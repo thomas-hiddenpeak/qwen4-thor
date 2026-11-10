@@ -53,6 +53,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_uploads_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_image_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp

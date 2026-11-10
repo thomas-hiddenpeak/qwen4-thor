@@ -26,11 +26,18 @@ ObjectReply Active(const BinaryAccess& access,
 bool Utf8(const std::string& value, size_t limit) {
   return value.size() <= limit && detail::NormalizeUtf8(value) == value;
 }
+FileWebpLimits WebpLimits(const FileImageLimits& limits) {
+  return {limits.max_pixels, limits.max_edge, limits.max_conversion_bytes,
+          limits.codec_timeout_ms};
+}
 ObjectReply Check(const FileImageInput& image, const FileImageLimits& limits,
-                  vision::MediaHeader* result) {
+                  vision::MediaHeader* result, bool require_conversion = true) {
   if (!limits.max_bytes || limits.max_bytes > kFileInputBytes ||
       !limits.max_pixels || limits.max_pixels > (256ULL << 20) ||
-      !limits.max_edge || limits.max_edge > 65536)
+      !limits.max_edge || limits.max_edge > 65536 ||
+      limits.max_conversion_bytes < 1024 ||
+      limits.max_conversion_bytes > (256ULL << 20) ||
+      limits.codec_timeout_ms < 1 || limits.codec_timeout_ms > 30000)
     return Error(500, "file_image_budget_invalid", "Invalid image budget");
   const auto& source = image.source;
   if (source.bytes.size() > limits.max_bytes)
@@ -39,14 +46,27 @@ ObjectReply Check(const FileImageInput& image, const FileImageLimits& limits,
       std::span(reinterpret_cast<const uint8_t*>(source.bytes.data()),
                 source.bytes.size());
   vision::MediaHeader header;
-  if (!vision::ReadMediaHeader(bytes, &header) ||
-      source.sha256 != Digest(source.bytes) || !Utf8(source.filename, 1024) ||
+  if (source.sha256 != Digest(source.bytes) || !Utf8(source.filename, 1024) ||
       !Utf8(source.mime_type, 255) ||
       (!source.file_id.empty() && !ValidId(source.file_id)) ||
       image.urls.size() > 11 ||
       (image.detail != "auto" && image.detail != "low" &&
        image.detail != "high" && image.detail != "original"))
     return Invalid();
+  if (IsWebpImage(source.bytes)) {
+    WebpHeader webp;
+    auto reply = ReadWebpHeader(source.bytes, &webp);
+    if (!reply.ok()) return reply;
+    if (require_conversion) {
+      if (!image.webp) return Invalid();
+      reply = ValidateWebpPixels(source.bytes, WebpLimits(limits), *image.webp,
+                                 &webp);
+      if (!reply.ok()) return reply;
+    }
+    header = {vision::MediaFormat::kPng, webp.width, webp.height};
+  } else if (image.webp || !vision::ReadMediaHeader(bytes, &header)) {
+    return Invalid();
+  }
   if (header.width > limits.max_edge || header.height > limits.max_edge ||
       uint64_t{header.width} * header.height > limits.max_pixels)
     return Error(413, "file_image_capacity", "Image pixel budget exceeded");
@@ -83,13 +103,23 @@ ObjectReply ReadFileImage(ObjectStore* objects, const BinaryAccess& access,
     reply = ReadLocalFileInput(objects, bounded, source, budget, &next.source);
     if (!reply.ok()) return reply;
   }
-  reply = Check(next, limits, &next.header);
+  reply = Check(next, limits, &next.header, false);
   if (!reply.ok()) return reply;
   if (!source.mime_type.empty() &&
       source.kind == FileInputSource::Kind::kInline &&
-      source.mime_type != vision::MediaFormatMime(next.header.format))
+      source.mime_type != (IsWebpImage(next.source.bytes)
+                               ? "image/webp"
+                               : vision::MediaFormatMime(next.header.format)))
     return Error(400, "media_format_mismatch",
                  "Image data URI type disagrees with its bytes");
+  if (IsWebpImage(next.source.bytes)) {
+    next.webp.emplace();
+    reply = DecodeWebpImage(next.source.bytes, WebpLimits(limits), access,
+                            &*next.webp, control);
+    if (!reply.ok()) return reply;
+    reply = Check(next, limits, &next.header);
+    if (!reply.ok()) return reply;
+  }
   reply = Active(access, control);
   if (!reply.ok()) return reply;
   *image = std::move(next);
@@ -113,8 +143,9 @@ ObjectReply SaveFileImageSnapshot(
   const auto& source = image.source;
   auto urls = Array();
   for (const auto& url : image.urls) urls.array.push_back(String(url));
-  const auto metadata = Object(
-      {{"format", String("q4t.image_input_snapshot.v1")},
+  auto metadata = Object(
+      {{"format", String(image.webp ? "q4t.image_input_snapshot.v2"
+                                    : "q4t.image_input_snapshot.v1")},
        {"filename", String(source.filename)},
        {"mime_type", String(source.mime_type)},
        {"file_id", String(source.file_id)},
@@ -123,10 +154,15 @@ ObjectReply SaveFileImageSnapshot(
        {"detail", String(image.detail)},
        {"width", Number(image.header.width)},
        {"height", Number(image.header.height)},
-       {"encoding", String(vision::MediaFormatName(image.header.format))}});
-  const std::string_view bytes(source.bytes);
-  return store.Save(access, binding_sha256, metadata, std::span(&bytes, 1),
-                    storage, hold_seconds, reference, hold);
+       {"encoding",
+        String(image.webp ? "webp"
+                          : vision::MediaFormatName(image.header.format))}});
+  if (image.webp) Set(&metadata, "conversion", image.webp->conversion);
+  const std::string_view parts[]{
+      source.bytes, image.webp ? image.webp->png : std::string_view{}};
+  return store.Save(access, binding_sha256, metadata,
+                    {parts, image.webp ? size_t{2} : size_t{1}}, storage,
+                    hold_seconds, reference, hold);
 }
 ObjectReply ReadFileImageSnapshot(InputSnapshotStore& store,
                                   const BinaryAccess& access,
@@ -143,10 +179,13 @@ ObjectReply ReadFileImageSnapshot(InputSnapshotStore& store,
   if (!reply.ok()) return reply;
   const auto& data = snapshot.metadata;
   const auto* urls = data.GetArray("urls");
-  if (snapshot.parts.size() != 1 || !data.IsObject() ||
-      data.object.size() != 10 ||
-      data.GetString("format") != "q4t.image_input_snapshot.v1" || !urls ||
-      urls->array.size() > 11)
+  const bool converted =
+      data.GetString("format") == "q4t.image_input_snapshot.v2";
+  if (snapshot.parts.size() != (converted ? 2 : 1) || !data.IsObject() ||
+      data.object.size() != (converted ? 11 : 10) ||
+      (!converted &&
+       data.GetString("format") != "q4t.image_input_snapshot.v1") ||
+      !urls || urls->array.size() > 11)
     return Corrupt();
   for (const auto* key :
        {"filename", "mime_type", "file_id", "sha256", "detail", "encoding"})
@@ -155,17 +194,22 @@ ObjectReply ReadFileImageSnapshot(InputSnapshotStore& store,
   next.source = {std::move(snapshot.parts[0]), data.GetString("filename"),
                  data.GetString("mime_type"), data.GetString("file_id"),
                  data.GetString("sha256")};
+  if (converted) {
+    const auto* conversion = data.Find("conversion");
+    if (!conversion || !IsWebpImage(next.source.bytes)) return Corrupt();
+    next.webp = FileWebpPixels{std::move(snapshot.parts[1]), *conversion};
+  }
   next.detail = data.GetString("detail");
   for (const auto& url : urls->array) {
     if (!url.IsString()) return Corrupt();
     next.urls.push_back(url.str);
   }
   reply = Check(next, limits, &next.header);
-  if (!reply.ok())
-    return reply.code == "invalid_file_image" ? Corrupt() : reply;
+  if (!reply.ok()) return reply.http_status == 400 ? Corrupt() : reply;
   if (data.GetInt("width", -1) != next.header.width ||
       data.GetInt("height", -1) != next.header.height ||
-      data.GetString("encoding") != vision::MediaFormatName(next.header.format))
+      data.GetString("encoding") !=
+          (converted ? "webp" : vision::MediaFormatName(next.header.format)))
     return Corrupt();
   reply = Active(access);
   if (!reply.ok()) return reply;

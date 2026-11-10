@@ -292,7 +292,8 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
     } else if (next.value.starts_with("data:")) {
       constexpr std::string_view png = "data:image/png;base64,",
                                  jpeg = "data:image/jpeg;base64,",
-                                 gif = "data:image/gif;base64,";
+                                 gif = "data:image/gif;base64,",
+                                 webp = "data:image/webp;base64,";
       if (next.value.starts_with(png)) {
         next.mime_type = "image/png";
         next.value.remove_prefix(png.size());
@@ -302,6 +303,9 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
       } else if (next.value.starts_with(gif)) {
         next.mime_type = "image/gif";
         next.value.remove_prefix(gif.size());
+      } else if (next.value.starts_with(webp)) {
+        next.mime_type = "image/webp";
+        next.value.remove_prefix(webp.size());
       } else {
         return Invalid("Image data URI requires a supported media type",
                        url_path);

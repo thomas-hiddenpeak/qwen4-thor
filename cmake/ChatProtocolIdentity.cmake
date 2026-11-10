@@ -133,6 +133,10 @@ set(protocol_inputs
   include/q4t/server/file_input.h
   src/server/file_input.cpp
   src/server/file_image.cpp
+  include/q4t/server/file_webp.h
+  src/server/file_webp_protocol.h
+  src/server/file_webp.cpp
+  src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h
   src/server/file_fetch_internal.h

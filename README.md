@@ -204,6 +204,17 @@ BuildId及转换结果SHA，原件SHA单独保持。Google查看链接和快捷�
 Apple/XLSB适配的固定上游测试资料及无照片派生说明见
 [测试来源与MPL许可](tests/fixtures/file_adapters/README.md)。
 
+WebP静态图片使用隔离子进程按需加载系统libwebpdecoder 3与zlib 1；
+构建需要`libwebp-dev`、`zlib1g-dev`头文件。主进程仅校验容器和预算，
+不链接这两个解码运行库；子进程采用固定系统路径、纯内存沙箱和既有
+超时/取消/退出回收合同。原件、实际RGB PNG、库版本与SHA共同保存，
+历史回放不重新依赖codec。缺库或解码失败只失败对应图片请求。
+按[libwebp官方API](https://developers.google.com/speed/webp/docs/api)与
+[RIFF容器规范](https://developers.google.com/speed/webp/docs/riff_container)
+实现适配，未复制解码器代码；系统libwebp保留BSD及专利许可，zlib保留
+zlib许可（本机`/usr/share/doc/libwebpdecoder3/copyright`和
+`/usr/share/doc/zlib1g/copyright`）。完整API接入及真实模型验收继续实施。
+
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
 原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。
@@ -309,7 +320,7 @@ HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
 #   pip install --user --break-system-packages cmake==4.4.3
 # 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
 #   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev \
-#     libssl-dev libarchive-dev libxml2-dev libreofficekit-dev
+#     libssl-dev libarchive-dev libxml2-dev libreofficekit-dev libwebp-dev zlib1g-dev
 # custom grammar构建另需rustc >= 1.65（本机使用固定1.90.0）；不要求cargo
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \

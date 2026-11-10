@@ -48,6 +48,10 @@ bool Options(const FileExpansionOptions& options) {
          options.image.max_bytes <= kFileInputBytes &&
          options.image.max_pixels &&
          options.image.max_pixels <= (256ULL << 20) && options.image.max_edge &&
+         options.image.max_conversion_bytes >= 1024 &&
+         options.image.max_conversion_bytes <= (256ULL << 20) &&
+         options.image.codec_timeout_ms >= 1 &&
+         options.image.codec_timeout_ms <= 30000 &&
          options.image.max_edge <= 65536 &&
          ValidFileDocumentLimits(options.extraction.document) &&
          options.extraction.pdf.max_pages &&
@@ -110,6 +114,9 @@ ObjectReply ChargeImage(const FileImageInput& image,
       !Add(1, options.max_files, &next.images) ||
       !Add(image.source.bytes.size(), options.extraction.pdf.max_image_bytes,
            &next.image_bytes) ||
+      (image.webp &&
+       !Add(image.webp->png.size(), options.extraction.pdf.max_image_bytes,
+            &next.image_bytes)) ||
       !Add(uint64_t{image.header.width} * image.header.height,
            options.extraction.pdf.max_pixels, &next.pixels))
     return Capacity();
@@ -625,10 +632,11 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       const std::string prefix = std::string("data:") +
                                  vision::MediaFormatMime(image.header.format) +
                                  ";base64,";
-      if (!Add(prefix.size() + (image.source.bytes.size() + 2) / 3 * 4,
+      const auto& pixels = image.webp ? image.webp->png : image.source.bytes;
+      if (!Add(prefix.size() + (pixels.size() + 2) / 3 * 4,
                options_.max_rendered_bytes, &bytes))
         return Capacity();
-      auto url = String(prefix + Encode(image.source.bytes));
+      auto url = String(prefix + Encode(pixels));
       parts->array.push_back(
           chat ? Object({{"type", String("image_url")},
                          {"image_url",

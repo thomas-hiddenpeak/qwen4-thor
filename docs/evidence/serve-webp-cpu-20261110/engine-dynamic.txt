@@ -1,0 +1,40 @@
+
+Dynamic section at offset 0xbfe838 contains 37 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libcudart.so.13]
+ 0x0000000000000001 (NEEDED)             Shared library: [libicui18n.so.74]
+ 0x0000000000000001 (NEEDED)             Shared library: [libicuuc.so.74]
+ 0x0000000000000001 (NEEDED)             Shared library: [liburing.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libcublasLt.so.13]
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]
+ 0x000000000000001d (RUNPATH)            Library runpath: [/usr/local/cuda-13.3/targets/sbsa-linux/lib]
+ 0x000000000000000c (INIT)               0x60388
+ 0x000000000000000d (FINI)               0x78469c
+ 0x0000000000000019 (INIT_ARRAY)         0xbc1290
+ 0x000000000000001b (INIT_ARRAYSZ)       224 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0xbc1370
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x2d0
+ 0x0000000000000005 (STRTAB)             0x3e50
+ 0x0000000000000006 (SYMTAB)             0x388
+ 0x000000000000000a (STRSZ)              16346 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0xbfeac8
+ 0x0000000000000002 (PLTRELSZ)           13008 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x5d0b8
+ 0x0000000000000007 (RELA)               0x8680
+ 0x0000000000000008 (RELASZ)             346680 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x8310
+ 0x000000006fffffff (VERNEEDNUM)         8
+ 0x000000006ffffff0 (VERSYM)             0x7e2a
+ 0x000000006ffffff9 (RELACOUNT)          14162
+ 0x0000000000000000 (NULL)               0x0

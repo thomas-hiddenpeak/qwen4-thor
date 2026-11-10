@@ -1,0 +1,17 @@
+{
+  "reviewed": "2026-11-10",
+  "sources": [
+    "https://developers.google.com/speed/webp/docs/api",
+    "https://developers.google.com/speed/webp/docs/riff_container",
+    "https://developers.openai.com/api/docs/guides/images-vision"
+  ],
+  "runtime_libraries": [
+    "/usr/lib/aarch64-linux-gnu/libwebpdecoder.so.3",
+    "/usr/lib/aarch64-linux-gnu/libz.so.1"
+  ],
+  "license_sources": {
+    "/usr/share/doc/libwebpdecoder3/copyright": "eee23313fcb4cac326f7a3a5c646474062440bd8665f706747b2eba33d72e97f",
+    "/usr/share/doc/zlib1g/copyright": "9e5b96d63773a5d177ba264254390f792be07e41748ebd94730981c6cac31cc6"
+  },
+  "implementation": "Native exec-only child loads system libwebp and zlib only there; no external service or downloaded decoder code. Actual source/PNG and runtime version/library SHA frozen together."
+}

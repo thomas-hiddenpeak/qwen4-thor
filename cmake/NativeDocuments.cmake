@@ -15,11 +15,19 @@ find_file(Q4T_SYSTEM_XML_LIBRARY libxml2.so.2
   PATHS /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
         /lib/${CMAKE_LIBRARY_ARCHITECTURE} /usr/lib64 /usr/lib /lib64 /lib
   NO_DEFAULT_PATH REQUIRED)
+find_path(Q4T_WEBP_INCLUDE_DIR webp/decode.h REQUIRED)
+find_path(Q4T_ZLIB_INCLUDE_DIR zlib.h REQUIRED)
+# Runtime absence is a request-local dependency error, not a server startup
+# dependency. Fixed system SONAMEs are opened and verified in the child only.
+set(Q4T_SYSTEM_WEBP_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libwebpdecoder.so.3")
+set(Q4T_SYSTEM_ZLIB_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libz.so.1")
 function(q4t_link_native_documents target)
   target_include_directories(${target} SYSTEM PRIVATE
     ${Q4T_ARCHIVE_INCLUDE_DIR} ${Q4T_XML_INCLUDE_DIR}
-    ${Q4T_LIBREOFFICE_INCLUDE_DIR})
+    ${Q4T_LIBREOFFICE_INCLUDE_DIR} ${Q4T_WEBP_INCLUDE_DIR} ${Q4T_ZLIB_INCLUDE_DIR})
   target_compile_definitions(${target} PRIVATE
+    Q4T_SYSTEM_WEBP_LIBRARY="${Q4T_SYSTEM_WEBP_LIBRARY}"
+    Q4T_SYSTEM_ZLIB_LIBRARY="${Q4T_SYSTEM_ZLIB_LIBRARY}"
     Q4T_SYSTEM_ARCHIVE_LIBRARY="${Q4T_SYSTEM_ARCHIVE_LIBRARY}"
     Q4T_SYSTEM_XML_LIBRARY="${Q4T_SYSTEM_XML_LIBRARY}"
     Q4T_SYSTEM_LIBREOFFICE_DIRECTORY="${Q4T_SYSTEM_LIBREOFFICE_DIRECTORY}"

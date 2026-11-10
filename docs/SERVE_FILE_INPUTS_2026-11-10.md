@@ -212,3 +212,10 @@ low/high在参考处理后限定最长边512/2048和对应平方像素数，仍�
 ## FI04非动画GIF（2026-11-10）
 
 2026-11-10。FI04 [非动画GIF 21项CPU通过](evidence/serve-static-gif-cpu-20261110/README.md)：透明调色板/局部画布/四档真实像素与Pillow一致，动画/截断/资源拒绝、原件快照及计时v1/v2兼容通过。最终零警告、448来源锚点一致，候选ae1f7444未发行。0GPU/默认STOPPED保持；继续WebP、全部API/模型/业务/回退与总任务。
+
+WebP组件完成[13项CPU接受](evidence/serve-webp-cpu-20261110/README.md)：
+真实五种图像像素与独立参考一致，库只在owned子进程加载，缺库/退出/
+超时不影响普通像素和文本处理。v2快照同时保留原件及转换PNG/库身份，
+codec不可用和原File删除后恢复不重新解码；两份实际字节均计预算。
+FI05回退也须识别image_input_snapshot.v2。完整API/模型/业务和总任务
+继续，尚未发行。

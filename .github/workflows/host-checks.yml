@@ -24,6 +24,8 @@ jobs:
           command -v cmake >/dev/null || packages+=(cmake)
           test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
           test -f /usr/include/archive.h || packages+=(libarchive-dev)
+          test -f /usr/include/webp/decode.h || packages+=(libwebp-dev)
+          test -f /usr/include/zlib.h || packages+=(zlib1g-dev)
           test -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)
           test -f /usr/include/LibreOfficeKit/LibreOfficeKit.h || packages+=(libreofficekit-dev)
           for codec in libreoffice-writer libreoffice-calc libreoffice-impress; do

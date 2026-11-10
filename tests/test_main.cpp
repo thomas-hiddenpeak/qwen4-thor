@@ -17,6 +17,7 @@
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/file_pdf.h"
+#include "q4t/server/file_webp.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
@@ -27,6 +28,7 @@ int FileFetchFixture(int argc, char** argv);
 int FileSourceFixture(int argc, char** argv);
 int NestedDocumentFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
+int WebpWorkerFixture(int argc, char** argv);
 int WorkerIoBudgetFixture(int argc, char** argv);
 int LegacyDocumentFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
@@ -53,6 +55,10 @@ int main(int argc, char** argv) {
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);
   if (document_worker >= 0) return document_worker;
+  const int webp_fixture = WebpWorkerFixture(argc, argv);
+  if (webp_fixture >= 0) return webp_fixture;
+  const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);
+  if (webp_worker >= 0) return webp_worker;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
