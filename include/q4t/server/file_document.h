@@ -37,6 +37,7 @@ struct FileDocument {
   std::string text, encoding, source_sha256;
   std::vector<FileDocumentSheet> sheets;
 };
+bool ValidFileDocumentLimits(const FileDocumentLimits& limits);
 
 // Classification never opens a filename or executes a decoder. Container and
 // PDF signatures override misleading filename metadata.

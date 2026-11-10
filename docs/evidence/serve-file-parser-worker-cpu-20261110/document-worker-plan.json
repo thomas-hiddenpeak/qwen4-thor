@@ -1,0 +1,21 @@
+{
+  "task": "A09.5/FI02_native_document_worker",
+  "tests": [
+    "file_document_worker_actual_text_and_sheet_match_original_data",
+    "file_document_worker_sandbox_denies_external_capabilities",
+    "file_document_worker_bad_documents_and_budgets_do_not_poison_next_request",
+    "file_document_worker_cancel_during_actual_raw_input_transfer",
+    "file_document_worker_stall_and_crash_have_bounded_owned_recovery",
+    "file_document_worker_deferred_exit_keeps_slot_and_loop_reaps",
+    "file_document_worker_invalid_owner_and_config_launch_nothing",
+    "file_document_budgets_apply_to_actual_utf8_cells_and_structure",
+    "file_fetch_unreaped_domain_keeps_its_slot_without_blocking_other_domains",
+    "grammar_process_memory_limit_and_descriptor_isolation"
+  ],
+  "new_tests": 7,
+  "affected_tests": 3,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "default_changed": false,
+  "scope": "actual isolated native text/table parsing, syscall limits, timeout/crash/cancel and deferred ownership; PDF/Office and actual model/API integration remain required"
+}

@@ -32,7 +32,7 @@ enum class GrammarFailure {
 // Independent fixed-capacity domains: a blocked object-store worker must not
 // consume the grammar slot or degrade ordinary structured generation.
 enum class IsolatedWorkerDomain {
-  kGrammar, kObjects, kSessionCache, kPrefixCache, kFileFetch
+  kGrammar, kObjects, kSessionCache, kPrefixCache, kFileFetch, kFileParse
 };
 
 // Independent lifetime: deferred cleanup never retains a server/request

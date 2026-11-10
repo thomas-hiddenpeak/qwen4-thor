@@ -1,0 +1,17 @@
+{
+  "status": "PASS_TARGETED_NATIVE_DOCUMENT_WORKER_CPU",
+  "tests": 10,
+  "new_tests": 7,
+  "affected_tests": 3,
+  "seconds": 0.3642031387425959,
+  "host_binary_sha256": "b3890cc78c98f6c9350b6a5c784bab70fa14a3a8fcf21049dc3687d17da65c8c",
+  "candidate_engine_sha256": "557e6b8b38da3847dcfa6650d6380b3754865551483bcce50921fa960c9a53b3",
+  "default_engine_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+  "default_changed": false,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "build_warnings": 0,
+  "complex_formats_pending": true,
+  "api_execution_integration_pending": true,
+  "remaining_master_tasks_open": true
+}

@@ -225,6 +225,10 @@ ObjectReply Delimited(std::string_view text, char delimiter,
 }
 }  // namespace
 
+bool ValidFileDocumentLimits(const FileDocumentLimits& limits) {
+  return Valid(limits);
+}
+
 FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
   const auto bytes = std::string_view(input.bytes);
   if (bytes.starts_with("%PDF-")) return FileDocumentFormat::kPdf;

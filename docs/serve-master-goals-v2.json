@@ -987,7 +987,8 @@
       "file_input_component_evidence": {
         "sources": "evidence/serve-file-source-cpu-20261110/README.md",
         "native_fetch": "evidence/serve-file-fetch-cpu-20261110/README.md",
-        "native_plain_documents": "evidence/serve-file-text-cpu-20261110/README.md"
+        "native_plain_documents": "evidence/serve-file-text-cpu-20261110/README.md",
+        "native_document_worker": "evidence/serve-file-parser-worker-cpu-20261110/README.md"
       }
     },
     {

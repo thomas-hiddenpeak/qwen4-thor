@@ -1443,8 +1443,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6e4a5658ef3249990aa620480eb1fc9e2471fcd67a381d6d6e0ab411f9669892",
-    "cmake/ChatProtocolIdentity.cmake": "5da2b0d28b2dbcf88a24589bcf05419fb1bd5eaee9414176f9e45374a34dce27",
+    "CMakeLists.txt": "71326992690997e3d5bd72010859e6ff64fc43062eaef8e8b06b3522fa61554b",
+    "cmake/ChatProtocolIdentity.cmake": "947d65bba8bf521ebd7b6f5ca5431ba9e26e4ee3888076f993c82b5ae60fe178",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1496,7 +1496,7 @@
     "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
-    "include/q4t/server/grammar_process.h": "766e14b63033a660b1e0a291727166d278e00592f64886a4d8ae921a89e92397",
+    "include/q4t/server/grammar_process.h": "d48dcfcf97594d86fd917573a592002916c5eb5e1ab60e260e09550a95b76eca",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -1590,7 +1590,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "019978f4d95fad72718f6d9e597ab3dac209f33e9f561c1cca728f7f7eedf39f",
+    "src/main.cpp": "90a6c91e704f0f2cddaffe048ddf31a3d987f6ea306f8fdd416f11d7c0f28d47",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -1647,7 +1647,7 @@
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
-    "src/server/grammar_process.cpp": "db10f0d8c6bcee90d8d159553c7fef92f40e699fae233c7f4d92e6ef9294c7a4",
+    "src/server/grammar_process.cpp": "4b36f06743a3a4285091d76b7bd883a7b51dc847957af4ba897ca2385ce324ce",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
@@ -1840,8 +1840,11 @@
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
     "include/q4t/server/file_fetch.h": "d3a1489614982189e1b120ea47e37a0e275ba2175bfc9d70013cf0b48a22693e",
     "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec",
-    "src/server/file_document.cpp": "c4dda83a9f4c0cd8253f0d4d82c3b84d7d1cb90fa2fde302ad0962e5235e59e3",
-    "include/q4t/server/file_document.h": "4fc92712e433a9dd470a20359c02b644a5037ebbcc3185063fc864205ccf7459"
+    "src/server/file_document.cpp": "4f3217d596bdcf15206f106da5c0e831124b52fae0c841723293773ce295c6aa",
+    "include/q4t/server/file_document.h": "906b7bcfc90bb1fde18464c79075aff6fc1187b053580279b3f867c7e714952f",
+    "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
+    "include/q4t/server/file_document_worker.h": "0786d9a5f18281f563a188211157bc8e8ac6f2b687fe4324cb856db9a16aa85a",
+    "src/server/file_document_worker.cpp": "ebf8a7ea88ee43f31230d40be430512f2419d55831f1fd9fc362fb138594a4e3"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -3500,5 +3503,21 @@
       "src/server/file_document.cpp"
     ],
     "evidence": "docs/evidence/serve-file-text-cpu-20261110/README.md"
+  },
+  "file_document_worker_cpu_20261110": {
+    "semantics": "Independent exec-only native document parser with syscall limits and retained ownership; complex codecs and API/model integration remain required",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/file_document.h",
+      "include/q4t/server/file_document_worker.h",
+      "include/q4t/server/grammar_process.h",
+      "src/main.cpp",
+      "src/server/file_document.cpp",
+      "src/server/file_document_sandbox.cpp",
+      "src/server/file_document_worker.cpp",
+      "src/server/grammar_process.cpp"
+    ],
+    "evidence": "docs/evidence/serve-file-parser-worker-cpu-20261110/README.md"
   }
 }

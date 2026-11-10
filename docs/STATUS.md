@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI02 [独立解析进程10项CPU通过](evidence/serve-file-parser-worker-cpu-20261110/README.md)，7新+3受影响、0.364秒，host/实际引擎零警告；真实seccomp拒绝、解析/超时/取消/占槽与后续恢复通过。0GPU、默认cdb5ced9保持STOPPED；继续PDF/Office/RTF、表格真实摘要及全部API/业务/总任务。
+
+FI02独立文本解析worker成组实现，冻结7新进程+3直接受影响CPU：真实文本/表格、seccomp文件/网络/exec/信号/执行内存拒绝、错误后续请求、原字节传输取消、卡住/短回执清理、未回收占槽和native loop释放。开始独立host/引擎必要构建，尚未测试；默认cdb5ced9/STOPPED、0GPU，复杂文档与全部模型/API任务继续。
+
 FI02 [原生文本/表格10项CPU通过](evidence/serve-file-text-cpu-20261110/README.md)，Unicode/原文、真实CSV/TSV/IIF、1000行及预算/损坏/取消均过，host零警告。0GPU、默认cdb5ced9保持STOPPED；继续隔离解析worker和PDF/Office、真实表格摘要与全部API/业务/总任务。
 
 FI02原生文本/表格提取成组完成，冻结10项直接CPU：UTF8/UTF16/UTF32、Unicode/代码原文、CSV引号/换行/空字段、TSV/IIF、1000行与原总行数、尾部损坏、输出/单元格/结构预算及取消。先独立host构建，尚未测试；PDF/Office、独立解析worker、模型摘要和全部消费仍继续。
