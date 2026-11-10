@@ -1,0 +1,23 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/client_policy.h",
+    "include/q4t/server/file_expansion.h",
+    "include/q4t/server/http_response.h",
+    "include/q4t/server/model_preparation.h",
+    "include/q4t/server/responses_execution.h",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_model_step.cpp",
+    "src/server/chat_model_step.h",
+    "src/server/client_policy.cpp",
+    "src/server/file_expansion.cpp",
+    "src/server/http_response.cpp",
+    "src/server/model_preparation.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 457,
+  "review": "Typed native preparation reuses actual generation under parent control/client permit and shared quota. Total sheet output is bounded; admitted partial usage remains charged. Strong control ownership survives cleanup; nested detached context cannot write or finish parent. Responses starts durable ownership before model work, checkpoints actual completed sheets and reports total preparation+primary usage. CPU receipt tests are not inference acceptance. All API and actual business validation remain required."
+}

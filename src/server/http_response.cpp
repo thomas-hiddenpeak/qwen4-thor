@@ -345,7 +345,8 @@ HttpResponseContext::~HttpResponseContext() {
   current_response = previous_;
 }
 
-HttpResponseContext::HttpResponseContext(Detached) : HttpResponseContext(-1) {
+HttpResponseContext::HttpResponseContext(Detached detached)
+    : HttpResponseContext(detached.borrowed_fd) {
   detached_ = true;
 }
 

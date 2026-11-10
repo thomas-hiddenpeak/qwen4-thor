@@ -1,0 +1,15 @@
+{
+  "cpu_cases": [
+    "test_budget_and_actual_standard_file_requests",
+    "test_answer_oracle_rejects_wrong_answer_and_incomplete"
+  ],
+  "cpu_count": 2,
+  "real_business": {
+    "starts": 1,
+    "chats": 4,
+    "model_steps": 6,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "scope": "Actual native preparation path with SDK CSV JSON, previous SSE frozen replay, background CSV and same-model ordinary Chat. Exact rate/token accounting and owned cleanup. No default mutation or performance/full-model matrix."
+}

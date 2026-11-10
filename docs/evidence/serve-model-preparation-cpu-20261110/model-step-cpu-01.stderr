@@ -1,0 +1,11 @@
+[q4t][http] trace_id=req-a0771c346a730f5617f50c9403c6f0c6 status=502 error=test_step_failure
+[q4t][http] trace_id=req-a72ea66418311c7745c7aa48f0ffbe94 status=502 error=upstream_error
+[q4t][http] trace_id=req-72ad7e4c0aa7b424e5bfaf100647f194 status=503 error=service_unavailable
+[q4t][http] trace_id=req-36b11f625f0dc23d7cee4a2ce8d2b92b status=503 error=service_unavailable
+[q4t][http] trace_id=req-91be764f66f1854051470c6841dba658 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error

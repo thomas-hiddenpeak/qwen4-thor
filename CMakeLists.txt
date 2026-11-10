@@ -300,6 +300,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_extract.cpp
   src/server/file_snapshot.cpp
   src/server/file_expansion.cpp
+  src/server/model_preparation.cpp
   src/server/file_source.cpp
   src/server/file_pdf.cpp
   src/server/file_pdf_worker.cpp
@@ -368,6 +369,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp
+  src/server/chat_model_step.cpp
   src/server/session_cache.cpp
   src/server/cache_io.cpp
   src/server/cache_worker.cpp

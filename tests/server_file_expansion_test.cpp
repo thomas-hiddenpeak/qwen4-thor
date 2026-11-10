@@ -110,6 +110,62 @@ constexpr std::string_view kFixtureSummary =
     R"({"summary":"CPU callback fixture: alpha=42, beta=7","headers":["name: label","value: quantity"]})";
 }  // namespace
 
+Q4T_TEST(
+    file_expansion_sheet_total_budget_tracks_actual_receipts_without_refill) {
+  Fixture fixture;
+  fixture.options.summary_output_tokens = 64;
+  fixture.options.total_summary_output_tokens = 100;
+  FileExpansion expansion(nullptr, fixture.options);
+  const auto items = Array({Item(Csv()), Item(Csv(), "msg_second")});
+  Q4T_CHECK(Ok(expansion.Prepare(items, FileInputProfile::kResponsesStored,
+                                 Json(), Access())));
+  Q4T_CHECK(expansion.PendingOutputBudget() == 100);
+  FileSheetStep first, second;
+  Q4T_CHECK(Ok(expansion.NextSheet(Config(), &first)));
+  Q4T_CHECK(first.request.GetInt("max_completion_tokens") == 64);
+  // Explicit CPU receipts exercise the protocol, not actual model quality.
+  Q4T_CHECK(
+      Ok(expansion.CompleteSheet(first, kFixtureSummary, "stop", 100, 50)));
+  Q4T_CHECK(expansion.PendingOutputBudget() == 50);
+  Q4T_CHECK(Ok(expansion.NextSheet(Config(), &second)));
+  Q4T_CHECK(second.request.GetInt("max_completion_tokens") == 50);
+  Q4T_CHECK(
+      expansion.CompleteSheet(second, kFixtureSummary, "stop", 100, 51).code ==
+      "file_augmentation_incomplete");
+  Q4T_CHECK(expansion.Usage().model_output_tokens == 50);
+  Q4T_CHECK(
+      Ok(expansion.CompleteSheet(second, kFixtureSummary, "stop", 101, 50)));
+  Q4T_CHECK(!expansion.PendingSheets() && expansion.PendingOutputBudget() == 0);
+  Q4T_CHECK(expansion.Usage().model_input_tokens == 201 &&
+            expansion.Usage().model_output_tokens == 100 &&
+            expansion.Usage().model_steps == 2);
+  Json rendered;
+  Q4T_CHECK(Ok(expansion.Render(items, &rendered)));
+  return true;
+}
+
+Q4T_TEST(file_expansion_exhausted_preparation_cannot_issue_another_sheet) {
+  Fixture fixture;
+  fixture.options.summary_output_tokens = 64;
+  fixture.options.total_summary_output_tokens = 64;
+  FileExpansion expansion(nullptr, fixture.options);
+  const auto items = Array({Item(Csv()), Item(Csv(), "msg_second")});
+  Q4T_CHECK(Ok(expansion.Prepare(items, FileInputProfile::kResponsesStored,
+                                 Json(), Access())));
+  FileSheetStep first, next;
+  Q4T_CHECK(Ok(expansion.NextSheet(Config(), &first)));
+  Q4T_CHECK(
+      Ok(expansion.CompleteSheet(first, kFixtureSummary, "stop", 100, 64)));
+  Q4T_CHECK(expansion.PendingSheets() && expansion.PendingOutputBudget() == 0);
+  const auto reply = expansion.NextSheet(Config(), &next);
+  Q4T_CHECK(reply.http_status == 413 &&
+            reply.code == "file_preparation_output_exhausted" &&
+            next.request.IsNull());
+  Json rendered;
+  Q4T_CHECK(!expansion.Render(items, &rendered).ok());
+  return true;
+}
+
 Q4T_TEST(file_expansion_all_source_validation_precedes_external_io) {
   Fixture fixture;
   ObjectStore objects(fixture.objects);

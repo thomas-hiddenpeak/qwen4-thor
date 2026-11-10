@@ -72,7 +72,11 @@ class HttpResponseContext {
  public:
   // Metrics must outlive the context. Publishing occurs after heartbeat join.
   explicit HttpResponseContext(int fd, HttpTransportMetrics* metrics = nullptr);
-  struct Detached {};
+  struct Detached {
+    // Input preparation borrows the parent descriptor only for cancellation
+    // checks. All response writes remain detached, including error paths.
+    int borrowed_fd = -1;
+  };
   // Native background execution observes errors/admission without a socket,
   // transport worker, heartbeat or loopback request.
   explicit HttpResponseContext(Detached);

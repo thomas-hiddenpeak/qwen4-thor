@@ -23,6 +23,9 @@ inline constexpr size_t kMaxClients = 64;
 // Optional request-owned classifiers have a separate, fixed internal ceiling;
 // they never increase the public generation budget or escape TPM accounting.
 inline constexpr uint64_t kMaxAuxiliaryOutputTokens = 1024;
+// Server-owned document preparation has its own finite reservation. It cannot
+// enlarge the caller's answer budget or bypass the client's TPM limit.
+inline constexpr uint64_t kMaxPreparationOutputTokens = 65536;
 inline constexpr uint64_t kMaxClientRevision = (uint64_t{1} << 53) - 1;
 inline constexpr auto kClientHandoffWait = std::chrono::milliseconds(100);
 
@@ -222,7 +225,8 @@ class ClientRateLease {
                            const ClientIdentity& identity, uint64_t prompt,
                            uint64_t output,
                            ClientClock::time_point now = ClientClock::now(),
-                           uint64_t auxiliary_output = 0);
+                           uint64_t auxiliary_output = 0,
+                           uint64_t preparation_output = 0);
   // Reserve actual additional input for a subsequent internal model step.
   // Keeps the original RPM admission and shared output reservation; cumulative
   // input must still fit the client's prompt limit. StartPrompt charges only

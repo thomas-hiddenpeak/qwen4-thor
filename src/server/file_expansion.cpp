@@ -44,7 +44,10 @@ bool Options(const FileExpansionOptions& options) {
          options.max_rendered_bytes <= (512ULL << 20) &&
          options.hold_seconds >= 1 && options.hold_seconds <= 3600 &&
          options.summary_output_tokens >= 64 &&
-         options.summary_output_tokens <= 65536 && options.image.max_bytes &&
+         options.summary_output_tokens <= 65536 &&
+         options.total_summary_output_tokens >= 64 &&
+         options.total_summary_output_tokens <= 65536 &&
+         options.image.max_bytes &&
          options.image.max_bytes <= kFileInputBytes &&
          options.image.max_pixels &&
          options.image.max_pixels <= (256ULL << 20) && options.image.max_edge &&
@@ -491,11 +494,25 @@ bool FileExpansion::PendingSheets() const {
       return true;
   return false;
 }
+uint64_t FileExpansion::PendingOutputBudget() const {
+  uint64_t count = 0;
+  for (const auto& entry : entries_)
+    count += entry.snapshot.document.sheets.size() -
+             entry.snapshot.augmentations.size();
+  return std::min(count * options_.summary_output_tokens,
+                  static_cast<uint64_t>(options_.total_summary_output_tokens) -
+                      usage_.model_output_tokens);
+}
 ObjectReply FileExpansion::NextSheet(const ChatPlanConfig& config,
                                      FileSheetStep* step) {
   if (!step) return Invalid();
   *step = {};
   if (!prepared_ || !PendingSheets()) return Invalid("No pending spreadsheet");
+  const auto output_budget =
+      std::min<uint64_t>(options_.summary_output_tokens, PendingOutputBudget());
+  if (!output_budget)
+    return Error(413, "file_preparation_output_exhausted",
+                 "Spreadsheet preparation exhausted its total output budget");
   FileSheetStep next;
   const Entry* entry = nullptr;
   for (size_t i = 0; i < entries_.size() && !entry; ++i)
@@ -546,7 +563,7 @@ ObjectReply FileExpansion::NextSheet(const ChatPlanConfig& config,
   next.request = Object(
       {{"model", String(config.model)},
        {"messages", messages},
-       {"max_completion_tokens", Number(options_.summary_output_tokens)},
+       {"max_completion_tokens", Number(output_budget)},
        {"enable_thinking", Boolean(false)},
        {"temperature", Number(0)},
        {"response_format",
@@ -586,7 +603,9 @@ ObjectReply FileExpansion::CompleteSheet(const FileSheetStep& step,
     return Invalid();
   if (finish_reason != "stop" || !input_tokens || input_tokens > 1000000000 ||
       !output_tokens ||
-      output_tokens > static_cast<uint64_t>(options_.summary_output_tokens))
+      output_tokens >
+          static_cast<uint64_t>(step.request.GetInt("max_completion_tokens")) ||
+      output_tokens > PendingOutputBudget())
     return Error(502, "file_augmentation_incomplete",
                  "Spreadsheet preparation did not complete");
   std::string identity;
@@ -634,6 +653,9 @@ ObjectReply FileExpansion::CompleteSheet(const FileSheetStep& step,
   entry.snapshot.augmentations.push_back(std::move(generated));
   entry.dirty = true;
   usage_.augmentation_bytes = bytes;
+  usage_.model_input_tokens += input_tokens;
+  usage_.model_output_tokens += output_tokens;
+  ++usage_.model_steps;
   issued_step_sha256_.clear();
   return {};
 }

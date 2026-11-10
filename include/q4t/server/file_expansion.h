@@ -16,10 +16,14 @@ struct FileExpansionOptions {
   uint64_t max_rendered_bytes = 128ULL << 20;
   int hold_seconds = 1800;
   int summary_output_tokens = 2048;
+  int total_summary_output_tokens = 8192;
 };
 struct FileExpansionUsage {
   uint64_t source_bytes = 0, text_bytes = 0, image_bytes = 0, pixels = 0;
   uint64_t augmentation_bytes = 0;
+  // Only work performed by this preparation; replayed summaries cost no new
+  // model tokens. The execution owner also accounts incomplete/failed steps.
+  uint64_t model_input_tokens = 0, model_output_tokens = 0, model_steps = 0;
   size_t files = 0, images = 0, pages = 0, sheets = 0, cells = 0, embedded = 0;
 };
 struct FileSheetStep {
@@ -50,6 +54,7 @@ class FileExpansion {
   ObjectReply Persist(const BinaryAccess& access);
   ObjectReply Release(const BinaryAccess& access);
   bool PendingSheets() const;
+  uint64_t PendingOutputBudget() const;
   size_t RetainedBytes() const;
   // If the enclosing record may have committed, let absolute holds expire.
   // Never turn an unknown publication into speculative dependency deletion.

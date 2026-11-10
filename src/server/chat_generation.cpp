@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "chat_model_step.h"
 #include "responses_json.h"
 
 #include <new>
@@ -18,6 +19,7 @@
 #include <span>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/diagnostic/execution_observer.h"
@@ -153,12 +155,23 @@ void ChatServer::HandleChat(int fd, const std::string& body,
   }
 }
 
+ObjectReply ChatServer::RunInternalModelStep(
+    int fd, InternalModelStep* step, std::shared_ptr<RequestControl> control) {
+  return ExecuteInternalModelStep(
+      fd, step, std::move(control),
+      [&](detail::ResponseState* state, std::shared_ptr<RequestControl> owner) {
+        HandleChatImpl(fd, "", state, false, nullptr, std::move(owner), step);
+      });
+}
+
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 detail::ResponseState* response_state,
                                 bool completion, ResponsesExecution* responses,
-                                std::shared_ptr<RequestControl> background) {
+                                std::shared_ptr<RequestControl> background,
+                                InternalModelStep* internal) {
   auto* http = detail::HttpResponseContext::Current(fd);
-  metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
+  if (!internal)
+    metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
   // Any return before generation starts (validation / alloc / encode / prefill
   // failure) counts as a pre-generation error; cleared once a token is
@@ -167,19 +180,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::atomic<uint64_t>& err;
     bool ok = false;
     bool aborted = false;
+    bool enabled = true;
     int exceptions = std::uncaught_exceptions();
     ~ErrGuard() {
-      if (!aborted && (!ok || std::uncaught_exceptions() > exceptions))
+      if (enabled && !aborted &&
+          (!ok || std::uncaught_exceptions() > exceptions))
         err.fetch_add(1, std::memory_order_relaxed);
     }
   } err_guard{metrics_.requests_error};
+  err_guard.enabled = !internal;
   detail::ServeFaultPoint("handler.before_diagnostics");
   RequestDiagnostics diagnostic(stderr, http ? http->TraceId() : "-");
   using Wait = RequestDiagnostics::Wait;
   if (RejectUnhealthy(fd)) return;
   if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
   RequestAdmissionLease chat_lease(active_chats_, admission_limits_.inflight);
-  if (!chat_lease.TryAcquire()) {
+  if (!internal && !chat_lease.TryAcquire()) {
     metrics_.text_admission_rejected.fetch_add(1, std::memory_order_relaxed);
     SendError(fd, 503, "text request capacity exhausted", {},
               "capacity_exhausted");
@@ -194,12 +210,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // Outlives request/grammar/response buffers; release only after cleanup.
   StructuredRequestLease structured_lease(structured_admission_,
                                           metrics_.structured_active);
-  ClientRateLease rate_lease;
+  ClientRateLease owned_rate;
+  auto& rate_lease = internal ? internal->accounting.Rate() : owned_rate;
   struct TerminalLeases {
     StructuredRequestLease& structured;
     ClientRateLease& rate;
   } terminal_leases{structured_lease, rate_lease};
-  if (http)
+  if (http && !internal)
     http->SetBeforeTerminal(
         [](void* lease) noexcept {
           auto& leases = *static_cast<TerminalLeases*>(lease);
@@ -212,7 +229,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   });
   io::Json original_request;
   Status s;
-  if (!responses || !responses->Prepared())
+  if (internal)
+    original_request = internal->request;
+  else if (!responses || !responses->Prepared())
     s = io::ParseJson(body, &original_request, true,
                       completion ? kCompletionJsonLimits : kSchemaJsonLimits);
   if (!s.ok()) {
@@ -220,8 +239,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
-  auto planning_config = PlanningConfig(fd);
+  auto planning_config = internal ? internal->config : PlanningConfig(fd);
+  if (internal) {
+    planning_config.client_limits = nullptr;
+    planning_config.count_input_only = false;
+    planning_config.prewarm_only = false;
+  }
   const auto client = http ? http->Client().Id() : std::string_view();
+  std::shared_ptr<RequestControl> preparation_control;
+  bool owns_preparation_control = false;
+  ScopeExit close_preparation_control([&] {
+    if (owns_preparation_control) requests_.Remove(preparation_control);
+  });
+  std::optional<ModelPreparation> preparation;
+  std::string preparation_wire;
   ChatRequestPlan request_plan;
   CompletionRequestPlan completion_plan;
   std::vector<PreparedCompletionPrompt> completion_prompts;
@@ -230,11 +261,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   if (responses) {
     if (!responses->Prepared()) {
       const auto& identity = http->Client();
+      const auto requested_ms =
+          original_request.GetInt("request_timeout_ms", request_deadline_ms_);
+      // Invalid values are diagnosed by the envelope before acquisition. A
+      // valid caller deadline also covers file/prompt I/O, not just decoding.
+      const auto preparation_ms = requested_ms >= 1 && requested_ms <= 10800000
+                                      ? requested_ms
+                                      : request_deadline_ms_;
       StateAccess access{
           identity.Scoped() ? "client:" + std::string(identity.Id())
                             : "local:anonymous",
-          t_arrive + std::chrono::milliseconds(request_deadline_ms_),
-          [this, fd] {
+          t_arrive + std::chrono::milliseconds(preparation_ms), [this, fd] {
             return stop_requested_.load() || detail::ClientConnectionFailed(fd);
           }};
       auto reply = responses->Prepare(original_request, planning_config,
@@ -247,19 +284,85 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
     }
     planning_config.prewarm_only = responses->Envelope().cache.prewarm;
-    if (responses->Envelope().truncate) {
-      const auto context_deadline =
+    if (responses->PendingFileSheets()) {
+      const auto& envelope = responses->Envelope();
+      const auto& original = envelope.request;
+      const auto deadline =
           background
               ? background->deadline()
+              : t_arrive + std::chrono::milliseconds(original.GetInt(
+                               "request_timeout_ms", request_deadline_ms_));
+      preparation_control =
+          background
+              ? background
+              : requests_.Register(
+                    original.GetString("request_id", responses->Id()),
+                    original.GetString("cancel_token"), deadline, client);
+      if (!preparation_control) {
+        SendError(fd, 409, "request_id already active", {},
+                  "request_id_conflict", "request_id");
+        return;
+      }
+      owns_preparation_control = !background;
+      responses->BindCancellation(deadline, [preparation_control, fd] {
+        return RequestCancelled(preparation_control.get(), fd);
+      });
+      const uint64_t auxiliary =
+          envelope.moderation.enabled
+              ? (envelope.cache.prewarm ? 1 : 2) * kMaxModerationStepTokens
+              : 0;
+      preparation.emplace(clients_, http->Client(), rate_lease,
+                          envelope.cache.prewarm
+                              ? 0
+                              : envelope.options.GetInt("max_output_tokens"),
+                          auxiliary, responses->FileOutputBudget());
+      while (responses->PendingFileSheets()) {
+        FileSheetStep sheet;
+        auto reply = responses->NextFileSheet(planning_config, &sheet);
+        if (reply.ok()) {
+          InternalModelStep work{
+              sheet.request,
+              planning_config,
+              *preparation,
+              [&] {
+                return responses->Begun() ? ObjectReply{}
+                                          : responses->Begin(&preparation_wire);
+              },
+              {},
+              false,
+              {},
+              {},
+              0,
+              0};
+          reply = RunInternalModelStep(fd, &work, preparation_control);
+          if (reply.ok())
+            reply = responses->CompleteFileSheet(
+                sheet, work.content, work.finish_reason, work.input_tokens,
+                work.output_tokens, planning_config);
+        }
+        if (!reply.ok()) {
+          SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                    reply.ClientCode(), reply.value.GetString("param"));
+          return;
+        }
+      }
+    }
+    if (responses->Envelope().truncate) {
+      const auto context_control =
+          preparation_control ? preparation_control : background;
+      const auto context_deadline =
+          context_control
+              ? context_control->deadline()
               : t_arrive +
                     std::chrono::milliseconds(
                         responses->Generation().generation_request.GetInt(
                             "request_timeout_ms", request_deadline_ms_));
-      const auto context_cancelled = [this, fd, background, context_deadline] {
+      const auto context_cancelled = [this, fd, context_control,
+                                      context_deadline] {
         return stop_requested_.load() ||
                std::chrono::steady_clock::now() >= context_deadline ||
-               (background ? background->Cancelled()
-                           : detail::ClientConnectionFailed(fd));
+               (context_control ? context_control->Cancelled()
+                                : detail::ClientConnectionFailed(fd));
       };
       responses->BindCancellation(context_deadline, context_cancelled);
       auto reply = responses->FitContext(
@@ -400,7 +503,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   detail::ServeFaultPoint("handler.before_register");
   if (background) deadline = background->deadline();
-  auto control = background
+  auto control = preparation_control ? preparation_control
+                 : background
                      ? background
                      : requests_.Register(request_id, key, deadline, client);
   if (!control) {
@@ -418,7 +522,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                            control->Reason());
       if (registry) registry->Remove(control);
     }
-  } registration{background ? nullptr : &requests_, control, diagnostic};
+  } registration{background || preparation_control ? nullptr : &requests_,
+                 control, diagnostic};
   OnException request_failure(
       [&] { control->Cancel(RequestControl::State::kFailure); });
   auto progress =
@@ -466,7 +571,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto count_abort = [&] {
     err_guard.ok = true;  // A cancellation is not also a validation error.
     err_guard.aborted = true;
-    if (!abort_counted) {
+    if (!abort_counted && !internal) {
       metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
       metrics_.abort_reasons[AbortReasonIndex(control->Reason())].fetch_add(
           1, std::memory_order_relaxed);
@@ -766,24 +871,41 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   }
-  if (planning_config.client_limits) {
-    if (prompt_u32.size() > planning_config.client_limits->max_prompt_tokens) {
+  const uint64_t prepared_input = preparation ? preparation->InputTokens() : 0;
+  const uint64_t prepared_output =
+      preparation ? preparation->OutputTokens() : 0;
+  if (internal) {
+    auto reply = internal->accounting.ReservePrompt(prompt_u32.size());
+    if (reply.ok()) reply = internal->before_model();
+    if (!reply.ok()) {
+      SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                reply.ClientCode(), reply.value.GetString("param"));
+      return;
+    }
+  } else if (planning_config.client_limits) {
+    if (prepared_input + prompt_u32.size() >
+        planning_config.client_limits->max_prompt_tokens) {
       SendError(fd, 400, "Initial step exceeds client input limit", {},
                 "client_prompt_limit_exceeded", "moderation");
       return;
     }
-    const auto result = rate_lease.Reserve(
-        clients_, http->Client(),
-        completion                                   ? completion_prompt_tokens
-        : standalone_compact && !compact_step_needed ? 0
-                                                     : prompt_u32.size(),
-        completion                                   ? completion_output_tokens
-        : standalone_compact && !compact_step_needed ? 0
-        : cache_prewarm                              ? 0
-        : responses                                  ? request_output_limit
-                    : prompt_budget.total_output,
-        ClientClock::now(),
-        (input_review + moderate_output) * kMaxModerationStepTokens);
+    const auto result =
+        preparation && preparation->Reserved()
+            ? rate_lease.ExtendPrompt(clients_, http->Client(),
+                                      prompt_u32.size())
+            : rate_lease.Reserve(
+                  clients_, http->Client(),
+                  completion ? completion_prompt_tokens
+                  : standalone_compact && !compact_step_needed
+                      ? 0
+                      : prompt_u32.size(),
+                  completion ? completion_output_tokens
+                  : standalone_compact && !compact_step_needed ? 0
+                  : cache_prewarm                              ? 0
+                  : responses ? request_output_limit
+                              : prompt_budget.total_output,
+                  ClientClock::now(),
+                  (input_review + moderate_output) * kMaxModerationStepTokens);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
@@ -814,6 +936,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                    moderation_usage.output_tokens);
     return completion ? completion_choices.CompletionTokens()
                       : choices.CompletionTokens();
+  };
+  const auto observe_completion = [&](uint64_t count) {
+    if (internal)
+      internal->accounting.ObserveOutput(count);
+    else
+      rate_lease.Completion(prepared_output + count);
   };
   bool headers_started = false;
   uint64_t admitted_completion_prompt_tokens = 0;
@@ -858,7 +986,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   bool compact_noop_pending = compact_selected && !compact_step_needed;
   const auto begin_response = [&](std::string* wire) {
     ObjectReply result;
-    wire->clear();
+    *wire = std::exchange(preparation_wire, {});
     if (!responses->Begun()) result = responses->Begin(wire);
     if (result.ok() && moderate_output &&
         moderation_options.output == ModerationMode::kBlock &&
@@ -881,8 +1009,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (result.ok()) {
       diagnostic.Stage("storage");
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
+      auto total_usage = responses_usage;
+      total_usage.input_tokens += prepared_input;
+      total_usage.output_tokens += prepared_output;
       result = responses->Finish(response_incomplete, responses_completed_calls,
-                                 responses_usage, std::time(nullptr), &terminal,
+                                 total_usage, std::time(nullptr), &terminal,
                                  response_filtered);
     }
     if (!result.ok()) {
@@ -1027,8 +1158,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     };
     const auto& moderation_plan =
         input_moderation_step ? input_moderation : output_moderation;
-    const bool internal_step =
-        compaction_step || pro_step || summary_step || moderation_step;
+    const bool internal_step = internal || compaction_step || pro_step ||
+                               summary_step || moderation_step;
     const bool compacted_primary = compact_step_needed && !internal_step;
     const bool continued_primary =
         (compact_step_needed || pro_selected) && !internal_step;
@@ -1085,9 +1216,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       if (planning_config.client_limits) {
-        const uint64_t total_prompt = responses_usage.input_tokens +
-                                      moderation_usage.input_tokens +
-                                      prompt_u32.size();
+        const uint64_t total_prompt =
+            prepared_input + responses_usage.input_tokens +
+            moderation_usage.input_tokens + prompt_u32.size();
         if (total_prompt > planning_config.client_limits->max_prompt_tokens) {
           if (moderation_step) {
             if (!review_failed("client_prompt_limit_exceeded",
@@ -1589,12 +1720,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     diagnostic.Admitted(seq_id);
-    if (completion) {
+    if (internal) {
+      if (!internal->accounting.StartStep()) {
+        FreeSeqId(seq_id);
+        SendError(fd, 500, "Invalid internal model accounting state", {},
+                  "file_preparation_state_invalid");
+        return;
+      }
+    } else if (completion) {
       if (choice_index % completion_plan.best_of == 0)
         admitted_completion_prompt_tokens += prompt_u32.size();
       rate_lease.StartPrompt(admitted_completion_prompt_tokens);
     } else if (responses) {
-      rate_lease.StartPrompt(responses_usage.input_tokens +
+      rate_lease.StartPrompt(prepared_input + responses_usage.input_tokens +
                              moderation_usage.input_tokens + prompt_u32.size());
     } else {
       rate_lease.Start();
@@ -2926,7 +3064,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (!mtp_sched) break;
         if (is_stop_token(mtp_b)) {
           generated.push_back(mtp_b);
-          rate_lease.Completion(completed_tokens() + generated.size());
+          observe_completion(completed_tokens() + generated.size());
           finish_reason = "stop";
           break;
         }
@@ -3000,7 +3138,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
              ++i) {
           const int32_t tok_id = mtp_ar.mtp_accepted[i];
           generated.push_back(tok_id);
-          rate_lease.Completion(completed_tokens() + generated.size());
+          observe_completion(completed_tokens() + generated.size());
           if (!consume_token(tok_id)) {
             if (text_stop.Matched())
               stop_mtp_discarded = mtp_ar.mtp_accepted_count - i - 1;
@@ -3218,8 +3356,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           ++completion_scored_tokens;
         }
         prediction.Consume(next_token, prediction_content);
-        rate_lease.Completion(completed_tokens() +
-                              prediction.Completion(generated.size()));
+        observe_completion(completed_tokens() +
+                           prediction.Completion(generated.size()));
         if (is_stop_token(next_token)) {
           finish_reason = "stop";
           break;
@@ -3376,8 +3514,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (prediction_enabled) {
       // Also settles an admitted zero-output length completion, where all
       // provided tokens remain rejected. Queued cancellations never start it.
-      rate_lease.Completion(completed_tokens() +
-                            prediction.Completion(generated.size()));
+      observe_completion(completed_tokens() +
+                         prediction.Completion(generated.size()));
       std::fprintf(
           stderr,
           "[prediction] request=%s provided=%zu accepted=%llu rejected=%llu "
@@ -3715,6 +3853,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       diagnostic.Outcome("error", "device_memory_failure");
       SendError(fd, 503, "device buffer release failed; restart server", {},
                 "gpu_unhealthy");
+      return;
+    }
+    if (internal) {
+      internal->content = response_parser.Content();
+      internal->finish_reason = finish_reason;
+      internal->input_tokens = T;
+      internal->output_tokens = generated.size();
+      observe_completion(generated.size());
+      trace_outcome = trace::RequestOutcome::kSuccess;
+      cleanup();
+      if (control->Cancelled() || RejectUnhealthy(fd)) return;
+      internal->completed = true;
+      err_guard.ok = true;
+      diagnostic.Outcome("success", "input_prepared");
       return;
     }
     // A choice is complete, but the external request retains admission,

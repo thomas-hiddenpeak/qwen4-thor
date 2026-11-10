@@ -50,6 +50,9 @@ class ResponsesExecution {
                             StateAccess access);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
+  uint64_t FileOutputBudget() const {
+    return files_ ? files_->PendingOutputBudget() : 0;
+  }
   const FileExpansionUsage* FileUsage() const {
     return files_ ? &files_->Usage() : nullptr;
   }

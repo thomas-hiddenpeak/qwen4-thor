@@ -435,12 +435,15 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           const ClientIdentity& identity,
                                           uint64_t prompt, uint64_t output,
                                           ClientClock::time_point now,
-                                          uint64_t auxiliary_output) {
+                                          uint64_t auxiliary_output,
+                                          uint64_t preparation_output) {
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
   if (auxiliary_output > kMaxAuxiliaryOutputTokens ||
+      preparation_output > kMaxPreparationOutputTokens ||
       output > UINT64_MAX - auxiliary_output ||
-      prompt > UINT64_MAX - output - auxiliary_output)
+      output + auxiliary_output > UINT64_MAX - preparation_output ||
+      prompt > UINT64_MAX - output - auxiliary_output - preparation_output)
     return ClientRateResult::kInvalid;
   if (identity.owner_ != &admission || !identity.Allowed())
     return ClientRateResult::kInvalid;
@@ -475,7 +478,8 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
     rate.rpm_rejected = Add(rate.rpm_rejected, 1);
     return ClientRateResult::kRpm;
   }
-  const uint64_t amount = prompt + output + auxiliary_output;
+  const uint64_t amount =
+      prompt + output + auxiliary_output + preparation_output;
   if (limits->tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
                                        amount) > limits->tokens_per_minute) {
     rate.tpm_rejected = Add(rate.tpm_rejected, 1);

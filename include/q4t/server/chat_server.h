@@ -183,7 +183,10 @@ class ChatServer {
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
                       class ResponsesExecution* responses,
-                      std::shared_ptr<RequestControl> background = {});
+                      std::shared_ptr<RequestControl> background = {},
+                      struct InternalModelStep* internal = nullptr);
+  ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
+                                   std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);
   void RunBackgroundResponse(ResponsesJobs::Job& job);
 

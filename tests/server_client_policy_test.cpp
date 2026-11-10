@@ -18,8 +18,10 @@
 #include "q4t/server/file_limits.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/model_preparation.h"
 #include "q4t/server/request_control.h"
 #include "q4t/test.h"
+#include "../src/server/chat_model_step.h"
 
 namespace {
 using namespace q4t::server;
@@ -1399,6 +1401,186 @@ Q4T_TEST(client_rate_auxiliary_cannot_bypass_tpm_or_public_output_limit) {
             ClientRateResult::kInvalid);
   const auto usage = admission.RateUsage(0, now);
   Q4T_CHECK(usage.requests == 0 && usage.admitted == 0 && usage.reserved == 0);
+  return true;
+}
+
+Q4T_TEST(model_preparation_shares_one_rpm_with_primary_and_actual_usage) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate;
+  ModelPreparation preparation(admission, client, rate, 16, 10, 80);
+  Q4T_CHECK(preparation.ReservePrompt(20).ok());
+  Q4T_CHECK(admission.RateUsage(0).reserved == 126);
+  Q4T_CHECK(preparation.StartStep());
+  Q4T_CHECK(!preparation.StartStep());
+  preparation.ObserveOutput(7);
+  preparation.CloseStep();
+  Q4T_CHECK(preparation.ReservePrompt(10).ok());
+  Q4T_CHECK(preparation.StartStep());
+  preparation.ObserveOutput(11);
+  preparation.CloseStep();
+  Q4T_CHECK(preparation.InputTokens() == 30 &&
+            preparation.OutputTokens() == 18);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 30) ==
+            ClientRateResult::kAllowed);
+  rate.StartPrompt(60);
+  rate.Completion(preparation.OutputTokens() + 4);
+  Q4T_CHECK(admission.RateUsage(0).requests == 1);
+  ClientRateLease competing;
+  Q4T_CHECK(competing.Reserve(admission, client, 1, 1) ==
+            ClientRateResult::kRpm);
+  rate.Settle();
+  const auto usage = admission.RateUsage(0);
+  Q4T_CHECK(usage.tokens == 82 && usage.reserved == 0 && usage.requests == 1);
+  return true;
+}
+
+Q4T_TEST(model_preparation_failed_steps_charge_only_admitted_actual_work) {
+  for (const bool started : {false, true}) {
+    ClientAdmission admission;
+    Q4T_CHECK(admission.Configure(DynamicPolicy(2, 200)));
+    ClientRateLease rate;
+    ModelPreparation preparation(
+        admission, admission.Authenticate("alpha", kSecret), rate, 16, 0, 64);
+    Q4T_CHECK(preparation.ReservePrompt(20).ok());
+    if (started) Q4T_CHECK(preparation.StartStep());
+    preparation.ObserveOutput(7);
+    preparation.ObserveOutput(3);  // Repeated stale observations cannot refund.
+    preparation.CloseStep();
+    preparation.CloseStep();
+    rate.Settle();
+    Q4T_CHECK(admission.RateUsage(0).tokens == (started ? 27u : 0u));
+    Q4T_CHECK(admission.RateUsage(0).reserved == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(model_preparation_budget_cannot_bypass_tpm_prompt_or_public_output) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 120)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease too_large, answer, invalid, overflow, valid;
+  Q4T_CHECK(too_large.Reserve(admission, client, 20, 16, ClientClock::now(), 0,
+                              90) == ClientRateResult::kTpm);
+  Q4T_CHECK(answer.Reserve(admission, client, 1, 17, ClientClock::now(), 0,
+                           64) == ClientRateResult::kInvalid);
+  Q4T_CHECK(invalid.Reserve(admission, client, 1, 1, ClientClock::now(), 0,
+                            kMaxPreparationOutputTokens + 1) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(overflow.Reserve(admission, client, 1, UINT64_MAX - 1,
+                             ClientClock::now(), 1,
+                             1) == ClientRateResult::kInvalid);
+  ModelPreparation preparation(admission, client, valid, 16, 0, 64);
+  Q4T_CHECK(preparation.ReservePrompt(20).ok());
+  Q4T_CHECK(preparation.StartStep());
+  preparation.ObserveOutput(10);
+  preparation.CloseStep();
+  Q4T_CHECK(preparation.ReservePrompt(45).code ==
+            "client_prompt_limit_exceeded");
+  Q4T_CHECK(preparation.ReservePrompt(21).code == "client_tpm_exhausted");
+  valid.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 30 &&
+            admission.RateUsage(0).requests == 1);
+  return true;
+}
+
+Q4T_TEST(model_preparation_total_exhaustion_does_not_refill_reservation) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 200)));
+  ClientRateLease rate;
+  ModelPreparation preparation(
+      admission, admission.Authenticate("alpha", kSecret), rate, 16, 0, 64);
+  Q4T_CHECK(preparation.ReservePrompt(20).ok());
+  Q4T_CHECK(preparation.StartStep());
+  preparation.ObserveOutput(65);  // Even a broken executor must pay actual use.
+  preparation.CloseStep();
+  Q4T_CHECK(!preparation.ReservePrompt(1).ok());
+  rate.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 85 &&
+            admission.RateUsage(0).requests == 1);
+  return true;
+}
+
+Q4T_TEST(internal_model_wrapper_preserves_parent_owner_and_quota_on_success) {
+  using namespace q4t::server::detail;
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate;
+  ModelPreparation accounting(admission, client, rate, 16, 0, 64);
+  HttpResponseContext parent(HttpResponseContext::Detached{});
+  parent.SetClient(client, nullptr);
+  RequestRegistry registry;
+  auto control = registry.Register("parent", "key", kDeadline, client.Id());
+  ScopeExit remove([&] { registry.Remove(control); });
+  bool handoff = false;
+  parent.SetBeforeTerminal(
+      [](void* flag) noexcept { *static_cast<bool*>(flag) = true; }, &handoff);
+  Json request;
+  InternalModelStep step{
+      request, {}, accounting, [] { return ObjectReply{}; }, {}, false, {},
+      {},      0,  0};
+  const auto reply = ExecuteInternalModelStep(
+      -1, &step, control,
+      [&](ResponseState*, std::shared_ptr<RequestControl> owner) {
+        if (owner != control || HttpResponseContext::Current(-1) == &parent ||
+            !accounting.ReservePrompt(20).ok() || !accounting.StartStep())
+          throw std::runtime_error("incorrect internal ownership");
+        accounting.ObserveOutput(7);
+        step.completed = true;  // CPU ownership callback, no model claim.
+        owner.reset();  // Callee releasing its borrow must not break cleanup.
+      });
+  Q4T_CHECK(reply.ok() && !handoff && accounting.InputTokens() == 20 &&
+            accounting.OutputTokens() == 7);
+  Q4T_CHECK(HttpResponseContext::Current(-1) == &parent &&
+            admission.RateUsage(0).reserved == 100);
+  Q4T_CHECK(registry.Cancel("parent", "key", client.Id()));
+  rate.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 27);
+  return true;
+}
+
+Q4T_TEST(internal_model_wrapper_failure_and_exception_restore_parent) {
+  using namespace q4t::server::detail;
+  for (const bool exception : {false, true}) {
+    ClientAdmission admission;
+    Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+    const auto client = admission.Authenticate("alpha", kSecret);
+    ClientRateLease rate;
+    ModelPreparation accounting(admission, client, rate, 16, 0, 64);
+    HttpResponseContext parent(HttpResponseContext::Detached{});
+    parent.SetClient(client, nullptr);
+    auto control = std::make_shared<RequestControl>("parent", "", kDeadline);
+    Json request;
+    InternalModelStep step{
+        request, {}, accounting, [] { return ObjectReply{}; }, {}, false, {},
+        {},      0,  0};
+    bool threw = false;
+    ObjectReply reply;
+    try {
+      reply = ExecuteInternalModelStep(
+          -1, &step, control,
+          [&](ResponseState*, std::shared_ptr<RequestControl>) {
+            if (!accounting.ReservePrompt(20).ok() || !accounting.StartStep())
+              throw std::logic_error("invalid ownership fixture");
+            accounting.ObserveOutput(3);
+            if (exception) throw std::runtime_error("CPU unwind fixture");
+            SendError(-1, 502, "step failed", {}, "test_step_failure");
+          });
+    } catch (const std::runtime_error&) {
+      threw = true;
+    }
+    Q4T_CHECK(threw == exception);
+    if (!exception)
+      Q4T_CHECK(reply.http_status == 502 && reply.code == "test_step_failure");
+    Q4T_CHECK(HttpResponseContext::Current(-1) == &parent &&
+              *parent.State() == ResponseState::kUnsent &&
+              accounting.InputTokens() == 20 && accounting.OutputTokens() == 3);
+    Q4T_CHECK(admission.RateUsage(0).reserved == 100 && control->Cancel());
+    rate.Settle();
+    Q4T_CHECK(admission.RateUsage(0).tokens == 23);
+  }
   return true;
 }
 

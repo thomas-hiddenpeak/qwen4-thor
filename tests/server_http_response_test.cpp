@@ -33,6 +33,46 @@ struct SocketPair {
 };
 }  // namespace
 
+Q4T_TEST(
+    server_detached_child_borrows_disconnect_fd_without_response_or_handoff) {
+  using namespace q4t::server;
+  using namespace q4t::server::detail;
+  SocketPair sockets;
+  HttpResponseContext parent(sockets.fd[0]);
+  bool handed_off = false;
+  parent.SetBeforeTerminal(
+      [](void* value) noexcept { *static_cast<bool*>(value) = true; },
+      &handed_off);
+  auto control = std::make_shared<RequestControl>(
+      "preparation", "", std::chrono::steady_clock::time_point::max());
+  int error = 0;
+  {
+    HttpResponseContext child(HttpResponseContext::Detached{sockets.fd[0]});
+    child.SetErrorObserver(
+        [](void* value, int status, std::string_view,
+           std::string_view) noexcept { *static_cast<int*>(value) = status; },
+        &error);
+    Q4T_CHECK(HttpResponseContext::Current(sockets.fd[0]) == &child);
+    SendError(sockets.fd[0], 502, "private model failure");
+    Q4T_CHECK(error == 502 && !handed_off &&
+              *parent.State() == ResponseState::kUnsent);
+    char bytes[128];
+    Q4T_CHECK(recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT) == -1 &&
+              (errno == EAGAIN || errno == EWOULDBLOCK));
+    Q4T_CHECK(WriteAll(sockets.fd[0], "private", {.control = control.get()}));
+    Q4T_CHECK(control->Cancel());  // A child did not finish the parent control.
+    Q4T_CHECK(!WriteAll(sockets.fd[0], "private", {.control = control.get()}));
+  }
+  Q4T_CHECK(HttpResponseContext::Current(sockets.fd[0]) == &parent);
+  Q4T_CHECK(SendSimple(sockets.fd[0], 200, "OK", "{}", "application/json"));
+  Q4T_CHECK(handed_off);
+  char bytes[4096];
+  const auto size = recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT);
+  Q4T_CHECK(size > 0 &&
+            std::string_view(bytes, size).find("private") == std::string::npos);
+  return true;
+}
+
 Q4T_TEST(server_terminal_handoff_precedes_wire_and_preserves_cleanup) {
   using namespace q4t::server;
   using namespace q4t::server::detail;
