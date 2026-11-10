@@ -1,0 +1,16 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp: In function ‘bool q4t_test_fn_batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:445:19: error: no matching function for call to ‘q4t::server::BatchJobs::BatchJobs(q4t::server::ObjectStore&, q4t::server::ClientAdmission&, q4t::server::ChatPlanConfig&, q4t::server::BatchJobsOptions&, q4t_test_fn_batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay()::<lambda(const auto:73&, const auto:74&, const auto:75&, const auto:76&, auto:77&, const auto:78&)>)’
+  445 |                  });
+      |                   ^
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:1:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_jobs.h:37:3: note: candidate: ‘q4t::server::BatchJobs::BatchJobs(q4t::server::ObjectStore&, q4t::server::ClientAdmission&, q4t::server::ChatPlanConfig, q4t::server::BatchJobsOptions, Executor, q4t::server::BatchInputMeter, q4t::server::BatchRatePlanner)’
+   37 |   BatchJobs(ObjectStore& objects, ClientAdmission& clients,
+      |   ^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_jobs.h:38:71: note:   no known conversion for argument 5 from ‘q4t_test_fn_batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay()::<lambda(const auto:73&, const auto:74&, const auto:75&, const auto:76&, auto:77&, const auto:78&)>’ to ‘q4t::server::BatchJobs::Executor’ {aka ‘std::function<q4t::server::BatchRowResult(const std::__cxx11::basic_string<char>&, const q4t::server::BatchInputRow&, const q4t::io::Json&, const q4t::server::ClientIdentity&, q4t::server::ClientLease&, const std::shared_ptr<q4t::server::RequestControl>&, std::shared_ptr<q4t::server::ClientRateLease>)>’}
+   38 |             ChatPlanConfig config, BatchJobsOptions options, Executor execute,
+      |                                                              ~~~~~~~~~^~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:989: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

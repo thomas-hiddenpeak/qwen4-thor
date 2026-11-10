@@ -1018,7 +1018,239 @@ BatchInputMeter Meter(ObjectStore& objects, BatchTokenCodec codec) {
                              codec, budget);
   };
 }
+Json Frozen(ObjectStore& objects, const Work& work,
+            const ChatPlanConfig& config) {
+  BatchPreparedInput prepared;
+  if (!Ok(BatchPreparation(objects).Prepare(Access(), work.id, work.endpoint,
+                                            work.row, config, &prepared)) ||
+      !Publish(objects, work, &prepared))
+    throw std::runtime_error("rate planner frozen fixture");
+  Json frozen;
+  if (!Ok(Load(objects, work, &frozen)))
+    throw std::runtime_error("rate planner original inputs");
+  return frozen;
+}
 }  // namespace
+
+Q4T_TEST(batch_rate_plan_chat_choices_use_actual_context_capped_budget) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto request =
+      Object({{"messages", Array({Object({{"role", String("user")},
+                                          {"content", String("question")}})})},
+              {"max_tokens", Number(32)},
+              {"n", Number(3)}});
+  auto work = Create(objects, request, "/v1/chat/completions");
+  const auto frozen = Frozen(objects, work, fixture.config);
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)));
+  Q4T_CHECK(input.exact && rate.input_exact &&
+            rate.prompt_capacity == input.tokens && rate.output == 96 &&
+            rate.auxiliary_output == 0 && rate.preparation_output == 0);
+  fixture.config.max_len = input.tokens + 7;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)) &&
+            rate.output == 21 && rate.Total() == input.tokens + 21);
+  return true;
+}
+
+Q4T_TEST(batch_rate_plan_completion_charges_all_candidates_and_zero_output) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ObjectStore objects(fixture.options);
+  for (int output : {0, 5}) {
+    auto request = Object({{"model", String(fixture.config.model)},
+                           {"prompt", Array({String("abc"), String("de")})},
+                           {"max_tokens", Number(output)},
+                           {"n", Number(2)},
+                           {"best_of", Number(3)}});
+    auto work = Create(objects, request, "/v1/completions");
+    const auto frozen = Frozen(objects, work, fixture.config);
+    BatchInputBudget input;
+    BatchRateBudget rate;
+    Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                   fixture.config, Access(), BudgetCodec(),
+                                   &input, &rate)));
+    Q4T_CHECK(rate.input_exact && rate.prompt_capacity == 5 &&
+              rate.output == static_cast<uint64_t>(output * 6) &&
+              rate.Total() == 5 + rate.output);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    batch_rate_plan_response_dynamic_steps_reserve_original_input_ceiling) {
+  Fixture fixture;
+  ClientLimits limits;
+  limits.max_prompt_tokens = 2048;
+  limits.max_output_tokens = 128;
+  limits.max_body_bytes = 1 << 20;
+  fixture.config.client_limits = &limits;
+  ObjectStore objects(fixture.options);
+  for (int mode = 0; mode < 5; ++mode) {
+    auto request = Response("Record 42");
+    Set(&request, "max_output_tokens", Number(32));
+    if (mode == 1)
+      Set(&request, "reasoning",
+          Object({{"mode", String("pro")}, {"effort", String("none")}}));
+    if (mode == 2)
+      Set(&request, "reasoning",
+          Object({{"summary", String("concise")}, {"effort", String("low")}}));
+    if (mode == 3)
+      Set(&request, "moderation",
+          Object({{"model", String(fixture.config.model)}}));
+    if (mode == 4)
+      Set(&request, "context_management",
+          Array({Object({{"type", String("compaction")},
+                         {"compact_threshold", Number(4096)}})}));
+    auto work = Create(objects, request);
+    const auto frozen = Frozen(objects, work, fixture.config);
+    BatchInputBudget input;
+    BatchRateBudget rate;
+    Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                   fixture.config, Access(), BudgetCodec(),
+                                   &input, &rate)));
+    Q4T_CHECK(input.exact && rate.input_exact == (mode == 0) &&
+              rate.prompt_capacity == (mode ? 2048 : input.tokens) &&
+              rate.output == 32 && rate.preparation_output == 0 &&
+              rate.auxiliary_output == (mode == 3 ? 1024 : 0));
+    const auto public_rows = Run(
+        objects, Request(ObjectKind::kResponse, {}, ObjectOperation::kList));
+    Q4T_CHECK(Ok(public_rows) &&
+              public_rows.value.GetArray("data")->array.empty());
+  }
+  return true;
+}
+
+Q4T_TEST(batch_rate_plan_pending_sheet_retains_original_without_generation) {
+  Fixture fixture;
+  ClientLimits limits;
+  limits.max_prompt_tokens = 4096;
+  limits.max_output_tokens = 64;
+  limits.max_body_bytes = 1 << 20;
+  fixture.config.client_limits = &limits;
+  ObjectStore objects(fixture.options);
+  auto file = Upload(objects, "key,value\nalpha,42\n", "facts.csv");
+  auto request = WithFile(file);
+  Set(&request, "max_output_tokens", Number(32));
+  auto work = Create(objects, request);
+  const auto frozen = Frozen(objects, work, fixture.config);
+  Q4T_CHECK(Ok(Files(objects).Erase(Access(), file)));
+  auto codec = BudgetCodec();
+  size_t encodes = 0;
+  codec.encode = [&](std::string_view, std::vector<uint32_t>*) {
+    ++encodes;
+    return q4t::Status::Fail("No generated sheet summary exists");
+  };
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  Q4T_CHECK(
+      Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                           fixture.config, Access(), codec, &input, &rate)));
+  Q4T_CHECK(!input.exact && !rate.input_exact && rate.prompt_capacity == 4096 &&
+            rate.output == 32 && rate.preparation_output == 2048 &&
+            rate.auxiliary_output == 0 && encodes == 0);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(
+      Ok(restored.RestoreInputs(frozen, fixture.config, State(), 42)) &&
+      restored.PendingFileSheets() && !restored.Begun() &&
+      restored.FileOutputBudget() == rate.preparation_output &&
+      ResponsesState(objects).Retrieve(restored.Id(), State()).http_status ==
+          404);
+  return true;
+}
+
+Q4T_TEST(batch_rate_plan_prewarm_full_context_has_no_public_output) {
+  Fixture fixture;
+  fixture.config.prefix_cache = true;
+  fixture.config.session_cache = true;
+  ObjectStore objects(fixture.options);
+  auto request = Response("a stable prefix");
+  Set(&request, "max_output_tokens", Number(32));
+  Set(&request, "prompt_cache_key", String("rate-fixture"));
+  Set(&request, "prompt_cache_options", Object({{"prewarm", Boolean(true)}}));
+  auto work = Create(objects, request);
+  const auto frozen = Frozen(objects, work, fixture.config);
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)));
+  fixture.config.max_len = input.tokens;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)) &&
+            rate.output == 0 && rate.input_exact &&
+            rate.Total() == input.tokens);
+  return true;
+}
+
+Q4T_TEST(batch_rate_plan_restored_queued_identity_does_not_publish_or_start) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto request = Response("queued original");
+  Set(&request, "background", Boolean(true));
+  Set(&request, "max_output_tokens", Number(32));
+  ResponsesExecution original(objects);
+  Q4T_CHECK(Ok(original.Prepare(request, fixture.config, State(), 42, true)) &&
+            original.BindRateDomain(ClientRateDomain::kBatch));
+  original.BindBackgroundControl(
+      std::make_shared<RequestControl>(original.Id(), "", Clock::now() + 30s));
+  std::string wire;
+  Q4T_CHECK(Ok(original.Begin(&wire)));
+  const auto before = ResponsesState(objects).Retrieve(original.Id(), State());
+  Q4T_CHECK(Ok(before));
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(Ok(restored.RestoreQueued(original.Id(), fixture.config, State())));
+  BatchRateBudget budget;
+  Q4T_CHECK(Ok(MeasureBatchResponseRate(restored, fixture.config, Access(),
+                                        BudgetCodec(), &budget)) &&
+            budget.input_exact && budget.output == 32 &&
+            budget.prompt_capacity > 0 &&
+            restored.RateDomain() == ClientRateDomain::kBatch);
+  const auto after = ResponsesState(objects).Retrieve(original.Id(), State());
+  Q4T_CHECK(Ok(after) && OutputJson(before.value) == OutputJson(after.value) &&
+            after.value.GetString("status") == "queued");
+  return true;
+}
+
+Q4T_TEST(batch_rate_plan_failure_keeps_output_and_original_identity) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesExecution response(objects);
+  auto request = Response("test input");
+  Set(&request, "max_output_tokens", Number(32));
+  Q4T_CHECK(Ok(response.Prepare(request, fixture.config, State(), 42)));
+  for (int mode = 0; mode < 4; ++mode) {
+    auto access = Access();
+    auto config = fixture.config;
+    auto codec = BudgetCodec();
+    ClientLimits limits;
+    if (mode == 0) access.scope = "client:other";
+    if (mode == 1) access.deadline = Clock::now() - 1ms;
+    if (mode == 2) access.cancelled = [] { return true; };
+    if (mode == 3) {
+      limits.max_prompt_tokens = 1;
+      limits.max_output_tokens = 64;
+      config.client_limits = &limits;
+    }
+    BatchRateBudget budget{77, 11, 5, 3, false};
+    const auto result =
+        MeasureBatchResponseRate(response, config, access, codec, &budget);
+    Q4T_CHECK(!result.ok() && budget.prompt_capacity == 77 &&
+              budget.output == 11 && budget.auxiliary_output == 5 &&
+              budget.preparation_output == 3 && !budget.input_exact &&
+              !response.Begun());
+    if (mode == 1) Q4T_CHECK(result.http_status == 408);
+    if (mode == 2) Q4T_CHECK(result.http_status == 499);
+    if (mode == 3) Q4T_CHECK(result.code == "client_prompt_limit_exceeded");
+  }
+  return true;
+}
 
 Q4T_TEST(batch_budget_native_chat_and_responses_templates_persist_exact_count) {
   Fixture fixture;

@@ -53,41 +53,31 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   HandleChatImpl(-1, "", http.State(), false, job.run.get(), job.control);
 }
 
-ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
-                                            const BatchInputRow& row,
-                                            const io::Json& prepared,
-                                            const ChatPlanConfig& config,
-                                            const BinaryAccess& access,
-                                            BatchInputBudget* budget) {
-  if (!objects_) {
-    ObjectReply reply;
-    reply.http_status = 503;
-    reply.code = "object_store_unavailable";
-    reply.message = "Batch storage is unavailable";
-    return reply;
-  }
-  const auto cancelled = [&] {
+BatchTokenCodec ChatServer::BatchCodec(const BinaryAccess& access) {
+  const auto cancelled = [this, access] {
     return stop_requested_.load() ||
            std::chrono::steady_clock::now() >= access.deadline ||
            (access.cancelled && access.cancelled());
   };
   BatchTokenCodec codec;
-  codec.encode = [&](std::string_view text, std::vector<uint32_t>* tokens) {
+  codec.encode = [this, cancelled](std::string_view text,
+                                   std::vector<uint32_t>* tokens) {
     auto lock = LockUnlessCancelled(tok_mu_, cancelled);
     if (!lock.owns_lock())
       return Status::Fail("Batch tokenizer wait cancelled");
     return tok_->Encode(text, tokens, {.cancelled = cancelled});
   };
-  codec.decode = [&](const std::vector<uint32_t>& tokens, std::string* text) {
+  codec.decode = [this, cancelled](const std::vector<uint32_t>& tokens,
+                                   std::string* text) {
     auto lock = LockUnlessCancelled(tok_mu_, cancelled);
     if (!lock.owns_lock())
       return Status::Fail("Batch tokenizer wait cancelled");
     return tok_->Decode(tokens, false, text);
   };
   codec.expand_media =
-      [&](const io::Json& request, std::span<const VisionItem> images,
-          const ChatPlanConfig& planning, std::vector<uint32_t>* tokens,
-          ChatPromptBudget* prompt, ChatPlanError* error) {
+      [this](const io::Json& request, std::span<const VisionItem> images,
+             const ChatPlanConfig& planning, std::vector<uint32_t>* tokens,
+             ChatPromptBudget* prompt, ChatPlanError* error) {
         vision::MediaPlan media;
         const auto& model = model_.Get().cfg;
         return ExpandChatMedia(request, images, model.image_token_id,
@@ -95,9 +85,42 @@ ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
                                vision_device_budget_, planning, tokens, &media,
                                prompt, error);
       };
-  return MeasureBatchInput(*objects_, endpoint, row, prepared, config,
-                           {access.scope, access.deadline, cancelled}, codec,
-                           budget);
+  return codec;
+}
+
+ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
+                                            const BatchInputRow& row,
+                                            const io::Json& prepared,
+                                            const ChatPlanConfig& config,
+                                            const BinaryAccess& access,
+                                            BatchInputBudget* budget,
+                                            BatchRateBudget* rate) {
+  if (!objects_) {
+    ObjectReply reply;
+    reply.http_status = 503;
+    reply.code = "object_store_unavailable";
+    reply.message = "Batch storage is unavailable";
+    return reply;
+  }
+  auto bounded = access;
+  bounded.cancelled = [this, access] {
+    return stop_requested_.load() || (access.cancelled && access.cancelled());
+  };
+  const auto codec = BatchCodec(bounded);
+  return MeasureBatchInput(*objects_, endpoint, row, prepared, config, bounded,
+                           codec, budget, rate);
+}
+
+ObjectReply ChatServer::MeasureBackgroundBatchRate(ResponsesExecution& response,
+                                                   const ChatPlanConfig& config,
+                                                   const BinaryAccess& access,
+                                                   BatchRateBudget* budget) {
+  auto bounded = access;
+  bounded.cancelled = [this, access] {
+    return stop_requested_.load() || (access.cancelled && access.cancelled());
+  };
+  return MeasureBatchResponseRate(response, config, bounded,
+                                  BatchCodec(bounded), budget);
 }
 
 BatchRowResult ChatServer::RunBatchRequest(

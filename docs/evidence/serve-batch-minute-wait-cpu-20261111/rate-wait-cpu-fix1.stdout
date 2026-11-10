@@ -1,0 +1,3 @@
+[PASS] batch_jobs_minute_wait_cancel_never_reserves_execution_or_starts_row
+[PASS] batch_jobs_minute_admission_requires_planner_and_respects_frozen_rates
+2 tests, 2 passed, 0 failed, 0 skipped

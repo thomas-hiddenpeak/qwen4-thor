@@ -201,7 +201,13 @@ class ChatServer {
                                   const io::Json& prepared,
                                   const ChatPlanConfig& config,
                                   const BinaryAccess& access,
-                                  BatchInputBudget* budget);
+                                  BatchInputBudget* budget,
+                                  BatchRateBudget* rate = nullptr);
+  BatchTokenCodec BatchCodec(const BinaryAccess& access);
+  ObjectReply MeasureBackgroundBatchRate(ResponsesExecution& response,
+                                         const ChatPlanConfig& config,
+                                         const BinaryAccess& access,
+                                         BatchRateBudget* budget);
   ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
                                    std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);

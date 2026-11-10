@@ -28,7 +28,7 @@ struct Fixture {
   ChatPlanConfig config;
   ClientAdmission clients;
   ClientIdentity alpha, beta;
-  Fixture() {
+  explicit Fixture(uint32_t rpm = 0, uint32_t tpm = 0) {
     const auto* out = std::getenv("Q4T_TEST_OUTPUT_DIR");
     auto base = std::filesystem::absolute(out ? out : ".q4t-work/batch-jobs");
     std::filesystem::create_directories(base);
@@ -55,9 +55,19 @@ struct Fixture {
                      "\",\"clients\":[" + entry("alpha") + ',' + entry("beta") +
                      "]}";
     GatewayClientPolicy policy;
-    if (!ParseGatewayClientPolicy(raw, &policy) ||
-        !clients.Configure(std::move(policy)))
+    if (!ParseGatewayClientPolicy(raw, &policy))
       throw std::runtime_error("Batch jobs client policy");
+    if (rpm || tpm) {
+      policy.version = 3;
+      policy.revision = 1;
+      policy.fair_queue = true;
+      for (auto& limits : policy.clients) {
+        limits.requests_per_minute = rpm;
+        limits.tokens_per_minute = tpm;
+      }
+    }
+    if (!clients.Configure(std::move(policy)))
+      throw std::runtime_error("Batch jobs rate policy");
     alpha = clients.Authenticate("alpha", secret);
     beta = clients.Authenticate("beta", secret);
   }
@@ -115,18 +125,48 @@ BatchCreate Options(const std::string& file) {
 // Actual finite response, admission and durable lifecycle; generation is an
 // explicit CPU fixture, not a model quality or real GPU business assertion.
 BatchJobs::Executor Native(std::atomic<int>& calls,
-                           std::function<void()> before = {}) {
-  return [&calls, before](const auto&, const auto&, const auto&,
-                          const auto& client, auto& permit, const auto& owner) {
-    return ExecuteBatchEndpoint(owner->id(), client, permit, owner, [&] {
-      ++calls;
-      if (before) before();
-      detail::SendSimple(
-          -1, 200, "OK",
-          R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})",
-          "application/json");
-    });
+                           std::function<void()> before = {},
+                           ClientAdmission* clients = nullptr) {
+  return [&calls, before, clients](const auto&, const auto&, const auto&,
+                                   const auto& client, auto& permit,
+                                   const auto& owner, auto rate) {
+    return ExecuteBatchEndpoint(
+        owner->id(), client, permit, owner,
+        [&] {
+          ++calls;
+          if (clients) {
+            const auto& charge =
+                detail::HttpResponseContext::Current(-1)->BatchRate();
+            if (!charge || charge->Reserve(*clients, client, 4, 16) !=
+                               ClientRateResult::kAllowed)
+              throw std::runtime_error("native fixture lost original rate");
+            charge->Start();
+            charge->Completion(2);
+          }
+          if (before) before();
+          detail::SendSimple(
+              -1, 200, "OK",
+              R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})",
+              "application/json");
+        },
+        std::move(rate));
   };
+}
+BatchRatePlanner RatePlanner(std::atomic<int>* calls = nullptr) {
+  return
+      [calls](const auto&, const auto&, const auto&,
+              const ChatPlanConfig& config, const auto&, BatchRateBudget* out) {
+        if (calls) ++*calls;
+        if (config.client_limits && config.client_limits->max_prompt_tokens < 4)
+          return Error(400, "client_prompt_limit_exceeded",
+                       "CPU fixture current input limit");
+        *out = {4, 16, 0, 0, true};
+        return ObjectReply{};
+      };
+}
+ClientRateUsage BatchUsage(Fixture& fixture, size_t index = 0) {
+  return fixture.clients.RateUsage(index, Clock::now(),
+                                   ClientRateDomain::kBatch);
 }
 ObjectReply Finished(ObjectStore& objects, BatchJobs& jobs,
                      const std::string& id,
@@ -301,19 +341,20 @@ Q4T_TEST(batch_jobs_fair_client_turns_and_queued_jobs_hold_no_data_permit) {
   std::mutex mutex;
   std::vector<std::string> order;
   const auto native = Native(calls);
-  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
-                 [&](const auto& endpoint, const auto& row, const auto& frozen,
-                     const auto& client, auto& permit, const auto& control) {
-                   bool first;
-                   {
-                     const std::lock_guard lock(mutex);
-                     first = order.empty();
-                     order.emplace_back(client.Id());
-                   }
-                   if (first) Wait([&] { return release.load(); });
-                   return native(endpoint, row, frozen, client, permit,
-                                 control);
-                 });
+  BatchJobs jobs(
+      objects, fixture.clients, fixture.config, fixture.jobs,
+      [&](const auto& endpoint, const auto& row, const auto& frozen,
+          const auto& client, auto& permit, const auto& control, auto rate) {
+        bool first;
+        {
+          const std::lock_guard lock(mutex);
+          first = order.empty();
+          order.emplace_back(client.Id());
+        }
+        if (first) Wait([&] { return release.load(); });
+        return native(endpoint, row, frozen, client, permit, control,
+                      std::move(rate));
+      });
   ScopeExit unblock([&] { release = true; });
   const auto a = jobs.Submit(Access(), Options(alpha), fixture.alpha);
   Q4T_CHECK(Ok(a) && Wait([&] {
@@ -339,18 +380,21 @@ Q4T_TEST(batch_jobs_cancel_waits_for_drain_and_publishes_partial_files) {
   const auto file = File(objects, Input(3));
   std::atomic<int> calls{0};
   std::atomic<bool> cancelled{false}, release{false};
-  BatchJobs jobs(
-      objects, fixture.clients, fixture.config, fixture.jobs,
-      [&](const auto&, const auto&, const auto&, const auto& client,
-          auto& permit, const auto& owner) {
-        return ExecuteBatchEndpoint(owner->id(), client, permit, owner, [&] {
-          ++calls;
-          Wait([&] { return owner->Cancelled(); });
-          cancelled = owner->Cancelled();
-          Wait([&] { return release.load(); });
-          detail::SendError(-1, 499, "CPU fixture drained", {}, "cancelled");
-        });
-      });
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 [&](const auto&, const auto&, const auto&, const auto& client,
+                     auto& permit, const auto& owner, auto rate) {
+                   return ExecuteBatchEndpoint(
+                       owner->id(), client, permit, owner,
+                       [&] {
+                         ++calls;
+                         Wait([&] { return owner->Cancelled(); });
+                         cancelled = owner->Cancelled();
+                         Wait([&] { return release.load(); });
+                         detail::SendError(-1, 499, "CPU fixture drained", {},
+                                           "cancelled");
+                       },
+                       std::move(rate));
+                 });
   ScopeExit unblock([&] { release = true; });
   const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
   Q4T_CHECK(Ok(accepted) && Wait([&] { return calls == 1; }));
@@ -390,7 +434,7 @@ Q4T_TEST(batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay) {
   std::atomic<int> calls{0};
   BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
                  [&](const auto&, const auto&, const auto&, const auto&, auto&,
-                     const auto& control) -> BatchRowResult {
+                     const auto& control, const auto&) -> BatchRowResult {
                    if (++calls == 1)
                      throw std::runtime_error("drained CPU fixture");
                    BatchRowResult invalid;
@@ -536,14 +580,16 @@ Q4T_TEST(batch_jobs_stop_cancels_owned_execution_and_keeps_pending_rows) {
   std::atomic<int> calls{0};
   BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
                  [&](const auto&, const auto&, const auto&, const auto& client,
-                     auto& permit, const auto& owner) {
+                     auto& permit, const auto& owner, auto rate) {
                    return ExecuteBatchEndpoint(
-                       owner->id(), client, permit, owner, [&] {
+                       owner->id(), client, permit, owner,
+                       [&] {
                          ++calls;
                          Wait([&] { return owner->Cancelled(); });
                          detail::SendError(-1, 503, "CPU fixture drained", {},
                                            "server_stopping");
-                       });
+                       },
+                       std::move(rate));
                  });
   const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
   Q4T_CHECK(Ok(accepted) && Wait([&] { return calls == 1; }));
@@ -637,5 +683,196 @@ Q4T_TEST(batch_jobs_two_workers_share_bounded_result_capacity) {
             jobs.Health().reserved_result_bytes == 0 &&
             fixture.clients.Usage(0).data_active == 0 &&
             fixture.clients.Usage(1).data_active == 0);
+  return true;
+}
+
+Q4T_TEST(
+    batch_jobs_minute_wait_yields_before_ticket_and_keeps_other_client_live) {
+  Fixture fixture(10, 100);
+  fixture.jobs.max_result_bytes = kChatBodyBytes;
+  ObjectStore objects(fixture.objects);
+  const auto alpha = File(objects, Input(1));
+  const auto beta = File(objects, Input(1, "beta"), "client:beta");
+  ClientRateLease held(ClientRateDomain::kBatch), online;
+  Q4T_CHECK(held.Reserve(fixture.clients, fixture.alpha, 90, 0) ==
+                ClientRateResult::kAllowed &&
+            online.Reserve(fixture.clients, fixture.alpha, 90, 0) ==
+                ClientRateResult::kAllowed);
+  std::atomic<int> calls = 0, plans = 0;
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls, {}, &fixture.clients), {}, RatePlanner(&plans));
+  const auto a = jobs.Submit(Access(), Options(alpha), fixture.alpha);
+  Q4T_CHECK(Ok(a) && Wait([&] { return jobs.Health().rate_deferrals >= 3; }));
+  auto row = BatchState(objects).Row(Access(), a.value.GetString("id"), 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "pending" &&
+            row.value.GetString("request_id").empty() && calls == 0 &&
+            plans == 1 && jobs.Health().rate_waiting == 1 &&
+            jobs.Health().errors == 0 &&
+            jobs.Health().reserved_result_bytes == 0 &&
+            fixture.clients.Usage(0).data_active == 0);
+  const auto b =
+      jobs.Submit(Access("client:beta"), Options(beta), fixture.beta);
+  Q4T_CHECK(Ok(b) && Wait([&] {
+              const auto value = BatchState(objects).Retrieve(
+                  Access("client:beta"), b.value.GetString("id"));
+              return value.ok() &&
+                     value.value.GetString("status") == "completed";
+            }) &&
+            calls == 1 && plans == 2 && BatchUsage(fixture, 1).tokens == 6);
+  held.Settle();
+  const auto finished = Finished(objects, jobs, a.value.GetString("id"));
+  Q4T_CHECK(Ok(finished) && calls == 2 && plans == 2 &&
+            BatchUsage(fixture).admitted == 2 &&
+            BatchUsage(fixture).tokens == 6 &&
+            BatchUsage(fixture).reserved == 0 &&
+            fixture.clients.RateUsage(0).reserved == 90 &&
+            jobs.Health().rate_waiting == 0);
+  return true;
+}
+
+Q4T_TEST(batch_jobs_minute_wait_replans_after_actual_policy_update) {
+  for (bool lower_input : {false, true}) {
+    Fixture fixture(1, 100);
+    ObjectStore objects(fixture.objects);
+    const auto file = File(objects, Input(1));
+    ClientRateLease used(ClientRateDomain::kBatch);
+    Q4T_CHECK(used.Reserve(fixture.clients, fixture.alpha, 1, 0) ==
+              ClientRateResult::kAllowed);
+    used.Settle();
+    std::atomic<int> calls = 0, plans = 0;
+    BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                   Native(calls, {}, &fixture.clients), {},
+                   RatePlanner(&plans));
+    const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+    Q4T_CHECK(Ok(accepted) &&
+              Wait([&] { return jobs.Health().rate_deferrals >= 3; }) &&
+              calls == 0 && plans == 1);
+    auto policy = *fixture.clients.Snapshot();
+    policy.revision = 2;
+    policy.clients[0].requests_per_minute = 2;
+    if (lower_input) policy.clients[0].max_prompt_tokens = 1;
+    Q4T_CHECK(fixture.clients.Publish(std::move(policy), 1, 8, 8));
+    const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+    Q4T_CHECK(Ok(final) && plans == 2 && calls == (lower_input ? 0 : 1) &&
+              final.value.Find("request_counts")->GetInt("failed") ==
+                  (lower_input ? 1 : 0) &&
+              BatchUsage(fixture).admitted == (lower_input ? 1 : 2) &&
+              BatchUsage(fixture).reserved == 0);
+    if (lower_input)
+      Q4T_CHECK(Content(objects, final.value.GetString("error_file_id"))
+                    .find("client_prompt_limit_exceeded") != std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(batch_jobs_minute_wait_cancel_never_reserves_execution_or_starts_row) {
+  Fixture fixture(10, 100);
+  ObjectStore objects(fixture.objects);
+  const auto file = File(objects, Input(1));
+  ClientRateLease held(ClientRateDomain::kBatch);
+  Q4T_CHECK(held.Reserve(fixture.clients, fixture.alpha, 90, 0) ==
+            ClientRateResult::kAllowed);
+  std::atomic<int> calls = 0;
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls, {}, &fixture.clients), {}, RatePlanner());
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted) &&
+            Wait([&] { return jobs.Health().rate_waiting == 1; }));
+  const auto id = accepted.value.GetString("id");
+  const auto pending = BatchState(objects).Row(Access(), id, 0);
+  Q4T_CHECK(Ok(pending) && pending.value.GetString("status") == "pending" &&
+            pending.value.GetString("request_id").empty());
+  Q4T_CHECK(Ok(jobs.Cancel(Access(), id)));
+  const auto final = Finished(objects, jobs, id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "cancelled" &&
+            calls == 0 && BatchUsage(fixture).reserved == 90 &&
+            BatchUsage(fixture).admitted == 1 &&
+            fixture.clients.Usage(0).data_active == 0 &&
+            jobs.Health().reserved_result_bytes == 0);
+  const auto line = Content(objects, final.value.GetString("error_file_id"));
+  Json record;
+  Q4T_CHECK(Parse(line, &record) && record.Find("response") &&
+            record.Find("response")->IsNull() && record.Find("error") &&
+            record.Find("error")->GetString("code") == "batch_cancelled");
+  return true;
+}
+
+Q4T_TEST(batch_jobs_minute_reservation_above_whole_window_is_finite_row_error) {
+  Fixture fixture(10, 5);
+  ObjectStore objects(fixture.objects);
+  const auto file = File(objects, Input(1));
+  std::atomic<int> calls = 0;
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls, {}, &fixture.clients), {}, RatePlanner());
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted));
+  const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed" &&
+            final.value.Find("request_counts")->GetInt("failed") == 1 &&
+            calls == 0 && BatchUsage(fixture).admitted == 0 &&
+            jobs.Health().rate_deferrals == 0 &&
+            fixture.clients.Usage(0).data_active == 0);
+  Q4T_CHECK(Content(objects, final.value.GetString("error_file_id"))
+                .find("batch_request_token_reservation_exceeded") !=
+            std::string::npos);
+  return true;
+}
+
+Q4T_TEST(
+    batch_jobs_minute_precharge_unknown_start_releases_without_invocation) {
+  Fixture fixture(10, 100);
+  std::string file;
+  {
+    ObjectStore objects(fixture.objects);
+    file = File(objects, Input(1));
+  }
+  ObjectWorkerEntryForTesting("--q4t-object-worker-batch-start-lost-ack");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  ObjectStore objects(fixture.objects);
+  std::atomic<int> calls = 0;
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls, {}, &fixture.clients), {}, RatePlanner());
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted));
+  const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+  Q4T_CHECK(Ok(final) && calls == 0 &&
+            final.value.Find("request_counts")->GetInt("failed") == 1 &&
+            BatchUsage(fixture).reserved == 0 &&
+            BatchUsage(fixture).admitted == 1 &&
+            BatchUsage(fixture).tokens == 0 &&
+            jobs.Health().reserved_result_bytes == 0);
+  Q4T_CHECK(Content(objects, final.value.GetString("error_file_id"))
+                .find("batch_execution_interrupted") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(
+    batch_jobs_minute_admission_requires_planner_and_respects_frozen_rates) {
+  for (bool missing : {true, false}) {
+    Fixture fixture(10, 100);
+    ObjectStore objects(fixture.objects);
+    const auto file = File(objects, Input(1));
+    if (!missing) {
+      ClientRateState rates;
+      Q4T_CHECK(fixture.clients.EnableRateRecovery() &&
+                fixture.clients.RestoreRates(nullptr, std::string(64, '1')) &&
+                fixture.clients.FreezeRates(&rates));
+    }
+    std::atomic<int> calls = 0;
+    BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                   Native(calls, {}, &fixture.clients), {},
+                   missing ? BatchRatePlanner{} : RatePlanner());
+    const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+    Q4T_CHECK(Ok(accepted) && Wait([&] { return jobs.Health().errors >= 2; }));
+    jobs.RequestStop();
+    jobs.Join();
+    const auto row =
+        BatchState(objects).Row(Access(), accepted.value.GetString("id"), 0);
+    Q4T_CHECK(Ok(row) && row.value.GetString("status") == "pending" &&
+              row.value.GetString("request_id").empty() && calls == 0 &&
+              BatchUsage(fixture).admitted == 0 &&
+              jobs.Health().reserved_result_bytes == 0 &&
+              fixture.clients.Usage(0).data_active == 0);
+  }
   return true;
 }

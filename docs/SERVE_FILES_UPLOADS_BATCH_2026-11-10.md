@@ -314,3 +314,9 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 冻结清单：`.q4t-work/serve-batches-20261110/required-rate-origin.txt`、`required-rate-origin-python.txt`。v2账本仍≤48KiB，新增原生指标与online既有指标并存。后台新任务只在Batch来源时夹住原父期限，普通HTTP后台独立于订阅连接的合同保持。
 
 2026-11-10。独立Batch配额/后台来源[18 C+++4 Python首次全过](evidence/serve-batch-rate-origin-cpu-20261110/README.md)：双池独立分钟记账、内部准备/后台来源与原期限、64客户端最大快照、真实账本丢回执/跨boot均通过。零警告/481锚点，0GPU/默认保持。继续入队token预算、50000行metadata/增量汇总、公开HTTP实际业务与兼容回退及全部总任务。
+
+## 2026-11-11 分钟准入与后续接入
+
+原生执行预留及后台所有权转交、执行预算和pending行公平等待已取得针对性CPU证据；详见[分钟等待](evidence/serve-batch-minute-wait-cpu-20261111/README.md)。多步骤输入以现有累计max_prompt_tokens上限预留，输出分公共/审查/文件准备三项；配置TPM必须容纳整份预留，超过时记录逐行错误，不无限等待。未执行行保留原24h期限与冻结输入，后续额度可用时只获得一次原子预留；已开始行永不重放。
+
+仍须原生完成后台Responses在进程退出后的配额重新准入、公开HTTP/SDK/CLI与真实模型闭环、兼容私有格式的回退包和默认交付；其余A09.7/A09.8和总计划不变。

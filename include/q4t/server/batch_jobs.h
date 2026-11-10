@@ -18,6 +18,8 @@ struct BatchJobsOptions {
 };
 struct BatchJobsHealth {
   size_t owned = 0, active = 0, reserved_result_bytes = 0;
+  size_t rate_waiting = 0;
+  uint64_t rate_deferrals = 0;
   uint64_t turns = 0, recovered = 0, interrupted = 0, errors = 0;
   uint64_t recovery_errors = 0, recovery_pending = 0;
   bool stopping = false, failed = false, recovery_scanned = false;
@@ -30,10 +32,11 @@ class BatchJobs {
   using Executor = std::function<BatchRowResult(
       const std::string&, const BatchInputRow&, const io::Json&,
       const ClientIdentity&, ClientLease&,
-      const std::shared_ptr<RequestControl>&)>;
+      const std::shared_ptr<RequestControl>&,
+      std::shared_ptr<ClientRateLease>)>;
   BatchJobs(ObjectStore& objects, ClientAdmission& clients,
             ChatPlanConfig config, BatchJobsOptions options, Executor execute,
-            BatchInputMeter meter = {});
+            BatchInputMeter meter = {}, BatchRatePlanner planner = {});
   ~BatchJobs();
   BatchJobs(const BatchJobs&) = delete;
   BatchJobs& operator=(const BatchJobs&) = delete;

@@ -36,6 +36,7 @@ struct BatchJobs::Job {
   ClientIdentity client, validation_client;
   size_t scheduling_client = kMaxClients;
   bool submitting = true, active = false;
+  bool rate_waiting = false;  // state mutex
   std::atomic<bool> cancel{false};
   Clock::time_point next;
   size_t attempts = 0;
@@ -43,6 +44,9 @@ struct BatchJobs::Job {
   // The remaining fields are exclusively owned by the selected worker.
   std::unique_ptr<BatchValidation> validation;
   ObjectReply validation_error;
+  std::optional<BatchRateBudget> rate_budget;
+  ClientIdentity rate_client;  // Retains the exact policy snapshot.
+  size_t rate_index = 0;
   std::optional<BatchRowResult> result;
   size_t result_index = 0;
   std::string custom_id;
@@ -59,6 +63,7 @@ struct BatchJobs::State {
   BatchJobsOptions options;
   Executor execute;
   BatchInputMeter meter;
+  BatchRatePlanner planner;
   mutable std::mutex mutex;
   std::condition_variable changed;
   std::vector<std::shared_ptr<Job>> jobs;
@@ -68,21 +73,25 @@ struct BatchJobs::State {
   size_t cursor = 0, last_client = kMaxClients + 1, result_bytes = 0;
   uint64_t turns = 0, recovered = 0, interrupted = 0, errors = 0;
   uint64_t recovery_errors = 0, recovery_pending = 0;
+  uint64_t rate_deferrals = 0;
   bool recovery_scanned = false;
   State(ObjectStore& o, ClientAdmission& c, ChatPlanConfig p,
-        BatchJobsOptions limits, Executor e, BatchInputMeter measure)
+        BatchJobsOptions limits, Executor e, BatchInputMeter measure,
+        BatchRatePlanner plan)
       : objects(o),
         clients(c),
         config(std::move(p)),
         options(limits),
         execute(std::move(e)),
         meter(std::move(measure)),
+        planner(std::move(plan)),
         jobs(limits.max_jobs) {}
 };
 
 BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
                      ChatPlanConfig config, BatchJobsOptions options,
-                     Executor execute, BatchInputMeter meter) {
+                     Executor execute, BatchInputMeter meter,
+                     BatchRatePlanner planner) {
   if (!options.workers || options.workers > 8 || !options.max_jobs ||
       options.max_jobs > 64 || options.workers > options.max_jobs ||
       !options.max_client_jobs || options.max_client_jobs > options.max_jobs ||
@@ -95,7 +104,8 @@ BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
       options.scan_interval.count() < 1 || !execute)
     throw std::invalid_argument("Invalid native Batch executor limits");
   state_ = std::make_unique<State>(objects, clients, std::move(config), options,
-                                   std::move(execute), std::move(meter));
+                                   std::move(execute), std::move(meter),
+                                   std::move(planner));
   try {
     for (size_t i = 0; i < options.workers; ++i)
       state_->workers.emplace_back([this] { Worker(); });
@@ -264,6 +274,28 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
              batch.GetInt("expires_at") <= std::time(nullptr)) {
     return batches.BeginFinalization(access, job->id, "expired");
   }
+  if (!running && status == "in_progress" && job->rate_budget &&
+      job->rate_index == index && job->client.Limits() &&
+      job->rate_client.Limits() == job->client.Limits() &&
+      !state_->clients.RatesFrozen()) {
+    const auto& limits = *job->client.Limits();
+    const auto amount = job->rate_budget->Total();
+    const auto usage = state_->clients.RateUsage(
+        job->client.Index(), ClientClock::now(), ClientRateDomain::kBatch);
+    const bool rpm = limits.requests_per_minute &&
+                     usage.requests >= limits.requests_per_minute;
+    const uint64_t ceiling = limits.tokens_per_minute;
+    const bool tpm =
+        ceiling && amount <= ceiling &&
+        (usage.tokens > ceiling || usage.reserved > ceiling - usage.tokens ||
+         amount > ceiling - usage.tokens - usage.reserved);
+    // This is only a cheap deferral, never an admission grant. On available
+    // capacity the atomic precharge below still arbitrates competing workers.
+    // Do not reread a potentially large JSONL row or frozen inputs each poll.
+    if (rpm || tpm)
+      return Error(429, "batch_rate_wait",
+                   "Batch row awaits its original client's minute quota");
+  }
   BatchInputRow row;
   auto read = batches.ReadInputRow(access, job->id, index, &row);
   if (!read.ok()) return read;
@@ -286,14 +318,78 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
     }
     return saved;
   }
-  ClientLease permit;
-  if (!permit.Acquire(state_->clients, job->client, ClientLane::kData))
-    return Error(429, "batch_data_admission", "Client data capacity is busy");
   Json frozen;
-  read = BatchPreparation(state_->objects)
-             .Read(access, job->id, batch.GetString("endpoint"), row,
-                   checkpoint.value, &frozen);
-  if (!read.ok()) return read;
+  bool inputs_read = false;
+  const auto read_inputs = [&] {
+    auto loaded = BatchPreparation(state_->objects)
+                      .Read(access, job->id, batch.GetString("endpoint"), row,
+                            checkpoint.value, &frozen);
+    inputs_read = loaded.ok();
+    return loaded;
+  };
+  BatchRateBudget budget;
+  ObjectReply row_error;
+  if (state_->planner) {
+    auto config = state_->config;
+    config.client_limits = job->client.Limits();
+    auto bounded = access;
+    bounded.deadline = std::min(
+        access.deadline,
+        Clock::now() + std::chrono::seconds(batch.GetInt("expires_at") -
+                                            std::time(nullptr)));
+    bounded.cancelled = [&] {
+      return state_->stopping.load() || job->cancel.load();
+    };
+    ObjectReply planned;
+    if (job->rate_budget && job->rate_index == index &&
+        job->rate_client.Limits() == job->client.Limits()) {
+      budget = *job->rate_budget;
+    } else {
+      read = read_inputs();
+      if (!read.ok()) return read;
+      planned = state_->planner(batch.GetString("endpoint"), row, frozen,
+                                config, bounded, &budget);
+    }
+    if (!planned.ok()) {
+      if (planned.commit_unknown ||
+          (planned.http_status != 400 && planned.http_status != 403 &&
+           planned.http_status != 422))
+        return planned;
+      row_error = std::move(planned);
+    } else if (!budget.prompt_capacity ||
+               budget.prompt_capacity > kBatchTokenLimit ||
+               budget.output > kBatchTokenLimit - budget.prompt_capacity ||
+               budget.auxiliary_output > kMaxAuxiliaryOutputTokens ||
+               budget.preparation_output > kMaxPreparationOutputTokens ||
+               budget.Total() > kBatchTokenLimit) {
+      return Error(503, "batch_rate_budget_invalid",
+                   "Native Batch execution budget is invalid");
+    } else if (config.client_limits &&
+               config.client_limits->tokens_per_minute &&
+               budget.Total() > config.client_limits->tokens_per_minute) {
+      // This envelope cannot fit even an empty minute window. Do not turn a
+      // deterministic configuration boundary into an endless waiting job.
+      row_error = Error(429, "batch_request_token_reservation_exceeded",
+                        budget.input_exact
+                            ? "Request input/output reservation exceeds TPM"
+                            : "Multi-step input ceiling/output reservation "
+                              "exceeds TPM");
+    }
+    if (planned.ok() && row_error.ok()) {
+      job->rate_budget = budget;
+      job->rate_client = job->client;
+      job->rate_index = index;
+    }
+  } else if (const auto* limits = job->client.Limits();
+             limits &&
+             (limits->requests_per_minute || limits->tokens_per_minute)) {
+    return Error(503, "batch_rate_planner_unavailable",
+                 "Native Batch minute admission is unavailable");
+  }
+  ClientLease permit;
+  if (row_error.ok() &&
+      !permit.Acquire(state_->clients, job->client, ClientLane::kData))
+    return Error(429, "batch_data_admission", "Client data capacity is busy");
   {
     const std::lock_guard lock(state_->mutex);
     if (!job->result_reserved) {
@@ -303,6 +399,35 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
                      "Batch pending result capacity is busy");
       state_->result_bytes += kChatBodyBytes;
       job->result_reserved = true;
+    }
+  }
+  std::shared_ptr<ClientRateLease> rate;
+  ScopeExit settle_unused([&] {
+    if (rate) rate->Settle();
+  });
+  if (state_->planner && row_error.ok()) {
+    rate = std::make_shared<ClientRateLease>(ClientRateDomain::kBatch);
+    const auto reserved = rate->PrechargeBatch(
+        state_->clients, job->client, budget.prompt_capacity, budget.output,
+        ClientClock::now(), budget.auxiliary_output, budget.preparation_output);
+    if (reserved != ClientRateResult::kAllowed) {
+      ReleaseResult(job);
+      if (reserved == ClientRateResult::kRpm ||
+          reserved == ClientRateResult::kTpm)
+        return Error(429, "batch_rate_wait",
+                     "Batch row awaits its original client's minute quota");
+      return Error(503,
+                   reserved == ClientRateResult::kFrozen
+                       ? "service_draining"
+                       : "batch_rate_identity_changed",
+                   "Batch minute admission is unavailable");
+    }
+  }
+  if (row_error.ok() && !inputs_read) {
+    read = read_inputs();
+    if (!read.ok()) {
+      ReleaseResult(job);
+      return read;
     }
   }
   // Set before the mutation: an unknown StartRow can only be closed as an
@@ -335,12 +460,15 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
   job->result->error = Interrupted();
   // Even a throwing executor must have drained before returning control.
   try {
-    if (control->Cancelled()) {
+    if (!row_error.ok()) {
+      job->result->error = std::move(row_error);
+    } else if (control->Cancelled()) {
       job->result->error = Error(499, "batch_cancelled",
                                  "Execution was cancelled before invocation");
     } else {
-      auto result = state_->execute(batch.GetString("endpoint"), row, frozen,
-                                    job->client, permit, control);
+      auto result =
+          state_->execute(batch.GetString("endpoint"), row, frozen, job->client,
+                          permit, control, std::move(rate));
       if (result.request_id != request_id ||
           result.response_body.size() > kChatBodyBytes) {
         job->result->error = Error(503, "batch_endpoint_result_invalid",
@@ -477,9 +605,14 @@ void BatchJobs::Worker() noexcept {
         const std::lock_guard lock(state_->mutex);
         ++state_->turns;
         job->active = false;
+        job->rate_waiting = result.code == "batch_rate_wait";
         if (terminal) {
           for (auto& slot : state_->jobs)
             if (slot == job) slot.reset();
+        } else if (job->rate_waiting) {
+          ++state_->rate_deferrals;
+          job->attempts = 0;
+          job->next = Clock::now() + state_->options.retry_delay;
         } else if (!result.ok()) {
           ++state_->errors;
           ++job->attempts;
@@ -612,7 +745,9 @@ BatchJobsHealth BatchJobs::Health() const {
     if (!job) continue;
     ++health.owned;
     health.active += job->active;
+    health.rate_waiting += job->rate_waiting;
   }
+  health.rate_deferrals = state_->rate_deferrals;
   health.reserved_result_bytes = state_->result_bytes;
   health.turns = state_->turns;
   health.recovered = state_->recovered;

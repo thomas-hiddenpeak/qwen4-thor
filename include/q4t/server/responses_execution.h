@@ -57,6 +57,13 @@ class ResponsesExecution {
                             int64_t created);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
+  bool VariableInputSteps() const {
+    const auto* context = envelope_.request.GetArray("context_management");
+    return PendingFileSheets() || envelope_.moderation.enabled ||
+           (!envelope_.cache.prewarm &&
+            (envelope_.reasoning_mode == "pro" || !envelope_.summary.empty() ||
+             compaction_trigger_ || (context && !context->array.empty())));
+  }
   uint64_t FileOutputBudget() const {
     return files_ ? files_->PendingOutputBudget() : 0;
   }

@@ -28,6 +28,132 @@ ObjectReply Planning(const Status& status, const ChatPlanError& error) {
   reply.value = Object({{"param", String(error.param)}});
   return reply;
 }
+
+struct NativeMeter {
+  const BinaryAccess& access;
+  const BatchTokenCodec& codec;
+  BatchInputBudget input;
+  uint64_t output = 0;
+
+  Status Encode(std::string_view text, std::vector<uint32_t>* tokens) {
+    auto check = Active(access);
+    if (!check.ok()) return Status::Fail(check.message);
+    auto status = codec.encode(text, tokens);
+    check = Active(access);
+    return check.ok() ? status : Status::Fail(check.message);
+  }
+  Status Decode(const std::vector<uint32_t>& tokens, std::string* text) {
+    auto check = Active(access);
+    if (!check.ok()) return Status::Fail(check.message);
+    auto status = codec.decode(tokens, text);
+    check = Active(access);
+    return check.ok() ? status : Status::Fail(check.message);
+  }
+  Status Chat(const Json& request, const ChatRequestPlan& plan,
+              const ChatPlanConfig& config, ChatPlanError* error) {
+    std::string prompt;
+    std::vector<VisionItem> images;
+    const auto& normalized = plan.Request(request);
+    auto status = PrepareChatPrompt(normalized, plan.constraints, &prompt,
+                                    &images, &error->param, &error->code);
+    std::vector<uint32_t> tokens;
+    ChatPromptBudget budget;
+    if (status)
+      status = EncodeChatPrompt(
+          normalized, config, prompt,
+          [&](auto text, auto* ids) { return Encode(text, ids); }, &tokens,
+          &budget, error);
+    if (status && !images.empty()) {
+      if (!codec.expand_media) {
+        *error = {"batch_media_count_unavailable", "input", 503};
+        return Status::Fail("Batch visual input count is unavailable");
+      }
+      status = codec.expand_media(normalized, images, config, &tokens, &budget,
+                                  error);
+    }
+    if (status) {
+      input = {tokens.size(), true};
+      output = budget.total_output;
+    }
+    return status;
+  }
+};
+
+ObjectReply MeasureResponse(ResponsesExecution& response,
+                            const ChatPlanConfig& config, NativeMeter* meter,
+                            BatchRateBudget* rate) {
+  if (!response.Prepared() || response.Finished()) return Invalid();
+  auto planning = config;
+  planning.prewarm_only = response.Envelope().cache.prewarm;
+  if (response.PendingFileSheets()) {
+    meter->input.tokens =
+        config.client_limits
+            ? std::min<uint64_t>(config.max_len,
+                                 config.client_limits->max_prompt_tokens)
+            : config.max_len;
+    meter->input.exact = false;
+  } else {
+    if (!response.GenerationReady()) return Invalid();
+    if (response.Envelope().truncate) {
+      auto context = planning;
+      context.client_limits = nullptr;
+      auto reply = response.FitContext(
+          planning,
+          [&](const ResponsesGenerationPlan& candidate, ChatPlanError* error) {
+            return meter->Chat(candidate.generation_request, candidate.chat,
+                               context, error);
+          });
+      if (!reply.ok()) return reply;
+    }
+    const auto& generation = response.Generation();
+    ChatPlanError error;
+    const auto status = meter->Chat(generation.generation_request,
+                                    generation.chat, planning, &error);
+    if (!status) return Planning(status, error);
+  }
+  if (!rate) return {};
+  BatchRateBudget budget;
+  budget.prompt_capacity = meter->input.tokens;
+  budget.input_exact = meter->input.exact;
+  const auto& envelope = response.Envelope();
+  const auto requested = envelope.options.GetInt("max_output_tokens");
+  if (requested < 1) return Invalid();
+  budget.output = envelope.cache.prewarm ? 0
+                  : response.PendingFileSheets()
+                      ? requested
+                      : std::min<int64_t>(config.max_len, requested);
+  budget.preparation_output = response.FileOutputBudget();
+  budget.auxiliary_output =
+      envelope.moderation.enabled
+          ? (envelope.cache.prewarm ? 1 : 2) * kMaxModerationStepTokens
+          : 0;
+  if (response.VariableInputSteps()) {
+    // Runtime enforces max_prompt_tokens across all actual steps. Reserve
+    // that same ceiling so later generated prompts cannot race other jobs
+    // for TPM after this request has already started. It is an upper bound.
+    budget.input_exact = false;
+    if (config.client_limits) {
+      budget.prompt_capacity = config.client_limits->max_prompt_tokens;
+    } else {
+      // Anonymous operation has no minute quota. Still expose a finite bound:
+      // each known sheet plus primary/pro/summary/compaction/two reviews.
+      const auto* files = response.FileUsage();
+      const uint64_t sheets = files ? files->sheets : 0;
+      if (sheets > kBatchTokenLimit / config.max_len - 6) return Invalid();
+      budget.prompt_capacity = (sheets + 6) * config.max_len;
+    }
+  }
+  if (!budget.prompt_capacity || budget.Total() > kBatchTokenLimit ||
+      budget.preparation_output > kMaxPreparationOutputTokens ||
+      budget.auxiliary_output > kMaxAuxiliaryOutputTokens)
+    return Invalid();
+  if (config.client_limits &&
+      budget.output > config.client_limits->max_output_tokens)
+    return Error(400, "client_output_limit_exceeded",
+                 "Batch public output exceeds current client limit");
+  *rate = budget;
+  return {};
+}
 }  // namespace
 
 Json BatchInputBudgetJson(const BatchInputBudget& budget) {
@@ -52,55 +178,21 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
                               const ChatPlanConfig& config,
                               const BinaryAccess& access,
                               const BatchTokenCodec& codec,
-                              BatchInputBudget* output) {
+                              BatchInputBudget* output, BatchRateBudget* rate) {
   auto active = Active(access);
   if (!active.ok()) return active;
   if (!output || !codec.encode || !codec.decode || config.max_len < 1 ||
       config.count_input_only || !prepared.IsObject())
     return Invalid();
-  // Cancellation still wins over a codec's generic parse/encode error.
-  const auto encode = [&](std::string_view text,
-                          std::vector<uint32_t>* tokens) -> Status {
-    auto check = Active(access);
-    if (!check.ok()) return Status::Fail(check.message);
-    auto status = codec.encode(text, tokens);
-    check = Active(access);
-    return check.ok() ? status : Status::Fail(check.message);
+  NativeMeter meter{access, codec, {}, 0};
+  const auto encode = [&](auto text, auto* ids) {
+    return meter.Encode(text, ids);
   };
-  const auto decode = [&](const std::vector<uint32_t>& tokens,
-                          std::string* text) -> Status {
-    auto check = Active(access);
-    if (!check.ok()) return Status::Fail(check.message);
-    auto status = codec.decode(tokens, text);
-    check = Active(access);
-    return check.ok() ? status : Status::Fail(check.message);
+  const auto decode = [&](const auto& ids, auto* text) {
+    return meter.Decode(ids, text);
   };
   ChatPlanError error;
-  BatchInputBudget measured;
-  const auto chat_tokens = [&](const Json& request, const ChatRequestPlan& plan,
-                               const ChatPlanConfig& options,
-                               ChatPlanError* failure) -> Status {
-    std::string prompt;
-    std::vector<VisionItem> images;
-    const auto& normalized = plan.Request(request);
-    auto status = PrepareChatPrompt(normalized, plan.constraints, &prompt,
-                                    &images, &failure->param, &failure->code);
-    std::vector<uint32_t> tokens;
-    ChatPromptBudget budget;
-    if (status)
-      status = EncodeChatPrompt(normalized, options, prompt, encode, &tokens,
-                                &budget, failure);
-    if (status && !images.empty()) {
-      if (!codec.expand_media) {
-        *failure = {"batch_media_count_unavailable", "input", 503};
-        return Status::Fail("Batch visual input count is unavailable");
-      }
-      status = codec.expand_media(normalized, images, options, &tokens, &budget,
-                                  failure);
-    }
-    if (status) measured = {tokens.size(), true};
-    return status;
-  };
+  BatchRateBudget planned;
   Status status;
   if (endpoint == "/v1/completions") {
     if (prepared.GetString("kind") != "completion") return Invalid();
@@ -108,9 +200,9 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     status = PlanCompletionRequest(row.body, config, &plan, &error);
     if (status) {
       std::vector<PreparedCompletionPrompt> prompts;
-      uint64_t outputs = 0;
-      status = PrepareCompletionPrompts(plan, config, encode, decode, &prompts,
-                                        &measured.tokens, &outputs, &error);
+      status =
+          PrepareCompletionPrompts(plan, config, encode, decode, &prompts,
+                                   &meter.input.tokens, &meter.output, &error);
     }
   } else if (endpoint == "/v1/chat/completions") {
     const auto* bindings = prepared.GetArray("input_snapshots");
@@ -120,41 +212,18 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     auto reply =
         files.Prepare(row.body, config, access, &plan, *bindings, true);
     if (!reply.ok()) return reply;
-    status = chat_tokens(row.body, plan, config, &error);
+    status = meter.Chat(row.body, plan, config, &error);
   } else if (endpoint == "/v1/responses") {
     ResponsesExecution response(objects);
     auto reply = response.RestoreInputs(
         prepared, config, {access.scope, access.deadline, access.cancelled},
         std::time(nullptr));
     if (!reply.ok()) return reply;
-    if (response.PendingFileSheets()) {
-      // A final prompt containing a model-generated summary is not known yet.
-      // Actual preparation and generation are still fully charged to TPM.
-      measured.tokens =
-          config.client_limits
-              ? std::min<uint64_t>(config.max_len,
-                                   config.client_limits->max_prompt_tokens)
-              : config.max_len;
-      measured.exact = false;
-    } else {
-      if (!response.GenerationReady()) return Invalid();
-      if (response.Envelope().truncate) {
-        auto context = config;
-        context.client_limits = nullptr;
-        reply = response.FitContext(
-            config, [&](const ResponsesGenerationPlan& candidate,
-                        ChatPlanError* failure) {
-              return chat_tokens(candidate.generation_request, candidate.chat,
-                                 context, failure);
-            });
-        if (!reply.ok()) {
-          active = Active(access);
-          return active.ok() ? reply : active;
-        }
-      }
-      const auto& generation = response.Generation();
-      status = chat_tokens(generation.generation_request, generation.chat,
-                           config, &error);
+    reply =
+        MeasureResponse(response, config, &meter, rate ? &planned : nullptr);
+    if (!reply.ok()) {
+      active = Active(access);
+      return active.ok() ? reply : active;
     }
   } else {
     return Error(503, "batch_endpoint_executor_unavailable",
@@ -163,8 +232,35 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
   active = Active(access);
   if (!active.ok()) return active;
   if (!status) return Planning(status, error);
-  if (!measured.tokens || measured.tokens > kBatchTokenLimit) return Invalid();
-  *output = measured;
+  if (!meter.input.tokens || meter.input.tokens > kBatchTokenLimit)
+    return Invalid();
+  if (rate && endpoint != "/v1/responses") {
+    planned.prompt_capacity = meter.input.tokens;
+    planned.output = meter.output;
+    if (planned.Total() > kBatchTokenLimit) return Invalid();
+  }
+  *output = meter.input;
+  if (rate) *rate = planned;
+  return {};
+}
+
+ObjectReply MeasureBatchResponseRate(ResponsesExecution& response,
+                                     const ChatPlanConfig& config,
+                                     const BinaryAccess& access,
+                                     const BatchTokenCodec& codec,
+                                     BatchRateBudget* output) {
+  auto active = Active(access);
+  if (!active.ok()) return active;
+  if (!output || !codec.encode || !codec.decode || config.max_len < 1 ||
+      config.count_input_only || response.Scope() != access.scope)
+    return Invalid();
+  NativeMeter meter{access, codec, {}, 0};
+  BatchRateBudget budget;
+  auto reply = MeasureResponse(response, config, &meter, &budget);
+  active = Active(access);
+  if (!active.ok()) return active;
+  if (!reply.ok()) return reply;
+  *output = budget;
   return {};
 }
 }  // namespace q4t::server
