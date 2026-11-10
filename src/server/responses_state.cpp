@@ -5,6 +5,7 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
@@ -57,6 +58,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
   auto result = Object({{"response", response},
                         {"history", plan.history},
                         {"own_input", plan.own_input},
+                        {"input_snapshots", plan.input_snapshots},
                         {"request", plan.request},
                         {"events", events}});
   if (!Terminal(response))
@@ -127,12 +129,29 @@ void CanonicalItem(Json* item) {
       });
   }
 }
+bool HasFileParts(const Json& value, size_t depth = 0) {
+  if (depth > 16) return false;
+  if (value.IsArray()) {
+    for (const auto& child : value.array)
+      if (HasFileParts(child, depth + 1)) return true;
+  } else if (value.IsObject()) {
+    const auto type = value.GetString("type");
+    if (type == "input_file" || type == "file" || type == "input_image" ||
+        type == "image_url")
+      return true;
+    for (const auto* key : {"content", "output", "results"})
+      if (const auto* child = value.Find(key);
+          child && HasFileParts(*child, depth + 1))
+        return true;
+  }
+  return false;
+}
 }  // namespace
 
 ObjectReply CompareStoredItem(const Json& stored, const Json& incoming) {
   std::string left, right;
-  auto status = CanonicalSchemaValue(stored, &left);
-  if (status) status = CanonicalSchemaValue(incoming, &right);
+  auto status = InputValueIdentity(stored, &left);
+  if (status) status = InputValueIdentity(incoming, &right);
   if (!status) return Error(503, "object_identity_capacity", status.message());
   if (left != right)
     return Error(409, "item_identity_conflict",
@@ -152,7 +171,9 @@ ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
 
 ObjectReply ResponsesState::ResolveItems(const Json& input,
                                          const StateAccess& access,
-                                         size_t maximum) {
+                                         size_t maximum,
+                                         Json* input_snapshots) {
+  if (input_snapshots) *input_snapshots = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
   auto items = Array();
@@ -176,17 +197,30 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
                    "compaction_trigger must be the final item");
   }
   std::unordered_set<std::string> ids;
+  auto snapshots = Array();
   for (auto& item : items.array) {
     // The SDK allows an omitted or null discriminator for ItemReference.
     const auto type = item.GetString("type");
+    const bool explicit_item = Nonnull(item, "id") &&
+                               type != "item_reference" &&
+                               !(type.empty() && !item.Has("role"));
     if (type == "item_reference" || (type.empty() && !item.Has("role"))) {
       if (!ValidId(item.GetString("id")))
         return Error(400, "invalid_request", "Invalid item reference");
-      auto reference =
-          Data(Get(ObjectKind::kConversationItem, item.GetString("id"), access),
-               "item");
+      auto stored =
+          Get(ObjectKind::kConversationItem, item.GetString("id"), access);
+      auto reference = Data(stored, "item");
       if (!reference.ok()) return reference;
       item = std::move(reference.value);
+      if (input_snapshots)
+        if (const auto* bound =
+                stored.value.Find("data")->Find("input_snapshots")) {
+          Json own;
+          auto reply = MergeInputSnapshots(*bound, Array({item}), &own);
+          if (!reply.ok()) return reply;
+          snapshots.array.insert(snapshots.array.end(), own.array.begin(),
+                                 own.array.end());
+        }
     } else {
       CanonicalItem(&item);
       if (!Nonnull(item, "id")) {
@@ -204,9 +238,29 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     const auto id = item.GetString("id");
     if (!ValidId(id) || !ids.insert(id).second)
       return Error(400, "invalid_request", "Invalid or repeated input item ID");
+    if (input_snapshots && explicit_item && HasFileParts(item)) {
+      auto existing = Get(ObjectKind::kConversationItem, id, access);
+      if (existing.ok()) {
+        auto original = Data(existing, "item");
+        if (!original.ok()) return original;
+        auto same = CompareStoredItem(original.value, item);
+        if (!same.ok()) return same;
+        if (const auto* bound =
+                existing.value.Find("data")->Find("input_snapshots")) {
+          Json own;
+          auto reply = MergeInputSnapshots(*bound, Array({item}), &own);
+          if (!reply.ok()) return reply;
+          snapshots.array.insert(snapshots.array.end(), own.array.begin(),
+                                 own.array.end());
+        }
+      } else if (existing.http_status != 404) {
+        return existing;
+      }
+    }
   }
   ObjectReply result;
   result.value = std::move(items);
+  if (input_snapshots) *input_snapshots = std::move(snapshots);
   return result;
 }
 
@@ -225,7 +279,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->request = envelope.request;
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
-  auto resolved = ResolveItems(input ? *input : Json(), access);
+  auto resolved = ResolveItems(input ? *input : Json(), access, 4096,
+                               &plan->input_snapshots);
   if (!resolved.ok()) return resolved;
   plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {
@@ -242,6 +297,13 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
       return Error(409, "response_not_completed",
                    "Previous response is still running");
     plan->history = *history;
+    if (const auto* bindings = data->Find("input_snapshots")) {
+      auto all = plan->history;
+      all.array.insert(all.array.end(), plan->own_input.array.begin(),
+                       plan->own_input.array.end());
+      auto reply = MergeInputSnapshots(*bindings, all, &plan->input_snapshots);
+      if (!reply.ok()) return reply;
+    }
     const auto& output = response->GetArray("output")->array;
     plan->history.array.insert(plan->history.array.end(), output.begin(),
                                output.end());
@@ -258,6 +320,13 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
     plan->conversation_revision = conversation.value.GetInt("revision");
     plan->conversation = *data;
     plan->history = *items;
+    if (const auto* bindings = data->Find("input_snapshots")) {
+      auto all = plan->history;
+      all.array.insert(all.array.end(), plan->own_input.array.begin(),
+                       plan->own_input.array.end());
+      auto reply = MergeInputSnapshots(*bindings, all, &plan->input_snapshots);
+      if (!reply.ok()) return reply;
+    }
   }
   plan->history.array.insert(plan->history.array.end(),
                              plan->own_input.array.begin(),
@@ -291,6 +360,12 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->history = *data->Find("history");
   plan->own_input = *data->Find("own_input");
   plan->request = *data->Find("request");
+  plan->input_snapshots = Array();
+  if (const auto* bindings = data->Find("input_snapshots")) {
+    auto reply =
+        MergeInputSnapshots(*bindings, plan->history, &plan->input_snapshots);
+    if (!reply.ok()) return reply;
+  }
   plan->response_revision = stored.value.GetInt("revision");
   plan->finished = Terminal(*response);
   if (const auto* continuation = data->Find("continuation")) {
@@ -370,6 +445,9 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
        snapshot.GetString("status") != "in_progress"))
     return StateError("Invalid initial response state");
   if (!plan->store) return {};
+  auto bindings =
+      MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
+  if (!bindings.ok()) return bindings;
   auto written =
       objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
                              SavedResponse(*plan, snapshot, events),
@@ -392,6 +470,9 @@ ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
       (plan->store && plan->response_revision <= 0))
     return StateError("Invalid response checkpoint");
   if (!plan->store) return {};
+  auto bindings =
+      MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
+  if (!bindings.ok()) return bindings;
   auto written = objects_.Execute(
       Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
             SavedResponse(*plan, snapshot, events),
@@ -414,6 +495,9 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
   for (const auto& item : snapshot.GetArray("output")->array)
     if (!Shape(item, ResponsesItemShape::kOutput, "output").ok())
       return StateError("Generated response item violates the output contract");
+  auto bindings =
+      MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
+  if (!bindings.ok()) return bindings;
   if (!plan->store && plan->conversation_id.empty()) {
     plan->finished = true;
     return {};
@@ -450,9 +534,31 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
                      "Item already belongs to this conversation");
     previous->array.insert(previous->array.end(), items.array.begin(),
                            items.array.end());
+    auto bound = conversation.Find("input_snapshots")
+                     ? *conversation.Find("input_snapshots")
+                     : Json();
+    bindings = MergeInputSnapshots(plan->input_snapshots, *previous, &bound);
+    if (!bindings.ok()) return bindings;
+    Set(&conversation, "input_snapshots", std::move(bound));
     mutations.push_back(Write(ObjectKind::kConversation, plan->conversation_id,
                               access, plan->conversation_revision,
                               std::move(conversation), true));
+  }
+  // A previously appended conversation item may be materialized for the first
+  // time by this generation. Retain that same result for future item-reference
+  // reads without appending the historical item to the conversation again.
+  if (publish) {
+    std::unordered_set<std::string> published;
+    for (const auto& item : items.array) published.insert(item.GetString("id"));
+    for (const auto& binding : plan->input_snapshots.array) {
+      const auto id = binding.GetString("item_id");
+      if (!published.insert(id).second) continue;
+      for (const auto& item : plan->history.array)
+        if (item.GetString("id") == id) {
+          items.array.push_back(item);
+          break;
+        }
+    }
   }
   std::unordered_set<std::string> seen;
   for (const auto& item : items.array) {
@@ -460,6 +566,10 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     if (!ValidId(id) || !seen.insert(id).second)
       return StateError("Generated item identity invalid or repeated");
     auto existing = Get(ObjectKind::kConversationItem, id, access);
+    Json item_bindings;
+    bindings = SelectInputSnapshots(plan->input_snapshots, Array({item}),
+                                    &item_bindings);
+    if (!bindings.ok()) return bindings;
     int64_t revision = 0;
     bool keep = permanent;
     bool temporary = plan->ephemeral && !keep;
@@ -468,15 +578,21 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
       if (!original.ok()) return original;
       auto identical = CompareStoredItem(original.value, item);
       if (!identical.ok()) return identical;
+      if (const auto* bound =
+              existing.value.Find("data")->Find("input_snapshots")) {
+        bindings = MergeInputSnapshots(*bound, Array({item}), &item_bindings);
+        if (!bindings.ok()) return bindings;
+      }
       revision = existing.value.GetInt("revision");
       keep = keep || existing.value.GetInt("expires_at", -1) == 0;
       temporary = false;  // Never shorten another retained item's lifetime.
     } else if (existing.http_status != 404) {
       return existing;
     }
-    mutations.push_back(Write(ObjectKind::kConversationItem, id, access,
-                              revision, Object({{"item", item}}), keep,
-                              temporary));
+    mutations.push_back(
+        Write(ObjectKind::kConversationItem, id, access, revision,
+              Object({{"item", item}, {"input_snapshots", item_bindings}}),
+              keep, temporary));
   }
   auto written =
       objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);

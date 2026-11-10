@@ -1,0 +1,6 @@
+[PASS] input_binding_response_previous_and_item_reference_keep_exact_snapshot
+[PASS] input_binding_multiple_references_and_queued_restart_restore_privately
+[PASS] input_binding_changed_original_is_rejected_before_begin
+[PASS] input_binding_explicit_tool_output_preserves_immutable_file
+[PASS] conversation_state_resolves_all_declared_input_variants
+5 tests, 5 passed, 0 failed, 0 skipped

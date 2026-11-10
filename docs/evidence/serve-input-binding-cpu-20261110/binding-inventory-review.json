@@ -1,0 +1,14 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/input_snapshot_bindings.h",
+    "include/q4t/server/responses_state.h",
+    "src/server/conversation_state.cpp",
+    "src/server/input_snapshot_bindings.cpp",
+    "src/server/responses_execution.cpp",
+    "src/server/responses_state.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "anchors": 444
+}

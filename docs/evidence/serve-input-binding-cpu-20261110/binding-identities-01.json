@@ -1,0 +1,15 @@
+{
+  "CMakeLists.txt": "73283b255107539297f0e467c23560b4a3949f1eff8d6c7634aa198cc470b9ef",
+  "cmake/ChatProtocolIdentity.cmake": "cb5ac1e8a99a518170a619396e7fc4cfb39f9d2f8ff1b91f44a26f23c041d2e5",
+  "include/q4t/server/input_snapshot_bindings.h": "e951fe72fd9d430931fe54e34de101bdfca9cae98287a8c464955b45168e0595",
+  "include/q4t/server/responses_state.h": "b16132d9e47ae9bb85b5a474088c4b19932b68f9bb3a2204c3e2d8a054a998a6",
+  "src/server/conversation_state.cpp": "9a566f5d2cf8207911d4209ba5c34a6015bcefbbcaa1f3610ea1d8d89fb5d783",
+  "src/server/input_snapshot_bindings.cpp": "aad55a3c93a700ba82b148b5fef9bab4ee6f7967c226bd7d9d6fa3277056ae41",
+  "src/server/responses_execution.cpp": "b78329c7d971c11f579bb619a08842ede7d9530d49d4c999c066320161ad481e",
+  "src/server/responses_state.cpp": "ecd743f552e144bc24b308e93a9b48e043d0854a8cb3b1c4417cd32b9a31f128",
+  "cmake/HostTestSources.cmake": "6a8a6c66520ed9046c3c1c6f325a97055d2329c06f31a307be04aba3d62e7662",
+  "tests/server_input_snapshot_bindings_test.cpp": "d46b9e26958229a8b66d4350e8c439e697db8acc646ceea9d47fb066708f2da2",
+  "tests/server_conversation_state_test.cpp": "9e2f1db2e9aaf8adb859201b96a19738e4f7ad38432801a3c8fae6e608cd723c",
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "674b43c880c041f8211a976869a924caf9c94e050e13d4ed0e67ba12e936c108",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "5abfca044b7de3f64aa5b7e4b559fa19d32f2408d7645e0c23d4fd25512289b9"
+}

@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "input_binding_response_previous_and_item_reference_keep_exact_snapshot",
+    "input_binding_multiple_references_and_queued_restart_restore_privately",
+    "input_binding_changed_original_is_rejected_before_begin",
+    "conversation_state_resolves_all_declared_input_variants",
+    "input_binding_explicit_tool_output_preserves_immutable_file"
+  ],
+  "count": 5,
+  "gpu": 0,
+  "reason": "Three new fixtures improperly reused server user-message IDs in SDK inputs; existing SDK opaque compaction fixture was shape-only. Correct real runtime inputs, preserve strict production schema/crypto. Add explicit-ID tool file output check, formatting only production after accepted 18."
+}

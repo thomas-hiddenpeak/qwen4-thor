@@ -1,0 +1,10 @@
+{
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "ce66b52e27ecffca4a954f94d3df3c111b9d59ebd746928a60a84177c6c2ab5c",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "78b51bcd0bea3dca06c4a0e43c2c5e2614b1ddd39880ee7fa4efe4eecfb558ee",
+  "src/server/responses_state.cpp": "e483afd6d643ae5f632bf0bb1cfec6684797afeb787e28f6882110ac78cc6fea",
+  "src/server/conversation_state.cpp": "143b2104e5ae43cc81d548b2fb982718e0f1b2657e771d937e3bbffe34c5de55",
+  "src/server/responses_execution.cpp": "1bb19708a06d19e44a5d6d9af1b69a2673f6d02638a0418439edddc1049f3353",
+  "src/server/input_snapshot_bindings.cpp": "aad55a3c93a700ba82b148b5fef9bab4ee6f7967c226bd7d9d6fa3277056ae41",
+  "tests/server_input_snapshot_bindings_test.cpp": "bcfb474e7adfa5f0b8e6c2ff89c8669a7bbc7927c65152ed6a378817171b7ece",
+  "tests/server_conversation_state_test.cpp": "f91e8276d112367999089253e920b6f7b13ba0be330e6e58c636ff0e23635033"
+}

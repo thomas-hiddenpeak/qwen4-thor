@@ -386,6 +386,15 @@ Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
       continue;
     auto items = Parse("[]");
     items.array.push_back(input);
+    if (input.GetString("type") == "compaction") {
+      // The SDK vector's arbitrary string proves shape only. Runtime state
+      // also requires our opaque identity envelope; cryptographic validation
+      // remains in generation, not this shape-resolution test.
+      Q4T_CHECK(responses.ResolveItems(items, Access()).code ==
+                "invalid_encrypted_content");
+      Set(&items.array[0], "encrypted_content",
+          String("q4tc1:item_compaction_fixture:q4t1:shape-only"));
+    }
     auto canonical = responses.ResolveItems(items, Access());
     Q4T_CHECK(Ok(canonical) && canonical.value.array.size() == 1);
     ++resolved;

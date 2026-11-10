@@ -183,3 +183,8 @@ Uploads二进制不能直接用于已有新类型的目录。不得删除新业�
 历史来伪造回退成功。当前默认与其状态目录未改，组件候选未发行。
 
 具体文档快照[6项CPU接受](evidence/serve-file-snapshot-cpu-20261110/README.md)：真实嵌入DOC/PDF、XLSX/XLS/Numbers、原File删除及解码不可用/重启后仍保留原内容；严格类型和现行预算复核。官方表格模型生成合同再次核对，摘要/表头、用量及计数一致性仍须实际接入，不能用纯CSV截取代替。所有API/业务/发行及总任务继续。
+
+FI03原始part与状态绑定完成[23个不同CPU检查](evidence/serve-input-binding-cpu-20261110/README.md)。
+私有绑定随previous/item/conversation/后台恢复保留；首次处理旧历史后
+同步独立item，公开投影无私有信息。首失败来自SDK输入/opaque夹具，
+原件及补验保留；实际提取、摘要/媒体、所有API和业务/回退仍继续接入。

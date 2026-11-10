@@ -25,6 +25,7 @@ struct ResponseStatePlan {
   io::Json execution_owner;
   io::Json history;    // Full authorized input for this generation.
   io::Json own_input;  // New input, without inherited context/instructions.
+  io::Json input_snapshots;  // Private exact-part bindings, never API items.
   io::Json request;
   std::string conversation_id;
   int64_t conversation_revision = 0;
@@ -44,7 +45,8 @@ class ResponsesState {
   // Shape-check all input before any storage access, resolve owned references,
   // and populate canonical item metadata. No tool execution or generation.
   ObjectReply ResolveItems(const io::Json& input, const StateAccess& access,
-                           size_t maximum = 4096);
+                           size_t maximum = 4096,
+                           io::Json* input_snapshots = nullptr);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan);
   // Loads authoritative inputs and revision, without rerunning resolution or

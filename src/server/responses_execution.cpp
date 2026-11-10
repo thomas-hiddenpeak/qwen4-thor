@@ -46,12 +46,13 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
 size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = 0;
   for (const auto* value :
-       {&plan_.request, &plan_.history, &plan_.own_input, &plan_.conversation,
-        &plan_.execution_owner, &envelope_.request, &envelope_.options,
-        &generation_.generation_request, &generation_.effective_tools,
-        &generation_.input.items, &generation_.input.messages,
-        &generation_history_, &compaction_.source, &compaction_.retained,
-        &compaction_.request, &compaction_window_, &output_.Snapshot()})
+       {&plan_.request, &plan_.history, &plan_.own_input,
+        &plan_.input_snapshots, &plan_.conversation, &plan_.execution_owner,
+        &envelope_.request, &envelope_.options, &generation_.generation_request,
+        &generation_.effective_tools, &generation_.input.items,
+        &generation_.input.messages, &generation_history_, &compaction_.source,
+        &compaction_.retained, &compaction_.request, &compaction_window_,
+        &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();

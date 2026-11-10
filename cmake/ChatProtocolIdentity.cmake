@@ -125,6 +125,8 @@ set(protocol_inputs
   include/q4t/server/binary_store.h
   src/server/binary_store.cpp
   src/server/input_snapshot.cpp
+  src/server/input_snapshot_bindings.cpp
+  include/q4t/server/input_snapshot_bindings.h
   include/q4t/server/input_snapshot.h
   include/q4t/server/uploads.h
   src/server/uploads.cpp

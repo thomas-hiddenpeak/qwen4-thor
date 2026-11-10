@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/responses_item_shape.h"
 
@@ -244,8 +245,12 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
                                        Json data, const Json& new_items,
                                        const StateAccess& access) {
   std::vector<ObjectRequest> mutations;
-  mutations.push_back(
-      Write(ObjectKind::kConversation, id, revision, std::move(data), access));
+  auto bindings =
+      data.Find("input_snapshots") ? *data.Find("input_snapshots") : Json();
+  const auto* all_items = data.GetArray("items");
+  if (!all_items) return StateError();
+  auto checked = MergeInputSnapshots(Json(), *all_items, &bindings);
+  if (!checked.ok()) return checked;
   for (const auto& item : new_items.array) {
     ObjectRequest get;
     get.kind = ObjectKind::kConversationItem;
@@ -259,13 +264,24 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
       if (!old_item) return StateError();
       auto identical = CompareStoredItem(*old_item, item);
       if (!identical.ok()) return identical;
+      if (const auto* bound = old_data->Find("input_snapshots")) {
+        checked = MergeInputSnapshots(*bound, *all_items, &bindings);
+        if (!checked.ok()) return checked;
+      }
       item_revision = previous.value.GetInt("revision");
     } else if (previous.http_status != 404) {
       return previous;
     }
-    mutations.push_back(Write(ObjectKind::kConversationItem, get.id,
-                              item_revision, Object({{"item", item}}), access));
+    Json own;
+    checked = SelectInputSnapshots(bindings, Array({item}), &own);
+    if (!checked.ok()) return checked;
+    mutations.push_back(
+        Write(ObjectKind::kConversationItem, get.id, item_revision,
+              Object({{"item", item}, {"input_snapshots", own}}), access));
   }
+  Set(&data, "input_snapshots", std::move(bindings));
+  mutations.insert(mutations.begin(), Write(ObjectKind::kConversation, id,
+                                            revision, std::move(data), access));
   return objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
 }
 
@@ -405,6 +421,13 @@ ObjectReply ConversationState::EraseItem(const std::string& id,
   if (!removed)
     return Error(404, "object_not_found",
                  "Item does not belong to this conversation");
+  if (const auto* bindings = data.Find("input_snapshots")) {
+    Json retained;
+    auto checked =
+        SelectInputSnapshots(*bindings, *data.Find("items"), &retained);
+    if (!checked.ok()) return checked;
+    Set(&data, "input_snapshots", std::move(retained));
+  }
   auto resource = *data.Find("resource");
   auto written = objects_.Execute(
       Write(ObjectKind::kConversation, id, existing.value.GetInt("revision"),
