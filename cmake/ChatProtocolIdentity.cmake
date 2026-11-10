@@ -135,6 +135,11 @@ set(protocol_inputs
   include/q4t/server/file_document_worker.h
   src/server/file_document_worker.cpp
   src/server/file_document_sandbox.cpp
+  include/q4t/server/file_pdf.h
+  src/server/file_pdf.cpp
+  src/server/file_pdf_protocol.h
+  src/server/file_pdf_worker.cpp
+  src/server/file_pdf_sandbox.cpp
   include/q4t/server/files.h
   include/q4t/server/file_limits.h
   src/server/files.cpp

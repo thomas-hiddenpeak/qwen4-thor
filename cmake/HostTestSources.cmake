@@ -51,6 +51,10 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_pdf_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_document_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_document_worker_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_input_test.cpp

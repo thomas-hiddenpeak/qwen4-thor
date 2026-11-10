@@ -1,5 +1,13 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI02 [PDF文字/逐页图像18 C++与1像素检查接受](evidence/serve-file-pdf-cpu-20261110/README.md)，首13过/5失败经单一EACCES诊断修复，6直接补验全过；首构建/失败/诊断保留。host/引擎零警告、0GPU，默认cdb5ced9保持STOPPED。继续Office/RTF和全部消费/历史/计数/真实业务及总目标，不以组件通过结案。
+
+FI02 PDF首组18项13通过、5实际解码失败；单一strace诊断证实execveat被Landlock拒绝，固定ELF inode需同时READ_FILE/EXECUTE。已定点补齐而不扩大目录执行权限；冻结5失败+1沙箱直接补验，复用其余已过，PNG检查尚未执行。首命名冲突构建与失败/诊断原件保留，默认/0GPU保持，全部任务继续。
+
+FI02 PDF与EOF/正常退出确认已成组实现，冻结18项C++（6进程、8实际PDF、4受影响）和1项真实PNG像素检查。原生文字+逐页图像、只读memfd/固定exec、Landlock4与seccomp、页数/实际像素/输出/取消/期限有界；开始独立必要构建，尚未测试。0GPU，默认cdb5ced9保持STOPPED，继续完整API/持久/业务与全部总任务。
+
+开始FI02 PDF专用执行：只读确认系统Poppler工具24.02和Landlock ABI4，计划固定参数/只读memfd/exec替换自身与受限文件读取；先补owned进程EOF及正常退出确认，随后实际文字+每页图像。尚无PDF测试/GPU，默认cdb5ced9保持STOPPED；全部Office/消费/业务任务继续。
+
 FI02 [独立解析进程10项CPU通过](evidence/serve-file-parser-worker-cpu-20261110/README.md)，7新+3受影响、0.364秒，host/实际引擎零警告；真实seccomp拒绝、解析/超时/取消/占槽与后续恢复通过。0GPU、默认cdb5ced9保持STOPPED；继续PDF/Office/RTF、表格真实摘要及全部API/业务/总任务。
 
 FI02独立文本解析worker成组实现，冻结7新进程+3直接受影响CPU：真实文本/表格、seccomp文件/网络/exec/信号/执行内存拒绝、错误后续请求、原字节传输取消、卡住/短回执清理、未回收占槽和native loop释放。开始独立host/引擎必要构建，尚未测试；默认cdb5ced9/STOPPED、0GPU，复杂文档与全部模型/API任务继续。

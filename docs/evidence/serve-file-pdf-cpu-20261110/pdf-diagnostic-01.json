@@ -1,0 +1,14 @@
+{
+  "argv": [
+    ".q4t-work/serve-file-inputs-20261110/diagnostic-tools/root/usr/bin/strace",
+    "-ff",
+    "-s",
+    "200",
+    "-o",
+    ".q4t-work/serve-file-inputs-20261110/pdf-trace",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "file_pdf_actual_text_and_every_page_images"
+  ],
+  "exit_code": 1,
+  "seconds": 0.01569531811401248
+}

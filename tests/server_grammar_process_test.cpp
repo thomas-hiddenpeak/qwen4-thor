@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
+#include <sys/socket.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -38,6 +39,19 @@ int GrammarProcessFixture(int argc, char** argv) {
   if (mode == "--grammar-fixture-short") {
     char byte = 'x';
     WorkerTransfer(&byte, 1, true);
+    return 0;
+  }
+  if (mode.starts_with("--grammar-fixture-output-")) {
+    if (mode == "--grammar-fixture-output-empty") return 0;
+    std::string payload(131073, 'x');
+    payload[65536] = '\0';
+    if (!WorkerTransfer(payload.data(), payload.size(), true)) return 4;
+    if (mode == "--grammar-fixture-output-failed") return 7;
+    if (mode == "--grammar-fixture-output-killed") raise(SIGKILL);
+    if (mode == "--grammar-fixture-output-hang") {
+      shutdown(3, SHUT_WR);
+      for (;;) pause();
+    }
     return 0;
   }
   rlimit limit{};
@@ -350,5 +364,127 @@ Q4T_TEST(grammar_process_transfer_cancellation_does_not_retain_request) {
                                std::chrono::steady_clock::now() + 2s,
                                [] { return true; }));
   Q4T_CHECK(process->Failure() == GrammarFailure::kCancelled);
+  return true;
+}
+
+Q4T_TEST(grammar_process_output_requires_eof_and_normal_exit) {
+  const auto descriptors = Descriptors();
+  GrammarControl control;
+  control.counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+  int callbacks = 0;
+  GrammarWorkerReport report;
+  control.worker_finished = [&](const auto& value) {
+    report = value;
+    ++callbacks;
+  };
+  std::unique_ptr<GrammarProcess> process;
+  Q4T_CHECK(
+      GrammarProcess::Start("--grammar-fixture-output-ok", control, &process));
+  std::string output = "previous";
+  Q4T_CHECK(process->CollectOutput(&output, 131073,
+                                   std::chrono::steady_clock::now() + 2s));
+  Q4T_CHECK(output.size() == 131073 && output[65536] == '\0' &&
+            output.back() == 'x' && Reaped(report) &&
+            WIFEXITED(report.exit_status) && !WEXITSTATUS(report.exit_status));
+  process.reset();
+  Q4T_CHECK(callbacks == 1 && control.counters->active == 0 &&
+            control.counters->reaped == 1 && Descriptors() == descriptors);
+  return true;
+}
+Q4T_TEST(grammar_process_output_empty_success_is_distinct_from_bad_exit) {
+  for (const char* entry :
+       {"--grammar-fixture-output-empty", "--grammar-fixture-output-failed",
+        "--grammar-fixture-output-killed"}) {
+    GrammarWorkerReport report;
+    GrammarControl control;
+    control.worker_finished = [&](const auto& value) { report = value; };
+    std::unique_ptr<GrammarProcess> process;
+    Q4T_CHECK(GrammarProcess::Start(entry, control, &process));
+    std::string output = "old";
+    const auto status = process->CollectOutput(
+        &output, 131073, std::chrono::steady_clock::now() + 2s);
+    const bool empty = std::string_view(entry).ends_with("empty");
+    Q4T_CHECK(static_cast<bool>(status) == empty && output.empty() &&
+              Reaped(report));
+    if (!empty) Q4T_CHECK(process->Failure() == GrammarFailure::kWorker);
+  }
+  return true;
+}
+Q4T_TEST(grammar_process_output_overflow_discards_partial_and_reaps) {
+  GrammarWorkerReport report;
+  GrammarControl control;
+  control.worker_finished = [&](const auto& value) { report = value; };
+  std::unique_ptr<GrammarProcess> process;
+  Q4T_CHECK(
+      GrammarProcess::Start("--grammar-fixture-output-ok", control, &process));
+  std::string output = "old";
+  Q4T_CHECK(!process->CollectOutput(&output, 65536,
+                                    std::chrono::steady_clock::now() + 2s));
+  Q4T_CHECK(output.empty() && process->Failure() == GrammarFailure::kResource &&
+            Reaped(report));
+  return true;
+}
+Q4T_TEST(grammar_process_output_eof_does_not_hide_stalled_exit) {
+  GrammarWorkerReport report;
+  GrammarControl control;
+  control.worker_finished = [&](const auto& value) { report = value; };
+  std::unique_ptr<GrammarProcess> process;
+  Q4T_CHECK(GrammarProcess::Start("--grammar-fixture-output-hang", control,
+                                  &process));
+  std::string output;
+  const auto start = std::chrono::steady_clock::now();
+  Q4T_CHECK(!process->CollectOutput(&output, 131073, start + 100ms));
+  Q4T_CHECK(output.empty() && process->Failure() == GrammarFailure::kTimeout &&
+            Reaped(report) && std::chrono::steady_clock::now() - start < 1s);
+  return true;
+}
+Q4T_TEST(grammar_process_output_cancel_interrupts_read_and_exit_wait) {
+  for (const char* entry :
+       {"--grammar-fixture-silent", "--grammar-fixture-output-hang"}) {
+    GrammarWorkerReport report;
+    GrammarControl control;
+    control.worker_finished = [&](const auto& value) { report = value; };
+    std::unique_ptr<GrammarProcess> process;
+    Q4T_CHECK(GrammarProcess::Start(entry, control, &process));
+    std::atomic<bool> cancelled{false};
+    std::jthread cancel([&] {
+      std::this_thread::sleep_for(50ms);
+      cancelled.store(true);
+    });
+    std::string output;
+    Q4T_CHECK(!process->CollectOutput(&output, 131073,
+                                      std::chrono::steady_clock::now() + 2s,
+                                      [&] { return cancelled.load(); }));
+    Q4T_CHECK(output.empty() &&
+              process->Failure() == GrammarFailure::kCancelled &&
+              Reaped(report));
+  }
+  return true;
+}
+Q4T_TEST(grammar_process_output_unknown_exit_retains_slot_and_counters) {
+  GrammarControl control;
+  control.counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+  GrammarWorkerReport report;
+  int callbacks = 0;
+  control.worker_finished = [&](const auto& value) {
+    report = value;
+    ++callbacks;
+  };
+  DeferredReapFixture deferred;
+  std::unique_ptr<GrammarProcess> process;
+  Q4T_CHECK(
+      GrammarProcess::Start("--grammar-fixture-output-ok", control, &process));
+  std::string output;
+  Q4T_CHECK(!process->CollectOutput(&output, 131073,
+                                    std::chrono::steady_clock::now() + 50ms));
+  Q4T_CHECK(output.empty() && callbacks == 1 && !report.reaped &&
+            control.counters->active == 1);
+  process.reset();
+  GrammarFailure failure;
+  Q4T_CHECK(!GrammarProcess::Start("--grammar-fixture-output-empty", {},
+                                   &process, &failure));
+  Q4T_CHECK(failure == GrammarFailure::kUnavailable && deferred.Drain());
+  Q4T_CHECK(callbacks == 1 && control.counters->active == 0 &&
+            control.counters->reaped == 1);
   return true;
 }

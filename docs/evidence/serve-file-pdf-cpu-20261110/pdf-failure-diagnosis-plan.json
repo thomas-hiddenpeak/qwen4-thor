@@ -1,0 +1,5 @@
+{
+  "failure": "5 actual PDF tests dependency_unavailable;13 passed retained",
+  "diagnostic": "one synthetic PDF under isolated downloaded strace; no host package mutation or GPU",
+  "retest": "only five failed PDF cases, plus direct sandbox case if policy changes, then existing unrun pixels test"
+}

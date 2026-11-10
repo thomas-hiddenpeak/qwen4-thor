@@ -33,9 +33,14 @@ struct FileDocumentSheet {
   uint64_t source_rows = 0;
   size_t columns = 0;
 };
+struct FileDocumentPage {
+  uint32_t number = 0, width = 0, height = 0;
+  std::string png;
+};
 struct FileDocument {
   std::string text, encoding, source_sha256;
   std::vector<FileDocumentSheet> sheets;
+  std::vector<FileDocumentPage> pages;
 };
 bool ValidFileDocumentLimits(const FileDocumentLimits& limits);
 

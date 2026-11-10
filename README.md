@@ -167,6 +167,15 @@ A09.5开发中的原生文件获取在独立子进程内按需加载同一系统
 回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
 项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。
 
+A09.5开发中的PDF解析通过独立受限进程调用系统
+[Poppler](https://poppler.freedesktop.org/)的`pdfinfo`、`pdftotext`和
+`pdftoppm`，使用标准输入输出提取文字与全部页面图像。q4t不链接或
+随包分发这些GPL工具；本机组件版本24.02.0，许可随系统包保存在
+`/usr/share/doc/poppler-utils/copyright`。只在PDF请求时启动，缺失、
+超时或异常只失败该请求；普通文本服务不依赖它们。需要Linux
+Landlock ABI4及seccomp支持，不能用无隔离执行作为回退。组件CPU
+已验，完整API消费和发行仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)推进。
+
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
 原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。

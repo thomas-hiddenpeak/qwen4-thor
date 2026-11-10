@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <array>
 #include <cerrno>
 #include <charconv>
 #include <cstdio>
@@ -362,6 +363,118 @@ Status GrammarProcess::Transfer(
   failure_ = GrammarFailure::kWorker;
   Stop();
   return Status::Fail("grammar worker closed or invalid transport");
+}
+
+Status GrammarProcess::AwaitExit(
+    std::chrono::steady_clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  while (pid_ > 0 && pid_fd_ >= 0) {
+    if ((cancelled && cancelled()) ||
+        (control_.cancelled && control_.cancelled())) {
+      failure_ = GrammarFailure::kCancelled;
+      Stop();
+      return Status::Fail("worker completion cancelled");
+    }
+    const auto remaining = deadline - std::chrono::steady_clock::now();
+    if (remaining <= decltype(remaining)::zero()) {
+      failure_ = GrammarFailure::kTimeout;
+      Stop();
+      return Status::Fail("worker completion time limit exceeded");
+    }
+    rusage usage{};
+    GrammarWorkerReport report;
+    const int waited = WaitWorker(pid_, &report.exit_status, &usage);
+    if (waited == pid_) {
+      report.reaped = true;
+      report.max_rss_bytes = static_cast<uint64_t>(usage.ru_maxrss) * 1024;
+      report.reported_rss_bytes = reported_rss_bytes_;
+      CountReaped(control_.counters, report);
+      ReleaseWorker(control_.domain);
+      slot_owned_ = false;
+      pid_ = -1;
+      close(std::exchange(pid_fd_, -1));
+      if (socket_ >= 0) close(std::exchange(socket_, -1));
+      if (control_.worker_finished) control_.worker_finished(report);
+      if (WIFEXITED(report.exit_status) && !WEXITSTATUS(report.exit_status))
+        return {};
+      failure_ = GrammarFailure::kWorker;
+      return Status::Fail("worker did not exit successfully");
+    }
+    if (waited < 0 && errno != EINTR) break;
+    pollfd descriptor{pid_fd_, POLLIN, 0};
+    const int timeout = static_cast<int>(std::clamp<int64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(remaining)
+            .count(),
+        1, 10));
+    const int ready = poll(&descriptor, 1, timeout);
+    if (ready < 0 && errno != EINTR) break;
+    // A signalled pidfd alone is not confirmation that wait4 succeeded.
+    if (ready > 0) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+  failure_ = GrammarFailure::kWorker;
+  Stop();
+  return Status::Fail("worker completion ownership unavailable");
+}
+
+Status GrammarProcess::CollectOutput(
+    std::string* output, size_t max_bytes,
+    std::chrono::steady_clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  if (!output) {
+    failure_ = GrammarFailure::kWorker;
+    Stop();
+    return Status::Fail("missing worker output destination");
+  }
+  output->clear();
+  std::string next;
+  std::array<char, 65536> buffer;
+  try {
+    while (socket_ >= 0 && pid_ > 0) {
+      if ((cancelled && cancelled()) ||
+          (control_.cancelled && control_.cancelled())) {
+        failure_ = GrammarFailure::kCancelled;
+        Stop();
+        return Status::Fail("worker output cancelled");
+      }
+      const auto remaining = deadline - std::chrono::steady_clock::now();
+      if (remaining <= decltype(remaining)::zero()) {
+        failure_ = GrammarFailure::kTimeout;
+        Stop();
+        return Status::Fail("worker output time limit exceeded");
+      }
+      pollfd descriptor{socket_, POLLIN, 0};
+      const int timeout = static_cast<int>(std::clamp<int64_t>(
+          std::chrono::duration_cast<std::chrono::milliseconds>(remaining)
+              .count(),
+          1, 10));
+      const int ready = poll(&descriptor, 1, timeout);
+      if (ready < 0 && errno == EINTR) continue;
+      if (ready < 0) break;
+      if (!ready) continue;
+      const auto count =
+          recv(socket_, buffer.data(), buffer.size(), MSG_DONTWAIT);
+      if (count < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+      if (count < 0) break;
+      if (!count) {
+        const auto status = AwaitExit(deadline, cancelled);
+        if (status) *output = std::move(next);
+        return status;
+      }
+      if (static_cast<size_t>(count) > max_bytes - next.size()) {
+        failure_ = GrammarFailure::kResource;
+        Stop();
+        return Status::Fail("worker output capacity exceeded");
+      }
+      next.append(buffer.data(), count);
+    }
+  } catch (const std::bad_alloc&) {
+    failure_ = GrammarFailure::kResource;
+    Stop();
+    return Status::Fail("worker output allocation failed");
+  }
+  failure_ = GrammarFailure::kWorker;
+  Stop();
+  return Status::Fail("worker output transport unavailable");
 }
 
 bool EnterGrammarWorker(int argc, char** argv) {

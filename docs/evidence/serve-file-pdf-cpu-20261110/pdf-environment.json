@@ -1,0 +1,8 @@
+{
+  "kernel": "6.8.12-1021-tegra",
+  "landlock_abi": 4,
+  "landlock_errno": 0,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "read_only_capability_query": true
+}

@@ -101,6 +101,11 @@ class GrammarProcess {
   Status Transfer(void* data, size_t bytes, bool write,
                   std::chrono::steady_clock::time_point deadline,
                   const std::function<bool()>& cancelled = {});
+  // One-shot raw stdout: publish only after EOF AND a confirmed normal zero
+  // exit. Failure clears output, stops this child and retains an unreaped slot.
+  Status CollectOutput(std::string* output, size_t max_bytes,
+                       std::chrono::steady_clock::time_point deadline,
+                       const std::function<bool()>& cancelled = {});
   GrammarFailure Failure() const { return failure_; }
   // Identity of this still-owned direct child; never used after Stop.
   int Pid() const { return pid_; }
@@ -109,6 +114,8 @@ class GrammarProcess {
 
  private:
   explicit GrammarProcess(GrammarControl control);
+  Status AwaitExit(std::chrono::steady_clock::time_point deadline,
+                   const std::function<bool()>& cancelled);
   GrammarControl control_;
   int socket_ = -1;
   int pid_ = -1;

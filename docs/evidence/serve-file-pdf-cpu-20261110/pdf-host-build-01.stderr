@@ -1,0 +1,50 @@
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:34:48: error: reference to ‘Operation’ is ambiguous
+   34 | ObjectReply Run(const FileInputContent& input, Operation operation,
+      |                                                ^~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:10:
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf_protocol.h:7:12: note: candidates are: ‘enum class q4t::server::pdf_detail::Operation’
+    7 | enum class Operation : uint64_t { kInfo = 1, kText = 2, kPage = 3 };
+      |            ^~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:11:
+/home/rm01/models/dev/qwen4-thor/src/server/object_protocol.h:59:20: note:                 ‘std::string q4t::server::object_detail::Operation(q4t::server::ObjectOperation)’
+   59 | inline std::string Operation(ObjectOperation op) {
+      |                    ^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:34:48: error: ‘Operation’ has not been declared
+   34 | ObjectReply Run(const FileInputContent& input, Operation operation,
+      |                                                ^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp: In function ‘q4t::server::ObjectReply q4t::server::{anonymous}::Run(const q4t::server::FileInputContent&, int, uint64_t, uint64_t, size_t, const q4t::server::BinaryAccess&, q4t::server::GrammarControl, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:59:27: error: cannot convert ‘int’ to ‘q4t::server::pdf_detail::Operation’ in initialization
+   59 |   Request request{kMagic, operation, input.bytes.size(), page, edge};
+      |                           ^~~~~~~~~
+      |                           |
+      |                           int
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp: In function ‘q4t::server::ObjectReply q4t::server::ParsePdfFileDocument(const FileInputContent&, const FileDocumentLimits&, const FilePdfOptions&, std::string_view, const BinaryAccess&, FileDocument*, GrammarControl)’:
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:155:29: error: cannot convert ‘q4t::server::pdf_detail::Operation’ to ‘int’
+  155 |       Run(input, Operation::kInfo, 0, 0, 65536, bounded, control, &raw);
+      |                  ~~~~~~~~~~~^~~~~
+      |                             |
+      |                             q4t::server::pdf_detail::Operation
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:34:58: note:   initializing argument 2 of ‘q4t::server::ObjectReply q4t::server::{anonymous}::Run(const q4t::server::FileInputContent&, int, uint64_t, uint64_t, size_t, const q4t::server::BinaryAccess&, q4t::server::GrammarControl, std::string*)’
+   34 | ObjectReply Run(const FileInputContent& input, Operation operation,
+      |                                                ~~~~~~~~~~^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:162:33: error: cannot convert ‘q4t::server::pdf_detail::Operation’ to ‘int’
+  162 |   reply = Run(input, Operation::kText, 0, 0, limits.max_text_bytes, bounded,
+      |                      ~~~~~~~~~~~^~~~~
+      |                                 |
+      |                                 q4t::server::pdf_detail::Operation
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:34:58: note:   initializing argument 2 of ‘q4t::server::ObjectReply q4t::server::{anonymous}::Run(const q4t::server::FileInputContent&, int, uint64_t, uint64_t, size_t, const q4t::server::BinaryAccess&, q4t::server::GrammarControl, std::string*)’
+   34 | ObjectReply Run(const FileInputContent& input, Operation operation,
+      |                                                ~~~~~~~~~~^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:178:27: error: cannot convert ‘q4t::server::pdf_detail::Operation’ to ‘int’
+  178 |         input, Operation::kPage, page, edge,
+      |                ~~~~~~~~~~~^~~~~
+      |                           |
+      |                           q4t::server::pdf_detail::Operation
+/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp:34:58: note:   initializing argument 2 of ‘q4t::server::ObjectReply q4t::server::{anonymous}::Run(const q4t::server::FileInputContent&, int, uint64_t, uint64_t, size_t, const q4t::server::BinaryAccess&, q4t::server::GrammarControl, std::string*)’
+   34 | ObjectReply Run(const FileInputContent& input, Operation operation,
+      |                                                ~~~~~~~~~~^~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:765: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

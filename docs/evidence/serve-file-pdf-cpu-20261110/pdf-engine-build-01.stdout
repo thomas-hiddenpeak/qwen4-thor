@@ -1,0 +1,37 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  3%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_trace
+[  7%] Built target q4t_runtime
+[  7%] Built target q4t_service_tools
+[ 22%] Built target xgrammar
+[ 25%] Built target q4t_text
+[ 25%] Built target q4t_service_cli
+[ 29%] Built target q4t_quant
+[ 44%] Built target q4t_model
+[ 44%] Built target q4t_startup_plan
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_store.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_worker.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_fetch.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_fetch_policy.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_fetch_http.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document_worker.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document_sandbox.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf_worker.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf_sandbox.cpp.o

@@ -1,0 +1,30 @@
+{
+  "stage": "FI02 actual PDF + bounded EOF/exit ownership",
+  "cpp_tests": [
+    "grammar_process_output_requires_eof_and_normal_exit",
+    "grammar_process_output_empty_success_is_distinct_from_bad_exit",
+    "grammar_process_output_overflow_discards_partial_and_reaps",
+    "grammar_process_output_eof_does_not_hide_stalled_exit",
+    "grammar_process_output_cancel_interrupts_read_and_exit_wait",
+    "grammar_process_output_unknown_exit_retains_slot_and_counters",
+    "file_pdf_actual_text_and_every_page_images",
+    "file_pdf_high_detail_preserves_rotated_geometry",
+    "file_pdf_page_and_text_budgets_never_publish_partial",
+    "file_pdf_image_bytes_and_actual_pixel_budgets",
+    "file_pdf_damaged_input_does_not_poison_native_text",
+    "file_pdf_sandbox_enforces_system_read_only_and_no_network_processes",
+    "file_pdf_cancel_and_deadline_reap_only_owned_worker",
+    "file_pdf_invalid_config_owner_detail_and_cancel_launch_nothing",
+    "grammar_process_memory_limit_and_descriptor_isolation",
+    "grammar_process_short_read_and_cleanup_do_not_leak",
+    "grammar_process_unconfirmed_reap_retains_capacity_without_callbacks",
+    "file_document_worker_actual_text_and_sheet_match_original_data"
+  ],
+  "python_tests": [
+    "tools.serve_responses.test_file_pdf_images.PdfImages.test_actual_pages_have_expected_pixels_and_rotation"
+  ],
+  "gpu_starts": 0,
+  "default_unchanged": "cdb5ced9 STOPPED",
+  "acceptance": "actual text/all pages, pixels, isolation, ownership, budgets; component only; FI03-FI05 and all master tasks remain",
+  "first_execution_not_started": true
+}
