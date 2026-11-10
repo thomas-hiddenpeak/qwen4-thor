@@ -229,6 +229,40 @@ Q4T_TEST(batch_jobs_invalid_later_line_never_invokes_and_keeps_error) {
   return true;
 }
 
+Q4T_TEST(batch_jobs_enqueued_quota_failure_keeps_line_and_releases_prefix) {
+  Fixture fixture;
+  fixture.objects.batch_model_queue_tokens = 6;
+  fixture.objects.batch_client_model_queue_tokens = 6;
+  ObjectStore objects(fixture.objects);
+  const auto too_large = File(objects, Input(2));
+  const auto fits = File(objects, Input(1));
+  std::atomic<int> calls{0}, measured{0};
+  BatchInputMeter meter = [&](const auto&, const auto&, const auto&,
+                              const auto&, const auto&,
+                              BatchInputBudget* output) {
+    ++measured;
+    *output = {4, true};
+    return ObjectReply{};
+  };
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls), meter);
+  auto submitted = jobs.Submit(Access(), Options(too_large), fixture.alpha);
+  Q4T_CHECK(Ok(submitted));
+  auto final = Finished(objects, jobs, submitted.value.GetString("id"));
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "failed" &&
+            calls == 0 && measured == 2);
+  const auto& error = final.value.Find("errors")->GetArray("data")->array[0];
+  Q4T_CHECK(error.GetString("code") == "batch_enqueued_token_limit_exceeded" &&
+            error.GetInt("line") == 2);
+  submitted = jobs.Submit(Access(), Options(fits), fixture.alpha);
+  Q4T_CHECK(Ok(submitted));
+  final = Finished(objects, jobs, submitted.value.GetString("id"));
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed" &&
+            calls == 1 && measured == 3 &&
+            fixture.clients.Usage(0).data_active == 0);
+  return true;
+}
+
 Q4T_TEST(batch_jobs_reserves_capacity_before_create_and_binds_admission_owner) {
   Fixture fixture;
   fixture.jobs.max_jobs = fixture.jobs.max_client_jobs = 1;

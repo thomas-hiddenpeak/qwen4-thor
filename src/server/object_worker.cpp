@@ -1,5 +1,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/batch_checkpoint.h"
+#include "q4t/server/batch_quota.h"
+#include "q4t/server/batch_state.h"
 
 #include <dirent.h>
 #include <fcntl.h>
@@ -160,6 +162,7 @@ struct Metadata {
   int64_t revision = 0, created = 0, expires = 0;
   uint64_t bytes = 0;
   ObjectRetentionInfo retention;
+  BatchQueueCharge batch_charge = {};
 };
 struct Usage {
   uint64_t bytes = 0, count = 0;
@@ -176,6 +179,10 @@ class DiskStore {
     options_.max_client_objects = config.GetInt("max_client_objects");
     options_.max_total_objects = config.GetInt("max_total_objects");
     options_.max_ttl_seconds = config.GetInt("max_ttl_seconds");
+    options_.batch_model_queue_tokens =
+        config.GetInt("batch_model_queue_tokens");
+    options_.batch_client_model_queue_tokens =
+        config.GetInt("batch_client_model_queue_tokens");
     if (options_.max_object_bytes < 1024 ||
         options_.max_object_bytes > kMaxFrame / 2 ||
         options_.max_client_bytes < options_.max_object_bytes ||
@@ -184,7 +191,11 @@ class DiskStore {
         !options_.max_client_objects ||
         options_.max_total_objects < options_.max_client_objects ||
         options_.max_total_objects > 100000 || options_.max_ttl_seconds <= 0 ||
-        options_.max_ttl_seconds > 366 * 24 * 3600 || !OpenRoot())
+        options_.max_ttl_seconds > 366 * 24 * 3600 ||
+        !options_.batch_client_model_queue_tokens ||
+        options_.batch_client_model_queue_tokens >
+            options_.batch_model_queue_tokens ||
+        options_.batch_model_queue_tokens >= (1ULL << 53) || !OpenRoot())
       return IoError();
     lock_ = Fd(openat(root_.Get(), ".q4t-lock",
                       O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK,
@@ -312,8 +323,16 @@ class DiskStore {
       if (kind == "input_snapshot")
         return Error(409, "input_snapshot_immutable",
                      "Private snapshots are reclaimed by reference retention");
-      if (request.GetInt("mutate_before", 0))
-        return Batch(Object({{"mutations", Array({request})}}));
+      if (kind == "batch" || request.GetInt("mutate_before", 0)) {
+        auto reply = Batch(Object({{"mutations", Array({request})}}));
+        if (kind == "batch" && reply.ok()) {
+          const auto* rows = reply.value.GetArray("data");
+          if (!rows || rows->array.size() != 1) return IoError(true);
+          auto deleted = rows->array[0];
+          reply.value = std::move(deleted);
+        }
+        return reply;
+      }
       const auto revision = request.GetInt("revision", -1);
       if (revision < 0 || (revision && revision != found->second.revision))
         return Error(409, "object_revision_conflict",
@@ -526,6 +545,95 @@ class DiskStore {
     }
     return {};
   }
+  ObjectReply BatchBudgets(const Json& changes, const std::string& owner) {
+    struct Delta {
+      uint64_t tokens = 0, rows = 0;
+      std::set<std::string> pages;
+    };
+    std::map<std::string, Delta> increments;
+    std::map<std::string, std::pair<Json, const Json*>> roots;
+    std::vector<BatchQueueChange> charges;
+    const auto invalid = [] {
+      return Error(409, "batch_budget_conflict",
+                   "Batch input budget and checkpoint must commit together");
+    };
+    for (const auto& change : changes.array) {
+      const auto name = change.GetString("name");
+      const auto* next = change.Find("record");
+      const auto found = records_.find(name);
+      const auto kind =
+          next->IsNull() ? found->second.kind : next->GetString("kind");
+      if (kind != "batch" && kind != "tool_run") continue;
+      const auto* data = next->Find("data");
+      if (kind == "tool_run" && (!data || !IsBatchPage(*data))) continue;
+      Json previous;
+      if (found != records_.end() && !ReadKnown(name, found->second, &previous))
+        return IoError();
+      const auto* old = previous.Find("data");
+      if (kind == "batch") {
+        const auto before = found == records_.end()
+                                ? BatchQueueCharge{}
+                                : found->second.batch_charge;
+        if (!data) {
+          if (before.tokens || before.unknown)
+            return Error(409, "batch_active_delete_conflict",
+                         "Active Batch must drain before removal");
+          charges.push_back({before, {}});
+          continue;
+        }
+        auto checked = CheckBatchBudgetMutation(*data, old);
+        if (!checked.ok()) return checked;
+        charges.push_back({before, InspectBatchQueueCharge(kind, *data)});
+        if (data->Has("enqueued_input_tokens")) {
+          // Copy only the small prior root, not request/result pages. Check
+          // its counter delta against precisely the newly committed rows.
+          roots.emplace(next->GetString("id"),
+                        std::make_pair(old ? *old : Json{}, data));
+        }
+      } else if (data && IsBatchPage(*data)) {
+        const auto* rows = data->GetArray("rows");
+        const auto* old_rows = old ? old->GetArray("rows") : nullptr;
+        const auto previous_count = old_rows ? old_rows->array.size() : 0;
+        for (size_t i = previous_count; i < rows->array.size(); ++i) {
+          const auto* value = rows->array[i].Find("input_budget");
+          if (!value) continue;
+          BatchInputBudget budget;
+          if (!ParseBatchInputBudget(*value, &budget)) return invalid();
+          auto& delta = increments[data->GetString("batch_id")];
+          if (budget.tokens > kBatchTokenLimit - delta.tokens) return invalid();
+          delta.tokens += budget.tokens;
+          ++delta.rows;
+          delta.pages.insert(next->GetString("id"));
+        }
+      }
+    }
+    for (const auto& [id, delta] : increments) {
+      const auto root = roots.find(id);
+      if (root == roots.end()) return invalid();
+      const auto* pages = root->second.second->GetArray("pages");
+      if (!pages) return invalid();
+      for (const auto& page : delta.pages)
+        if (std::none_of(pages->array.begin(), pages->array.end(),
+                         [&](const Json& value) {
+                           return value.IsString() && value.str == page;
+                         }))
+          return invalid();
+    }
+    for (const auto& [id, pair] : roots) {
+      const auto& [old, data] = pair;
+      const auto delta = increments.find(id);
+      const auto tokens = delta == increments.end() ? 0 : delta->second.tokens;
+      const auto rows = delta == increments.end() ? 0 : delta->second.rows;
+      if (data->GetInt("enqueued_input_tokens") -
+                  old.GetInt("enqueued_input_tokens") !=
+              static_cast<int64_t>(tokens) ||
+          data->GetInt("metered_rows") - old.GetInt("metered_rows") !=
+              static_cast<int64_t>(rows))
+        return invalid();
+    }
+    return batch_quota_.Check(owner, charges, options_.batch_model_queue_tokens,
+                              options_.batch_client_model_queue_tokens);
+  }
   ObjectReply Batch(const Json& request, bool retention = false) {
     const auto* mutations = request.GetArray("mutations");
     if (!mutations || mutations->array.empty() ||
@@ -647,6 +755,8 @@ class DiskStore {
           PrivateSnapshotReferences(*change.Find("record"), final, &checked);
       if (!references.ok()) return references;
     }
+    auto budget = BatchBudgets(changes, owner);
+    if (!budget.ok()) return budget;
     if ((projected.bytes > options_.max_total_bytes &&
          projected.bytes > total_.bytes) ||
         (projected.count > options_.max_total_objects &&
@@ -781,7 +891,9 @@ class DiskStore {
                  content->GetInt("expires_at"),
                  text.size(),
                  InspectObjectRetention(content->GetString("kind"),
-                                        *content->Find("data"))};
+                                        *content->Find("data")),
+                 InspectBatchQueueCharge(content->GetString("kind"),
+                                         *content->Find("data"))};
     *record = *content;
     return true;
   }
@@ -792,6 +904,7 @@ class DiskStore {
            actual.bytes == expected.bytes;
   }
   void Add(const std::string& name, Metadata metadata) {
+    batch_quota_.Add(metadata.owner, metadata.batch_charge);
     if (metadata.retention.Bytes() > 64 * 1024 * 1024 - retention_bytes_) {
       metadata.retention.uncertain = true;
       std::vector<std::string>().swap(metadata.retention.references);
@@ -806,6 +919,7 @@ class DiskStore {
   }
   using Iterator = std::map<std::string, Metadata>::iterator;
   void Remove(Iterator found) {
+    batch_quota_.Remove(found->second.owner, found->second.batch_charge);
     retention_bytes_ -= found->second.retention.Bytes();
     auto client = clients_.find(found->second.owner);
     client->second.bytes -= found->second.bytes;
@@ -921,7 +1035,10 @@ class DiskStore {
   }
   ObjectReply Put(const std::string& name, const Json& request) {
     // Conditioned writes use the same final journal check as transactions.
-    if (request.GetInt("mutate_before", 0)) {
+    const auto* proposed = request.Find("data");
+    if (request.GetString("kind") == "batch" ||
+        (proposed && IsBatchPage(*proposed)) ||
+        request.GetInt("mutate_before", 0)) {
       auto reply = Batch(Object({{"mutations", Array({request})}}));
       if (reply.ok()) {
         const auto* rows = reply.value.GetArray("data");
@@ -1199,6 +1316,7 @@ class DiskStore {
   bool initialized_ = false;
   std::map<std::string, Metadata> records_;
   std::map<std::string, Usage> clients_;
+  BatchQueueQuota batch_quota_;
   Usage total_;
   size_t retention_bytes_ = 0;
   int pause_after_ = 0;
@@ -1226,10 +1344,12 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-batch-start-lost-ack") == 0;
   const bool lose_batch_result =
       std::strcmp(argv[1], "--q4t-object-worker-batch-result-lost-ack") == 0;
+  const bool lose_batch_budget =
+      std::strcmp(argv[1], "--q4t-object-worker-batch-budget-lost-ack") == 0;
   int successful_puts = 0;
   matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack ||
             lose_cleanup_ack || lose_application_ack || lose_batch_create ||
-            lose_batch_start || lose_batch_result;
+            lose_batch_start || lose_batch_result || lose_batch_budget;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1264,8 +1384,8 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
-      if (reply.ok() &&
-          (lose_batch_create || lose_batch_start || lose_batch_result))
+      if (reply.ok() && (lose_batch_create || lose_batch_start ||
+                         lose_batch_result || lose_batch_budget))
         if (const auto* mutations = request.GetArray("mutations")) {
           const bool page_update = std::any_of(
               mutations->array.begin(), mutations->array.end(),
@@ -1281,6 +1401,9 @@ int MaybeRunObjectWorker(int argc, char** argv) {
             const bool root = format == "q4t.batch.v1";
             if ((lose_batch_create && root &&
                  mutation.GetInt("revision", -1) == 0) ||
+                (lose_batch_budget && page_update && root &&
+                 data->Has("enqueued_input_tokens") &&
+                 data->Find("batch")->GetString("status") == "validating") ||
                 (lose_batch_start && page_update && root &&
                  data->GetInt("running") == 1) ||
                 (lose_batch_result &&

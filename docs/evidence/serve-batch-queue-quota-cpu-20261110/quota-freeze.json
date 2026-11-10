@@ -1,0 +1,37 @@
+{
+  "new": [
+    "batch_quota_actual_worker_client_model_and_atomic_rejection",
+    "batch_quota_concurrent_clients_have_one_durable_winner",
+    "batch_quota_restart_rebuilds_and_lower_limits_allow_drain",
+    "batch_quota_unknown_receipt_and_journal_recovery_charge_once",
+    "batch_quota_execution_cancel_and_finalization_retain_until_terminal",
+    "batch_quota_expired_restored_input_keeps_charge_until_finalization",
+    "batch_quota_cannot_rewrite_budget_model_pages_or_delete_active_root",
+    "batch_quota_legacy_unknown_affects_only_relevant_batch_admission",
+    "batch_quota_exact_wide_rebuild_and_unknown_model_quarantine",
+    "batch_jobs_enqueued_quota_failure_keeps_line_and_releases_prefix"
+  ],
+  "direct": [
+    "batch_budget_native_chat_and_responses_templates_persist_exact_count",
+    "batch_budget_validation_restart_reuses_original_metered_prefix",
+    "batch_validation_rows_concurrent_same_offset_commits_exactly_once",
+    "batch_validation_rows_cancel_collects_private_inputs_after_terminal",
+    "batch_jobs_actual_unknown_result_reconciles_without_replay",
+    "batch_jobs_cancel_waits_for_drain_and_publishes_partial_files",
+    "batch_jobs_actual_dead_owner_recovery_skips_started_row",
+    "batch_state_reset_retires_private_pages_but_preserves_pinned_input",
+    "batch_state_original_expiry_blocks_late_validation_mutation",
+    "batch_finalization_row_budget_and_checkpoint_restart",
+    "batch_results_finalization_quota_never_exposes_partial_files",
+    "object_store_durable_crud_and_exact_data",
+    "object_store_global_bytes_account_across_clients_after_restart",
+    "object_store_transaction_conflict_or_quota_changes_nothing",
+    "object_store_transaction_recovers_durable_decision_before_apply",
+    "object_store_transaction_recovers_partial_file_installation",
+    "object_store_reduced_limit_preserves_read_delete_access"
+  ],
+  "total": 27,
+  "max_seconds": 1200,
+  "gpu_starts": 0,
+  "note": "Actual object workers, atomic queue accounting, durable recovery and CPU finite execution. No public HTTP/default release claim."
+}

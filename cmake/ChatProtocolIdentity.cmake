@@ -141,6 +141,8 @@ set(protocol_inputs
   src/server/batch_checkpoint.cpp
   include/q4t/server/batch_budget.h
   src/server/batch_budget.cpp
+  include/q4t/server/batch_quota.h
+  src/server/batch_quota.cpp
   include/q4t/server/batch_preparation.h
   src/server/batch_preparation.cpp
   include/q4t/server/batch_execution.h

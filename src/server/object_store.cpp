@@ -51,17 +51,24 @@ bool ValidOptions(const ObjectStoreOptions& o) {
          o.max_queue_bytes <= (256ULL << 20) && o.restart_limit > 0 &&
          o.restart_limit <= 10 && o.restart_window_ms >= 100 &&
          o.restart_backoff_ms >= 0 &&
-         o.restart_backoff_ms <= o.restart_window_ms;
+         o.restart_backoff_ms <= o.restart_window_ms &&
+         o.batch_client_model_queue_tokens > 0 &&
+         o.batch_client_model_queue_tokens <= o.batch_model_queue_tokens &&
+         o.batch_model_queue_tokens < (1ULL << 53);
 }
 Json Config(const ObjectStoreOptions& o) {
-  return Object({{"operation", String("init")},
-                 {"directory", String(o.directory)},
-                 {"max_object_bytes", Number(o.max_object_bytes)},
-                 {"max_client_bytes", Number(o.max_client_bytes)},
-                 {"max_total_bytes", Number(o.max_total_bytes)},
-                 {"max_client_objects", Number(o.max_client_objects)},
-                 {"max_total_objects", Number(o.max_total_objects)},
-                 {"max_ttl_seconds", Number(o.max_ttl_seconds)}});
+  return Object(
+      {{"operation", String("init")},
+       {"directory", String(o.directory)},
+       {"max_object_bytes", Number(o.max_object_bytes)},
+       {"max_client_bytes", Number(o.max_client_bytes)},
+       {"max_total_bytes", Number(o.max_total_bytes)},
+       {"max_client_objects", Number(o.max_client_objects)},
+       {"max_total_objects", Number(o.max_total_objects)},
+       {"max_ttl_seconds", Number(o.max_ttl_seconds)},
+       {"batch_model_queue_tokens", Number(o.batch_model_queue_tokens)},
+       {"batch_client_model_queue_tokens",
+        Number(o.batch_client_model_queue_tokens)}});
 }
 Json RequestWire(const ObjectRequest& request, const Json* data = nullptr) {
   return Object({{"operation", String(Operation(request.operation))},

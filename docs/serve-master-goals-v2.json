@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 fair Batch jobs and resumed whole-file validation reusing frozen rows; independent rate origin including background Responses, scalable small-row metadata, HTTP/native SDK/business and compatible rollback/default delivery. Native finite endpoint and immutable preparation components are CPU-accepted; full Batch API and all eight backends with A10 remain required, along with all master work.",
+      "next": "A09.6: reconcile legacy frozen input budgets, defer queued work on minute quota exhaustion, expose native HTTP/SDK/CLI and perform actual model business with compatible rollback/default delivery; A09.7/A09.8 and all master tasks remain required.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1052,7 +1052,8 @@
         "evidence/serve-batch-jobs-cpu-20261110/README.md",
         "evidence/serve-batch-rate-origin-cpu-20261110/README.md",
         "evidence/serve-batch-capacity-cpu-20261110/README.md",
-        "evidence/serve-batch-input-meter-cpu-20261110/README.md"
+        "evidence/serve-batch-input-meter-cpu-20261110/README.md",
+        "evidence/serve-batch-queue-quota-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },
@@ -1640,6 +1641,6 @@
       "release": null
     }
   ],
-  "next_task": "继续A09 Batch存储worker原子入队token配额、分钟配额等待、公开HTTP/SDK实际业务、兼容回退/default交付，以及A09.6/7/8、A10和全部总任务。",
+  "next_task": "继续A09旧冻结预算有界补计、分钟配额等待、公开HTTP/SDK实际业务及CLI配额、兼容回退/default交付，以及A09.6/7/8、A10和全部总任务。",
   "next": "A09.6 enqueued token reservation, scalable 50000-row metadata/incremental finalization, public HTTP/SDK real business and compatible quota/Response rollback/default; then A09.7 all eight actual backends and all master work."
 }

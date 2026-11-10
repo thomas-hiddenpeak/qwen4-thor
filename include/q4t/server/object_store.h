@@ -42,6 +42,10 @@ struct ObjectStoreOptions {
   int restart_limit = 3;
   int restart_window_ms = 60000;
   int restart_backoff_ms = 100;
+  // Independent of minute RPM/TPM and online traffic. Applied per canonical
+  // model across clients, and per authenticated client/model respectively.
+  uint64_t batch_model_queue_tokens = 1ULL << 30;
+  uint64_t batch_client_model_queue_tokens = 1ULL << 28;
 };
 
 struct ObjectRequest {

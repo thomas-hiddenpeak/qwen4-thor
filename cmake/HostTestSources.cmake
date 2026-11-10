@@ -57,6 +57,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_checkpoint.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_budget.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_quota.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_results.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_preparation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_execution.cpp
@@ -68,6 +69,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_preparation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_execution_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_jobs_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp

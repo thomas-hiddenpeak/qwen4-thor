@@ -1,0 +1,16 @@
+{
+  "status": "PASS_BATCH_QUEUE_QUOTA_TARGETED_CPU",
+  "distinct_tests": 27,
+  "new_tests": 10,
+  "passed": 27,
+  "failed": 0,
+  "skipped": 0,
+  "seconds": 16.886287559755147,
+  "gpu_starts": 0,
+  "builds_final_zero_warning": true,
+  "source_anchors": 487,
+  "engine_sha256": "40ee6e93b05c5cd699702416c44c5a3b588887309e4c6158715b6d0118d1a9c7",
+  "host_sha256": "4c1a95ab289fb6a0672c47bc44819a1d888d461b55acd02fd690715377e67600",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Legacy frozen budget reconciliation, minute quota wait, public HTTP/SDK actual model business, CLI quota exposure and compatible rollback/default delivery; all A09 and master tasks continue."
+}

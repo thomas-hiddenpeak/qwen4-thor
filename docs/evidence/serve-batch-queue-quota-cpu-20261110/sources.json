@@ -1,0 +1,13 @@
+{
+  "CMakeLists.txt": "ddbe7fb4bf4ced767b36c5252d05b10359c1168f2b5628e17930c4948e9b733a",
+  "cmake/ChatProtocolIdentity.cmake": "0da8e64da4daf1b7e74ec6eb8980dc1ed426438e66e39f124906f4fdc46865a6",
+  "cmake/HostTestSources.cmake": "363d32ed44774b5764972c9942ac92919a024ac0fbf8d7eed9818d3ac30d07b0",
+  "include/q4t/server/object_store.h": "3b767f78b07f60008ec792c3913a785e91107a966132b3bf24c2c31cc0796993",
+  "src/server/batch_jobs.cpp": "8169d3330781b68dc53a39c33bee506c1cdb66ec2a571e2ae3ddf7cbd8ac21a6",
+  "src/server/object_store.cpp": "cf519691f0c33f49b5808ef9ddf1912c30b803e4f8faf1c2480decfbb3334886",
+  "src/server/object_worker.cpp": "58e53b2a5350fda4f7f70efd2a07083da5004158fa856c6e075fabc45840ba35",
+  "tests/server_batch_jobs_test.cpp": "719d47567f0141ad8ff222aa6aa1b2089bf0871fde666202e1d69bdcba309a14",
+  "include/q4t/server/batch_quota.h": "50cb090f3d057a94d28843e63604b60fe631ed6afcb958855aa5dee9cd097355",
+  "src/server/batch_quota.cpp": "457512c3e1109885afa433556c9a61244742f08535a6dd938c4e8ea3b17b6fd0",
+  "tests/server_batch_quota_test.cpp": "93f46b529d11fdb0e0bcc05a4baacaad7f1c65376d855c78038fdc548cad6f28"
+}

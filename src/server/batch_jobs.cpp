@@ -413,7 +413,9 @@ ObjectReply BatchJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
       // A failed read/publication is not a malformed user's JSONL.
       if (!result.commit_unknown && result.http_status >= 400 &&
           result.http_status < 500 && result.http_status != 408 &&
-          result.http_status != 409 && result.http_status != 429 &&
+          result.http_status != 409 &&
+          (result.http_status != 429 ||
+           result.code == "batch_enqueued_token_limit_exceeded") &&
           result.http_status != 499)
         job->validation_error = result;
     }
