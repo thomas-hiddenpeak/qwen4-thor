@@ -51,6 +51,19 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       item.kind = VisionItem::kImage;
       item.message_index = message_index;
       item.part_index = part_index;
+      const auto* detail_field = iu->Find("detail");
+      const auto detail = iu->GetString("detail", "auto");
+      if (detail_field && (!detail_field->IsString() ||
+                           (detail != "auto" && detail != "low" &&
+                            detail != "high" && detail != "original"))) {
+        *error_param += ".image_url.detail";
+        *error_code = "media_detail_invalid";
+        *err = *error_code;
+        return {};
+      }
+      if (detail == "low") item.detail = vision::ImageDetail::kLow;
+      if (detail == "high") item.detail = vision::ImageDetail::kHigh;
+      if (detail == "original") item.detail = vision::ImageDetail::kOriginal;
       *error_param = MediaInputParam(item);
       if (items->size() >= vision::kMediaPlanItems) {
         *error_code = "media_item_limit";

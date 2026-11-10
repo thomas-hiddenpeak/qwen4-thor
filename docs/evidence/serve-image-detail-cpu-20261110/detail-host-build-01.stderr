@@ -1,0 +1,15 @@
+/home/rm01/models/dev/qwen4-thor/tests/vision_image_detail_test.cpp: In function ‘q4t::io::Json {anonymous}::Parse(std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/tests/vision_image_detail_test.cpp:28:27: error: invalid initialization of reference of type ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’} from expression of type ‘std::string_view’ {aka ‘std::basic_string_view<char>’}
+   28 |   if (!q4t::io::ParseJson(text, &result, true))
+      |                           ^~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/object_store.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:8,
+                 from /home/rm01/models/dev/qwen4-thor/tests/vision_image_detail_test.cpp:7:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/io/json.h:73:37: note: in passing argument 1 of ‘q4t::Status q4t::io::ParseJson(const std::string&, Json*, bool, const JsonParseLimits&)’
+   73 | Status ParseJson(const std::string& text, Json* out,
+      |                  ~~~~~~~~~~~~~~~~~~~^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3327: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vision_image_detail_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

@@ -27,6 +27,8 @@
 namespace q4t {
 namespace vision {
 
+enum class ImageDetail { kAuto, kLow, kHigh, kOriginal };
+
 // Processor config (from preprocessor_config.json).
 struct ProcessorConfig {
   int patch_size = 16;
@@ -55,6 +57,8 @@ struct ProcessorOptions {
   ProcessorResult* result = nullptr;
   // Optional request-local accumulator; never owns or resets prior stages.
   StageTimings* timings = nullptr;
+  // Image-only native policy. Auto preserves the checkpoint preprocessor.
+  ImageDetail image_detail = ImageDetail::kAuto;
 };
 
 // Processed image (ready for the vision tower).

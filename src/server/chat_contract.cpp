@@ -342,9 +342,14 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
           const auto* link = value.Find("url");
           if (!link || !link->IsString() || link->str.empty())
             return Status::Fail("media URL must be a nonempty string");
-          if (const auto* detail = value.Find("detail");
-              detail && (!detail->IsString() || detail->str != "auto"))
-            return Status::Fail("only detail=auto is implemented");
+          if (const auto* detail = value.Find("detail"); detail) {
+            if (!detail->IsString() ||
+                !Known(detail->str, {"auto", "low", "high", "original"}) ||
+                (!image && detail->str != "auto")) {
+              *error_param += ".detail";
+              return Status::Fail("invalid image detail or video frame detail");
+            }
+          }
           return Status();
         };
         if (image) {

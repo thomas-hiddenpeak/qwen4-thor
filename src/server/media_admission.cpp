@@ -145,7 +145,8 @@ Status PlanChatMedia(std::span<const VisionItem> items,
                       item.frames[f].size()};
     inputs[i] = {item.kind == VisionItem::kImage ? vision::MediaKind::kImage
                                                  : vision::MediaKind::kVideo,
-                 {frames[i].data(), item.frames.size()}};
+                 {frames[i].data(), item.frames.size()},
+                 item.detail};
   }
   size_t placeholders = 0;
   size_t item_index = 0, group = 0;
@@ -255,11 +256,16 @@ Status ExpandChatMedia(const io::Json& request,
 
 std::string MediaLimitsJson(uint64_t attention_shared_bytes) {
   const vision::MediaPlanLimits limits;
-  return R"({"profile":"q4t-media-admission-v2","experimental":true,)"
+  return R"({"profile":"q4t-media-admission-v3","experimental":true,)"
          R"("roles":["user"],"formats":["png","jpeg"],)"
          R"("data_url_mime":["image/png","image/jpeg"],)"
          R"("raw_base64":true,"base64":"canonical_standard_padded",)"
-         R"("image_detail":["auto"],"remote_urls":false,)"
+         R"("image_detail":["auto","low","high","original"],"remote_urls":false,)"
+         R"("detail_policy":{"auto":"qwen_reference_smart_resize",)"
+         R"("low":{"longest_edge":512,"max_pixels":262144},)"
+         R"("high":{"longest_edge":2048,"max_pixels":4194304},)"
+         R"("original":"preserve_pixels_pad_right_bottom_edge",)"
+         R"("configured_pixel_limit_applies":true},)"
          R"("video_time_field":"video_timestamps","video_time_unit":"seconds",)"
          R"("video_time_default":"frame_index/24","max_timestamp_seconds":86400,)"
          R"("temporal_group_frames":2,"timestamp_rounding_decimal_places":1,)"

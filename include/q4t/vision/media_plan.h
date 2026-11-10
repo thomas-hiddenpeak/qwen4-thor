@@ -29,6 +29,7 @@ enum class MediaPlanError {
   kFrameDimensions,
   kDecodedBytes,
   kGeometry,
+  kDetailLimit,
   kIntegerRange,
   kPatchCount,
   kWorkspaceBytes,
@@ -75,17 +76,20 @@ struct MediaGeometry {
   uint64_t attention_shared_bytes = 0;
 };
 
-// Keeps current C++ round (ties away from zero), image repetition and video
-// last-frame padding. Temporal/spatial merge 2 is the implemented contract.
-MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
-                                  uint32_t height, size_t frames,
-                                  const ProcessorConfig& config,
-                                  MediaGeometry* out) noexcept;
+// Auto preserves reference ties-to-even rounding and temporal padding.
+// Low/high additionally bound the longest edge to 512/2048 and area to its
+// square. Original preserves pixels with bottom/right edge padding; it fails
+// when the padded image exceeds the configured pixel budget, never resizes.
+MediaPlanResult PlanMediaGeometry(
+    MediaKind kind, uint32_t width, uint32_t height, size_t frames,
+    const ProcessorConfig& config, MediaGeometry* out,
+    ImageDetail detail = ImageDetail::kAuto) noexcept;
 
 using MediaBytes = std::span<const uint8_t>;
 struct MediaPlanInput {
   MediaKind kind = MediaKind::kImage;
   std::span<const MediaBytes> frames;
+  ImageDetail detail = ImageDetail::kAuto;
 };
 
 struct MediaPlanLimits {
@@ -122,6 +126,7 @@ struct MediaItemPlan {
   uint32_t source_height = 0;
   size_t frames = 0;
   MediaGeometry geometry;
+  ImageDetail detail = ImageDetail::kAuto;
 };
 
 struct MediaPlan {

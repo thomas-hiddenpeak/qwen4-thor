@@ -1,0 +1,22 @@
+{
+  "include/q4t/server/chat_prompt.h": "40f524f8de1cada46e16a1c982ab8ef29d4a2c404df276bdd5d941b32afe5605",
+  "include/q4t/vision/media_plan.h": "ed9552968bd7548e3009ddd48403575cbb6d499d81ffd518bbd0d2801aadd91c",
+  "include/q4t/vision/processor.h": "84fcd6e47c24d4c2e023d3f8084e476c469cc555da3790b46b877e620dca1164",
+  "src/server/chat_contract.cpp": "75c5e79650ca501e7ef6f1e40e1d8a33d83df32e19b43198a827f7de6daf48f8",
+  "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
+  "src/server/chat_prompt.cpp": "44ee8504faec4d904d4cd320581218253d3e1e62c8f12476e4b509f78c3f1db8",
+  "src/server/file_input.cpp": "89ff33a93e024f05ef4ddf2c0886fd54b09ba748457151bbe1a4723979849683",
+  "src/server/media_admission.cpp": "6453a378f0b236b7340661bebc617068544e5f24985466d1c3a5cba9d2f19199",
+  "src/vision/media_plan.cpp": "e0472cc3c9781fca2e6f98ee191de3aee79c521529d2ac3c202d37f145dd9770",
+  "src/vision/processor.cpp": "91ebea44c02bd67a0e40480ff468dcb71d3cdf8685114d7fc794876e24aa5e95",
+  "cmake/HostTestSources.cmake": "55c0bef1b806567f79c7677e678aa7cc9771d179a257d955640fb638043ca94f",
+  "tests/vision_image_detail_test.cpp": "0422b4816d4e3edb16991a8966dd18233edec1233b442554941b672bfd9715bc",
+  "tests/server_media_admission_test.cpp": "a3f7099d598b740beb3a65cd9609bf64cc6224c155521de1933d828f26d1a4a7",
+  "tests/fixtures/image_detail/README.md": "145371b6428aea202d712066b053b562e6f50d3dbbe3b140e1fafec11cf77c4d",
+  "tests/fixtures/image_detail/generate.py": "b99e80e5869b63c8d6a73bd14fa08f6a6be3901fe811fa2a8bf8727e7aaee39e",
+  "tests/fixtures/image_detail/pattern.png": "4866418146c85c7662ddb60eae9d37562ce33cfa963a279d864b9ef0f18bdcd5",
+  "tests/fixtures/image_detail/reference.json": "b308927b69e69ba140ff1dc73a4bde3e2234620d778bb7996a8bdbe4dd5b4477",
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "e88cf3c597243481bc2473a89e12249d204d59b1f6446b1a17688acf4df45254",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "21e3c84ef43d78cbfa5c7847e00827626db1db57a509f9a3e208a10e420ac8b4",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_progress_media_tests": "f98091764b3f2b10bd59d6d812910789b425b13318a01e698791bbaa264014b2"
+}

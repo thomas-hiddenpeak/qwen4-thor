@@ -198,3 +198,13 @@ FI03共同展开与表格模型步骤合同完成[16个不同CPU检查](evidence
 ## FI04图片来源组件（2026-11-10）
 
 2026-11-10。FI04 [图片来源12项CPU通过](evidence/serve-file-image-cpu-20261110/README.md)，真实PNG/JPEG像素、File删除/重启恢复和最多2次本地GET，0.615秒。首host链接修复记录保留；最终host/引擎零警告，448来源锚点一致，候选2c24e514未发行。0GPU/默认cdb5ced9 STOPPED保持；继续detail实际执行、格式和全部API/模型/业务/回退及总任务。
+
+## FI04原生detail（2026-11-10）
+
+2026-11-10。FI04 [原生detail 17项CPU通过](evidence/serve-image-detail-cpu-20261110/README.md)：四档完整像素SHA与独立Pillow/NumPy一致，计数/生成准入一致，原图/视频/取消通过。首测试辅助编译错误保留，最终零警告，448来源锚点一致；候选21e3c84e未发行。0GPU/默认STOPPED保持；继续格式、全部API/真实模型/业务/回退与总任务。
+
+[官方图片输入说明](https://developers.openai.com/api/docs/guides/images-vision)
+明确detail控制处理，具体尺寸随模型而异。q4t auto保持检查点处理；
+low/high在参考处理后限定最长边512/2048和对应平方像素数，仍受部署
+像素限制。original忽略最小像素扩展，只以右/下重复边缘补齐patch，
+保留原坐标，超实际配置/上下文/设备预算拒绝。视频保持原处理。

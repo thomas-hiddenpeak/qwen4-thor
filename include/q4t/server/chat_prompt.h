@@ -7,6 +7,7 @@
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/status.h"
+#include "q4t/vision/processor.h"
 
 namespace q4t::server {
 
@@ -17,6 +18,7 @@ struct VisionItem {
   std::vector<std::string> frames;
   size_t message_index = 0;
   size_t part_index = 0;
+  vision::ImageDetail detail = vision::ImageDetail::kAuto;
 };
 
 struct ChatPromptLayout {

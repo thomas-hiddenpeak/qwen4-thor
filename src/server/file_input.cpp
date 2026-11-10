@@ -243,10 +243,12 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
   const auto* id = part.Find("file_id");
   const auto* detail = part.Find("detail");
   std::string url_path = path + ".image_url";
+  std::string detail_path = path + ".detail";
   if (chat && url && url->IsObject()) {
     checked = InputFields(*url, {"url", "detail"}, &error, url_path);
     if (!checked) return Invalid(checked.message(), error);
     detail = url->Find("detail");
+    detail_path = url_path + ".detail";
     url = url->Find("url");
     url_path += ".url";
   }
@@ -260,7 +262,7 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
     if (!detail->IsString() ||
         (detail->str != "auto" && detail->str != "low" &&
          detail->str != "high" && detail->str != "original"))
-      return Invalid("Invalid image detail", path + ".detail");
+      return Invalid("Invalid image detail", detail_path);
     next.detail = detail->str;
   }
   const auto* breakpoint = part.Find("prompt_cache_breakpoint");

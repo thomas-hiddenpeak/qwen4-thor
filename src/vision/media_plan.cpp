@@ -109,6 +109,8 @@ const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
       return "media_decoded_limit";
     case MediaPlanError::kGeometry:
       return "media_geometry_invalid";
+    case MediaPlanError::kDetailLimit:
+      return "media_detail_limit";
     case MediaPlanError::kIntegerRange:
       return "media_integer_range";
     case MediaPlanError::kPatchCount:
@@ -216,7 +218,8 @@ MediaPlanResult ReadMediaHeader(std::span<const uint8_t> bytes,
 MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
                                   uint32_t height, size_t frames,
                                   const ProcessorConfig& config,
-                                  MediaGeometry* out) noexcept {
+                                  MediaGeometry* out,
+                                  ImageDetail detail) noexcept {
   if (!out) return Fail(MediaPlanError::kInvalidConfig);
   *out = {};
   if (!ValidConfig(config) ||
@@ -224,6 +227,10 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     return Fail(MediaPlanError::kInvalidConfig);
   }
   const bool video = kind == MediaKind::kVideo;
+  if ((detail != ImageDetail::kAuto && detail != ImageDetail::kLow &&
+       detail != ImageDetail::kHigh && detail != ImageDetail::kOriginal) ||
+      (video && detail != ImageDetail::kAuto))
+    return Fail(MediaPlanError::kInvalidConfig);
   if ((!video && frames != 1) || (video && frames < 2) ||
       frames > kMediaPlanFrames) {
     return Fail(MediaPlanError::kFrameCount);
@@ -256,33 +263,62 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     return quotient + (twice_remainder > divisor ||
                         (twice_remainder == divisor && (quotient & 1)));
   };
-  if (!Aligned(round_even(h, factor), factor, &rh) ||
-      !Aligned(round_even(w, factor), factor, &rw)) {
-    return Fail(MediaPlanError::kIntegerRange);
-  }
-  // The reference resizes before padding; its budget rounds to nearest even
-  // temporal groups, while patchification below always pads the last frame.
-  const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
-  uint64_t rounded_pixels = 0, source_pixels = 0;
-  if (!Mul(rh, rw, &rounded_pixels) ||
-      !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
-      !Mul(h, w, &source_pixels) ||
-      !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
-    return Fail(MediaPlanError::kIntegerRange);
-  }
-  if (rounded_pixels > static_cast<uint64_t>(config.max_pixels)) {
-    const double beta =
-        std::sqrt(static_cast<double>(source_pixels) / config.max_pixels);
-    if (!Aligned(std::max(1.0, std::floor(h / beta / factor)), factor, &rh) ||
-        !Aligned(std::max(1.0, std::floor(w / beta / factor)), factor, &rw)) {
+  if (detail == ImageDetail::kOriginal) {
+    if (!Aligned((uint64_t{height} + factor - 1) / factor, factor, &rh) ||
+        !Aligned((uint64_t{width} + factor - 1) / factor, factor, &rw))
+      return Fail(MediaPlanError::kIntegerRange);
+    if (static_cast<uint64_t>(rh) * rw >
+        static_cast<uint64_t>(config.max_pixels))
+      return Fail(MediaPlanError::kDetailLimit);
+  } else {
+    if (!Aligned(round_even(h, factor), factor, &rh) ||
+        !Aligned(round_even(w, factor), factor, &rw)) {
       return Fail(MediaPlanError::kIntegerRange);
     }
-  } else if (rounded_pixels < static_cast<uint64_t>(config.min_pixels)) {
-    const double beta = std::sqrt(static_cast<double>(config.min_pixels) /
-                                  static_cast<double>(source_pixels));
-    if (!Aligned(std::ceil(h * beta / factor), factor, &rh) ||
-        !Aligned(std::ceil(w * beta / factor), factor, &rw)) {
+    // The reference resizes before padding; its budget rounds to nearest even
+    // temporal groups, while patchification below always pads the last frame.
+    const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
+    uint64_t rounded_pixels = 0, source_pixels = 0;
+    if (!Mul(rh, rw, &rounded_pixels) ||
+        !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
+        !Mul(h, w, &source_pixels) ||
+        !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
       return Fail(MediaPlanError::kIntegerRange);
+    }
+    if (rounded_pixels > static_cast<uint64_t>(config.max_pixels)) {
+      const double beta =
+          std::sqrt(static_cast<double>(source_pixels) / config.max_pixels);
+      if (!Aligned(std::max(1.0, std::floor(h / beta / factor)), factor, &rh) ||
+          !Aligned(std::max(1.0, std::floor(w / beta / factor)), factor, &rw)) {
+        return Fail(MediaPlanError::kIntegerRange);
+      }
+    } else if (rounded_pixels < static_cast<uint64_t>(config.min_pixels)) {
+      const double beta = std::sqrt(static_cast<double>(config.min_pixels) /
+                                    static_cast<double>(source_pixels));
+      if (!Aligned(std::ceil(h * beta / factor), factor, &rh) ||
+          !Aligned(std::ceil(w * beta / factor), factor, &rw)) {
+        return Fail(MediaPlanError::kIntegerRange);
+      }
+    }
+    if (detail == ImageDetail::kLow || detail == ImageDetail::kHigh) {
+      const int edge = detail == ImageDetail::kLow ? 512 : 2048;
+      const int pixels = std::min(config.max_pixels, edge * edge);
+      if (factor > edge || static_cast<uint64_t>(factor) * factor >
+                               static_cast<uint64_t>(pixels))
+        return Fail(MediaPlanError::kDetailLimit);
+      // Additional detail policy after the unchanged reference smart-resize.
+      // Floor to patch alignment so rounding cannot exceed either ceiling.
+      const double scale =
+          std::min({1.0, static_cast<double>(edge) / std::max(rh, rw),
+                    std::sqrt(static_cast<double>(pixels) /
+                              (static_cast<uint64_t>(rh) * rw))});
+      if (!Aligned(std::max(1.0, std::floor(rh * scale / factor)), factor,
+                   &rh) ||
+          !Aligned(std::max(1.0, std::floor(rw * scale / factor)), factor, &rw))
+        return Fail(MediaPlanError::kIntegerRange);
+      if (rh > edge || rw > edge ||
+          static_cast<uint64_t>(rh) * rw > static_cast<uint64_t>(pixels))
+        return Fail(MediaPlanError::kDetailLimit);
     }
   }
   if (rh <= 0 || rw <= 0) return Fail(MediaPlanError::kGeometry);
@@ -351,6 +387,7 @@ MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
     }
     MediaItemPlan item;
     item.kind = input.kind;
+    item.detail = input.detail;
     item.frames = input.frames.size();
     for (size_t f = 0; f < input.frames.size(); ++f) {
       const auto bytes = input.frames[f];
@@ -386,7 +423,7 @@ MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
     const auto geometry = PlanMediaGeometry(
         item.kind, item.source_width, item.source_height, item.frames,
         item.kind == MediaKind::kImage ? image_config : video_config,
-        &item.geometry);
+        &item.geometry, item.detail);
     if (!geometry) return Fail(geometry.error, i);
     if (!Add(plan.patches, item.geometry.patches, &plan.patches) ||
         plan.patches > limits.max_patches) {

@@ -1,0 +1,13 @@
+{
+  "reviewed": "2026-11-10",
+  "sources": [
+    "https://developers.openai.com/api/docs/guides/images-vision?api-mode=responses",
+    "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create"
+  ],
+  "findings": [
+    "detail controls actual preprocessing; exact sizing and patch limits are model-specific",
+    "low/high/original/auto must remain distinct in native policy; preserve existing Qwen auto preprocessing",
+    "original must not silently shrink just to pass rejection/admission bounds; padded patch alignment must preserve original coordinates and account actual geometry"
+  ],
+  "remaining": "implement native per-image geometry and processor semantics, exact common preflight/count/generation, real HTTP business"
+}

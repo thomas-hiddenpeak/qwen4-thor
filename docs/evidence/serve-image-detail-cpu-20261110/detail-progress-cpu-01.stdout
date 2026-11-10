@@ -1,0 +1,4 @@
+[PASS] progress_actual_image_stages_preserve_pixels
+[PASS] progress_actual_video_frame_completion_preserves_pixels
+[PASS] progress_actual_media_failure_and_cancellation_do_not_complete
+3 tests, 3 passed, 0 failed, 0 skipped

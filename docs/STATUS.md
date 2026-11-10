@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+2026-11-10。FI04 [原生detail 17项CPU通过](evidence/serve-image-detail-cpu-20261110/README.md)：四档完整像素SHA与独立Pillow/NumPy一致，计数/生成准入一致，原图/视频/取消通过。首测试辅助编译错误保留，最终零警告，448来源锚点一致；候选21e3c84e未发行。0GPU/默认STOPPED保持；继续格式、全部API/真实模型/业务/回退与总任务。
+
+2026-11-10。原生图片detail已接入共同准入与实际processor：auto保持参考，low/high限定512/2048最长边，original仅右/下补边且超预算拒绝；发现信息及错误路径同步。冻结14项host与3项实际图片/视频进度CPU，共17项，含独立Pillow/NumPy四档全像素SHA；必要独立构建开始，0GPU/默认保持。全部API/模型/业务/回退及总任务继续。
+
 2026-11-10。FI04 [图片来源12项CPU通过](evidence/serve-file-image-cpu-20261110/README.md)，真实PNG/JPEG像素、File删除/重启恢复和最多2次本地GET，0.615秒。首host链接修复记录保留；最终host/引擎零警告，448来源锚点一致，候选2c24e514未发行。0GPU/默认cdb5ced9 STOPPED保持；继续detail实际执行、格式和全部API/模型/业务/回退及总任务。
 
 2026-11-10。图片组首host链接缺失真实CPU processor，实际引擎构建已通过；按测试需要将既有processor加入两种host构建入口，系统化third_party头路径，不用mock替代像素验证。原链接失败保留，12项冻结范围不变，尚未执行测试/GPU；全部任务继续。

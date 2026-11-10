@@ -83,7 +83,8 @@ bool ChatServer::RunVisionPipeline(
         .cancel_context = const_cast<std::function<bool()>*>(&cancelled),
         .admission = &plan.items[index],
         .result = &processed,
-        .timings = timing};
+        .timings = timing,
+        .image_detail = item.detail};
     std::vector<float> pix;
     vision::ImageShape sh;
     std::string perr;

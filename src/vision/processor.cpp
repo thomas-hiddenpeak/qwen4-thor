@@ -329,7 +329,8 @@ bool PrepareItem(const MediaPlanInput& input, const ProcessorConfig& config,
   if (const auto* admitted = options.admission) {
     const auto& a = admitted->geometry;
     const auto& b = item->geometry;
-    if (admitted->kind != item->kind || admitted->frames != item->frames ||
+    if (admitted->kind != item->kind || admitted->detail != item->detail ||
+        admitted->frames != item->frames ||
         admitted->source_width != item->source_width ||
         admitted->source_height != item->source_height || a.width != b.width ||
         a.height != b.height || a.grid_t != b.grid_t || a.grid_h != b.grid_h ||
@@ -365,7 +366,8 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   if (!image_bytes || !num_bytes)
     return ProcessorFail(options, err, "media_encoded_limit");
   const MediaBytes bytes{image_bytes, num_bytes};
-  const MediaPlanInput input{MediaKind::kImage, {&bytes, 1}};
+  const MediaPlanInput input{
+      MediaKind::kImage, {&bytes, 1}, options.image_detail};
   MediaItemPlan item;
   if (!PrepareItem(input, cfg, options, &item, err)) return false;
   prepare_timing.Stop();
@@ -404,7 +406,21 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   std::vector<uint8_t> resized;
   if (rh != h || rw != w) {
     resized.resize(static_cast<size_t>(rh) * rw * 3);
-    BicubicResize(pixels, h, w, resized.data(), rh, rw);
+    if (item.detail == ImageDetail::kOriginal) {
+      // Preserve every original pixel, repeating only the right/bottom edge
+      // to fill the model's spatial merge. Admission already charged padding.
+      for (int y = 0; y < rh; ++y) {
+        if (!(y % 128) && !ProcessorContinue(options, err)) return false;
+        const auto* row =
+            pixels + static_cast<size_t>(std::min(y, h - 1)) * w * 3;
+        auto* output = resized.data() + static_cast<size_t>(y) * rw * 3;
+        std::memcpy(output, row, static_cast<size_t>(w) * 3);
+        for (int x = w; x < rw; ++x)
+          std::memcpy(output + x * 3, row + (w - 1) * 3, 3);
+      }
+    } else {
+      BicubicResize(pixels, h, w, resized.data(), rh, rw);
+    }
   } else {
     resized.assign(pixels, pixels + static_cast<size_t>(h) * w * 3);
   }

@@ -58,8 +58,8 @@ Q4T_TEST(media_contract_closed_shapes) {
       Contract(R"({"type":"video_frames","video_frames":["x",{"url":"y"}]})"));
   for (const char* part :
        {R"({"image_url":{"url":"x","unknown":1}})",
-        R"({"image_url":{"url":"x","detail":"low"}})",
-        R"({"image_url":{"url":"x","detail":"high"}})",
+        R"({"image_url":{"url":"x","detail":2}})",
+        R"({"image_url":{"url":"x","detail":"unknown"}})",
         R"({"image_url":{"url":2}})", R"({"image_url":null})",
         R"({"image_url":""})", R"({"image_url":"x","text":"x"})",
         R"({"image_url":"x","video_frames":["x","x"]})",
@@ -79,9 +79,9 @@ Q4T_TEST(media_contract_roles_and_locations) {
   Q4T_CHECK(
       !Contract(R"({"video_frames":["x",{"url":false}]})", "user", &param));
   Q4T_CHECK(param == "messages[0].content[0].video_frames[1]");
-  Q4T_CHECK(!Contract(R"({"image_url":{"url":"x","detail":"high"}})", "user",
+  Q4T_CHECK(!Contract(R"({"image_url":{"url":"x","detail":"unknown"}})", "user",
                       &param));
-  Q4T_CHECK(param == "messages[0].content[0].image_url");
+  Q4T_CHECK(param == "messages[0].content[0].image_url.detail");
   return true;
 }
 
@@ -228,6 +228,11 @@ Q4T_TEST(media_policy_discovery) {
   Q4T_CHECK(policy.GetInt("attention_shared_bytes") == 48128);
   Q4T_CHECK(policy.GetInt("decoder_owned_bytes") == 268435456);
   Q4T_CHECK(policy.GetInt("max_items") == 8);
+  Q4T_CHECK(policy.GetArray("image_detail")->array.size() == 4);
+  Q4T_CHECK(policy.Find("detail_policy")->Find("low")->GetInt("longest_edge") ==
+            512);
+  Q4T_CHECK(policy.Find("detail_policy")->Find("high")->GetInt("max_pixels") ==
+            4194304);
   Q4T_CHECK(!policy.GetBool("whole_server_ram_limit", true));
   Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("m", true, false, 48128),
                                &caps, true));
