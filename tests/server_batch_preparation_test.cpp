@@ -1,4 +1,5 @@
 #include "q4t/server/batch_preparation.h"
+#include "q4t/server/batch_validation.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -121,6 +122,31 @@ Work Create(ObjectStore& objects, Json body,
   auto result = BatchState(objects).Create(
       Access(), {work.file, work.endpoint, Object()});
   if (!Ok(result)) throw std::runtime_error("Batch root fixture");
+  work.id = result.value.GetString("id");
+  return work;
+}
+struct ValidationWork {
+  std::string id, file, raw;
+  std::vector<BatchRowPosition> positions;
+};
+ValidationWork ValidationInput(ObjectStore& objects,
+                               const std::vector<Json>& bodies,
+                               bool duplicate = false,
+                               bool final_newline = true) {
+  ValidationWork work;
+  for (size_t i = 0; i < bodies.size(); ++i) {
+    const auto id = "validation-" + std::to_string(duplicate ? 0 : i);
+    const auto line = OutputJson(Object(
+        {{"custom_id", String(id)}, {"method", String("POST")},
+         {"url", String("/v1/responses")}, {"body", bodies[i]}})) +
+        (i + 1 == bodies.size() && !final_newline ? "" : "\r\n");
+    work.positions.push_back({i + 1, work.raw.size(), line.size(), Digest(id)});
+    work.raw += line;
+  }
+  work.file = Upload(objects, work.raw, "validation.jsonl", "batch");
+  const auto result = BatchState(objects).Create(
+      Access(), {work.file, "/v1/responses", Object()});
+  if (!Ok(result)) throw std::runtime_error("validation input fixture");
   work.id = result.value.GetString("id");
   return work;
 }
@@ -544,5 +570,222 @@ Q4T_TEST(batch_preparation_snapshot_dependencies_checked_before_atomic_publish) 
   InputSnapshot result;
   Q4T_CHECK(Ok(snapshots.Read(Access(), child, binding, {}, &result)) &&
             result.parts == std::vector<std::string>{std::string(part)});
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_yields_one_row_and_admits_only_after_whole_file) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(
+      objects, {Response("first"), Response("second"), Response("third")});
+  BatchValidation driver(objects, work.id, fixture.config);
+  for (size_t i = 0; i < 3; ++i) {
+    Q4T_CHECK(Ok(driver.Step(Access())) && driver.RowsChecked() == i + 1);
+    const auto loaded = BatchState(objects).Load(Access(), work.id);
+    Q4T_CHECK(Ok(loaded));
+    const auto& data = *loaded.value.Find("data");
+    const auto& batch = *data.Find("batch");
+    Q4T_CHECK(data.GetInt("validated_rows") == static_cast<int64_t>(i + 1) &&
+              batch.GetString("status") ==
+                  (i < 2 ? "validating" : "in_progress") &&
+              batch.Find("request_counts")->GetInt("total") == (i < 2 ? 0 : 3));
+    if (i < 2)
+      Q4T_CHECK(BatchState(objects).StartRow(Access(), work.id, 0).http_status ==
+                409);
+  }
+  Q4T_CHECK(driver.Complete() && driver.BytesChecked() == work.raw.size());
+  Q4T_CHECK(Run(objects, Request(ObjectKind::kResponse, {},
+                                 ObjectOperation::kList))
+                .value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_restart_rechecks_source_and_reuses_deleted_file) {
+  Fixture fixture;
+  ValidationWork work;
+  Json original;
+  {
+    ObjectStore objects(fixture.options);
+    const auto file = Upload(objects, "permanent queued fact 42", "fact.txt");
+    work = ValidationInput(objects, {WithFile(file), Response("later")});
+    BatchValidation driver(objects, work.id, fixture.config);
+    Q4T_CHECK(Ok(driver.Step(Access())) && driver.RowsChecked() == 1 &&
+              !driver.Complete());
+    original = BatchState(objects).Row(Access(), work.id, 0).value;
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), file)) &&
+              Ok(Files(objects).Erase(Access(), work.file)));
+  }
+  ObjectStore objects(fixture.options);
+  BatchValidation restored(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(restored.Step(Access())) && restored.RowsChecked() == 1);
+  Q4T_CHECK(OutputJson(BatchState(objects).Row(Access(), work.id, 0).value) ==
+            OutputJson(original));
+  Q4T_CHECK(Ok(restored.Step(Access())) && restored.Complete() &&
+            restored.RowsChecked() == 2);
+  BatchInputRow row;
+  Q4T_CHECK(Ok(BatchState(objects).ReadInputRow(Access(), work.id, 0, &row)));
+  Json frozen;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Read(
+      Access(), work.id, "/v1/responses", row, original, &frozen)));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.RestoreInputs(frozen, fixture.config, State(), 43)) &&
+            Prompt(run).find("permanent queued fact 42") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_duplicate_after_recovery_never_prepares_next_row) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(
+      objects, {Response("first"), WithFile("file_not_present")}, true);
+  {
+    BatchValidation driver(objects, work.id, fixture.config);
+    Q4T_CHECK(Ok(driver.Step(Access())) && driver.RowsChecked() == 1);
+  }
+  BatchValidation restored(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(restored.Step(Access())));
+  const auto failed = restored.Step(Access());
+  Q4T_CHECK(failed.http_status == 400 &&
+            failed.value.GetString("param") == "custom_id" &&
+            failed.value.GetInt("line") == 2 && !restored.Complete());
+  const auto before = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(before) && before.value.Find("data")->GetInt("validated_rows") ==
+                               1);
+  Q4T_CHECK(restored.Step(Access()).message == failed.message &&
+            OutputJson(BatchState(objects).Load(Access(), work.id).value) ==
+                OutputJson(before.value));
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_late_native_error_has_original_line_and_no_execution) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto invalid = Object({{"input", String("bad")},
+                                {"tools", Array({Object()})}});
+  const auto work = ValidationInput(objects, {Response(), invalid});
+  BatchValidation driver(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(driver.Step(Access())));
+  const auto failed = driver.Step(Access());
+  Q4T_CHECK(failed.http_status == 400 && failed.value.GetInt("line") == 2 &&
+            !failed.value.GetString("param").empty() && !driver.Complete());
+  BatchState batches(objects);
+  Q4T_CHECK(batches.StartRow(Access(), work.id, 0).http_status == 409);
+  Q4T_CHECK(Ok(batches.FailValidation(Access(), work.id, failed)));
+  const auto terminal = batches.Retrieve(Access(), work.id);
+  Q4T_CHECK(Ok(terminal) && terminal.value.GetString("status") == "failed" &&
+            terminal.value.Find("errors")->GetArray("data")->array[0]
+                .GetInt("line") == 2 &&
+            terminal.value.Find("request_counts")->GetInt("completed") == 0);
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_model_change_cannot_reinterpret_frozen_prefix) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(objects, {Response(), Response("next")});
+  {
+    BatchValidation driver(objects, work.id, fixture.config);
+    Q4T_CHECK(Ok(driver.Step(Access())));
+  }
+  auto config = fixture.config;
+  config.model = "different-served-model";
+  BatchValidation restored(objects, work.id, config);
+  Q4T_CHECK(Ok(restored.Step(Access())) && restored.RowsChecked() == 1);
+  const auto failed = restored.Step(Access());
+  Q4T_CHECK(failed.http_status == 400 &&
+            failed.value.GetString("param") == "body.model" &&
+            failed.value.GetInt("line") == 2);
+  const auto current = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(current) &&
+            current.value.Find("data")->GetString("canonical_model") ==
+                fixture.config.model &&
+            current.value.Find("data")->GetInt("validated_rows") == 1);
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_cancel_scope_and_completed_scope_are_bound) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(objects, {Response(), Response("next")});
+  BatchValidation driver(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(driver.Step(Access())));
+  auto foreign = Access("client:foreign");
+  Q4T_CHECK(!driver.Step(foreign).ok() && driver.RowsChecked() == 1);
+  Q4T_CHECK(Ok(driver.Step(Access())) && driver.Complete());
+  const auto leaked = driver.Step(foreign);
+  Q4T_CHECK(!leaked.ok() && leaked.value.GetString("id").empty());
+  const auto other = ValidationInput(objects, {Response(), Response("next")});
+  BatchValidation cancelled(objects, other.id, fixture.config);
+  Q4T_CHECK(Ok(cancelled.Step(Access())));
+  Q4T_CHECK(Ok(BatchState(objects).Cancel(Access(), other.id)));
+  Q4T_CHECK(cancelled.Step(Access()).code == "batch_cancelled" &&
+            cancelled.RowsChecked() == 1 && !cancelled.Complete());
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_chunk_crossing_final_line_and_short_pins) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto text = std::string(kBinaryChunkBytes + 31, 'q') + " tail 42";
+  const auto work = ValidationInput(objects, {Response(text), Response()}, false,
+                                      false);
+  BatchValidation driver(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(driver.Step(Access())) && driver.RowsChecked() == 1);
+  auto request = Request(ObjectKind::kToolRun, {}, ObjectOperation::kList);
+  request.limit = 100;
+  const auto private_objects = Run(objects, request);
+  Q4T_CHECK(Ok(private_objects));
+  for (const auto& record : private_objects.value.GetArray("data")->array)
+    Q4T_CHECK(record.Find("data")->GetString("format") != "q4t.binary_read.v1");
+  Q4T_CHECK(Ok(driver.Step(Access())) && driver.Complete() &&
+            driver.BytesChecked() == work.raw.size());
+  BatchInputRow original;
+  Q4T_CHECK(Ok(BatchState(objects).ReadInputRow(Access(), work.id, 0, &original)));
+  Q4T_CHECK(original.body.GetString("input") == text);
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_unknown_source_pin_is_sticky_and_resumable) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 100;
+  ValidationWork work;
+  {
+    ObjectStore objects(fixture.options);
+    work = ValidationInput(objects, {Response()});
+  }
+  ObjectWorkerEntryForTesting("--q4t-object-worker-application-lost-ack");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  {
+    ObjectStore objects(fixture.options);
+    BatchValidation failed(objects, work.id, fixture.config);
+    const auto result = failed.Step(Access());
+    Q4T_CHECK(result.commit_unknown && failed.RowsChecked() == 0 &&
+              !failed.Complete() && failed.Step(Access()).commit_unknown);
+  }
+  // The worker entry is captured when ObjectStore is constructed. Recreate
+  // the controller after clearing the injected entry, preserving the actual
+  // committed read pin and original durable Batch on disk.
+  ObjectWorkerEntryForTesting({});
+  ObjectStore objects(fixture.options);
+  BatchValidation restored(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(restored.Step(Access())) && restored.Complete() &&
+            restored.RowsChecked() == 1);
+  return true;
+}
+
+Q4T_TEST(batch_validation_driver_unfrozen_legacy_positions_are_revalidated) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(objects, {Response(), Response("next")});
+  Q4T_CHECK(Ok(BatchState(objects).AppendValidationPage(
+      Access(), work.id, std::span(&work.positions[0], 1))));
+  BatchValidation driver(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(driver.Step(Access())) && driver.RowsChecked() == 1 &&
+            !driver.Complete());
+  const auto restored = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(restored) && restored.value.Find("data")->GetBool("inputs_frozen") &&
+            restored.value.Find("data")->GetString("canonical_model") ==
+                fixture.config.model);
+  Q4T_CHECK(Ok(driver.Step(Access())) && driver.Complete());
   return true;
 }

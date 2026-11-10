@@ -1,0 +1,18 @@
+{
+  "status": "PASS_BATCH_INCREMENTAL_VALIDATION_DRIVER_CPU",
+  "distinct_tests": 17,
+  "new_tests": 9,
+  "direct_tests": 8,
+  "first_pass": 16,
+  "first_fail": 1,
+  "retry_pass": 1,
+  "first_seconds": 3.9187057740055025,
+  "retry_seconds": 0.16411865083500743,
+  "gpu_starts": 0,
+  "engine_sha256": "e05e29ca4fdadaefebba463638f3c18a04921fa3d46649d03042355eb3b71544",
+  "host_sha256": "bfd187c2bfa94f260daae8bb2c34cdc9756ff3e2caa8390924c912cf62acc975",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "builds_zero_warning": true,
+  "anchors": 479,
+  "remaining": "Fair jobs, independent Batch rate origin, scalable metadata, HTTP/SDK actual business, compatible rollback/default and all master tasks"
+}

@@ -285,3 +285,12 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 清单：`.q4t-work/serve-batches-20261110/required-validation-rows.txt`。验证器可在每行后公平让出执行线程并释放准备hold，既有128行页通过CAS追加；模型身份与冻结标志持久保存。重启须重新检查原JSONL唯一ID/整体合同并复用已冻结行，不能ResetValidation重取这些行。该组仅实现持久检查点，未连接任务扫描/队列。后续还须解决小请求逐行私有根可能超出50000行配置所需metadata容量的问题，不能只验证JSONL数量上限就声称最大Batch已可执行。
 
 逐行冻结[16项CPU首次接受](evidence/serve-batch-validation-rows-cpu-20261110/README.md)，0GPU；继续真实任务恢复/调度和全部总任务。
+
+
+## 完整增量验证驱动
+
+2026-11-10。Batch完整增量验证驱动已成组实现：每轮1行、真实原JSONL全合同/唯一ID、旧冻结行只读复用，全部通过后才转可执行；scope/进程身份、短读租约、取消和未知回执粘性闭合。冻结9新+8直接CPU（17项），含跨1MiB末行无换行、删除源File后重启和真实丢回执；尚未执行，0GPU/默认保持。继续公平任务/独立配额/容量/HTTP业务与全部总任务。
+
+清单：`.q4t-work/serve-batches-20261110/required-validation-driver.txt`。BatchValidation只在原Batch固定manifest内分块读取，每调度轮最多完成一行；重启从原JSONL重新建立唯一ID/同模型合同并验证已冻结行绑定，复用其私有计划，不重新获取文件/历史。全文件Finish通过且同一持久根CompleteValidation回执成功才允许执行；一个后续无效行仍使整个验证失败。每次读取在轮内关闭lease，排队间隔不会依赖不断续租；未知回执原对象粘性失败，拥有者先对账再另建驱动。未冻结旧位置允许原文件重验，冻结但缺失模型身份不得擅自推断。仍未接公开任务调度或调用GPU。
+
+完整驱动17不同CPU已接受，首16/17及1夹具修复补验1/1均保留；生产源码未变、其余16复用。见[证据](evidence/serve-batch-validation-driver-cpu-20261110/README.md)。继续实际任务调度、独立速率来源、容量和公开业务接线，尚未交付Batch API。

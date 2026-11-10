@@ -1489,7 +1489,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "ea007a5435af3573487daa81c95c2d9a12a8b1fc3f54940e07895da1418c36fe",
+    "CMakeLists.txt": "c126187bd90941e9861d9011b96e80711e65e5bd5d46803296ca6ab4d9c36aed",
     "cmake/ChatProtocolIdentity.cmake": "c3d5aceaa058727414bc7fef82ae0698ea1e135a7cd549d90bedb5d694ab5759",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
@@ -1519,6 +1519,7 @@
     "include/q4t/server/batch_input.h": "7d2c745aabeb863ccbe4343f34a9744b5df46708e970273b270b7c8ffe6b8206",
     "include/q4t/server/batch_preparation.h": "7ad125e7f12f272d3f879205819d17bc5837b18a12bf35fc297438fba1d9ddbd",
     "include/q4t/server/batch_state.h": "2de63713549a1f70fce62b517a50740ea1de37b867d6cb36ff7047b43f5b841c",
+    "include/q4t/server/batch_validation.h": "eedcd089176ee16929f9e0d0e992dca130d936900a2ca7d318ab80ebdfd727b2",
     "include/q4t/server/binary_store.h": "edb2878f213dd86d136e162250e9f558ad2ec01a5599bad89bf5f5fd2c417821",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
@@ -1682,6 +1683,7 @@
     "src/server/batch_preparation.cpp": "1ace0c651cc9517b4c08e028d86cb66bd115c05680b23790b8af889a13495260",
     "src/server/batch_results.cpp": "c544bab91a10b38c5105367f1c5cc10a52059b4580cb964f0dbc673ca737b3d1",
     "src/server/batch_state.cpp": "2c71487c21eb98ede4bd81785e9746c0c2e5d4c4f660bb416b15f6955927dd84",
+    "src/server/batch_validation.cpp": "164062c146dc52ac468aa3dbbfc42ae5673fd252ad0893d07d7f405de7937b61",
     "src/server/binary_store.cpp": "78d07fffd88b2f375b59d8f6f01788aa4d4c4a522658850cfc6db192e9d574df",
     "src/server/cache_io.cpp": "679d821d52da169a81c1bdc6ad68cead9f967e029a3861f418bd3adec31a9c3c",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",

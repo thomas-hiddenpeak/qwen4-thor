@@ -1047,7 +1047,8 @@
         "evidence/serve-batch-recovery-scan-cpu-20261110/README.md",
         "evidence/serve-batch-preparation-cpu-20261110/README.md",
         "evidence/serve-batch-native-execution-cpu-20261110/README.md",
-        "evidence/serve-batch-validation-rows-cpu-20261110/README.md"
+        "evidence/serve-batch-validation-rows-cpu-20261110/README.md",
+        "evidence/serve-batch-validation-driver-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },
