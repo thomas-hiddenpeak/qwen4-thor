@@ -1,0 +1,20 @@
+{
+  "first": "scan-cpu-01: 14 PASS, 2 FAIL",
+  "tests": [
+    "batch_recovery_scan_preserves_expired_active_root_until_terminal_cleanup",
+    "responses_recovery_capacity_defers_then_resumes_without_new_deadline",
+    "object_retention_expired_active_cas_can_finish_without_extending_expiry",
+    "object_retention_referenced_expired_nonactive_cannot_use_active_cas_exception",
+    "object_store_expiration_reclaims_persistent_quota",
+    "object_store_revision_conflicts_prevent_lost_updates",
+    "object_store_transaction_commits_related_objects_together",
+    "batch_state_original_expiry_blocks_late_validation_mutation",
+    "object_retention_expired_active_survives_restart_and_recovery_scan"
+  ],
+  "reuse": "14 unchanged passing checks",
+  "fixes": [
+    "retained active object may CAS preserve its original expired retention while reconciling, both Put and ExecuteBatch; cannot create expired or mutate nonactive expired objects",
+    "existing capacity test waits for both completed scan and actual worker entry, retains original full capacity assertion"
+  ],
+  "gpu_starts": 0
+}

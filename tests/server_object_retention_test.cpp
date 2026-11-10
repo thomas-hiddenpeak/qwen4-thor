@@ -1,6 +1,7 @@
 #include "q4t/server/object_retention.h"
 
 #include <cstdlib>
+#include <array>
 #include <ctime>
 #include <filesystem>
 #include <thread>
@@ -80,6 +81,70 @@ void Expired(int64_t until) {
     throw std::runtime_error("retention fixture expiry deadline");
 }
 }  // namespace
+
+Q4T_TEST(object_retention_expired_active_cas_can_finish_without_extending_expiry) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto root = Item("resp_preserve_expiry");
+  root.kind = ObjectKind::kResponse;
+  root.ttl_seconds = 1;
+  root.data = Parse(
+      R"({"response":{"status":"queued"},"continuation":{"scope":"client:a"}})");
+  auto made = Run(objects, root);
+  Q4T_CHECK(Ok(made));
+  root.created_at = made.value.GetInt("created_at");
+  root.expires_at = made.value.GetInt("expires_at");
+  Expired(root.expires_at);
+  root.expected_revision = 1;
+  root.data = Parse(
+      R"({"response":{"status":"in_progress"},"continuation":{"scope":"client:a"}})");
+  auto progress = Run(objects, root);
+  Q4T_CHECK(Ok(progress) &&
+            progress.value.GetInt("expires_at") == root.expires_at &&
+            progress.value.GetInt("revision") == 2);
+  auto unrelated = root;
+  unrelated.id = "resp_new_expired";
+  unrelated.expected_revision = 0;
+  Q4T_CHECK(Run(objects, unrelated).http_status == 404);
+  root.expected_revision = 2;
+  root.data = Parse(R"({"response":{"status":"failed"}})");
+  auto item = Item("item_final_receipt");
+  const std::array mutations{root, item};
+  auto terminal = objects.ExecuteBatch(mutations, Clock::now() + 5s);
+  Q4T_CHECK(Ok(terminal));
+  const auto* results = terminal.value.GetArray("data");
+  Q4T_CHECK(results && results->array.size() == 2 &&
+            results->array[0].GetInt("expires_at") == root.expires_at &&
+            Read(objects, root).http_status == 404 && Ok(Read(objects, item)));
+  return true;
+}
+
+Q4T_TEST(
+    object_retention_referenced_expired_nonactive_cannot_use_active_cas_exception) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto item = Item("item_old_expiry");
+  item.ttl_seconds = 1;
+  auto created = Run(objects, item);
+  Q4T_CHECK(Ok(created));
+  item.created_at = created.value.GetInt("created_at");
+  item.expires_at = created.value.GetInt("expires_at");
+  auto parent = Item("conv_hold_old");
+  parent.kind = ObjectKind::kConversation;
+  parent.data = Parse(R"({"items":[{"id":"item_old_expiry"}]})");
+  Q4T_CHECK(Ok(Run(objects, parent)));
+  Expired(item.expires_at);
+  Q4T_CHECK(Ok(Read(objects, item)));
+  item.expected_revision = 1;
+  Q4T_CHECK(Run(objects, item).http_status == 404);
+  const std::array mutations{item};
+  Q4T_CHECK(objects.ExecuteBatch(mutations, Clock::now() + 5s).http_status ==
+            404);
+  auto unchanged = Read(objects, item);
+  Q4T_CHECK(Ok(unchanged) && unchanged.value.GetInt("revision") == 1 &&
+            unchanged.value.GetInt("expires_at") == item.expires_at);
+  return true;
+}
 
 Q4T_TEST(object_retention_extracts_typed_dependencies_not_user_strings) {
   auto info = InspectObjectRetention("response", Parse(R"({

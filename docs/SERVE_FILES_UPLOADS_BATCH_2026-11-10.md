@@ -248,3 +248,13 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 复用SendSimple/SendError/SendExceptionResponse的原始JSON合同，不从文本摘要拼装Chat/Responses结果。HTTP上下文内部输出仅由服务器设置，借用fd只用于原取消检查；socketpair断言0传输。独立上限<=96MiB、严格完整JSON对象/精确数字/无重复键、单次终态，嵌套文档准备的旧detached上下文不能污染父结果。清单 `.q4t-work/serve-batches-20261110/required-finite-01.txt`，真实模型适配与后台调度、HTTP/SDK业务仍继续，组件通过不宣称Batch API支持。
 
 2026-11-10。原生完整JSON接收[18项CPU通过](evidence/serve-batch-finite-response-cpu-20261110/README.md)，0.016秒：真实输出/错误/异常、工具usage、零socket传输、嵌套准备隔离与取消/容量均过。host/引擎首次零警告、472锚点，0GPU/默认保持；两个独立probe源声明同步。继续真实Batch生成适配/调度/恢复/协议与全部总任务。
+
+## A09.6 有界恢复扫描与身份CPU冻结
+
+2026-11-10。Batch恢复扫描已成组实现，每页最多32记录/8活动任务、跨客户端归属SHA核对、游标删除可续扫，不含输入/结果。发现并修复共享owner仅检查boot ID长度会把畸形值误判已死的问题；Batch/Responses扫描统一投影4身份字段。冻结7新+9直接恢复CPU（16项），尚未执行，0GPU/默认保持。继续真实生成/任务调度/协议与全部总任务。
+
+清单 `.q4t-work/serve-batches-20261110/required-scan-01.txt`。实际worker重启、过期活动保护/终态回收、跨scope/删除游标、32条非Batch扫描上限、1MiB私有owner扩展投影与畸形UUID均覆盖。身份未知不授予执行，真正不同有效boot/实际退出PID仍允许原规则。共享Responses扫描同步防止owner扩展泄露，复用9项直接恢复保护。
+
+2026-11-10。恢复扫描首16 CPU为14过/2失败：已保留活动对象的过期原TTL阻止取消终态，修为仅对已有active对象按相同绝对期限CAS更新；新建/普通过期对象仍拒绝。旧容量恢复测试补齐扫描与执行器进入的共同等待，保留原断言。冻结2失败+2新边界+5直接存储/期限共9补验，其余14复用；原失败保留，0GPU/默认保持，全部任务继续。
+
+2026-11-10。Batch恢复扫描与过期收尾[23不同CPU接受](evidence/serve-batch-recovery-scan-cpu-20261110/README.md)：首14/16、修复后9/9，畸形UUID未知、实际有界私有扫描、过期active原期限CAS收尾及普通项拒绝通过。失败/补验原件保留，最终零警告/472锚点，0GPU/默认保持。继续真实生成适配、任务调度/输入冻结/全部协议业务和总任务。

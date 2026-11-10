@@ -502,6 +502,16 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
                   false, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::ScanBatches(std::string after,
+                                    Clock::time_point deadline,
+                                    const std::function<bool()>& cancelled) {
+  if (after.size() > 320)
+    return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+  return Dispatch(OutputJson(Object({{"operation", String("scan_batches")},
+                                     {"after", String(std::move(after))}})),
+                  false, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::Retention(int64_t item_created_before, size_t limit,
                                    std::string expected_plan,
                                    Clock::time_point deadline,

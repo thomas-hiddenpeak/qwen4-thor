@@ -1,0 +1,12 @@
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp: In member function ‘q4t::server::ObjectReply q4t::server::{anonymous}::DiskStore::ScanBatches(const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp:1032:37: error: invalid initialization of reference of type ‘const q4t::io::Json&’ from expression of type ‘const std::__cxx11::basic_string<char>’
+ 1032 |     if (!after.empty() && !Filename(after))
+      |                                     ^~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp:141:34: note: in passing argument 1 of ‘std::string q4t::server::{anonymous}::Filename(const q4t::io::Json&)’
+  141 | std::string Filename(const Json& record) {
+      |                      ~~~~~~~~~~~~^~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:107: CMakeFiles/q4t_server.dir/src/server/object_worker.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

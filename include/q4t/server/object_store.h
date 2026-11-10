@@ -138,6 +138,11 @@ class ObjectStore {
   ObjectReply ScanResponses(std::string after,
                             std::chrono::steady_clock::time_point deadline,
                             const std::function<bool()>& cancelled = {});
+  // Same trusted bounded scan for native Batch recovery. No request bodies,
+  // file manifests, result content, or credentials cross this projection.
+  ObjectReply ScanBatches(std::string after,
+                         std::chrono::steady_clock::time_point deadline,
+                         const std::function<bool()>& cancelled = {});
   // Trusted same-UID operator control only. Empty expected_plan inspects;
   // collection requires the exact prior plan digest and rechecks dependencies.
   ObjectReply Retention(int64_t item_created_before, size_t limit,

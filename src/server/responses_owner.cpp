@@ -10,10 +10,22 @@
 #include <stdexcept>
 
 #include "object_protocol.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/service/guardian_process.h"
 
 namespace q4t::server {
 namespace {
+bool ValidBootId(std::string_view value) {
+  if (value.size() != 36) return false;
+  for (size_t i = 0; i < value.size(); ++i) {
+    const bool dash = i == 8 || i == 13 || i == 18 || i == 23;
+    if (dash ? value[i] != '-'
+             : !((value[i] >= '0' && value[i] <= '9') ||
+                 (value[i] >= 'a' && value[i] <= 'f')))
+      return false;
+  }
+  return true;
+}
 std::string BootId() {
   service::OwnedFd fd(open("/proc/sys/kernel/random/boot_id",
                            O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
@@ -25,14 +37,7 @@ std::string BootId() {
   } while (size < 0 && errno == EINTR);
   if (size != 37 || bytes[36] != '\n') return {};
   const std::string value(bytes.data(), 36);
-  for (size_t i = 0; i < value.size(); ++i) {
-    const bool dash = i == 8 || i == 13 || i == 18 || i == 23;
-    if (dash ? value[i] != '-'
-             : !((value[i] >= '0' && value[i] <= '9') ||
-                 (value[i] >= 'a' && value[i] <= 'f')))
-      return {};
-  }
-  return value;
+  return ValidBootId(value) ? value : std::string();
 }
 uint64_t PidNamespace() {
   struct stat info {};
@@ -53,14 +58,23 @@ io::Json CurrentResponseOwner() {
                  {"pid_namespace", Number(space)}});
 }
 
+bool ValidResponseOwner(const io::Json& owner) {
+  if (!owner.IsObject()) return false;
+  const auto* boot = owner.Find("boot_id");
+  if (!boot || !boot->IsString() || !ValidBootId(boot->str)) return false;
+  for (const auto* key : {"pid", "start_ticks", "pid_namespace"}) {
+    const auto* value = owner.Find(key);
+    if (!value || !IsInputInteger(*value) || value->AsInt() <= 0) return false;
+  }
+  return owner.GetInt("pid") <= INT_MAX;
+}
+
 ResponseOwnerState ResponseOwnerStatus(const io::Json& owner) {
+  if (!ValidResponseOwner(owner)) return ResponseOwnerState::kUnknown;
   const auto pid = owner.GetInt("pid"), ticks = owner.GetInt("start_ticks");
   const auto boot = BootId();
   const auto space = PidNamespace();
-  if (pid <= 0 || pid > INT_MAX || ticks <= 0 ||
-      owner.GetString("boot_id").size() != 36 ||
-      owner.GetInt("pid_namespace") <= 0 || boot.empty() || !space)
-    return ResponseOwnerState::kUnknown;
+  if (boot.empty() || !space) return ResponseOwnerState::kUnknown;
   if (boot != owner.GetString("boot_id")) return ResponseOwnerState::kGone;
   // The same boot may host other PID namespaces. Do not infer death from a
   // PID lookup in the wrong namespace after a deployment migration.

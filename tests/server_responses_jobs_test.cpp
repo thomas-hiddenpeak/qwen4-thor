@@ -677,9 +677,11 @@ Q4T_TEST(responses_recovery_capacity_defers_then_resumes_without_new_deadline) {
     if (!job.control->Cancelled()) Complete(job);
   });
   jobs.StartRecovery(f.clients, Config());
-  Q4T_CHECK(Wait([&] { return jobs.Health().recovery_scanned; }));
-  Q4T_CHECK(executed == 1 && jobs.Health().owned == 1 &&
-            jobs.Health().recovery_pending == 1);
+  Q4T_CHECK(Wait([&] {
+    const auto health = jobs.Health();
+    return health.recovery_scanned && executed == 1 && health.owned == 1 &&
+           health.recovery_pending == 1;
+  }));
   release = true;
   Q4T_CHECK(Wait([&] {
     return jobs.Health().recovered == 2 && jobs.Health().owned == 0;

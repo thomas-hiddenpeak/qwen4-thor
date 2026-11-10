@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 native Batch validation, durable per-line execution/results, cancellation/restart; then A09.7 all eight real backends and all master work.",
+      "next": "A09.6 actual native generation adapter, fair Batch admission/jobs, pending-input snapshot ownership, recovery orchestration, HTTP/native SDK/business/reversible delivery; all eight backends with A10 and all master work remain required.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1038,7 +1038,15 @@
           "service_release_sha256": "1eff86d147c4de2ba5514e224b56640add93a6c3e8edc593e9cedaa9689e7829"
         }
       },
-      "batch_input_component_evidence": "evidence/serve-batch-input-cpu-20261110/README.md"
+      "batch_input_component_evidence": "evidence/serve-batch-input-cpu-20261110/README.md",
+      "batch_component_evidence": [
+        "evidence/serve-batch-input-cpu-20261110/README.md",
+        "evidence/serve-batch-state-cpu-20261110/README.md",
+        "evidence/serve-batch-results-cpu-20261110/README.md",
+        "evidence/serve-batch-finite-response-cpu-20261110/README.md",
+        "evidence/serve-batch-recovery-scan-cpu-20261110/README.md"
+      ],
+      "batch_delivery_pending": true
     },
     {
       "id": "A10",

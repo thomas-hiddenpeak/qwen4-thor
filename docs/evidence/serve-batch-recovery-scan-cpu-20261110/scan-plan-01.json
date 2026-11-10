@@ -1,0 +1,25 @@
+{
+  "task": "A09.6 bounded recovery scan and strict owner identity",
+  "tests": [
+    "batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion",
+    "batch_recovery_scan_unknown_scope_and_owner_do_not_supply_execution_authority",
+    "batch_recovery_scan_projects_only_process_identity_from_large_private_owner",
+    "batch_recovery_scan_preserves_expired_active_root_until_terminal_cleanup",
+    "batch_recovery_invalid_boot_id_is_unknown_and_never_claimed",
+    "batch_recovery_shared_response_scan_also_redacts_owner_extensions",
+    "batch_recovery_scan_advances_over_bounded_nonbatch_records",
+    "responses_recovery_owner_requires_actual_process_exit_or_reuse",
+    "responses_recovery_scan_redacts_payload_and_survives_cursor_deletion",
+    "responses_recovery_resumes_queued_identity_and_fails_started_without_replay",
+    "responses_recovery_preserves_live_and_unknown_owners_without_blocking_jobs",
+    "responses_recovery_revoked_expired_and_spoofed_scope_never_execute",
+    "responses_recovery_capacity_defers_then_resumes_without_new_deadline",
+    "batch_state_actual_dead_process_claim_preserves_original_deadline",
+    "batch_state_live_and_unknown_owner_never_grant_recovery",
+    "batch_results_actual_dead_owner_started_row_is_interrupted_then_pending_can_continue"
+  ],
+  "seconds_limit": 1200,
+  "gpu_starts": 0,
+  "network": "none",
+  "remaining": "actual generation adapter/client pool/Batch job scheduler/HTTP/native SDK/business/release/all master goals"
+}

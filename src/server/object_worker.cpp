@@ -19,10 +19,18 @@
 #include "q4t/server/application_payload.h"
 #include "q4t/server/grammar_process.h"
 #include "q4t/server/object_retention.h"
+#include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
 namespace {
 using namespace object_detail;
+Json RecoveryOwner(const Json* owner) {
+  if (!owner || !ValidResponseOwner(*owner)) return {};
+  return Object({{"pid", Number(owner->GetInt("pid"))},
+                 {"start_ticks", Number(owner->GetInt("start_ticks"))},
+                 {"boot_id", String(owner->GetString("boot_id"))},
+                 {"pid_namespace", Number(owner->GetInt("pid_namespace"))}});
+}
 class Fd {
  public:
   explicit Fd(int value = -1) : value_(value) {}
@@ -69,7 +77,8 @@ ObjectReply ImmutableSnapshot(const Json& data, const Json* previous) {
   return {};
 }
 ObjectReply Times(const Json& request, int64_t now, int64_t existing_created,
-                   int64_t max_ttl, int64_t* created, int64_t* expires) {
+                   int64_t max_ttl, int64_t* created, int64_t* expires,
+                   int64_t retained_active_expiry = 0) {
   const auto requested = request.GetInt("created_at", 0);
   const auto absolute = request.GetInt("expires_at", -1);
   const auto ttl = request.GetInt("ttl", -1);
@@ -82,7 +91,11 @@ ObjectReply Times(const Json& request, int64_t now, int64_t existing_created,
   *expires = absolute >= 0 ? absolute : ttl == 0 ? 0 : base + ttl;
   if (*expires && (*expires <= *created || *expires > base + max_ttl))
     return Error(400, "invalid_object_request", "Invalid object expiration");
-  if (*expires && *expires <= now)
+  // Retention deliberately keeps active work past its retention deadline.
+  // Permit its CAS owner to reconcile/finish while preserving that exact
+  // expired timestamp. This cannot resurrect a new or ordinary expired item.
+  if (*expires && *expires <= now &&
+      !(absolute > 0 && absolute == retained_active_expiry))
     return Error(404, "object_not_found", "Object retention has expired");
   return {};
 }
@@ -257,6 +270,10 @@ class DiskStore {
     if (operation == "scan_responses") {
       auto pruned = Prune();
       return pruned.ok() ? ScanResponses(request) : pruned;
+    }
+    if (operation == "scan_batches") {
+      auto pruned = Prune();
+      return pruned.ok() ? ScanBatches(request) : pruned;
     }
     if (operation == "batch") {
       auto pruned = Prune();
@@ -557,7 +574,9 @@ class DiskStore {
         }
         int64_t created = 0, expires = 0;
         auto timing = Times(mutation, now, exists ? found->second.created : 0,
-                             options_.max_ttl_seconds, &created, &expires);
+                             options_.max_ttl_seconds, &created, &expires,
+                             exists && found->second.retention.active
+                                 ? found->second.expires : 0);
         if (!timing.ok()) return timing;
         if (kind == "input_snapshot" && expires != 0)
           return Error(
@@ -916,7 +935,9 @@ class DiskStore {
     const auto now = Now();
     int64_t created = 0, expires = 0;
     auto timing = Times(request, now, exists ? found->second.created : 0,
-                         options_.max_ttl_seconds, &created, &expires);
+                         options_.max_ttl_seconds, &created, &expires,
+                         exists && found->second.retention.active
+                             ? found->second.expires : 0);
     if (!timing.ok()) return timing;
     if (request.GetString("kind") == "input_snapshot" && expires != 0)
       return Error(409, "input_snapshot_immutable",
@@ -1000,12 +1021,65 @@ class DiskStore {
           {{"id", String(metadata.id)},
            {"scope", String(scope)},
            {"owner_digest", String(metadata.owner)},
-           {"owner", owner ? *owner : Json()},
+           {"owner", RecoveryOwner(owner)},
            {"status", String(status)},
            {"background", Boolean(response->GetBool("background"))},
            {"execution_deadline_at",
             Number(continuation ? continuation->GetInt("execution_deadline_at")
                                 : 0)}}));
+    }
+    ObjectReply result;
+    result.value = Object({{"data", std::move(rows)},
+                           {"cursor", String(cursor)},
+                           {"scanned", Number(scanned)},
+                           {"has_more", Boolean(current != records_.end())}});
+    return result;
+  }
+
+  ObjectReply ScanBatches(const Json& request) {
+    const auto after = request.GetString("after");
+    if (!after.empty() && !ValidFilename(after))
+      return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+    auto current =
+        after.empty() ? records_.begin() : records_.upper_bound(after);
+    auto rows = Array();
+    std::string cursor = after;
+    size_t scanned = 0;
+    for (; current != records_.end() && scanned < 32 && rows.array.size() < 8;
+         ++current) {
+      ++scanned;
+      cursor = current->first;
+      const auto& metadata = current->second;
+      if (metadata.kind != "batch") continue;
+      Json record;
+      if (!ReadKnown(current->first, metadata, &record)) return IoError();
+      const auto* data = record.Find("data");
+      const auto* batch = data ? data->Find("batch") : nullptr;
+      if (!data || data->GetString("format") != "q4t.batch.v1" || !batch)
+        continue;
+      const auto status = batch->GetString("status");
+      if (status != "validating" && status != "in_progress" &&
+          status != "finalizing" && status != "cancelling")
+        continue;
+      auto scope = data->GetString("scope");
+      if (scope.empty() || scope.size() > 256 ||
+          Digest(scope) != metadata.owner)
+        scope.clear();
+      const auto* owner = data->Find("owner");
+      const auto* declared_endpoint = batch->Find("endpoint");
+      const auto endpoint = declared_endpoint &&
+                                    declared_endpoint->IsString() &&
+                                    declared_endpoint->str.size() <= 64
+                                ? declared_endpoint->str
+                                : std::string();
+      rows.array.push_back(Object(
+          {{"id", String(metadata.id)},
+           {"scope", String(scope)},
+           {"owner_digest", String(metadata.owner)},
+           {"owner", RecoveryOwner(owner)},
+           {"status", String(status)},
+           {"endpoint", String(endpoint)},
+           {"execution_deadline_at", Number(batch->GetInt("expires_at"))}}));
     }
     ObjectReply result;
     result.value = Object({{"data", std::move(rows)},

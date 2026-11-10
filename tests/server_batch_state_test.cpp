@@ -15,6 +15,7 @@
 #include "q4t/server/files.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/object_retention.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
 namespace {
@@ -50,8 +51,9 @@ bool Ok(const ObjectReply& reply) {
   return reply.ok();
 }
 std::string File(ObjectStore& objects, const std::string& bytes,
-                 std::string purpose = "batch") {
-  FileUpload upload(objects, Access(), "multipart/form-data; boundary=b");
+                 std::string purpose = "batch",
+                 std::string scope = "client:batch") {
+  FileUpload upload(objects, Access(scope), "multipart/form-data; boundary=b");
   const auto wire =
       "--b\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\n" +
       purpose +
@@ -573,5 +575,237 @@ Q4T_TEST(
                 std::vector<std::string>{"tool_run_result"});
   Set(&Field(page_data, "rows").array[0], "status", String("unknown"));
   Q4T_CHECK(InspectObjectRetention("tool_run", page_data).uncertain);
+  return true;
+}
+
+Q4T_TEST(batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto first = File(objects, "private-input-not-in-scan");
+  const auto second =
+      File(objects, "other-private-input", "batch", "client:second");
+  for (size_t i = 0; i < 10; ++i) {
+    const auto scope = i == 1 ? "client:second" : "client:batch";
+    auto options = Options(i == 1 ? second : first);
+    options.metadata =
+        Object({{"secret", String("private-metadata-not-in-scan")}});
+    auto created = batches.Create(Access(scope), options);
+    Q4T_CHECK(Ok(created));
+    if (i == 2)
+      Q4T_CHECK(Ok(batches.Cancel(Access(), created.value.GetString("id"))));
+    if (i == 3)
+      Q4T_CHECK(Ok(batches.FailValidation(
+          Access(), created.value.GetString("id"),
+          Error(400, "bad_fixture", "private-failure-message"))));
+  }
+  auto page = objects.ScanBatches("", Access().deadline);
+  Q4T_CHECK(Ok(page) && page.value.GetBool("has_more") &&
+            page.value.GetArray("data")->array.size() == 8 &&
+            page.value.GetInt("scanned") <= 32);
+  const auto wire = OutputJson(page.value);
+  for (const auto* secret :
+       {"private-input", "private-metadata", "private-failure", "blob", "pages",
+        "input_file_id", "request_counts"})
+    Q4T_CHECK(wire.find(secret) == std::string::npos);
+  for (const auto& row : page.value.GetArray("data")->array) {
+    Q4T_CHECK(row.object.size() == 7 && !row.GetString("scope").empty() &&
+              Digest(row.GetString("scope")) == row.GetString("owner_digest") &&
+              row.Find("owner")->object.size() == 4 &&
+              ResponseOwnerStatus(*row.Find("owner")) ==
+                  ResponseOwnerState::kAlive);
+  }
+  const auto cursor = page.value.GetString("cursor");
+  const auto& last = page.value.GetArray("data")->array.back();
+  auto erase = StoredRequest(last.GetString("id"));
+  erase.scope = last.GetString("scope");
+  erase.operation = ObjectOperation::kErase;
+  Q4T_CHECK(Ok(objects.Execute(erase, Access().deadline)));
+  page = objects.ScanBatches(cursor, Access().deadline);
+  Q4T_CHECK(Ok(page) && !page.value.GetBool("has_more") &&
+            page.value.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(
+      objects.ScanBatches("../../foreign", Access().deadline).http_status ==
+          400 &&
+      objects.ScanBatches(std::string(321, 'x'), Access().deadline)
+              .http_status == 400);
+  Q4T_CHECK(
+      !objects.ScanBatches("", Access().deadline, [] { return true; }).ok());
+  return true;
+}
+
+Q4T_TEST(
+    batch_recovery_scan_unknown_scope_and_owner_do_not_supply_execution_authority) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto id = Create(objects, File(objects, Input(1)));
+  Q4T_CHECK(Ok(Edit(objects, id, [](Json& data) {
+    Set(&data, "scope", String("client:spoofed"));
+    Set(&Field(data, "owner"), "boot_id", String(std::string(36, 'x')));
+    Set(&Field(data, "batch"), "endpoint", String(std::string(1024, 's')));
+  })));
+  auto scan = objects.ScanBatches("", Access().deadline);
+  Q4T_CHECK(Ok(scan) && scan.value.GetArray("data")->array.size() == 1);
+  const auto& row = scan.value.GetArray("data")->array[0];
+  Q4T_CHECK(row.GetString("scope").empty() && row.Find("owner")->IsNull() &&
+            row.GetString("endpoint").empty() &&
+            row.GetString("owner_digest") == Digest("client:batch"));
+  Q4T_CHECK(OutputJson(scan.value).size() < 1024 &&
+            ResponseOwnerStatus(*row.Find("owner")) ==
+                ResponseOwnerState::kUnknown);
+  return true;
+}
+
+Q4T_TEST(
+    batch_recovery_scan_projects_only_process_identity_from_large_private_owner) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto id = Create(objects, File(objects, Input(1)));
+  Q4T_CHECK(Ok(Edit(objects, id, [](Json& data) {
+    Set(&Field(data, "owner"), "private",
+        String(std::string(1024 * 1024, 'p')));
+  })));
+  auto scan = objects.ScanBatches("", Access().deadline);
+  Q4T_CHECK(Ok(scan) && OutputJson(scan.value).size() < 1024);
+  const auto& owner = *scan.value.GetArray("data")->array[0].Find("owner");
+  Q4T_CHECK(owner.object.size() == 4 && !owner.Has("private") &&
+            ResponseOwnerStatus(owner) == ResponseOwnerState::kAlive);
+  return true;
+}
+
+Q4T_TEST(
+    batch_recovery_scan_preserves_expired_active_root_until_terminal_cleanup) {
+  Fixture fixture;
+  std::string id;
+  int64_t expires = 0;
+  {
+    ObjectStore objects(fixture.options);
+    id = Create(objects, File(objects, Input(1)));
+    auto request = StoredRequest(id);
+    auto loaded = objects.Execute(request, Access().deadline);
+    Q4T_CHECK(Ok(loaded));
+    request.operation = ObjectOperation::kPut;
+    request.expected_revision = loaded.value.GetInt("revision");
+    request.created_at = loaded.value.GetInt("created_at");
+    request.expires_at = std::time(nullptr) + 1;
+    expires = request.expires_at;
+    request.data = *loaded.value.Find("data");
+    Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  }
+  const auto until = Clock::now() + 2s;
+  while (std::time(nullptr) < expires && Clock::now() < until)
+    std::this_thread::sleep_for(2ms);
+  Q4T_CHECK(std::time(nullptr) >= expires);
+  ObjectStore objects(fixture.options);
+  auto scan = objects.ScanBatches("", Access().deadline);
+  Q4T_CHECK(Ok(scan) && scan.value.GetArray("data")->array.size() == 1 &&
+            scan.value.GetArray("data")->array[0].GetString("id") == id);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.Cancel(Access(), id)) &&
+            Ok(batches.FinishCancelled(Access(), id)));
+  scan = objects.ScanBatches("", Access().deadline);
+  Q4T_CHECK(Ok(scan) && scan.value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(batch_recovery_invalid_boot_id_is_unknown_and_never_claimed) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto file = File(objects, Input(1));
+  for (const auto* invalid : {"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                              "00000000_0000_0000_0000_000000000000",
+                              "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"}) {
+    const auto id = Create(objects, file);
+    Q4T_CHECK(Ok(Edit(objects, id, [&](Json& data) {
+      Set(&Field(data, "owner"), "boot_id", String(invalid));
+    })));
+    const auto loaded = batches.Load(Access(), id);
+    Q4T_CHECK(Ok(loaded));
+    const auto& owner = *loaded.value.Find("data")->Find("owner");
+    Q4T_CHECK(!ValidResponseOwner(owner) &&
+              ResponseOwnerStatus(owner) == ResponseOwnerState::kUnknown &&
+              batches.ClaimAbandoned(Access(), id).code ==
+                  "batch_owner_unconfirmed");
+  }
+  auto owner = CurrentResponseOwner();
+  Q4T_CHECK(ValidResponseOwner(owner));
+  for (const auto* key : {"pid", "start_ticks", "pid_namespace"}) {
+    auto malformed = owner;
+    Set(&malformed, key, Boolean(true));
+    Q4T_CHECK(!ValidResponseOwner(malformed) &&
+              ResponseOwnerStatus(malformed) == ResponseOwnerState::kUnknown);
+  }
+  Set(&owner, "boot_id",
+      String(owner.GetString("boot_id") ==
+                     "00000000-0000-0000-0000-000000000000"
+                 ? "11111111-1111-1111-1111-111111111111"
+                 : "00000000-0000-0000-0000-000000000000"));
+  Q4T_CHECK(ValidResponseOwner(owner) &&
+            ResponseOwnerStatus(owner) == ResponseOwnerState::kGone);
+  return true;
+}
+
+Q4T_TEST(batch_recovery_shared_response_scan_also_redacts_owner_extensions) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto owner = CurrentResponseOwner();
+  Set(&owner, "private", String("never-project-this-private-owner-extension"));
+  for (const int mode : {0, 1}) {
+    auto request = StoredRequest("resp_scan_" + std::to_string(mode),
+                                 ObjectKind::kResponse);
+    request.operation = ObjectOperation::kPut;
+    if (mode == 1) Set(&owner, "boot_id", String(std::string(36, 'x')));
+    request.data = Object(
+        {{"response", Object({{"status", String("queued")}})},
+         {"continuation",
+          Object({{"scope", String(Access().scope)}, {"owner", owner}})}});
+    Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  }
+  auto page = objects.ScanResponses("", Access().deadline);
+  Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 2 &&
+            OutputJson(page.value).find("never-project") == std::string::npos);
+  for (const auto& row : page.value.GetArray("data")->array) {
+    const auto* projected = row.Find("owner");
+    if (row.GetString("id") == "resp_scan_0")
+      Q4T_CHECK(projected && projected->object.size() == 4 &&
+                ResponseOwnerStatus(*projected) == ResponseOwnerState::kAlive);
+    else
+      Q4T_CHECK(projected && projected->IsNull());
+  }
+  return true;
+}
+
+Q4T_TEST(batch_recovery_scan_advances_over_bounded_nonbatch_records) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto id = Create(objects, File(objects, Input(1)));
+  for (int i = 0; i < 40; ++i) {
+    auto request = StoredRequest("conv_scan_" + std::to_string(i),
+                                 ObjectKind::kConversation);
+    request.operation = ObjectOperation::kPut;
+    request.data = Object({{"items", Array()}});
+    Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  }
+  size_t found = 0, calls = 0;
+  std::string cursor;
+  bool more = true, full_scan = false;
+  while (more && calls++ < 8) {
+    auto page = objects.ScanBatches(cursor, Access().deadline);
+    Q4T_CHECK(Ok(page) && page.value.GetInt("scanned") <= 32 &&
+              page.value.GetArray("data")->array.size() <= 8);
+    full_scan |= page.value.GetInt("scanned") == 32;
+    for (const auto& row : page.value.GetArray("data")->array) {
+      Q4T_CHECK(row.GetString("id") == id);
+      ++found;
+    }
+    more = page.value.GetBool("has_more");
+    if (more)
+      Q4T_CHECK(page.value.GetString("cursor") != cursor &&
+                !page.value.GetString("cursor").empty());
+    cursor = page.value.GetString("cursor");
+  }
+  Q4T_CHECK(!more && found == 1 && calls >= 2 && full_scan);
   return true;
 }

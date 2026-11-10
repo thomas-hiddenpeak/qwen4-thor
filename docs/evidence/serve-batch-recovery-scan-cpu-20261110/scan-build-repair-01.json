@@ -1,0 +1,5 @@
+{
+  "cause": "new scan cursor called Filename serializer instead of existing ValidFilename predicate",
+  "change": "use actual predicate and preserve terminal cursor",
+  "cpu_not_started": true
+}
