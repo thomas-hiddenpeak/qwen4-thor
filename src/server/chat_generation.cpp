@@ -251,7 +251,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                           metrics_.structured_active);
   ClientRateLease owned_rate(http ? http->RateDomain()
                                   : ClientRateDomain::kOnline);
-  auto& rate_lease = internal ? internal->accounting.Rate() : owned_rate;
+  const auto batch_rate = http ? http->BatchRate() : nullptr;
+  if (batch_rate && (http->RateDomain() != ClientRateDomain::kBatch ||
+                     !batch_rate->PrechargedFor(http->Client()))) {
+    SendError(fd, 500, "Native Batch rate ownership changed", {},
+              "batch_execution_rate_invalid");
+    return;
+  }
+  auto& rate_lease = internal     ? internal->accounting.Rate()
+                     : batch_rate ? *batch_rate
+                                  : owned_rate;
   struct TerminalLeases {
     StructuredRequestLease& structured;
     ClientRateLease& rate;

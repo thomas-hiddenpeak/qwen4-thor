@@ -1057,7 +1057,9 @@
         "evidence/serve-batch-recount-cpu-20261111/README.md",
         "evidence/serve-batch-precharge-cpu-20261111/README.md"
       ],
-      "batch_delivery_pending": true
+      "batch_delivery_pending": true,
+      "batch_rate_bridge_status": "24 distinct targeted CPU checks accepted; production sources unchanged across fixture repairs. Native execution/background handoff implemented; minute-wait scheduler/native planning/recovered background admission and real public business/release remain required.",
+      "batch_rate_bridge_component_evidence": "evidence/serve-batch-rate-bridge-cpu-20261111/README.md"
     },
     {
       "id": "A10",

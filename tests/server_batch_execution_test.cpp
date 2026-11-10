@@ -26,18 +26,22 @@ using Clock = std::chrono::steady_clock;
 struct Fixture {
   ClientAdmission clients;
   ClientIdentity alpha, beta;
-  Fixture() {
+  explicit Fixture(bool rate_limits = false) {
     GatewayClientPolicy policy;
     const std::string secret(64, 'a');
-    const auto entry = [](std::string name) {
+    const auto entry = [rate_limits](std::string name) {
       return "{\"id\":\"" + name +
              "\",\"max_inflight\":2,\"max_control_inflight\":1,"
              "\"max_prompt_tokens\":4096,\"max_output_tokens\":64,"
-             "\"max_body_bytes\":4096}";
+             "\"max_body_bytes\":4096" +
+             (rate_limits ? ",\"requests_per_minute\":10,"
+                            "\"tokens_per_minute\":8192}"
+                          : "}");
     };
-    const auto raw = "{\"version\":1,\"gateway_token\":\"" + secret +
-                     "\",\"clients\":[" + entry("alpha") + ',' +
-                     entry("beta") + "]}";
+    const auto raw = std::string("{\"version\":") +
+                     (rate_limits ? "2,\"fair_queue\":true" : "1") +
+                     ",\"gateway_token\":\"" + secret + "\",\"clients\":[" +
+                     entry("alpha") + ',' + entry("beta") + "]}";
     if (!ParseGatewayClientPolicy(raw, &policy) ||
         !clients.Configure(std::move(policy)))
       throw std::runtime_error("Batch execution policy fixture");
@@ -82,6 +86,32 @@ ObjectStoreOptions Storage() {
 }
 constexpr const char* kBody =
     R"({"id":"chatcmpl_cpu_fixture","choices":[{"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1","type":"function","function":{"name":"lookup","arguments":"{\"id\":42}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":19,"completion_tokens":7,"total_tokens":26},"exact":1e-999})";
+std::shared_ptr<ClientRateLease> Precharge(Fixture& fixture,
+                                           const ClientIdentity& client) {
+  auto rate = std::make_shared<ClientRateLease>(ClientRateDomain::kBatch);
+  if (rate->PrechargeBatch(fixture.clients, client, 128, 32) !=
+      ClientRateResult::kAllowed)
+    throw std::runtime_error("CPU Batch precharge");
+  return rate;
+}
+ClientRateUsage Usage(Fixture& fixture, size_t client = 0) {
+  return fixture.clients.RateUsage(client, Clock::now(),
+                                   ClientRateDomain::kBatch);
+}
+std::unique_ptr<ResponsesExecution> Background(ObjectStore& objects) {
+  auto run = std::make_unique<ResponsesExecution>(objects);
+  ChatPlanConfig config;
+  config.model = "cpu";
+  if (!run->Prepare(
+              Parsed(
+                  R"({"input":"question","background":true,"max_output_tokens":32,"reasoning":{"effort":"none"}})"),
+              config, {"client:alpha", Clock::now() + 5s, {}},
+              std::time(nullptr), true)
+           .ok() ||
+      !run->BindRateDomain(ClientRateDomain::kBatch))
+    throw std::runtime_error("CPU Batch background");
+  return run;
+}
 }  // namespace
 
 Q4T_TEST(batch_execution_complete_tools_usage_and_parent_transport_are_preserved) {
@@ -272,7 +302,8 @@ Q4T_TEST(batch_execution_stream_and_missing_response_fail_without_synthetic_succ
 }
 
 Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) {
-  Fixture fixture;
+  Fixture fixture(true);
+  auto rate = Precharge(fixture, fixture.alpha);
   ObjectStore objects(Storage());
   StateAccess access{"client:alpha", Clock::now() + 5s, {}};
   ChatPlanConfig config;
@@ -281,11 +312,17 @@ Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) 
   std::atomic<bool> correct_origin = false;
   ResponsesJobs jobs(objects, {}, [&](auto& job) {
     correct_origin = job.run->RateDomain() == ClientRateDomain::kBatch &&
-                     job.control->deadline() <= access.deadline;
+                     job.control->deadline() <= access.deadline &&
+                     job.rate == rate;
+    if (!job.rate || job.rate->Reserve(fixture.clients, job.client, 7, 32) !=
+                         ClientRateResult::kAllowed)
+      throw std::runtime_error("background original precharge claim");
+    job.rate->Start();
     entered = true;
     while (!proceed && !job.control->Cancelled())
       std::this_thread::sleep_for(1ms);
     if (job.control->Cancelled()) return;
+    job.rate->Completion(3);
     ResponseDelta delta;
     delta.kind = ResponseDelta::Kind::kContent;
     delta.text = "explicit CPU background fixture";
@@ -309,10 +346,12 @@ Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) 
   Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
   auto control = Control();
   const auto result = ExecuteBatchEndpoint(
-      control->id(), fixture.alpha, permit, control, [&] {
+      control->id(), fixture.alpha, permit, control,
+      [&] {
         ServePreparedBackgroundResponse(-1, objects, jobs, std::move(run),
                                          access);
-      });
+      },
+      rate);
   Q4T_CHECK(result.error.ok() && result.http_status == 200 && !run);
   const auto accepted = Parsed(result.response_body);
   Q4T_CHECK(accepted.GetString("id") == id &&
@@ -321,12 +360,245 @@ Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) 
   Q4T_CHECK(Wait([&] { return entered.load(); }) && correct_origin &&
             !permit.Holds(fixture.alpha, ClientLane::kData) &&
             fixture.clients.Usage(0).data_active == 1 &&
-            jobs.Health().foreground_owned == 0);
+            jobs.Health().foreground_owned == 0 &&
+            Usage(fixture).reserved == 160 && Usage(fixture).admitted == 1 &&
+            fixture.clients.RateUsage(0).admitted == 0);
   proceed = true;
   Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
   Q4T_CHECK(fixture.clients.Usage(0).data_active == 0);
+  Q4T_CHECK(Usage(fixture).reserved == 0 && Usage(fixture).tokens == 10 &&
+            Usage(fixture).admitted == 1);
   const auto terminal = ResponsesState(objects).Retrieve(id, access);
   Q4T_CHECK(Ok(terminal) && terminal.value.GetString("status") == "completed" &&
             terminal.value.Find("usage")->GetInt("total_tokens") == 10);
+  return true;
+}
+
+Q4T_TEST(batch_execution_precharge_one_claim_settles_after_cleanup) {
+  Fixture fixture(true);
+  auto rate = Precharge(fixture, fixture.alpha);
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  auto control = Control();
+  bool claimed = false, drained = false, held_during_cleanup = false;
+  auto result = ExecuteBatchEndpoint(
+      control->id(), fixture.alpha, permit, control,
+      [&] {
+        auto* http = detail::HttpResponseContext::Current(-1);
+        ScopeExit cleanup([&] {
+          held_during_cleanup = Usage(fixture).reserved == 160;
+          drained = true;
+        });
+        claimed = http && http->BatchRate() == rate &&
+                  rate->Reserve(fixture.clients, http->Client(), 19, 32) ==
+                      ClientRateResult::kAllowed;
+        if (!claimed) throw std::runtime_error("native precharge claim");
+        rate->Start();
+        rate->Completion(7);
+        detail::SendSimple(-1, 200, "OK", kBody, "application/json");
+      },
+      rate);
+  Q4T_CHECK(claimed && drained && held_during_cleanup && result.error.ok() &&
+            result.response_body == kBody && Usage(fixture).reserved == 0 &&
+            Usage(fixture).tokens == 26 && Usage(fixture).admitted == 1 &&
+            fixture.clients.RateUsage(0).admitted == 0 &&
+            !rate->PrechargedFor(fixture.alpha));
+  return true;
+}
+
+Q4T_TEST(batch_execution_precharge_binding_rejects_scope_domain_and_reuse) {
+  Fixture fixture(true);
+  auto rate = Precharge(fixture, fixture.alpha);
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.beta, ClientLane::kData));
+  auto control = Control();
+  int calls = 0;
+  auto result = ExecuteBatchEndpoint(
+      control->id(), fixture.beta, permit, control, [&] { ++calls; }, rate);
+  Q4T_CHECK(result.error.code == "batch_execution_owner_invalid" &&
+            calls == 0 && Usage(fixture).reserved == 160 &&
+            control->ClaimInvocation());
+  {
+    detail::HttpResponseContext http(detail::HttpResponseContext::Detached{});
+    http.SetClient(fixture.alpha, nullptr);
+    Q4T_CHECK(!http.BindBatchRate(rate) && !http.BatchRate());
+    http.SetClient(fixture.beta, nullptr, ClientRateDomain::kBatch);
+    Q4T_CHECK(!http.BindBatchRate(rate) && !http.BatchRate());
+    http.SetClient(fixture.alpha, nullptr, ClientRateDomain::kBatch);
+    Q4T_CHECK(http.BindBatchRate(rate) && !http.BindBatchRate(rate));
+    http.SetClient(fixture.beta, nullptr, ClientRateDomain::kBatch);
+    Q4T_CHECK(http.BatchRate() &&
+              !http.BatchRate()->PrechargedFor(http.Client()));
+  }
+  Q4T_CHECK(Usage(fixture).reserved == 0 && Usage(fixture).tokens == 0);
+  return true;
+}
+
+Q4T_TEST(batch_execution_precharge_exception_missing_and_cancelled_refunds) {
+  Fixture fixture(true);
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  for (int mode = 0; mode < 4; ++mode) {
+    auto rate = Precharge(fixture, fixture.alpha);
+    auto control = Control();
+    bool drained = false;
+    auto result = ExecuteBatchEndpoint(
+        control->id(), fixture.alpha, permit, control,
+        [&] {
+          ScopeExit cleanup([&] { drained = true; });
+          if (mode == 0) throw std::bad_alloc();
+          if (mode == 1) throw std::runtime_error("CPU precharge failure");
+          if (mode == 2) control->Cancel();
+        },
+        rate);
+    Q4T_CHECK(drained && Usage(fixture).reserved == 0 &&
+              Usage(fixture).tokens == 0 &&
+              Usage(fixture).admitted == static_cast<uint64_t>(mode + 1));
+    Q4T_CHECK(
+        mode < 2
+            ? result.error.ok() && result.http_status == (mode == 0 ? 503 : 500)
+            : result.error.code == (mode == 2 ? "batch_cancelled"
+                                              : "batch_response_incomplete"));
+  }
+  return true;
+}
+
+Q4T_TEST(batch_execution_precharge_background_failed_handoff_releases) {
+  Fixture fixture(true);
+  ObjectStore objects(Storage());
+  std::atomic<int> calls = 0;
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; });
+  for (int mode = 0; mode < 3; ++mode) {
+    auto run = Background(objects);
+    const auto id = run->Id();
+    auto rate = Precharge(fixture, fixture.alpha);
+    const auto identity = mode == 0 ? fixture.beta : fixture.alpha;
+    if (mode == 1) Q4T_CHECK(run->BindRateDomain(ClientRateDomain::kOnline));
+    bool transfer = false;
+    auto result = jobs.Submit(
+        std::move(run), identity,
+        [&](ClientLease&) {
+          transfer = true;
+          return false;
+        },
+        rate);
+    Q4T_CHECK(!result.ok() && transfer == (mode == 2) &&
+              Usage(fixture).reserved == 0 && Usage(fixture).tokens == 0 &&
+              Wait([&] { return jobs.Health().owned == 0; }) && calls == 0);
+    const auto saved = ResponsesState(objects).Retrieve(
+        id, {"client:alpha", Clock::now() + 5s, {}});
+    Q4T_CHECK(mode < 2
+                  ? saved.http_status == 404
+                  : saved.ok() && saved.value.GetString("status") == "failed");
+  }
+  return true;
+}
+
+Q4T_TEST(
+    batch_execution_precharge_queued_background_cancel_refunds_only_its_owner) {
+  Fixture fixture(true);
+  ObjectStore objects(Storage());
+  std::atomic<int> calls = 0;
+  std::atomic<bool> entered = false, proceed = false;
+  ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    ++calls;
+    if (!job.rate || job.rate->Reserve(fixture.clients, job.client, 7, 32) !=
+                         ClientRateResult::kAllowed)
+      throw std::runtime_error("queued precharge claim");
+    job.rate->Start();
+    entered = true;
+    while (!proceed && !job.control->Cancelled())
+      std::this_thread::sleep_for(1ms);
+    job.rate->Completion(3);
+    std::string wire;
+    if (!job.run->Finish(false, 0, {7, 0, 3, 0}, std::time(nullptr), &wire)
+             .ok())
+      throw std::runtime_error("queued fixture completion");
+  });
+  ScopeExit release([&] { proceed = true; });
+  const auto submit = [&]() {
+    ClientLease permit;
+    if (!permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData))
+      throw std::runtime_error("queued precharge permit");
+    auto rate = Precharge(fixture, fixture.alpha);
+    return jobs.Submit(
+        Background(objects), fixture.alpha,
+        [&](ClientLease& destination) {
+          return permit.TransferTo(destination);
+        },
+        std::move(rate));
+  };
+  auto first = submit();
+  Q4T_CHECK(Ok(first) && Wait([&] { return entered.load(); }));
+  auto second = submit();
+  Q4T_CHECK(Ok(second) && Usage(fixture).reserved == 320 &&
+            jobs.Health().queued == 1);
+  auto cancelled = jobs.Cancel(second.value.GetString("id"),
+                               {"client:alpha", Clock::now() + 5s, {}});
+  Q4T_CHECK(Ok(cancelled) &&
+            cancelled.value.GetString("status") == "cancelled" && calls == 1 &&
+            Usage(fixture).reserved == 160 && Usage(fixture).tokens == 0);
+  proceed = true;
+  Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }) &&
+            Usage(fixture).reserved == 0 && Usage(fixture).tokens == 10 &&
+            Usage(fixture).admitted == 2 && calls == 1);
+  return true;
+}
+
+Q4T_TEST(
+    batch_execution_precharge_unknown_background_start_does_not_hold_tokens) {
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
+  auto options = Storage();
+  options.io_timeout_ms = 250;
+  Fixture fixture(true);
+  ObjectStore objects(options);
+  std::atomic<int> calls = 0;
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; });
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  auto rate = Precharge(fixture, fixture.alpha);
+  const auto result = jobs.Submit(
+      Background(objects), fixture.alpha,
+      [&](ClientLease& destination) { return permit.TransferTo(destination); },
+      rate);
+  Q4T_CHECK(Ok(result) && Wait([&] { return jobs.Health().owned == 0; }) &&
+            calls == 0 && Usage(fixture).reserved == 0 &&
+            Usage(fixture).tokens == 0 && Usage(fixture).admitted == 1);
+  const auto terminal = ResponsesState(objects).Retrieve(
+      result.value.GetString("id"), {"client:alpha", Clock::now() + 5s, {}});
+  Q4T_CHECK(Ok(terminal) && terminal.value.GetString("status") == "failed" &&
+            terminal.value.Find("error")->GetString("code") ==
+                "background_execution_interrupted");
+  return true;
+}
+
+Q4T_TEST(
+    batch_execution_precharge_unknown_background_begin_refunds_without_replay) {
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  ObjectWorkerEntryForTesting("--q4t-object-worker-lost-ack");
+  auto options = Storage();
+  options.io_timeout_ms = 250;
+  Fixture fixture(true);
+  ObjectStore objects(options);
+  std::atomic<int> calls = 0;
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; });
+  auto run = Background(objects);
+  const auto id = run->Id();
+  auto rate = Precharge(fixture, fixture.alpha);
+  bool transfer = false;
+  const auto result = jobs.Submit(
+      std::move(run), fixture.alpha,
+      [&](ClientLease&) {
+        transfer = true;
+        return false;
+      },
+      rate);
+  Q4T_CHECK(!result.ok() && result.commit_unknown && !transfer && calls == 0 &&
+            Usage(fixture).reserved == 0 && Usage(fixture).tokens == 0 &&
+            Wait([&] { return jobs.Health().owned == 0; }));
+  const auto terminal = ResponsesState(objects).Retrieve(
+      id, {"client:alpha", Clock::now() + 5s, {}});
+  Q4T_CHECK(Ok(terminal) && terminal.value.GetString("status") == "failed");
   return true;
 }

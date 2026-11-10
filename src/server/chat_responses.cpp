@@ -45,6 +45,11 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   // Observe actual failures. Do not use the live SSE error renderer here:
   // cancellation is finalized by the owner after all generation cleanup.
   http.SetErrorObserver(&ResponsesExecution::ObserveError, job.run.get());
+  if (job.rate && !http.BindBatchRate(job.rate)) {
+    detail::SendError(-1, 500, "Background rate ownership is invalid", {},
+                      "background_rate_invalid");
+    return;
+  }
   HandleChatImpl(-1, "", http.State(), false, job.run.get(), job.control);
 }
 
@@ -98,9 +103,11 @@ ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
 BatchRowResult ChatServer::RunBatchRequest(
     const std::string& endpoint, const BatchInputRow& row,
     const io::Json& frozen_inputs, const ClientIdentity& client,
-    ClientLease& permit, const std::shared_ptr<RequestControl>& control) {
+    ClientLease& permit, const std::shared_ptr<RequestControl>& control,
+    std::shared_ptr<ClientRateLease> rate) {
   return ExecuteBatchEndpoint(
-      control ? control->id() : "", client, permit, control, [&] {
+      control ? control->id() : "", client, permit, control,
+      [&] {
         const auto api = endpoint == "/v1/responses" ? GenerationApi::kResponse
                         : endpoint == "/v1/completions"
                             ? GenerationApi::kCompletion
@@ -118,7 +125,8 @@ BatchRowResult ChatServer::RunBatchRequest(
           return;
         }
         HandleChat(-1, OutputJson(row.body), api, control, &frozen_inputs);
-      });
+      },
+      std::move(rate));
 }
 
 }  // namespace q4t::server

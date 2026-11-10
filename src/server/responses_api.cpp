@@ -64,10 +64,10 @@ void ServePreparedBackgroundResponse(
       for (const auto& item : include->array)
         target += "&include[]=" + item.str;
   }
-  auto result =
-      jobs.Submit(std::move(run), http->Client(), [&](ClientLease& lease) {
-        return http->TransferClientLease(lease);
-      });
+  auto result = jobs.Submit(
+      std::move(run), http->Client(),
+      [&](ClientLease& lease) { return http->TransferClientLease(lease); },
+      http->TakeBatchRate());
   if (!result.ok()) {
     detail::SendError(fd, result.http_status, result.ClientMessage(), {},
                       result.ClientCode(),

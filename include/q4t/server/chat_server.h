@@ -189,10 +189,13 @@ class ChatServer {
                       std::shared_ptr<RequestControl> background = {},
                       struct InternalModelStep* internal = nullptr,
                       const io::Json* frozen_inputs = nullptr);
-  BatchRowResult RunBatchRequest(
-      const std::string& endpoint, const BatchInputRow& row,
-      const io::Json& frozen_inputs, const ClientIdentity& client,
-      ClientLease& permit, const std::shared_ptr<RequestControl>& control);
+  BatchRowResult RunBatchRequest(const std::string& endpoint,
+                                 const BatchInputRow& row,
+                                 const io::Json& frozen_inputs,
+                                 const ClientIdentity& client,
+                                 ClientLease& permit,
+                                 const std::shared_ptr<RequestControl>& control,
+                                 std::shared_ptr<ClientRateLease> rate = {});
   ObjectReply MeasureBatchRequest(std::string_view endpoint,
                                   const BatchInputRow& row,
                                   const io::Json& prepared,

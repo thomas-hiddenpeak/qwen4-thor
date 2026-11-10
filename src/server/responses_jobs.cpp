@@ -189,14 +189,18 @@ void ResponsesJobs::ReconcileForeground(uint64_t ticket, std::string_view scope,
 
 ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
                                   ClientIdentity client,
-                                  const TransferPermit& transfer) {
-  return Adopt(std::move(run), client, transfer, false);
+                                  const TransferPermit& transfer,
+                                  std::shared_ptr<ClientRateLease> rate) {
+  return Adopt(std::move(run), client, transfer, false, std::move(rate));
 }
 
 ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
                                  ClientIdentity client,
-                                 const TransferPermit& transfer,
-                                 bool restored) {
+                                 const TransferPermit& transfer, bool restored,
+                                 std::shared_ptr<ClientRateLease> rate) {
+  ScopeExit settle_rate([&] {
+    if (rate) rate->Settle();
+  });
   if (!run || !run->Prepared() || run->Begun() != restored ||
       !run->Envelope().background || !client.Allowed() || !transfer)
     return Error(500, "background_state_invalid", "Invalid background handoff");
@@ -204,6 +208,10 @@ ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
                                      : "local:anonymous";
   if (scope != run->Scope())
     return Error(403, "object_scope_mismatch", "Background client changed");
+  if (rate && (restored || run->RateDomain() != ClientRateDomain::kBatch ||
+               !rate->PrechargedFor(client)))
+    return Error(500, "background_rate_invalid",
+                 "Background rate ownership is invalid");
   auto job = std::make_shared<Job>();
   job->bytes = run->RetainedInputBytes();
   auto duration = state_->options.timeout;
@@ -270,6 +278,7 @@ ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
       }
     }
   });
+  job->rate = std::move(rate);
   std::string ignored;
   auto result = restored ? ObjectReply() : job->run->Begin(&ignored);
   if (!result.ok()) return result;
@@ -459,6 +468,9 @@ void ResponsesJobs::Recover(ClientAdmission& clients,
 
 void ResponsesJobs::Release(const std::shared_ptr<Job>& job,
                             bool known_terminal) {
+  // Execution has drained even when its terminal storage receipt is unknown.
+  // Reconciliation retains metadata, never a live token reservation.
+  if (auto rate = std::move(job->rate)) rate->Settle();
   const std::lock_guard lock(state_->mutex);
   if (!known_terminal) {
     job->stage = Job::Stage::kUncertain;

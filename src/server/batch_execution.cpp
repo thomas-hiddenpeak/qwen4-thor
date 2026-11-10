@@ -10,7 +10,8 @@ namespace q4t::server {
 BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
-    const std::function<void()>& execute) {
+    const std::function<void()>& execute,
+    std::shared_ptr<ClientRateLease> rate) {
   using namespace object_detail;
   BatchRowResult result;
   result.request_id = request_id;
@@ -19,7 +20,8 @@ BatchRowResult ExecuteBatchEndpoint(
     return result;
   };
   if (!ValidId(request_id) || !control || control->id() != request_id ||
-      !client.Allowed() || !permit.Holds(client, ClientLane::kData) || !execute)
+      !client.Allowed() || !permit.Holds(client, ClientLane::kData) ||
+      !execute || (rate && !rate->PrechargedFor(client)))
     return failure(500, "batch_execution_owner_invalid",
                    "Native Batch execution ownership is invalid");
   const auto interrupted = [&]() -> BatchRowResult {
@@ -36,6 +38,9 @@ BatchRowResult ExecuteBatchEndpoint(
   detail::HttpResponseContext http(
       detail::HttpResponseContext::Detached{-1, &output});
   http.SetClient(client, &permit, ClientRateDomain::kBatch);
+  if (rate && !http.BindBatchRate(std::move(rate)))
+    return failure(500, "batch_execution_rate_invalid",
+                   "Native Batch execution rate ownership is invalid");
   if (!http.SetTraceId(request_id))
     return failure(500, "batch_execution_owner_invalid",
                    "Invalid native Batch request identity");

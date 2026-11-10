@@ -49,6 +49,7 @@ class ResponsesJobs : public IResponsesCleanup {
     ClientIdentity client;
     ClientLease permit;
     std::shared_ptr<RequestControl> control;
+    std::shared_ptr<ClientRateLease> rate;
 
    private:
     friend class ResponsesJobs;
@@ -70,7 +71,8 @@ class ResponsesJobs : public IResponsesCleanup {
   // The callback is invoked once, on the caller thread, before execution.
   using TransferPermit = std::function<bool(ClientLease&)>;
   ObjectReply Submit(std::unique_ptr<ResponsesExecution> run,
-                     ClientIdentity client, const TransferPermit& transfer);
+                     ClientIdentity client, const TransferPermit& transfer,
+                     std::shared_ptr<ClientRateLease> rate = {});
   // Cancel returns a real persisted terminal response. A deadline can end the
   // caller's wait without undoing cancellation or releasing a running owner.
   ObjectReply Cancel(const std::string& id, const StateAccess& access);
@@ -91,7 +93,7 @@ class ResponsesJobs : public IResponsesCleanup {
   std::unique_ptr<State> state_;
   ObjectReply Adopt(std::unique_ptr<ResponsesExecution> run,
                     ClientIdentity client, const TransferPermit& transfer,
-                    bool restored);
+                    bool restored, std::shared_ptr<ClientRateLease> rate = {});
   void Recover(ClientAdmission& clients, ChatPlanConfig config) noexcept;
   void Worker() noexcept;
   void Execute(const std::shared_ptr<Job>& job) noexcept;

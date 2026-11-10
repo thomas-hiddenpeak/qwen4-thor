@@ -110,6 +110,21 @@ class HttpResponseContext {
   // Handler-thread-only identity, minted by header admission.
   const ClientIdentity& Client() const { return client_; }
   ClientRateDomain RateDomain() const { return rate_domain_; }
+  // Trusted native execution only. The context settles on destruction unless
+  // ownership is explicitly moved to the detached background job.
+  bool BindBatchRate(std::shared_ptr<ClientRateLease> rate) {
+    if (batch_rate_ || rate_domain_ != ClientRateDomain::kBatch || !rate ||
+        !rate->PrechargedFor(client_))
+      return false;
+    batch_rate_ = std::move(rate);
+    return true;
+  }
+  const std::shared_ptr<ClientRateLease>& BatchRate() const {
+    return batch_rate_;
+  }
+  std::shared_ptr<ClientRateLease> TakeBatchRate() {
+    return std::move(batch_rate_);
+  }
   void SetClient(ClientIdentity client, ClientLease* lease,
                  ClientRateDomain domain = ClientRateDomain::kOnline) {
     client_ = client;
@@ -204,6 +219,7 @@ class HttpResponseContext {
   ClientIdentity client_;
   ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
+  std::shared_ptr<ClientRateLease> batch_rate_;
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   ErrorObserver error_observer_ = nullptr;
   void* error_observer_owner_ = nullptr;

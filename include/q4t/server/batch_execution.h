@@ -15,5 +15,6 @@ namespace q4t::server {
 BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
-    const std::function<void()>& execute);
+    const std::function<void()>& execute,
+    std::shared_ptr<ClientRateLease> rate = {});
 }  // namespace q4t::server

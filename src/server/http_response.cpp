@@ -339,6 +339,7 @@ HttpResponseContext::HttpResponseContext(int fd, HttpTransportMetrics* metrics)
 
 HttpResponseContext::~HttpResponseContext() {
   StopHeartbeats();
+  if (batch_rate_) batch_rate_->Settle();
   // Both reasons are finalized after join and before the socket is closed.
   // A read rejection may also fail to write; these are separate observations.
   if (metrics_ && receive_failure_ != HttpReceiveFailure::kNone) {
