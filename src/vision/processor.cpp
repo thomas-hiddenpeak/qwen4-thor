@@ -5,7 +5,7 @@
 // BICUBIC uses Pillow 12.3.0 fixed-point coefficients.
 //
 // Pipeline:
-//   1. Decode PNG/JPEG (stb_image) -> RGB uint8 [H, W, 3]
+//   1. Decode PNG/JPEG/static GIF (stb_image) -> RGB uint8 [H, W, 3]
 //   2. smart_resize(H, W, factor=32, min_pixels, max_pixels) -> (rh, rw)
 //   3. BICUBIC resize (Pillow fixed-point, PRECISION_BITS=22) -> uint8
 //   4. rescale: float32(double(px) * double(1.0/255.0))
@@ -128,6 +128,7 @@ void* DecodeReallocate(void* pointer, size_t bytes) noexcept {
 #define STBI_FREE(pointer) DecodeFree(pointer)
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
+#define STBI_ONLY_GIF
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -135,6 +136,54 @@ namespace q4t {
 namespace vision {
 
 namespace {
+
+TimingStage DecodeStage(uint8_t first) {
+  return first == 0xff  ? TimingStage::kDecodeJpeg
+         : first == 'G' ? TimingStage::kDecodeGif
+                        : TimingStage::kDecodePng;
+}
+
+uint8_t* DecodeRgb(const uint8_t* bytes, size_t count, int* width, int* height,
+                   int* components) {
+  if (bytes[0] != 'G')
+    return stbi_load_from_memory(bytes, static_cast<int>(count), width, height,
+                                 components, 3);
+  GifFrame frame;
+  if (!ReadGifFrame({bytes, count}, &frame)) return nullptr;
+  std::unique_ptr<uint8_t, decltype(&DecodeFree)> opaque(nullptr, DecodeFree);
+  if (frame.transparency_flags) {
+    // PIL's first-frame convert("RGB") keeps a transparent palette entry's
+    // RGB. Suppress animation compositing for this private decoder copy.
+    // The original bytes and their immutable SHA remain untouched.
+    opaque.reset(static_cast<uint8_t*>(DecodeAllocate(count)));
+    if (!opaque) return nullptr;
+    std::memcpy(opaque.get(), bytes, count);
+    opaque.get()[frame.transparency_flags] &= ~uint8_t{1};
+    bytes = opaque.get();
+  }
+  auto* pixels = stbi_load_from_memory(bytes, static_cast<int>(count), width,
+                                       height, components, 3);
+  if (!pixels) return nullptr;
+  if (*width != static_cast<int>(frame.header.width) ||
+      *height != static_cast<int>(frame.header.height)) {
+    stbi_image_free(pixels);
+    return nullptr;
+  }
+  // A still indexed image's untouched canvas is palette zero. stb's GIF
+  // animation background/disposal semantics must not change those pixels.
+  if (frame.left || frame.top || frame.width != frame.header.width ||
+      frame.height != frame.header.height) {
+    for (uint32_t y = 0; y < frame.header.height; ++y) {
+      for (uint32_t x = 0; x < frame.header.width; ++x) {
+        if (x < frame.left || x >= frame.left + frame.width || y < frame.top ||
+            y >= frame.top + frame.height)
+          std::memcpy(pixels + (size_t{y} * frame.header.width + x) * 3,
+                      frame.palette_zero.data(), 3);
+      }
+    }
+  }
+  return pixels;
+}
 
 // ---------------------------------------------------------------------------
 // Pillow 12.3.0 BICUBIC fixed-point resize (exact replication).
@@ -373,19 +422,15 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   prepare_timing.Stop();
   DecodeScope decode(options);
 
-  // 1. Decode PNG/JPEG -> RGB uint8.
+  // 1. Decode PNG/JPEG/static GIF -> RGB uint8.
   int w = 0, h = 0, comp = 0;
   decode_allocation_failed = false;
-  // PrepareItem has already restricted sources to PNG/JPEG.
+  // PrepareItem has already restricted sources to PNG/JPEG/static GIF.
   runtime::ExecutionActivity decode_progress(
       runtime::ExecutionActivityKind::kMediaDecode);
-  TimingScope decode_timing(options.timings, image_bytes[0] == 0xff
-                                                ? TimingStage::kDecodeJpeg
-                                                : TimingStage::kDecodePng);
+  TimingScope decode_timing(options.timings, DecodeStage(image_bytes[0]));
   std::unique_ptr<uint8_t, decltype(&stbi_image_free)> decoded(
-      stbi_load_from_memory(image_bytes, static_cast<int>(num_bytes), &w, &h,
-                            &comp, 3),
-      stbi_image_free);
+      DecodeRgb(image_bytes, num_bytes, &w, &h, &comp), stbi_image_free);
   decode_timing.Stop();
   if (decode_allocation_failed) throw std::bad_alloc();
   if (decode.budget.denied)
@@ -544,15 +589,11 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     DecodeScope decode(options);
     runtime::ExecutionActivity decode_progress(
         runtime::ExecutionActivityKind::kMediaDecode);
-    TimingScope decode_timing(options.timings, frames[f][0] == 0xff
-                                                  ? TimingStage::kDecodeJpeg
-                                                  : TimingStage::kDecodePng);
+    TimingScope decode_timing(options.timings, DecodeStage(frames[f][0]));
     int w = 0, h = 0, comp = 0;
     decode_allocation_failed = false;
     std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
-        stbi_load_from_memory(frames[f], static_cast<int>(frame_bytes[f]), &w,
-                              &h, &comp, 3),
-        stbi_image_free);
+        DecodeRgb(frames[f], frame_bytes[f], &w, &h, &comp), stbi_image_free);
     if (decode_allocation_failed) throw std::bad_alloc();
     if (decode.budget.denied)
       return ProcessorFail(options, err, "media_decode_limit");

@@ -38,6 +38,103 @@ uint32_t Be16(const uint8_t* p) noexcept {
   return (uint32_t{p[0]} << 8) | p[1];
 }
 
+uint32_t Le16(const uint8_t* p) noexcept {
+  return p[0] | (uint32_t{p[1]} << 8);
+}
+
+MediaPlanResult GifHeader(std::span<const uint8_t> bytes, MediaHeader* out,
+                          GifFrame* frame = nullptr) noexcept {
+  if (bytes.size() < 13) return Fail(MediaPlanError::kInvalidHeader);
+  const uint32_t width = Le16(bytes.data() + 6),
+                 height = Le16(bytes.data() + 8);
+  if (!width || !height) return Fail(MediaPlanError::kInvalidHeader);
+  size_t position = 13;
+  const auto skip = [&](size_t count) {
+    if (count > bytes.size() - position) return false;
+    position += count;
+    return true;
+  };
+  const auto blocks = [&] {
+    while (position < bytes.size()) {
+      const size_t count = bytes[position++];
+      if (!count) return true;
+      if (!skip(count)) return false;
+    }
+    return false;
+  };
+  const size_t global_colors =
+      (bytes[10] & 0x80) ? size_t{2} << (bytes[10] & 7) : 0;
+  if ((global_colors && bytes[11] >= global_colors) || !skip(global_colors * 3))
+    return Fail(MediaPlanError::kInvalidHeader);
+  size_t images = 0;
+  int transparent = -1;
+  bool control = false;
+  GifFrame next;
+  while (position < bytes.size()) {
+    const auto type = bytes[position++];
+    if (type == 0x3b) {
+      if (images != 1 || position != bytes.size() || control)
+        return Fail(MediaPlanError::kInvalidHeader);
+      *out = {MediaFormat::kGif, width, height};
+      next.header = *out;
+      if (frame) *frame = next;
+      return {};
+    }
+    if (type == 0x2c) {
+      if (++images > 1) return Fail(MediaPlanError::kAnimation);
+      if (bytes.size() - position < 9)
+        return Fail(MediaPlanError::kInvalidHeader);
+      const auto* descriptor = bytes.data() + position;
+      const uint32_t left = Le16(descriptor), top = Le16(descriptor + 2),
+                     w = Le16(descriptor + 4), h = Le16(descriptor + 6);
+      const auto packed = descriptor[8];
+      position += 9;
+      const size_t colors =
+          packed & 0x80 ? size_t{2} << (packed & 7) : global_colors;
+      const size_t palette = packed & 0x80 ? position : 13;
+      if (!w || !h || left + w > width || top + h > height || (packed & 0x18) ||
+          !colors || transparent >= int(colors) ||
+          !skip(packed & 0x80 ? colors * 3 : 0) || position == bytes.size())
+        return Fail(MediaPlanError::kInvalidHeader);
+      next.left = left;
+      next.top = top;
+      next.width = w;
+      next.height = h;
+      std::copy_n(bytes.data() + palette, 3, next.palette_zero.begin());
+      const auto code_size = bytes[position++];
+      if (code_size < 2 || code_size > 8 || !blocks())
+        return Fail(MediaPlanError::kInvalidHeader);
+      transparent = -1;
+      control = false;
+    } else if (type == 0x21) {
+      if (position == bytes.size()) return Fail(MediaPlanError::kInvalidHeader);
+      const auto extension = bytes[position++];
+      if (extension == 0xf9) {
+        if (control || bytes.size() - position < 6 || bytes[position] != 4 ||
+            (bytes[position + 1] & 0xe0) ||
+            ((bytes[position + 1] >> 2) & 7) > 3 || bytes[position + 5])
+          return Fail(MediaPlanError::kInvalidHeader);
+        transparent = bytes[position + 1] & 1 ? bytes[position + 4] : -1;
+        if (transparent >= 0) next.transparency_flags = position + 1;
+        position += 6;
+        control = true;
+      } else if (extension == 0xfe) {
+        if (!blocks()) return Fail(MediaPlanError::kInvalidHeader);
+      } else if (extension == 0xff) {
+        if (position == bytes.size() || bytes[position++] != 11 || !skip(11) ||
+            !blocks())
+          return Fail(MediaPlanError::kInvalidHeader);
+      } else {
+        // Text rendering is not an image; never silently drop a graphic block.
+        return Fail(MediaPlanError::kUnsupportedFormat);
+      }
+    } else {
+      return Fail(MediaPlanError::kInvalidHeader);
+    }
+  }
+  return Fail(MediaPlanError::kInvalidHeader);
+}
+
 uint32_t PngCrc(std::span<const uint8_t> bytes) noexcept {
   uint32_t crc = 0xffffffffu;
   for (uint8_t byte : bytes) {
@@ -85,6 +182,41 @@ bool ResampleIndicesFit(int in_size, int out_size) noexcept {
 
 }  // namespace
 
+MediaPlanResult ReadGifFrame(std::span<const uint8_t> bytes,
+                             GifFrame* out) noexcept {
+  if (!out) return Fail(MediaPlanError::kInvalidConfig);
+  *out = {};
+  if (bytes.size() < 6 || bytes[0] != 'G' || bytes[1] != 'I' ||
+      bytes[2] != 'F' || bytes[3] != '8' ||
+      (bytes[4] != '7' && bytes[4] != '9') || bytes[5] != 'a')
+    return Fail(MediaPlanError::kUnsupportedFormat);
+  MediaHeader header;
+  return GifHeader(bytes, &header, out);
+}
+
+const char* MediaFormatName(MediaFormat format) noexcept {
+  switch (format) {
+    case MediaFormat::kPng:
+      return "png";
+    case MediaFormat::kJpeg:
+      return "jpeg";
+    case MediaFormat::kGif:
+      return "gif";
+  }
+  return "";
+}
+const char* MediaFormatMime(MediaFormat format) noexcept {
+  switch (format) {
+    case MediaFormat::kPng:
+      return "image/png";
+    case MediaFormat::kJpeg:
+      return "image/jpeg";
+    case MediaFormat::kGif:
+      return "image/gif";
+  }
+  return "";
+}
+
 const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
   switch (error) {
     case MediaPlanError::kNone:
@@ -99,6 +231,8 @@ const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
       return "media_encoded_limit";
     case MediaPlanError::kUnsupportedFormat:
       return "media_format_unsupported";
+    case MediaPlanError::kAnimation:
+      return "media_animation_unsupported";
     case MediaPlanError::kInvalidHeader:
       return "media_header_invalid";
     case MediaPlanError::kSourceDimensions:
@@ -135,6 +269,10 @@ MediaPlanResult ReadMediaHeader(std::span<const uint8_t> bytes,
                                 MediaHeader* out) noexcept {
   if (!out) return Fail(MediaPlanError::kInvalidConfig);
   *out = {};
+  if (bytes.size() >= 6 && bytes[0] == 'G' && bytes[1] == 'I' &&
+      bytes[2] == 'F' && bytes[3] == '8' &&
+      (bytes[4] == '7' || bytes[4] == '9') && bytes[5] == 'a')
+    return GifHeader(bytes, out);
   constexpr uint8_t kPng[] = {137, 80, 78, 71, 13, 10, 26, 10};
   if (bytes.size() >= 8 &&
       std::equal(std::begin(kPng), std::end(kPng), bytes.begin())) {

@@ -14,6 +14,7 @@ enum class TimingStage {
   kPrepare,
   kDecodePng,
   kDecodeJpeg,
+  kDecodeGif,
   kResize,
   kNormalize,
   kPatchify,
@@ -29,11 +30,11 @@ enum class TimingStage {
 
 inline constexpr std::array<const char*,
                             static_cast<size_t>(TimingStage::kCount)>
-    kTimingNames{"prepare",   "decode_png",      "decode_jpeg",
-                 "resize",    "normalize",       "patchify",
-                 "pack",      "pixels_allocate", "pixels_upload",
-                 "workspace", "output_allocate", "forward",
-                 "cleanup"};
+    kTimingNames{"prepare",       "decode_png", "decode_jpeg",
+                 "decode_gif",    "resize",     "normalize",
+                 "patchify",      "pack",       "pixels_allocate",
+                 "pixels_upload", "workspace",  "output_allocate",
+                 "forward",       "cleanup"};
 
 inline bool VisionTimingEnabled() {
   // Environment is fixed at process startup, as with other diagnostic flags.
@@ -85,7 +86,7 @@ class StageTimings {
     // Negative residual is deliberately not clamped: analysis must reject an
     // overlapping measurement instead of hiding it. Not pure GPU/kernel time.
     std::fprintf(sink,
-                 "[q4t][vision-timing] version=1 id=%s clock=host_wall "
+                 "[q4t][vision-timing] version=2 id=%s clock=host_wall "
                  "completed=%d items=%zu frames=%zu patches=%llu "
                  "total_ms=%.6f other_ms=%.6f%s\n",
                  id, completed, items, frames, patches, total, total - measured,

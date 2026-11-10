@@ -291,13 +291,17 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
       next.kind = FileInputSource::Kind::kUrl;
     } else if (next.value.starts_with("data:")) {
       constexpr std::string_view png = "data:image/png;base64,",
-                                 jpeg = "data:image/jpeg;base64,";
+                                 jpeg = "data:image/jpeg;base64,",
+                                 gif = "data:image/gif;base64,";
       if (next.value.starts_with(png)) {
         next.mime_type = "image/png";
         next.value.remove_prefix(png.size());
       } else if (next.value.starts_with(jpeg)) {
         next.mime_type = "image/jpeg";
         next.value.remove_prefix(jpeg.size());
+      } else if (next.value.starts_with(gif)) {
+        next.mime_type = "image/gif";
+        next.value.remove_prefix(gif.size());
       } else {
         return Invalid("Image data URI requires a supported media type",
                        url_path);

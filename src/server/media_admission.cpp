@@ -60,12 +60,16 @@ Status DecodeMediaUrl(std::string_view url, std::string* bytes,
   int format = -1;
   constexpr std::string_view png = "data:image/png;base64,";
   constexpr std::string_view jpeg = "data:image/jpeg;base64,";
+  constexpr std::string_view gif = "data:image/gif;base64,";
   if (url.starts_with(png)) {
     url.remove_prefix(png.size());
     format = 0;
   } else if (url.starts_with(jpeg)) {
     url.remove_prefix(jpeg.size());
     format = 1;
+  } else if (url.starts_with(gif)) {
+    url.remove_prefix(gif.size());
+    format = 2;
   } else if (url.starts_with("data:") || url.starts_with("http://") ||
              url.starts_with("https://"))
     return fail("media_url_unsupported");
@@ -99,7 +103,8 @@ Status DecodeMediaUrl(std::string_view url, std::string* bytes,
       &header);
   if (!checked) return fail(vision::MediaPlanErrorCode(checked.error));
   if ((format == 0 && header.format != vision::MediaFormat::kPng) ||
-      (format == 1 && header.format != vision::MediaFormat::kJpeg))
+      (format == 1 && header.format != vision::MediaFormat::kJpeg) ||
+      (format == 2 && header.format != vision::MediaFormat::kGif))
     return fail("media_format_mismatch");
   return Status();
 }
@@ -257,8 +262,8 @@ Status ExpandChatMedia(const io::Json& request,
 std::string MediaLimitsJson(uint64_t attention_shared_bytes) {
   const vision::MediaPlanLimits limits;
   return R"({"profile":"q4t-media-admission-v3","experimental":true,)"
-         R"("roles":["user"],"formats":["png","jpeg"],)"
-         R"("data_url_mime":["image/png","image/jpeg"],)"
+         R"("roles":["user"],"formats":["png","jpeg","gif"],)"
+         R"("data_url_mime":["image/png","image/jpeg","image/gif"],"animated_images":false,)"
          R"("raw_base64":true,"base64":"canonical_standard_padded",)"
          R"("image_detail":["auto","low","high","original"],"remote_urls":false,)"
          R"("detail_policy":{"auto":"qwen_reference_smart_resize",)"

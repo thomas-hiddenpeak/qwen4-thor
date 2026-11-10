@@ -1,0 +1,15 @@
+[PASS] file_image_source_contract_preserves_borrowed_payload_and_detail
+[PASS] file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor
+[PASS] file_image_snapshot_restores_deleted_source_and_rechecks_header_and_budgets
+[PASS] file_image_gif_complete_structure_rejects_animation_and_truncation
+[PASS] file_image_gif_actual_pixels_match_pillow_palette_and_canvas
+[PASS] file_image_gif_frozen_files_keep_original_bytes_and_render_mime
+[PASS] file_image_gif_real_video_and_separate_decode_timing
+[PASS] vision_timing_disabled_is_silent
+[PASS] vision_timing_accumulates_without_mixing_codecs
+[PASS] vision_timing_stop_is_idempotent_and_unwind_records_partial
+[PASS] vision_timing_terminal_fields_and_fresh_request
+[PASS] image_detail_actual_pixels_match_independent_pillow_four_modes
+[PASS] media_transport_base64_and_mime
+[PASS] media_policy_discovery
+14 tests, 14 passed, 0 failed, 0 skipped

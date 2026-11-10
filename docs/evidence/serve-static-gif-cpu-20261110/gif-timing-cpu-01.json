@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.vision_service.test_timing",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06399950571358204
+}

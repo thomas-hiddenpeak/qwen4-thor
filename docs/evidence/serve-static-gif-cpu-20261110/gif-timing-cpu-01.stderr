@@ -1,0 +1,12 @@
+test_complete_partition (tools.vision_service.test_timing.Timing.test_complete_partition) ... ok
+test_duplicate_request_rejected (tools.vision_service.test_timing.Timing.test_duplicate_request_rejected) ... ok
+test_gif_version_two_and_legacy_zero_are_distinct (tools.vision_service.test_timing.Timing.test_gif_version_two_and_legacy_zero_are_distinct) ... ok
+test_invalid_durations_and_overlap (tools.vision_service.test_timing.Timing.test_invalid_durations_and_overlap) ... ok
+test_missing_duplicate_or_changed_fields (tools.vision_service.test_timing.Timing.test_missing_duplicate_or_changed_fields) ... ok
+test_missing_stage_or_wrong_codec_rejected (tools.vision_service.test_timing.Timing.test_missing_stage_or_wrong_codec_rejected) ... ok
+test_partial_is_retained_but_not_complete_sample (tools.vision_service.test_timing.Timing.test_partial_is_retained_but_not_complete_sample) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK

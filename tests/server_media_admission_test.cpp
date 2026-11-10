@@ -114,7 +114,7 @@ Q4T_TEST(media_transport_base64_and_mime) {
     Q4T_CHECK(!DecodeMediaUrl(input, &bytes, &code));
     Q4T_CHECK(std::string(code) == "media_base64_invalid" && bytes.empty());
   }
-  for (const char* input : {"data:image/gif;base64,AAAA", "http://a/b.png",
+  for (const char* input : {"data:image/tiff;base64,AAAA", "http://a/b.png",
                             "https://a/b.jpg", "data:image/png,AAAA"}) {
     Q4T_CHECK(!DecodeMediaUrl(input, &bytes, &code));
     Q4T_CHECK(std::string(code) == "media_url_unsupported");

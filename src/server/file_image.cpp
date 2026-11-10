@@ -87,9 +87,7 @@ ObjectReply ReadFileImage(ObjectStore* objects, const BinaryAccess& access,
   if (!reply.ok()) return reply;
   if (!source.mime_type.empty() &&
       source.kind == FileInputSource::Kind::kInline &&
-      source.mime_type != (next.header.format == vision::MediaFormat::kPng
-                               ? "image/png"
-                               : "image/jpeg"))
+      source.mime_type != vision::MediaFormatMime(next.header.format))
     return Error(400, "media_format_mismatch",
                  "Image data URI type disagrees with its bytes");
   reply = Active(access, control);
@@ -125,9 +123,7 @@ ObjectReply SaveFileImageSnapshot(
        {"detail", String(image.detail)},
        {"width", Number(image.header.width)},
        {"height", Number(image.header.height)},
-       {"encoding",
-        String(image.header.format == vision::MediaFormat::kPng ? "png"
-                                                                : "jpeg")}});
+       {"encoding", String(vision::MediaFormatName(image.header.format))}});
   const std::string_view bytes(source.bytes);
   return store.Save(access, binding_sha256, metadata, std::span(&bytes, 1),
                     storage, hold_seconds, reference, hold);
@@ -169,8 +165,7 @@ ObjectReply ReadFileImageSnapshot(InputSnapshotStore& store,
     return reply.code == "invalid_file_image" ? Corrupt() : reply;
   if (data.GetInt("width", -1) != next.header.width ||
       data.GetInt("height", -1) != next.header.height ||
-      data.GetString("encoding") !=
-          (next.header.format == vision::MediaFormat::kPng ? "png" : "jpeg"))
+      data.GetString("encoding") != vision::MediaFormatName(next.header.format))
     return Corrupt();
   reply = Active(access);
   if (!reply.ok()) return reply;

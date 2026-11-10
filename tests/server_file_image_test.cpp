@@ -18,6 +18,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/test.h"
+#include "q4t/vision/timing.h"
 
 namespace {
 using namespace q4t::server;
@@ -374,5 +375,161 @@ Q4T_TEST(
             ReadFileImage(&objects, cancelled, source, {}, {}, &budget, &image)
                     .http_status == 499 &&
             image.source.bytes.empty());
+  return true;
+}
+
+Q4T_TEST(file_image_gif_complete_structure_rejects_animation_and_truncation) {
+  using namespace q4t::vision;
+  const auto image = Bytes("gif/opaque.gif");
+  const auto header = [&](std::string_view bytes, MediaHeader* value) {
+    return ReadMediaHeader(
+        {reinterpret_cast<const uint8_t*>(bytes.data()), bytes.size()}, value);
+  };
+  MediaHeader value;
+  Q4T_CHECK(header(image, &value) && value.format == MediaFormat::kGif &&
+            value.width == 64 && value.height == 32);
+  Q4T_CHECK(std::string(MediaFormatMime(value.format)) == "image/gif");
+  for (size_t length = 0; length < image.size(); ++length) {
+    Q4T_CHECK(!header(std::string_view(image).substr(0, length), &value));
+    Q4T_CHECK(value.width == 0 && value.height == 0);
+  }
+  Q4T_CHECK(!header(image + "trailing", &value));
+  auto result = header(Bytes("gif/animated.gif"), &value);
+  Q4T_CHECK(!result && result.error == MediaPlanError::kAnimation &&
+            value.width == 0);
+  auto corrupt = image;
+  const size_t descriptor =
+      13 + 3 * (size_t{2} << (static_cast<uint8_t>(image[10]) & 7));
+  Q4T_CHECK(corrupt[descriptor] == ',');
+  corrupt[descriptor + 5] = 0;
+  corrupt[descriptor + 6] = 0;
+  Q4T_CHECK(!header(corrupt, &value));
+  corrupt = image;
+  corrupt[descriptor + 9] |= 0x08;  // Reserved image descriptor bit.
+  Q4T_CHECK(!header(corrupt, &value));
+  corrupt = image;
+  corrupt[descriptor + 10] = 1;  // GIF minimum LZW code size is 2..8.
+  Q4T_CHECK(!header(corrupt, &value));
+  return true;
+}
+
+Q4T_TEST(file_image_gif_actual_pixels_match_pillow_palette_and_canvas) {
+  using namespace q4t::vision;
+  for (const auto* name : {"opaque", "transparent", "local", "offset"}) {
+    const auto gif = Bytes((std::string("gif/") + name + ".gif").c_str());
+    const auto original_sha = Digest(gif);
+    const auto png = Bytes((std::string("gif/") + name + ".png").c_str());
+    for (auto mode : {ImageDetail::kAuto, ImageDetail::kLow, ImageDetail::kHigh,
+                      ImageDetail::kOriginal}) {
+      ProcessorOptions options;
+      options.image_detail = mode;
+      ProcessedImage actual, reference;
+      std::string error;
+      Q4T_CHECK(ProcessImage(reinterpret_cast<const uint8_t*>(gif.data()),
+                             gif.size(), {}, &actual, &error, options));
+      Q4T_CHECK(ProcessImage(reinterpret_cast<const uint8_t*>(png.data()),
+                             png.size(), {}, &reference, &error, options));
+      Q4T_CHECK(actual.grid_h == reference.grid_h &&
+                actual.grid_w == reference.grid_w &&
+                actual.pixel_values == reference.pixel_values);
+      Q4T_CHECK(Digest(gif) == original_sha);
+    }
+  }
+  const auto gif = Bytes("gif/transparent.gif");
+  ProcessorResult result;
+  ProcessorOptions options;
+  options.decoder_owned_bytes = 1024;
+  options.result = &result;
+  ProcessedImage output;
+  std::string error;
+  Q4T_CHECK(!ProcessImage(reinterpret_cast<const uint8_t*>(gif.data()),
+                          gif.size(), {}, &output, &error, options));
+  Q4T_CHECK(error == "media_decode_limit" && output.pixel_values.empty() &&
+            result.decoder_peak_bytes <= 1024);
+  return true;
+}
+
+Q4T_TEST(file_image_gif_frozen_files_keep_original_bytes_and_render_mime) {
+  using namespace q4t::vision;
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto gif = Bytes("gif/transparent.gif");
+  const auto id = Upload(objects, gif, "transparent.gif");
+  const auto items = Items(Part("file_id", id, "original"));
+  FileExpansion expansion(&objects, {});
+  Q4T_CHECK(Ok(expansion.Prepare(items, FileInputProfile::kResponsesStored, {},
+                                 Access())) &&
+            Ok(expansion.Persist(Access())) &&
+            Ok(Files(objects).Erase(Access(), id)));
+  FileExpansion restored(&objects, {});
+  Json rendered;
+  Q4T_CHECK(Ok(restored.Prepare(items, FileInputProfile::kResponsesStored,
+                                expansion.Bindings(), Access(), true)) &&
+            Ok(restored.Render(items, &rendered)));
+  const auto& part = rendered.array[0].Find("content")->array[0];
+  Q4T_CHECK(part.GetString("image_url").starts_with("data:image/gif;base64,"));
+  FileInputSource source;
+  Q4T_CHECK(Ok(Source(part, &source)) && source.mime_type == "image/gif");
+  FileImageInput image;
+  FileInputBudget budget;
+  Q4T_CHECK(
+      Ok(ReadFileImage(nullptr, Access(), source, {}, {}, &budget, &image)) &&
+      image.source.bytes == gif && image.header.format == MediaFormat::kGif);
+  std::string bytes;
+  const char* code;
+  Q4T_CHECK(DecodeMediaUrl(part.GetString("image_url"), &bytes, &code) &&
+            bytes == gif);
+  auto wrong = part.GetString("image_url");
+  wrong.replace(5, 9, "image/png");
+  Q4T_CHECK(!DecodeMediaUrl(wrong, &bytes, &code) && bytes.empty() &&
+            std::string(code) == "media_format_mismatch");
+  Q4T_CHECK(Ok(restored.Release(Access())) && Ok(expansion.Release(Access())));
+  return true;
+}
+
+Q4T_TEST(file_image_gif_real_video_and_separate_decode_timing) {
+  using namespace q4t::vision;
+  std::vector<std::string> gifs{Bytes("gif/opaque.gif"),
+                                Bytes("gif/transparent.gif"),
+                                Bytes("gif/local.gif")};
+  std::vector<std::string> pngs{Bytes("gif/opaque.png"),
+                                Bytes("gif/transparent.png"),
+                                Bytes("gif/local.png")};
+  const auto process = [](const std::vector<std::string>& sources,
+                          ProcessedVideo* output, StageTimings* timing) {
+    std::vector<const uint8_t*> bytes;
+    std::vector<size_t> sizes;
+    for (const auto& source : sources) {
+      bytes.push_back(reinterpret_cast<const uint8_t*>(source.data()));
+      sizes.push_back(source.size());
+    }
+    ProcessorOptions options;
+    options.timings = timing;
+    ProcessorConfig video;
+    video.min_pixels = 4096;
+    video.max_pixels = 25165824;
+    std::string error;
+    return ProcessVideo(bytes, sizes, video, output, &error, options);
+  };
+  ProcessedVideo actual, reference;
+  StageTimings timing(true);
+  Q4T_CHECK(process(gifs, &actual, &timing) &&
+            process(pngs, &reference, nullptr));
+  Q4T_CHECK(actual.pixel_values == reference.pixel_values &&
+            actual.grid_t == 2);
+  Q4T_CHECK(timing.Calls(TimingStage::kDecodeGif) == 3 &&
+            timing.Calls(TimingStage::kDecodePng) == 0 &&
+            timing.Calls(TimingStage::kDecodeJpeg) == 0);
+  FILE* file = std::tmpfile();
+  Q4T_CHECK(file);
+  timing.Report(file, "gif-cpu", true, 1, 3,
+                actual.grid_t * actual.grid_h * actual.grid_w);
+  std::rewind(file);
+  std::string text;
+  char buffer[4096];
+  while (std::fgets(buffer, sizeof(buffer), file)) text += buffer;
+  std::fclose(file);
+  Q4T_CHECK(text.find("version=2") != text.npos &&
+            text.find("decode_gif_calls=3") != text.npos);
   return true;
 }

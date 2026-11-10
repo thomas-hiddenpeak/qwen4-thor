@@ -1,16 +1,16 @@
 // Image processor for the Qwen3-VL vision tower.
 //
-// Decodes PNG/JPEG with stb_image (JPEG may differ from Pillow IDCT),
-// smart-resizes (factor = patch_size * merge_size),
-// applies BICUBIC resize (exact Pillow 12.3.0 fixed-point replication),
-// normalizes to [-1, 1], and patchifies in block-major order to match
-// the vision tower's expected pixel_values layout.
+// Decodes PNG/JPEG/static GIF with stb_image (JPEG may differ from Pillow
+// IDCT), smart-resizes (factor = patch_size * merge_size), applies BICUBIC
+// resize (exact Pillow 12.3.0 fixed-point replication), normalizes to [-1, 1],
+// and patchifies in block-major order to match the vision tower's expected
+// pixel_values layout.
 //
 // Reference: transformers 5.16.1 Qwen2VLImageProcessorPil (PIL backend)
 // + Pillow 12.3.0 src/libImaging/Resample.c (bicubic fixed-point).
 //
 // Pipeline (must match the Python reference tools/vision_processor_ref.py):
-//   1. Decode PNG/JPEG -> RGB uint8 [H, W, 3]
+//   1. Decode PNG/JPEG/static GIF -> RGB uint8 [H, W, 3]
 //   2. smart_resize(H, W, factor=32, min_pixels, max_pixels) -> (rh, rw)
 //   3. BICUBIC resize (Pillow fixed-point) -> uint8 [rh, rw, 3]
 //   4. rescale: / 255.0 -> float32 [0, 1]
@@ -92,7 +92,7 @@ struct ProcessedVideo {
 };
 
 // Decode + resize + normalize + patchify.
-// image_bytes: raw PNG/JPEG image data.
+// image_bytes: raw PNG/JPEG/static GIF image data.
 // num_bytes: length of image_bytes.
 // cfg: processor config.
 // out: receives the processed image.
@@ -104,9 +104,9 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
 
 // Video processor (Qwen3-VL, transformers 5.16.1 Qwen3VLVideoProcessor).
 //
-// frames: list of raw PNG/JPEG frame buffers (each decoded independently).
-// frame_bytes: lengths of each frame buffer.
-// cfg: processor config. NOTE: min_pixels/max_pixels must be the VIDEO
+// frames: list of raw PNG/JPEG/static GIF frame buffers (each decoded
+// independently). frame_bytes: lengths of each frame buffer. cfg: processor
+// config. NOTE: min_pixels/max_pixels must be the VIDEO
 //      budget (video_preprocessor_config.json: 4096 / 25165824), NOT the
 //      image budget.
 // out: receives the processed video (grid_t = ceil(num_frames / temporal)).

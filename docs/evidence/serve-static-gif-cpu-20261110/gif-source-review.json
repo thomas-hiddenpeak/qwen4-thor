@@ -1,0 +1,9 @@
+{
+  "reviewed": "2026-11-10",
+  "sources": [
+    "https://developers.openai.com/api/docs/guides/images-vision",
+    "https://www.w3.org/Graphics/GIF/spec-gif89a.txt"
+  ],
+  "implementation": "Existing repository stb_image, own complete static block validation and Pillow-compatible RGB policy; no third-party decoder code copied or new runtime dependency.",
+  "scope": "PNG/JPEG/static GIF; animated GIF explicitly excluded by the official image-input contract. WebP still requires isolated native decoding."
+}

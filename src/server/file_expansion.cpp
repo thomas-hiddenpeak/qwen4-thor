@@ -622,10 +622,9 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
     *parts = Array();
     if (entry.image) {
       const auto& image = *entry.image;
-      const std::string prefix =
-          image.header.format == vision::MediaFormat::kPng
-              ? "data:image/png;base64,"
-              : "data:image/jpeg;base64,";
+      const std::string prefix = std::string("data:") +
+                                 vision::MediaFormatMime(image.header.format) +
+                                 ";base64,";
       if (!Add(prefix.size() + (image.source.bytes.size() + 2) / 3 * 4,
                options_.max_rendered_bytes, &bytes))
         return Capacity();
