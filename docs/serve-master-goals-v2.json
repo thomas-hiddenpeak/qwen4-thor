@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 actual native generation adapter, fair Batch admission/jobs, pending-input snapshot ownership, recovery orchestration, HTTP/native SDK/business/reversible delivery; all eight backends with A10 and all master work remain required.",
+      "next": "A09.6 fair Batch jobs and resumed whole-file validation reusing frozen rows; independent rate origin including background Responses, scalable small-row metadata, HTTP/native SDK/business and compatible rollback/default delivery. Native finite endpoint and immutable preparation components are CPU-accepted; full Batch API and all eight backends with A10 remain required, along with all master work.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1045,8 +1045,9 @@
         "evidence/serve-batch-results-cpu-20261110/README.md",
         "evidence/serve-batch-finite-response-cpu-20261110/README.md",
         "evidence/serve-batch-recovery-scan-cpu-20261110/README.md",
-        "docs/evidence/serve-batch-preparation-cpu-20261110/README.md",
-        "docs/evidence/serve-batch-native-execution-cpu-20261110/README.md"
+        "evidence/serve-batch-preparation-cpu-20261110/README.md",
+        "evidence/serve-batch-native-execution-cpu-20261110/README.md",
+        "evidence/serve-batch-validation-rows-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },

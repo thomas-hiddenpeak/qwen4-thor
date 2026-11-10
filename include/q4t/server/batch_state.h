@@ -46,6 +46,13 @@ class BatchState {
   ObjectReply AppendValidationPage(const BinaryAccess& access,
                                    const std::string& id,
                                    std::span<const BatchRowPosition> rows);
+  // Commit a prepared row immediately, extending a partial 128-row page.
+  // This freezes external inputs before yielding/restarting validation; the
+  // next row cannot reset prior inputs or change the canonical model.
+  ObjectReply AppendValidatedRow(const BinaryAccess& access,
+                                 const std::string& id,
+                                 const BatchRowPosition& row,
+                                 const std::string& canonical_model);
   ObjectReply CompleteValidation(const BinaryAccess& access,
                                  const std::string& id,
                                  const std::string& canonical_model);
@@ -81,6 +88,9 @@ class BatchState {
   ObjectReply Owned(const BinaryAccess& access, const std::string& id);
   ObjectReply Page(const BinaryAccess& access, const io::Json& stored,
                    size_t index);
+  ObjectReply AppendRows(const BinaryAccess& access, const std::string& id,
+                         std::span<const BatchRowPosition> rows,
+                         const std::string& canonical_model);
   ObjectStore& objects_;
 };
 }  // namespace q4t::server

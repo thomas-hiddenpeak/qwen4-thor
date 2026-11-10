@@ -5,9 +5,11 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <barrier>
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
+#include <future>
 #include <thread>
 
 #include "../src/server/object_protocol.h"
@@ -138,6 +140,27 @@ void Drain(ObjectStore& objects) {
   const auto until = Clock::now() + 2s;
   while (objects.Health().pending && Clock::now() < until)
     std::this_thread::sleep_for(1ms);
+}
+struct FrozenPosition {
+  BatchRowPosition row;
+  InputSnapshotHold hold;
+};
+FrozenPosition Freeze(ObjectStore& objects, const std::string& id,
+                       const BatchRowPosition& position) {
+  FrozenPosition frozen{position, {}};
+  frozen.row.prepared_binding_sha256 =
+      Digest("CPU validation checkpoint:" + id + ':' +
+             std::to_string(position.line));
+  const std::string_view text = "private preparation fixture; no model";
+  const auto reply = InputSnapshotStore(objects).Save(
+      Access(), frozen.row.prepared_binding_sha256,
+      Object({{"line", Number(position.line)}}), std::span(&text, 1), {}, 60,
+      &frozen.row.prepared_input, &frozen.hold);
+  if (!Ok(reply)) throw std::runtime_error("frozen checkpoint fixture");
+  return frozen;
+}
+bool Release(ObjectStore& objects, FrozenPosition* frozen) {
+  return Ok(InputSnapshotStore(objects).Release(Access(), &frozen->hold));
 }
 }  // namespace
 
@@ -509,6 +532,9 @@ Q4T_TEST(batch_state_original_expiry_blocks_late_validation_mutation) {
   Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
   const auto before = batches.Load(Access(), id);
   Q4T_CHECK(Ok(before));
+  auto frozen = Freeze(objects, id, Positions(bytes)[0]);
+  Q4T_CHECK(!batches.AppendValidatedRow(Access(), id, frozen.row, "fixture").ok());
+  Q4T_CHECK(Release(objects, &frozen));
   Q4T_CHECK(!batches.AppendValidationPage(Access(), id, Positions(bytes)).ok());
   Q4T_CHECK(!batches.ResetValidation(Access(), id).ok());
   Q4T_CHECK(OutputJson(batches.Load(Access(), id).value) ==
@@ -516,6 +542,284 @@ Q4T_TEST(batch_state_original_expiry_blocks_late_validation_mutation) {
   // Expiry never prevents explicitly cancelling an abandoned validation.
   Q4T_CHECK(Ok(batches.Cancel(Access(), id)) &&
             Ok(batches.FinishCancelled(Access(), id)));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_partial_page_survives_restart_and_129_boundary) {
+  Fixture fixture;
+  const auto bytes = Input(129);
+  const auto positions = Positions(bytes);
+  std::string id, first_page;
+  Json first_row;
+  {
+    ObjectStore objects(fixture.options);
+    const auto file = File(objects, bytes);
+    id = Create(objects, file);
+    BatchState batches(objects);
+    for (size_t i = 0; i < 3; ++i) {
+      auto frozen = Freeze(objects, id, positions[i]);
+      const auto added =
+          batches.AppendValidatedRow(Access(), id, frozen.row, "fixture");
+      Q4T_CHECK(Ok(added) && Release(objects, &frozen));
+      if (i == 0) first_page = added.value.GetString("page_id");
+      Q4T_CHECK(added.value.GetString("page_id") == first_page);
+    }
+    first_row = batches.Row(Access(), id, 0).value;
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), file)));
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto partial = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(partial) &&
+            partial.value.Find("data")->GetInt("validated_rows") == 3 &&
+            partial.value.Find("data")->GetString("canonical_model") ==
+                "fixture");
+  Q4T_CHECK(OutputJson(batches.Row(Access(), id, 0).value) ==
+            OutputJson(first_row));
+  for (size_t i = 3; i < positions.size(); ++i) {
+    auto frozen = Freeze(objects, id, positions[i]);
+    const auto added =
+        batches.AppendValidatedRow(Access(), id, frozen.row, "fixture");
+    Q4T_CHECK(Ok(added) && Release(objects, &frozen));
+    Q4T_CHECK((added.value.GetString("page_id") == first_page) == (i < 128));
+  }
+  const auto page = objects.Execute(
+      StoredRequest(first_page, ObjectKind::kToolRun), Access().deadline);
+  Q4T_CHECK(Ok(page) && page.value.GetInt("revision") == 128 &&
+            page.value.Find("data")->GetArray("rows")->array.size() == 128);
+  Q4T_CHECK(Ok(batches.CompleteValidation(Access(), id, "fixture")));
+  BatchInputRow last;
+  Q4T_CHECK(Ok(batches.ReadInputRow(Access(), id, 128, &last)) &&
+            last.custom_id == "source-128");
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_frozen_model_and_sources_cannot_reset_or_change) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto bytes = Input(2);
+  const auto positions = Positions(bytes);
+  const auto id = Create(objects, File(objects, bytes));
+  BatchState batches(objects);
+  auto first = Freeze(objects, id, positions[0]);
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, first.row, "fixture")) &&
+            Release(objects, &first));
+  const auto before = batches.Load(Access(), id);
+  auto second = Freeze(objects, id, positions[1]);
+  Q4T_CHECK(batches.ResetValidation(Access(), id).code ==
+            "batch_frozen_inputs_retained");
+  Q4T_CHECK(batches.AppendValidatedRow(Access(), id, second.row, "changed")
+                .http_status == 400);
+  Q4T_CHECK(OutputJson(batches.Load(Access(), id).value) ==
+            OutputJson(before.value));
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, second.row, "fixture")) &&
+            Release(objects, &second));
+  Q4T_CHECK(batches.CompleteValidation(Access(), id, "changed").http_status ==
+            400);
+  Q4T_CHECK(Ok(batches.CompleteValidation(Access(), id, "fixture")));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_actual_unknown_partial_append_never_duplicates) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  const auto bytes = Input(2);
+  const auto positions = Positions(bytes);
+  std::string id, page_id;
+  FrozenPosition second;
+  {
+    ObjectStore objects(fixture.options);
+    id = Create(objects, File(objects, bytes));
+    auto first = Freeze(objects, id, positions[0]);
+    const auto added =
+        BatchState(objects).AppendValidatedRow(Access(), id, first.row, "fixture");
+    Q4T_CHECK(Ok(added) && Release(objects, &first));
+    page_id = added.value.GetString("page_id");
+    second = Freeze(objects, id, positions[1]);
+  }
+  Injection injection("--q4t-object-worker-application-lost-ack");
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  auto added = batches.AppendValidatedRow(Access(), id, second.row, "fixture");
+  Q4T_CHECK(!added.ok() && added.commit_unknown &&
+            added.value.GetString("id") == id &&
+            added.value.GetString("page_id") == page_id);
+  Drain(objects);
+  const auto loaded = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(loaded) &&
+            loaded.value.Find("data")->GetInt("validated_rows") == 2 &&
+            loaded.value.Find("data")->GetArray("pages")->array.size() == 1);
+  Q4T_CHECK(!batches.AppendValidatedRow(Access(), id, second.row, "fixture").ok());
+  const auto page = objects.Execute(
+      StoredRequest(page_id, ObjectKind::kToolRun), Access().deadline);
+  Q4T_CHECK(Ok(page) && page.value.GetInt("revision") == 2);
+  Q4T_CHECK(Release(objects, &second));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_concurrent_same_offset_commits_exactly_once) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto bytes = Input(2);
+  const auto positions = Positions(bytes);
+  const auto id = Create(objects, File(objects, bytes));
+  BatchState batches(objects);
+  auto first = Freeze(objects, id, positions[0]);
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, first.row, "fixture")) &&
+            Release(objects, &first));
+  auto a = Freeze(objects, id, positions[1]);
+  auto b = Freeze(objects, id, positions[1]);
+  std::barrier gate(2);
+  const auto append = [&](const BatchRowPosition& row) {
+    gate.arrive_and_wait();
+    return batches.AppendValidatedRow(Access(), id, row, "fixture");
+  };
+  auto left = std::async(std::launch::async, append, a.row);
+  auto right = std::async(std::launch::async, append, b.row);
+  const auto one = left.get(), two = right.get();
+  Q4T_CHECK(one.ok() != two.ok());
+  Q4T_CHECK(Release(objects, &a) && Release(objects, &b));
+  const auto loaded = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(loaded) &&
+            loaded.value.Find("data")->GetInt("validated_rows") == 2 &&
+            loaded.value.Find("data")->GetInt("validated_bytes") ==
+                static_cast<int64_t>(bytes.size()));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_cancel_collects_private_inputs_after_terminal) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto bytes = Input(2);
+  const auto positions = Positions(bytes);
+  const auto file = File(objects, bytes);
+  const auto id = Create(objects, file);
+  BatchState batches(objects);
+  auto first = Freeze(objects, id, positions[0]);
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, first.row, "fixture")) &&
+            Release(objects, &first));
+  Q4T_CHECK(Ok(batches.Cancel(Access(), id)));
+  auto second = Freeze(objects, id, positions[1]);
+  Q4T_CHECK(batches.AppendValidatedRow(Access(), id, second.row, "fixture")
+                .http_status == 409);
+  Q4T_CHECK(Release(objects, &second));
+  Q4T_CHECK(Ok(objects.Execute(
+      StoredRequest(first.row.prepared_input.id, ObjectKind::kInputSnapshot),
+      Access().deadline)));
+  Q4T_CHECK(Ok(batches.FinishCancelled(Access(), id)));
+  Q4T_CHECK(objects.Execute(
+                StoredRequest(first.row.prepared_input.id,
+                                ObjectKind::kInputSnapshot),
+                Access().deadline).http_status == 404);
+  Q4T_CHECK(Ok(Files(objects).Retrieve(Access(), file)));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_corrupt_private_model_never_authorizes_work) {
+  for (int variant = 0; variant < 4; ++variant) {
+    Fixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto bytes = Input(1);
+    const auto id = Create(objects, File(objects, bytes));
+    BatchState batches(objects);
+    auto row = Freeze(objects, id, Positions(bytes)[0]);
+    Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, row.row, "fixture")) &&
+              Release(objects, &row));
+    if (variant == 3)
+      Q4T_CHECK(Ok(batches.CompleteValidation(Access(), id, "fixture")));
+    Q4T_CHECK(Ok(Edit(objects, id, [&](Json& data) {
+      if (variant == 0) Set(&data, "inputs_frozen", Number(1));
+      if (variant == 1) Set(&data, "canonical_model", Boolean(true));
+      if (variant == 2) Set(&data, "canonical_model", String(""));
+      if (variant == 3) Set(&data, "canonical_model", String("other"));
+    })));
+    Q4T_CHECK(batches.Load(Access(), id).code == "batch_state_invalid" &&
+              batches.StartRow(Access(), id, 0).code == "batch_state_invalid");
+  }
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_require_frozen_inputs_and_complete_file) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto bytes = Input(2);
+  const auto positions = Positions(bytes);
+  const auto id = Create(objects, File(objects, bytes));
+  BatchState batches(objects);
+  Q4T_CHECK(batches.AppendValidatedRow(Access(), id, positions[0], "fixture")
+                .http_status == 400);
+  auto frozen = Freeze(objects, id, positions[0]);
+  Q4T_CHECK(batches.AppendValidatedRow(Access(), id, frozen.row, "")
+                .http_status == 400);
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, frozen.row, "fixture")) &&
+            Release(objects, &frozen));
+  Q4T_CHECK(batches.CompleteValidation(Access(), id, "fixture").http_status ==
+                400 &&
+            batches.StartRow(Access(), id, 0).http_status == 409);
+  Q4T_CHECK(!batches.AppendValidationPage(Access(), id,
+                                          std::span(&positions[1], 1)).ok());
+  const auto legacy = Create(objects, File(objects, bytes));
+  Q4T_CHECK(Ok(batches.AppendValidationPage(
+      Access(), legacy, std::span(&positions[0], 1))));
+  auto next = Freeze(objects, legacy, positions[1]);
+  Q4T_CHECK(batches.AppendValidatedRow(Access(), legacy, next.row, "fixture")
+                .http_status == 400);
+  Q4T_CHECK(Release(objects, &next));
+  return true;
+}
+
+Q4T_TEST(batch_validation_rows_actual_dead_owner_resumes_original_partial_page) {
+  Fixture fixture;
+  int pipe[2];
+  Q4T_CHECK(pipe2(pipe, O_CLOEXEC) == 0);
+  const auto pid = fork();
+  Q4T_CHECK(pid >= 0);
+  if (pid == 0) {
+    close(pipe[0]);
+    try {
+      std::string id;
+      {
+        ObjectStore objects(fixture.options);
+        const auto bytes = Input(2);
+        id = Create(objects, File(objects, bytes));
+        auto row = Freeze(objects, id, Positions(bytes)[0]);
+        if (!BatchState(objects)
+                 .AppendValidatedRow(Access(), id, row.row, "fixture").ok() ||
+            !Release(objects, &row))
+          _exit(2);
+      }
+      if (write(pipe[1], id.data(), id.size()) != static_cast<ssize_t>(id.size()))
+        _exit(3);
+      close(pipe[1]);
+      _exit(0);
+    } catch (...) { _exit(4); }
+  }
+  close(pipe[1]);
+  char text[128];
+  const auto size = read(pipe[0], text, sizeof(text));
+  close(pipe[0]);
+  int status = 0;
+  Q4T_CHECK(waitpid(pid, &status, 0) == pid && WIFEXITED(status) &&
+            WEXITSTATUS(status) == 0 && size > 0);
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const std::string id(text, size);
+  const auto original = batches.Row(Access(), id, 0);
+  const auto before = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(original) && Ok(before) &&
+            Ok(batches.ClaimAbandoned(Access(), id)));
+  Q4T_CHECK(batches.ResetValidation(Access(), id).code ==
+            "batch_frozen_inputs_retained");
+  auto next = Freeze(objects, id, Positions(Input(2))[1]);
+  Q4T_CHECK(Ok(batches.AppendValidatedRow(Access(), id, next.row, "fixture")) &&
+            Release(objects, &next));
+  const auto after = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(after) &&
+            after.value.GetInt("expires_at") == before.value.GetInt("expires_at") &&
+            OutputJson(batches.Row(Access(), id, 0).value) ==
+                OutputJson(original.value) &&
+            after.value.Find("data")->GetInt("recoveries") == 1);
+  Q4T_CHECK(Ok(batches.CompleteValidation(Access(), id, "fixture")));
   return true;
 }
 

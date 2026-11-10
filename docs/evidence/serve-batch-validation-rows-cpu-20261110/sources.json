@@ -1,0 +1,8 @@
+{
+  "include/q4t/server/batch_state.h": "2de63713549a1f70fce62b517a50740ea1de37b867d6cb36ff7047b43f5b841c",
+  "src/server/batch_state.cpp": "2c71487c21eb98ede4bd81785e9746c0c2e5d4c4f660bb416b15f6955927dd84",
+  "src/server/batch_results.cpp": "c544bab91a10b38c5105367f1c5cc10a52059b4580cb964f0dbc673ca737b3d1",
+  "src/server/object_worker.cpp": "cb56ec09fe78cced61775d09eea7a2904ad16aaa3bdd1e9bfbc5f458bc909f41",
+  "src/server/object_retention.cpp": "0753089c518d4ff1423b390986eef83aafb0d8bf90afefc46ccf6e83469dfb0a",
+  "tests/server_batch_state_test.cpp": "8d2106e7b87ea79c7f7821966ab4a345f2f008cd2825a44dc752f7b5f267c348"
+}

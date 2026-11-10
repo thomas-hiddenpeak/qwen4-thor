@@ -124,6 +124,15 @@ ObjectReply Public(const Json& stored) {
       released &&
       (!released->IsBool() || (released->boolean && !BatchTerminal(status))))
     return Corrupt();
+  const auto* frozen = data->Find("inputs_frozen");
+  const auto* model = data->Find("canonical_model");
+  if ((frozen && !frozen->IsBool()) ||
+      (model && (!model->IsString() || model->str.empty() ||
+                 model->str.size() > 256 || !frozen || !frozen->boolean ||
+                 !data->GetInt("validated_rows") ||
+                 (status == "in_progress" &&
+                  batch->GetString("model") != model->str))))
+    return Corrupt();
   return result;
 }
 ObjectReply Commit(ObjectStore& objects, const BinaryAccess& access,
@@ -301,18 +310,43 @@ ObjectReply BatchState::List(const BinaryAccess& access, const Json& query) {
 ObjectReply BatchState::AppendValidationPage(
     const BinaryAccess& access, const std::string& id,
     std::span<const BatchRowPosition> rows) {
+  return AppendRows(access, id, rows, "");
+}
+ObjectReply BatchState::AppendValidatedRow(
+    const BinaryAccess& access, const std::string& id,
+    const BatchRowPosition& row, const std::string& canonical_model) {
+  if (canonical_model.empty() || canonical_model.size() > 256 ||
+      row.prepared_input.id.empty())
+    return Invalid("A validated row needs frozen inputs and canonical model");
+  return AppendRows(access, id, std::span(&row, 1), canonical_model);
+}
+ObjectReply BatchState::AppendRows(
+    const BinaryAccess& access, const std::string& id,
+    std::span<const BatchRowPosition> rows,
+    const std::string& canonical_model) {
   auto loaded = Owned(access, id);
   if (!loaded.ok()) return loaded;
   auto root = Update(access, loaded.value);
   const auto* batch = root.data.Find("batch");
   if (batch->GetString("status") != "validating")
     return Error(409, "batch_state_conflict", "Batch is not validating");
+  const auto deadline = batch->GetInt("expires_at");
+  const bool incremental = !canonical_model.empty();
+  const auto previous_model = root.data.GetString("canonical_model");
+  if (!previous_model.empty() && previous_model != canonical_model)
+    return Invalid("Canonical model changed during Batch validation");
   auto count = root.data.GetInt("validated_rows");
+  const auto previous_count = count;
   auto offset = root.data.GetInt("validated_bytes");
   const auto total_bytes = root.data.Find("blob")->GetInt("bytes");
-  if (rows.empty() || rows.size() > kBatchPageRows || count % kBatchPageRows ||
+  if (rows.empty() || rows.size() > kBatchPageRows ||
+      (!incremental && count % kBatchPageRows) ||
+      rows.size() > kBatchPageRows - count % kBatchPageRows ||
       rows.size() > kBatchRequests - count)
     return Invalid("Invalid batch validation page");
+  if (incremental && previous_count && previous_model.empty())
+    return Invalid("Cannot reinterpret earlier unbound validation rows");
+  bool frozen = root.data.GetBool("inputs_frozen");
   auto entries = Array();
   for (const auto& row : rows) {
     if (row.line != static_cast<uint64_t>(count + 1) ||
@@ -329,6 +363,7 @@ ObjectReply BatchState::AppendValidationPage(
                 {"status", String("pending")},
                 {"result_id", Json()}}));
     if (!row.prepared_input.id.empty()) {
+      frozen = true;
       InputSnapshotRef checked;
       const auto reference = InputSnapshotReference(row.prepared_input);
       if (!ParseInputSnapshotReference(reference, &checked) ||
@@ -345,19 +380,32 @@ ObjectReply BatchState::AppendValidationPage(
     ++count;
     offset += row.wire_bytes;
   }
-  const auto page_id = NewObjectId(ObjectKind::kToolRun);
-  if (page_id.empty())
-    return Error(503, "object_entropy_unavailable", "No page ID");
-  auto page = Request(access, page_id, ObjectOperation::kPut);
+  ObjectRequest page;
+  if (previous_count % kBatchPageRows) {
+    auto existing = Page(access, loaded.value, previous_count - 1);
+    if (!existing.ok()) return existing;
+    page = Update(access, existing.value);
+    auto& old_rows = Field(page.data, "rows").array;
+    for (auto& row : entries.array) old_rows.push_back(std::move(row));
+  } else {
+    const auto page_id = NewObjectId(ObjectKind::kToolRun);
+    if (page_id.empty())
+      return Error(503, "object_entropy_unavailable", "No page ID");
+    page = Request(access, page_id, ObjectOperation::kPut);
+    page.ttl_seconds = 0;
+    page.data = Object({{"format", String("q4t.batch_page.v1")},
+                        {"batch_id", String(id)},
+                        {"rows", std::move(entries)}});
+    Field(root.data, "pages").array.push_back(String(page_id));
+  }
   page.kind = ObjectKind::kToolRun;
-  page.ttl_seconds = 0;
-  page.data = Object({{"format", String("q4t.batch_page.v1")},
-                      {"batch_id", String(id)},
-                      {"rows", std::move(entries)}});
-  Field(root.data, "pages").array.push_back(String(page_id));
+  const auto page_id = page.id;
   Set(&root.data, "validated_rows", Number(count));
   Set(&root.data, "validated_bytes", Number(offset));
-  root.mutate_before = batch->GetInt("expires_at");
+  if (frozen) Set(&root.data, "inputs_frozen", Boolean(true));
+  if (incremental)
+    Set(&root.data, "canonical_model", String(canonical_model));
+  root.mutate_before = deadline;
   std::array mutations{std::move(page), std::move(root)};
   auto reply =
       objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
@@ -385,6 +433,9 @@ ObjectReply BatchState::CompleteValidation(const BinaryAccess& access,
       root.data.GetInt("validated_bytes") !=
           root.data.Find("blob")->GetInt("bytes"))
     return Invalid("Batch file validation is incomplete");
+  if (root.data.Has("canonical_model") &&
+      root.data.GetString("canonical_model") != canonical_model)
+    return Invalid("Canonical model changed after validation");
   root.mutate_before = batch.GetInt("expires_at");
   Set(&batch, "model", String(canonical_model));
   Set(&batch, "status", String("in_progress"));
@@ -481,6 +532,9 @@ ObjectReply BatchState::ResetValidation(const BinaryAccess& access,
   const auto* batch = root.data.Find("batch");
   if (batch->GetString("status") != "validating")
     return Error(409, "batch_state_conflict", "Batch is not validating");
+  if (root.data.GetBool("inputs_frozen"))
+    return Error(409, "batch_frozen_inputs_retained",
+                 "Resume validation from the original frozen inputs");
   root.mutate_before = batch->GetInt("expires_at");
   Set(&root.data, "pages", Array());
   Set(&root.data, "validated_rows", Number(0));

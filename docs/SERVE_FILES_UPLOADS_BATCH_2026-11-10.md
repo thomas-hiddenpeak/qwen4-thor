@@ -276,3 +276,12 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 清单：`.q4t-work/serve-batches-20261110/required-execution.txt`。RunBatchRequest实际调用HandleChat/Completions/Responses生成路径，冻结文件和历史直接还原；当前只完成内部接线，未启用Batch路由和调度。执行包装器要求已经取得的data准入、匹配票据的RequestControl和原子单次声明，直接使用同一端点输出JSON；HTTP错误保留响应码/完整体，未完成/取消另记编排错误，不自动重放。后台Responses沿已有任务管理器转交准入，不额外占前台清理槽；其真实生成、独立Batch速率来源与持久继续仍需后续整体集成。非性能改动仅针对性CPU，完成后继续调度/协议/业务，不结束总目标。
 
 原生执行接线[21项CPU首次接受](evidence/serve-batch-native-execution-cpu-20261110/README.md)，0GPU；公开调度和真实业务继续必做，不结束A09及总目标。
+
+
+## 逐行验证与冻结恢复
+
+2026-11-10。Batch增量验证检查点已成组实现：逐行原子延长未满128行页，首行固定规范模型、保留冻结输入，恢复/重置不得重取已冻结内容；原整页/未冻结重置合同保留。冻结8新+8直接影响CPU（16项），含实际129行、部分页重启、进程死亡接管、并发同位置及丢回执；尚未执行，0GPU/默认保持，继续公平调度/独立准入/HTTP业务和全部总任务。
+
+清单：`.q4t-work/serve-batches-20261110/required-validation-rows.txt`。验证器可在每行后公平让出执行线程并释放准备hold，既有128行页通过CAS追加；模型身份与冻结标志持久保存。重启须重新检查原JSONL唯一ID/整体合同并复用已冻结行，不能ResetValidation重取这些行。该组仅实现持久检查点，未连接任务扫描/队列。后续还须解决小请求逐行私有根可能超出50000行配置所需metadata容量的问题，不能只验证JSONL数量上限就声称最大Batch已可执行。
+
+逐行冻结[16项CPU首次接受](evidence/serve-batch-validation-rows-cpu-20261110/README.md)，0GPU；继续真实任务恢复/调度和全部总任务。
