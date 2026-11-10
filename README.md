@@ -160,29 +160,29 @@ TLS与认证加密状态使用系统OpenSSL 3，不复制nginx代码，也不随
 文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
 运行时TLS入口按需加载libssl/libcrypto；引擎的加密状态、密钥操作和
 Uploads可选MD5按需加载libcrypto，普通Chat/Responses不依赖其可用性。
-A09.5开发中的原生文件获取在独立子进程内按需加载同一系统libssl，
-不调用外部下载服务；文件来源/获取组件已做针对性CPU，完整文件输入
-仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)继续接入。
+原生文件获取在独立子进程内按需加载同一系统libssl，
+不调用外部下载服务；文件输入已通过针对性CPU和真实PDF/表格/历史业务并交付，
+见[文件输入发行](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
 
-开发候选已提供`serve --file-input-policy-file FILE`及纯CPU
+当前发行提供`serve --file-input-policy-file FILE`及纯CPU
 `q4t file-input-policy-check FILE`；文件需当前用户所有、0600或0400，
 最小配置为`{"version":1}`，可覆盖获取策略、各解析域预算及表格准备
 输出上限。`service prepare --file-input-policy FILE`将策略封入发行包，
 `/v1/config`的`file_inputs`报告实际数值与SHA，不泄露私有地址或路径。
 请求不能覆盖部署策略；网络或codec故障只失败依赖该功能的请求。
-完整参数、累计预算与尚未发行边界见上述文件输入计划。
+完整参数、累计预算与发行回退说明见上述文件输入计划。
 关闭TLS仍需OpenSSL开发头以构建加密状态功能。缺库或坏证书不会
 回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
 项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。
 
-A09.5开发中的PDF解析通过独立受限进程调用系统
+PDF解析通过独立受限进程调用系统
 [Poppler](https://poppler.freedesktop.org/)的`pdfinfo`、`pdftotext`和
 `pdftoppm`，使用标准输入输出提取文字与全部页面图像。q4t不链接或
 随包分发这些GPL工具；本机组件版本24.02.0，许可随系统包保存在
 `/usr/share/doc/poppler-utils/copyright`。只在PDF请求时启动，缺失、
 超时或异常只失败该请求；普通文本服务不依赖它们。需要Linux
-Landlock ABI4及seccomp支持，不能用无隔离执行作为回退。组件CPU
-已验，完整API消费和发行仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)推进。
+Landlock ABI4及seccomp支持，不能用无隔离执行作为回退。实际PDF文本/页图API与跨版本业务已验，见
+[文件输入发行](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
 
 Office容器底座在独立worker内按需加载系统libarchive 13/libxml2 2，
 构建需`libarchive-dev`与`libxml2-dev`头文件。原生适配采用内存ZIP
@@ -208,7 +208,8 @@ OpenXML/ODF/RTF不依赖它。固定系统路径可通过CMake的
 BuildId及转换结果SHA，原件SHA单独保持。Google查看链接和快捷方式
 通过同一来源策略获取真实导出，保留原件与跳转来源；公开Sheets样表
 已做实网短验，私有文档仍须具备实际访问权限，不注入用户凭据。
-嵌入文档及完整API消费继续实施，组件通过不等于文件输入API已交付。
+嵌入文档和统一API消费已接入；各格式组件证据和综合业务分别记录，
+不会将一种格式的业务短验宣称为所有文档内容都已逐一验收。
 Apple/XLSB适配的固定上游测试资料及无照片派生说明见
 [测试来源与MPL许可](tests/fixtures/file_adapters/README.md)。
 

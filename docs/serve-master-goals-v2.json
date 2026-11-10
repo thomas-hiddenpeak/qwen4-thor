@@ -939,13 +939,12 @@
       "release": null,
       "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
       "remaining_required": [
-        "A09.5 actual file consumption and retention",
         "A09.6 real Batch executor/recovery",
         "A09.7 all eight endpoint backends with A10",
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.5 all API/history/background/token-count input consumption with immutable provenance, PDF vision and real spreadsheet summaries; business/release, then Batch and all master tasks.",
+      "next": "A09.6 native Batch validation, durable per-line execution/results, cancellation/restart; then A09.7 all eight real backends and all master work.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -966,7 +965,8 @@
         "A09.1 incremental multipart and Files contracts",
         "A09.2 isolated binary persistence",
         "A09.3 Files and bounded native transport",
-        "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release"
+        "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release",
+        "A09.5 native file consumption, immutable history/originals, real PDF/table business and compatible rollback release"
       ],
       "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
       "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
@@ -1014,7 +1014,29 @@
         "automatic_application_storage": "evidence/serve-object-application-cpu-20261110/README.md",
         "atomic_snapshot_publication": "evidence/serve-snapshot-publication-cpu-20261110/README.md",
         "application_input_capacity": "evidence/serve-application-capacity-cpu-20261110/README.md",
-        "integrated_file_business_and_format_rollback": "evidence/serve-file-integration-business-20261110/README.md"
+        "integrated_file_business_and_format_rollback": "evidence/serve-file-integration-business-20261110/README.md",
+        "release": "evidence/serve-file-inputs-delivery-20261110/README.md"
+      },
+      "file_input_release": {
+        "engine_binary_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+        "engine_release_sha256": "229e023d8b4eb6887d2a6d09a8a748b11c122ff117fe230c1107e7e9f001b431",
+        "generation_sha256": "915ffc62999ff0dbbd9eb9d6e16334760120b466894f4c720ff9ffb796d87c87",
+        "manifest_sha256": "0dc8948d8847ea11776313477b67da0d93687b3608568c38bd888be0834700ea",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle",
+        "service_acceptance_sha256": "f7ea2f5b06fca1fff1f7d137d99f3eda5ddb46667e2517c2347febb01f31aa12",
+        "service_release_sha256": "b24bad47595d0a1ee8d0f1382994448a8c8cd980953b24a1feb7706c776fcb08",
+        "publication_revision": 40,
+        "state": "STOPPED",
+        "main_merged": false,
+        "compatible_rollback": {
+          "engine_binary_sha256": "2657eb168192aa6c9cf3e1dd77c52d1f9dea053d237777dc4b56e18d30134a96",
+          "engine_release_sha256": "1a0cbd0382ce133f12a7e3304e1ed505e9e7620a49bdf7fd7670f3d09df9fc5f",
+          "generation_sha256": "56c914c74b2203678314b873f0a14cc5dcb6eaa7af5379acd45bfef868d4c856",
+          "manifest_sha256": "32af8803269b121539aaa2d32f692299d9e10420e8ed8d47cb35a9916759f34c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/rollback-reader/bundle",
+          "service_acceptance_sha256": "18b6287c4f7f85d665d76b3956d40483353a4cc06261c394a550aeb3ae9d569c",
+          "service_release_sha256": "1eff86d147c4de2ba5514e224b56640add93a6c3e8edc593e9cedaa9689e7829"
+        }
       }
     },
     {
@@ -1601,6 +1623,6 @@
       "release": null
     }
   ],
-  "next_task": "A09.5 actual file_id/file_data/file_url input consumption, then Batch and all remaining master tasks",
-  "next": "A09.5 signature precedence for shortcut metadata, compressed iWork and nested document decoding; all API/history/background/token-count input consumption with immutable provenance, PDF vision and real spreadsheet summaries; business/release, then Batch and all master tasks."
+  "next_task": "A09.6",
+  "next": "A09.6 native Batch validation, durable per-line execution/results, cancellation/restart; then A09.7 all eight real backends and all master work."
 }

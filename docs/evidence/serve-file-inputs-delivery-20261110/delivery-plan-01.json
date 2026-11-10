@@ -1,0 +1,14 @@
+{
+  "driver": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/deliver.py",
+  "sha256": "86008eb865cd70a5f1b531c81bed4a52d30cc7bd1fc8e7b1ab690a8d02cdf6ed",
+  "max_commands": 15,
+  "command_timeout_seconds": 45,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "publication_revisions": [
+    36,
+    38,
+    40
+  ],
+  "scope": "Seal compatible reader then candidate, legacy deployed credentials and quotas preserved, no activation; add reader to retained generations"
+}

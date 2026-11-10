@@ -2,6 +2,8 @@
 
 ## 当前进展（2026-11-10）
 
+2026-11-10。A09.5[文件输入可回退交付](evidence/serve-file-inputs-delivery-20261110/README.md)完成：默认43472e76/元数据229e023d/包0dc8948d、rev40 STOPPED；兼容回退2657eb16/包32af8803已入保留历史。15实际CLI、21.440秒、0新增GPU，原Key/显式配额与账本保持。继续A09.6 Batch执行/取消/恢复及全部总任务，未合main。
+
 A09.4 [Uploads可回退交付完成](evidence/serve-uploads-delivery-20261110/README.md)：默认引擎cdb5ced9、元数据d4559e09、v11包96b75252，revision36、STOPPED。8实际CLI/9.794秒、0新增模型/GPU，原Key/配额/用量与容量保持，保留Files旧代。开始A09.5原生文件内容消费，之后Batch及全部总任务；未合main。
 
 A09.1增量multipart、A09.2分块持久IO、A09.3 Files原生路由/传输与

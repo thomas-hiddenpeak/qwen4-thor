@@ -1,0 +1,26 @@
+{
+  "label": "candidate-publish",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle",
+    "--manifest-sha256",
+    "0dc8948d8847ea11776313477b67da0d93687b3608568c38bd888be0834700ea",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/service.release.json",
+    "--expected-manifest-sha256",
+    "32af8803269b121539aaa2d32f692299d9e10420e8ed8d47cb35a9916759f34c",
+    "--expected-revision",
+    "38",
+    "--request-id",
+    "5c52cb30-1935-4767-a4d2-d23680852fed"
+  ],
+  "returncode": 0,
+  "seconds": 4.526850298047066
+}
