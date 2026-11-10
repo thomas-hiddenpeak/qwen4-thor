@@ -1,0 +1,5 @@
+[q4t][http] trace_id=req-3ec435777979cad118ba15973bf95c9f status=408 error=request_deadline_exceeded
+[q4t][http] trace_id=req-6ce783023ddc3f147616a64645d825c8 status=502 error=upstream_error
+[q4t][http] trace_id=req-5e42c68f979872d8c99f5795a9d040e7 status=503 error=service_unavailable
+[q4t][http] trace_id=req-6ec2721a5021ef46bc4554cd8b944c66 status=503 error=service_unavailable
+[q4t][http] trace_id=req-3286b65e1cd584a46b484d21124ae455 error=internal_error

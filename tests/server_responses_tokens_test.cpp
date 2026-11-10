@@ -10,6 +10,7 @@
 #include "q4t/server/application_routes.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/conversation_state.h"
+#include "q4t/server/files.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
@@ -104,7 +105,210 @@ Json Generate(Fixture* fixture, Json request) {
     throw std::runtime_error("count history finish");
   return run.Output().Snapshot();
 }
+constexpr auto kCountSheetReceipt =
+    R"({"summary":"CPU preparation receipt: alpha is 42",)"
+    R"("headers":["name: row label","value: quantity"]})";
+Json FileRequest(bool sheet = false) {
+  return Read(
+      sheet
+          ? R"({"input":[{"role":"user","content":[{"type":"input_file","filename":"values.csv","file_data":"bmFtZSx2YWx1ZQphbHBoYSw0Mgo="}]}],"reasoning":{"effort":"none"}})"
+          : R"({"input":[{"role":"user","content":[{"type":"input_file","filename":"facts.txt","file_data":"YWxwaGEgaXMgNDIK"}]}],"reasoning":{"effort":"none"}})");
+}
+ObjectReply CompleteCountSheet(FileExpansion& files,
+                               const ChatPlanConfig& config) {
+  FileSheetStep sheet;
+  auto result = files.NextSheet(config, &sheet);
+  if (!result.ok()) return result;
+  return files.CompleteSheet(sheet, kCountSheetReceipt, "stop", 111, 19);
+}
+std::string UploadCountFixture(Fixture* fixture, const char* name) {
+  const auto path =
+      std::filesystem::path(__FILE__).parent_path() / "fixtures" / name;
+  std::ifstream stream(path, std::ios::binary);
+  if (!stream) throw std::runtime_error("count media fixture");
+  const std::string bytes(std::istreambuf_iterator<char>(stream), {});
+  const BinaryAccess access{
+      fixture->access.scope, fixture->access.deadline, {}};
+  FileUpload upload(fixture->objects, access,
+                    "multipart/form-data; boundary=count");
+  const auto head =
+      "--count\r\nContent-Disposition: form-data; "
+      "name=\"purpose\"\r\n\r\nuser_data\r\n"
+      "--count\r\nContent-Disposition: form-data; name=\"file\"; filename=\"" +
+      path.filename().string() + "\"\r\n\r\n";
+  if (!upload.Feed(head, access.deadline).ok() ||
+      !upload.Feed(bytes, access.deadline).ok() ||
+      !upload.Feed("\r\n--count--\r\n", access.deadline).ok())
+    throw std::runtime_error("count file upload fixture");
+  auto reply = upload.Finish();
+  if (!reply.ok()) throw std::runtime_error(reply.message);
+  return reply.value.GetString("id");
+}
 }  // namespace
+
+Q4T_TEST(
+    responses_tokens_pdf_and_webp_keep_actual_media_and_generation_parity) {
+  Fixture f;
+  f.access.deadline = std::chrono::steady_clock::now() + 30s;
+  f.config.allow_media = true;
+  const auto pdf = UploadCountFixture(&f, "file_nested/page.pdf");
+  const auto webp = UploadCountFixture(&f, "file_images/webp/alpha.webp");
+  auto request = Read(
+      R"({"input":[{"role":"user","content":[{"type":"input_file"},{"type":"input_image","detail":"original"}]}]})");
+  auto& content = request.object[0].second.array[0].object[1].second;
+  Set(&content.array[0], "file_id", String(pdf));
+  Set(&content.array[1], "file_id", String(webp));
+  FileExpansionUsage usage;
+  Q4T_CHECK(
+      Ok(PrepareResponsesTokenCount(request, f.config, f.objects, f.access,
+                                    &f.envelope, &f.plan, {}, &usage)));
+  Q4T_CHECK(usage.files == 2 && usage.pages == 1 && usage.model_steps == 0);
+  std::string prompt, param;
+  std::vector<VisionItem> counted;
+  Q4T_CHECK(PrepareChatPrompt(f.plan.generation_request,
+                              f.plan.chat.constraints, &prompt, &counted,
+                              &param, nullptr, nullptr, true));
+  auto config = f.config;
+  config.count_input_only = false;
+  Set(&request, "store", Read("false"));
+  ResponsesExecution run(f.objects);
+  Q4T_CHECK(Ok(run.Prepare(request, config, f.access, 42)));
+  std::vector<VisionItem> generated;
+  std::string generated_prompt;
+  Q4T_CHECK(PrepareChatPrompt(run.Generation().generation_request,
+                              run.Generation().chat.constraints,
+                              &generated_prompt, &generated, &param));
+  Q4T_CHECK(prompt == generated_prompt && counted.size() == 2 &&
+            generated.size() == 2);
+  for (size_t i = 0; i < counted.size(); ++i)
+    Q4T_CHECK(counted[i].frames == generated[i].frames &&
+              counted[i].detail == generated[i].detail);
+  Q4T_CHECK(counted.back().detail == q4t::vision::ImageDetail::kOriginal);
+  return true;
+}
+
+Q4T_TEST(responses_tokens_file_text_matches_actual_generation_template) {
+  Fixture f;
+  auto request = FileRequest();
+  FileExpansionUsage usage;
+  bool ran = false;
+  Q4T_CHECK(Ok(PrepareResponsesTokenCount(
+      request, f.config, f.objects, f.access, &f.envelope, &f.plan,
+      [&](FileExpansion&) {
+        ran = true;
+        return ObjectReply{};
+      },
+      &usage)));
+  Q4T_CHECK(!ran && usage.files == 1 && usage.model_steps == 0);
+  auto config = f.config;
+  config.count_input_only = false;
+  Set(&request, "store", Read("false"));
+  ResponsesExecution generation(f.objects);
+  Q4T_CHECK(Ok(generation.Prepare(request, config, f.access, 42)));
+  Q4T_CHECK(Prompt(f.plan, true) == Prompt(generation.Generation()) &&
+            Prompt(f.plan, true).find("alpha is 42") != std::string::npos &&
+            f.objects.Health().workers_started == 0);
+  return true;
+}
+
+Q4T_TEST(responses_tokens_sheet_requires_completed_receipt_not_placeholder) {
+  Fixture f;
+  auto request = FileRequest(true);
+  Q4T_CHECK(f.Prepare(request).code == "file_preparation_unavailable");
+  Q4T_CHECK(PrepareResponsesTokenCount(
+                request, f.config, f.objects, f.access, &f.envelope, &f.plan,
+                [](FileExpansion&) { return ObjectReply{}; })
+                .code == "file_preparation_incomplete");
+  FileExpansionUsage usage;
+  Q4T_CHECK(Ok(PrepareResponsesTokenCount(
+      request, f.config, f.objects, f.access, &f.envelope, &f.plan,
+      [&](FileExpansion& files) { return CompleteCountSheet(files, f.config); },
+      &usage)));
+  Q4T_CHECK(usage.model_steps == 1 && usage.model_input_tokens == 111 &&
+            usage.model_output_tokens == 19 &&
+            Prompt(f.plan, true).find("CPU preparation receipt: alpha is 42") !=
+                std::string::npos);
+  auto config = f.config;
+  config.count_input_only = false;
+  Set(&request, "store", Read("false"));
+  ResponsesExecution generation(f.objects);
+  Q4T_CHECK(Ok(generation.Prepare(request, config, f.access, 42)));
+  FileSheetStep sheet;
+  Q4T_CHECK(Ok(generation.NextFileSheet(config, &sheet)) &&
+            Ok(generation.CompleteFileSheet(sheet, kCountSheetReceipt, "stop",
+                                            111, 19, config)));
+  Q4T_CHECK(Prompt(f.plan, true) == Prompt(generation.Generation()));
+  return true;
+}
+
+Q4T_TEST(
+    responses_tokens_file_validation_and_cancellation_prevent_false_count) {
+  Fixture f;
+  auto request = FileRequest(true);
+  Set(&request, "tools", Read("[{}]"));
+  bool ran = false;
+  auto executor = [&](FileExpansion& files) {
+    ran = true;
+    return CompleteCountSheet(files, f.config);
+  };
+  Q4T_CHECK(PrepareResponsesTokenCount(request, f.config, f.objects, f.access,
+                                       &f.envelope, &f.plan, executor)
+                    .http_status == 400 &&
+            !ran && f.objects.Health().workers_started == 0);
+  request = FileRequest(true);
+  bool cancel = false;
+  f.access.cancelled = [&] { return cancel; };
+  Q4T_CHECK(PrepareResponsesTokenCount(request, f.config, f.objects, f.access,
+                                       &f.envelope, &f.plan,
+                                       [&](FileExpansion& files) {
+                                         auto reply = executor(files);
+                                         cancel = true;
+                                         return reply;
+                                       })
+                .http_status == 499);
+  Q4T_CHECK(ran && f.plan.generation_request.IsNull());
+  return true;
+}
+
+Q4T_TEST(responses_tokens_previous_sheet_reuses_snapshot_without_model_work) {
+  Fixture f;
+  auto config = f.config;
+  config.count_input_only = false;
+  ResponsesExecution previous(f.objects);
+  Q4T_CHECK(Ok(previous.Prepare(FileRequest(true), config, f.access, 42)));
+  FileSheetStep sheet;
+  Q4T_CHECK(Ok(previous.NextFileSheet(config, &sheet)) &&
+            Ok(previous.CompleteFileSheet(sheet, kCountSheetReceipt, "stop",
+                                          111, 19, config)));
+  std::string wire;
+  Q4T_CHECK(Ok(previous.Begin(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kContent;
+  delta.text = "CPU output fixture";
+  Q4T_CHECK(previous.Append(delta, "null", &wire) &&
+            Ok(previous.Finish(false, 0, {100, 0, 5, 0}, 43, &wire)));
+  auto request =
+      Read(R"({"input":"repeat alpha","reasoning":{"effort":"none"}})");
+  Set(&request, "previous_response_id", String(previous.Id()));
+  FileExpansionUsage usage;
+  bool executed = false;
+  Q4T_CHECK(Ok(PrepareResponsesTokenCount(
+                request, f.config, f.objects, f.access, &f.envelope, &f.plan,
+                [&](FileExpansion&) {
+                  executed = true;
+                  return ObjectReply{};
+                },
+                &usage)) &&
+            !executed && usage.model_steps == 0);
+  Set(&request, "store", Read("false"));
+  ResponsesExecution next(f.objects);
+  Q4T_CHECK(Ok(next.Prepare(request, config, f.access, 44)));
+  Q4T_CHECK(!next.PendingFileSheets() &&
+            Prompt(f.plan, true) == Prompt(next.Generation()) &&
+            Prompt(f.plan, true).find("CPU preparation receipt") !=
+                std::string::npos);
+  return true;
+}
 
 Q4T_TEST(responses_tokens_empty_null_and_empty_array_use_real_template) {
   Fixture f;

@@ -1007,7 +1007,8 @@
         "responses_preparation_lifecycle": "evidence/serve-responses-files-cpu-20261110/README.md",
         "native_model_preparation": "evidence/serve-model-preparation-cpu-20261110/README.md",
         "native_model_preparation_business": "evidence/serve-model-preparation-business-20261110/README.md",
-        "chat_preflight_storage": "evidence/serve-chat-files-cpu-20261110/README.md"
+        "chat_preflight_storage": "evidence/serve-chat-files-cpu-20261110/README.md",
+        "file_input_counting": "evidence/serve-count-files-cpu-20261110/README.md"
       }
     },
     {

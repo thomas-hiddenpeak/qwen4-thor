@@ -25,14 +25,14 @@ ObjectReply CheckResponsesTokenCountActive(const StateAccess& access) {
   return {};
 }
 
-ObjectReply PrepareResponsesTokenCount(const io::Json& request,
-                                       const ChatPlanConfig& config,
-                                       ObjectStore& objects,
-                                       const StateAccess& access,
-                                       ResponsesEnvelope* envelope,
-                                       ResponsesGenerationPlan* generation) {
+ObjectReply PrepareResponsesTokenCount(
+    const io::Json& request, const ChatPlanConfig& config, ObjectStore& objects,
+    const StateAccess& access, ResponsesEnvelope* envelope,
+    ResponsesGenerationPlan* generation,
+    const ResponsesFilePreparation& prepare, FileExpansionUsage* file_usage) {
   *envelope = {};
   *generation = {};
+  if (file_usage) *file_usage = {};
   auto active = CheckResponsesTokenCountActive(access);
   if (!active.ok()) return active;
   if (!config.count_input_only)
@@ -89,6 +89,35 @@ ObjectReply PrepareResponsesTokenCount(const io::Json& request,
     if (!result.ok()) return result;
   } else {
     history = std::move(resolved.history);
+  }
+  Json effective_tools;
+  status = ValidateResponsesPreparation(*envelope, history, config,
+                                        &effective_tools, &error);
+  if (!status) return Invalid(status, error);
+  if (HasFileInputs(history)) {
+    FileExpansion files(&objects, config.file_inputs ? *config.file_inputs
+                                                     : FileExpansionOptions{});
+    result = files.Prepare(history, FileInputProfile::kResponsesStored,
+                           resolved.input_snapshots,
+                           {access.scope, access.deadline, access.cancelled});
+    if (!result.ok()) return result;
+    if (files.PendingSheets()) {
+      if (!prepare)
+        return Error(503, "file_preparation_unavailable",
+                     "Input count requires native sheet preparation");
+      result = prepare(files);
+      if (!result.ok()) return result;
+      if (files.PendingSheets())
+        return Error(503, "file_preparation_incomplete",
+                     "Input count preparation did not complete");
+    }
+    active = CheckResponsesTokenCountActive(access);
+    if (!active.ok()) return active;
+    Json expanded;
+    result = files.Render(history, &expanded);
+    if (!result.ok()) return result;
+    history = std::move(expanded);
+    if (file_usage) *file_usage = files.Usage();
   }
   status = PrepareResponsesGeneration(*envelope, history, config, generation,
                                       &error);

@@ -33,6 +33,44 @@ struct SocketPair {
 };
 }  // namespace
 
+Q4T_TEST(server_preparation_usage_headers_preserve_body_and_parent_ownership) {
+  using namespace q4t::server::detail;
+  for (bool failure : {false, true}) {
+    SocketPair sockets;
+    HttpResponseContext parent(sockets.fd[0]);
+    parent.SetPreparationUsage({157, 23, 2});
+    {
+      HttpResponseContext child(HttpResponseContext::Detached{sockets.fd[0]});
+      Q4T_CHECK(child.InputPreparationUsage().model_steps == 0);
+      child.SetPreparationUsage({999, 999, 999});
+    }
+    if (failure)
+      SendError(sockets.fd[0], 408, "preparation deadline", {},
+                "request_deadline_exceeded");
+    else
+      Q4T_CHECK(
+          SendSimple(sockets.fd[0], 200, "OK",
+                     R"({"object":"response.input_tokens","input_tokens":41})",
+                     "application/json"));
+    char bytes[4096];
+    const auto size = recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT);
+    Q4T_CHECK(size > 0);
+    const std::string_view wire(bytes, size);
+    Q4T_CHECK(
+        wire.find("X-Q4T-Preparation-Input-Tokens: 157\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Output-Tokens: 23\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Model-Steps: 2\r\n") != wire.npos &&
+        wire.find("999") == wire.npos);
+    q4t::io::Json body;
+    Q4T_CHECK(q4t::io::ParseJson(
+        std::string(wire.substr(wire.find("\r\n\r\n") + 4)), &body, true));
+    Q4T_CHECK(failure ? body.Has("error")
+                      : body.GetInt("input_tokens") == 41 &&
+                            body.object.size() == 2);
+  }
+  return true;
+}
+
 Q4T_TEST(
     server_detached_child_borrows_disconnect_fd_without_response_or_handoff) {
   using namespace q4t::server;

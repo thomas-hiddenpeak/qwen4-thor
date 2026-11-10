@@ -1,0 +1,10 @@
+{
+  "tests": [
+    "tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_invalid_preparation_headers_fail_only_the_current_response"
+  ],
+  "test_count": 1,
+  "reason": "Fixture expected 502, but existing Relay intentionally returns 503/service_binding_unavailable for invalid upstream framing. Assert both existing status and code. Native binary unchanged; reuse other three passed checks.",
+  "local_http_max": 24,
+  "seconds": 30,
+  "gpu_starts": 0
+}

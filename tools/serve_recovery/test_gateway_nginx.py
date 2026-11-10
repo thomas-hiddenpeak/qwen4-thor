@@ -100,6 +100,8 @@ class Stack:
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Content-Length', str(len(raw)))
                 self.send_header('Connection', 'close')
+                for name, value in getattr(stack, 'response_headers', ()):
+                    self.send_header(name, value)
                 self.end_headers()
                 self.wfile.write(raw)
                 self.close_connection = True

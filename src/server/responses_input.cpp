@@ -542,6 +542,12 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     for (size_t i = 0; i < definitions->array.size(); ++i) {
       const auto& definition = definitions->array[i];
       const auto at = "tools[" + std::to_string(i) + ']';
+      if (!definition.IsObject())
+        return Invalid(error, at, "tool definition must be an object");
+      const auto* kind = definition.Find("type");
+      if (!kind || !kind->IsString() || kind->str.empty())
+        return Invalid(error, at + ".type",
+                       "tool type must be a nonempty string");
       const auto type = definition.GetString("type");
       if (type != "function" && type != "custom") return Unresolved(error, at);
       auto status =

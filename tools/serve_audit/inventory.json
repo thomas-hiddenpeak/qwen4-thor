@@ -862,13 +862,16 @@
       ]
     },
     "POST /v1/responses/input_tokens": {
-      "semantics": "Native standard input token count: shared actual template/tokenizer/media expansion; client-scoped existing history; optional/null body; no inference, durable response mutation or generation RPM/TPM.",
-      "boundary": "Targeted CPU and real SDK count-vs-usage validation pending. File and built-in tool resolutions remain required A09/A10/A11 work; shared data/client/body limits and deadline apply.",
+      "semantics": "Standard count-only request/response shape, final actual initial prompt count; common file preparation and immutable historical summaries. New sheets execute bounded native preparation with parent admission/cancellation and one RPM/cumulative TPM. No final answer or Response publication. Actual preparation usage is separate numeric response headers, including ordinary failures.",
+      "boundary": "Model execution/rate reservation is conditional on new sheet preparation. File read leases can mutate private bookkeeping, never Response/conversation history. Native ingress forwards only the complete three fixed uint64 preparation headers, rejects malformed/duplicate/partial/hop-by-hop metadata and strips private headers. Counts are native-template/tokenizer values, not hosted-model equivalence. Integrated business and default release still required.",
       "evidence": [
         "include/q4t/server/application_routes.h",
         "src/server/chat_input_tokens.cpp",
         "src/server/responses_tokens.cpp",
-        "tests/server_responses_tokens_test.cpp"
+        "tests/server_responses_tokens_test.cpp",
+        "tests/server_http_response_test.cpp",
+        "tools/serve_responses/test_input_tokens_ingress.py",
+        "docs/SERVE_FILE_INPUTS_2026-11-10.md"
       ]
     },
     "DELETE /v1/files/{file_id}": {
@@ -1537,7 +1540,7 @@
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
     "include/q4t/server/http_request.h": "3135504e774692aeecac96077e92495f59c1e293ae4f8b0afd46d2386880dbb0",
-    "include/q4t/server/http_response.h": "a7fb70b3466f0f5753033c6a57b1f7ef23031cbd1dfa61ed04d67418ef756a35",
+    "include/q4t/server/http_response.h": "20c637014ea7cdeaa9810013922c843db7f8d65d1512263cb302f2eb5a70948e",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/input_snapshot.h": "1bbabc3f36787d5c977016c7dbd5611172f7840b3b1b21ffafb7e3ff76394535",
     "include/q4t/server/input_snapshot_bindings.h": "e951fe72fd9d430931fe54e34de101bdfca9cae98287a8c464955b45168e0595",
@@ -1580,7 +1583,7 @@
     "include/q4t/server/responses_plan.h": "46abed48f94041355eac19322b3971ebca74a62846bd4e264d87ff649f3a1e83",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "b16132d9e47ae9bb85b5a474088c4b19932b68f9bb3a2204c3e2d8a054a998a6",
-    "include/q4t/server/responses_tokens.h": "2b0f68e8e570577d54f0faa7b6e0848ca86c2b6dbf304b12a6839c08edea77f5",
+    "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -1646,7 +1649,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "ad6ea036e7dd08f755d6b9f2abb19b5fb39dff5c27813c24f38510faf1c92313",
+    "src/server/chat_capabilities.cpp": "dfd798a6942246b19f3214323aa694b30eb790ea4c0b67d9597a1be076188b6e",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "f93b1524f4cdb71b3f6d2937cda5b6341478072e071a9e4fc03858490cc6c529",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -1654,7 +1657,7 @@
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "834f128e8ead26bc4d3833883e8bdb4707ffff59b163da6594c5efefac53dfd8",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
-    "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
+    "src/server/chat_input_tokens.cpp": "aa52109b39d58a475b0f2706185326d1cd3c5e3baddcb191fe6905a05f5d7046",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "847aa9952a316dfe5c2f34cdc298b521b7de325d1713970feb3d7a9ffb63c37f",
     "src/server/chat_plan.cpp": "2d707f6481e45d859ec78e183a7a4c6f097df5d76cb272e6b1f3f620b545d955",
@@ -1728,7 +1731,7 @@
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
-    "src/server/http_response.cpp": "c1add5b5709e7c698f9308a3dbb95a5a475b187d0f33a24818bf382a11967470",
+    "src/server/http_response.cpp": "81462d227c40c8c5da5fe5fd64e3557afab3d67006a98784dad5a74492d7905a",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "e8ba90822999386390bbbd82652e140fff8247c5472c216bcf414a0b66fd61e2",
     "src/server/input_snapshot_bindings.cpp": "aad55a3c93a700ba82b148b5fef9bab4ee6f7967c226bd7d9d6fa3277056ae41",
@@ -1763,7 +1766,7 @@
     "src/server/responses_execution.cpp": "9ff77b2d7e2951450bf2593b74fa52090a0c7ea16c32deac0e08d65e4a234339",
     "src/server/responses_execution_compaction.cpp": "e04a7a1536232b1f9e9a7896c0f00d9e52d066df098589742068aa17c985ccbd",
     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
-    "src/server/responses_input.cpp": "7d2e1428b4e82d662181149572a69d2e3efcf93635baee230917c1c63b396b2c",
+    "src/server/responses_input.cpp": "71b10552c00320a9d7e1d1765906c37b3b4ef4ca0fc17f39943afe2d8eca13bc",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
@@ -1773,7 +1776,7 @@
     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
     "src/server/responses_state.cpp": "ecd743f552e144bc24b308e93a9b48e043d0854a8cb3b1c4417cd32b9a31f128",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
-    "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
+    "src/server/responses_tokens.cpp": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1818,7 +1821,7 @@
     "src/service/ingress_main.cpp": "52b7a9dca54ab655edc425aa81b7400c41a5f6ca7d7b66c5cb2bd6d6aba558ed",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
-    "src/service/ingress_transport.cpp": "363dbe389f4820c1a05423deb637e7dac4cb1555515397d9ecb7b137a5e1a651",
+    "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
     "src/vision/media_plan.cpp": "d46531462936f89c2563b58de098e0aa0174340c6da8cecbc04441ed7df590a7",
@@ -2859,13 +2862,16 @@
       ]
     },
     "POST /v1/responses/input_tokens": {
-      "semantics": "Native standard input token count: shared actual template/tokenizer/media expansion; client-scoped existing history; optional/null body; no inference, durable response mutation or generation RPM/TPM.",
-      "boundary": "Targeted CPU and real SDK count-vs-usage validation pending. File and built-in tool resolutions remain required A09/A10/A11 work; shared data/client/body limits and deadline apply.",
+      "semantics": "Standard count-only request/response shape, final actual initial prompt count; common file preparation and immutable historical summaries. New sheets execute bounded native preparation with parent admission/cancellation and one RPM/cumulative TPM. No final answer or Response publication. Actual preparation usage is separate numeric response headers, including ordinary failures.",
+      "boundary": "Model execution/rate reservation is conditional on new sheet preparation. File read leases can mutate private bookkeeping, never Response/conversation history. Native ingress forwards only the complete three fixed uint64 preparation headers, rejects malformed/duplicate/partial/hop-by-hop metadata and strips private headers. Counts are native-template/tokenizer values, not hosted-model equivalence. Integrated business and default release still required.",
       "evidence": [
         "include/q4t/server/application_routes.h",
         "src/server/chat_input_tokens.cpp",
         "src/server/responses_tokens.cpp",
-        "tests/server_responses_tokens_test.cpp"
+        "tests/server_responses_tokens_test.cpp",
+        "tests/server_http_response_test.cpp",
+        "tools/serve_responses/test_input_tokens_ingress.py",
+        "docs/SERVE_FILE_INPUTS_2026-11-10.md"
       ]
     },
     "OPTIONS /v1/responses/input_tokens": {

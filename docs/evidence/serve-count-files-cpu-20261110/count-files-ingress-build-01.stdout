@@ -1,0 +1,6 @@
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 66%] Built target q4t_ingress_access
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_transport.cpp.o
+[ 66%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

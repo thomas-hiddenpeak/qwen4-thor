@@ -19,7 +19,18 @@ thread_local HttpResponseContext* current_response = nullptr;
 
 std::string RequestIdHeader(int fd) {
   const auto* context = HttpResponseContext::Current(fd);
-  return context ? "X-Request-Id: " + context->TraceId() + "\r\n" : "";
+  if (!context) return {};
+  auto headers = "X-Request-Id: " + context->TraceId() + "\r\n";
+  const auto& usage = context->InputPreparationUsage();
+  if (usage.model_steps) {
+    headers += "X-Q4T-Preparation-Input-Tokens: " +
+               std::to_string(usage.input_tokens) +
+               "\r\nX-Q4T-Preparation-Output-Tokens: " +
+               std::to_string(usage.output_tokens) +
+               "\r\nX-Q4T-Preparation-Model-Steps: " +
+               std::to_string(usage.model_steps) + "\r\n";
+  }
+  return headers;
 }
 }  // namespace
 

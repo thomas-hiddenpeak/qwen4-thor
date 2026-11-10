@@ -1,0 +1,13 @@
+..F.
+======================================================================
+FAIL: test_invalid_preparation_headers_fail_only_the_current_response (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_invalid_preparation_headers_fail_only_the_current_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_input_tokens_ingress.py", line 96, in test_invalid_preparation_headers_fail_only_the_current_response
+    self.assertEqual(self.preparation_request(row)[0], 502)
+AssertionError: 503 != 502
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.009s
+
+FAILED (failures=1)

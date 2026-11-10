@@ -79,8 +79,12 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("input_tokens":{"endpoint":"/v1/responses/input_tokens",)"
          R"("enabled":true,"measurement":"actual_template_tokenizer_media",)"
          R"("empty_input":true,"client_scoped_history":true,)"
-         R"("model_execution":false,"state_mutation":false,)"
-         R"("generation_rpm_tpm":false,"bounded_data_admission":true},)"
+         R"("model_execution":true,"model_execution_condition":"new_sheet_preparation",)"
+         R"("state_mutation":false,"private_file_read_leases":true,)"
+         R"("generation_rpm_tpm":true,"rate_condition":"actual_sheet_preparation",)"
+         R"("preparation_usage":"X-Q4T-Preparation-* response headers",)"
+         R"("count_scope":"final_initial_model_prompt",)"
+         R"("bounded_data_admission":true},)"
          R"("personality":{"presets":["friendly","pragmatic"],)"
          R"("executor":"native_system_instruction",)"
          R"("create_field":"native_extension_to_pinned_sdk"},)"
@@ -152,8 +156,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"files":{"profile":"q4t-files-v1","endpoint":"/v1/files",)"
          R"("create":true,"retrieve":true,"list":true,"delete":true,)"
          R"("content":true,"multipart":true,"binary_streaming":true,)"
-         R"("max_file_bytes":)" + std::to_string(kFileBytes) +
-         R"(,"max_wire_bytes":)" + std::to_string(kFileWireBytes) +
+         R"("max_file_bytes":)" +
+         std::to_string(kFileBytes) + R"(,"max_wire_bytes":)" +
+         std::to_string(kFileWireBytes) +
          R"(,"client_policy_version":4,"client_limit":"max_file_body_bytes",)"
          R"("native_ingress_policy_version":5,"ingress_limit":"file_body_bytes",)"
          R"("legacy_limits_preserved":true,"storage_quota_separate":true,)"

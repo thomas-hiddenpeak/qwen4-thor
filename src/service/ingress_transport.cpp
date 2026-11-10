@@ -69,6 +69,13 @@ std::string_view Trim(std::string_view value) {
   return value;
 }
 
+unsigned PreparationHeader(std::string_view name) {
+  if (name == "x-q4t-preparation-input-tokens") return 1;
+  if (name == "x-q4t-preparation-output-tokens") return 2;
+  if (name == "x-q4t-preparation-model-steps") return 4;
+  return 0;
+}
+
 bool ResponseHeaders(std::string_view raw, Connection& client,
                      std::string_view request_id, std::string* output,
                      std::optional<size_t>* length, bool* chunked,
@@ -91,6 +98,7 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   output->append("\r\n");
   pos += 2;
   bool seen_type = false;
+  unsigned preparation_headers = 0;
   std::vector<std::string> connection;
   while (pos < raw.size()) {
     const size_t end = raw.find("\r\n", pos);
@@ -126,19 +134,31 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
       if (seen_type) return false;
       seen_type = true;
     }
+    const auto preparation = PreparationHeader(name);
+    if (preparation) {
+      uint64_t tokens = 0;
+      const auto parsed =
+          std::from_chars(value.data(), value.data() + value.size(), tokens);
+      if ((preparation_headers & preparation) || value.empty() ||
+          parsed.ec != std::errc{} || parsed.ptr != value.data() + value.size())
+        return false;
+      preparation_headers |= preparation;
+    }
     // Preserve the runner's public response metadata, never private headers,
     // cookies, hop-by-hop options or a second response on this connection.
     if (name == "content-length" || name == "content-type" ||
         name == "retry-after" || name == "www-authenticate" ||
-        name == "allow") {
+        name == "allow" || preparation) {
       output->append(field);
       output->append("\r\n");
     }
     pos = end + 2;
   }
+  if (preparation_headers && preparation_headers != 7) return false;
   if (*chunked && length->has_value()) return false;
   for (const auto& field : connection)
-    if (server::http::Protected(field)) return false;
+    if (server::http::Protected(field) || PreparationHeader(field))
+      return false;
   if ((status == 204 || status == 304) && length->value_or(0) != 0)
     return false;
   if ((status == 204 || status == 304) && *chunked) return false;

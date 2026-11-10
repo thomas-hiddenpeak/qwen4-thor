@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "env",
+    "Q4T_INGRESS=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_invalid_preparation_headers_fail_only_the_current_response"
+  ],
+  "exit_code": 0,
+  "seconds": 1.4656554092653096
+}

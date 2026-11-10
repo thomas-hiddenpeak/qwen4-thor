@@ -23,6 +23,20 @@ bool Input(const std::string& text, ResponsesInputPlan* plan,
 }
 }  // namespace
 
+Q4T_TEST(responses_input_malformed_tool_type_is_not_unresolved_capability) {
+  for (const auto* definition : {"{}", "null", "42", R"({"type":null})",
+                                 R"({"type":true})", R"({"type":""})"}) {
+    Json tools, choice;
+    ChatPlanError error;
+    Q4T_CHECK(!NormalizeResponsesTools(
+        Read(std::string("{\"tools\":[") + definition + "]}"), &tools, &choice,
+        &error));
+    Q4T_CHECK(error.http_status == 400 && error.code == "invalid_request" &&
+              error.param.starts_with("tools[0]"));
+  }
+  return true;
+}
+
 Q4T_TEST(responses_input_instructions_roles_and_original_metadata) {
   const auto request = Read(R"({"instructions":"总规则",
     "input":[{"role":"developer","content":"补充规则"},

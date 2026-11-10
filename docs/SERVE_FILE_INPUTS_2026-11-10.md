@@ -235,3 +235,24 @@ Chat/计数/preflight等仍须接线；当前候选不替换默认。之后业�
 未知提交保留绝对hold；成功发布后的辅助清理不反向影响业务。
 当前仍需计数/配置/综合媒体与真实业务/回退验收，不能据组件结果发布
 完整文件能力或结束总任务。
+
+## FI03 文件计数语义与实际准备用量（实施中，2026-11-10）
+
+[官方input_tokens接口](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count)
+要求返回标准input_tokens对象，并接受文件输入；
+[表格输入说明](https://developers.openai.com/api/docs/guides/file-inputs#how-spreadsheet-augmentation-works)
+要求实际生成摘要与列元数据。官方文档没有说明这种内部准备在计数请求中
+如何计费。以下是q4t的明确工程约定，不宣称等同托管服务的内部计费。
+
+计数返回实际最终初始prompt的token数；新的表格须先走与生成相同的
+真实摘要步骤，完成后才可计数，不用占位摘要/字符估算。摘要模型实际
+输入、输出及执行次数分别通过X-Q4T-Preparation-Input-Tokens、
+X-Q4T-Preparation-Output-Tokens、X-Q4T-Preparation-Model-Steps报告。
+它们属于此次计数实际执行的辅助用量，受同一父准入/期限/取消与一次
+RPM/累计TPM约束；失败按实际已执行工作结算。普通文本/PDF与已冻结
+摘要不产生这些模型步骤，也不因此预留生成配额。最终回答不执行。
+
+previous/conversation中已有不可变摘要直接复用，计数与实际生成使用
+同一历史内容。独立提交新来源仍是独立请求，不能保证变化URL的两次
+读取相同。计数不创建或更新Response，不发布新摘要快照；真实File
+读取仍可能使用有界私有读取租约。此组正在针对性CPU和实际业务验收。

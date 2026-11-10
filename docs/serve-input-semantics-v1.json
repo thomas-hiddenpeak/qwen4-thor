@@ -42,7 +42,7 @@
         "src/server/chat_plan.cpp",
         "src/server/media_admission.cpp"
       ],
-      "contract": "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain; no generation slot, model/tool step, cache write or generation RPM/TPM reservation. Truncation auto protects the current turn and tool dependencies; count has zero output budget. Counts describe initial input, not later generated reasoning/compaction/moderation steps. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File/tool executors remain linked A09/A10/A11 implementation tasks."
+      "contract": "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain. Text, PDF/image and frozen summaries use shared actual file preparation without final-answer generation. New spreadsheet summaries execute real bounded native model steps under the parent admission/cancellation and one RPM/cumulative actual TPM lease. The standard input_tokens value describes the final initial prompt, excluding preparation model usage; X-Q4T-Preparation-Input-Tokens/Output-Tokens/Model-Steps report that actual auxiliary work even on ordinary error responses. No response is begun or mutated, no tools/final answer are run, and no cache write occurs; private file read leases remain possible. Truncation auto protects the current turn and tool dependencies; count has zero final-answer output budget. Existing immutable summaries are reused exactly; independent fresh inputs remain independent requests. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File counting uses the shared prepared-input path; remaining endpoint executors/business/release remain linked A09/A10/A11 tasks."
     },
     {
       "id": "stored-chat",
@@ -440,7 +440,7 @@
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "834f128e8ead26bc4d3833883e8bdb4707ffff59b163da6594c5efefac53dfd8",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
-    "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
+    "src/server/chat_input_tokens.cpp": "aa52109b39d58a475b0f2706185326d1cd3c5e3baddcb191fe6905a05f5d7046",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "847aa9952a316dfe5c2f34cdc298b521b7de325d1713970feb3d7a9ffb63c37f",
     "src/server/chat_plan.cpp": "2d707f6481e45d859ec78e183a7a4c6f097df5d76cb272e6b1f3f620b545d955",
@@ -486,7 +486,7 @@
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
     "src/server/responses_plan.cpp": "dfe6656629a7d0c7578488095054910a29be7ecc31849dc31b3f4c930dbe6ecc",
     "src/server/responses_state.cpp": "ecd743f552e144bc24b308e93a9b48e043d0854a8cb3b1c4417cd32b9a31f128",
-    "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
+    "src/server/responses_tokens.cpp": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",

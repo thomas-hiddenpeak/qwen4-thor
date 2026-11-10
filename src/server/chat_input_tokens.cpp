@@ -1,5 +1,7 @@
 #include "chat_server_internal.h"
+#include "chat_model_step.h"
 
+#include "q4t/server/lifetime.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_admission.h"
@@ -19,7 +21,7 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
                       "capacity_exhausted");
     return;
   }
-  const auto* http = detail::HttpResponseContext::Current(fd);
+  auto* http = detail::HttpResponseContext::Current(fd);
   if (!objects_ || !http || !http->Client().Allowed()) {
     detail::SendError(fd, 503, "Authenticated application state unavailable",
                       {}, "object_scope_unavailable");
@@ -35,11 +37,25 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
     return;
   }
   const auto& client = http->Client();
+  ClientRateLease preparation_rate;
+  http->SetBeforeTerminal(
+      [](void* value) noexcept {
+        static_cast<ClientRateLease*>(value)->Settle();
+      },
+      &preparation_rate);
+  ScopeExit clear_terminal([&] { http->SetBeforeTerminal(nullptr, nullptr); });
+  std::shared_ptr<RequestControl> preparation_control;
+  ScopeExit remove_control([&] {
+    if (preparation_control) requests_.Remove(preparation_control);
+  });
   StateAccess access{
       client.Scoped() ? "client:" + std::string(client.Id())
                       : "local:anonymous",
-      arrived + std::chrono::milliseconds(request_deadline_ms_), [this, fd] {
-        return stop_requested_.load() || detail::ClientConnectionFailed(fd);
+      arrived + std::chrono::milliseconds(request_deadline_ms_), [&, this] {
+        return stop_requested_.load() ||
+               (preparation_control
+                    ? detail::RequestCancelled(preparation_control.get(), fd)
+                    : detail::ClientConnectionFailed(fd));
       }};
   const auto send = [&](const ObjectReply& error) {
     detail::SendError(fd, error.http_status, error.message, {}, error.code,
@@ -52,8 +68,52 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
   config.count_input_only = true;
   ResponsesEnvelope envelope;
   ResponsesGenerationPlan generation;
-  auto prepared = PrepareResponsesTokenCount(request, config, *objects_, access,
-                                             &envelope, &generation);
+  const auto prepare_files = [&](FileExpansion& files) -> ObjectReply {
+    preparation_control = requests_.Register(
+        detail::NewRequestId("count-auto-"), "", access.deadline, client.Id());
+    if (!preparation_control) {
+      ObjectReply error;
+      error.http_status = 409;
+      error.code = "request_id_conflict";
+      error.message = "Input preparation identity already active";
+      return error;
+    }
+    ModelPreparation preparation(clients_, client, preparation_rate, 0, 0,
+                                 files.PendingOutputBudget());
+    uint64_t steps = 0;
+    ScopeExit report([&] {
+      http->SetPreparationUsage(
+          {preparation.InputTokens(), preparation.OutputTokens(), steps});
+    });
+    while (files.PendingSheets()) {
+      FileSheetStep sheet;
+      auto result = files.NextSheet(config, &sheet);
+      if (!result.ok()) return result;
+      const auto before = preparation.InputTokens();
+      ScopeExit observe_step([&] {
+        if (preparation.InputTokens() > before) ++steps;
+      });
+      InternalModelStep work{sheet.request,
+                             config,
+                             preparation,
+                             [] { return ObjectReply{}; },
+                             {},
+                             false,
+                             {},
+                             {},
+                             0,
+                             0};
+      result = RunInternalModelStep(fd, &work, preparation_control);
+      if (!result.ok()) return result;
+      result = files.CompleteSheet(sheet, work.content, work.finish_reason,
+                                   work.input_tokens, work.output_tokens);
+      if (!result.ok()) return result;
+    }
+    return {};
+  };
+  auto prepared =
+      PrepareResponsesTokenCount(request, config, *objects_, access, &envelope,
+                                 &generation, prepare_files);
   if (!prepared.ok()) {
     send(prepared);
     return;
@@ -115,7 +175,12 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
                       error.param);
     return;
   }
-  // No Response::Begin, cache mutation, rate reservation or model scheduler.
+  if (preparation_control && !preparation_control->Finish()) {
+    send(CheckResponsesTokenCountActive(access));
+    return;
+  }
+  // No Response::Begin or final-answer generation. For new sheets, actual
+  // preparation usage is separately visible in headers and charged once.
   detail::SendSimple(fd, 200, "OK",
                      OutputJson(ResponsesTokenCountJson(input_tokens)),
                      "application/json", {access.deadline});

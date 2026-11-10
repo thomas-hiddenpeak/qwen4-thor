@@ -96,8 +96,10 @@ class Stage(encrypted.Stage):
         self.input_counts = 0
         rows, values = requests(), []
         caps = read(self.out/'capabilities-1.json')['responses']['input_tokens']
-        require(caps['enabled'] and not caps['model_execution'] and
-                not caps['state_mutation'] and not caps['generation_rpm_tpm'],
+        require(caps['enabled'] and caps['model_execution'] and
+                caps['model_execution_condition'] == 'new_sheet_preparation' and
+                not caps['state_mutation'] and caps['generation_rpm_tpm'] and
+                caps['rate_condition'] == 'actual_sheet_preparation',
                 'actual count capability differs')
         empty = self.count('empty-omitted', omit_request=True)
         require(self.count('empty-null') == empty and

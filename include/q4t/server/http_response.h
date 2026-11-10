@@ -86,6 +86,17 @@ class HttpResponseContext {
   static HttpResponseContext* Current(int fd);
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
+  struct PreparationUsage {
+    uint64_t input_tokens = 0, output_tokens = 0, model_steps = 0;
+  };
+  // Actual auxiliary work, separate from count's standard input_tokens body.
+  // Set before the first header; never accepts caller-controlled header text.
+  void SetPreparationUsage(PreparationUsage usage) noexcept {
+    preparation_usage_ = usage;
+  }
+  const PreparationUsage& InputPreparationUsage() const {
+    return preparation_usage_;
+  }
   // Handler-thread-only identity, minted by header admission.
   const ClientIdentity& Client() const { return client_; }
   void SetClient(ClientIdentity client, ClientLease* lease) {
@@ -175,6 +186,7 @@ class HttpResponseContext {
   bool framing_finished_ = false;
   HttpResponseContext* const previous_;
   std::string trace_id_;
+  PreparationUsage preparation_usage_;
   ClientIdentity client_;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
