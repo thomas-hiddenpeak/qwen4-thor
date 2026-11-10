@@ -300,6 +300,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_extract.cpp
   src/server/file_snapshot.cpp
   src/server/file_expansion.cpp
+  src/server/file_input_policy.cpp
   src/server/chat_file_inputs.cpp
   src/server/model_preparation.cpp
   src/server/file_source.cpp

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -337,11 +338,35 @@ def access_program_binding(raw, clients, model):
                 model=model, sha256=hashlib.sha256(raw).hexdigest())
 
 
+def file_input_policy_binding(binary, path, raw):
+    """The hash-verified engine owns policy parsing; this never loads a model."""
+    from tools.serve_gateway import client_policy as cp
+    require(type(raw) is bytes and 0 < len(raw) <= cp.MAX_BYTES,
+            'invalid file input policy size')
+    environment = {k: v for k, v in os.environ.items()
+                   if k not in ('LD_PRELOAD', 'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME')}
+    try:
+        result = subprocess.run([str(binary), 'file-input-policy-check', str(path)],
+            capture_output=True, timeout=10, check=False, env=environment)
+        require(result.returncode == 0 and len(result.stdout) <= 16384,
+                'native file input policy validation failed')
+        value = json.loads(result.stdout.decode('utf-8'), object_pairs_hook=cp.unique,
+                           parse_constant=lambda _: cp.require(False))
+    except (OSError, subprocess.TimeoutExpired, ValueError, UnicodeError) as error:
+        raise RuntimeError('native file input policy validation failed') from error
+    require(type(value) is dict and value.get('profile') == 'q4t-file-input-policy-v1'
+            and value.get('configured') is True
+            and value.get('sha256') == hashlib.sha256(raw).hexdigest()
+            and value.get('request_override') is False,
+            'native file input policy identity differs')
+    return value
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
             application_state=None, capacity_config=None, repository=None,
-            access_program_policy=None):
+            access_program_policy=None, file_input_policy=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -365,6 +390,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         access_raw = cp.read_private(access_program_policy)
         access_binding = access_program_binding(access_raw, clients,
             config.get('model_names', {}).get('name', 'qwen3.8-flash-next'))
+    file_raw, file_binding = None, None
+    if file_input_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        file_raw = cp.read_private(file_input_policy)
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -386,6 +415,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         require(read(declarations/'capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
                 'accepted engine lacks native access programs')
+    if file_raw is not None:
+        require(read(declarations/'capabilities.json').get('file_inputs', {})
+                .get('policy_profile') == 'q4t-file-input-policy-v1',
+                'accepted engine lacks native file input policy')
+        file_binding = file_input_policy_binding(binary, file_input_policy, file_raw)
     observed_state = metadata.get('observed_configuration', {}).get('application_state')
     if observed_state is not None:
         require(type(observed_state) is dict and
@@ -444,6 +478,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             stream.write(access_raw)
         (target/'access-program-policy.json').chmod(0o400)
         names.append('access-program-policy.json')
+    if file_raw is not None:
+        with (target/'file-input-policy.json').open('xb') as stream:
+            stream.write(file_raw)
+        (target/'file-input-policy.json').chmod(0o400)
+        names.append('file-input-policy.json')
     python = Path(sys.executable).resolve()
     manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
@@ -452,6 +491,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         weight_shards_rehashed=False, managed_service_accepted=False)
     if access_binding is not None:
         manifest['access_program_policy'] = access_binding
+    if file_binding is not None:
+        manifest['file_input_policy'] = file_binding
     manifest['release_declarations'] = metadata['release_declarations']['profile']
     manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
@@ -545,6 +586,8 @@ def verify(package, digest):
         require(manifest['access_program_policy'] == access_program_binding(
             access_raw, clients, config.get('model_names', {}).get(
                 'name', 'qwen3.8-flash-next')), 'access program binding differs')
+    if 'file_input_policy' in manifest:
+        expected.add('file-input-policy.json')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -566,6 +609,15 @@ def verify(package, digest):
         require(read(package/'declarations/capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
                 'engine access program declaration absent')
+    if 'file_input_policy' in manifest:
+        from tools.serve_gateway import client_policy as cp
+        require(read(package/'declarations/capabilities.json').get('file_inputs', {})
+                .get('policy_profile') == 'q4t-file-input-policy-v1',
+                'engine file input policy declaration absent')
+        file_path = package/'file-input-policy.json'
+        require(manifest['file_input_policy'] == file_input_policy_binding(
+            package/'q4t', file_path, cp.read_private(file_path)),
+            'file input policy binding differs')
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
@@ -600,6 +652,8 @@ def command(package, manifest, *, state_directory=None):
     if 'access_program_policy' in manifest:
         args += ['--access-program-policy-file',
                  str(Path(package)/'access-program-policy.json')]
+    if 'file_input_policy' in manifest:
+        args += ['--file-input-policy-file', str(Path(package)/'file-input-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
     if 'model_names' in cfg:

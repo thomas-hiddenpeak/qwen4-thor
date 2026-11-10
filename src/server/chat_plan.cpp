@@ -6,6 +6,7 @@
 
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/file_expansion.h"
+#include "q4t/server/file_input_policy.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
@@ -13,6 +14,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/text_stop.h"
@@ -403,7 +405,10 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"("observability_version":5,)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
-         R"(,"model_aliases":)" + aliases +
+         R"(,"model_aliases":)" + aliases + R"(,"file_inputs":)" +
+         OutputJson(FileInputPolicyDescription(
+             config.file_inputs ? *config.file_inputs : FileExpansionOptions{},
+             config.file_input_policy_sha256)) +
          R"(,"completions":{"profile":"q4t-completions-v1",)"
          R"("default_output_tokens":16,"max_batch_candidates":128})"
          R"(,"application_state":{"profile":"q4t-objects-v1",)"

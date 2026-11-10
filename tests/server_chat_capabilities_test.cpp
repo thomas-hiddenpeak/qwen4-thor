@@ -34,8 +34,15 @@ Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
             files->GetInt("max_wire_bytes") ==
                 static_cast<int64_t>(q4t::server::kFileWireBytes) &&
             !files->GetBool("core_readiness_dependency") &&
-            files->GetBool("file_resolution_pending"));
+            !files->GetBool("file_resolution_pending"));
   Q4T_CHECK(files->GetArray("purposes")->array.size() == 6);
+  const auto* inputs = value.Find("file_inputs");
+  Q4T_CHECK(inputs && inputs->GetString("policy_profile") ==
+                          "q4t-file-input-policy-v1" &&
+            inputs->GetString("configuration_endpoint") == "/v1/config" &&
+            inputs->GetString("configuration_field") == "file_inputs" &&
+            inputs->GetBool("policy_check_cli") &&
+            !inputs->GetBool("request_override"));
   return true;
 }
 

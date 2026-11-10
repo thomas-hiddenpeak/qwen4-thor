@@ -144,7 +144,13 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("access_programs":)" +
          OutputJson(AccessProgramCapabilities(access)) + "," +
          R"("pending_execution":[)"
-         R"("file_resolution","builtin_tools"]})"
+         R"("builtin_tools"]})"
+         R"(,"file_inputs":{"policy_profile":"q4t-file-input-policy-v1",)"
+         R"("configuration_endpoint":"/v1/config",)"
+         R"("configuration_field":"file_inputs","policy_check_cli":true,)"
+         R"("request_override":false,"chat_pdf":true,"responses":true,)"
+         R"("input_tokens":true,"preflight":true,"frozen_replay":true,)"
+         R"("core_readiness_dependency":false})"
          R"(,"conversations":{"profile":"q4t-conversations-v1",)"
          R"("endpoint":"/v1/conversations","create":true,"retrieve":true,)"
          R"("metadata_update":true,"delete":true,"items_append":true,)"
@@ -166,7 +172,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("publish":"after_complete_http_multipart_and_durable_commit",)"
          R"("retention":"explicit_expiry_or_batch_30_days_otherwise_permanent",)"
          R"("purposes":["assistants","batch","fine-tune","vision","user_data","evals"],)"
-         R"("purpose_is_storage_metadata":true,"file_resolution_pending":true})"
+         R"("purpose_is_storage_metadata":true,"file_resolution_pending":false})"
          R"(,"uploads":{"profile":"q4t-uploads-v1","endpoint":"/v1/uploads",)"
          R"("create":true,"parts":true,"complete":true,"cancel":true,)"
          R"("max_bytes":8589934592,"max_part_bytes":67108864,)"

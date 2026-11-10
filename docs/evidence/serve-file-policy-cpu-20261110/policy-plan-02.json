@@ -1,0 +1,9 @@
+{
+  "reason": "Final discovery review separates valid /v1/config endpoint from file_inputs field; only affected capability assertion rechecked, all other C++ and native package parser evidence reused.",
+  "required_list": "policy-required-02.txt",
+  "source_sha256": {
+    "src/server/chat_capabilities.cpp": "e9c677baf524f736c9ece5458594d375dcca4fb4d1b715518f49bfb45d529a3c"
+  },
+  "candidate_before_sha256": "aa345138c47e616cf065f367d3db1a5719eb8b17d1530439d1f85380d814c674",
+  "gpu": 0
+}

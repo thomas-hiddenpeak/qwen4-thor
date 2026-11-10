@@ -80,6 +80,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_extract.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_snapshot.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_expansion.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_input_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_file_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_file_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_preparation.cpp

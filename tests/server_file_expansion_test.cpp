@@ -245,6 +245,72 @@ Q4T_TEST(file_expansion_combined_source_text_and_rendered_budgets_are_atomic) {
   return true;
 }
 
+Q4T_TEST(file_expansion_combined_retained_payload_is_atomic) {
+  Fixture fixture;
+  const auto one = Array({Item(Inline())});
+  FileExpansion measured(nullptr, fixture.options);
+  Q4T_CHECK(Ok(measured.Prepare(one, FileInputProfile::kResponsesStored, Json(),
+                                Access())));
+  fixture.options.max_retained_bytes = measured.RetainedBytes();
+  FileExpansion fits(nullptr, fixture.options);
+  Q4T_CHECK(Ok(
+      fits.Prepare(one, FileInputProfile::kResponsesStored, Json(), Access())));
+  FileExpansion combined(nullptr, fixture.options);
+  const auto two = Array({Item(Inline()), Item(Inline(), "msg_second")});
+  Q4T_CHECK(
+      combined
+          .Prepare(two, FileInputProfile::kResponsesStored, Json(), Access())
+          .http_status == 413);
+  Q4T_CHECK(combined.Usage().files == 0 && combined.RetainedBytes() == 0);
+  Json output;
+  Q4T_CHECK(!combined.Render(two, &output).ok() && output.IsNull());
+  return true;
+}
+
+Q4T_TEST(file_expansion_frozen_inputs_obey_new_retained_budget) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto items = Array({Item(Inline())});
+  FileExpansion original(&objects, fixture.options);
+  Q4T_CHECK(Ok(original.Prepare(items, FileInputProfile::kResponsesStored,
+                                Json(), Access())));
+  Q4T_CHECK(Ok(original.Persist(Access())));
+  fixture.options.max_retained_bytes = original.RetainedBytes() - 1;
+  FileExpansion limited(&objects, fixture.options);
+  Q4T_CHECK(limited
+                .Prepare(items, FileInputProfile::kResponsesStored,
+                         original.Bindings(), Access(), true)
+                .http_status == 413);
+  Q4T_CHECK(limited.RetainedBytes() == 0 && limited.Usage().files == 0);
+  fixture.options.max_retained_bytes = original.RetainedBytes();
+  FileExpansion fits(&objects, fixture.options);
+  Q4T_CHECK(Ok(fits.Prepare(items, FileInputProfile::kResponsesStored,
+                            original.Bindings(), Access(), true)));
+  Q4T_CHECK(Ok(original.Release(Access())));
+  return true;
+}
+
+Q4T_TEST(file_expansion_summary_cannot_exceed_retained_payload_budget) {
+  Fixture fixture;
+  const auto items = Array({Item(Csv())});
+  FileExpansion measured(nullptr, fixture.options);
+  Q4T_CHECK(Ok(measured.Prepare(items, FileInputProfile::kResponsesStored,
+                                Json(), Access())));
+  fixture.options.max_retained_bytes = measured.RetainedBytes() + 4;
+  FileExpansion limited(nullptr, fixture.options);
+  Q4T_CHECK(Ok(limited.Prepare(items, FileInputProfile::kResponsesStored,
+                               Json(), Access())));
+  FileSheetStep step;
+  Q4T_CHECK(Ok(limited.NextSheet(Config(), &step)));
+  // CPU receipt only. The execution owner accounts failed actual model work.
+  Q4T_CHECK(limited.CompleteSheet(step, kFixtureSummary, "stop", 100, 50)
+                .http_status == 413);
+  Q4T_CHECK(limited.PendingSheets() &&
+            limited.Usage().augmentation_bytes == 0 &&
+            limited.RetainedBytes() == measured.RetainedBytes());
+  return true;
+}
+
 Q4T_TEST(file_expansion_actual_pdf_page_and_chat_profile_are_complete) {
   Fixture fixture;
   ObjectStore objects(fixture.objects);

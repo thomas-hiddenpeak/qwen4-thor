@@ -163,6 +163,14 @@ Uploads可选MD5按需加载libcrypto，普通Chat/Responses不依赖其可用�
 A09.5开发中的原生文件获取在独立子进程内按需加载同一系统libssl，
 不调用外部下载服务；文件来源/获取组件已做针对性CPU，完整文件输入
 仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)继续接入。
+
+开发候选已提供`serve --file-input-policy-file FILE`及纯CPU
+`q4t file-input-policy-check FILE`；文件需当前用户所有、0600或0400，
+最小配置为`{"version":1}`，可覆盖获取策略、各解析域预算及表格准备
+输出上限。`service prepare --file-input-policy FILE`将策略封入发行包，
+`/v1/config`的`file_inputs`报告实际数值与SHA，不泄露私有地址或路径。
+请求不能覆盖部署策略；网络或codec故障只失败依赖该功能的请求。
+完整参数、累计预算与尚未发行边界见上述文件输入计划。
 关闭TLS仍需OpenSSL开发头以构建加密状态功能。缺库或坏证书不会
 回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
 项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。

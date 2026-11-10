@@ -1008,7 +1008,8 @@
         "native_model_preparation": "evidence/serve-model-preparation-cpu-20261110/README.md",
         "native_model_preparation_business": "evidence/serve-model-preparation-business-20261110/README.md",
         "chat_preflight_storage": "evidence/serve-chat-files-cpu-20261110/README.md",
-        "file_input_counting": "evidence/serve-count-files-cpu-20261110/README.md"
+        "file_input_counting": "evidence/serve-count-files-cpu-20261110/README.md",
+        "deployment_policy_and_retained_budget": "evidence/serve-file-policy-cpu-20261110/README.md"
       }
     },
     {

@@ -117,6 +117,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
       options.client_policy_file.empty())
     return Status::Fail("access-program-policy-file requires client policy");
   if (options.model_dir.empty()) return Status::Fail("model-dir is empty");
+  if (options.file_input_policy_file.size() > 4096 ||
+      options.file_input_policy_file.find('\0') != std::string::npos)
+    return Status::Fail("invalid file-input-policy-file path");
   if (options.max_tokens < 1)
     return Status::Fail("max-tokens must be positive");
   if (options.max_prefill < 0 || options.max_len < 0)
@@ -238,7 +241,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
         key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
-        key != "--served-model-name" &&
+        key != "--file-input-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -281,6 +284,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.mtp_subset_head = value;
     } else if (key == "--access-program-policy-file") {
       parsed.access_program_policy_file = value;
+    } else if (key == "--file-input-policy-file") {
+      parsed.file_input_policy_file = value;
     } else if (key == "--client-policy-file") {
       parsed.client_policy_file = value;
     } else if (key == "--host") {

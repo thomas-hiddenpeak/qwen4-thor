@@ -5,6 +5,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/file_input_policy.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/request_json.h"
 
@@ -38,31 +39,10 @@ bool Add(uint64_t amount, uint64_t maximum, uint64_t* used) {
   *used += amount;
   return true;
 }
-bool Options(const FileExpansionOptions& options) {
-  return options.max_source_bytes <= kFileInputBytes && options.max_files &&
-         options.max_files <= 4096 && options.max_rendered_bytes &&
-         options.max_rendered_bytes <= (512ULL << 20) &&
-         options.hold_seconds >= 1 && options.hold_seconds <= 3600 &&
-         options.summary_output_tokens >= 64 &&
-         options.summary_output_tokens <= 65536 &&
-         options.total_summary_output_tokens >= 64 &&
-         options.total_summary_output_tokens <= 65536 &&
-         options.image.max_bytes &&
-         options.image.max_bytes <= kFileInputBytes &&
-         options.image.max_pixels &&
-         options.image.max_pixels <= (256ULL << 20) && options.image.max_edge &&
-         options.image.max_conversion_bytes >= 1024 &&
-         options.image.max_conversion_bytes <= (256ULL << 20) &&
-         options.image.codec_timeout_ms >= 1 &&
-         options.image.codec_timeout_ms <= 30000 &&
-         options.image.max_edge <= 65536 &&
-         ValidFileDocumentLimits(options.extraction.document) &&
-         options.extraction.pdf.max_pages &&
-         options.extraction.pdf.max_pages <= 256 &&
-         options.extraction.pdf.max_pixels &&
-         options.extraction.pdf.max_pixels <= (256ULL << 20) &&
-         options.extraction.pdf.max_image_bytes &&
-         options.extraction.pdf.max_image_bytes <= (256ULL << 20);
+uint64_t Retained(const FileExpansionUsage& usage) {
+  return usage.source_bytes + usage.text_bytes + usage.image_bytes +
+         usage.augmentation_bytes +
+         (usage.cells + usage.sheets + usage.files + usage.embedded) * 1024;
 }
 ObjectReply Charge(const FileInputSnapshot& file,
                    const FileExpansionOptions& options,
@@ -299,9 +279,7 @@ size_t FileExpansion::RetainedBytes() const {
   // Conservative queue ownership: original and rendered forms can coexist.
   // Logical sources/pixels are already bounded by Prepare; no character-to-
   // token estimate is used for model or quota admission.
-  return usage_.source_bytes + usage_.text_bytes + usage_.image_bytes +
-         usage_.augmentation_bytes +
-         (usage_.cells + usage_.sheets + usage_.files + usage_.embedded) * 1024;
+  return Retained(usage_);
 }
 
 FileExpansion::FileExpansion(ObjectStore* objects, FileExpansionOptions options)
@@ -320,8 +298,8 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
                                    const BinaryAccess& access,
                                    bool require_frozen,
                                    GrammarControl control) {
-  if (prepared_ || commit_unknown_ || !Options(options_) || !items.IsArray() ||
-      items.array.size() > 4096 || access.scope.empty())
+  if (prepared_ || commit_unknown_ || !ValidFileExpansionOptions(options_) ||
+      !items.IsArray() || items.array.size() > 4096 || access.scope.empty())
     return Invalid();
   auto reply = Active(access);
   if (!reply.ok()) return reply;
@@ -408,6 +386,8 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
     reply = candidate.image ? ChargeImage(*entry.image, options_, &usage)
                             : Charge(entry.snapshot, options_, &usage);
     if (!reply.ok()) return At(reply, entry.path);
+    if (Retained(usage) > options_.max_retained_bytes)
+      return At(Capacity(), entry.path);
     budget.used_bytes = usage.source_bytes;
     budget.used_files = usage.files;
     prepared.push_back(std::move(entry));
@@ -650,6 +630,9 @@ ObjectReply FileExpansion::CompleteSheet(const FileSheetStep& step,
       return Capacity();
     generated.headers.push_back(header.str);
   }
+  auto retained_usage = usage_;
+  retained_usage.augmentation_bytes = bytes;
+  if (Retained(retained_usage) > options_.max_retained_bytes) return Capacity();
   entry.snapshot.augmentations.push_back(std::move(generated));
   entry.dirty = true;
   usage_.augmentation_bytes = bytes;

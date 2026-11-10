@@ -43,7 +43,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .client_limits = http ? http->Client().Limits() : nullptr,
           .model_aliases = model_catalog_.Aliases(),
           .access_program_policy = access_program_policy_,
-          .file_inputs = file_inputs_};
+          .file_inputs = file_inputs_,
+          .file_input_policy_sha256 = file_input_policy_sha256_};
 }
 
 void ChatServer::HandleConfig(int fd) {

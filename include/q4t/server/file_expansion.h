@@ -14,6 +14,8 @@ struct FileExpansionOptions {
   uint64_t max_source_bytes = kFileInputBytes;
   size_t max_files = 32;
   uint64_t max_rendered_bytes = 128ULL << 20;
+  // Logical retained payload plus conservative structure charges, not RSS.
+  uint64_t max_retained_bytes = 256ULL << 20;
   int hold_seconds = 1800;
   int summary_output_tokens = 2048;
   int total_summary_output_tokens = 8192;

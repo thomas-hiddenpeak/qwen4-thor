@@ -66,6 +66,7 @@ struct ChatPlanConfig {
   std::shared_ptr<const AccessProgramPolicy> access_program_policy;
   // Deployment-owned file policy; never read from request JSON.
   std::shared_ptr<const FileExpansionOptions> file_inputs;
+  std::string file_input_policy_sha256;
 };
 
 struct ChatPlanError {

@@ -202,6 +202,7 @@ class ChatServer {
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
+  std::string file_input_policy_sha256_;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;
   std::unique_ptr<ResponsesJobs> background_;
   std::mutex connections_mu_;
