@@ -41,7 +41,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .client_fair_queue = policy && policy->fair_queue,
           .client_limits = http ? http->Client().Limits() : nullptr,
           .model_aliases = model_catalog_.Aliases(),
-          .access_program_policy = access_program_policy_};
+          .access_program_policy = access_program_policy_,
+          .file_inputs = file_inputs_};
 }
 
 void ChatServer::HandleConfig(int fd) {

@@ -23,6 +23,7 @@ struct MediaPlan;
 }
 
 namespace q4t::server {
+struct FileExpansionOptions;
 
 inline constexpr std::string_view kPreflightProfile = "q4t-preflight-v1";
 inline constexpr size_t kPreflightResponseBytes = 8 * 1024 * 1024;
@@ -59,6 +60,8 @@ struct ChatPlanConfig {
   const ClientLimits* client_limits = nullptr;
   std::vector<std::string> model_aliases;
   std::shared_ptr<const AccessProgramPolicy> access_program_policy;
+  // Deployment-owned file policy; never read from request JSON.
+  std::shared_ptr<const FileExpansionOptions> file_inputs;
 };
 
 struct ChatPlanError {

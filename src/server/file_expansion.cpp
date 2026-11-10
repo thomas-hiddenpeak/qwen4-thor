@@ -271,10 +271,40 @@ bool JsonBytes(const Json& value, uint64_t maximum, uint64_t* bytes,
 }
 }  // namespace
 
+namespace {
+bool ContainsFile(const Json& value, size_t depth) {
+  if (depth > 32) return true;  // The bounded full scanner supplies the error.
+  if (value.IsArray()) {
+    for (const auto& child : value.array)
+      if (ContainsFile(child, depth + 1)) return true;
+  } else if (value.IsObject()) {
+    const auto type = value.GetString("type");
+    if (type == "file" || type == "input_file" || type == "input_image" ||
+        type == "image_url")
+      return true;
+    for (const auto* key : {"content", "output", "results"})
+      if (const auto* child = value.Find(key);
+          child && ContainsFile(*child, depth + 1))
+        return true;
+  }
+  return false;
+}
+}  // namespace
+bool HasFileInputs(const Json& items) { return ContainsFile(items, 0); }
+
+size_t FileExpansion::RetainedBytes() const {
+  // Conservative queue ownership: original and rendered forms can coexist.
+  // Logical sources/pixels are already bounded by Prepare; no character-to-
+  // token estimate is used for model or quota admission.
+  return usage_.source_bytes + usage_.text_bytes + usage_.image_bytes +
+         usage_.augmentation_bytes +
+         (usage_.cells + usage_.sheets + usage_.files + usage_.embedded) * 1024;
+}
+
 FileExpansion::FileExpansion(ObjectStore* objects, FileExpansionOptions options)
     : objects_(objects), options_(std::move(options)) {}
 FileExpansion::~FileExpansion() {
-  if (objects_ && !holds_.empty()) {
+  if (objects_ && !holds_.empty() && !retain_holds_) {
     try {
       Release({scope_, Clock::now() + std::chrono::milliseconds(250), {}});
     } catch (...) {

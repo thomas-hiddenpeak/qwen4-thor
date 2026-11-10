@@ -198,6 +198,7 @@ class ChatServer {
   std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
+  std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;
   std::unique_ptr<ResponsesJobs> background_;
   std::mutex connections_mu_;

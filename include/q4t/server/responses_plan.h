@@ -80,6 +80,14 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
                            const ResponsesContextCheck& check,
                            ResponsesGenerationPlan* plan, ChatPlanError* error);
 
+// Pure validation before file/network/codec I/O. Retains every actual content
+// part for semantic/history checks; does not invent a generation prompt.
+Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
+                                    const io::Json& resolved_input,
+                                    const ChatPlanConfig& config,
+                                    io::Json* effective_tools,
+                                    ChatPlanError* error);
+
 // resolved_input includes the authorized previous/conversation history and
 // resolved media. No I/O here. Instructions always belong to the new request.
 Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,

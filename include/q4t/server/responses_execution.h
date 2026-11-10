@@ -2,6 +2,9 @@
 
 #include <array>
 #include <optional>
+#include <stdexcept>
+
+#include "q4t/server/file_expansion.h"
 
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_compaction.h"
@@ -31,7 +34,8 @@ class ResponsesExecution {
                               IResponsesCleanup* cleanup = nullptr,
                               bool require_cleanup = false,
                               bool standalone_compaction = false)
-      : state_(objects),
+      : objects_(objects),
+        state_(objects),
         cipher_(objects),
         prompts_(objects),
         cleanup_(cleanup),
@@ -44,6 +48,17 @@ class ResponsesExecution {
                       bool background_executor = false);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
+  bool GenerationReady() const { return generation_ready_; }
+  bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
+  const FileExpansionUsage* FileUsage() const {
+    return files_ ? &files_->Usage() : nullptr;
+  }
+  ObjectReply NextFileSheet(const ChatPlanConfig& config, FileSheetStep* step);
+  ObjectReply CompleteFileSheet(const FileSheetStep& step,
+                                std::string_view output,
+                                std::string_view finish_reason,
+                                uint64_t input_tokens, uint64_t output_tokens,
+                                const ChatPlanConfig& config);
   ObjectReply FitContext(const ChatPlanConfig& config,
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
@@ -92,7 +107,11 @@ class ResponsesExecution {
   ObjectReply CloseUnfinished();
 
   const ResponsesEnvelope& Envelope() const { return envelope_; }
-  const ResponsesGenerationPlan& Generation() const { return generation_; }
+  const ResponsesGenerationPlan& Generation() const {
+    if (!generation_ready_)
+      throw std::logic_error("File preparation has not completed");
+    return generation_;
+  }
   const ResponsesOutput& Output() const { return output_; }
   void CacheDiagnostics(io::Json value) noexcept {
     output_.CacheDiagnostics(std::move(value));
@@ -117,7 +136,15 @@ class ResponsesExecution {
   ObjectReply BindMutationResult(ObjectReply reply);
   ObjectReply RequiredExecutors(bool background_executor) const;
   ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
+  ObjectReply BuildPreparedGeneration(const ChatPlanConfig& config);
+  ObjectReply PersistPreparedInputs();
+  void ReleasePreparedInputs() noexcept;
   Status RecordOutput(Status status, std::string* wire);
+  ObjectStore& objects_;
+  std::unique_ptr<FileExpansion> files_;
+  io::Json file_history_;
+  bool require_frozen_inputs_ = false;
+  bool generation_ready_ = false;
   ResponsesState state_;
   StateCipher cipher_;
   PromptRegistry prompts_;

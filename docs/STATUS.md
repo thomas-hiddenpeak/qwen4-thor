@@ -1,5 +1,13 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+2026-11-10。Responses文件准备/持久状态[19项CPU接受](evidence/serve-responses-files-cpu-20261110/README.md)，0.865秒：真实文档/媒体、原件删除/重启/previous/Conversation、queued冻结和表格步骤回执换版通过。首夹具编译/空指针失败与1次诊断保留；最终零警告、453锚点一致，候选7bbbea35未发行。实际模型/全部API/用量/业务/回退及总任务继续，0GPU/默认保持。
+
+2026-11-10。Responses文件首CPU进程SIGSEGV，已用1次有界gdb定位为新增测试将PrepareChatPrompt必需error_param传空；生产调用不变。修正夹具，原构建/失败/栈保留；因缓冲输出丢失未形成逐项通过证据，仍重跑原19项清单，不扩范围。0GPU/默认保持，全部接线/业务/总任务继续。
+
+2026-11-10。Responses文件准备/状态接线冻结19项CPU（7新+12直接影响）：真实文本/PDF/WebP、删除/重启/previous/Conversation、queued原提取与表格回执换版、提前验证和未知提交保护。表格回执为明确CPU协议夹具，实际模型仍须接线验收；开始独立必要构建，0网络/GPU，默认保持，全部后续任务继续。
+
+2026-11-10。Responses原生文件接线进入开发：完整文件/工具/schema准备验证先于获取，实际展开与原始history分开；queued先持久原提取，表格等待真实步骤，完成后新快照/检查点接管引用。generation readiness独立，不能用未展开输入执行。尚未构建/测试，继续Chat/计数/preflight与模型准入用量和全部业务/总任务；默认保持/0GPU。
+
 2026-11-10。FI04 [WebP 13项CPU接受](evidence/serve-webp-cpu-20261110/README.md)，0.965秒：真实五格式像素、owned退出/缺库/期限/取消、原件+PNG冻结恢复与预算通过；首host夹具Werror已修且保留，最终零警告、452来源锚点一致。候选f54ef953未发行，0GPU/默认STOPPED保持。继续全部API/真实模型/业务/格式兼容回退和总任务。
 
 2026-11-10。WebP原生转换及快照已成组实现：完整静态RIFF准入，固定域owned子进程/系统libwebp与zlib、纯内存沙箱、版本和库SHA回执；v2图片快照保存原件+PNG，恢复不再加载codec。冻结13项针对性CPU，含真实损坏/丢库/期限/取消/退出/来源及冻结回放，0网络/GPU。开始独立必要构建；全部API/模型/业务/回退及总任务继续，默认保持。

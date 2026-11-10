@@ -19,9 +19,11 @@ struct ResponsesInputPlan {
 // Object/file/encrypted references must be resolved by the owning request's
 // client-scoped state layer first. This function never performs external I/O.
 Status NormalizeResponsesInput(const io::Json& request,
-                               ResponsesInputPlan* result,
-                               ChatPlanError* error,
-                               bool allow_empty = false);
+                               ResponsesInputPlan* result, ChatPlanError* error,
+                               bool allow_empty = false,
+                               bool preparing_files = false);
+// preparing_files validates and retains unresolved file/image parts for the
+// preparation owner. Its output must not be sent to the model/template.
 // Maps shared-generation errors back to the caller's Responses input path.
 void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
                               std::string* param);

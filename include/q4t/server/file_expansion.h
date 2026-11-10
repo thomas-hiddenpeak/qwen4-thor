@@ -28,6 +28,9 @@ struct FileSheetStep {
   ChatRequestPlan chat;
   std::string prompt_sha256;
 };
+// Scans only typed content/output/results trees; no I/O or arbitrary metadata.
+bool HasFileInputs(const io::Json& items);
+
 // Items need stable private IDs (ResponsesState supplies these; Chat adapters
 // use private IDs and remove them before normal planning). Input items remain
 // unchanged. Only content/output/results trees are expanded, never metadata
@@ -47,6 +50,10 @@ class FileExpansion {
   ObjectReply Persist(const BinaryAccess& access);
   ObjectReply Release(const BinaryAccess& access);
   bool PendingSheets() const;
+  size_t RetainedBytes() const;
+  // If the enclosing record may have committed, let absolute holds expire.
+  // Never turn an unknown publication into speculative dependency deletion.
+  void RetainUncertainHolds() noexcept { retain_holds_ = true; }
   ObjectReply NextSheet(const ChatPlanConfig& config, FileSheetStep* step);
   // Accept only a completed real model step, with actual token accounting.
   ObjectReply CompleteSheet(const FileSheetStep& step, std::string_view output,
@@ -77,6 +84,6 @@ class FileExpansion {
   ObjectReply unknown_result_;
   std::string issued_step_sha256_;
   size_t issued_file_ = 0, issued_sheet_ = 0;
-  bool prepared_ = false, commit_unknown_ = false;
+  bool prepared_ = false, commit_unknown_ = false, retain_holds_ = false;
 };
 }  // namespace q4t::server

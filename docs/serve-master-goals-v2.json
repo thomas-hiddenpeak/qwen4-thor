@@ -1003,7 +1003,8 @@
         "image_sources": "evidence/serve-file-image-cpu-20261110/README.md",
         "native_image_detail": "evidence/serve-image-detail-cpu-20261110/README.md",
         "static_gif": "evidence/serve-static-gif-cpu-20261110/README.md",
-        "static_webp": "evidence/serve-webp-cpu-20261110/README.md"
+        "static_webp": "evidence/serve-webp-cpu-20261110/README.md",
+        "responses_preparation_lifecycle": "evidence/serve-responses-files-cpu-20261110/README.md"
       }
     },
     {

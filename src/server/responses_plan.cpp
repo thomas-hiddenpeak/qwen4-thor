@@ -490,6 +490,90 @@ Status ParseResponsesEnvelope(const io::Json& request,
   return {};
 }
 
+namespace {
+Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
+                         Json* effective_tools, ChatPlanError* error) {
+  auto& chat = *value;
+  const auto& request = envelope.request;
+  for (const auto* key :
+       {"model", "temperature", "top_p", "parallel_tool_calls", "stream"})
+    Set(&chat, key, *envelope.options.Find(key));
+  Set(&chat, "max_completion_tokens",
+      *envelope.options.Find("max_output_tokens"));
+  Set(&chat, "logprobs", Boolean(envelope.logprobs));
+  if (envelope.logprobs)
+    Set(&chat, "top_logprobs", *envelope.options.Find("top_logprobs"));
+  for (const auto* key :
+       {"request_id", "cancel_token", "request_timeout_ms", "seed"})
+    if (const auto* value = request.Find(key)) Set(&chat, key, *value);
+  Json tools, choice;
+  auto status =
+      NormalizeResponsesTools(request, &tools, &choice, error, effective_tools);
+  if (!status) return status;
+  Set(&chat, "tools", std::move(tools));
+  Set(&chat, "tool_choice", std::move(choice));
+  const auto& format = *envelope.options.Find("text")->Find("format");
+  if (format.GetString("type") == "json_schema") {
+    Json spec = Object();
+    for (const auto* key : {"name", "schema", "description", "strict"})
+      if (const auto* value = format.Find(key)) Set(&spec, key, *value);
+    Set(&chat, "response_format",
+        Object({{"type", String("json_schema")},
+                {"json_schema", std::move(spec)}}));
+  } else {
+    Set(&chat, "response_format", format);
+  }
+  Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
+  return {};
+}
+void OptionErrorParam(ChatPlanError* error) {
+  if (error->param.starts_with("tool_choice.allowed_tools"))
+    error->param.erase(std::string_view("tool_choice").size(),
+                       std::string_view(".allowed_tools").size());
+  if (error->param.starts_with("tools[") ||
+      error->param.starts_with("tool_choice"))
+    for (const auto* wrapper : {".function", ".custom"}) {
+      const auto offset = error->param.find(wrapper);
+      if (offset != std::string::npos)
+        error->param.erase(offset, std::char_traits<char>::length(wrapper));
+    }
+  if (error->param.starts_with("response_format.json_schema"))
+    error->param.replace(0, 27, "text.format");
+  else if (error->param.starts_with("response_format"))
+    error->param.replace(0, 15, "text.format");
+}
+}  // namespace
+
+Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
+                                    const io::Json& resolved_input,
+                                    const ChatPlanConfig& config,
+                                    io::Json* effective_tools,
+                                    ChatPlanError* error) {
+  *effective_tools = {};
+  *error = {};
+  auto request = envelope.request;
+  Set(&request, "input", resolved_input);
+  ResponsesInputPlan input;
+  auto status = NormalizeResponsesInput(request, &input, error,
+                                        config.count_input_only, true);
+  if (!status) return status;
+  auto options = Object({{"messages", std::move(input.messages)}});
+  status = GenerationOptions(envelope, &options, effective_tools, error);
+  if (!status) return status;
+  OutputConstraints constraints;
+  status = PlanOutputConstraints(options, &constraints, &error->param);
+  if (!status) {
+    error->code = "invalid_output_constraint";
+    OptionErrorParam(error);
+    return status;
+  }
+  if (constraints.active && !config.structured) {
+    *error = {"structured_backend_unavailable", "text.format", 503};
+    return Status::Fail("Structured decoding backend is not built");
+  }
+  return {};
+}
+
 Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
                                   const io::Json& resolved_input,
                                   const ChatPlanConfig& config,
@@ -505,34 +589,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   if (!status) return status;
   result.generation_request = Object({{"messages", result.input.messages}});
   auto& chat = result.generation_request;
-  for (const auto* key :
-       {"model", "temperature", "top_p", "parallel_tool_calls", "stream"})
-    Set(&chat, key, *envelope.options.Find(key));
-  Set(&chat, "max_completion_tokens",
-      *envelope.options.Find("max_output_tokens"));
-  Set(&chat, "logprobs", Boolean(envelope.logprobs));
-  if (envelope.logprobs)
-    Set(&chat, "top_logprobs", *envelope.options.Find("top_logprobs"));
-  for (const auto* key :
-       {"request_id", "cancel_token", "request_timeout_ms", "seed"})
-    if (const auto* value = request.Find(key)) Set(&chat, key, *value);
-  Json tools, choice;
-  status = NormalizeResponsesTools(request, &tools, &choice, error,
-                                   &result.effective_tools);
+  status = GenerationOptions(envelope, &chat, &result.effective_tools, error);
   if (!status) return status;
-  Set(&chat, "tools", std::move(tools));
-  Set(&chat, "tool_choice", std::move(choice));
-  const auto& format = *envelope.options.Find("text")->Find("format");
-  if (format.GetString("type") == "json_schema") {
-    Json spec = Object();
-    for (const auto* key : {"name", "schema", "description", "strict"})
-      if (const auto* value = format.Find(key)) Set(&spec, key, *value);
-    Set(&chat, "response_format",
-        Object({{"type", String("json_schema")},
-                {"json_schema", std::move(spec)}}));
-  } else {
-    Set(&chat, "response_format", format);
-  }
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
   std::string guidance = envelope.access_program.instructions;
   if (!guidance.empty()) guidance += '\n';
@@ -599,21 +657,7 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     }
     if (error->param == "max_completion_tokens")
       error->param = "max_output_tokens";
-    if (error->param.starts_with("tool_choice.allowed_tools"))
-      error->param.erase(std::string_view("tool_choice").size(),
-                         std::string_view(".allowed_tools").size());
-    if (error->param.starts_with("tools[") ||
-        error->param.starts_with("tool_choice")) {
-      for (const auto* wrapper : {".function", ".custom"}) {
-        const auto offset = error->param.find(wrapper);
-        if (offset != std::string::npos)
-          error->param.erase(offset, std::char_traits<char>::length(wrapper));
-      }
-    }
-    if (error->param.starts_with("response_format.json_schema"))
-      error->param.replace(0, 27, "text.format");
-    else if (error->param.starts_with("response_format"))
-      error->param.replace(0, 15, "text.format");
+    OptionErrorParam(error);
     return status;
   }
   *plan = std::move(result);

@@ -306,6 +306,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_pdf_sandbox.cpp
   src/server/responses_state.cpp
   src/server/responses_execution.cpp
+  src/server/responses_execution_files.cpp
   src/server/responses_execution_compaction.cpp
   src/server/responses_jobs.cpp
   src/server/responses_owner.cpp

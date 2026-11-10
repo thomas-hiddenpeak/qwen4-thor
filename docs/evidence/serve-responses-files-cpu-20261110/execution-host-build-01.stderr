@@ -1,0 +1,28 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp: In function ‘std::string {anonymous}::Prompt(const q4t::server::ResponsesExecution&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp:95:34: error: too few arguments to function ‘q4t::Status q4t::server::PrepareChatPrompt(const q4t::io::Json&, const OutputConstraints&, std::string*, std::vector<VisionItem>*, std::string*, std::string*, ChatPromptLayout*, bool)’
+   95 |   auto status = PrepareChatPrompt(plan.chat.Request(plan.generation_request),
+      |                 ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   plan.chat.constraints, &prompt, &images);
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp:8:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_prompt.h:33:8: note: declared here
+   33 | Status PrepareChatPrompt(const io::Json& request,
+      |        ^~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp:13:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp: In function ‘bool q4t_test_fn_responses_files_pdf_and_webp_use_actual_media_planner()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp:188:30: error: too few arguments to function ‘q4t::Status q4t::server::PrepareChatPrompt(const q4t::io::Json&, const OutputConstraints&, std::string*, std::vector<VisionItem>*, std::string*, std::string*, ChatPromptLayout*, bool)’
+  188 |   Q4T_CHECK(PrepareChatPrompt(generation.generation_request,
+      |             ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  189 |                               generation.chat.constraints, &prompt, &images));
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_prompt.h:33:8: note: declared here
+   33 | Status PrepareChatPrompt(const io::Json& request,
+      |        ^~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1661: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

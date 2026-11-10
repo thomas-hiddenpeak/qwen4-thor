@@ -219,3 +219,9 @@ WebP组件完成[13项CPU接受](evidence/serve-webp-cpu-20261110/README.md)：
 codec不可用和原File删除后恢复不重新解码；两份实际字节均计预算。
 FI05回退也须识别image_input_snapshot.v2。完整API/模型/业务和总任务
 继续，尚未发行。
+
+Responses实际准备owner与持久生命周期完成[19项CPU检查](evidence/serve-responses-files-cpu-20261110/README.md)：
+原件与展开分离、先验证后获取、queued冻结/恢复、previous/Conversation
+引用及未知提交保持。表格CPU回执仅验证状态合同，真实调度/用量与
+Chat/计数/preflight等仍须接线；当前候选不替换默认。之后业务/格式
+兼容回退与全部总任务继续。

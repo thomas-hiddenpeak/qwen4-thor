@@ -36,6 +36,7 @@ ObjectReply OutputError(const Status& status) {
 ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   if (reply.commit_unknown) {
     commit_unknown_ = true;
+    if (files_) files_->RetainUncertainHolds();
     reply.message +=
         "; retrieve response " + plan_.id + " before retrying this request";
     reply.value = Object({{"response_id", String(plan_.id)}});
@@ -62,6 +63,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   bytes += generation_.input.cache_boundaries.size() *
            sizeof(PromptCacheInputBoundary);
   bytes += generation_.chat.constraints.structural_tag.size();
+  if (files_) bytes += files_->RetainedBytes();
+  if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   return bytes;
 }
 
@@ -127,7 +130,8 @@ ObjectReply ResponsesExecution::RequiredExecutors(
 ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
                                            const ResponsesContextCheck& check) {
   const auto* output = output_.Snapshot().GetArray("output");
-  if (!prepared_ || plan_.finished || !output || !output->array.empty())
+  if (!prepared_ || !generation_ready_ || plan_.finished || !output ||
+      !output->array.empty())
     return Error(500, "response_state_invalid",
                  "Context must be selected before model output");
   if (envelope_.truncate && !check)
@@ -190,19 +194,36 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     generation_history_ = std::move(history);
   }
   ChatPlanError error;
-  auto status = PrepareResponsesGeneration(envelope_, generation_history_,
-                                           config, &generation_, &error);
+  Json effective_tools;
+  auto status = ValidateResponsesPreparation(envelope_, generation_history_,
+                                             config, &effective_tools, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
     return reply;
+  }
+  if (HasFileInputs(generation_history_)) {
+    files_ = std::make_unique<FileExpansion>(
+        &objects_,
+        config.file_inputs ? *config.file_inputs : FileExpansionOptions{});
+    file_history_ = std::move(generation_history_);
+    auto prepared =
+        files_->Prepare(file_history_, FileInputProfile::kResponsesStored,
+                        plan_.input_snapshots,
+                        {access_.scope, access_.deadline, access_.cancelled},
+                        require_frozen_inputs_);
+    if (!prepared.ok()) return prepared;
+  }
+  if (!PendingFileSheets()) {
+    auto built = BuildPreparedGeneration(config);
+    if (!built.ok()) return built;
   }
   if (envelope_.encrypted_reasoning) {
     auto ready = cipher_.Ready(access_);
     if (!ready.ok()) return ready;
   }
   cipher_config_.model = config.model;
-  Set(&envelope_.options, "tools", generation_.effective_tools);
+  Set(&envelope_.options, "tools", std::move(effective_tools));
   // Keep the public Responses shape, not Chat's nested function/custom shape.
   // NormalizeResponsesTools has already validated the selection and defaults.
   const auto* choice = envelope_.request.Find("tool_choice");
@@ -244,6 +265,7 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
       return Error(409, "response_access_program_changed",
                    "Queued response access program policy changed");
   }
+  require_frozen_inputs_ = true;
   auto result = RequiredExecutors(true);
   if (result.ok())
     result = PlanGeneration(config, snapshot.GetInt("created_at"));
@@ -313,6 +335,8 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   wire->clear();
   if (!prepared_ || begun_ || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response begin");
+  auto persisted = PersistPreparedInputs();
+  if (!persisted.ok()) return persisted;
   auto candidate = output_;
   auto events = events_;
   size_t bytes = event_bytes_;
@@ -334,6 +358,7 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   auto reply = BindMutationResult(
       state_.Begin(candidate.Snapshot(), events, access_, &plan_));
   if (!reply.ok()) {
+    if (reply.commit_unknown && files_) files_->RetainUncertainHolds();
     if (!reply.commit_unknown) durable_begin_attempted_ = false;
     return reply;
   }
@@ -342,6 +367,7 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   event_bytes_ = checkpoint_bytes_ = bytes;
   checkpoint_time_ = std::chrono::steady_clock::now();
   begun_ = true;
+  ReleasePreparedInputs();
   *wire = std::move(start);
   return {};
 }
@@ -463,7 +489,7 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
                                        int64_t completed_at, std::string* wire,
                                        bool content_filtered) {
   wire->clear();
-  if (!begun_ || plan_.finished || commit_unknown_)
+  if (!begun_ || !generation_ready_ || plan_.finished || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response finish");
   if (moderation_safe_)
     return Error(409, "moderation_review_pending",
@@ -501,6 +527,7 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
   output_ = std::move(candidate);
   events_ = std::move(events);
   event_bytes_ = bytes;
+  ReleasePreparedInputs();
   *wire = std::move(terminal);
   return {};
 }

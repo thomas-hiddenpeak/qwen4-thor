@@ -2,6 +2,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/file_expansion.h"
 #include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
 
@@ -129,6 +130,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
       ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
                                 home_directory ? home_directory : "");
   objects_ = std::make_unique<ObjectStore>(object_options);
+  auto file_inputs = std::make_shared<FileExpansionOptions>();
+  // A sibling of the strict ObjectStore tree: never put codec scratch files
+  // inside application-state records or use a client-provided pathname.
+  file_inputs->extraction.legacy.work_directory =
+      object_options.directory + "-input-codecs";
+  file_inputs_ = std::move(file_inputs);
   state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);
   if (opts.allow_media) {
     const auto status = vision::CheckVisionConfiguration(opts.model_dir);

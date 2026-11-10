@@ -18,7 +18,8 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 
 ObjectReply ResponsesExecution::SelectCompaction(size_t input_tokens,
                                                  const ChatPlanConfig& config) {
-  if (!prepared_ || plan_.finished || compaction_selected_ ||
+  if (!prepared_ || !generation_ready_ || plan_.finished ||
+      compaction_selected_ ||
       !output_.Snapshot().GetArray("output")->array.empty())
     return Error(500, "response_state_invalid", "Invalid compaction selection");
   bool selected = standalone_compaction_ || compaction_trigger_;

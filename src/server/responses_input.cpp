@@ -7,6 +7,7 @@
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/file_input.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "responses_json.h"
@@ -88,7 +89,7 @@ bool StrictDefaults(Json* schema, size_t depth = 0) {
   return true;
 }
 Status Parts(const Json& value, const std::string& role, std::string_view path,
-             Json* content, ChatPlanError* error) {
+             Json* content, ChatPlanError* error, bool preparing_files) {
   if (value.IsString()) {
     *content = value;
     return {};
@@ -117,7 +118,22 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
       return Invalid(error, at + ".prompt_cache_breakpoint",
                      "Cache breakpoints require an input content block");
     Json mapped;
-    if (type == "input_text" || type == "output_text") {
+    if (preparing_files && (type == "input_file" || type == "input_image")) {
+      FileInputSource source;
+      const auto checked =
+          type == "input_file"
+              ? ParseFileInputSource(part, FileInputProfile::kResponsesStored,
+                                     at, &source)
+              : ParseImageInputSource(part, FileInputProfile::kResponsesStored,
+                                      at, &source);
+      if (!checked.ok()) {
+        *error = {checked.code, checked.value.GetString("param"),
+                  checked.http_status};
+        return Status::Fail(checked.message);
+      }
+      // This is the actual unresolved part, not a surrogate text prompt.
+      mapped = part;
+    } else if (type == "input_text" || type == "output_text") {
       status = InputFields(part, {"type", "text", "annotations", "logprobs",
                                   "prompt_cache_breakpoint"},
                            &error->param, at);
@@ -233,8 +249,8 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
 }  // namespace
 
 Status NormalizeResponsesInput(const io::Json& request,
-                               ResponsesInputPlan* result,
-                               ChatPlanError* error, bool allow_empty) {
+                               ResponsesInputPlan* result, ChatPlanError* error,
+                               bool allow_empty, bool preparing_files) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -336,7 +352,8 @@ Status NormalizeResponsesInput(const io::Json& request,
       const auto* value = item.Find("content");
       if (!value) return Invalid(error, path + ".content", "content required");
       Json content;
-      status = Parts(*value, role, path + ".content", &content, error);
+      status = Parts(*value, role, path + ".content", &content, error,
+                     preparing_files);
       if (!status) return status;
       if (const auto* phase = item.Find("phase"); phase && !phase->IsNull()) {
         if (role != "assistant" || !phase->IsString() ||
@@ -478,7 +495,8 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (!value)
         return Invalid(error, path + ".output", "tool output required");
       Json content;
-      status = Parts(*value, "tool", path + ".output", &content, error);
+      status = Parts(*value, "tool", path + ".output", &content, error,
+                     preparing_files);
       if (!status) return status;
       results.emplace_back(Object({{"role", String("tool")},
                                    {"tool_call_id", String(id)},

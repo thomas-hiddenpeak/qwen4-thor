@@ -1,0 +1,6 @@
+{
+  "reason": "First frozen 19-case CPU process exited SIGSEGV with buffered stdout; failing case unknown. One bounded debugger run of the same exact list to obtain the failure stack, not acceptance.",
+  "max_runs": 1,
+  "timeout_seconds": 120,
+  "gpu": 0
+}
