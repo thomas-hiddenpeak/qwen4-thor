@@ -71,6 +71,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_workspace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_extract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_snapshot.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_snapshot_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_source.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_extract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_nested_test.cpp

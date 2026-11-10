@@ -165,6 +165,8 @@ set(protocol_inputs
   src/server/file_legacy_sandbox.cpp
   include/q4t/server/file_extract.h
   src/server/file_extract.cpp
+  src/server/file_snapshot.cpp
+  include/q4t/server/file_snapshot.h
   include/q4t/server/file_source.h
   src/server/file_source.cpp
   cmake/NativeDocuments.cmake

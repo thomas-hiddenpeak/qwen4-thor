@@ -1,0 +1,7 @@
+[PASS] file_snapshot_real_nested_pages_conversion_and_restart_without_codecs
+[PASS] file_snapshot_real_sheets_and_private_indirect_source_are_exact
+[PASS] file_snapshot_stored_file_delete_cannot_change_prepared_input
+[PASS] file_snapshot_typed_receipt_rejects_wrong_parts_sources_and_pages
+[PASS] file_snapshot_active_budgets_apply_to_history_without_partial_output
+[PASS] file_snapshot_never_persists_incomplete_or_mismatched_extraction
+6 tests, 6 passed, 0 failed, 0 skipped
