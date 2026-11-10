@@ -998,7 +998,8 @@
         "nested_documents": "evidence/serve-file-nested-cpu-20261110/README.md",
         "immutable_snapshot": "evidence/serve-input-snapshot-cpu-20261110/README.md",
         "document_snapshot": "evidence/serve-file-snapshot-cpu-20261110/README.md",
-        "state_bindings": "evidence/serve-input-binding-cpu-20261110/README.md"
+        "state_bindings": "evidence/serve-input-binding-cpu-20261110/README.md",
+        "shared_expansion": "evidence/serve-file-expansion-cpu-20261110/README.md"
       }
     },
     {

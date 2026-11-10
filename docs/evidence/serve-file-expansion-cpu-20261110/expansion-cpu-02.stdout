@@ -1,0 +1,5 @@
+[PASS] file_expansion_frozen_history_survives_delete_restart_and_codec_outage
+[PASS] file_expansion_pending_and_augmented_snapshots_are_separate_immutable_versions
+[PASS] file_expansion_combined_pdf_pages_and_history_budgets_are_enforced
+[PASS] file_expansion_unknown_persistence_never_replays_or_erases_owned_state
+4 tests, 4 passed, 0 failed, 0 skipped

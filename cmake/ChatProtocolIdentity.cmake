@@ -168,6 +168,8 @@ set(protocol_inputs
   include/q4t/server/file_extract.h
   src/server/file_extract.cpp
   src/server/file_snapshot.cpp
+  src/server/file_expansion.cpp
+  include/q4t/server/file_expansion.h
   include/q4t/server/file_snapshot.h
   include/q4t/server/file_source.h
   src/server/file_source.cpp

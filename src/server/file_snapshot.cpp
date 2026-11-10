@@ -182,6 +182,27 @@ ObjectReply Validate(const FileInputSnapshot& input,
       }
     }
   }
+  if (input.augmentations.size() > document.sheets.size()) return Corrupt();
+  std::vector<bool> augmented(document.sheets.size());
+  uint64_t augmentation_bytes = limits.max_text_bytes;
+  for (const auto& generated : input.augmentations) {
+    if (generated.sheet_index >= document.sheets.size() ||
+        augmented[generated.sheet_index] || generated.model.empty() ||
+        !Utf8(generated.model, 1024) || !Hex(generated.prompt_sha256) ||
+        generated.summary.empty() ||
+        !Utf8(generated.summary, limits.max_text_bytes) ||
+        !Consume(generated.summary.size(), &augmentation_bytes) ||
+        !generated.input_tokens || generated.input_tokens > 1000000000 ||
+        !generated.output_tokens || generated.output_tokens > 65536 ||
+        generated.headers.size() !=
+            document.sheets[generated.sheet_index].columns)
+      return Corrupt();
+    augmented[generated.sheet_index] = true;
+    for (const auto& header : generated.headers)
+      if (!Utf8(header, limits.max_cell_bytes) ||
+          !Consume(header.size(), &augmentation_bytes))
+        return Corrupt();
+  }
   FileDocumentConversion conversion;
   if (!ReadConversion(Conversion(document.conversion), &conversion))
     return Corrupt();
@@ -263,19 +284,38 @@ Json Pack(const FileInputSnapshot& input,
         Object({{"path", PathJson(item.path)},
                 {"source_sha256", String(item.source_sha256)},
                 {"conversion", Conversion(item.conversion)}}));
-  return Object({{"format", String("q4t.file_input_snapshot.v1")},
-                 {"detail", String(input.detail)},
-                 {"source", std::move(source)},
-                 {"indirect_source", std::move(indirect)},
-                 {"urls", std::move(urls)},
-                 {"export_format", String(input.source.export_format)},
-                 {"text", String(document.text)},
-                 {"encoding", String(document.encoding)},
-                 {"source_sha256", String(document.source_sha256)},
-                 {"conversion", Conversion(document.conversion)},
-                 {"embedded", std::move(embedded)},
-                 {"sheets", std::move(sheets)},
-                 {"pages", std::move(pages)}});
+  auto result = Object({{"format", String("q4t.file_input_snapshot.v1")},
+                        {"detail", String(input.detail)},
+                        {"source", std::move(source)},
+                        {"indirect_source", std::move(indirect)},
+                        {"urls", std::move(urls)},
+                        {"export_format", String(input.source.export_format)},
+                        {"text", String(document.text)},
+                        {"encoding", String(document.encoding)},
+                        {"source_sha256", String(document.source_sha256)},
+                        {"conversion", Conversion(document.conversion)},
+                        {"embedded", std::move(embedded)},
+                        {"sheets", std::move(sheets)},
+                        {"pages", std::move(pages)}});
+  if (!input.augmentations.empty()) {
+    Set(&result, "format", String("q4t.file_input_snapshot.v2"));
+    auto summaries = Array();
+    for (const auto& generated : input.augmentations) {
+      auto headers = Array();
+      for (const auto& header : generated.headers)
+        headers.array.push_back(String(header));
+      summaries.array.push_back(
+          Object({{"sheet_index", Number(generated.sheet_index)},
+                  {"model", String(generated.model)},
+                  {"prompt_sha256", String(generated.prompt_sha256)},
+                  {"summary", String(generated.summary)},
+                  {"headers", std::move(headers)},
+                  {"input_tokens", Number(generated.input_tokens)},
+                  {"output_tokens", Number(generated.output_tokens)}}));
+    }
+    Set(&result, "augmentations", std::move(summaries));
+  }
+  return result;
 }
 ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
                    FileInputSnapshot* output) {
@@ -293,10 +333,13 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
       text && text->IsString() &&
       text->str.size() > limits.document.max_text_bytes)
     return Capacity();
-  if (value.object.size() != 13 ||
-      value.GetString("format") != "q4t.file_input_snapshot.v1" || !source ||
-      !indirect || !urls || !sheets || !pages || !embedded || !conversion ||
-      !Text(value, "detail", 8, &output->detail) ||
+  const bool augmented =
+      value.GetString("format") == "q4t.file_input_snapshot.v2";
+  if (value.object.size() != (augmented ? 14 : 13) ||
+      (!augmented &&
+       value.GetString("format") != "q4t.file_input_snapshot.v1") ||
+      !source || !indirect || !urls || !sheets || !pages || !embedded ||
+      !conversion || !Text(value, "detail", 8, &output->detail) ||
       !Text(value, "export_format", 16, &output->source.export_format) ||
       !Text(value, "text", limits.document.max_text_bytes, &document.text) ||
       !Text(value, "encoding", 16, &document.encoding) ||
@@ -375,6 +418,40 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
     page.width = width;
     page.height = height;
     document.pages.push_back(std::move(page));
+  }
+  if (augmented) {
+    const auto* summaries = value.GetArray("augmentations");
+    if (!summaries || summaries->array.empty() ||
+        summaries->array.size() > document.sheets.size())
+      return Corrupt();
+    uint64_t remaining = limits.document.max_text_bytes;
+    for (const auto& entry : summaries->array) {
+      FileSheetAugmentation generated;
+      const auto index = entry.GetInt("sheet_index", -1);
+      const auto inputs = entry.GetInt("input_tokens", -1);
+      const auto outputs = entry.GetInt("output_tokens", -1);
+      const auto* headers = entry.GetArray("headers");
+      if (!entry.IsObject() || entry.object.size() != 7 || index < 0 ||
+          static_cast<size_t>(index) >= document.sheets.size() || inputs <= 0 ||
+          outputs <= 0 || !headers ||
+          headers->array.size() != document.sheets[index].columns ||
+          !Text(entry, "model", 1024, &generated.model) ||
+          !Text(entry, "prompt_sha256", 64, &generated.prompt_sha256) ||
+          !Text(entry, "summary", remaining, &generated.summary) ||
+          !Consume(generated.summary.size(), &remaining))
+        return Corrupt();
+      generated.sheet_index = index;
+      generated.input_tokens = inputs;
+      generated.output_tokens = outputs;
+      for (const auto& header : headers->array) {
+        if (!header.IsString() ||
+            !Utf8(header.str, limits.document.max_cell_bytes) ||
+            !Consume(header.str.size(), &remaining))
+          return Corrupt();
+        generated.headers.push_back(header.str);
+      }
+      output->augmentations.push_back(std::move(generated));
+    }
   }
   if (std::find(used.begin(), used.end(), false) != used.end())
     return Corrupt();

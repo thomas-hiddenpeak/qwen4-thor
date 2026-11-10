@@ -1,0 +1,13 @@
+{
+  "CMakeLists.txt": "684a2e8a4255abe8b70347c0ae8a89fe390759c9ace40fa5d2aec6a71633acd3",
+  "cmake/ChatProtocolIdentity.cmake": "d46a547e7741fe2f29ea1c804516498477f50bf26bcb2382fa98a82a9be1c33d",
+  "include/q4t/server/file_expansion.h": "8bb565f68fd33d1805f8a50ecc67708a18218edbf6b8d53559179baf022505d2",
+  "include/q4t/server/file_snapshot.h": "5ca27670e9d44d9c7a1398c508ed9220643d11eed0ed77c0f88c5534756b991c",
+  "src/server/file_expansion.cpp": "03c6feb9b7b65db267460c0a9d6f8d3240eabb490df48d67a3e6073dee0b21bf",
+  "src/server/file_snapshot.cpp": "fd22d3551d3158a5115a91a75d64d1ffc4246e8717568aa78e9f819d35df2833",
+  "cmake/HostTestSources.cmake": "e4fece6bf9c344712aef8c015ffe2c7fd22b24d26c42a96720368984026bb239",
+  "tests/server_file_expansion_test.cpp": "1b3545a5ad320c6f218ee3d2dc6e53a427199bd4631a7a8b217e51cfc9b41aee",
+  "tests/server_file_snapshot_test.cpp": "7e9e85089f517d32afa17f48750fdf4d6e678fcd94fd468f46ea8119dbd2eebd",
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "f5830c940e2f63310b3a4d83424bc781b19aa803b704c75c3270af8f0ab79d4b",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "ba18afe6d43adb693f563c50f79532961bed326fa16bf8006a21a81415f1e3e5"
+}
