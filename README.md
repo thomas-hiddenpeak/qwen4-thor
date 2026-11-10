@@ -182,8 +182,22 @@ Office容器底座在独立worker内按需加载系统libarchive 13/libxml2 2，
 目录。系统包分别保留BSD与MIT等原始许可（见其copyright文件），
 q4t没有复制这些库源码或随包分发库。OpenXML/ODF内容和原生RTF解析
 已做针对性CPU验证；RTF代码页仅在解析子进程通过系统libc的iconv
-预加载，实际未使用的代码页缺失不影响其他文档。Legacy Office、
-Apple/Google来源适配及完整API消费仍在实施，组件通过不等于文件
+预加载，实际未使用的代码页缺失不影响其他文档。
+
+Legacy Office/Apple适配使用隔离子进程中的系统
+[LibreOfficeKit](https://docs.libreoffice.org/libreofficekit.html) C API，
+构建需`libreofficekit-dev`头；不随q4t分发或启动Office常驻服务。
+只有对应文档请求按需加载系统运行库和过滤器，普通文本、原生
+OpenXML/ODF/RTF不依赖它。固定系统路径可通过CMake的
+`Q4T_SYSTEM_LIBREOFFICE_DIRECTORY`指定，默认`/usr/lib/libreoffice/program`。
+缺失/超时仅失败对应请求，禁止以无隔离模式回退。每次转换使用独立
+私有配置，关闭宏、主动内容和链接更新，限制总写入、文件/线程创建、
+时间及地址空间；未确认退出时不复用占槽或清理其目录。
+本机接口版本24.2.7，系统包保留MPL-2.0、Apache-2.0及各过滤器许可
+（见`/usr/share/doc/libreoffice-core/copyright`和对应依赖包）。q4t按
+官方C ABI实现适配，未复制其实现源码。DOC/XLS/PPT及隔离边界已做
+针对性CPU验证，
+Apple/Google来源适配及完整API消费继续实施，组件通过不等于文件
 输入API已交付。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
@@ -291,7 +305,7 @@ HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
 #   pip install --user --break-system-packages cmake==4.4.3
 # 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
 #   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev \
-#     libssl-dev libarchive-dev libxml2-dev
+#     libssl-dev libarchive-dev libxml2-dev libreofficekit-dev
 # custom grammar构建另需rustc >= 1.65（本机使用固定1.90.0）；不要求cargo
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \

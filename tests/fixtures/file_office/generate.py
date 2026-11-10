@@ -139,6 +139,7 @@ def odf():
     text = '<text:p>真实<text:s text:c="3"/>spaces<text:tab/>tab<text:line-break/>line</text:p><text:tracked-changes><text:p>DELETED ODF</text:p></text:tracked-changes>'
     save('text.odt', {'mimetype': 'application/vnd.oasis.opendocument.text', 'content.xml': document('text', text)})
     save('slides.odp', {'mimetype': 'application/vnd.oasis.opendocument.presentation', 'content.xml': document('presentation', '<draw:page draw:name="Opening">' + text + '</draw:page>')})
+    save('drawing.odg', {'mimetype': 'application/vnd.oasis.opendocument.graphics', 'content.xml': document('drawing', '<draw:page draw:name="Canvas">' + text + '</draw:page>')})
     body = '''<table:table table:name="Repeated">
       <table:table-row><table:table-cell table:number-columns-repeated="2" office:value-type="string"><text:p>alpha</text:p></table:table-cell>
        <table:table-cell table:number-columns-repeated="2"/><table:table-cell office:value-type="float" office:value="5" table:formula="of:=SUM([.A1:.B1])"><text:p>5.00</text:p></table:table-cell>
@@ -146,6 +147,13 @@ def odf():
       <table:table-row table:number-rows-repeated="1005"><table:table-cell office:value-type="date" office:date-value="2026-11-10"/></table:table-row>
       </table:table><table:table table:name="Empty"><table:table-row><table:table-cell table:number-columns-repeated="100000"/></table:table-row></table:table>'''
     save('sheets.ods', {'mimetype': 'application/vnd.oasis.opendocument.spreadsheet', 'content.xml': document('spreadsheet', body)})
+    sparse = '''<table:table table:name="Sparse">
+      <table:table-row><table:table-cell office:value-type="string"><text:p>first</text:p></table:table-cell></table:table-row>
+      <table:table-row table:number-rows-repeated="3"><table:table-cell table:number-columns-repeated="16384"/></table:table-row>
+      <table:table-row><table:table-cell office:value-type="string"><text:p>fifth</text:p></table:table-cell></table:table-row>
+      <table:table-row table:number-rows-repeated="1048571"><table:table-cell table:number-columns-repeated="16384"/></table:table-row>
+      </table:table>'''
+    save('sparse.ods', {'mimetype': 'application/vnd.oasis.opendocument.spreadsheet', 'content.xml': document('spreadsheet', sparse)})
 
 
 if __name__ == '__main__':

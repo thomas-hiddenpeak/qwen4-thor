@@ -1,0 +1,3 @@
+[PASS] file_legacy_workspace_cleanup_deep_tree_never_follows_symlink
+[PASS] file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance
+2 tests, 2 passed, 0 failed, 0 skipped

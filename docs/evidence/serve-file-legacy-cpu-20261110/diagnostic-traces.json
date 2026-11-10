@@ -1,0 +1,87 @@
+[
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-01.1315111",
+    "bytes": 495157,
+    "sha256": "1f7af716122084ce9c0941e8f880226f993eb26c0916f70b4a9fadff8cae517a"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-01.1315112",
+    "bytes": 162950,
+    "sha256": "2ee71725917d86e4c0d3364f53a6464510d14172f86f048586a89e79b9a4d007"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-01.1315139",
+    "bytes": 19825,
+    "sha256": "56315071a21aee04eff5b18e92b14ae83a1f31fdd2e88a094a1d0b48d929b1f1"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316109",
+    "bytes": 3015599,
+    "sha256": "c9aae8827c8de1ce3ba78785585dd800854cfbe4610e2da166040795659dc1b3"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316110",
+    "bytes": 1353106,
+    "sha256": "182fd0a7b116527eadd9ee16fd8f40e6d7f8664cdb6962b713c09ee4a96986bd"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316111",
+    "bytes": 2641,
+    "sha256": "9a6cf57db7472677c256da0dccc258fb6477da4d2cb082c972562730cd4afff5"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316112",
+    "bytes": 504417,
+    "sha256": "b04392f956d4302724154d6be89b0523a51ba5a5f36afcd171b8abd44636ec9e"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316113",
+    "bytes": 875,
+    "sha256": "bbe7b65805c83039cae94059da2dc65868246328308803fae6ff0890b7469720"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316114",
+    "bytes": 1242,
+    "sha256": "a7a39f44fed09ef5e2770360c81f07c211f1ce0f9feff59513f5e12d1d175d72"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316116",
+    "bytes": 96738,
+    "sha256": "8c9a5184de77bd44246376a3f7def54dd0c8ce34d80bc8a121925fc6b39230ae"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316117",
+    "bytes": 1143263,
+    "sha256": "1b8ea81c29dfe4df24aa8a9a0c1b696a1db023597760e0c6da050a8856601eb2"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316118",
+    "bytes": 2641,
+    "sha256": "5b9a601e0d9bd0d96e04fbd7c9b0c4962cf18b42283c914a4a4250565ccdee5f"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316119",
+    "bytes": 506795,
+    "sha256": "d840d435af02850e7bbdbd0b9b46214ae739e66f0a4aec2ab012c998af6b808c"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316120",
+    "bytes": 875,
+    "sha256": "a169f2755d685379618fe3dc060114bfe0e1d100ce5d63282eb7dd649d186321"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316121",
+    "bytes": 1438,
+    "sha256": "8e86f03f76aa0224d0e567ec235800f6ae316114f70daedaae46e396759454f6"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316122",
+    "bytes": 95769,
+    "sha256": "f369cd62156d14056fcb295a6562e7def2dcc0b3d3b728f6c784c74431601e06"
+  },
+  {
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-strace-02.1316123",
+    "bytes": 54700,
+    "sha256": "27da299de161bcbf4a723ce549f2925b3e444e5c67656d0734dbf50b20e6a377"
+  }
+]

@@ -22,7 +22,8 @@ ObjectReply ParseDepth(const FileInputContent& input,
       mime &&
       (mime->starts_with("application/vnd.oasis.opendocument.text") ||
        mime->starts_with("application/vnd.oasis.opendocument.spreadsheet") ||
-       mime->starts_with("application/vnd.oasis.opendocument.presentation"))) {
+       mime->starts_with("application/vnd.oasis.opendocument.presentation") ||
+       mime->starts_with("application/vnd.oasis.opendocument.graphics"))) {
     reply = OpenDocument(context);
   } else {
     if (!context.Part("[Content_Types].xml")) return OfficeInvalid();

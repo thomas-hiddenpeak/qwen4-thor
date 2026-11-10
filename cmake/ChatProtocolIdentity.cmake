@@ -154,6 +154,13 @@ set(protocol_inputs
   src/server/file_rtf_encoding.h
   src/server/file_rtf.cpp
   src/server/file_rtf_encoding.cpp
+  include/q4t/server/file_legacy.h
+  src/server/file_legacy_protocol.h
+  src/server/file_legacy_workspace.h
+  src/server/file_legacy.cpp
+  src/server/file_legacy_worker.cpp
+  src/server/file_legacy_workspace.cpp
+  src/server/file_legacy_sandbox.cpp
   cmake/NativeDocuments.cmake
   include/q4t/server/file_pdf.h
   src/server/file_pdf.cpp

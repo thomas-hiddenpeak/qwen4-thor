@@ -140,6 +140,18 @@ Q4T_TEST(file_office_bad_content_and_external_relationships_publish_nothing) {
   Q4T_CHECK(Read("word.docx", &output).ok());
   return true;
 }
+Q4T_TEST(file_office_odf_sparse_rows_trim_only_trailing_grid_and_drawing_pages) {
+  FileDocument output;
+  Q4T_CHECK(Read("sparse.ods", &output).ok() && output.sheets.size() == 1);
+  const auto& sheet = output.sheets[0];
+  Q4T_CHECK(sheet.source_rows == 5 && sheet.rows.size() == 5 &&
+            sheet.columns == 1 && sheet.rows[0][0] == "first" &&
+            sheet.rows[1].empty() && sheet.rows[2].empty() &&
+            sheet.rows[3].empty() && sheet.rows[4][0] == "fifth");
+  Q4T_CHECK(Read("drawing.odg", &output).ok() &&
+            output.text == "\n[Page Canvas]\n真实   spaces\ttab\nline\n");
+  return true;
+}
 Q4T_TEST(file_office_nested_content_and_independent_capacity_budgets) {
   FileDocument output;
   Q4T_CHECK(Read("nested.docx", &output).ok() &&

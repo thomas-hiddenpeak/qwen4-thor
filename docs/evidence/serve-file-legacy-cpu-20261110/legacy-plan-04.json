@@ -1,0 +1,5 @@
+{
+  "reason": "Final review: KeepLeaseUntilExit changed Workspace destructor dependency; repeat only two earlier accepted consumers. Same binary identities04, no source change/rebuild.",
+  "tests": 2,
+  "gpu": 0
+}

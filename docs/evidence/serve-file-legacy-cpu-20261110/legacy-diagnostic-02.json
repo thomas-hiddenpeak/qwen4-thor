@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "timeout",
+    "75",
+    ".q4t-work/serve-file-inputs-20261110/diagnostic-tools/root/usr/bin/strace",
+    "-ff",
+    "-qq",
+    "-s",
+    "96",
+    "-o",
+    ".q4t-work/serve-file-inputs-20261110/legacy-strace-02",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-file-inputs-20261110/legacy-diagnostic-required-02.txt"
+  ],
+  "exit_code": 1,
+  "seconds": 1.9160921503789723
+}

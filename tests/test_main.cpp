@@ -17,6 +17,7 @@
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/file_pdf.h"
+#include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
@@ -25,6 +26,7 @@ int FilesApiFixture(int argc, char** argv);
 int FileFetchFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
 int WorkerIoBudgetFixture(int argc, char** argv);
+int LegacyDocumentFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
 int PackageFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
@@ -51,6 +53,8 @@ int main(int argc, char** argv) {
   if (document_worker >= 0) return document_worker;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
+  const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
+  if (legacy_worker >= 0) return legacy_worker;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
   const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
@@ -67,6 +71,8 @@ int main(int argc, char** argv) {
   if (document_sandbox >= 0) return document_sandbox;
   const int io_budget = WorkerIoBudgetFixture(argc, argv);
   if (io_budget >= 0) return io_budget;
+  const int legacy_fixture = LegacyDocumentFixture(argc, argv);
+  if (legacy_fixture >= 0) return legacy_fixture;
   const int pdf_sandbox = PdfSandboxFixture(argc, argv);
   if (pdf_sandbox >= 0) return pdf_sandbox;
   const int package_fixture = PackageFixture(argc, argv);

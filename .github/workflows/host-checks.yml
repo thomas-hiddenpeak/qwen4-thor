@@ -25,6 +25,11 @@ jobs:
           test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
           test -f /usr/include/archive.h || packages+=(libarchive-dev)
           test -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)
+          test -f /usr/include/LibreOfficeKit/LibreOfficeKit.h || packages+=(libreofficekit-dev)
+          for codec in libreoffice-writer libreoffice-calc libreoffice-impress; do
+            dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \
+              grep -q 'install ok installed' || packages+=("$codec")
+          done
           command -v pdftoppm >/dev/null || packages+=(poppler-utils)
           test -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf || packages+=(fonts-dejavu-core)
           dpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \

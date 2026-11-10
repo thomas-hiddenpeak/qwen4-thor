@@ -1,0 +1,32 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/desktop/source/lib/init.cxx",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/init.cxx",
+    "bytes": 293960,
+    "sha256": "df90a4177ce8882eba9f205c3654b7e4b26c9bd77a791406bee27a83ee9d77b2"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/include/LibreOfficeKit/LibreOfficeKit.h",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/LibreOfficeKit.h",
+    "bytes": 20545,
+    "sha256": "af1f5c90f39a885bd0f2ba50bb5c68f40cf2fac88cfcc6b6a76a4522fab0b676"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/include/LibreOfficeKit/LibreOfficeKitEnums.h",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/LibreOfficeKitEnums.h",
+    "bytes": 41338,
+    "sha256": "9217e7849fc0f7de580638733395007991bbea36e30156a3335b733ccea61ea7"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/offapi/com/sun/star/document/MacroExecMode.idl",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/MacroExecMode.idl",
+    "bytes": 3293,
+    "sha256": "854e73fa62a55b5f2f42070cd9fec0325fbfde537f39357bf07e3a0decb6e239"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/offapi/com/sun/star/document/UpdateDocMode.idl",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/UpdateDocMode.idl",
+    "bytes": 1689,
+    "sha256": "b6e380c2429919dcdb31148226325fff7a105df588bf2b8ddd396bbf28d16a8a"
+  }
+]

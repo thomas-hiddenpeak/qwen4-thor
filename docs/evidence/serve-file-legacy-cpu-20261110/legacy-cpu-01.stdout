@@ -1,0 +1,27 @@
+[PASS] worker_io_budget_pumps_during_input_output_and_post_eof_cleanup
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(input, &output).ok() (line 127)
+[FAIL] file_legacy_actual_doc_unicode_and_confirmed_cleanup
+legacy sheet.xls: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(input, &output).ok() && output.sheets.size() == 1 (line 138)
+[FAIL] file_legacy_actual_xls_sheet_coordinates_values_and_formula
+legacy slides.ppt: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(Input("slides.ppt"), &output).ok() (line 151)
+[FAIL] file_legacy_actual_ppt_slide_order
+legacy word.doc: 408 request_deadline_exceeded
+  CHECK failed: fixture.Read(input, &output).http_status == 400 && output.text.empty() && output.source_sha256.empty() && fixture.Clean() (line 165)
+[FAIL] file_legacy_corrupt_input_is_local_and_next_document_works
+legacy word.doc: 413 file_document_capacity
+legacy word.doc: 413 file_document_capacity
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(Input("word.doc"), &output, limits).http_status == 413 && output.text.empty() && fixture.Clean() (line 184)
+[FAIL] file_legacy_resource_rejection_cleans_and_publishes_nothing
+legacy word.doc: 408 request_deadline_exceeded
+[PASS] file_legacy_preflight_and_active_cancellation_are_bounded
+[PASS] file_legacy_workspace_lease_ownership_and_unrelated_data
+[PASS] file_legacy_workspace_cleanup_deep_tree_never_follows_symlink
+[PASS] file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance
+[PASS] file_office_odf_text_slides_and_repeated_sparse_sheet_rows
+[PASS] file_document_worker_actual_text_and_sheet_match_original_data
+[PASS] file_document_worker_deferred_exit_keeps_slot_and_loop_reaps
+13 tests, 8 passed, 5 failed, 0 skipped

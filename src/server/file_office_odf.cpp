@@ -70,6 +70,7 @@ ObjectReply OpenDocument(OfficeContext& context) {
   XmlNode cell_node;
   bool covered = false, seen_body = false;
   uint64_t row_repeat = 1, cell_repeat = 1, column = 0, row_bytes = 0;
+  uint64_t pending_blank_rows = 0;
   FileDocumentSheet sheet;
   std::vector<std::string> row;
   std::unordered_set<std::string> names;
@@ -104,7 +105,7 @@ ObjectReply OpenDocument(OfficeContext& context) {
         if (node.kind == XmlKind::kStart && node.depth == body + 1) {
           if (content != kUnset || node.space != kOffice || !kind.empty() ||
               (node.name != "text" && node.name != "presentation" &&
-               node.name != "spreadsheet"))
+               node.name != "spreadsheet" && node.name != "drawing"))
             return OfficeInvalid();
           content = node.depth;
           kind = node.name;
@@ -127,6 +128,7 @@ ObjectReply OpenDocument(OfficeContext& context) {
               table = node.depth;
               sheet = {};
               sheet.name = name;
+              pending_blank_rows = 0;
             } else if (table != kUnset && node.name == "table-row") {
               if (row_depth != kUnset ||
                   !Repeat(node, "number-rows-repeated", &row_repeat))
@@ -167,11 +169,11 @@ ObjectReply OpenDocument(OfficeContext& context) {
             else if (!paragraphs.empty() && node.name == "line-break")
               return text("\n");
           }
-          if (kind == "presentation" && node.space == kDraw &&
-              node.name == "page")
-            return context.Text("\n[Slide " +
-                                std::string(node.Attribute("name", kDraw)) +
-                                "]\n");
+          if ((kind == "presentation" || kind == "drawing") &&
+              node.space == kDraw && node.name == "page")
+            return context.Text(
+                std::string(kind == "drawing" ? "\n[Page " : "\n[Slide ") +
+                std::string(node.Attribute("name", kDraw)) + "]\n");
         } else if (node.kind == XmlKind::kText) {
           if (!paragraphs.empty()) return text(node.value);
         } else if (node.kind == XmlKind::kEnd) {
@@ -204,8 +206,23 @@ ObjectReply OpenDocument(OfficeContext& context) {
               cell_depth = kUnset;
             }
             if (node.depth == row_depth) {
-              auto stored = context.Rows(sheet, row, row_repeat);
-              if (!stored.ok()) return stored;
+              if (row_repeat >
+                  1000000000 - sheet.source_rows - pending_blank_rows)
+                return OfficeCapacity();
+              // ODF exporters may append a million style-only grid rows.
+              // Retain repeated blank gaps only if later data uses them, so
+              // real row positions remain exact without inventing a data tail.
+              if (row.empty() && (row_repeat > 1 || pending_blank_rows)) {
+                pending_blank_rows += row_repeat;
+              } else {
+                if (pending_blank_rows) {
+                  auto gap = context.Rows(sheet, {}, pending_blank_rows);
+                  if (!gap.ok()) return gap;
+                  pending_blank_rows = 0;
+                }
+                auto stored = context.Rows(sheet, row, row_repeat);
+                if (!stored.ok()) return stored;
+              }
               row_depth = kUnset;
             }
             if (node.depth == table) {

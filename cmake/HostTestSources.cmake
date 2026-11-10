@@ -64,6 +64,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_odf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf_encoding.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_workspace.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_legacy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_office_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_rtf_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_package_test.cpp

@@ -288,6 +288,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_office_odf.cpp
   src/server/file_rtf.cpp
   src/server/file_rtf_encoding.cpp
+  src/server/file_legacy.cpp
+  src/server/file_legacy_worker.cpp
+  src/server/file_legacy_workspace.cpp
+  src/server/file_legacy_sandbox.cpp
   src/server/file_pdf.cpp
   src/server/file_pdf_worker.cpp
   src/server/file_pdf_sandbox.cpp

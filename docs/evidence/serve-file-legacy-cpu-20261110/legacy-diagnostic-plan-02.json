@@ -1,0 +1,5 @@
+{
+  "reason": "Readonly mapping adaptation passed; PPT real parse passed. Word still worker503 and XLS semantic assertion failed. New focused test-only diagnostic prints exit status and original fixture cells.",
+  "action": "Only these two failed cases under one strace, max75s",
+  "gpu": 0
+}

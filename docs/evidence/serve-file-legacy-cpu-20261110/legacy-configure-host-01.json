@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "tests/host",
+    "-B",
+    ".q4t-work/serve-access-20261109/host",
+    "-DQ4T_LIBREOFFICE_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-deps/root/usr/include"
+  ],
+  "exit_code": 0,
+  "seconds": 0.666103767696768
+}

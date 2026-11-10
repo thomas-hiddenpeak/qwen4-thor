@@ -1,0 +1,2 @@
+file_legacy_workspace_cleanup_deep_tree_never_follows_symlink
+file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance

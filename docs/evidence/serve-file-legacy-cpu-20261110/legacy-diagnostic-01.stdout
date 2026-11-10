@@ -1,0 +1,4 @@
+legacy word.doc: 408 request_deadline_exceeded
+  CHECK failed: fixture.Read(input, &output).ok() (line 127)
+[FAIL] file_legacy_actual_doc_unicode_and_confirmed_cleanup
+1 tests, 0 passed, 1 failed, 0 skipped
