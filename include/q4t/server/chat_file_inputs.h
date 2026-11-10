@@ -11,7 +11,11 @@ class ChatFileInputs {
  public:
   explicit ChatFileInputs(ObjectStore* objects) : objects_(objects) {}
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
-                      const BinaryAccess& access, ChatRequestPlan* plan);
+                      const BinaryAccess& access, ChatRequestPlan* plan,
+                      const io::Json& bindings = {},
+                      bool require_frozen = false);
+  // Private queue preparation; does not publish a stored Chat completion.
+  ObjectReply Freeze(const BinaryAccess& access, io::Json* bindings);
   ObjectReply Persist(const std::string& completion_id,
                       const BinaryAccess& access, io::Json* bindings);
   void Published(const BinaryAccess& access, bool uncertain) noexcept;

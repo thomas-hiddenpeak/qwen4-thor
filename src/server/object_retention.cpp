@@ -224,6 +224,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   } else if (kind == "input_snapshot" &&
              data.GetString("format") == "q4t.input_snapshot.v1") {
     inspector.Blob(data);
+    inspector.Snapshots(data);
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");

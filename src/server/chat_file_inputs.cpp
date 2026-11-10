@@ -25,7 +25,9 @@ std::string StoredChatMessageId(const std::string& id, size_t index) {
 ObjectReply ChatFileInputs::Prepare(const Json& request,
                                     const ChatPlanConfig& config,
                                     const BinaryAccess& access,
-                                    ChatRequestPlan* plan) {
+                                    ChatRequestPlan* plan,
+                                    const Json& bindings,
+                                    bool require_frozen) {
   if (files_)
     return Error(500, "file_input_state_invalid", "Inputs already prepared");
   auto validation = config;
@@ -43,7 +45,7 @@ ObjectReply ChatFileInputs::Prepare(const Json& request,
       objects_,
       config.file_inputs ? *config.file_inputs : FileExpansionOptions{});
   auto reply = files_->Prepare(original_items_, FileInputProfile::kChat,
-                               Array(), access);
+                               bindings, access, require_frozen);
   if (!reply.ok()) return reply;
   Json expanded;
   reply = files_->Render(original_items_, &expanded);
@@ -60,6 +62,17 @@ ObjectReply ChatFileInputs::Prepare(const Json& request,
   plan->legacy_output = legacy;
   plan->normalized_request = std::move(model_request);
   return {};
+}
+
+ObjectReply ChatFileInputs::Freeze(const BinaryAccess& access,
+                                   Json* bindings) {
+  if (!bindings)
+    return Error(500, "file_input_state_invalid", "Missing private bindings");
+  *bindings = Array();
+  if (!files_) return {};
+  auto reply = files_->Persist(access);
+  if (reply.ok()) *bindings = files_->Bindings();
+  return reply;
 }
 
 ObjectReply ChatFileInputs::Persist(const std::string& id,

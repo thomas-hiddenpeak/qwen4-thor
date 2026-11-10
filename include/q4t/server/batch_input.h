@@ -29,8 +29,9 @@ struct BatchInputRow {
   io::Json body;
 };
 struct BatchRowCheck {
-  // Endpoint-specific validation resolves aliases/defaults without IO or
-  // execution. Batch model identity is compared after this resolution.
+  // Endpoint validation resolves aliases/defaults and may read authorized
+  // history/files into private immutable preparation. It must not execute a
+  // model or publish a public Response. Compare model identity after resolving.
   std::string canonical_model;
   size_t embedding_inputs = 0;
 };

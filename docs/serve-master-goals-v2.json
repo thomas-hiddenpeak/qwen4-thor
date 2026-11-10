@@ -1044,7 +1044,8 @@
         "evidence/serve-batch-state-cpu-20261110/README.md",
         "evidence/serve-batch-results-cpu-20261110/README.md",
         "evidence/serve-batch-finite-response-cpu-20261110/README.md",
-        "evidence/serve-batch-recovery-scan-cpu-20261110/README.md"
+        "evidence/serve-batch-recovery-scan-cpu-20261110/README.md",
+        "docs/evidence/serve-batch-preparation-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },

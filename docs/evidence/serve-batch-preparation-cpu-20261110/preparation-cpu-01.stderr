@@ -1,0 +1,2 @@
+invalid_request items[0].content: Unknown item field
+invalid_request prompt[0]: prompt token outside served vocabulary

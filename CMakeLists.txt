@@ -277,6 +277,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/batch_input.cpp
   src/server/batch_state.cpp
   src/server/batch_results.cpp
+  src/server/batch_preparation.cpp
   src/server/file_input.cpp
   src/server/file_image.cpp
   src/server/file_webp.cpp
@@ -314,6 +315,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/responses_state.cpp
   src/server/responses_execution.cpp
   src/server/responses_execution_files.cpp
+  src/server/responses_execution_inputs.cpp
   src/server/responses_execution_compaction.cpp
   src/server/responses_jobs.cpp
   src/server/responses_owner.cpp

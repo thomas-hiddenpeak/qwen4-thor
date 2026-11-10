@@ -435,31 +435,45 @@ class DiskStore {
   ObjectReply PrivateSnapshotReferences(const Json& record,
                                         const SnapshotChanges& changes,
                                         SnapshotIdentities* checked) {
-    if (!ApplicationKind(record.GetString("kind"))) return {};
     const auto* data = record.Find("data");
     if (!data || !data->IsObject()) return {};
+    const auto kind = record.GetString("kind");
+    const bool page = kind == "tool_run" &&
+                      data->GetString("format") == "q4t.batch_page.v1";
+    if (!ApplicationKind(kind) && kind != "input_snapshot" && !page)
+      return {};
     struct Dependency {
       InputSnapshotRef reference;
       std::string binding;
     };
     std::vector<Dependency> dependencies;
-    if (const auto* inputs = data->Find("input_snapshots");
-        inputs && !inputs->IsNull()) {
+    const auto collect = [&](const Json& source) -> bool {
+      const auto* inputs = source.Find("input_snapshots");
+      if (!inputs || inputs->IsNull()) return true;
       if (!inputs->IsArray() || inputs->array.size() > 4096)
-        return SnapshotConflict();
+        return false;
       for (const auto& input : inputs->array) {
         const auto* snapshot = input.Find("snapshot");
         Dependency dependency;
         if (!snapshot ||
             !ParseInputSnapshotReference(*snapshot, &dependency.reference))
-          return SnapshotConflict();
+          return false;
         if (const auto* binding = input.Find("binding_sha256")) {
           if (!binding->IsString() || !Hex(binding->str, 64))
-            return SnapshotConflict();
+            return false;
           dependency.binding = binding->str;
         }
         dependencies.push_back(std::move(dependency));
+        if (dependencies.size() > kMaxTransactionObjects) return false;
       }
+      return true;
+    };
+    if (!collect(*data)) return SnapshotConflict();
+    if (page) {
+      const auto* rows = data->GetArray("rows");
+      if (!rows || rows->array.size() > 128) return SnapshotConflict();
+      for (const auto& row : rows->array)
+        if (!collect(row)) return SnapshotConflict();
     }
     std::vector<ApplicationStringRef> strings;
     if (!ParseApplicationPayloadReferences(*data, &strings))

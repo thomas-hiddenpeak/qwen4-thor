@@ -8,6 +8,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
 namespace {
@@ -177,6 +178,18 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
          !ValidApplicationId(row.GetString("request_id"))))
       return Corrupt();
     end = row.GetInt("offset") + row.GetInt("wire_bytes");
+    if (const auto* owner = row.Find("execution_owner");
+        owner && !ValidResponseOwner(*owner))
+      return Corrupt();
+    if (const auto* frozen = row.Find("input_snapshots")) {
+      InputSnapshotRef reference;
+      if (!frozen->IsArray() || frozen->array.size() != 1 ||
+          !frozen->array[0].Find("snapshot") ||
+          !ParseInputSnapshotReference(*frozen->array[0].Find("snapshot"),
+                                       &reference) ||
+          !Hash(frozen->array[0].GetString("binding_sha256")))
+        return Corrupt();
+    }
   }
   if (first + rows->array.size() == count &&
       end != static_cast<uint64_t>(data.GetInt("validated_bytes")))
@@ -271,6 +284,9 @@ ObjectReply BatchState::StartRow(const BinaryAccess& access,
   Set(&row, "status", String("running"));
   Set(&row, "request_id", String(request_id));
   Set(&row, "started_at", Number(std::time(nullptr)));
+  // A later root takeover must not erase the identity of the process which
+  // may have executed this ticket. Unknown or live row owners cannot replay.
+  Set(&row, "execution_owner", *root.data.Find("owner"));
   Set(&root.data, "running", Number(1));
   root.mutate_before = root.data.Find("batch")->GetInt("expires_at");
   const auto receipt = row;

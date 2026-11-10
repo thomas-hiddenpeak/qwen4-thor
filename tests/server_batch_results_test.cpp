@@ -15,6 +15,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/files.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
 namespace {
@@ -631,6 +632,10 @@ Q4T_TEST(
   auto row = batches.Row(Access(), id, 0);
   BatchInputRow input;
   Q4T_CHECK(Ok(row) && Ok(batches.ReadInputRow(Access(), id, 0, &input)));
+  const auto* execution_owner = row.value.Find("execution_owner");
+  Q4T_CHECK(execution_owner && ValidResponseOwner(*execution_owner) &&
+            execution_owner->GetInt("pid") == pid &&
+            ResponseOwnerStatus(*execution_owner) == ResponseOwnerState::kGone);
   BatchRowResult interrupted;
   interrupted.request_id = row.value.GetString("request_id");
   interrupted.error = Error(503, "batch_interrupted",

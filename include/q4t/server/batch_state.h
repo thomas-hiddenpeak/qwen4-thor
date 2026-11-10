@@ -6,6 +6,7 @@
 
 #include "q4t/server/batch_input.h"
 #include "q4t/server/binary_store.h"
+#include "q4t/server/input_snapshot.h"
 
 namespace q4t::server {
 inline constexpr size_t kBatchPageRows = 128;
@@ -16,6 +17,8 @@ struct BatchRowPosition {
   size_t line = 0;
   uint64_t offset = 0, wire_bytes = 0;
   std::string custom_id_sha256;
+  InputSnapshotRef prepared_input = {};
+  std::string prepared_binding_sha256 = {};
 };
 struct BatchRowResult {
   // The durable StartRow ticket, not a client-provided request ID.

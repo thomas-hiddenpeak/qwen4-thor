@@ -328,6 +328,20 @@ ObjectReply BatchState::AppendValidationPage(
                 {"custom_id_sha256", String(row.custom_id_sha256)},
                 {"status", String("pending")},
                 {"result_id", Json()}}));
+    if (!row.prepared_input.id.empty()) {
+      InputSnapshotRef checked;
+      const auto reference = InputSnapshotReference(row.prepared_input);
+      if (!ParseInputSnapshotReference(reference, &checked) ||
+          !Hash(row.prepared_binding_sha256))
+        return Invalid("Invalid prepared row reference");
+      Set(&entries.array.back(), "input_snapshots",
+          Array({Object(
+              {{"snapshot", reference},
+               {"binding_sha256", String(row.prepared_binding_sha256)}})}));
+    } else if (!row.prepared_input.sha256.empty() ||
+               !row.prepared_binding_sha256.empty()) {
+      return Invalid("Incomplete prepared row reference");
+    }
     ++count;
     offset += row.wire_bytes;
   }

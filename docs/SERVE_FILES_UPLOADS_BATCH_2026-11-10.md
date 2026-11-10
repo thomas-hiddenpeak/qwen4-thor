@@ -258,3 +258,12 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 2026-11-10。恢复扫描首16 CPU为14过/2失败：已保留活动对象的过期原TTL阻止取消终态，修为仅对已有active对象按相同绝对期限CAS更新；新建/普通过期对象仍拒绝。旧容量恢复测试补齐扫描与执行器进入的共同等待，保留原断言。冻结2失败+2新边界+5直接存储/期限共9补验，其余14复用；原失败保留，0GPU/默认保持，全部任务继续。
 
 2026-11-10。Batch恢复扫描与过期收尾[23不同CPU接受](evidence/serve-batch-recovery-scan-cpu-20261110/README.md)：首14/16、修复后9/9，畸形UUID未知、实际有界私有扫描、过期active原期限CAS收尾及普通项拒绝通过。失败/补验原件保留，最终零警告/472锚点，0GPU/默认保持。继续真实生成适配、任务调度/输入冻结/全部协议业务和总任务。
+
+
+## A09.6 私有输入冻结与真实原生计划接入
+
+2026-11-10。Batch私有输入冻结已成组实现：验证时解析实际端点、文件/历史/模板但不生成或发布Response；不可变快照递归保留依赖并同事务核对，原始行/客户端绑定，逐行execution_owner不随根接管改写。冻结12新+10直接影响CPU（22项），含17MiB、真实文件删除/重启与丢回执；尚未测试或接任务HTTP执行，0GPU/默认保持。继续实际生成/调度/协议与全部总任务。
+
+清单：`.q4t-work/serve-batches-20261110/required-preparation.txt`。Responses保存已解析的原始历史、模板展开请求、会话revision和文件快照，store=false及待增强表格同样冻结；恢复不重查公共父资源，不提前执行模型或发布排队Response。Chat保存原始消息对应私有文件绑定，执行时仍调用原生Chat计划；Completions验证其自身token/echo合同。单行准备对象通过既有1MiB分块保存，元数据限额不截断实际长输入。InputSnapshot新增可选私有依赖，worker在同一发布决策验证归属/根SHA/绑定，retention沿不可变依赖保留；Batch页同样原子核对快照。新格式交付前必须补兼容回退reader。A10其余模型端点仍是必做，不以此文本适配宣称完整Batch通过；任务执行/公平调度/HTTP和真实业务继续。
+
+私有准备[22不同CPU接受](evidence/serve-batch-preparation-cpu-20261110/README.md)，原失败与补验保留，0GPU。继续实际生成/调度/HTTP与其余全部任务，不以组件接受结束A09。

@@ -1,0 +1,4 @@
+[PASS] batch_preparation_conversation_change_keeps_input_and_conflicts_commit
+[PASS] batch_preparation_completion_alias_and_raw_tokens_use_native_contract
+[PASS] batch_preparation_snapshot_dependencies_checked_before_atomic_publish
+3 tests, 3 passed, 0 failed, 0 skipped

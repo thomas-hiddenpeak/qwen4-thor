@@ -42,7 +42,8 @@ class InputSnapshotStore {
                    const io::Json& metadata,
                    std::span<const std::string_view> parts,
                    const InputSnapshotLimits& limits, int hold_seconds,
-                   InputSnapshotRef* reference, InputSnapshotHold* hold);
+                   InputSnapshotRef* reference, InputSnapshotHold* hold,
+                   const io::Json& dependencies = {});
   ObjectReply Read(const BinaryAccess& access,
                    const InputSnapshotRef& reference,
                    std::string_view binding_sha256,

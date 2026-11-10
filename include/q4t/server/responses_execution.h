@@ -48,6 +48,13 @@ class ResponsesExecution {
                       bool background_executor = false);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
+  // Private, unexecuted queue state. Freeze publishes no Response resource;
+  // the caller must retain all input_snapshots before releasing the holds.
+  ObjectReply FreezeInputs(io::Json* inputs);
+  void InputsPublished(bool uncertain) noexcept;
+  ObjectReply RestoreInputs(const io::Json& inputs,
+                            const ChatPlanConfig& config, StateAccess access,
+                            int64_t created);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
   uint64_t FileOutputBudget() const {

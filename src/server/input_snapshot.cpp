@@ -89,7 +89,8 @@ ObjectReply InputSnapshotStore::Save(
     const BinaryAccess& parent_access, std::string_view binding_sha256,
     const Json& metadata, std::span<const std::string_view> parts,
     const InputSnapshotLimits& limits, int hold_seconds,
-    InputSnapshotRef* reference, InputSnapshotHold* hold) {
+    InputSnapshotRef* reference, InputSnapshotHold* hold,
+    const Json& dependencies) {
   if (hold && hold->commit_unknown)
     return Error(503, "input_snapshot_commit_unknown",
                  "Inspect the original snapshot; do not replay", true);
@@ -103,6 +104,18 @@ ObjectReply InputSnapshotStore::Save(
       !Hex(binding_sha256) || !Limits(limits) || !metadata.IsObject() ||
       hold_seconds < 1 || hold_seconds > 3600)
     return Invalid();
+  if (!dependencies.IsNull()) {
+    if (!dependencies.IsArray() || dependencies.array.size() > 4096)
+      return Invalid();
+    for (const auto& dependency : dependencies.array) {
+      InputSnapshotRef child;
+      const auto* value = dependency.Find("snapshot");
+      const auto* binding = dependency.Find("binding_sha256");
+      if (!value || !ParseInputSnapshotReference(*value, &child) ||
+          (binding && (!binding->IsString() || !Hex(binding->str))))
+        return Invalid();
+    }
+  }
   uint64_t remaining = limits.max_metadata_bytes;
   size_t values = 2 * 1024 * 1024;
   if (parts.size() > limits.max_parts ||
@@ -135,6 +148,10 @@ ObjectReply InputSnapshotStore::Save(
   root.data = Object({{"format", String("q4t.input_snapshot.v1")},
                       {"binding_sha256", String(std::string(binding_sha256))},
                       {"segments", std::move(description)}});
+  // This root retains its exact dependencies, not their mutable public
+  // parents. The worker verifies all children in the same publish decision.
+  if (!dependencies.IsNull() && !dependencies.array.empty())
+    Set(&root.data, "input_snapshots", dependencies);
   BinaryStage stage;
   result = binary_.Begin(access, bytes, hold_seconds, &stage);
   if (!result.ok()) {

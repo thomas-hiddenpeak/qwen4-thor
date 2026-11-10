@@ -1,0 +1,26 @@
+[PASS] input_snapshot_live_application_roots_retain_and_last_delete_reclaims
+[PASS] input_snapshot_actual_lost_cleanup_receipt_keeps_verified_content
+[PASS] input_snapshot_parent_publication_requires_owned_exact_live_root
+[PASS] input_snapshot_parent_and_new_root_publish_in_either_batch_order
+[PASS] batch_results_concurrent_start_has_exactly_one_execution_owner
+[PASS] batch_results_actual_dead_owner_started_row_is_interrupted_then_pending_can_continue
+[PASS] batch_preparation_deleted_files_and_previous_restore_after_restart
+  CHECK failed: Ok(created) (line 215)
+[FAIL] batch_preparation_conversation_change_keeps_input_and_conflicts_commit
+[PASS] batch_preparation_csv_store_false_restores_unexecuted_sheet
+[PASS] batch_preparation_chat_pdf_restores_original_bytes_and_store_binding
+[PASS] batch_preparation_original_row_and_scope_are_bound_transactionally
+[PASS] batch_preparation_native_planners_reject_before_publication
+  CHECK failed: Ok(BatchPreparation(objects).Prepare( Access(), work.id, work.endpoint, work.row, fixture.config, &prepared)) (line 387)
+[FAIL] batch_preparation_completion_alias_and_raw_tokens_use_native_contract
+[PASS] batch_preparation_response_policy_scope_and_frozen_files_are_enforced
+[PASS] batch_preparation_large_history_uses_private_chunks_not_metadata_limit
+[PASS] batch_preparation_atomic_page_rejects_changed_snapshot_identity
+[PASS] batch_preparation_unknown_snapshot_receipt_keeps_private_identity
+  CHECK failed: Run(objects, request).http_status == 404 (line 533)
+[FAIL] batch_preparation_snapshot_dependencies_checked_before_atomic_publish
+[PASS] chat_files_stored_originals_replay_after_restart_and_decoder_outage
+[PASS] chat_files_unknown_parent_publication_retains_absolute_holds
+[PASS] responses_files_previous_restores_deleted_source_and_original_items
+[PASS] responses_files_conversation_retains_snapshots_with_store_false
+22 tests, 19 passed, 3 failed, 0 skipped
