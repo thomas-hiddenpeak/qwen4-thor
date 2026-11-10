@@ -1,0 +1,25 @@
+{
+  "status": "PASS_BATCH_CAPACITY_TARGETED_CPU",
+  "distinct_tests": 33,
+  "new_tests": 9,
+  "first_passed": 32,
+  "first_failed": 1,
+  "retry_passed": 1,
+  "reused_unchanged": 32,
+  "first_seconds": 98.59239950310439,
+  "retry_seconds": 0.11391612002626061,
+  "capacity": {
+    "actual_frozen_rows": 50000,
+    "actual_finalization_turns": 391,
+    "record_quota": 1500,
+    "objects_observed_after_terminal_read": 792,
+    "result_source": "Explicit CPU capacity receipts seeded per page; actual Start/Finish lifecycle tested separately across 129 rows"
+  },
+  "gpu_starts": 0,
+  "builds_zero_warning": true,
+  "source_anchors": 483,
+  "engine_sha256": "0069d3c913eeb65ca2c0a02e9968281f84dc544eaf439f6c9e4d030480a78d84",
+  "host_sha256": "9060576a098223cbd94e2e774c87bc7adf8ea7aff49b69a51fad7cfd0d596f8e",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Enqueued input-token reservation and rate-wait behavior; HTTP/SDK actual model business; compatible Batch v2/aggregate retention/quota/Response rollback reader; default delivery and all master tasks"
+}

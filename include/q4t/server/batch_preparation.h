@@ -9,6 +9,7 @@ struct BatchPreparedInput {
   InputSnapshotRef reference;
   InputSnapshotHold hold;
   std::string binding_sha256, canonical_model;
+  io::Json inline_input = {};
 };
 
 class BatchPreparation {

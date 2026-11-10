@@ -10,12 +10,15 @@
 #include "q4t/server/binary_store.h"
 #include "q4t/server/batch_state.h"
 #include "q4t/server/input_snapshot.h"
+#include "q4t/server/batch_checkpoint.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
 namespace {
 using io::Json;
-constexpr size_t kReferenceBytes = 1024 * 1024;
+// A Batch checkpoint may retain both output lanes (16K chunks each), its
+// original source and 391 pages. The planner's total graph budget remains 64M.
+constexpr size_t kReferenceBytes = 4 * 1024 * 1024;
 constexpr size_t kPlanBytes = 64 * 1024 * 1024;
 
 class Inspector {
@@ -78,8 +81,7 @@ class Inspector {
     Items(request->Find("messages"));
   }
 
-  void Blob(const Json& data) {
-    const auto* blob = data.Find("blob");
+  void Manifest(const Json* blob) {
     BinaryManifest manifest;
     if (!blob || !ParseBinaryManifest(*blob, &manifest)) {
       value.uncertain = true;
@@ -88,6 +90,7 @@ class Inspector {
     const auto* chunks = blob->GetArray("chunks");
     for (const auto& chunk : chunks->array) Reference(chunk.Find("id"));
   }
+  void Blob(const Json& data) { Manifest(data.Find("blob")); }
 
   void Snapshots(const Json& data) {
     const auto* snapshots = data.Find("input_snapshots");
@@ -215,6 +218,18 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       if (!data.GetBool("resources_released")) {
         inspector.Blob(data);
         for (const auto& page : pages->array) inspector.Reference(&page);
+        if (const auto* progress = data.Find("finalization")) {
+          if (progress->GetString("format") != "q4t.batch_finalization.v1")
+            inspector.value.uncertain = true;
+          for (const auto* lane : {"output", "error"}) {
+            const auto* blob = progress->Find(lane);
+            if (!blob) {
+              inspector.value.uncertain = true;
+              continue;
+            }
+            inspector.Manifest(blob);
+          }
+        }
       }
       // Result Files have their own declared expiry. A historical Batch
       // receipt must not pin their content beyond output_expires_after.
@@ -239,7 +254,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     } else if (format == "q4t.batch_result.v1") {
       inspector.Blob(data);
       inspector.value.collect_when_unreferenced = true;
-    } else if (format == "q4t.batch_page.v1") {
+    } else if (IsBatchPage(data)) {
       inspector.value.collect_when_unreferenced = true;
       const auto* rows = data.GetArray("rows");
       if (!rows || rows->array.empty() || rows->array.size() > kBatchPageRows ||
@@ -251,6 +266,12 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
           inspector.value.uncertain |= status != "pending" && status != "running" &&
                                        status != "completed" && status != "failed";
           inspector.Reference(row.Find("result_id"));
+          if (row.Has("prepared_inline"))
+            inspector.value.uncertain |=
+                row.Has("input_snapshots") ||
+                !ValidBatchInlineInput(*row.Find("prepared_inline"));
+          if (row.Has("result_inline"))
+            inspector.value.uncertain |= !ValidBatchInlineResult(row);
           inspector.Snapshots(row);
           inspector.Request(row.Find("request_dependencies"));
         }

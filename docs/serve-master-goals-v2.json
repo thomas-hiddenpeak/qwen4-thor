@@ -1050,7 +1050,8 @@
         "evidence/serve-batch-validation-rows-cpu-20261110/README.md",
         "evidence/serve-batch-validation-driver-cpu-20261110/README.md",
         "evidence/serve-batch-jobs-cpu-20261110/README.md",
-        "evidence/serve-batch-rate-origin-cpu-20261110/README.md"
+        "evidence/serve-batch-rate-origin-cpu-20261110/README.md",
+        "evidence/serve-batch-capacity-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },
@@ -1638,6 +1639,6 @@
       "release": null
     }
   ],
-  "next_task": "A09.6",
+  "next_task": "继续A09 Batch入队token预算、分钟配额等待、公开HTTP/SDK实际业务与兼容回退/default交付；A09.6/7/8、A10及全部总任务继续。",
   "next": "A09.6 enqueued token reservation, scalable 50000-row metadata/incremental finalization, public HTTP/SDK real business and compatible quota/Response rollback/default; then A09.7 all eight actual backends and all master work."
 }

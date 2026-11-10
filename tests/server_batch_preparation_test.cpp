@@ -1,5 +1,6 @@
 #include "q4t/server/batch_preparation.h"
 #include "q4t/server/batch_validation.h"
+#include "q4t/server/batch_checkpoint.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -15,6 +16,7 @@
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/files.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/object_retention.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
 
@@ -152,9 +154,10 @@ ValidationWork ValidationInput(ObjectStore& objects,
 }
 bool Publish(ObjectStore& objects, const Work& work,
                BatchPreparedInput* prepared) {
-  BatchRowPosition position{work.row.line, work.row.offset, work.row.wire_bytes,
-                             Digest(work.row.custom_id), prepared->reference,
-                             prepared->binding_sha256};
+  BatchRowPosition position{work.row.line,         work.row.offset,
+                            work.row.wire_bytes,   Digest(work.row.custom_id),
+                            prepared->reference,   prepared->binding_sha256,
+                            prepared->inline_input};
   auto result = BatchState(objects).AppendValidationPage(
       Access(), work.id, std::span(&position, 1));
   BatchPreparation(objects).Published(Access(), prepared, result.commit_unknown);
@@ -480,7 +483,8 @@ Q4T_TEST(batch_preparation_large_history_uses_private_chunks_not_metadata_limit)
 Q4T_TEST(batch_preparation_atomic_page_rejects_changed_snapshot_identity) {
   Fixture fixture;
   ObjectStore objects(fixture.options);
-  auto work = Create(objects, Response());
+  auto work =
+      Create(objects, Response(std::string(kBatchInlineBytes + 1, 's')));
   BatchPreparedInput prepared;
   Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
       Access(), work.id, work.endpoint, work.row, fixture.config, &prepared)));
@@ -504,7 +508,7 @@ Q4T_TEST(batch_preparation_unknown_snapshot_receipt_keeps_private_identity) {
   Work work;
   {
     ObjectStore objects(fixture.options);
-    work = Create(objects, Response());
+    work = Create(objects, Response(std::string(kBatchInlineBytes + 1, 's')));
   }
   // Restart only this fixture worker with the real commit/receipt-loss hook.
   ObjectWorkerEntryForTesting("--q4t-object-worker-snapshot-lost-ack");
@@ -787,5 +791,171 @@ Q4T_TEST(batch_validation_driver_unfrozen_legacy_positions_are_revalidated) {
             restored.value.Find("data")->GetString("canonical_model") ==
                 fixture.config.model);
   Q4T_CHECK(Ok(driver.Step(Access())) && driver.Complete());
+  return true;
+}
+
+Q4T_TEST(batch_inline_input_exact_byte_boundary_and_durable_fallback) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto body = [](size_t input, size_t metadata) {
+    auto request = Response(std::string(input, 'x'));
+    Set(&request, "metadata",
+        Object({{"padding", String(std::string(metadata, 'm'))}}));
+    return request;
+  };
+  const auto measure = [&](size_t input, size_t metadata) {
+    auto sample = Create(objects, body(input, metadata));
+    BatchPreparedInput value;
+    if (!Ok(BatchPreparation(objects).Prepare(Access(), sample.id,
+                                              sample.endpoint, sample.row,
+                                              fixture.config, &value)) ||
+        !ValidBatchInlineInput(value.inline_input))
+      throw std::runtime_error("bounded inline boundary fixture");
+    return value.inline_input.GetString("payload").size();
+  };
+  // The frozen request/history/own_input retain several copies. Measure
+  // small valid payloads to construct an exact byte boundary independently
+  // of that representation, without weakening the 8192/8193 assertions.
+  const auto base_bytes = measure(1, 1);
+  const auto input_step = measure(2, 1) - base_bytes;
+  const auto metadata_step = measure(1, 2) - base_bytes;
+  Q4T_CHECK(base_bytes > 0 && base_bytes < kBatchInlineBytes);
+  Q4T_CHECK(input_step > 0 && metadata_step > 0);
+  for (size_t extra : {size_t{0}, size_t{1}}) {
+    const auto available = kBatchInlineBytes + extra - base_bytes;
+    size_t padding = 0;
+    while (padding < input_step &&
+           (available - padding * metadata_step) % input_step)
+      ++padding;
+    Q4T_CHECK(padding < input_step && padding * metadata_step < available);
+    auto work = Create(
+        objects, body(1 + (available - padding * metadata_step) / input_step,
+                      1 + padding));
+    BatchPreparedInput prepared;
+    Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(Access(), work.id,
+                                                   work.endpoint, work.row,
+                                                   fixture.config, &prepared)));
+    if (extra == 0) {
+      Q4T_CHECK(ValidBatchInlineInput(prepared.inline_input) &&
+                prepared.inline_input.GetString("payload").size() ==
+                    kBatchInlineBytes &&
+                prepared.reference.id.empty() && prepared.hold.id.empty());
+    } else {
+      Q4T_CHECK(prepared.inline_input.IsNull() &&
+                !prepared.reference.id.empty() && !prepared.hold.id.empty());
+      InputSnapshot saved;
+      Q4T_CHECK(Ok(InputSnapshotStore(objects).Read(
+          Access(), prepared.reference, prepared.binding_sha256,
+          {kBackgroundInputBytes, 16384, 1}, &saved)));
+      Q4T_CHECK(saved.parts.size() == 1 &&
+                saved.parts[0].size() == kBatchInlineBytes + 1);
+    }
+    Q4T_CHECK(Publish(objects, work, &prepared));
+    Json restored;
+    Q4T_CHECK(Ok(Load(objects, work, &restored)) &&
+              restored.Find("request")->GetString("input") ==
+                  work.row.body.GetString("input"));
+  }
+  return true;
+}
+
+Q4T_TEST(batch_inline_input_scope_deadline_binding_and_immutable_page) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = Create(objects, Response("immutable input 42"));
+  BatchPreparedInput prepared;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+      Access(), work.id, work.endpoint, work.row, fixture.config, &prepared)));
+  Q4T_CHECK(ValidBatchInlineInput(prepared.inline_input) &&
+            Publish(objects, work, &prepared));
+  auto checkpoint = BatchState(objects).Row(Access(), work.id, 0);
+  Q4T_CHECK(Ok(checkpoint));
+  for (int which = 0; which < 6; ++which) {
+    auto access = Access();
+    auto row = work.row;
+    auto stored = checkpoint.value;
+    Json output = String("unchanged");
+    if (which == 0) access.scope = "client:other";
+    if (which == 1) access.deadline = Clock::now() - 1ms;
+    if (which == 2) access.cancelled = [] { return true; };
+    if (which == 3) Set(&row.body, "input", String("changed request"));
+    if (which == 4)
+      Set(&Field(stored, "prepared_inline"), "payload", String("{}"));
+    if (which == 5) Set(&stored, "input_snapshots", Array());
+    const auto reply = BatchPreparation(objects).Read(
+        access, work.id, work.endpoint, row, stored, &output);
+    Q4T_CHECK(!reply.ok() && output.IsString() && output.str == "unchanged");
+  }
+  auto loaded = BatchState(objects).Load(Access(), work.id);
+  const auto page_id =
+      loaded.value.Find("data")->GetArray("pages")->array[0].str;
+  auto request = Request(ObjectKind::kToolRun, page_id);
+  auto page = Run(objects, request);
+  Q4T_CHECK(Ok(page));
+  request.operation = ObjectOperation::kPut;
+  request.expected_revision = page.value.GetInt("revision");
+  request.created_at = page.value.GetInt("created_at");
+  request.expires_at = page.value.GetInt("expires_at");
+  request.data = *page.value.Find("data");
+  for (int which = 0; which < 4; ++which) {
+    auto changed = request;
+    auto& row = Field(changed.data, "rows").array[0];
+    if (which == 0) Set(&row, "custom_id_sha256", String(Digest("changed")));
+    if (which == 1) {
+      auto& value = Field(row, "prepared_inline");
+      Set(&value, "payload", String("{\"kind\":\"completion\"}"));
+      Set(&value, "sha256", String(Digest(value.GetString("payload"))));
+    }
+    if (which == 2) Set(&changed.data, "format", String("q4t.batch_page.v1"));
+    if (which == 3) Set(&changed.data, "rows", Array());
+    auto reply = which % 2 ? objects.ExecuteBatch(std::span(&changed, 1),
+                                                  Access().deadline)
+                           : Run(objects, changed);
+    Q4T_CHECK(reply.code == "batch_checkpoint_immutable" &&
+              !reply.commit_unknown);
+  }
+  Json restored;
+  Q4T_CHECK(Ok(Load(objects, work, &restored)) &&
+            restored.Find("request")->GetString("input") ==
+                "immutable input 42");
+  return true;
+}
+
+Q4T_TEST(batch_inline_input_actual_lost_page_receipt_survives_restart) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 150;
+  Work work;
+  BatchPreparedInput prepared;
+  {
+    ObjectStore objects(fixture.options);
+    work = Create(objects, Response("frozen only once"));
+    Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(Access(), work.id,
+                                                   work.endpoint, work.row,
+                                                   fixture.config, &prepared)));
+    Q4T_CHECK(ValidBatchInlineInput(prepared.inline_input));
+  }
+  ObjectWorkerEntryForTesting("--q4t-object-worker-application-lost-ack");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  {
+    ObjectStore objects(fixture.options);
+    BatchRowPosition position{work.row.line,
+                              work.row.offset,
+                              work.row.wire_bytes,
+                              Digest(work.row.custom_id),
+                              {},
+                              prepared.binding_sha256,
+                              prepared.inline_input};
+    auto result = BatchState(objects).AppendValidatedRow(
+        Access(), work.id, position, prepared.canonical_model);
+    Q4T_CHECK(!result.ok() && result.commit_unknown);
+    BatchPreparation(objects).Published(Access(), &prepared, true);
+  }
+  ObjectWorkerEntryForTesting({});
+  ObjectStore objects(fixture.options);
+  auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->GetInt("validated_rows") == 1);
+  Json restored;
+  Q4T_CHECK(Ok(Load(objects, work, &restored)) &&
+            restored.Find("request")->GetString("input") == "frozen only once");
   return true;
 }

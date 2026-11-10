@@ -19,6 +19,7 @@ struct BatchRowPosition {
   std::string custom_id_sha256;
   InputSnapshotRef prepared_input = {};
   std::string prepared_binding_sha256 = {};
+  io::Json prepared_inline = {};
 };
 struct BatchRowResult {
   // The durable StartRow ticket, not a client-provided request ID.
@@ -84,8 +85,9 @@ class BatchState {
   ObjectReply BeginFinalization(const BinaryAccess& access,
                                 const std::string& id,
                                 const std::string& terminal_status);
-  // Stream results into success/error Files; both files and terminal Batch
-  // publish in one commit. Partial files are never publicly visible.
+  // One bounded turn (up to 128 rows / 4 MiB), with persistent progress.
+  // Repeated calls resume the original output after a lost receipt/restart.
+  // Both Files and terminal Batch publish in one commit, never partially.
   ObjectReply Finalize(const BinaryAccess& access, const std::string& id);
 
  private:

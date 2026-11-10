@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -152,7 +153,7 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
   const auto* content = page.value.Find("data");
   const auto* rows = content ? content->GetArray("rows") : nullptr;
   const size_t first = index / kBatchPageRows * kBatchPageRows;
-  if (!content || content->GetString("format") != "q4t.batch_page.v1" ||
+  if (!content || !IsBatchPage(*content) ||
       content->GetString("batch_id") != stored.GetString("id") || !rows ||
       rows->array.size() != std::min(kBatchPageRows, count - first))
     return Corrupt();
@@ -172,10 +173,21 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
         (status != "pending" && status != "running" && status != "completed" &&
          status != "failed") ||
         ((status == "completed" || status == "failed")
-             ? (!result->IsString() || !ValidApplicationId(result->str))
+             ? (row.Has("result_inline")
+                    ? (!result->IsNull() || !ValidBatchInlineResult(row))
+                    : (!result->IsString() || !ValidApplicationId(result->str)))
              : !result->IsNull()) ||
+        ((status == "pending" || status == "running") &&
+         row.Has("result_inline")) ||
         (status == "running" &&
          !ValidApplicationId(row.GetString("request_id"))))
+      return Corrupt();
+    if (const auto* embedded = row.Find("prepared_inline");
+        embedded &&
+        (row.Has("input_snapshots") || !ValidBatchInlineInput(*embedded)))
+      return Corrupt();
+    if ((row.Has("prepared_inline") || row.Has("result_inline")) &&
+        content->GetString("format") != "q4t.batch_page.v2")
       return Corrupt();
     end = row.GetInt("offset") + row.GetInt("wire_bytes");
     if (const auto* owner = row.Find("execution_owner");
@@ -344,6 +356,28 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
   std::string line;
   auto reply = JsonLine(custom_id, result, &line);
   if (!reply.ok()) return reply;
+  const bool success = result.error.ok() && result.http_status < 300;
+  Set(&row, "status", String(success ? "completed" : "failed"));
+  Set(&row, "finished_at", Number(std::time(nullptr)));
+  Set(&root.data, "running", Number(0));
+  Set(&root.data, "next_row", Number(index + 1));
+  auto& counts = Field(Field(root.data, "batch"), "request_counts");
+  const auto* key = success ? "completed" : "failed";
+  Set(&counts, key, Number(counts.GetInt(key) + 1));
+  if (line.size() <= kBatchInlineBytes) {
+    Set(&page.data, "format", String("q4t.batch_page.v2"));
+    Set(&row, "result_inline",
+        Object({{"sha256", String(Digest(line))}, {"payload", String(line)}}));
+    const std::array mutations{std::move(page), std::move(root)};
+    reply = objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
+    if (reply.ok())
+      reply.value = *mutations[1].data.Find("batch");
+    else {
+      Identify(&reply, id);
+      Set(&reply.value, "result_id", Json());
+    }
+    return reply;
+  }
   BinaryStore binary(objects_);
   BinaryStage stage;
   reply = binary.Begin(access, line.size(), 3600, &stage);
@@ -358,7 +392,6 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
   const auto result_id = NewObjectId(ObjectKind::kToolRun);
   if (result_id.empty())
     return Error(503, "object_entropy_unavailable", "No result root ID");
-  const bool success = result.error.ok() && result.http_status < 300;
   auto output =
       Request(access, result_id, ObjectKind::kToolRun, ObjectOperation::kPut);
   output.ttl_seconds = 0;
@@ -366,14 +399,7 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
                         {"batch_id", String(id)},
                         {"line", Number(index + 1)},
                         {"successful", Boolean(success)}});
-  Set(&row, "status", String(success ? "completed" : "failed"));
   Set(&row, "result_id", String(result_id));
-  Set(&row, "finished_at", Number(std::time(nullptr)));
-  Set(&root.data, "running", Number(0));
-  Set(&root.data, "next_row", Number(index + 1));
-  auto& counts = Field(Field(root.data, "batch"), "request_counts");
-  const auto* key = success ? "completed" : "failed";
-  Set(&counts, key, Number(counts.GetInt(key) + 1));
   const std::array parents{std::move(page), std::move(root)};
   reply = binary.Publish(access, &stage, std::move(output), parents);
   if (reply.ok())
@@ -440,126 +466,203 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
       (terminal != "completed" && terminal != "cancelled" &&
        terminal != "expired"))
     return Conflict();
+  // A checkpoint owns the output chunks directly. Temporary staging roots
+  // exist only within this turn, and disappear atomically with progress.
+  // Recovery never needs an expired in-memory stage or an earlier model run.
+  std::array<BinaryManifest, 2> manifests;
+  std::array<int64_t, 2> observed{};
+  int64_t index = 0;
+  size_t source_chunk = 0;
+  if (const auto* progress = root.data.Find("finalization")) {
+    if (progress->GetString("format") != "q4t.batch_finalization.v1" ||
+        !Integer(*progress, "next_row", 0, total) ||
+        !Integer(*progress, "source_chunk", 0, kBinaryMaxChunks) ||
+        !Integer(*progress, "completed", 0, counts->GetInt("completed")) ||
+        !Integer(*progress, "failed", 0, counts->GetInt("failed")) ||
+        !progress->Find("output") || !progress->Find("error") ||
+        !ParseBinaryManifest(*progress->Find("output"), &manifests[0]) ||
+        !ParseBinaryManifest(*progress->Find("error"), &manifests[1]))
+      return Corrupt();
+    index = progress->GetInt("next_row");
+    source_chunk = progress->GetInt("source_chunk");
+    observed = {progress->GetInt("completed"), progress->GetInt("failed")};
+    if (observed[0] + observed[1] != index || (index == total && source_chunk))
+      return Corrupt();
+  }
   BinaryStore binary(objects_);
   std::array<BinaryStage, 2> stages;
   std::array<std::string, 2> buffers;
-  std::array<int64_t, 2> observed{};
   ScopeExit cleanup([&] {
     for (auto& stage : stages) Abort(objects_, &stage);
   });
-  const auto append = [&](size_t lane, std::string_view bytes) -> ObjectReply {
+  const auto flush = [&](size_t lane) -> ObjectReply {
+    if (buffers[lane].empty()) return {};
     if (stages[lane].id.empty()) {
       auto reply = binary.Begin(access, kBinaryMaxBytes, 3600, &stages[lane]);
       if (!reply.ok()) return reply;
     }
+    auto reply = binary.Append(access, &stages[lane], buffers[lane]);
+    if (reply.ok()) buffers[lane].clear();
+    return reply;
+  };
+  const auto append = [&](size_t lane, std::string_view bytes) -> ObjectReply {
+    const auto staged = stages[lane].manifest.bytes + buffers[lane].size();
+    if (staged > kBinaryMaxBytes - manifests[lane].bytes ||
+        bytes.size() > kBinaryMaxBytes - manifests[lane].bytes - staged)
+      return Error(413, "binary_capacity_exceeded",
+                   "Batch output File exceeds its byte budget");
     while (!bytes.empty()) {
       const auto n = std::min<size_t>(kBinaryChunkBytes - buffers[lane].size(),
                                       bytes.size());
       buffers[lane].append(bytes.substr(0, n));
       bytes.remove_prefix(n);
       if (buffers[lane].size() == kBinaryChunkBytes) {
-        auto reply = binary.Append(access, &stages[lane], buffers[lane]);
+        auto reply = flush(lane);
         if (!reply.ok()) return reply;
-        buffers[lane].clear();
       }
     }
     return {};
   };
-  for (int64_t index = 0; index < total;) {
+  // Count the bytes consumed from original result manifests, including a
+  // partly consumed row. Large rows cannot monopolize a fair worker turn.
+  size_t rows = 0;
+  uint64_t consumed = 0;
+  constexpr uint64_t kTurnBytes = 4 * kBinaryChunkBytes;
+  while (index < total && rows < kBatchPageRows && consumed < kTurnBytes) {
     auto page = Page(access, loaded.value, index);
     if (!page.ok()) return page;
-    for (const auto& row : page.value.Find("data")->GetArray("rows")->array) {
+    const auto& entries = page.value.Find("data")->GetArray("rows")->array;
+    size_t at = index % kBatchPageRows;
+    while (at < entries.size() && rows < kBatchPageRows &&
+           consumed < kTurnBytes) {
+      const auto& row = entries[at];
       const bool success = row.GetString("status") == "completed";
       if (!success && row.GetString("status") != "failed") return Corrupt();
-      ++observed[success ? 0 : 1];
-      BinaryRead read;
-      Json result_data;
-      auto reply =
-          binary.Open(access, ObjectKind::kToolRun, row.GetString("result_id"),
-                      3600, &read, &result_data);
-      if (!reply.ok()) return reply;
-      ScopeExit close([&] { Close(objects_, &read); });
-      if (result_data.GetString("format") != "q4t.batch_result.v1" ||
-          result_data.GetString("batch_id") != id ||
-          result_data.GetInt("line") != index + 1 ||
-          !result_data.Find("successful") ||
-          !result_data.Find("successful")->IsBool() ||
-          result_data.GetBool("successful") != success || !read.manifest.bytes)
-        return Corrupt();
-      for (size_t chunk_index = 0; chunk_index < read.manifest.chunks.size();
-           ++chunk_index) {
-        std::string chunk;
-        reply = binary.Read(access, read, chunk_index, &chunk);
+      const size_t lane = success ? 0 : 1;
+      if (const auto* embedded = row.Find("result_inline")) {
+        if (source_chunk || !ValidBatchInlineResult(row)) return Corrupt();
+        const auto text = embedded->GetString("payload");
+        if (text.size() > kTurnBytes - consumed) break;
+        auto reply = append(lane, text);
         if (!reply.ok()) return reply;
-        reply = append(success ? 0 : 1, chunk);
+        consumed += text.size();
+      } else {
+        BinaryRead read;
+        Json result_data;
+        auto reply =
+            binary.Open(access, ObjectKind::kToolRun,
+                        row.GetString("result_id"), 3600, &read, &result_data);
         if (!reply.ok()) return reply;
+        ScopeExit close([&] { Close(objects_, &read); });
+        const auto* successful = result_data.Find("successful");
+        if (result_data.GetString("format") != "q4t.batch_result.v1" ||
+            result_data.GetString("batch_id") != id ||
+            result_data.GetInt("line") != index + 1 || !successful ||
+            !successful->IsBool() || successful->boolean != success ||
+            !read.manifest.bytes || source_chunk >= read.manifest.chunks.size())
+          return Corrupt();
+        while (source_chunk < read.manifest.chunks.size()) {
+          const auto bytes = read.manifest.chunks[source_chunk].bytes;
+          if (bytes > kTurnBytes - consumed) break;
+          std::string chunk;
+          reply = binary.Read(access, read, source_chunk, &chunk);
+          if (!reply.ok()) return reply;
+          reply = append(lane, chunk);
+          if (!reply.ok()) return reply;
+          consumed += chunk.size();
+          ++source_chunk;
+        }
+        if (source_chunk != read.manifest.chunks.size()) break;
+        source_chunk = 0;
       }
+      ++observed[lane];
       ++index;
+      ++at;
+      ++rows;
     }
+    // A remaining input chunk may not fit the strict byte bound. Commit the
+    // consumed prefix and let the next turn start with its full byte budget.
+    if (at < entries.size()) break;
   }
-  if (observed[0] != counts->GetInt("completed") ||
-      observed[1] != counts->GetInt("failed"))
-    return Corrupt();
-  std::vector<ObjectRequest> files;
   for (size_t lane = 0; lane < stages.size(); ++lane) {
-    if (stages[lane].id.empty()) continue;
-    if (!buffers[lane].empty()) {
-      auto reply = binary.Append(access, &stages[lane], buffers[lane]);
-      if (!reply.ok()) return reply;
-      buffers[lane].clear();
+    auto reply = flush(lane);
+    if (!reply.ok()) return reply;
+    const auto& staged = stages[lane].manifest;
+    if (staged.chunks.size() > kBinaryMaxChunks - manifests[lane].chunks.size())
+      return Error(413, "binary_capacity_exceeded",
+                   "Batch output File exceeds its chunk budget");
+    manifests[lane].bytes += staged.bytes;
+    manifests[lane].chunks.insert(manifests[lane].chunks.end(),
+                                  staged.chunks.begin(), staged.chunks.end());
+  }
+  const bool done = index == total;
+  if (done && (source_chunk || observed[0] != counts->GetInt("completed") ||
+               observed[1] != counts->GetInt("failed")))
+    return Corrupt();
+  Set(&root.data, "finalization",
+      Object({{"format", String("q4t.batch_finalization.v1")},
+              {"next_row", Number(index)},
+              {"source_chunk", Number(source_chunk)},
+              {"completed", Number(observed[0])},
+              {"failed", Number(observed[1])},
+              {"output", BinaryManifestJson(manifests[0])},
+              {"error", BinaryManifestJson(manifests[1])}}));
+  std::vector<ObjectRequest> mutations;
+  if (done) {
+    // Setting finalization may reallocate root.data's field vector.
+    auto& terminal_batch = Field(root.data, "batch");
+    for (size_t lane = 0; lane < manifests.size(); ++lane) {
+      if (!manifests[lane].bytes) continue;
+      const auto file_id = NewObjectId(ObjectKind::kFile);
+      if (file_id.empty())
+        return Error(503, "object_entropy_unavailable", "No output File ID");
+      auto file =
+          Request(access, file_id, ObjectKind::kFile, ObjectOperation::kPut);
+      file.created_at = std::time(nullptr);
+      file.expires_at =
+          file.created_at + root.data.GetInt("output_ttl_seconds");
+      file.data = Object(
+          {{"format", String("q4t.file.v1")},
+           {"mime_type", String("application/jsonl")},
+           {"blob", BinaryManifestJson(manifests[lane])},
+           {"file", Object({{"id", String(file_id)},
+                            {"object", String("file")},
+                            {"bytes", Number(manifests[lane].bytes)},
+                            {"created_at", Number(file.created_at)},
+                            {"expires_at", Number(file.expires_at)},
+                            {"filename", String(id + (lane ? "_errors.jsonl"
+                                                           : "_output.jsonl"))},
+                            {"purpose", String("batch_output")},
+                            {"status", String("processed")}})}});
+      Set(&terminal_batch, lane ? "error_file_id" : "output_file_id",
+          String(file_id));
+      mutations.push_back(std::move(file));
     }
-    const auto file_id = NewObjectId(ObjectKind::kFile);
-    if (file_id.empty())
-      return Error(503, "object_entropy_unavailable", "No output File ID");
-    auto file =
-        Request(access, file_id, ObjectKind::kFile, ObjectOperation::kPut);
-    file.created_at = std::time(nullptr);
-    file.expires_at = file.created_at + root.data.GetInt("output_ttl_seconds");
-    file.data = Object(
-        {{"format", String("q4t.file.v1")},
-         {"mime_type", String("application/jsonl")},
-         {"blob", BinaryManifestJson(stages[lane].manifest)},
-         {"file", Object({{"id", String(file_id)},
-                          {"object", String("file")},
-                          {"bytes", Number(stages[lane].manifest.bytes)},
-                          {"created_at", Number(file.created_at)},
-                          {"expires_at", Number(file.expires_at)},
-                          {"filename", String(id + (lane ? "_errors.jsonl"
-                                                         : "_output.jsonl"))},
-                          {"purpose", String("batch_output")},
-                          {"status", String("processed")}})}});
-    Set(&batch, lane ? "error_file_id" : "output_file_id", String(file_id));
-    files.push_back(std::move(file));
+    Set(&terminal_batch, "status", String(terminal));
+    Set(&terminal_batch, terminal + "_at", Number(std::time(nullptr)));
+    Set(&root.data, "resources_released", Boolean(true));
   }
-  Set(&batch, "status", String(terminal));
-  Set(&batch, terminal + "_at", Number(std::time(nullptr)));
-  Set(&root.data, "resources_released", Boolean(true));
-  if (files.empty()) return Save(objects_, access, root);
-  // The other stage and its File join the primary publication atomically.
-  const size_t primary = stages[0].id.empty() ? 1 : 0;
-  std::vector<ObjectRequest> parents;
-  if (files.size() == 2) {
-    parents.push_back(std::move(files[1]));
-    auto erase = Request(access, stages[1].id, ObjectKind::kToolRun,
+  for (const auto& stage : stages) {
+    if (stage.id.empty()) continue;
+    auto erase = Request(access, stage.id, ObjectKind::kToolRun,
                          ObjectOperation::kErase);
-    erase.expected_revision = stages[1].revision;
-    parents.push_back(std::move(erase));
+    erase.expected_revision = stage.revision;
+    mutations.push_back(std::move(erase));
   }
-  parents.push_back(std::move(root));
+  mutations.push_back(std::move(root));
   auto reply =
-      binary.Publish(access, &stages[primary], std::move(files[0]), parents);
+      objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
   if (reply.ok()) {
     for (auto& stage : stages) stage.closed = true;
-    reply.value = *parents.back().data.Find("batch");
+    reply.value = *mutations.back().data.Find("batch");
   } else {
     if (reply.commit_unknown)
       for (auto& stage : stages) stage.commit_unknown = true;
     Identify(&reply, id);
-    Set(&reply.value, "output_file_id",
-        *parents.back().data.Find("batch")->Find("output_file_id"));
-    Set(&reply.value, "error_file_id",
-        *parents.back().data.Find("batch")->Find("error_file_id"));
+    for (const auto* key : {"output_file_id", "error_file_id"})
+      Set(&reply.value, key, *mutations.back().data.Find("batch")->Find(key));
   }
   return reply;
 }
+
 }  // namespace q4t::server

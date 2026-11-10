@@ -91,9 +91,13 @@ ObjectReply BatchValidation::Check(const BatchInputRow& row,
 ObjectReply BatchValidation::Stage(BatchInputRow&& row) {
   if (row.line <= frozen_rows_) return {};
   if (!prepared_) return Invalid();
-  BatchRowPosition position{
-      row.line, row.offset, row.wire_bytes, Digest(row.custom_id),
-      prepared_->reference, prepared_->binding_sha256};
+  BatchRowPosition position{row.line,
+                            row.offset,
+                            row.wire_bytes,
+                            Digest(row.custom_id),
+                            prepared_->reference,
+                            prepared_->binding_sha256,
+                            prepared_->inline_input};
   auto reply = batches_.AppendValidatedRow(access_, id_, position,
                                             prepared_->canonical_model);
   ReleasePrepared(reply.commit_unknown);

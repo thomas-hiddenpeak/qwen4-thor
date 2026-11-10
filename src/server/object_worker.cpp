@@ -1,4 +1,5 @@
 #include "q4t/server/object_store.h"
+#include "q4t/server/batch_checkpoint.h"
 
 #include <dirent.h>
 #include <fcntl.h>
@@ -438,8 +439,7 @@ class DiskStore {
     const auto* data = record.Find("data");
     if (!data || !data->IsObject()) return {};
     const auto kind = record.GetString("kind");
-    const bool page = kind == "tool_run" &&
-                      data->GetString("format") == "q4t.batch_page.v1";
+    const bool page = kind == "tool_run" && IsBatchPage(*data);
     if (!ApplicationKind(kind) && kind != "input_snapshot" && !page)
       return {};
     struct Dependency {
@@ -472,8 +472,13 @@ class DiskStore {
     if (page) {
       const auto* rows = data->GetArray("rows");
       if (!rows || rows->array.size() > 128) return SnapshotConflict();
-      for (const auto& row : rows->array)
+      for (const auto& row : rows->array) {
+        if (const auto* input = row.Find("prepared_inline");
+            input &&
+            input->GetString("scope_sha256") != record.GetString("owner"))
+          return SnapshotConflict();
         if (!collect(row)) return SnapshotConflict();
+      }
     }
     std::vector<ApplicationStringRef> strings;
     if (!ParseApplicationPayloadReferences(*data, &strings))
@@ -583,6 +588,11 @@ class DiskStore {
           return Error(400, "invalid_object_request", "Invalid object write");
         if (kind == "input_snapshot") {
           auto immutable = ImmutableSnapshot(
+              *data, exists ? previous.Find("data") : nullptr);
+          if (!immutable.ok()) return immutable;
+        }
+        if (kind == "tool_run") {
+          auto immutable = CheckBatchPageMutation(
               *data, exists ? previous.Find("data") : nullptr);
           if (!immutable.ok()) return immutable;
         }
@@ -939,6 +949,11 @@ class DiskStore {
           ImmutableSnapshot(*data, exists ? previous.Find("data") : nullptr);
       if (!immutable.ok()) return immutable;
     }
+    if (request.GetString("kind") == "tool_run") {
+      auto immutable = CheckBatchPageMutation(
+          *data, exists ? previous.Find("data") : nullptr);
+      if (!immutable.ok()) return immutable;
+    }
     // No unindexed file may be overwritten, even if another process ignored
     // our advisory lock. Only a successfully read expected revision replaces.
     struct stat info {};
@@ -1257,7 +1272,7 @@ int MaybeRunObjectWorker(int argc, char** argv) {
               [](const Json& mutation) {
                 const auto* data = mutation.Find("data");
                 return mutation.GetString("operation") == "put" && data &&
-                       data->GetString("format") == "q4t.batch_page.v1";
+                       IsBatchPage(*data);
               });
           for (const auto& mutation : mutations->array) {
             const auto* data = mutation.Find("data");
@@ -1268,8 +1283,12 @@ int MaybeRunObjectWorker(int argc, char** argv) {
                  mutation.GetInt("revision", -1) == 0) ||
                 (lose_batch_start && page_update && root &&
                  data->GetInt("running") == 1) ||
-                (lose_batch_result && format == "q4t.batch_result.v1" &&
-                 mutation.GetInt("revision", -1) == 0))
+                (lose_batch_result &&
+                 ((format == "q4t.batch_result.v1" &&
+                   mutation.GetInt("revision", -1) == 0) ||
+                  (page_update && root && data->GetInt("next_row") > 0 &&
+                   data->GetInt("running") == 0 &&
+                   data->Find("batch")->GetString("status") == "in_progress"))))
               for (;;) pause();  // Actual atomic commit, no receipt.
           }
         }

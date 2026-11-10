@@ -6,6 +6,7 @@
 #include <limits>
 
 #include "object_protocol.h"
+#include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/files.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
@@ -322,7 +323,7 @@ ObjectReply BatchState::AppendValidatedRow(
     const BinaryAccess& access, const std::string& id,
     const BatchRowPosition& row, const std::string& canonical_model) {
   if (canonical_model.empty() || canonical_model.size() > 256 ||
-      row.prepared_input.id.empty())
+      (row.prepared_input.id.empty() && row.prepared_inline.IsNull()))
     return Invalid("A validated row needs frozen inputs and canonical model");
   return AppendRows(access, id, std::span(&row, 1), canonical_model);
 }
@@ -368,7 +369,18 @@ ObjectReply BatchState::AppendRows(
                 {"custom_id_sha256", String(row.custom_id_sha256)},
                 {"status", String("pending")},
                 {"result_id", Json()}}));
-    if (!row.prepared_input.id.empty()) {
+    if (!row.prepared_inline.IsNull()) {
+      if (!row.prepared_input.id.empty() ||
+          !row.prepared_input.sha256.empty() ||
+          !ValidBatchInlineInput(row.prepared_inline) ||
+          row.prepared_inline.GetString("scope_sha256") !=
+              Digest(access.scope) ||
+          row.prepared_binding_sha256 !=
+              row.prepared_inline.GetString("binding_sha256"))
+        return Invalid("Invalid inline prepared row");
+      Set(&entries.array.back(), "prepared_inline", row.prepared_inline);
+      frozen = true;
+    } else if (!row.prepared_input.id.empty()) {
       frozen = true;
       InputSnapshotRef checked;
       const auto reference = InputSnapshotReference(row.prepared_input);
@@ -405,6 +417,11 @@ ObjectReply BatchState::AppendRows(
     Field(root.data, "pages").array.push_back(String(page_id));
   }
   page.kind = ObjectKind::kToolRun;
+  for (const auto& row : page.data.GetArray("rows")->array)
+    if (row.Has("prepared_inline")) {
+      Set(&page.data, "format", String("q4t.batch_page.v2"));
+      break;
+    }
   const auto page_id = page.id;
   Set(&root.data, "validated_rows", Number(count));
   Set(&root.data, "validated_bytes", Number(offset));

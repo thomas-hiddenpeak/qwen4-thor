@@ -1,4 +1,6 @@
 #include "q4t/server/batch_state.h"
+#include "q4t/server/batch_checkpoint.h"
+#include "q4t/server/batch_preparation.h"
 
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -15,6 +17,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/files.h"
+#include "q4t/server/object_retention.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
@@ -95,7 +98,8 @@ struct ReadyBatch {
   std::string id, file;
   std::vector<BatchInputRow> rows;
 };
-ReadyBatch Ready(ObjectStore& objects, size_t count, size_t padding = 0) {
+ReadyBatch Ready(ObjectStore& objects, size_t count, size_t padding = 0,
+                 bool freeze = false) {
   const auto bytes = Input(count, padding);
   FileUpload upload(objects, Access(), "multipart/form-data; boundary=b");
   const auto wire =
@@ -131,9 +135,23 @@ ReadyBatch Ready(ObjectStore& objects, size_t count, size_t padding = 0) {
   if (!Ok(input.Feed(bytes)) || !Ok(input.Finish()))
     throw std::runtime_error("fixture validation");
   std::vector<BatchRowPosition> positions;
-  for (const auto& row : ready.rows)
-    positions.push_back(
-        {row.line, row.offset, row.wire_bytes, Digest(row.custom_id)});
+  ChatPlanConfig config;
+  config.model = "CPU-fixture";
+  for (const auto& row : ready.rows) {
+    BatchRowPosition position{row.line, row.offset, row.wire_bytes,
+                              Digest(row.custom_id)};
+    if (freeze) {
+      BatchPreparedInput prepared;
+      if (!Ok(BatchPreparation(objects).Prepare(
+              Access(), ready.id, options.endpoint, row, config, &prepared)) ||
+          !prepared.reference.id.empty() || !prepared.hold.id.empty() ||
+          !ValidBatchInlineInput(prepared.inline_input))
+        throw std::runtime_error("inline preparation fixture");
+      position.prepared_binding_sha256 = prepared.binding_sha256;
+      position.prepared_inline = std::move(prepared.inline_input);
+    }
+    positions.push_back(std::move(position));
+  }
   for (size_t i = 0; i < count; i += kBatchPageRows)
     if (!Ok(batches.AppendValidationPage(
             Access(), ready.id,
@@ -259,10 +277,8 @@ Q4T_TEST(
           .http_status == 409);
   auto row = batches.Row(Access(), ready.id, 0);
   Q4T_CHECK(Ok(row) && row.value.GetString("status") == "completed");
-  auto stored = objects.Execute(
-      Request(row.value.GetString("result_id"), ObjectKind::kToolRun),
-      Access().deadline);
-  Q4T_CHECK(Ok(stored));
+  Q4T_CHECK(row.value.Find("result_id")->IsNull() &&
+            ValidBatchInlineResult(row.value));
   auto next = Start(batches, ready, 1);
   Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 1, ready.rows[1].custom_id,
                                  next)) &&
@@ -307,7 +323,7 @@ Q4T_TEST(batch_results_concurrent_start_has_exactly_one_execution_owner) {
 Q4T_TEST(
     batch_results_mixed_files_restart_and_terminal_private_resource_reclamation) {
   Fixture fixture;
-  std::string id, output, error, page_id, result_id, original_chunk;
+  std::string id, output, error, page_id, original_chunk;
   {
     ObjectStore objects(fixture.options);
     BatchState batches(objects);
@@ -332,7 +348,7 @@ Q4T_TEST(
       Q4T_CHECK(Ok(
           batches.FinishRow(Access(), id, i, ready.rows[i].custom_id, result)));
     }
-    result_id = batches.Row(Access(), id, 0).value.GetString("result_id");
+    Q4T_CHECK(ValidBatchInlineResult(batches.Row(Access(), id, 0).value));
     Q4T_CHECK(Ok(batches.BeginFinalization(Access(), id, "completed")));
     auto finalized = batches.Finalize(Access(), id);
     Q4T_CHECK(Ok(finalized) &&
@@ -353,7 +369,7 @@ Q4T_TEST(
     }
     Q4T_CHECK(Ok(Files(objects).Erase(Access(), ready.file)) &&
               Ok(Collect(objects)));
-    for (const auto& private_id : {page_id, result_id, original_chunk})
+    for (const auto& private_id : {page_id, original_chunk})
       Q4T_CHECK(objects
                     .Execute(Request(private_id, ObjectKind::kToolRun),
                              Access().deadline)
@@ -388,7 +404,9 @@ Q4T_TEST(batch_results_final_files_coalesce_large_rows_and_page_boundaries) {
   }
   Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
   auto final = batches.Finalize(Access(), ready.id);
-  Q4T_CHECK(Ok(final));
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "finalizing");
+  final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed");
   auto stored = objects.Execute(
       Request(final.value.GetString("output_file_id"), ObjectKind::kFile),
       Access().deadline);
@@ -397,7 +415,7 @@ Q4T_TEST(batch_results_final_files_coalesce_large_rows_and_page_boundaries) {
   Q4T_CHECK(ParseBinaryManifest(*stored.value.Find("data")->Find("blob"),
                                 &manifest) &&
             manifest.bytes > 2 * kBinaryChunkBytes &&
-            manifest.chunks.size() == 3 &&
+            manifest.chunks.size() == 4 &&
             manifest.chunks[0].bytes == kBinaryChunkBytes &&
             manifest.chunks[1].bytes == kBinaryChunkBytes);
   const auto lines =
@@ -726,7 +744,10 @@ Q4T_TEST(
     ObjectStore objects(fixture.options);
     BatchState batches(objects);
     ready = Ready(objects, 1);
-    result = Start(batches, ready, 0);
+    result = Start(
+        batches, ready, 0, 200,
+        OutputJson(Object(
+            {{"payload", String(std::string(kBatchInlineBytes + 1, 'r'))}})));
     auto health = Request("");
     health.operation = ObjectOperation::kHealth;
     count = objects.Execute(health, Access().deadline).value.GetInt("objects");
@@ -846,17 +867,345 @@ Q4T_TEST(batch_results_corrupt_page_blocks_reads_and_start_transactionally) {
   Q4T_CHECK(Ok(root));
   const auto page = root.value.Find("data")->GetArray("pages")->array[0].str;
   Q4T_CHECK(
-      Ok(Edit(objects, page, ObjectKind::kToolRun, [](ObjectRequest& request) {
+      Edit(objects, page, ObjectKind::kToolRun, [](ObjectRequest& request) {
         Set(&request.data, "batch_id", String("batch_other"));
-      })));
-  BatchInputRow row;
-  row.custom_id = "unchanged";
-  Q4T_CHECK(batches.ReadInputRow(Access(), ready.id, 0, &row).code ==
-                "batch_state_invalid" &&
-            batches.StartRow(Access(), ready.id, 0).code ==
-                "batch_state_invalid" &&
-            row.custom_id == "unchanged");
+      }).code == "batch_checkpoint_immutable");
   Q4T_CHECK(OutputJson(root.value) ==
             OutputJson(batches.Load(Access(), ready.id).value));
+  BatchInputRow row;
+  Q4T_CHECK(Ok(batches.ReadInputRow(Access(), ready.id, 0, &row)) &&
+            row.custom_id == ready.rows[0].custom_id &&
+            Ok(batches.StartRow(Access(), ready.id, 0)));
+  return true;
+}
+
+Q4T_TEST(batch_inline_result_page_immutability_and_exact_number_retention) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  auto ready = Ready(objects, 1, 0, true);
+  auto result = Start(batches, ready, 0, 200, "{\"exact\":1e-999}");
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)));
+  const auto root = batches.Load(Access(), ready.id);
+  const auto page_id = root.value.Find("data")->GetArray("pages")->array[0].str;
+  const auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(
+      Ok(row) && ValidBatchInlineResult(row.value) &&
+      row.value.Find("result_inline")->GetString("payload").find("1e-999") !=
+          std::string::npos);
+  for (int which = 0; which < 4; ++which) {
+    auto changed = Edit(
+        objects, page_id, ObjectKind::kToolRun, [&](ObjectRequest& request) {
+          auto& value = Field(request.data, "rows").array[0];
+          if (which == 0) {
+            auto& embedded = Field(value, "result_inline");
+            auto payload = Parsed(embedded.GetString("payload"));
+            Set(&Field(Field(payload, "response"), "body"), "exact",
+                Number(99));
+            const auto text = OutputJson(payload) + '\n';
+            Set(&embedded, "payload", String(text));
+            Set(&embedded, "sha256", String(Digest(text)));
+          }
+          if (which == 1) Set(&value, "finished_at", Number(0));
+          if (which == 2) Set(&value, "status", String("running"));
+          if (which == 3)
+            Set(&value, "result_id", String(NewObjectId(ObjectKind::kToolRun)));
+        });
+    Q4T_CHECK(changed.code == "batch_checkpoint_immutable");
+  }
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) &&
+            Content(objects, final.value.GetString("output_file_id")) ==
+                row.value.Find("result_inline")->GetString("payload"));
+  return true;
+}
+
+Q4T_TEST(batch_finalization_row_budget_and_checkpoint_restart) {
+  Fixture fixture;
+  ReadyBatch ready;
+  int64_t expires = 0;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, kBatchPageRows + 1, 0, true);
+    for (size_t i = 0; i < ready.rows.size(); ++i) {
+      auto result = Start(batches, ready, i);
+      Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                     ready.rows[i].custom_id, result)));
+    }
+    Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+    auto step = batches.Finalize(Access(), ready.id);
+    Q4T_CHECK(Ok(step) && step.value.GetString("status") == "finalizing" &&
+              step.value.Find("output_file_id")->IsNull());
+    auto root = batches.Load(Access(), ready.id);
+    expires = root.value.GetInt("expires_at");
+    const auto* progress = root.value.Find("data")->Find("finalization");
+    Q4T_CHECK(progress && progress->GetInt("next_row") == kBatchPageRows &&
+              progress->GetInt("source_chunk") == 0 &&
+              progress->Find("output")->GetInt("bytes") > 0 &&
+              Ok(Files(objects).Erase(Access(), ready.file)) &&
+              Ok(Collect(objects)));
+    auto files = Files(objects).List(Access(), Object());
+    Q4T_CHECK(Ok(files) && files.value.GetArray("data")->array.empty());
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(batches.Load(Access(), ready.id).value.GetInt("expires_at") ==
+            expires);
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed");
+  const auto lines =
+      Lines(Content(objects, final.value.GetString("output_file_id")));
+  Q4T_CHECK(lines.size() == ready.rows.size());
+  for (size_t i = 0; i < lines.size(); ++i)
+    Q4T_CHECK(lines[i].GetString("custom_id") == ready.rows[i].custom_id);
+  return true;
+}
+
+Q4T_TEST(batch_finalization_large_row_lost_checkpoint_resumes_original_bytes) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  fixture.options.max_client_bytes = 256ULL << 20;
+  fixture.options.max_total_bytes = 512ULL << 20;
+  ReadyBatch ready;
+  const auto body = OutputJson(
+      Object({{"large",
+               String(std::string(9 * kBinaryChunkBytes + 17, 'x') + "42")}}));
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 1);
+    auto result = Start(batches, ready, 0, 200, body);
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0,
+                                   ready.rows[0].custom_id, result)) &&
+              Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  }
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(fixture.options);
+    auto step = BatchState(objects).Finalize(Access(), ready.id);
+    Q4T_CHECK(!step.ok() && step.commit_unknown &&
+              step.value.Find("output_file_id")->IsNull());
+    Drain(objects);
+    auto root = BatchState(objects).Load(Access(), ready.id);
+    Q4T_CHECK(Ok(root));
+    const auto* progress = root.value.Find("data")->Find("finalization");
+    Q4T_CHECK(progress && progress->GetInt("next_row") == 0 &&
+              progress->GetInt("source_chunk") == 4 &&
+              progress->GetInt("completed") == 0 &&
+              progress->Find("output")->GetInt("bytes") ==
+                  4 * kBinaryChunkBytes);
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(Collect(objects)));
+  auto step = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(step) && step.value.GetString("status") == "finalizing");
+  auto root = batches.Load(Access(), ready.id);
+  Q4T_CHECK(
+      root.value.Find("data")->Find("finalization")->GetInt("source_chunk") ==
+      8);
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed");
+  const auto lines =
+      Lines(Content(objects, final.value.GetString("output_file_id")));
+  Q4T_CHECK(lines.size() == 1 &&
+            lines[0].GetString("custom_id") == ready.rows[0].custom_id &&
+            OutputJson(*lines[0].Find("response")->Find("body")) == body);
+  return true;
+}
+
+Q4T_TEST(batch_finalization_actual_dead_process_keeps_committed_prefix) {
+  Fixture fixture;
+  int fds[2];
+  Q4T_CHECK(pipe2(fds, O_CLOEXEC) == 0);
+  const auto pid = fork();
+  Q4T_CHECK(pid >= 0);
+  if (pid == 0) {
+    close(fds[0]);
+    try {
+      std::string id;
+      {
+        ObjectStore objects(fixture.options);
+        BatchState batches(objects);
+        auto ready = Ready(objects, 129, 0, true);
+        id = ready.id;
+        for (size_t i = 0; i < ready.rows.size(); ++i) {
+          const auto result = Start(batches, ready, i, i % 2 ? 400 : 200);
+          if (!Ok(batches.FinishRow(Access(), id, i, ready.rows[i].custom_id,
+                                    result)))
+            _exit(4);
+        }
+        if (!Ok(batches.BeginFinalization(Access(), id, "completed")) ||
+            !Ok(batches.Finalize(Access(), id)))
+          _exit(5);
+      }
+      if (write(fds[1], id.data(), id.size()) !=
+          static_cast<ssize_t>(id.size()))
+        _exit(3);
+      close(fds[1]);
+      _exit(0);
+    } catch (...) {
+      _exit(2);
+    }
+  }
+  close(fds[1]);
+  char bytes[128];
+  const auto n = read(fds[0], bytes, sizeof(bytes));
+  close(fds[0]);
+  int status = 0;
+  Q4T_CHECK(waitpid(pid, &status, 0) == pid && WIFEXITED(status) &&
+            WEXITSTATUS(status) == 0 && n > 0);
+  const std::string id(bytes, n);
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto before = batches.Load(Access(), id);
+  Q4T_CHECK(
+      Ok(before) &&
+      before.value.Find("data")->Find("finalization")->GetInt("next_row") ==
+          128 &&
+      batches.Finalize(Access(), id).code == "batch_owner_changed" &&
+      Ok(batches.ClaimAbandoned(Access(), id)));
+  auto final = batches.Finalize(Access(), id);
+  Q4T_CHECK(
+      Ok(final) && final.value.GetString("status") == "completed" &&
+      Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+          65 &&
+      Lines(Content(objects, final.value.GetString("error_file_id"))).size() ==
+          64);
+  return true;
+}
+
+Q4T_TEST(
+    batch_finalization_maximum_dual_lane_retention_is_bounded_and_complete) {
+  BinaryManifest lane;
+  for (size_t i = 0; i < kBinaryMaxChunks; ++i)
+    lane.chunks.push_back(
+        {"tool_run_" + std::string(40, 'a') + std::to_string(i),
+         Digest("fixture chunk"), kBinaryMaxBytes / kBinaryMaxChunks});
+  lane.bytes = kBinaryMaxBytes;
+  auto other = lane;
+  for (auto& chunk : other.chunks) chunk.id[9] = 'b';
+  auto pages = Array();
+  for (size_t i = 0; i < kBatchPages; ++i)
+    pages.array.push_back(String("tool_run_page_" + std::to_string(i)));
+  auto data = Object(
+      {{"format", String("q4t.batch.v1")},
+       {"batch", Object({{"status", String("finalizing")}})},
+       {"blob", BinaryManifestJson({})},
+       {"pages", pages},
+       {"finalization", Object({{"format", String("q4t.batch_finalization.v1")},
+                                {"output", BinaryManifestJson(lane)},
+                                {"error", BinaryManifestJson(other)}})}});
+  const auto retained = InspectObjectRetention("batch", data);
+  Q4T_CHECK(retained.active && !retained.uncertain &&
+            retained.references.size() == 2 * kBinaryMaxChunks + kBatchPages);
+  Set(&data, "resources_released", Boolean(true));
+  Set(&Field(data, "batch"), "status", String("completed"));
+  const auto released = InspectObjectRetention("batch", data);
+  Q4T_CHECK(!released.active && !released.uncertain &&
+            released.references.empty());
+  return true;
+}
+
+Q4T_TEST(batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs) {
+  Fixture fixture;
+  fixture.options.max_client_bytes = 768ULL << 20;
+  fixture.options.max_total_bytes = 1ULL << 30;
+  fixture.options.max_client_objects = 1500;
+  fixture.options.max_total_objects = 1500;
+  fixture.options.io_timeout_ms = 2000;
+  auto objects = std::make_unique<ObjectStore>(fixture.options);
+  auto ready = Ready(*objects, kBatchRequests, 0, true);
+  auto loaded = BatchState(*objects).Load(Access(), ready.id);
+  Q4T_CHECK(Ok(loaded));
+  const auto pages = *loaded.value.Find("data")->GetArray("pages");
+  Q4T_CHECK(pages.array.size() == kBatchPages);
+  // Capacity fixture seeds explicit CPU endpoint receipts per page. The
+  // native Start/Finish lifecycle is exercised separately across 129 rows;
+  // this test proves actual storage/aggregation of all 50K prepared requests,
+  // not model execution or a synthetic arithmetic estimate of object count.
+  std::array<std::string, 2> expected;
+  size_t index = 0;
+  for (const auto& page : pages.array) {
+    auto written = Edit(
+        *objects, page.str, ObjectKind::kToolRun, [&](ObjectRequest& request) {
+          for (auto& row : Field(request.data, "rows").array) {
+            const size_t lane = index % 3 == 0 ? 1 : 0;
+            const auto ticket = "req_capacity_" + std::to_string(index);
+            const auto text =
+                OutputJson(Object(
+                    {{"id",
+                      String("batch_req_capacity_" + std::to_string(index))},
+                     {"custom_id", String(ready.rows[index].custom_id)},
+                     {"response",
+                      Object({{"status_code", Number(lane ? 400 : 200)},
+                              {"request_id", String(ticket)},
+                              {"body", Object({{"cpu_capacity_fixture",
+                                                Number(index)}})}})},
+                     {"error", Json()}})) +
+                '\n';
+            expected[lane] += text;
+            Set(&row, "status", String(lane ? "failed" : "completed"));
+            Set(&row, "request_id", String(ticket));
+            Set(&row, "result_inline",
+                Object({{"sha256", String(Digest(text))},
+                        {"payload", String(text)}}));
+            ++index;
+          }
+        });
+    Q4T_CHECK(Ok(written));
+  }
+  const int64_t failed = (kBatchRequests + 2) / 3;
+  Q4T_CHECK(index == kBatchRequests &&
+            Ok(Edit(*objects, ready.id, ObjectKind::kBatch,
+                    [&](ObjectRequest& request) {
+                      Set(&request.data, "next_row", Number(kBatchRequests));
+                      auto& counts =
+                          Field(Field(request.data, "batch"), "request_counts");
+                      Set(&counts, "completed",
+                          Number(kBatchRequests - failed));
+                      Set(&counts, "failed", Number(failed));
+                    })));
+  BatchPreparation prepare(*objects);
+  for (size_t at : {size_t{0}, kBatchRequests - 1}) {
+    auto row = BatchState(*objects).Row(Access(), ready.id, at);
+    Json frozen;
+    Q4T_CHECK(Ok(row) && Ok(prepare.Read(Access(), ready.id, "/v1/responses",
+                                         ready.rows[at], row.value, &frozen)));
+    Q4T_CHECK(frozen.Find("request")->GetString("input") ==
+              ready.rows[at].body.GetString("input"));
+  }
+  Q4T_CHECK(Ok(
+      BatchState(*objects).BeginFinalization(Access(), ready.id, "completed")));
+  ObjectReply final;
+  for (size_t turn = 0; turn < kBatchPages; ++turn) {
+    if (turn == 10) {
+      objects.reset();
+      objects = std::make_unique<ObjectStore>(fixture.options);
+    }
+    final = BatchState(*objects).Finalize(Access(), ready.id);
+    Q4T_CHECK(Ok(final));
+    if (turn + 1 != kBatchPages)
+      Q4T_CHECK(final.value.GetString("status") == "finalizing" &&
+                final.value.Find("output_file_id")->IsNull());
+  }
+  Q4T_CHECK(final.value.GetString("status") == "completed");
+  for (size_t lane = 0; lane < 2; ++lane) {
+    const auto content = Content(
+        *objects,
+        final.value.GetString(lane ? "error_file_id" : "output_file_id"));
+    Q4T_CHECK(content.size() == expected[lane].size() &&
+              Digest(content) == Digest(expected[lane]));
+  }
+  auto health = Request("");
+  health.operation = ObjectOperation::kHealth;
+  const auto usage = objects->Execute(health, Access().deadline);
+  Q4T_CHECK(Ok(usage) && usage.value.GetInt("objects") < 1500);
+  std::fprintf(
+      stdout, "  actual 50000 rows, %zu finalization turns, %lld objects\n",
+      kBatchPages, static_cast<long long>(usage.value.GetInt("objects")));
   return true;
 }
