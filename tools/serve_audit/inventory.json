@@ -1431,6 +1431,22 @@
       "file_id",
       "filename"
     ],
+    "file_input.cpp:3:part": [
+      "type",
+      "image_url",
+      "prompt_cache_breakpoint"
+    ],
+    "file_input.cpp:4:part": [
+      "type",
+      "image_url",
+      "file_id",
+      "detail",
+      "prompt_cache_breakpoint"
+    ],
+    "file_input.cpp:5:*url": [
+      "url",
+      "detail"
+    ],
     "file_fetch_policy.cpp:0:value": [
       "public_networks",
       "allow_http",
@@ -1443,8 +1459,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "684a2e8a4255abe8b70347c0ae8a89fe390759c9ace40fa5d2aec6a71633acd3",
-    "cmake/ChatProtocolIdentity.cmake": "d46a547e7741fe2f29ea1c804516498477f50bf26bcb2382fa98a82a9be1c33d",
+    "CMakeLists.txt": "1cb1471e00252315f8fd2acc320beafa7a93a2f738eedef9718f06f82d75b254",
+    "cmake/ChatProtocolIdentity.cmake": "c5d7b2108f661296c93dd7a0f1af9152c4b0f53d4ec8b5f488cc0037cd007835",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1497,10 +1513,11 @@
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/file_document.h": "b86ae6f22230d2a12e429d6d19b610001c2f378ce2640b7ec5e97a2a76e36c61",
     "include/q4t/server/file_document_worker.h": "006f8e02037cf396a918be053328bedd0d75b77ef30c8fe5d6eca868cb36d183",
-    "include/q4t/server/file_expansion.h": "8bb565f68fd33d1805f8a50ecc67708a18218edbf6b8d53559179baf022505d2",
+    "include/q4t/server/file_expansion.h": "ce880291e2bb296ff20f4cead54f4e24e34979966815b440746f86c0dcf9a63c",
     "include/q4t/server/file_extract.h": "b78f26ab39d02e64669c2823f4933025cf0608d73934eb8a0d04d36b3038be0b",
     "include/q4t/server/file_fetch.h": "d3a1489614982189e1b120ea47e37a0e275ba2175bfc9d70013cf0b48a22693e",
-    "include/q4t/server/file_input.h": "6f6670ba1821f8b05d36a8eba1b1b152dde71f840e641753839c71678fa75b1d",
+    "include/q4t/server/file_image.h": "78aefb57a1f9f2b400168ab56b88896592d76445b56001f55e95d21b6846f1fb",
+    "include/q4t/server/file_input.h": "781f7babb20bd3349d7d1f680821a8151c1b2bb2628077441c479373289e7f0e",
     "include/q4t/server/file_legacy.h": "55536f49a70182aad554e9a0ed5de95c9e871b0a28be1f0af030374bab34ea00",
     "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
     "include/q4t/server/file_pdf.h": "92071a8e8fdc423b6371b72c54611afeba8043123f0d7300e30d8a45c33d7609",
@@ -1663,13 +1680,14 @@
     "src/server/file_document.cpp": "f07f0319930b224263c53eefb248d4378528ad801f9dd24d634e37997ff56ade",
     "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
     "src/server/file_document_worker.cpp": "0d3bd998e76f2b14b0d15e46179dacaa1f1fdcaf221a83d95b6cff150c3dea86",
-    "src/server/file_expansion.cpp": "03c6feb9b7b65db267460c0a9d6f8d3240eabb490df48d67a3e6073dee0b21bf",
+    "src/server/file_expansion.cpp": "5fbffa0961d8b6d72281eb95c23cb2610a5fb2c2339ce83e6119eee5ee225d22",
     "src/server/file_extract.cpp": "8b3ce7954ba2b85a6fac34d5d6e9fc9b4b1314694d3c3d09de9ee36c4e5e4d69",
     "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
     "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
     "src/server/file_fetch_internal.h": "f25e5b630b36ecbe0720e159808ec70b927d73b8e8b7af090198fea2decea51f",
     "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec",
-    "src/server/file_input.cpp": "d810d48c6caa9220c4d217a9a3840debf2f4fd5a8f95e328d0203d361e6cc2cc",
+    "src/server/file_image.cpp": "97dd78ab03ba48167944827a73da2a1e2df5be8f5aecb589b4e2c59b6d02e422",
+    "src/server/file_input.cpp": "2a6285c6f0d5ba3c0a381853edff1001dcdb9cf60abcf91aa9f49fc464dfff2b",
     "src/server/file_legacy.cpp": "703a27b9ec77721d4fe1ac90637cb611390a185278773bf13131e45f13e9271c",
     "src/server/file_legacy_protocol.h": "8d85f5fa2c5663c89129f1aed65ccb6da8cb21aa8fac698bdd357c6f410dc2e4",
     "src/server/file_legacy_sandbox.cpp": "51dec5581ab18e70f4ad3d5bda58fd61d00678d57a5831d8b4d09f9e6adbd8f3",

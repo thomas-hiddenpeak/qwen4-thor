@@ -221,6 +221,91 @@ ObjectReply ParseFileInputSource(const Json& part, FileInputProfile profile,
   return {};
 }
 
+ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
+                                  std::string_view param,
+                                  FileInputSource* source) {
+  if (!source) return Error(500, "file_input_state_invalid", "Missing source");
+  *source = {};
+  const bool chat = profile == FileInputProfile::kChat;
+  const auto path = std::string(param);
+  std::string error;
+  auto checked =
+      chat ? InputFields(part, {"type", "image_url", "prompt_cache_breakpoint"},
+                         &error, path)
+           : InputFields(part,
+                         {"type", "image_url", "file_id", "detail",
+                          "prompt_cache_breakpoint"},
+                         &error, path);
+  if (!checked) return Invalid(checked.message(), error);
+  if (part.GetString("type") != (chat ? "image_url" : "input_image"))
+    return Invalid("Unexpected image input type", path + ".type");
+  const auto* url = part.Find("image_url");
+  const auto* id = part.Find("file_id");
+  const auto* detail = part.Find("detail");
+  std::string url_path = path + ".image_url";
+  if (chat && url && url->IsObject()) {
+    checked = InputFields(*url, {"url", "detail"}, &error, url_path);
+    if (!checked) return Invalid(checked.message(), error);
+    detail = url->Find("detail");
+    url = url->Find("url");
+    url_path += ".url";
+  }
+  if ((url && !url->IsNull() && !url->IsString()) ||
+      (id && !id->IsNull() && !id->IsString()) ||
+      (chat && (!url || !url->IsString())) ||
+      (bool(url && !url->IsNull()) + bool(id && !id->IsNull()) != 1))
+    return Invalid("Image requires exactly one URL or file ID", path);
+  FileInputSource next;
+  if (detail) {
+    if (!detail->IsString() ||
+        (detail->str != "auto" && detail->str != "low" &&
+         detail->str != "high" && detail->str != "original"))
+      return Invalid("Invalid image detail", path + ".detail");
+    next.detail = detail->str;
+  }
+  const auto* breakpoint = part.Find("prompt_cache_breakpoint");
+  if (breakpoint && breakpoint->IsNull() &&
+      profile != FileInputProfile::kResponsesStored)
+    return Invalid("Expected cache breakpoint object",
+                   path + ".prompt_cache_breakpoint");
+  checked = ParsePromptCacheBreakpoint(
+      breakpoint, path + ".prompt_cache_breakpoint", &next.cache_breakpoint,
+      &next.cache_ttl, &error);
+  if (!checked) return Invalid(checked.message(), error);
+  if (id && !id->IsNull()) {
+    if (!ValidId(id->str))
+      return Invalid("Invalid image file ID", path + ".file_id");
+    next.kind = FileInputSource::Kind::kStored;
+    next.value = id->str;
+    next.param = path + ".file_id";
+  } else {
+    next.value = url->str;
+    next.param = url_path;
+    if (next.value.empty()) return Invalid("Image source is empty", url_path);
+    if (next.value.starts_with("https://") ||
+        next.value.starts_with("http://")) {
+      if (!HttpUrl(next.value))
+        return Invalid("Image URL requires credential-free HTTP(S)", url_path);
+      next.kind = FileInputSource::Kind::kUrl;
+    } else if (next.value.starts_with("data:")) {
+      constexpr std::string_view png = "data:image/png;base64,",
+                                 jpeg = "data:image/jpeg;base64,";
+      if (next.value.starts_with(png)) {
+        next.mime_type = "image/png";
+        next.value.remove_prefix(png.size());
+      } else if (next.value.starts_with(jpeg)) {
+        next.mime_type = "image/jpeg";
+        next.value.remove_prefix(jpeg.size());
+      } else {
+        return Invalid("Image data URI requires a supported media type",
+                       url_path);
+      }
+    }
+  }
+  *source = std::move(next);
+  return {};
+}
+
 ObjectReply ReadLocalFileInput(ObjectStore* objects, const BinaryAccess& access,
                                const FileInputSource& source,
                                FileInputBudget* budget,

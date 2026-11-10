@@ -52,6 +52,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/uploads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_uploads_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_image_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
@@ -232,6 +234,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_prompt.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/media_admission.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/vision/media_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/vision/processor.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_plan_test.cpp)
 list(APPEND Q4T_HOST_TEST_SOURCES

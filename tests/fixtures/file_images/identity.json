@@ -1,0 +1,10 @@
+{
+  "producer": "Pillow 12.3.0",
+  "source": "generate.py",
+  "width": 64,
+  "height": 32,
+  "sha256": {
+    "original.png": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+    "original.jpg": "2c59fcf770e79d87dd012f3a214365e4984cb26d444fd6b70469764966e038f0"
+  }
+}

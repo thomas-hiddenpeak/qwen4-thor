@@ -274,6 +274,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/files_http.cpp
   src/server/uploads.cpp
   src/server/file_input.cpp
+  src/server/file_image.cpp
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
@@ -800,6 +801,7 @@ if(Q4T_BUILD_TESTS)
   q4t_link_native_crypto(q4t_host_tests)
 q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
+  target_include_directories(q4t_host_tests SYSTEM PRIVATE third_party)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)

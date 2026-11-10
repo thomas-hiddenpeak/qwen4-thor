@@ -1,0 +1,21 @@
+{
+  "cases": [
+    "file_image_source_contract_preserves_borrowed_payload_and_detail",
+    "file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor",
+    "file_image_snapshot_restores_deleted_source_and_rechecks_header_and_budgets",
+    "file_image_url_policy_redirect_and_frozen_expansion_do_not_leak_or_refetch",
+    "file_image_shared_expansion_source_pixel_and_prevalidation_boundaries",
+    "file_input_source_profiles_preserve_borrowed_data_and_metadata",
+    "file_input_nullable_variants_cache_and_data_uri_are_explicit",
+    "file_input_inline_bytes_and_digest_require_no_storage",
+    "file_expansion_actual_pdf_page_and_chat_profile_are_complete",
+    "file_expansion_frozen_history_survives_delete_restart_and_codec_outage",
+    "file_expansion_pending_and_augmented_snapshots_are_separate_immutable_versions",
+    "file_expansion_unknown_persistence_never_replays_or_erases_owned_state"
+  ],
+  "count": 12,
+  "gpu": 0,
+  "external_network": 0,
+  "loopback_get_max": 2,
+  "scope": "5 image source/actual pixel decode/typed snapshot/shared expansion cases plus 7 directly affected document/source paths. Original deterministic PNG/JPEG, no GPU vision claim. Native detail semantics, other image formats and all API/model execution remain implementation tasks."
+}

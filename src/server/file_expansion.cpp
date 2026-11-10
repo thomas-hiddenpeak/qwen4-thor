@@ -44,7 +44,11 @@ bool Options(const FileExpansionOptions& options) {
          options.max_rendered_bytes <= (512ULL << 20) &&
          options.hold_seconds >= 1 && options.hold_seconds <= 3600 &&
          options.summary_output_tokens >= 64 &&
-         options.summary_output_tokens <= 65536 &&
+         options.summary_output_tokens <= 65536 && options.image.max_bytes &&
+         options.image.max_bytes <= kFileInputBytes &&
+         options.image.max_pixels &&
+         options.image.max_pixels <= (256ULL << 20) && options.image.max_edge &&
+         options.image.max_edge <= 65536 &&
          ValidFileDocumentLimits(options.extraction.document) &&
          options.extraction.pdf.max_pages &&
          options.extraction.pdf.max_pages <= 256 &&
@@ -96,11 +100,28 @@ ObjectReply Charge(const FileInputSnapshot& file,
   *usage = next;
   return {};
 }
+ObjectReply ChargeImage(const FileImageInput& image,
+                        const FileExpansionOptions& options,
+                        FileExpansionUsage* usage) {
+  auto next = *usage;
+  if (!Add(image.source.bytes.size(), options.max_source_bytes,
+           &next.source_bytes) ||
+      !Add(1, options.max_files, &next.files) ||
+      !Add(1, options.max_files, &next.images) ||
+      !Add(image.source.bytes.size(), options.extraction.pdf.max_image_bytes,
+           &next.image_bytes) ||
+      !Add(uint64_t{image.header.width} * image.header.height,
+           options.extraction.pdf.max_pixels, &next.pixels))
+    return Capacity();
+  *usage = next;
+  return {};
+}
 struct Candidate {
   const Json* item;
   const Json* part;
   std::string path;
   FileInputSource source;
+  bool image = false;
 };
 ObjectReply Scan(const Json& item, const Json& value, std::string path,
                  FileInputProfile profile, size_t maximum, size_t* work,
@@ -115,11 +136,15 @@ ObjectReply Scan(const Json& item, const Json& value, std::string path,
     }
   } else if (value.IsObject()) {
     const auto type = value.GetString("type");
-    if (type == "file" || type == "input_file") {
+    if (type == "file" || type == "input_file" || type == "input_image" ||
+        type == "image_url") {
       if (files->size() >= maximum) return Capacity();
       Candidate candidate{&item, &value, path, {}};
+      candidate.image = type == "input_image" || type == "image_url";
       auto reply =
-          ParseFileInputSource(value, profile, path, &candidate.source);
+          candidate.image
+              ? ParseImageInputSource(value, profile, path, &candidate.source)
+              : ParseFileInputSource(value, profile, path, &candidate.source);
       if (!reply.ok()) return reply;
       files->push_back(std::move(candidate));
     } else {
@@ -283,6 +308,7 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
     reply = Active(access);
     if (!reply.ok()) return reply;
     Entry entry;
+    if (candidate.image) entry.image.emplace();
     entry.item_id = candidate.item->GetString("id");
     entry.path = candidate.path;
     if (!InputValueIdentity(*candidate.part, &entry.identity))
@@ -300,11 +326,17 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
                                                     &entry.reference))
         return Invalid();
       InputSnapshotStore snapshots(*objects_);
-      reply = ReadFileInputSnapshot(snapshots, access, entry.reference,
-                                    entry.identity, options_.extraction,
-                                    options_.storage, &entry.snapshot);
+      reply = candidate.image
+                  ? ReadFileImageSnapshot(snapshots, access, entry.reference,
+                                          entry.identity, options_.image,
+                                          options_.storage, &*entry.image)
+                  : ReadFileInputSnapshot(snapshots, access, entry.reference,
+                                          entry.identity, options_.extraction,
+                                          options_.storage, &entry.snapshot);
       if (!reply.ok()) return At(reply, entry.path);
-      if (entry.snapshot.detail != candidate.source.detail) return Invalid();
+      if ((candidate.image ? entry.image->detail : entry.snapshot.detail) !=
+          candidate.source.detail)
+        return Invalid();
       if (candidate.source.pdf_only &&
           ClassifyFileDocument(entry.snapshot.source.content) !=
               FileDocumentFormat::kPdf)
@@ -315,18 +347,26 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
         return At(
             Invalid("Queued file input is missing its immutable snapshot"),
             entry.path);
-      reply =
-          ResolveFileInput(objects_, access, candidate.source, options_.fetch,
-                           &budget, &entry.snapshot.source, control);
-      if (!reply.ok()) return reply;
-      entry.snapshot.detail = candidate.source.detail;
-      reply = ExtractFileDocument(
-          entry.snapshot.source.content, options_.extraction,
-          candidate.source.pdf_only, entry.snapshot.detail, access,
-          &entry.snapshot.document, control);
-      if (!reply.ok()) return At(reply, entry.path);
+      if (candidate.image) {
+        reply =
+            ReadFileImage(objects_, access, candidate.source, options_.fetch,
+                          options_.image, &budget, &*entry.image, control);
+        if (!reply.ok()) return At(reply, entry.path);
+      } else {
+        reply =
+            ResolveFileInput(objects_, access, candidate.source, options_.fetch,
+                             &budget, &entry.snapshot.source, control);
+        if (!reply.ok()) return reply;
+        entry.snapshot.detail = candidate.source.detail;
+        reply = ExtractFileDocument(
+            entry.snapshot.source.content, options_.extraction,
+            candidate.source.pdf_only, entry.snapshot.detail, access,
+            &entry.snapshot.document, control);
+        if (!reply.ok()) return At(reply, entry.path);
+      }
     }
-    reply = Charge(entry.snapshot, options_, &usage);
+    reply = candidate.image ? ChargeImage(*entry.image, options_, &usage)
+                            : Charge(entry.snapshot, options_, &usage);
     if (!reply.ok()) return At(reply, entry.path);
     budget.used_bytes = usage.source_bytes;
     budget.used_files = usage.files;
@@ -358,10 +398,15 @@ ObjectReply FileExpansion::Persist(const BinaryAccess& access) {
     if (entry.dirty) {
       reference = {};  // A new immutable version, never overwrite the old root.
       InputSnapshotHold hold;
-      reply = SaveFileInputSnapshot(snapshots, access, entry.identity,
-                                    entry.snapshot, options_.extraction,
-                                    options_.storage, options_.hold_seconds,
-                                    &reference, &hold);
+      reply = entry.image
+                  ? SaveFileImageSnapshot(
+                        snapshots, access, entry.identity, *entry.image,
+                        options_.image, options_.storage, options_.hold_seconds,
+                        &reference, &hold)
+                  : SaveFileInputSnapshot(
+                        snapshots, access, entry.identity, entry.snapshot,
+                        options_.extraction, options_.storage,
+                        options_.hold_seconds, &reference, &hold);
       if (!hold.id.empty()) holds_.push_back(std::move(hold));
       commit_unknown_ |= reply.commit_unknown;
       if (!reply.ok()) {
@@ -575,6 +620,29 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
   };
   const auto materialize = [&](const Entry& entry, Json* parts) -> ObjectReply {
     *parts = Array();
+    if (entry.image) {
+      const auto& image = *entry.image;
+      const std::string prefix =
+          image.header.format == vision::MediaFormat::kPng
+              ? "data:image/png;base64,"
+              : "data:image/jpeg;base64,";
+      if (!Add(prefix.size() + (image.source.bytes.size() + 2) / 3 * 4,
+               options_.max_rendered_bytes, &bytes))
+        return Capacity();
+      auto url = String(prefix + Encode(image.source.bytes));
+      parts->array.push_back(
+          chat ? Object({{"type", String("image_url")},
+                         {"image_url",
+                          Object({{"url", std::move(url)},
+                                  {"detail", String(image.detail)}})}})
+               : Object({{"type", String("input_image")},
+                         {"image_url", std::move(url)},
+                         {"detail", String(image.detail)}}));
+      if (!entry.cache_breakpoint.IsNull())
+        Set(&parts->array.back(), "prompt_cache_breakpoint",
+            entry.cache_breakpoint);
+      return {};
+    }
     auto data = Source(entry.snapshot);
     Set(&data, "text", String(entry.snapshot.document.text));
     auto sheets = Array();
@@ -633,7 +701,9 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
         const auto& child = value.array[i];
         const auto child_path = path + '/' + std::to_string(i);
         if (child.GetString("type") == "file" ||
-            child.GetString("type") == "input_file") {
+            child.GetString("type") == "input_file" ||
+            child.GetString("type") == "input_image" ||
+            child.GetString("type") == "image_url") {
           const Entry* entry = nullptr;
           for (const auto& candidate : entries_)
             if (candidate.item_id == id && candidate.path == child_path)

@@ -36,6 +36,10 @@ struct FileInputContent {
 ObjectReply ParseFileInputSource(const io::Json& part, FileInputProfile profile,
                                  std::string_view param,
                                  FileInputSource* source);
+ObjectReply ParseImageInputSource(const io::Json& part,
+                                  FileInputProfile profile,
+                                  std::string_view param,
+                                  FileInputSource* source);
 // Read only an inline payload or an authenticated stored File. URL acquisition
 // has its own isolated network executor; this local reader never opens paths.
 // Failed reads clear output and do not refund the request's attempted budget.

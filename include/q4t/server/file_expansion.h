@@ -3,12 +3,14 @@
 
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/file_snapshot.h"
+#include "q4t/server/file_image.h"
 
 namespace q4t::server {
 struct FileExpansionOptions {
   FileFetchOptions fetch;
   FileExtractOptions extraction;
   InputSnapshotLimits storage;
+  FileImageLimits image;
   uint64_t max_source_bytes = kFileInputBytes;
   size_t max_files = 32;
   uint64_t max_rendered_bytes = 128ULL << 20;
@@ -18,7 +20,7 @@ struct FileExpansionOptions {
 struct FileExpansionUsage {
   uint64_t source_bytes = 0, text_bytes = 0, image_bytes = 0, pixels = 0;
   uint64_t augmentation_bytes = 0;
-  size_t files = 0, pages = 0, sheets = 0, cells = 0, embedded = 0;
+  size_t files = 0, images = 0, pages = 0, sheets = 0, cells = 0, embedded = 0;
 };
 struct FileSheetStep {
   size_t file_index = 0, sheet_index = 0;
@@ -60,6 +62,7 @@ class FileExpansion {
     std::string item_id, path, identity;
     io::Json cache_breakpoint;
     FileInputSnapshot snapshot;
+    std::optional<FileImageInput> image;
     InputSnapshotRef reference;
     bool dirty = true;
   };

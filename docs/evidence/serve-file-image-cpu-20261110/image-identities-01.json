@@ -1,0 +1,20 @@
+{
+  "CMakeLists.txt": "1cb1471e00252315f8fd2acc320beafa7a93a2f738eedef9718f06f82d75b254",
+  "cmake/ChatProtocolIdentity.cmake": "c5d7b2108f661296c93dd7a0f1af9152c4b0f53d4ec8b5f488cc0037cd007835",
+  "include/q4t/server/file_expansion.h": "ce880291e2bb296ff20f4cead54f4e24e34979966815b440746f86c0dcf9a63c",
+  "include/q4t/server/file_image.h": "78aefb57a1f9f2b400168ab56b88896592d76445b56001f55e95d21b6846f1fb",
+  "include/q4t/server/file_input.h": "781f7babb20bd3349d7d1f680821a8151c1b2bb2628077441c479373289e7f0e",
+  "src/server/file_expansion.cpp": "5fbffa0961d8b6d72281eb95c23cb2610a5fb2c2339ce83e6119eee5ee225d22",
+  "src/server/file_image.cpp": "97dd78ab03ba48167944827a73da2a1e2df5be8f5aecb589b4e2c59b6d02e422",
+  "src/server/file_input.cpp": "2a6285c6f0d5ba3c0a381853edff1001dcdb9cf60abcf91aa9f49fc464dfff2b",
+  "cmake/HostTestSources.cmake": "ea9f9e7da9f0d4a038b935dbb96dd3e7db31458caba32d41fe396e5bc770e9af",
+  "tests/host/CMakeLists.txt": "92b6268c3e663be0039199228b5f153a6a2262a139d4e7167ab74ddf7200dd63",
+  "tests/server_file_image_test.cpp": "55ee802ac39255e74f3c0a77298b15816491cd0aa71ca7be28c7b9f0b07ddc32",
+  "tests/fixtures/file_images/README.md": "439c6c5ede1a26464c80e7ddc5a76c471f7ee4b1fe6ce62464410d843db4ba06",
+  "tests/fixtures/file_images/generate.py": "e11f8a5405ca6d1227ccefcc81ffa172dc4f5a886e0377733cacae769048d081",
+  "tests/fixtures/file_images/identity.json": "8fe808b2a85c486a46e27a7b9d0868510ea1e21d2d8c320602ce89e083109346",
+  "tests/fixtures/file_images/original.jpg": "2c59fcf770e79d87dd012f3a214365e4984cb26d444fd6b70469764966e038f0",
+  "tests/fixtures/file_images/original.png": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "05db7f37ddb5874d4f828fc96a86acf50057ec3b6ef58c8fcf9ab98d32da51c8",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "2c24e5145fdb79c0284b3d30beea48dd0760017a675526b7d223a8352da6f3ff"
+}
