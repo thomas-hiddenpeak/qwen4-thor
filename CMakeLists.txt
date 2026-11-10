@@ -344,6 +344,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/object_store_options.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
+  src/server/finite_response.cpp
   src/server/chat_response_parser.cpp
   src/server/thinking_budget.cpp
   src/server/text_stop.cpp
@@ -650,6 +651,7 @@ if(Q4T_BUILD_TESTS)
     src/server/server_options.cpp
     src/server/object_store_options.cpp
     src/server/http_response.cpp
+  src/server/finite_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     tests/io_safetensors_test.cpp

@@ -10,6 +10,7 @@ add_executable(template_probe template_probe.cpp
   ../../src/server/chat_tool_history.cpp ../../src/server/input_contract.cpp
   ../../src/server/output_constraints.cpp ../../src/server/output_schema.cpp
   ../../src/server/http_response.cpp ../../src/server/http_request.cpp
+  ../../src/server/finite_response.cpp
   ../../src/io/json.cpp ../../src/text/tokenizer.cpp)
 target_include_directories(template_probe PRIVATE ../../include)
 target_compile_options(template_probe PRIVATE -Wall -Wextra -Werror)

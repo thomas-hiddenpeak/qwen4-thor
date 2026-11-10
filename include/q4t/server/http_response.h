@@ -16,6 +16,7 @@
 #include "q4t/server/request_control.h"
 #include "q4t/server/client_policy.h"
 #include "q4t/server/http_observation.h"
+#include "q4t/server/finite_response.h"
 
 namespace q4t::server::detail {
 
@@ -76,6 +77,7 @@ class HttpResponseContext {
     // Input preparation borrows the parent descriptor only for cancellation
     // checks. All response writes remain detached, including error paths.
     int borrowed_fd = -1;
+    FiniteResponse* output = nullptr;
   };
   // Native background execution observes errors/admission without a socket,
   // transport worker, heartbeat or loopback request.
@@ -84,6 +86,14 @@ class HttpResponseContext {
   HttpResponseContext(const HttpResponseContext&) = delete;
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
   static HttpResponseContext* Current(int fd);
+  bool CapturesJson() const { return captured_ != nullptr; }
+  bool CaptureJson(int status, std::string_view content_type,
+                   std::string_view body) {
+    return captured_ && captured_->Record(status, content_type, body);
+  }
+  void RejectCapturedJson() noexcept {
+    if (captured_) captured_->Reject();
+  }
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
   struct PreparationUsage {
@@ -178,6 +188,7 @@ class HttpResponseContext {
   void RecordWriteFailure(HttpWriteObservation value, HttpWriteOrigin origin);
   const int fd_;
   bool detached_ = false;
+  FiniteResponse* captured_ = nullptr;
   bool keep_alive_ = false;
   bool http11_ = true;
   bool chunked_ = false;

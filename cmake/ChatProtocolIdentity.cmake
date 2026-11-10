@@ -261,6 +261,7 @@ set(protocol_inputs
   include/q4t/server/chat_template.h
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
+  include/q4t/server/finite_response.h
   include/q4t/server/http_request.h
   include/q4t/server/http_framing.h
   include/q4t/server/http_connection.h
@@ -313,6 +314,7 @@ set(protocol_inputs
   src/server/chat_template.cpp
   src/server/chat_tool_history.cpp
   src/server/http_response.cpp
+  src/server/finite_response.cpp
   src/server/http_request.cpp
   src/server/chat_server.cpp
   src/server/chat_scheduler.cpp

@@ -61,6 +61,14 @@ void SendExceptionResponse(int fd, ResponseState state,
         type, code);
     if (body_size <= 0 || static_cast<size_t>(body_size) >= sizeof(body))
       return;
+    if (context && context->CapturesJson()) {
+      context->BeforeTerminal();
+      *context->State() = ResponseState::kTerminal;
+      if (context->CaptureJson(memory ? 503 : 500, "application/json",
+                               std::string_view(body, body_size)))
+        *context->State() = ResponseState::kComplete;
+      return;
+    }
     char response[1024];
     int size = 0;
     if (state == ResponseState::kStreaming && context &&
@@ -359,6 +367,7 @@ HttpResponseContext::~HttpResponseContext() {
 HttpResponseContext::HttpResponseContext(Detached detached)
     : HttpResponseContext(detached.borrowed_fd) {
   detached_ = true;
+  captured_ = detached.output;
 }
 
 void HttpResponseContext::RecordReceiveFailure(HttpReceiveFailure reason,
@@ -443,6 +452,12 @@ bool HttpResponseContext::Write(const char* data, size_t size,
                                 ResponseState* header_state) {
   const std::lock_guard<std::mutex> lock(write_mu_);
   if (detached_) {
+    // Captured executions must use a typed finite response. Raw/SSE/binary
+    // writes cannot silently succeed and manufacture an incomplete result.
+    if (captured_) {
+      captured_->Reject();
+      return false;
+    }
     if (header_state) *header_state = ResponseState::kHeadersStarted;
     return !options.control || !options.control->Cancelled();
   }
@@ -536,6 +551,10 @@ bool WriteAll(int fd, const char* data, size_t len,
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options) {
   auto* context = HttpResponseContext::Current(fd);
+  if (context && context->CapturesJson()) {
+    context->RejectCapturedJson();
+    return false;
+  }
   if (context && !context->Http11()) context->SetKeepAlive(false, false);
   const bool persistent = context && context->KeepAlive();
   const std::string header =
@@ -563,6 +582,19 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
                 std::string_view allow) {
   auto* context = HttpResponseContext::Current(fd);
+  if (context && context->CapturesJson()) {
+    context->LengthResponse();
+    context->BeforeTerminal();
+    *context->State() = ResponseState::kTerminal;
+    if (std::chrono::steady_clock::now() >= options.deadline ||
+        (options.control && options.control->Cancelled())) {
+      context->RejectCapturedJson();
+      return false;
+    }
+    const bool received = context->CaptureJson(code, content_type, body);
+    if (received) *context->State() = ResponseState::kComplete;
+    return received;
+  }
   const bool persistent = context && context->KeepAlive();
   std::string resp =
       "HTTP/1.1 " + std::to_string(code) + " " + status +
@@ -586,6 +618,11 @@ bool SendBinaryResponse(int fd, uint64_t length,
                          const std::function<bool(std::string*)>& next,
                          const WriteOptions& options,
                          std::string_view content_type) {
+  if (auto* context = HttpResponseContext::Current(fd);
+      context && context->CapturesJson()) {
+    context->RejectCapturedJson();
+    return false;
+  }
   if (content_type != "application/octet-stream" &&
       content_type != "application/json") return false;
   auto* context = HttpResponseContext::Current(fd);

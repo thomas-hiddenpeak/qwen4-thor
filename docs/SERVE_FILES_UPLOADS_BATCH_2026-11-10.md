@@ -240,3 +240,11 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 清单 `.q4t-work/serve-batches-20261110/required-results-01.txt`；固定24小时业务期限与文件保留期限独立。真实已死进程的running行只可记中断，不能再取得执行票据；未开始行按取消/到期生成error，原输出完整保存。两个结果File须与Batch终态同事务，配额失败/未知回执不暴露部分文件、不重复记账。结果Files按创建时固定TTL过期，Batch历史不延长其内容寿命；完成后释放私有输入/page/result引用。CPU使用明确端点响应夹具核对完整JSON、工具及usage，不能替代实际模型/SDK业务。
 
 2026-11-10。Batch逐行与双结果File[26项CPU通过](evidence/serve-batch-results-cpu-20261110/README.md)，6.673秒：129行实际汇总、并发开始票据、三类丢回执、死亡接管/取消/到期、配额及终态回收通过。首测试构建与合同来源刷新记录保留，最终零警告/470锚点，0GPU/默认保持。继续真实生成接线/后台恢复/HTTP与全部总任务。
+
+## A09.6 原生完整响应接收通道CPU冻结
+
+2026-11-10。原生有限JSON接收通道已成组实现：直接接既有端点JSON与错误/异常输出，完整保留工具/usage，无socket/回环或二次准入；单回执、容量、取消/期限与SSE/raw/binary拒绝闭合。冻结9新+9直接HTTP行为CPU（18项），尚未接Batch调度/模型，0GPU/默认保持。继续实际生成适配、恢复、全部协议/业务和总任务。
+
+复用SendSimple/SendError/SendExceptionResponse的原始JSON合同，不从文本摘要拼装Chat/Responses结果。HTTP上下文内部输出仅由服务器设置，借用fd只用于原取消检查；socketpair断言0传输。独立上限<=96MiB、严格完整JSON对象/精确数字/无重复键、单次终态，嵌套文档准备的旧detached上下文不能污染父结果。清单 `.q4t-work/serve-batches-20261110/required-finite-01.txt`，真实模型适配与后台调度、HTTP/SDK业务仍继续，组件通过不宣称Batch API支持。
+
+2026-11-10。原生完整JSON接收[18项CPU通过](evidence/serve-batch-finite-response-cpu-20261110/README.md)，0.016秒：真实输出/错误/异常、工具usage、零socket传输、嵌套准备隔离与取消/容量均过。host/引擎首次零警告、472锚点，0GPU/默认保持；两个独立probe源声明同步。继续真实Batch生成适配/调度/恢复/协议与全部总任务。
