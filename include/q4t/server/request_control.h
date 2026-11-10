@@ -67,6 +67,13 @@ class RequestControl {
     const State state = state_.load();
     return state != State::kActive && state != State::kFinished;
   }
+  // One outer native invocation may borrow this owner. Internal model steps
+  // remain within that invocation; a lost result never permits a second one.
+  bool ClaimInvocation() {
+    if (state_.load() != State::kActive) return false;
+    bool expected = false;
+    return invocation_claimed_.compare_exchange_strong(expected, true);
+  }
   const char* Reason() const {
     switch (state_.load()) {
       case State::kDisconnect: return "client_disconnected";
@@ -92,6 +99,7 @@ class RequestControl {
   const std::string registry_key_;
   const std::chrono::steady_clock::time_point deadline_;
   std::atomic<State> state_{State::kActive};
+  std::atomic<bool> invocation_claimed_{false};
   ProgressHandle progress_;
 };
 

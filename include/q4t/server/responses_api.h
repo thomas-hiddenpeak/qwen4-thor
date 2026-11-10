@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
 
@@ -41,5 +43,10 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                              const io::Json& request,
                              const ChatPlanConfig& config,
                              const StateAccess& access);
+// Trusted already-prepared input, used by native queues. No second Resolve,
+// file acquisition, client admission or public request parsing takes place.
+void ServePreparedBackgroundResponse(
+    int fd, ObjectStore& objects, ResponsesJobs& jobs,
+    std::unique_ptr<class ResponsesExecution> run, const StateAccess& access);
 
 }  // namespace q4t::server

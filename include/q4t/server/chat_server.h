@@ -58,6 +58,7 @@
 #include "q4t/server/grammar_process.h"
 #include "q4t/server/object_store.h"
 #include "q4t/server/responses_jobs.h"
+#include "q4t/server/batch_execution.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
@@ -179,12 +180,19 @@ class ChatServer {
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };
   void HandleChat(int fd, const std::string& body,
-                  GenerationApi api = GenerationApi::kChat);
+                  GenerationApi api = GenerationApi::kChat,
+                  std::shared_ptr<RequestControl> owner = {},
+                  const io::Json* frozen_inputs = nullptr);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
                       class ResponsesExecution* responses,
                       std::shared_ptr<RequestControl> background = {},
-                      struct InternalModelStep* internal = nullptr);
+                      struct InternalModelStep* internal = nullptr,
+                      const io::Json* frozen_inputs = nullptr);
+  BatchRowResult RunBatchRequest(
+      const std::string& endpoint, const BatchInputRow& row,
+      const io::Json& frozen_inputs, const ClientIdentity& client,
+      ClientLease& permit, const std::shared_ptr<RequestControl>& control);
   ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
                                    std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);

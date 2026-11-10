@@ -32,6 +32,7 @@
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/completion_response.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/server/responses_reasoning.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/media_admission.h"
@@ -100,11 +101,13 @@ using detail::SseChunk;
 using detail::WriteAll;
 
 void ChatServer::HandleChat(int fd, const std::string& body,
-                            GenerationApi api) {
+                            GenerationApi api,
+                            std::shared_ptr<RequestControl> owner,
+                            const io::Json* frozen_inputs) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
   auto* context = detail::HttpResponseContext::Current(fd);
   auto* state = context ? context->State() : &response;
-  std::optional<ResponsesExecution> responses;
+  std::unique_ptr<ResponsesExecution> responses;
   ScopeExit close_responses([&] {
     if (!responses) return;
     try {
@@ -128,7 +131,7 @@ void ChatServer::HandleChat(int fd, const std::string& body,
   });
   try {
     if (api == GenerationApi::kResponse || api == GenerationApi::kCompact) {
-      if (api == GenerationApi::kResponse &&
+      if (!frozen_inputs && api == GenerationApi::kResponse &&
           TryHandleBackgroundResponse(fd, body))
         return;
       if (!objects_ || !context || !context->Client().Allowed()) {
@@ -136,14 +139,48 @@ void ChatServer::HandleChat(int fd, const std::string& body,
                   "object_scope_unavailable");
         return;
       }
-      responses.emplace(*objects_, background_.get(), true,
-                        api == GenerationApi::kCompact);
+      const auto* frozen_request =
+          frozen_inputs ? frozen_inputs->Find("request") : nullptr;
+      const bool frozen_background =
+          frozen_request && frozen_request->GetBool("background");
+      responses = std::make_unique<ResponsesExecution>(
+          *objects_, frozen_background ? nullptr : background_.get(),
+          !frozen_background, api == GenerationApi::kCompact);
+      if (frozen_inputs) {
+        if (!owner || api != GenerationApi::kResponse) {
+          SendError(fd, 500, "Frozen request owner unavailable", {},
+                    "batch_execution_owner_invalid");
+          return;
+        }
+        const auto& client = context->Client();
+        StateAccess access{
+            client.Scoped() ? "client:" + std::string(client.Id())
+                            : "local:anonymous",
+            owner->deadline(), [owner] { return owner->Cancelled(); }};
+        const auto restored = responses->RestoreInputs(
+            *frozen_inputs, PlanningConfig(fd), access, std::time(nullptr));
+        if (!restored.ok()) {
+          SendError(fd, restored.http_status, restored.ClientMessage(), {},
+                    restored.ClientCode(), restored.value.GetString("param"));
+          return;
+        }
+        if (responses->Envelope().background) {
+          if (!background_) {
+            SendError(fd, 503, "Background executor unavailable", {},
+                      "background_unavailable");
+            return;
+          }
+          ServePreparedBackgroundResponse(fd, *objects_, *background_,
+                                           std::move(responses), access);
+          return;
+        }
+      }
       context->SetResponsesStream(&ResponsesExecution::RenderStreamError,
                                   &*responses, responses->Sequence());
       context->SetErrorObserver(&ResponsesExecution::ObserveError, &*responses);
     }
     HandleChatImpl(fd, body, state, api == GenerationApi::kCompletion,
-                   responses ? &*responses : nullptr);
+                   responses.get(), std::move(owner), nullptr, frozen_inputs);
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(fd, *state,
                                   detail::ExceptionKind::kHostMemory);
@@ -169,7 +206,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 detail::ResponseState* response_state,
                                 bool completion, ResponsesExecution* responses,
                                 std::shared_ptr<RequestControl> background,
-                                InternalModelStep* internal) {
+                                InternalModelStep* internal,
+                                const io::Json* frozen_inputs) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!internal)
     metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
@@ -453,18 +491,24 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       const auto deadline =
-          t_arrive + std::chrono::milliseconds(original_request.GetInt(
-                         "request_timeout_ms", request_deadline_ms_));
-      preparation_control = requests_.Register(
-          original_request.GetString("request_id",
-                                     detail::NewRequestId("chatcmpl-auto-")),
-          original_request.GetString("cancel_token"), deadline, client);
+          background
+              ? background->deadline()
+              : t_arrive + std::chrono::milliseconds(original_request.GetInt(
+                               "request_timeout_ms", request_deadline_ms_));
+      preparation_control =
+          background
+              ? background
+              : requests_.Register(
+                    original_request.GetString(
+                        "request_id", detail::NewRequestId("chatcmpl-auto-")),
+                    original_request.GetString("cancel_token"), deadline,
+                    client);
       if (!preparation_control) {
         SendError(fd, 409, "request_id already active", {},
                   "request_id_conflict", "request_id");
         return;
       }
-      owns_preparation_control = true;
+      owns_preparation_control = !background;
       const BinaryAccess access{
           http && http->Client().Scoped()
               ? "client:" + std::string(http->Client().Id())
@@ -472,8 +516,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           deadline, [preparation_control, fd] {
             return RequestCancelled(preparation_control.get(), fd);
           }};
-      auto prepared = chat_files.Prepare(original_request, planning_config,
-                                         access, &request_plan);
+      const auto* bindings = frozen_inputs
+                                 ? frozen_inputs->Find("input_snapshots")
+                                 : nullptr;
+      auto prepared = chat_files.Prepare(
+          original_request, planning_config, access, &request_plan,
+          bindings ? *bindings : io::Json(), frozen_inputs != nullptr);
       if (!prepared.ok()) {
         SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
                   prepared.ClientCode(), prepared.value.GetString("param"));

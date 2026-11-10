@@ -30,11 +30,39 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                       result.value.GetString("param"));
     return;
   }
+  ServePreparedBackgroundResponse(fd, objects, jobs, std::move(run), access);
+}
+
+void ServePreparedBackgroundResponse(
+    int fd, ObjectStore& objects, ResponsesJobs& jobs,
+    std::unique_ptr<ResponsesExecution> run, const StateAccess& access) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Allowed() || !run || !run->Prepared() ||
+      run->Begun() || !run->Envelope().background ||
+      run->Scope() != access.scope) {
+    detail::SendError(fd, 503, "Prepared background owner unavailable", {},
+                      "object_scope_unavailable");
+    return;
+  }
   const auto id = run->Id();
   const bool stream = run->Envelope().stream;
-  result = jobs.Submit(std::move(run), http->Client(), [&](ClientLease& lease) {
-    return http->TransferClientLease(lease);
-  });
+  // Construct the subscriber target before transferring run: a fast owned
+  // job can finish and release it immediately after Submit returns.
+  std::string target;
+  if (stream) {
+    target = "/v1/responses/" + id + "?stream=true";
+    const auto& request = run->Envelope().request;
+    if (const auto* options = request.Find("stream_options");
+        options && !options->GetBool("include_obfuscation", true))
+      target += "&include_obfuscation=false";
+    if (const auto* include = request.GetArray("include"))
+      for (const auto& item : include->array)
+        target += "&include[]=" + item.str;
+  }
+  auto result =
+      jobs.Submit(std::move(run), http->Client(), [&](ClientLease& lease) {
+        return http->TransferClientLease(lease);
+      });
   if (!result.ok()) {
     detail::SendError(fd, result.http_status, result.ClientMessage(), {},
                       result.ClientCode(),
@@ -42,13 +70,6 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     return;
   }
   if (stream) {
-    std::string target = "/v1/responses/" + id + "?stream=true";
-    if (const auto* options = request.Find("stream_options");
-        options && !options->GetBool("include_obfuscation", true))
-      target += "&include_obfuscation=false";
-    if (const auto* include = request.GetArray("include"))
-      for (const auto& item : include->array)
-        target += "&include[]=" + item.str;  // Validated fixed enum spellings.
     ServeResponsesState(fd, objects, "GET", target, "", access, &jobs);
   } else {
     detail::SendSimple(fd, 200, "OK", OutputJson(result.value),

@@ -268,6 +268,11 @@ class ClientLease {
   ClientLease& operator=(ClientLease&&) = delete;
   bool Acquire(ClientAdmission& admission, const ClientIdentity& identity,
                ClientLane lane);
+  bool Holds(const ClientIdentity& identity, ClientLane lane) const {
+    return admitted_ && identity_.owner_ == identity.owner_ &&
+           identity_.index_ == identity.index_ && identity_.Id() == identity.Id() &&
+           lane_ == lane;
+  }
   // Transfer an admitted request into owned background work. The permit stays
   // charged continuously; the source cannot acquire another permit.
   bool TransferTo(ClientLease& destination) noexcept;
@@ -282,6 +287,8 @@ class ClientLease {
   bool handing_off_ = false;
   bool attempted_ = false;
   bool admitted_ = false;
+  ClientIdentity identity_;
+  ClientLane lane_ = ClientLane::kData;
 };
 
 // Bounded labels come exclusively from the private, validated policy.

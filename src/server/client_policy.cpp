@@ -629,6 +629,8 @@ bool ClientLease::TransferTo(ClientLease& destination) noexcept {
   destination.handing_off_ = handing_off_;
   destination.attempted_ = true;
   destination.admitted_ = true;
+  destination.identity_ = identity_;
+  destination.lane_ = lane_;
   active_ = nullptr;
   counters_ = nullptr;
   finishing_ = nullptr;
@@ -654,6 +656,10 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     return false;
   if (!identity.Scoped()) {
     admitted_ = !admission.Enabled();
+    if (admitted_) {
+      identity_ = identity;
+      lane_ = lane;
+    }
     return admitted_;
   }
   const auto policy = admission.Snapshot();
@@ -688,6 +694,8 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     active_ = &active;
     finishing_ = &finishing;
     admitted_ = true;
+    identity_ = identity;
+    lane_ = lane;
     return true;
   }
   rejected.fetch_add(1, std::memory_order_relaxed);

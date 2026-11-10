@@ -46,4 +46,30 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   HandleChatImpl(-1, "", http.State(), false, job.run.get(), job.control);
 }
 
+BatchRowResult ChatServer::RunBatchRequest(
+    const std::string& endpoint, const BatchInputRow& row,
+    const io::Json& frozen_inputs, const ClientIdentity& client,
+    ClientLease& permit, const std::shared_ptr<RequestControl>& control) {
+  return ExecuteBatchEndpoint(
+      control ? control->id() : "", client, permit, control, [&] {
+        const auto api = endpoint == "/v1/responses" ? GenerationApi::kResponse
+                        : endpoint == "/v1/completions"
+                            ? GenerationApi::kCompletion
+                            : GenerationApi::kChat;
+        if (endpoint != "/v1/responses" && endpoint != "/v1/completions" &&
+            endpoint != "/v1/chat/completions") {
+          detail::SendError(-1, 503, "Native Batch executor unavailable", {},
+                            "batch_endpoint_executor_unavailable");
+          return;
+        }
+        if (stop_requested_.load()) {
+          control->Cancel(RequestControl::State::kShutdown);
+          detail::SendError(-1, 503, "Server is stopping", {},
+                            "server_stopping");
+          return;
+        }
+        HandleChat(-1, OutputJson(row.body), api, control, &frozen_inputs);
+      });
+}
+
 }  // namespace q4t::server

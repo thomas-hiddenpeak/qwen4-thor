@@ -267,3 +267,12 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 清单：`.q4t-work/serve-batches-20261110/required-preparation.txt`。Responses保存已解析的原始历史、模板展开请求、会话revision和文件快照，store=false及待增强表格同样冻结；恢复不重查公共父资源，不提前执行模型或发布排队Response。Chat保存原始消息对应私有文件绑定，执行时仍调用原生Chat计划；Completions验证其自身token/echo合同。单行准备对象通过既有1MiB分块保存，元数据限额不截断实际长输入。InputSnapshot新增可选私有依赖，worker在同一发布决策验证归属/根SHA/绑定，retention沿不可变依赖保留；Batch页同样原子核对快照。新格式交付前必须补兼容回退reader。A10其余模型端点仍是必做，不以此文本适配宣称完整Batch通过；任务执行/公平调度/HTTP和真实业务继续。
 
 私有准备[22不同CPU接受](evidence/serve-batch-preparation-cpu-20261110/README.md)，原失败与补验保留，0GPU。继续实际生成/调度/HTTP与其余全部任务，不以组件接受结束A09。
+
+
+## 原生端点执行接线与有限响应
+
+2026-11-10。Batch原生生成适配已成组接线：完整JSON/工具/usage接收、实际准入归属/转交、单次执行声明、Chat文件准备继承父取消/期限、冻结后台Responses直接交给既有执行器。冻结9新+12直接影响CPU（21项），尚未测试或接Batch HTTP调度；模型回执使用明确CPU夹具，0GPU/默认保持。继续公平任务/独立准入/HTTP业务与全部总任务。
+
+清单：`.q4t-work/serve-batches-20261110/required-execution.txt`。RunBatchRequest实际调用HandleChat/Completions/Responses生成路径，冻结文件和历史直接还原；当前只完成内部接线，未启用Batch路由和调度。执行包装器要求已经取得的data准入、匹配票据的RequestControl和原子单次声明，直接使用同一端点输出JSON；HTTP错误保留响应码/完整体，未完成/取消另记编排错误，不自动重放。后台Responses沿已有任务管理器转交准入，不额外占前台清理槽；其真实生成、独立Batch速率来源与持久继续仍需后续整体集成。非性能改动仅针对性CPU，完成后继续调度/协议/业务，不结束总目标。
+
+原生执行接线[21项CPU首次接受](evidence/serve-batch-native-execution-cpu-20261110/README.md)，0GPU；公开调度和真实业务继续必做，不结束A09及总目标。
