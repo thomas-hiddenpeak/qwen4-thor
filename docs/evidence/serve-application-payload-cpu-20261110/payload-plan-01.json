@@ -1,0 +1,50 @@
+{
+  "task": "A09.5 private large application payload codec and root retention pin",
+  "classification": "nonperformance",
+  "cpu_tests": [
+    "application_payload_plain_values_remain_exact_without_storage_io",
+    "application_payload_over_16mib_exact_bytes_dedup_and_restart",
+    "application_payload_reuse_pins_root_across_old_parent_deletion",
+    "application_payload_changed_strings_get_new_immutable_snapshots",
+    "application_payload_limits_cancel_and_deadline_precede_storage",
+    "application_payload_staging_budget_is_shared_across_batch_members",
+    "application_payload_reference_paths_are_exact_and_not_request_paths",
+    "application_payload_all_targets_validate_before_any_read",
+    "application_payload_scope_corruption_and_expansion_budget_fail_closed",
+    "application_payload_unknown_publication_keeps_root_and_blocks_replay",
+    "application_payload_actual_unknown_snapshot_write_is_not_replayed",
+    "application_payload_root_pin_validates_owner_binding_and_identity",
+    "input_snapshot_scope_binding_root_digest_and_pinned_metadata",
+    "input_snapshot_allocation_budgets_and_known_quota_failure_are_atomic",
+    "input_snapshot_cancel_between_durable_chunks_aborts_only_own_stage",
+    "input_snapshot_unknown_publish_recovers_original_root_and_hold",
+    "input_snapshot_retention_uses_only_private_typed_bindings"
+  ],
+  "gpu_starts": 0,
+  "gpu_requests": 0,
+  "network_requests": 0,
+  "source_sha256": {
+    "CMakeLists.txt": "5fb03cd21d773ad1ddc24ca134e7aab4b19b1603de073b64f6a941ef9ec6ffa5",
+    "cmake/ChatProtocolIdentity.cmake": "494f691076fac4eb0fcee88afc6ba4d56783bc15c9c5360c5b9b411e9f00955d",
+    "cmake/HostTestSources.cmake": "eb4423b700cc56da389822a1e3b2c1b2403bbc3a98f3e4ca396f6ce4603daa0b",
+    "docs/SERVE_FILE_INPUTS_2026-11-10.md": "103066a034ca92c03addc04d08964fa02bd61c04e94730a68e2c0064affe62b7",
+    "docs/STATUS.md": "c554d01b5b579f1cba1068f72657c60fd3cc61a4f8a936b6d3438933f3ca389e",
+    "docs/log/2026-11-10.md": "d4153abef5493579ecf4931cbddf2ef5f620b691520da198ceb5439f1499b9c7",
+    "include/q4t/server/input_snapshot.h": "2ce4d8a482d94190fddc11ffb9275eb3303976aa8df9bc53c4757523987cbc4f",
+    "src/server/input_snapshot.cpp": "33b392d8ff64048cddd3c94fe872a814b52696c7190d0569a6fc06e59b503654",
+    "src/server/object_retention.cpp": "42c9f00cf7dfe288ed3968356e9a5fd8363bccdc7416ce04d5ff85b500d154a3",
+    "include/q4t/server/application_payload.h": "7738db659e56f881303ba22b4a9c3aa23ce9180c37f31b9518a38fc07215a896",
+    "src/server/application_payload.cpp": "cd1444e504e62e0de65315e711508246bf1d8b8de3bc4ff0e3c21b7107344016",
+    "tests/server_application_payload_test.cpp": "7341af4836e7ab922b01e6bf915253283b9763b3c5d5923f10a9eb4acb39589d"
+  },
+  "base": "6296da61e9c3e70861167f53bba58710a45a4a67",
+  "candidate_before_sha256": "94ef412d6322a797e1c99032b2f3badb14b8e979d2499c4097a8013d04dfedec",
+  "host_before_sha256": "7e05302dc4a8fd821512fcd769acab17803855f540ecdf31533dbc5a8ad90d4c",
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  },
+  "remaining": "Not automatically wired into ObjectStore or HTTP yet. Must integrate all application paths/body+JSON budgets/public projections and format-capable rollback before production delivery."
+}

@@ -1468,8 +1468,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "1cc162d5b3da8d8c49e464e5322d43286bf64036db964083e32723e12ce3d064",
-    "cmake/ChatProtocolIdentity.cmake": "b9962cbb7d57892b8db2664039f3982413e202b23314730e0592b02149fe90b7",
+    "CMakeLists.txt": "5fb03cd21d773ad1ddc24ca134e7aab4b19b1603de073b64f6a941ef9ec6ffa5",
+    "cmake/ChatProtocolIdentity.cmake": "494f691076fac4eb0fcee88afc6ba4d56783bc15c9c5360c5b9b411e9f00955d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1542,7 +1542,7 @@
     "include/q4t/server/http_request.h": "3135504e774692aeecac96077e92495f59c1e293ae4f8b0afd46d2386880dbb0",
     "include/q4t/server/http_response.h": "20c637014ea7cdeaa9810013922c843db7f8d65d1512263cb302f2eb5a70948e",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
-    "include/q4t/server/input_snapshot.h": "1bbabc3f36787d5c977016c7dbd5611172f7840b3b1b21ffafb7e3ff76394535",
+    "include/q4t/server/input_snapshot.h": "2ce4d8a482d94190fddc11ffb9275eb3303976aa8df9bc53c4757523987cbc4f",
     "include/q4t/server/input_snapshot_bindings.h": "e951fe72fd9d430931fe54e34de101bdfca9cae98287a8c464955b45168e0595",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -1733,7 +1733,7 @@
     "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
     "src/server/http_response.cpp": "81462d227c40c8c5da5fe5fd64e3557afab3d67006a98784dad5a74492d7905a",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
-    "src/server/input_snapshot.cpp": "e8ba90822999386390bbbd82652e140fff8247c5472c216bcf414a0b66fd61e2",
+    "src/server/input_snapshot.cpp": "33b392d8ff64048cddd3c94fe872a814b52696c7190d0569a6fc06e59b503654",
     "src/server/input_snapshot_bindings.cpp": "aad55a3c93a700ba82b148b5fef9bab4ee6f7967c226bd7d9d6fa3277056ae41",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
@@ -1743,7 +1743,7 @@
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
     "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "4665aeccac638b7a65eb36e8383d9afa7ad64d929cd52127d8afbde059cef7b2",
-    "src/server/object_retention.cpp": "65ebc6e0c11d2516c0bfa8e58be3b8a767df522abb7029bd9ae4225baf1dba4a",
+    "src/server/object_retention.cpp": "42c9f00cf7dfe288ed3968356e9a5fd8363bccdc7416ce04d5ff85b500d154a3",
     "src/server/object_store.cpp": "426410b171fcba29a97e3ce36b886c0f16e8dfaefc65bf107e0e3b715e7dabe3",
     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
     "src/server/object_worker.cpp": "65953eabc6e0cf6006d8c131723f5046fa36aaea5acb9c06fd101803f9dd875f",
@@ -1928,7 +1928,9 @@
     "src/server/chat_file_inputs.cpp": "9551754f1dbe2188fb2b05e09dec3ab3c912c0a72b29e5e8d5a84e3851a50f2b",
     "include/q4t/server/chat_file_inputs.h": "765eeb1f1b531f0e2906e1d502e0acf2679584b116de1abf43d860e2d11f94cb",
     "include/q4t/server/file_input_policy.h": "7948845c8424b71307151c9b27e517dd164e79705a04511cd07fae9a4945968c",
-    "src/server/file_input_policy.cpp": "5caa12f4f2256dea2736bf2df26894a7c6c887c5ab389cf3271eaef837d7548e"
+    "src/server/file_input_policy.cpp": "5caa12f4f2256dea2736bf2df26894a7c6c887c5ab389cf3271eaef837d7548e",
+    "src/server/application_payload.cpp": "cd1444e504e62e0de65315e711508246bf1d8b8de3bc4ff0e3c21b7107344016",
+    "include/q4t/server/application_payload.h": "7738db659e56f881303ba22b4a9c3aa23ce9180c37f31b9518a38fc07215a896"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

@@ -43,6 +43,11 @@ class InputSnapshotStore {
                    const InputSnapshotRef& reference,
                    std::string_view binding_sha256,
                    const InputSnapshotLimits& limits, InputSnapshot* output);
+  // Atomically retain the snapshot root while a different durable parent is
+  // prepared. A binary read lease alone only protects chunks, not this root.
+  ObjectReply Pin(const BinaryAccess& access, const InputSnapshotRef& reference,
+                  std::string_view binding_sha256, int hold_seconds,
+                  InputSnapshotHold* hold);
   ObjectReply Release(const BinaryAccess& access, InputSnapshotHold* hold);
 
  private:

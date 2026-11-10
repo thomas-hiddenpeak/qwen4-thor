@@ -46,6 +46,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/multipart.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/binary_store.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_snapshot.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_payload.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_application_payload_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_snapshot_bindings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_input_snapshot_bindings_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_input_snapshot_test.cpp

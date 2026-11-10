@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 #include "q4t/server/application_routes.h"
+#include "q4t/server/application_payload.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/input_snapshot.h"
 #include "q4t/trace/sha256.h"
@@ -102,6 +103,20 @@ class Inspector {
         return;
       }
       Reference(snapshot->Find("id"));
+    }
+  }
+
+  void Payloads(const Json& data) {
+    std::vector<ApplicationStringRef> references;
+    if (!ParseApplicationPayloadReferences(data, &references)) {
+      value.uncertain = true;
+      return;
+    }
+    for (const auto& ref : references) {
+      Json id;
+      id.type = Json::Type::kString;
+      id.str = ref.snapshot.id;
+      Reference(&id);
     }
   }
 
@@ -227,6 +242,9 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   if (kind == "response" || kind == "conversation" || kind == "item" ||
       kind == "chat")
     inspector.Snapshots(data);
+  if (kind == "response" || kind == "conversation" || kind == "item" ||
+      kind == "chat" || kind == "prompt" || kind == "batch")
+    inspector.Payloads(data);
   return inspector.Finish();
 }
 

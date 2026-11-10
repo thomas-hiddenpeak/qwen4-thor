@@ -471,7 +471,7 @@
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
-    "src/server/object_retention.cpp": "65ebc6e0c11d2516c0bfa8e58be3b8a767df522abb7029bd9ae4225baf1dba4a",
+    "src/server/object_retention.cpp": "42c9f00cf7dfe288ed3968356e9a5fd8363bccdc7416ce04d5ff85b500d154a3",
     "src/server/object_store.cpp": "426410b171fcba29a97e3ce36b886c0f16e8dfaefc65bf107e0e3b715e7dabe3",
     "src/server/object_worker.cpp": "65953eabc6e0cf6006d8c131723f5046fa36aaea5acb9c06fd101803f9dd875f",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",

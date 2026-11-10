@@ -1,0 +1,47 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp: In function ‘bool q4t_test_fn_application_payload_changed_strings_get_new_immutable_snapshots()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:187:13: error: call of overloaded ‘Field(q4t::io::Json&, const char [8])’ is ambiguous
+  187 |   Set(&Field(restored, "request"), "file_data", String(std::string(4096, 'y')));
+      |        ~~~~~^~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:12,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:7:
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:14: note: candidate: ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:57:7: note: candidate: ‘q4t::io::Json& {anonymous}::Field(q4t::io::Json&, const std::string&)’
+   57 | Json& Field(Json& value, const std::string& name) {
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp: In function ‘bool q4t_test_fn_application_payload_reference_paths_are_exact_and_not_request_paths()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:260:8: error: call of overloaded ‘Field(q4t::io::Json&, const char [5])’ is ambiguous
+  260 |   Field(Ref(bad), "path").array[1] = String("00");
+      |   ~~~~~^~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:14: note: candidate: ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:57:7: note: candidate: ‘q4t::io::Json& {anonymous}::Field(q4t::io::Json&, const std::string&)’
+   57 | Json& Field(Json& value, const std::string& name) {
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp: In function ‘bool q4t_test_fn_application_payload_all_targets_validate_before_any_read()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:281:8: error: call of overloaded ‘Field(q4t::io::Json&, const char [8])’ is ambiguous
+  281 |   Field(Field(encoded, kField), "strings").array.push_back(extra);
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:14: note: candidate: ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:57:7: note: candidate: ‘q4t::io::Json& {anonymous}::Field(q4t::io::Json&, const std::string&)’
+   57 | Json& Field(Json& value, const std::string& name) {
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp: In function ‘bool q4t_test_fn_application_payload_unknown_publication_keeps_root_and_blocks_replay()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:336:8: error: call of overloaded ‘Field(q4t::io::Json&, const char [8])’ is ambiguous
+  336 |   Field(Field(bad, kField), "strings").array.push_back(Ref(bad));
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:14: note: candidate: ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp:57:7: note: candidate: ‘q4t::io::Json& {anonymous}::Field(q4t::io::Json&, const std::string&)’
+   57 | Json& Field(Json& value, const std::string& name) {
+      |       ^~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:695: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

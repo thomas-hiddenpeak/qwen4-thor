@@ -256,6 +256,52 @@ ObjectReply InputSnapshotStore::Read(const BinaryAccess& access,
   return result;
 }
 
+ObjectReply InputSnapshotStore::Pin(const BinaryAccess& access,
+                                    const InputSnapshotRef& reference,
+                                    std::string_view binding_sha256,
+                                    int hold_seconds, InputSnapshotHold* hold) {
+  if (hold && hold->commit_unknown)
+    return Error(503, "input_snapshot_commit_unknown",
+                 "Inspect the original snapshot; do not replay", true);
+  InputSnapshotRef checked;
+  if (!hold || !hold->id.empty() || !Hex(binding_sha256) ||
+      !ParseInputSnapshotReference(InputSnapshotReference(reference),
+                                   &checked) ||
+      hold_seconds < 1 || hold_seconds > 3600 ||
+      access.deadline > Clock::now() + std::chrono::seconds(hold_seconds))
+    return Invalid();
+  auto active = Active(access);
+  if (!active.ok()) return active;
+  auto root = Request(access, ObjectKind::kInputSnapshot, reference.id);
+  root.operation = ObjectOperation::kGet;
+  auto stored = objects_.Execute(root, access.deadline, access.cancelled);
+  if (!stored.ok()) return stored;
+  const auto* data = stored.value.Find("data");
+  if (!data || data->GetString("format") != "q4t.input_snapshot.v1" ||
+      data->GetString("binding_sha256") != binding_sha256 ||
+      Digest(OutputJson(*data)) != reference.sha256)
+    return Corrupt();
+  auto lease =
+      Request(access, ObjectKind::kToolRun, NewObjectId(ObjectKind::kToolRun));
+  if (lease.id.empty())
+    return Error(503, "object_entropy_unavailable", "No secure snapshot ID");
+  lease.expires_at = std::time(nullptr) + hold_seconds;
+  lease.mutate_before = root.mutate_before = lease.expires_at;
+  lease.data = Object({{"format", String("q4t.input_snapshot_hold.v1")},
+                       {"snapshot_id", String(root.id)}});
+  root.operation = ObjectOperation::kPut;
+  root.data = *data;
+  root.expected_revision = stored.value.GetInt("revision");
+  root.created_at = stored.value.GetInt("created_at");
+  root.expires_at = stored.value.GetInt("expires_at");
+  const auto reply = objects_.ExecuteBatch(std::array{root, lease},
+                                           access.deadline, access.cancelled);
+  if (reply.ok() || reply.commit_unknown)
+    *hold = {access.scope, lease.id, lease.expires_at, false,
+             reply.commit_unknown};
+  return reply;
+}
+
 ObjectReply InputSnapshotStore::Release(const BinaryAccess& access,
                                         InputSnapshotHold* hold) {
   if (!hold || hold->scope != access.scope || hold->released ||

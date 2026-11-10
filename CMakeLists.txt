@@ -269,6 +269,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/multipart.cpp
   src/server/binary_store.cpp
   src/server/input_snapshot.cpp
+  src/server/application_payload.cpp
   src/server/input_snapshot_bindings.cpp
   src/server/files.cpp
   src/server/files_http.cpp
