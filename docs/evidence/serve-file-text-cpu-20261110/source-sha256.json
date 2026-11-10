@@ -1,0 +1,8 @@
+{
+  "CMakeLists.txt": "6e4a5658ef3249990aa620480eb1fc9e2471fcd67a381d6d6e0ab411f9669892",
+  "cmake/HostTestSources.cmake": "5830751e92a8873ffa76bcb95ea76852070e7975235635e4cf6ed72928e67705",
+  "cmake/ChatProtocolIdentity.cmake": "5da2b0d28b2dbcf88a24589bcf05419fb1bd5eaee9414176f9e45374a34dce27",
+  "include/q4t/server/file_document.h": "4fc92712e433a9dd470a20359c02b644a5037ebbcc3185063fc864205ccf7459",
+  "src/server/file_document.cpp": "c4dda83a9f4c0cd8253f0d4d82c3b84d7d1cb90fa2fde302ad0962e5235e59e3",
+  "tests/server_file_document_test.cpp": "b5cae5e9d40b8dd252e9eda076fecae0971ff09e297d3abca374cc2d10d80d13"
+}

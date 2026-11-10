@@ -1443,8 +1443,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6b119be4d6574f485bcf9ef52079bda03c833e3ad4ae8253e8b0d628371aeef6",
-    "cmake/ChatProtocolIdentity.cmake": "6f0801e9660b838fd472dc1e30febc8f159d1c461d3e919f447e1a55c06ef259",
+    "CMakeLists.txt": "6e4a5658ef3249990aa620480eb1fc9e2471fcd67a381d6d6e0ab411f9669892",
+    "cmake/ChatProtocolIdentity.cmake": "5da2b0d28b2dbcf88a24589bcf05419fb1bd5eaee9414176f9e45374a34dce27",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1839,7 +1839,9 @@
     "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
     "include/q4t/server/file_fetch.h": "d3a1489614982189e1b120ea47e37a0e275ba2175bfc9d70013cf0b48a22693e",
-    "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec"
+    "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec",
+    "src/server/file_document.cpp": "c4dda83a9f4c0cd8253f0d4d82c3b84d7d1cb90fa2fde302ad0962e5235e59e3",
+    "include/q4t/server/file_document.h": "4fc92712e433a9dd470a20359c02b644a5037ebbcc3185063fc864205ccf7459"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -3488,5 +3490,15 @@
       "src/server/grammar_process.cpp"
     ],
     "evidence": "docs/evidence/serve-file-fetch-cpu-20261110/README.md"
+  },
+  "file_document_text_cpu_20261110": {
+    "semantics": "Native Unicode/code and CSV/TSV/IIF extraction only; isolated decoder, complex formats, generated sheet summaries and API integration remain required",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/file_document.h",
+      "src/server/file_document.cpp"
+    ],
+    "evidence": "docs/evidence/serve-file-text-cpu-20261110/README.md"
   }
 }

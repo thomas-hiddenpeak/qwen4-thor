@@ -1,0 +1,14 @@
+{
+  "status": "PASS_TARGETED_NATIVE_TEXT_TABLE_EXTRACTION_CPU",
+  "tests": 10,
+  "seconds": 0.0036377357318997383,
+  "host_binary_sha256": "c885e8374dc52c2a1019034fe136a7e75d5aae898afd7f4703551a2b7aeaf50c",
+  "default_engine_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+  "default_changed": false,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "build_warnings": 0,
+  "decoder_worker_and_complex_formats_pending": true,
+  "api_execution_integration_pending": true,
+  "remaining_master_tasks_open": true
+}

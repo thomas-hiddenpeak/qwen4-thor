@@ -945,7 +945,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.5 actual file input resolution and retention, then Batch and all master tasks.",
+      "next": "A09.5 isolated document parsing, PDF/Office, all execution/state/token-count paths, actual spreadsheet summaries and model business; then Batch and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -982,6 +982,12 @@
         "publication_revision": 36,
         "state": "STOPPED",
         "main_merged": false
+      },
+      "file_input_plan": "SERVE_FILE_INPUTS_2026-11-10.md",
+      "file_input_component_evidence": {
+        "sources": "evidence/serve-file-source-cpu-20261110/README.md",
+        "native_fetch": "evidence/serve-file-fetch-cpu-20261110/README.md",
+        "native_plain_documents": "evidence/serve-file-text-cpu-20261110/README.md"
       }
     },
     {

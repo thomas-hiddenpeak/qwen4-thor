@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI02 [原生文本/表格10项CPU通过](evidence/serve-file-text-cpu-20261110/README.md)，Unicode/原文、真实CSV/TSV/IIF、1000行及预算/损坏/取消均过，host零警告。0GPU、默认cdb5ced9保持STOPPED；继续隔离解析worker和PDF/Office、真实表格摘要与全部API/业务/总任务。
+
+FI02原生文本/表格提取成组完成，冻结10项直接CPU：UTF8/UTF16/UTF32、Unicode/代码原文、CSV引号/换行/空字段、TSV/IIF、1000行与原总行数、尾部损坏、输出/单元格/结构预算及取消。先独立host构建，尚未测试；PDF/Office、独立解析worker、模型摘要和全部消费仍继续。
+
+FI02获取组件已提交41c9c2ff；开始原生文档解析底座，先实现编码/文本与CSV、TSV、IIF实际行列和1000行合同，表格模型摘要及PDF/Office解析仍为必做余项。所有格式沿独立有界解析/消费路径接入，默认cdb5ced9保持STOPPED，无新增GPU。
+
 FI02 [原生获取16 C++/4 TLS实网通过](evidence/serve-file-fetch-cpu-20261110/README.md)，仅loop回收再补1直接用例；首清单缩进拒绝原件保留。host/实际引擎零警告，0GPU、默认cdb5ced9保持STOPPED；组件接受后继续文档解析/全部消费路径与总任务，不宣称API已实现。
 
 FI02原生HTTP(S)获取/独立worker已成组实现，冻结16项C++（12新获取、3进程归属、1错误参数序列化）与4本机TLS实网。每跳目标复核/绑定数值地址、无凭据转发、证书/主机名、完整分帧/预算、超时取消/占槽已编码。开始独立必要构建；0GPU、默认cdb5ced9保持，解析/执行等全部任务继续。
