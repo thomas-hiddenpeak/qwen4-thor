@@ -293,7 +293,8 @@ storage组，以及原字节/数量/展开/累计保留负载、hold期限、单
 
 ## FI03 大inline与私有应用负载（实施中）
 
-当前硬缺口是普通JSON body/string至多16MiB、单对象至多32MiB，
+普通JSON body/string至多16MiB仍待补齐；物理单对象32MiB上限保留，
+大应用内容现经私有分块恢复（见下文30项接线验收）。
 50000000原字节的base64约66.7MB，且Responses会保存request/own_input/
 history多处原内容。只提高一层上限、删除原件或以虚构File ID替代均不能
 完成合同。本项继续实际实现，不将现有限制当最终支持范围。
@@ -320,3 +321,5 @@ history多处原内容。只提高一层上限、删除原件或以虚构File ID
 长请求期限不能导致内部Pin/Save参数无效；快照已完整校验后的辅助
 读取租约Close失败不应丢弃有效内容，未知清理保留到期回收，不能
 自动重启模型。相应CPU故障验证与API回填必须完成后再统一业务短验。
+
+自动应用读写已[30项CPU通过](evidence/serve-object-application-cpu-20261110/README.md)：Chat/Responses/Conversation真实持久状态、公开消息回填、原子批、逻辑分页、内容复用和辅助清理隔离均接通。候选32bdd3cf未发行；继续全部HTTP/JSON/prompt/后台容量、私有快照父引用发布时存在性/身份原子校验、实际业务和新格式兼容回退。上述快照发布校验要防止父提交前保留租约已过期且根已回收，不能接受悬空引用。

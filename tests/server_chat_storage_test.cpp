@@ -577,3 +577,52 @@ Q4T_TEST(chat_storage_cancel_before_commit_never_creates_success) {
       404);
   return true;
 }
+
+Q4T_TEST(chat_storage_large_original_parts_survive_update_and_restart) {
+  Fixture fixture;
+  const std::string original =
+      "data:application/pdf;base64," + std::string(17ULL << 20, 'A') + "TAIL";
+  auto input = Input();
+  auto messages = Parse(R"([{"role":"user","content":[{"type":"file",
+    "file":{"filename":"original.pdf","file_data":""}}]}])");
+  auto file = *messages.array[0].GetArray("content")->array[0].Find("file");
+  Set(&file, "file_data", String(original));
+  auto part = messages.array[0].GetArray("content")->array[0];
+  Set(&part, "file", file);
+  auto parts = Parse("[]");
+  parts.array.push_back(part);
+  Set(&messages.array[0], "content", parts);
+  Set(&input, "messages", messages);
+  {
+    ObjectStore objects(fixture.options);
+    StoredChats chats(objects);
+    auto access = Access();
+    access.deadline = Clock::now() + 30s;
+    Q4T_CHECK(Ok(chats.Save(input, Output(), access)));
+    Q4T_CHECK(Ok(chats.Update("chatcmpl_test", Parse(R"({"phase":"updated"})"),
+                              access)));
+  }
+  ObjectStore objects(fixture.options);
+  auto access = Access();
+  access.deadline = Clock::now() + 30s;
+  // Actual public handler, not a synthetic decoder or direct durable reader.
+  const auto page = HandleStoredChatRequest(
+      objects, "GET", "/v1/chat/completions/chatcmpl_test/messages", {},
+      access);
+  Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 1);
+  const auto& message = page.value.GetArray("data")->array[0];
+  Q4T_CHECK(message.GetArray("content_parts")
+                ->array[0]
+                .Find("file")
+                ->GetString("file_data") == original);
+  Q4T_CHECK(OutputJson(page.value).find("_q4t_application_payload") ==
+            std::string::npos);
+  StoredChats chats(objects);
+  const auto metadata = chats.Retrieve("chatcmpl_test", access);
+  Q4T_CHECK(Ok(metadata) &&
+            metadata.value.Find("metadata")->GetString("phase") == "updated");
+  Q4T_CHECK(
+      chats.Messages("chatcmpl_test", {}, Access("client:other")).http_status ==
+      404);
+  return true;
+}

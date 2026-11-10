@@ -67,7 +67,9 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(health.controller_starts) + R"(,"controller_failures":)" +
       std::to_string(health.controller_failures) +
       R"(,"controller_recoveries":)" +
-      std::to_string(health.controller_recoveries) + "}," +
+      std::to_string(health.controller_recoveries) +
+      R"(,"auxiliary_cleanup_failures":)" +
+      std::to_string(health.auxiliary_cleanup_failures) + "}," +
       R"("responses_background":{"state":")" + jobs_state +
       R"(","readiness_dependency":false,"owned":)" +
       std::to_string(jobs.owned) + R"(,"queued":)" +

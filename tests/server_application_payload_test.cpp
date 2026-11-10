@@ -1,7 +1,9 @@
 #include "q4t/server/application_payload.h"
 
+#include <array>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <thread>
 
 #include "../src/server/object_protocol.h"
@@ -72,6 +74,22 @@ int64_t Count(ObjectStore& objects) {
   return objects.Execute(request, Access().deadline)
       .value.GetInt("objects", -1);
 }
+Json Durable(const Fixture& fixture, ObjectKind kind, const std::string& id) {
+  const auto path = fixture.options.directory + "/" + Digest(Access().scope) +
+                    "." + Kind(kind) + "." + id + ".json";
+  std::ifstream file(path);
+  std::string bytes((std::istreambuf_iterator<char>(file)), {});
+  Json envelope;
+  if (!Parse(bytes, &envelope) || !envelope.Find("record"))
+    throw std::runtime_error("payload durable record");
+  return *envelope.Find("record");
+}
+struct Injection {
+  explicit Injection(std::string value) {
+    ObjectWorkerEntryForTesting(std::move(value));
+  }
+  ~Injection() { ObjectWorkerEntryForTesting({}); }
+};
 }  // namespace
 
 Q4T_TEST(application_payload_plain_values_remain_exact_without_storage_io) {
@@ -147,7 +165,8 @@ Q4T_TEST(application_payload_reuse_pins_root_across_old_parent_deletion) {
   Json encoded;
   {
     ApplicationPayloads payloads(objects, Access(), Small());
-    Q4T_CHECK(Ok(payloads.Encode(Data(std::string(4096, 'x')), &encoded)));
+    Q4T_CHECK(
+        Ok(payloads.Encode(Data(std::string(512 * 1024, 'x')), &encoded)));
     Q4T_CHECK(Ok(Save(objects, first, encoded)));
     payloads.Published(false);
   }
@@ -398,5 +417,224 @@ Q4T_TEST(application_payload_root_pin_validates_owner_binding_and_identity) {
   Q4T_CHECK(Ok(RestoreApplicationPayload(objects, Access(), encoded, Small(),
                                          &restored)));
   Q4T_CHECK(Ok(snapshots.Release(Access(), &pin)) && Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(object_application_all_kinds_restore_without_private_manifest) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const std::string content(300 * 1024, 'x');
+  const auto data =
+      Object({{"messages", Array()},
+              {"items", Array()},
+              {"item", Object({{"type", String("message")}})},
+              {"versions", Array()},
+              {"response", Object({{"status", String("completed")}})},
+              {"content", String(content)}});
+  for (const auto kind :
+       {ObjectKind::kChat, ObjectKind::kResponse, ObjectKind::kConversation,
+        ObjectKind::kConversationItem, ObjectKind::kPrompt,
+        ObjectKind::kBatch}) {
+    auto request = Request(NewObjectId(kind), ObjectOperation::kPut);
+    request.kind = kind;
+    request.data = data;
+    const auto written = objects.Execute(request, Access().deadline);
+    Q4T_CHECK(Ok(written) &&
+              OutputJson(*written.value.Find("data")) == OutputJson(data));
+    auto durable = Durable(fixture, kind, request.id);
+    Q4T_CHECK(durable.Find("data")->Find("content")->IsNull() &&
+              durable.Find("data")->Has(kField));
+    request.operation = ObjectOperation::kGet;
+    auto read = objects.Execute(request, Access().deadline);
+    Q4T_CHECK(Ok(read) &&
+              OutputJson(*read.value.Find("data")) == OutputJson(data));
+    auto list = request;
+    list.operation = ObjectOperation::kList;
+    list.id.clear();
+    auto page = objects.Execute(list, Access().deadline);
+    Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 1);
+    Q4T_CHECK(OutputJson(*page.value.GetArray("data")->array[0].Find("data")) ==
+              OutputJson(data));
+    request.scope = "client:other";
+    Q4T_CHECK(objects.Execute(request, Access().deadline).http_status == 404);
+    request.scope = Access().scope;
+    request.operation = ObjectOperation::kErase;
+    Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  }
+  Q4T_CHECK(Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(object_application_update_reuses_content_and_preserves_real_nulls) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto request = Request("chatcmpl_reuse", ObjectOperation::kPut);
+  request.data =
+      Object({{"messages", Array()},
+              {"parts", Array({String(std::string(300 * 1024, 'a')),
+                               String(std::string(300 * 1024, 'b'))})}});
+  Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  const auto old = Durable(fixture, request.kind, request.id);
+  std::vector<ApplicationStringRef> old_refs, next_refs;
+  Q4T_CHECK(ParseApplicationPayloadReferences(*old.Find("data"), &old_refs));
+  request.expected_revision = 1;
+  // Deleting the first member shifts the surviving content's path. A null at
+  // the old index must remain null, never resurrect previously stored bytes.
+  request.data = Object(
+      {{"messages", Array()},
+       {"parts", Array({String(std::string(300 * 1024, 'b')), Json()})}});
+  const auto updated = objects.Execute(request, Access().deadline);
+  Q4T_CHECK(Ok(updated) &&
+            updated.value.Find("data")->GetArray("parts")->array[1].IsNull());
+  const auto current = Durable(fixture, request.kind, request.id);
+  Q4T_CHECK(
+      ParseApplicationPayloadReferences(*current.Find("data"), &next_refs));
+  Q4T_CHECK(next_refs.size() == 1 && old_refs.size() == 2 &&
+            next_refs[0].snapshot.id == old_refs[1].snapshot.id &&
+            next_refs[0].path.back() == "0");
+  Q4T_CHECK(current.GetInt("created_at") == old.GetInt("created_at") &&
+            current.GetInt("expires_at") == old.GetInt("expires_at"));
+  const auto before = Count(objects);
+  Q4T_CHECK(objects.Execute(request, Access().deadline).http_status == 409 &&
+            Count(objects) == before);
+  request.expected_revision = 2;
+  request.data = Object({{"messages", Array()}, {"parts", Array({Json()})}});
+  Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
+  Q4T_CHECK(
+      !Durable(fixture, request.kind, request.id).Find("data")->Has(kField) &&
+      Count(objects) == 1);
+  return true;
+}
+
+Q4T_TEST(object_application_batch_deduplicates_and_conflicts_remain_atomic) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto first = Request("chatcmpl_batch_one", ObjectOperation::kPut);
+  auto second = Request("chatcmpl_batch_two", ObjectOperation::kPut);
+  first.data = second.data = Data(std::string(300 * 1024, 'a'));
+  auto result =
+      objects.ExecuteBatch(std::array{first, second}, Access().deadline);
+  Q4T_CHECK(Ok(result) && result.value.GetArray("data")->array.size() == 2);
+  std::vector<ApplicationStringRef> a, b;
+  Q4T_CHECK(ParseApplicationPayloadReferences(
+      *Durable(fixture, first.kind, first.id).Find("data"), &a));
+  Q4T_CHECK(ParseApplicationPayloadReferences(
+      *Durable(fixture, second.kind, second.id).Find("data"), &b));
+  Q4T_CHECK(a[0].snapshot.id == b[0].snapshot.id);
+  for (const auto& record : result.value.GetArray("data")->array)
+    Q4T_CHECK(OutputJson(*record.Find("data")) == OutputJson(first.data));
+  const auto before = Count(objects);
+  auto third = Request("chatcmpl_batch_three", ObjectOperation::kPut);
+  third.data = Data(std::string(300 * 1024, 'z'));
+  result = objects.ExecuteBatch(std::array{third, first}, Access().deadline);
+  Q4T_CHECK(result.http_status == 409 && !result.commit_unknown &&
+            Count(objects) == before);
+  third.operation = ObjectOperation::kGet;
+  Q4T_CHECK(objects.Execute(third, Access().deadline).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(object_application_entire_batch_validates_before_private_io) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto first = Request("chatcmpl_validation", ObjectOperation::kPut);
+  first.data = Data(std::string(300 * 1024, 'a'));
+  auto bad = first;
+  Q4T_CHECK(objects.ExecuteBatch(std::array{first, bad}, Access().deadline)
+                .http_status == 400);
+  bad.id += "_other";
+  bad.scope = "client:other";
+  Q4T_CHECK(objects.ExecuteBatch(std::array{first, bad}, Access().deadline)
+                .http_status == 400);
+  bad.scope = first.scope;
+  bad.created_at = -1;
+  Q4T_CHECK(objects.ExecuteBatch(std::array{first, bad}, Access().deadline)
+                .http_status == 400);
+  Q4T_CHECK(objects.Health().workers_started == 0);
+  Q4T_CHECK(objects.Execute(first, Access().deadline, [] { return true; })
+                .http_status == 499);
+  Q4T_CHECK(objects.Health().workers_started == 0);
+  return true;
+}
+
+Q4T_TEST(object_application_expanded_page_budget_preserves_next_cursor) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto first = Request("chatcmpl_page_one", ObjectOperation::kPut);
+  auto second = Request("chatcmpl_page_two", ObjectOperation::kPut);
+  first.data = Data(std::string(300 * 1024, 'a'));
+  second.data = Data(std::string(300 * 1024, 'b'));
+  Q4T_CHECK(
+      Ok(objects.ExecuteBatch(std::array{first, second}, Access().deadline)));
+  auto page =
+      Object({{"object", String("list")},
+              {"data", Array({Durable(fixture, first.kind, first.id),
+                              Durable(fixture, second.kind, second.id)})},
+              {"first_id", String(first.id)},
+              {"last_id", String(second.id)},
+              {"has_more", Boolean(false)}});
+  ApplicationPayloadLimits limits;
+  limits.max_data_bytes = 400 * 1024;
+  Q4T_CHECK(
+      Ok(RestoreApplicationObjects(objects, Access(), true, &page, limits)));
+  Q4T_CHECK(page.GetBool("has_more") && page.GetString("last_id") == first.id &&
+            page.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(OutputJson(*page.GetArray("data")->array[0].Find("data")) ==
+            OutputJson(first.data));
+  auto query = Request({}, ObjectOperation::kList);
+  query.descending = false;
+  query.after = page.GetString("last_id");
+  auto next = objects.Execute(query, Access().deadline);
+  Q4T_CHECK(Ok(next) && next.value.GetArray("data")->array.size() == 1 &&
+            next.value.GetString("first_id") == second.id &&
+            OutputJson(*next.value.GetArray("data")->array[0].Find("data")) ==
+                OutputJson(second.data));
+  return true;
+}
+
+Q4T_TEST(object_application_unknown_parent_preserves_actual_single_and_batch) {
+  for (const bool batch : {false, true}) {
+    Fixture fixture;
+    fixture.options.io_timeout_ms = 250;
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(fixture.options);
+    auto request = Request("chatcmpl_unknown", ObjectOperation::kPut);
+    request.data = Data(std::string(300 * 1024, 'a'));
+    const auto failed =
+        batch ? objects.ExecuteBatch(std::span(&request, 1), Access().deadline)
+              : objects.Execute(request, Access().deadline);
+    Q4T_CHECK(!failed.ok() && failed.commit_unknown);
+    const auto until = Clock::now() + 1s;
+    while (objects.Health().pending && Clock::now() < until)
+      std::this_thread::sleep_for(1ms);
+    request.operation = ObjectOperation::kGet;
+    const auto restored = objects.Execute(request, Access().deadline);
+    Q4T_CHECK(Ok(restored) && restored.value.GetInt("revision") == 1 &&
+              OutputJson(*restored.value.Find("data")) ==
+                  OutputJson(request.data));
+    auto list = Request({}, ObjectOperation::kList);
+    const auto page = objects.Execute(list, Access().deadline);
+    Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 1 &&
+              objects.Health().workers_started == 2);
+  }
+  return true;
+}
+
+Q4T_TEST(object_application_long_request_uses_bounded_storage_and_real_quotas) {
+  Fixture fixture;
+  fixture.options.max_object_bytes = 2ULL << 20;
+  fixture.options.max_client_bytes = 3ULL << 20;
+  ObjectStore objects(fixture.options);
+  auto request = Request("chatcmpl_budget", ObjectOperation::kPut);
+  request.data = Data(std::string(300 * 1024, 'a'));
+  Q4T_CHECK(Ok(objects.Execute(request, Clock::now() + 8h)));
+  auto large = Request("chatcmpl_over_budget", ObjectOperation::kPut);
+  large.data = Data(std::string(3 * 1024 * 1024, 'b'));
+  const auto before = Count(objects);
+  const auto failed = objects.Execute(large, Access().deadline);
+  Q4T_CHECK(failed.http_status == 429 && !failed.commit_unknown &&
+            Count(objects) == before);
+  request.operation = ObjectOperation::kGet;
+  Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)));
   return true;
 }

@@ -392,3 +392,47 @@ Q4T_TEST(responses_state_rejects_malformed_generated_items_before_commit) {
       states.Finish(Snapshot(plan, "failed"), Parse("[]"), Access(), &plan)));
   return true;
 }
+
+Q4T_TEST(responses_state_large_history_survives_checkpoint_and_previous) {
+  Fixture fixture;
+  const std::string bytes(17ULL << 20, 'A');
+  auto envelope = Envelope(R"({"input":[{"role":"user","content":[
+    {"type":"input_file","filename":"original.txt","file_data":"AA=="}]}]})");
+  auto input = *envelope.request.GetArray("input");
+  auto content = *input.array[0].GetArray("content");
+  Set(&content.array[0], "file_data", String(bytes));
+  Set(&input.array[0], "content", content);
+  Set(&envelope.request, "input", input);
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesState states(objects);
+    auto access = Access();
+    access.deadline = Clock::now() + 30s;
+    ResponseStatePlan plan;
+    Q4T_CHECK(Ok(states.Resolve(envelope, access, &plan)));
+    id = plan.id;
+    Q4T_CHECK(Ok(states.Begin(Snapshot(plan, "in_progress"), access, &plan)));
+    Q4T_CHECK(Ok(states.Checkpoint(Snapshot(plan, "in_progress"), Parse("[]"),
+                                   access, &plan)));
+    Q4T_CHECK(Ok(states.Finish(Snapshot(plan, "completed", Answer()),
+                               Parse("[]"), access, &plan)));
+  }
+  ObjectStore objects(fixture.options);
+  ResponsesState states(objects);
+  auto access = Access();
+  access.deadline = Clock::now() + 30s;
+  ResponseStatePlan loaded, next;
+  Q4T_CHECK(Ok(states.LoadPlan(id, access, &loaded)));
+  Q4T_CHECK(loaded.own_input.array[0].GetArray("content")->array[0].GetString(
+                "file_data") == bytes);
+  auto followup = Envelope(R"({"input":"next"})");
+  followup.previous_response_id = id;
+  Q4T_CHECK(Ok(states.Resolve(followup, access, &next)));
+  Q4T_CHECK(next.history.array.size() == 3 &&
+            next.history.array[0].GetArray("content")->array[0].GetString(
+                "file_data") == bytes);
+  Q4T_CHECK(OutputJson(next.history).find("_q4t_application_payload") ==
+            std::string::npos);
+  return true;
+}

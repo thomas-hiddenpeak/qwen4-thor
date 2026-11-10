@@ -111,6 +111,7 @@ struct ObjectStoreHealth {
   uint64_t controller_starts = 0;
   uint64_t controller_failures = 0;
   uint64_t controller_recoveries = 0;
+  uint64_t auxiliary_cleanup_failures = 0;
 };
 
 class ObjectStore {
@@ -128,6 +129,8 @@ class ObjectStore {
                            std::chrono::steady_clock::time_point deadline,
                            const std::function<bool()>& cancelled = {});
   ObjectStoreHealth Health() const;
+  // Diagnostic only: expiring lease cleanup must not undo completed reads.
+  void RecordAuxiliaryCleanupFailure() noexcept;
   // Trusted service recovery only, never an HTTP/API operation. Returns a
   // bounded page of active response metadata across scopes, with no input or
   // output content. The scope is accepted only when its digest matches the

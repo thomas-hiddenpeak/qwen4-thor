@@ -86,13 +86,17 @@ bool ParseInputSnapshotReference(const Json& value,
 }
 
 ObjectReply InputSnapshotStore::Save(
-    const BinaryAccess& access, std::string_view binding_sha256,
+    const BinaryAccess& parent_access, std::string_view binding_sha256,
     const Json& metadata, std::span<const std::string_view> parts,
     const InputSnapshotLimits& limits, int hold_seconds,
     InputSnapshotRef* reference, InputSnapshotHold* hold) {
   if (hold && hold->commit_unknown)
     return Error(503, "input_snapshot_commit_unknown",
                  "Inspect the original snapshot; do not replay", true);
+  if (hold_seconds < 1 || hold_seconds > 3600) return Invalid();
+  auto access = parent_access;
+  access.deadline = std::min(access.deadline,
+                             Clock::now() + std::chrono::seconds(hold_seconds));
   auto result = Active(access);
   if (!result.ok()) return result;
   if (!reference || !hold || !reference->id.empty() || !hold->id.empty() ||
@@ -122,11 +126,9 @@ ObjectReply InputSnapshotStore::Save(
       Request(access, ObjectKind::kToolRun, NewObjectId(ObjectKind::kToolRun));
   if (root.id.empty() || lease.id.empty())
     return Error(503, "object_entropy_unavailable", "No secure snapshot ID");
-  // The hold must cover the operation's whole remaining budget. Its deadline
-  // is absolute and never refreshed by a codec/read or process restart.
+  // Bound this storage operation by the absolute hold, independently of a
+  // longer enclosing model request. Neither codecs nor restarts refresh it.
   lease.expires_at = std::time(nullptr) + hold_seconds;
-  if (access.deadline > Clock::now() + std::chrono::seconds(hold_seconds))
-    return Invalid();
   lease.data = Object({{"format", String("q4t.input_snapshot_hold.v1")},
                        {"snapshot_id", String(root.id)}});
   root.mutate_before = lease.mutate_before = lease.expires_at;
@@ -175,13 +177,16 @@ ObjectReply InputSnapshotStore::Save(
   return result;
 }
 
-ObjectReply InputSnapshotStore::Read(const BinaryAccess& access,
+ObjectReply InputSnapshotStore::Read(const BinaryAccess& parent_access,
                                      const InputSnapshotRef& reference,
                                      std::string_view binding_sha256,
                                      const InputSnapshotLimits& limits,
                                      InputSnapshot* output) {
   if (!output) return Invalid();
   *output = {};
+  auto access = parent_access;
+  access.deadline =
+      std::min(access.deadline, Clock::now() + std::chrono::hours(1));
   InputSnapshotRef validated;
   if (!Limits(limits) || !Hex(binding_sha256) ||
       !ParseInputSnapshotReference(InputSnapshotReference(reference),
@@ -250,13 +255,20 @@ ObjectReply InputSnapshotStore::Read(const BinaryAccess& access,
     return Active(access);
   };
   result = load();
-  const auto closed = binary_.Close(Cleanup(access), &read);
-  if (!closed.ok()) return closed;
+  try {
+    if (!binary_.Close(Cleanup(access), &read).ok())
+      objects_.RecordAuxiliaryCleanupFailure();
+  } catch (...) {
+    objects_.RecordAuxiliaryCleanupFailure();
+  }
+  // Content already has complete length/hash/metadata validation. The read
+  // lease expires absolutely; a lost cleanup receipt is never replayed and
+  // cannot turn successful data access into a model/request failure.
   if (result.ok()) *output = std::move(next);
   return result;
 }
 
-ObjectReply InputSnapshotStore::Pin(const BinaryAccess& access,
+ObjectReply InputSnapshotStore::Pin(const BinaryAccess& parent_access,
                                     const InputSnapshotRef& reference,
                                     std::string_view binding_sha256,
                                     int hold_seconds, InputSnapshotHold* hold) {
@@ -267,9 +279,11 @@ ObjectReply InputSnapshotStore::Pin(const BinaryAccess& access,
   if (!hold || !hold->id.empty() || !Hex(binding_sha256) ||
       !ParseInputSnapshotReference(InputSnapshotReference(reference),
                                    &checked) ||
-      hold_seconds < 1 || hold_seconds > 3600 ||
-      access.deadline > Clock::now() + std::chrono::seconds(hold_seconds))
+      hold_seconds < 1 || hold_seconds > 3600)
     return Invalid();
+  auto access = parent_access;
+  access.deadline = std::min(access.deadline,
+                             Clock::now() + std::chrono::seconds(hold_seconds));
   auto active = Active(access);
   if (!active.ok()) return active;
   auto root = Request(access, ObjectKind::kInputSnapshot, reference.id);

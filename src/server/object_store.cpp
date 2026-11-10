@@ -8,10 +8,13 @@
 #include <condition_variable>
 #include <deque>
 #include <mutex>
+#include <optional>
+#include <set>
 #include <string_view>
 #include <thread>
 
 #include "object_protocol.h"
+#include "q4t/server/application_payload.h"
 #include "q4t/server/grammar_process.h"
 
 namespace q4t::server {
@@ -60,12 +63,12 @@ Json Config(const ObjectStoreOptions& o) {
                  {"max_total_objects", Number(o.max_total_objects)},
                  {"max_ttl_seconds", Number(o.max_ttl_seconds)}});
 }
-Json RequestWire(const ObjectRequest& request) {
+Json RequestWire(const ObjectRequest& request, const Json* data = nullptr) {
   return Object({{"operation", String(Operation(request.operation))},
                  {"kind", String(Kind(request.kind))},
                  {"owner", String(Digest(request.scope))},
                  {"id", String(request.id)},
-                 {"data", request.data},
+                 {"data", data ? *data : request.data},
                  {"revision", Number(request.expected_revision)},
                  {"ttl", Number(request.ttl_seconds)},
                  {"created_at", Number(request.created_at)},
@@ -76,6 +79,75 @@ Json RequestWire(const ObjectRequest& request) {
                  {"descending", Boolean(request.descending)},
                  {"file_metadata_only", Boolean(request.file_metadata_only)},
                  {"mutate_before", Number(request.mutate_before)}});
+}
+bool ApplicationObject(ObjectKind kind) {
+  return kind == ObjectKind::kChat || kind == ObjectKind::kResponse ||
+         kind == ObjectKind::kConversation ||
+         kind == ObjectKind::kConversationItem || kind == ObjectKind::kPrompt ||
+         kind == ObjectKind::kBatch;
+}
+bool PreparePayload(const ObjectRequest& request) {
+  return request.operation == ObjectOperation::kPut &&
+         ApplicationObject(request.kind) && request.data.IsObject() &&
+         NeedsApplicationPayload(request.data);
+}
+BinaryAccess ApplicationAccess(const std::string& scope,
+                               Clock::time_point deadline,
+                               const std::function<bool()>& cancelled) {
+  // One storage phase for all chunks/members; model request budgets may be
+  // longer, but cannot extend the absolute temporary retention leases.
+  return {scope, std::min(deadline, Clock::now() + 30min), cancelled};
+}
+struct PreparedPayload {
+  Json encoded;
+  std::optional<Json> original;
+  const Json& Data(const ObjectRequest& request) const {
+    return original ? *original : request.data;
+  }
+};
+ObjectReply PrepareApplicationWrite(
+    ObjectStore& objects, const ObjectRequest& request,
+    const BinaryAccess& access, ApplicationPayloads& payloads,
+    const std::function<ObjectReply()>& read_previous,
+    PreparedPayload* result) {
+  ObjectReply previous;
+  const Json* old = nullptr;
+  if (request.expected_revision > 0) {
+    previous = read_previous();
+    if (!previous.ok()) return previous;
+    if (previous.value.GetInt("revision") != request.expected_revision)
+      return Error(409, "object_revision_conflict", "Object revision changed");
+    old = previous.value.Find("data");
+    if (!old)
+      return Error(503, "object_transport_error", "Missing object data");
+  }
+  if (request.data.Find(std::string(kApplicationPayloadField))) {
+    // Explicit internal codec callers may supply a compact representation.
+    // Validate/read it before publication; never return its private metadata.
+    Json restored;
+    auto reply =
+        RestoreApplicationPayload(objects, access, request.data, {}, &restored);
+    if (!reply.ok()) return reply;
+    std::erase_if(restored.object, [](const auto& item) {
+      return item.first == kApplicationPayloadField;
+    });
+    result->original = std::move(restored);
+    if (!old) old = &request.data;
+  }
+  return payloads.Encode(result->Data(request), &result->encoded, old);
+}
+ObjectReply RestoreWriteReceipt(const ObjectRequest& request,
+                                const PreparedPayload& prepared, Json* value) {
+  if (!value->IsObject() || value->GetString("id") != request.id ||
+      value->GetString("kind") != Kind(request.kind) ||
+      value->GetInt("revision") != request.expected_revision + 1 ||
+      !value->Has("data"))
+    return Error(503, "object_transport_error",
+                 "Invalid application publication receipt", true);
+  // No additional IO after a confirmed parent mutation. All bytes were
+  // verified/prepared before commit and remain owned by this call.
+  Set(value, "data", prepared.Data(request));
+  return {};
 }
 }  // namespace
 
@@ -104,6 +176,7 @@ struct ObjectStore::State {
   uint64_t controller_starts = 0;
   uint64_t controller_failures = 0;
   uint64_t controller_recoveries = 0;
+  std::atomic<uint64_t> auxiliary_cleanup_failures{0};
   std::array<Clock::time_point, 10> failures{};
   size_t failure_count = 0;
   Clock::time_point controller_retry = Clock::time_point::min();
@@ -360,9 +433,10 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
              operation = Operation(request.operation);
   if (request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
       operation.empty() || request.expected_revision < 0 ||
-      request.created_at < 0 || request.created_at > (1LL << 53) - 1 ||
-      request.expires_at < -1 || request.expires_at > (1LL << 53) - 1 ||
-      request.mutate_before < 0 || request.mutate_before > (1LL << 53) - 1 ||
+      request.expected_revision >= (1LL << 53) - 1 || request.created_at < 0 ||
+      request.created_at > (1LL << 53) - 1 || request.expires_at < -1 ||
+      request.expires_at > (1LL << 53) - 1 || request.mutate_before < 0 ||
+      request.mutate_before > (1LL << 53) - 1 ||
       (request.mutate_before && operation != "put" && operation != "erase") ||
       (request.file_metadata_only && (operation != "list" || kind != "file")) ||
       (operation != "list" && operation != "health" && !ValidId(request.id)) ||
@@ -374,11 +448,48 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
         (!request.before.empty() && !ValidId(request.before)) ||
         (!request.after.empty() && !request.before.empty()))))
     return Error(400, "invalid_object_request", "Invalid object request");
-  auto wire = OutputJson(RequestWire(request));
+  const auto access = ApplicationAccess(request.scope, deadline, cancelled);
+  std::optional<ApplicationPayloads> payloads;
+  std::optional<PreparedPayload> prepared;
+  if (PreparePayload(request)) {
+    payloads.emplace(*this, access);
+    prepared.emplace();
+    const auto read_previous = [&] {
+      ObjectRequest read;
+      read.scope = request.scope;
+      read.kind = request.kind;
+      read.id = request.id;
+      return Dispatch(OutputJson(RequestWire(read)), false, access.deadline,
+                      cancelled);
+    };
+    auto reply = PrepareApplicationWrite(*this, request, access, *payloads,
+                                         read_previous, &*prepared);
+    if (!reply.ok()) return reply;
+  }
+  auto wire =
+      OutputJson(RequestWire(request, prepared ? &prepared->encoded : nullptr));
   if (wire.size() > options.max_object_bytes)
     return Error(413, "object_too_large", "Object request exceeds byte limit");
-  return Dispatch(std::move(wire), operation == "put" || operation == "erase",
-                  deadline, cancelled);
+  auto reply =
+      Dispatch(std::move(wire), operation == "put" || operation == "erase",
+               prepared ? access.deadline : deadline, cancelled);
+  if (prepared) {
+    if (reply.ok()) {
+      auto receipt = RestoreWriteReceipt(request, *prepared, &reply.value);
+      if (!receipt.ok()) reply = std::move(receipt);
+    }
+    payloads->Published(reply.commit_unknown);
+    if (reply.commit_unknown && !reply.value.Has("id")) {
+      if (!reply.value.IsObject()) reply.value = Object();
+      Set(&reply.value, "id", String(request.id));
+    }
+  } else if (reply.ok() && ApplicationObject(request.kind) &&
+             (operation == "get" || operation == "list")) {
+    auto restored = RestoreApplicationObjects(
+        *this, access, operation == "list", &reply.value);
+    if (!restored.ok()) return restored;
+  }
+  return reply;
 }
 
 ObjectReply ObjectStore::ScanResponses(std::string after,
@@ -417,30 +528,93 @@ ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
                                       const std::function<bool()>& cancelled) {
   if (requests.empty() || requests.size() > kMaxTransactionObjects)
     return Error(400, "invalid_object_request", "Invalid transaction size");
-  Json mutations = Array();
-  size_t bytes = 0;
+  std::set<std::pair<ObjectKind, std::string>> targets;
+  uint64_t logical_remaining = ApplicationPayloadLimits{}.max_data_bytes;
+  // Validate the entire group before staging any private content.
   for (const auto& request : requests) {
     if ((request.operation != ObjectOperation::kPut &&
          request.operation != ObjectOperation::kErase) ||
         request.scope.empty() || request.scope.size() > 256 ||
         request.scope != requests.front().scope || !ValidId(request.id) ||
         Kind(request.kind).empty() || request.expected_revision < 0 ||
-        request.mutate_before < 0 ||
-        request.mutate_before > (1LL << 53) - 1 ||
+        request.expected_revision >= (1LL << 53) - 1 ||
+        request.mutate_before < 0 || request.mutate_before > (1LL << 53) - 1 ||
+        request.created_at < 0 || request.created_at > (1LL << 53) - 1 ||
+        request.expires_at < -1 || request.expires_at > (1LL << 53) - 1 ||
         request.ttl_seconds < 0 ||
-        request.ttl_seconds > state_->options.max_ttl_seconds)
+        request.ttl_seconds > state_->options.max_ttl_seconds ||
+        request.file_metadata_only ||
+        !targets.emplace(request.kind, request.id).second)
       return Error(400, "invalid_object_request",
                    "Invalid transaction mutation");
-    auto value = RequestWire(request);
+    if (!ApplicationObject(request.kind) ||
+        request.operation != ObjectOperation::kPut)
+      continue;
+    uint64_t logical_bytes = 0;
+    auto measured = MeasureApplicationPayload(request.data, {}, &logical_bytes);
+    if (!measured.ok()) return measured;
+    if (logical_bytes > logical_remaining)
+      return Error(413, "application_payload_capacity",
+                   "Expanded transaction exceeds byte limit");
+    logical_remaining -= logical_bytes;
+  }
+  const auto access =
+      ApplicationAccess(requests.front().scope, deadline, cancelled);
+  ApplicationPayloads payloads(*this, access);
+  std::vector<std::optional<PreparedPayload>> prepared(requests.size());
+  Json mutations = Array();
+  size_t bytes = 0;
+  for (size_t i = 0; i < requests.size(); ++i) {
+    const auto& request = requests[i];
+    if (PreparePayload(request)) {
+      prepared[i].emplace();
+      const auto read_previous = [&] {
+        ObjectRequest read;
+        read.scope = request.scope;
+        read.kind = request.kind;
+        read.id = request.id;
+        return Dispatch(OutputJson(RequestWire(read)), false, access.deadline,
+                        cancelled);
+      };
+      auto reply = PrepareApplicationWrite(*this, request, access, payloads,
+                                           read_previous, &*prepared[i]);
+      if (!reply.ok()) return reply;
+    }
+    auto value =
+        RequestWire(request, prepared[i] ? &prepared[i]->encoded : nullptr);
     const auto size = OutputJson(value).size();
     if (size > state_->options.max_object_bytes ||
         (bytes += size) > kMaxFrame / 2)
       return Error(413, "object_too_large", "Transaction exceeds byte limit");
     mutations.array.push_back(std::move(value));
   }
-  return Dispatch(OutputJson(Object({{"operation", String("batch")},
-                                     {"mutations", std::move(mutations)}})),
-                  true, deadline, cancelled);
+  auto reply =
+      Dispatch(OutputJson(Object({{"operation", String("batch")},
+                                  {"mutations", std::move(mutations)}})),
+               true, access.deadline, cancelled);
+  if (reply.ok() &&
+      std::any_of(prepared.begin(), prepared.end(),
+                  [](const auto& item) { return item.has_value(); })) {
+    Json* values = nullptr;
+    for (auto& [name, value] : reply.value.object)
+      if (name == "data" && value.IsArray()) values = &value;
+    if (!values || values->array.size() != requests.size()) {
+      reply = Error(503, "object_transport_error",
+                    "Invalid application transaction receipt", true);
+    } else {
+      for (size_t i = 0; i < requests.size(); ++i) {
+        if (!prepared[i]) continue;
+        auto receipt =
+            RestoreWriteReceipt(requests[i], *prepared[i], &values->array[i]);
+        if (!receipt.ok()) {
+          reply = std::move(receipt);
+          break;
+        }
+      }
+    }
+  }
+  payloads.Published(reply.commit_unknown);
+  return reply;
 }
 
 ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
@@ -506,10 +680,18 @@ ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
 
 ObjectStoreHealth ObjectStore::Health() const {
   const std::lock_guard lock(state_->mutex);
-  return {std::string(state_->health),      state_->outstanding,
-          state_->counters->started.load(), state_->counters->reaped.load(),
-          state_->controller_starts,        state_->controller_failures,
-          state_->controller_recoveries};
+  return {std::string(state_->health),
+          state_->outstanding,
+          state_->counters->started.load(),
+          state_->counters->reaped.load(),
+          state_->controller_starts,
+          state_->controller_failures,
+          state_->controller_recoveries,
+          state_->auxiliary_cleanup_failures.load()};
+}
+
+void ObjectStore::RecordAuxiliaryCleanupFailure() noexcept {
+  ++state_->auxiliary_cleanup_failures;
 }
 
 std::string NewObjectId(ObjectKind kind) {

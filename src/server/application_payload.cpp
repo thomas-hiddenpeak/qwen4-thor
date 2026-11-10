@@ -230,27 +230,39 @@ bool ParseApplicationPayloadReferences(
   return true;
 }
 
-ObjectReply RestoreApplicationPayload(ObjectStore& objects,
-                                      const BinaryAccess& access,
-                                      const Json& encoded,
-                                      const ApplicationPayloadLimits& limits,
-                                      Json* restored) {
-  if (!restored || !Limits(limits)) return Invalid();
-  *restored = {};
-  auto reply = Active(access);
-  if (!reply.ok()) return reply;
-  std::vector<ApplicationStringRef> references;
-  if (!ParseApplicationPayloadReferences(encoded, &references))
+namespace {
+bool Needs(const Json& value, size_t depth, size_t* remaining) {
+  if (!*remaining || depth > 64) return true;
+  --*remaining;
+  if (value.IsString() &&
+      value.str.size() > ApplicationPayloadLimits{}.inline_bytes)
+    return true;
+  if (value.IsObject()) {
+    for (const auto& [name, child] : value.object)
+      if ((!depth && name == kField) || Needs(child, depth + 1, remaining))
+        return true;
+  } else if (value.IsArray()) {
+    for (const auto& child : value.array)
+      if (Needs(child, depth + 1, remaining)) return true;
+  }
+  return false;
+}
+ObjectReply Inspect(const Json& encoded, const ApplicationPayloadLimits& limits,
+                    std::vector<ApplicationStringRef>* references,
+                    uint64_t* bytes) {
+  if (!Limits(limits)) return Invalid();
+  if (encoded.IsObject() &&
+      !ParseApplicationPayloadReferences(encoded, references))
     return Invalid();
-  if (references.size() > limits.max_references) return Capacity();
+  if (references->size() > limits.max_references) return Capacity();
   uint64_t remaining = limits.max_data_bytes;
-  size_t nodes = 262144;
+  size_t nodes = 2 * 1024 * 1024;
   Path path;
   std::vector<Candidate> unused;
   if (!Scan(encoded, limits, &path, &remaining, &nodes, &unused))
     return Capacity();
   // Validate every target and total expansion BEFORE reading any snapshot.
-  for (const auto& ref : references) {
+  for (const auto& ref : *references) {
     const auto* target = At(&encoded, ref.path);
     if (!target || (!target->IsNull() &&
                     (!target->IsString() || target->str.size() != ref.bytes ||
@@ -260,6 +272,38 @@ ObjectReply RestoreApplicationPayload(ObjectStore& objects,
         (target->IsNull() && !Charge(ref.bytes, &remaining)))
       return Capacity();
   }
+  *bytes = limits.max_data_bytes - remaining;
+  return {};
+}
+}  // namespace
+
+bool NeedsApplicationPayload(const Json& data) {
+  size_t remaining = 2 * 1024 * 1024;
+  return Needs(data, 0, &remaining);
+}
+
+ObjectReply MeasureApplicationPayload(const Json& data,
+                                      const ApplicationPayloadLimits& limits,
+                                      uint64_t* bytes) {
+  if (!bytes) return Invalid();
+  *bytes = 0;
+  std::vector<ApplicationStringRef> references;
+  return Inspect(data, limits, &references, bytes);
+}
+
+ObjectReply RestoreApplicationPayload(ObjectStore& objects,
+                                      const BinaryAccess& access,
+                                      const Json& encoded,
+                                      const ApplicationPayloadLimits& limits,
+                                      Json* restored) {
+  if (!restored) return Invalid();
+  *restored = {};
+  auto reply = Active(access);
+  if (!reply.ok()) return reply;
+  std::vector<ApplicationStringRef> references;
+  uint64_t bytes = 0;
+  reply = Inspect(encoded, limits, &references, &bytes);
+  if (!reply.ok()) return reply;
   auto next = encoded;
   std::map<std::string, std::string> loaded;
   for (const auto& ref : references) {
@@ -286,31 +330,91 @@ ObjectReply RestoreApplicationPayload(ObjectStore& objects,
   return reply;
 }
 
+ObjectReply RestoreApplicationObjects(ObjectStore& objects,
+                                      const BinaryAccess& access, bool list,
+                                      Json* value,
+                                      const ApplicationPayloadLimits& limits) {
+  if (!value || !value->IsObject()) return Invalid();
+  const auto restore = [&](Json* record) -> ObjectReply {
+    for (auto& [name, data] : record->object) {
+      if (name != "data" || !data.Find(kField)) continue;
+      Json restored;
+      auto reply =
+          RestoreApplicationPayload(objects, access, data, limits, &restored);
+      if (!reply.ok()) return reply;
+      std::erase_if(restored.object,
+                    [](const auto& field) { return field.first == kField; });
+      data = std::move(restored);
+    }
+    return {};
+  };
+  if (!list) return restore(value);
+  for (auto& [name, records] : value->object) {
+    if (name != "data") continue;
+    if (!records.IsArray()) return Invalid();
+    uint64_t remaining = limits.max_data_bytes;
+    size_t count = 0;
+    for (const auto& record : records.array) {
+      const auto* data = record.Find("data");
+      if (!record.IsObject() || !data) return Invalid();
+      uint64_t bytes = 0;
+      auto measured = MeasureApplicationPayload(*data, limits, &bytes);
+      if (!measured.ok()) return measured;
+      if (bytes > remaining) break;
+      remaining -= bytes;
+      ++count;
+    }
+    if (!count && !records.array.empty()) return Capacity();
+    const bool more = count != records.array.size();
+    records.array.resize(count);
+    for (auto& record : records.array) {
+      auto reply = restore(&record);
+      if (!reply.ok()) return reply;
+    }
+    if (more) {
+      const auto first = records.array.front().GetString("id");
+      const auto last = records.array.back().GetString("id");
+      Set(value, "first_id", String(first));
+      Set(value, "last_id", String(last));
+      Set(value, "has_more", Boolean(true));
+    }
+    return {};
+  }
+  return Invalid();
+}
+
 ApplicationPayloads::ApplicationPayloads(ObjectStore& objects,
                                          BinaryAccess access,
                                          ApplicationPayloadLimits limits)
-    : objects_(objects), access_(std::move(access)), limits_(limits) {}
+    : objects_(objects), access_(std::move(access)), limits_(limits) {
+  access_.deadline =
+      std::min(access_.deadline, Clock::now() + std::chrono::minutes(30));
+}
 ApplicationPayloads::~ApplicationPayloads() { Published(uncertain_); }
 
-ObjectReply ApplicationPayloads::Encode(const Json& data, Json* encoded) {
+ObjectReply ApplicationPayloads::Encode(const Json& data, Json* encoded,
+                                        const Json* previous_data) {
   if (!encoded || !Limits(limits_) || published_) return Invalid();
   *encoded = {};
   if (uncertain_) return unknown_result_;
   auto reply = Active(access_);
   if (!reply.ok()) return reply;
   std::vector<ApplicationStringRef> previous;
-  if (!ParseApplicationPayloadReferences(data, &previous)) return Invalid();
+  if (!ParseApplicationPayloadReferences(previous_data ? *previous_data : data,
+                                         &previous))
+    return Invalid();
   uint64_t remaining = limits_.max_data_bytes;
-  size_t nodes = 262144;
+  size_t nodes = 2 * 1024 * 1024;
   Path path;
   std::vector<Candidate> strings;
   if (!Scan(data, limits_, &path, &remaining, &nodes, &strings))
     return Capacity();
-  for (const auto& ref : previous) {
-    const auto* target = At(&data, ref.path);
-    // An encoded record must be restored before being written again.
-    if (target && target->IsNull()) return Invalid();
-  }
+  if (!previous_data)
+    for (const auto& ref : previous) {
+      const auto* target = At(&data, ref.path);
+      // An encoded record must be restored before being written again.
+      if (target && target->IsNull()) return Invalid();
+    }
   auto next = Clone(data, limits_.inline_bytes);
   auto descriptions = Array();
   InputSnapshotStore store(objects_);
@@ -323,8 +427,7 @@ ObjectReply ApplicationPayloads::Encode(const Json& data, Json* encoded) {
     if (found == known_.end()) {
       const auto old =
           std::find_if(previous.begin(), previous.end(), [&](const auto& ref) {
-            return ref.path == candidate.path && ref.bytes == bytes.size() &&
-                   ref.sha256 == digest;
+            return ref.bytes == bytes.size() && ref.sha256 == digest;
           });
       InputSnapshotRef reference;
       if (old != previous.end()) {
@@ -385,10 +488,12 @@ void ApplicationPayloads::Published(bool commit_unknown) noexcept {
     for (auto& hold : holds_)
       if (!hold.released && !hold.commit_unknown &&
           Clock::now() < cleanup.deadline)
-        store.Release(cleanup, &hold);
+        if (!store.Release(cleanup, &hold).ok())
+          objects_.RecordAuxiliaryCleanupFailure();
     holds_.clear();
   } catch (...) {
     // Holds have absolute expiry. Cleanup failure cannot undo publication.
+    objects_.RecordAuxiliaryCleanupFailure();
   }
 }
 }  // namespace q4t::server

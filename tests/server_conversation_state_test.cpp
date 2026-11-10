@@ -522,3 +522,46 @@ Q4T_TEST(conversation_state_screenshot_absence_and_include_contract) {
                             "data:image/png;base64,AQ==");
   return true;
 }
+
+Q4T_TEST(conversation_state_large_item_survives_membership_shift_and_restart) {
+  Fixture fixture;
+  const std::string bytes(17ULL << 20, 'A');
+  auto items = Items({"msg_small", "msg_large"});
+  auto content = Parse(R"([{"type":"input_file","filename":"original.txt",
+                            "file_data":""}])");
+  Set(&content.array[0], "file_data", String(bytes));
+  Set(&items.array[1], "content", content);
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    ConversationState states(objects);
+    auto access = Access();
+    access.deadline = Clock::now() + 30s;
+    const auto created = states.Create(Json(), items, access);
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    Q4T_CHECK(Ok(states.EraseItem(id, "msg_small", access)));
+    Q4T_CHECK(Ok(states.Update(id, Parse(R"({"phase":"shifted"})"), access)));
+  }
+  ObjectStore objects(fixture.options);
+  ConversationState states(objects);
+  auto access = Access();
+  access.deadline = Clock::now() + 30s;
+  const auto page = states.ListItems(id, {}, access);
+  Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 1);
+  const auto& item = page.value.GetArray("data")->array[0];
+  Q4T_CHECK(item.GetString("id") == "msg_large" &&
+            item.GetArray("content")->array[0].GetString("file_data") == bytes);
+  Q4T_CHECK(OutputJson(page.value).find("_q4t_application_payload") ==
+            std::string::npos);
+  Q4T_CHECK(Ok(states.Erase(id, access)));
+  // Independently stored item remains usable by Responses after its parent
+  // conversation has gone; membership deletion does not rewrite history.
+  ResponsesState responses(objects);
+  const auto resolved = responses.ResolveItems(
+      Parse(R"([{"type":"item_reference","id":"msg_large"}])"), access);
+  Q4T_CHECK(Ok(resolved) && resolved.value.array.size() == 1 &&
+            resolved.value.array[0].GetArray("content")->array[0].GetString(
+                "file_data") == bytes);
+  return true;
+}

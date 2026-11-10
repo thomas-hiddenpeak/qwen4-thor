@@ -970,8 +970,13 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-second-put-lost-ack") == 0;
   const bool lose_snapshot_ack =
       std::strcmp(argv[1], "--q4t-object-worker-snapshot-lost-ack") == 0;
+  const bool lose_cleanup_ack =
+      std::strcmp(argv[1], "--q4t-object-worker-read-close-lost-ack") == 0;
+  const bool lose_application_ack =
+      std::strcmp(argv[1], "--q4t-object-worker-application-lost-ack") == 0;
   int successful_puts = 0;
-  matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack;
+  matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack ||
+            lose_cleanup_ack || lose_application_ack;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1006,6 +1011,25 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+      if (reply.ok() && lose_cleanup_ack &&
+          request.GetString("operation") == "erase" &&
+          request.GetString("kind") == "tool_run")
+        for (;;) pause();  // Durable cleanup completed; its receipt is lost.
+      if (reply.ok() && lose_application_ack) {
+        const auto application = [](const Json& value) {
+          const auto kind = value.GetString("kind");
+          return value.GetString("operation") == "put" &&
+                 (kind == "chat" || kind == "response" ||
+                  kind == "conversation" || kind == "item" ||
+                  kind == "prompt" || kind == "batch");
+        };
+        if (application(request))
+          for (;;) pause();
+        if (const auto* mutations = request.GetArray("mutations"))
+          for (const auto& mutation : mutations->array)
+            if (application(mutation))
+              for (;;) pause();
+      }
       if (reply.ok() && lose_snapshot_ack)
         if (const auto* mutations = request.GetArray("mutations"))
           for (const auto& mutation : mutations->array)

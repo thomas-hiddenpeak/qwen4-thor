@@ -357,3 +357,52 @@ Q4T_TEST(input_snapshot_retention_uses_only_private_typed_bindings) {
   Q4T_CHECK(InspectObjectRetention("chat", parent.data).uncertain);
   return true;
 }
+
+Q4T_TEST(input_snapshot_long_parent_deadline_preserves_absolute_hold) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  auto access = Access();
+  access.deadline = Clock::now() + 8h;
+  InputSnapshotRef reference;
+  InputSnapshotHold hold, pin;
+  const auto before = std::time(nullptr);
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold, access)));
+  Q4T_CHECK(hold.expires_at >= before + 60 &&
+            hold.expires_at <= std::time(nullptr) + 60);
+  Q4T_CHECK(Ok(snapshots.Pin(access, reference, kBinding, 60, &pin)));
+  Q4T_CHECK(pin.expires_at <= std::time(nullptr) + 60);
+  InputSnapshot restored;
+  Q4T_CHECK(Ok(snapshots.Read(access, reference, kBinding, {}, &restored)) &&
+            restored.parts == std::vector<std::string>{"actual payload"});
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)) &&
+            Ok(snapshots.Release(Access(), &pin)) && Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_actual_lost_cleanup_receipt_keeps_verified_content) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 100;
+  Injection injection("--q4t-object-worker-read-close-lost-ack");
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  InputSnapshot restored;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &restored)));
+  Q4T_CHECK(restored.parts == std::vector<std::string>{"actual payload"} &&
+            restored.metadata.GetString("text") == "中文" &&
+            objects.Health().auxiliary_cleanup_failures == 1);
+  Reaped(objects);
+  // A real content validation error retains its cause even when the second
+  // read lease's cleanup also loses its receipt in the replacement IO worker.
+  const auto bad = snapshots.Read(Access(), reference, Digest("wrong binding"),
+                                  {}, &restored);
+  Q4T_CHECK(bad.code == "input_snapshot_inconsistent" &&
+            restored.parts.empty() &&
+            objects.Health().auxiliary_cleanup_failures == 2);
+  Reaped(objects);
+  Q4T_CHECK(objects.Health().workers_started == 2);
+  return true;
+}

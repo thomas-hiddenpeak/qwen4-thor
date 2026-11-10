@@ -1,0 +1,9 @@
+{
+  "argv": [
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-file-inputs-20261110/application-required-01.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 22.492623027879745
+}

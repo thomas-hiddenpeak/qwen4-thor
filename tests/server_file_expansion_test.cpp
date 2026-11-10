@@ -166,6 +166,29 @@ Q4T_TEST(file_expansion_exhausted_preparation_cannot_issue_another_sheet) {
   return true;
 }
 
+Q4T_TEST(file_expansion_long_parent_request_uses_short_absolute_storage_hold) {
+  Fixture fixture;
+  fixture.options.hold_seconds = 60;
+  ObjectStore objects(fixture.objects);
+  FileExpansion expansion(&objects, fixture.options);
+  auto access = Access();
+  access.deadline = Clock::now() + 8h;
+  const auto items = Array({Item(Inline())});
+  Q4T_CHECK(Ok(expansion.Prepare(items, FileInputProfile::kResponsesStored,
+                                 Json(), access)));
+  Q4T_CHECK(Ok(expansion.Persist(access)));
+  Q4T_CHECK(Retain(objects, items, expansion.Bindings()));
+  Q4T_CHECK(Ok(expansion.Release(Access())));
+  FileExpansion replay(&objects, fixture.options);
+  Q4T_CHECK(Ok(replay.Prepare(items, FileInputProfile::kResponsesStored,
+                              expansion.Bindings(), access, true)));
+  Json expected, actual;
+  Q4T_CHECK(Ok(expansion.Render(items, &expected)) &&
+            Ok(replay.Render(items, &actual)) &&
+            OutputJson(expected) == OutputJson(actual));
+  return true;
+}
+
 Q4T_TEST(file_expansion_all_source_validation_precedes_external_io) {
   Fixture fixture;
   ObjectStore objects(fixture.objects);

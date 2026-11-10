@@ -402,7 +402,11 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
   prepared_ = true;
   return {};
 }
-ObjectReply FileExpansion::Persist(const BinaryAccess& access) {
+ObjectReply FileExpansion::Persist(const BinaryAccess& parent_access) {
+  auto access = parent_access;
+  access.deadline =
+      std::min(access.deadline,
+               Clock::now() + std::chrono::seconds(options_.hold_seconds));
   if (access.scope != scope_) return Invalid();
   if (commit_unknown_) return unknown_result_;
   if (!prepared_) return Invalid();

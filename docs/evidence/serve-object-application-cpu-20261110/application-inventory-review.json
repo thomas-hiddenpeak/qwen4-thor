@@ -1,0 +1,16 @@
+{
+  "reviewed": [
+    "include/q4t/server/application_payload.h",
+    "include/q4t/server/object_store.h",
+    "src/server/application_payload.cpp",
+    "src/server/chat_preflight.cpp",
+    "src/server/file_expansion.cpp",
+    "src/server/input_snapshot.cpp",
+    "src/server/object_store.cpp",
+    "src/server/object_worker.cpp"
+  ],
+  "semantic_keys_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 463,
+  "review": "Automatic application ObjectStore put/get/list/atomic batches compact large strings internally, restore exact public/application data, hide root manifests, enforce expanded list/transaction budgets and reuse content under original revision CAS. IO deadlines fit absolute leases. Actual read cleanup lost receipts are diagnostic only and do not overwrite validated content or genuine read errors. Fault selectors remain host-test-only. Reviewed all changed production paths; HTTP large-input capacities and private snapshot parent publication existence checking still require implementation."
+}
