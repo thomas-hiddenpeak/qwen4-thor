@@ -193,6 +193,7 @@ def current_surface(root):
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",
                        root / "cmake/NativeCrypto.cmake",
+                       root / "cmake/NativeDocuments.cmake",
                        root / "cmake/RecoveryProbe.cmake",
                        root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",

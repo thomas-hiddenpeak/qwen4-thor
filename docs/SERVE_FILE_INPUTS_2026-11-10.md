@@ -118,3 +118,26 @@ seccomp限制，与纯内存文本沙箱分开验证。缺失解码器或隔离�
 实现或验收完成。后续Office/RTF与全部FI03—FI05继续。
 
 PDF组件完成[18 C++与1真实像素检查](evidence/serve-file-pdf-cpu-20261110/README.md)，保留首次EACCES失败、诊断及受影响补验。固定工具inode只读+执行、库目录只读，EOF与正常退出共同确认成功；实际全部文字/页面、旋转、预算和取消已核对。默认32页/64M像素/64MiB图片、每页16MiB；总30秒可配置至120秒，2GiB单worker地址空间，model/context准入仍在FI03。未接API/真实模型或默认发行；下一步Office/RTF，之后全部消费与业务任务。
+
+## FI02 Office容器与语义接入（继续实施）
+
+容器复用系统[libarchive内存读取接口](https://github.com/libarchive/libarchive/blob/v3.7.2/libarchive/archive_read.3)
+与[libxml2 XML reader](https://gnome.pages.gitlab.gnome.org/libxml2/html/xmlreader_8h.html)。
+本机实际3.7.2/2.9.14；只采用本机头文件已有接口，不假设最新版API。
+两个库只在独立解析worker内预加载，随后进入既有纯内存seccomp；
+核心启动没有新的DT_NEEDED或文档服务进程。dev头只解压到工作目录，
+系统安装未变；正常构建依赖及公共host检查所需包已登记README/CI。
+
+seekable ZIP要求完整目录，所有成员按实际字节/CRC读取，包括被格式
+忽略的数据；默认128MiB展开/32MiB成员/4096成员，可至512MiB/64MiB/
+65536成员。重复/穿越/链接/加密拒绝，不写包内路径。XML按namespace
+展开名称，保留Unicode/空白，拒绝DTD与外部/自定义实体；固定外部
+loader拒绝读取。默认1000000节点/深度64，硬上限2000000/128，
+节点/属性/字节均有界，取消和错误停止访问，最终文档仅成功后发布。
+
+格式语义继续依据[WordprocessingML](https://learn.microsoft.com/en-us/office/open-xml/word/structure-of-a-wordprocessingml-document)、
+[SpreadsheetML](https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/structure-of-a-spreadsheetml-document)
+及[ODF 1.2](https://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html)：
+文档段落/表格、演示文稿实际顺序、workbook关联和共享字符串、真实行列/
+1000行及缓存数值、ODF重复行列/文字都须实现。Legacy Office、RTF、
+Apple及Google文档来源适配继续保留，容器接受不替代它们或全部FI03—FI05。

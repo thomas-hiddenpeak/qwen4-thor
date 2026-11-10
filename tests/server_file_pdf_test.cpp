@@ -84,11 +84,14 @@ FileInputContent Pdf(size_t pages = 2, bool rotated = false) {
 }
 bool Save(const FileDocument& document, std::string_view prefix) {
   const char* root = std::getenv("Q4T_TEST_OUTPUT_DIR");
-  if (!root) return false;
-  std::filesystem::create_directories(root);
+  const auto destination =
+      root ? std::filesystem::path(root)
+           : std::filesystem::path(__FILE__).parent_path().parent_path() /
+                 ".q4t-work/public-host-fixtures/pdf";
+  std::filesystem::create_directories(destination);
   for (const auto& page : document.pages) {
     std::ofstream file(
-        std::filesystem::path(root) /
+        destination /
             (std::string(prefix) + std::to_string(page.number) + ".png"),
         std::ios::binary);
     file.write(page.png.data(), page.png.size());

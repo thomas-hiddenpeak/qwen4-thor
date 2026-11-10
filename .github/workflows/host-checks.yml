@@ -23,6 +23,10 @@ jobs:
           command -v g++-14 >/dev/null || packages+=(g++-14)
           command -v cmake >/dev/null || packages+=(cmake)
           test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
+          test -f /usr/include/archive.h || packages+=(libarchive-dev)
+          test -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)
+          command -v pdftoppm >/dev/null || packages+=(poppler-utils)
+          test -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf || packages+=(fonts-dejavu-core)
           dpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \
             grep -q 'install ok installed' || packages+=(libidn2-0)
           command -v openssl >/dev/null || packages+=(openssl)

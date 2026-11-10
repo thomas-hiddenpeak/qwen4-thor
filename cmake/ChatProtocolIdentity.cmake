@@ -135,6 +135,11 @@ set(protocol_inputs
   include/q4t/server/file_document_worker.h
   src/server/file_document_worker.cpp
   src/server/file_document_sandbox.cpp
+  src/server/file_package.h
+  src/server/file_package.cpp
+  src/server/file_package_runtime.h
+  src/server/file_package_runtime.cpp
+  cmake/NativeDocuments.cmake
   include/q4t/server/file_pdf.h
   src/server/file_pdf.cpp
   src/server/file_pdf_protocol.h

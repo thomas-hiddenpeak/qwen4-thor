@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI02 [ZIP/XML 10项隔离CPU接受](evidence/serve-file-package-cpu-20261110/README.md)，0.064秒，另PDF无环境变量夹具1项通过。host/引擎零警告，ELF无新增文档库DT_NEEDED，系统安装/默认/0GPU保持；CI构建依赖已登记但未冒称远端CI通过。继续Office真实语义、RTF/Legacy及全部API/业务/总任务。
+
+FI02 Office容器底座已成组实现：独立进程预加载系统libarchive/libxml2后进入纯内存沙箱，完整ZIP/CRC/真实展开量、namespace XML/实体禁用与期限取消。冻结8新+2受影响CPU，另1项修复PDF夹具无环境变量输出路径；必要构建开始，尚未测试。运行库本机已有，dev头只解压工作目录，0GPU/默认保持；Office语义及全部消费/业务/总任务继续。
+
 FI02 [PDF文字/逐页图像18 C++与1像素检查接受](evidence/serve-file-pdf-cpu-20261110/README.md)，首13过/5失败经单一EACCES诊断修复，6直接补验全过；首构建/失败/诊断保留。host/引擎零警告、0GPU，默认cdb5ced9保持STOPPED。继续Office/RTF和全部消费/历史/计数/真实业务及总目标，不以组件通过结案。
 
 FI02 PDF首组18项13通过、5实际解码失败；单一strace诊断证实execveat被Landlock拒绝，固定ELF inode需同时READ_FILE/EXECUTE。已定点补齐而不扩大目录执行权限；冻结5失败+1沙箱直接补验，复用其余已过，PNG检查尚未执行。首命名冲突构建与失败/诊断原件保留，默认/0GPU保持，全部任务继续。

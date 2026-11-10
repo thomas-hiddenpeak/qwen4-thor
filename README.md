@@ -176,6 +176,13 @@ A09.5开发中的PDF解析通过独立受限进程调用系统
 Landlock ABI4及seccomp支持，不能用无隔离执行作为回退。组件CPU
 已验，完整API消费和发行仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)推进。
 
+Office容器底座在独立worker内按需加载系统libarchive 13/libxml2 2，
+构建需`libarchive-dev`与`libxml2-dev`头文件。原生适配采用内存ZIP
+读取及禁用外部实体的XML读取，进入纯内存沙箱后解析；不解压到主机
+目录。系统包分别保留BSD与MIT等原始许可（见其copyright文件），
+q4t没有复制这些库源码或随包分发库。容器组件已验，Office具体内容
+映射仍在实施，未把解析库可加载当作文件输入API已交付。
+
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
 原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。
@@ -280,7 +287,8 @@ HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
 # 要求: CMake >= 4.0 (CMAKE_CUDA_STANDARD 23 仅在 4.x 映射 nvcc --std=c++23)
 #   pip install --user --break-system-packages cmake==4.4.3
 # 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
-#   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev
+#   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev \
+#     libssl-dev libarchive-dev libxml2-dev
 # custom grammar构建另需rustc >= 1.65（本机使用固定1.90.0）；不要求cargo
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \

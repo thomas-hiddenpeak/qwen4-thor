@@ -278,6 +278,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_document.cpp
   src/server/file_document_worker.cpp
   src/server/file_document_sandbox.cpp
+  src/server/file_package.cpp
+  src/server/file_package_runtime.cpp
   src/server/file_pdf.cpp
   src/server/file_pdf_worker.cpp
   src/server/file_pdf_sandbox.cpp
@@ -375,12 +377,14 @@ target_include_directories(q4t_server PUBLIC include)
 target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 q4t_link_structured_output(q4t_server)
 include(cmake/NativeCrypto.cmake)
+include(cmake/NativeDocuments.cmake)
 target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
   src/server/state_cipher.cpp src/server/responses_crypto.cpp
   src/server/responses_compaction.cpp
   src/server/state_key_admin.cpp src/server/state_key_cli.cpp
   src/server/state_retention_cli.cpp)
 q4t_link_native_crypto(q4t_server)
+q4t_link_native_documents(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -683,6 +687,7 @@ if(Q4T_BUILD_TESTS)
   target_sources(q4t_tests PRIVATE src/server/native_crypto.cpp
     tests/server_native_crypto_test.cpp)
   q4t_link_native_crypto(q4t_tests)
+q4t_link_native_documents(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
       tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp
@@ -774,6 +779,7 @@ if(Q4T_BUILD_TESTS)
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
   q4t_link_native_crypto(q4t_host_tests)
+q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})

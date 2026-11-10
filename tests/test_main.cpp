@@ -25,6 +25,7 @@ int FilesApiFixture(int argc, char** argv);
 int FileFetchFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
+int PackageFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
 int ResponsesJobsFixture(int argc, char** argv);
 #endif
@@ -65,6 +66,8 @@ int main(int argc, char** argv) {
   if (document_sandbox >= 0) return document_sandbox;
   const int pdf_sandbox = PdfSandboxFixture(argc, argv);
   if (pdf_sandbox >= 0) return pdf_sandbox;
+  const int package_fixture = PackageFixture(argc, argv);
+  if (package_fixture >= 0) return package_fixture;
   const int responses = ResponsesApiFixture(argc, argv);
   if (responses >= 0) return responses;
   const int jobs = ResponsesJobsFixture(argc, argv);
