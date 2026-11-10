@@ -125,6 +125,11 @@ set(protocol_inputs
   src/server/uploads.cpp
   include/q4t/server/file_input.h
   src/server/file_input.cpp
+  include/q4t/server/file_fetch.h
+  src/server/file_fetch_internal.h
+  src/server/file_fetch.cpp
+  src/server/file_fetch_policy.cpp
+  src/server/file_fetch_http.cpp
   include/q4t/server/files.h
   include/q4t/server/file_limits.h
   src/server/files.cpp

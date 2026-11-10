@@ -1,0 +1,22 @@
+{
+  "CMakeLists.txt": "6b119be4d6574f485bcf9ef52079bda03c833e3ad4ae8253e8b0d628371aeef6",
+  "cmake/HostTestSources.cmake": "16bda072ad6088bb1e82bf92587b551d694bd24dfae80a57daef90a41ec00063",
+  "cmake/ChatProtocolIdentity.cmake": "6f0801e9660b838fd472dc1e30febc8f159d1c461d3e919f447e1a55c06ef259",
+  "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
+  "include/q4t/server/file_fetch.h": "d3a1489614982189e1b120ea47e37a0e275ba2175bfc9d70013cf0b48a22693e",
+  "src/server/file_fetch_internal.h": "f25e5b630b36ecbe0720e159808ec70b927d73b8e8b7af090198fea2decea51f",
+  "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
+  "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec",
+  "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
+  "include/q4t/server/grammar_process.h": "766e14b63033a660b1e0a291727166d278e00592f64886a4d8ae921a89e92397",
+  "src/server/grammar_process.cpp": "db10f0d8c6bcee90d8d159553c7fef92f40e699fae233c7f4d92e6ef9294c7a4",
+  "src/server/chat_http.cpp": "834f128e8ead26bc4d3833883e8bdb4707ffff59b163da6594c5efefac53dfd8",
+  "src/server/chat_metrics.cpp": "847aa9952a316dfe5c2f34cdc298b521b7de325d1713970feb3d7a9ffb63c37f",
+  "src/main.cpp": "019978f4d95fad72718f6d9e597ab3dac209f33e9f561c1cca728f7f7eedf39f",
+  "src/server/file_input.cpp": "d810d48c6caa9220c4d217a9a3840debf2f4fd5a8f95e328d0203d361e6cc2cc",
+  "tests/server_file_input_test.cpp": "8068547190552900d7680665dfeb00e1b303190fdb667b2f5efd7dc423d257b4",
+  "tests/server_file_fetch_test.cpp": "e8fa2dc51fd28c3617a89ab92f2c7c3a08940bab9ce7829c453e66771e25890c",
+  "tests/test_main.cpp": "e544088ce433486057894b50ff09d03144ba325141bf0cfea8d1517e977106c8",
+  "tools/serve_responses/test_file_fetch.py": "94d9c5b3e3d7af0738884e94dca23c3a5380731d937caa6a2687c8002b7e239e",
+  "tools/serve_audit/check_inventory.py": "4e27cc714f8fdde1a9b2136c89396bd5e6fd6f6dc4c7c9ad4667ae8ab2a87823"
+}

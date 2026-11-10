@@ -29,6 +29,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/object_store.h"
+#include "q4t/server/file_fetch.h"
 #include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
 #include "q4t/service/service_cli.h"
@@ -899,6 +900,8 @@ int main(int argc, char** argv) {
   if (cache_worker >= 0) return cache_worker;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
+  const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
+  if (fetch_worker >= 0) return fetch_worker;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
   const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);

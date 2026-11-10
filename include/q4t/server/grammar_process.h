@@ -32,7 +32,7 @@ enum class GrammarFailure {
 // Independent fixed-capacity domains: a blocked object-store worker must not
 // consume the grammar slot or degrade ordinary structured generation.
 enum class IsolatedWorkerDomain {
-  kGrammar, kObjects, kSessionCache, kPrefixCache
+  kGrammar, kObjects, kSessionCache, kPrefixCache, kFileFetch
 };
 
 // Independent lifetime: deferred cleanup never retains a server/request
@@ -76,6 +76,9 @@ namespace detail {
 
 // Called by the native event loop and before admission. No wait or callback.
 void PollGrammarWorkers();
+// Native loop polling also collects independent one-shot file fetches, even
+// when no later request uses that capability. No request callback is retained.
+void PollRequestWorkers();
 bool GrammarCleanupPending();
 void PollIsolatedWorkers(IsolatedWorkerDomain domain);
 bool IsolatedCleanupPending(IsolatedWorkerDomain domain);

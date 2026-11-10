@@ -14,11 +14,13 @@
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 #include "q4t/server/object_store.h"
+#include "q4t/server/file_fetch.h"
 #include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
 int FilesApiFixture(int argc, char** argv);
+int FileFetchFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
 int ResponsesJobsFixture(int argc, char** argv);
 #endif
@@ -37,6 +39,8 @@ int main(int argc, char** argv) {
   if (cache_fixture >= 0) return cache_fixture;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
+  const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
+  if (fetch_worker >= 0) return fetch_worker;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
   const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
@@ -47,6 +51,8 @@ int main(int argc, char** argv) {
   if (conversation >= 0) return conversation;
   const int files = FilesApiFixture(argc, argv);
   if (files >= 0) return files;
+  const int file_fetch = FileFetchFixture(argc, argv);
+  if (file_fetch >= 0) return file_fetch;
   const int responses = ResponsesApiFixture(argc, argv);
   if (responses >= 0) return responses;
   const int jobs = ResponsesJobsFixture(argc, argv);

@@ -51,10 +51,12 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* objects = new WorkerOwner;
   static auto* sessions = new WorkerOwner;
   static auto* prefixes = new WorkerOwner;
+  static auto* files = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
     case IsolatedWorkerDomain::kPrefixCache: return *prefixes;
+    case IsolatedWorkerDomain::kFileFetch: return *files;
     default: return *grammar;
   }
 }
@@ -136,6 +138,11 @@ void PollGrammarWorkers() {
   PollIsolatedWorkers(IsolatedWorkerDomain::kGrammar);
 }
 
+void PollRequestWorkers() {
+  PollGrammarWorkers();
+  PollIsolatedWorkers(IsolatedWorkerDomain::kFileFetch);
+}
+
 void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
   auto& owner = Owner(domain);
   const std::lock_guard lock(owner.mutex);
@@ -174,7 +181,8 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
   if (control.domain != IsolatedWorkerDomain::kGrammar &&
       control.domain != IsolatedWorkerDomain::kObjects &&
       control.domain != IsolatedWorkerDomain::kSessionCache &&
-      control.domain != IsolatedWorkerDomain::kPrefixCache)
+      control.domain != IsolatedWorkerDomain::kPrefixCache &&
+      control.domain != IsolatedWorkerDomain::kFileFetch)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -223,11 +231,13 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char grammar_name[] = "q4t-grammar-worker";
     char objects_name[] = "q4t-object-worker";
     char cache_name[] = "q4t-cache-worker";
+    char fetch_name[] = "q4t-file-fetch";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
     if (control.domain == IsolatedWorkerDomain::kSessionCache ||
         control.domain == IsolatedWorkerDomain::kPrefixCache)
       name = cache_name;
+    if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     char* argv[] = {name, const_cast<char*>(entry), parent.data(), limit.data(),
                     nullptr};
     char locale[] = "LC_ALL=C";

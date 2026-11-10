@@ -143,7 +143,7 @@ def current_surface(root):
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
                  "moderation.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
-                 "file_input.cpp"):
+                 "file_input.cpp", "file_fetch_policy.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
@@ -192,6 +192,7 @@ def current_surface(root):
                        root / "tools/serve_gateway/gateway.py",
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",
+                       root / "cmake/NativeCrypto.cmake",
                        root / "cmake/RecoveryProbe.cmake",
                        root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",

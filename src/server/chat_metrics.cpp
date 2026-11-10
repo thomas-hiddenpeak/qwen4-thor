@@ -187,7 +187,7 @@ void ChatServer::HandleMetrics(int fd) {
   counter("q4t_structured_prepare_failed_total",
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
-  detail::PollGrammarWorkers();
+  detail::PollRequestWorkers();
   gauge("q4t_structured_cleanup_pending",
         "Unconfirmed cleanup retains the process-wide structured capacity.",
         detail::GrammarCleanupPending() ? 1 : 0);

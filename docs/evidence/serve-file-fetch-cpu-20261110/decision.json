@@ -1,0 +1,20 @@
+{
+  "status": "PASS_TARGETED_NATIVE_FILE_FETCH_CPU",
+  "cpp_unique_tests": 16,
+  "cpp_cleanup_followup": 1,
+  "tls_python_tests": 4,
+  "first_cpp_selection_executed": 0,
+  "first_selection_failure_preserved": true,
+  "cpp_seconds": 0.71463214000687,
+  "cleanup_seconds": 0.11407809797674417,
+  "tls_seconds": 0.814861221704632,
+  "host_binary_sha256": "d2390293abda0135d05dbf5dc6b6af77428c860c4a4043183e75b9072d75ca2a",
+  "candidate_engine_sha256": "8cc5e9936d4c970d0353dd00f30a8bbf823ed71ad86dffb5c90a2f6801422891",
+  "default_engine_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+  "default_changed": false,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "build_warnings": 0,
+  "api_execution_integration_pending": true,
+  "remaining_master_tasks_open": true
+}

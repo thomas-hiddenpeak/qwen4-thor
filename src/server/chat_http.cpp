@@ -190,7 +190,7 @@ Status ChatServer::Run() {
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
       ProgressExecution loop_work(ProgressWork::kServiceLoop);
-      detail::PollGrammarWorkers();
+      detail::PollRequestWorkers();
       if (std::chrono::steady_clock::now() >= recovery_retry) {
         recovery_retry =
             std::chrono::steady_clock::now() + std::chrono::seconds(60);

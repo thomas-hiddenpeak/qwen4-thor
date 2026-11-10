@@ -1430,11 +1430,21 @@
       "file_data",
       "file_id",
       "filename"
+    ],
+    "file_fetch_policy.cpp:0:value": [
+      "public_networks",
+      "allow_http",
+      "allowed_networks",
+      "allowed_hosts",
+      "ports",
+      "ca_file",
+      "timeout_ms",
+      "max_redirects"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "bd369d97bb02ee4fe037d929524a1c036f279384daba505f74dd73a21f0eacbc",
-    "cmake/ChatProtocolIdentity.cmake": "3c9e06be73594ae6c1ea9996191be58ab715e2a634d912e7becb8712df8e067c",
+    "CMakeLists.txt": "6b119be4d6574f485bcf9ef52079bda03c833e3ad4ae8253e8b0d628371aeef6",
+    "cmake/ChatProtocolIdentity.cmake": "6f0801e9660b838fd472dc1e30febc8f159d1c461d3e919f447e1a55c06ef259",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1486,7 +1496,7 @@
     "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
-    "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
+    "include/q4t/server/grammar_process.h": "766e14b63033a660b1e0a291727166d278e00592f64886a4d8ae921a89e92397",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -1580,7 +1590,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "06d70ef5e279bf1231e03359a8673f6b2b32aff5e6a8f6203481796e0b963ba2",
+    "src/main.cpp": "019978f4d95fad72718f6d9e597ab3dac209f33e9f561c1cca728f7f7eedf39f",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -1604,11 +1614,11 @@
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "be3ef121ed71457ae356bd332c40af9b18a785ed0546f470e8d6d8995dc89c05",
+    "src/server/chat_http.cpp": "834f128e8ead26bc4d3833883e8bdb4707ffff59b163da6594c5efefac53dfd8",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
     "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "9bfdbed223753fb2f6d9304e7472537ae81f31a6f619b5d2e7db42a7722e1cce",
+    "src/server/chat_metrics.cpp": "847aa9952a316dfe5c2f34cdc298b521b7de325d1713970feb3d7a9ffb63c37f",
     "src/server/chat_plan.cpp": "8fb25d37abfd75646db8aa641107dd63341591873bec7cec9f6f7f3700d1e68d",
     "src/server/chat_preflight.cpp": "c920aff0a7994f2c6a35327a1119c4ccbe699920bdc980476b345a54fdd91e19",
     "src/server/chat_prompt.cpp": "91639256c143a659423b42340e92d154ac3f0a6c697b58bae2e20814fe303272",
@@ -1637,7 +1647,7 @@
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
-    "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
+    "src/server/grammar_process.cpp": "db10f0d8c6bcee90d8d159553c7fef92f40e699fae233c7f4d92e6ef9294c7a4",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
@@ -1823,7 +1833,13 @@
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "include/q4t/server/file_input.h": "6f6670ba1821f8b05d36a8eba1b1b152dde71f840e641753839c71678fa75b1d",
-    "src/server/file_input.cpp": "b5c73041b2e2d5e60fb92e456bd65be3c84018078f04f724ef4c828f0c8c006a"
+    "src/server/file_input.cpp": "d810d48c6caa9220c4d217a9a3840debf2f4fd5a8f95e328d0203d361e6cc2cc",
+    "src/server/file_fetch_internal.h": "f25e5b630b36ecbe0720e159808ec70b927d73b8e8b7af090198fea2decea51f",
+    "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
+    "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
+    "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
+    "include/q4t/server/file_fetch.h": "d3a1489614982189e1b120ea47e37a0e275ba2175bfc9d70013cf0b48a22693e",
+    "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -3452,5 +3468,25 @@
       "src/server/files.cpp"
     ],
     "evidence": "docs/evidence/serve-file-source-cpu-20261110/README.md"
+  },
+  "file_fetch_cpu_20261110": {
+    "semantics": "Native bounded HTTP(S) file acquisition in independent exec worker; no public API support claimed before complete parser/execution integration",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "cmake/NativeCrypto.cmake",
+      "include/q4t/server/file_fetch.h",
+      "include/q4t/server/grammar_process.h",
+      "src/main.cpp",
+      "src/server/chat_http.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/file_fetch.cpp",
+      "src/server/file_fetch_http.cpp",
+      "src/server/file_fetch_internal.h",
+      "src/server/file_fetch_policy.cpp",
+      "src/server/file_input.cpp",
+      "src/server/grammar_process.cpp"
+    ],
+    "evidence": "docs/evidence/serve-file-fetch-cpu-20261110/README.md"
   }
 }

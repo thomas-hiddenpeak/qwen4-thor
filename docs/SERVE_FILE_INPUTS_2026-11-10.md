@@ -48,3 +48,32 @@ file_id/file_data，文本内容仍可由标准text part发送。Responses非PDF
 冻结针对性CPU及必要模型短验后成组验收。具体用例/启动上限在执行前
 记录；已过且身份未变的证据复用。非性能工作，不跑完整性能或整模型
 质量矩阵。长稳仍由用户执行，工具与交接属于本任务。
+
+## FI02 原生获取组件（2026-11-10）
+
+实现使用本项目HTTP字段/分块合同及独立exec工作进程，不调用下载
+程序、代理环境或外部文件服务。TLS复用已有系统OpenSSL 3开发头及
+libssl；仅HTTPS工作进程动态加载，缺库/证书/CA/DNS只失败该文件请求。
+依据[OpenSSL主机名校验](https://docs.openssl.org/3.0/man3/SSL_set1_host/)和
+[信任根配置](https://docs.openssl.org/3.0/man3/SSL_CTX_load_verify_locations/)，
+启用peer验证、DNS或IP校验、TLS1.2下限、HTTP/1.1 ALPN，禁止HTTPS
+跳转降为HTTP。没有复制第三方服务器代码或新增服务进程依赖。
+
+部署可设置精确主机、CIDR、端口、CA和总超时；请求不能覆盖它们。
+默认仅公网及80/443，按[IANA IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry/)
+和[IPv6特殊地址登记](https://www.iana.org/assignments/iana-ipv6-special-registry/)
+保守拒绝特殊/私网/转换地址；显式CIDR可授权内网，映射IPv4按IPv4
+规则核对。每跳最多16个解析结果，全部经验证后直接连接其数值地址，
+没有二次主机名解析；每跳重新授权，不转发cookie/API Key/其他凭据。
+
+完整200内容按[HTTP/1.1分帧](https://www.rfc-editor.org/rfc/rfc9112.html)
+读取CL、chunked或连接结束；拒绝歧义、截断、部分文件及保护字段的
+迟到trailer，要求identity编码。控制头32KiB、分块控制2MiB、原字节
+不超过请求剩余预算；最多10跳/30秒，默认5跳/15秒。失败或未知回执
+保留本次最大尝试预算，成功按实际字节计费。独立固定槽位在未确认
+退出时保持占用，native loop也回收已退出子进程，不等待下一次文件请求。
+
+16项C++及4本机TLS实网首组通过；清单生成缩进导致执行前拒绝的
+原件保留。增加loop回收绑定后仅补1直接用例，其他15项与TLS身份
+依赖未变证据复用。完整文档解析、标准API执行、持久快照和真实模型
+业务仍继续实施，不能据组件通过标记A09.5完成。

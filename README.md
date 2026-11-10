@@ -158,8 +158,11 @@ journal仍使用Python，必要的CUDA、系统与模型依赖不变。
 TLS与认证加密状态使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
 构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
 文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
-运行时TLS入口按需加载libssl/libcrypto；引擎只有加密状态请求或密钥
-初始化/轮换才加载libcrypto，普通Chat/Responses不依赖其可用性。
+运行时TLS入口按需加载libssl/libcrypto；引擎的加密状态、密钥操作和
+Uploads可选MD5按需加载libcrypto，普通Chat/Responses不依赖其可用性。
+A09.5开发中的原生文件获取在独立子进程内按需加载同一系统libssl，
+不调用外部下载服务；文件来源/获取组件已做针对性CPU，完整文件输入
+仍按[文件输入计划](docs/SERVE_FILE_INPUTS_2026-11-10.md)继续接入。
 关闭TLS仍需OpenSSL开发头以构建加密状态功能。缺库或坏证书不会
 回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
 项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。

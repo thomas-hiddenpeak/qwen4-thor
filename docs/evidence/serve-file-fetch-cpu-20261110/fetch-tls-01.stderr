@@ -1,0 +1,9 @@
+test_stalled_tls_handshake_has_bounded_owned_cleanup (tools.serve_responses.test_file_fetch.NativeFileFetchTls.test_stalled_tls_handshake_has_bounded_owned_cleanup) ... ok
+test_valid_chain_and_hostname_deliver_original_file (tools.serve_responses.test_file_fetch.NativeFileFetchTls.test_valid_chain_and_hostname_deliver_original_file) ... ok
+test_verified_https_redirect_cannot_downgrade_to_plaintext (tools.serve_responses.test_file_fetch.NativeFileFetchTls.test_verified_https_redirect_cannot_downgrade_to_plaintext) ... ok
+test_wrong_name_untrusted_and_missing_ca_do_not_send_http (tools.serve_responses.test_file_fetch.NativeFileFetchTls.test_wrong_name_untrusted_and_missing_ca_do_not_send_http) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.722s
+
+OK

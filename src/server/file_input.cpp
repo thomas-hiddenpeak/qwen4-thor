@@ -21,7 +21,10 @@ ObjectReply Invalid(std::string message, std::string param) {
   return result;
 }
 ObjectReply At(ObjectReply result, std::string_view param) {
-  if (!result.ok()) Set(&result.value, "param", String(std::string(param)));
+  if (!result.ok()) {
+    if (!result.value.IsObject()) result.value = Object();
+    Set(&result.value, "param", String(std::string(param)));
+  }
   return result;
 }
 ObjectReply Active(const BinaryAccess& access) {

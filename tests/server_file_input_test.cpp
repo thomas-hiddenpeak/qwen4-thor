@@ -289,7 +289,9 @@ Q4T_TEST(file_input_stored_owner_and_size_gate_precede_pin_and_content) {
   auto result =
       ReadLocalFileInput(&objects, Access(), source, &budget, &content);
   Q4T_CHECK(result.http_status == 413 && Count(objects) == before &&
-            budget.used_files == 0);
+            budget.used_files == 0 && result.value.IsObject() &&
+            OutputJson(result.value).find("input[0].content[0].file_id") !=
+                std::string::npos);
   budget.max_files = 0;
   Q4T_CHECK(ReadLocalFileInput(&objects, Access(), source, &budget, &content)
                     .http_status == 500 &&
