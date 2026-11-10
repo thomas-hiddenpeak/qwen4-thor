@@ -197,7 +197,6 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
           inspector.value.uncertain = true;
       }
   } else if (kind == "batch" && data.GetString("format") == "q4t.batch.v1") {
-    inspector.Blob(data);
     const auto* batch = data.Find("batch");
     const auto* pages = data.GetArray("pages");
     if (!batch || !batch->IsObject() || !pages ||
@@ -209,7 +208,14 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
                                status == "in_progress" ||
                                status == "finalizing" || status == "cancelling";
       inspector.value.uncertain |= !inspector.value.active && !BatchTerminal(status);
-      for (const auto& page : pages->array) inspector.Reference(&page);
+      const auto* released = data.Find("resources_released");
+      if (released && (!released->IsBool() ||
+                       (released->boolean && !BatchTerminal(status))))
+        inspector.value.uncertain = true;
+      if (!data.GetBool("resources_released")) {
+        inspector.Blob(data);
+        for (const auto& page : pages->array) inspector.Reference(&page);
+      }
       // Result Files have their own declared expiry. A historical Batch
       // receipt must not pin their content beyond output_expires_after.
     }

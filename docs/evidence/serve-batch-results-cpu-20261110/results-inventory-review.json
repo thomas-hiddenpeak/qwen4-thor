@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/batch_state.h",
+    "src/server/batch_results.cpp",
+    "src/server/batch_state.cpp",
+    "src/server/object_retention.cpp"
+  ],
+  "anchors": 470,
+  "public_contract_changed": false
+}

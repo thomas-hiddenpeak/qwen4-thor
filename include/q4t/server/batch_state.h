@@ -17,6 +17,15 @@ struct BatchRowPosition {
   uint64_t offset = 0, wire_bytes = 0;
   std::string custom_id_sha256;
 };
+struct BatchRowResult {
+  // The durable StartRow ticket, not a client-provided request ID.
+  std::string request_id;
+  int http_status = 0;
+  // Complete finite endpoint JSON including tool output and usage. A failure
+  // of orchestration uses error instead and publishes response=null.
+  std::string response_body;
+  ObjectReply error;
+};
 bool BatchTerminal(std::string_view status);
 
 class BatchState {
@@ -47,8 +56,28 @@ class BatchState {
   ObjectReply FinishCancelled(const BinaryAccess& access,
                               const std::string& id);
 
+  // Zero-based. Reading never grants execution: only a successful StartRow
+  // receipt permits one invocation; running/unknown rows must never replay.
+  ObjectReply Row(const BinaryAccess& access, const std::string& id,
+                  size_t index);
+  ObjectReply ReadInputRow(const BinaryAccess& access, const std::string& id,
+                           size_t index, BatchInputRow* row);
+  ObjectReply StartRow(const BinaryAccess& access, const std::string& id,
+                       size_t index);
+  ObjectReply FinishRow(const BinaryAccess& access, const std::string& id,
+                        size_t index, const std::string& custom_id,
+                        const BatchRowResult& result);
+  ObjectReply BeginFinalization(const BinaryAccess& access,
+                                const std::string& id,
+                                const std::string& terminal_status);
+  // Stream results into success/error Files; both files and terminal Batch
+  // publish in one commit. Partial files are never publicly visible.
+  ObjectReply Finalize(const BinaryAccess& access, const std::string& id);
+
  private:
   ObjectReply Owned(const BinaryAccess& access, const std::string& id);
+  ObjectReply Page(const BinaryAccess& access, const io::Json& stored,
+                   size_t index);
   ObjectStore& objects_;
 };
 }  // namespace q4t::server

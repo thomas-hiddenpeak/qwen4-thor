@@ -276,6 +276,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/uploads.cpp
   src/server/batch_input.cpp
   src/server/batch_state.cpp
+  src/server/batch_results.cpp
   src/server/file_input.cpp
   src/server/file_image.cpp
   src/server/file_webp.cpp

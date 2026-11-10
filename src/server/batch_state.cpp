@@ -114,6 +114,16 @@ ObjectReply Public(const Json& stored) {
     return Corrupt();
   ObjectReply result;
   result.value = *batch;
+  if (counts->GetInt("completed") + counts->GetInt("failed") !=
+          data->GetInt("next_row") ||
+      ((status == "in_progress" || status == "finalizing" ||
+        counts->GetInt("total") > 0) &&
+       counts->GetInt("total") != data->GetInt("validated_rows")))
+    return Corrupt();
+  if (const auto* released = data->Find("resources_released");
+      released &&
+      (!released->IsBool() || (released->boolean && !BatchTerminal(status))))
+    return Corrupt();
   return result;
 }
 ObjectReply Commit(ObjectStore& objects, const BinaryAccess& access,
@@ -392,6 +402,7 @@ ObjectReply BatchState::FailValidation(const BinaryAccess& access,
                               {"param", error.value.Find("param")
                                             ? *error.value.Find("param")
                                             : Json()}})})}}));
+  Set(&root.data, "resources_released", Boolean(true));
   return Commit(objects_, access, root);
 }
 ObjectReply BatchState::Cancel(const BinaryAccess& access,
@@ -416,11 +427,13 @@ ObjectReply BatchState::FinishCancelled(const BinaryAccess& access,
   auto root = Update(access, loaded.value);
   auto& batch = Field(root.data, "batch");
   if (batch.GetString("status") != "cancelling" ||
-      root.data.GetInt("running", -1) != 0)
+      root.data.GetInt("running", -1) != 0 ||
+      batch.Find("request_counts")->GetInt("total") != 0)
     return Error(409, "batch_state_conflict",
                  "Batch cancellation still has execution owners");
   Set(&batch, "status", String("cancelled"));
   Set(&batch, "cancelled_at", Number(std::time(nullptr)));
+  Set(&root.data, "resources_released", Boolean(true));
   return Commit(objects_, access, root);
 }
 ObjectReply BatchState::ClaimAbandoned(const BinaryAccess& access,

@@ -1,0 +1,14 @@
+{
+  "status": "PASS_BATCH_ROW_CHECKPOINTS_AND_ATOMIC_RESULT_FILES_CPU",
+  "tests": 26,
+  "seconds": 6.672546312678605,
+  "gpu_starts": 0,
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "engine_sha256": "93f10c349cc07d4d36249b8fb73ad05628f72af377698bfa5664191da35c8a7c",
+  "host_sha256": "60e2aac87bc854f59108c4b24680c70da9ae2b375545fbcd2da32d02b3833a21",
+  "anchors": 470,
+  "builds_zero_warning": true,
+  "first_build": "test Ok helper brace fixed; production unchanged; first logs retained",
+  "first_contract": "Source SHA in generated semantics stale; reviewed source then regenerated/check passed; routes unchanged.",
+  "remaining": "actual generation adapter/jobs/recovery scan/HTTP/native SDK/business/reversible delivery and all master goals"
+}

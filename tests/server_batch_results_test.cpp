@@ -1,0 +1,857 @@
+#include "q4t/server/batch_state.h"
+
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <array>
+#include <barrier>
+#include <cstdlib>
+#include <ctime>
+#include <filesystem>
+#include <future>
+#include <thread>
+
+#include "../src/server/object_protocol.h"
+#include "q4t/server/files.h"
+#include "q4t/test.h"
+
+namespace {
+using namespace q4t::server;
+using namespace q4t::server::object_detail;
+using namespace std::chrono_literals;
+using Clock = std::chrono::steady_clock;
+namespace fs = std::filesystem;
+struct Fixture {
+  ObjectStoreOptions options;
+  Fixture() {
+    const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+    auto root = fs::absolute(output ? output : ".q4t-work/batch-results-cpu");
+    fs::create_directories(root);
+    auto directory = (root / "batch-results-XXXXXX").string();
+    if (!mkdtemp(directory.data()))
+      throw std::runtime_error("fixture directory");
+    options.directory = directory + "/objects";
+    options.restart_backoff_ms = 0;
+    options.io_timeout_ms = 500;
+  }
+};
+struct Injection {
+  explicit Injection(std::string value) { ObjectWorkerEntryForTesting(value); }
+  ~Injection() { ObjectWorkerEntryForTesting({}); }
+};
+BinaryAccess Access(std::string scope = "client:batch-results") {
+  return {std::move(scope), Clock::now() + 30s, {}};
+}
+bool Ok(const ObjectReply& reply) {
+  if (!reply.ok())
+    std::fprintf(stderr, "%d %s: %s\n", reply.http_status, reply.code.c_str(),
+                 reply.message.c_str());
+  return reply.ok();
+}
+Json Parsed(const std::string& text) {
+  Json value;
+  if (!Parse(text, &value)) throw std::runtime_error("fixture JSON");
+  return value;
+}
+ObjectRequest Request(const std::string& id,
+                      ObjectKind kind = ObjectKind::kBatch) {
+  ObjectRequest request;
+  request.scope = Access().scope;
+  request.id = id;
+  request.kind = kind;
+  return request;
+}
+ObjectReply Edit(ObjectStore& objects, const std::string& id, ObjectKind kind,
+                 const std::function<void(ObjectRequest&)>& change) {
+  auto request = Request(id, kind);
+  auto loaded = objects.Execute(request, Access().deadline);
+  if (!loaded.ok()) return loaded;
+  request.operation = ObjectOperation::kPut;
+  request.expected_revision = loaded.value.GetInt("revision");
+  request.created_at = loaded.value.GetInt("created_at");
+  request.expires_at = loaded.value.GetInt("expires_at");
+  request.data = *loaded.value.Find("data");
+  change(request);
+  return objects.Execute(request, Access().deadline);
+}
+std::string Input(size_t count, size_t padding = 0) {
+  std::string text;
+  for (size_t i = 0; i < count; ++i) {
+    text += OutputJson(Object(
+        {{"custom_id", String("请求\n\"" + std::to_string(i))},
+         {"method", String("POST")},
+         {"url", String("/v1/responses")},
+         {"body", Object({{"model", String("CPU-fixture")},
+                          {"input", String(i == 0 ? std::string(padding, 'x')
+                                                  : "资料")}})}}));
+    if (i + 1 != count) text += "\r\n";
+  }
+  return text;
+}
+struct ReadyBatch {
+  std::string id, file;
+  std::vector<BatchInputRow> rows;
+};
+ReadyBatch Ready(ObjectStore& objects, size_t count, size_t padding = 0) {
+  const auto bytes = Input(count, padding);
+  FileUpload upload(objects, Access(), "multipart/form-data; boundary=b");
+  const auto wire =
+      "--b\r\nContent-Disposition: form-data; "
+      "name=\"purpose\"\r\n\r\nbatch\r\n"
+      "--b\r\nContent-Disposition: form-data; name=\"file\"; "
+      "filename=\"input.jsonl\"\r\n\r\n" +
+      bytes + "\r\n--b--\r\n";
+  if (!Ok(upload.Feed(wire, Access().deadline)))
+    throw std::runtime_error("fixture upload feed");
+  auto uploaded = upload.Finish();
+  if (!Ok(uploaded)) throw std::runtime_error("fixture upload finish");
+  ReadyBatch ready;
+  ready.file = uploaded.value.GetString("id");
+  BatchCreate options;
+  options.input_file_id = ready.file;
+  options.endpoint = "/v1/responses";
+  options.output_ttl_seconds = 3600;
+  BatchState batches(objects);
+  auto created = batches.Create(Access(), options);
+  if (!Ok(created)) throw std::runtime_error("fixture batch create");
+  ready.id = created.value.GetString("id");
+  BatchInput input(
+      options.endpoint,
+      [](const auto&, auto* check) {
+        check->canonical_model = "CPU-fixture";
+        return ObjectReply{};
+      },
+      [&](auto&& row) {
+        ready.rows.push_back(std::move(row));
+        return ObjectReply{};
+      });
+  if (!Ok(input.Feed(bytes)) || !Ok(input.Finish()))
+    throw std::runtime_error("fixture validation");
+  std::vector<BatchRowPosition> positions;
+  for (const auto& row : ready.rows)
+    positions.push_back(
+        {row.line, row.offset, row.wire_bytes, Digest(row.custom_id)});
+  for (size_t i = 0; i < count; i += kBatchPageRows)
+    if (!Ok(batches.AppendValidationPage(
+            Access(), ready.id,
+            std::span(positions).subspan(i,
+                                         std::min(kBatchPageRows, count - i)))))
+      throw std::runtime_error("fixture page");
+  if (!Ok(batches.CompleteValidation(Access(), ready.id, "CPU-fixture")))
+    throw std::runtime_error("fixture ready");
+  return ready;
+}
+BatchRowResult Start(BatchState& batches, const ReadyBatch& ready, size_t index,
+                     int code = 200, std::string body = "{\"answer\":42}") {
+  auto started = batches.StartRow(Access(), ready.id, index);
+  if (!Ok(started)) throw std::runtime_error("fixture start");
+  return {started.value.GetString("request_id"), code, std::move(body), {}};
+}
+std::string Content(ObjectStore& objects, const std::string& id) {
+  BinaryRead read;
+  if (!Ok(Files(objects).Open(Access(), id, &read)))
+    throw std::runtime_error("fixture file read");
+  BinaryStore binary(objects);
+  std::string bytes;
+  for (size_t i = 0; i < read.manifest.chunks.size(); ++i) {
+    std::string chunk;
+    if (!Ok(binary.Read(Access(), read, i, &chunk)))
+      throw std::runtime_error("fixture chunk");
+    bytes += chunk;
+  }
+  if (!Ok(binary.Close(Access(), &read)))
+    throw std::runtime_error("fixture read close");
+  return bytes;
+}
+std::vector<Json> Lines(const std::string& text) {
+  std::vector<Json> lines;
+  size_t offset = 0;
+  while (offset < text.size()) {
+    const auto end = text.find('\n', offset);
+    if (end == std::string::npos)
+      throw std::runtime_error("missing terminal newline");
+    lines.push_back(Parsed(text.substr(offset, end - offset)));
+    offset = end + 1;
+  }
+  return lines;
+}
+ObjectReply Collect(ObjectStore& objects) {
+  auto plan = objects.Retention(0, 128, "", Access().deadline);
+  return plan.ok()
+             ? objects.Retention(0, 128, plan.value.GetString("plan_sha256"),
+                                 Access().deadline)
+             : plan;
+}
+void Drain(ObjectStore& objects) {
+  const auto until = Clock::now() + 2s;
+  while (objects.Health().pending && Clock::now() < until)
+    std::this_thread::sleep_for(1ms);
+}
+}  // namespace
+
+Q4T_TEST(
+    batch_results_read_original_rows_across_actual_chunks_after_file_delete) {
+  Fixture fixture;
+  ReadyBatch ready;
+  {
+    ObjectStore objects(fixture.options);
+    ready = Ready(objects, 3, 2 * kBinaryChunkBytes + 17);
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), ready.file)) &&
+              Ok(Collect(objects)));
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  for (size_t i = 0; i < ready.rows.size(); ++i) {
+    BatchInputRow row;
+    Q4T_CHECK(Ok(batches.ReadInputRow(Access(), ready.id, i, &row)) &&
+              row.line == ready.rows[i].line &&
+              row.offset == ready.rows[i].offset &&
+              row.wire_bytes == ready.rows[i].wire_bytes &&
+              row.custom_id == ready.rows[i].custom_id &&
+              OutputJson(row.body) == OutputJson(ready.rows[i].body));
+  }
+  BatchInputRow unchanged;
+  unchanged.custom_id = "unchanged";
+  Q4T_CHECK(
+      batches.ReadInputRow(Access("client:other"), ready.id, 0, &unchanged)
+              .http_status == 404 &&
+      unchanged.custom_id == "unchanged");
+  Q4T_CHECK(batches.Row(Access(), ready.id, 3).http_status == 409);
+  auto cancelled = Access();
+  cancelled.cancelled = [] { return true; };
+  Q4T_CHECK(!batches.ReadInputRow(cancelled, ready.id, 0, &unchanged).ok() &&
+            unchanged.custom_id == "unchanged");
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_one_durable_start_ticket_and_atomic_full_endpoint_output) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 2);
+  Q4T_CHECK(
+      batches.StartRow(Access(), ready.id, 1).http_status == 409 &&
+      batches.BeginFinalization(Access(), ready.id, "completed").http_status ==
+          409);
+  auto result =
+      Start(batches, ready, 0, 200,
+            "{\n\"id\":\"resp_fixture\",\"output\":[{\"type\":\"function_"
+            "call\",\"name\":\"lookup\",\"arguments\":\"{}\"}],"
+            "\"usage\":{\"input_tokens\":17,\"output_tokens\":3,\"total_"
+            "tokens\":20},\"decimal\":1e-999\n}");
+  Q4T_CHECK(batches.StartRow(Access(), ready.id, 0).http_status == 409 &&
+            batches.StartRow(Access(), ready.id, 1).http_status == 409);
+  auto wrong = result;
+  wrong.request_id += "x";
+  Q4T_CHECK(
+      batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id, wrong)
+              .http_status == 409 &&
+      batches.FinishRow(Access(), ready.id, 0, "wrong ID", result).code ==
+          "batch_state_invalid");
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)));
+  Q4T_CHECK(
+      batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id, result)
+          .http_status == 409);
+  auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "completed");
+  auto stored = objects.Execute(
+      Request(row.value.GetString("result_id"), ObjectKind::kToolRun),
+      Access().deadline);
+  Q4T_CHECK(Ok(stored));
+  auto next = Start(batches, ready, 1);
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 1, ready.rows[1].custom_id,
+                                 next)) &&
+            Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  auto completed = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(completed) &&
+            completed.value.GetString("status") == "completed" &&
+            completed.value.Find("error_file_id")->IsNull());
+  const auto lines =
+      Lines(Content(objects, completed.value.GetString("output_file_id")));
+  Q4T_CHECK(lines.size() == 2 &&
+            lines[0].GetString("custom_id") == ready.rows[0].custom_id &&
+            lines[0].Find("response")->GetString("request_id") ==
+                result.request_id &&
+            OutputJson(*lines[0].Find("response")->Find("body")) ==
+                OutputJson(Parsed(result.response_body)) &&
+            lines[0].Find("error")->IsNull());
+  return true;
+}
+
+Q4T_TEST(batch_results_concurrent_start_has_exactly_one_execution_owner) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 1);
+  std::barrier barrier(2);
+  const auto start = [&] {
+    barrier.arrive_and_wait();
+    return batches.StartRow(Access(), ready.id, 0);
+  };
+  auto a = std::async(std::launch::async, start),
+       b = std::async(std::launch::async, start);
+  const auto ra = a.get(), rb = b.get();
+  Q4T_CHECK(ra.ok() != rb.ok());
+  Q4T_CHECK((ra.ok() ? rb : ra).http_status == 409);
+  auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("request_id") ==
+                           (ra.ok() ? ra : rb).value.GetString("request_id"));
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_mixed_files_restart_and_terminal_private_resource_reclamation) {
+  Fixture fixture;
+  std::string id, output, error, page_id, result_id, original_chunk;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    const auto ready = Ready(objects, 3);
+    id = ready.id;
+    auto loaded = batches.Load(Access(), id);
+    page_id = loaded.value.Find("data")->GetArray("pages")->array[0].str;
+    original_chunk = loaded.value.Find("data")
+                         ->Find("blob")
+                         ->GetArray("chunks")
+                         ->array[0]
+                         .GetString("id");
+    for (size_t i = 0; i < 3; ++i) {
+      auto result = Start(batches, ready, i, i == 1 ? 400 : 200,
+                          i == 1 ? "{\"error\":{\"code\":\"invalid_request\","
+                                   "\"message\":\"CPU fixture\"}}"
+                                 : "{\"answer\":42}");
+      if (i == 2)
+        result.error =
+            Error(503, "batch_interrupted",
+                  "Previous execution outcome unknown; not replayed");
+      Q4T_CHECK(Ok(
+          batches.FinishRow(Access(), id, i, ready.rows[i].custom_id, result)));
+    }
+    result_id = batches.Row(Access(), id, 0).value.GetString("result_id");
+    Q4T_CHECK(Ok(batches.BeginFinalization(Access(), id, "completed")));
+    auto finalized = batches.Finalize(Access(), id);
+    Q4T_CHECK(Ok(finalized) &&
+              finalized.value.Find("request_counts")->GetInt("completed") ==
+                  1 &&
+              finalized.value.Find("request_counts")->GetInt("failed") == 2);
+    output = finalized.value.GetString("output_file_id");
+    error = finalized.value.GetString("error_file_id");
+    for (const auto& file_id : {output, error}) {
+      auto file = Files(objects).Retrieve(Access(), file_id);
+      Q4T_CHECK(Ok(file) && file.value.GetString("purpose") == "batch_output" &&
+                file.value.GetInt("expires_at") -
+                        file.value.GetInt("created_at") ==
+                    3600 &&
+                Files(objects)
+                        .Retrieve(Access("client:other"), file_id)
+                        .http_status == 404);
+    }
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), ready.file)) &&
+              Ok(Collect(objects)));
+    for (const auto& private_id : {page_id, result_id, original_chunk})
+      Q4T_CHECK(objects
+                    .Execute(Request(private_id, ObjectKind::kToolRun),
+                             Access().deadline)
+                    .http_status == 404);
+  }
+  ObjectStore objects(fixture.options);
+  auto completed = BatchState(objects).Retrieve(Access(), id);
+  Q4T_CHECK(Ok(completed) &&
+            completed.value.GetString("status") == "completed");
+  auto success = Lines(Content(objects, output)),
+       failures = Lines(Content(objects, error));
+  Q4T_CHECK(success.size() == 1 && failures.size() == 2 &&
+            failures[0].Find("response")->GetInt("status_code") == 400 &&
+            failures[0].Find("error")->IsNull() &&
+            failures[1].Find("response")->IsNull() &&
+            failures[1].Find("error")->GetString("code") ==
+                "batch_interrupted");
+  return true;
+}
+
+Q4T_TEST(batch_results_final_files_coalesce_large_rows_and_page_boundaries) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, kBatchPageRows + 1);
+  for (size_t i = 0; i < ready.rows.size(); ++i) {
+    const auto body = OutputJson(Object(
+        {{"i", Number(i)}, {"payload", String(std::string(16384, 'q'))}}));
+    auto result = Start(batches, ready, i, 200, body);
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                   ready.rows[i].custom_id, result)));
+  }
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final));
+  auto stored = objects.Execute(
+      Request(final.value.GetString("output_file_id"), ObjectKind::kFile),
+      Access().deadline);
+  Q4T_CHECK(Ok(stored));
+  BinaryManifest manifest;
+  Q4T_CHECK(ParseBinaryManifest(*stored.value.Find("data")->Find("blob"),
+                                &manifest) &&
+            manifest.bytes > 2 * kBinaryChunkBytes &&
+            manifest.chunks.size() == 3 &&
+            manifest.chunks[0].bytes == kBinaryChunkBytes &&
+            manifest.chunks[1].bytes == kBinaryChunkBytes);
+  const auto lines =
+      Lines(Content(objects, final.value.GetString("output_file_id")));
+  Q4T_CHECK(lines.size() == ready.rows.size());
+  for (size_t i = 0; i < lines.size(); ++i)
+    Q4T_CHECK(lines[i].GetString("custom_id") == ready.rows[i].custom_id &&
+              lines[i].Find("response")->Find("body")->GetInt("i") ==
+                  static_cast<int64_t>(i));
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_cancellation_keeps_finished_and_records_unstarted_without_execution) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 3);
+  auto result = Start(batches, ready, 0);
+  Q4T_CHECK(
+      Ok(batches.Cancel(Access(), ready.id)) &&
+      batches.BeginFinalization(Access(), ready.id, "cancelled").http_status ==
+          409 &&
+      batches.FinishCancelled(Access(), ready.id).http_status == 409 &&
+      batches.StartRow(Access(), ready.id, 1).http_status == 409);
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)) &&
+            Ok(batches.BeginFinalization(Access(), ready.id, "cancelled")));
+  const auto revision =
+      batches.Load(Access(), ready.id).value.GetInt("revision");
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "cancelled")) &&
+            batches.Load(Access(), ready.id).value.GetInt("revision") ==
+                revision);
+  Q4T_CHECK(batches.Finalize(Access(), ready.id).http_status == 409);
+  for (size_t i = 1; i < 3; ++i) {
+    BatchRowResult skipped;
+    skipped.error = Error(499, "batch_cancelled",
+                          "Batch cancelled before this request started");
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                   ready.rows[i].custom_id, skipped)));
+  }
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(
+      Ok(final) && final.value.GetString("status") == "cancelled" &&
+      final.value.Find("request_counts")->GetInt("completed") == 1 &&
+      final.value.Find("request_counts")->GetInt("failed") == 2 &&
+      Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+          1);
+  for (const auto& line :
+       Lines(Content(objects, final.value.GetString("error_file_id"))))
+    Q4T_CHECK(line.Find("response")->IsNull() &&
+              line.Find("error")->GetString("code") == "batch_cancelled");
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_invalid_endpoint_json_and_ticket_do_not_complete_or_publish) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 1);
+  auto result = Start(batches, ready, 0);
+  for (const auto* bad :
+       {"[]", "{\"v\":1,\"v\":2}", "data: hello\n\n", "{\"v\":NaN}"}) {
+    result.response_body = bad;
+    Q4T_CHECK(
+        batches
+            .FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id, result)
+            .code == "batch_response_invalid");
+  }
+  result.response_body = "{}";
+  result.http_status = 302;
+  Q4T_CHECK(
+      batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id, result)
+          .code == "batch_response_invalid");
+  const auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "running" &&
+            row.value.Find("result_id")->IsNull());
+  auto loaded = batches.Load(Access(), ready.id);
+  Q4T_CHECK(Ok(loaded) && loaded.value.Find("data")->GetInt("next_row") == 0);
+  result.http_status = 200;
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)));
+  return true;
+}
+
+Q4T_TEST(batch_results_actual_unknown_start_never_grants_duplicate_execution) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  ReadyBatch ready;
+  {
+    ObjectStore objects(fixture.options);
+    ready = Ready(objects, 1);
+  }
+  Injection injection("--q4t-object-worker-application-lost-ack");
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  auto started = batches.StartRow(Access(), ready.id, 0);
+  Q4T_CHECK(!started.ok() && started.commit_unknown &&
+            started.value.GetString("id") == ready.id);
+  Drain(objects);
+  auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "running" &&
+            row.value.GetString("request_id") ==
+                started.value.GetString("request_id") &&
+            batches.StartRow(Access(), ready.id, 0).http_status == 409);
+  return true;
+}
+
+Q4T_TEST(batch_results_actual_unknown_finish_commits_result_and_counts_once) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  ReadyBatch ready;
+  BatchRowResult result;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 1);
+    result = Start(batches, ready, 0);
+  }
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    auto finished = batches.FinishRow(Access(), ready.id, 0,
+                                      ready.rows[0].custom_id, result);
+    Q4T_CHECK(!finished.ok() && finished.commit_unknown &&
+              finished.value.GetString("id") == ready.id);
+    Drain(objects);
+    auto row = batches.Row(Access(), ready.id, 0);
+    auto root = batches.Load(Access(), ready.id);
+    Q4T_CHECK(Ok(row) && Ok(root) &&
+              row.value.GetString("status") == "completed" &&
+              row.value.GetString("result_id") ==
+                  finished.value.GetString("result_id") &&
+              root.value.Find("data")->GetInt("next_row") == 1 &&
+              root.value.Find("data")
+                      ->Find("batch")
+                      ->Find("request_counts")
+                      ->GetInt("completed") == 1 &&
+              batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                result)
+                      .http_status == 409);
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(
+      Ok(final) &&
+      Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+          1);
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_actual_unknown_finalization_publishes_both_files_and_terminal_atomically) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  ReadyBatch ready;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 2);
+    for (size_t i = 0; i < 2; ++i) {
+      auto result = Start(batches, ready, i, i ? 400 : 200);
+      Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                     ready.rows[i].custom_id, result)));
+    }
+    Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  }
+  Injection injection("--q4t-object-worker-application-lost-ack");
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(!final.ok() && final.commit_unknown &&
+            final.value.GetString("id") == ready.id);
+  Drain(objects);
+  auto retrieved = batches.Retrieve(Access(), ready.id);
+  Q4T_CHECK(Ok(retrieved) &&
+            retrieved.value.GetString("status") == "completed");
+  for (const auto* key : {"output_file_id", "error_file_id"})
+    Q4T_CHECK(final.value.GetString(key) == retrieved.value.GetString(key) &&
+              Lines(Content(objects, retrieved.value.GetString(key))).size() ==
+                  1);
+  Q4T_CHECK(batches.Finalize(Access(), ready.id).http_status == 409);
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_actual_dead_owner_started_row_is_interrupted_then_pending_can_continue) {
+  Fixture fixture;
+  int fds[2];
+  Q4T_CHECK(pipe2(fds, O_CLOEXEC) == 0);
+  const auto pid = fork();
+  Q4T_CHECK(pid >= 0);
+  if (pid == 0) {
+    close(fds[0]);
+    try {
+      std::string id;
+      {
+        ObjectStore objects(fixture.options);
+        BatchState batches(objects);
+        auto ready = Ready(objects, 2);
+        id = ready.id;
+        Start(batches, ready, 0);
+      }
+      if (write(fds[1], id.data(), id.size()) !=
+          static_cast<ssize_t>(id.size()))
+        _exit(3);
+      close(fds[1]);
+      _exit(0);
+    } catch (...) {
+      _exit(2);
+    }
+  }
+  close(fds[1]);
+  char bytes[128];
+  const auto n = read(fds[0], bytes, sizeof(bytes));
+  close(fds[0]);
+  int status = 0;
+  Q4T_CHECK(waitpid(pid, &status, 0) == pid && WIFEXITED(status) &&
+            WEXITSTATUS(status) == 0 && n > 0);
+  const std::string id(bytes, n);
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(batches.StartRow(Access(), id, 0).code == "batch_owner_changed");
+  const auto before = batches.Retrieve(Access(), id);
+  Q4T_CHECK(Ok(before) && Ok(batches.ClaimAbandoned(Access(), id)) &&
+            batches.StartRow(Access(), id, 0).http_status == 409 &&
+            batches.StartRow(Access(), id, 1).http_status == 409);
+  auto row = batches.Row(Access(), id, 0);
+  BatchInputRow input;
+  Q4T_CHECK(Ok(row) && Ok(batches.ReadInputRow(Access(), id, 0, &input)));
+  BatchRowResult interrupted;
+  interrupted.request_id = row.value.GetString("request_id");
+  interrupted.error = Error(503, "batch_interrupted",
+                            "Prior execution outcome unknown; not replayed");
+  Q4T_CHECK(
+      Ok(batches.FinishRow(Access(), id, 0, input.custom_id, interrupted)));
+  auto started = batches.StartRow(Access(), id, 1);
+  Q4T_CHECK(Ok(started) && Ok(batches.ReadInputRow(Access(), id, 1, &input)));
+  BatchRowResult result{
+      started.value.GetString("request_id"), 200, "{\"answer\":42}", {}};
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), id, 1, input.custom_id, result)) &&
+            Ok(batches.BeginFinalization(Access(), id, "completed")));
+  auto final = batches.Finalize(Access(), id);
+  Q4T_CHECK(Ok(final) &&
+            final.value.GetInt("expires_at") ==
+                before.value.GetInt("expires_at") &&
+            final.value.Find("request_counts")->GetInt("failed") == 1 &&
+            final.value.Find("request_counts")->GetInt("completed") == 1);
+  auto failures =
+      Lines(Content(objects, final.value.GetString("error_file_id")));
+  Q4T_CHECK(failures.size() == 1 && failures[0].Find("error")->GetString(
+                                        "code") == "batch_interrupted");
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_expired_immutable_deadline_produces_errors_without_start) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  auto ready = Ready(objects, 2);
+  Q4T_CHECK(
+      batches.BeginFinalization(Access(), ready.id, "expired").http_status ==
+      409);
+  // Construct a previous-day persisted record. Existing creation times are
+  // immutable, so never edit a live record's original creation/deadline.
+  auto stored = batches.Load(Access(), ready.id);
+  Q4T_CHECK(Ok(stored));
+  auto root = Request(NewObjectId(ObjectKind::kBatch));
+  root.operation = ObjectOperation::kPut;
+  root.created_at = std::time(nullptr) - kBatchWindowSeconds - 1;
+  root.data = *stored.value.Find("data");
+  auto& batch = Field(root.data, "batch");
+  Set(&batch, "id", String(root.id));
+  Set(&batch, "created_at", Number(root.created_at));
+  Set(&batch, "expires_at", Number(root.created_at + kBatchWindowSeconds));
+  auto old_page = objects.Execute(
+      Request(root.data.GetArray("pages")->array[0].str, ObjectKind::kToolRun),
+      Access().deadline);
+  Q4T_CHECK(Ok(old_page));
+  auto page = Request(NewObjectId(ObjectKind::kToolRun), ObjectKind::kToolRun);
+  page.operation = ObjectOperation::kPut;
+  page.ttl_seconds = 0;
+  page.data = *old_page.value.Find("data");
+  Set(&page.data, "batch_id", String(root.id));
+  Set(&root.data, "pages", Array({String(page.id)}));
+  const std::array mutations{page, root};
+  Q4T_CHECK(Ok(objects.ExecuteBatch(mutations, Access().deadline)));
+  ready.id = root.id;
+  Q4T_CHECK(!batches.StartRow(Access(), ready.id, 0).ok());
+  Q4T_CHECK(batches.Row(Access(), ready.id, 0).value.GetString("status") ==
+                "pending" &&
+            Ok(batches.BeginFinalization(Access(), ready.id, "expired")));
+  for (size_t i = 0; i < 2; ++i) {
+    BatchRowResult skipped;
+    skipped.error =
+        Error(408, "batch_expired", "Batch expired before request execution");
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                   ready.rows[i].custom_id, skipped)));
+  }
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "expired" &&
+            final.value.Find("output_file_id")->IsNull());
+  for (const auto& line :
+       Lines(Content(objects, final.value.GetString("error_file_id"))))
+    Q4T_CHECK(line.Find("response")->IsNull() &&
+              line.Find("error")->GetString("code") == "batch_expired");
+  return true;
+}
+
+Q4T_TEST(
+    batch_results_storage_quota_rejects_result_without_releasing_started_owner) {
+  Fixture fixture;
+  ReadyBatch ready;
+  BatchRowResult result;
+  int64_t count = 0;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 1);
+    result = Start(batches, ready, 0);
+    auto health = Request("");
+    health.operation = ObjectOperation::kHealth;
+    count = objects.Execute(health, Access().deadline).value.GetInt("objects");
+  }
+  auto limited = fixture.options;
+  limited.max_client_objects = count + 1;
+  {
+    ObjectStore objects(limited);
+    BatchState batches(objects);
+    auto failed = batches.FinishRow(Access(), ready.id, 0,
+                                    ready.rows[0].custom_id, result);
+    Q4T_CHECK(failed.code == "object_quota_exceeded" && !failed.commit_unknown);
+    auto row = batches.Row(Access(), ready.id, 0),
+         loaded = batches.Load(Access(), ready.id);
+    Q4T_CHECK(Ok(row) && Ok(loaded) &&
+              row.value.GetString("status") == "running" &&
+              row.value.Find("result_id")->IsNull() &&
+              loaded.value.Find("data")->GetInt("running") == 1 &&
+              loaded.value.Find("data")->GetInt("next_row") == 0 &&
+              batches.StartRow(Access(), ready.id, 0).http_status == 409);
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  // Re-persist the already available result; this is not a model retry.
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)));
+  return true;
+}
+
+Q4T_TEST(batch_results_finalization_quota_never_exposes_partial_files) {
+  Fixture fixture;
+  ReadyBatch ready;
+  int64_t count = 0;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 2);
+    for (size_t i = 0; i < 2; ++i) {
+      auto result = Start(batches, ready, i, i ? 400 : 200);
+      Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                     ready.rows[i].custom_id, result)));
+    }
+    Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+    auto health = Request("");
+    health.operation = ObjectOperation::kHealth;
+    count = objects.Execute(health, Access().deadline).value.GetInt("objects");
+  }
+  auto limited = fixture.options;
+  limited.max_client_objects = count + 1;
+  {
+    ObjectStore objects(limited);
+    BatchState batches(objects);
+    auto failed = batches.Finalize(Access(), ready.id);
+    Q4T_CHECK(failed.code == "object_quota_exceeded" && !failed.commit_unknown);
+    auto root = batches.Retrieve(Access(), ready.id);
+    auto files = Files(objects).List(Access(), Object());
+    Q4T_CHECK(Ok(root) && root.value.GetString("status") == "finalizing" &&
+              root.value.Find("output_file_id")->IsNull() &&
+              root.value.Find("error_file_id")->IsNull() && Ok(files) &&
+              files.value.GetArray("data")->array.size() == 1);
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.Finalize(Access(), ready.id)));
+  return true;
+}
+
+Q4T_TEST(batch_results_historical_receipt_does_not_pin_expired_output_bytes) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 1);
+  const auto result = Start(batches, ready, 0);
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)) &&
+            Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final));
+  const auto output = final.value.GetString("output_file_id");
+  auto stored =
+      objects.Execute(Request(output, ObjectKind::kFile), Access().deadline);
+  Q4T_CHECK(Ok(stored));
+  const auto chunk = stored.value.Find("data")
+                         ->Find("blob")
+                         ->GetArray("chunks")
+                         ->array[0]
+                         .GetString("id");
+  int64_t expires = 0;
+  Q4T_CHECK(
+      Ok(Edit(objects, output, ObjectKind::kFile, [&](ObjectRequest& request) {
+        // CPU clock fixture only: public output_expires_after still requires
+        // >=1h.
+        request.expires_at = request.created_at + 1;
+        expires = request.expires_at;
+        Set(&Field(request.data, "file"), "expires_at", Number(expires));
+      })));
+  const auto until = Clock::now() + 2s;
+  while (std::time(nullptr) < expires && Clock::now() < until)
+    std::this_thread::sleep_for(2ms);
+  Q4T_CHECK(std::time(nullptr) >= expires &&
+            Files(objects).Retrieve(Access(), output).http_status == 404 &&
+            Ok(Collect(objects)));
+  Q4T_CHECK(
+      objects.Execute(Request(chunk, ObjectKind::kToolRun), Access().deadline)
+              .http_status == 404 &&
+      batches.Retrieve(Access(), ready.id).value.GetString("output_file_id") ==
+          output);
+  return true;
+}
+
+Q4T_TEST(batch_results_corrupt_page_blocks_reads_and_start_transactionally) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 1);
+  auto root = batches.Load(Access(), ready.id);
+  Q4T_CHECK(Ok(root));
+  const auto page = root.value.Find("data")->GetArray("pages")->array[0].str;
+  Q4T_CHECK(
+      Ok(Edit(objects, page, ObjectKind::kToolRun, [](ObjectRequest& request) {
+        Set(&request.data, "batch_id", String("batch_other"));
+      })));
+  BatchInputRow row;
+  row.custom_id = "unchanged";
+  Q4T_CHECK(batches.ReadInputRow(Access(), ready.id, 0, &row).code ==
+                "batch_state_invalid" &&
+            batches.StartRow(Access(), ready.id, 0).code ==
+                "batch_state_invalid" &&
+            row.custom_id == "unchanged");
+  Q4T_CHECK(OutputJson(root.value) ==
+            OutputJson(batches.Load(Access(), ready.id).value));
+  return true;
+}
