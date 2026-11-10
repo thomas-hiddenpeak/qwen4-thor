@@ -405,3 +405,67 @@ Q4T_TEST(batch_quota_exact_wide_rebuild_and_unknown_model_quarantine) {
   Q4T_CHECK(Ok(quota.Check("owner", std::span(&extra, 1), 1, 1)));
   return true;
 }
+
+Q4T_TEST(batch_recount_accepted_legacy_above_reduced_quota_can_drain) {
+  Fixture fixture;
+  fixture.options.batch_model_queue_tokens = 5;
+  fixture.options.batch_client_model_queue_tokens = 5;
+  ObjectStore objects(fixture.options);
+  const auto work = Prepare(objects, 0), next = Prepare(objects, 1);
+  Q4T_CHECK(Ok(Append(objects, work)));
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.RecountInput(Access(), work.id, 0, {7, true})) &&
+            Limited(Append(objects, next)));
+  Q4T_CHECK(!batches.RecountInput(Access(), work.id, 0, {1, true}).ok());
+  Q4T_CHECK(Ok(Fail(objects, work)) && Ok(Append(objects, next)));
+  return true;
+}
+
+Q4T_TEST(batch_recount_requires_atomic_original_page_and_root_transition) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = Prepare(objects, 0);
+  Q4T_CHECK(Ok(Append(objects, work)));
+  const auto root = Root(objects, work);
+  Q4T_CHECK(Ok(root));
+  ObjectRequest page;
+  page.kind = ObjectKind::kToolRun;
+  page.id = root.value.Find("data")->GetArray("pages")->array[0].str;
+  page.scope = work.scope;
+  const auto previous = objects.Execute(page, Access().deadline);
+  Q4T_CHECK(Ok(previous));
+  page.operation = ObjectOperation::kPut;
+  page.expected_revision = previous.value.GetInt("revision");
+  page.created_at = previous.value.GetInt("created_at");
+  page.expires_at = previous.value.GetInt("expires_at");
+  page.data = *previous.value.Find("data");
+  Set(&Field(page.data, "rows").array[0], "input_budget",
+      BatchInputBudgetJson({7, true}));
+  Q4T_CHECK(objects.Execute(page, Access().deadline).code ==
+            "batch_budget_conflict");
+  const auto missing_page = Edit(objects, work, [](Json& data) {
+    Set(&data, "input_recount",
+        Object({{"format", String("q4t.batch_input_recount.v1")},
+                {"rows", Number(1)},
+                {"tokens", Number(7)},
+                {"total_rows", Number(1)}}));
+    Set(&data, "enqueued_input_tokens", Number(7));
+    Set(&data, "metered_rows", Number(1));
+  });
+  Q4T_CHECK(missing_page.code == "batch_budget_conflict" &&
+            !Root(objects, work).value.Find("data")->Has("input_recount"));
+  std::barrier ready(3);
+  auto recount = [&] {
+    ready.arrive_and_wait();
+    return BatchState(objects).RecountInput(Access(), work.id, 0, {7, true});
+  };
+  auto a = std::async(std::launch::async, recount);
+  auto b = std::async(std::launch::async, recount);
+  ready.arrive_and_wait();
+  const auto first = a.get(), second = b.get();
+  Q4T_CHECK(first.ok() != second.ok());
+  Q4T_CHECK(
+      Root(objects, work).value.Find("data")->GetInt("enqueued_input_tokens") ==
+      7);
+  return true;
+}

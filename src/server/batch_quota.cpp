@@ -32,7 +32,50 @@ ObjectReply Invalid() {
   return Error(409, "batch_budget_conflict",
                "Batch budget must match its immutable validation prefix");
 }
+bool Same(const Json& a, const Json& b, const std::string& key) {
+  const auto* left = a.Find(key);
+  const auto* right = b.Find(key);
+  return (!left && !right) ||
+         (left && right && OutputJson(*left) == OutputJson(*right));
+}
+Json WithoutBudget(Json data) {
+  std::erase_if(data.object, [](const auto& item) {
+    return item.first == "input_recount" ||
+           item.first == "enqueued_input_tokens" ||
+           item.first == "metered_rows";
+  });
+  return data;
+}
 }  // namespace
+
+bool ParseBatchInputRecount(const Json& value, BatchInputRecount* output) {
+  if (!output || !value.IsObject() || value.object.size() != 4 ||
+      value.GetString("format") != "q4t.batch_input_recount.v1" ||
+      !Integer(value, "total_rows", 1, kBatchRequests) ||
+      !Integer(value, "rows", 1, value.GetInt("total_rows")) ||
+      !Integer(value, "tokens", 1, kBatchTokenLimit))
+    return false;
+  *output = {static_cast<uint64_t>(value.GetInt("rows")),
+             static_cast<uint64_t>(value.GetInt("tokens")),
+             static_cast<uint64_t>(value.GetInt("total_rows"))};
+  return true;
+}
+bool ValidBatchInputRecount(const Json& data) {
+  const auto* value = data.Find("input_recount");
+  if (!value) return true;
+  BatchInputRecount progress;
+  const auto model = data.GetString("canonical_model");
+  if (!ParseBatchInputRecount(*value, &progress) ||
+      !data.GetBool("inputs_frozen") || model.empty() || model.size() > 256 ||
+      !Integer(data, "validated_rows", progress.total_rows, kBatchRequests))
+    return false;
+  if (progress.rows < progress.total_rows)
+    return !data.Has("enqueued_input_tokens") && !data.Has("metered_rows") &&
+           data.GetInt("validated_rows") ==
+               static_cast<int64_t>(progress.total_rows);
+  return Metered(data) && data.GetInt("enqueued_input_tokens") >=
+                              static_cast<int64_t>(progress.tokens);
+}
 
 BatchQueueCharge InspectBatchQueueCharge(std::string_view kind,
                                          const Json& data) {
@@ -54,7 +97,12 @@ BatchQueueCharge InspectBatchQueueCharge(std::string_view kind,
     // quarantines only further Batch reservations, not online generation.
     charge.unknown =
         !(state == "validating" && Integer(data, "validated_rows", 0, 0) &&
-          !data.Has("enqueued_input_tokens") && !data.Has("metered_rows"));
+          !data.Has("enqueued_input_tokens") && !data.Has("metered_rows") &&
+          !data.Has("input_recount"));
+    BatchInputRecount recount;
+    if (const auto* value = data.Find("input_recount");
+        value && ParseBatchInputRecount(*value, &recount))
+      charge.tokens = recount.tokens;
   }
   return charge;
 }
@@ -62,15 +110,36 @@ BatchQueueCharge InspectBatchQueueCharge(std::string_view kind,
 ObjectReply CheckBatchBudgetMutation(const Json& data, const Json* previous) {
   if (!Native(data) && (!previous || !Native(*previous))) return {};
   if (!Native(data)) return Invalid();
+  if (!ValidBatchInputRecount(data)) return Invalid();
   const bool has_budget =
       data.Has("enqueued_input_tokens") || data.Has("metered_rows");
   if (has_budget && !Metered(data)) return Invalid();
-  if (!previous) return {};
+  if (!previous) return data.Has("input_recount") ? Invalid() : ObjectReply{};
   if (!Native(*previous)) return Invalid();
+  if (!Same(data, *previous, "input_recount")) {
+    BatchInputRecount next, old;
+    const auto* value = data.Find("input_recount");
+    const auto* prior = previous->Find("input_recount");
+    if (!value || !ParseBatchInputRecount(*value, &next) ||
+        (prior && !ParseBatchInputRecount(*prior, &old)) ||
+        previous->Has("enqueued_input_tokens") ||
+        !previous->GetBool("inputs_frozen") ||
+        (State(*previous) != "validating" &&
+         State(*previous) != "in_progress") ||
+        next.rows != old.rows + 1 || next.tokens <= old.tokens ||
+        next.total_rows !=
+            static_cast<uint64_t>(previous->GetInt("validated_rows")) ||
+        (prior && old.total_rows != next.total_rows) ||
+        OutputJson(WithoutBudget(data)) !=
+            OutputJson(WithoutBudget(*previous)) ||
+        (next.rows == next.total_rows && data.GetInt("enqueued_input_tokens") !=
+                                             static_cast<int64_t>(next.tokens)))
+      return Invalid();
+  }
   const bool old_budget =
       previous->Has("enqueued_input_tokens") || previous->Has("metered_rows");
-  if (!old_budget) return {};
-  if (!has_budget || !Metered(*previous) ||
+  if (!old_budget && !previous->Has("input_recount")) return {};
+  if ((old_budget && (!has_budget || !Metered(*previous))) ||
       data.GetString("canonical_model") !=
           previous->GetString("canonical_model"))
     return Invalid();
@@ -81,14 +150,14 @@ ObjectReply CheckBatchBudgetMutation(const Json& data, const Json* previous) {
   for (size_t i = 0; i < old_pages->array.size(); ++i)
     if (OutputJson(pages->array[i]) != OutputJson(old_pages->array[i]))
       return Invalid();
-  const auto rows = data.GetInt("metered_rows");
+  const auto rows = data.GetInt("validated_rows");
   const auto old_rows = previous->GetInt("metered_rows");
   const auto tokens = data.GetInt("enqueued_input_tokens");
   const auto old_tokens = previous->GetInt("enqueued_input_tokens");
-  if (rows < old_rows || tokens < old_tokens ||
-      ((rows == old_rows) != (tokens == old_tokens)) ||
-      (rows > old_rows &&
-       (State(data) != "validating" || State(*previous) != "validating")))
+  if (old_budget && (rows < old_rows || tokens < old_tokens ||
+                     ((rows == old_rows) != (tokens == old_tokens)) ||
+                     (rows > old_rows && (State(data) != "validating" ||
+                                          State(*previous) != "validating"))))
     return Invalid();
   if (BatchTerminal(State(*previous)) && State(data) != State(*previous))
     return Invalid();
@@ -158,6 +227,10 @@ ObjectReply BatchQueueQuota::Check(const std::string& owner,
     return found->second;
   };
   for (const auto& change : changes) {
+    if (change.recount &&
+        (!change.before.unknown || change.after.model != change.before.model ||
+         change.after.tokens <= change.before.tokens))
+      return Invalid();
     auto& old = get(change.before.model);
     old.total.tokens -= change.before.tokens;
     old.client.tokens -= change.before.tokens;
@@ -168,6 +241,13 @@ ObjectReply BatchQueueQuota::Check(const std::string& owner,
     next.client.tokens += change.after.tokens;
     next.total.unknown += change.after.unknown;
     next.client.unknown += change.after.unknown;
+    if (change.recount) {
+      // Already accepted input can be discovered above the new limit. Keep
+      // exact usage and block further growth, while allowing its owner to
+      // finish/expire/cancel. Do not turn an upgrade into new admission.
+      next.old_total.tokens += change.after.tokens - change.before.tokens;
+      next.old_client.tokens += change.after.tokens - change.before.tokens;
+    }
   }
   const auto global_unknown = get("").total.unknown;
   for (const auto& [name, value] : projected) {

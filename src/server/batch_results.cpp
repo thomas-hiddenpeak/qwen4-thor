@@ -1,4 +1,5 @@
 #include "q4t/server/batch_state.h"
+#include "q4t/server/batch_quota.h"
 
 #include <algorithm>
 #include <array>
@@ -166,7 +167,12 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
     if (const auto* input = row.Find("input_budget");
         input && !ParseBatchInputBudget(*input, &budget))
       return Corrupt();
-    if (data.Has("enqueued_input_tokens") != row.Has("input_budget"))
+    BatchInputRecount recount;
+    if (const auto* value = data.Find("input_recount");
+        value && !ParseBatchInputRecount(*value, &recount))
+      return Corrupt();
+    if ((data.Has("enqueued_input_tokens") || first + i < recount.rows) !=
+        row.Has("input_budget"))
       return Corrupt();
     const auto status = row.GetString("status");
     if (!Integer(row, "line", first + i + 1, first + i + 1) ||

@@ -1113,3 +1113,38 @@ Q4T_TEST(batch_recovery_scan_advances_over_bounded_nonbatch_records) {
   Q4T_CHECK(!more && found == 1 && calls >= 2 && full_scan);
   return true;
 }
+
+Q4T_TEST(batch_recount_129_original_rows_resume_across_page_and_restart) {
+  Fixture fixture;
+  std::string id;
+  const auto bytes = Input(129);
+  const auto positions = Positions(bytes);
+  {
+    ObjectStore objects(fixture.options);
+    id = Create(objects, File(objects, bytes));
+    BatchState batches(objects);
+    for (const auto& position : positions) {
+      auto frozen = Freeze(objects, id, position);
+      Q4T_CHECK(
+          Ok(batches.AppendValidatedRow(Access(), id, frozen.row, "fixture")) &&
+          Release(objects, &frozen));
+    }
+    for (size_t i = 0; i < 128; ++i)
+      Q4T_CHECK(Ok(batches.RecountInput(Access(), id, i, {i + 1, true})));
+    const auto root = batches.Load(Access(), id);
+    Q4T_CHECK(Ok(root) &&
+              root.value.Find("data")->Find("input_recount")->GetInt("rows") ==
+                  128 &&
+              !root.value.Find("data")->Has("enqueued_input_tokens"));
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.RecountInput(Access(), id, 128, {129, false})));
+  const auto root = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(root) &&
+            root.value.Find("data")->GetInt("metered_rows") == 129 &&
+            root.value.Find("data")->GetInt("enqueued_input_tokens") == 8385);
+  Q4T_CHECK(Ok(batches.CompleteValidation(Access(), id, "fixture")) &&
+            Ok(batches.StartRow(Access(), id, 0)));
+  return true;
+}

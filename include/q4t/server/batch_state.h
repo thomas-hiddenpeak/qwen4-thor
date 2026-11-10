@@ -62,6 +62,10 @@ class BatchState {
   ObjectReply CompleteValidation(const BinaryAccess& access,
                                  const std::string& id,
                                  const std::string& canonical_model);
+  // One original frozen legacy row per transaction. Never changes inputs,
+  // results, execution tickets or the original window. Does not execute.
+  ObjectReply RecountInput(const BinaryAccess& access, const std::string& id,
+                           size_t index, const BatchInputBudget& budget);
   ObjectReply FailValidation(const BinaryAccess& access, const std::string& id,
                              const ObjectReply& error);
   // Claim only after independently confirming the previous process identity

@@ -411,8 +411,13 @@ Q4T_TEST(batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay) {
   return true;
 }
 
-Q4T_TEST(batch_jobs_actual_dead_owner_recovery_skips_started_row) {
+namespace {
+bool RecoverDeadBatch(bool recount) {
   Fixture fixture;
+  if (recount) {
+    fixture.objects.batch_model_queue_tokens = 6;
+    fixture.objects.batch_client_model_queue_tokens = 6;
+  }
   int channel[2];
   Q4T_CHECK(pipe(channel) == 0);
   const auto pid = fork();
@@ -450,9 +455,20 @@ Q4T_TEST(batch_jobs_actual_dead_owner_recovery_skips_started_row) {
             WEXITSTATUS(status) == 0 && bytes > 0);
   const std::string id(id_bytes, bytes);
   ObjectStore objects(fixture.objects);
-  std::atomic<int> calls{0};
+  std::atomic<int> calls{0}, measured{0};
+  BatchInputMeter meter;
+  if (recount)
+    meter = [&](const auto&, const BatchInputRow& row, const auto&,
+                const ChatPlanConfig& config, const auto&,
+                BatchInputBudget* result) {
+      const auto count = ++measured;
+      if (row.line != static_cast<size_t>(count) || config.client_limits)
+        return Error(500, "fixture_recount", "Recount order or policy changed");
+      *result = {4, true};
+      return ObjectReply{};
+    };
   BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
-                 Native(calls));
+                 Native(calls), meter);
   const auto final = Finished(objects, jobs, id);
   Q4T_CHECK(Ok(final) && calls == 2 &&
             final.value.Find("request_counts")->GetInt("failed") == 1 &&
@@ -461,7 +477,20 @@ Q4T_TEST(batch_jobs_actual_dead_owner_recovery_skips_started_row) {
   const auto error = Content(objects, final.value.GetString("error_file_id"));
   Q4T_CHECK(error.find("item-0") != std::string::npos &&
             error.find("batch_execution_interrupted") != std::string::npos);
+  const auto root = BatchState(objects).Load(Access(), id);
+  Q4T_CHECK(Ok(root) && measured == (recount ? 3 : 0) &&
+            root.value.Find("data")->Has("enqueued_input_tokens") == recount);
+  if (recount)
+    Q4T_CHECK(root.value.Find("data")->GetInt("enqueued_input_tokens") == 12);
   return true;
+}
+}  // namespace
+
+Q4T_TEST(batch_jobs_actual_dead_owner_recovery_skips_started_row) {
+  return RecoverDeadBatch(false);
+}
+Q4T_TEST(batch_jobs_actual_dead_owner_recounts_without_replaying_started_row) {
+  return RecoverDeadBatch(true);
 }
 
 Q4T_TEST(batch_jobs_live_or_unknown_owner_never_grants_recovery) {

@@ -1,0 +1,16 @@
+{
+  "include/q4t/server/batch_quota.h": "7f0ea8c538259bfa592a34717f91a6cda8baab2105ccb09e29f0ed451a203f8d",
+  "include/q4t/server/batch_state.h": "ee7a17cfda894bb838e69a429007d156e21f89dcb4552913da136653b22d29ef",
+  "include/q4t/server/batch_validation.h": "62a3ac4ee2e9295a2de51894b56aec67867d25926c9d0a98f51d38cdbb3bb334",
+  "src/server/batch_checkpoint.cpp": "b471671f8b11b3fa4fd8daa14035672afc452a8aaf6010bc68087edac30405cf",
+  "src/server/batch_jobs.cpp": "ba037796fc07f2a11a5c0e727311ea971ea8c4bc05c4f59d45c2cf32f59667b2",
+  "src/server/batch_quota.cpp": "b03f6341cb417723c59d313f76b7895dc229ade23e7d8b0f262ecc8c08f588cb",
+  "src/server/batch_results.cpp": "2a8c06c542ae22ecd095939a3d23f62ab3db7590ed321718bc2738598c8015b1",
+  "src/server/batch_state.cpp": "4b9a93c13feaad4f069e6c0b60a0de476791b8b839e9880d31ff0dc7608c131c",
+  "src/server/batch_validation.cpp": "f3a5369229c982ca986f00849191229893c765387b308d02ebba84ae321148e4",
+  "src/server/object_worker.cpp": "ae372a32c93d632907383718a2df26b1b94a77bc0cb36bfbf18c90c8f38be48a",
+  "tests/server_batch_jobs_test.cpp": "e3b6a0e66655173d817752117769cadafc439d685be84b626e8577ec05f01264",
+  "tests/server_batch_preparation_test.cpp": "6d4408e2ba76a6255db406900d0a8d43227c114dfc27cb9d85e09a028ac40613",
+  "tests/server_batch_quota_test.cpp": "0f05517b1ab39272922509a8d12fe9f6d8e40a3406f333f9901f9369f2914448",
+  "tests/server_batch_state_test.cpp": "49b45e128b03081b64bf62b54ff9a5ff580c0e7ed44c359ca38fa4c4462fafbe"
+}

@@ -1,4 +1,5 @@
 #include "q4t/server/batch_state.h"
+#include "q4t/server/batch_quota.h"
 
 #include <algorithm>
 #include <array>
@@ -141,6 +142,7 @@ ObjectReply Public(const Json& stored) {
         !model)
       return Corrupt();
   }
+  if (!ValidBatchInputRecount(*data)) return Corrupt();
   return result;
 }
 ObjectReply Commit(ObjectStore& objects, const BinaryAccess& access,
@@ -469,6 +471,57 @@ ObjectReply BatchState::AppendRows(
   }
   return reply;
 }
+ObjectReply BatchState::RecountInput(const BinaryAccess& access,
+                                     const std::string& id, size_t index,
+                                     const BatchInputBudget& budget) {
+  auto loaded = Owned(access, id);
+  if (!loaded.ok()) return loaded;
+  auto root = Update(access, loaded.value);
+  const auto* batch = root.data.Find("batch");
+  const auto status = batch->GetString("status");
+  BatchInputRecount recount;
+  const auto deadline = batch->GetInt("expires_at");
+  if (const auto* value = root.data.Find("input_recount");
+      value && !ParseBatchInputRecount(*value, &recount))
+    return Corrupt();
+  BatchInputBudget checked;
+  if ((status != "validating" && status != "in_progress") ||
+      !root.data.GetBool("inputs_frozen") ||
+      root.data.GetString("canonical_model").empty() ||
+      root.data.Has("enqueued_input_tokens") || index != recount.rows ||
+      !ParseBatchInputBudget(BatchInputBudgetJson(budget), &checked) ||
+      budget.tokens > kBatchTokenLimit - recount.tokens)
+    return Error(409, "batch_budget_conflict",
+                 "Legacy input recount does not match its original prefix");
+  auto page_reply = Page(access, loaded.value, index);
+  if (!page_reply.ok()) return page_reply;
+  auto page = Update(access, page_reply.value);
+  page.kind = ObjectKind::kToolRun;
+  auto& row = Field(page.data, "rows").array[index % kBatchPageRows];
+  if (row.Has("input_budget"))
+    return Error(409, "batch_budget_conflict",
+                 "Original row is already counted");
+  Set(&row, "input_budget", BatchInputBudgetJson(budget));
+  ++recount.rows;
+  recount.tokens += budget.tokens;
+  recount.total_rows = root.data.GetInt("validated_rows");
+  Set(&root.data, "input_recount",
+      Object({{"format", String("q4t.batch_input_recount.v1")},
+              {"rows", Number(recount.rows)},
+              {"tokens", Number(recount.tokens)},
+              {"total_rows", Number(recount.total_rows)}}));
+  if (recount.rows == recount.total_rows) {
+    Set(&root.data, "enqueued_input_tokens", Number(recount.tokens));
+    Set(&root.data, "metered_rows", Number(recount.rows));
+  }
+  root.mutate_before = deadline;
+  std::array mutations{std::move(page), std::move(root)};
+  auto reply =
+      objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
+  if (!reply.ok()) Identify(&reply, id);
+  return reply;
+}
+
 ObjectReply BatchState::CompleteValidation(const BinaryAccess& access,
                                            const std::string& id,
                                            const std::string& canonical_model) {

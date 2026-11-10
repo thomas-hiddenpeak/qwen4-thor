@@ -8,6 +8,11 @@
 #include "q4t/server/batch_preparation.h"
 
 namespace q4t::server {
+// One bounded recovery turn for a legacy frozen input. The native meter reads
+// the original prepared payload; no model, public Response or fresh fetch.
+ObjectReply RecountBatchInput(ObjectStore& objects, const BinaryAccess& access,
+                              const std::string& id, ChatPlanConfig config,
+                              const BatchInputMeter& meter);
 class BatchValidation {
  public:
   BatchValidation(ObjectStore& objects, std::string id, ChatPlanConfig config,

@@ -548,6 +548,7 @@ class DiskStore {
   ObjectReply BatchBudgets(const Json& changes, const std::string& owner) {
     struct Delta {
       uint64_t tokens = 0, rows = 0;
+      uint64_t recounted = 0, recounted_line = 0;
       std::set<std::string> pages;
     };
     std::map<std::string, Delta> increments;
@@ -583,8 +584,14 @@ class DiskStore {
         }
         auto checked = CheckBatchBudgetMutation(*data, old);
         if (!checked.ok()) return checked;
-        charges.push_back({before, InspectBatchQueueCharge(kind, *data)});
-        if (data->Has("enqueued_input_tokens")) {
+        const auto* progress = data->Find("input_recount");
+        const auto* old_progress = old ? old->Find("input_recount") : nullptr;
+        const bool recount =
+            progress && (!old_progress ||
+                         OutputJson(*progress) != OutputJson(*old_progress));
+        charges.push_back(
+            {before, InspectBatchQueueCharge(kind, *data), recount});
+        if (data->Has("enqueued_input_tokens") || progress) {
           // Copy only the small prior root, not request/result pages. Check
           // its counter delta against precisely the newly committed rows.
           roots.emplace(next->GetString("id"),
@@ -594,15 +601,21 @@ class DiskStore {
         const auto* rows = data->GetArray("rows");
         const auto* old_rows = old ? old->GetArray("rows") : nullptr;
         const auto previous_count = old_rows ? old_rows->array.size() : 0;
-        for (size_t i = previous_count; i < rows->array.size(); ++i) {
+        for (size_t i = 0; i < rows->array.size(); ++i) {
           const auto* value = rows->array[i].Find("input_budget");
-          if (!value) continue;
+          if (!value ||
+              (i < previous_count && old_rows->array[i].Has("input_budget")))
+            continue;
           BatchInputBudget budget;
           if (!ParseBatchInputBudget(*value, &budget)) return invalid();
           auto& delta = increments[data->GetString("batch_id")];
           if (budget.tokens > kBatchTokenLimit - delta.tokens) return invalid();
           delta.tokens += budget.tokens;
           ++delta.rows;
+          if (i < previous_count) {
+            ++delta.recounted;
+            delta.recounted_line = rows->array[i].GetInt("line");
+          }
           delta.pages.insert(next->GetString("id"));
         }
       }
@@ -618,17 +631,41 @@ class DiskStore {
                            return value.IsString() && value.str == page;
                          }))
           return invalid();
+      if (delta.recounted) {
+        BatchInputRecount recount;
+        const auto* value = root->second.second->Find("input_recount");
+        if (delta.recounted != 1 || delta.rows != 1 || !value ||
+            !ParseBatchInputRecount(*value, &recount) ||
+            recount.rows != delta.recounted_line)
+          return invalid();
+      }
     }
     for (const auto& [id, pair] : roots) {
       const auto& [old, data] = pair;
       const auto delta = increments.find(id);
       const auto tokens = delta == increments.end() ? 0 : delta->second.tokens;
       const auto rows = delta == increments.end() ? 0 : delta->second.rows;
-      if (data->GetInt("enqueued_input_tokens") -
-                  old.GetInt("enqueued_input_tokens") !=
-              static_cast<int64_t>(tokens) ||
-          data->GetInt("metered_rows") - old.GetInt("metered_rows") !=
-              static_cast<int64_t>(rows))
+      const auto progress = [](const Json& value) {
+        BatchInputRecount result;
+        if (value.Has("enqueued_input_tokens")) {
+          result.tokens = value.GetInt("enqueued_input_tokens");
+          result.rows = value.GetInt("metered_rows");
+        } else if (const auto* partial = value.Find("input_recount")) {
+          ParseBatchInputRecount(*partial, &result);
+        }
+        return result;
+      };
+      const auto before = progress(old), after = progress(*data);
+      const auto* prior = old.Find("input_recount");
+      const auto* current = data->Find("input_recount");
+      const bool recount =
+          current && (!prior || OutputJson(*current) != OutputJson(*prior));
+      if (after.tokens < before.tokens || after.rows < before.rows ||
+          after.tokens - before.tokens != tokens ||
+          after.rows - before.rows != rows ||
+          (recount &&
+           (delta == increments.end() || delta->second.recounted != 1)) ||
+          (!recount && delta != increments.end() && delta->second.recounted))
         return invalid();
     }
     return batch_quota_.Check(owner, charges, options_.batch_model_queue_tokens,
@@ -1346,10 +1383,13 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-batch-result-lost-ack") == 0;
   const bool lose_batch_budget =
       std::strcmp(argv[1], "--q4t-object-worker-batch-budget-lost-ack") == 0;
+  const bool lose_batch_recount =
+      std::strcmp(argv[1], "--q4t-object-worker-batch-recount-lost-ack") == 0;
   int successful_puts = 0;
   matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack ||
             lose_cleanup_ack || lose_application_ack || lose_batch_create ||
-            lose_batch_start || lose_batch_result || lose_batch_budget;
+            lose_batch_start || lose_batch_result || lose_batch_budget ||
+            lose_batch_recount;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1384,8 +1424,9 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
-      if (reply.ok() && (lose_batch_create || lose_batch_start ||
-                         lose_batch_result || lose_batch_budget))
+      if (reply.ok() &&
+          (lose_batch_create || lose_batch_start || lose_batch_result ||
+           lose_batch_budget || lose_batch_recount))
         if (const auto* mutations = request.GetArray("mutations")) {
           const bool page_update = std::any_of(
               mutations->array.begin(), mutations->array.end(),
@@ -1404,6 +1445,8 @@ int MaybeRunObjectWorker(int argc, char** argv) {
                 (lose_batch_budget && page_update && root &&
                  data->Has("enqueued_input_tokens") &&
                  data->Find("batch")->GetString("status") == "validating") ||
+                (lose_batch_recount && page_update && root &&
+                 data->Has("input_recount")) ||
                 (lose_batch_start && page_update && root &&
                  data->GetInt("running") == 1) ||
                 (lose_batch_result &&

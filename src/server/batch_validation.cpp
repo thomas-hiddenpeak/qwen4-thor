@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/batch_quota.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
 
@@ -16,6 +17,46 @@ ObjectReply Invalid() {
                "Original Batch validation checkpoint is inconsistent");
 }
 }  // namespace
+
+ObjectReply RecountBatchInput(ObjectStore& objects, const BinaryAccess& access,
+                              const std::string& id, ChatPlanConfig config,
+                              const BatchInputMeter& meter) {
+  BatchState batches(objects);
+  const auto root = batches.Load(access, id);
+  if (!root.ok()) return root;
+  const auto& data = *root.value.Find("data");
+  const auto* owner = data.Find("owner");
+  if (!owner || OutputJson(*owner) != OutputJson(CurrentResponseOwner()))
+    return Error(409, "batch_owner_changed",
+                 "Original Batch recount belongs to another process");
+  if (!meter || data.Has("enqueued_input_tokens") ||
+      !data.GetBool("inputs_frozen") || data.GetInt("validated_rows") < 1)
+    return Error(409, "batch_budget_conflict", "No legacy input to recount");
+  if (config.model != data.GetString("canonical_model"))
+    return Error(409, "batch_budget_model_mismatch",
+                 "Legacy input requires its original canonical model");
+  BatchInputRecount progress;
+  if (const auto* value = data.Find("input_recount");
+      value && !ParseBatchInputRecount(*value, &progress))
+    return Invalid();
+  auto checkpoint = batches.Row(access, id, progress.rows);
+  if (!checkpoint.ok()) return checkpoint;
+  BatchInputRow row;
+  auto read = batches.ReadInputRow(access, id, progress.rows, &row);
+  if (!read.ok()) return read;
+  const auto endpoint = data.Find("batch")->GetString("endpoint");
+  Json prepared;
+  read = BatchPreparation(objects).Read(access, id, endpoint, row,
+                                        checkpoint.value, &prepared);
+  if (!read.ok()) return read;
+  // Current execution still enforces the current client policy. Recounting
+  // accepted work must not discard its input after a policy limit decreases.
+  config.client_limits = nullptr;
+  BatchInputBudget budget;
+  read = meter(endpoint, row, prepared, config, access, &budget);
+  if (!read.ok()) return read;
+  return batches.RecountInput(access, id, progress.rows, budget);
+}
 
 BatchValidation::~BatchValidation() { ReleasePrepared(false); }
 
@@ -152,6 +193,7 @@ ObjectReply BatchValidation::Step(BinaryAccess access) {
   if (access.scope.empty() || (!scope_.empty() && access.scope != scope_))
     return Invalid();
   if (!result_.ok() || complete_) return result_;
+  scope_ = access.scope;
   access_ = std::move(access);
   if (access_.cancelled && access_.cancelled())
     return Fail(Error(499, "batch_cancelled", "Batch validation cancelled"));
@@ -176,6 +218,11 @@ ObjectReply BatchValidation::Step(BinaryAccess access) {
     return Fail(Error(499, "batch_cancelled", "Batch validation cancelled"));
   if (state != "validating")
     return Fail(Error(409, "batch_state_conflict", "Batch is not validating"));
+  if (meter_ && data.GetBool("inputs_frozen") &&
+      data.GetInt("validated_rows") > 0 && !data.Has("enqueued_input_tokens")) {
+    auto recounted = RecountBatchInput(objects_, access_, id_, config_, meter_);
+    return recounted.ok() ? recounted : Fail(recounted);
+  }
   if (!input_) {
     auto initialized = Initialize(data);
     if (!initialized.ok()) return Fail(initialized);

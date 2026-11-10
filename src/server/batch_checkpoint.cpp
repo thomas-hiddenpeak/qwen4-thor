@@ -120,14 +120,23 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
   for (size_t i = 0; i < old_rows->array.size(); ++i) {
     const auto& old = old_rows->array[i];
     const auto& next = rows->array[i];
-    for (const auto* key :
-         {"line", "offset", "wire_bytes", "custom_id_sha256", "input_snapshots",
-          "prepared_inline", "input_budget"})
+    for (const auto* key : {"line", "offset", "wire_bytes", "custom_id_sha256",
+                            "input_snapshots", "prepared_inline"})
       if (!Same(old, next, key)) return Immutable();
+    // First-time legacy counting is checked with the parent's exact recount
+    // transition by the storage worker. An existing count never changes.
+    if (old.Has("input_budget") && !Same(old, next, "input_budget"))
+      return Immutable();
     // Once an inline result is durable, subsequent page updates may only
     // affect other rows. Binary-backed legacy result semantics are unchanged.
-    if (old.Has("result_inline") && OutputJson(old) != OutputJson(next))
-      return Immutable();
+    if (old.Has("result_inline")) {
+      auto compare = next;
+      if (!old.Has("input_budget"))
+        std::erase_if(compare.object, [](const auto& field) {
+          return field.first == "input_budget";
+        });
+      if (OutputJson(old) != OutputJson(compare)) return Immutable();
+    }
   }
   return {};
 }

@@ -1,6 +1,7 @@
 #include "q4t/server/batch_preparation.h"
 #include "q4t/server/batch_validation.h"
 #include "q4t/server/batch_checkpoint.h"
+#include "q4t/server/batch_quota.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -1292,5 +1293,201 @@ Q4T_TEST(
             prepared.input_budget.tokens < 300 &&
             encoded.find("retain 42") != encoded.npos &&
             encoded.find(std::string(50, 'o')) == encoded.npos);
+  return true;
+}
+
+Q4T_TEST(batch_recount_native_frozen_file_prefix_resumes_without_fetch) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ValidationWork work;
+  Json original;
+  {
+    ObjectStore objects(fixture.options);
+    const auto file = Upload(objects, "original recount fact 42", "fact.txt");
+    work = ValidationInput(
+        objects, {WithFile(file), Response("second"), Response("new")});
+    BatchValidation old(objects, work.id, fixture.config);
+    Q4T_CHECK(Ok(old.Step(Access())) && Ok(old.Step(Access())) &&
+              !old.Complete());
+    original = BatchState(objects).Row(Access(), work.id, 0).value;
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), file)) &&
+              Ok(Files(objects).Erase(Access(), work.file)));
+    BatchValidation recount(objects, work.id, fixture.config,
+                            Meter(objects, BudgetCodec()));
+    Q4T_CHECK(Ok(recount.Step(Access())) && recount.RowsChecked() == 0);
+    const auto root = BatchState(objects).Load(Access(), work.id);
+    Q4T_CHECK(Ok(root) &&
+              root.value.Find("data")->Find("input_recount")->GetInt("rows") ==
+                  1 &&
+              !root.value.Find("data")->Has("enqueued_input_tokens"));
+  }
+  ObjectStore objects(fixture.options);
+  auto meter = Meter(objects, BudgetCodec());
+  size_t measured = 0;
+  BatchInputMeter remaining = [&](auto endpoint, const auto& row,
+                                  const auto& prepared, const auto& config,
+                                  const auto& access, auto* count) {
+    ++measured;
+    if (row.line == 1)
+      return Error(500, "counted_again", "Recovered count was repeated");
+    return meter(endpoint, row, prepared, config, access, count);
+  };
+  BatchValidation restored(objects, work.id, fixture.config, remaining);
+  for (int i = 0; i < 6 && !restored.Complete(); ++i)
+    Q4T_CHECK(Ok(restored.Step(Access())));
+  Q4T_CHECK(restored.Complete() && measured == 2);
+  auto row = BatchState(objects).Row(Access(), work.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.Has("input_budget"));
+  std::erase_if(row.value.object, [](const auto& field) {
+    return field.first == "input_budget";
+  });
+  Q4T_CHECK(OutputJson(row.value) == OutputJson(original));
+  const auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->GetInt("metered_rows") == 3 &&
+            root.value.Find("data")->Find("input_recount")->GetInt("rows") ==
+                2);
+  return true;
+}
+
+Q4T_TEST(batch_recount_actual_partial_lost_ack_resumes_next_original_row) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 150;
+  ValidationWork work;
+  {
+    ObjectStore objects(fixture.options);
+    work = ValidationInput(objects, {Response("first"), Response("second")});
+    BatchValidation old(objects, work.id, fixture.config);
+    Q4T_CHECK(Ok(old.Step(Access())) && Ok(old.Step(Access())) &&
+              old.Complete());
+  }
+  const auto fixed = [](uint64_t amount, size_t expected) -> BatchInputMeter {
+    return [=](const auto&, const BatchInputRow& row, const auto&, const auto&,
+               const auto&, BatchInputBudget* budget) {
+      if (row.line != expected)
+        return Error(500, "wrong_recount_row", "Repeated or skipped row");
+      *budget = {amount, true};
+      return ObjectReply{};
+    };
+  };
+  ObjectWorkerEntryForTesting("--q4t-object-worker-batch-recount-lost-ack");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  {
+    ObjectStore objects(fixture.options);
+    const auto reply = RecountBatchInput(objects, Access(), work.id,
+                                         fixture.config, fixed(7, 1));
+    Q4T_CHECK(!reply.ok() && reply.commit_unknown);
+  }
+  ObjectWorkerEntryForTesting({});
+  ObjectStore objects(fixture.options);
+  Q4T_CHECK(Ok(RecountBatchInput(objects, Access(), work.id, fixture.config,
+                                 fixed(9, 2))));
+  const auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) &&
+            root.value.Find("data")->GetInt("enqueued_input_tokens") == 16 &&
+            root.value.Find("data")->GetInt("metered_rows") == 2);
+  return true;
+}
+
+Q4T_TEST(batch_recount_scope_model_deadline_and_cancel_prevent_publication) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(objects, {Response("first")});
+  BatchValidation old(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(old.Step(Access())) && old.Complete());
+  size_t counted = 0;
+  bool cancelled = false;
+  BatchInputMeter meter = [&](const auto&, const auto&, const auto&,
+                              const auto&, const auto&,
+                              BatchInputBudget* result) {
+    ++counted;
+    cancelled = true;
+    *result = {4, true};
+    return ObjectReply{};
+  };
+  for (int i = 0; i < 5; ++i) {
+    auto access = Access();
+    auto config = fixture.config;
+    if (i == 0) access.scope = "client:foreign";
+    if (i == 1) config.model = "changed-model";
+    if (i == 2) access.deadline = Clock::now();
+    if (i == 3) access.cancelled = [] { return true; };
+    if (i == 4) access.cancelled = [&] { return cancelled; };
+    Q4T_CHECK(!RecountBatchInput(objects, access, work.id, config, meter).ok());
+  }
+  const auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(counted == 1 && Ok(root) &&
+            !root.value.Find("data")->Has("input_recount") &&
+            !root.value.Find("data")->Has("enqueued_input_tokens"));
+  return true;
+}
+
+Q4T_TEST(batch_recount_completed_inline_result_and_ticket_are_immutable) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work =
+      ValidationInput(objects, {Response("first"), Response("second")});
+  BatchValidation old(objects, work.id, fixture.config);
+  Q4T_CHECK(Ok(old.Step(Access())) && Ok(old.Step(Access())));
+  BatchState batches(objects);
+  const auto started = batches.StartRow(Access(), work.id, 0);
+  Q4T_CHECK(Ok(started));
+  BatchInputRow first;
+  Q4T_CHECK(Ok(batches.ReadInputRow(Access(), work.id, 0, &first)));
+  BatchRowResult result;
+  result.request_id = started.value.GetString("request_id");
+  result.http_status = 200;
+  result.response_body = R"({"output":[],"usage":{"input_tokens":7}})";
+  Q4T_CHECK(
+      Ok(batches.FinishRow(Access(), work.id, 0, first.custom_id, result)));
+  const auto before = batches.Row(Access(), work.id, 0);
+  Q4T_CHECK(Ok(before) && before.value.Has("result_inline"));
+  Q4T_CHECK(Ok(batches.RecountInput(Access(), work.id, 0, {7, true})) &&
+            Ok(batches.RecountInput(Access(), work.id, 1, {8, false})));
+  auto after = batches.Row(Access(), work.id, 0);
+  Q4T_CHECK(Ok(after) && after.value.Has("input_budget"));
+  std::erase_if(after.value.object, [](const auto& field) {
+    return field.first == "input_budget";
+  });
+  Q4T_CHECK(OutputJson(before.value) == OutputJson(after.value));
+  const auto root = batches.Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->GetInt("next_row") == 1 &&
+            root.value.Find("data")->GetInt("enqueued_input_tokens") == 15);
+  return true;
+}
+
+Q4T_TEST(batch_recount_partial_budget_cannot_move_model_and_can_cancel) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = ValidationInput(
+      objects, {Response("first"), Response("second"), Response("later")});
+  BatchValidation old(objects, work.id, fixture.config);
+  Q4T_CHECK(
+      Ok(old.Step(Access())) && Ok(old.Step(Access())) &&
+      Ok(BatchState(objects).RecountInput(Access(), work.id, 0, {7, true})));
+  auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(root));
+  for (int i = 0; i < 3; ++i) {
+    auto put = Request(ObjectKind::kBatch, work.id, ObjectOperation::kPut);
+    put.expected_revision = root.value.GetInt("revision");
+    put.created_at = root.value.GetInt("created_at");
+    put.expires_at = root.value.GetInt("expires_at");
+    put.data = *root.value.Find("data");
+    if (i == 0) Set(&put.data, "canonical_model", String("quota-escape"));
+    if (i == 1) Set(&put.data, "pages", Array());
+    if (i == 2) {
+      Set(&Field(put.data, "batch"), "status", String("completed"));
+      Set(&put.data, "resources_released", Boolean(true));
+    }
+    Q4T_CHECK(Run(objects, put).code == "batch_budget_conflict");
+  }
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.Cancel(Access(), work.id)) &&
+            Ok(batches.FinishCancelled(Access(), work.id)));
+  root = batches.Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) &&
+            root.value.Find("data")->Find("batch")->GetString("status") ==
+                "cancelled" &&
+            root.value.Find("data")->Find("input_recount")->GetInt("tokens") ==
+                7);
   return true;
 }

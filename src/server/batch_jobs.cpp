@@ -394,6 +394,14 @@ ObjectReply BatchJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
                                           "Original client is unauthorized"));
     return batches.Cancel(access, job->id);
   }
+  if (status == "in_progress" && state_->meter &&
+      batch.GetInt("expires_at") > std::time(nullptr) &&
+      data.GetBool("inputs_frozen") && data.GetInt("validated_rows") > 0 &&
+      !data.Has("enqueued_input_tokens")) {
+    access.cancelled = [&] { return state_->stopping.load() || job->cancel; };
+    return RecountBatchInput(state_->objects, access, job->id, state_->config,
+                             state_->meter);
+  }
   if (status == "validating") {
     if (batch.GetInt("expires_at") <= std::time(nullptr))
       return batches.BeginFinalization(access, job->id, "expired");

@@ -20,9 +20,17 @@ BatchQueueCharge InspectBatchQueueCharge(std::string_view kind,
 // Preserve metered prefixes and their canonical model even after termination.
 ObjectReply CheckBatchBudgetMutation(const io::Json& data,
                                      const io::Json* previous);
+struct BatchInputRecount {
+  uint64_t rows = 0, tokens = 0, total_rows = 0;
+};
+bool ParseBatchInputRecount(const io::Json& value, BatchInputRecount* output);
+bool ValidBatchInputRecount(const io::Json& data);
 
 struct BatchQueueChange {
   BatchQueueCharge before, after;
+  // Only a verified addition of budget to an already frozen legacy row.
+  // Recounting old work is not admitting new input under a reduced limit.
+  bool recount = false;
 };
 class BatchQueueQuota {
  public:
