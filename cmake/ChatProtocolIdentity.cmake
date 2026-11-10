@@ -105,6 +105,9 @@ set(protocol_inputs
   src/main.cpp
   include/q4t/server/grammar_process.h
   src/server/grammar_process.cpp
+  include/q4t/server/worker_io_budget.h
+  src/server/worker_io_broker.h
+  src/server/worker_io_broker.cpp
   include/q4t/server/cache_io.h
   include/q4t/server/cache_health.h
   src/server/cache_io.cpp

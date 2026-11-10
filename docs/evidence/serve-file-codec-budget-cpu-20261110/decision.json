@@ -1,0 +1,16 @@
+{
+  "status": "PASS_TARGETED_KERNEL_IO_BUDGET_CPU",
+  "tests": 18,
+  "new": 7,
+  "affected": 11,
+  "seconds": 0.7647847668267787,
+  "first_host_build": "FAIL_WERROR_UNUSED_WRITE_RESULT_IN_FIXTURE",
+  "final_build_warnings": 0,
+  "host_sha256": "9acabc4bda2723b8326decd7f4ff09bef6f60196a0c0af9cdbf86412000da77a",
+  "candidate_engine_sha256": "81c9de81c3974ce7cf3f168741f4933be4a26c8314bdbc9b5f3e1fdae19510cd",
+  "default_changed": false,
+  "gpu_queries": 0,
+  "model_starts": 0,
+  "full_legacy_sandbox_and_decoder_pending": true,
+  "all_master_tasks_continue": true
+}

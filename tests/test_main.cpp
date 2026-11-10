@@ -24,6 +24,7 @@ int ConversationApiFixture(int argc, char** argv);
 int FilesApiFixture(int argc, char** argv);
 int FileFetchFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
+int WorkerIoBudgetFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
 int PackageFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
@@ -64,6 +65,8 @@ int main(int argc, char** argv) {
   if (file_fetch >= 0) return file_fetch;
   const int document_sandbox = DocumentSandboxFixture(argc, argv);
   if (document_sandbox >= 0) return document_sandbox;
+  const int io_budget = WorkerIoBudgetFixture(argc, argv);
+  if (io_budget >= 0) return io_budget;
   const int pdf_sandbox = PdfSandboxFixture(argc, argv);
   if (pdf_sandbox >= 0) return pdf_sandbox;
   const int package_fixture = PackageFixture(argc, argv);

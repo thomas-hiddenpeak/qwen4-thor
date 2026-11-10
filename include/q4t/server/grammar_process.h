@@ -11,6 +11,7 @@
 #include <string>
 
 #include "q4t/status.h"
+#include "q4t/server/worker_io_budget.h"
 
 namespace q4t::server {
 
@@ -74,6 +75,8 @@ struct GrammarControl {
 
 namespace detail {
 
+class WorkerIoBroker;
+
 // Called by the native event loop and before admission. No wait or callback.
 void PollGrammarWorkers();
 // Native loop polling also collects independent one-shot file fetches, even
@@ -101,6 +104,11 @@ class GrammarProcess {
   Status Transfer(void* data, size_t bytes, bool write,
                   std::chrono::steady_clock::time_point deadline,
                   const std::function<bool()>& cancelled = {});
+  // Receive exactly one kernel listener from this owned child. Its resource
+  // requests are serviced by Transfer/CollectOutput and confirmed exit waits.
+  Status ReceiveIoBudget(const WorkerIoBudget& budget,
+                         std::chrono::steady_clock::time_point deadline,
+                         const std::function<bool()>& cancelled = {});
   // One-shot raw stdout: publish only after EOF AND a confirmed normal zero
   // exit. Failure clears output, stops this child and retains an unreaped slot.
   Status CollectOutput(std::string* output, size_t max_bytes,
@@ -116,6 +124,7 @@ class GrammarProcess {
   explicit GrammarProcess(GrammarControl control);
   Status AwaitExit(std::chrono::steady_clock::time_point deadline,
                    const std::function<bool()>& cancelled);
+  bool PumpIoBudget();
   GrammarControl control_;
   int socket_ = -1;
   int pid_ = -1;
@@ -123,6 +132,7 @@ class GrammarProcess {
   GrammarFailure failure_ = GrammarFailure::kNone;
   uint64_t reported_rss_bytes_ = 0;
   bool slot_owned_ = false;
+  std::unique_ptr<WorkerIoBroker> io_broker_;
 };
 
 // Shared child entry validation: exact inherited UNIX socket, parent death,

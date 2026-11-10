@@ -1,0 +1,11 @@
+{
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "9acabc4bda2723b8326decd7f4ff09bef6f60196a0c0af9cdbf86412000da77a",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "81c9de81c3974ce7cf3f168741f4933be4a26c8314bdbc9b5f3e1fdae19510cd",
+  "src/server/grammar_process.cpp": "d6a26c56069e2154b4ce7d960f48056ff7fe1241cc52feb8aa604666fb929d6a",
+  "include/q4t/server/grammar_process.h": "147717af9fec223cf189cf5603e8a640a4c29dd2ab997af1c305c7ef28eeac7a",
+  "src/server/worker_io_broker.cpp": "991b7c3fcc6a23eac20243ee554e7316ec0e0216a556a8195b8f762a265d764c",
+  "src/server/worker_io_broker.h": "9a0b353822159b61b40899c5fb78b2691f51a66283ae429d7916f83191b41387",
+  "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
+  "tests/server_worker_io_budget_test.cpp": "1e800a27ab422c10d3d503d43e4777e40f8a8af455d24f27923884455f84f239",
+  "tests/test_main.cpp": "512423ec757164456e9e37c0bbf1acfd1b111c69f05a779440b13c9a5fc616de"
+}

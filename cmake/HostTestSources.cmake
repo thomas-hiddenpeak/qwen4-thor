@@ -33,6 +33,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_device_memory_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cuda_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/worker_io_broker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_worker_io_budget_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/cache_io.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/cache_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cache_io_test.cpp

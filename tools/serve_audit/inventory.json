@@ -1443,8 +1443,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "ba8262be89b4f027373e09e5cdc80266ba439382781729c6fd077314189a628f",
-    "cmake/ChatProtocolIdentity.cmake": "fb263224f89c47aebc32b204a3d733b306b12e2872deca2aee6112f9893d0a7d",
+    "CMakeLists.txt": "4a42d38e870f7f9b6df1377c903648f953b0435698c089b8e9866fa2b8f2d10c",
+    "cmake/ChatProtocolIdentity.cmake": "cdcc99d437f5c2ce54a2cff170d83fadd18781611bf8ef7d8d60591c8a19f402",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1503,7 +1503,7 @@
     "include/q4t/server/file_pdf.h": "92071a8e8fdc423b6371b72c54611afeba8043123f0d7300e30d8a45c33d7609",
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
-    "include/q4t/server/grammar_process.h": "e065cc1952ebdb3f7b21f7c1a4e324946aa8b50af072c3e00db26a39e80812c2",
+    "include/q4t/server/grammar_process.h": "147717af9fec223cf189cf5603e8a640a4c29dd2ab997af1c305c7ef28eeac7a",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -1575,6 +1575,7 @@
     "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "4e78d55c74f87be540b134bdd9a537050548118a0ae8a864750c730618a46060",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
+    "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "eb409d5a22d14fa432da89a9090501a49aa78cd10f57de24b3b8de3405139d93",
@@ -1682,7 +1683,7 @@
     "src/server/file_rtf_encoding.h": "dadba820330cb95391fba72190d729af3770854da3d5f10b98cb02499ea63801",
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
-    "src/server/grammar_process.cpp": "85340f7e2d3264f5e022b550d1d7a4323957bb7bff4a5a7e1356c0b7f9cc900a",
+    "src/server/grammar_process.cpp": "d6a26c56069e2154b4ce7d960f48056ff7fe1241cc52feb8aa604666fb929d6a",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
@@ -1759,6 +1760,8 @@
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
+    "src/server/worker_io_broker.cpp": "991b7c3fcc6a23eac20243ee554e7316ec0e0216a556a8195b8f762a265d764c",
+    "src/server/worker_io_broker.h": "9a0b353822159b61b40899c5fb78b2691f51a66283ae429d7916f83191b41387",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
     "src/service/guardian_main.cpp": "a7c7bacec4f927c42e61bff64f1455af01a3d4129562f4ed7a5f28361ee112ad",
@@ -3553,5 +3556,11 @@
       "spreadsheet model summaries and actual PDF vision",
       "business verification and reversible delivery"
     ]
+  },
+  "file_codec_io_budget_20261110": {
+    "scope": "Owned seccomp listener resource admission; full codec syscall/Landlock policy still required",
+    "semantics": "scalar arguments only; charge attempts before syscall, no refunds; same owner/pidfd deadline/cancel and unknown-exit slot",
+    "evidence": "docs/evidence/serve-file-codec-budget-cpu-20261110",
+    "no_full_legacy_or_api_claim": true
   }
 }

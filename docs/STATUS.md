@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI02 [解码进程总IO预算18项CPU接受](evidence/serve-file-codec-budget-cpu-20261110/README.md)，0.765秒；首夹具Werror修复和原件保留，最终host/引擎零警告，候选81c9de81。实际超额系统调用未发生、收发/EOF/取消/期限及所有权通过；0GPU、默认cdb5ced9保持。继续完整Legacy转换/沙箱和全部API/业务/总任务。
+
+FI02旧格式解码所需总IO预算已成组实现：owned seccomp listener、累计实际尝试写入/文件创建/线程创建准入，输入/输出/退出等待共同处理，避免单文件限制遗漏总量。冻结7新+11受影响CPU（18项），开始独立必要构建，尚未测试；完整Legacy沙箱/转换及全部API/业务/总任务继续，0GPU/默认保持。
+
 FI02 [Office/RTF 26 CPU与3项补验接受](evidence/serve-file-office-cpu-20261110/README.md)：实际内容、生产隔离worker与预算通过，host/引擎零警告，候选a8c719c0。普通Office不再绑定RTF代码页可用性；0GPU、默认cdb5ced9保持STOPPED。继续Legacy/Apple/Google及全部API/历史/真实业务和总任务，不以组件接受结案。
 
 Office/RTF首组26 CPU全过（0.565秒），收尾审查补齐依赖隔离：RTF预加载只准备可用代码页，不因未使用的代码页缺失拒绝Office/Unicode文档，实际转换缺失仍503。冻结3项直接补验，复用其余23；0GPU/默认保持，Legacy及全部API/业务/总任务继续。

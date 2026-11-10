@@ -340,6 +340,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/schema_idna.cpp
   src/server/output_constraints.cpp
   src/server/grammar_process.cpp
+  src/server/worker_io_broker.cpp
   src/server/grammar_worker.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp

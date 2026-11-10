@@ -22,6 +22,8 @@
 #include <thread>
 #include <utility>
 
+#include "worker_io_broker.h"
+
 namespace q4t::server::detail {
 namespace {
 constexpr int kSocket = 3;
@@ -273,6 +275,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
 }
 
 void GrammarProcess::Stop() {
+  io_broker_.reset();
   if (socket_ >= 0) close(std::exchange(socket_, -1));
   if (pid_ > 0) {
     if (pid_fd_ >= 0) {
@@ -341,15 +344,19 @@ Status GrammarProcess::Transfer(
       return Status::Fail("grammar operation time limit exceeded");
     }
     if (socket_ < 0) break;
-    pollfd descriptor{socket_, static_cast<short>(write ? POLLOUT : POLLIN), 0};
+    pollfd descriptors[] = {
+        {socket_, static_cast<short>(write ? POLLOUT : POLLIN), 0},
+        {io_broker_ ? io_broker_->Descriptor() : -1, POLLIN, 0}};
     const int timeout = static_cast<int>(std::clamp<int64_t>(
         std::chrono::duration_cast<std::chrono::milliseconds>(remaining)
             .count(),
         1, 10));
-    const int ready = poll(&descriptor, 1, timeout);
+    const int ready = poll(descriptors, 2, timeout);
     if (ready < 0 && errno == EINTR) continue;
     if (ready < 0) break;
     if (!ready) continue;
+    if (!PumpIoBudget()) return Status::Fail("worker IO budget rejected");
+    if (!descriptors[0].revents) continue;
     const size_t chunk = std::min<size_t>(bytes, 65536);
     const auto count =
         write ? send(socket_, cursor, chunk, MSG_DONTWAIT | MSG_NOSIGNAL)
@@ -394,6 +401,7 @@ Status GrammarProcess::AwaitExit(
       pid_ = -1;
       close(std::exchange(pid_fd_, -1));
       if (socket_ >= 0) close(std::exchange(socket_, -1));
+      io_broker_.reset();
       if (control_.worker_finished) control_.worker_finished(report);
       if (WIFEXITED(report.exit_status) && !WEXITSTATUS(report.exit_status))
         return {};
@@ -401,15 +409,20 @@ Status GrammarProcess::AwaitExit(
       return Status::Fail("worker did not exit successfully");
     }
     if (waited < 0 && errno != EINTR) break;
-    pollfd descriptor{pid_fd_, POLLIN, 0};
+    pollfd descriptors[] = {{pid_fd_, POLLIN, 0},
+                            {io_broker_ ? io_broker_->Descriptor() : -1,
+                             POLLIN, 0}};
     const int timeout = static_cast<int>(std::clamp<int64_t>(
         std::chrono::duration_cast<std::chrono::milliseconds>(remaining)
             .count(),
         1, 10));
-    const int ready = poll(&descriptor, 1, timeout);
+    const int ready = poll(descriptors, 2, timeout);
     if (ready < 0 && errno != EINTR) break;
+    if (ready > 0 && !PumpIoBudget())
+      return Status::Fail("worker completion IO budget rejected");
     // A signalled pidfd alone is not confirmation that wait4 succeeded.
-    if (ready > 0) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    if (descriptors[0].revents)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   failure_ = GrammarFailure::kWorker;
   Stop();
@@ -442,15 +455,19 @@ Status GrammarProcess::CollectOutput(
         Stop();
         return Status::Fail("worker output time limit exceeded");
       }
-      pollfd descriptor{socket_, POLLIN, 0};
+      pollfd descriptors[] = {{socket_, POLLIN, 0},
+                              {io_broker_ ? io_broker_->Descriptor() : -1,
+                               POLLIN, 0}};
       const int timeout = static_cast<int>(std::clamp<int64_t>(
           std::chrono::duration_cast<std::chrono::milliseconds>(remaining)
               .count(),
           1, 10));
-      const int ready = poll(&descriptor, 1, timeout);
+      const int ready = poll(descriptors, 2, timeout);
       if (ready < 0 && errno == EINTR) continue;
       if (ready < 0) break;
       if (!ready) continue;
+      if (!PumpIoBudget()) return Status::Fail("worker output IO budget rejected");
+      if (!descriptors[0].revents) continue;
       const auto count =
           recv(socket_, buffer.data(), buffer.size(), MSG_DONTWAIT);
       if (count < 0 && (errno == EINTR || errno == EAGAIN)) continue;
