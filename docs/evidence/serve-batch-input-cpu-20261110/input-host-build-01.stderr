@@ -1,0 +1,69 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_create_invalid_fields_are_transactional()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:73:19: error: loop variable ‘seconds’ creates a copy from type ‘const q4t::io::Json’ [-Werror=range-loop-construct]
+   73 |   for (const auto seconds :
+      |                   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:73:19: note: use reference type to prevent copying
+   73 |   for (const auto seconds :
+      |                   ^~~~~~~
+      |                   &
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_create_all_endpoints_defaults_and_output_expiry()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:63:1: error: control reaches end of non-void function [-Werror=return-type]
+   63 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_create_invalid_fields_are_transactional()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:94:1: error: control reaches end of non-void function [-Werror=return-type]
+   94 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_fragmentation_preserves_ids_body_and_decimal_text()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:114:1: error: control reaches end of non-void function [-Werror=return-type]
+  114 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_crlf_offsets_and_unterminated_final_line()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:129:1: error: control reaches end of non-void function [-Werror=return-type]
+  129 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_rejects_blank_bom_invalid_utf8_and_truncated_json()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:143:1: error: control reaches end of non-void function [-Werror=return-type]
+  143 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_duplicate_decoded_ids_and_duplicate_keys_rejected()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:158:1: error: control reaches end of non-void function [-Werror=return-type]
+  158 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_envelope_method_url_and_stream_rejected_before_checker()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:191:1: error: control reaches end of non-void function [-Werror=return-type]
+  191 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_canonical_model_alias_default_and_mismatch()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:207:1: error: control reaches end of non-void function [-Werror=return-type]
+  207 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_endpoint_failure_and_stage_unknown_are_sticky()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:236:1: error: control reaches end of non-void function [-Werror=return-type]
+  236 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_cancellation_before_feed_and_after_validation()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:257:1: error: control reaches end of non-void function [-Werror=return-type]
+  257 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_exact_configured_file_line_and_row_limits()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:287:1: error: control reaches end of non-void function [-Werror=return-type]
+  287 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_embedding_total_is_separate_from_request_count()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:307:1: error: control reaches end of non-void function [-Werror=return-type]
+  307 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_actual_200mb_50000_rows_keep_one_line_buffer()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:329:1: error: control reaches end of non-void function [-Werror=return-type]
+  329 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp: In function ‘bool q4t_test_fn_batch_jsonl_invalid_internal_limits_and_missing_resolver_rejected()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp:352:1: error: control reaches end of non-void function [-Werror=return-type]
+  352 | }
+      | ^
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:793: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

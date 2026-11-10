@@ -1,0 +1,9 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/batch_input.h",
+    "src/server/batch_input.cpp"
+  ],
+  "note": "First update precondition incorrectly expected checker to hash itself; stopped before inventory/doc writes. Actual reviewed source set corrected; no tests ran."
+}

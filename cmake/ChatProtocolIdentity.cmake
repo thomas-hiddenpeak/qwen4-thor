@@ -132,6 +132,8 @@ set(protocol_inputs
   include/q4t/server/application_payload.h
   include/q4t/server/uploads.h
   src/server/uploads.cpp
+  include/q4t/server/batch_input.h
+  src/server/batch_input.cpp
   include/q4t/server/file_input.h
   src/server/file_input.cpp
   src/server/file_image.cpp

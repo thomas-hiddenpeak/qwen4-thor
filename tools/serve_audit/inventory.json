@@ -1465,11 +1465,28 @@
     "chat_contract.cpp:4:part": [
       "type",
       "file"
+    ],
+    "batch_input.cpp:0:request": [
+      "input_file_id",
+      "endpoint",
+      "completion_window",
+      "metadata",
+      "output_expires_after"
+    ],
+    "batch_input.cpp:1:*expiry": [
+      "anchor",
+      "seconds"
+    ],
+    "batch_input.cpp:2:value": [
+      "custom_id",
+      "method",
+      "url",
+      "body"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5fb03cd21d773ad1ddc24ca134e7aab4b19b1603de073b64f6a941ef9ec6ffa5",
-    "cmake/ChatProtocolIdentity.cmake": "7fe854b82efb56b8071f5b7b4016a867a17f591f15fd178793ae3c50cc1ab704",
+    "CMakeLists.txt": "7d5e0dda6161ca60e4a06cbfb1cb2a516bf4d424507b165f8c19aa90c89b7eb2",
+    "cmake/ChatProtocolIdentity.cmake": "88be3fdf266c77cdc34e912f271edfd9b4c8be35d5be4800b32b6ca1baca2a42",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1932,7 +1949,9 @@
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/request_limits.h": "551e05c38dc097450da55766fa39ceda75879e7e141385b829aa916e28f9a30a",
-    "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221"
+    "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
+    "include/q4t/server/batch_input.h": "4719a6230734a1c4cb04850e15bb5d5febadb9bb4cf8bc4dbf9ffaa999546086",
+    "src/server/batch_input.cpp": "a064dc01f70e647f0493f00802185d2afbbb7124dcee14ed2961a7436c497859"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

@@ -1037,7 +1037,8 @@
           "service_acceptance_sha256": "18b6287c4f7f85d665d76b3956d40483353a4cc06261c394a550aeb3ae9d569c",
           "service_release_sha256": "1eff86d147c4de2ba5514e224b56640add93a6c3e8edc593e9cedaa9689e7829"
         }
-      }
+      },
+      "batch_input_component_evidence": "evidence/serve-batch-input-cpu-20261110/README.md"
     },
     {
       "id": "A10",
