@@ -1,0 +1,3 @@
+[PASS] batch_background_actual_ttl_retains_until_result_copy_then_collects
+[PASS] batch_background_original_parent_expiry_cancels_queued_execution
+2 tests, 2 passed, 0 failed, 0 skipped

@@ -569,6 +569,7 @@ void ResponsesJobs::Release(const std::shared_ptr<Job>& job,
                             bool known_terminal) {
   // Execution has drained even when its terminal storage receipt is unknown.
   // Reconciliation retains metadata, never a live token reservation.
+  job->permit.reset();
   if (auto rate = std::move(job->rate)) rate->Settle();
   const std::lock_guard lock(state_->mutex);
   job->rate_waiting = false;
@@ -614,8 +615,13 @@ void ResponsesJobs::Reconcile(const std::shared_ptr<Job>& job) noexcept {
 
 void ResponsesJobs::Execute(const std::shared_ptr<Job>& job) noexcept {
   try {
-    ObjectReply admission;
-    if (!job->control->Cancelled() &&
+    bool parent_cancelled = false;
+    ObjectReply admission = job->run->CheckBatchParent(&parent_cancelled);
+    if (parent_cancelled) job->control->Cancel();
+    if (!admission.ok())
+      ResponsesExecution::ObserveError(job->run.get(), admission.http_status,
+                                       admission.message, admission.code);
+    if (admission.ok() && !job->control->Cancelled() &&
         job->run->RateDomain() == ClientRateDomain::kBatch && !job->rate) {
       admission = state_->rate_admission
                       ? state_->rate_admission(*job)
@@ -806,6 +812,52 @@ ObjectReply ResponsesJobs::Cancel(const std::string& id,
   }
   return Error(503, "response_cancel_pending",
                "Cancellation remains requested; retrieve the response");
+}
+
+ObjectReply ResponsesJobs::ObserveBatch(const BatchResponseLink& link,
+                                        const StateAccess& access,
+                                        bool cancel) {
+  BatchResponseLink checked;
+  if (link.scope != access.scope ||
+      !ParseBatchResponseLink(BatchResponseLinkValue(link), &checked))
+    return Error(503, "batch_response_binding_invalid",
+                 "Invalid trusted Batch response observation");
+  const auto record =
+      ResponsesState(state_->objects).ReadRecord(link.response_id, access);
+  if (!record.ok()) return record;
+  const auto* parent = record.value.Find("batch_parent");
+  const auto* response = record.value.Find("response");
+  if (!parent || !ParseBatchResponseLink(*parent, &checked) ||
+      checked != link || !response || !response->GetBool("background"))
+    return Error(503, "batch_response_binding_invalid",
+                 "Original Response has a different Batch parent");
+  {
+    const std::lock_guard lock(state_->mutex);
+    const auto found = state_->jobs.find(Key(access.scope, link.response_id));
+    if (found != state_->jobs.end()) {
+      if (cancel) {
+        found->second->control->Cancel();
+        found->second->next_rate = Clock::now();
+        state_->changed.notify_all();
+      }
+      // Finish can publish before callback cleanup returns. Release removes
+      // ownership only after model/grammar, data and rate leases have drained.
+      return Error(503, "batch_response_pending",
+                   "Original background execution has not drained");
+    }
+  }
+  const auto* continuation = record.value.Find("continuation");
+  const auto* owner = continuation ? continuation->Find("owner") : nullptr;
+  const bool original_gone =
+      owner && ResponseOwnerStatus(*owner) == ResponseOwnerState::kGone;
+  const bool current = owner && ValidResponseOwner(*owner) &&
+                       OutputJson(*owner) == OutputJson(CurrentResponseOwner());
+  if (!Terminal(*response) || (!original_gone && !current))
+    return Error(503, "batch_response_pending",
+                 "Original Response awaits terminal owner reconciliation");
+  ObjectReply reply;
+  reply.value = *response;
+  return reply;
 }
 
 void ResponsesJobs::RequestStop() noexcept {

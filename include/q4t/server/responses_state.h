@@ -2,9 +2,11 @@
 
 #include <chrono>
 #include <functional>
+#include <optional>
 #include <string>
 
 #include "q4t/server/client_policy.h"
+#include "q4t/server/batch_response_link.h"
 #include "q4t/server/object_store.h"
 #include "q4t/server/responses_plan.h"
 
@@ -24,6 +26,7 @@ struct ResponseStatePlan {
   bool ephemeral = false;  // Background store=false is retained for polling.
   int64_t execution_deadline_at = 0;  // Unix seconds; restart cannot reset it.
   io::Json execution_owner;
+  std::optional<BatchResponseLink> batch_parent = {};
   ClientRateDomain rate_domain = ClientRateDomain::kOnline;
   io::Json history;    // Full authorized input for this generation.
   io::Json own_input;  // New input, without inherited context/instructions.

@@ -1,0 +1,42 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  3%] Built target q4t_ple
+[  3%] Built target q4t_regex_build
+[  6%] Built target q4t_trace
+[  6%] Built target q4t_runtime
+[  6%] Built target q4t_service_tools
+[  6%] Built target q4t_text
+[ 20%] Built target xgrammar
+[ 24%] Built target q4t_quant
+[ 24%] Built target q4t_service_cli
+[ 34%] Built target q4t_model
+[ 37%] Built target q4t_startup_plan
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_worker.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_retention.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_input.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_state.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_checkpoint.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_budget.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_quota.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_results.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_usage.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_response_link.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_preparation.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_execution.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_validation.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_jobs.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_api.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_state.cpp.o

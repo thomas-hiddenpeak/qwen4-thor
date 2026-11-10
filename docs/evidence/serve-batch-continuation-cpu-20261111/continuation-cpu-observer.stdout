@@ -1,0 +1,3 @@
+[PASS] batch_background_absent_observer_closes_only_proven_missing_submission
+[PASS] batch_background_existing_result_waits_for_original_observer_recovery
+2 tests, 2 passed, 0 failed, 0 skipped

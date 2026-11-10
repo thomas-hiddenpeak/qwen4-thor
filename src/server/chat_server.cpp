@@ -809,6 +809,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
           BatchInputBudget input;
           return MeasureBatchRequest(endpoint, row, frozen, config, access,
                                      &input, rate);
+        },
+        [this](const auto& link, const auto& access, bool cancel) {
+          if (background_)
+            return background_->ObserveBatch(link, access, cancel);
+          ObjectReply reply;
+          reply.http_status = 503;
+          reply.code = "batch_response_observer_unavailable";
+          reply.message = "Background observer unavailable";
+          return reply;
         });
   } catch (...) {
     // Batch availability is independent of healthy online inference.

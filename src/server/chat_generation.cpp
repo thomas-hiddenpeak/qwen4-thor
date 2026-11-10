@@ -100,10 +100,10 @@ using detail::SendSimple;
 using detail::SseChunk;
 using detail::WriteAll;
 
-void ChatServer::HandleChat(int fd, const std::string& body,
-                            GenerationApi api,
+void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                             std::shared_ptr<RequestControl> owner,
-                            const io::Json* frozen_inputs) {
+                            const io::Json* frozen_inputs,
+                            const BatchResponseLink* batch_parent) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
   auto* context = detail::HttpResponseContext::Current(fd);
   auto* state = context ? context->State() : &response;
@@ -157,8 +157,9 @@ void ChatServer::HandleChat(int fd, const std::string& body,
             client.Scoped() ? "client:" + std::string(client.Id())
                             : "local:anonymous",
             owner->deadline(), [owner] { return owner->Cancelled(); }};
-        const auto restored = responses->RestoreInputs(
-            *frozen_inputs, PlanningConfig(fd), access, std::time(nullptr));
+        const auto restored =
+            responses->RestoreInputs(*frozen_inputs, PlanningConfig(fd), access,
+                                     std::time(nullptr), batch_parent);
         if (!restored.ok()) {
           SendError(fd, restored.http_status, restored.ClientMessage(), {},
                     restored.ClientCode(), restored.value.GetString("param"));

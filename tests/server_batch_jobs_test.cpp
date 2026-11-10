@@ -22,6 +22,9 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/responses_jobs.h"
+#include "q4t/server/responses_api.h"
+#include "q4t/server/object_retention.h"
 #include "q4t/test.h"
 
 namespace {
@@ -1208,5 +1211,700 @@ Q4T_TEST(batch_jobs_dead_owner_recounts_original_usage_before_next_invocation) {
                     ->GetInt("reasoning_tokens") == 2 &&
             jobs.Health().reserved_result_bytes == 0 &&
             jobs.Health().recovered == 1);
+  return true;
+}
+
+namespace {
+std::string BackgroundInput() {
+  auto input = Input(1);
+  const auto at = input.find("\"max_output_tokens\":16");
+  if (at == input.npos) throw std::runtime_error("background fixture body");
+  input.insert(at, "\"background\":true,\"store\":false,");
+  return input;
+}
+bool RecoverBackground(const std::string& mode);
+StateAccess ResponseAccess(std::string scope = "client:alpha") {
+  return {std::move(scope), Clock::now() + 5s, {}};
+}
+BatchJobs::Executor BackgroundNative(ObjectStore& objects, Fixture& fixture,
+                                     ResponsesJobs& responses,
+                                     std::atomic<int>& submissions) {
+  return [&](const auto&, const auto& row, const auto& frozen,
+             const auto& client, auto& permit, const auto& control, auto rate) {
+    ++submissions;
+    return ExecuteBatchEndpoint(
+        control->id(), client, permit, control,
+        [&] {
+          if (!row.background_response)
+            throw std::runtime_error("missing durable Batch parent");
+          auto run = std::make_unique<ResponsesExecution>(objects);
+          const StateAccess access{row.background_response->scope,
+                                   control->deadline(),
+                                   [control] { return control->Cancelled(); }};
+          const auto restored =
+              run->RestoreInputs(frozen, fixture.config, access,
+                                 std::time(nullptr), &*row.background_response);
+          if (!restored.ok()) {
+            detail::SendError(-1, restored.http_status,
+                              restored.ClientMessage(), {},
+                              restored.ClientCode());
+            return;
+          }
+          ServePreparedBackgroundResponse(-1, objects, responses,
+                                          std::move(run), access);
+        },
+        std::move(rate));
+  };
+}
+BatchJobs::Continuation Observe(ResponsesJobs& responses) {
+  return [&](const auto& link, const auto& access, bool cancel) {
+    return responses.ObserveBatch(link, access, cancel);
+  };
+}
+void CompleteBackground(ResponsesJobs::Job& job, Fixture& fixture) {
+  if (!job.rate || job.rate->Reserve(fixture.clients, job.client, 4, 16) !=
+                       ClientRateResult::kAllowed)
+    throw std::runtime_error("background CPU rate claim");
+  job.rate->Start();
+  job.rate->Completion(2);
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_continuation", "lookup", "{\"key\":42}"};
+  std::string wire;
+  if (!job.run->Append(delta, "null", &wire) ||
+      !job.run->Finish(false, 1, {4, 1, 2, 0}, std::time(nullptr), &wire).ok())
+    throw std::runtime_error("background CPU actual terminal");
+}
+struct BoundBackground {
+  BatchResponseLink link;
+  Json frozen;
+};
+BoundBackground PrepareBoundBackground(ObjectStore& objects, Fixture& fixture) {
+  const auto file = File(objects, BackgroundInput());
+  const auto accepted = BatchState(objects).Create(Access(), Options(file));
+  if (!Ok(accepted)) throw std::runtime_error("bound Batch create");
+  BoundBackground bound;
+  bound.link.batch_id = accepted.value.GetString("id");
+  BatchValidation validation(objects, bound.link.batch_id, fixture.config);
+  while (!validation.Complete())
+    if (!Ok(validation.Step(Access())))
+      throw std::runtime_error("bound Batch validation");
+  BatchInputRow input;
+  BatchState state(objects);
+  const auto row = state.Row(Access(), bound.link.batch_id, 0);
+  if (!Ok(row) ||
+      !Ok(state.ReadInputRow(Access(), bound.link.batch_id, 0, &input)) ||
+      !Ok(BatchPreparation(objects).Read(Access(), bound.link.batch_id,
+                                         "/v1/responses", input, row.value,
+                                         &bound.frozen)))
+    throw std::runtime_error("bound Batch original input");
+  bound.link.response_id = bound.frozen.GetString("id");
+  bound.link.request_id = "req_" + NewObjectId(ObjectKind::kToolRun);
+  bound.link.scope = Access().scope;
+  if (!Ok(state.StartRow(Access(), bound.link.batch_id, 0,
+                         bound.link.request_id, &bound.link)))
+    throw std::runtime_error("bound Batch Start");
+  return bound;
+}
+}  // namespace
+
+Q4T_TEST(batch_background_waits_for_terminal_and_actual_cleanup_before_copy) {
+  Fixture fixture(10, 100);
+  fixture.jobs.max_result_bytes = kChatBodyBytes;
+  ObjectStore objects(fixture.objects);
+  const auto file = File(objects, BackgroundInput());
+  const auto beta = File(objects, Input(1), "client:beta");
+  std::atomic<int> submissions = 0, other = 0;
+  std::atomic<bool> entered = false, complete = false, terminal = false,
+                    drained = false;
+  ResponsesJobs responses(objects, {}, [&](auto& job) {
+    entered = true;
+    Wait([&] { return complete.load() || job.control->Cancelled(); });
+    if (job.control->Cancelled()) return;
+    CompleteBackground(job, fixture);
+    terminal = true;
+    Wait([&] { return drained.load(); });
+  });
+  auto background = BackgroundNative(objects, fixture, responses, submissions);
+  auto foreground = Native(other, {}, &fixture.clients);
+  BatchJobs jobs(
+      objects, fixture.clients, fixture.config, fixture.jobs,
+      [&](const auto& endpoint, const auto& row, const auto& frozen,
+          const auto& client, auto& permit, const auto& control, auto rate) {
+        return (row.background_response ? background : foreground)(
+            endpoint, row, frozen, client, permit, control, std::move(rate));
+      },
+      {}, RatePlanner(), Observe(responses));
+  ScopeExit release([&] { complete = drained = true; });
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted) && Wait([&] { return entered.load(); }));
+  const auto id = accepted.value.GetString("id");
+  const auto row = BatchState(objects).Row(Access(), id, 0);
+  BatchResponseLink link;
+  Q4T_CHECK(
+      Ok(row) && row.value.GetString("status") == "running" &&
+      ParseBatchResponseLink(*row.value.Find("background_response"), &link));
+  Q4T_CHECK(ResponsesState(objects)
+                .Retrieve(link.response_id, ResponseAccess("client:beta"))
+                .http_status == 404);
+  auto wrong = link;
+  wrong.request_id = "req_" + NewObjectId(ObjectKind::kToolRun);
+  Q4T_CHECK(responses.ObserveBatch(wrong, ResponseAccess(), false).code ==
+            "batch_response_binding_invalid");
+  const auto b =
+      jobs.Submit(Access("client:beta"), Options(beta), fixture.beta);
+  Q4T_CHECK(Ok(b) && Wait([&] {
+              const auto value = BatchState(objects).Retrieve(
+                  Access("client:beta"), b.value.GetString("id"));
+              return value.ok() &&
+                     value.value.GetString("status") == "completed";
+            }));
+  complete = true;
+  Q4T_CHECK(Wait([&] { return terminal.load(); }));
+  Q4T_CHECK(
+      ResponsesState(objects).Erase(link.response_id, ResponseAccess()).code ==
+          "response_batch_result_pending" &&
+      responses.ObserveBatch(link, ResponseAccess(), false).code ==
+          "batch_response_pending" &&
+      fixture.clients.Usage(0).data_active == 1 &&
+      BatchState(objects).Row(Access(), id, 0).value.GetString("status") ==
+          "running");
+  drained = true;
+  const auto final = Finished(objects, jobs, id);
+  Q4T_CHECK(Ok(final) && submissions == 1 && other == 1 &&
+            final.value.Find("usage")->GetInt("total_tokens") == 6 &&
+            BatchUsage(fixture).admitted == 1 &&
+            BatchUsage(fixture).tokens == 6 &&
+            BatchUsage(fixture).reserved == 0 &&
+            fixture.clients.Usage(0).data_active == 0 &&
+            jobs.Health().reserved_result_bytes == 0);
+  const auto output = Content(objects, final.value.GetString("output_file_id"));
+  Q4T_CHECK(
+      output.find("call_continuation") != output.npos &&
+      output.find("\"status\":\"queued\"") == output.npos &&
+      output.find(link.response_id) != output.npos &&
+      Ok(ResponsesState(objects).Erase(link.response_id, ResponseAccess())));
+  return true;
+}
+
+Q4T_TEST(
+    batch_background_cancel_and_revocation_reach_original_owner_and_drain) {
+  for (bool revoke : {false, true}) {
+    if (revoke) return RecoverBackground("revoked");
+    Fixture fixture(10, 100);
+    ObjectStore objects(fixture.objects);
+    const auto file = File(objects, BackgroundInput());
+    std::atomic<int> submissions = 0;
+    std::atomic<bool> entered = false, cancelled = false, drain = false;
+    ResponsesJobs responses(objects, {}, [&](auto& job) {
+      entered = true;
+      Wait([&] { return job.control->Cancelled(); });
+      cancelled = job.control->Cancelled();
+      Wait([&] { return drain.load(); });
+    });
+    BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                   BackgroundNative(objects, fixture, responses, submissions),
+                   {}, RatePlanner(), Observe(responses));
+    ScopeExit release([&] { drain = true; });
+    const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+    Q4T_CHECK(Ok(accepted) && Wait([&] { return entered.load(); }));
+    const auto id = accepted.value.GetString("id");
+    Q4T_CHECK(Ok(jobs.Cancel(Access(), id)));
+    Q4T_CHECK(Wait([&] { return cancelled.load(); }));
+    Q4T_CHECK(
+        BatchState(objects).Row(Access(), id, 0).value.GetString("status") ==
+            "running" &&
+        fixture.clients.Usage(0).data_active == 1);
+    drain = true;
+    const auto final = Finished(objects, jobs, id);
+    Q4T_CHECK(Ok(final) && submissions == 1 &&
+              final.value.GetString("status") == "cancelled" &&
+              fixture.clients.Usage(0).data_active == 0 &&
+              Content(objects, final.value.GetString("output_file_id"))
+                      .find("\"status\":\"cancelled\"") != std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    batch_background_submission_failure_does_not_lose_original_http_error) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto file = File(objects, BackgroundInput());
+  std::atomic<int> calls = 0;
+  ResponsesJobs responses(objects, {}, [&](auto&) { ++calls; });
+  BatchJobs jobs(
+      objects, fixture.clients, fixture.config, fixture.jobs,
+      [&](const auto&, const auto&, const auto&, const auto& client,
+          auto& permit, const auto& control, auto rate) {
+        return ExecuteBatchEndpoint(
+            control->id(), client, permit, control,
+            [&] {
+              detail::SendError(-1, 400, "CPU explicit rejection", {},
+                                "fixture_rejected");
+            },
+            std::move(rate));
+      },
+      {}, RatePlanner(), Observe(responses));
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted));
+  const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+  Q4T_CHECK(Ok(final) && calls == 0 &&
+            final.value.Find("request_counts")->GetInt("failed") == 1 &&
+            Content(objects, final.value.GetString("error_file_id"))
+                    .find("fixture_rejected") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(batch_background_actual_lost_start_begin_and_finish_never_resubmit) {
+  for (const auto* selector :
+       {"--q4t-object-worker-batch-start-lost-ack",
+        "--q4t-object-worker-batch-response-begin-lost-ack",
+        "--q4t-object-worker-batch-result-lost-ack"}) {
+    Fixture fixture(10, 100);
+    std::string file;
+    {
+      ObjectStore objects(fixture.objects);
+      file = File(objects, BackgroundInput());
+    }
+    ObjectWorkerEntryForTesting(selector);
+    ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+    ObjectStore objects(fixture.objects);
+    std::atomic<int> submissions = 0, calls = 0;
+    ResponsesJobs responses(objects, {}, [&](auto& job) {
+      ++calls;
+      CompleteBackground(job, fixture);
+    });
+    BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                   BackgroundNative(objects, fixture, responses, submissions),
+                   {}, RatePlanner(), Observe(responses));
+    const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+    Q4T_CHECK(Ok(accepted));
+    const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+    const bool start = std::string_view(selector).find("batch-start") !=
+                       std::string_view::npos;
+    const bool finish = std::string_view(selector).find("batch-result") !=
+                        std::string_view::npos;
+    Q4T_CHECK(Ok(final) && submissions == (start ? 0 : 1) &&
+              calls == (finish ? 1 : 0) &&
+              fixture.clients.Usage(0).data_active == 0 &&
+              BatchUsage(fixture).reserved == 0 &&
+              jobs.Health().reserved_result_bytes == 0);
+    const auto output = Content(
+        objects,
+        final.value.GetString(start ? "error_file_id" : "output_file_id"));
+    Q4T_CHECK(output.find(start    ? "batch_execution_interrupted"
+                          : finish ? "call_continuation"
+                                   : "background_execution_interrupted") !=
+              output.npos);
+    if (finish)
+      Q4T_CHECK(final.value.Find("usage")->GetInt("total_tokens") == 6);
+    Q4T_CHECK(objects.Health().workers_started > 1);
+  }
+  return true;
+}
+
+Q4T_TEST(batch_background_binding_is_private_immutable_and_retains_result) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto bound = PrepareBoundBackground(objects, fixture);
+  const auto& link = bound.link;
+  BatchResponseLink parsed;
+  auto wire = BatchResponseLinkValue(link);
+  Q4T_CHECK(ParseBatchResponseLink(wire, &parsed) && parsed == link);
+  Json huge;
+  Q4T_CHECK(q4t::io::ParseJson("{\"index\":1e20}", &huge, true));
+  Set(&wire, "index", *huge.Find("index"));
+  Q4T_CHECK(!ParseBatchResponseLink(wire, &parsed));
+  auto wrong = link;
+  wrong.scope = "client:beta";
+  ResponsesExecution invalid(objects);
+  Q4T_CHECK(invalid
+                .RestoreInputs(bound.frozen, fixture.config, ResponseAccess(),
+                               std::time(nullptr), &wrong)
+                .code == "batch_response_binding_invalid");
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.RestoreInputs(bound.frozen, fixture.config, ResponseAccess(),
+                                 std::time(nullptr), &link)));
+  std::string events;
+  Q4T_CHECK(
+      Ok(run.Begin(&events)) && Ok(run.StartRunning(&events)) &&
+      Ok(run.Finish(false, 0, {4, 1, 2, 0}, std::time(nullptr), &events)));
+  Q4T_CHECK(
+      ResponsesState(objects).Erase(link.response_id, ResponseAccess()).code ==
+      "response_batch_result_pending");
+  auto root = BatchState(objects).Load(Access(), link.batch_id);
+  Q4T_CHECK(Ok(root));
+  ObjectRequest request;
+  request.kind = ObjectKind::kToolRun;
+  request.scope = Access().scope;
+  request.id = root.value.Find("data")->GetArray("pages")->array[0].str;
+  auto page = objects.Execute(request, Access().deadline);
+  Q4T_CHECK(Ok(page));
+  auto retained = InspectObjectRetention("tool_run", *page.value.Find("data"));
+  Q4T_CHECK(!retained.uncertain &&
+            std::find(retained.references.begin(), retained.references.end(),
+                      link.response_id) != retained.references.end());
+  request.operation = ObjectOperation::kPut;
+  request.expected_revision = page.value.GetInt("revision");
+  request.data = *page.value.Find("data");
+  auto& saved = Field(request.data, "rows").array[0];
+  Set(&Field(saved, "background_response"), "response_id",
+      String(NewObjectId(ObjectKind::kResponse)));
+  Q4T_CHECK(objects.Execute(request, Access().deadline).code ==
+            "batch_checkpoint_immutable");
+  BatchRowResult result{
+      link.request_id, 200, OutputJson(run.Output().Snapshot()), {}};
+  Q4T_CHECK(Ok(BatchState(objects).FinishRow(Access(), link.batch_id, 0,
+                                             "item-0", result)));
+  request.operation = ObjectOperation::kGet;
+  page = objects.Execute(request, Access().deadline);
+  Q4T_CHECK(Ok(page));
+  retained = InspectObjectRetention("tool_run", *page.value.Find("data"));
+  Q4T_CHECK(
+      !retained.uncertain &&
+      std::find(retained.references.begin(), retained.references.end(),
+                link.response_id) == retained.references.end() &&
+      Ok(ResponsesState(objects).Erase(link.response_id, ResponseAccess())));
+  return true;
+}
+
+namespace {
+bool RecoverBackground(const std::string& mode) {
+  Fixture fixture(10, 100);
+  int channel[2];
+  Q4T_CHECK(pipe(channel) == 0);
+  const auto pid = fork();
+  Q4T_CHECK(pid >= 0);
+  if (pid == 0) {
+    close(channel[0]);
+    int status = 0;
+    try {
+      ObjectStore objects(fixture.objects);
+      const auto bound = PrepareBoundBackground(objects, fixture);
+      if (mode != "missing") {
+        ResponsesExecution run(objects);
+        if (!Ok(run.RestoreInputs(bound.frozen, fixture.config,
+                                  ResponseAccess(), std::time(nullptr),
+                                  &bound.link)) ||
+            !run.BindRateDomain(ClientRateDomain::kBatch))
+          throw std::runtime_error("dead child bound preparation");
+        auto control = std::make_shared<RequestControl>(
+            run.Id(), "", Clock::now() + 5s, fixture.alpha.Id());
+        run.BindBackgroundControl(control);
+        std::string wire;
+        if (!Ok(run.Begin(&wire))) throw std::runtime_error("child Begin");
+        if (mode == "running" || mode == "terminal")
+          if (!Ok(run.StartRunning(&wire)))
+            throw std::runtime_error("child Start");
+        if (mode == "terminal")
+          if (!Ok(run.Finish(false, 0, {7, 2, 3, 1}, std::time(nullptr),
+                             &wire)))
+            throw std::runtime_error("child Finish");
+      }
+      if (mode == "cancelled")
+        if (!Ok(BatchState(objects).Cancel(Access(), bound.link.batch_id)))
+          throw std::runtime_error("child Cancel");
+      const auto text = OutputJson(BatchResponseLinkValue(bound.link));
+      if (write(channel[1], text.data(), text.size()) !=
+          static_cast<ssize_t>(text.size()))
+        throw std::runtime_error("child identity channel");
+    } catch (...) {
+      status = 2;
+    }
+    close(channel[1]);
+    _exit(status);
+  }
+  close(channel[1]);
+  char bytes[2048]{};
+  const auto length = read(channel[0], bytes, sizeof(bytes));
+  close(channel[0]);
+  int status;
+  Q4T_CHECK(waitpid(pid, &status, 0) == pid && WIFEXITED(status) &&
+            WEXITSTATUS(status) == 0 && length > 0);
+  Json value;
+  BatchResponseLink link;
+  Q4T_CHECK(q4t::io::ParseJson(std::string(bytes, length), &value, true) &&
+            ParseBatchResponseLink(value, &link));
+  ObjectStore objects(fixture.objects);
+  ClientAdmission revoked;
+  auto* clients = &fixture.clients;
+  if (mode == "revoked") {
+    auto policy = *fixture.clients.Snapshot();
+    policy.clients.erase(policy.clients.begin());
+    Q4T_CHECK(revoked.Configure(std::move(policy)));
+    clients = &revoked;
+  }
+  std::atomic<int> submissions = 0, calls = 0;
+  ResponsesJobs responses(
+      objects, {},
+      [&](auto& job) {
+        ++calls;
+        CompleteBackground(job, fixture);
+      },
+      [&](auto& job) {
+        return AdmitBackgroundBatchRate(
+            *clients, job, fixture.config,
+            [](auto&, const auto&, const auto&, BatchRateBudget* budget) {
+              *budget = {4, 16, 0, 0, true};
+              return ObjectReply{};
+            });
+      });
+  responses.StartRecovery(*clients, fixture.config);
+  BatchJobs jobs(objects, *clients, fixture.config, fixture.jobs,
+                 BackgroundNative(objects, fixture, responses, submissions), {},
+                 RatePlanner(), Observe(responses));
+  const auto final = Finished(objects, jobs, link.batch_id);
+  Q4T_CHECK(Ok(final) && submissions == 0 &&
+            calls == (mode == "queued" ? 1 : 0) &&
+            fixture.clients.Usage(0).data_active == 0 &&
+            jobs.Health().reserved_result_bytes == 0);
+  const auto output = Content(
+      objects, final.value.GetString(mode == "missing" ? "error_file_id"
+                                                       : "output_file_id"));
+  if (mode != "missing")
+    Q4T_CHECK(output.find(link.response_id) != output.npos);
+  if (mode == "queued")
+    Q4T_CHECK(output.find("call_continuation") != output.npos);
+  if (mode == "terminal")
+    Q4T_CHECK(final.value.Find("usage")->GetInt("total_tokens") == 10);
+  if (mode == "running")
+    Q4T_CHECK(output.find("background_execution_interrupted") != output.npos);
+  if (mode == "revoked")
+    Q4T_CHECK(final.value.GetString("status") == "cancelled" &&
+              output.find("background_client_revoked") != output.npos);
+  if (mode == "cancelled")
+    Q4T_CHECK(final.value.GetString("status") == "cancelled" &&
+              output.find("\"status\":\"cancelled\"") != output.npos);
+  return true;
+}
+}  // namespace
+Q4T_TEST(batch_background_actual_dead_owner_resumes_same_queued_response) {
+  return RecoverBackground("queued");
+}
+Q4T_TEST(batch_background_actual_dead_owner_keeps_original_terminal_usage) {
+  return RecoverBackground("terminal");
+}
+Q4T_TEST(batch_background_actual_dead_owner_never_replays_started_or_missing) {
+  return RecoverBackground("running") && RecoverBackground("missing");
+}
+Q4T_TEST(batch_background_actual_dead_owner_cancelled_parent_never_executes) {
+  return RecoverBackground("cancelled");
+}
+
+Q4T_TEST(batch_background_actual_ttl_retains_until_result_copy_then_collects) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto bound = PrepareBoundBackground(objects, fixture);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.RestoreInputs(bound.frozen, fixture.config, ResponseAccess(),
+                                 std::time(nullptr), &bound.link)));
+  std::string events;
+  Q4T_CHECK(
+      Ok(run.Begin(&events)) && Ok(run.StartRunning(&events)) &&
+      Ok(run.Finish(false, 0, {4, 1, 2, 0}, std::time(nullptr), &events)));
+  ObjectRequest request;
+  request.kind = ObjectKind::kResponse;
+  request.scope = Access().scope;
+  request.id = bound.link.response_id;
+  const auto stored = objects.Execute(request, Access().deadline);
+  Q4T_CHECK(Ok(stored));
+  request.operation = ObjectOperation::kPut;
+  request.expected_revision = stored.value.GetInt("revision");
+  request.created_at = stored.value.GetInt("created_at");
+  request.expires_at = std::time(nullptr) + 1;
+  request.data = *stored.value.Find("data");
+  // CPU clock fixture: production ephemeral polling still lasts 600 seconds.
+  Q4T_CHECK(Ok(objects.Execute(request, Access().deadline)) &&
+            Wait([&] { return std::time(nullptr) >= request.expires_at; }));
+  const auto retained = ResponsesState(objects).Retrieve(bound.link.response_id,
+                                                         ResponseAccess());
+  Q4T_CHECK(Ok(retained) && retained.value.GetString("status") == "completed" &&
+            ResponsesState(objects)
+                    .Erase(bound.link.response_id, ResponseAccess())
+                    .code == "response_batch_result_pending");
+  BatchRowResult result{
+      bound.link.request_id, 200, OutputJson(retained.value), {}};
+  Q4T_CHECK(Ok(BatchState(objects).FinishRow(Access(), bound.link.batch_id, 0,
+                                             "item-0", result)));
+  Q4T_CHECK(ResponsesState(objects)
+                .Retrieve(bound.link.response_id, ResponseAccess())
+                .http_status == 404);
+  Q4T_CHECK(Ok(BatchState(objects).BeginFinalization(
+      Access(), bound.link.batch_id, "completed")));
+  ObjectReply final;
+  Q4T_CHECK(Wait([&] {
+    final = BatchState(objects).Finalize(Access(), bound.link.batch_id);
+    return final.ok() && final.value.GetString("status") == "completed";
+  }));
+  Q4T_CHECK(final.value.Find("usage")->GetInt("total_tokens") == 6 &&
+            Content(objects, final.value.GetString("output_file_id"))
+                    .find(bound.link.response_id) != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(batch_background_original_parent_expiry_cancels_queued_execution) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  auto bound = PrepareBoundBackground(objects, fixture);
+  const auto old = bound.link;
+  const auto loaded = BatchState(objects).Load(Access(), old.batch_id);
+  Q4T_CHECK(Ok(loaded));
+  ObjectRequest page;
+  page.kind = ObjectKind::kToolRun;
+  page.scope = Access().scope;
+  page.id = loaded.value.Find("data")->GetArray("pages")->array[0].str;
+  const auto old_page = objects.Execute(page, Access().deadline);
+  Q4T_CHECK(Ok(old_page));
+  // New historical fixture; never edit an existing creation/deadline. Keep
+  // the original frozen input alive while creating the prior-day parent.
+  bound.link.batch_id = NewObjectId(ObjectKind::kBatch);
+  ObjectRequest root;
+  root.operation = ObjectOperation::kPut;
+  root.kind = ObjectKind::kBatch;
+  root.scope = Access().scope;
+  root.id = bound.link.batch_id;
+  root.created_at = std::time(nullptr) - kBatchWindowSeconds + 2;
+  const auto expires = root.created_at + kBatchWindowSeconds;
+  root.data = *loaded.value.Find("data");
+  auto& resource = Field(root.data, "batch");
+  Set(&resource, "id", String(root.id));
+  Set(&resource, "created_at", Number(root.created_at));
+  Set(&resource, "expires_at", Number(expires));
+  page.operation = ObjectOperation::kPut;
+  page.id = NewObjectId(ObjectKind::kToolRun);
+  page.ttl_seconds = 0;
+  page.data = *old_page.value.Find("data");
+  Set(&page.data, "batch_id", String(root.id));
+  Set(&Field(page.data, "rows").array[0], "background_response",
+      BatchResponseLinkValue(bound.link));
+  Set(&root.data, "pages", Array({String(page.id)}));
+  const std::array mutations{page, root};
+  Q4T_CHECK(Ok(objects.ExecuteBatch(mutations, Access().deadline)));
+  std::atomic<bool> entered = false, release = false;
+  std::atomic<int> alpha_calls = 0;
+  ResponsesJobs responses(objects, {}, [&](auto& job) {
+    if (job.client.Id() == "alpha") {
+      ++alpha_calls;
+      return;
+    }
+    entered = true;
+    Wait([&] { return release.load(); });
+  });
+  ScopeExit unblock([&] { release = true; });
+  auto blocker = std::make_unique<ResponsesExecution>(objects);
+  Q4T_CHECK(Ok(blocker->Prepare(Object({{"input", String("CPU queue blocker")},
+                                        {"background", Boolean(true)}}),
+                                fixture.config, ResponseAccess("client:beta"),
+                                std::time(nullptr), true)));
+  ClientLease beta, alpha;
+  Q4T_CHECK(beta.Acquire(fixture.clients, fixture.beta, ClientLane::kData) &&
+            alpha.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  Q4T_CHECK(Ok(responses.Submit(std::move(blocker), fixture.beta,
+                                [&](ClientLease& target) {
+                                  return beta.TransferTo(target);
+                                })) &&
+            Wait([&] { return entered.load(); }));
+  auto run = std::make_unique<ResponsesExecution>(objects);
+  Q4T_CHECK(
+      Ok(run->RestoreInputs(bound.frozen, fixture.config, ResponseAccess(),
+                            std::time(nullptr), &bound.link)));
+  Q4T_CHECK(Ok(responses.Submit(
+      std::move(run), fixture.alpha,
+      [&](ClientLease& target) { return alpha.TransferTo(target); })));
+  Q4T_CHECK(Wait([&] { return std::time(nullptr) >= expires; }));
+  release = true;
+  Q4T_CHECK(Wait([&] { return responses.Health().owned == 0; }) &&
+            alpha_calls == 0 && fixture.clients.Usage(0).data_active == 0);
+  const auto result =
+      responses.ObserveBatch(bound.link, ResponseAccess(), false);
+  Q4T_CHECK(Ok(result) && result.value.GetString("status") == "cancelled");
+  Q4T_CHECK(
+      Ok(BatchState(objects).FinishRow(
+          Access(), root.id, 0, "item-0",
+          {bound.link.request_id, 200, OutputJson(result.value), {}})) &&
+      Ok(BatchState(objects).BeginFinalization(Access(), root.id, "expired")));
+  ObjectReply final;
+  Q4T_CHECK(Wait([&] {
+    final = BatchState(objects).Finalize(Access(), root.id);
+    return final.ok() && final.value.GetString("status") == "expired";
+  }));
+  return true;
+}
+
+Q4T_TEST(
+    batch_background_absent_observer_closes_only_proven_missing_submission) {
+  for (bool callback : {false, true}) {
+    Fixture fixture;
+    ObjectStore objects(fixture.objects);
+    const auto file = File(objects, BackgroundInput());
+    std::atomic<int> calls = 0;
+    BatchJobs::Continuation observer;
+    if (callback)
+      observer = [](const auto&, const auto&, bool) {
+        return Error(503, "batch_response_observer_unavailable",
+                     "CPU unavailable observer");
+      };
+    BatchJobs jobs(
+        objects, fixture.clients, fixture.config, fixture.jobs,
+        [&](const auto&, const auto&, const auto&, const auto& client,
+            auto& permit, const auto& control, auto rate) {
+          ++calls;
+          return ExecuteBatchEndpoint(
+              control->id(), client, permit, control,
+              [&] {
+                detail::SendError(-1, 503, "Background unavailable", {},
+                                  "background_unavailable");
+              },
+              std::move(rate));
+        },
+        {}, RatePlanner(), std::move(observer));
+    const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+    Q4T_CHECK(Ok(accepted));
+    const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+    Q4T_CHECK(Ok(final) && calls == 1 &&
+              final.value.Find("request_counts")->GetInt("failed") == 1 &&
+              Content(objects, final.value.GetString("error_file_id"))
+                      .find("background_unavailable") != std::string::npos &&
+              fixture.clients.Usage(0).data_active == 0 &&
+              jobs.Health().reserved_result_bytes == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    batch_background_existing_result_waits_for_original_observer_recovery) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto file = File(objects, BackgroundInput());
+  std::atomic<int> submissions = 0, calls = 0, observations = 0;
+  std::atomic<bool> available = false;
+  ResponsesJobs responses(objects, {}, [&](auto& job) {
+    ++calls;
+    CompleteBackground(job, fixture);
+  });
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 BackgroundNative(objects, fixture, responses, submissions), {},
+                 RatePlanner(),
+                 [&](const auto& link, const auto& access, bool cancel) {
+                   ++observations;
+                   if (!available)
+                     return Error(503, "batch_response_observer_unavailable",
+                                  "CPU unavailable observer");
+                   return responses.ObserveBatch(link, access, cancel);
+                 });
+  const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
+  Q4T_CHECK(Ok(accepted) && Wait([&] {
+              return calls == 1 && responses.Health().owned == 0 &&
+                     observations >= 3;
+            }));
+  const auto id = accepted.value.GetString("id");
+  const auto row = BatchState(objects).Row(Access(), id, 0);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "running" &&
+            submissions == 1);
+  available = true;
+  const auto final = Finished(objects, jobs, id);
+  Q4T_CHECK(Ok(final) && submissions == 1 && calls == 1 &&
+            final.value.Find("usage")->GetInt("total_tokens") == 6);
   return true;
 }

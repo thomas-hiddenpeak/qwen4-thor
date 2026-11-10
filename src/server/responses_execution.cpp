@@ -385,6 +385,16 @@ ObjectReply ResponsesExecution::Checkpoint() {
   return reply;
 }
 
+ObjectReply ResponsesExecution::CheckBatchParent(bool* cancelled) {
+  if (!cancelled)
+    return Error(500, "batch_response_binding_invalid",
+                 "Missing parent output");
+  *cancelled = false;
+  if (!plan_.batch_parent) return {};
+  return CheckBatchResponseParent(objects_, *plan_.batch_parent, access_,
+                                  cancelled);
+}
+
 ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
   wire->clear();
   if (!begun_ || plan_.finished || commit_unknown_)

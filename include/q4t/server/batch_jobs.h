@@ -27,16 +27,19 @@ struct BatchJobsHealth {
 class BatchJobs {
  public:
   // Must return only after all synchronous model/grammar work has drained.
-  // A background Response may transfer the actual client data permit into
-  // its existing owner; its queued receipt is the complete Batch row result.
+  // A background Response transfers data/rate ownership into its existing
+  // owner. The queued receipt is not a completed Batch row.
   using Executor = std::function<BatchRowResult(
       const std::string&, const BatchInputRow&, const io::Json&,
       const ClientIdentity&, ClientLease&,
       const std::shared_ptr<RequestControl>&,
       std::shared_ptr<ClientRateLease>)>;
+  using Continuation = std::function<ObjectReply(
+      const BatchResponseLink&, const StateAccess&, bool cancel)>;
   BatchJobs(ObjectStore& objects, ClientAdmission& clients,
             ChatPlanConfig config, BatchJobsOptions options, Executor execute,
-            BatchInputMeter meter = {}, BatchRatePlanner planner = {});
+            BatchInputMeter meter = {}, BatchRatePlanner planner = {},
+            Continuation continuation = {});
   ~BatchJobs();
   BatchJobs(const BatchJobs&) = delete;
   BatchJobs& operator=(const BatchJobs&) = delete;
@@ -59,6 +62,9 @@ class BatchJobs {
                      const BinaryAccess& access);
   ObjectReply SaveResult(const std::shared_ptr<Job>& job,
                          const BinaryAccess& access);
-  void ReleaseResult(const std::shared_ptr<Job>& job);
+  ObjectReply FollowResponse(const std::shared_ptr<Job>& job,
+                             const io::Json& data, const io::Json& row,
+                             const BinaryAccess& access);
+  void ReleaseResult(const std::shared_ptr<Job>& job, bool keep_ticket = false);
 };
 }  // namespace q4t::server

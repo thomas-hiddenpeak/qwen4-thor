@@ -75,7 +75,7 @@ void ResponsesExecution::InputsPublished(bool uncertain) noexcept {
 
 ObjectReply ResponsesExecution::RestoreInputs(
     const Json& inputs, const ChatPlanConfig& config, StateAccess access,
-    int64_t created) {
+    int64_t created, const BatchResponseLink* batch_parent) {
   if (prepared_ || begun_ || standalone_compaction_ || created <= 0 ||
       inputs.GetString("format") != "q4t.responses_prepared.v1" ||
       inputs.GetString("scope") != access.scope || access.scope.empty())
@@ -124,6 +124,18 @@ ObjectReply ResponsesExecution::RestoreInputs(
       return Invalid();
     for (size_t i = 0; i < prefix; ++i)
       if (!Same(items->array[i], history->array[i])) return Invalid();
+  }
+  if (batch_parent) {
+    bool cancelled = false;
+    if (!envelope_.background || batch_parent->response_id != id)
+      return Invalid();
+    auto parent =
+        CheckBatchResponseParent(objects_, *batch_parent, access_, &cancelled);
+    if (!parent.ok()) return parent;
+    if (cancelled)
+      return Error(499, "batch_cancelled",
+                   "Original Batch no longer accepts work");
+    plan_.batch_parent = *batch_parent;
   }
   plan_.id = id;
   plan_.scope = access_.scope;

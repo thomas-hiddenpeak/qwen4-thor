@@ -6,6 +6,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/batch_state.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
@@ -74,6 +75,8 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                                                                    : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
+  if (plan.batch_parent)
+    Set(&result, "batch_parent", BatchResponseLinkValue(*plan.batch_parent));
   return result;
 }
 ObjectReply Data(const ObjectReply& stored, std::string_view field) {
@@ -371,6 +374,13 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   }
   plan->response_revision = stored.value.GetInt("revision");
   plan->finished = Terminal(*response);
+  if (const auto* parent = data->Find("batch_parent")) {
+    BatchResponseLink link;
+    if (!ParseBatchResponseLink(*parent, &link) || link.scope != access.scope ||
+        link.response_id != id || !response->GetBool("background"))
+      return StateError("Stored Batch response binding is invalid");
+    plan->batch_parent = std::move(link);
+  }
   if (const auto* continuation = data->Find("continuation")) {
     if (const auto* domain = continuation->Find("rate_domain")) {
       if (!domain->IsString() ||
@@ -455,6 +465,18 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
        snapshot.GetString("status") != "in_progress"))
     return StateError("Invalid initial response state");
   if (!plan->store) return {};
+  if (plan->batch_parent) {
+    bool cancelled = false;
+    if (plan->batch_parent->response_id != plan->id ||
+        !snapshot.GetBool("background"))
+      return StateError("Invalid Batch response publication");
+    auto parent = CheckBatchResponseParent(objects_, *plan->batch_parent,
+                                           access, &cancelled);
+    if (!parent.ok()) return parent;
+    if (cancelled)
+      return Error(499, "batch_cancelled",
+                   "Original Batch no longer accepts work");
+  }
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
@@ -667,6 +689,24 @@ ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
   if (!Terminal(response.value))
     return Error(409, "response_not_completed",
                  "Cancel an active response before deletion");
+  if (const auto* parent = existing.value.Find("data")->Find("batch_parent")) {
+    BatchResponseLink link;
+    if (!ParseBatchResponseLink(*parent, &link) || link.scope != access.scope ||
+        link.response_id != id)
+      return StateError("Stored Batch response binding is invalid");
+    // The parent prefix only advances. Once it passes this row, a later
+    // erase cannot race a new dependency on this same execution identity.
+    auto batch = BatchState(objects_).Load(
+        {access.scope, access.deadline, access.cancelled}, link.batch_id);
+    if (!batch.ok() && batch.http_status != 404) return batch;
+    if (batch.ok()) {
+      const auto& data = *batch.value.Find("data");
+      if (!BatchTerminal(data.Find("batch")->GetString("status")) &&
+          data.GetInt("next_row") <= static_cast<int64_t>(link.index))
+        return Error(409, "response_batch_result_pending",
+                     "The original Batch has not received this result yet");
+    }
+  }
   ObjectRequest request;
   request.operation = ObjectOperation::kErase;
   request.kind = ObjectKind::kResponse;

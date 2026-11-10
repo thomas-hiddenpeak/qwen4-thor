@@ -208,6 +208,14 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
     if (const auto* owner = row.Find("execution_owner");
         owner && !ValidResponseOwner(*owner))
       return Corrupt();
+    if (const auto* background = row.Find("background_response")) {
+      BatchResponseLink link;
+      if (!ParseBatchResponseLink(*background, &link) ||
+          link.batch_id != stored.GetString("id") ||
+          link.scope != access.scope || link.index != first + i ||
+          link.request_id != row.GetString("request_id") || status == "pending")
+        return Corrupt();
+    }
     if (const auto* frozen = row.Find("input_snapshots")) {
       InputSnapshotRef reference;
       if (!frozen->IsArray() || frozen->array.size() != 1 ||
@@ -293,13 +301,22 @@ ObjectReply BatchState::ReadInputRow(const BinaryAccess& access,
 
 ObjectReply BatchState::StartRow(const BinaryAccess& access,
                                  const std::string& id, size_t index,
-                                 const std::string& reserved_request_id) {
+                                 const std::string& reserved_request_id,
+                                 const BatchResponseLink* background) {
   if (!reserved_request_id.empty() &&
       (!reserved_request_id.starts_with("req_tool_run_") ||
        reserved_request_id.size() != 45 ||
        !ValidApplicationId(reserved_request_id)))
     return Error(500, "batch_request_identity_invalid",
                  "Invalid reserved execution identity");
+  BatchResponseLink checked;
+  if (background &&
+      (!ParseBatchResponseLink(BatchResponseLinkValue(*background), &checked) ||
+       background->scope != access.scope || background->batch_id != id ||
+       background->index != index ||
+       background->request_id != reserved_request_id))
+    return Error(500, "batch_response_binding_invalid",
+                 "Invalid reserved background execution identity");
   auto loaded = Owned(access, id);
   if (!loaded.ok()) return loaded;
   auto root = Update(access, loaded.value, ObjectKind::kBatch);
@@ -325,6 +342,8 @@ ObjectReply BatchState::StartRow(const BinaryAccess& access,
   // A later root takeover must not erase the identity of the process which
   // may have executed this ticket. Unknown or live row owners cannot replay.
   Set(&row, "execution_owner", *root.data.Find("owner"));
+  if (background)
+    Set(&row, "background_response", BatchResponseLinkValue(*background));
   Set(&root.data, "running", Number(1));
   root.mutate_before = root.data.Find("batch")->GetInt("expires_at");
   const auto receipt = row;

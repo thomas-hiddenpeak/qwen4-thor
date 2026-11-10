@@ -162,7 +162,9 @@ BatchRowResult ChatServer::RunBatchRequest(
                             "server_stopping");
           return;
         }
-        HandleChat(-1, OutputJson(row.body), api, control, &frozen_inputs);
+        HandleChat(
+            -1, OutputJson(row.body), api, control, &frozen_inputs,
+            row.background_response ? &*row.background_response : nullptr);
       },
       std::move(rate));
 }

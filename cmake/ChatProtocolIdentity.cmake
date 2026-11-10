@@ -138,7 +138,9 @@ set(protocol_inputs
   src/server/batch_state.cpp
   src/server/batch_results.cpp
   src/server/batch_usage.cpp
+  src/server/batch_response_link.cpp
   include/q4t/server/batch_usage.h
+  include/q4t/server/batch_response_link.h
   include/q4t/server/batch_checkpoint.h
   src/server/batch_checkpoint.cpp
   include/q4t/server/batch_budget.h

@@ -1,0 +1,33 @@
+{
+  "frozen_at": "2026-11-10T18:30:35.407597+00:00",
+  "scope": "Batch background original terminal, private durable parent, cleanup, cancellation, process death and reference lifetime",
+  "new": 9,
+  "direct": 13,
+  "cpu_required": [
+    "batch_background_waits_for_terminal_and_actual_cleanup_before_copy",
+    "batch_background_cancel_and_revocation_reach_original_owner_and_drain",
+    "batch_background_submission_failure_does_not_lose_original_http_error",
+    "batch_background_actual_lost_start_begin_and_finish_never_resubmit",
+    "batch_background_binding_is_private_immutable_and_retains_result",
+    "batch_background_actual_dead_owner_resumes_same_queued_response",
+    "batch_background_actual_dead_owner_keeps_original_terminal_usage",
+    "batch_background_actual_dead_owner_never_replays_started_or_missing",
+    "batch_background_actual_dead_owner_cancelled_parent_never_executes",
+    "batch_jobs_actual_native_finite_rows_and_output_file",
+    "batch_jobs_cancel_waits_for_drain_and_publishes_partial_files",
+    "batch_jobs_actual_unknown_start_never_invokes",
+    "batch_jobs_stop_cancels_owned_execution_and_keeps_pending_rows",
+    "batch_jobs_minute_wait_yields_before_ticket_and_keeps_other_client_live",
+    "batch_results_actual_unknown_finish_commits_result_and_counts_once",
+    "batch_results_expired_immutable_deadline_produces_errors_without_start",
+    "batch_inline_result_page_immutability_and_exact_number_retention",
+    "batch_execution_prepared_background_response_transfers_real_lifecycle",
+    "batch_execution_precharge_unknown_background_begin_refunds_without_replay",
+    "batch_execution_precharge_unknown_background_start_does_not_hold_tokens",
+    "batch_api_actual_lifecycle_scope_query_and_output",
+    "batch_api_cancel_drains_running_row_and_skips_remaining"
+  ],
+  "gpu": 0,
+  "default_change": false,
+  "failure_usage_collection": "next required group, not closed by these checks"
+}

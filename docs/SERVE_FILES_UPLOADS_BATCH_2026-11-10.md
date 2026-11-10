@@ -1,5 +1,11 @@
 # A09 原生 Files、Uploads 与 Batch 连续实现计划
 
+## 2026-11-11 后台原终态接续CPU接受
+
+[26不同CPU检查通过](evidence/serve-batch-continuation-cpu-20261111/README.md)：原Start/Response父绑定、排空后收取、不重放、原取消/期限/新代撤权、真实TTL及删除保护与辅助观察器缺失已验证。正常失败/取消的实际usage采集、永久容量/任务所有者恢复、真实模型业务及兼容回退/default继续；旧章节的queued缺口是当时状态，当前不能以此组件接受宣称A09完成。
+
+后台queued回执的必须修复合同与接线顺序见[原终态闭合](SERVE_BATCH_CONTINUATION_2026-11-11.md)，包括先持久绑定、等待原任务、取消/删除保护和可获得的失败用量；继续实现，不以已有组件通过停止。
+
 ## 2026-11-11 原结果usage组件接受
 
 [26 CPU和2 SDK通过](evidence/serve-batch-usage-cpu-20261111/README.md)，

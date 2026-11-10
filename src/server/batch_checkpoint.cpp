@@ -98,6 +98,15 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
     if (const auto* input = row.Find("input_budget");
         input && !ParseBatchInputBudget(*input, &budget))
       return Immutable();
+    if (const auto* background = row.Find("background_response")) {
+      BatchResponseLink link;
+      if (!ParseBatchResponseLink(*background, &link) ||
+          link.batch_id != data.GetString("batch_id") ||
+          link.index + 1 != static_cast<size_t>(row.GetInt("line")) ||
+          link.request_id != row.GetString("request_id") ||
+          row.GetString("status") == "pending")
+        return Immutable();
+    }
     if (const auto* input = row.Find("prepared_inline")) {
       if (data.GetString("format") != "q4t.batch_page.v2" ||
           row.Has("input_snapshots") || !ValidBatchInlineInput(*input))
@@ -125,6 +134,13 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
       if (!Same(old, next, key)) return Immutable();
     // First-time legacy counting is checked with the parent's exact recount
     // transition by the storage worker. An existing count never changes.
+    if (old.Has("background_response") &&
+        !Same(old, next, "background_response"))
+      return Immutable();
+    if (next.Has("background_response") && !old.Has("background_response") &&
+        (old.GetString("status") != "pending" ||
+         next.GetString("status") != "running"))
+      return Immutable();
     if (old.Has("input_budget") && !Same(old, next, "input_budget"))
       return Immutable();
     // Once an inline result is durable, subsequent page updates may only

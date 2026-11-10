@@ -54,7 +54,8 @@ class ResponsesExecution {
   void InputsPublished(bool uncertain) noexcept;
   ObjectReply RestoreInputs(const io::Json& inputs,
                             const ChatPlanConfig& config, StateAccess access,
-                            int64_t created);
+                            int64_t created,
+                            const BatchResponseLink* batch_parent = nullptr);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
   bool VariableInputSteps() const {
@@ -80,6 +81,7 @@ class ResponsesExecution {
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
   ObjectReply StartRunning(std::string* wire);
+  ObjectReply CheckBatchParent(bool* cancelled);
   ObjectReply Cancel();
   ObjectReply Checkpoint();
   // Block policy keeps all generated items/events private until the actual

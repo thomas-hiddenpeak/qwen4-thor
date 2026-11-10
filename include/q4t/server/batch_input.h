@@ -2,10 +2,12 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <string>
 #include <unordered_set>
 
 #include "q4t/server/object_store.h"
+#include "q4t/server/batch_response_link.h"
 #include "q4t/server/request_limits.h"
 
 namespace q4t::server {
@@ -27,6 +29,8 @@ struct BatchInputRow {
   uint64_t offset = 0, wire_bytes = 0;
   std::string custom_id;
   io::Json body;
+  // Set only by the native task owner after its durable StartRow receipt.
+  std::optional<BatchResponseLink> background_response = {};
 };
 struct BatchRowCheck {
   // Endpoint validation resolves aliases/defaults and may read authorized

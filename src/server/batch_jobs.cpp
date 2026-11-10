@@ -12,6 +12,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/batch_usage.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/responses_state.h"
 
 namespace q4t::server {
 namespace {
@@ -49,6 +50,7 @@ struct BatchJobs::Job {
   ClientIdentity rate_client;  // Retains the exact policy snapshot.
   size_t rate_index = 0;
   std::optional<BatchRowResult> result;
+  std::optional<BatchRowResult> submission;
   size_t result_index = 0;
   std::string custom_id;
   bool result_reserved = false;  // state mutex
@@ -65,6 +67,7 @@ struct BatchJobs::State {
   Executor execute;
   BatchInputMeter meter;
   BatchRatePlanner planner;
+  Continuation continuation;
   mutable std::mutex mutex;
   std::condition_variable changed;
   std::vector<std::shared_ptr<Job>> jobs;
@@ -78,7 +81,7 @@ struct BatchJobs::State {
   bool recovery_scanned = false;
   State(ObjectStore& o, ClientAdmission& c, ChatPlanConfig p,
         BatchJobsOptions limits, Executor e, BatchInputMeter measure,
-        BatchRatePlanner plan)
+        BatchRatePlanner plan, Continuation follow)
       : objects(o),
         clients(c),
         config(std::move(p)),
@@ -86,13 +89,14 @@ struct BatchJobs::State {
         execute(std::move(e)),
         meter(std::move(measure)),
         planner(std::move(plan)),
+        continuation(std::move(follow)),
         jobs(limits.max_jobs) {}
 };
 
 BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
                      ChatPlanConfig config, BatchJobsOptions options,
                      Executor execute, BatchInputMeter meter,
-                     BatchRatePlanner planner) {
+                     BatchRatePlanner planner, Continuation continuation) {
   if (!options.workers || options.workers > 8 || !options.max_jobs ||
       options.max_jobs > 64 || options.workers > options.max_jobs ||
       !options.max_client_jobs || options.max_client_jobs > options.max_jobs ||
@@ -106,7 +110,7 @@ BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
     throw std::invalid_argument("Invalid native Batch executor limits");
   state_ = std::make_unique<State>(objects, clients, std::move(config), options,
                                    std::move(execute), std::move(meter),
-                                   std::move(planner));
+                                   std::move(planner), std::move(continuation));
   try {
     for (size_t i = 0; i < options.workers; ++i)
       state_->workers.emplace_back([this] { Worker(); });
@@ -192,11 +196,15 @@ ObjectReply BatchJobs::Cancel(const BinaryAccess& access,
   return reply;
 }
 
-void BatchJobs::ReleaseResult(const std::shared_ptr<Job>& job) {
+void BatchJobs::ReleaseResult(const std::shared_ptr<Job>& job,
+                              bool keep_ticket) {
   job->result.reset();
   job->custom_id.clear();
-  job->locally_drained.reset();
-  job->local_ticket.clear();
+  if (!keep_ticket) {
+    job->locally_drained.reset();
+    job->local_ticket.clear();
+    job->submission.reset();
+  }
   const std::lock_guard lock(state_->mutex);
   job->control.reset();
   if (job->result_reserved) {
@@ -260,6 +268,8 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
   auto checkpoint = batches.Row(access, job->id, index);
   if (!checkpoint.ok()) return checkpoint;
   const bool running = checkpoint.value.GetString("status") == "running";
+  if (running && checkpoint.value.Has("background_response"))
+    return FollowResponse(job, data, checkpoint.value, access);
   if (running) {
     const auto* owner = checkpoint.value.Find("execution_owner");
     const bool drained =
@@ -439,8 +449,15 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
                  "No row execution identity");
   job->local_ticket = "req_" + identity;
   job->locally_drained = index;
-  const auto started =
-      batches.StartRow(access, job->id, index, job->local_ticket);
+  const auto* frozen_request = frozen.Find("request");
+  if (row_error.ok() && batch.GetString("endpoint") == "/v1/responses" &&
+      frozen_request && frozen_request->GetBool("background")) {
+    row.background_response = BatchResponseLink{
+        job->id, frozen.GetString("id"), job->local_ticket, job->scope, index};
+  }
+  const auto started = batches.StartRow(
+      access, job->id, index, job->local_ticket,
+      row.background_response ? &*row.background_response : nullptr);
   if (!started.ok()) return started;
   const auto request_id = started.value.GetString("request_id");
   const auto remaining = batch.GetInt("expires_at") - std::time(nullptr);
@@ -481,10 +498,111 @@ ObjectReply BatchJobs::RunRow(const std::shared_ptr<Job>& job, const Json& data,
   } catch (...) {
     // Keep the interruption cached; never replay the invocation.
   }
+  if (row.background_response) {
+    // The callback may have durably submitted even if its HTTP receipt was
+    // lost. Observe the pre-bound ID before choosing any endpoint result.
+    job->submission = std::move(job->result);
+    ReleaseResult(job, true);
+    return {};
+  }
   // Cancellation of execution must not cancel storage of its drained result.
   const BinaryAccess close{
       job->scope, Clock::now() + std::chrono::seconds(2), {}};
   return SaveResult(job, close);
+}
+
+ObjectReply BatchJobs::FollowResponse(const std::shared_ptr<Job>& job,
+                                      const Json& data, const Json& row,
+                                      const BinaryAccess& access) {
+  BatchResponseLink link;
+  if (!ParseBatchResponseLink(*row.Find("background_response"), &link) ||
+      link.batch_id != job->id || link.scope != job->scope ||
+      link.index != static_cast<size_t>(data.GetInt("next_row")) ||
+      link.request_id != row.GetString("request_id"))
+    return Error(503, "batch_response_binding_invalid",
+                 "Stored Batch continuation is invalid");
+  {
+    const std::lock_guard lock(state_->mutex);
+    if (!job->result_reserved) {
+      if (state_->result_bytes >
+          state_->options.max_result_bytes - kChatBodyBytes)
+        return Error(429, "batch_result_capacity",
+                     "Batch result capacity busy");
+      state_->result_bytes += kChatBodyBytes;
+      job->result_reserved = true;
+    }
+  }
+  bool keep_result = false;
+  ScopeExit release([&] {
+    if (!keep_result) ReleaseResult(job, true);
+  });
+  const auto& batch = *data.Find("batch");
+  const bool cancel = job->cancel ||
+                      batch.GetString("status") == "cancelling" ||
+                      batch.GetString("status") == "finalizing" ||
+                      batch.GetInt("expires_at") <= std::time(nullptr);
+  const StateAccess response_access{access.scope, access.deadline,
+                                    access.cancelled};
+  auto observed = state_->continuation
+                      ? state_->continuation(link, response_access, cancel)
+                      : Error(503, "batch_response_observer_unavailable",
+                              "Original Response observer is unavailable");
+  if (observed.code == "batch_response_observer_unavailable") {
+    // Auxiliary owner construction may fail before any Response is created.
+    // Absence plus the original submitter's drain below is enough to close
+    // that finite error. An existing record still needs its actual owner;
+    // storage alone cannot certify that model/grammar cleanup has completed.
+    auto stored = ResponsesState(state_->objects)
+                      .ReadRecord(link.response_id, response_access);
+    if (!stored.ok()) observed = std::move(stored);
+  }
+  BatchRowResult result;
+  result.request_id = link.request_id;
+  if (observed.ok()) {
+    const auto status = observed.value.GetString("status");
+    if (observed.value.GetString("id") != link.response_id ||
+        (status != "completed" && status != "incomplete" &&
+         status != "failed" && status != "cancelled"))
+      return Error(503, "batch_response_binding_invalid",
+                   "Original Response observer returned a different result");
+    // These are the actual Response bytes, including tool output, error and
+    // usage. An application failed/cancelled resource still has HTTP 200.
+    result.http_status = 200;
+    result.response_body = OutputJson(observed.value);
+    job->submission.reset();
+  } else if (observed.http_status == 404) {
+    const auto* owner = row.Find("execution_owner");
+    const bool drained = job->locally_drained == link.index &&
+                         job->local_ticket == link.request_id;
+    if (!drained &&
+        (!owner || ResponseOwnerStatus(*owner) != ResponseOwnerState::kGone))
+      return Error(503, "batch_response_pending",
+                   "Original submission owner has not drained");
+    if (job->submission) {
+      result = std::move(*job->submission);
+      job->submission.reset();
+      // A successful queued receipt without its durable resource is never
+      // accepted as a complete result, even after its submitter has drained.
+      if (result.error.ok() && result.http_status < 300) {
+        result.response_body.clear();
+        result.error = Interrupted();
+      }
+    } else {
+      result.error = Interrupted();
+    }
+  } else {
+    if (observed.code == "batch_response_pending") job->submission.reset();
+    return observed;
+  }
+  BatchInputRow original;
+  auto read = BatchState(state_->objects)
+                  .ReadInputRow(access, job->id, link.index, &original);
+  if (!read.ok()) return read;
+  job->result = std::move(result);
+  job->result_index = link.index;
+  job->custom_id = std::move(original.custom_id);
+  keep_result = true;
+  return SaveResult(job, access);
 }
 
 ObjectReply BatchJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
@@ -631,8 +749,9 @@ void BatchJobs::Worker() noexcept {
         if (terminal) {
           for (auto& slot : state_->jobs)
             if (slot == job) slot.reset();
-        } else if (job->rate_waiting) {
-          ++state_->rate_deferrals;
+        } else if (job->rate_waiting ||
+                   result.code == "batch_response_pending") {
+          if (job->rate_waiting) ++state_->rate_deferrals;
           job->attempts = 0;
           job->next = Clock::now() + state_->options.retry_delay;
         } else if (!result.ok()) {

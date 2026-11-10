@@ -1066,15 +1066,17 @@
       "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
-        "Capture available actual usage on native errors/cancellation and original background Response terminal completion; durable original-result aggregation/legacy recount is accepted. Never substitute budget estimates or unknown-as-zero.",
+        "Capture available actual usage on native errors/cancellation; original background terminal/drain and original-result aggregation/legacy recount are CPU accepted. Never substitute budget estimates or unknown-as-zero.",
         "Close deterministic finalization byte/chunk capacity exhaustion finitely, preserve original results and receipt uncertainty; never retry the model or spin finalization forever.",
-        "Complete bounded actual model business and compatible state/quota rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
-        "Audit application task-owner construction failure recovery: temporary auxiliary startup failure must have a bounded retry path without core restart or duplicate live owners.",
-        "Follow original background Responses queued receipt through terminal observation and actual usage; never treat queued submission as completed model work or replay its already-started ticket."
+        "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
+        "Complete bounded retry for application task-owner initial construction failure without core restart or duplicate live owners."
       ],
       "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
       "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage capture still required.",
-      "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md"
+      "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md",
+      "batch_background_followthrough_plan": "SERVE_BATCH_CONTINUATION_2026-11-11.md",
+      "batch_background_followthrough_status": "26 distinct targeted CPU accepted: trusted parent/ResponseID with original Start transaction, actual terminal plus cleanup/data/rate drain, fair waiting, actual child death and lost Start/Begin/Finish receipts, cancel/expiry/next-generation revocation, actual TTL pin/unpin and finite absent-observer submission failure. No GPU/default change. Actual failed/cancelled usage collection and business/rollback/delivery remain required.",
+      "batch_background_followthrough_component_evidence": "evidence/serve-batch-continuation-cpu-20261111/README.md"
     },
     {
       "id": "A10",

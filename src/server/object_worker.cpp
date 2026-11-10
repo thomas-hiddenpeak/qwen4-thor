@@ -1377,6 +1377,9 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-application-lost-ack") == 0;
   const bool lose_batch_create =
       std::strcmp(argv[1], "--q4t-object-worker-batch-create-lost-ack") == 0;
+  const bool lose_batch_response_begin =
+      std::strcmp(argv[1],
+                  "--q4t-object-worker-batch-response-begin-lost-ack") == 0;
   const bool lose_batch_start =
       std::strcmp(argv[1], "--q4t-object-worker-batch-start-lost-ack") == 0;
   const bool lose_batch_result =
@@ -1389,7 +1392,7 @@ int MaybeRunObjectWorker(int argc, char** argv) {
   matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack ||
             lose_cleanup_ack || lose_application_ack || lose_batch_create ||
             lose_batch_start || lose_batch_result || lose_batch_budget ||
-            lose_batch_recount;
+            lose_batch_recount || lose_batch_response_begin;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1458,6 +1461,12 @@ int MaybeRunObjectWorker(int argc, char** argv) {
               for (;;) pause();  // Actual atomic commit, no receipt.
           }
         }
+      if (reply.ok() && lose_batch_response_begin &&
+          request.GetString("operation") == "put" &&
+          request.GetString("kind") == "response" &&
+          request.GetInt("revision", -1) == 0 && request.Find("data") &&
+          request.Find("data")->Has("batch_parent"))
+        for (;;) pause();  // Original bound Response committed, no receipt.
       if (reply.ok() && lose_cleanup_ack &&
           request.GetString("operation") == "erase" &&
           request.GetString("kind") == "tool_run")

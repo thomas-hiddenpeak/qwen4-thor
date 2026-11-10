@@ -84,7 +84,8 @@ class BatchState {
                            size_t index, BatchInputRow* row);
   ObjectReply StartRow(const BinaryAccess& access, const std::string& id,
                        size_t index,
-                       const std::string& reserved_request_id = {});
+                       const std::string& reserved_request_id = {},
+                       const BatchResponseLink* background = nullptr);
   ObjectReply FinishRow(const BinaryAccess& access, const std::string& id,
                         size_t index, const std::string& custom_id,
                         const BatchRowResult& result);

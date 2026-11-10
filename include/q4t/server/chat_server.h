@@ -183,7 +183,8 @@ class ChatServer {
   void HandleChat(int fd, const std::string& body,
                   GenerationApi api = GenerationApi::kChat,
                   std::shared_ptr<RequestControl> owner = {},
-                  const io::Json* frozen_inputs = nullptr);
+                  const io::Json* frozen_inputs = nullptr,
+                  const BatchResponseLink* batch_parent = nullptr);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
                       class ResponsesExecution* responses,

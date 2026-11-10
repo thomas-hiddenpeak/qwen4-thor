@@ -1,0 +1,10 @@
+{
+  "frozen_at": "2026-11-10T18:37:06.394487+00:00",
+  "reason": "The first 22 CPU checks cover reference extraction and original cancellation; add actual worker TTL pruning and prior-day parent expiry before accepting lifetime behavior. Production is unchanged.",
+  "required": [
+    "batch_background_actual_ttl_retains_until_result_copy_then_collects",
+    "batch_background_original_parent_expiry_cancels_queued_execution"
+  ],
+  "gpu": 0,
+  "reuse": "22 distinct original checks, 21 initial pass plus one fixture-only retry pass"
+}

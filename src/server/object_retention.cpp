@@ -266,6 +266,16 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
           inspector.value.uncertain |= status != "pending" && status != "running" &&
                                        status != "completed" && status != "failed";
           inspector.Reference(row.Find("result_id"));
+          if (const auto* background = row.Find("background_response")) {
+            BatchResponseLink link;
+            if (!ParseBatchResponseLink(*background, &link) ||
+                link.batch_id != data.GetString("batch_id") ||
+                link.request_id != row.GetString("request_id") ||
+                status == "pending")
+              inspector.value.uncertain = true;
+            else if (status == "running")
+              inspector.Reference(background->Find("response_id"));
+          }
           if (row.Has("prepared_inline"))
             inspector.value.uncertain |=
                 row.Has("input_snapshots") ||
