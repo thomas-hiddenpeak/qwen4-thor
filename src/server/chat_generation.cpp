@@ -1029,7 +1029,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
 
   const bool collect_chat = !stream || chat_storage.store;
-  ChatChoices choices(sampling.choices, !collect_chat);
+  const bool batch_usage =
+      http && http->RateDomain() == ClientRateDomain::kBatch;
+  ChatChoices choices(sampling.choices, !collect_chat, batch_usage);
   CompletionChoices completion_choices(
       static_cast<int>(completion_plan.prompts.size()), completion_plan.n,
       completion_plan.best_of, stream);
@@ -1403,7 +1405,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           reasoning_options.token_budget, prompt, constraints.json_output,
           (request_tools && !request_tools->array.empty()) ||
               constraints.choice == OutputConstraints::ToolChoice::kNone,
-          responses != nullptr);
+          responses != nullptr || batch_usage);
     if (s && thinking_budget.Enabled()) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock()) {
@@ -2850,7 +2852,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // tokens. Model history is never reconstructed from parsed response text.
     const auto consume_token = [&](int32_t token) {
       if (completion && is_stop_token(token)) return true;
-      if (!responses && !completion && !stream && !thinking_budget.Enabled() &&
+      if (!responses && !completion && !stream && !thinking_budget.Tracking() &&
           !text_stop.Enabled() && !sampling.logprobs && !prediction_enabled)
         return true;
       std::string piece;

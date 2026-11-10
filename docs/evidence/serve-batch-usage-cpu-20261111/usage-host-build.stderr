@@ -1,0 +1,13 @@
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:25:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp: In function ‘bool q4t_test_fn_batch_jobs_dead_owner_recounts_original_usage_before_next_invocation()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:1209:27: error: ‘struct q4t::server::BatchJobsHealth’ has no member named ‘result_bytes’
+ 1209 |             jobs.Health().result_bytes == 0 && jobs.Health().recovered == 1);
+      |                           ^~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1017: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

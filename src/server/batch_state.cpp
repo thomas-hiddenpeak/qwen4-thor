@@ -8,6 +8,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/batch_checkpoint.h"
+#include "q4t/server/batch_usage.h"
 #include "q4t/server/files.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
@@ -142,7 +143,8 @@ ObjectReply Public(const Json& stored) {
         !model)
       return Corrupt();
   }
-  if (!ValidBatchInputRecount(*data)) return Corrupt();
+  if (!ValidBatchInputRecount(*data) || !ValidBatchUsageAccounting(*data))
+    return Corrupt();
   return result;
 }
 ObjectReply Commit(ObjectStore& objects, const BinaryAccess& access,

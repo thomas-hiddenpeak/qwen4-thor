@@ -10,6 +10,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/batch_usage.h"
 #include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
@@ -521,6 +522,27 @@ ObjectReply BatchJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
                                     Error(403, "batch_client_revoked",
                                           "Original client is unauthorized"));
     return batches.Cancel(access, job->id);
+  }
+  if (BatchUsageRows(data) < static_cast<size_t>(data.GetInt("next_row"))) {
+    // Legacy results are read one at a time under the same bounded result
+    // workspace admission. Never count input/output reservations as usage.
+    const bool reserved = !job->result_reserved;
+    if (reserved) {
+      const std::lock_guard lock(state_->mutex);
+      if (state_->result_bytes >
+          state_->options.max_result_bytes - kChatBodyBytes)
+        return Error(429, "batch_result_capacity",
+                     "Batch result capacity busy");
+      state_->result_bytes += kChatBodyBytes;
+    }
+    ScopeExit release([&] {
+      if (reserved) {
+        const std::lock_guard lock(state_->mutex);
+        state_->result_bytes -= kChatBodyBytes;
+      }
+    });
+    access.cancelled = [&] { return state_->stopping.load(); };
+    return batches.RecountUsage(access, job->id);
   }
   if (status == "in_progress" && state_->meter &&
       batch.GetInt("expires_at") > std::time(nullptr) &&

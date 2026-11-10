@@ -7,6 +7,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/batch_checkpoint.h"
+#include "q4t/server/batch_usage.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -98,7 +99,8 @@ Json& Entry(ObjectRequest& page, size_t index) {
   return Field(page.data, "rows").array[index % kBatchPageRows];
 }
 ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
-                     std::string* line) {
+                     std::string_view endpoint, std::string* line,
+                     std::optional<BatchUsage>* usage) {
   const auto id = Identity("batch_req_");
   if (id.empty())
     return Error(503, "object_entropy_unavailable", "No result ID");
@@ -121,6 +123,7 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
                    "Endpoint did not return a finite JSON response");
     // Formatting newlines in endpoint JSON must not split one JSONL result.
     const auto compact = OutputJson(body);
+    *usage = BatchResponseUsage(endpoint, body);
     if (compact.size() > kChatBodyBytes)
       return Error(413, "batch_result_capacity_exceeded",
                    "Batch result capacity exceeded");
@@ -304,6 +307,9 @@ ObjectReply BatchState::StartRow(const BinaryAccess& access,
       root.data.GetInt("running") ||
       static_cast<size_t>(root.data.GetInt("next_row")) != index)
     return Conflict();
+  if (BatchUsageRows(root.data) != index)
+    return Error(503, "batch_usage_recount_required",
+                 "Original results require usage reconciliation");
   auto loaded_page = Page(access, loaded.value, index);
   if (!loaded_page.ok()) return loaded_page;
   auto page = Update(access, loaded_page.value, ObjectKind::kToolRun);
@@ -366,7 +372,9 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
                 result.error.code == "batch_expired")))
     return Conflict();
   std::string line;
-  auto reply = JsonLine(custom_id, result, &line);
+  std::optional<BatchUsage> usage;
+  auto reply =
+      JsonLine(custom_id, result, batch.GetString("endpoint"), &line, &usage);
   if (!reply.ok()) return reply;
   const bool success = result.error.ok() && result.http_status < 300;
   Set(&row, "status", String(success ? "completed" : "failed"));
@@ -376,6 +384,11 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
   auto& counts = Field(Field(root.data, "batch"), "request_counts");
   const auto* key = success ? "completed" : "failed";
   Set(&counts, key, Number(counts.GetInt(key) + 1));
+  // A never-started cancelled/expired row provably consumed no model tokens.
+  // A running failure with no result usage remains unknown, not fabricated 0.
+  if (!running) usage = BatchUsage{};
+  reply = AddBatchUsage(&root.data, index, usage);
+  if (!reply.ok()) return reply;
   if (line.size() <= kBatchInlineBytes) {
     Set(&page.data, "format", String("q4t.batch_page.v2"));
     Set(&row, "result_inline",
@@ -423,6 +436,77 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
   return reply;
 }
 
+ObjectReply BatchState::RecountUsage(const BinaryAccess& access,
+                                     const std::string& id) {
+  auto loaded = Owned(access, id);
+  if (!loaded.ok()) return loaded;
+  auto root = Update(access, loaded.value, ObjectKind::kBatch);
+  const auto index = BatchUsageRows(root.data);
+  const auto next = static_cast<size_t>(root.data.GetInt("next_row"));
+  if (index >= next) {
+    ObjectReply reply;
+    reply.value = *root.data.Find("batch");
+    return reply;
+  }
+  auto page = Page(access, loaded.value, index);
+  if (!page.ok()) return page;
+  const auto& row =
+      page.value.Find("data")->GetArray("rows")->array[index % kBatchPageRows];
+  const bool success = row.GetString("status") == "completed";
+  if (!success && row.GetString("status") != "failed") return Corrupt();
+  std::string line;
+  if (const auto* embedded = row.Find("result_inline")) {
+    line = embedded->GetString("payload");
+  } else {
+    BinaryRead read;
+    Json result_data;
+    BinaryStore binary(objects_);
+    auto reply =
+        binary.Open(access, ObjectKind::kToolRun, row.GetString("result_id"),
+                    3600, &read, &result_data);
+    if (!reply.ok()) return reply;
+    ScopeExit close([&] { Close(objects_, &read); });
+    const auto* successful = result_data.Find("successful");
+    if (result_data.GetString("format") != "q4t.batch_result.v1" ||
+        result_data.GetString("batch_id") != id ||
+        result_data.GetInt("line") != static_cast<int64_t>(index + 1) ||
+        !successful || !successful->IsBool() ||
+        successful->boolean != success || !read.manifest.bytes ||
+        read.manifest.bytes > kExpandedApplicationBytes + 65536)
+      return Corrupt();
+    line.reserve(read.manifest.bytes);
+    for (size_t chunk = 0; chunk < read.manifest.chunks.size(); ++chunk) {
+      std::string bytes;
+      reply = binary.Read(access, read, chunk, &bytes);
+      if (!reply.ok()) return reply;
+      line += bytes;
+    }
+  }
+  Json result;
+  auto limits = kApplicationJsonLimits;
+  limits.max_depth += 4;  // Private JSONL wrapper around the original body.
+  limits.max_values += 32;
+  limits.max_string_bytes = kExpandedApplicationBytes + 65536;
+  if (!io::ParseJson(line, &result, true, limits) ||
+      Digest(result.GetString("custom_id")) !=
+          row.GetString("custom_id_sha256"))
+    return Corrupt();
+  std::optional<BatchUsage> usage;
+  const auto* response = result.Find("response");
+  const auto* body = response ? response->Find("body") : nullptr;
+  if (body)
+    usage = BatchResponseUsage(root.data.Find("batch")->GetString("endpoint"),
+                               *body);
+  else if (row.GetString("request_id").empty()) {
+    const auto* error = result.Find("error");
+    const auto code = error ? error->GetString("code") : "";
+    if (code == "batch_cancelled" || code == "batch_expired")
+      usage = BatchUsage{};
+  }
+  auto reply = AddBatchUsage(&root.data, index, usage);
+  return reply.ok() ? Save(objects_, access, root) : reply;
+}
+
 ObjectReply BatchState::BeginFinalization(const BinaryAccess& access,
                                           const std::string& id,
                                           const std::string& terminal_status) {
@@ -438,6 +522,10 @@ ObjectReply BatchState::BeginFinalization(const BinaryAccess& access,
     return result;
   }
   if (BatchTerminal(status) || root.data.GetInt("running")) return Conflict();
+  if (BatchUsageRows(root.data) !=
+      static_cast<size_t>(root.data.GetInt("next_row")))
+    return Error(503, "batch_usage_recount_required",
+                 "Original results require usage reconciliation");
   if (terminal_status == "completed") {
     if (status != "in_progress" ||
         root.data.GetInt("next_row") !=
@@ -478,6 +566,9 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
       (terminal != "completed" && terminal != "cancelled" &&
        terminal != "expired"))
     return Conflict();
+  if (BatchUsageRows(root.data) != static_cast<size_t>(total))
+    return Error(503, "batch_usage_recount_required",
+                 "Original results require usage reconciliation");
   // A checkpoint owns the output chunks directly. Temporary staging roots
   // exist only within this turn, and disappear atomically with progress.
   // Recovery never needs an expired in-memory stage or an earlier model run.

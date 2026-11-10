@@ -70,10 +70,10 @@ std::string ChatChoices::UsageJson() const {
       "{\"prompt_tokens\":" + std::to_string(prompt_) +
       ",\"completion_tokens\":" + std::to_string(completion_) +
       ",\"total_tokens\":" + std::to_string(prompt_ + completion_);
-  if (report_cached_)
+  if (report_cached_ || full_usage_)
     json += ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(cached_) + '}';
-  if (reasoning_limit_ >= 0 || prediction_) {
+  if (reasoning_limit_ >= 0 || prediction_ || full_usage_) {
     json += ",\"completion_tokens_details\":{\"reasoning_tokens\":" +
             std::to_string(reasoning_ + forced_);
     if (prediction_)

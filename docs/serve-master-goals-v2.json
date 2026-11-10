@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 aggregate actual usage, finite permanent finalization failure and bounded auxiliary owner construction recovery, then actual model business and compatible rollback/default. A09.7/8 and all master tasks remain required.",
+      "next": "A09.6 original background terminal/actual failed work usage, finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business and compatible rollback/default, A09.7/8 and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1066,12 +1066,15 @@
       "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
-        "Aggregate real per-row usage into Batch usage with durable exactly-once accounting, including cache/reasoning details and cancelled/error work where available; no invented zero totals.",
+        "Capture available actual usage on native errors/cancellation and original background Response terminal completion; durable original-result aggregation/legacy recount is accepted. Never substitute budget estimates or unknown-as-zero.",
         "Close deterministic finalization byte/chunk capacity exhaustion finitely, preserve original results and receipt uncertainty; never retry the model or spin finalization forever.",
         "Complete bounded actual model business and compatible state/quota rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
-        "Audit application task-owner construction failure recovery: temporary auxiliary startup failure must have a bounded retry path without core restart or duplicate live owners."
+        "Audit application task-owner construction failure recovery: temporary auxiliary startup failure must have a bounded retry path without core restart or duplicate live owners.",
+        "Follow original background Responses queued receipt through terminal observation and actual usage; never treat queued submission as completed model work or replay its already-started ticket."
       ],
-      "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md"
+      "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
+      "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage capture still required.",
+      "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1657,6 +1660,6 @@
       "release": null
     }
   ],
-  "next_task": "继续A09真实usage汇总、永久容量终结与辅助任务所有者恢复；实际模型业务、兼容回退/default及全部总任务。",
-  "next": "A09.6 aggregate actual usage, finite permanent finalization failure and bounded auxiliary owner construction recovery, then actual model business and compatible rollback/default. A09.7/8 and all master tasks remain required."
+  "next_task": "继续后台Response原终态/实际失败用量、永久容量与辅助所有者恢复，再实际模型业务/兼容回退交付；全部任务继续。",
+  "next": "A09.6 original background terminal/actual failed work usage, finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business and compatible rollback/default, A09.7/8 and all master tasks."
 }

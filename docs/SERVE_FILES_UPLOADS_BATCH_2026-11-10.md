@@ -1,5 +1,13 @@
 # A09 原生 Files、Uploads 与 Batch 连续实现计划
 
+## 2026-11-11 原结果usage组件接受
+
+[26 CPU和2 SDK通过](evidence/serve-batch-usage-cpu-20261111/README.md)，
+逐行结果与真实usage同事务，原legacy结果有界补计；超大整数边界已
+单独修复补验。未知结果不伪造零，Batch Chat补实际无预算推理统计。
+背景queued回执终态/失败取消实际计量仍需接通，之后永久容量终结、
+辅助恢复、真实模型业务及兼容回退/default；并非A09完成。
+
 ## 2026-11-11 公开Batch接入（CPU/SDK接受，待业务/交付）
 
 共享原生处理器已连接`POST/GET /v1/batches`、`GET /v1/batches/{id}`及

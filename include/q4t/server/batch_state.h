@@ -88,6 +88,9 @@ class BatchState {
   ObjectReply FinishRow(const BinaryAccess& access, const std::string& id,
                         size_t index, const std::string& custom_id,
                         const BatchRowResult& result);
+  // One original legacy result per turn, no model/input fetch/replay. Active
+  // jobs reconcile the durable prefix before executing/finalizing more rows.
+  ObjectReply RecountUsage(const BinaryAccess& access, const std::string& id);
   ObjectReply BeginFinalization(const BinaryAccess& access,
                                 const std::string& id,
                                 const std::string& terminal_status);

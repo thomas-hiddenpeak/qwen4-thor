@@ -184,6 +184,26 @@ Q4T_TEST(sampling_choices_accounting_and_storage_fail_closed) {
   return true;
 }
 
+Q4T_TEST(sampling_batch_choices_report_actual_unbounded_reasoning_and_cache) {
+  ChatChoices choices(2, false, true);
+  const auto message = R"({"role":"assistant","content":"x"})";
+  Q4T_CHECK(choices.Add(0, message, "stop", "null", 10, 7, 0, false, -1, 3, 0));
+  Q4T_CHECK(choices.Add(1, message, "stop", "null", 10, 9, 0, false, -1, 5, 0));
+  const auto usage = Read(choices.UsageJson());
+  Q4T_CHECK(
+      usage.GetInt("prompt_tokens") == 10 &&
+      usage.GetInt("completion_tokens") == 16 &&
+      usage.Find("prompt_tokens_details")->GetInt("cached_tokens") == 0 &&
+      usage.Find("completion_tokens_details")->GetInt("reasoning_tokens") ==
+          8 &&
+      !usage.Has("q4t_thinking_budget"));
+  ChatChoices original(1, false);
+  Q4T_CHECK(
+      original.Add(0, message, "stop", "null", 10, 7, 0, false, -1, 0, 0));
+  Q4T_CHECK(!Read(original.UsageJson()).Has("completion_tokens_details"));
+  return true;
+}
+
 Q4T_TEST(sampling_plan_token_bias_and_choice_quota_are_not_shape_only) {
   ChatPlanConfig config;
   config.model = "m";

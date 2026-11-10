@@ -1,0 +1,566 @@
+{
+  "status": "PASS",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+        "object": "file",
+        "bytes": 346,
+        "created_at": 1794333884,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796925884
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_aba851c02b19f297e1010c5aeb0a5c87",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_aba851c02b19f297e1010c5aeb0a5c87/cancel",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_2c3738e6a8afeeefa692a95eb01de88b",
+      "status": 200,
+      "response": {
+        "id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_aba851c02b19f297e1010c5aeb0a5c87",
+      "status": 200,
+      "response": {
+        "id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+        "object": "batch",
+        "status": "in_progress",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_aba851c02b19f297e1010c5aeb0a5c87",
+      "status": 200,
+      "response": {
+        "id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+        "object": "batch",
+        "status": "completed",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": "file_295fafdd31a3c11ec706c0de598e6663",
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 2,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884,
+        "usage": {
+          "input_tokens": 8,
+          "output_tokens": 4,
+          "total_tokens": 12,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "finalizing_at": 1794333884,
+        "completed_at": 1794333884
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_295fafdd31a3c11ec706c0de598e6663",
+      "status": 200,
+      "response": {
+        "id": "file_295fafdd31a3c11ec706c0de598e6663",
+        "object": "file",
+        "bytes": 934,
+        "created_at": 1794333884,
+        "expires_at": 1794337484,
+        "filename": "batch_aba851c02b19f297e1010c5aeb0a5c87_output.jsonl",
+        "purpose": "batch_output",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_295fafdd31a3c11ec706c0de598e6663/content",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "object": "file",
+        "bytes": 406,
+        "created_at": 1794333884,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796925884
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "in_progress",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "cancelling",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884,
+        "cancelling_at": 1794333884
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "cancelling",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 1
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884,
+        "cancelling_at": 1794333884
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_8e99e1706f434abfd39fe40c7caf5b0a",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884,
+        "cancelling_at": 1794333884,
+        "finalizing_at": 1794333884,
+        "cancelled_at": 1794333884
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_bf83940f9ed15cf327acd0b9a07c9abf/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+        "completion_window": "24h",
+        "created_at": 1794333884,
+        "expires_at": 1794420284,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_8e99e1706f434abfd39fe40c7caf5b0a",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333884,
+        "cancelling_at": 1794333884,
+        "finalizing_at": 1794333884,
+        "cancelled_at": 1794333884
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+            "object": "batch",
+            "status": "cancelled",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_c658da538a935765bdd28eaa97f3a15f",
+            "completion_window": "24h",
+            "created_at": 1794333884,
+            "expires_at": 1794420284,
+            "metadata": null,
+            "output_file_id": null,
+            "error_file_id": "file_8e99e1706f434abfd39fe40c7caf5b0a",
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 0,
+              "failed": 2
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794333884,
+            "cancelling_at": 1794333884,
+            "finalizing_at": 1794333884,
+            "cancelled_at": 1794333884
+          }
+        ],
+        "first_id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "last_id": "batch_bf83940f9ed15cf327acd0b9a07c9abf",
+        "has_more": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+            "object": "batch",
+            "status": "completed",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_2c3738e6a8afeeefa692a95eb01de88b",
+            "completion_window": "24h",
+            "created_at": 1794333884,
+            "expires_at": 1794420284,
+            "metadata": {
+              "fixture": "real-api"
+            },
+            "output_file_id": "file_295fafdd31a3c11ec706c0de598e6663",
+            "error_file_id": null,
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 2,
+              "failed": 0
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794333884,
+            "usage": {
+              "input_tokens": 8,
+              "output_tokens": 4,
+              "total_tokens": 12,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "finalizing_at": 1794333884,
+            "completed_at": 1794333884
+          }
+        ],
+        "first_id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+        "last_id": "batch_aba851c02b19f297e1010c5aeb0a5c87",
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [],
+        "first_id": null,
+        "last_id": null,
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "limit requires 1..100",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "limit"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/batches",
+      "status": 401,
+      "response": {
+        "error": {
+          "message": "Fixture transport rejected",
+          "type": "authentication_error",
+          "code": "client_authentication_failed",
+          "param": null
+        }
+      }
+    }
+  ],
+  "request_count": 22,
+  "actual_network": true,
+  "model_starts": 0,
+  "generation": "explicit_CPU_fixture",
+  "max_retries": 0,
+  "rows": [
+    {
+      "id": "batch_req_tool_run_1d6a446effbd4b3e44dcd2e5bdc7bd17",
+      "custom_id": "cpu-0",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_0b967aed059f4ee347d2bce7d7435626",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "batch_req_tool_run_1c799b26a64d7b233c4c4054ff7f7299",
+      "custom_id": "cpu-1",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_a4b2113fae751c1f0e3a2f92380d885e",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        }
+      },
+      "error": null
+    }
+  ]
+}

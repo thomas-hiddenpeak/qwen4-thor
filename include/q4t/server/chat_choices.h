@@ -14,7 +14,8 @@ namespace q4t::server {
 class ChatChoices {
  public:
   static constexpr size_t kResponseLimit = 32 * 1024 * 1024;
-  ChatChoices(int count, bool stream) : count_(count), stream_(stream) {}
+  ChatChoices(int count, bool stream, bool full_usage = false)
+      : count_(count), stream_(stream), full_usage_(full_usage) {}
   Status Add(int index, std::string_view message, std::string_view finish,
              std::string_view logprobs, uint64_t prompt, uint64_t completion,
              uint64_t cached, bool report_cached, int64_t reasoning_limit,
@@ -30,6 +31,7 @@ class ChatChoices {
  private:
   int count_;
   bool stream_;
+  bool full_usage_;
   int accepted_ = 0;
   uint64_t prompt_ = 0;
   uint64_t completion_ = 0;

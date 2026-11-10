@@ -1,0 +1,43 @@
+{
+  "classification": "non-performance",
+  "base_commit": "d099b00c6d0a9f20de0552b60296005fe19b1798",
+  "new_tests": [
+    "batch_usage_normalizes_endpoints_without_inventing_missing_details",
+    "batch_usage_atomic_success_error_and_final_files_keep_actual_totals",
+    "batch_usage_unknown_running_result_never_becomes_zero",
+    "batch_usage_exact_integer_overflow_and_corruption_never_publish_false_total",
+    "batch_usage_legacy_inline_binary_recount_resume_without_result_rewrite",
+    "batch_usage_actual_lost_recount_receipt_never_doubles_prefix",
+    "sampling_batch_choices_report_actual_unbounded_reasoning_and_cache",
+    "batch_jobs_dead_owner_recounts_original_usage_before_next_invocation"
+  ],
+  "direct_tests": [
+    "batch_results_actual_unknown_finish_commits_result_and_counts_once",
+    "batch_results_final_files_coalesce_large_rows_and_page_boundaries",
+    "batch_inline_result_page_immutability_and_exact_number_retention",
+    "batch_finalization_row_budget_and_checkpoint_restart",
+    "batch_finalization_large_row_lost_checkpoint_resumes_original_bytes",
+    "batch_jobs_actual_native_finite_rows_and_output_file",
+    "batch_jobs_stop_cancels_owned_execution_and_keeps_pending_rows",
+    "batch_jobs_cancel_waits_for_drain_and_publishes_partial_files",
+    "batch_jobs_actual_unknown_start_never_invokes",
+    "batch_jobs_minute_wait_yields_before_ticket_and_keeps_other_client_live",
+    "batch_api_actual_lifecycle_scope_query_and_output",
+    "batch_api_cancel_drains_running_row_and_skips_remaining",
+    "thinking_usage_tracks_unbounded_tokens_without_forcing_output",
+    "thinking_budget_speculation_reserves_pending_token",
+    "thinking_budget_zero_and_forced_accounting",
+    "sampling_choices_share_prompt_and_aggregate_real_usage",
+    "sampling_choices_accounting_and_storage_fail_closed",
+    "batch_execution_prepared_background_response_transfers_real_lifecycle"
+  ],
+  "count": 26,
+  "python_tests": [
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle"
+  ],
+  "python_count": 2,
+  "gpu_starts": 0,
+  "scope": "Atomic actual Batch usage, missing/invalid/overflow uncertainty, original inline/binary result reconciliation and dead process/lost receipt; explicit Batch Chat unbounded reasoning tracking. SDK verifies public aggregate over actual core/TLS tasks with CPU output.",
+  "remaining": "Background Response queued receipt follow-through must collect terminal actual usage before final Batch accounting. Permanent output-capacity and auxiliary owner recovery, actual model business, compatible state/quota rollback/default and every master task remain required."
+}

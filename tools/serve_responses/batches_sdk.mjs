@@ -48,6 +48,8 @@ const completed = await wait(created.id,['completed','failed']);
 assert.equal(completed.status,'completed');assert.equal(completed.model,'batch-cpu');
 assert.deepEqual(completed.request_counts,{total:2,completed:2,failed:0});
 assert.equal(completed.expires_at,created.expires_at);
+assert.deepEqual(completed.usage,{input_tokens:8,output_tokens:4,total_tokens:12,
+  input_tokens_details:{cached_tokens:0},output_tokens_details:{reasoning_tokens:0}});
 const outputFile = await client.files.retrieve(completed.output_file_id);
 assert.equal(outputFile.purpose,'batch_output');assert.equal(outputFile.expires_at-outputFile.created_at,3600);
 const rows = (await (await client.files.content(outputFile.id)).text()).trim().split('\n').map(JSON.parse);
@@ -56,7 +58,8 @@ for (const row of rows) {
   assert.equal(row.response.status_code,200);
   assert.equal(row.response.body.output[0].type,'function_call');
   assert.deepEqual(JSON.parse(row.response.body.output[0].arguments),{key:42});
-  assert.deepEqual(row.response.body.usage,{input_tokens:4,output_tokens:2,total_tokens:6});
+  assert.deepEqual(row.response.body.usage,{input_tokens:4,output_tokens:2,total_tokens:6,
+    input_tokens_details:{cached_tokens:0},output_tokens_details:{reasoning_tokens:0}});
   assert.equal(row.error,null);
 }
 const heldFile = await upload(true);

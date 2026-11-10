@@ -83,7 +83,7 @@ int FilesApiFixture(int argc, char** argv) {
                   charge->Completion(2);
                   detail::SendSimple(
                       -1, 200, "OK",
-                      R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})",
+                      R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6,"input_tokens_details":{"cached_tokens":0},"output_tokens_details":{"reasoning_tokens":0}}})",
                       "application/json");
                 },
                 std::move(rate));

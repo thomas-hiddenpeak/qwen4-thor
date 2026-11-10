@@ -158,7 +158,7 @@ BatchJobs::Executor Native(std::atomic<int>& calls,
           if (before) before();
           detail::SendSimple(
               -1, 200, "OK",
-              R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})",
+              R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6,"input_tokens_details":{"cached_tokens":0},"output_tokens_details":{"reasoning_tokens":0}}})",
               "application/json");
         },
         std::move(rate));
@@ -1126,5 +1126,87 @@ Q4T_TEST(batch_config_native_cli_budget_and_effective_discovery) {
   std::ofstream file(directory / "batches-config.json");
   file << wire;
   Q4T_CHECK(file.good());
+  return true;
+}
+
+Q4T_TEST(batch_jobs_dead_owner_recounts_original_usage_before_next_invocation) {
+  Fixture fixture;
+  int channel[2];
+  Q4T_CHECK(pipe(channel) == 0);
+  const auto pid = fork();
+  Q4T_CHECK(pid >= 0);
+  if (!pid) {
+    close(channel[0]);
+    int status = 0;
+    try {
+      ObjectStore objects(fixture.objects);
+      BatchState batches(objects);
+      const auto file = File(objects, Input(2));
+      const auto created = batches.Create(Access(), Options(file));
+      if (!created.ok()) throw std::runtime_error("child batch");
+      const auto id = created.value.GetString("id");
+      BatchValidation validation(objects, id, fixture.config);
+      for (int turn = 0; turn < 4 && !validation.Complete(); ++turn)
+        if (!validation.Step(Access()).ok())
+          throw std::runtime_error("child validation");
+      const auto started = batches.StartRow(Access(), id, 0);
+      BatchInputRow row;
+      if (!started.ok() || !batches.ReadInputRow(Access(), id, 0, &row).ok())
+        throw std::runtime_error("child row");
+      BatchRowResult result;
+      result.request_id = started.value.GetString("request_id");
+      result.http_status = 200;
+      result.response_body =
+          R"({"usage":{"input_tokens":10,"output_tokens":4,"total_tokens":14,"input_tokens_details":{"cached_tokens":3},"output_tokens_details":{"reasoning_tokens":2}}})";
+      if (!batches.FinishRow(Access(), id, 0, row.custom_id, result).ok())
+        throw std::runtime_error("child finish");
+      const auto loaded = batches.Load(Access(), id);
+      ObjectRequest legacy;
+      legacy.scope = Access().scope;
+      legacy.id = id;
+      legacy.kind = ObjectKind::kBatch;
+      legacy.operation = ObjectOperation::kPut;
+      legacy.expected_revision = loaded.value.GetInt("revision");
+      legacy.created_at = loaded.value.GetInt("created_at");
+      legacy.expires_at = loaded.value.GetInt("expires_at");
+      legacy.data = *loaded.value.Find("data");
+      std::erase_if(legacy.data.object, [](const auto& item) {
+        return item.first == "usage_accounting";
+      });
+      std::erase_if(Field(legacy.data, "batch").object,
+                    [](const auto& item) { return item.first == "usage"; });
+      if (!objects.Execute(legacy, Access().deadline).ok() ||
+          write(channel[1], id.data(), id.size()) !=
+              static_cast<ssize_t>(id.size()))
+        throw std::runtime_error("child legacy result");
+    } catch (...) {
+      status = 2;
+    }
+    close(channel[1]);
+    _exit(status);
+  }
+  close(channel[1]);
+  char bytes[128]{};
+  const auto count = read(channel[0], bytes, sizeof(bytes));
+  close(channel[0]);
+  int status = 0;
+  Q4T_CHECK(waitpid(pid, &status, 0) == pid && WIFEXITED(status) &&
+            WEXITSTATUS(status) == 0 && count > 0);
+  ObjectStore objects(fixture.objects);
+  std::atomic<int> calls{0};
+  BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
+                 Native(calls));
+  const auto final = Finished(objects, jobs, std::string(bytes, count));
+  Q4T_CHECK(Ok(final) && calls == 1 && final.value.Find("usage") &&
+            final.value.Find("usage")->GetInt("input_tokens") == 14 &&
+            final.value.Find("usage")->GetInt("output_tokens") == 6 &&
+            final.value.Find("usage")
+                    ->Find("input_tokens_details")
+                    ->GetInt("cached_tokens") == 3 &&
+            final.value.Find("usage")
+                    ->Find("output_tokens_details")
+                    ->GetInt("reasoning_tokens") == 2 &&
+            jobs.Health().reserved_result_bytes == 0 &&
+            jobs.Health().recovered == 1);
   return true;
 }
