@@ -59,7 +59,7 @@ struct Fixture {
   ObjectStoreOptions options;
   ClientAdmission clients;
   const std::string token = std::string(64, 'a');
-  Fixture() {
+  explicit Fixture(bool minute_quota = false) {
     const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
     const auto root = std::filesystem::absolute(
         output ? output : ".q4t-work/responses-jobs-cpu");
@@ -79,9 +79,20 @@ struct Fixture {
     }
     const auto raw = R"({"version":1,"gateway_token":")" + token +
                      R"(","clients":[)" + entries + "]}";
-    if (!ParseGatewayClientPolicy(raw, &policy) ||
-        !clients.Configure(std::move(policy)))
+    if (!ParseGatewayClientPolicy(raw, &policy))
       throw std::runtime_error("jobs policy");
+    if (minute_quota) {
+      policy.version = 3;
+      policy.revision = 1;
+      policy.fair_queue = true;
+      for (auto& limits : policy.clients) {
+        limits.max_inflight = 1;
+        limits.requests_per_minute = 10;
+        limits.tokens_per_minute = 512;
+      }
+    }
+    if (!clients.Configure(std::move(policy)))
+      throw std::runtime_error("jobs rate policy");
   }
   ClientIdentity Identity(std::string client = "alpha") {
     return clients.Authenticate(client, token);
@@ -150,15 +161,17 @@ void EditRecord(ObjectStore& objects, const std::string& id,
 }
 std::string Interrupted(ObjectStore& objects, bool started = false,
                         std::string scope = "client:alpha", bool dead = true,
-                        bool expired = false) {
+                        bool expired = false, bool batch = false) {
   ResponsesExecution run(objects);
-  if (!run.Prepare(
-              Parse(
-                  R"({"input":"private original input","background":true,"reasoning":{"effort":"none"}})"),
-              Config(), {scope, Clock::now() + 5s, {}}, std::time(nullptr),
-              true)
+  auto request = Parse(
+      R"({"input":"private original input","background":true,"reasoning":{"effort":"none"}})");
+  if (batch) Set(&request, "max_output_tokens", Parse("32"));
+  if (!run.Prepare(request, Config(), {scope, Clock::now() + 5s, {}},
+                   std::time(nullptr), true)
            .ok())
     throw std::runtime_error("recovery preparation");
+  if (batch && !run.BindRateDomain(ClientRateDomain::kBatch))
+    throw std::runtime_error("recovery Batch origin");
   run.BindBackgroundControl(
       std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 30s));
   std::string wire;
@@ -182,6 +195,61 @@ std::string Interrupted(ObjectStore& objects, bool started = false,
       if (expired) Set(continuation, "execution_deadline_at", Parse("1"));
     });
   return run.Id();
+}
+
+std::string InterruptedBatch(ObjectStore& objects) {
+  return Interrupted(objects, false, "client:alpha", true, false, true);
+}
+ResponsesJobs::RateAdmission BatchAdmission(Fixture& fixture,
+                                            std::atomic<int>* plans = nullptr) {
+  return [&fixture, plans](ResponsesJobs::Job& job) {
+    return AdmitBackgroundBatchRate(
+        fixture.clients, job, Config(),
+        [plans](auto& run, const auto& config, const auto& access,
+                auto* budget) {
+          if (plans) ++*plans;
+          // Explicit CPU codec; actual native request/template planning, not
+          // a claim about model tokens or generation quality.
+          BatchTokenCodec codec;
+          codec.encode = [](std::string_view text, auto* tokens) {
+            tokens->assign(text.begin(), text.end());
+            return q4t::Status{};
+          };
+          codec.decode = [](const auto& tokens, std::string* text) {
+            text->assign(tokens.size(), 't');
+            return q4t::Status{};
+          };
+          return MeasureBatchResponseRate(run, config, access, codec, budget);
+        });
+  };
+}
+void CompleteBatch(Fixture& fixture, ResponsesJobs::Job& job) {
+  if (!job.rate || !job.planned_rate || !job.permit ||
+      !job.permit->Holds(job.client, ClientLane::kData))
+    throw std::runtime_error("CPU Batch recovery owner");
+  const auto& budget = *job.planned_rate;
+  if (job.rate->Reserve(fixture.clients, job.client, budget.prompt_capacity,
+                        budget.output, ClientClock::now(),
+                        budget.auxiliary_output, budget.preparation_output) !=
+      ClientRateResult::kAllowed)
+    throw std::runtime_error("CPU Batch recovery precharge claim");
+  job.rate->Start();
+  job.rate->Completion(2);
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kContent;
+  delta.text = "CPU recovered Batch fixture";
+  std::string wire;
+  if (!job.run->Append(delta, "null", &wire) ||
+      !job.run
+           ->Finish(false, 0,
+                    {static_cast<int64_t>(budget.prompt_capacity), 0, 2, 0},
+                    std::time(nullptr), &wire)
+           .ok())
+    throw std::runtime_error("CPU Batch recovery completion");
+}
+ClientRateUsage BatchUsage(Fixture& fixture) {
+  return fixture.clients.RateUsage(0, ClientClock::now(),
+                                   ClientRateDomain::kBatch);
 }
 
 std::string Exchange(
@@ -969,6 +1037,318 @@ Q4T_TEST(responses_jobs_waiting_clients_get_round_robin_turns) {
   const std::lock_guard lock(mutex);
   Q4T_CHECK(order == std::vector<std::string>(
                          {"alpha", "beta", "gamma", "alpha", "alpha"}));
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_real_exit_waits_and_yields_to_online) {
+  Fixture f(true);
+  int channel[2];
+  Q4T_CHECK(pipe2(channel, O_CLOEXEC) == 0);
+  const pid_t child = fork();
+  Q4T_CHECK(child >= 0);
+  if (child == 0) {
+    close(channel[0]);
+    try {
+      std::string id;
+      {
+        ObjectStore objects(f.options);
+        id = Interrupted(objects, false, "client:alpha", false, false, true);
+      }
+      const bool sent = write(channel[1], id.data(), id.size()) ==
+                        static_cast<ssize_t>(id.size());
+      _exit(sent ? 0 : 2);
+    } catch (...) {
+      _exit(3);
+    }
+  }
+  close(channel[1]);
+  bool reaped = false;
+  ScopeExit cleanup([&] {
+    close(channel[0]);
+    if (!reaped) {
+      kill(child, SIGKILL);
+      int status;
+      while (waitpid(child, &status, 0) < 0 && errno == EINTR) {
+      }
+    }
+  });
+  pollfd ready{channel[0], POLLIN, 0};
+  Q4T_CHECK(poll(&ready, 1, 5000) > 0);
+  char id_buffer[256];
+  const auto length = read(channel[0], id_buffer, sizeof(id_buffer));
+  Q4T_CHECK(length > 0);
+  const std::string id(id_buffer, length);
+  int status = 0;
+  Q4T_CHECK(waitpid(child, &status, 0) == child);
+  reaped = true;
+  Q4T_CHECK(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+  ObjectStore objects(f.options);
+  const auto before = Raw(objects, id);
+  Q4T_CHECK(Ok(before));
+  ClientRateLease blocker(ClientRateDomain::kBatch);
+  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+            ClientRateResult::kAllowed);
+  std::atomic<int> batch{0}, online{0}, plans{0};
+  ResponsesJobs jobs(
+      objects, {},
+      [&](auto& job) {
+        if (job.run->RateDomain() == ClientRateDomain::kBatch) {
+          ++batch;
+          CompleteBatch(f, job);
+        } else {
+          ++online;
+          Complete(job);
+        }
+      },
+      BatchAdmission(f, &plans));
+  jobs.StartRecovery(f.clients, Config());
+  Q4T_CHECK(Wait([&] { return jobs.Health().rate_deferrals >= 2; }));
+  Q4T_CHECK(jobs.Health().rate_waiting == 1 && batch == 0 && plans == 1 &&
+            f.clients.Usage(0).data_active == 0);
+  const auto waiting = Raw(objects, id);
+  Q4T_CHECK(Ok(waiting) &&
+            OutputJson(before.value) == OutputJson(waiting.value));
+  Q4T_CHECK(Ok(f.Submit(jobs, objects, "beta")));
+  Q4T_CHECK(Wait([&] { return online == 1 && jobs.Health().owned == 1; }));
+  Q4T_CHECK(batch == 0 && BatchUsage(f).admitted == 1);
+  blocker.Settle();
+  Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
+  const auto after = Raw(objects, id);
+  Q4T_CHECK(Ok(after) && batch == 1 && plans == 1 &&
+            after.value.Find("data")->Find("response")->GetString("status") ==
+                "completed");
+  Q4T_CHECK(after.value.Find("data")
+                ->Find("continuation")
+                ->GetInt("execution_deadline_at") ==
+            before.value.Find("data")
+                ->Find("continuation")
+                ->GetInt("execution_deadline_at"));
+  const auto usage = BatchUsage(f);
+  Q4T_CHECK(usage.admitted == 2 && usage.reserved == 0 &&
+            usage.settled_tokens > 2 && jobs.Health().rate_waiting == 0 &&
+            f.clients.Usage(0).data_active == 0 && !jobs.Health().failed);
+  Q4T_CHECK(f.clients.RateUsage(0).admitted == 0);
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_minute_wait_cancel_and_original_deadline) {
+  for (const bool cancel : {true, false}) {
+    Fixture f(true);
+    ObjectStore objects(f.options);
+    const auto id = InterruptedBatch(objects);
+    if (!cancel)
+      EditRecord(objects, id, "client:alpha", [](Json& data) {
+        Set(Field(&data, "continuation"), "execution_deadline_at",
+            Parse(std::to_string(std::time(nullptr) + 2)));
+      });
+    const auto original = Raw(objects, id);
+    ClientRateLease blocker(ClientRateDomain::kBatch);
+    Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+              ClientRateResult::kAllowed);
+    std::atomic<int> calls{0};
+    ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; }, BatchAdmission(f));
+    jobs.StartRecovery(f.clients, Config());
+    Q4T_CHECK(Wait([&] { return jobs.Health().rate_waiting == 1; }));
+    Q4T_CHECK(f.clients.Usage(0).data_active == 0);
+    if (cancel) Q4T_CHECK(Ok(jobs.Cancel(id, Access())));
+    Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
+    const auto reply = ResponsesState(objects).Retrieve(id, Access());
+    Q4T_CHECK(Ok(reply) && calls == 0 && !jobs.Health().failed &&
+              reply.value.GetString("status") ==
+                  (cancel ? "cancelled" : "failed"));
+    if (!cancel)
+      Q4T_CHECK(reply.value.Find("error")->GetString("code") ==
+                "deadline_exceeded");
+    const auto final = Raw(objects, id);
+    Q4T_CHECK(Ok(final) && final.value.Find("data")
+                                   ->Find("continuation")
+                                   ->GetInt("execution_deadline_at") ==
+                               original.value.Find("data")
+                                   ->Find("continuation")
+                                   ->GetInt("execution_deadline_at"));
+    Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == 500 &&
+              jobs.Health().rate_waiting == 0 &&
+              f.clients.Usage(0).data_active == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_refreshes_policy_and_replans_original_input) {
+  for (const bool reject_input : {false, true}) {
+    Fixture f(true);
+    auto policy = *f.clients.Snapshot();
+    policy.revision = 2;
+    policy.clients[0].requests_per_minute = 1;
+    Q4T_CHECK(f.clients.Publish(std::move(policy), 1, 8, 8));
+    ClientRateLease blocker(ClientRateDomain::kBatch);
+    Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 1, 0) ==
+              ClientRateResult::kAllowed);
+    blocker.Settle();
+    ObjectStore objects(f.options);
+    const auto id = InterruptedBatch(objects);
+    std::atomic<int> calls{0}, plans{0};
+    ResponsesJobs jobs(
+        objects, {},
+        [&](auto& job) {
+          ++calls;
+          CompleteBatch(f, job);
+        },
+        BatchAdmission(f, &plans));
+    jobs.StartRecovery(f.clients, Config());
+    Q4T_CHECK(Wait([&] { return jobs.Health().rate_waiting == 1; }));
+    Q4T_CHECK(calls == 0 && plans == 1);
+    policy = *f.clients.Snapshot();
+    policy.revision = 3;
+    policy.clients[0].requests_per_minute = 2;
+    if (reject_input) policy.clients[0].max_prompt_tokens = 1;
+    Q4T_CHECK(f.clients.Publish(std::move(policy), 2, 8, 8));
+    Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
+    const auto reply = ResponsesState(objects).Retrieve(id, Access());
+    Q4T_CHECK(Ok(reply) && plans == 2 && calls == (reject_input ? 0 : 1) &&
+              reply.value.GetString("status") ==
+                  (reject_input ? "failed" : "completed"));
+    Q4T_CHECK(BatchUsage(f).admitted == (reject_input ? 1 : 2) &&
+              BatchUsage(f).reserved == 0 &&
+              f.clients.Usage(0).data_active == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_wait_reacquires_data_without_spending_rpm) {
+  Fixture f(true);
+  ObjectStore objects(f.options);
+  const auto id = InterruptedBatch(objects);
+  ClientRateLease blocker(ClientRateDomain::kBatch);
+  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+            ClientRateResult::kAllowed);
+  std::atomic<int> calls{0}, plans{0};
+  ResponsesJobs jobs(
+      objects, {},
+      [&](auto& job) {
+        ++calls;
+        CompleteBatch(f, job);
+      },
+      BatchAdmission(f, &plans));
+  jobs.StartRecovery(f.clients, Config());
+  Q4T_CHECK(Wait([&] { return jobs.Health().rate_waiting == 1; }));
+  std::optional<ClientLease> online(std::in_place);
+  Q4T_CHECK(online->Acquire(f.clients, f.Identity(), ClientLane::kData));
+  const auto deferred = jobs.Health().rate_deferrals;
+  blocker.Settle();
+  Q4T_CHECK(Wait([&] { return jobs.Health().rate_deferrals > deferred; }));
+  Q4T_CHECK(calls == 0 && plans == 1 && BatchUsage(f).admitted == 1 &&
+            BatchUsage(f).reserved == 0 && f.clients.Usage(0).data_active == 1);
+  Q4T_CHECK(ResponsesState(objects)
+                .Retrieve(id, Access())
+                .value.GetString("status") == "queued");
+  online.reset();
+  Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
+  Q4T_CHECK(calls == 1 && plans == 1 && BatchUsage(f).admitted == 2 &&
+            BatchUsage(f).reserved == 0 && f.clients.Usage(0).data_active == 0);
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_unknown_start_refunds_and_never_replays) {
+  Fixture f(true);
+  f.options.io_timeout_ms = 250;
+  std::string id;
+  {
+    ObjectStore original(f.options);
+    id = InterruptedBatch(original);
+  }
+  ObjectWorkerEntryForTesting("--q4t-object-worker-lost-ack");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  ObjectStore objects(f.options);
+  std::atomic<int> calls{0};
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; }, BatchAdmission(f));
+  jobs.StartRecovery(f.clients, Config());
+  Q4T_CHECK(Wait([&] {
+    return jobs.Health().recovered == 1 && jobs.Health().owned == 0;
+  }));
+  const auto reply = ResponsesState(objects).Retrieve(id, Access());
+  Q4T_CHECK(Ok(reply) && calls == 0 &&
+            reply.value.GetString("status") == "failed");
+  Q4T_CHECK(reply.value.Find("error")->GetString("code") ==
+            "background_execution_interrupted");
+  Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == 0 &&
+            BatchUsage(f).settled_tokens == 0 && !jobs.Health().failed &&
+            f.clients.Usage(0).data_active == 0);
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_missing_admission_waits_and_shutdown_drains) {
+  Fixture f(true);
+  ObjectStore objects(f.options);
+  const auto id = InterruptedBatch(objects);
+  std::atomic<int> calls{0};
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; });
+  jobs.StartRecovery(f.clients, Config());
+  Q4T_CHECK(Wait([&] { return jobs.Health().rate_waiting == 1; }));
+  Q4T_CHECK(calls == 0 && f.clients.Usage(0).data_active == 0 &&
+            BatchUsage(f).admitted == 0 && !jobs.Health().failed);
+  jobs.RequestStop();
+  jobs.Join();
+  Q4T_CHECK(jobs.Health().owned == 0 && jobs.Health().rate_waiting == 0);
+  const auto reply = ResponsesState(objects).Retrieve(id, Access());
+  Q4T_CHECK(Ok(reply) && reply.value.GetString("status") == "cancelled" &&
+            calls == 0);
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_impossible_window_fails_without_waiting) {
+  Fixture f(true);
+  auto policy = *f.clients.Snapshot();
+  policy.revision = 2;
+  policy.clients[0].tokens_per_minute = 1;
+  Q4T_CHECK(f.clients.Publish(std::move(policy), 1, 8, 8));
+  ObjectStore objects(f.options);
+  const auto id = InterruptedBatch(objects);
+  std::atomic<int> calls{0};
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; }, BatchAdmission(f));
+  jobs.StartRecovery(f.clients, Config());
+  Q4T_CHECK(Wait([&] {
+    return jobs.Health().recovered == 1 && jobs.Health().owned == 0;
+  }));
+  const auto reply = ResponsesState(objects).Retrieve(id, Access());
+  Q4T_CHECK(Ok(reply) && calls == 0 &&
+            reply.value.GetString("status") == "failed");
+  Q4T_CHECK(reply.value.Find("error")->GetString("code") ==
+            "batch_request_token_reservation_exceeded");
+  Q4T_CHECK(jobs.Health().rate_deferrals == 0 && BatchUsage(f).admitted == 0 &&
+            f.clients.Usage(0).data_active == 0);
+  return true;
+}
+
+Q4T_TEST(responses_batch_recovery_invalid_owner_or_budget_never_starts) {
+  for (const bool missing_owner : {true, false}) {
+    Fixture f(true);
+    ObjectStore objects(f.options);
+    const auto id = InterruptedBatch(objects);
+    std::atomic<int> calls{0};
+    ResponsesJobs jobs(
+        objects, {}, [&](auto&) { ++calls; },
+        [&](auto& job) {
+          if (missing_owner) return ObjectReply{};
+          return AdmitBackgroundBatchRate(
+              f.clients, job, Config(),
+              [](auto&, const auto&, const auto&, auto* budget) {
+                *budget = {1, kBatchTokenLimit, 0, 0, true};
+                return ObjectReply{};
+              });
+        });
+    jobs.StartRecovery(f.clients, Config());
+    Q4T_CHECK(Wait([&] {
+      return jobs.Health().recovered == 1 && jobs.Health().owned == 0;
+    }));
+    const auto reply = ResponsesState(objects).Retrieve(id, Access());
+    Q4T_CHECK(Ok(reply) && calls == 0 &&
+              reply.value.GetString("status") == "failed");
+    Q4T_CHECK(reply.value.Find("error")->GetString("code") ==
+              (missing_owner ? "background_rate_invalid"
+                             : "background_rate_budget_invalid"));
+    Q4T_CHECK(BatchUsage(f).admitted == 0 &&
+              f.clients.Usage(0).data_active == 0);
+  }
   return true;
 }
 

@@ -208,6 +208,7 @@ class ChatServer {
                                          const ChatPlanConfig& config,
                                          const BinaryAccess& access,
                                          BatchRateBudget* budget);
+  ObjectReply AdmitBackgroundBatch(ResponsesJobs::Job& job);
   ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
                                    std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);

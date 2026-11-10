@@ -5,9 +5,11 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string_view>
 
 #include "q4t/server/client_policy.h"
+#include "q4t/server/batch_budget.h"
 #include "q4t/server/request_limits.h"
 #include "q4t/server/responses_execution.h"
 
@@ -35,6 +37,8 @@ struct ResponsesJobsHealth {
   uint64_t interrupted = 0;
   uint64_t recovery_errors = 0;
   size_t recovery_pending = 0;
+  size_t rate_waiting = 0;
+  uint64_t rate_deferrals = 0;
   size_t foreground_owned = 0;
   size_t foreground_active = 0;
   size_t foreground_pending = 0;
@@ -47,9 +51,11 @@ class ResponsesJobs : public IResponsesCleanup {
   struct Job {
     std::unique_ptr<ResponsesExecution> run;
     ClientIdentity client;
-    ClientLease permit;
+    std::optional<ClientLease> permit{std::in_place};
     std::shared_ptr<RequestControl> control;
     std::shared_ptr<ClientRateLease> rate;
+    std::optional<BatchRateBudget> planned_rate;
+    ClientIdentity planned_client;
 
    private:
     friend class ResponsesJobs;
@@ -58,12 +64,18 @@ class ResponsesJobs : public IResponsesCleanup {
     size_t bytes = 0;
     size_t recovery_attempts = 0;
     std::chrono::steady_clock::time_point next_recovery;
+    std::chrono::steady_clock::time_point next_rate;
+    bool rate_waiting = false;
   };
   // Called on a worker thread after the queued->in_progress durable receipt.
   // It must drain model/grammar resources before returning or throwing.
   using Executor = std::function<void(Job&)>;
+  // Before durable StartRunning, for Batch-origin jobs whose process-local
+  // precharge was lost. A wait keeps the original queued record/deadline.
+  // No model is allowed here. Success must supply scoped rate/data leases.
+  using RateAdmission = std::function<ObjectReply(Job&)>;
   ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
-                Executor executor);
+                Executor executor, RateAdmission rate_admission = {});
   ~ResponsesJobs();
   ResponsesJobs(const ResponsesJobs&) = delete;
   ResponsesJobs& operator=(const ResponsesJobs&) = delete;
@@ -102,4 +114,13 @@ class ResponsesJobs : public IResponsesCleanup {
                            std::string_view id) noexcept;
   void Release(const std::shared_ptr<Job>& job, bool known_terminal);
 };
+using BackgroundRatePlanner =
+    std::function<ObjectReply(ResponsesExecution&, const ChatPlanConfig&,
+                              const BinaryAccess&, BatchRateBudget*)>;
+// Shared native admission for recovered Batch background jobs. The supplied
+// planner uses original restored inputs only; no model or public publication.
+ObjectReply AdmitBackgroundBatchRate(ClientAdmission& clients,
+                                     ResponsesJobs::Job& job,
+                                     ChatPlanConfig config,
+                                     const BackgroundRatePlanner& planner);
 }  // namespace q4t::server

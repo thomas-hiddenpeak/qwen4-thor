@@ -76,7 +76,9 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(jobs.queued) + R"(,"running":)" +
       std::to_string(jobs.running) + R"(,"uncertain":)" +
       std::to_string(jobs.uncertain) + R"(,"input_bytes":)" +
-      std::to_string(jobs.input_bytes) + R"(,"recovery_configured":)" +
+      std::to_string(jobs.input_bytes) + R"(,"rate_waiting":)" +
+      std::to_string(jobs.rate_waiting) + R"(,"rate_deferrals":)" +
+      std::to_string(jobs.rate_deferrals) + R"(,"recovery_configured":)" +
       (jobs.recovery_configured ? "true" : "false") +
       R"(,"recovery_scanned":)" + (jobs.recovery_scanned ? "true" : "false") +
       R"(,"recovery_pending":)" + std::to_string(jobs.recovery_pending) +

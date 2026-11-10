@@ -772,7 +772,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
         std::min<size_t>({jobs.max_jobs, static_cast<size_t>(max_seq_), 8});
     jobs.timeout = std::chrono::milliseconds(request_deadline_ms_);
     background_ = std::make_unique<ResponsesJobs>(
-        *objects_, jobs, [this](auto& job) { RunBackgroundResponse(job); });
+        *objects_, jobs, [this](auto& job) { RunBackgroundResponse(job); },
+        [this](auto& job) { return AdmitBackgroundBatch(job); });
   } catch (...) {
     // Application workers are an auxiliary domain, not core model health.
     std::fprintf(stderr, "[responses] background executor unavailable\n");

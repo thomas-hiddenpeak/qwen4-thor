@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6: recovered background Batch rate admission/wait, native HTTP/SDK/CLI and actual model business with compatible rollback/default. A09.7/A09.8 and all master tasks remain required.",
+      "next": "A09.6 public HTTP/SDK/CLI, actual model business and compatible rollback/default; finalize permanent output-capacity failure without replay; A09.7/8 and all master tasks remain required.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1061,7 +1061,9 @@
       "batch_rate_bridge_status": "24 distinct targeted CPU checks accepted; production sources unchanged across fixture repairs. Native execution/background handoff implemented; minute-wait scheduler/native planning/recovered background admission and real public business/release remain required.",
       "batch_rate_bridge_component_evidence": "evidence/serve-batch-rate-bridge-cpu-20261111/README.md",
       "batch_minute_wait_status": "34 targeted CPU checks accepted after 2 fixture repairs, production unchanged across CPU rounds. Native initial/execution budgets and fair minute quota gate before original row ticket implemented. Recovery background admission/public actual business/CLI/rollback/default remain required.",
-      "batch_minute_wait_component_evidence": "evidence/serve-batch-minute-wait-cpu-20261111/README.md"
+      "batch_minute_wait_component_evidence": "evidence/serve-batch-minute-wait-cpu-20261111/README.md",
+      "batch_background_rate_status": "26/26 targeted CPU first-round accepted; original queued owner/deadline/cancel, native current-policy budget, fair minute wait/data reacquisition, actual child exit and lost Start receipt validated. Public actual business/delivery remain pending.",
+      "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1647,6 +1649,6 @@
       "release": null
     }
   ],
-  "next_task": "继续A09后台恢复分钟额度准入/等待、公开HTTP/SDK实际业务及CLI配额、兼容回退/default交付，以及A09.6/7/8、A10和全部总任务。",
-  "next": "A09.6 recovered background Batch quota admission/wait, public HTTP/SDK/CLI real model business and compatible rollback/default delivery; then A09.7 all eight actual backends, A09.8 ongoing delivery and every remaining master task."
+  "next_task": "继续A09公开Batch HTTP/SDK/CLI接入、结果汇总永久容量故障闭合、实际模型业务短验与兼容回退/default；全部总任务继续。",
+  "next": "A09.6 public native Batch API/SDK/configuration, finite permanent finalization failure, actual model business and compatible rollback/default; A09.7/8 and every master task."
 }

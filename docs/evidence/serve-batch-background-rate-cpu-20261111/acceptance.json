@@ -1,0 +1,24 @@
+{
+  "status": "PASS_BACKGROUND_BATCH_RATE_RECOVERY_CPU",
+  "distinct_tests": 26,
+  "new_tests": 8,
+  "passed": 26,
+  "skipped": 0,
+  "first_round": {
+    "argv": [
+      ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      ".q4t-work/serve-batches-20261110/background-rate-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 7.424141644965857
+  },
+  "builds_final_zero_warning": true,
+  "first_build_failure": "New CPU helper missing closing brace; fixture-only repair before first CPU test. Original host failure preserved.",
+  "source_anchors": 487,
+  "gpu_starts": 0,
+  "engine_sha256": "448e5d41c447aaf463b974ba65069f3c978995af89d73a37649d1a98366dd8b5",
+  "host_sha256": "084f0f4031fb4a0eb0c3b5b1bca0a87c27804110451e1ce3056037194841c6e3",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Public Batch HTTP/SDK/CLI, actual model business, compatible rollback/default and all master tasks."
+}

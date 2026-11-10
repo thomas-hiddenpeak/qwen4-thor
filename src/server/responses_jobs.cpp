@@ -43,6 +43,7 @@ struct ResponsesJobs::State {
   ObjectStore& objects;
   ResponsesJobsOptions options;
   Executor executor;
+  RateAdmission rate_admission;
   mutable std::mutex mutex;
   std::condition_variable changed;
   std::unordered_map<std::string, std::shared_ptr<Job>> jobs;
@@ -62,11 +63,20 @@ struct ResponsesJobs::State {
   uint64_t foreground_reconciled = 0;
   uint64_t foreground_errors = 0;
   bool last_foreground = false;
-  State(ObjectStore& store, ResponsesJobsOptions limits, Executor run)
+  uint64_t rate_deferrals = 0;
+  State(ObjectStore& store, ResponsesJobsOptions limits, Executor run,
+        RateAdmission admit)
       : objects(store),
         options(limits),
         executor(std::move(run)),
+        rate_admission(std::move(admit)),
         foreground(std::min<size_t>(256, limits.max_jobs)) {}
+  bool ReadyQueue() const {
+    return std::any_of(queue.begin(), queue.end(), [&](const auto& job) {
+      return stopping || job->control->Cancelled() ||
+             Clock::now() >= job->next_rate;
+    });
+  }
   size_t ReadyForeground() const {
     const auto now = Clock::now();
     for (size_t i = 0; i < foreground.size(); ++i) {
@@ -79,8 +89,9 @@ struct ResponsesJobs::State {
 };
 
 ResponsesJobs::ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
-                             Executor executor)
-    : state_(std::make_unique<State>(objects, options, std::move(executor))) {
+                             Executor executor, RateAdmission rate_admission)
+    : state_(std::make_unique<State>(objects, options, std::move(executor),
+                                     std::move(rate_admission))) {
   if (!options.workers || options.workers > 32 || !options.max_jobs ||
       options.max_jobs > 256 || options.workers > options.max_jobs ||
       !options.max_client_jobs || options.max_client_jobs > options.max_jobs ||
@@ -282,7 +293,7 @@ ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
   std::string ignored;
   auto result = restored ? ObjectReply() : job->run->Begin(&ignored);
   if (!result.ok()) return result;
-  if (!transfer(job->permit))
+  if (!transfer(*job->permit))
     return Error(503, "background_admission_lost", "Client permit unavailable");
   bool close_on_submit = false;
   {
@@ -305,6 +316,94 @@ ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
   }
   state_->changed.notify_all();
   return accepted;
+}
+
+ObjectReply AdmitBackgroundBatchRate(ClientAdmission& clients,
+                                     ResponsesJobs::Job& job,
+                                     ChatPlanConfig config,
+                                     const BackgroundRatePlanner& planner) {
+  const auto error = [](int status, std::string code, std::string message) {
+    ObjectReply reply;
+    reply.http_status = status;
+    reply.code = std::move(code);
+    reply.message = std::move(message);
+    return reply;
+  };
+  if (!job.run || !job.control || !planner || job.rate ||
+      !job.run->Prepared() || !job.run->Begun() || job.run->Finished() ||
+      job.run->CommitUnknown() ||
+      job.run->RateDomain() != ClientRateDomain::kBatch ||
+      !clients.OwnsIdentity(job.client))
+    return error(500, "background_rate_invalid",
+                 "Background rate admission owner is invalid");
+  const auto client = clients.RecoveryIdentity(job.client.Index());
+  if (!client.Allowed() || client.Id() != job.client.Id() ||
+      job.run->Scope() != (client.Scoped()
+                               ? "client:" + std::string(client.Id())
+                               : "local:anonymous"))
+    return error(403, "background_client_revoked",
+                 "Original background client is unauthorized");
+  job.client = client;
+  config.client_limits = job.client.Limits();
+  if (!job.planned_rate || job.planned_client.Limits() != job.client.Limits()) {
+    BatchRateBudget budget;
+    const auto result =
+        planner(*job.run, config,
+                {job.run->Scope(), job.control->deadline(),
+                 [control = job.control] { return control->Cancelled(); }},
+                &budget);
+    if (!result.ok()) return result;
+    if (!budget.prompt_capacity || budget.prompt_capacity > kBatchTokenLimit ||
+        budget.output > kBatchTokenLimit - budget.prompt_capacity ||
+        budget.auxiliary_output > kMaxAuxiliaryOutputTokens ||
+        budget.preparation_output > kMaxPreparationOutputTokens ||
+        budget.Total() > kBatchTokenLimit)
+      return error(500, "background_rate_budget_invalid",
+                   "Background execution budget is invalid");
+    job.planned_rate = budget;
+    job.planned_client = job.client;
+  }
+  const auto& budget = *job.planned_rate;
+  if (config.client_limits && config.client_limits->tokens_per_minute &&
+      budget.Total() > config.client_limits->tokens_per_minute)
+    return error(
+        429, "batch_request_token_reservation_exceeded",
+        budget.input_exact
+            ? "Request input/output reservation exceeds TPM"
+            : "Multi-step input ceiling/output reservation exceeds TPM");
+  if (clients.RatesFrozen())
+    return error(503, "batch_rate_wait", "Batch rate admission is draining");
+  if (config.client_limits) {
+    const auto usage = clients.RateUsage(job.client.Index(), ClientClock::now(),
+                                         ClientRateDomain::kBatch);
+    const auto& limits = *config.client_limits;
+    const uint64_t ceiling = limits.tokens_per_minute;
+    if ((limits.requests_per_minute &&
+         usage.requests >= limits.requests_per_minute) ||
+        (ceiling &&
+         (usage.tokens > ceiling || usage.reserved > ceiling - usage.tokens ||
+          budget.Total() > ceiling - usage.tokens - usage.reserved)))
+      return error(429, "batch_rate_wait",
+                   "Background task awaits original Batch minute quota");
+  }
+  if (!job.permit || !job.permit->Holds(job.client, ClientLane::kData)) {
+    job.permit.emplace();
+    if (!job.permit->Acquire(clients, job.client, ClientLane::kData))
+      return error(429, "batch_data_wait",
+                   "Background task awaits client data admission");
+  }
+  auto rate = std::make_shared<ClientRateLease>(ClientRateDomain::kBatch);
+  const auto admitted = rate->PrechargeBatch(
+      clients, job.client, budget.prompt_capacity, budget.output,
+      ClientClock::now(), budget.auxiliary_output, budget.preparation_output);
+  if (admitted != ClientRateResult::kAllowed)
+    return error(admitted == ClientRateResult::kFrozen ? 503 : 429,
+                 admitted == ClientRateResult::kInvalid
+                     ? "background_rate_prepare_retry"
+                     : "batch_rate_wait",
+                 "Background Batch rate admission is unavailable");
+  job.rate = std::move(rate);
+  return {};
 }
 
 void ResponsesJobs::StartRecovery(ClientAdmission& clients,
@@ -472,6 +571,7 @@ void ResponsesJobs::Release(const std::shared_ptr<Job>& job,
   // Reconciliation retains metadata, never a live token reservation.
   if (auto rate = std::move(job->rate)) rate->Settle();
   const std::lock_guard lock(state_->mutex);
+  job->rate_waiting = false;
   if (!known_terminal) {
     job->stage = Job::Stage::kUncertain;
     job->next_recovery = Clock::now() + (job->recovery_attempts &&
@@ -514,7 +614,44 @@ void ResponsesJobs::Reconcile(const std::shared_ptr<Job>& job) noexcept {
 
 void ResponsesJobs::Execute(const std::shared_ptr<Job>& job) noexcept {
   try {
-    if (!job->control->Cancelled()) {
+    ObjectReply admission;
+    if (!job->control->Cancelled() &&
+        job->run->RateDomain() == ClientRateDomain::kBatch && !job->rate) {
+      admission = state_->rate_admission
+                      ? state_->rate_admission(*job)
+                      : Error(503, "background_rate_prepare_retry",
+                              "Batch background rate admission unavailable");
+      const bool waiting = admission.code == "batch_rate_wait" ||
+                           admission.code == "batch_data_wait" ||
+                           admission.code == "background_rate_prepare_retry";
+      if (waiting) {
+        // No model callback or StartRunning occurred. Release the temporary
+        // data permit as well, so a minute wait cannot block online traffic.
+        if (auto rate = std::move(job->rate)) rate->Settle();
+        job->permit.reset();
+        const std::lock_guard lock(state_->mutex);
+        if (!state_->stopping && !job->control->Cancelled()) {
+          state_->queue.push_back(job);
+          job->stage = Job::Stage::kQueued;
+          job->rate_waiting = true;
+          job->next_rate = Clock::now() + std::chrono::milliseconds(250);
+          ++state_->rate_deferrals;
+          state_->changed.notify_all();
+          return;
+        }
+        if (state_->stopping)
+          job->control->Cancel(RequestControl::State::kShutdown);
+      }
+      if (admission.ok() &&
+          (!job->rate || !job->rate->PrechargedFor(job->client) ||
+           !job->permit || !job->permit->Holds(job->client, ClientLane::kData)))
+        admission = Error(500, "background_rate_invalid",
+                          "Background rate admission has no valid owner");
+      if (!admission.ok() && !job->control->Cancelled())
+        ResponsesExecution::ObserveError(job->run.get(), admission.http_status,
+                                         admission.message, admission.code);
+    }
+    if (admission.ok() && !job->control->Cancelled()) {
       std::string ignored;
       const auto started = job->run->StartRunning(&ignored);
       if (started.ok()) {
@@ -565,7 +702,7 @@ void ResponsesJobs::Worker() noexcept {
       {
         std::unique_lock lock(state_->mutex);
         state_->changed.wait_for(lock, std::chrono::milliseconds(250), [&] {
-          return state_->stopping || !state_->queue.empty() ||
+          return state_->stopping || state_->ReadyQueue() ||
                  state_->ReadyForeground() < state_->foreground.size();
         });
         if (state_->queue.empty() && state_->stopping) return;
@@ -588,23 +725,31 @@ void ResponsesJobs::Worker() noexcept {
             break;
           }
         }
-        if (!job && !foreground && state_->queue.empty() &&
+        if (!job && !foreground && !state_->ReadyQueue() &&
             next_foreground < state_->foreground.size())
           take_foreground();
-        if (!job && !foreground && state_->queue.empty()) continue;
+        if (!job && !foreground && !state_->ReadyQueue()) continue;
         if (!job && !foreground) {
           const auto rank = [&](const auto& candidate) {
             return (candidate->client.Index() + kMaxClients -
                     state_->last_client) %
                    (kMaxClients + 1);
           };
-          auto choice = std::min_element(
-              state_->queue.begin(), state_->queue.end(),
-              [&](const auto& a, const auto& b) { return rank(a) < rank(b); });
+          auto choice = state_->queue.end();
+          for (auto it = state_->queue.begin(); it != state_->queue.end();
+               ++it) {
+            if (!state_->stopping && !(*it)->control->Cancelled() &&
+                Clock::now() < (*it)->next_rate)
+              continue;
+            if (choice == state_->queue.end() || rank(*it) < rank(*choice))
+              choice = it;
+          }
+          if (choice == state_->queue.end()) continue;
           job = *choice;
           state_->queue.erase(choice);
           state_->last_client = job->client.Index();
           job->stage = Job::Stage::kRunning;
+          job->rate_waiting = false;
           if (state_->stopping)
             job->control->Cancel(RequestControl::State::kShutdown);
         }
@@ -694,6 +839,7 @@ ResponsesJobsHealth ResponsesJobs::Health() const {
   health.interrupted = state_->interrupted;
   health.recovery_errors = state_->recovery_errors;
   health.recovery_pending = state_->recovery_pending;
+  health.rate_deferrals = state_->rate_deferrals;
   health.foreground_reconciled = state_->foreground_reconciled;
   health.foreground_errors = state_->foreground_errors;
   for (const auto& item : state_->foreground) {
@@ -703,6 +849,7 @@ ResponsesJobsHealth ResponsesJobs::Health() const {
     health.foreground_pending += !item.active;
   }
   for (const auto& [_, job] : state_->jobs) {
+    health.rate_waiting += job->rate_waiting;
     health.queued += job->stage == Job::Stage::kQueued;
     health.running += job->stage == Job::Stage::kRunning;
     health.uncertain += job->stage == Job::Stage::kUncertain;

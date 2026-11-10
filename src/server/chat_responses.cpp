@@ -40,11 +40,17 @@ bool ChatServer::TryHandleBackgroundResponse(int fd, const std::string& body) {
 
 void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   detail::HttpResponseContext http(detail::HttpResponseContext::Detached{});
-  http.SetClient(job.client, &job.permit, job.run->RateDomain());
+  http.SetClient(job.client, job.permit ? &*job.permit : nullptr,
+                 job.run->RateDomain());
   http.SetTraceId(job.run->Id());
   // Observe actual failures. Do not use the live SSE error renderer here:
   // cancellation is finalized by the owner after all generation cleanup.
   http.SetErrorObserver(&ResponsesExecution::ObserveError, job.run.get());
+  if (!job.permit || !job.permit->Holds(job.client, ClientLane::kData)) {
+    detail::SendError(-1, 500, "Background data ownership is invalid", {},
+                      "background_admission_lost");
+    return;
+  }
   if (job.rate && !http.BindBatchRate(job.rate)) {
     detail::SendError(-1, 500, "Background rate ownership is invalid", {},
                       "background_rate_invalid");
@@ -121,6 +127,15 @@ ObjectReply ChatServer::MeasureBackgroundBatchRate(ResponsesExecution& response,
   };
   return MeasureBatchResponseRate(response, config, bounded,
                                   BatchCodec(bounded), budget);
+}
+
+ObjectReply ChatServer::AdmitBackgroundBatch(ResponsesJobs::Job& job) {
+  return AdmitBackgroundBatchRate(clients_, job, PlanningConfig(),
+                                  [this](auto& response, const auto& config,
+                                         const auto& access, auto* budget) {
+                                    return MeasureBackgroundBatchRate(
+                                        response, config, access, budget);
+                                  });
 }
 
 BatchRowResult ChatServer::RunBatchRequest(
