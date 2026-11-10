@@ -267,7 +267,10 @@ FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
       mime == "application/vnd.oasis.opendocument.text" ||
       mime == "application/vnd.oasis.opendocument.presentation" ||
-      mime == "application/vnd.oasis.opendocument.spreadsheet")
+      mime == "application/vnd.oasis.opendocument.spreadsheet" ||
+      mime == "application/vnd.apple.pages" ||
+      mime == "application/vnd.apple.numbers" ||
+      mime == "application/vnd.apple.keynote")
     return FileDocumentFormat::kOfficeZip;
   if (extension == ".doc" || extension == ".dot" || extension == ".ppt" ||
       extension == ".pot" || extension == ".ppa" || extension == ".pps" ||

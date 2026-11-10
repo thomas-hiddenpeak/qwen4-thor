@@ -24,6 +24,7 @@ int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
 int FilesApiFixture(int argc, char** argv);
 int FileFetchFixture(int argc, char** argv);
+int FileSourceFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
 int WorkerIoBudgetFixture(int argc, char** argv);
 int LegacyDocumentFixture(int argc, char** argv);
@@ -67,6 +68,8 @@ int main(int argc, char** argv) {
   if (files >= 0) return files;
   const int file_fetch = FileFetchFixture(argc, argv);
   if (file_fetch >= 0) return file_fetch;
+  const int file_source = FileSourceFixture(argc, argv);
+  if (file_source >= 0) return file_source;
   const int document_sandbox = DocumentSandboxFixture(argc, argv);
   if (document_sandbox >= 0) return document_sandbox;
   const int io_budget = WorkerIoBudgetFixture(argc, argv);

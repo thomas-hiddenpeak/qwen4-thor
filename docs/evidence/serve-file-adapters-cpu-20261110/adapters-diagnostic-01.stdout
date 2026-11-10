@@ -1,0 +1,6 @@
+keynote format=odp codec=libreofficekit product=LibreOffice version=24.2 build=420(Build:2) text=
+[Slide page1]
+ clean=1
+  CHECK failed: document.text.find("[Slide 1]") != document.text.npos && document.text.find("Transition") == document.text.npos && Provenance(input, document, "odp") && fixture.Clean() (line 116)
+[FAIL] file_extract_actual_keynote_empty_slide_and_provenance
+1 tests, 0 passed, 1 failed, 0 skipped

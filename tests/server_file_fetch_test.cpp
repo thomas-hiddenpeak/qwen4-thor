@@ -1,4 +1,5 @@
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/file_source.h"
 
 #include <arpa/inet.h>
 #include <poll.h>
@@ -448,5 +449,26 @@ Q4T_TEST(file_fetch_unowned_invalid_and_denied_inputs_start_no_process) {
           .http_status == 400);
   Q4T_CHECK(control.counters->started == 0 && budget.used_files == 0 &&
             receipt.content.bytes.empty());
+  return true;
+}
+
+Q4T_TEST(file_source_actual_http_uses_same_fetch_and_provenance_contract) {
+  Server server({Response("Actual source bytes")});
+  const auto url = server.Url();
+  FileInputSource source;
+  source.kind = FileInputSource::Kind::kUrl;
+  source.value = url;
+  FileInputBudget budget;
+  FileSourceReceipt receipt;
+  GrammarControl control;
+  control.counters = std::make_shared<GrammarWorkerCounters>();
+  Q4T_CHECK(ResolveFileInput(nullptr, Access(), source, server.Options(), &budget,
+                             &receipt, control).ok());
+  Q4T_CHECK(receipt.content.bytes == "Actual source bytes" &&
+            receipt.content.sha256 == Digest(receipt.content.bytes) &&
+            receipt.urls == std::vector<std::string>{url} &&
+            !receipt.indirect_source && receipt.export_format.empty());
+  Q4T_CHECK(budget.used_files == 1 && budget.used_bytes == receipt.content.bytes.size() &&
+            control.counters->active == 0 && control.counters->started == control.counters->reaped);
   return true;
 }

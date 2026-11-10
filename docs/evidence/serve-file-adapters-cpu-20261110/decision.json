@@ -1,0 +1,47 @@
+{
+  "status": "COMPONENT_ACCEPTED",
+  "scope": "unified source/extraction dispatch and conversion provenance",
+  "unique_cpp_cases": 24,
+  "reused_first_round": [
+    "file_extract_actual_pages_text_and_conversion_identity",
+    "file_extract_actual_numbers_coordinates_and_values",
+    "file_extract_native_path_does_not_require_converter",
+    "file_extract_chat_rejects_non_pdf_without_starting_decoder",
+    "file_extract_corrupt_package_never_falls_back_to_converter",
+    "file_source_google_export_plans_preserve_identity_and_resource_key",
+    "file_source_explicit_exports_and_unrelated_urls_stay_intact",
+    "file_source_google_url_rejects_credentials_and_ambiguous_keys",
+    "file_source_inline_identity_and_chat_restriction",
+    "file_source_google_shortcut_requires_matching_type_and_fetch_policy",
+    "file_source_shortcut_byte_budget_and_control_cancel_before_fetch",
+    "file_source_actual_http_uses_same_fetch_and_provenance_contract",
+    "file_extract_pdf_signature_routes_every_page_with_detail",
+    "file_legacy_actual_doc_unicode_and_confirmed_cleanup",
+    "file_legacy_actual_xls_sheet_coordinates_values_and_formula",
+    "file_legacy_actual_ppt_slide_order",
+    "file_legacy_corrupt_input_is_local_and_next_document_works",
+    "file_legacy_resource_rejection_cleans_and_publishes_nothing",
+    "file_document_magic_and_metadata_dispatch_do_not_read_binary_as_text"
+  ],
+  "second_round_passed": [
+    "file_extract_actual_keynote_xml_notes_are_real_document_content",
+    "file_extract_actual_xlsb_binary_workbook_values",
+    "file_office_word_actual_stories_tables_and_rtf_import",
+    "file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache"
+  ],
+  "final_round": [
+    "file_extract_actual_keynote_empty_slide_and_provenance"
+  ],
+  "external_network": "adapters-google-02.json",
+  "default_ssrf_policy_unchanged": true,
+  "host_sha256": "575243c05459fc3f3d4f868f1a4440660cb36a614b0cda5d32094550d4a2e4da",
+  "engine_sha256": "eafc5627a5d91323280e7873bf9fd04fc8495997ce7b8d2ea671ffdfe35ae332",
+  "all_builds_zero_warnings": true,
+  "reviewed_source_anchors": 12,
+  "total_anchors": 438,
+  "gpu": 0,
+  "model_starts": 0,
+  "default_unchanged": "cdb5ced9",
+  "api_acceptance": false,
+  "master_complete": false
+}

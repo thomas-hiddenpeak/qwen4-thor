@@ -1,0 +1,5 @@
+keynote format=odp codec=libreofficekit product=LibreOffice version=24.2 build=420(Build:2) text=
+[Slide page1]
+ clean=1
+[PASS] file_extract_actual_keynote_empty_slide_and_provenance
+1 tests, 1 passed, 0 failed, 0 skipped

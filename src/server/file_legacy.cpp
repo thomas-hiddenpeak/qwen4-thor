@@ -53,10 +53,23 @@ bool Config(const FileLegacyOptions& options) {
          options.io.thread_creations <= 256 && options.io.notifications > 0 &&
          options.io.notifications <= 2000000;
 }
+template <size_t N>
+bool MetadataText(const char (&value)[N], bool empty) {
+  const auto length = strnlen(value, N);
+  if ((!empty && !length) || length == N) return false;
+  for (size_t i = 0; i < length; ++i)
+    if (static_cast<unsigned char>(value[i]) < 32 ||
+        static_cast<unsigned char>(value[i]) > 126)
+      return false;
+  for (size_t i = length; i < N; ++i)
+    if (value[i]) return false;
+  return true;
+}
 ObjectReply Exchange(const FileInputContent& input,
                      const FileLegacyOptions& options,
                      const BinaryAccess& access, Request request, bool* reaped,
-                     FileInputContent* converted, GrammarControl control) {
+                     FileInputContent* converted,
+                     FileDocumentConversion* conversion, GrammarControl control) {
   *reaped = false;
   const auto original_finished = control.worker_finished;
   control.worker_finished = [&](const auto& report) {
@@ -132,6 +145,16 @@ ObjectReply Exchange(const FileInputContent& input,
       return Failed(GrammarFailure::kWorker);
   }
   if (!result.bytes) return Failed(GrammarFailure::kWorker);
+  if (!MetadataText(result.product, false) ||
+      !MetadataText(result.version, false) ||
+      !MetadataText(result.build_id, true))
+    return Failed(GrammarFailure::kWorker);
+  conversion->codec = "libreofficekit";
+  conversion->product = result.product;
+  conversion->version = result.version;
+  conversion->build_id = result.build_id;
+  conversion->output_format =
+      converted->filename.substr(converted->filename.rfind('.') + 1);
   converted->bytes.assign(output, sizeof(Result), result.bytes);
   return {};
 }
@@ -178,8 +201,9 @@ ObjectReply ParseLegacyFileDocument(const FileInputContent& input,
   }
   bool reaped = false;
   FileInputContent converted;
-  auto reply =
-      Exchange(input, options, bounded, request, &reaped, &converted, control);
+  FileDocumentConversion conversion;
+  auto reply = Exchange(input, options, bounded, request, &reaped, &converted,
+                        &conversion, control);
   if (reaped) {
     // Only after confirmed exit can another owned worker remove scratch. The
     // root lease also protects against another service or kernel-stalled owner.
@@ -194,7 +218,7 @@ ObjectReply ParseLegacyFileDocument(const FileInputContent& input,
     }
     bool cleaned_owner = false;
     auto cleanup = Exchange({}, options, cleanup_access, clean, &cleaned_owner,
-                            &converted, cleanup_control);
+                            &converted, &conversion, cleanup_control);
     if (reply.ok() && !cleanup.ok()) reply = cleanup;
   }
   if (!reply.ok()) return reply;
@@ -203,6 +227,8 @@ ObjectReply ParseLegacyFileDocument(const FileInputContent& input,
   reply =
       ParseNativeFileDocument(converted, limits, bounded, &document, control);
   if (!reply.ok()) return reply;
+  conversion.output_sha256 = document.source_sha256;
+  document.conversion = std::move(conversion);
   document.source_sha256 = object_detail::Digest(input.bytes);
   *output = std::move(document);
   return {};

@@ -16,6 +16,7 @@
 
 #include "file_legacy_protocol.h"
 #include "file_legacy_workspace.h"
+#include "q4t/io/json.h"
 #include "q4t/server/lifetime.h"
 
 namespace q4t::server {
@@ -106,7 +107,37 @@ bool Profile(const Workspace& workspace) {
       "</item></oor:items>";
   return WriteAll(file, policy) && fsync(file) == 0;
 }
-Failure Convert(const Workspace& workspace, Format* format) {
+template <size_t N>
+bool MetadataText(const std::string& text, char (&output)[N], bool empty) {
+  if ((!empty && text.empty()) || text.size() >= N) return false;
+  for (unsigned char c : text)
+    if (c < 32 || c > 126) return false;
+  std::memcpy(output, text.data(), text.size());
+  return true;
+}
+bool Metadata(LibreOfficeKit* office, Result* result) {
+  if (!LIBREOFFICEKIT_HAS(office, getVersionInfo) ||
+      !office->pClass->getVersionInfo || !office->pClass->freeError)
+    return false;
+  char* text = office->pClass->getVersionInfo(office);
+  if (!text) return false;
+  ScopeExit free_text([&] { office->pClass->freeError(text); });
+  if (strnlen(text, 8193) > 8192) return false;
+  io::Json metadata;
+  io::JsonParseLimits limits;
+  limits.max_depth = 4;
+  limits.max_values = 32;
+  limits.max_string_bytes = 8192;
+  limits.reject_duplicate_keys = true;
+  if (!io::ParseJson(text, &metadata, false, limits) || !metadata.IsObject())
+    return false;
+  return MetadataText(metadata.GetString("ProductName"), result->product,
+                      false) &&
+         MetadataText(metadata.GetString("ProductVersion"), result->version,
+                      false) &&
+         MetadataText(metadata.GetString("BuildId"), result->build_id, true);
+}
+Failure Convert(const Workspace& workspace, Result* result) {
   constexpr char library[] = Q4T_SYSTEM_LIBREOFFICE_LIBRARY;
   struct stat info {};
   if (stat(library, &info) || !S_ISREG(info.st_mode) || info.st_uid != 0 ||
@@ -125,6 +156,7 @@ Failure Convert(const Workspace& workspace, Format* format) {
       !office->pClass->documentLoadWithOptions || !office->pClass->destroy)
     return Failure::kDependency;
   ScopeExit close_office([&] { office->pClass->destroy(office); });
+  if (!Metadata(office, result)) return Failure::kDependency;
   const auto source = Url(workspace.Path() + "/source");
   auto* document = office->pClass->documentLoadWithOptions(
       office, source.c_str(),
@@ -141,19 +173,19 @@ Failure Convert(const Workspace& workspace, Format* format) {
   const char* extension = nullptr;
   switch (type) {
     case 0:
-      *format = Format::kText;
+      result->format = Format::kText;
       extension = "odt";
       break;
     case 1:
-      *format = Format::kSheet;
+      result->format = Format::kSheet;
       extension = "ods";
       break;
     case 2:
-      *format = Format::kSlides;
+      result->format = Format::kSlides;
       extension = "odp";
       break;
     case 3:
-      *format = Format::kDrawing;
+      result->format = Format::kDrawing;
       extension = "odg";
       break;
     default:
@@ -219,8 +251,8 @@ int Run(int argc, char** argv) {
   source = -1;
   if (!Environment(workspace) || !Profile(workspace))
     return ResultReply(Failure::kStorage) ? 0 : 3;
-  Format format;
-  const auto converted = Convert(workspace, &format);
+  Result result;
+  const auto converted = Convert(workspace, &result);
   if (converted != Failure::kNone) return ResultReply(converted) ? 0 : 3;
   const int output = openat(workspace.Directory(), "converted",
                             O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK);
@@ -232,8 +264,7 @@ int Run(int argc, char** argv) {
     return ResultReply(Failure::kStorage) ? 0 : 3;
   if (static_cast<uint64_t>(info.st_size) > request.output_bytes)
     return ResultReply(Failure::kCapacity) ? 0 : 3;
-  Result result{kMagic, Failure::kNone, format,
-                static_cast<uint64_t>(info.st_size)};
+  result.bytes = static_cast<uint64_t>(info.st_size);
   if (!detail::WorkerTransfer(&result, sizeof(result), true)) return 3;
   for (uint64_t left = result.bytes; left;) {
     const auto count =

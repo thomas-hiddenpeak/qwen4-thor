@@ -1,4 +1,5 @@
 #include "q4t/server/file_pdf.h"
+#include "q4t/server/file_extract.h"
 
 #include <fcntl.h>
 #include <signal.h>
@@ -100,6 +101,23 @@ bool Save(const FileDocument& document, std::string_view prefix) {
   return true;
 }
 }  // namespace
+
+Q4T_TEST(file_extract_pdf_signature_routes_every_page_with_detail) {
+  auto input = Pdf(1);
+  input.filename = "misleading.txt";
+  input.mime_type = "text/plain";
+  const auto control = Control();
+  FileDocument document;
+  Q4T_CHECK(ExtractFileDocument(input, {}, true, "low", Access(), &document,
+                                 control).ok());
+  Q4T_CHECK(document.text.find("Q4T actual PDF page 1") != document.text.npos &&
+            document.pages.size() == 1 && document.pages[0].width == 512 &&
+            document.conversion.codec.empty() &&
+            document.source_sha256 == Digest(input.bytes));
+  Q4T_CHECK(control.counters->active == 0 &&
+            control.counters->started == control.counters->reaped);
+  return true;
+}
 
 int PdfSandboxFixture(int argc, char** argv) {
   if (argc < 2 || std::strcmp(argv[1], "--pdf-sandbox-fixture")) return -1;

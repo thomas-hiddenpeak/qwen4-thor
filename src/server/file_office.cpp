@@ -5,6 +5,36 @@
 
 namespace q4t::server::file_detail {
 namespace {
+ObjectReply CodecRequired(size_t depth) {
+  return object_detail::Error(
+      503,
+      depth ? "file_nested_codec_required" : "file_document_codec_required",
+      "Document requires its isolated format decoder");
+}
+ObjectReply ApplePackage(OfficeContext& context, bool* apple) {
+  *apple = false;
+  if ((context.Part("Index/Document.iwa") || context.Part("Index.zip")) &&
+      context.Part("Metadata/Properties.plist")) {
+    *apple = true;
+    return {};
+  }
+  for (const char* name : {"index.xml", "index.apxl"}) {
+    if (!context.Part(name)) continue;
+    auto reply = context.Xml(name, [&](const XmlNode& node) -> ObjectReply {
+      if (node.kind == XmlKind::kStart && !node.depth)
+        *apple =
+            (node.name == "document" &&
+             (node.space == "http://developer.apple.com/namespaces/sl" ||
+              node.space == "http://developer.apple.com/namespaces/ls")) ||
+            (node.name == "presentation" &&
+             (node.space == "http://developer.apple.com/namespaces/keynote2" ||
+              node.space == "http://developer.apple.com/schemas/APXL"));
+      return {};
+    });
+    if (!reply.ok() || *apple) return reply;
+  }
+  return {};
+}
 ObjectReply ParseDepth(const FileInputContent& input,
                        const FileDocumentLimits& limits,
                        const PackageLimits& package_limits,
@@ -26,8 +56,14 @@ ObjectReply ParseDepth(const FileInputContent& input,
        mime->starts_with("application/vnd.oasis.opendocument.graphics"))) {
     reply = OpenDocument(context);
   } else {
-    if (!context.Part("[Content_Types].xml")) return OfficeInvalid();
+    if (!context.Part("[Content_Types].xml")) {
+      bool apple = false;
+      reply = ApplePackage(context, &apple);
+      if (!reply.ok()) return reply;
+      return apple ? CodecRequired(depth) : OfficeInvalid();
+    }
     bool types = false;
+    std::unordered_map<std::string, std::string> defaults, overrides;
     reply = context.Xml(
         "[Content_Types].xml", [&](const XmlNode& node) -> ObjectReply {
           if (node.kind == XmlKind::kStart && !node.depth) {
@@ -36,6 +72,20 @@ ObjectReply ParseDepth(const FileInputContent& input,
                                             "http://schemas.openxmlformats.org/"
                                             "package/2006/content-types";
             if (!types) return OfficeInvalid();
+          }
+          if (node.kind == XmlKind::kStart && node.depth == 1 &&
+              node.space ==
+                  "http://schemas.openxmlformats.org/package/2006/"
+                  "content-types") {
+            const bool is_default = node.name == "Default";
+            if (!is_default && node.name != "Override") return OfficeInvalid();
+            const auto name =
+                node.Attribute(is_default ? "Extension" : "PartName");
+            const auto type = node.Attribute("ContentType");
+            if (name.empty() || name.size() > 2048 || type.empty() ||
+                type.size() > 255 ||
+                !(is_default ? defaults : overrides).emplace(name, type).second)
+              return OfficeInvalid();
           }
           return {};
         });
@@ -54,6 +104,17 @@ ObjectReply ParseDepth(const FileInputContent& input,
     std::string part, kind;
     reply = context.Target("", *main, &part);
     if (!reply.ok()) return reply;
+    std::string content_type;
+    const auto override = overrides.find("/" + part);
+    if (override != overrides.end())
+      content_type = override->second;
+    else if (const auto dot = part.rfind('.'); dot != part.npos) {
+      const auto value = defaults.find(part.substr(dot + 1));
+      if (value != defaults.end()) content_type = value->second;
+    }
+    if (content_type ==
+        "application/vnd.ms-excel.sheet.binary.macroEnabled.main")
+      return CodecRequired(depth);
     reply = context.Xml(part, [&](const XmlNode& node) -> ObjectReply {
       if (node.kind != XmlKind::kStart || node.depth) return {};
       if (node.name == "document" &&

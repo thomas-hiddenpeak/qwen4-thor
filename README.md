@@ -195,10 +195,14 @@ OpenXML/ODF/RTF不依赖它。固定系统路径可通过CMake的
 时间及地址空间；未确认退出时不复用占槽或清理其目录。
 本机接口版本24.2.7，系统包保留MPL-2.0、Apache-2.0及各过滤器许可
 （见`/usr/share/doc/libreoffice-core/copyright`和对应依赖包）。q4t按
-官方C ABI实现适配，未复制其实现源码。DOC/XLS/PPT及隔离边界已做
-针对性CPU验证，
-Apple/Google来源适配及完整API消费继续实施，组件通过不等于文件
-输入API已交付。
+官方C ABI实现适配，未复制其实现源码。DOC/XLS/PPT、Apple/XLSB
+实际内容及隔离边界已做针对性CPU验证；转换回执保留产品版本、
+BuildId及转换结果SHA，原件SHA单独保持。Google查看链接和快捷方式
+通过同一来源策略获取真实导出，保留原件与跳转来源；公开Sheets样表
+已做实网短验，私有文档仍须具备实际访问权限，不注入用户凭据。
+嵌入文档及完整API消费继续实施，组件通过不等于文件输入API已交付。
+Apple/XLSB适配的固定上游测试资料及无照片派生说明见
+[测试来源与MPL许可](tests/fixtures/file_adapters/README.md)。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。

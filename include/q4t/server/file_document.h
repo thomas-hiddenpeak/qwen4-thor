@@ -48,10 +48,17 @@ struct FileDocumentPage {
   uint32_t number = 0, width = 0, height = 0;
   std::string png;
 };
+struct FileDocumentConversion {
+  std::string codec, product, version, build_id;
+  std::string output_format, output_sha256;
+};
 struct FileDocument {
   std::string text, encoding, source_sha256;
   std::vector<FileDocumentSheet> sheets;
   std::vector<FileDocumentPage> pages;
+  // Empty codec means no system Office conversion. Converted formula values
+  // must not be presented as the original binary document's cached results.
+  FileDocumentConversion conversion;
 };
 bool ValidFileDocumentLimits(const FileDocumentLimits& limits);
 

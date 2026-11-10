@@ -3,7 +3,7 @@
 #include <cstdint>
 
 namespace q4t::server::legacy_detail {
-inline constexpr uint64_t kMagic = 0x5134544c45473031;
+inline constexpr uint64_t kMagic = 0x5134544c45473032;
 enum class Operation : uint64_t { kConvert = 1, kClean = 2 };
 enum class Ready : uint64_t {
   kReady = 1,
@@ -35,5 +35,6 @@ struct Result {
   Failure failure = Failure::kNone;
   Format format = Format::kText;
   uint64_t bytes = 0;
+  char product[96]{}, version[64]{}, build_id[128]{};
 };
 }  // namespace q4t::server::legacy_detail

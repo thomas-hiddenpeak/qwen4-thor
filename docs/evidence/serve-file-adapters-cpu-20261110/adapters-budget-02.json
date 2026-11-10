@@ -1,0 +1,23 @@
+{
+  "reason": "Two concrete failures: XLSB Default content type omitted, and fixture oracle treated transition metadata as visible Keynote text. Verify correct empty slide plus added original notes; rerun only affected types paths.",
+  "cases": [
+    "file_extract_actual_keynote_empty_slide_and_provenance",
+    "file_extract_actual_keynote_xml_notes_are_real_document_content",
+    "file_extract_actual_xlsb_binary_workbook_values",
+    "file_office_word_actual_stories_tables_and_rtf_import",
+    "file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache"
+  ],
+  "public_fetch_max": 1,
+  "public_fetch_seconds": 30,
+  "fetch_policy": {
+    "allow_http": false,
+    "ports": [
+      443
+    ],
+    "allowed_networks": [
+      "198.18.0.0/15"
+    ]
+  },
+  "network_reason": "Observed deployment DNS maps Google and GitHub to 198.18/15; only this explicit one-off fixture permits that route. Default production SSRF rules unchanged, TLS hostname/chain validation remains on.",
+  "gpu_starts": 0
+}

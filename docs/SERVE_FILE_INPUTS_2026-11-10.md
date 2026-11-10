@@ -164,3 +164,5 @@ owned进程处理通知、截止/取消及EOF后清理，不执行解码器的�
 ## FI02旧格式转换组件（2026-11-10）
 
 [14项CPU组件接受](evidence/serve-file-legacy-cpu-20261110/README.md)，真实DOC/XLS/PPT、原文件SHA、资源/取消/目录/沙箱及ODF稀疏行与绘图页通过。保留首失败、两次定向诊断和分依赖复用记录；候选3b67937c、0GPU，默认Uploads包不变。系统LibreOfficeKit仅在owned子进程动态加载，无新常驻服务或核心DT_NEEDED。旧格式转换结果完整且正常退出后清理、再解析；宏/链接关闭，网络/GPU/外部exec拒绝，私有目录有界写入。Apple/Google及嵌入格式、FI03—FI05和全部总任务继续。
+
+统一来源/分派已完成[24项CPU及Google公开样表真实导出](evidence/serve-file-adapters-cpu-20261110/README.md)。Apple/XLSB实际内容、Google快捷方式与累计字节/私有来源、系统转换版本/BuildId和双SHA均已进入组件；API快照仍须保留这些信息。嵌入文档、全部FI03—FI05和总任务继续实施，不据组件接受结案。
