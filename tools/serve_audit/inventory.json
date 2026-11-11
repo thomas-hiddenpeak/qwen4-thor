@@ -2039,6 +2039,7 @@
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "tools/serve_recovery/profile_acceptance.py": "5be5df589cf83e06707e7389ca4f585f072dafbcfc01fdc4c37eb6ea85b875db",
     "tools/serve_recovery/profile_bundle.py": "b2f033b9fd3b6b1136223fda0766652879acf884e14037e911f17d49744ba294",
     "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
     "tools/serve_recovery/profile_controller.py": "528e56fe8642e316d4b5f6daa7d8154fb525a21cf78fb2352cce0ee4c65f9e88",

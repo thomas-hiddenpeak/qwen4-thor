@@ -1,0 +1,7 @@
+test_commands_preserve_actual_selected_capacity_and_private_state (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_commands_preserve_actual_selected_capacity_and_private_state) ... ok
+test_failed_or_missing_environment_cannot_certify_business (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_failed_or_missing_environment_cannot_certify_business) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
