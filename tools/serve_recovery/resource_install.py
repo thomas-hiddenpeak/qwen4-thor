@@ -20,12 +20,14 @@ PUBLIC = 'resource.json'
 
 def validate(value):
     ledger.keys(value, ('format', 'service_id', 'domain_id', 'runtime_uid', 'runtime_gid',
-                        'policy', 'phase', 'record', 'revision'))
+                        'policy', 'phase', 'record', 'revision',
+                        *(('renewal',) if 'renewal' in value else ()),
+                        *(('previous_record',) if 'previous_record' in value else ())))
     ledger.require(value['format'] == FORMAT and ledger.identifier(value['service_id']) and
         ledger.identifier(value['domain_id']) and ledger.integer(value['revision']) and
         all(ledger.integer(value[n], minimum=1) and value[n] < 2**32-1 for n in
             ('runtime_uid', 'runtime_gid')) and
-        value['phase'] in ('prepared', 'ready', 'revoking', 'empty', 'removed'),
+        value['phase'] in ('prepared', 'ready', 'renewing', 'revoking', 'empty', 'removed'),
         'invalid resource installation')
     policy = value['policy']; selected = policy['service']
     ledger.require(policy == kernel.policy(selected['memory_high_bytes']//1024**2,
@@ -36,6 +38,19 @@ def validate(value):
         kernel.validate(record)
         ledger.require(all(record[name] == value[name] for name in
             ('service_id', 'domain_id', 'runtime_uid', 'policy')), 'installed kernel identity differs')
+    ledger.require(('renewal' in value) == (value['phase'] == 'renewing'),
+                   'resource renewal checkpoint differs')
+    if 'renewal' in value:
+        renewal = value['renewal']; ledger.keys(renewal, ('target_boot', 'source_sha256'))
+        ledger.require(ledger.identifier(renewal['target_boot']) and
+            renewal['target_boot'] != record['boot_id'] and
+            renewal['source_sha256'] == ledger.digest(record), 'invalid resource renewal source')
+    if 'previous_record' in value:
+        previous = kernel.validate(value['previous_record'])
+        ledger.require(record is not None and previous['boot_id'] != record['boot_id'] and
+            all(previous[key] == record[key] for key in
+                ('service_id', 'domain_id', 'runtime_uid', 'root', 'policy')),
+            'resource renewal lost its prior installation identity')
     return value
 
 
@@ -117,7 +132,9 @@ def load(directory): return validate(device_domain.read_record(directory/'admin'
 def finish(directory):
     with exclusive(directory) as directory:
         value = load(directory)
-        ledger.require(value['phase'] in ('prepared', 'ready'), 'resource installation is being removed')
+        ledger.require(value['phase'] in ('prepared', 'ready', 'renewing'),
+                       'resource installation is being removed')
+        if value['phase'] == 'renewing': return renew_locked(directory, value)
         if value['phase'] == 'prepared':
             record = kernel.create(value['service_id'], value['domain_id'], value['runtime_uid'],
                                    value['policy'], resume_unpublished=True)
@@ -130,11 +147,46 @@ def finish(directory):
         return public_value(value)
 
 
+def renew_locked(directory, value):
+    """Keep the installation identity; only a new actual host boot recreates it."""
+    current_boot = store.stamp().boot_id
+    ledger.require(value['phase'] in ('ready', 'renewing'), 'removed resource installation cannot renew')
+    root = Path(value['record']['root'])
+    if value['phase'] == 'ready' and value['record']['boot_id'] == current_boot:
+        with kernel.Scope(value['record']): pass
+        publish(directory, value)
+        return public_value(value)
+    if value['phase'] == 'ready' or value['renewal']['target_boot'] != current_boot:
+        # Neither same-boot deletion nor a pre-existing new domain supplies
+        # the original disappeared kernel epoch. Never adopt or erase it.
+        ledger.require(value['record']['boot_id'] != current_boot and not root.exists(),
+                       'resource renewal requires a new boot and absent old domain')
+        value = dict(value, phase='renewing', revision=value['revision']+1,
+                     renewal=dict(target_boot=current_boot, source_sha256=ledger.digest(value['record'])))
+        commit(directory, value)
+    # Publish revocation before creating/resuming an unpublished new epoch.
+    publish(directory, value)
+    record = kernel.create(value['service_id'], value['domain_id'], value['runtime_uid'],
+                           value['policy'], resume_unpublished=True)
+    ledger.require(record['boot_id'] == value['renewal']['target_boot'], 'host boot changed during renewal')
+    value = dict(value, phase='ready', revision=value['revision']+1,
+                 previous_record=deepcopy(value['record']), record=record)
+    del value['renewal']
+    commit(directory, value)
+    return public_value(value)
+
+
+def renew(directory):
+    with exclusive(directory) as directory: return renew_locked(directory, load(directory))
+
+
 def status(directory):
     with exclusive(directory) as directory:
         value = load(directory)
         result = public_value(value)
-        if value['phase'] == 'ready':
+        if value['phase'] == 'ready' and value['record']['boot_id'] != store.stamp().boot_id:
+            result.update(kernel_verified=False, admission_enabled=False, renewal_required=True)
+        elif value['phase'] == 'ready':
             with kernel.Scope(value['record']) as scope:
                 result.update(kernel_verified=True, service_empty=scope.empty(), outer_empty=scope.empty('outer'))
         else: result['kernel_verified'] = False
@@ -145,16 +197,21 @@ def remove(directory):
     """Revoke new entry first; preserve healthy tasks until explicitly stopped."""
     with exclusive(directory) as directory:
         value = load(directory)
-        ledger.require(value['phase'] != 'prepared', 'finish unpublished installation before removal')
+        ledger.require(value['phase'] not in ('prepared', 'renewing'),
+                       'finish unpublished installation before removal')
         if value['phase'] == 'ready':
             value = dict(value, phase='revoking', revision=value['revision']+1); commit(directory, value)
         if value['phase'] == 'revoking':
             # Re-publish an interrupted revocation BEFORE inspecting/removing.
             publish(directory, value)
-            with kernel.Scope(value['record']) as scope:
-                ledger.require(scope.empty('outer') and scope.empty(),
-                               'resource removal waits for explicit stop and empty owned domains')
-                value = dict(value, phase='empty', revision=value['revision']+1); commit(directory, value)
+            if value['record']['boot_id'] != store.stamp().boot_id:
+                ledger.require(not Path(value['record']['root']).exists(),
+                               'old resource domain path was recreated after boot')
+            else:
+                with kernel.Scope(value['record']) as scope:
+                    ledger.require(scope.empty('outer') and scope.empty(),
+                                   'resource removal waits for explicit stop and empty owned domains')
+            value = dict(value, phase='empty', revision=value['revision']+1); commit(directory, value)
         if value['phase'] == 'empty':
             record = value['record']; root = Path(record['root'])
             # The durable empty checkpoint precedes the first rmdir. Existing
@@ -211,7 +268,7 @@ def main(argv=None):
         from tools.serve_recovery import resource_launch
         return resource_launch.main(argv[1:])
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('operation', choices=('init', 'init-resume', 'status', 'remove'))
+    parser.add_argument('operation', choices=('init', 'init-resume', 'renew', 'status', 'remove'))
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--service-id')
     parser.add_argument('--runtime-uid', type=int)
@@ -225,7 +282,7 @@ def main(argv=None):
             selected = kernel.policy(args.memory_high_mib, args.memory_max_mib, args.tasks_max)
             result = initialize(args.directory, args.service_id, args.runtime_uid, args.runtime_gid, selected)
         else:
-            result = {'init-resume': finish, 'status': status, 'remove': remove}[args.operation](args.directory)
+            result = {'init-resume': finish, 'renew': renew, 'status': status, 'remove': remove}[args.operation](args.directory)
         print(json.dumps(result, sort_keys=True)); return 0
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(json.dumps(dict(status='FAILED', category=type(error).__name__, model_actions=False)), file=sys.stderr)

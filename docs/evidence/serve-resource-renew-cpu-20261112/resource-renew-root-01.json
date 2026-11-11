@@ -1,0 +1,45 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_renew.py",
+    "-v",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_new_boot_recreation_preserves_installation_identity_policy_and_prior_epoch",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_same_boot_deleted_domain_is_not_silently_recreated",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_existing_path_in_new_boot_cannot_be_adopted_or_erased",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_partial_new_kernel_epoch_resumes_only_recorded_boot_and_domain",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_ready_receipt_failure_repairs_current_epoch_without_another_renewal",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_another_boot_during_unpublished_renewal_continues_original_installation",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_old_boot_uninstall_keeps_tombstone_without_recreating_any_domain",
+    "tools.serve_recovery.test_resource_renew.RenewalTests.test_explicit_entry_resumes_old_epoch_then_drops_privileges",
+    "tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload",
+    "tools.serve_recovery.test_resource_install.InstallationTests.test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain"
+  ],
+  "exit_code": 0,
+  "seconds": 4.290610684081912,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

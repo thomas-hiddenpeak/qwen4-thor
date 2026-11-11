@@ -14,7 +14,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import ledger, resource_install as install
-from tools.serve_recovery import resource_kernel as kernel
+from tools.serve_recovery import resource_kernel as kernel, store
 
 DIRECTORY = 'Q4T_RESOURCE_DIRECTORY'
 ENTRY_FD = 'Q4T_RESOURCE_ENTRY_FD'
@@ -50,6 +50,10 @@ def enter(directory, command):
     try:
         with install.exclusive(directory) as directory:
             value = install.load(directory)
+            if value['phase'] == 'renewing' or value['phase'] == 'ready' and \
+                    value['record']['boot_id'] != store.stamp().boot_id:
+                install.renew_locked(directory, value)
+                value = install.load(directory)
             ledger.require(value['phase'] == 'ready', 'resource entry has been revoked')
             ledger.require(install.read_public(directory) == install.public_value(value),
                            'resource private/public authority differs')
