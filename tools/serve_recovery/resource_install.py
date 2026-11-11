@@ -13,7 +13,7 @@ import uuid
 
 from tools.serve_recovery import device_domain, ledger, resource_kernel as kernel, store
 
-FORMAT = 'q4t-resource-installation-v1'
+FORMAT = 'q4t-resource-installation-v2'
 PRIVATE = 'installation.json'
 PUBLIC = 'resource.json'
 

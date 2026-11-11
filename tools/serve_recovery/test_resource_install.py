@@ -21,12 +21,18 @@ from tools.serve_recovery import resource_kernel as kernel, service, store
 
 def worker():
     operation, directory, uid, gid = sys.argv[2:6]
+    if operation == 'join':
+        value = install.read_public(Path(directory)); fd = int(sys.argv[6])
+        with kernel.Scope(value['record']) as scope: scope.join_self('outer', fd)
+        os.close(fd)
     os.setgroups([]); os.setresgid(int(gid), int(gid), int(gid))
     os.setresuid(int(uid), int(uid), int(uid))
     value = install.read_public(Path(directory))
     with kernel.Scope(value['record']) as scope:
         if operation == 'join':
-            fd = int(sys.argv[6]); scope.join_self('service', fd); os.close(fd)
+            fd = scope.join_descriptor('service')
+            try: scope.join_self('service', fd)
+            finally: os.close(fd)
         print(json.dumps(dict(uid=os.geteuid(), domain_id=value['domain_id'],
                               kernel_verified=True)), flush=True)
         if operation == 'join': time.sleep(10)
@@ -75,7 +81,7 @@ class InstallationTests(unittest.TestCase):
     def run_worker(self, operation):
         value = install.read_public(self.directory)
         with kernel.Scope(value['record']) as scope:
-            fd = scope.join_descriptor('service') if operation == 'join' else None
+            fd = scope.join_descriptor('outer') if operation == 'join' else None
         try:
             argv = [sys.executable, '-I', '-B', __file__, '--worker', operation,
                     str(self.directory), str(self.uid), str(self.gid)]

@@ -2,8 +2,9 @@
 
 The privileged installer enters the observer leaf before releasing its admin
 lock, drops all user/group privileges, and execs the requested service command.
-Only the root-open service entry FD crosses exec. The unprivileged outer holds
-it; each child consumes its copy before any Guardian or model is executed.
+Service entry is opened only after permanent UID drop. Kernel common-ancestor
+checks confine this descriptor to the installed subtree. Each child consumes
+its copy before any Guardian or model is executed; no root-open FD crosses exec.
 """
 from copy import deepcopy
 import ctypes
@@ -72,7 +73,6 @@ def enter(directory, command):
                            'resource private/public authority differs')
             with kernel.Scope(value['record']) as scope:
                 outer_fd = scope.join_descriptor('outer')
-                entry_fd = scope.join_descriptor('service')
                 try: scope.join_self('outer', outer_fd)
                 finally: os.close(outer_fd)
         # Admin removal now sees this process in outer until it actually exits.
@@ -83,6 +83,8 @@ def enter(directory, command):
         os.setresuid(value['runtime_uid'], value['runtime_uid'], value['runtime_uid'])
         ledger.require(os.getresuid() == (value['runtime_uid'],)*3 and
             os.getresgid() == (value['runtime_gid'],)*3, 'resource privilege drop failed')
+        with kernel.Scope(value['record']) as scope:
+            entry_fd = scope.join_descriptor('service')
         os.set_inheritable(entry_fd, True)
         env = {key: val for key, val in os.environ.items()
                if not key.startswith(('LD_', 'PYTHON', 'Q4T_RESOURCE_'))}
@@ -104,7 +106,9 @@ class Capability:
                 'resource runtime identity differs')
             self.scope = kernel.Scope(self.publication['record'])
             self.scope.member('outer'); self.scope.entry_descriptor('service', fd)
-            self.fd = os.dup(fd); os.set_inheritable(self.fd, False)
+            # fstat cannot prove the credentials used to open an inherited FD.
+            # Reopen under our permanently unprivileged identity before use.
+            self.fd = self.scope.join_descriptor('service')
             self.check()
         except BaseException: self.close(); raise
 
@@ -147,7 +151,10 @@ def child(directory, fd, expected, command):
         and value['runtime_gid'] == os.getegid(), 'resource child installation changed')
     try:
         with kernel.Scope(value['record']) as scope:
-            scope.member('outer'); scope.join_self('service', fd)
+            scope.member('outer'); scope.entry_descriptor('service', fd)
+            safe_fd = scope.join_descriptor('service')
+            try: scope.join_self('service', safe_fd)
+            finally: os.close(safe_fd)
     finally: os.close(fd)
     # The entry FD must never leak into Guardian, controller or model code.
     os.execve(command[0], command, dict(os.environ))

@@ -18,9 +18,16 @@ from tools.serve_recovery import outer_tree, resource_kernel as kernel
 
 def worker():
     record, role, fd, uid, gid, mode = json.loads(sys.argv[2]), sys.argv[3], *map(int, sys.argv[4:7]), sys.argv[7]
+    with kernel.Scope(record) as scope: scope.join_self('outer', fd)
+    os.close(fd)
     os.setgroups([]); os.setresgid(gid, gid, gid); os.setresuid(uid, uid, uid)
     with kernel.Scope(record) as scope:
-        result = scope.join_self(role, fd); os.close(fd)
+        if role == 'service':
+            fd = scope.join_descriptor(role)
+            try: result = scope.join_self(role, fd)
+            finally: os.close(fd)
+        else:
+            scope.member(role); result = dict(joined=role, device_authorized=False)
         result.update(pid=os.getpid(), uid=os.geteuid(), physical_ram_limit=False)
         if mode == 'pids':
             count = 0
@@ -63,7 +70,7 @@ class KernelTests(unittest.TestCase):
             root.rmdir()
 
     def start(self, role='service', mode='sleep'):
-        fd = self.scope.join_descriptor(role)
+        fd = self.scope.join_descriptor('outer')
         try:
             command = [sys.executable, '-I', '-B', __file__, '--worker', json.dumps(self.record),
                        role, str(fd), str(self.uid), str(self.gid), mode]

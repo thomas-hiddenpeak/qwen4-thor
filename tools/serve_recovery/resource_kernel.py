@@ -16,7 +16,7 @@ from tools.serve_recovery import ledger, store
 
 CGROUP = Path('/sys/fs/cgroup')
 MAGIC = 0x63677270
-FORMAT = 'q4t-resource-kernel-v1'
+FORMAT = 'q4t-resource-kernel-v2'
 NAMES = ('outer', 'service')
 
 
@@ -101,6 +101,22 @@ def limits(selected, role):
             'pids.max': values['pids_max'], 'memory.swap.max': 0, 'memory.oom.group': 1}
 
 
+def delegate(fd, name, uid):
+    """Only used before publishing an empty, root-owned installation."""
+    info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+    ledger.require(stat.S_ISREG(info.st_mode) and info.st_uid in (0, uid) and
+                   not info.st_mode & 0o022, 'unpublished resource authority changed')
+    os.chown(name, uid, 0, dir_fd=fd, follow_symlinks=False)
+    os.chmod(name, 0o600, dir_fd=fd, follow_symlinks=False)
+
+
+def permission(fd, name, uid, *, delegated=False):
+    info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+    ledger.require(stat.S_ISREG(info.st_mode) and info.st_uid == uid and
+        (stat.S_IMODE(info.st_mode) == 0o600 if delegated else
+         not info.st_mode & 0o022), 'resource control permission changed')
+
+
 def validate(value):
     ledger.keys(value, ('format', 'service_id', 'domain_id', 'runtime_uid', 'boot_id',
                         'root', 'root_identity', 'children', 'namespaces', 'policy'))
@@ -149,6 +165,10 @@ def create(service_id, domain_id, runtime_uid, selected, *, resume_unpublished=F
         ledger.require(set(read(fd, 'cgroup.subtree_control').split()) <= {'memory', 'pids'},
                        'unpublished controller selection differs')
         write(fd, 'cgroup.subtree_control', '+memory +pids')
+        # Kernel migration checks the common ancestor with the opener's
+        # credentials. Delegate only within this installation, not host root.
+        # Active domain controllers prevent processes entering this parent.
+        delegate(fd, 'cgroup.procs', runtime_uid)
         children = {}
         for role in NAMES:
             path = root/role; path.mkdir(mode=0o755, exist_ok=resume_unpublished)
@@ -163,12 +183,11 @@ def create(service_id, domain_id, runtime_uid, selected, *, resume_unpublished=F
                                    'unpublished resource leaf limit differs')
                     write(child, name, amount)
                 children[role] = identity(path)
-                # This only grants killing this service's own leaf. Migration,
-                # controller limits and hierarchy creation remain root-owned.
+                # Only service entry and its own kill switch are delegated.
+                # Outer entry, all thread entry and controllers stay root-only.
                 if role == 'service':
-                    ledger.require((path/'cgroup.kill').lstat().st_uid in (0, runtime_uid),
-                                   'unpublished kill authority changed')
-                    os.chown(path/'cgroup.kill', runtime_uid, -1)
+                    delegate(child, 'cgroup.procs', runtime_uid)
+                    delegate(child, 'cgroup.kill', runtime_uid)
             finally: os.close(child)
         return validate(dict(format=FORMAT, service_id=service_id, domain_id=domain_id,
             runtime_uid=runtime_uid, boot_id=store.stamp().boot_id, root=str(root),
@@ -200,16 +219,34 @@ class Scope:
                 'resource kernel domain changed')
         ledger.require(set(self.fds) == {'root', *NAMES} and
             read(self.fds['root'], 'cgroup.max.depth') == '1' and
-            read(self.fds['root'], 'cgroup.max.descendants') == '2', 'resource hierarchy boundary changed')
+            read(self.fds['root'], 'cgroup.max.descendants') == '2' and
+            set(read(self.fds['root'], 'cgroup.subtree_control').split()) == {'memory', 'pids'},
+            'resource hierarchy boundary changed')
+        for role, fd in self.fds.items():
+            delegated = role != 'outer'
+            permission(fd, 'cgroup.procs', value['runtime_uid'] if delegated else 0,
+                       delegated=delegated)
+            permission(fd, 'cgroup.kill', value['runtime_uid'] if role == 'service' else 0,
+                       delegated=role == 'service')
+            for name in ('cgroup.threads', 'cgroup.type', 'cgroup.subtree_control',
+                         'cgroup.max.depth', 'cgroup.max.descendants'):
+                permission(fd, name, 0)
         for role in NAMES:
             for name, expected in limits(value['policy'], role).items():
+                permission(self.fds[role], name, 0)
                 ledger.require(read(self.fds[role], name) == str(expected), 'resource controller limit changed')
         return self
 
     def join_descriptor(self, role):
-        """Admin-only capability for moving the eventual child itself to a leaf."""
-        ledger.require(os.geteuid() == 0 and role in NAMES, 'privileged self-entry capability required')
+        """Root enters outer; only the runtime UID may open service entry."""
+        ledger.require(role in NAMES, 'invalid resource self-entry')
         self.check()
+        if role == 'outer':
+            ledger.require(os.geteuid() == 0, 'privileged outer self-entry required')
+        else:
+            ledger.require(os.getresuid() == (self.record['runtime_uid'],)*3,
+                           'service entry must be opened after permanent UID drop')
+            self.member('outer')
         return os.open('cgroup.procs', os.O_WRONLY | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=self.fds[role])
 
     def join_self(self, role, fd):
