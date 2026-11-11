@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。Embeddings[接口交付完成](evidence/serve-embeddings-delivery-20261111/README.md)：8命令/12.027秒/0GPU，默认3cd4361c、包441be958、generation950db8d5，rev50 STOPPED，原Key/配置/账本保持。原样已验同版本包为恢复锚点；旧ee550cab不能执行新向量任务。继续实现0/2检索表示缺口及全部媒体/工具/恢复总任务，未合main，不将接口交付等同A10完成。
+
 2026-11-11。公共JSON变化后的[9项实际Guardian/journal CPU检查首过](evidence/serve-embeddings-native-cpu-20261111/README.md)，累计49项不同CPU；引擎3cd4361c/原GPU业务保持。冻结8条封包发布与健康检查、0GPU，原Key/配置/用量保持，保留同版本已验恢复包。随后继续0/2检索表示缺口与全部Serve任务。
 
 2026-11-11。接口封包复核确认JSON公共实现也进入Guardian，已4.481秒零警告重建Guardian/探针；不能把新源码绑定到旧二进制。冻结7项实际journal/wire与2项真实Guardian CPU控制/畸形请求检查，复用引擎业务/既有TLS。准备单次发布和原样已验同版本恢复锚点，不冒充此前旧包已支持Embeddings；质量缺口及全部总任务继续。

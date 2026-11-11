@@ -1,0 +1,13 @@
+{
+  "phase": "native_embeddings_interface_publication",
+  "commands": 8,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "seconds": 180,
+  "expected_previous_revision": 48,
+  "target_revision": 50,
+  "preserve_state": "all client/keys/capacity/usage hashes",
+  "recovery": "exact same-version accepted capable package; no older embeddings executor claimed",
+  "retrieval_quality_task": "A10 remains open0/2",
+  "driver_sha256": "281324cd999232d18c06da22eabcb889c333d5cf687f6d65a4aa1c3e844fcbcc"
+}

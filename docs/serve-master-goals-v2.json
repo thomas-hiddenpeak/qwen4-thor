@@ -945,7 +945,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Continue native embeddings backend/API/Batch and all remaining media, recovery, SDK and delivery tasks; standalone Moderations delivered.",
+      "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1127,9 +1127,22 @@
       },
       "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
       "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
-      "embeddings_state": "interface_business_accepted_delivery_pending_retrieval_quality_open",
+      "embeddings_state": "interface_delivered_retrieval_representation_implementation_open",
       "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
-      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md"
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md",
+      "embeddings_release": {
+        "engine_binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+        "engine_release_sha256": "0f19aeba0b2b6810d1274ab1f9f06711ef10eda6ad6dc055ccdcf3a74580e454",
+        "generation_sha256": "950db8d57b0244d8734ebb2aa90d39893db4bcef9dd58610a5f5ade5c28161bf",
+        "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "6d0b19dd55a66f797e725360ad773a5451e37758bd75f3292d4479b1aebe72e5",
+        "service_release_sha256": "4986a7dca067856232022b87f434abedcac7202441d35e506f8bd586c190e60a",
+        "publication_revision": 50,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1164,7 +1177,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Continue native embeddings backend/API/Batch and all remaining media, recovery, SDK and delivery tasks; standalone Moderations delivered.",
+      "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -1183,9 +1196,22 @@
       },
       "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
       "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
-      "embeddings_state": "interface_business_accepted_delivery_pending_retrieval_quality_open",
+      "embeddings_state": "interface_delivered_retrieval_representation_implementation_open",
       "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
-      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md"
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md",
+      "embeddings_release": {
+        "engine_binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+        "engine_release_sha256": "0f19aeba0b2b6810d1274ab1f9f06711ef10eda6ad6dc055ccdcf3a74580e454",
+        "generation_sha256": "950db8d57b0244d8734ebb2aa90d39893db4bcef9dd58610a5f5ade5c28161bf",
+        "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "6d0b19dd55a66f797e725360ad773a5451e37758bd75f3292d4479b1aebe72e5",
+        "service_release_sha256": "4986a7dca067856232022b87f434abedcac7202441d35e506f8bd586c190e60a",
+        "publication_revision": 50,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md"
     },
     {
       "id": "A11",
@@ -1743,6 +1769,6 @@
       "release": null
     }
   ],
-  "next_task": "A10/A09.7 native embeddings backend, standard API and Batch",
-  "next": "Deliver accepted native vector interface with an exact capable recovery anchor, then resolve retrieval representation and remaining media/tool/recovery/master tasks."
+  "next_task": "A10 native trained embedding/retrieval representation, then remaining master tasks",
+  "next": "Resolve observed0/2 retrieval quality with a suitable native backend and real project retrieval evidence, without treating interface delivery as completion; continue all required goals."
 }

@@ -1,0 +1,16 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+  "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+  "original_accepted_binary": {
+    "binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+    "source_commit": "1a3c1ec5cafbb41ccf422a2f3e3676d964cb0c0d",
+    "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/business-02",
+    "acceptance_sha256": "e18a1cfde056f2fcaec2c652e712778ded6e0e34c4db34756043fdd39c2ea35e",
+    "kind": "exact_accepted_first_embeddings_binary_not_an_older_feature_version"
+  },
+  "kind": "same_version_capable_republication_anchor",
+  "older_capable_version_available": false,
+  "previous_default_compatible_with_new_embeddings": false,
+  "command": "q4t service publish --state STATE --default-root ROOT --package ANCHOR --manifest-sha256 ANCHOR_SHA --service-release ANCHOR_SERVICE_RELEASE --expected-manifest-sha256 CURRENT_MANIFEST --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+  "preservation": "Retain original task IDs, deadlines, results and quotas; do not reset state."
+}

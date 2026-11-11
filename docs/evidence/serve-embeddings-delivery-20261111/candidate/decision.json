@@ -1,0 +1,52 @@
+{
+  "status": "PASS_TARGETED_EMBEDDINGS_INTERFACE",
+  "acceptance": "ACCEPT_NATIVE_EMBEDDINGS_INTERFACE_BUSINESS",
+  "binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+  "engine_source_commit": "1a3c1ec5cafbb41ccf422a2f3e3676d964cb0c0d",
+  "package_source_commit": "218d4cbf8a209c6b10bc7fe3a5dfcd5220049f6f",
+  "protocol_sha256": "18133184156cb1edfaeaaf729599dcee0a846da46726c5a62548aef424e285af",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_EMBEDDINGS_INTERFACE_BUSINESS",
+    "embedding_chunks": 12.0,
+    "cancelled_usage": {
+      "input_tokens": 4096,
+      "output_tokens": 0,
+      "total_tokens": 4096,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    },
+    "exact_text_token_id_match": true,
+    "batch_restart_original": true,
+    "chat_answer": "42",
+    "retrieval_quality_separate": true,
+    "default_unchanged": true,
+    "postflight": {
+      "sources_unchanged": true,
+      "default_unchanged": true,
+      "binary_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "nvml_queries": 81,
+    "all_queries_ok": true,
+    "env_abort": false,
+    "candidate_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+    "seconds": 85.35826472518966,
+    "retrieval_top1_correct": 0,
+    "retrieval_total": 2,
+    "retrieval_quality_accepted": false,
+    "remaining_quality_implementation_required": true,
+    "performance_claim": false
+  },
+  "source_review_sha256": "a47f59e262645f818fd3f986e728f726c832daf09d1fb02940a9f151b347a854",
+  "full_model_quality": false,
+  "retrieval_quality_accepted": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}
