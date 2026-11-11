@@ -1082,7 +1082,10 @@
       "batch_finalization_component_evidence": "evidence/serve-batch-finalization-cpu-20261111/README.md",
       "application_owner_recovery_plan": "SERVE_APPLICATION_OWNER_RECOVERY_2026-11-11.md",
       "application_owner_recovery_status": "16 targeted C++ and2config checks accepted. Actual partial worker construction cleanup and retry, stable single publication, stop race, existing scanner recovery with original queued/started semantics and independent diagnostics. Historical config-v1 capacity schema fixed to observed16/48 and96/192MiB pairs; failures retained. No GPU/default change; actual business/compatible delivery remain required.",
-      "application_owner_recovery_component_evidence": "evidence/serve-application-owner-cpu-20261111/README.md"
+      "application_owner_recovery_component_evidence": "evidence/serve-application-owner-cpu-20261111/README.md",
+      "batch_business_plan": "SERVE_BATCH_BUSINESS_2026-11-11.md",
+      "batch_business_preparation_evidence": "evidence/serve-batch-business-preparation-20261111/README.md",
+      "batch_business_status": "Preparation CPU4distinct accepted; independent clean fc69 rollback built with compatible state/quota/parent/output-failure sources. Actual2start/8generation business and delivery still required."
     },
     {
       "id": "A10",

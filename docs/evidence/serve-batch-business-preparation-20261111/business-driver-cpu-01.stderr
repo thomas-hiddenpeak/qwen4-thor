@@ -1,0 +1,48 @@
+test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes) ... ERROR
+test_frozen_generation_budget_and_finite_rows (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_frozen_generation_budget_and_finite_rows) ... ok
+test_jsonl_rejects_truncated_reordered_or_missing_receipts (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_jsonl_rejects_truncated_reordered_or_missing_receipts) ... ERROR
+test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows) ... ERROR
+
+======================================================================
+ERROR: test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_acceptance.py", line 49, in test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes
+    with self.assertRaises(ValueError):stage.usage(value)
+                                       ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_acceptance.py", line 74, in usage
+    require(type(value) is dict, 'actual usage is unknown')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: actual usage is unknown
+
+======================================================================
+ERROR: test_jsonl_rejects_truncated_reordered_or_missing_receipts (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_jsonl_rejects_truncated_reordered_or_missing_receipts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_acceptance.py", line 42, in test_jsonl_rejects_truncated_reordered_or_missing_receipts
+    with self.assertRaises(ValueError):stage.jsonl(raw,['item-0','item-1'])
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_acceptance.py", line 64, in jsonl
+    require(raw.endswith(b'\n'), 'result lost final whole-line delimiter')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: result lost final whole-line delimiter
+
+======================================================================
+ERROR: test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows (tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_acceptance.py", line 62, in test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows
+    with self.assertRaises(ValueError):stage.check_batch(bad,2,1,1)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_acceptance.py", line 88, in check_batch
+    require(value['status'] == status and value['request_counts'] ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: Batch terminal/counts
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (errors=3)
