@@ -253,12 +253,19 @@ Uploads已提供原生创建、分块、顺序/MD5完成及取消，生成标准
 模型原生file_id/file_data/file_url内容消费已完成实际PDF/表格和历史
 复用验收，见[交付记录](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
 原生Batch提供创建、查询、列表、取消及完整JSONL结果文件，当前
-Chat Completions、Completions和Responses三类执行已交付；后台
+Chat Completions、Completions、Responses和Moderations四类执行已交付；后台
 Responses等待原任务终态和资源排空，在线/Batch使用独立分钟配额。
 结构化失败与取消保存实际用量，重启不重放已开始且结果不明的行。
-新状态须用已登记的fc69兼容回退包，不能回退到旧file-inputs包；
-[业务与交付记录](docs/evidence/serve-batch-delivery-20261111/README.md)
-列出身份。其余五类Batch后端及完整多模态接口仍按总计划继续实现。
+新审核任务回退使用已登记的61649847包，保留审核执行器、原任务和
+结果；[最新交付记录](docs/evidence/serve-moderations-delivery-20261111/README.md)
+列出身份。其余四类Batch后端及完整多模态接口仍按总计划继续实现。
+
+`POST /v1/moderations`及官方SDK `moderations.create()`提供原生审核：
+字符串数组逐项返回结果，文本/图像内容数组合并审核，返回本地实际
+模型的完整13类分数、分类和适用输入。每请求1RPM，各分类步骤累计
+计入TPM，失败或取消不发布部分成功。图像使用显式`--allow-media
+--no-mtp --max-seq 1`配置；默认文本MTP保持。分数为本地模型估计，
+实际良性/威胁与图像短验见[业务证据](docs/evidence/serve-moderations-business-20261111/README.md)。
 
 标准`POST /v1/responses/input_tokens`与SDK
 `responses.inputTokens.count()`已通过计数与真实生成usage业务短验。

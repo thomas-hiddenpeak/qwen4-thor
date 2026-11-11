@@ -1,0 +1,40 @@
+{
+  "status": "PASS_TARGETED_MODERATIONS_ACCEPTED_FALLBACK",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_MODERATIONS",
+  "binary_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+  "engine_source_commit": "c2eea34b83201ec055def17e70898e71d8355ad5",
+  "package_source_commit": "b81548d903f97f1243cacb72f10a04b4cdc5779b",
+  "protocol_sha256": "049af25bf0a536cbd915b4c6f9a3fd1bdaabadbd75d77bc81829b4567b6160d5",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_MODERATIONS_BUSINESS",
+    "model_steps": 8,
+    "text_mtp": true,
+    "image_native": true,
+    "standard_sdk": true,
+    "batch_actual_usage": true,
+    "running_cancel": true,
+    "original_state_preserved": true,
+    "default_unchanged": true,
+    "cloud_calibration_claim": false,
+    "performance_claim": false,
+    "postflight": {
+      "sources_unchanged": true,
+      "default_unchanged": true,
+      "binary_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "nvml_queries": 100,
+    "all_queries_ok": true,
+    "env_abort": false,
+    "candidate_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+    "scope": "Targeted local classification; cancelled during grammar preparation with known zero model-token usage; no full quality, calibration or performance claim."
+  },
+  "write_correction_business": null,
+  "source_review_sha256": "bd9d986bfe0afa34b2e23523d3175cc2205c1dfc65b9405c102c274ba1864f22",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

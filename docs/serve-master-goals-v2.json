@@ -945,7 +945,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Moderations actual text/vision/Batch and terminal-write correction accepted; seal feature-capable fallback and default delivery, then all remaining master tasks.",
+      "next": "Continue native embeddings backend/API/Batch and all remaining media, recovery, SDK and delivery tasks; standalone Moderations delivered.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -968,7 +968,8 @@
         "A09.3 Files and bounded native transport",
         "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release",
         "A09.5 native file consumption, immutable history/originals, real PDF/table business and compatible rollback release",
-        "A09.6 native text Batch execution/recovery/actual usage/cancel, compatible rollback and default delivery"
+        "A09.6 native text Batch execution/recovery/actual usage/cancel, compatible rollback and default delivery",
+        "A09.7 component: native standalone Moderations/Batch text and image classification, targeted cancellation/quota, feature-capable fallback and default delivery"
       ],
       "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
       "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
@@ -1111,7 +1112,20 @@
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
-      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md"
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md",
+      "moderations_release": {
+        "engine_binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+        "engine_release_sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd",
+        "generation_sha256": "9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd",
+        "manifest_sha256": "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "83d816a1b18e534531d7afcb07484a7cb3804a7b5b89657b86555e9302f93d6e",
+        "service_release_sha256": "374f690ef8ba4e43c7bad97d63d73e0a3fbbafaf42f8f32b55cdceb35e9be213",
+        "publication_revision": 48,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1139,12 +1153,25 @@
           "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
         }
       ],
-      "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation",
-      "next": "Moderations actual text/vision/Batch and terminal-write correction accepted; seal feature-capable fallback and default delivery, then all remaining master tasks.",
+      "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
+      "next": "Continue native embeddings backend/API/Batch and all remaining media, recovery, SDK and delivery tasks; standalone Moderations delivered.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
-      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md"
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md",
+      "moderations_release": {
+        "engine_binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+        "engine_release_sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd",
+        "generation_sha256": "9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd",
+        "manifest_sha256": "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "83d816a1b18e534531d7afcb07484a7cb3804a7b5b89657b86555e9302f93d6e",
+        "service_release_sha256": "374f690ef8ba4e43c7bad97d63d73e0a3fbbafaf42f8f32b55cdceb35e9be213",
+        "publication_revision": 48,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md"
     },
     {
       "id": "A11",
@@ -1702,6 +1729,6 @@
       "release": null
     }
   ],
-  "next_task": "A09.7/A10 standalone Moderations actual business and delivery",
-  "next": "Continue bounded Moderations SDK text/vision and Batch actual-usage/cancellation acceptance, then all remaining required tasks; no completion from a component."
+  "next_task": "A10/A09.7 native embeddings backend, standard API and Batch",
+  "next": "Audit actual final hidden-state extraction and native embedding numerical/wire/usage contract, implement and targeted acceptance; continue all remaining required tasks."
 }

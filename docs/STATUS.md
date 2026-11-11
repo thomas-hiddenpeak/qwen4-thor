@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。Moderations[可回退交付完成](evidence/serve-moderations-delivery-20261111/README.md)：15命令首过/21.851秒/0GPU，默认ee550cab、包9f3c44f0、generation9fb5ff43，rev48 STOPPED。同审核能力61649847回退已登记rev46；配置/Key/容量/账本保持。四类Batch可执行，继续原生Embeddings及全部媒体、恢复和总任务，未合main。
+
 2026-11-11。写回计数[补验首过](evidence/serve-moderations-write-business-20261111/README.md)：ee550cab、1启动/1请求/1步骤/45.881秒，45次NVML正常，实际563 TPM/1RPM及新协议身份一致，自有资源释放。原34 CPU和文本/视觉/Batch业务复用。准备15命令/0GPU封装61649847回退及候选、保留原配置账本；全部总任务继续。
 
 2026-11-11。Moderations[真实文本/视觉/Batch首过](evidence/serve-moderations-business-20261111/README.md)：2启动/8请求/8步骤/105.976秒、100次NVML正常，自有资源释放。交付复核发现写回失败仍计成功，已改为采用SendSimple实际结果；3 CPU写入边界通过、11.199秒零警告重建。保留61649847回退，继续1启动/1请求定点补验、交付及全部总目标。

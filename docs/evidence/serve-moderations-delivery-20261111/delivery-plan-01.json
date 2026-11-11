@@ -1,0 +1,24 @@
+{
+  "commands_max": 15,
+  "command_seconds": 45,
+  "model_starts": 0,
+  "chats": 0,
+  "gpu_queries": 0,
+  "predecessor_revision": 44,
+  "publish_revisions": [
+    46,
+    48
+  ],
+  "default_engine": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+  "candidate": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+  "fallback": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+  "script_sha256": "3fdad95ab993e6f30ca2af8c50f57632a51f99148f01b350c959cd01495d35b9",
+  "preserve": [
+    "STOPPED state",
+    "default text MTP and limits",
+    "client credentials",
+    "client capacities",
+    "usage ledger"
+  ],
+  "scope": "2 sealed feature-capable packages, publish retained fallback before candidate; no GPU and no main merge"
+}
