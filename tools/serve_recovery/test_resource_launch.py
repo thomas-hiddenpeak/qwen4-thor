@@ -124,9 +124,29 @@ def reconcile(path, mode):
                               budgets_preserved=True, result=result)), flush=True)
 
 
+def runtime_reconcile(path):
+    from tools.serve_recovery import outer_runtime, service
+    desc = deployment.read_descriptor(path); sid = desc['service_id']
+    before = json.loads((path/store.STATE).read_text())['state']
+    binding = access_store.binding(path, sid); old_outer = fixture.read_outer(binding)
+    runtime = outer_runtime.Runtime(path, Path(desc['package']), desc['manifest_sha256'], {}, desc, binding)
+    try:
+        with mock.patch.object(service, 'acquire_lease', side_effect=AssertionError('GPU forbidden')):
+            value = runtime.supervise()
+    finally: runtime.close()
+    after = fixture.read_core(path, sid); current = fixture.read_outer(binding)
+    assert value['state'] == 'STOPPED' and value['cleanup_confirmed']
+    assert all(after[k] == before[k] for k in ('desired', 'quarantine', 'generations',
+        'attempts', 'failures', 'not_before', 'circuit_until'))
+    assert not any(after['active'].values()) and current['pending'] is None
+    assert current['total'] == old_outer['total'] and current['starts'] == old_outer['starts']
+    print(json.dumps(dict(runtime_reconciled=True, original_state_preserved=True)), flush=True)
+
+
 def scenario(path, mode):
     if mode.startswith('prepare:'): return prepare(path, mode.split(':', 1)[1])
     if mode.startswith('retire:'): return reconcile(path, mode.split(':', 1)[1])
+    if mode == 'runtime-reconcile': return runtime_reconcile(path)
     public = install.read_public(Path(os.environ[launch.DIRECTORY])); sid = public['service_id']
     if mode == 'wrong-fd':
         source = int(os.environ[launch.ENTRY_FD]); replacement = os.open('/dev/null', os.O_WRONLY)
@@ -246,6 +266,10 @@ class LaunchTests(installation_tests.InstallationTests):
     def test_new_instance_cleans_original_orphan_before_writer_lock_and_preserves_protection(self):
         self.check_retirement('normal')
 
+    def test_complete_runtime_reconciles_old_resource_writer_before_opening_core(self):
+        self.initialize(); self.run_entry('prepare:normal')
+        self.assertTrue(self.run_entry('runtime-reconcile')['runtime_reconciled'])
+
     def test_unrecorded_root_birth_is_reconciled_only_by_original_resource_domain(self):
         self.check_retirement('lost-spawn')
 
@@ -275,6 +299,12 @@ class LaunchTests(installation_tests.InstallationTests):
         self.assertTrue(self.check_retirement('outer-receipt')['result']['already_retired'])
 
     def test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain(self):
+        self.native_cycle()
+
+    def test_daemon_forwards_resource_capability_then_closes_it_in_all_roles(self):
+        self.native_cycle(daemon=True)
+
+    def native_cycle(self, *, daemon=False):
         def helper(operation):
             result = subprocess.run([sys.executable, '-I', '-B', __file__, '--runtime-helper',
                 str(self.uid), str(self.gid), str(self.path), operation], capture_output=True,
@@ -286,7 +316,8 @@ class LaunchTests(installation_tests.InstallationTests):
         self.selected = kernel.policy(512, 768, 128); public = self.initialize()
         command = [sys.executable, '-I', '-B', str(ROOT/'tools/serve_recovery/resource_launch.py'),
             '--directory', str(self.directory), '--', sys.executable, '-I', '-B',
-            str(ROOT/'tools/serve_recovery/test_outer_runtime.py'), '--worker',
+            str(ROOT/'tools/serve_recovery'/('test_outer_daemon.py' if daemon else 'test_outer_runtime.py')),
+            '--launcher' if daemon else '--worker',
             str(self.path/'runtime-config.json')]
         self.tree.launch(command, env=dict(os.environ))
         ready = helper('status'); self.assertTrue(ready['outer_supervised'])
@@ -304,6 +335,7 @@ class LaunchTests(installation_tests.InstallationTests):
         self.assertEqual(policy['total'], 1)
         self.assertTrue(helper('stop')['cleanup_confirmed'])
         self.assertEqual(self.tree.root.wait(timeout=6), 0)
+        self.tree.drain(term_seconds=.2, kill_seconds=2)
         final = json.loads((state/store.STATE).read_text())['state']
         self.assertEqual(final['desired'], 'STOPPED'); self.assertFalse(any(final['active'].values()))
         self.assertTrue(install.remove(self.directory)['removed'])

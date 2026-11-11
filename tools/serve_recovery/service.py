@@ -377,6 +377,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         if name == 'start':
             command.add_argument('--daemon', action='store_true', required=True)
             command.add_argument('--timeout', type=timeout_seconds, default=360)
+        if name in ('outer-run', 'outer-start'):
+            command.add_argument('--daemon', action='store_true')
+            command.add_argument('--timeout', type=timeout_seconds, default=360)
         if name in ('access-status', 'access-propose', 'limits-status', 'limits-propose'):
             command.add_argument('--request-id')
         if name == 'access-propose':
@@ -451,8 +454,13 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     deployment.ready(args.state, descriptor(args.state, package, digest))
             if args.operation in ('outer-run', 'outer-start'):
                 from tools.serve_recovery import outer_runtime
-                result = outer_runtime.run(args.state, package, digest,
-                    activate=args.operation == 'outer-start')
+                if args.daemon:
+                    from tools.serve_recovery import outer_daemon
+                    result = outer_daemon.start(args.state, package, digest,
+                        activate=args.operation == 'outer-start', timeout=args.timeout)
+                else:
+                    result = outer_runtime.run(args.state, package, digest,
+                        activate=args.operation == 'outer-start')
             elif args.operation.startswith('outer-'):
                 from tools.serve_recovery import outer_manager
                 if args.operation in ('outer-enable', 'outer-disable'):
@@ -517,12 +525,21 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     deployment.switch(args.state, package, digest,
                         expected=args.expected_manifest_sha256, request_id=args.request_id,
                         rollback=args.operation == 'rollback'))
-            elif args.operation in ('run', 'start'):
-                result = launch(package, digest, args.state, daemon=args.operation == 'start',
-                                timeout=getattr(args, 'timeout', 360))
-            elif args.operation == 'resume':
-                from tools.serve_recovery import lifecycle
-                result = lifecycle.resume(args.state, package, digest)
+            elif args.operation in ('run', 'start', 'resume'):
+                from tools.serve_recovery import outer_runtime
+                if outer_runtime.selected(args.state, package, digest):
+                    if args.operation == 'start':
+                        from tools.serve_recovery import outer_daemon
+                        result = outer_daemon.start(args.state, package, digest, timeout=args.timeout)
+                    else:
+                        result = outer_runtime.run(args.state, package, digest,
+                            activate=args.operation == 'run')
+                elif args.operation == 'resume':
+                    from tools.serve_recovery import lifecycle
+                    result = lifecycle.resume(args.state, package, digest)
+                else:
+                    result = launch(package, digest, args.state, daemon=args.operation == 'start',
+                                    timeout=getattr(args, 'timeout', 360))
             elif args.operation.startswith('usage-'):
                 from tools.serve_recovery import usage_manager
                 desc = descriptor(args.state, package, digest)
@@ -617,6 +634,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                                 lifecycle.stopped(args.state, package, digest))
                             except (OSError, ValueError, RuntimeError):pass
         print(json.dumps(result, ensure_ascii=False))
+        if result.get('daemon_start') and not result.get('startup_confirmed'): return 1
         if args.operation == 'stop' and not result.get('cleanup_confirmed'):
             return 1
         if args.operation in ('tls-reload', 'reload') and not result.get('reloaded'):

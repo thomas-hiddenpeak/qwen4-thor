@@ -118,7 +118,7 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V17_SOURCES),
                          {'tools/serve_recovery/'+name+'.py' for name in
                           ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
-                           'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control', 'outer_runtime', 'resource_kernel', 'resource_install', 'resource_launch', 'resource_reconcile')})
+                           'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control', 'outer_runtime', 'resource_kernel', 'resource_install', 'resource_launch', 'resource_reconcile', 'outer_daemon')})
         self.assertEqual(set(bundle.V17_SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
@@ -447,6 +447,7 @@ from tools.serve_recovery import service, lifecycle, outer_policy, outer_store
 from tools.serve_recovery import outer_instance, outer_tree, outer_reconcile
 from tools.serve_recovery import outer_observe, outer_manager, outer_control, outer_runtime
 from tools.serve_recovery import resource_kernel, resource_install, resource_launch, resource_reconcile
+from tools.serve_recovery import outer_daemon
 assert not lifecycle.pending_outer(sys.argv[2], {})
 service.main(['resume', '--help'])
 '''

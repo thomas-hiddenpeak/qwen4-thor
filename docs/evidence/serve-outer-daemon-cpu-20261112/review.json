@@ -1,0 +1,32 @@
+{
+  "status": "TARGETED_OUTER_DAEMON_CPU_PASS",
+  "distinct_tests": 17,
+  "all_first_pass": true,
+  "cpu_seconds": 20.35725427651778,
+  "native_guardian_with_cpu_roles": true,
+  "synthetic_engine_verifier": true,
+  "cpu_fixture_bootstrap_substituted": true,
+  "production_daemon_runtime_used": true,
+  "real_launcher_exit_and_reply_loss": true,
+  "resource_capability_forwarding_and_closure": true,
+  "full_runtime_old_writer_cleanup_before_core_open": true,
+  "duplicate_daemon_rejected": true,
+  "legacy_daemon_regressions": true,
+  "model_gpu_starts": 0,
+  "host_startup_configuration_changed": false,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "owned_test_domains_remaining": [],
+  "source_sha256": {
+    "tools/serve_recovery/outer_daemon.py": "87aabdf77883e7b51c8bf19c2934957ae3e307c57658021690f90b9809fe83b3",
+    "tools/serve_recovery/outer_runtime.py": "efc793da2820d099c4ad178d7d1eeeb09a360140527f044cef0845859dbacd26",
+    "tools/serve_recovery/service.py": "2108cd598fbeaf72e99569a3088f824e3ea4eae48dd83c57891efc6fcfb30d7a",
+    "tools/serve_recovery/bundle.py": "428bf77f10ec9a4aff1830ee73158bf4d240c3636765f375ff84ac21237208ea",
+    "tools/serve_recovery/test_outer_daemon.py": "a89c6fb9d83576b23b5141b48c259079dccb7d4e124feb8a4d6b08c8516c6dc1",
+    "tools/serve_recovery/test_outer_runtime.py": "47b930907906f0ae2a21c17e0fbc2f8919d1ca496a88cedd82ab16c7c7890fd6",
+    "tools/serve_recovery/test_resource_launch.py": "5b55a23213df6cc62fb6c73c13a90526de7d32456488b48d1b4df28c86985b22",
+    "tools/serve_recovery/test_native_bundle.py": "349bf69370311e7c4ad369956d7c200a3b90f32f249e078482ffb59ed8143529"
+  },
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "released": false
+}

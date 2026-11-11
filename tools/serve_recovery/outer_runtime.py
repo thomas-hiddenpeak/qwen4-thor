@@ -18,8 +18,22 @@ from tools.serve_recovery import outer_policy, outer_reconcile, outer_store, out
 from tools.serve_recovery import resource_launch
 
 
+def selected(state, package, digest):
+    """Respect explicit policy; incomplete/lost initialization never downgrades."""
+    state = Path(state).absolute()
+    with deployment.claim(state, shared=True):
+        desc = lifecycle.selected_state(state, package, digest)
+        present = any(os.path.lexists(state/name) for name in (outer_manager.INTENT,
+            outer_manager.PENDING, outer_store.Store.marker_name, outer_store.Store.directory_name))
+        requested = any(name in os.environ for name in (resource_launch.DIRECTORY, resource_launch.ENTRY_FD))
+        if not present and not requested: return False
+        outer_manager.ready(state, desc)
+        policy = lifecycle.read_family(state, desc, outer_store.Store)
+        return policy['enabled'] or requested
+
+
 class Runtime:
-    def __init__(self, state, package, digest, manifest, desc, binding):
+    def __init__(self, state, package, digest, manifest, desc, binding, startup=None):
         self.state, self.package, self.digest = state, package, digest
         self.manifest, self.desc, self.binding = manifest, desc, binding
         self.instance = self.tree = self.observer = None
@@ -30,6 +44,7 @@ class Runtime:
         self.reason = None
         self.last_guardian = None
         self.stop_durable = self.cleaned = False
+        self.startup = startup
         self.resource = resource_launch.inherited(desc['service_id'])
         try: self.server = outer_control.Server(desc['service_id'], self.client)
         except BaseException:
@@ -105,6 +120,9 @@ class Runtime:
 
     def tick(self):
         self.server.tick(); self.stop_core(); self.heartbeat()
+        if self.startup is not None:
+            try: self.startup(self.status())
+            except (OSError, ValueError, KeyError, TypeError): self.startup = None
 
     def unstarted(self):
         """Cancel only this still-held local intent before a successful fork."""
@@ -193,9 +211,17 @@ class Runtime:
             try: self.instance = candidate.__enter__()
             except BlockingIOError: self.observe_existing()
         try:
+            policy = lifecycle.read_family(self.state, self.desc, outer_store.Store)
+            if policy['pending'] is not None:
+                # A surviving old journal can hold the writer. The original
+                # resource path must retire it before opening that writer.
+                if self.resource is not None and policy['pending']['boot_id'] == store.stamp().boot_id:
+                    from tools.serve_recovery import resource_reconcile
+                    resource_reconcile.retire(self.instance, self.resource)
+                else: outer_reconcile.reboot(self.instance, resource=self.resource)
             with store.Store(self.state, self.desc['service_id']) as core:
                 ledger.require(core.service_contract, 'outer runtime requires core service fence')
-                if activate:
+                if activate and not self.stop_requested:
                     policy = lifecycle.read_family(self.state, self.desc, outer_store.Store)
                     ledger.require(policy['enabled'] and not policy['protected'] and
                         policy['pending'] is None and not any(core.state['active'].values()) and
@@ -203,14 +229,6 @@ class Runtime:
                     if core.state['desired'] != 'RUNNING':
                         core.transact(dict(id=str(uuid.uuid4()), expected_revision=core.state['revision'],
                             operation='desired', args=dict(state='RUNNING')))
-            policy = lifecycle.read_family(self.state, self.desc, outer_store.Store)
-            if policy['pending'] is not None:
-                # Previous-boot reconciliation uses the actual system boot and
-                # exact tickets. Same-boot new observers need the resource path.
-                if self.resource is not None and policy['pending']['boot_id'] == store.stamp().boot_id:
-                    from tools.serve_recovery import resource_reconcile
-                    resource_reconcile.retire(self.instance, self.resource)
-                else: outer_reconcile.reboot(self.instance, resource=self.resource)
             while True:
                 self.tick()
                 try:
@@ -260,7 +278,7 @@ class Runtime:
         if self.resource is not None: self.resource.close()
 
 
-def run(state, package, digest, *, activate=False):
+def run(state, package, digest, *, activate=False, startup=None):
     state = Path(state).absolute(); package = Path(package).resolve(strict=True)
     manifest = bundle.verify(package, digest)
     ledger.require(manifest['version'] >= 18 and type(activate) is bool,
@@ -270,7 +288,7 @@ def run(state, package, digest, *, activate=False):
         locks.enter_context(deployment.claim(state, name='outer-runtime.lock'))
         desc = lifecycle.selected_state(state, package, digest)
         binding = outer_manager.ready(state, desc)
-        runtime = Runtime(state, package, digest, manifest, desc, binding)
+        runtime = Runtime(state, package, digest, manifest, desc, binding, startup=startup)
         previous = {}
         try:
             for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):

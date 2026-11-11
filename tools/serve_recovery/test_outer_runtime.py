@@ -19,7 +19,7 @@ from tools.serve_recovery import outer_runtime, outer_store, outer_tree, service
 from tools.serve_recovery import test_lifecycle, test_native_bundle, test_runtime
 
 
-def worker(path):
+def worker(path, *, daemon_config=None):
     args = json.loads(path.read_text()); state = Path(args['state']); package = Path(args['package'])
     private_lease = state/'private-runtime-cpu-lease'
     original_launch = outer_tree.Tree.launch; original_lease = service.acquire_lease
@@ -62,7 +62,12 @@ def worker(path):
         patches.enter_context(mock.patch.object(outer_runtime.Runtime, 'tick', tick))
         patches.enter_context(mock.patch.object(control, 'outer_observation', observation))
         try:
-            value = outer_runtime.run(state, package, args['digest'], activate=args['activate'])
+            if daemon_config is None:
+                value = outer_runtime.run(state, package, args['digest'], activate=args['activate'])
+            else:
+                from tools.serve_recovery import outer_daemon
+                value = outer_daemon.run(daemon_config)
+                if value != 0: raise RuntimeError('CPU outer daemon returned failure')
             (state/'worker-result.json').write_text(json.dumps(dict(ok=True, result=value)))
         except BaseException as error:
             (state/'worker-result.json').write_text(json.dumps(dict(ok=False, error=type(error).__name__,
