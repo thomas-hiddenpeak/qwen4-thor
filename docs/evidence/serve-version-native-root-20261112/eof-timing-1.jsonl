@@ -1,0 +1,8 @@
+{"stage": "before_close", "pid": 1776104, "at_ns": 2603267248815107}
+{"stage": "before_signal", "pid": 1776104, "at_ns": 2603267298938217}
+{"stage": "before_close", "pid": 1776114, "at_ns": 2603272735740789}
+{"stage": "before_signal", "pid": 1776114, "at_ns": 2603272785832389}
+{"stage": "before_close", "pid": 1776186, "at_ns": 2603278189648215}
+{"stage": "before_signal", "pid": 1776186, "at_ns": 2603278239760176}
+{"stage": "before_close", "pid": 1776252, "at_ns": 2603283665952805}
+{"stage": "before_signal", "pid": 1776252, "at_ns": 2603283716051080}

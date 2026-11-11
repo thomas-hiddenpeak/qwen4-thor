@@ -20,6 +20,8 @@ def main():
     parser.add_argument('--escape-model-child', action='store_true')
     parser.add_argument('--bind-model', action='store_true')
     parser.add_argument('--capacity-fingerprint')
+    parser.add_argument('--binary-fingerprint',default='c'*64)
+    parser.add_argument('--protocol-fingerprint',default='d'*64)
     parser.add_argument('--probe-lifecycle', action='store_true')
     parser.add_argument('--probe-only', action='store_true')
     parser.add_argument('--aux-health', action='store_true')

@@ -78,6 +78,13 @@ class ControllerChannel:
         return self._send('admission', admission=dict(
             model_generation=generation, opened=opened))
 
+    def model_exit(self, generation, owner, returncode):
+        """Report an actual direct-child wait result, never an inferred health error."""
+        ledger.require(ledger.integer(generation,minimum=1) and type(returncode) is int and
+            returncode in (-4,-6,-11), 'unclassified model exit')
+        return self._send('model_exit',model_exit=dict(model_generation=generation,
+            pid=owner['pid'],start_ticks=owner['start_ticks'],signal=-returncode))
+
     def quota_restored(self, generation, boot_id, receipt):
         ledger.require(ledger.integer(generation, minimum=2) and ledger.identifier(boot_id) and
             type(receipt) is str and ledger.HASH.fullmatch(receipt), 'invalid quota recovery receipt')

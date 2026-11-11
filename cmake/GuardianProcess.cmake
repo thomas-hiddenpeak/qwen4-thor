@@ -16,7 +16,9 @@ target_link_libraries(q4t_guardian_journal PUBLIC q4t_guardian_process)
 target_compile_options(q4t_guardian_journal PRIVATE -Wall -Wextra -Werror)
 
 add_executable(q4t_guardian
-  ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_main.cpp)
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_main.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_version.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp)
 set_target_properties(q4t_guardian PROPERTIES OUTPUT_NAME q4t-guardian)
 target_link_libraries(q4t_guardian PRIVATE q4t_guardian_journal)
 target_compile_options(q4t_guardian PRIVATE -Wall -Wextra -Werror)

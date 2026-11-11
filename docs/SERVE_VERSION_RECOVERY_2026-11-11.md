@@ -102,3 +102,7 @@ R06.4继续登记资格和原生实际故障/整树接管；尚未接自动运�
 
 资格登记与新版归档20项不同CPU接受，见[证据](evidence/serve-version-registration-20261111/README.md)。
 保留显式修复前周期及已用资格，缺意图不猜测；实际payload切换和独立故障归因继续实现。
+
+2026-11-12。原生根、CLI与实际CPU整树切换28项不同检查接受，
+见[证据](evidence/serve-version-native-root-20261112/README.md)。
+尚需回退后实际观测身份/显式修复部署、真实模型短验及发布，R06.4继续。

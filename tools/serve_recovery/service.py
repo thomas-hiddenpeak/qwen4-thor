@@ -214,6 +214,10 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
                 startup_fd=endpoint.fileno() if daemon else 0, timeout_ms=int(timeout*1000)))
         if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
             config.update(version=2, usage_handoff=True)
+        from tools.serve_recovery import version_launch
+        versions = version_launch.configuration(state,desc,run)
+        if versions is not None:
+            config.update(version=3,version_recovery=versions)
         engine.save(run/'guardian.json', config)
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
             previous[sig] = signal.signal(sig, stop)
@@ -309,6 +313,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
                  'limits-migrate', 'usage-status', 'usage-migrate',
                  'deploy', 'rollback', 'deployment-status', 'profiles-status',
+                 'version-prepare', 'version-register', 'version-status',
                  'publish', 'publish-status', 'publish-resume', 'publish-rollback'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=name != 'check')
@@ -348,6 +353,15 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         if name in ('deploy', 'rollback'):
             command.add_argument('--expected-manifest-sha256', required=True)
             command.add_argument('--request-id', required=True)
+        if name == 'version-prepare':
+            command.add_argument('--fallback-package',type=Path,required=True)
+            command.add_argument('--fallback-manifest-sha256',required=True)
+            command.add_argument('--fallback-release',type=Path,required=True)
+            command.add_argument('--fallback-decision',type=Path,required=True)
+            command.add_argument('--cycle-id',required=True)
+        if name in ('version-prepare','version-register'):
+            command.add_argument('--registration',type=Path,required=True)
+        if name == 'version-register':command.add_argument('--expected-cycle')
         if name in ('publish','publish-resume','publish-rollback'):
             command.add_argument('--request-id', required=True)
         if name in ('publish','publish-rollback'):
@@ -419,6 +433,26 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     deployment.ready(args.state, desc)
                     manifest = bundle.verify(package, digest)
                     result = profile_manager.status(args.state, desc, manifest)
+            elif args.operation.startswith('version-'):
+                from tools.serve_recovery import deployment, version_launch
+                desc = descriptor(args.state,package,digest)
+                root = dict(package=desc['package'],manifest_sha256=desc['manifest_sha256'])
+                if args.operation == 'version-register':
+                    result = version_launch.register_file(args.state,root,
+                        args.registration,args.expected_cycle)
+                else:
+                    with deployment.claim(args.state,shared=True):
+                        deployment.ready(args.state,desc)
+                        if args.operation == 'version-status':
+                            result = version_launch.status(args.state,desc)
+                        else:
+                            receipt = {name:dict(path=str(path.absolute()),sha256=engine.sha(path))
+                                for name,path in [('release',args.fallback_release),
+                                                  ('decision',args.fallback_decision)]}
+                            result = version_launch.prepare_file(root,
+                                dict(package=str(args.fallback_package.absolute()),
+                                    manifest_sha256=args.fallback_manifest_sha256),
+                                receipt,args.registration,args.cycle_id)
             elif args.operation in ('deploy', 'rollback', 'deployment-status'):
                 from tools.serve_recovery import deployment
                 result = (deployment.status(args.state) if args.operation == 'deployment-status' else

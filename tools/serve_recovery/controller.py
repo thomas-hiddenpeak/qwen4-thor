@@ -600,6 +600,13 @@ class Controller:
         self.phase, self.reason = 'RECOVERING', kind.value.lower()
         if self.grant is None:
             return
+        if (os.environ.get('Q4T_VERSION_RECOVERY') == '1' and
+                kind == policy.FaultKind.UNKNOWN_MODEL_EXIT and not self.stopping and
+                self.model is not None and not self.monitor.fatal and
+                (self.watchdog is None or not self.watchdog.tripped.is_set())):
+            returncode = self.model.poll()  # Popen retains its own waitpid result.
+            if returncode in (-4,-6,-11):
+                self.channel.model_exit(self.grant['generation'],self.owner,returncode)
         fingerprint = ledger.digest(dict(binary=self.base['files']['q4t'],
             assets=self.manifest['model_assets'], configuration=self.settings, cause=kind.value))
         reply = self.transaction('fault', dict(generation=self.grant['generation'],

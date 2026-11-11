@@ -25,6 +25,14 @@ from tools.serve_recovery import access_control, access_io
 from tools.serve_recovery.gateway import Admission, listener
 
 
+def propagate_native_exit(process, stopped):
+    """Preserve only an actual fatal native wait result for the owned wrapper."""
+    if (os.environ.get('Q4T_VERSION_RECOVERY') == '1' and not stopped and
+            process is not None and process.poll() in (-4,-6,-11)):
+        signal.signal(-process.returncode,signal.SIG_DFL)
+        os.kill(os.getpid(),-process.returncode)
+
+
 class AdmissionSocket:
     """One bounded packet per connection, only from the pinned native child."""
     def __init__(self, address, clients, decide, child_pid, *, include_client=False):
@@ -215,6 +223,10 @@ def run(config, channel):
                     process.wait(timeout=1)
                 except subprocess.TimeoutExpired:
                     pass  # Guardian keeps ownership until actual reap.
+        # Preserve a verified native child's fatal signal for the pinned
+        # Guardian-owned wrapper. Intentional shutdown/unknown exits do not
+        # become a version attribution, and all reader/child cleanup precedes it.
+        propagate_native_exit(process,stopped)
         channel.close()
 
 

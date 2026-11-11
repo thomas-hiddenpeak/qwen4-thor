@@ -123,6 +123,44 @@ class RetentionTests(unittest.TestCase):
                 self.archive(run_id)
         self.assertEqual((self.state/'ledger.json').read_bytes(),self.ledger)
 
+    def version_run(self):
+        from tools.serve_recovery import version_policy
+        run_id,path=self.run_fixture();bound=access_store.binding(self.state,self.service_id)
+        outer=json.loads((path/'controller.json').read_text())
+        guardian=json.loads((path/'guardian.json').read_text())
+        payloads={};identities={}
+        for name,digest in [('primary','c'*64),('fallback','d'*64)]:
+            directory=path/name;directory.mkdir(mode=0o700)
+            cfg=dict(outer,version=5,directory=str(directory),manifest_sha256=digest,
+                     limits=bound,profiles=bound)
+            self.write(directory/'controller.json',cfg);self.write(directory/'gateway.json',{})
+            payloads[name]=dict(controller=['python','--config',str(directory/'controller.json')],
+                               gateway=['python','--config',str(directory/'gateway.json')])
+            identities[name]=dict(manifest_sha256=digest,binding_sha256='e'*64)
+        registry=dict(format=version_policy.REGISTRY_FORMAT,cycle_id=str(uuid.uuid4()),
+            root_manifest_sha256=outer['manifest_sha256'],payloads=identities,
+            compatibility_sha256='f'*64,qualification_sha256='a'*64)
+        guardian.update(version=3,version_recovery=dict(registry=registry,payloads=payloads))
+        self.write(path/'guardian.json',guardian)
+        return run_id,path
+
+    def test_version_run_archives_both_frozen_payload_paths(self):
+        run_id,path=self.version_run()
+        receipt=self.archive(run_id)
+        _,manifest=r.verified_archive(self.state,run_id)
+        self.assertEqual(manifest['original'],r.snapshot(path))
+        for name in ('primary','fallback'):
+            self.assertEqual((Path(receipt['archive'])/'files'/name/'controller.json').read_bytes(),
+                             (path/name/'controller.json').read_bytes())
+        self.assertEqual((self.state/'ledger.json').read_bytes(),self.ledger)
+
+    def test_version_run_foreign_nested_state_cannot_be_retired(self):
+        run_id,path=self.version_run();nested=path/'fallback/controller.json'
+        cfg=json.loads(nested.read_bytes());cfg['profiles']['service_id']=str(uuid.uuid4())
+        self.write(nested,cfg)
+        with self.assertRaisesRegex(ValueError,'payload binding'):self.archive(run_id)
+        self.assertEqual((self.state/'ledger.json').read_bytes(),self.ledger)
+
 
 
     def test_archive_roundtrip_is_private_and_required_for_every_run(self):

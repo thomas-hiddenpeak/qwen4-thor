@@ -1,0 +1,14 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal"
+  ],
+  "expected_cpu_cases": 1,
+  "scope": "Only failed deterministic CPU EOF case. Timestamp fixture close and actual signal; production unchanged.",
+  "new_gpu_starts": 0,
+  "sources": {
+    "src/service/guardian_main.cpp": "93ad190348629567689c391b2c0053892f1bedc4394650d021726a6a06360c40",
+    "src/service/guardian_version.cpp": "6fb3c51bc9399f02abaa3a5211d80a1bfb5c369e9dedcf1b4b2f982c20e0165a",
+    "tools/serve_recovery/fixture_model.py": "b8b62c59c488ae0fa976dde7ade2b40bd545f1a2f378f7f5dcd4e18091181a5c",
+    "tools/serve_recovery/test_version_native.py": "866220653a6af7e30650cd586eea8fecaf2c92a71df398ab8557d7307f80a7ee"
+  }
+}

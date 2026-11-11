@@ -54,7 +54,8 @@ class Service:
                  gateway=False, quota=False, probe_lifecycle=False,
                  probe_only=False, aux_health=False, production=False,
                  usage_handoff=False, quota_restore=None, stop_handoff=False,
-                 gateway_diagnostics=False, capacity_fingerprint=None):
+                 gateway_diagnostics=False, capacity_fingerprint=None,
+                 version_fixture=None):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -126,6 +127,9 @@ class Service:
         if usage_handoff:self.config.update(version=2, usage_handoff=True, term_ms=1000)
         if gateway_diagnostics:
             self.config['gateway'] += ['--diagnostics-dir', str(self.directory)]
+        if version_fixture is not None:
+            self.config.update(version=3,usage_handoff=usage_handoff,
+                               version_recovery=version_fixture(self))
         self.config_path = self.directory/'config.json'
         self.config_path.write_text(json.dumps(self.config))
         self.config_path.chmod(0o600)

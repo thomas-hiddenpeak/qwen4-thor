@@ -16,7 +16,7 @@ from tools.serve_recovery import access_store, journal, ledger, store
 from tools.serve_recovery import version_policy as policy, version_store
 
 
-def transact(writer, request):
+def transact(writer, request, *, binding=None):
     ledger.keys(request, ('id', 'expected_revision', 'operation', 'args'))
     ledger.require(ledger.identifier(request['id']) and
         ledger.integer(request['expected_revision']), 'invalid version transaction')
@@ -24,7 +24,13 @@ def transact(writer, request):
     ledger.require(current['revision'] == request['expected_revision'],
                    'version transaction predecessor changed')
     operation, args = request['operation'], request['args']
-    if operation == 'resume':
+    preparation = None
+    if operation == 'prepare':
+        from tools.serve_recovery import version_runtime
+        ledger.require(binding is not None, 'version worker needs its owned state binding')
+        preparation = version_runtime.prepare(binding,current,args)
+        candidate = policy.resume(current,store.stamp().boot_id)
+    elif operation == 'resume':
         ledger.keys(args, ('boot_id',))
         ledger.require(args['boot_id'] == store.stamp().boot_id,
                        'version resume is not the current host boot')
@@ -39,7 +45,8 @@ def transact(writer, request):
         raise ledger.LedgerError('version worker cannot grant role or operator authority')
     writer.transact(request['id'], request['expected_revision'], candidate)
     return dict(revision=candidate['revision'],
-                result=dict(state=candidate, selection=policy.describe(candidate)))
+                result=dict(state=candidate, selection=policy.describe(candidate),
+                            **(dict(preparation=preparation) if preparation is not None else {})))
 
 
 def serve(sock, directory, service_id):
@@ -60,7 +67,7 @@ def serve(sock, directory, service_id):
                     ledger.integer(message['sequence'], minimum=1) and
                     message['sequence'] == sequence+1, 'version journal sequence mismatch')
                 sequence = message['sequence']
-                receipt = transact(writer, message['request'])
+                receipt = transact(writer, message['request'], binding=bound)
                 journal.send(sock, dict(version=journal.WIRE_VERSION, sequence=sequence,
                                         ok=True, receipt=receipt))
     except (OSError, ValueError, RuntimeError, KeyError, TypeError):

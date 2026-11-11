@@ -155,6 +155,21 @@ def run_directory(state, run_id):
     ledger.require(guardian.get('controller', [])[-2:] == ['--config', str(path / 'controller.json')]
         and guardian.get('gateway', [])[-2:] == ['--config', str(path / 'gateway.json')],
         'run launch identity mismatch')
+    if guardian.get('version') == 3:
+        from tools.serve_recovery import access_store, version_policy
+        versions=guardian['version_recovery'];registry=version_policy.registry(versions['registry'])
+        ledger.require(registry['root_manifest_sha256']==cfg['manifest_sha256'] and
+            set(versions['payloads'])==set(version_policy.PAYLOADS),'version run root differs')
+        expected=access_store.binding(state,desc['service_id'])
+        for name,payload in versions['payloads'].items():
+            directory=path/name
+            nested=native.private_json(directory/'controller.json')
+            ledger.require(payload['controller'][-2:]==['--config',str(directory/'controller.json')] and
+                payload['gateway'][-2:]==['--config',str(directory/'gateway.json')] and
+                nested.get('version')==5 and nested.get('directory')==str(directory) and
+                nested.get('state_directory')==str(state) and nested.get('limits')==expected and
+                nested.get('profiles')==expected and nested.get('manifest_sha256')==
+                    registry['payloads'][name]['manifest_sha256'],'version run payload binding differs')
     return path
 
 

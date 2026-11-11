@@ -123,8 +123,8 @@ def controller(channel, args):
         if args.bind_model:
             value = dict(port=18000, operations_port=18001,
                     gateway_token=hashlib.sha256(grant['ticket'].encode()).hexdigest(),
-                    client_policy_sha256='b'*64, binary_sha256='c'*64,
-                    protocol_sha256='d'*64)
+                    client_policy_sha256='b'*64, binary_sha256=args.binary_fingerprint,
+                    protocol_sha256=args.protocol_fingerprint)
             if args.capacity_fingerprint is not None:
                 value['capacity_sha256'] = args.capacity_fingerprint
                 reply = channel.transact('bind', dict(role='model', ticket=grant['ticket'], binding=value))
@@ -162,6 +162,30 @@ def controller(channel, args):
             (args.model_fixture/'quota-blocked.json').write_text(json.dumps(early))
             idle(channel, (quota_deadline-time.monotonic_ns())/1e9)
         transaction(channel, 'ready', ready)
+        if os.environ.get('Q4T_VERSION_RECOVERY') == '1':
+            def version_hook():
+                fatal=args.model_fixture/'cpu-fatal-close-first'
+                if fatal.exists():
+                    # This CPU case isolates EOF-before-wait, not the host's
+                    # apport/core-dump pipeline. Disable dumps only in this
+                    # about-to-exit fixture, after its identities were checked.
+                    if libc.prctl(4,0,0,0,0):
+                        raise RuntimeError('CPU fixture dump isolation failed')
+                    trace=args.model_fixture/'cpu-fatal-close-timing.jsonl'
+                    with trace.open('a') as output:
+                        output.write(json.dumps(dict(stage='before_close',pid=os.getpid(),
+                            dumpable=False,at_ns=time.monotonic_ns()))+'\n')
+                    channel.sock.close()
+                    time.sleep(.05)
+                    with trace.open('a') as output:
+                        output.write(json.dumps(dict(stage='before_signal',pid=os.getpid(),
+                                                     at_ns=time.monotonic_ns()))+'\n')
+                    os.kill(os.getpid(),signal.SIGABRT)
+                marker=args.model_fixture/'model-exit-report.json'
+                if marker.exists():
+                    channel._send('model_exit',model_exit=json.loads(marker.read_text()))
+                    marker.unlink()
+            channel.fixture_tick=version_hook
         if args.aux_health:
             def hook():
                 invalid_auxiliary = args.model_fixture/'auxiliary-invalid.json'
@@ -174,6 +198,8 @@ def controller(channel, args):
             channel.fixture_tick = hook
         while process.poll() is None:
             idle(channel, 0.05)
+        if os.environ.get('Q4T_VERSION_RECOVERY') == '1' and process.returncode in (-4,-6,-11):
+            channel.model_exit(grant['generation'],owner,process.returncode)
         fault = dict(generation=grant['generation'],
             fingerprint=hashlib.sha256(b'cpu-fixture-signal-exit').hexdigest(),
             unknown=True)

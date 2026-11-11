@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_version_native.NativeTests.test_actual_controller_fault_replaces_whole_tree_then_fallback_fault_protects",
+    "tools.serve_recovery.test_version_native.NativeTests.test_pending_version_write_timeout_reaps_worker_before_resuming_one_switch",
+    "tools.serve_recovery.test_version_native.NativeTests.test_stop_during_device_probe_never_starts_fallback_and_reaps_helpers",
+    "tools.serve_recovery.test_version_native.NativeTests.test_unknown_kill_uses_existing_role_budget_without_version_blame",
+    "tools.serve_recovery.test_version_native.NativeTests.test_model_parent_wait_result_preserves_original_fault_before_fallback",
+    "tools.serve_recovery.test_version_native.NativeTests.test_unqualified_fallback_binding_never_opens_business",
+    "tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal"
+  ],
+  "exit_code": 1,
+  "seconds": 62.61440978711471,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

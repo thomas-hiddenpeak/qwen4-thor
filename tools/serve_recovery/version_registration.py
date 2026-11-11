@@ -164,6 +164,14 @@ def load(state, root):
     binding = access_store.binding(state,root['service_id'])
     with version_store.open_bound(binding) as current:
         selected = copy.deepcopy(current.head['state']['policy'])
+    return for_state(state,root,selected)
+
+
+def for_state(state, root, selected):
+    """Verify retained registration against an already exclusively owned head."""
+    state = Path(state).absolute()
+    version_policy.validate(selected)
+    binding = access_store.binding(state,root['service_id'])
     entries = intents(state)
     for files in entries.values():
         ledger.require('committed' in files and 'pending' not in files,

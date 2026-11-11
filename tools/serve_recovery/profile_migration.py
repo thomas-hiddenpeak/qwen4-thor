@@ -1,7 +1,8 @@
 """Qualified version/capacity migration without changing historical budgets.
 
-Only a STOPPED deployment owner may construct the authorized store contract
-after verifying both sealed packages and a durable deployment intent. Ordinary
+Only a STOPPED deployment owner or the independent native version root after
+whole-tree retirement may construct the authorized store contract, using both
+sealed packages and its durable deployment/version intent. Ordinary
 runtime profile workers retain profile_policy and cannot authorize migration.
 Explicit capacity changes retain historical qualifications in state v2. Auto
 fallback remains capacity-preserving and never changes the user's contract.
@@ -114,10 +115,10 @@ def candidate(previous, authorization, stamp):
 
 
 class AuthorizedContract:
-    """In-memory authority supplied by locked deployment, never runtime IPC.
+    """Authority supplied by locked deployment or the private native root.
 
     On a crash the durable deployment intent must be reverified to reconstruct
-    this contract. No migration token is copied into an ordinary worker request
+    this contract. No migration token is copied into an ordinary profile worker request
     or the backward-readable profile state. Original receipts remain intact.
     """
     MAX_BYTES = policy.MAX_BYTES
