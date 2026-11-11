@@ -1856,11 +1856,12 @@
         "R06"
       ],
       "evidence": [
-        "evidence/serve-outer-policy-cpu-20261112/README.md"
+        "evidence/serve-outer-policy-cpu-20261112/README.md",
+        "evidence/serve-outer-tree-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
-      "development_status": "Audit confirmed automatic activate overrides stop intent and stale core slots lack reconciliation. Separate outer policy/journal developed; 12 targeted CPU cases passed (0.181s). No runtime wiring, GPU, optional host install or release yet. R07 maintenance approval remains pending; all master tasks continue.",
+      "development_status": "Audit confirmed automatic activate overrides stop intent and stale core slots lack reconciliation. Separate outer policy/journal developed; 12 targeted CPU cases passed (0.181s). No runtime wiring, GPU, optional host install or release yet. R07 maintenance approval remains pending; all master tasks continue. Continuous subreaper custody accepted in 6 distinct CPU cases (Thor discovery correction retained); no slot retirement or runtime wiring yet.",
       "subtasks": [
         {
           "id": "R09.1",

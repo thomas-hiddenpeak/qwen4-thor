@@ -47,3 +47,19 @@ quarantine、未退休 slot 与未知清理；它本身不读取硬件、发信�
 
 长时间运行由用户验收；真实宿主重启/外部部署只在现场选配时
 进行，但所需代码、短验与交接仍须完成，不能以未部署代替实现。
+
+## 连续进程树保管（开发中）
+
+`outer_tree.py` 使用现有 Linux 系统能力：在专属、无既有子进程的
+单线程外层设置 subreaper，派生一次明确命令；后代即使 setsid/
+双 fork，父进程死亡后仍由最近存活 subreaper 接管。
+[Linux subreaper 合同](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html)
+及 [wait 合同](https://man7.org/linux/man-pages/man2/wait.2.html)为依据，
+只实现本项目逻辑，不复制外部代码或引入外部守护程序。
+
+该路径以实际 waitid/waitpid 回收与 ECHILD 为终点；信号只通过
+pidfd 发给仍属于当前外层的直接子进程，超时保留 custody。
+身份、原启动 attempt、原外层连续存活必须对应；新外层不能通过
+复制 JSON 或看见“自己没有子进程”来退休上一外层的 slot。
+冻结 5 项真实 CPU 进程用例。完整同 boot 外层丢失/跨 boot 证明、
+原 journal slot 退休与运行接线仍须继续实现。

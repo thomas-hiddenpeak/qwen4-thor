@@ -1,0 +1,20 @@
+{
+  "status": "TARGETED_CPU_ACCEPTED_AFTER_FIX",
+  "distinct_tests": 6,
+  "first_pass": 2,
+  "first_total": 5,
+  "affected_retest": 3,
+  "additional_parser_check": 1,
+  "seconds": 1.5456190421245992,
+  "model_starts": 0,
+  "default_unchanged": true,
+  "first_failure": "Thor lacks /proc/PID/task/TID/children",
+  "initial_fixture_pids_confirmed_exited": [
+    1812232,
+    1812242,
+    1812245
+  ],
+  "cleanup_proof": "continuous single-threaded subreaper and actual waitid ECHILD",
+  "proc_discovery_is_not_cleanup_proof": true,
+  "runtime_wired": false
+}

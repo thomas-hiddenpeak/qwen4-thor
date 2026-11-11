@@ -1,0 +1,15 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_outer_tree"
+  ],
+  "expected_tests": 5,
+  "model_starts": 0,
+  "actual_cpu_processes": true,
+  "scope": [
+    "exact exit and root identity",
+    "setsid orphan adoption/reap",
+    "timeout remains unready",
+    "live custody cannot close",
+    "pre-existing and independent sibling untouched"
+  ]
+}

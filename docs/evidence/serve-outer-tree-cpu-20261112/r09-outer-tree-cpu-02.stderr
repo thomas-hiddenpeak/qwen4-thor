@@ -1,0 +1,8 @@
+test_cannot_close_custody_or_claim_foreign_root_while_live (tools.serve_recovery.test_outer_tree.TreeTests.test_cannot_close_custody_or_claim_foreign_root_while_live) ... ok
+test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling (tools.serve_recovery.test_outer_tree.TreeTests.test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling) ... ok
+test_timeout_retains_custody_until_later_actual_cleanup (tools.serve_recovery.test_outer_tree.TreeTests.test_timeout_retains_custody_until_later_actual_cleanup) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.472s
+
+OK
