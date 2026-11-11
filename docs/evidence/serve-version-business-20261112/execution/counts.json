@@ -1,0 +1,88 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 10,
+    "probes": 1,
+    "controls": 409
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 1,
+      "monotonic_ns": 2605082058962791
+    },
+    {
+      "kind": "chats",
+      "label": "primary-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2605128600477973
+    },
+    {
+      "kind": "chats",
+      "label": "primary-schema",
+      "ordinal": 2,
+      "monotonic_ns": 2605130335432942
+    },
+    {
+      "kind": "chats",
+      "label": "primary-tool",
+      "ordinal": 3,
+      "monotonic_ns": 2605131213868897
+    },
+    {
+      "kind": "chats",
+      "label": "batch-create",
+      "ordinal": 4,
+      "monotonic_ns": 2605134487588776
+    },
+    {
+      "kind": "chats",
+      "label": "beta-before",
+      "ordinal": 5,
+      "monotonic_ns": 2605137048445307
+    },
+    {
+      "kind": "chats",
+      "label": "beta-denial-before",
+      "ordinal": 6,
+      "monotonic_ns": 2605137868101027
+    },
+    {
+      "kind": "probes",
+      "label": "root-version-device-proof",
+      "ordinal": 1,
+      "monotonic_ns": 2605139044144100
+    },
+    {
+      "kind": "starts",
+      "label": "fallback-model",
+      "ordinal": 2,
+      "monotonic_ns": 2605146254518495
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-self-check",
+      "ordinal": 7,
+      "monotonic_ns": 2605182639782018
+    },
+    {
+      "kind": "chats",
+      "label": "beta-denial-after",
+      "ordinal": 8,
+      "monotonic_ns": 2605184479486855
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-tool-result-sse",
+      "ordinal": 9,
+      "monotonic_ns": 2605184564565913
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-schema-sse",
+      "ordinal": 10,
+      "monotonic_ns": 2605185648867055
+    }
+  ]
+}

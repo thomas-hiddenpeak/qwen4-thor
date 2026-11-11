@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "fixed_root": true,
+  "fallback": {
+    "enabled": true,
+    "root_manifest_sha256": "e4bf8dcb0366f7dfe56c910ed77431be025352ef1fa9de1155dbc495c6a01726",
+    "cycle_id": "e0b33351-936a-471e-82e4-fe4100a56bac",
+    "selected": "fallback",
+    "launch_payload": "fallback",
+    "payload_manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+    "fallback_consumed": true,
+    "protected": false,
+    "pending": false,
+    "payload_prepared": true,
+    "state_available": true,
+    "worker_pid": 1787084,
+    "worker_start_ticks": 260507701,
+    "probe_pid": null,
+    "probe_count": 1,
+    "last_fault": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "fingerprint": "b621a3ca6128adc52cc0378628c7cb205402f5ded50b4140e4d4e24e1d207158",
+      "generation": 1,
+      "kind": "native_process_signal",
+      "payload_sha256": "e4bf8dcb0366f7dfe56c910ed77431be025352ef1fa9de1155dbc495c6a01726",
+      "role": "gateway",
+      "signal": 6
+    },
+    "reason": "",
+    "role_launch_authority": false
+  },
+  "original_batch": true,
+  "original_stored_chat": true,
+  "original_client_accounting": true,
+  "no_tool_replay": true
+}

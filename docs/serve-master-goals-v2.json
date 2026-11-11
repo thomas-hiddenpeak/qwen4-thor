@@ -1725,11 +1725,12 @@
         "evidence/serve-version-channel-20261111/README.md",
         "evidence/serve-version-registration-20261111/README.md",
         "evidence/serve-version-native-root-20261112/README.md",
-        "evidence/serve-version-observation-repair-20261112/README.md"
+        "evidence/serve-version-observation-repair-20261112/README.md",
+        "evidence/serve-version-business-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "R06.1-R06.4 targeted CPU verified: qualified registration, native whole-payload recovery, original budgets, read-only actual-payload observation and STOPPED repair continuation. Actual model version business and reversible delivery remain; default rev56 unchanged.",
+      "development_status": "Targeted CPU and real retained-service-version recovery passed: 2 model starts, 10 HTTP POST, 1 CUDA probe, 123.789 seconds; 117 NVML queries healthy. Default rev56 unchanged; reversible publication and all remaining master tasks continue.",
       "subtasks": [
         {
           "id": "R06.1",
@@ -1753,12 +1754,12 @@
         },
         {
           "id": "R06.5",
-          "state": "implementing",
+          "state": "verified",
           "title": "针对性CPU及实际业务验收"
         },
         {
           "id": "R06.6",
-          "state": "planned",
+          "state": "implementing",
           "title": "可用交付与继续总目标"
         }
       ]
