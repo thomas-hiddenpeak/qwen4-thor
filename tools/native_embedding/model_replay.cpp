@@ -122,6 +122,27 @@ int Replay(const fs::path& directory, const fs::path& input,
     for (int layer = 0; layer < model::EmbeddingConfig::kLayers; ++layer) {
       Check(run.NextLayer());
       Require(run.completed_layers() == layer + 1, "completion state");
+      if (layer == 0 && row.GetBool("trace_primitives")) {
+        const size_t t = ids.size(), p = layout.padded_tokens;
+        const auto dump = [&](const char* name, size_t offset, size_t count) {
+          Save(case_output / (std::string(name) + ".bf16"),
+               reinterpret_cast<const uint16_t*>(workspace + offset), count);
+        };
+        dump("q", layout.q, t * 2048);
+        dump("k", layout.k, t * 1024);
+        dump("v", layout.v, t * 1024);
+        dump("head_q", layout.head_q, p * 16 * 128);
+        dump("head_k", layout.head_k, p * 8 * 128);
+        dump("transposed_v", layout.transposed_v, p * 8 * 128);
+        dump("rope", layout.rope, t * 128);
+        dump("scores", layout.scores, t * p);
+        dump("head_output", layout.head_output, t * 128);
+        dump("attention", layout.attention, t * 2048);
+        dump("post_norm", layout.normalized, t * 1024);
+        dump("gate", layout.gate, t * 3072);
+        dump("up", layout.up, t * 3072);
+        dump("projected", layout.projected, t * 1024);
+      }
       if (trace) {
         const std::string number = (layer + 1 < 10 ? "0" : "") +
                                    std::to_string(layer + 1);

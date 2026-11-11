@@ -1,0 +1,7 @@
+{'name': 'q', 'values': 34816, 'fp32_accumulate_rounding_bound_violations': 0, 'native_vs_reference_differences': 1, 'native_vs_nearest_fp64_bf16': 17, 'max_abs_error': 0.011979468632489443, 'max_fp32_error_bound': 0.0008629277693408444}
+{'name': 'k', 'values': 17408, 'fp32_accumulate_rounding_bound_violations': 0, 'native_vs_reference_differences': 0, 'native_vs_nearest_fp64_bf16': 0, 'max_abs_error': 0.006622558459639549, 'max_fp32_error_bound': 0.000843890504372065}
+{'name': 'v', 'values': 17408, 'fp32_accumulate_rounding_bound_violations': 0, 'native_vs_reference_differences': 32, 'native_vs_nearest_fp64_bf16': 48, 'max_abs_error': 0.0017487957084085792, 'max_fp32_error_bound': 0.0002474986723319854}
+{'name': 'up', 'values': 52224, 'fp32_accumulate_rounding_bound_violations': 0, 'native_vs_reference_differences': 40, 'native_vs_nearest_fp64_bf16': 31, 'max_abs_error': 0.007270470841831411, 'max_fp32_error_bound': 0.0007066990167856775}
+{'name': 'projected', 'values': 17408, 'fp32_accumulate_rounding_bound_violations': 0, 'native_vs_reference_differences': 221, 'native_vs_nearest_fp64_bf16': 32, 'max_abs_error': 0.0031251040941242536, 'max_fp32_error_bound': 0.0018286117856673495}
+{'name': 'norm_rope_q', 'different': 0, 'maximum_error': 0.0}
+{'name': 'norm_rope_k', 'different': 0, 'maximum_error': 0.0}

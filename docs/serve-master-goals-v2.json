@@ -1156,7 +1156,8 @@
       ],
       "evidence": [
         "evidence/serve-native-embedding-foundation-20261111/README.md",
-        "evidence/serve-native-embedding-core-cpu-20261111/README.md"
+        "evidence/serve-native-embedding-core-cpu-20261111/README.md",
+        "evidence/serve-native-embedding-numerical-20261111/README.md"
       ],
       "release": null,
       "findings": [
@@ -1216,7 +1217,7 @@
       },
       "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
       "native_embedding_plan": "SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md",
-      "native_embedding_state": "native_compute_and_asset_io_implemented_13_cpu_accepted_numeric_and_service_pending"
+      "native_embedding_state": "14_final_vectors_and_5_retrieval_pass_8_intermediate_checks_failed_operator_review_and_service_integration_open"
     },
     {
       "id": "A11",

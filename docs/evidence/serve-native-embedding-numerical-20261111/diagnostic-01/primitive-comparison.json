@@ -1,0 +1,122 @@
+[
+  {
+    "tensor": "attention.bf16",
+    "entries": 34816,
+    "different": 65,
+    "relative_l2": 2.2168947252833753e-07,
+    "absolute_max": 9.5367431640625e-07,
+    "abs_reference_max": 0.7890625
+  },
+  {
+    "tensor": "gate.bf16",
+    "entries": 52224,
+    "different": 34,
+    "relative_l2": 1.8319513818455955e-05,
+    "absolute_max": 0.000244140625,
+    "abs_reference_max": 8.75
+  },
+  {
+    "tensor": "head_k.bf16",
+    "entries": 32768,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 300.0
+  },
+  {
+    "tensor": "head_output.bf16",
+    "entries": 2176,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 0.412109375
+  },
+  {
+    "tensor": "head_q.bf16",
+    "entries": 65536,
+    "different": 1,
+    "relative_l2": 1.1788591110149824e-06,
+    "absolute_max": 0.00048828125,
+    "abs_reference_max": 28.625
+  },
+  {
+    "tensor": "k.bf16",
+    "entries": 17408,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 5.03125
+  },
+  {
+    "tensor": "last.bf16",
+    "entries": 1024,
+    "different": 948,
+    "relative_l2": 0.0251992972261664,
+    "absolute_max": 0.25,
+    "abs_reference_max": 13.0
+  },
+  {
+    "tensor": "post_norm.bf16",
+    "entries": 17408,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 3.109375
+  },
+  {
+    "tensor": "projected.bf16",
+    "entries": 17408,
+    "different": 221,
+    "relative_l2": 0.00015561286548889479,
+    "absolute_max": 0.001953125,
+    "abs_reference_max": 1.5
+  },
+  {
+    "tensor": "q.bf16",
+    "entries": 34816,
+    "different": 1,
+    "relative_l2": 9.113495697996877e-07,
+    "absolute_max": 6.103515625e-05,
+    "abs_reference_max": 4.09375
+  },
+  {
+    "tensor": "rope.bf16",
+    "entries": 2176,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 1.0
+  },
+  {
+    "tensor": "scores.bf16",
+    "entries": 544,
+    "different": 0,
+    "relative_l2": 0.0,
+    "absolute_max": 0.0,
+    "abs_reference_max": 1.0
+  },
+  {
+    "tensor": "transposed_v.bf16",
+    "entries": 32768,
+    "different": 32,
+    "relative_l2": 2.1765849350870715e-07,
+    "absolute_max": 9.5367431640625e-07,
+    "abs_reference_max": 0.7890625
+  },
+  {
+    "tensor": "up.bf16",
+    "entries": 52224,
+    "different": 40,
+    "relative_l2": 0.00016844555361041245,
+    "absolute_max": 0.00390625,
+    "abs_reference_max": 2.75
+  },
+  {
+    "tensor": "v.bf16",
+    "entries": 17408,
+    "different": 32,
+    "relative_l2": 2.1765849350870715e-07,
+    "absolute_max": 9.5367431640625e-07,
+    "abs_reference_max": 0.7890625
+  }
+]

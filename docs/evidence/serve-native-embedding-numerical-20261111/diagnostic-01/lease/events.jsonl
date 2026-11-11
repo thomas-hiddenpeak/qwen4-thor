@@ -1,0 +1,14 @@
+{"utc": "2026-11-11T11:19:20.868938+00:00", "monotonic": 2586043.385816815, "pid": 1697107, "event": "lease_acquired"}
+{"utc": "2026-11-11T11:19:20.868993+00:00", "monotonic": 2586043.385870203, "pid": 1697107, "event": "cleanup_capabilities", "pidfd": true}
+{"utc": "2026-11-11T11:19:20.956002+00:00", "monotonic": 2586043.472887291, "pid": 1697107, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:20.956436+00:00", "monotonic": 2586043.473316344, "pid": 1697107, "event": "child_started", "child_pid": 1697112}
+{"utc": "2026-11-11T11:19:21.035555+00:00", "monotonic": 2586043.552444099, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:22.117081+00:00", "monotonic": 2586044.633971456, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:23.197478+00:00", "monotonic": 2586045.714365191, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:24.278573+00:00", "monotonic": 2586046.795459787, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:25.357968+00:00", "monotonic": 2586047.874855296, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:26.439956+00:00", "monotonic": 2586048.956847568, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:27.519936+00:00", "monotonic": 2586050.036824788, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:28.610389+00:00", "monotonic": 2586051.127280747, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:29.690808+00:00", "monotonic": 2586052.207697564, "pid": 1697107, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-11T11:19:29.719090+00:00", "monotonic": 2586052.235966999, "pid": 1697107, "event": "lease_released", "status": "COMPLETED"}

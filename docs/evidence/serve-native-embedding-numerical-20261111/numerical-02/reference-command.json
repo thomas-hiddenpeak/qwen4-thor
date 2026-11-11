@@ -1,0 +1,15 @@
+{
+  "name": "reference",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_embedding/reference.py",
+    "--assets",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/plan.json",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference"
+  ],
+  "exit_code": 0,
+  "seconds": 8.088994482066482
+}

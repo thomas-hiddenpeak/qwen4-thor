@@ -1,0 +1,23 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "tools/native_embedding/acceptance.py",
+    "run",
+    "--output",
+    ".q4t-work/native-embedding-20261111/numerical-01"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "finished": {
+    "utc": "2026-11-11T11:13:09.157165+00:00",
+    "monotonic": 2585671.674050892,
+    "pid": 1677091
+  }
+}

@@ -40,6 +40,12 @@ def save(path, value):
         stream.write('\n')
 
 
+def reference_interpreter(path):
+    # Resolving a venv's python symlink selects /usr/bin/python instead and
+    # silently drops its site-packages. Preserve the executable entry path.
+    return str(path.absolute())
+
+
 def prepare(args):
     from tokenizers import Tokenizer
     args.output.mkdir(parents=True, exist_ok=False)
@@ -146,7 +152,7 @@ def run(args):
                        HF_HUB_OFFLINE='1', HF_HOME=str(output / 'hf-cache'),
                        TORCH_HOME=str(output / 'torch-cache'))
     commands = [
-        ('reference', [str(args.reference_python.resolve()),
+        ('reference', [reference_interpreter(args.reference_python),
                        str(ROOT / 'tools/native_embedding/reference.py'),
                        '--assets', plan['assets'], '--plan', str(output / 'plan.json'),
                        '--output', str(output / 'reference')]),

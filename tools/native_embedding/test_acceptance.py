@@ -1,15 +1,27 @@
 """Negative controls for the numerical/retrieval decision, no model loading."""
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
 
 import numpy as np
 
-from tools.native_embedding.acceptance import compare
+from tools.native_embedding.acceptance import compare, reference_interpreter
 
 
 class Decision(unittest.TestCase):
+    def test_reference_venv_entry_keeps_torch_environment(self):
+        interpreter = Path('.q4t-work/refenv/bin/python')
+        result = subprocess.run([reference_interpreter(interpreter), '-c',
+            'import json,sys,torch; print(json.dumps(dict(prefix=sys.prefix,'
+            'torch=torch.__version__)))'], check=True, text=True,
+            capture_output=True, timeout=30)
+        value = json.loads(result.stdout)
+        self.assertEqual(Path(value['prefix']).resolve(),
+                         interpreter.parent.parent.resolve())
+        self.assertEqual(value['torch'], '2.14.0+cpu')
+
     def fixture(self, root):
         root.mkdir()
         for kind in ['native', 'reference']:
