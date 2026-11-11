@@ -216,7 +216,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                     checked[name] = journals[name].head['state']['policy']
             consistent_clients(checked['access'], checked['limits'], target)
             from tools.serve_recovery import profile_manager
-            profile_manager.preflight(binding, old, selected)
+            profile_manager.preflight(binding, old, selected, root=desc, core=core.state)
             candidate = policy.prepare(value, target, request_id, bootstrap)
             journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'prepare')), value['revision'], candidate)
             value = candidate

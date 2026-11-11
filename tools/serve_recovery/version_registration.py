@@ -171,7 +171,6 @@ def for_state(state, root, selected):
     """Verify retained registration against an already exclusively owned head."""
     state = Path(state).absolute()
     version_policy.validate(selected)
-    binding = access_store.binding(state,root['service_id'])
     entries = intents(state)
     for files in entries.values():
         ledger.require('committed' in files and 'pending' not in files,
@@ -179,11 +178,27 @@ def for_state(state, root, selected):
         value = native.private_json(files['committed'],MAX_BYTES)
         ledger.require(value['candidate']['revision'] <= selected['revision'],
                        'version registration selection needs resume')
-    cycle = selected['registry']['cycle_id']
-    ledger.require(cycle in entries,'selected version registration is missing')
+    registration = for_cycle(state, root, selected['registry']['cycle_id'])
+    ledger.require(registration['registry'] == selected['registry'],
+                   'selected version registry changed')
+    return dict(registration=registration,state=selected)
+
+
+def for_cycle(state, root, cycle):
+    """Read immutable registration for an authenticated root's live cycle.
+
+    Observers never acquire the version writer lock or reconcile its journal.
+    The caller authenticates the root process before trusting its cycle ID.
+    """
+    ledger.require(ledger.identifier(cycle), 'invalid observed version cycle')
+    binding = access_store.binding(state, root['service_id'])
+    entries = intents(state)
+    ledger.require(cycle in entries and all('committed' in files and
+        'pending' not in files for files in entries.values()),
+        'selected version registration is missing or needs resume')
     value = intent(native.private_json(entries[cycle]['committed'],MAX_BYTES),binding)
     registration = value['registration']
-    ledger.require(registration['registry'] == selected['registry'] and
+    ledger.require(registration['registry']['cycle_id'] == cycle and
         registration['root'] == dict(package=root['package'],manifest_sha256=root['manifest_sha256']),
         'selected root needs explicit version registration')
-    return dict(registration=registration,state=selected)
+    return registration

@@ -61,22 +61,40 @@ def register_file(state, root, path, expected_cycle):
         request_id=registration['registry']['cycle_id'],expected_cycle=expected_cycle)
 
 
-def status(state, root):
+def observed(state, root):
+    """Read live root or stopped durable selection, without journal mutation."""
     if not version_registration.present(state):
-        return dict(enabled=False,model_actions=False,automatic_start=False)
+        return None
     try:
         live = control.request(root['service_id'],'status')
     except OSError:
         live = None
     if live is not None:
-        value = live.get('version_recovery')
-        ledger.require(type(value) is dict and
-            value.get('root_manifest_sha256') == root['manifest_sha256'],
+        bundle.verify(root['package'],root['manifest_sha256'])
+        context = {name:native.inode('/proc/self/ns/'+name) for name in ('pid','user','net','mnt')}
+        ledger.require(live.get('service_id') == root['service_id'], 'foreign live version service')
+        native.process(live['guardian_pid'],live['guardian_start_ticks'],
+            native.inode(Path(root['package'])/'bin/q4t-guardian'),context)
+        value = native.project_version(live.get('version_recovery'))
+        ledger.require(value is not None and value['root_manifest_sha256'] == root['manifest_sha256'],
             'live root has no matching version projection')
-        return dict(value,enabled=True,live_control=True)
-    selected = version_registration.load(state,root)
+        registration = version_registration.for_cycle(state,root,value['cycle_id'])
+        ledger.require(value['payload_manifest_sha256'] is None or
+            value['payload_manifest_sha256'] in {p['descriptor']['manifest_sha256']
+                for p in registration['payloads'].values()}, 'foreign live payload')
+        return dict(registration=registration,projection=dict(value,live_control=True))
+    from tools.serve_recovery import lifecycle, version_store
+    head = lifecycle.read_family(state,root,version_store.Store)
+    selected = version_registration.for_state(state,root,head)
     value = selected['state'];name = version_policy.launch_payload(value)
-    return dict(version_policy.describe(value),enabled=True,live_control=False,
+    projection = dict(version_policy.describe(value),enabled=True,live_control=False,
         root_manifest_sha256=root['manifest_sha256'],
         payload_manifest_sha256=value['registry']['payloads'][name]['manifest_sha256'],
         last_fault=value['terminal_fault'] or (value['faults'][-1] if value['faults'] else None))
+    return dict(registration=selected['registration'],projection=projection)
+
+
+def status(state, root):
+    value = observed(state,root)
+    if value is None:return dict(enabled=False,model_actions=False,automatic_start=False)
+    return dict(value['projection'],model_actions=False,automatic_start=False)

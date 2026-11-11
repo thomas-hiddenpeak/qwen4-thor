@@ -1,0 +1,7 @@
+test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection (tools.serve_recovery.test_version_observation.ObservationTests.test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection) ... ok
+test_payload_change_without_matching_generation_invalidates_collected_metrics (tools.serve_recovery.test_version_observation.ObservationTests.test_payload_change_without_matching_generation_invalidates_collected_metrics) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.050s
+
+OK

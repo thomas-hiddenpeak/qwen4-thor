@@ -15,6 +15,31 @@ from tools.serve_recovery import profile_migration, profile_store, version_contr
 from tools.serve_recovery import version_policy, version_registration
 
 
+def repair_sources(binding, root, core, original):
+    """Reconstruct actual profile predecessors under STOPPED operator locks.
+
+    A prepared deployment retains its original root even after service.json
+    advances. Only its registered switch can authorize an unfinished automatic
+    migration; explicit repair never starts the fallback or clears its outcome.
+    """
+    ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
+                   'repair profile selection requires stopped authority')
+    selected = version_registration.load(binding['state_directory'], root)
+    if selected is None:
+        return [(root['package'], original)], {}
+    registration, state = selected['registration'], selected['state']
+    first = version_contract.payload(registration['payloads']['primary']['descriptor'])
+    sources = [(first['descriptor']['package'], first['manifest'])]
+    grants = {}
+    if state['switch'] is not None:
+        second = version_contract.payload(registration['payloads']['fallback']['descriptor'])
+        sources.append((second['descriptor']['package'], second['manifest']))
+        request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
+                                'version-profile-migration'))
+        grants[request] = [version_contract.compatible(first, second)]
+    return sources, grants
+
+
 def prepare(binding, selected, args):
     ledger.keys(args, ('root_manifest_sha256', 'payload', 'cleanup_complete',
                        'lease_continuous', 'roles_retired'))

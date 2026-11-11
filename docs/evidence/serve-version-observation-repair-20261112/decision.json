@@ -1,0 +1,51 @@
+{
+  "status": "ACCEPT_TARGETED_CPU_VERSION_OBSERVATION_REPAIR",
+  "distinct_cpu_cases": 24,
+  "initial_passed": 22,
+  "initial_total": 24,
+  "passed": [
+    "test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection (tools.serve_recovery.test_version_observation.ObservationTests.test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection)",
+    "test_actual_profile_migration_keeps_pending_history_clock_and_retry (tools.serve_recovery.test_version_runtime.RuntimeTests.test_actual_profile_migration_keeps_pending_history_clock_and_retry)",
+    "test_auxiliary_unknown_and_missing_resources_do_not_override_ready (tools.serve_host.test_native.NativeTests.test_auxiliary_unknown_and_missing_resources_do_not_override_ready)",
+    "test_birth_namespace_and_descriptor_replacement_are_not_trusted (tools.serve_host.test_native.NativeTests.test_birth_namespace_and_descriptor_replacement_are_not_trusted)",
+    "test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent)",
+    "test_cli_register_exact_file_and_status_keep_original_state (tools.serve_recovery.test_version_runtime.RuntimeTests.test_cli_register_exact_file_and_status_keep_original_state)",
+    "test_descriptor_advanced_before_failure_replays_using_retained_control_root (tools.serve_recovery.test_version_repair.RepairTests.test_descriptor_advanced_before_failure_replays_using_retained_control_root)",
+    "test_descriptor_and_publication_interruptions_resume_original_migration (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_descriptor_and_publication_interruptions_resume_original_migration)",
+    "test_explicit_capacity_repair_preserves_fallback_pending_original_qualification (tools.serve_recovery.test_version_repair.RepairTests.test_explicit_capacity_repair_preserves_fallback_pending_original_qualification)",
+    "test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle (tools.serve_recovery.test_version_registration.RegistrationTests.test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle)",
+    "test_interrupted_repair_profile_commit_resumes_exact_deployment_once (tools.serve_recovery.test_version_repair.RepairTests.test_interrupted_repair_profile_commit_resumes_exact_deployment_once)",
+    "test_live_cli_checks_control_root_birth_before_accepting_retained_payload (tools.serve_recovery.test_version_observation.ObservationTests.test_live_cli_checks_control_root_birth_before_accepting_retained_payload)",
+    "test_live_version_writer_lock_and_unknown_commit_do_not_block_healthy_projection (tools.serve_recovery.test_version_observation.ObservationTests.test_live_version_writer_lock_and_unknown_commit_do_not_block_healthy_projection)",
+    "test_payload_change_without_matching_generation_invalidates_collected_metrics (tools.serve_recovery.test_version_observation.ObservationTests.test_payload_change_without_matching_generation_invalidates_collected_metrics)",
+    "test_pending_automatic_profile_migration_resumes_only_original_switch_then_repairs (tools.serve_recovery.test_version_repair.RepairTests.test_pending_automatic_profile_migration_resumes_only_original_switch_then_repairs)",
+    "test_profile_rename_failure_requires_exact_deployment_and_recovers_once (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_profile_rename_failure_requires_exact_deployment_and_recovers_once)",
+    "test_resigned_foreign_automatic_receipt_cannot_authorize_repair (tools.serve_recovery.test_version_repair.RepairTests.test_resigned_foreign_automatic_receipt_cannot_authorize_repair)",
+    "test_stopped_observer_does_not_reconcile_pending_version_transaction (tools.serve_recovery.test_version_observation.ObservationTests.test_stopped_observer_does_not_reconcile_pending_version_transaction)",
+    "test_stopped_version_and_profile_status_read_fallback_without_reconciling_or_resetting (tools.serve_recovery.test_version_observation.ObservationTests.test_stopped_version_and_profile_status_read_fallback_without_reconciling_or_resetting)",
+    "test_terminal_fallback_repairs_current_state_then_explicitly_registers_new_cycle (tools.serve_recovery.test_version_repair.RepairTests.test_terminal_fallback_repairs_current_state_then_explicitly_registers_new_cycle)",
+    "test_unknown_payload_and_wrong_actual_model_identity_are_not_trusted (tools.serve_recovery.test_version_observation.ObservationTests.test_unknown_payload_and_wrong_actual_model_identity_are_not_trusted)",
+    "test_unrelated_pending_migration_receipt_cannot_be_adopted (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_unrelated_pending_migration_receipt_cannot_be_adopted)",
+    "test_unstarted_fallback_intent_repairs_primary_without_start_or_extra_migration (tools.serve_recovery.test_version_repair.RepairTests.test_unstarted_fallback_intent_repairs_primary_without_start_or_extra_migration)",
+    "test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state)"
+  ],
+  "sources_sha256": {
+    "tools/serve_host/native.py": "a565d35cde165245745cab54445ca0400483265887bba45725788ec8f4030206",
+    "tools/serve_recovery/deployment.py": "5c47635488b1ec762bb511b67eef0837213d97971727acd0cd44719ada8828b8",
+    "tools/serve_recovery/profile_manager.py": "3e9e329f5d50a2b4d58a2200734a84606f05eb0278cb1e5deb727f50b0280376",
+    "tools/serve_recovery/version_launch.py": "a07205713d2fe45f5e0c3006dfb91de404b8af16c99b5c0473290995ec27f1db",
+    "tools/serve_recovery/version_registration.py": "da973cbeee3e92a52234c7e80c81c4cdd9d05ae1613ae1b83db78a5d02189f0d",
+    "tools/serve_recovery/version_runtime.py": "04013377fdd4339c695ea2902ce4eafe9f534c4fa6632c2e396d268778b8ab10",
+    "tools/serve_recovery/test_version_observation.py": "3ec65a41534ac7d53c3e67aa41717d5a13871e7f3a7e6b19d35918c2c6969854",
+    "tools/serve_recovery/test_version_repair.py": "c76098002d0aa003331dfba001375db03943fffc48ef803ffb15f0ca9c7074ac"
+  },
+  "new_gpu_starts": 0,
+  "default_revision": 56,
+  "default_unchanged": true,
+  "actual_model_recovery_accepted": false,
+  "remaining": [
+    "actual bounded version business",
+    "rollback publication",
+    "all remaining Serve master tasks"
+  ]
+}

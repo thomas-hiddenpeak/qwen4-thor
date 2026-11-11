@@ -81,7 +81,81 @@ def empty(reason='source_unavailable', now=None):
         state='UNKNOWN', reason=reason, sources={n: False for n in SOURCES},
         business_ready=None, observation=None, recovery_frozen=None,
         generations=None, ledger=None, process=None, runtime=None, auxiliary=None,
-        gateway_binding=None)
+        gateway_binding=None, version_recovery=None)
+
+
+def project_version(value):
+    """Bounded public fields; never publish helper PIDs or retained paths."""
+    if value is None:return None  # Pre-version-control packages remain readable.
+    from tools.serve_recovery import version_policy as policy
+    ledger.require(type(value) is dict and value.get('enabled') is True and
+                   ledger.identifier(value.get('cycle_id')), 'invalid live version cycle')
+    policy.hash_value(value.get('root_manifest_sha256'))
+    if value.get('payload_manifest_sha256') is not None:
+        policy.hash_value(value['payload_manifest_sha256'])
+    for name in ('selected', 'launch_payload'):
+        ledger.require(value.get(name) in (None, *policy.PAYLOADS), 'invalid observed payload')
+    flags = ('fallback_consumed', 'protected', 'pending', 'payload_prepared', 'state_available')
+    ledger.require(all(type(value.get(name)) is bool for name in flags),
+                   'invalid observed recovery state')
+    last = value.get('last_fault')
+    if last is not None:
+        policy.fault(last)
+        ledger.require(policy.recognized(last), 'unknown observed version fault')
+    reason = value.get('reason')
+    ledger.require(type(reason) is str and len(reason.encode()) <= 1024,
+                   'invalid version observation reason')
+    names = ('enabled', 'cycle_id', 'root_manifest_sha256', 'payload_manifest_sha256',
+             'selected', 'launch_payload', *flags, 'last_fault', 'reason')
+    return {name: value.get(name) for name in names}
+
+
+def payload_binding(binding, value):
+    """Resolve only registered payloads of an already authenticated native root.
+
+    This runs in the isolated collector. Qualification is verified once per
+    immutable cycle; its executable inodes remain frozen across observations.
+    No writer lock or repair operation is used, even if a commit is pending.
+    """
+    from tools.serve_recovery import version_registration
+    from tools.serve_service import package as engine
+    projection = project_version(value.get('version_recovery'))
+    if projection is None:
+        ledger.require(not version_registration.present(binding['state']),
+                       'registered service has no live version projection')
+        return binding
+    ledger.require(projection['root_manifest_sha256'] == binding['digest'],
+                   'observed control root differs')
+    cycle = projection['cycle_id']
+    cache = binding.get('version_payloads')
+    if cache is None or cache['cycle_id'] != cycle:
+        registration = version_registration.for_cycle(binding['state'], binding['descriptor'], cycle)
+        payloads = {}
+        for name, item in registration['payloads'].items():
+            package = Path(item['descriptor']['package'])
+            payloads[item['descriptor']['manifest_sha256']] = dict(
+                {k:v for k,v in binding.items() if k != 'version_payloads'},
+                engine=inode(package/'engine/q4t'),
+                observation_version=engine.read(package/'engine/q4t.release.json')
+                    ['chat_protocol']['observability']['version'],
+                port=item['binding']['operations_port'], payload=name,
+                binary_sha256=item['binding']['binary_sha256'],
+                protocol_sha256=item['binding']['protocol_sha256'])
+        cache = dict(cycle_id=cycle, payloads=payloads)
+        binding['version_payloads'] = cache
+    digest = projection['payload_manifest_sha256']
+    if digest is None:
+        ledger.require(not value.get('business_ready') and
+            all(value.get(role+'_pid') is None for role in ledger.ROLES),
+            'running payload identity missing')
+        return binding
+    ledger.require(digest in cache['payloads'], 'unregistered running payload')
+    selected = cache['payloads'][digest]
+    if value.get('model_ready'):
+        ledger.require(value.get('model_binary_sha256') == selected['binary_sha256'] and
+            value.get('model_protocol_sha256') == selected['protocol_sha256'],
+            'observed model differs from prepared payload')
+    return selected
 
 
 def project_status(value):
@@ -123,7 +197,8 @@ def project_status(value):
         gateway = dict(reason=reason, model_generation=generation, age_ms=age)
     return dict(state=value['state'], business_ready=ready,
         observation=observation, recovery_frozen=value['recovery_frozen'],
-        generations=generations, auxiliary=auxiliary, gateway_binding=gateway)
+        generations=generations, auxiliary=auxiliary, gateway_binding=gateway,
+        version_recovery=project_version(value.get('version_recovery')))
 
 
 def read_ledger(binding):
@@ -204,13 +279,14 @@ def collect(binding, *, request=control.request, check_process=process,
         check_process(value['guardian_pid'], value['guardian_start_ticks'],
                       binding['guardian'], binding['context'])
         projected = project_status(value)
+        running = payload_binding(binding, value)
         for role, executable, parent in (
                 ('controller', 'python', value['guardian_pid']),
                 ('gateway', 'python', value['guardian_pid']),
                 ('model', 'engine', value.get('controller_pid'))):
             if value.get(role + '_pid') is not None:
                 check_process(value[role + '_pid'], value[role + '_start_ticks'],
-                    binding[executable], binding['context'], parent=parent)
+                    running[executable], binding['context'], parent=parent)
         result.update(projected, reason='none')
         result['sources']['guardian'] = True
     except (OSError, ValueError, KeyError, TypeError):
@@ -222,7 +298,7 @@ def collect(binding, *, request=control.request, check_process=process,
     if pid is None:
         return result
     for name, reader in (('process', lambda: resources(pid)),
-                         ('runtime', lambda: runtime(binding, pid))):
+                         ('runtime', lambda: runtime(running, pid))):
         try:
             result[name] = reader()
             result['sources'][name] = True
@@ -236,7 +312,13 @@ def collect(binding, *, request=control.request, check_process=process,
                 'model_pid', 'model_start_ticks', 'gateway_generation', 'gateway_pid',
                 'gateway_start_ticks')
         ledger.require(all(value[k] == after[k] for k in keys), 'generation changed')
-        check_process(pid, value['model_start_ticks'], binding['engine'],
+        before_version = projected['version_recovery']
+        after_version = project_version(after.get('version_recovery'))
+        ledger.require((before_version is None) == (after_version is None) and
+            (before_version is None or all(before_version[k] == after_version[k]
+             for k in ('cycle_id', 'root_manifest_sha256', 'payload_manifest_sha256'))),
+            'running version changed during observation')
+        check_process(pid, value['model_start_ticks'], running['engine'],
                       binding['context'], parent=value['controller_pid'])
         result.update(project_status(after))
     except (OSError, ValueError, KeyError, TypeError):
@@ -282,6 +364,10 @@ def metrics(value):
             emit('auxiliary_observation', int(value['observation'] == name), f'state="{name}"')
     if value['recovery_frozen'] is not None:
         emit('recovery_frozen', int(value['recovery_frozen']))
+    recovery = value.get('version_recovery')
+    if recovery is not None:
+        for name in ('fallback_consumed', 'protected', 'pending', 'state_available'):
+            emit('version_'+name, int(recovery[name]))
     for role, generation in (value['generations'] or {}).items():
         emit('generation', generation, f'role="{role}"')
     for name, amount in (value['process'] or {}).items():
