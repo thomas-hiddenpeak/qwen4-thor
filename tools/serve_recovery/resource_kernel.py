@@ -119,8 +119,8 @@ def validate(value):
     return value
 
 
-def create(service_id, domain_id, runtime_uid, selected):
-    """Explicit privileged setup only; no existing hierarchy is adopted/reset."""
+def create(service_id, domain_id, runtime_uid, selected, *, resume_unpublished=False):
+    """Privileged setup; resume is only for a never-published installation."""
     ledger.require(os.geteuid() == 0 and ledger.identifier(service_id) and ledger.identifier(domain_id)
         and ledger.integer(runtime_uid, minimum=1) and runtime_uid < 2**32-1,
         'explicit privileged resource setup required')
@@ -134,22 +134,41 @@ def create(service_id, domain_id, runtime_uid, selected):
                       selected['service']['memory_max_bytes']//1024**2, selected['service']['pids_max'])
     ledger.require(selected == expected, 'invalid selected resource policy')
     root = CGROUP/('q4t-resource-'+domain_id)
-    root.mkdir(mode=0o755)  # Exclusive creation; no mutation of an existing name.
+    root.mkdir(mode=0o755, exist_ok=resume_unpublished)
+    ledger.require(root.lstat().st_uid == 0 and stat.S_IMODE(root.lstat().st_mode) in (0o700, 0o755),
+                   'unpublished resource directory changed')
     root.chmod(0o755)
     fd = directory(root)
     try:
-        write(fd, 'cgroup.max.depth', 1); write(fd, 'cgroup.max.descendants', 2)
+        ledger.require(counters(read(fd, 'cgroup.events')).get('populated') == 0 and
+            {p.name for p in root.iterdir() if p.is_dir()} <= set(NAMES),
+            'unpublished resource hierarchy is not empty')
+        for name, amount in (('cgroup.max.depth', 1), ('cgroup.max.descendants', 2)):
+            ledger.require(read(fd, name) in ('max', str(amount)), 'unpublished hierarchy limit differs')
+            write(fd, name, amount)
+        ledger.require(set(read(fd, 'cgroup.subtree_control').split()) <= {'memory', 'pids'},
+                       'unpublished controller selection differs')
         write(fd, 'cgroup.subtree_control', '+memory +pids')
         children = {}
         for role in NAMES:
-            path = root/role; path.mkdir(mode=0o755); path.chmod(0o755)
+            path = root/role; path.mkdir(mode=0o755, exist_ok=resume_unpublished)
+            ledger.require(path.lstat().st_uid == 0 and stat.S_IMODE(path.lstat().st_mode) in (0o700, 0o755),
+                           'unpublished resource leaf changed')
+            path.chmod(0o755)
             child = directory(path)
             try:
-                for name, amount in limits(selected, role).items(): write(child, name, amount)
+                for name, amount in limits(selected, role).items():
+                    default = '0' if name == 'memory.oom.group' else 'max'
+                    ledger.require(read(child, name) in (default, str(amount)),
+                                   'unpublished resource leaf limit differs')
+                    write(child, name, amount)
                 children[role] = identity(path)
                 # This only grants killing this service's own leaf. Migration,
                 # controller limits and hierarchy creation remain root-owned.
-                if role == 'service': os.chown(path/'cgroup.kill', runtime_uid, -1)
+                if role == 'service':
+                    ledger.require((path/'cgroup.kill').lstat().st_uid in (0, runtime_uid),
+                                   'unpublished kill authority changed')
+                    os.chown(path/'cgroup.kill', runtime_uid, -1)
             finally: os.close(child)
         return validate(dict(format=FORMAT, service_id=service_id, domain_id=domain_id,
             runtime_uid=runtime_uid, boot_id=store.stamp().boot_id, root=str(root),

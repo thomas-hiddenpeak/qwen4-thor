@@ -1,0 +1,26 @@
+{
+  "status": "TARGETED_INSTALLATION_CPU_PASS",
+  "distinct_tests": 12,
+  "cpu_seconds": 2.07801107596606,
+  "first_root_pass": 8,
+  "first_root_total": 10,
+  "first_bundle_executed": 0,
+  "followup_tests": 4,
+  "original_failures_preserved": true,
+  "followup_reason": "CPU fixture setresuid argument omission and unittest selector command corrected; only two failed root cases and two unexecuted packaging cases rerun.",
+  "owned_test_domains_remaining": [],
+  "owned_install_tests_remaining": [],
+  "model_starts": 0,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/resource_install.py": "778578169c61e11c5650eae6c2aaf20f50a7116feb6f35ae739b964a1c9782cb",
+    "tools/serve_recovery/resource_kernel.py": "f70cbcab456ea53595e300a1d0e58ca91d62e09f1f7bcd1e463eff019ec42337",
+    "tools/serve_recovery/test_resource_install.py": "3d5d83371fa45df5d92ea90fcbd6afd9137068de168e10dc37fc76bc1bb34a57",
+    "tools/serve_recovery/test_native_bundle.py": "f5f7c3e7796f30438a117e79e307ef1902bf4fde3f4e63244206e69fdc1b9525",
+    "tools/serve_recovery/bundle.py": "a971681fcb2a1e2a1d328e2ee8275488e1394d0e42362a48228dcaa6aebbb54e",
+    "tools/serve_recovery/service.py": "117930a7beef8a1b502590b088402637cb6f713a0dfb4e5e250d3172aa48c78e"
+  },
+  "runtime_domain_integration": false,
+  "released": false
+}
