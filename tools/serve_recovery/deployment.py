@@ -73,6 +73,12 @@ def check_target(current, target):
     ledger.require(old_core['model_dir'] == new_core['model_dir'] and
         all(old_core['settings'].get(k) == new_core['settings'].get(k)
             for k in ('application_state', 'model_names')), 'deployment application identity changed')
+    embedding = old_core['settings'].get('native_embedding')
+    if embedding is not None:
+        selected = new_core['settings'].get('native_embedding', {})
+        ledger.require(all(selected.get(k) == embedding[k]
+                           for k in engine.NATIVE_EMBEDDING),
+                       'deployment would remove or change accepted embedding model')
     return old, new
 
 

@@ -34373,6 +34373,154 @@
               "response_scanner"
             ],
             "description": "Present in native application initialization recovery builds; omitted by historical config-v1 producers."
+          },
+          "native_embedding": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "profile": {
+                "const": "q4t-native-embedding-v1"
+              },
+              "available": {
+                "const": true
+              },
+              "model": {
+                "const": "qwen3-embedding-0.6b"
+              },
+              "revision": {
+                "const": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+              },
+              "weight_sha256": {
+                "const": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+              },
+              "weight_file_bytes": {
+                "const": 1191586416
+              },
+              "executor": {
+                "const": "native_qwen3_dense_bf16"
+              },
+              "dimensions": {
+                "const": 1024
+              },
+              "dimension_min": {
+                "const": 32
+              },
+              "dimension_selection": {
+                "const": "prefix_then_l2"
+              },
+              "input_tokens_max": {
+                "const": 8192
+              },
+              "token_vocab": {
+                "const": 151669
+              },
+              "text_postprocessor": {
+                "const": "append_eos_151643"
+              },
+              "raw_tokens_append_eos": {
+                "const": false
+              },
+              "query_instruction": {
+                "const": "caller_supplied"
+              },
+              "lazy_assets": {
+                "const": true
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model_restart_on_failure": {
+                "const": false
+              },
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "profile",
+              "available",
+              "model",
+              "revision",
+              "weight_sha256",
+              "weight_file_bytes",
+              "executor",
+              "dimensions",
+              "dimension_min",
+              "dimension_selection",
+              "input_tokens_max",
+              "token_vocab",
+              "text_postprocessor",
+              "raw_tokens_append_eos",
+              "query_instruction",
+              "lazy_assets",
+              "core_readiness_dependency",
+              "model_restart_on_failure",
+              "enabled"
+            ],
+            "description": "Optional fixed native model declaration; historical config-v1 producers omit this property. Enabled describes configuration, not current backend health."
+          },
+          "native_embedding_health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "disabled",
+                  "configured",
+                  "loading",
+                  "metadata_ready",
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "none",
+                  "embedding_assets_invalid",
+                  "embedding_assets_timeout",
+                  "embedding_worker_unavailable",
+                  "embedding_resource_exhausted",
+                  "gpu_unhealthy",
+                  "embedding_compute_failed"
+                ]
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model": {
+                "const": "qwen3-embedding-0.6b"
+              },
+              "device_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery": {
+                "const": "request_driven"
+              },
+              "retry_delay_ms": {
+                "const": 5000
+              }
+            },
+            "required": [
+              "state",
+              "reason",
+              "core_readiness_dependency",
+              "model",
+              "device_bytes",
+              "load_attempts",
+              "load_failures",
+              "recovery",
+              "retry_delay_ms"
+            ],
+            "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
           }
         },
         "required": [

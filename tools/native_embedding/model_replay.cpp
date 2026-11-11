@@ -21,6 +21,8 @@ namespace {
 using namespace q4t;
 namespace fs = std::filesystem;
 using Clock = std::chrono::steady_clock;
+fs::path trace_directory;
+int trace_layer = -1;
 
 void Require(bool ok, const std::string& error) {
   if (!ok) throw std::runtime_error(error);
@@ -114,6 +116,11 @@ int Replay(const fs::path& directory, const fs::path& input,
     const fs::path case_output = output / ("case-" + std::to_string(index));
     Require(fs::create_directory(case_output), "case output");
     model::EmbeddingRun run;
+    trace_layer = row.GetInt("trace_operand_layer", -1);
+    Require(trace_layer >= -1 && trace_layer < 28, "trace layer bound");
+    trace_directory = case_output / "operands";
+    if (trace_layer >= 0)
+      Require(fs::create_directory(trace_directory), "trace output directory");
     Check(run.Begin(binding, ids, workspace, layout.bytes));
     auto* hidden = reinterpret_cast<uint16_t*>(workspace + layout.hidden);
     const bool trace = row.GetBool("trace_layers");
@@ -171,6 +178,12 @@ int Replay(const fs::path& directory, const fs::path& input,
   return 0;
 }
 }  // namespace
+
+void q4t::model::TraceEmbeddingOperand(int layer, const char* name,
+                                       const uint16_t* data, size_t values) {
+  if (layer == trace_layer)
+    Save(trace_directory / (std::string(name) + ".bf16"), data, values);
+}
 
 int main(int argc, char** argv) {
   const int worker = q4t::server::MaybeRunEmbeddingAssetWorker(argc, argv);

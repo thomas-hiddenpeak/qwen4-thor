@@ -37,6 +37,7 @@
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
+#include "q4t/model/embedding_model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
 #include "q4t/server/progress_transport.h"
@@ -188,6 +189,13 @@ class ChatServer {
       int fd, const std::vector<int32_t>& tokens,
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
+  ObjectReply EnsureNativeEmbedding(bool weights, const BinaryAccess& access,
+                                    RequestDiagnostics* diagnostic = nullptr);
+  ObjectReply RunNativeEmbeddingInput(
+      int fd, const std::vector<int32_t>& tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
+  std::string NativeEmbeddingHealthJson() const;
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };
@@ -216,7 +224,8 @@ class ChatServer {
                                   const BinaryAccess& access,
                                   BatchInputBudget* budget,
                                   BatchRateBudget* rate = nullptr);
-  BatchTokenCodec BatchCodec(const BinaryAccess& access);
+  BatchTokenCodec BatchCodec(const BinaryAccess& access,
+                             bool native_embedding = false);
   ObjectReply MeasureBackgroundBatchRate(ResponsesExecution& response,
                                          const ChatPlanConfig& config,
                                          const BinaryAccess& access,
@@ -442,6 +451,27 @@ class ChatServer {
   std::string effective_config_;
   std::string model_name_;
   ModelCatalog model_catalog_;
+  ModelCatalog embedding_catalog_;
+  std::string embedding_model_dir_;
+  // Optional model ownership is independent of Chat readiness. Asset I/O
+  // never holds model_mu_; published immutable weights live until drain.
+  std::mutex embedding_mu_;
+  std::mutex embedding_tok_mu_;
+  std::unique_ptr<text::Tokenizer> embedding_tok_;
+  uint8_t* d_embedding_weights_ = nullptr;
+  model::EmbeddingDeviceWeights embedding_weights_;
+  std::atomic<bool> embedding_loading_{false};
+  std::atomic<bool> embedding_tokenizer_ready_{false};
+  std::atomic<bool> embedding_ready_{false};
+  std::atomic<uint64_t> embedding_device_bytes_{0};
+  enum class EmbeddingFailure {
+    kNone, kAssets, kTimeout, kWorker, kResource, kDevice, kCompute
+  };
+  std::atomic<EmbeddingFailure> embedding_failure_{EmbeddingFailure::kNone};
+  std::atomic<uint64_t> embedding_load_attempts_{0};
+  std::atomic<uint64_t> embedding_load_failures_{0};
+  // Protected by embedding_mu_. Request-driven retries only, no model restart.
+  std::chrono::steady_clock::time_point embedding_retry_after_{};
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;

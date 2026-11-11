@@ -210,10 +210,14 @@ target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::
 if(Q4T_HAS_ICU)
   add_executable(q4t_embedding_replay EXCLUDE_FROM_ALL
     tools/native_embedding/model_replay.cpp src/server/embedding_assets.cpp
-    src/server/grammar_process.cpp src/server/worker_io_broker.cpp)
+    src/server/grammar_process.cpp src/server/worker_io_broker.cpp
+    src/model/embedding_model.cu)
+  target_compile_definitions(q4t_embedding_replay PRIVATE Q4T_EMBEDDING_TRACE=1)
   target_link_libraries(q4t_embedding_replay PRIVATE
     q4t_model q4t_text q4t_runtime)
-  target_compile_options(q4t_embedding_replay PRIVATE -Wall -Wextra -Werror)
+  target_compile_options(q4t_embedding_replay PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Werror>
+    $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Werror>)
 endif()
 
 # Standalone A1 diagnostic: never linked by production q4t_model/serve.
@@ -405,6 +409,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_responses.cpp
   src/server/chat_moderations.cpp
   src/server/chat_embeddings.cpp
+  src/server/chat_embedding_backend.cpp
   src/server/chat_model_step.cpp
   src/server/session_cache.cpp
   src/server/cache_io.cpp

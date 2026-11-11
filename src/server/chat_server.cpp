@@ -28,6 +28,7 @@
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
 #include "q4t/server/cuda_quota_policy.h"
+#include "q4t/server/embedding_assets.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -70,6 +71,8 @@ ChatServer::~ChatServer() {
   release(d_sched_logits_, "shutdown.scheduler_logits");
   release(d_sched_tokens_, "shutdown.scheduler_tokens");
   release(d_prefill_logits_, "shutdown.prefill_logits");
+  release(d_embedding_weights_, "shutdown.native_embedding_weights");
+  embedding_ready_.store(false);
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -307,6 +310,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  quant::MoEResidencyStagingBytes(cfg.hs, cfg.moe_is) +
              quant::MoEResidencyMirrorK() *
                  quant::MoEResidencyMirrorBytes(cfg.hs, cfg.moe_is));
+      }
+      if (!opts.embedding_model_dir.empty()) {
+        model::EmbeddingWorkspaceLayout embedding;
+        const auto planned = model::PlanEmbeddingWorkspace(
+            model::EmbeddingConfig::kInputTokens, &embedding);
+        if (!planned) return planned;
+        // Host staging + device weights + possible file pages all use Thor
+        // DRAM. Keep the optional model's peak visible before capacity choice.
+        breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
+            512ULL * 1024 * 1024 + size_t(opts.max_seq) * embedding.bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -654,6 +667,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   s = model_catalog_.Configure(model_name_, opts.model_aliases,
                                 static_cast<int64_t>(std::time(nullptr)));
   if (!s) return s;
+  embedding_model_dir_ = opts.embedding_model_dir;
+  if (!embedding_model_dir_.empty()) {
+    s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
+                                      static_cast<int64_t>(std::time(nullptr)));
+    if (!s) return s;
+  }
   // Video processor budget comes from video_preprocessor_config.json
   // (4096 / 25165824), NOT the image budget. Same patch/merge/temporal dims.
   video_proc_cfg_ = proc_cfg_;

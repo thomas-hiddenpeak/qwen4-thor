@@ -1217,7 +1217,9 @@
       },
       "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
       "native_embedding_plan": "SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md",
-      "native_embedding_state": "14_final_vectors_and_5_retrieval_pass_8_intermediate_checks_failed_operator_review_and_service_integration_open"
+      "native_embedding_state": "targeted_numerical_review_accepted_original_intermediate_failures_preserved_28_serve_cpu_pass_business_pending",
+      "native_embedding_serve_cpu": "evidence/serve-native-embedding-serve-cpu-20261111/README.md",
+      "native_embedding_rounding_review": "evidence/serve-native-embedding-rounding-review-20261111/README.md"
     },
     {
       "id": "A11",

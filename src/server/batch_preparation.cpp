@@ -66,6 +66,7 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
   if (row.body.GetBool("stream"))
     return Error(400, "batch_stream_unsupported", "Batch requires finite JSON");
   Json prepared, dependencies = Array();
+  std::string canonical_model = config.model;
   ChatFileInputs chat(&objects_);
   std::optional<ResponsesExecution> responses;
   bool uncertain = false;
@@ -97,6 +98,7 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
     ChatPlanError error;
     const auto status = PlanEmbeddingsRequest(row.body, config, &plan, &error);
     if (!status) reply = PlanningError(status, error);
+    else canonical_model = plan.model;
     prepared = Object({{"kind", String("embedding")}});
   } else if (endpoint == "/v1/moderations") {
     ModerationsRequestPlan plan;
@@ -135,7 +137,7 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
                 {"scope_sha256", String(Digest(access.scope))},
                 {"sha256", String(Digest(text))},
                 {"payload", String(text)}});
-    output->canonical_model = config.model;
+    output->canonical_model = canonical_model;
     return {};
   }
   const std::string_view part(text);
@@ -143,7 +145,7 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
       access, output->binding_sha256, metadata, std::span(&part, 1), kLimits,
       3600, &output->reference, &output->hold, dependencies);
   uncertain = reply.commit_unknown;
-  if (reply.ok()) output->canonical_model = config.model;
+  if (reply.ok()) output->canonical_model = canonical_model;
   return reply;
 }
 

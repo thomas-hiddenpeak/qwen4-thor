@@ -36,7 +36,8 @@ struct EmbeddingHostAssets {
 Status LoadEmbeddingAssets(const std::string& directory,
                             EmbeddingHostAssets* out,
                             GrammarControl control = {},
-                            GrammarFailure* failure = nullptr);
+                            GrammarFailure* failure = nullptr,
+                            bool include_weights = true);
 int MaybeRunEmbeddingAssetWorker(int argc, char** argv);
 
 namespace detail {

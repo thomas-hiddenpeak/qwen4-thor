@@ -16,6 +16,66 @@ class Declarations(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
 
+    def native_embedding_fixture(self):
+        binary, release, model = self.fixture()
+        metadata = pkg.read(release)
+        declaration = metadata['release_declarations']
+        root = Path(declaration['directory'])
+        backend = dict(pkg.NATIVE_EMBEDDING, available=True, enabled=True)
+        caps = pkg.read(root/'capabilities.json')
+        caps['embeddings'] = dict(profile='q4t-embeddings-v1', native_backend=backend)
+        metadata['chat_protocol']['embeddings'] = caps['embeddings']
+        config = metadata['observed_configuration']
+        config['native_embedding'] = backend
+        for name, value in [('capabilities.json', caps), ('configuration.json', config)]:
+            pkg.save(root/name, value)
+            declaration['files'][name] = pkg.sha(root/name)
+        pkg.save(release, metadata)
+        return binary, release, model
+
+    def test_native_embedding_binding_survives_missing_optional_assets(self):
+        binary, release, model = self.native_embedding_fixture()
+        absent = self.root/'missing-assets'
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                               embedding_model_dir=absent)
+        manifest = pkg.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertFalse(absent.exists())
+        self.assertEqual(manifest['settings']['native_embedding'],
+                         dict(pkg.NATIVE_EMBEDDING, directory=str(absent)))
+        args = pkg.command(receipt['package'], manifest)
+        self.assertEqual(args[args.index('--embedding-model-dir')+1], str(absent))
+        self.assertEqual(args.count('--embedding-model-dir'), 1)
+        shutil.rmtree(Path(pkg.read(release)['release_declarations']['directory']))
+        release.unlink()
+        pkg.verify(receipt['package'], receipt['manifest_sha256'])
+
+    def test_native_embedding_requires_accepted_backend_configuration(self):
+        binary, release, model = self.fixture()
+        with self.assertRaisesRegex(RuntimeError, 'does not declare configured native'):
+            pkg.prepare(binary, release, model, self.root/'package',
+                        embedding_model_dir=self.root/'absent')
+        self.assertFalse((self.root/'package').exists())
+        for enabled in [False, None, 'true']:
+            metadata = dict(chat_protocol=dict(embeddings=dict(native_backend=
+                dict(pkg.NATIVE_EMBEDDING, available=True))), observed_configuration=
+                dict(native_embedding=dict(pkg.NATIVE_EMBEDDING, enabled=enabled)))
+            with self.assertRaises(RuntimeError):
+                pkg.check_embedding_declaration(metadata)
+
+    def test_native_embedding_settings_validate_path_identity_and_model_collision(self):
+        base = dict(pkg.NATIVE_EMBEDDING, directory='/optional/assets')
+        for path in ['', '/', '/a/', 'relative', '/a/../b', '/a//b', '/a/.', '/a\0b']:
+            with self.subTest(path=path), self.assertRaises(RuntimeError):
+                pkg.settings(8080, 0, native_embedding=dict(base, directory=path))
+        for field in pkg.NATIVE_EMBEDDING:
+            with self.subTest(field=field), self.assertRaises(RuntimeError):
+                pkg.settings(8080, 0, native_embedding=dict(base, **{field: 'wrong'}))
+        for names in [dict(name=base['model'], aliases=[]),
+                      dict(name='chat', aliases=[base['model']])]:
+            with self.assertRaisesRegex(RuntimeError, 'conflicts'):
+                pkg.settings(8080, 0, model_names=names, native_embedding=base)
+        self.assertNotIn('native_embedding', pkg.settings(8080, 0))
+
     def application_declaration_fixture(self):
         binary, release, model = self.fixture()
         metadata = pkg.read(release)

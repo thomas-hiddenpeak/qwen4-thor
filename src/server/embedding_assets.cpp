@@ -26,6 +26,7 @@ constexpr char kTokenizerDigest[] =
 struct Request {
   uint64_t magic = kMagic;
   uint64_t path_bytes = 0;
+  uint64_t include_weights = 1;
 };
 struct Reply {
   uint64_t magic = kMagic;
@@ -37,19 +38,6 @@ struct Reply {
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
-
-bool ValidDirectory(const std::string& path) {
-  if (path.size() < 2 || path.size() > 4096 || path.front() != '/' ||
-      path.back() == '/' || path.find('\0') != path.npos) return false;
-  for (size_t start = 1; start < path.size();) {
-    const auto end = path.find('/', start);
-    const auto part = path.substr(start, end == path.npos ? end : end - start);
-    if (part.empty() || part == "." || part == "..") return false;
-    if (end == path.npos) break;
-    start = end + 1;
-  }
-  return true;
-}
 
 std::string Digest(std::span<const uint8_t> value) {
   return trace::HexDigest(trace::Sha256(value));
@@ -100,13 +88,13 @@ void detail::SetEmbeddingAssetWorkerForTesting(std::string entry) {
 
 Status LoadEmbeddingAssets(const std::string& directory,
                             EmbeddingHostAssets* out, GrammarControl control,
-                            GrammarFailure* failure) {
+                            GrammarFailure* failure, bool include_weights) {
   if (failure) *failure = GrammarFailure::kNone;
   const auto fail = [&](GrammarFailure kind, const char* message) {
     if (failure) *failure = kind;
     return Status::Fail(message);
   };
-  if (!out || !ValidDirectory(directory))
+  if (!out || !model::ValidEmbeddingAssetDirectory(directory))
     return fail(GrammarFailure::kDependency, "invalid embedding asset directory");
   if (control.cancelled && control.cancelled())
     return fail(GrammarFailure::kCancelled, "embedding asset load cancelled");
@@ -129,7 +117,7 @@ Status LoadEmbeddingAssets(const std::string& directory,
                               control.cancelled);
   };
   try {
-    Request request{kMagic, directory.size()};
+    Request request{kMagic, directory.size(), include_weights ? 1UL : 0UL};
     Reply reply;
     if (!transfer(&request, sizeof(request), true) ||
         !transfer(const_cast<char*>(directory.data()), directory.size(), true) ||
@@ -138,7 +126,7 @@ Status LoadEmbeddingAssets(const std::string& directory,
     if (reply.magic != kMagic || reply.code != 0 ||
         reply.config_bytes != kConfigBytes ||
         reply.tokenizer_bytes != kTokenizerBytes ||
-        reply.weight_bytes != kNativeEmbeddingFileBytes)
+        reply.weight_bytes != (include_weights ? kNativeEmbeddingFileBytes : 0))
       return fail(GrammarFailure::kDependency, "embedding assets absent or invalid");
     std::string config(kConfigBytes, '\0'), tokenizer(kTokenizerBytes, '\0');
     if (!transfer(config.data(), config.size(), false) ||
@@ -159,13 +147,21 @@ Status LoadEmbeddingAssets(const std::string& directory,
                                        text::TokenizerProfile::kQwen3Embedding);
     if (!status) return fail(GrammarFailure::kDependency,
                             "embedding tokenizer contract differs");
-    next.file_bytes.resize(kNativeEmbeddingFileBytes);
+    next.file_bytes.resize(reply.weight_bytes);
     if (!transfer(next.file_bytes.data(), next.file_bytes.size(), false))
       return fail(process->Failure(), "embedding weight transfer failed");
     std::string trailing;
     if (!process->CollectOutput(&trailing, 0, control.compile_deadline,
                                 control.cancelled))
       return fail(process->Failure(), "embedding worker completion unconfirmed");
+    if (!include_weights) {
+      if (control.cancelled && control.cancelled())
+        return fail(GrammarFailure::kCancelled, "embedding asset load cancelled");
+      if (Clock::now() >= control.compile_deadline)
+        return fail(GrammarFailure::kTimeout, "embedding tokenizer deadline");
+      *out = std::move(next);
+      return {};
+    }
     if (Digest(next.file_bytes) != kNativeEmbeddingWeightSha256)
       return fail(GrammarFailure::kDependency, "embedding weights SHA256 differs");
     uint64_t header_bytes = 0;
@@ -201,29 +197,31 @@ int MaybeRunEmbeddingAssetWorker(int argc, char** argv) {
     Request request;
     if (!detail::WorkerTransfer(&request, sizeof(request), false) ||
         request.magic != kMagic || request.path_bytes > 4096 ||
-        request.path_bytes < 2) return 3;
+        request.path_bytes < 2 || request.include_weights > 1) return 3;
     std::string path(request.path_bytes, '\0');
     if (!detail::WorkerTransfer(path.data(), path.size(), false) ||
-        !ValidDirectory(path)) return 3;
+        !model::ValidEmbeddingAssetDirectory(path)) return 3;
     const int directory = open(path.c_str(),
                                O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
     std::array<int, 3> fds{-1, -1, -1};
     if (directory >= 0) {
       fds[0] = OpenFile(directory, "config.json", kConfigBytes);
       fds[1] = OpenFile(directory, "tokenizer.json", kTokenizerBytes);
-      fds[2] = OpenFile(directory, "model.safetensors", kNativeEmbeddingFileBytes);
+      if (request.include_weights)
+        fds[2] = OpenFile(directory, "model.safetensors", kNativeEmbeddingFileBytes);
       close(directory);
     }
-    const bool opened = std::all_of(fds.begin(), fds.end(),
-                                    [](int fd) { return fd >= 0; });
+    const bool opened = fds[0] >= 0 && fds[1] >= 0 &&
+                        (!request.include_weights || fds[2] >= 0);
     Reply reply;
     if (opened) reply = {kMagic, 0, kConfigBytes, kTokenizerBytes,
-                         kNativeEmbeddingFileBytes};
+                         request.include_weights ? kNativeEmbeddingFileBytes : 0};
     bool ok = detail::WorkerTransfer(&reply, sizeof(reply), true);
     if (ok && opened)
       ok = StreamFile(fds[0], kConfigBytes) &&
            StreamFile(fds[1], kTokenizerBytes) &&
-           StreamFile(fds[2], kNativeEmbeddingFileBytes);
+           (!request.include_weights ||
+            StreamFile(fds[2], kNativeEmbeddingFileBytes));
     for (const int fd : fds)
       if (fd >= 0) close(fd);
     return ok ? 0 : 4;

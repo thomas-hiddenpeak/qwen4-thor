@@ -1793,6 +1793,90 @@ Q4T_TEST(batch_moderations_rejects_cumulative_input_limit_and_wrong_kind) {
   return true;
 }
 
+Q4T_TEST(batch_native_embedding_rejects_mixed_models_without_relabeling) {
+  Fixture fixture;
+  fixture.config.native_embedding_enabled = true;
+  fixture.config.token_vocab = 256;
+  fixture.config.embedding_dimensions = 2560;
+  ObjectStore objects(fixture.options);
+  std::string raw;
+  for (const auto* name : {"qwen3-embedding-0.6b", "cpu-alias"}) {
+    raw += OutputJson(Object({{"custom_id", String(name)},
+        {"method", String("POST")}, {"url", String("/v1/embeddings")},
+        {"body", Object({{"model", String(name)},
+                         {"input", Array({Number(0)})}})}})) + '\n';
+  }
+  const auto file = Upload(objects, raw, "mixed.jsonl", "batch");
+  const auto created = BatchState(objects).Create(
+      Access(), {file, "/v1/embeddings", Object()});
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  BatchValidation validation(objects, id, fixture.config,
+                              Meter(objects, BudgetCodec()));
+  ObjectReply reply;
+  for (int i = 0; i < 6 && reply.ok() && !validation.Complete(); ++i)
+    reply = validation.Step(Access());
+  Q4T_CHECK(!reply.ok() && reply.http_status == 400 &&
+            reply.value.GetString("param") == "body.model");
+  const auto root = BatchState(objects).Load(Access(), id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->GetString("canonical_model")
+            == "qwen3-embedding-0.6b" &&
+            root.value.Find("data")->GetInt("validated_rows") == 1);
+  return true;
+}
+
+Q4T_TEST(batch_native_embedding_canonical_recount_survives_restart) {
+  Fixture fixture;
+  fixture.config.native_embedding_enabled = true;
+  fixture.config.token_vocab = 256;
+  fixture.config.embedding_dimensions = 2560;
+  fixture.config.max_len = 1;
+  fixture.config.capacities = {1};
+  Work work;
+  Json original;
+  {
+    ObjectStore objects(fixture.options);
+    work = Create(objects, Object({{"model", String("qwen3-embedding-0.6b")},
+        {"input", Array({Number(0), Number(151643)})}}), "/v1/embeddings");
+    BatchValidation validation(objects, work.id, fixture.config);
+    for (int i = 0; i < 6 && !validation.Complete(); ++i)
+      Q4T_CHECK(Ok(validation.Step(Access())));
+    Q4T_CHECK(validation.Complete());
+    const auto root = BatchState(objects).Load(Access(), work.id);
+    Q4T_CHECK(Ok(root) && root.value.Find("data")->GetString("canonical_model")
+              == "qwen3-embedding-0.6b");
+    original = BatchState(objects).Row(Access(), work.id, 0).value;
+    Q4T_CHECK(Ok(Files(objects).Erase(Access(), work.file)));
+  }
+  ObjectStore objects(fixture.options);
+  auto codec = BudgetCodec();
+  codec.encode = [](auto, auto*) {
+    return q4t::Status::Fail("Raw IDs must not be tokenized");
+  };
+  auto underlying = Meter(objects, codec);
+  bool selected = false;
+  BatchInputMeter meter = [&](auto endpoint, const auto& row, const auto& frozen,
+                              const auto& config, const auto& access, auto* out) {
+    selected = config.model == "qwen3-embedding-0.6b" &&
+               config.token_vocab == 151669 && config.max_len == 8192 &&
+               config.capacities.empty();
+    return underlying(endpoint, row, frozen, config, access, out);
+  };
+  Q4T_CHECK(Ok(RecountBatchInput(objects, Access(), work.id, fixture.config,
+                                 meter)) && selected);
+  const auto root = BatchState(objects).Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->GetInt("enqueued_input_tokens")
+            == 2 && root.value.Find("data")->GetString("canonical_model")
+            == "qwen3-embedding-0.6b");
+  auto row = BatchState(objects).Row(Access(), work.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.Find("input_budget")->GetInt("tokens") == 2);
+  std::erase_if(row.value.object, [](const auto& field) {
+    return field.first == "input_budget";
+  });
+  Q4T_CHECK(OutputJson(row.value) == OutputJson(original));
+  return true;
+}
+
 Q4T_TEST(batch_embeddings_freeze_raw_inputs_meter_and_restore_original) {
   Fixture fixture;
   fixture.config.token_vocab = 2048;

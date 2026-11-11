@@ -23,6 +23,7 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .token_vocab = std::min(static_cast<int>(tok_->VocabSize()),
                                   model_.Get().cfg.vocab),
           .embedding_dimensions = model_.Get().cfg.hs,
+          .native_embedding_enabled = !embedding_model_dir_.empty(),
           .request_deadline_ms = request_deadline_ms_,
           .admission = admission_limits_,
           .allow_media = allow_media_,
@@ -63,6 +64,7 @@ void ChatServer::HandleConfig(int fd) {
                                           : "ready";
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
+      R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
       R"(,"application_startup":{"responses":)" +
       ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
       ApplicationStartupJson(batches_.StartupHealth()) +

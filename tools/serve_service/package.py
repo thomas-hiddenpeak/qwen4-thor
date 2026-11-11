@@ -145,9 +145,28 @@ def application_settings(value):
     return dict(value)
 
 
+NATIVE_EMBEDDING = dict(profile='q4t-native-embedding-v1', model='qwen3-embedding-0.6b',
+    revision='97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3',
+    weight_sha256='0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd')
+
+
+def embedding_settings(value):
+    require(type(value) is dict and value.keys() == {*NATIVE_EMBEDDING, 'directory'}
+            and all(value[k] == v for k, v in NATIVE_EMBEDDING.items()),
+            'invalid native embedding identity')
+    path = value['directory']
+    require(type(path) is str and 1 < len(path.encode('utf-8')) <= 4096 and
+            path.startswith('/') and '\0' not in path and
+            not {'', '.', '..'}.intersection(path.split('/')[1:]),
+            'invalid native embedding directory')
+    # Asset presence is checked by the isolated endpoint loader. Verification
+    # of this optional configuration must not make Chat depend on its files.
+    return dict(value)
+
+
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
              nvml_policy='strict', model_names=None, application_state=None,
-             capacity_profile=None):
+             capacity_profile=None, native_embedding=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -187,6 +206,12 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         result['profile'] = capacity.validate(capacity_profile)
     if application_state is not None:
         result['application_state'] = application_settings(application_state)
+    if native_embedding is not None:
+        selected = embedding_settings(native_embedding)
+        names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
+        require(selected['model'] not in [names['name'], *names['aliases']],
+                'native embedding model conflicts with Chat registry')
+        result['native_embedding'] = selected
     return result
 
 
@@ -366,7 +391,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
             application_state=None, capacity_config=None, repository=None,
-            access_program_policy=None, file_input_policy=None):
+            access_program_policy=None, file_input_policy=None,
+            embedding_model_dir=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -374,7 +400,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         from tools.serve_service import capacity
         profile = capacity.normalize(capacity_config)
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
-                      nvml_policy, model_names, capacity_profile=profile)
+                      nvml_policy, model_names, capacity_profile=profile,
+                      native_embedding=(dict(NATIVE_EMBEDDING,
+                          directory=str(embedding_model_dir))
+                          if embedding_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -411,6 +440,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    if 'native_embedding' in config:
+        check_embedding_declaration(metadata)
     if access_raw is not None:
         require(read(declarations/'capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
@@ -526,7 +557,8 @@ def verify(package, digest):
                       config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10, 11) else 0,
                       config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10, 11) else 'strict',
                       config.get('model_names'), config.get('application_state'),
-                      config['profile'] if manifest['version'] == 11 else None)
+                      config['profile'] if manifest['version'] == 11 else None,
+                      config.get('native_embedding'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -621,6 +653,8 @@ def verify(package, digest):
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
+    if 'native_embedding' in config:
+        check_embedding_declaration(metadata)
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -637,6 +671,15 @@ def verify(package, digest):
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
             manifest['model_files'].keys(), 'model metadata incomplete')
     return manifest
+
+
+def check_embedding_declaration(metadata):
+    capability = metadata.get('chat_protocol', {}).get('embeddings', {}).get('native_backend', {})
+    observed = metadata.get('observed_configuration', {}).get('native_embedding', {})
+    require(capability.get('available') is True and observed.get('enabled') is True and
+            all(capability.get(k) == v and observed.get(k) == v
+                for k, v in NATIVE_EMBEDDING.items()),
+            'accepted engine does not declare configured native embedding backend')
 
 
 def command(package, manifest, *, state_directory=None):
@@ -660,6 +703,9 @@ def command(package, manifest, *, state_directory=None):
         args += ['--served-model-name', cfg['model_names']['name']]
         for alias in cfg['model_names']['aliases']:
             args += ['--model-alias', alias]
+    if 'native_embedding' in cfg:
+        selected = embedding_settings(cfg['native_embedding'])
+        args += ['--embedding-model-dir', selected['directory']]
     if 'application_state' in cfg:
         objects = application_settings(cfg['application_state'])
         directory = objects['directory']

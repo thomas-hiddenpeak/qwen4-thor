@@ -6,6 +6,7 @@
 #include "q4t/server/responses_api.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/batch_budget.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/request_control.h"
 
 namespace q4t::server {
@@ -61,26 +62,33 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   HandleChatImpl(-1, "", http.State(), false, job.run.get(), job.control);
 }
 
-BatchTokenCodec ChatServer::BatchCodec(const BinaryAccess& access) {
+BatchTokenCodec ChatServer::BatchCodec(const BinaryAccess& access,
+                                      bool native_embedding) {
   const auto cancelled = [this, access] {
     return stop_requested_.load() ||
            std::chrono::steady_clock::now() >= access.deadline ||
            (access.cancelled && access.cancelled());
   };
   BatchTokenCodec codec;
-  codec.encode = [this, cancelled](std::string_view text,
+  codec.encode = [this, cancelled, native_embedding](std::string_view text,
                                    std::vector<uint32_t>* tokens) {
-    auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+    auto& mutex = native_embedding ? embedding_tok_mu_ : tok_mu_;
+    auto lock = LockUnlessCancelled(mutex, cancelled);
     if (!lock.owns_lock())
       return Status::Fail("Batch tokenizer wait cancelled");
-    return tok_->Encode(text, tokens, {.cancelled = cancelled});
+    auto* tokenizer = native_embedding ? embedding_tok_.get() : tok_.get();
+    if (!tokenizer) return Status::Fail("Batch tokenizer is unavailable");
+    return tokenizer->Encode(text, tokens, {.cancelled = cancelled});
   };
-  codec.decode = [this, cancelled](const std::vector<uint32_t>& tokens,
+  codec.decode = [this, cancelled, native_embedding](const std::vector<uint32_t>& tokens,
                                    std::string* text) {
-    auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+    auto& mutex = native_embedding ? embedding_tok_mu_ : tok_mu_;
+    auto lock = LockUnlessCancelled(mutex, cancelled);
     if (!lock.owns_lock())
       return Status::Fail("Batch tokenizer wait cancelled");
-    return tok_->Decode(tokens, false, text);
+    auto* tokenizer = native_embedding ? embedding_tok_.get() : tok_.get();
+    if (!tokenizer) return Status::Fail("Batch tokenizer is unavailable");
+    return tokenizer->Decode(tokens, false, text);
   };
   codec.expand_media =
       [this](const io::Json& request, std::span<const VisionItem> images,
@@ -114,8 +122,18 @@ ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
   bounded.cancelled = [this, access] {
     return stop_requested_.load() || (access.cancelled && access.cancelled());
   };
-  const auto codec = BatchCodec(bounded);
-  return MeasureBatchInput(*objects_, endpoint, row, prepared, config, bounded,
+  const bool native = endpoint == "/v1/embeddings" &&
+                      config.native_embedding_enabled &&
+                      row.body.GetString("model") ==
+                          model::EmbeddingConfig::kModelId;
+  if (native) {
+    const auto loaded = EnsureNativeEmbedding(false, bounded);
+    if (!loaded.ok()) return loaded;
+  }
+  const auto codec = BatchCodec(bounded, native);
+  const auto planning = endpoint == "/v1/embeddings"
+      ? EmbeddingPlanningConfig(row.body.GetString("model"), config) : config;
+  return MeasureBatchInput(*objects_, endpoint, row, prepared, planning, bounded,
                            codec, budget, rate);
 }
 

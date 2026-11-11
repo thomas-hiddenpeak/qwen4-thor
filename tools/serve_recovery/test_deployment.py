@@ -21,6 +21,33 @@ def save(path, value):
     path.write_bytes(ledger.canonical(value));path.chmod(0o600)
 
 
+class EmbeddingTargetTests(unittest.TestCase):
+    def target(self, previous, following):
+        base = dict(ingress_mode='native', version=11, repository='/repo',
+                    lock_path='/lock', engine_manifest_sha256='sha',
+                    files={'source/tools/serve_recovery/deployment.py': 'sha'})
+        cores = [dict(model_dir='/model', settings=s) for s in (previous, following)]
+        with mock.patch.object(bundle, 'verify', return_value=base), \
+             mock.patch.object(bundle.engine, 'verify', side_effect=cores):
+            return d.check_target(dict(package='/old', manifest_sha256='a'),
+                                  dict(package='/new', manifest_sha256='b'))
+
+    def test_embedding_deployment_addition_and_asset_relocation_keep_identity(self):
+        value = dict(bundle.engine.NATIVE_EMBEDDING, directory='/assets/old')
+        self.target({}, dict(native_embedding=value))
+        self.target(dict(native_embedding=value), dict(native_embedding=dict(
+            value, directory='/assets/new')))
+
+    def test_embedding_deployment_cannot_drop_accepted_model_on_rollback(self):
+        value = dict(bundle.engine.NATIVE_EMBEDDING, directory='/assets')
+        for selected in [None, dict(value, revision='changed'),
+                         dict(value, weight_sha256='changed')]:
+            with self.subTest(selected=selected), self.assertRaisesRegex(
+                    ValueError, 'remove or change accepted embedding'):
+                self.target(dict(native_embedding=value),
+                            {} if selected is None else dict(native_embedding=selected))
+
+
 class DeploymentTests(unittest.TestCase):
     def setUp(self):
         self.fixture = test_native_bundle.BundleTests()

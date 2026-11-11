@@ -210,6 +210,7 @@ def main():
     p.add_argument('--binary', type=Path, default=ROOT/'build/q4t')
     p.add_argument('--release', type=Path, default=ROOT/'build/q4t.release.json')
     p.add_argument('--model-dir', type=Path, required=True)
+    p.add_argument('--embedding-model-dir', type=Path)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--operations-port', type=int, default=0)
@@ -254,6 +255,7 @@ def main():
                              if args.served_model_name is not None or args.model_alias else None,
                              access_program_policy=args.access_program_policy,
                              file_input_policy=args.file_input_policy,
+                             embedding_model_dir=args.embedding_model_dir,
                              capacity_config=pkg.read(args.capacity_config)
                                  if args.capacity_config is not None else None,
                              application_state=({**({'directory': args.object_store_dir}

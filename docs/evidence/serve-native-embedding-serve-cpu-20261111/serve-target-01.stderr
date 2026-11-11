@@ -1,0 +1,7 @@
+test_embedding_deployment_addition_and_asset_relocation_keep_identity (tools.serve_recovery.test_deployment.EmbeddingTargetTests.test_embedding_deployment_addition_and_asset_relocation_keep_identity) ... ok
+test_embedding_deployment_cannot_drop_accepted_model_on_rollback (tools.serve_recovery.test_deployment.EmbeddingTargetTests.test_embedding_deployment_cannot_drop_accepted_model_on_rollback) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK

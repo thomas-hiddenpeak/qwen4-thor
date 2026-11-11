@@ -1,5 +1,6 @@
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/server/file_limits.h"
+#include "q4t/server/embeddings_plan.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -22,7 +23,8 @@ std::string Quote(const std::string& value) {
 std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  bool mtp_enabled,
                                  uint64_t media_attention_shared_bytes,
-                                 const AccessProgramPolicy* access) {
+                                 const AccessProgramPolicy* access,
+                                 bool native_embedding) {
   const bool constrained = kStructuredDecodingAvailable;
   const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
@@ -203,7 +205,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("max_inputs":2048,"max_input_tokens":8192,)"
          R"("max_total_tokens":300000,"max_response_bytes":100663296,)"
          R"("prompt_template":"none","batch":true,)"
-         R"("quality":"generative_hidden_states_no_retrieval_training_claim"})"
+         R"("quality":"generative_hidden_states_no_retrieval_training_claim",)"
+         R"("native_backend":)" + NativeEmbeddingDescription(native_embedding) + "}" +
          R"(,"batches":{"profile":"q4t-batches-v1","endpoint":"/v1/batches",)"
          R"("create":true,"retrieve":true,"list":true,"cancel":true,)"
          R"("completion_window":"24h","max_requests":50000,)"

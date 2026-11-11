@@ -38,6 +38,9 @@ struct ChatPlanConfig {
   int default_max_tokens = 256;
   int token_vocab = 0;
   int embedding_dimensions = 0;
+  int embedding_min_dimensions = 1;
+  // Independently configured trained backend. Never adds a Chat model alias.
+  bool native_embedding_enabled = false;
   int request_deadline_ms = 1200000;
   AdmissionLimits admission;
   bool allow_media = false;

@@ -33,6 +33,8 @@ ObjectReply RecountBatchInput(ObjectStore& objects, const BinaryAccess& access,
   if (!meter || data.Has("enqueued_input_tokens") ||
       !data.GetBool("inputs_frozen") || data.GetInt("validated_rows") < 1)
     return Error(409, "batch_budget_conflict", "No legacy input to recount");
+  if (data.Find("batch")->GetString("endpoint") == "/v1/embeddings")
+    config = EmbeddingPlanningConfig(data.GetString("canonical_model"), config);
   if (config.model != data.GetString("canonical_model"))
     return Error(409, "batch_budget_model_mismatch",
                  "Legacy input requires its original canonical model");

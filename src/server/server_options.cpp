@@ -7,6 +7,7 @@
 #include <limits>
 
 #include "q4t/mtp/suffix_drafter.h"
+#include "q4t/model/embedding_config.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/object_store_options.h"
 
@@ -117,6 +118,13 @@ Status ValidateServerOptions(const ServerOptions& options) {
       options.client_policy_file.empty())
     return Status::Fail("access-program-policy-file requires client policy");
   if (options.model_dir.empty()) return Status::Fail("model-dir is empty");
+  if (!options.embedding_model_dir.empty()) {
+    if (!model::ValidEmbeddingAssetDirectory(options.embedding_model_dir))
+      return Status::Fail("embedding-model-dir must be an absolute asset path");
+    if (IsServedModel(model::EmbeddingConfig::kModelId,
+                      options.served_model_name, options.model_aliases))
+      return Status::Fail("embedding model name conflicts with Chat model names");
+  }
   if (options.file_input_policy_file.size() > 4096 ||
       options.file_input_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid file-input-policy-file path");
@@ -256,6 +264,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.object_max_total_objects;
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
+        key != "--embedding-model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
@@ -326,6 +335,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.moe_trace_workload = value;
     } else if (key == "--model-dir") {
       parsed.model_dir = value;
+    } else if (key == "--embedding-model-dir") {
+      parsed.embedding_model_dir = value;
     } else if (key == "--served-model-name") {
       parsed.served_model_name = value;
     } else if (key == "--model-alias") {

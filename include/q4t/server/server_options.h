@@ -38,6 +38,8 @@ struct ServerOptions {
   // 127.0.0.1, with its own bounded handlers; never serves generation.
   int operations_port = 0;
   std::string model_dir;
+  // Explicit optional trained embedding assets; never inferred/downloaded.
+  std::string embedding_model_dir;
   std::string served_model_name = "qwen3.8-flash-next";
   std::vector<std::string> model_aliases;
   // Durable application state, independent of model assets and KV caches.

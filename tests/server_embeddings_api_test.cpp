@@ -14,6 +14,7 @@
 #include "q4t/server/batch_usage.h"
 #include "q4t/server/embedding_metadata.h"
 #include "q4t/server/finite_response.h"
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/test.h"
@@ -74,6 +75,106 @@ void Save(const std::string& name, const std::string& value) {
   if (!output) throw std::runtime_error("Fixture output failed");
 }
 }  // namespace
+
+Q4T_TEST(embeddings_native_selection_preserves_chat_and_primary_contract) {
+  auto config = Config();
+  auto request = Read(R"({"model":"qwen3-embedding-0.6b","input":[151668]})");
+  EmbeddingsRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(!PlanEmbeddingsRequest(request, config, &plan, &error) &&
+            error.http_status == 404);
+  config.native_embedding_enabled = true;
+  Q4T_CHECK(PlanEmbeddingsRequest(request, config, &plan, &error) &&
+            plan.model == "qwen3-embedding-0.6b" &&
+            plan.hidden_size == 1024 && plan.dimensions == 1024);
+  ChatRequestPlan chat;
+  Q4T_CHECK(!PlanChatRequest(Read(R"({"model":"qwen3-embedding-0.6b",
+      "messages":[{"role":"user","content":"Hi"}]})"), config, &chat, &error) &&
+            error.http_status == 404);
+  Q4T_CHECK(PlanEmbeddingsRequest(Request(String("x")), config, &plan, &error) &&
+            plan.model == config.model && plan.hidden_size == 4);
+  Q4T_CHECK(config.model == "actual-qwen" && config.token_vocab == 256);
+  return true;
+}
+
+Q4T_TEST(embeddings_native_dimensions_vocab_and_limits_use_selected_model) {
+  auto config = Config();
+  config.native_embedding_enabled = true;
+  auto request = Read(R"({"model":"qwen3-embedding-0.6b","input":[151668]})");
+  EmbeddingsRequestPlan plan;
+  ChatPlanError error;
+  for (int dimension : {32, 64, 1024}) {
+    Set(&request, "dimensions", Number(dimension));
+    Q4T_CHECK(PlanEmbeddingsRequest(request, config, &plan, &error) &&
+              plan.dimensions == static_cast<size_t>(dimension));
+  }
+  for (int dimension : {0, 1, 31, 1025}) {
+    Set(&request, "dimensions", Number(dimension));
+    Q4T_CHECK(!PlanEmbeddingsRequest(request, config, &plan, &error) &&
+              error.param == "dimensions");
+  }
+  Set(&request, "dimensions", Number(32));
+  Set(&request, "input", Array({Number(151669)}));
+  Q4T_CHECK(!PlanEmbeddingsRequest(request, config, &plan, &error) &&
+            error.param == "input[0]");
+  return true;
+}
+
+Q4T_TEST(embeddings_native_preparation_keeps_eos_and_bypasses_primary_kv) {
+  auto config = Config();
+  config.native_embedding_enabled = true;
+  config.max_len = 1;
+  config.capacities = {1};
+  auto request = Read(R"({"model":"qwen3-embedding-0.6b","input":"!"})");
+  EmbeddingsRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(PlanEmbeddingsRequest(request, config, &plan, &error));
+  std::vector<std::vector<int32_t>> inputs;
+  uint64_t total = 0;
+  size_t count = 8191, calls = 0;
+  const auto encoded = [&](auto, std::vector<uint32_t>* ids) {
+    ++calls;
+    ids->assign(count, 0);
+    ids->push_back(151643);
+    return q4t::Status{};
+  };
+  Q4T_CHECK(PrepareEmbeddingInputs(plan, config, encoded, &inputs, &total, &error)
+            && total == 8192 && inputs[0].back() == 151643);
+  count = 8192;
+  Q4T_CHECK(!PrepareEmbeddingInputs(plan, config, encoded, &inputs, &total, &error)
+            && total == 0 && inputs.empty());
+  Set(&request, "input", Array({Number(0), Number(151643)}));
+  Q4T_CHECK(PlanEmbeddingsRequest(request, config, &plan, &error) &&
+            PrepareEmbeddingInputs(plan, config, encoded, &inputs, &total, &error)
+            && total == 2 && inputs[0] == std::vector<int32_t>({0, 151643}) &&
+            calls == 2);
+  ClientLimits client;
+  client.max_prompt_tokens = 1;
+  config.client_limits = &client;
+  Q4T_CHECK(!PrepareEmbeddingInputs(plan, config, encoded, &inputs, &total, &error)
+            && error.code == "client_prompt_limit_exceeded");
+  return true;
+}
+
+Q4T_TEST(embeddings_native_discovery_distinguishes_configuration_and_health) {
+  for (bool enabled : {false, true}) {
+    auto config = Config();
+    config.native_embedding_enabled = enabled;
+    const auto caps = Read(ChatCapabilitiesJson("chat", false, true, 0, nullptr,
+                                                enabled));
+    const auto value = Read(EffectiveServeConfigJson({}, config, true, true, 8));
+    const auto* backend = caps.Find("embeddings")->Find("native_backend");
+    Q4T_CHECK(backend && backend->GetBool("available") &&
+              backend->GetBool("enabled") == enabled &&
+              backend->GetInt("dimensions") == 1024 &&
+              backend->GetInt("dimension_min") == 32 &&
+              !backend->GetBool("core_readiness_dependency") &&
+              !backend->GetBool("model_restart_on_failure"));
+    Q4T_CHECK(OutputJson(*backend) == OutputJson(*value.Find("native_embedding")));
+    Q4T_CHECK(!value.Find("native_embedding")->Has("directory"));
+  }
+  return true;
+}
 
 Q4T_TEST(embeddings_input_families_defaults_and_served_alias) {
   for (const auto* input :

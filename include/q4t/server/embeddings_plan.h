@@ -30,10 +30,18 @@ struct EmbeddingsRequestPlan {
   std::vector<EmbeddingInput> inputs;
 };
 
+// Select only an explicitly enabled embedding model. Retains authenticated
+// client limits but uses that model's own vocabulary/context/dimensions.
+// Chat and other generative planners never call this selector.
+ChatPlanConfig EmbeddingPlanningConfig(std::string_view requested_model,
+                                       const ChatPlanConfig& config);
+std::string NativeEmbeddingDescription(bool enabled);
+
 Status PlanEmbeddingsRequest(const io::Json& request,
                              const ChatPlanConfig& config,
                              EmbeddingsRequestPlan* plan, ChatPlanError* error);
-// Raw model input: no chat template, implicit BOS/EOS, or token truncation.
+// Raw model input: no chat template or truncation. The explicitly selected
+// tokenizer applies its trained postprocessor; raw token IDs bypass it.
 // Returns every input or none; tokenization has the caller's cancellation.
 Status PrepareEmbeddingInputs(const EmbeddingsRequestPlan& plan,
                               const ChatPlanConfig& config,

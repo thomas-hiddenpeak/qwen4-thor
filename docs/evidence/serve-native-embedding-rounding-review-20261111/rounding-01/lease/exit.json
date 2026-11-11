@@ -1,0 +1,28 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "HF_HUB_OFFLINE=1",
+    "timeout",
+    "120s",
+    ".q4t-work/refenv/bin/python",
+    "tools/native_embedding/rounding_review.py",
+    "run",
+    "--output",
+    ".q4t-work/native-embedding-20261111/rounding-01"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "finished": {
+    "utc": "2026-11-11T11:55:19.353615+00:00",
+    "monotonic": 2588201.870501242,
+    "pid": 1702640
+  }
+}

@@ -1,0 +1,65 @@
+{"name": "input_norm", "category": "same_operand_bf16", "values": 132096, "differences": 0, "max_absolute_error": 0.0}
+{"name": "q", "category": "fp32_dot_bf16_rounding", "values": 264192, "violations": 0, "max_absolute_error": 0.15070347487926483, "max_fp32_error_bound": 0.017175241913013187}
+{"name": "k", "category": "fp32_dot_bf16_rounding", "values": 132096, "violations": 0, "max_absolute_error": 0.23734206147491932, "max_fp32_error_bound": 0.011573333046739853}
+{"name": "v", "category": "fp32_dot_bf16_rounding", "values": 132096, "violations": 0, "max_absolute_error": 0.031022504903376102, "max_fp32_error_bound": 0.006602284784509441}
+{"name": "norm_rope_q", "category": "same_operand_bf16", "values": 264192, "differences": 1, "max_absolute_error": 0.015625}
+{"name": "norm_rope_k", "category": "same_operand_bf16", "values": 132096, "differences": 4, "max_absolute_error": 0.0078125}
+{"name": "rope_table", "category": "same_operand_bf16", "values": 16512, "differences": 0, "max_absolute_error": 0.0}
+{"name": "transpose_values", "category": "same_operand_bf16", "values": 147456, "differences": 0, "max_absolute_error": 0.0}
+{"name": "qk_0", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.2499549686908722, "max_fp32_error_bound": 0.0013615559628844883}
+{"name": "softmax_0", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_0", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0038299560546875, "max_fp32_error_bound": 1.6035266824259005e-05}
+{"name": "qk_1", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.4945354536175728, "max_fp32_error_bound": 0.001567812821819807}
+{"name": "softmax_1", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_1", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.002919912338256836, "max_fp32_error_bound": 1.5248697450045798e-05}
+{"name": "qk_2", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24945109710097313, "max_fp32_error_bound": 0.0010511257318744113}
+{"name": "softmax_2", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_2", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0020313262939453125, "max_fp32_error_bound": 1.429683372575754e-05}
+{"name": "qk_3", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24968399479985237, "max_fp32_error_bound": 0.001083228885165674}
+{"name": "softmax_3", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_3", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.001953125, "max_fp32_error_bound": 1.429683372575754e-05}
+{"name": "qk_4", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24758674949407578, "max_fp32_error_bound": 0.0015311022614848111}
+{"name": "softmax_4", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_4", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.022624805569648743, "max_fp32_error_bound": 8.11724535128674e-05}
+{"name": "qk_5", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.49969686567783356, "max_fp32_error_bound": 0.001589101573506625}
+{"name": "softmax_5", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_5", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.01544189453125, "max_fp32_error_bound": 3.5660930997225866e-05}
+{"name": "qk_6", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.49390172958374023, "max_fp32_error_bound": 0.0013561802429325647}
+{"name": "softmax_6", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_6", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.02838134765625, "max_fp32_error_bound": 8.331159390476478e-05}
+{"name": "qk_7", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.37224364280700684, "max_fp32_error_bound": 0.001410378802679504}
+{"name": "softmax_7", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_7", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0189208984375, "max_fp32_error_bound": 8.324054356883236e-05}
+{"name": "qk_8", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24600426852703094, "max_fp32_error_bound": 0.0012882149515737625}
+{"name": "softmax_8", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_8", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.007476806640625, "max_fp32_error_bound": 3.290547332199489e-05}
+{"name": "qk_9", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24937710165977478, "max_fp32_error_bound": 0.0012510901168794255}
+{"name": "softmax_9", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_9", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.007476806640625, "max_fp32_error_bound": 3.291365884456775e-05}
+{"name": "qk_10", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24887102842330933, "max_fp32_error_bound": 0.0013559007176078075}
+{"name": "softmax_10", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_10", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0089263916015625, "max_fp32_error_bound": 4.8356793151428625e-05}
+{"name": "qk_11", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24941730499267578, "max_fp32_error_bound": 0.001167286078184892}
+{"name": "softmax_11", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_11", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.014644861221313477, "max_fp32_error_bound": 4.8362686727681084e-05}
+{"name": "qk_12", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24859261512756348, "max_fp32_error_bound": 0.0012149886752592658}
+{"name": "softmax_12", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_12", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0206298828125, "max_fp32_error_bound": 9.07507441583864e-05}
+{"name": "qk_13", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24849272519350052, "max_fp32_error_bound": 0.0013748818231257797}
+{"name": "softmax_13", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_13", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.0206298828125, "max_fp32_error_bound": 9.083651206390482e-05}
+{"name": "qk_14", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.24871230125427246, "max_fp32_error_bound": 0.001510134105886247}
+{"name": "softmax_14", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_14", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.015106201171875, "max_fp32_error_bound": 5.5651861836722755e-05}
+{"name": "qk_15", "category": "fp32_dot_bf16_rounding", "values": 18576, "violations": 0, "max_absolute_error": 0.249985933303833, "max_fp32_error_bound": 0.0013346192614315563}
+{"name": "softmax_15", "category": "fp32_softmax_bf16", "values": 18576, "violations": 0}
+{"name": "pv_15", "category": "fp32_dot_bf16_rounding", "values": 16512, "violations": 0, "max_absolute_error": 0.01263427734375, "max_fp32_error_bound": 5.561394649616527e-05}
+{"name": "merge_heads", "category": "same_operand_bf16", "values": 264192, "differences": 0, "max_absolute_error": 0.0}
+{"name": "attention_projection", "category": "fp32_dot_bf16_rounding", "values": 132096, "violations": 0, "max_absolute_error": 0.06240786542184651, "max_fp32_error_bound": 0.00573082624409828}
+{"name": "attention_residual", "category": "same_operand_bf16", "values": 132096, "differences": 0, "max_absolute_error": 0.0}
+{"name": "post_norm", "category": "same_operand_bf16", "values": 132096, "differences": 0, "max_absolute_error": 0.0}
+{"name": "gate_projection", "category": "fp32_dot_bf16_rounding", "values": 396288, "violations": 0, "max_absolute_error": 0.780020902007891, "max_fp32_error_bound": 0.01859437433451172}
+{"name": "up_projection", "category": "fp32_dot_bf16_rounding", "values": 396288, "violations": 0, "max_absolute_error": 0.4137584142808919, "max_fp32_error_bound": 0.014206329512256241}
+{"name": "swiglu", "category": "same_operand_bf16", "values": 396288, "differences": 0, "max_absolute_error": 0.0}
+{"name": "down_projection", "category": "fp32_dot_bf16_rounding", "values": 132096, "violations": 0, "max_absolute_error": 16.009915118047502, "max_fp32_error_bound": 1.2987841901033221}
+{"name": "final_residual", "category": "same_operand_bf16", "values": 132096, "differences": 0, "max_absolute_error": 0.0}

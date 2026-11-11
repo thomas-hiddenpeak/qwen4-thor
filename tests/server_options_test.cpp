@@ -20,6 +20,22 @@ bool Parse(std::initializer_list<std::string_view> args, ServerOptions* out) {
 }
 }  // namespace
 
+Q4T_TEST(serve_embedding_options_bind_distinct_model_and_absolute_assets) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({"--embedding-model-dir", "/absent/optional-assets"}, &options));
+  Q4T_CHECK(options.embedding_model_dir == "/absent/optional-assets");
+  for (const auto* path : {"relative", "/", "/a/", "/a//b", "/a/../b", "/a/."}) {
+    Q4T_CHECK(!Parse({"--embedding-model-dir", path}, &options));
+    Q4T_CHECK(options.embedding_model_dir == "/absent/optional-assets");
+  }
+  Q4T_CHECK(!Parse({"--embedding-model-dir"}, &options));
+  Q4T_CHECK(!Parse({"--served-model-name", "qwen3-embedding-0.6b"}, &options));
+  Q4T_CHECK(!Parse({"--model-alias", "qwen3-embedding-0.6b"}, &options));
+  Q4T_CHECK(options.served_model_name == Defaults().served_model_name &&
+            options.model_aliases.empty());
+  return true;
+}
+
 Q4T_TEST(serve_access_program_option_requires_trusted_client_policy) {
   auto options = Defaults();
   Q4T_CHECK(!Parse({"--access-program-policy-file", "/private/access.json"},

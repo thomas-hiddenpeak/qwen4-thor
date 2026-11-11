@@ -364,7 +364,13 @@ void ChatServer::HandleHealth(int fd) {
 }
 
 void ChatServer::HandleModels(int fd) {
-  SendSimple(fd, 200, "OK", model_catalog_.ListJson(), "application/json");
+  auto body = model_catalog_.ListJson();
+  if (!embedding_model_dir_.empty()) {
+    body.resize(body.size() - 2);
+    body += ',' + embedding_catalog_.RetrieveJson(
+                      model::EmbeddingConfig::kModelId) + "]}";
+  }
+  SendSimple(fd, 200, "OK", body, "application/json");
 }
 
 void ChatServer::HandleModel(int fd, const std::string& method,
@@ -374,7 +380,9 @@ void ChatServer::HandleModel(int fd, const std::string& method,
   if (!decoded) {
     detail::SendError(fd, 400, decoded.message(), {}, "invalid_model_path",
                       "model");
-  } else if (!model_catalog_.Contains(model)) {
+  } else if (!model_catalog_.Contains(model) &&
+             (embedding_model_dir_.empty() ||
+              !embedding_catalog_.Contains(model))) {
     detail::SendError(fd, 404, "model is not registered by this server", {},
                       "model_not_found", "model");
   } else if (method == "DELETE") {
@@ -383,7 +391,9 @@ void ChatServer::HandleModel(int fd, const std::string& method,
     detail::SendError(fd, 403, "loaded base models cannot be deleted", {},
                       "model_not_deletable", "model");
   } else {
-    SendSimple(fd, 200, "OK", model_catalog_.RetrieveJson(model),
+    const auto& catalog = model_catalog_.Contains(model) ? model_catalog_
+                                                        : embedding_catalog_;
+    SendSimple(fd, 200, "OK", catalog.RetrieveJson(model),
                "application/json");
   }
 }
@@ -392,7 +402,8 @@ void ChatServer::HandleCapabilities(int fd) {
   SendSimple(fd, 200, "OK",
              ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_,
                                   vision_device_budget_.attention_shared_bytes,
-                                  access_program_policy_.get()),
+                                  access_program_policy_.get(),
+                                  !embedding_model_dir_.empty()),
              "application/json");
 }
 

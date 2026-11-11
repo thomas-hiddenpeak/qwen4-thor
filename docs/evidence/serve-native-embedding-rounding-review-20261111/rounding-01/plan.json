@@ -1,0 +1,231 @@
+{
+  "limits": {
+    "seconds": 120,
+    "cpu_layer_forwards": 16,
+    "full_model_starts": 0,
+    "gpu_model_starts": 0,
+    "http_requests": 0
+  },
+  "rows": [
+    {
+      "case": 1,
+      "layer": 28,
+      "original_comparison": {
+        "case": 1,
+        "tensor": "layer-28.bf16",
+        "min_cosine": 0.99792678163907,
+        "max_normalized_absolute_error": 0.05720597716074799,
+        "max_relative_l2_error": 0.07409991319688075,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-1/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-1/layer-28.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-1/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-1/layer-28.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 6,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-06.bf16",
+        "min_cosine": 0.9998408719791995,
+        "max_normalized_absolute_error": 0.006919705754393074,
+        "max_relative_l2_error": 0.021454429624547203,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-05.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-06.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-05.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-06.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 7,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-07.bf16",
+        "min_cosine": 0.9998094413908132,
+        "max_normalized_absolute_error": 0.0064431609581446225,
+        "max_relative_l2_error": 0.022128786555487858,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-06.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-07.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-06.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-07.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 8,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-08.bf16",
+        "min_cosine": 0.9998255837160971,
+        "max_normalized_absolute_error": 0.005014189270342084,
+        "max_relative_l2_error": 0.020146413501426184,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-07.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-08.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-07.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-08.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 9,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-09.bf16",
+        "min_cosine": 0.9997485668945201,
+        "max_normalized_absolute_error": 0.008121656945733802,
+        "max_relative_l2_error": 0.023319165457484598,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-08.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-09.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-08.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-09.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 24,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-24.bf16",
+        "min_cosine": 0.9999017474544379,
+        "max_normalized_absolute_error": 0.005686968099775869,
+        "max_relative_l2_error": 0.014030810638604462,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-23.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-24.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-23.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-24.bf16"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "layer": 28,
+      "original_comparison": {
+        "case": 2,
+        "tensor": "layer-28.bf16",
+        "min_cosine": 0.9963046977952648,
+        "max_normalized_absolute_error": 0.07969376804921144,
+        "max_relative_l2_error": 0.09485667173742945,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-28.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-28.bf16"
+        }
+      }
+    },
+    {
+      "case": 3,
+      "layer": 28,
+      "original_comparison": {
+        "case": 3,
+        "tensor": "layer-28.bf16",
+        "min_cosine": 0.9963046977952648,
+        "max_normalized_absolute_error": 0.07969376804921144,
+        "max_relative_l2_error": 0.09485667173742945,
+        "accepted": false
+      },
+      "operands": {
+        "native": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-3/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-3/layer-28.bf16"
+        },
+        "reference": {
+          "input": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-3/layer-27.bf16",
+          "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-3/layer-28.bf16"
+        }
+      }
+    }
+  ],
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-1/layer-27.bf16": "bba053edac603c29d5031321f92525444b3cf072d694f650da7ac2aca21bca2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-1/layer-28.bf16": "1c256d70c11aab76060958b71ba9097d14e227e63d000507461c399e1e686781",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-1/layer-27.bf16": "f642a8d5bc0b65c55611a68ebccf261a89258317ce82748dd9e643105457f51f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-1/layer-28.bf16": "22d1f057cb8eff1df5d5df522c214d67f7af53f459dea0b97cad8c0707026467",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-05.bf16": "904f14624d8dba4fd85875c053a2da6ebfdd399798b9e2741fc2c82ce3081a33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-06.bf16": "32a93f842bb3af332ac00545a015d0ff65003f84458a2e6d4a980a3ff546206c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-05.bf16": "0c05c5d496200f930af409edec486533efcba105fa42183a31c2d26411f28056",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-06.bf16": "a2c13d5e0b566299aaf03617dd38d9f7a00201eb6f3f718dec0b9b9d04e75ba5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-07.bf16": "9d32493915e219dce85306bbf6bf1ccc6925cb54cce3d07b9973cb943f90dbf0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-07.bf16": "70a2848c57705a772d442439e10852689d06058d0f450de39eef2aa8844814cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-08.bf16": "65b4113b717ff6ab898c03f9c03e210a8f630f110ed94f863286a7fa58aec670",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-08.bf16": "b4f7420bfa78bb43bc43c9cc5c699e2144dd29d65a7398fc04927dfa7aeb6547",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-09.bf16": "a9ed11f8f58f80fd760596000d7d6553702830be46f2593822e9b01b46df116b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-09.bf16": "e225fd52ff8d9d0de52c61b7437e388f72258f85a159a250429719e0e0deaac0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-23.bf16": "99d0ace2d9b1c24aef8f47947e79c1b4cb30937cf69bbd1133745dba03ef0c47",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-24.bf16": "9573f6171c6ff8025ff6c73d271f8f7ebea1b27317adec011fb9db9201fba61a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-23.bf16": "364a8617c733224786ac37d8a561e7b89a59b60f86c0f7cadace9f1df66f984a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-24.bf16": "f73052e316d90df5a1b16b3da548c7433b921979a16efc5fe285fc2ea3f32b86",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-27.bf16": "cee6da1e4362756ee015641912e4bc4104d45bf5c3a377c9d2dc2efdbfce70ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-2/layer-28.bf16": "53e5be74a7bb9e73623834cea8f124f15ca07a14c8567e333c418cbc005fe596",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-27.bf16": "84918ac5c7d302fbf759619632a00424ce4ebf87dab598d80e16f02f2a04583e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-2/layer-28.bf16": "c8993baabd23e21cac3f8f0eddf853fe98f69482141319071d2a0e1db8285226",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-3/layer-27.bf16": "d7d8fc57d6b9af7467bf353a2fbb1f1ce17b6def09d0e372c2314fa91ba12369",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native/case-3/layer-28.bf16": "0ef3c6670d634d831ec9fc13e9546df8faa00a4578e23daa4b7131be528273f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-3/layer-27.bf16": "a1433930a55ff866d2d3d09e4e6014408bcc0cc0c0601a6808867b0fb92dc36f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference/case-3/layer-28.bf16": "8aec63680cd7dc6fe58cf1a1d5e38d6bdc7b66294bd6488748488a9b74a3117f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/plan.json": "3e10c1412823e639963d0c0f4854550ec12701d04a43f2277d819b6cb4099da8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/comparison.json": "0ebfb9c2ba3d338a5d038ae0fedcb9706a53c1718576e35ade955617490e612c",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_embedding/rounding_review.py": "1187f7ac5422c655f4e91132be271be6170e2cf5310ca45e686cbe4f78022717"
+  },
+  "assets": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+  "weight_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd",
+  "thresholds": {
+    "min_cosine": 0.999,
+    "max_normalized_absolute_error": 0.005,
+    "max_relative_l2_error": 0.03,
+    "retrieval_top1_required": 5
+  },
+  "original_gate_accepted": false,
+  "default": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "0f19aeba0b2b6810d1274ab1f9f06711ef10eda6ad6dc055ccdcf3a74580e454"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "status": "CPU_ACCEPTED_BUSINESS_PENDING",
+  "cpp": 18,
+  "python_package": 3,
+  "python_deployment": 2,
+  "python_discovery_driver": 5,
+  "total_distinct": 28,
+  "default_unchanged": true,
+  "engine_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "compiled_sources": 389,
+  "gpu_http_requests": 0,
+  "full_performance_or_quality_matrix": false
+}

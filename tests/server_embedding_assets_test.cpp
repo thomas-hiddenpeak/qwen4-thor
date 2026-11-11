@@ -58,6 +58,53 @@ struct Fixture {
 };
 }  // namespace
 
+Q4T_TEST(embedding_assets_metadata_only_uses_real_tokenizer_without_weights) {
+  Fixture fixture;
+  const char* root = std::getenv("Q4T_EMBEDDING_ASSETS");
+  const fs::path source = root ? root :
+      ".q4t-work/native-embedding-20261111/assets";
+  for (const char* name : {"config.json", "tokenizer.json"})
+    fs::copy_file(source / name, fixture.directory / name);
+  // A FIFO catches an accidental weights open; this path must not read it.
+  Q4T_CHECK(!mkfifo((fixture.directory / "model.safetensors").c_str(), 0600));
+  fixture.control.compile_deadline = Clock::now() + 15s;
+  Q4T_CHECK(LoadEmbeddingAssets(fixture.directory, &fixture.assets,
+                               fixture.control, &fixture.failure, false));
+  Q4T_CHECK(fixture.failure == GrammarFailure::kNone &&
+            fixture.assets.file_bytes.empty() && fixture.assets.WeightBytes().empty()
+            && fixture.assets.layout.tensors.empty() && fixture.assets.tokenizer);
+  std::vector<uint32_t> ids;
+  Q4T_CHECK(fixture.assets.tokenizer->Encode("!", &ids) &&
+            ids == std::vector<uint32_t>({0, 151643}));
+  Q4T_CHECK(fixture.control.counters->started == 1 &&
+            fixture.control.counters->active == 0 &&
+            fixture.control.counters->reaped == 1);
+  Q4T_CHECK(!LoadEmbeddingAssets(fixture.directory, &fixture.assets,
+                                fixture.control, &fixture.failure, true));
+  Q4T_CHECK(fixture.failure == GrammarFailure::kDependency &&
+            fixture.assets.tokenizer && fixture.assets.file_bytes.empty() &&
+            fixture.control.counters->active == 0 &&
+            fixture.control.counters->reaped == 2);
+  return true;
+}
+
+Q4T_TEST(embedding_assets_metadata_mode_preserves_output_on_bad_hash_and_cancel) {
+  Fixture fixture;
+  Q4T_CHECK(fixture.Size("config.json", 727) &&
+            fixture.Size("tokenizer.json", 11423705));
+  Q4T_CHECK(!LoadEmbeddingAssets(fixture.directory, &fixture.assets,
+                                fixture.control, &fixture.failure, false) &&
+            fixture.failure == GrammarFailure::kDependency);
+  fixture.control.cancelled = [] { return true; };
+  Q4T_CHECK(!LoadEmbeddingAssets(fixture.directory, &fixture.assets,
+                                fixture.control, &fixture.failure, false) &&
+            fixture.failure == GrammarFailure::kCancelled);
+  Q4T_CHECK(fixture.assets.file_bytes == std::vector<uint8_t>({42}) &&
+            !fixture.assets.tokenizer && fixture.control.counters->started == 1 &&
+            fixture.control.counters->active == 0);
+  return true;
+}
+
 Q4T_TEST(embedding_assets_invalid_path_cancel_and_deadline_start_no_child) {
   Fixture fixture;
   for (const char* path : {"", "relative", "/", "/tmp/../x", "/tmp//x"})

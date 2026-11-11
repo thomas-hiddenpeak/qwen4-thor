@@ -1,4 +1,5 @@
 #include "q4t/server/embeddings_plan.h"
+#include "q4t/model/embedding_config.h"
 
 #include <algorithm>
 #include <bit>
@@ -6,6 +7,7 @@
 #include <cmath>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/embedding_assets.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/output_schema.h"
 #include "responses_json.h"
@@ -56,9 +58,43 @@ std::string Base64(std::span<const float> vector) {
 }
 }  // namespace
 
-Status PlanEmbeddingsRequest(const Json& request, const ChatPlanConfig& config,
+std::string NativeEmbeddingDescription(bool enabled) {
+  return std::string(R"({"profile":"q4t-native-embedding-v1",)") +
+      R"("available":true,"enabled":)" + (enabled ? "true" : "false") +
+      R"(,"model":")" + model::EmbeddingConfig::kModelId +
+      R"(","revision":")" + kNativeEmbeddingRevision +
+      R"(","weight_sha256":")" + kNativeEmbeddingWeightSha256 +
+      R"(","weight_file_bytes":)" + std::to_string(kNativeEmbeddingFileBytes) +
+      R"(,"executor":"native_qwen3_dense_bf16","dimensions":1024,)"
+      R"("dimension_min":32,"dimension_selection":"prefix_then_l2",)"
+      R"("input_tokens_max":8192,"token_vocab":151669,)"
+      R"("text_postprocessor":"append_eos_151643","raw_tokens_append_eos":false,)"
+      R"("query_instruction":"caller_supplied","lazy_assets":true,)"
+      R"("core_readiness_dependency":false,"model_restart_on_failure":false})";
+}
+
+ChatPlanConfig EmbeddingPlanningConfig(std::string_view requested_model,
+                                       const ChatPlanConfig& config) {
+  auto selected = config;
+  using C = model::EmbeddingConfig;
+  if (config.native_embedding_enabled && requested_model == C::kModelId) {
+    selected.model = C::kModelId;
+    selected.model_aliases.clear();
+    selected.max_len = C::kInputTokens;
+    selected.token_vocab = C::kVocab;
+    selected.embedding_dimensions = C::kHidden;
+    selected.embedding_min_dimensions = C::kMinimumDimensions;
+    // Its temporary tensors do not use the primary model's KV capacity.
+    selected.capacities.clear();
+    selected.allow_media = false;
+  }
+  return selected;
+}
+
+Status PlanEmbeddingsRequest(const Json& request, const ChatPlanConfig& base,
                              EmbeddingsRequestPlan* plan,
                              ChatPlanError* error) {
+  const auto config = EmbeddingPlanningConfig(request.GetString("model"), base);
   *plan = {};
   *error = {};
   auto status = InputFields(
@@ -73,6 +109,8 @@ Status PlanEmbeddingsRequest(const Json& request, const ChatPlanConfig& config,
                    "model_not_found", 404);
   if (config.embedding_dimensions < 1 ||
       config.embedding_dimensions > static_cast<int>(kEmbeddingDimensions) ||
+      config.embedding_min_dimensions < 1 ||
+      config.embedding_min_dimensions > config.embedding_dimensions ||
       config.token_vocab < 1 || config.max_len < 1)
     return Invalid(error, "model", "Invalid native embedding configuration",
                    "embedding_configuration_invalid", 503);
@@ -81,7 +119,8 @@ Status PlanEmbeddingsRequest(const Json& request, const ChatPlanConfig& config,
   candidate.hidden_size = config.embedding_dimensions;
   candidate.dimensions = candidate.hidden_size;
   if (const auto* dimensions = request.Find("dimensions")) {
-    if (!IsInputInteger(*dimensions) || dimensions->number < 1 ||
+    if (!IsInputInteger(*dimensions) ||
+        dimensions->number < config.embedding_min_dimensions ||
         dimensions->number > config.embedding_dimensions)
       return Invalid(error, "dimensions",
                      "Dimensions must fit the served final hidden state");
@@ -140,7 +179,7 @@ Status PlanEmbeddingsRequest(const Json& request, const ChatPlanConfig& config,
 }
 
 Status PrepareEmbeddingInputs(const EmbeddingsRequestPlan& plan,
-                              const ChatPlanConfig& config,
+                              const ChatPlanConfig& base,
                               const PromptEncoder& encode,
                               std::vector<std::vector<int32_t>>* inputs,
                               uint64_t* total, ChatPlanError* error) {
@@ -149,6 +188,7 @@ Status PrepareEmbeddingInputs(const EmbeddingsRequestPlan& plan,
   *error = {};
   if (!encode || plan.inputs.empty() || plan.inputs.size() > kEmbeddingInputs)
     return Invalid(error, "input", "Invalid embedding preparation");
+  const auto config = EmbeddingPlanningConfig(plan.model, base);
   std::vector<std::vector<int32_t>> candidate;
   uint64_t count = 0;
   for (size_t i = 0; i < plan.inputs.size(); ++i) {

@@ -254,6 +254,19 @@ void ChatServer::HandleEmbeddings(int fd, const std::string& body,
         control->Cancel(RequestControl::State::kShutdown);
       return detail::RequestCancelled(control.get(), fd);
     };
+    const bool native = config.native_embedding_enabled &&
+                        plan.model == model::EmbeddingConfig::kModelId;
+    if (native) {
+      RequestDiagnostics::Scope waiting(
+          diagnostic, RequestDiagnostics::Wait::kStorage);
+      const auto loaded = EnsureNativeEmbedding(
+          false, {{}, control->deadline(), cancelled});
+      if (!loaded.ok()) {
+        detail::SendError(fd, loaded.http_status, loaded.ClientMessage(), {},
+                          loaded.ClientCode());
+        return;
+      }
+    }
     std::vector<std::vector<int32_t>> inputs;
     uint64_t total = 0;
     status = PrepareEmbeddingInputs(
@@ -261,10 +274,12 @@ void ChatServer::HandleEmbeddings(int fd, const std::string& body,
         [&](std::string_view text, std::vector<uint32_t>* tokens) {
           RequestDiagnostics::Scope waiting(
               diagnostic, RequestDiagnostics::Wait::kTokenizer);
-          auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+          auto& mutex = native ? embedding_tok_mu_ : tok_mu_;
+          auto lock = LockUnlessCancelled(mutex, cancelled);
           if (!lock.owns_lock())
             return Status::Fail("Embedding tokenization cancelled");
-          return tok_->Encode(text, tokens, {.cancelled = cancelled});
+          auto* tokenizer = native ? embedding_tok_.get() : tok_.get();
+          return tokenizer->Encode(text, tokens, {.cancelled = cancelled});
         },
         &inputs, &total, &error);
     if (cancelled()) {
@@ -290,6 +305,9 @@ void ChatServer::HandleEmbeddings(int fd, const std::string& body,
     auto reply = ExecuteEmbeddingInputs(
         plan, inputs, clients_, http->Client(), rate, http->Usage(),
         [&](const auto& input, auto* result) {
+          if (native)
+            return RunNativeEmbeddingInput(fd, input, control, diagnostic,
+                                            result);
           return RunEmbeddingInput(fd, input, control, diagnostic, result);
         },
         cancelled, &response);

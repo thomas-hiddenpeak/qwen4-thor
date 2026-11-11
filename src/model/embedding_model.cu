@@ -283,6 +283,18 @@ EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
   auto* attention = at(layout_.attention);
   auto* gate = at(layout_.gate);
   auto* up = at(layout_.up);
+#ifdef Q4T_EMBEDDING_TRACE
+  const auto trace = [&](const char* name, const uint16_t* pointer, size_t count) {
+    TraceEmbeddingOperand(completed_layers_, name, pointer, count);
+  };
+  const auto trace_head = [&](const char* name, int head,
+                              const uint16_t* pointer, size_t count) {
+    trace((std::string(name) + std::to_string(head)).c_str(), pointer, count);
+  };
+#else
+  const auto trace = [](const char*, const uint16_t*, size_t) {};
+  const auto trace_head = [](const char*, int, const uint16_t*, size_t) {};
+#endif
   Status status;
   const auto gemm = [&](const uint16_t* x, const uint16_t* weight, uint16_t* y,
                          int n, int inner) {
@@ -294,9 +306,13 @@ EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
                             std::to_string(static_cast<int>(r.status)));
   };
   Norm<<<t, kThreads, 0, stream>>>(hidden, w.input_norm, normalized);
+  trace("input_norm", normalized, t * C::kHidden);
   gemm(normalized, w.q, q, C::kQueryHeads * C::kHeadDim, C::kHidden);
   gemm(normalized, w.k, k, C::kKvHeads * C::kHeadDim, C::kHidden);
   gemm(normalized, w.v, v, C::kKvHeads * C::kHeadDim, C::kHidden);
+  trace("q", q, t * C::kQueryHeads * C::kHeadDim);
+  trace("k", k, t * C::kKvHeads * C::kHeadDim);
+  trace("v", v, t * C::kKvHeads * C::kHeadDim);
   if (status) {
     NormRope<<<dim3(p, C::kQueryHeads), C::kHeadDim, 0, stream>>>(
         q, w.q_norm, at(layout_.rope), head_q, t, p, C::kQueryHeads);
@@ -305,35 +321,50 @@ EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
     const int values = p * C::kKvHeads * C::kHeadDim;
     TransposeValues<<<(values + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         v, vt, t, p);
+    trace("head_q", head_q, p * C::kQueryHeads * C::kHeadDim);
+    trace("head_k", head_k, p * C::kKvHeads * C::kHeadDim);
+    trace("transposed_v", vt, values);
+    trace("rope", at(layout_.rope), t * C::kHeadDim);
   }
   for (int h = 0; status && h < C::kQueryHeads; ++h) {
     const int kv = h / (C::kQueryHeads / C::kKvHeads);
     gemm(head_q + h * p * C::kHeadDim, head_k + kv * p * C::kHeadDim,
          scores, p, C::kHeadDim);
     if (!status) break;
+    trace_head("qk_", h, scores, t * p);
     CausalSoftmax<<<t, kThreads, 0, stream>>>(scores, p);
+    trace_head("probabilities_", h, scores, t * p);
     gemm(scores, vt + kv * C::kHeadDim * p, head_output, C::kHeadDim, p);
     if (!status) break;
+    trace_head("pv_", h, head_output, t * C::kHeadDim);
     const int count = t * C::kHeadDim;
     MergeHead<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         head_output, attention, t, h);
   }
   gemm(attention, w.o, projected, C::kHidden, C::kQueryHeads * C::kHeadDim);
+  trace("attention", attention, t * C::kQueryHeads * C::kHeadDim);
+  trace("attention_projected", projected, t * C::kHidden);
   const int hidden_count = t * C::kHidden;
   const int hidden_blocks = (hidden_count + kThreads - 1) / kThreads;
   if (status) {
     Residual<<<hidden_blocks, kThreads, 0, stream>>>(hidden, projected,
                                                    hidden_count);
+    trace("attention_residual", hidden, hidden_count);
     Norm<<<t, kThreads, 0, stream>>>(hidden, w.post_norm, normalized);
+    trace("post_norm", normalized, hidden_count);
   }
   gemm(normalized, w.gate, gate, C::kIntermediate, C::kHidden);
   gemm(normalized, w.up, up, C::kIntermediate, C::kHidden);
+  trace("gate_raw", gate, t * C::kIntermediate);
+  trace("up", up, t * C::kIntermediate);
   if (status) {
     const int count = t * C::kIntermediate;
     SwiGlu<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         gate, up, count);
+    trace("gate", gate, count);
   }
   gemm(gate, w.down, projected, C::kHidden, C::kIntermediate);
+  trace("projected", projected, t * C::kHidden);
   if (status)
     Residual<<<hidden_blocks, kThreads, 0, stream>>>(hidden, projected,
                                                    hidden_count);

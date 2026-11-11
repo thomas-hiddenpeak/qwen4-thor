@@ -1,0 +1,10 @@
+test_discovery_schema_retains_historical_config_and_precise_native_contract (tools.native_embedding.test_business_acceptance.NativeBusinessTests.test_discovery_schema_retains_historical_config_and_precise_native_contract) ... ok
+test_fixed_requests_budget_and_trained_tokenizer_inputs (tools.native_embedding.test_business_acceptance.NativeBusinessTests.test_fixed_requests_budget_and_trained_tokenizer_inputs) ... ok
+test_native_vector_oracle_rejects_wrong_model_and_wire (tools.native_embedding.test_business_acceptance.NativeBusinessTests.test_native_vector_oracle_rejects_wrong_model_and_wire) ... ok
+test_retrieval_oracle_requires_all_actual_document_ranks (tools.native_embedding.test_business_acceptance.NativeBusinessTests.test_retrieval_oracle_requires_all_actual_document_ranks) ... ok
+test_standalone_openapi_contains_the_same_discovery_contract (tools.serve_access.test_config.ConfigTests.test_standalone_openapi_contains_the_same_discovery_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.276s
+
+OK

@@ -295,6 +295,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--capacity-config', type=Path)
     prepare.add_argument('--access-program-policy', type=Path)
     prepare.add_argument('--file-input-policy', type=Path)
+    prepare.add_argument('--embedding-model-dir', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
@@ -366,6 +367,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     if args.capacity_config is not None else None,
                 repository=repository, access_program_policy=args.access_program_policy,
                 file_input_policy=args.file_input_policy,
+                embedding_model_dir=args.embedding_model_dir,
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)

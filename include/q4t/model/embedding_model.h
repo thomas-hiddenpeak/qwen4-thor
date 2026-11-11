@@ -12,6 +12,12 @@
 
 namespace q4t::model {
 
+#ifdef Q4T_EMBEDDING_TRACE
+// Replay-only instrumentation. Production compiles no trace calls or state.
+void TraceEmbeddingOperand(int layer, const char* name,
+                            const uint16_t* data, size_t values);
+#endif
+
 struct EmbeddingLayerWeights {
   const uint16_t* input_norm = nullptr;
   const uint16_t* post_norm = nullptr;

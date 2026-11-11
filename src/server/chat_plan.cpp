@@ -8,6 +8,7 @@
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/legacy_tools.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_request.h"
@@ -405,7 +406,9 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"("observability_version":5,)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
-         R"(,"model_aliases":)" + aliases + R"(,"file_inputs":)" +
+         R"(,"model_aliases":)" + aliases + R"(,"native_embedding":)" +
+         NativeEmbeddingDescription(config.native_embedding_enabled) +
+         R"(,"file_inputs":)" +
          OutputJson(FileInputPolicyDescription(
              config.file_inputs ? *config.file_inputs : FileExpansionOptions{},
              config.file_input_policy_sha256)) +

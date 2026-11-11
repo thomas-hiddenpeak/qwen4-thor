@@ -1,0 +1,23 @@
+{
+  "status": "ACCEPTED_TARGETED_NUMERICAL_ENGINEERING_REVIEW",
+  "original_gate_accepted": false,
+  "original_comparison_sha256": "0ebfb9c2ba3d338a5d038ae0fedcb9706a53c1718576e35ade955617490e612c",
+  "final_output_thresholds_changed": false,
+  "production_arithmetic_changed": false,
+  "local_failed_boundary_replay": 8,
+  "local_pass_original_thresholds": 7,
+  "remaining_local_boundary": "case-3/layer-28",
+  "operator_checks": 65,
+  "operator_values": 4192896,
+  "same_operand_norm_rope_heads": 3096,
+  "norm_rope_uncovered_heads": 0,
+  "rsqrt_empirical_documented_ulps": 2,
+  "rsqrt_bound_is_universal_guarantee": false,
+  "final_vectors_original_thresholds_pass": 14,
+  "actual_retrieval_top1": 5,
+  "service_business_accepted": false,
+  "new_gpu_starts": 1,
+  "new_gpu_forwards": 1,
+  "new_http_requests": 0,
+  "default_unchanged": true
+}
