@@ -48,6 +48,13 @@ class DeviceFilter {
                      int allowed_cgroup,
                      const std::vector<DeviceNumber>& devices,
                      const DeviceFilterIdentity& expected);
+  // Recover a root-owned pin after an interrupted initial registration. The
+  // caller must own its private deployment path. This still reconstructs and
+  // verifies the exact immutable program, target and allowed cgroup; it does
+  // not grant launch authority or recover an old admission token.
+  Status RecoverPinned(const std::string& path, int target_cgroup,
+                       int allowed_cgroup,
+                       const std::vector<DeviceNumber>& devices);
   // For a nonprivileged Guardian after checking a root-issued admission.
   // Takes private duplicates and never trusts a bare numeric FD as identity.
   Status AdoptInherited(int link, int program,

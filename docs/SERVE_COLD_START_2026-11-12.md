@@ -4,6 +4,46 @@
 冷启动授权，使 NVML 失能时仍能在受控部署中恢复 LLM 服务；
 没有证据时拒绝启动是保护行为，不是本任务的交付终点。
 
+## 本机驱动资格与管理入口（开发中，未交付）
+
+已取得[NVIDIA R39.2.1官方源码包](https://developer.download.nvidia.com/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2)，
+SHA256 `8346f0371649a92c42293b2d4a7bf3d69e4dd1de23009e1463ea910994a81371`；
+其中 unified GPU/display 源码包 SHA256
+`5635273fa55a0145cf9b93a20b00fadd71dfbfd606c4fd7eb06432297b829fd4`，
+源码版本确为595.78。实际安装的四个模块SHA及加载srcversion逐个绑定在
+`device_platform.py`，不是接受任意同名/同版本驱动。源码只在工作目录
+研读，未复制实现进产品，也不新增运行时下载、编译或readelf依赖。
+
+该版本RM、UVM/tools、caps、IMEX、NVLink/switch、modeset与DRM的
+文件操作绑定模块owner；RM dma-buf通过内核导出宏持有owner。
+本机内核头文件的宏同样设置owner。VMA及传递中的文件引用不能靠
+进程FD列表完整枚举，所以不把一次进程扫描当作独占证据。
+[内核dma-buf合同](https://docs.kernel.org/driver-api/dma-buf.html)
+说明导出模块引用的用途；
+[NVIDIA平台驱动说明](https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/Kernel/DisplayConfigurationAndBringUp/NvLoadDisplayModulesService.html)
+区分OpenRM与NVGPU。当前资格拒绝额外NVGPU/GDR计算入口和未知NVIDIA设备号。
+NVHost媒体/PVA/相机接口不是本配置的OpenRM计算入口，仍计入独立资源治理；
+特权管理员/内核修改不属于本设备域隔离可防御的对象。
+
+**无用户持有引用不等于硬件已经空闲。** 595.78的`nvidia_close`在中断
+路径可能延迟清理；因此静态引用只用于确认外部用户设备能力已消失。
+完整宿主过滤持续存在、允许域为空、驱动/boot身份未变后，仍必须由
+Guardian在原预算下执行有界CUDA探测；卡住的探测不增殖，明确设备故障
+保留保护，不卸载驱动或重置GPU。真实初始独占及冷启动业务仍须验证。
+
+统一入口为`q4t service device-domain`，显式root管理，运行进程降权。
+提供`init/init-resume/status/arm/enter/disarm`。root私有目录绑定服务、
+运行UID/GID与原生控制程序SHA；共享GPU锁、内核实际cgroup和bpffs对象
+分别验证。`arm`在BUSY时不安装策略；中断的安装从已持久的规则意图与
+实际固定程序接管，不能凭JSON重建启动权。`enter`重新核对空域和独立
+事实，先持久扣额度再签一次凭据，只移动自身，设置no_new_privs并降权。
+`disarm`使用保留的规则意图撤销自身注册，不调用NVML、不停止其他进程，
+不清空历史额度。管理失败不进入健康模型控制循环。
+
+本组冻结15新+5直接CPU及1次真实宿主只读观察；不安装宿主GPU策略、不
+启动模型。通过后仍须做真实设备域部署/业务与可回退发行，不能据此
+结束R07或总目标。
+
 ## 已确认的缺口
 
 当前控制器在 NVML 不可用且没有本根控制器连续模型租约时返回

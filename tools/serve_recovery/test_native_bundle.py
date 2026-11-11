@@ -117,7 +117,8 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
-             'device_budget', 'device_store', 'device_control', 'device_inventory')})
+             'device_budget', 'device_store', 'device_control', 'device_inventory',
+             'device_platform', 'device_domain')})
         self.assertEqual(set(bundle.V16_SOURCES)-set(bundle.V15_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('version_runtime','version_launch')})
         self.assertEqual(set(bundle.V15_SOURCES)-set(bundle.V14_SOURCES),
@@ -423,6 +424,7 @@ class BundleTests(unittest.TestCase):
 sys.path.insert(0, sys.argv[1])
 from tools.serve_recovery import service, cold_admission, device_budget
 from tools.serve_recovery import device_store, device_control, device_inventory
+from tools.serve_recovery import device_platform, device_domain
 assert cold_admission.configuration('unused', 'unused', -1) == (None, ())
 print('isolated cold source imports passed')
 '''

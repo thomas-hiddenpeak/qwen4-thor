@@ -130,12 +130,18 @@ void Execute(int socket, const Json& command) {
          {receipt.Get(), token.Get()});
     return;
   }
-  if (operation == "attach") {
+  if (operation == "attach" || operation == "recover") {
     Fields(args, {"target_fd", "allowed_fd", "devices", "pin"});
-    Need(filter.Attach(Descriptor(args, "target_fd"),
-                        Descriptor(args, "allowed_fd"),
-                        Devices(*args.Find("devices"))));
-    Need(filter.Pin(Text(args, "pin")));
+    if (operation == "attach") {
+      Need(filter.Attach(Descriptor(args, "target_fd"),
+                          Descriptor(args, "allowed_fd"),
+                          Devices(*args.Find("devices"))));
+      Need(filter.Pin(Text(args, "pin")));
+    } else {
+      Need(filter.RecoverPinned(Text(args, "pin"),
+          Descriptor(args, "target_fd"), Descriptor(args, "allowed_fd"),
+          Devices(*args.Find("devices"))));
+    }
   } else if (operation == "adopt" || operation == "remove") {
     Fields(args, {"target_fd", "allowed_fd", "devices", "pin", "identity"});
     Need(filter.AdoptPinned(Text(args, "pin"), Descriptor(args, "target_fd"),

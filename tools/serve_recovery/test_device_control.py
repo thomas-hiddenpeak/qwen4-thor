@@ -78,6 +78,18 @@ class ControlTests(unittest.TestCase):
             self.assertEqual(removed.fds, [])
         self.assertFalse(self.pin.exists())
 
+    def test_interrupted_registration_recovers_fixed_code_without_saved_ids(self):
+        attached = self.attach(); identity = attached.result
+        attached.close()
+        with self.control.call('recover', self.args, inherited=self.inherited) as recovered:
+            self.assertEqual(recovered.result, identity)
+        bad = dict(self.args, devices=[dict(major=1, minor=3, all_minors=False)])
+        with self.assertRaisesRegex(ValueError, 'rejected'):
+            self.control.call('recover', bad, inherited=self.inherited)
+        self.assertTrue(self.pin.exists())
+        with self.control.call('recover', self.args, inherited=self.inherited) as recovered:
+            self.assertEqual(recovered.result, identity)
+
     def test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe(self):
         attached = self.attach()
         claims = self.admission(attached.result)

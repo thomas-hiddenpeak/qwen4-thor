@@ -286,6 +286,10 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
 
 def main(argv=None, *, package=None, digest=None, workspace=None):
     os.umask(0o077)
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ['device-domain']:
+        from tools.serve_recovery import device_domain
+        return device_domain.main(argv[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='operation', required=True)
     def timeout_seconds(raw):

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "task": "R07 explicit device-domain administration",
+  "new_cpu_cases": 15,
+  "direct_cpu_cases": 5,
+  "host_readonly_observations": 1,
+  "gpu_starts": 0,
+  "host_root_filter_changes": 0,
+  "scope": [
+    "14 platform/management tests; pure policy mocks explicitly separate from kernel enforcement",
+    "1 actual native interrupted-pin recovery test",
+    "3 direct real kernel adapter cases: attachment/adoption/removal, wrong code, unheld lease",
+    "2 package checks: source closure and relocated module imports",
+    "one actual read-only host platform report; BUSY/UNKNOWN cannot authorize entry"
+  ],
+  "default": "rev64 STOPPED retained",
+  "next": "actual host maintenance qualification, bounded GPU business and R07 release, then all master tasks"
+}

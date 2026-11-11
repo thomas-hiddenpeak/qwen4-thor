@@ -1796,10 +1796,11 @@
         "evidence/serve-device-admission-cpu-20261112/README.md",
         "evidence/serve-device-management-cpu-20261112/README.md",
         "evidence/serve-device-guardian-cpu-20261112/README.md",
-        "evidence/serve-device-package-cpu-20261112/README.md"
+        "evidence/serve-device-package-cpu-20261112/README.md",
+        "evidence/serve-device-domain-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Admission/management/budget and Guardian/controller wiring CPU verified; v17 package/source closure has 8 first-pass targeted checks and actual retained v16 package verifies under current reader. Full host initial qualification, usable device-domain administration, real NVML-free cold launch and release remain in progress. 0 new GPU, default rev64 retained. Continue all master tasks.",
+      "development_status": "Explicit root device-domain CLI and exact Thor OpenRM profile implemented; 20 targeted CPU cases first-pass, actual host read-only report BUSY. No host-root policy, model start or default change. Real deployment/entry, NVML-free GPU business, fallback combinations and release remain required; all master tasks continue.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

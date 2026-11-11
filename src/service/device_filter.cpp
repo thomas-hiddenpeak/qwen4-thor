@@ -390,6 +390,35 @@ Status DeviceFilter::RemovePin(const std::string& path) const {
   return {};
 }
 
+Status DeviceFilter::RecoverPinned(
+    const std::string& path, int target_cgroup, int allowed_cgroup,
+    const std::vector<DeviceNumber>& devices) {
+  PinLocation location;
+  auto status = LocatePin(path, &location);
+  if (!status.ok()) return status;
+  OwnedFd link;
+  status = GetPin(location, &link);
+  if (!status.ok()) return status;
+  bpf_link_info observed{};
+  status = Info(link.Get(), &observed);
+  if (!status.ok()) return status;
+  if (observed.type != BPF_LINK_TYPE_CGROUP ||
+      observed.cgroup.attach_type != BPF_CGROUP_DEVICE)
+    return Status::Fail("recovery pin is not a cgroup device link");
+  bpf_attr get_program{};
+  get_program.prog_id = observed.prog_id;
+  OwnedFd program(Bpf(BPF_PROG_GET_FD_BY_ID, &get_program));
+  if (program.Get() < 0) return Error("open recovery device program");
+  bpf_prog_info actual{};
+  status = Info(program.Get(), &actual);
+  if (!status.ok()) return status;
+  DeviceFilterIdentity expected{observed.prog_id, observed.id,
+      observed.cgroup.cgroup_id, 0, Tag(actual)};
+  status = ReadCgroupId(allowed_cgroup, &expected.allowed_cgroup_id);
+  if (!status.ok()) return status;
+  return AdoptPinned(path, target_cgroup, allowed_cgroup, devices, expected);
+}
+
 Status DeviceFilter::AdoptInherited(int link, int program,
                                    const DeviceFilterIdentity& expected) {
   if (link_.Get() >= 0 || program_.Get() >= 0)

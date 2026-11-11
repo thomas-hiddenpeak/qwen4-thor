@@ -63,7 +63,8 @@ def character_devices(text):
         ledger.require(1 <= number < 4096, 'invalid character device major')
         if name not in DEVICES:
             # Unknown NVIDIA entry points need a reviewed fence extension.
-            ledger.require(not name.startswith(('nvidia', 'gdrdrv')),
+            ledger.require(not name.startswith(('nvidia', 'gdrdrv', 'nvgpu',
+                                                 'nvhost-gpu')),
                            'unreviewed GPU character device')
             continue
         ledger.require(name not in named, 'repeated GPU device registry name')
