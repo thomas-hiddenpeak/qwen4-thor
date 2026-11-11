@@ -1540,7 +1540,8 @@
         "SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
         "evidence/serve-cache-io-cpu-20261109/decision.json",
         "evidence/serve-cache-io-business-20261109/decision.json",
-        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json"
+        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json",
+        "evidence/serve-memory-isolation-delivery-20261111/README.md"
       ],
       "release": {
         "manifest_sha256": "fac58f347f8ba65857d9c8c7b2a1abf07668f80bd59b6d4dfa1b422358d2c10f",
@@ -1563,6 +1564,11 @@
           "issue": "Optional cache synchronous pread/pwrite/open/fstat run under cache and model locks; cancellation is checked between calls and cannot bound a blocked call. Isolate filesystem work so unavailable cache does not prevent healthy plain generation.",
           "state": "implemented_verified_delivered",
           "prior_delivered_log_and_observation_isolation_preserved": true
+        },
+        {
+          "source": "tools/serve_service/memory.py Watchdog",
+          "issue": "Runtime missing RAM observations previously escalated to model termination. UNKNOWN now clears unconfirmed pressure without signalling healthy core; startup unknown and confirmed critical pressure remain protected.",
+          "state": "implemented_verified_delivered"
         }
       ],
       "cache_io_candidate": {
@@ -1679,8 +1685,9 @@
       "evidence": [],
       "release": null,
       "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
-      "development_status": "Qualification contract6CPU and memory observer isolation14CPU passed; controller fix delivery and durable profile switching/actual model qualification pending.",
-      "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md"
+      "development_status": "Qualification contract 6 CPU passed; memory-observation isolation 14 CPU and control-only delivery passed (rev54, engine unchanged). Durable profile switching and actual light qualification remain in progress.",
+      "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
+      "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md"
     },
     {
       "id": "R06",

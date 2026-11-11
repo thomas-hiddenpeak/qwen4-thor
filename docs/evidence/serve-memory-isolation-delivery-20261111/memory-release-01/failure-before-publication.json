@@ -1,0 +1,8 @@
+{
+  "status": "FAILED_BEFORE_PUBLICATION",
+  "reason": "strict regular-file reader called on intentional default symlink",
+  "completed_cli_commands": 0,
+  "default_revision": 52,
+  "default_unchanged": true,
+  "next": "resolve selected service metadata regular target; retain this attempt; new package in memory-release-02"
+}
