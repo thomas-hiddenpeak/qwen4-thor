@@ -1,0 +1,16 @@
+{
+  "README.md": "bb75810f25810c470d9da6e11cc241d6e35ad40746fc46ce26f80faa38974c30",
+  "build-embeddings-journal-tests-01.json": "9b36eb238d6abd9c6c7ba332ecd24596166e0219e8c9c2579c5ade68f7747005",
+  "build-embeddings-journal-tests-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "build-embeddings-journal-tests-01.stdout": "73a3aeb05445d9f77e7079cec2e27d86899d9bee712e1fb812b58995c42319c2",
+  "build-embeddings-native-01.json": "056fe841bc7e4d1e0fbed6c61955b96719462f2a39e36938a2707081f6f6255f",
+  "build-embeddings-native-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "build-embeddings-native-01.stdout": "1f106e47f490063ac77fd0a7ccf4be70fff16f19488bebcc7877b67e14f6af11",
+  "guardian-journal-01.json": "67cc71fd36fd61a202b0e34d9dbad5c265082846d247e6784c9617754d0d3b1c",
+  "guardian-journal-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "guardian-journal-01.stdout": "490571f40ca33b7bca9a05f806d9ac2b1822e47eaeb058b5b92cfd1255c1c1fd",
+  "guardian-runtime-01.json": "548c83d66bd9b4f5efaed9e1406b7b9fc2faa45f4ff4f89c376d566f3c501962",
+  "guardian-runtime-01.stderr": "5706c09d576af80631468cc8ff29e827207790eb60841429bbb02b7fb6e2b169",
+  "guardian-runtime-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "identities.json": "3cf3c4e295124478d0a939ca88aa16c5c1dc1a8df9600e21ec98fd02ffb83201"
+}

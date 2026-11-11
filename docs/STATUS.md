@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。公共JSON变化后的[9项实际Guardian/journal CPU检查首过](evidence/serve-embeddings-native-cpu-20261111/README.md)，累计49项不同CPU；引擎3cd4361c/原GPU业务保持。冻结8条封包发布与健康检查、0GPU，原Key/配置/用量保持，保留同版本已验恢复包。随后继续0/2检索表示缺口与全部Serve任务。
+
+2026-11-11。接口封包复核确认JSON公共实现也进入Guardian，已4.481秒零警告重建Guardian/探针；不能把新源码绑定到旧二进制。冻结7项实际journal/wire与2项真实Guardian CPU控制/畸形请求检查，复用引擎业务/既有TLS。准备单次发布和原样已验同版本恢复锚点，不冒充此前旧包已支持Embeddings；质量缺口及全部总任务继续。
+
 2026-11-11。Embeddings[真实接口业务接受](evidence/serve-embeddings-business-20261111/README.md)：2启动/8请求/12向量chunk/85.358秒，最终mixer逐位、SDK/raw ID、Batch真实取消4096token、重启原件和Chat通过；81次NVML正常并清理。实际项目检索top1为0/2，已登记必须实现的质量缺口，不以协议通过结案。默认保持，继续接口交付、原生检索表示和全部总任务。
 
 2026-11-11。Embeddings提交7aa23cdb后冻结准备发现驱动误用服务包2MiB元数据reader读取真实大tokenizer；GPU尚未开始。已改为模型资产独立64MiB上限及实际token0校验，保留未完成plan；补1项大文件/错误ID/超限CPU，随后重新冻结，生产候选3cd4361c与39项原CPU保持。全部总任务继续。

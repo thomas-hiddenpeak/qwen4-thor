@@ -1,0 +1,5 @@
+[  0%] Built target q4t_guardian_process
+[100%] Built target q4t_guardian_journal
+[100%] Building CXX object CMakeFiles/q4t_guardian_journal_tests.dir/tests/guardian_journal_test.cpp.o
+[100%] Linking CXX executable q4t_guardian_journal_tests
+[100%] Built target q4t_guardian_journal_tests
