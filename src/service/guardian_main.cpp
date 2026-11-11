@@ -514,6 +514,9 @@ class Guardian {
           model_.identity.pid > 0 ? w::Unsigned(model_.identity.pid) : Json{}},
          {"model_start_ticks", w::Unsigned(model_.identity.start_ticks)},
          {"model_generation", w::Unsigned(model_generation_)},
+         {"model_capacity_sha256", model_binding_.Has("capacity_sha256")
+                                       ? *model_binding_.Find("capacity_sha256")
+                                       : Json{}},
          {"model_ready", w::Boolean(model_ready_)},
          {"model_admission_open", w::Boolean(model_admission_open_)},
          {"business_ready", w::Boolean(BusinessReady())},
@@ -922,10 +925,16 @@ class Guardian {
                   model_binding_.IsNull() && !model_ready_committed_,
               "invalid binding transaction");
       const auto& binding = *args.Find("binding");
-      Require(w::HasKeys(binding, {"port", "operations_port", "gateway_token",
-                                   "client_policy_sha256", "binary_sha256",
-                                   "protocol_sha256"}),
-              "invalid model binding");
+      const bool has_capacity = binding.Has("capacity_sha256");
+      Require(
+          has_capacity
+              ? w::HasKeys(binding, {"port", "operations_port", "gateway_token",
+                                     "client_policy_sha256", "binary_sha256",
+                                     "protocol_sha256", "capacity_sha256"})
+              : w::HasKeys(binding, {"port", "operations_port", "gateway_token",
+                                     "client_policy_sha256", "binary_sha256",
+                                     "protocol_sha256"}),
+          "invalid model binding");
       for (const char* name : {"port", "operations_port"})
         Require(
             Integer(binding, name) >= 1024 && Integer(binding, name) <= 65535,
@@ -939,6 +948,13 @@ class Guardian {
             value.size() == 64 && value.find_first_not_of("0123456789abcdef") ==
                                       std::string::npos,
             "invalid binding fingerprint");
+      }
+      if (has_capacity) {
+        const auto digest = Text(binding, "capacity_sha256");
+        Require(digest.size() == 64 &&
+                    digest.find_first_not_of("0123456789abcdef") ==
+                        std::string::npos,
+                "invalid qualified capacity fingerprint");
       }
     } else if (operation == "spawned" || operation == "ready" ||
                operation == "retired" || operation == "stable") {
@@ -1564,6 +1580,9 @@ class Guardian {
     }
     DriveGateway(now);
     DriveModel(now);
+    // A rejected model transaction can enter recovery synchronously. Do not
+    // resubmit the already-ready controller's startup receipt in this turn.
+    if (stopping_ || recovering_) return;
     if (!initialized_ || gate_.Frozen()) return;
     if (activate_) {
       Submit(Purpose::kActivate, "desired",

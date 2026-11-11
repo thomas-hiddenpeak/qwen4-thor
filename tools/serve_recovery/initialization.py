@@ -141,6 +141,9 @@ def finish(state, package, digest, manifest):
             journals[name] = locks.enter_context(access_store.open_bound(binding, writer))
         deployment.consistent_clients(journals['access'].head['state']['policy'],
                                       journals['limits'].head['state']['policy'], desc)
+        from tools.serve_recovery import profile_manager
+        profile_manager.initialize(binding, manifest, core.state,
+                                   previously_enabled=published)
         if not published:
             access_store.bootstrap_bound(binding, deployment_policy.initial(desc), deployment.Store)
         selection = locks.enter_context(access_store.open_bound(binding, deployment.Store))

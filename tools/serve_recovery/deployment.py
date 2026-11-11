@@ -79,6 +79,8 @@ def check_target(current, target):
         ledger.require(all(selected.get(k) == embedding[k]
                            for k in engine.NATIVE_EMBEDDING),
                        'deployment would remove or change accepted embedding model')
+    from tools.serve_recovery import profile_manager
+    profile_manager.compatible(old, new)
     return old, new
 
 
@@ -226,6 +228,10 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                 journals[name] = stack.enter_context(access_store.open_bound(binding, writer))
         consistent_clients(journals['access'].head['state']['policy'],
                            journals['limits'].head['state']['policy'], value['target'])
+        from tools.serve_recovery import profile_manager
+        old, selected = check_target(value['current'], value['target'])
+        profile_manager.initialize(binding, selected, core.state,
+            previously_enabled=old.get('recovery_profiles') is not None)
         write_descriptor(state, value['target'])
         # All launchers that understand v8/v9 already reject this prepared
         # phase. Publish the coherent default generation before finalizing it.

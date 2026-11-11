@@ -54,7 +54,7 @@ class Service:
                  gateway=False, quota=False, probe_lifecycle=False,
                  probe_only=False, aux_health=False, production=False,
                  usage_handoff=False, quota_restore=None, stop_handoff=False,
-                 gateway_diagnostics=False):
+                 gateway_diagnostics=False, capacity_fingerprint=None):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -89,6 +89,8 @@ class Service:
             command.append('--escape-model-child')
         if gateway:
             command.append('--bind-model')
+        if capacity_fingerprint is not None:
+            command += ['--capacity-fingerprint', capacity_fingerprint]
         if probe_lifecycle:
             command.append('--probe-lifecycle')
         if probe_only:
@@ -271,6 +273,30 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(service.persistent()['desired'], 'STOPPED')
         self.assertTrue(all(value is None for value in
                             service.persistent()['active'].values()))
+        service.assert_lease_free()
+
+    def test_qualified_capacity_binding_survives_independent_gateway_admission(self):
+        service = self.launch(models=True, gateway=True, capacity_fingerprint='a'*64)
+        current = service.wait(lambda s: s['business_ready'])
+        self.assertEqual(current['model_capacity_sha256'], 'a'*64)
+        reply = json.loads((service.directory/'capacity-binding.json').read_text())
+        self.assertTrue(reply['ok'])
+        self.assertEqual(current['model_generation'], 1)
+        self.assertNotIn('binding', current)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_malformed_capacity_cannot_open_model_or_create_another_generation(self):
+        service = self.launch(models=True, gateway=True, capacity_fingerprint='not-qualified')
+        service.wait(lambda s: (service.directory/'capacity-binding.json').exists())
+        reply = json.loads((service.directory/'capacity-binding.json').read_text())
+        self.assertFalse(reply['ok'])
+        current = service.status()
+        self.assertFalse(current['business_ready'])
+        self.assertFalse(current['recovery_frozen'])
+        self.assertEqual(current['model_generation'], 1)
+        self.assertIsNone(current['model_capacity_sha256'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
         service.assert_lease_free()
 
     def test_gateway_failure_preserves_controller_and_model(self):

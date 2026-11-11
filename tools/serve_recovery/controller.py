@@ -43,12 +43,13 @@ def model_command(package, base, config, policy_path):
 
 def validate_configuration(config):
     version = config.get('version')
-    ledger.require(type(version) is int and version in (1, 2, 3, 4),
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5),
                    'unsupported controller config')
     ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
         (('state_directory',) if version >= 2 else ()) +
         (('retention_context',) if version >= 3 else ()) +
-        (('limits',) if version >= 4 else ()))
+        (('limits',) if version >= 4 else ()) +
+        (('profiles',) if version >= 5 else ()))
     # Retention-only provenance never participates in model/recovery decisions.
 
 
@@ -99,15 +100,22 @@ class Controller:
         _, self.base_policy = cp.read(self.package/'engine/client-policy.json')
         self.policies = None
         self.usage = None
+        self.profiles = None
         if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
             from tools.serve_recovery import quota_policy, quota_runtime, usage_runtime
-            ledger.require(config['version'] == 4 and
+            ledger.require(config['version'] >= 4 and
                 config['limits']['service_id'] == channel.service_id and
                 config['limits']['state_directory'] == config['state_directory'],
                 'limits service binding changed')
             self.base_policy = quota_policy.from_base(self.base_policy)
             self.policies = quota_runtime.Policies(config['limits'])
             self.usage = usage_runtime.Recovery(config['limits'])
+        if self.manifest.get('recovery_profiles') is not None:
+            from tools.serve_recovery import profile_controller
+            ledger.require(config['version'] == 5 and config['profiles'] == config['limits'],
+                           'profile state service binding changed')
+            self.profiles = profile_controller.Profiles(self,
+                self.manifest['recovery_profiles'], config['profiles'])
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
 
@@ -140,6 +148,8 @@ class Controller:
                                 not self.stopping and not self.frozen)
             except Exception:
                 self.usage.error = 'client_usage_auxiliary_unavailable'
+        if getattr(self, 'profiles', None) is not None:
+            self.profiles.step(allow_start=allow_query and not self.stopping and not self.frozen)
         try:
             value = self.progress.poll() if self.progress is not None else None
             self.progress_fault = self.progress_detector.assess(value)
@@ -219,8 +229,11 @@ class Controller:
             self.reason = 'query_pending'
             return None
         try:
-            if memory.read()['available_bytes'] < 4096*1024**2:
+            observed_memory = memory.read()
+            if observed_memory['available_bytes'] < 4096*1024**2:
                 self.reason = 'memory_headroom'
+                return None
+            if self.profiles is not None and not self.profiles.prepare_launch(self, observed_memory):
                 return None
             bundle.check_assets(Path(self.base['model_dir']), self.manifest['model_assets'], read_edges=True)
             supervisor.preflight_ports(self.settings)
@@ -332,6 +345,8 @@ class Controller:
             operations_port=self.settings['operations_port'], gateway_token=token,
             client_policy_sha256=hashlib.sha256(raw).hexdigest(),
             binary_sha256=self.base['files']['q4t'], protocol_sha256=self.base['protocol_sha256'])
+        if self.profiles is not None:
+            self.current_binding['capacity_sha256'] = ledger.digest(self.settings['profile'])
         parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         observed, publisher = None, None
         try:
@@ -469,6 +484,8 @@ class Controller:
             self.frozen = True
             return False
         self.ready = True
+        if self.profiles is not None:
+            self.profiles.started(self.grant['generation'])
         self.phase, self.reason = 'READY', 'serving'
         self.stable_at, self.stable_reported = time.monotonic(), False
         if self.progress is not None:
@@ -502,17 +519,17 @@ class Controller:
             time.sleep(.025)
         return not self.stopping
 
-    def close_model(self):
+    def close_model(self, *, planned=False):
         if self.grant is not None:
             self.channel.admission(self.grant['generation'], False)
         usage = getattr(self, 'usage', None)
-        if (usage is not None and self.stopping and self.ready and not self.monitor.fatal and
+        if (usage is not None and (self.stopping or planned) and self.ready and not self.monitor.fatal and
                 self.model is not None and self.model.poll() is None and
                 not self.quarantined and not self.frozen and self.progress_fault is None and
                 (self.watchdog is None or not self.watchdog.tripped.is_set())):
             try:
                 if usage.freeze():
-                    end = time.monotonic()+4
+                    end = time.monotonic()+(30 if planned else 4)
                     while not usage.sealed and time.monotonic()<end:
                         self.tick(allow_query=False)
                         if (self.monitor.fatal or self.model.poll() is not None or
@@ -528,6 +545,8 @@ class Controller:
             try:self.policies.detach()
             except Exception:pass  # Owned tree cleanup still runs below.
         self.ready = False
+        if getattr(self, 'profiles', None) is not None:
+            self.profiles.retired()
         if self.progress is not None:
             self.progress.close()
             self.progress = None
@@ -574,6 +593,8 @@ class Controller:
 
     def record_fault(self, kind):
         self.last_fault = kind
+        if self.profiles is not None:
+            self.profiles.fault(self, kind)
         self.need_cuda_probe = kind in (policy.FaultKind.CUDA_CONTEXT,
                                         policy.FaultKind.EXECUTION_DEADLINE)
         self.phase, self.reason = 'RECOVERING', kind.value.lower()
@@ -633,6 +654,11 @@ class Controller:
             if self.ready:
                 kind = self.supervise()
                 if kind is None:
+                    if self.profiles is not None and self.profiles.switch_ready(self):
+                        self.phase, self.reason = 'RECOVERING', 'qualified_profile_switch'
+                        if self.close_model(planned=True):
+                            self.last_fault = policy.FaultKind.MODEL_EXIT
+                        continue
                     self.idle(0.05)
                     continue
                 if not self.quarantined:
@@ -662,6 +688,8 @@ class Controller:
         if self.usage is not None:
             try:self.usage.close()
             except Exception:pass
+        if self.profiles is not None:
+            self.profiles.close()
 
 
 def main():

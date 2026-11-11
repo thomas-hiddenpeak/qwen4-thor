@@ -150,9 +150,13 @@ class Admission:
             stage = 'gateway_identity_mismatch'
             key = self.key(snapshot)
             p, value = self.config['policy'], snapshot['binding']
+            profiles = self.config.get('recovery_profiles', {}).get('profiles')
             expected = binding.validate(value, base=self.config['backend_policy'],
                 port=p['upstream_port'], operations_port=p['upstream_operations_port'],
-                binary=self.config['binary_sha256'], protocol=self.config['protocol_sha256'])
+                binary=self.config['binary_sha256'], protocol=self.config['protocol_sha256'],
+                profiles=profiles)
+            capacity = (self.config.get('capacity_profile') if profiles is None else
+                        binding.selected_profile(value, profiles))
             owner = snapshot['model_owner']
             fd = os.pidfd_open(owner['pid'])
             try:
@@ -164,7 +168,7 @@ class Admission:
                 stage = 'gateway_observation_invalid'
                 result = supervisor.classify(observation, value['protocol_sha256'],
                     value['binary_sha256'], expected, value['operations_port'],
-                    self.config.get('capacity_profile'))
+                    capacity)
                 stage = 'gateway_backend_not_ready'
                 ledger.require(result == 'READY', 'new backend is not ready')
                 stage = 'gateway_generation_changed'

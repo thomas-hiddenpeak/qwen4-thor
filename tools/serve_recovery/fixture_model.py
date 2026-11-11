@@ -121,11 +121,17 @@ def controller(channel, args):
                 raise RuntimeError('CPU model did not pass exec barrier')
             idle(channel, 0.05)
         if args.bind_model:
-            transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'],
-                binding=dict(port=18000, operations_port=18001,
+            value = dict(port=18000, operations_port=18001,
                     gateway_token=hashlib.sha256(grant['ticket'].encode()).hexdigest(),
                     client_policy_sha256='b'*64, binary_sha256='c'*64,
-                    protocol_sha256='d'*64)))
+                    protocol_sha256='d'*64)
+            if args.capacity_fingerprint is not None:
+                value['capacity_sha256'] = args.capacity_fingerprint
+                reply = channel.transact('bind', dict(role='model', ticket=grant['ticket'], binding=value))
+                (args.model_fixture/'capacity-binding.json').write_text(json.dumps(reply))
+                if not reply['ok']: idle(channel)
+            else:
+                transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'], binding=value))
         if args.stop_handoff:
             def planned_stop(_signal, _frame):
                 # Synthetic controller work measures actual signal ordering;

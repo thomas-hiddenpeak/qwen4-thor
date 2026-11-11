@@ -22,8 +22,18 @@ def quota_enforced(base):
                for c in base['clients'])
 
 
-def validate(value, *, base, port, operations_port, binary, protocol):
-    ledger.keys(value, FIELDS)
+def selected_profile(value, profiles):
+    digest = value.get('capacity_sha256')
+    ledger.require(type(digest) is str and ledger.HASH.fullmatch(digest),
+                   'missing qualified generation profile')
+    selected = [p for p in profiles.values() if ledger.digest(p) == digest]
+    ledger.require(len(selected) == 1, 'generation profile is not qualified')
+    return selected[0]
+
+
+def validate(value, *, base, port, operations_port, binary, protocol, profiles=None):
+    ledger.keys(value, FIELDS + (('capacity_sha256',) if profiles is not None else ()))
+    if profiles is not None: selected_profile(value, profiles)
     ledger.require(type(value['port']) is int and value['port'] == port and
                    type(value['operations_port']) is int and
                    value['operations_port'] == operations_port and

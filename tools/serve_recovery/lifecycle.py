@@ -87,6 +87,9 @@ def check(package, digest, state=None):
                            for name, writer in deployment.FAMILIES.items()}
                 deployment.consistent_clients(current['access'], current['limits'], desc)
                 value.update(client_state_valid=True,client_count=len(current['limits']['clients']))
+            if manifest.get('recovery_profiles') is not None:
+                from tools.serve_recovery import profile_manager
+                value['adaptive_profiles'] = profile_manager.status(state, desc, manifest)
     return value
 
 

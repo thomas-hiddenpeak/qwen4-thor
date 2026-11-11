@@ -1,0 +1,16 @@
+test_qualified_capacity_binding_survives_independent_gateway_admission (__main__.RuntimeTests.test_qualified_capacity_binding_survives_independent_gateway_admission) ... ok
+test_malformed_capacity_cannot_open_model_or_create_another_generation (__main__.RuntimeTests.test_malformed_capacity_cannot_open_model_or_create_another_generation) ... FAIL
+test_foreground_control_stop_and_lease_release (__main__.RuntimeTests.test_foreground_control_stop_and_lease_release) ... ok
+
+======================================================================
+FAIL: test_malformed_capacity_cannot_open_model_or_create_another_generation (__main__.RuntimeTests.test_malformed_capacity_cannot_open_model_or_create_another_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 298, in test_malformed_capacity_cannot_open_model_or_create_another_generation
+    self.assertTrue(service.stop()['cleanup_confirmed'])
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.791s
+
+FAILED (failures=1)

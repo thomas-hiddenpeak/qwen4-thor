@@ -35,7 +35,11 @@ V9_SOURCES = V8_SOURCES  # v9 adds HTTP transport, with unchanged Python invento
 V10_SOURCES = tuple(sorted(set(V9_SOURCES) | {'tools/serve_service/capacity.py',
     'tools/serve_recovery/lifecycle.py', *('tools/serve_recovery/'+name+'.py' for name in
     ('publication','publication_policy','publication_files','publication_journal'))}))
-SOURCES = V10_SOURCES  # v11 binds native file streams and client policy v4.
+V11_SOURCES = V10_SOURCES  # v11 binds native file streams and client policy v4.
+SOURCES = tuple(sorted(set(V11_SOURCES) | {'tools/serve_recovery/'+name+'.py' for name in
+    ('profile_contract', 'profile_policy', 'profile_memory', 'profile_store',
+     'profile_io', 'profile_runtime', 'profile_controller', 'profile_evidence',
+     'profile_bundle', 'profile_manager')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -149,7 +153,9 @@ def gateway_config_for(package, manifest, directory, *, access=None):
            name+'_sha256': manifest['files']['bin/'+executable]},
         policy=policy, backend_policy=backend, binary_sha256=base['files']['q4t'],
         protocol_sha256=base['protocol_sha256'], tls=tls,
-        **({'capacity_profile':base['settings']['profile']} if base.get('version') == 11 else {})))
+        **({'capacity_profile':base['settings']['profile']} if base.get('version') == 11 else {}),
+        **({'recovery_profiles': manifest['recovery_profiles']}
+           if manifest.get('recovery_profiles') is not None else {})))
 
 
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
@@ -157,7 +163,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
             model_names=None, application_state=None, capacity_config=None,
             repository=None, access_program_policy=None, file_input_policy=None,
-            embedding_model_dir=None):
+            embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -232,20 +238,27 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             ingress.save(target/name, ingress.read_file(path, private=name.startswith('private')))
             names.append(name)
     base = engine.verify(target/'engine', receipt['manifest_sha256'])
+    from tools.serve_recovery import profile_bundle
+    model_assets = assets(Path(base['model_dir']))
+    qualified, switch_policy, evidence_files = profile_bundle.prepare(
+        target, base, model_assets, recovery_profiles, recovery_profile_policy)
+    ledger.require(qualified is None or native, 'qualified profiles need native ingress')
+    names.extend(evidence_files)
     # A fixed cooperative lease path is part of the deployment identity, not
     # resolved from a copied bundle's source directory at runtime.
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=11, profile='q4t-service-recovery-v11', repository=str(repository),
+    value = dict(version=12, profile='q4t-service-recovery-v12', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
-        model_assets=assets(Path(base['model_dir'])), weight_shards_rehashed=False,
+        model_assets=model_assets, weight_shards_rehashed=False,
         resource_mode='process', require_hard_memory_limit=False,
         lock_path=str(common.parent/'.q4t-work/gpu-exclusive.lock'),
         quota_enforced=bool(native or binding.quota_enforced(backend)), tls=certificate is not None,
-        tls_configuration=tls)
+        tls_configuration=tls, recovery_profiles=qualified,
+        recovery_profile_policy=switch_policy)
     engine.save(target/'manifest.json', value)
     digest = engine.sha(target/'manifest.json')
     ingress.save(target/'bin/q4t', launcher(digest, value['python']['path']))
@@ -264,9 +277,10 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11) else ()),
-        *(('tls_configuration',) if version in (4, 5, 6, 7, 8, 9, 10, 11) else ())))
-    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) and
+        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12) else ()),
+        *(('tls_configuration',) if version in (4, 5, 6, 7, 8, 9, 10, 11, 12) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version == 12 else ())))
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -275,7 +289,8 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    sources = (SOURCES if version == 11 else V10_SOURCES if version == 10 else
+    sources = (SOURCES if version == 12 else V11_SOURCES if version == 11 else
+               V10_SOURCES if version == 10 else
                V9_SOURCES if version == 9 else
                V8_SOURCES if version == 8 else
                V7_SOURCES if version == 7 else V6_SOURCES if version == 6 else
@@ -284,10 +299,12 @@ def verify(package, digest):
                V2_SOURCES if version == 2 else LEGACY_SOURCES)
     names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
-    if version in (4, 5, 6, 7, 8, 9, 10, 11):
+    if value.get('recovery_profiles') is not None:
+        names |= {'profile-primary.json', 'profile-light.json'}
+    if version in (4, 5, 6, 7, 8, 9, 10, 11, 12):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in (4, 5, 6, 7, 8, 9, 10, 11) and native):
+    if value['tls'] and not (version in (4, 5, 6, 7, 8, 9, 10, 11, 12) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')
@@ -296,6 +313,9 @@ def verify(package, digest):
         ledger.require((package/name).resolve().is_relative_to(package) and
                        engine.sha(package/name) == wanted, 'recovery file identity changed')
     base = engine.verify(package/'engine', value['engine_manifest_sha256'])
+    if version >= 12:
+        from tools.serve_recovery import profile_bundle
+        profile_bundle.verify(package, value, base)
     ledger.require(base.get('version', 1) != 11 or version >= 10,
                    'managed capacity requires recovery profile v10')
     ledger.require(base['python'] == value['python'] and

@@ -60,6 +60,7 @@ class DeploymentTests(unittest.TestCase):
                  'native-build.json', *('bin/'+n for n in bundle.EXECUTABLES)}
         value.update(version=6, profile='q4t-service-recovery-v6',
                      files={n:h for n,h in value['files'].items() if n in names})
+        value.pop('recovery_profiles');value.pop('recovery_profile_policy')
         bundle.engine.save(self.legacy/'manifest.json', value)
         self.old_digest = bundle.engine.sha(self.legacy/'manifest.json')
         (self.legacy/'bin/q4t').chmod(0o700)
@@ -96,6 +97,10 @@ class DeploymentTests(unittest.TestCase):
         shutil.copytree(self.package, previous)
         value = bundle.engine.read(previous/'manifest.json')
         value.update(version=8, profile='q4t-service-recovery-v8')
+        value.pop('recovery_profiles');value.pop('recovery_profile_policy')
+        allowed = {*('source/'+n for n in bundle.V8_SOURCES), 'gateway-policy.json',
+                   'native-build.json', *('bin/'+n for n in bundle.EXECUTABLES)}
+        value['files'] = {n:h for n,h in value['files'].items() if n in allowed}
         bundle.engine.save(previous/'manifest.json', value)
         digest = bundle.engine.sha(previous/'manifest.json')
         (previous/'bin/q4t').chmod(0o700)
@@ -230,6 +235,10 @@ class DeploymentTests(unittest.TestCase):
         shutil.copytree(self.package, previous)
         value = bundle.engine.read(previous/'manifest.json')
         value.update(version=10, profile='q4t-service-recovery-v10')
+        value.pop('recovery_profiles');value.pop('recovery_profile_policy')
+        allowed = {*('source/'+n for n in bundle.V10_SOURCES), 'gateway-policy.json',
+                   'native-build.json', *('bin/'+n for n in bundle.EXECUTABLES)}
+        value['files'] = {n:h for n,h in value['files'].items() if n in allowed}
         bundle.engine.save(previous/'manifest.json', value)
         digest = bundle.engine.sha(previous/'manifest.json')
         (previous/'bin/q4t').chmod(0o700)

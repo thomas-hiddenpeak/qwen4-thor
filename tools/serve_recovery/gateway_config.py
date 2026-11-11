@@ -17,7 +17,8 @@ def validate(value):
     ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
         'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls',
         *(('access',) if value.get('version') in (3, 4) else ()),
-        *(('capacity_profile',) if 'capacity_profile' in value else ())))
+        *(('capacity_profile',) if 'capacity_profile' in value else ()),
+        *(('recovery_profiles',) if 'recovery_profiles' in value else ())))
     ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3, 4),
                    'invalid gateway config version')
     if value['version'] in (3, 4):
@@ -40,6 +41,13 @@ def validate(value):
         from tools.serve_service import capacity
         capacity.validate(value['capacity_profile'])
         capacity.check_clients(value['capacity_profile'],value['backend_policy'])
+    if 'recovery_profiles' in value:
+        from tools.serve_recovery import profile_contract
+        registry = profile_contract.validate(value['recovery_profiles'])
+        ledger.require(native and registry['identity']['binary_sha256'] == value['binary_sha256'] and
+            registry['identity']['protocol_sha256'] == value['protocol_sha256'] and
+            registry['profiles']['primary'] == value.get('capacity_profile'),
+            'gateway qualified capacity differs')
     ledger.require(value['version'] != 4 or value['backend_policy']['version'] >= 3,
                    'dynamic ingress requires a versioned model policy')
     ledger.require('upstream_operations_port' in p,

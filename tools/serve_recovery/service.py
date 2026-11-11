@@ -190,6 +190,8 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
             from tools.serve_recovery import access_store
             access = access_store.binding(state, desc['service_id'])
             if manifest['version'] >= 8:controller.update(version=4, limits=access)
+            if manifest.get('recovery_profiles') is not None:
+                controller.update(version=5, profiles=access)
             # No journal read in this process or silent legacy-key fallback.
             # The isolated reader gates the public credential configuration.
         gateway = bundle.gateway_config_for(package, manifest, run, access=access)
@@ -296,6 +298,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--access-program-policy', type=Path)
     prepare.add_argument('--file-input-policy', type=Path)
     prepare.add_argument('--embedding-model-dir', type=Path)
+    prepare.add_argument('--recovery-profiles', type=Path)
+    prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
@@ -304,7 +308,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
                  'limits-migrate', 'usage-status', 'usage-migrate',
-                 'deploy', 'rollback', 'deployment-status',
+                 'deploy', 'rollback', 'deployment-status', 'profiles-status',
                  'publish', 'publish-status', 'publish-resume', 'publish-rollback'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=name != 'check')
@@ -368,6 +372,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 repository=repository, access_program_policy=args.access_program_policy,
                 file_input_policy=args.file_input_policy,
                 embedding_model_dir=args.embedding_model_dir,
+                recovery_profiles=args.recovery_profiles,
+                recovery_profile_policy=engine.read(args.recovery_profile_policy)
+                    if args.recovery_profile_policy is not None else None,
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)
@@ -405,6 +412,13 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                         release=getattr(args,'service_release',None),
                         expected=args.expected_manifest_sha256,revision=args.expected_revision,
                         generation=getattr(args,'generation_sha256',None))
+            elif args.operation == 'profiles-status':
+                from tools.serve_recovery import deployment, profile_manager
+                with deployment.claim(args.state, shared=True):
+                    desc = descriptor(args.state, package, digest)
+                    deployment.ready(args.state, desc)
+                    manifest = bundle.verify(package, digest)
+                    result = profile_manager.status(args.state, desc, manifest)
             elif args.operation in ('deploy', 'rollback', 'deployment-status'):
                 from tools.serve_recovery import deployment
                 result = (deployment.status(args.state) if args.operation == 'deployment-status' else
