@@ -250,8 +250,15 @@ Files默认batch留存30天，其余永久，可用`expires_after`明确覆盖�
 用法/安全旧包迁移见[客户端容量](docs/SERVE_ACCESS_CONTROL_2026-11-09.md)，
 [业务及发行证据](docs/evidence/serve-files-delivery-20261110/README.md)。
 Uploads已提供原生创建、分块、顺序/MD5完成及取消，生成标准File；重复Part保持原字节，取消有独立准入/内存，见[交付证据](docs/evidence/serve-uploads-delivery-20261110/README.md)。默认部署容量保持，较大Part需显式配置。
-模型原生file_id/file_data/file_url内容消费与Batch仍是当前必须完成的
-[后续任务](docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)。
+模型原生file_id/file_data/file_url内容消费已完成实际PDF/表格和历史
+复用验收，见[交付记录](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
+原生Batch提供创建、查询、列表、取消及完整JSONL结果文件，当前
+Chat Completions、Completions和Responses三类执行已交付；后台
+Responses等待原任务终态和资源排空，在线/Batch使用独立分钟配额。
+结构化失败与取消保存实际用量，重启不重放已开始且结果不明的行。
+新状态须用已登记的fc69兼容回退包，不能回退到旧file-inputs包；
+[业务与交付记录](docs/evidence/serve-batch-delivery-20261111/README.md)
+列出身份。其余五类Batch后端及完整多模态接口仍按总计划继续实现。
 
 标准`POST /v1/responses/input_tokens`与SDK
 `responses.inputTokens.count()`已通过计数与真实生成usage业务短验。

@@ -1,0 +1,16 @@
+{
+  "reader": {
+    "engine_binary_sha256": "312678bc44c85603f540723c771630462afd6cc7676d4a1612ffad94417b2c55",
+    "engine_release_sha256": "2f6810f199c3ed09a9fdf25a39a5319861020e659ab7f448c14acdea5a88da20",
+    "generation_sha256": "773b6eb1b6b0345fa812876465c1686d7a9eb7443d23bbf3748d21be4b6f5eff",
+    "manifest_sha256": "0146e62cc16a4cb6fca5b9d42e05438bc1eae0d3dba8c5c1066b41fd20c09766",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle",
+    "service_acceptance_sha256": "36d101f8b4c9e45496189840c1e80dff577af92e8758c928a5b840063d992184",
+    "service_release_sha256": "e2c19d223091490dd169eb9b5c64d18ceba319dfa02b2d647a2c8440a0f742fd"
+  },
+  "revision": 42,
+  "old_file_inputs_batch_format_compatible": false,
+  "original_business_records_must_be_preserved": true,
+  "command": "q4t service publish-rollback --state STATE --default-root ROOT --generation-sha256 READER_GENERATION --expected-manifest-sha256 CURRENT_MANIFEST --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+  "capacity": "Use retained fc69 reader with current original Batch/Files/Responses and dual-domain quota; existing policies fit both. Never delete business records or silently reset minute budgets."
+}

@@ -1,0 +1,14 @@
+{
+  "driver": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/deliver.py",
+  "sha256": "52cd9cc064414de0ec01bf4b4dfcf9095a83ec58045cf1f26e5501b57e2e562e",
+  "max_commands": 15,
+  "command_timeout_seconds": 45,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "publication_revisions": [
+    40,
+    42,
+    44
+  ],
+  "scope": "Seal actually verified fc69 Batch/quota compatible reader then candidate; preserve credentials, explicit limits, objects and usage. No activation. Remaining five endpoint backends stay required."
+}

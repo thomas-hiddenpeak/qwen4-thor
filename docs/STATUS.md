@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。Batch[可回退交付完成](evidence/serve-batch-delivery-20261111/README.md)：15命令首过、21.989秒、0新增GPU；默认f23be45c/包25061a30/generation223a915c，rev44 STOPPED，兼容fc69回退312678bc已登记rev42。原Key/容量/账本保持。三文本Batch可用，继续独立moderations/其余五后端及全部总任务，未合main。
+
 2026-11-11。Batch[真实业务首次接受](evidence/serve-batch-business-20261111/README.md)：严格租约99.300秒、2启动/8生成/8步骤，三文本端点、真实工具SSE、失败/取消实际计量和独立fc69回退原件/双池配额连续通过。自有进程/端口/锁释放，默认保持。继续兼容发行、适用默认交付及全部总任务，未合main。
 
 2026-11-11。Batch业务准备[4项CPU接受](evidence/serve-batch-business-preparation-20261111/README.md)，首异常断言失败原件保留、仅补3项。独立fc69回退170.498秒零警告并固定兼容持久源码/二进制身份；0GPU/默认保持。继续冻结2启动/8生成/10步骤/1200秒真实业务、兼容交付及全部总任务。

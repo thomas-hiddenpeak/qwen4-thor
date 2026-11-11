@@ -934,17 +934,18 @@
         "evidence/serve-files-business-20261110/README.md",
         "evidence/serve-files-delivery-20261110/README.md",
         "evidence/serve-uploads-business-20261110/README.md",
-        "evidence/serve-uploads-delivery-20261110/README.md"
+        "evidence/serve-uploads-delivery-20261110/README.md",
+        "evidence/serve-batch-business-20261111/README.md",
+        "evidence/serve-batch-delivery-20261111/README.md"
       ],
       "release": null,
       "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
       "remaining_required": [
-        "A09.6 real Batch executor/recovery",
         "A09.7 all eight endpoint backends with A10",
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Compatible Batch format/quota rollback/default delivery; then A09.7 all eight endpoint backends with A10, A09.8 and all master tasks.",
+      "next": "A09.7/A10: native standalone moderation and Batch execution first, then remaining model/API backends and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -966,7 +967,8 @@
         "A09.2 isolated binary persistence",
         "A09.3 Files and bounded native transport",
         "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release",
-        "A09.5 native file consumption, immutable history/originals, real PDF/table business and compatible rollback release"
+        "A09.5 native file consumption, immutable history/originals, real PDF/table business and compatible rollback release",
+        "A09.6 native text Batch execution/recovery/actual usage/cancel, compatible rollback and default delivery"
       ],
       "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
       "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
@@ -1057,7 +1059,7 @@
         "evidence/serve-batch-recount-cpu-20261111/README.md",
         "evidence/serve-batch-precharge-cpu-20261111/README.md"
       ],
-      "batch_delivery_pending": true,
+      "batch_delivery_pending": false,
       "batch_rate_bridge_status": "24 distinct targeted CPU checks accepted; production sources unchanged across fixture repairs. Native execution/background handoff implemented; minute-wait scheduler/native planning/recovered background admission and real public business/release remain required.",
       "batch_rate_bridge_component_evidence": "evidence/serve-batch-rate-bridge-cpu-20261111/README.md",
       "batch_minute_wait_status": "34 targeted CPU checks accepted after 2 fixture repairs, production unchanged across CPU rounds. Native initial/execution budgets and fair minute quota gate before original row ticket implemented. Recovery background admission/public actual business/CLI/rollback/default remain required.",
@@ -1065,9 +1067,7 @@
       "batch_background_rate_status": "26/26 targeted CPU first-round accepted; original queued owner/deadline/cancel, native current-policy budget, fair minute wait/data reacquisition, actual child exit and lost Start receipt validated. Public actual business/delivery remain pending.",
       "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
-      "batch_pre_delivery_remaining": [
-        "Seal compatible fc69 reader and accepted candidate, preserve current policy/state and qualify default delivery."
-      ],
+      "batch_pre_delivery_remaining": [],
       "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
       "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage now have separate targeted CPU acceptance; actual model business/release still required.",
       "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md",
@@ -1085,12 +1085,34 @@
       "batch_business_plan": "SERVE_BATCH_BUSINESS_2026-11-11.md",
       "batch_business_preparation_evidence": "evidence/serve-batch-business-preparation-20261111/README.md",
       "batch_business_status": "Actual2starts/8generations/8modelsteps first-round accepted in99.300s under strict lease; native tool SSE, failed/cancelled actual usage, original cross-version receipts and both unexpired minute windows preserved. Compatible package/default delivery still required.",
-      "batch_business_evidence": "evidence/serve-batch-business-20261111/README.md"
+      "batch_business_evidence": "evidence/serve-batch-business-20261111/README.md",
+      "batch_delivery_evidence": "evidence/serve-batch-delivery-20261111/README.md",
+      "batch_release": {
+        "engine_binary_sha256": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+        "engine_release_sha256": "226c812bb798bae6d10e370b24aee65540746de733ec652d9ac30731512d95ea",
+        "generation_sha256": "223a915cd8f013d9aa68c60848338dafa1ea3a6175ea1a1dc8266f2847a7d1e5",
+        "manifest_sha256": "25061a30fdc43be7b8b1ae900f9fc2fd2b7df92bec8b006559d22268594d0ea4",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/candidate/bundle",
+        "service_acceptance_sha256": "200babf00df0bdbf8b2182772a481f38b2ef4e68f100bbee8eb79592e6b2d7e4",
+        "service_release_sha256": "39965135e4b1049334d0f8012b0e6fa15a821db015b5684af0067f49533ecfb9",
+        "publication_revision": 44,
+        "state": "STOPPED",
+        "compatible_rollback": {
+          "engine_binary_sha256": "312678bc44c85603f540723c771630462afd6cc7676d4a1612ffad94417b2c55",
+          "engine_release_sha256": "2f6810f199c3ed09a9fdf25a39a5319861020e659ab7f448c14acdea5a88da20",
+          "generation_sha256": "773b6eb1b6b0345fa812876465c1686d7a9eb7443d23bbf3748d21be4b6f5eff",
+          "manifest_sha256": "0146e62cc16a4cb6fca5b9d42e05438bc1eae0d3dba8c5c1066b41fd20c09766",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle",
+          "service_acceptance_sha256": "36d101f8b4c9e45496189840c1e80dff577af92e8758c928a5b840063d992184",
+          "service_release_sha256": "e2c19d223091490dd169eb9b5c64d18ceba319dfa02b2d647a2c8440a0f742fd"
+        },
+        "main_merged": false
+      }
     },
     {
       "id": "A10",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "标准多模态与模型能力接入；文本/图像现有后端补组合，embedding/audio/realtime等登记所需后端及实现",
       "acceptance": "每个接口区分前端实现与实际模型支持，提供真实任务证据；缺后端继续记未解决，不能用空向量/假转录/固定拒绝结案",
       "depends_on": [
@@ -1113,7 +1135,8 @@
           "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
         }
       ],
-      "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation"
+      "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation",
+      "next": "Native standalone moderation endpoint and Batch wiring using actual existing classifier; continue all other multimodal/backend tasks."
     },
     {
       "id": "A11",
@@ -1671,6 +1694,6 @@
       "release": null
     }
   ],
-  "next_task": "继续后台Response原终态/实际失败用量、永久容量与辅助所有者恢复，再实际模型业务/兼容回退交付；全部任务继续。",
-  "next": "Deliver accepted Batch candidate and compatible rollback, then A09.7/A10 and all remaining master tasks."
+  "next_task": "A10",
+  "next": "Native standalone moderation and Batch wiring, remaining five Batch backends and all A/N/R/Q tasks; qualified text Batch default delivered."
 }
