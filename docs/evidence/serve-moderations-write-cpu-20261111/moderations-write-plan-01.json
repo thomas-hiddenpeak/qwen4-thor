@@ -1,0 +1,17 @@
+{
+  "reason": "code review: HandleModerations ignored failed terminal SendSimple and counted success",
+  "change": "assign SendSimple result to outer success, unchanged model/state/numerics",
+  "cpp_tests": [
+    "server_http_response_send_status",
+    "finite_response_cancel_and_write_deadline_prevent_success_capture",
+    "server_http_write_cancel_and_request_deadline"
+  ],
+  "business": {
+    "starts": 1,
+    "chats": 1,
+    "model_steps": 1,
+    "seconds": 300
+  },
+  "reuse": "34 CPU and real 2-profile/8-request/8-step business on otherwise-identical source",
+  "rollback": "retained accepted61649847 implements all moderation executors"
+}

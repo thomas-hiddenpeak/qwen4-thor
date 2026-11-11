@@ -125,9 +125,8 @@ void ChatServer::HandleModerations(int fd, const std::string& body,
                         control->Reason());
       return;
     }
-    detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
-                       "application/json", {control->deadline()});
-    success = true;
+    success = detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
+                                 "application/json", {control->deadline()});
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(
         fd, http ? *http->State() : detail::ResponseState::kUnsent,

@@ -1,0 +1,6 @@
+{
+  "binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+  "changed_source": "src/server/chat_moderations.cpp",
+  "source_sha256": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
+  "baseline": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851"
+}

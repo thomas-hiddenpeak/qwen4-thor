@@ -1,0 +1,18 @@
+{
+  "README.md": "2ee389d12bc5afe1b5b2837ae4bab1ecb31a15968cb821474203267d89069980",
+  "build-moderations-write-engine-01.json": "47140d85194987cce991099fa07ca9a2a4762af8aacacb3fed2b01019c3e49b6",
+  "build-moderations-write-engine-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "build-moderations-write-engine-01.stdout": "30fe0fa4b60c570b05c371f2f60612a4cf603bb28ca0e1318ef54ddd82e7e220",
+  "identity.json": "dec606ee86e44e6ab25b1ac998ec1d63a3088cc13c48d88e93370735eebc5b0f",
+  "moderations-write-cpu-01.json": "ff35ae9137dc94d9f0944247d6e0feadd3b2cbf06d1378066e5513a289f183b1",
+  "moderations-write-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "moderations-write-cpu-01.stdout": "077a76cbe15d90f47b05153628f15f1a7be61bddf9e9f06861bea50bb592d94a",
+  "moderations-write-plan-01.json": "c8553e3ac5483cfcbf37ecf3536d71126fe767c8a52ca677d22800225b1252e4",
+  "moderations-write-protocol-01.json": "e63e2f74fc6a652233421e11960b6089f3f80e5f2e4808a7c8381db3459f37d1",
+  "moderations-write-protocol-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "moderations-write-protocol-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "moderations-write-required-01.txt": "50058e0877d5bb046342782d05e18a755f62585964120b14b4387d2db3be9848",
+  "moderations-write-sources-01.json": "93dce09655cdb4678ed2bc2f661c42e01203bd992e21295db56a6832c58113ad",
+  "moderations-write-sources-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "moderations-write-sources-01.stdout": "84ec9d52235dd8276a0b8a3f926f1993df75319a86112b2e9be7abd5708b35b4"
+}
