@@ -1789,9 +1789,39 @@
       "depends_on": [
         "R03"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-device-filter-cpu-20261112/README.md"
+      ],
       "release": null,
-      "development_status": "Inspect independent cold-start exclusivity enforcement and CUDA health evidence; monitoring unknown is not idle. Implement deployment control before claiming NVML-free startup."
+      "development_status": "Native device filter passed 6 real kernel CPU checks in 0.132 seconds; only owned test cgroups/zero/null. No GPU or default mutation. Independent initial exclusivity, durable custody and cold-start integration continue; primitive alone does not qualify an idle GPU.",
+      "plan": "SERVE_COLD_START_2026-11-12.md",
+      "subtasks": [
+        {
+          "id": "R07.1",
+          "state": "cpu_verified",
+          "title": "原生设备过滤与内核CPU验证"
+        },
+        {
+          "id": "R07.2",
+          "state": "implementing",
+          "title": "独占部署与独立凭据"
+        },
+        {
+          "id": "R07.3",
+          "state": "planned",
+          "title": "Guardian冷启动预算与探测接线"
+        },
+        {
+          "id": "R07.4",
+          "state": "planned",
+          "title": "针对性CPU与真实冷启动业务"
+        },
+        {
+          "id": "R07.5",
+          "state": "planned",
+          "title": "可回退交付及总任务接续"
+        }
+      ]
     },
     {
       "id": "R08",

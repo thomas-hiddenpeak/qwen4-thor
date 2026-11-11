@@ -8,6 +8,11 @@ target_include_directories(q4t_guardian_process PUBLIC
 target_compile_features(q4t_guardian_process PUBLIC cxx_std_23)
 target_compile_options(q4t_guardian_process PRIVATE -Wall -Wextra -Werror)
 
+add_library(q4t_device_filter STATIC
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/device_filter.cpp)
+target_link_libraries(q4t_device_filter PUBLIC q4t_guardian_process)
+target_compile_options(q4t_device_filter PRIVATE -Wall -Wextra -Werror)
+
 add_library(q4t_guardian_journal STATIC
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_journal.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_wire.cpp
@@ -24,6 +29,11 @@ target_link_libraries(q4t_guardian PRIVATE q4t_guardian_journal)
 target_compile_options(q4t_guardian PRIVATE -Wall -Wextra -Werror)
 
 if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)
+  add_executable(q4t_device_filter_tests
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/device_filter_test.cpp)
+  target_link_libraries(q4t_device_filter_tests PRIVATE q4t_device_filter)
+  target_compile_options(q4t_device_filter_tests PRIVATE
+    -Wall -Wextra -Werror)
   add_executable(q4t_guardian_process_tests
     ${CMAKE_CURRENT_LIST_DIR}/../tests/guardian_process_test.cpp)
   target_link_libraries(q4t_guardian_process_tests PRIVATE q4t_guardian_process)
