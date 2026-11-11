@@ -60,6 +60,7 @@
 #include "q4t/server/responses_jobs.h"
 #include "q4t/server/batch_execution.h"
 #include "q4t/server/batch_jobs.h"
+#include "q4t/server/application_owner.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
@@ -215,6 +216,7 @@ class ChatServer {
                                    std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);
   void RunBackgroundResponse(ResponsesJobs::Job& job);
+  void RecoverApplicationJobs() noexcept;
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
@@ -230,8 +232,11 @@ class ChatServer {
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::string file_input_policy_sha256_;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;
-  std::unique_ptr<ResponsesJobs> background_;
-  std::unique_ptr<BatchJobs> batches_;
+  ResponsesJobsOptions background_options_;
+  BatchJobsOptions batch_options_;
+  ApplicationOwner<ResponsesJobs> background_;
+  ApplicationOwner<BatchJobs> batches_;
+  ApplicationStartup background_scanner_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);

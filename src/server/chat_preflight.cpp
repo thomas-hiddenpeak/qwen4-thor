@@ -62,7 +62,12 @@ void ChatServer::HandleConfig(int fd) {
                                           : "ready";
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
-      R"(,"application_state_health":{"state":")" +
+      R"(,"application_startup":{"responses":)" +
+      ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
+      ApplicationStartupJson(batches_.StartupHealth()) +
+      R"(,"response_scanner":)" +
+      ApplicationStartupJson(background_scanner_.Health()) + "}," +
+      R"("application_state_health":{"state":")" +
       detail::JsonEscape(health.state) + '"' + R"(,"key_admin_ready":)" +
       (state_key_admin_ && state_key_admin_->Alive() ? "true" : "false") +
       R"(,"key_admin_readiness_dependency":false,"pending":)" +

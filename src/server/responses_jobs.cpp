@@ -13,6 +13,7 @@
 #include <unordered_map>
 
 #include "object_protocol.h"
+#include "q4t/server/application_owner.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
 
@@ -101,8 +102,10 @@ ResponsesJobs::ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
       !state_->executor)
     throw std::invalid_argument("Invalid background execution limits");
   try {
-    for (size_t i = 0; i < options.workers; ++i)
+    for (size_t i = 0; i < options.workers; ++i) {
+      ApplicationThreadStart(ApplicationThreadKind::kResponseWorker);
       state_->workers.emplace_back([this] { Worker(); });
+    }
   } catch (...) {
     RequestStop();
     Join();
@@ -411,6 +414,7 @@ void ResponsesJobs::StartRecovery(ClientAdmission& clients,
   const std::lock_guard lock(state_->mutex);
   if (state_->recovery_configured || state_->stopping)
     throw std::logic_error("Response recovery already configured or stopping");
+  ApplicationThreadStart(ApplicationThreadKind::kResponseScanner);
   state_->recovery =
       std::thread([this, &clients, config = std::move(config)]() mutable {
         Recover(clients, std::move(config));

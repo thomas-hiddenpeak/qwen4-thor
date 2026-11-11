@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "tools/serve_responses/build_contract.py",
+    "--types",
+    ".q4t-work/serve-input-tokens-20261110/application-types.json",
+    "--check"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06507283495739102
+}

@@ -31444,10 +31444,16 @@
                 "type": "boolean"
               },
               "body_bytes": {
-                "const": 100663296
+                "enum": [
+                  16777216,
+                  100663296
+                ]
               },
               "aggregate_body_bytes": {
-                "const": 201326592
+                "enum": [
+                  50331648,
+                  201326592
+                ]
               },
               "tokenizer_input_bytes": {
                 "type": "integer",
@@ -31539,6 +31545,28 @@
               "queue_policy",
               "queue_order",
               "queue_excludes_preparation"
+            ],
+            "oneOf": [
+              {
+                "properties": {
+                  "body_bytes": {
+                    "const": 16777216
+                  },
+                  "aggregate_body_bytes": {
+                    "const": 50331648
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "body_bytes": {
+                    "const": 100663296
+                  },
+                  "aggregate_body_bytes": {
+                    "const": 201326592
+                  }
+                }
+              }
             ]
           },
           "configuration_mutable": {
@@ -32441,6 +32469,10 @@
               },
               "key_admin_readiness_dependency": {
                 "const": false
+              },
+              "auxiliary_cleanup_failures": {
+                "type": "integer",
+                "minimum": 0
               }
             },
             "required": [
@@ -33457,6 +33489,171 @@
               "retained_budget_is_rss_limit",
               "body_storage_context_admission_separate"
             ]
+          },
+          "application_startup": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "responses": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "uninitialized",
+                      "starting",
+                      "backoff",
+                      "ready",
+                      "stopping"
+                    ]
+                  },
+                  "readiness_dependency": {
+                    "const": false
+                  },
+                  "attempts": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "failures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "recoveries": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "retry_after_ms": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "last_failure": {
+                    "enum": [
+                      "none",
+                      "host_memory",
+                      "thread_or_system",
+                      "initialization_exception"
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "readiness_dependency",
+                  "attempts",
+                  "failures",
+                  "recoveries",
+                  "retry_after_ms",
+                  "last_failure"
+                ]
+              },
+              "batches": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "uninitialized",
+                      "starting",
+                      "backoff",
+                      "ready",
+                      "stopping"
+                    ]
+                  },
+                  "readiness_dependency": {
+                    "const": false
+                  },
+                  "attempts": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "failures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "recoveries": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "retry_after_ms": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "last_failure": {
+                    "enum": [
+                      "none",
+                      "host_memory",
+                      "thread_or_system",
+                      "initialization_exception"
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "readiness_dependency",
+                  "attempts",
+                  "failures",
+                  "recoveries",
+                  "retry_after_ms",
+                  "last_failure"
+                ]
+              },
+              "response_scanner": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "uninitialized",
+                      "starting",
+                      "backoff",
+                      "ready",
+                      "stopping"
+                    ]
+                  },
+                  "readiness_dependency": {
+                    "const": false
+                  },
+                  "attempts": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "failures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "recoveries": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "retry_after_ms": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "last_failure": {
+                    "enum": [
+                      "none",
+                      "host_memory",
+                      "thread_or_system",
+                      "initialization_exception"
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "readiness_dependency",
+                  "attempts",
+                  "failures",
+                  "recoveries",
+                  "retry_after_ms",
+                  "last_failure"
+                ]
+              }
+            },
+            "required": [
+              "responses",
+              "batches",
+              "response_scanner"
+            ],
+            "description": "Present in native application initialization recovery builds; omitted by historical config-v1 producers."
           }
         },
         "required": [

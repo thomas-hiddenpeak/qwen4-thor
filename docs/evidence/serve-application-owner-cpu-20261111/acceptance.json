@@ -1,0 +1,62 @@
+{
+  "status": "targeted_cpu_accepted",
+  "base_commit": "fc69f823",
+  "kind": "nonperformance auxiliary availability recovery",
+  "cpp": {
+    "required": 16,
+    "passed": 16,
+    "new": 8,
+    "direct": 8,
+    "seconds": 0.9651066162623465
+  },
+  "python": {
+    "distinct": 2,
+    "passed": 2,
+    "initial_pass": 1,
+    "initial_error": 1,
+    "affected_retries": [
+      {
+        "exit": 1,
+        "reason": "historical aggregate incorrectly assumed32MiB; actual source and both records48MiB"
+      },
+      {
+        "exit": 0,
+        "tests": 1
+      }
+    ],
+    "production_unchanged": true
+  },
+  "protocol": "498 anchors; app schema and regenerated standalone OpenAPI checks pass; stale bundle check failure preserved",
+  "binaries_sha256": {
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "4c430ce7e547bc3f12b8962d4c71bb9d115dfcdd964e67ef59f17ffea65f8336",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+    "tools/serve_audit/inventory.json": "ceec58e3fa3e7213ffba5b050eb1b6948ee6eaccc33bf28c25deb4a3e4459594",
+    "build/q4t": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+  },
+  "gpu_starts": 0,
+  "default_changed": false,
+  "passed": [
+    "application_startup_retry_window_bounds_attempts_and_health",
+    "application_owner_concurrent_initialization_publishes_once",
+    "application_owner_stop_during_creation_preserves_single_stopped_owner",
+    "application_owner_stop_before_creation_prevents_all_attempts",
+    "application_startup_classifies_failure_and_domains_are_independent",
+    "batch_jobs_cancel_waits_for_drain_and_publishes_partial_files",
+    "batch_jobs_actual_dead_owner_recovery_skips_started_row",
+    "batch_jobs_stop_cancels_owned_execution_and_keeps_pending_rows",
+    "batch_background_actual_dead_owner_resumes_same_queued_response",
+    "batch_application_owner_partial_threads_drain_then_real_task_recovers",
+    "responses_recovery_resumes_queued_identity_and_fails_started_without_replay",
+    "responses_jobs_shutdown_cancels_owned_work_and_rejects_submission",
+    "responses_foreground_close_failure_transfers_only_after_cleanup",
+    "responses_foreground_missing_coordinator_preserves_stateless_service",
+    "responses_application_owner_partial_thread_failure_recovers_real_task",
+    "responses_application_scanner_retry_uses_same_owner_and_original_id"
+  ],
+  "remaining": [
+    "actual model Batch business and available failed/cancelled usage",
+    "compatible state/quota/background binding/output failure reader rollback",
+    "qualified default delivery",
+    "all remaining master tasks"
+  ]
+}

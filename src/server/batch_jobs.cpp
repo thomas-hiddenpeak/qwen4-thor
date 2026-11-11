@@ -9,6 +9,7 @@
 #include <thread>
 
 #include "object_protocol.h"
+#include "q4t/server/application_owner.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/batch_usage.h"
 #include "q4t/server/responses_owner.h"
@@ -112,8 +113,11 @@ BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
                                    std::move(execute), std::move(meter),
                                    std::move(planner), std::move(continuation));
   try {
-    for (size_t i = 0; i < options.workers; ++i)
+    for (size_t i = 0; i < options.workers; ++i) {
+      ApplicationThreadStart(ApplicationThreadKind::kBatchWorker);
       state_->workers.emplace_back([this] { Worker(); });
+    }
+    ApplicationThreadStart(ApplicationThreadKind::kBatchScanner);
     state_->recovery = std::thread([this] { Recover(); });
   } catch (...) {
     RequestStop();

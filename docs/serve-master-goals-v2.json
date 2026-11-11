@@ -1067,8 +1067,7 @@
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
         "Verify available failed/cancelled native usage during the combined actual model business acceptance; capture and original background terminal/drain are CPU accepted. Preserve unknown unsaved process-death tails.",
-        "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
-        "Complete bounded retry for application task-owner initial construction failure without core restart or duplicate live owners."
+        "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed."
       ],
       "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
       "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage now have separate targeted CPU acceptance; actual model business/release still required.",
@@ -1080,7 +1079,10 @@
       "batch_actual_usage_component_evidence": "evidence/serve-actual-usage-cpu-20261111/README.md",
       "batch_finalization_plan": "SERVE_BATCH_FINALIZATION_2026-11-11.md",
       "batch_finalization_status": "22 distinct targeted CPU accepted: first17pass/3fail,6affected followups pass after retained-result read guard fix. Deterministic capacity finite failed terminal/whole-row partial Files, original usage and finite retention, actual lost receipts/dead process and queue release validated. No GPU/default change; actual business and compatible failure-reader rollback/delivery remain required.",
-      "batch_finalization_component_evidence": "evidence/serve-batch-finalization-cpu-20261111/README.md"
+      "batch_finalization_component_evidence": "evidence/serve-batch-finalization-cpu-20261111/README.md",
+      "application_owner_recovery_plan": "SERVE_APPLICATION_OWNER_RECOVERY_2026-11-11.md",
+      "application_owner_recovery_status": "16 targeted C++ and2config checks accepted. Actual partial worker construction cleanup and retry, stable single publication, stop race, existing scanner recovery with original queued/started semantics and independent diagnostics. Historical config-v1 capacity schema fixed to observed16/48 and96/192MiB pairs; failures retained. No GPU/default change; actual business/compatible delivery remain required.",
+      "application_owner_recovery_component_evidence": "evidence/serve-application-owner-cpu-20261111/README.md"
     },
     {
       "id": "A10",

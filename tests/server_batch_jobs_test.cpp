@@ -1,4 +1,5 @@
 #include "q4t/server/batch_jobs.h"
+#include "q4t/server/application_owner.h"
 
 #include <sys/wait.h>
 #include <unistd.h>
@@ -1906,5 +1907,50 @@ Q4T_TEST(
   const auto final = Finished(objects, jobs, id);
   Q4T_CHECK(Ok(final) && submissions == 1 && calls == 1 &&
             final.value.Find("usage")->GetInt("total_tokens") == 6);
+  return true;
+}
+
+Q4T_TEST(
+    batch_application_owner_partial_threads_drain_then_real_task_recovers) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto file = File(objects, Input(2));
+  ApplicationOwner<BatchJobs> owner({1ms, 20ms});
+  f.jobs.workers = 2;
+  std::atomic<int> calls{0};
+  const auto factory = [&] {
+    return std::make_unique<BatchJobs>(objects, f.clients, f.config, f.jobs,
+                                       Native(calls));
+  };
+  const auto threads = [] {
+    return std::distance(std::filesystem::directory_iterator("/proc/self/task"),
+                         std::filesystem::directory_iterator());
+  };
+  const auto before = threads();
+  FailApplicationThreadForTesting(ApplicationThreadKind::kBatchScanner);
+  ScopeExit reset([] { application_failed_thread.store(-1); });
+  Q4T_CHECK(!owner.TryStart(factory) && !owner && calls == 0 &&
+            owner.StartupHealth().failures == 1);
+  Q4T_CHECK(Wait([&] { return threads() == before; }));
+  Q4T_CHECK(Wait([&] {
+    owner.TryStart(factory);
+    return bool(owner);
+  }));
+  const auto submitted = owner->Submit(Access(), Options(file), f.alpha);
+  Q4T_CHECK(Ok(submitted));
+  const auto final = Finished(objects, *owner, submitted.value.GetString("id"));
+  Q4T_CHECK(
+      Ok(final) && final.value.GetString("status") == "completed" &&
+      final.value.Find("request_counts")->GetInt("completed") == 2 &&
+      calls == 2 &&
+      !Content(objects, final.value.GetString("output_file_id")).empty() &&
+      owner.StartupHealth().recoveries == 1 &&
+      owner->Health().reserved_result_bytes == 0 &&
+      f.clients.Usage(0).data_active == 0);
+  auto* original = owner.Get();
+  owner.RequestStop();
+  owner.Join();
+  Q4T_CHECK(!owner.TryStart(factory) && owner.Get() == original &&
+            owner->Health().stopping && calls == 2);
   return true;
 }

@@ -1,4 +1,5 @@
 #include "q4t/server/responses_jobs.h"
+#include "q4t/server/application_owner.h"
 
 #include <unistd.h>
 #include <poll.h>
@@ -1571,5 +1572,92 @@ Q4T_TEST(responses_foreground_missing_coordinator_preserves_stateless_service) {
   Q4T_CHECK(stored.Begin(&wire).code == "response_reconciliation_unavailable");
   Q4T_CHECK(Ok(stateless.Begin(&wire)) && Ok(stateless.CloseUnfinished()));
   Q4T_CHECK(objects.Health().workers_started == 0);
+  return true;
+}
+
+Q4T_TEST(
+    responses_application_owner_partial_thread_failure_recovers_real_task) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ApplicationOwner<ResponsesJobs> owner({1ms, 20ms});
+  ResponsesJobsOptions options;
+  options.workers = 2;
+  const auto threads = [] {
+    return std::distance(std::filesystem::directory_iterator("/proc/self/task"),
+                         std::filesystem::directory_iterator());
+  };
+  const auto before = threads();
+  std::atomic<int> calls{0};
+  const auto factory = [&] {
+    return std::make_unique<ResponsesJobs>(objects, options, [&](auto& job) {
+      ++calls;
+      Complete(job);
+    });
+  };
+  FailApplicationThreadForTesting(ApplicationThreadKind::kResponseWorker, 1);
+  ScopeExit reset([] { application_failed_thread.store(-1); });
+  Q4T_CHECK(!owner.TryStart(factory) && !owner &&
+            owner.StartupHealth().failures == 1 &&
+            std::string(owner.StartupHealth().last_failure) ==
+                "thread_or_system");
+  Q4T_CHECK(Wait([&] { return threads() == before; }));
+  Q4T_CHECK(Wait([&] {
+    owner.TryStart(factory);
+    return bool(owner);
+  }));
+  const auto submitted = f.Submit(*owner, objects);
+  Q4T_CHECK(Ok(submitted) && Wait([&] { return owner->Health().owned == 0; }));
+  const auto response = ResponsesState(objects).Retrieve(
+      submitted.value.GetString("id"), Access());
+  Q4T_CHECK(Ok(response) && response.value.GetString("status") == "completed" &&
+            calls == 1 && owner.StartupHealth().recoveries == 1 &&
+            f.clients.Usage(0).data_active == 0);
+  auto* original = owner.Get();
+  owner.RequestStop();
+  owner.Join();
+  Q4T_CHECK(!owner.TryStart(factory) && owner.Get() == original &&
+            owner->Health().stopping && calls == 1);
+  return true;
+}
+
+Q4T_TEST(responses_application_scanner_retry_uses_same_owner_and_original_id) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto queued = Interrupted(objects);
+  const auto started = Interrupted(objects, true);
+  std::atomic<int> calls{0};
+  ResponsesJobs owner(objects, {}, [&](auto& job) {
+    ++calls;
+    Complete(job);
+  });
+  ApplicationStartup scanner({1ms, 20ms});
+  const auto start = [&] { owner.StartRecovery(f.clients, Config()); };
+  FailApplicationThreadForTesting(ApplicationThreadKind::kResponseScanner);
+  ScopeExit reset([] { application_failed_thread.store(-1); });
+  Q4T_CHECK(!scanner.Try(start) && !owner.Health().recovery_configured &&
+            !owner.Health().stopping && scanner.Health().failures == 1);
+  // The existing executor remains usable while only its scanner backs off.
+  const auto online = f.Submit(owner, objects);
+  Q4T_CHECK(Ok(online) && Wait([&] { return owner.Health().owned == 0; }) &&
+            calls == 1);
+  Q4T_CHECK(Wait([&] {
+    scanner.Try(start);
+    return scanner.Health().ready;
+  }));
+  Q4T_CHECK(Wait([&] {
+    const auto health = owner.Health();
+    return health.recovered == 1 && health.interrupted == 1 &&
+           health.owned == 0;
+  }));
+  Q4T_CHECK(ResponsesState(objects)
+                    .Retrieve(queued, Access())
+                    .value.GetString("status") == "completed" &&
+            ResponsesState(objects)
+                    .Retrieve(started, Access())
+                    .value.GetString("status") == "failed" &&
+            calls == 2 && scanner.Health().recoveries == 1 &&
+            !scanner.Try(start));
+  owner.RequestStop();
+  owner.Join();
   return true;
 }

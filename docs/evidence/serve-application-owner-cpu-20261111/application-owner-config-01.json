@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_application_startup_contract",
+    "-v"
+  ],
+  "exit_code": 1,
+  "seconds": 0.1642722189426422
+}

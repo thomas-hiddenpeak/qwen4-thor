@@ -37,14 +37,15 @@
 namespace q4t::server {
 
 ChatServer::~ChatServer() {
+  RequestStop();
   // Stop the bounded policy worker before destroying queue/client state.
   client_policy_admin_.reset();
   state_key_admin_.reset();
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
-  if (batches_) batches_->RequestStop();
-  if (background_) background_->RequestStop();
+  batches_.RequestStop();
+  background_.RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -55,8 +56,8 @@ ChatServer::~ChatServer() {
   // d_sched_logits_ under model_mu_, so it must be joined before those are
   // freed).
   StopScheduler();
-  if (batches_) batches_->Join();
-  if (background_) background_->Join();
+  batches_.Join();
+  background_.Join();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
   const auto release = [&](auto*& pointer, const char* site) {
@@ -764,35 +765,38 @@ Status ChatServer::Start(const ServerOptions& opts) {
                                    admission_limits_.inflight,
                                    admission_limits_.queued);
       });
-  try {
-    ResponsesJobsOptions jobs;
-    jobs.max_input_bytes = static_cast<size_t>(opts.background_max_input_mib)
-                           << 20;
-    jobs.max_jobs = std::clamp<size_t>(admission_limits_.inflight, 1, 256);
-    jobs.max_client_jobs = jobs.max_jobs;
-    jobs.workers =
-        std::min<size_t>({jobs.max_jobs, static_cast<size_t>(max_seq_), 8});
-    jobs.timeout = std::chrono::milliseconds(request_deadline_ms_);
-    background_ = std::make_unique<ResponsesJobs>(
-        *objects_, jobs, [this](auto& job) { RunBackgroundResponse(job); },
-        [this](auto& job) { return AdmitBackgroundBatch(job); });
-  } catch (...) {
-    // Application workers are an auxiliary domain, not core model health.
-    std::fprintf(stderr, "[responses] background executor unavailable\n");
-  }
+  background_options_.max_input_bytes =
+      static_cast<size_t>(opts.background_max_input_mib) << 20;
+  background_options_.max_jobs =
+      std::clamp<size_t>(admission_limits_.inflight, 1, 256);
+  background_options_.max_client_jobs = background_options_.max_jobs;
+  background_options_.workers = std::min<size_t>(
+      {background_options_.max_jobs, static_cast<size_t>(max_seq_), 8});
+  background_options_.timeout = std::chrono::milliseconds(request_deadline_ms_);
+  batch_options_.workers = opts.batch_workers;
+  batch_options_.max_jobs = opts.batch_max_jobs;
+  batch_options_.max_client_jobs = opts.batch_max_client_jobs;
+  batch_options_.max_result_bytes =
+      static_cast<size_t>(opts.batch_max_result_mib) << 20;
+  batch_options_.turn_timeout = std::chrono::milliseconds(request_deadline_ms_);
   startup_listeners_ = std::move(pending_listeners);
   ProgressExecution::Completed();
   model_ready_.store(true);
-  try {
-    BatchJobsOptions jobs;
-    jobs.workers = opts.batch_workers;
-    jobs.max_jobs = opts.batch_max_jobs;
-    jobs.max_client_jobs = opts.batch_max_client_jobs;
-    jobs.max_result_bytes = static_cast<size_t>(opts.batch_max_result_mib)
-                            << 20;
-    jobs.turn_timeout = std::chrono::milliseconds(request_deadline_ms_);
-    batches_ = std::make_unique<BatchJobs>(
-        *objects_, clients_, PlanningConfig(), jobs,
+  RecoverApplicationJobs();
+  return Status();
+}
+
+void ChatServer::RecoverApplicationJobs() noexcept {
+  if (stop_requested_.load() || !model_ready_.load() || !objects_) return;
+  background_.TryStart([this] {
+    return std::make_unique<ResponsesJobs>(
+        *objects_, background_options_,
+        [this](auto& job) { RunBackgroundResponse(job); },
+        [this](auto& job) { return AdmitBackgroundBatch(job); });
+  });
+  batches_.TryStart([this] {
+    return std::make_unique<BatchJobs>(
+        *objects_, clients_, PlanningConfig(), batch_options_,
         [this](const auto& endpoint, const auto& row, const auto& frozen,
                const auto& client, auto& permit, const auto& control,
                auto rate) {
@@ -811,26 +815,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
                                      &input, rate);
         },
         [this](const auto& link, const auto& access, bool cancel) {
-          if (background_)
-            return background_->ObserveBatch(link, access, cancel);
+          if (auto* background = background_.Get())
+            return background->ObserveBatch(link, access, cancel);
           ObjectReply reply;
           reply.http_status = 503;
           reply.code = "batch_response_observer_unavailable";
           reply.message = "Background observer unavailable";
           return reply;
         });
-  } catch (...) {
-    // Batch availability is independent of healthy online inference.
-    std::fprintf(stderr, "[batches] executor unavailable\n");
+  });
+  if (auto* background = background_.Get()) {
+    background_scanner_.Try(
+        [&] { background->StartRecovery(clients_, PlanningConfig()); });
   }
-  if (background_ && !stop_requested_.load()) {
-    try {
-      background_->StartRecovery(clients_, PlanningConfig());
-    } catch (...) {
-      std::fprintf(stderr, "[responses] recovery scanner unavailable\n");
-    }
-  }
-  return Status();
 }
 
 void ChatServer::StopScheduler() {

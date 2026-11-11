@@ -1,0 +1,11 @@
+{
+  "base": "fc69f823",
+  "kind": "nonperformance fault recovery",
+  "cpu_required": 16,
+  "new": 8,
+  "direct": 8,
+  "python_required": 2,
+  "gpu": 0,
+  "scope": "bounded initial construction recovery, partial real threads drain, stable single publication, stop race, real task completion/cancel/original recovery and diagnostics",
+  "default": "unchanged"
+}

@@ -146,7 +146,7 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
       const bool frozen_background =
           frozen_request && frozen_request->GetBool("background");
       responses = std::make_unique<ResponsesExecution>(
-          *objects_, frozen_background ? nullptr : background_.get(),
+          *objects_, frozen_background ? nullptr : background_.Get(),
           !frozen_background, api == GenerationApi::kCompact);
       context->SetUsageObserver(&ResponsesExecution::ObserveUsage,
                                 responses.get());

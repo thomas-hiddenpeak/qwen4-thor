@@ -73,6 +73,9 @@ void ChatServer::FinishConnection(int fd, bool operations) noexcept {
 void ChatServer::RequestStop() {
   static_assert(std::atomic<bool>::is_always_lock_free);
   stop_requested_.store(true);
+  background_.PreventStart();
+  batches_.PreventStart();
+  background_scanner_.PreventStart();
 }
 
 void ChatServer::StartConnection(int fd, bool operations) {
@@ -186,30 +189,18 @@ Status ChatServer::Run() {
     loop.Handle().Stage(ProgressStage::kControl);
     ProgressContext progress_context(loop.Handle());
     bool draining = false;
-    auto recovery_retry =
-        std::chrono::steady_clock::now() + std::chrono::seconds(60);
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
       ProgressExecution loop_work(ProgressWork::kServiceLoop);
       detail::PollRequestWorkers();
-      if (std::chrono::steady_clock::now() >= recovery_retry) {
-        recovery_retry =
-            std::chrono::steady_clock::now() + std::chrono::seconds(60);
-        try {
-          if (background_ && !stop_requested_.load() &&
-              !background_->Health().recovery_configured)
-            background_->StartRecovery(clients_, PlanningConfig());
-        } catch (...) {
-          std::fprintf(stderr, "[responses] recovery startup deferred\n");
-        }
-      }
+      RecoverApplicationJobs();
       if (stop_requested_.load() && !draining) {
         draining = true;
         drain_until =
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
-        if (batches_) batches_->RequestStop();
-        if (background_) background_->RequestStop();
+        batches_.RequestStop();
+        background_.RequestStop();
         {
           const std::lock_guard<std::mutex> lock(seq_mu_);
           seq_stopping_ = true;
@@ -264,8 +255,8 @@ Status ChatServer::Run() {
   RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
-  if (batches_) batches_->RequestStop();
-  if (background_) background_->RequestStop();
+  batches_.RequestStop();
+  background_.RequestStop();
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
     for (int fd : connections_) ::shutdown(fd, SHUT_RDWR);
@@ -276,8 +267,8 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
-  if (batches_) batches_->Join();
-  if (background_) background_->Join();
+  batches_.Join();
+  background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   close_listener.Run();
@@ -547,13 +538,13 @@ void ChatServer::Dispatch(int fd, const std::string& method,
         }};
     if (IsResponsesTarget(path)) {
       ServeResponsesState(fd, *objects_, method, path, body, access,
-                          background_.get());
+                          background_.Get());
       return;
     }
     auto reply =
         IsBatchTarget(path)
             ? HandleBatchRequest(
-                  *objects_, batches_.get(), method, path, body, client,
+                  *objects_, batches_.Get(), method, path, body, client,
                   {access.scope, access.deadline, access.cancelled})
         : IsPromptTarget(path)
             ? HandlePromptRequest(*objects_, method, path, body,

@@ -1,0 +1,22 @@
+test_config_accepts_new_diagnostics_and_historical_absence (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_config_accepts_new_diagnostics_and_historical_absence) ... ERROR
+
+======================================================================
+ERROR: test_config_accepts_new_diagnostics_and_historical_absence (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_config_accepts_new_diagnostics_and_historical_absence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_application_startup_contract.py", line 42, in test_config_accepts_new_diagnostics_and_historical_absence
+    validator.validate(value)
+  File "/home/rm01/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: 50331648 is not one of [33554432, 201326592]
+
+Failed validating 'enum' in schema['properties']['limits']['properties']['aggregate_body_bytes']:
+    {'enum': [33554432, 201326592]}
+
+On instance['limits']['aggregate_body_bytes']:
+    50331648
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)

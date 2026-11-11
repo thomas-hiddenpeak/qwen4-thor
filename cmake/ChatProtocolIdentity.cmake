@@ -156,6 +156,8 @@ set(protocol_inputs
   src/server/batch_execution.cpp
   include/q4t/server/batch_validation.h
   src/server/batch_validation.cpp
+  include/q4t/server/application_owner.h
+  src/server/application_owner.cpp
   include/q4t/server/batch_jobs.h
   src/server/batch_jobs.cpp
   include/q4t/server/batch_api.h
