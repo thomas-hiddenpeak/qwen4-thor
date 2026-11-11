@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。写回计数[补验首过](evidence/serve-moderations-write-business-20261111/README.md)：ee550cab、1启动/1请求/1步骤/45.881秒，45次NVML正常，实际563 TPM/1RPM及新协议身份一致，自有资源释放。原34 CPU和文本/视觉/Batch业务复用。准备15命令/0GPU封装61649847回退及候选、保留原配置账本；全部总任务继续。
+
 2026-11-11。Moderations[真实文本/视觉/Batch首过](evidence/serve-moderations-business-20261111/README.md)：2启动/8请求/8步骤/105.976秒、100次NVML正常，自有资源释放。交付复核发现写回失败仍计成功，已改为采用SendSimple实际结果；3 CPU写入边界通过、11.199秒零警告重建。保留61649847回退，继续1启动/1请求定点补验、交付及全部总目标。
 
 2026-11-11。独立Moderations[34项CPU/SDK接入首过](evidence/serve-moderations-cpu-20261111/README.md)：26 C++、4合同、原生TLS官方SDK、3业务驱动；补齐5文件编译期身份并定点重验。候选61649847/入口39757f08零警告，503来源；0GPU/默认保持。冻结2启动/8请求/9步骤/900秒真实文本视觉与Batch业务，随后交付及全部总目标继续。

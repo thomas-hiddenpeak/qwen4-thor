@@ -1,0 +1,10 @@
+{
+  "status": "PASS_MODERATIONS_WRITE_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 42
+  },
+  "seconds": 45.88098073005676,
+  "binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220"
+}

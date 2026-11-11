@@ -945,7 +945,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Real standalone text/vision/Batch business passed; finish terminal-write accounting correction and one-request acceptance, compatible package delivery, then all remaining tasks.",
+      "next": "Moderations actual text/vision/Batch and terminal-write correction accepted; seal feature-capable fallback and default delivery, then all remaining master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1110,7 +1110,8 @@
       },
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
-      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md"
+      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1139,10 +1140,11 @@
         }
       ],
       "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation",
-      "next": "Real standalone text/vision/Batch business passed; finish terminal-write accounting correction and one-request acceptance, compatible package delivery, then all remaining tasks.",
+      "next": "Moderations actual text/vision/Batch and terminal-write correction accepted; seal feature-capable fallback and default delivery, then all remaining master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
-      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md"
+      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md"
     },
     {
       "id": "A11",

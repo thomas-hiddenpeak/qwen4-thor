@@ -62,6 +62,13 @@ Chat。排空正常退出后，显式视觉配置验证原Batch和结果File原�
 与真实逐行用量一致。配置转换是驱动显式安排，不是故障自动重启。
 默认/其他服务保持；失败保留原件、修复直接问题，只补受影响部分。
 
+业务[首轮通过](evidence/serve-moderations-business-20261111/README.md)：
+105.976秒、2启动/8请求/8步骤，100次NVML正常。交付复核的单行
+写回计数修复经3 CPU和[1请求补验](evidence/serve-moderations-write-business-20261111/README.md)
+通过（45.881秒、45次NVML正常），原文本/视觉/Batch证据复用。
+默认保持，继续封装具备同等审核执行器的61649847回退及ee550cab
+候选；冻结15命令、0模型/0GPU交付，不改现有服务配置和业务账本。
+
 ## 依据
 
 2026-11-11已读取[官方Moderation指南](https://developers.openai.com/api/docs/guides/moderation)
