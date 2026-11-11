@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。R08/R09隔离工作分支codex/serve-outer-recovery已推送d72d3554：持久资源安装12 CPU、原域启动/新实例回收29 CPU、跨boot资源续办13 CPU接受；含实际原生Guardian和CPU四角色，均0GPU，未作宿主重启/模型验收或发行。原停止/设备保护/恢复额度保持，自有测试域已清理。当前实现及下一步见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)；继续跨boot未知出生slot、宿主/daemon入口、冷准入组合及全部计划。本工作区R07 plan-v2和默认rev64保持，既有服务维护问题仍待回复。
+
 2026-11-12。R09隔离工作分支codex/serve-outer-recovery已推进至c8920eac：原slot退休、跨boot检查点、健康根接管及显式管理/实际连续恢复循环均有针对性CPU，最新15不同用例65.124秒，0GPU/未发行。工作区及证据见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)；新实例资源域、宿主入口、业务与可回退交付继续。本工作区R07 plan-v2源码/封包冻结不变，维护确认未收到；默认rev64 STOPPED保持，总任务未完成。
 
 2026-11-12。R09运行接线已隔离至[工作区计划](/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/docs/SERVE_OUTER_RECOVERY_2026-11-12.md)，分支codex/serve-outer-recovery/base1750b278；实例锁原语10 CPU首过，提交3269ccbf，未发行。隔离用于保持原工作区R07 plan-v2源码不变；R07维护问题仍待回复，未操作nvargus/jtop/GPU。继续全部任务，后续把已验接线合回有效主工作分支。
