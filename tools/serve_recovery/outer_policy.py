@@ -30,6 +30,32 @@ def hashed(value):
                    'invalid outer recovery digest')
 
 
+def custody_valid(value, boot_id):
+    ledger.keys(value, ('supervisor', 'instance_token', 'tree_scope'))
+    ledger.owner_valid(value['supervisor'])
+    ledger.require(value['supervisor']['boot_id'] == boot_id and
+        ledger.identifier(value['instance_token']) and ledger.identifier(value['tree_scope']),
+        'invalid original outer custody')
+
+
+def pending_valid(pending):
+    ledger.keys(pending, ('ticket', 'serial', 'boot_id', 'manifest_sha256',
+                         'core_sha256', 'core_revision', 'core_generations', 'custody', 'owner'))
+    ledger.require(ledger.identifier(pending['ticket']) and
+        revision(pending['serial'], minimum=1) and revision(pending['core_revision']) and
+        ledger.identifier(pending['boot_id']), 'invalid pending outer attempt')
+    hashed(pending['manifest_sha256']); hashed(pending['core_sha256'])
+    ledger.keys(pending['core_generations'], ledger.ROLES)
+    ledger.require(all(revision(n) for n in pending['core_generations'].values()),
+                   'invalid original core generations')
+    custody_valid(pending['custody'], pending['boot_id'])
+    if pending['owner'] is not None:
+        ledger.owner_valid(pending['owner'])
+        ledger.require(pending['owner']['boot_id'] == pending['boot_id'],
+                       'outer owner belongs to another boot')
+    return pending
+
+
 def validate(value):
     ledger.keys(value, ('format', 'revision', 'service_id', 'enabled', 'clock',
                        'total', 'starts', 'pending', 'protected', 'last'))
@@ -59,16 +85,8 @@ def validate(value):
         ledger.require(starts[-1]['serial'] == value['total'], 'lost outer start history')
     pending = value['pending']
     if pending is not None:
-        ledger.keys(pending, ('ticket', 'serial', 'boot_id', 'manifest_sha256',
-                             'core_sha256', 'owner'))
-        ledger.require(ledger.identifier(pending['ticket']) and
-            revision(pending['serial'], minimum=1) and pending['serial'] == value['total'] and
-            ledger.identifier(pending['boot_id']), 'invalid pending outer attempt')
-        hashed(pending['manifest_sha256']); hashed(pending['core_sha256'])
-        if pending['owner'] is not None:
-            ledger.owner_valid(pending['owner'])
-            ledger.require(pending['owner']['boot_id'] == pending['boot_id'],
-                           'outer owner belongs to another boot')
+        pending_valid(pending)
+        ledger.require(pending['serial'] == value['total'], 'outer attempt serial changed')
     last = value['last']
     ledger.require((last is None) == (value['revision'] == 0), 'missing outer transition')
     if last is not None:
@@ -101,12 +119,14 @@ def core_state(args, value):
 
 
 def request(value, args, stamp, now):
-    ledger.keys(args, ('core', 'ticket', 'manifest_sha256', 'cleanup_verified', 'identity_valid'))
+    ledger.keys(args, ('core', 'ticket', 'manifest_sha256', 'cleanup_verified', 'identity_valid',
+                       'custody'))
     core = core_state(args, value)
     ledger.require(ledger.identifier(args['ticket']) and
         type(args['cleanup_verified']) is bool and type(args['identity_valid']) is bool,
         'invalid outer start request')
     hashed(args['manifest_sha256'])
+    custody_valid(args['custody'], stamp.boot_id)
     reason = None
     if not value['enabled']: reason = 'disabled'
     elif core['desired'] != 'RUNNING': reason = 'operator_intent'
@@ -127,7 +147,9 @@ def request(value, args, stamp, now):
     value['total'] += 1
     value['starts'].append(dict(serial=value['total'], at=now, ticket=args['ticket']))
     value['pending'] = dict(ticket=args['ticket'], serial=value['total'], boot_id=stamp.boot_id,
-        manifest_sha256=args['manifest_sha256'], core_sha256=ledger.digest(core), owner=None)
+        manifest_sha256=args['manifest_sha256'], core_sha256=ledger.digest(core),
+        core_revision=core['revision'], core_generations=deepcopy(core['generations']),
+        custody=deepcopy(args['custody']), owner=None)
     return dict(allowed=True, ticket=args['ticket'], serial=value['total'])
 
 

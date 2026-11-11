@@ -28,7 +28,12 @@ class StoreTests(unittest.TestCase):
 
     def request(self):
         return self.commit('request', dict(core=self.core, ticket=str(uuid.uuid4()),
-            manifest_sha256='b'*64, cleanup_verified=True, identity_valid=True))
+            manifest_sha256='b'*64, cleanup_verified=True, identity_valid=True,
+            custody=self.custody()))
+
+    def custody(self):
+        return dict(supervisor=dict(pid=100,start_ticks=200,boot_id=self.now.boot_id),
+                    instance_token=str(uuid.uuid4()),tree_scope=str(uuid.uuid4()))
 
     def load(self):
         with s.open_bound(self.binding) as writer: return writer.head['state']['policy']
@@ -47,7 +52,8 @@ class StoreTests(unittest.TestCase):
         with s.open_bound(self.binding) as writer:
             previous = writer.head['state']['policy']
             candidate = p.change(previous, 'request', dict(core=self.core,ticket=str(uuid.uuid4()),
-                manifest_sha256='c'*64,cleanup_verified=True,identity_valid=True),self.now)
+                manifest_sha256='c'*64,cleanup_verified=True,identity_valid=True,
+                custody=self.custody()),self.now)
             real = os.fsync
             def fail(fd):
                 if fd == writer.dir_fd: raise OSError('postrename')

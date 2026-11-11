@@ -6,6 +6,7 @@ this particular tree empty; a new observer cannot adopt that proof from JSON.
 This module does not inspect GPU availability or authorize another model.
 """
 import ctypes
+from copy import deepcopy
 import os
 from pathlib import Path
 import signal
@@ -13,7 +14,7 @@ import subprocess
 import time
 import uuid
 
-from tools.serve_recovery import journal, ledger, store
+from tools.serve_recovery import journal, ledger, outer_instance, outer_policy, store
 
 MAX_CHILDREN = 512
 
@@ -46,6 +47,9 @@ class Tree:
         self.owner_start = journal.process_start(self.owner_pid)
         self.boot_id = store.stamp().boot_id
         self.reaped = []
+        self.instance = None
+        self.instance_custody = None
+        self.attempt = None
 
     def local(self):
         ledger.require(os.getpid() == self.owner_pid and
@@ -70,7 +74,15 @@ class Tree:
         self.previous_subreaper = old.value; self.entered = True
         return self
 
-    def launch(self, command, *, env, pass_fds=()):
+    def binding(self, instance):
+        self.local()
+        ledger.require(type(instance) is outer_instance.Instance and self.entered,
+                       'actual entered outer custody required')
+        custody = instance.custody()
+        return dict(supervisor=custody['owner'], instance_token=custody['token'],
+                    tree_scope=self.scope_id)
+
+    def launch(self, command, *, env, pass_fds=(), instance=None, attempt=None):
         self.local()
         ledger.require(self.entered and self.root is None and no_children(),
                        'outer tree can dispatch only one owned root')
@@ -78,6 +90,17 @@ class Tree:
             os.path.isabs(command[0]) and
             all(type(arg) is str and len(arg) <= 4096 and '\0' not in arg for arg in command),
             'invalid bounded outer command')
+        ledger.require((instance is None) == (attempt is None), 'partial outer custody binding')
+        if instance is not None:
+            ledger.require(type(instance) is outer_instance.Instance, 'actual instance owner required')
+            outer_policy.pending_valid(attempt)
+            ledger.require(attempt['owner'] is None and attempt['boot_id'] == self.boot_id,
+                           'outer attempt was already dispatched or boot changed')
+            ledger.require(attempt['custody'] == self.binding(instance),
+                           'outer dispatch lacks its original durable custody')
+            self.instance_custody = instance.custody()
+            self.instance = instance
+            self.attempt = deepcopy(attempt)
         self.root = subprocess.Popen(command, stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             start_new_session=True, close_fds=True, env=env, pass_fds=pass_fds)
@@ -85,6 +108,18 @@ class Tree:
         self.root_identity = dict(pid=self.root.pid,
             start_ticks=journal.process_start(self.root.pid), boot_id=self.boot_id)
         return dict(self.root_identity)
+
+    def continuous(self, instance, attempt):
+        """Only the original in-memory custody can retire this launch's slots."""
+        self.local()
+        outer_policy.pending_valid(attempt)
+        ledger.require(self.instance is instance and self.instance_custody is not None and
+            instance.custody() == self.instance_custody and self.attempt is not None and
+            attempt['custody'] == self.binding(instance) and
+            dict(attempt, owner=None) == self.attempt and
+            attempt['owner'] in (None, self.root_identity),
+            'outer attempt lacks continuous original instance custody')
+        return self.witness(self.root_identity)
 
     def poll(self):
         self.local()

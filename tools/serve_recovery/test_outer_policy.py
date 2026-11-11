@@ -24,7 +24,9 @@ class PolicyTests(unittest.TestCase):
 
     def request(self, **extra):
         args = dict(core=self.core, ticket=str(uuid.uuid4()), manifest_sha256='a'*64,
-                    cleanup_verified=True, identity_valid=True)
+                    cleanup_verified=True, identity_valid=True, custody=dict(
+                        supervisor=dict(pid=100, start_ticks=200, boot_id=self.now.boot_id),
+                        instance_token=str(uuid.uuid4()), tree_scope=str(uuid.uuid4())))
         args.update(extra)
         return self.change('request', args)
 
@@ -45,6 +47,8 @@ class PolicyTests(unittest.TestCase):
         original = deepcopy(self.core)
         result = self.request(); self.assertTrue(result['allowed'])
         self.assertEqual(self.value['pending']['core_sha256'], ledger.digest(original))
+        self.assertEqual(self.value['pending']['core_revision'], original['revision'])
+        self.assertEqual(self.value['pending']['core_generations'], original['generations'])
         self.assertEqual(self.value['total'], 1); self.assertEqual(self.core, original)
         self.assertFalse(p.describe(self.value)['device_authorized'])
         self.assertFalse(p.describe(self.value)['model_actions'])

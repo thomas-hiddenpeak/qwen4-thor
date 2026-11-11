@@ -78,3 +78,24 @@ JSON 所称的“外层持锁”。后台 detach 不适用该父层生命周期�
 分支 `codex/serve-outer-recovery`，基点1750b278；隔离原因是保留
 原工作区 R07 当前plan-v2的源码与真实短验资格。后续合回有效
 主工作分支，不把这个隔离入口永久保留。
+
+## 连续外层的原 slot 退休（CPU 已验证，未接运行入口）
+
+启动请求在派生前持久绑定原外层 PID/start/boot、实例锁保管 token、
+唯一树 scope、原核心 revision/generations/hash。派生只能消费自己的
+原绑定；新树或重新取得的实例锁不能使用旧回执。原外层实际回收
+整树并得到 ECHILD 后，`outer_reconcile` 在部署与原实例独占下，
+先核对当前描述符、持久外层 intent 和核心格式围栏，再按原 ticket
+依次退休 model/controller/gateway。STOPPED、quarantine、代次、
+故障记录和冷却不变；预算只允许原核心时钟规则正常过期。
+
+核心 pending rename 或外层最终回执丢失不重置预算，也不发新进程；
+仍由同一连续外层/实例证明续办。未记录 spawned 的窗口由派生前
+持久 custody 和原活内存 Tree 对应，不以 `owner=null` 认定没有进程。
+该未发行外层格式本次补足 baseline/custody，不改已发布核心格式。
+
+冻结28项针对性CPU：8新退休/中断/否定用例、12直接策略/存储回归、
+6实例锁与2树原行为；不占GPU。它只解决连续外层路径，外层自身
+丢失/跨boot、统一运行和选配宿主入口仍属必做任务。
+
+28项[针对性CPU首过](evidence/serve-outer-reconcile-cpu-20261112/README.md)，4.186秒/0GPU。后续新外层与跨boot仍继续，不把此组完成当总任务终点。
