@@ -1,0 +1,31 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_deployment",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_fresh_initialization_cli_status_and_lost_descriptor_keep_original_journals",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_interrupted_enablement_keeps_keys_usage_budget_and_resumes_one_profile_seed",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets"
+  ],
+  "expected_cpu_cases": 18,
+  "new_gpu_starts": 0,
+  "scope": "Qualified same-capacity STOPPED deployment migration and exact interruption replay; old v12 reader, historical package inventory and unchanged key/quota/core journals. No automatic version fallback claim.",
+  "sources": {
+    "tools/serve_recovery/profile_manager.py": "f61593cad63943dda5a207d636d935cd23a2dfa7fb069cea7a430c2a4883e17d",
+    "tools/serve_recovery/profile_migration.py": "a750ab19de30a48bdfda988463f6c48e054da7db883851a129a0c5419c1874db",
+    "tools/serve_recovery/deployment.py": "50fcf44aed90a0df4fb5d5e639df39a346934deba1bae266c41af401e89a5309",
+    "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
+    "tools/serve_recovery/bundle.py": "b997b8bb4a127d40188872c4922c9e852198df2680049cf3568d1369d8b6adf3",
+    "tools/serve_recovery/profile_policy.py": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571",
+    "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/test_profile_deployment.py": "41bf2a915b3d8a19f575c6c5506d479a523eae82b276ac337ec4dd9e0e2131e9",
+    "tools/serve_recovery/test_profile_integration.py": "ea4ac3798a49c8b39c94c89a5e43e4b8031e6e242b92f7b0cb727d77085117a0",
+    "tools/serve_recovery/test_native_bundle.py": "979f9a8d377f409da1c8ec68af362ab16029881ccde1341892fffb82e3ec962b",
+    "tools/serve_recovery/test_deployment.py": "17e30f67d502686a2ebec6cc5d1ab4e13b99b6138e1ab3ce8deed323f0f666b1"
+  }
+}

@@ -80,7 +80,7 @@ def check_target(current, target):
                            for k in engine.NATIVE_EMBEDDING),
                        'deployment would remove or change accepted embedding model')
     from tools.serve_recovery import profile_manager
-    profile_manager.compatible(old, new)
+    profile_manager.compatible(old, new, current['package'], target['package'])
     return old, new
 
 
@@ -230,8 +230,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                            journals['limits'].head['state']['policy'], value['target'])
         from tools.serve_recovery import profile_manager
         old, selected = check_target(value['current'], value['target'])
-        profile_manager.initialize(binding, selected, core.state,
-            previously_enabled=old.get('recovery_profiles') is not None)
+        profile_manager.deploy(binding, value, old, selected, core.state)
         write_descriptor(state, value['target'])
         # All launchers that understand v8/v9 already reject this prepared
         # phase. Publish the coherent default generation before finalizing it.

@@ -1718,20 +1718,21 @@
         "R05"
       ],
       "evidence": [
-        "evidence/serve-version-migration-contract-20261111/README.md"
+        "evidence/serve-version-migration-contract-20261111/README.md",
+        "evidence/serve-version-migration-deployment-20261111/README.md"
       ],
       "release": null,
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "Same-capacity migration contract accepted by six targeted CPU cases, including actual rename/fsync faults. Continue STOPPED deployment wiring, capacity-history evolution and automatic version recovery; no R06 release yet.",
+      "development_status": "Same-capacity migration and STOPPED deployment accepted by 6 contract plus 18 integration CPU cases. Original failure/retry preserved. Continue capacity-history evolution, persistent version selection, native recovery and actual business; no R06 release.",
       "subtasks": [
         {
           "id": "R06.1",
-          "state": "implementing",
+          "state": "cpu_verified",
           "title": "资格与迁移合同"
         },
         {
           "id": "R06.2",
-          "state": "planned",
+          "state": "implementing",
           "title": "容量变更与格式演进"
         },
         {
