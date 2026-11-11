@@ -1,0 +1,27 @@
+{
+  "scope": "R05 durable intent, exact replay, no downtime credits, RAM hysteresis, isolated I/O; no model/profile qualification or GPU claims",
+  "tests": {
+    "test_profile_policy": 6,
+    "test_profile_memory": 4,
+    "test_profile_store": 4,
+    "test_profile_io": 3
+  },
+  "additional": [
+    "tools.serve_recovery.test_usage_io.UsageIoTests.test_independent_worker_large_seal_replacement_and_durable_confirmation"
+  ],
+  "total": 18,
+  "max_seconds": 60,
+  "gpu_starts": 0,
+  "sources": {
+    "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
+    "tools/serve_recovery/profile_policy.py": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571",
+    "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
+    "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
+    "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/test_profile_policy.py": "2ccd9c5b437d9f9784bf1ca3c61c391b957c87871e86a379092887226bd92af9",
+    "tools/serve_recovery/test_profile_memory.py": "a42f6b8593e5c2c85b762e3065eead1040d5a4cf91bae3468bfdafb371d6cc98",
+    "tools/serve_recovery/test_profile_store.py": "c40ec1a182d7a39906a72a91f1f3ff451cc10032819482c04b1a206f06601a29",
+    "tools/serve_recovery/test_profile_io.py": "49464dd95d3822c3af76892269efc54b65df1f49facebf8e397886609c4d1a13",
+    "tools/serve_recovery/access_io.py": "f41f73140426ecbc9968874e123cb7159bdefeb1b89c207cf9ba2bc3fe3102f0"
+  }
+}

@@ -20,8 +20,12 @@ ERRORS = ('state_unavailable', 'state_invalid', 'writer_busy')
 
 
 def family(kind):
-    ledger.require(kind in ('access', 'limits', 'usage'), 'invalid policy reader family')
+    ledger.require(kind in ('access', 'limits', 'usage', 'profiles'),
+                   'invalid policy reader family')
     if kind == 'access':return access_policy, access_store
+    if kind == 'profiles':
+        from tools.serve_recovery import profile_policy, profile_store
+        return profile_policy, profile_store
     if kind == 'usage':
         from tools.serve_recovery import usage_policy, usage_store
         return usage_policy, usage_store
@@ -31,7 +35,8 @@ def family(kind):
 
 
 def claim_address(service_id, kind='access'):
-    ledger.require(ledger.identifier(service_id) and kind in ('access', 'limits', 'usage'),
+    ledger.require(ledger.identifier(service_id) and
+                   kind in ('access', 'limits', 'usage', 'profiles'),
                    'invalid policy service identity')
     return '\0q4t-' + kind + '-io-' + str(os.geteuid()) + '-' + service_id
 
@@ -223,12 +228,13 @@ def worker(args):
         while True:
             # Idle reads need no timeout; the parent-death handler remains active.
             channel.settimeout(None)
-            raw, ancillary, flags, _ = channel.recvmsg(65536 if kind == 'usage' else 1024)
+            transactional = kind in ('usage', 'profiles')
+            raw, ancillary, flags, _ = channel.recvmsg(65536 if transactional else 1024)
             if not raw:return
             ledger.require(not ancillary and not flags & (socket.MSG_TRUNC | socket.MSG_CTRUNC),
                            'invalid reader request')
             request = store.decode(raw)
-            if kind != 'usage':
+            if not transactional:
                 ledger.keys(request, ('sequence', 'op'))
                 ledger.require(request['op'] == 'load', 'invalid reader operation')
             ledger.require(type(request) is dict and type(request.get('sequence')) is int and
@@ -245,7 +251,7 @@ def worker(args):
                     'reader state identity changed')
                 value = dict(state_directory=str(state), service_id=args.service_id,
                              state_identity=[args.state_device, args.state_inode])
-                if kind == 'usage':
+                if transactional:
                     payload = ledger.canonical(writer.execute(value, request))
                 else:
                     with writer.open_bound(value) as journal_store:
@@ -271,7 +277,8 @@ def main():
         parser.add_argument('--' + name, required=True, type=int)
     parser.add_argument('--state', required=True)
     parser.add_argument('--service-id', required=True)
-    parser.add_argument('--kind', choices=('access', 'limits', 'usage'), default='access')
+    parser.add_argument('--kind', choices=('access', 'limits', 'usage', 'profiles'),
+                        default='access')
     worker(parser.parse_args())
 
 

@@ -1685,9 +1685,10 @@
       "evidence": [],
       "release": null,
       "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
-      "development_status": "Qualification contract 6 CPU passed; memory-observation isolation 14 CPU and control-only delivery passed (rev54, engine unchanged). Durable profile switching and actual light qualification remain in progress.",
+      "development_status": "Qualification contract 6 CPU, memory observer isolation 14 CPU plus rev54 delivery, and durable state/RAM/isolated I/O 18 CPU passed. Controller, Guardian, ingress integration and actual light qualification remain in progress.",
       "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
-      "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md"
+      "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md",
+      "state_evidence": "evidence/serve-adaptive-profile-state-20261111/README.md"
     },
     {
       "id": "R06",
