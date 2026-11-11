@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。R09运行接线已隔离至[工作区计划](/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/docs/SERVE_OUTER_RECOVERY_2026-11-12.md)，分支codex/serve-outer-recovery/base1750b278；实例锁原语10 CPU首过，提交3269ccbf，未发行。隔离用于保持原工作区R07 plan-v2源码不变；R07维护问题仍待回复，未操作nvargus/jtop/GPU。继续全部任务，后续把已验接线合回有效主工作分支。
+
 2026-11-12。R09连续树[6项不同CPU接受](evidence/serve-outer-tree-cpu-20261112/README.md)：首2/5，Thor发现接口修复后仅补3失败，再增1解析边界通过；累计1.546秒/0GPU。实际setsid孤儿/旁路进程/超时保护通过，原失败保留。尚待slot退休及运行接线，R07维护继续待确认，全部任务继续。
 
 2026-11-12。R09 Thor兼容修复后三个原失败CPU全部补过（0.632秒）。同时复核候选发现时其他进程退出可造成空/短stat，已让这类记录不产生信号候选，仍由ECHILD最终判定；只新增1项实际/proc解析边界CPU，不重复已过进程场景。原失败保留、0GPU，继续全部任务。
