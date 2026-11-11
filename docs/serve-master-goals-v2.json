@@ -1685,11 +1685,12 @@
       "evidence": [],
       "release": null,
       "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
-      "development_status": "Qualification contract 6 CPU, memory observer isolation 14 CPU plus rev54 delivery, durable state/RAM/isolated I/O 18 CPU, and controller/Guardian/ingress/package integration 19 distinct CPU accepted. Actual primary/light model qualification, managed switching and delivery remain.",
+      "development_status": "Foundation/state/integration CPU accepted; actual primary/light qualification passed first attempt, 2 starts/8 requests/112.781 seconds, 106 NVML queries all OK and cleanup. Managed automatic switching, original tasks/quotas and delivery remain.",
       "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
       "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md",
       "state_evidence": "evidence/serve-adaptive-profile-state-20261111/README.md",
-      "integration_evidence": "evidence/serve-adaptive-profile-integration-20261111/README.md"
+      "integration_evidence": "evidence/serve-adaptive-profile-integration-20261111/README.md",
+      "qualification_evidence": "evidence/serve-adaptive-profile-qualification-20261111/README.md"
     },
     {
       "id": "R06",

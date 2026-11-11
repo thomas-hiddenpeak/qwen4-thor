@@ -1,0 +1,56 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "enable_thinking": false,
+  "max_completion_tokens": 256,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Use project_document to read docs/SERVE_MEMORY_STOP_2026-11-03.md. Then report only the first 12 hexadecimal digits of its actual SHA256."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-81761b96e4093672cbe16332cc395df8_0",
+          "type": "function",
+          "function": {
+            "name": "project_document",
+            "arguments": "{\"path\": \"docs/SERVE_MEMORY_STOP_2026-11-03.md\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_chatcmpl-auto-81761b96e4093672cbe16332cc395df8_0",
+      "content": "{\"path\": \"docs/SERVE_MEMORY_STOP_2026-11-03.md\", \"sha256\": \"2265eb26d4cbfd2a5fe87b86afdeae5276555299cafad0c6f60bae240f82dbdb\", \"answer\": \"2265eb26d4cb\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "project_document",
+        "strict": true,
+        "description": "Read an actual project document and return its SHA256 digest.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/SERVE_MEMORY_STOP_2026-11-03.md"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "none",
+  "parallel_tool_calls": false
+}
