@@ -11,7 +11,7 @@ import unittest
 import uuid
 from unittest import mock
 
-from tools.serve_recovery import controller, journal, ledger, retention as r, service
+from tools.serve_recovery import access_store, controller, journal, ledger, retention as r, service
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -92,6 +92,37 @@ class RetentionTests(unittest.TestCase):
         controller.validate_configuration(cfg)
         with self.assertRaisesRegex(ValueError, 'epoch'):
             self.archive(run_id)
+
+    def test_managed_v4_and_profile_v5_runs_archive_original_state_binding(self):
+        binding = access_store.binding(self.state,self.service_id)
+        for version in (4,5):
+            with self.subTest(version=version):
+                run_id,path = self.run_fixture()
+                cfg = json.loads((path/'controller.json').read_text())
+                cfg.update(version=version,limits=binding)
+                if version == 5:cfg['profiles'] = binding
+                controller.validate_configuration(cfg)
+                self.write(path/'controller.json',cfg)
+                receipt = self.archive(run_id)
+                actual,manifest = r.verified_archive(self.state,run_id)
+                self.assertEqual(actual,receipt)
+                self.assertEqual(manifest['original'],r.snapshot(path))
+                self.assertEqual((Path(receipt['archive'])/'files/controller.json').read_bytes(),
+                                 (path/'controller.json').read_bytes())
+        self.assertEqual((self.state/'ledger.json').read_bytes(),self.ledger)
+
+    def test_managed_run_cannot_archive_foreign_limits_or_profile_binding(self):
+        binding = access_store.binding(self.state,self.service_id)
+        run_id,path = self.run_fixture()
+        base = json.loads((path/'controller.json').read_text())
+        base.update(version=5,limits=binding,profiles=binding)
+        for name in ('limits','profiles'):
+            bad = dict(base,**{name:dict(binding,service_id=str(uuid.uuid4()))})
+            self.write(path/'controller.json',bad)
+            with self.assertRaisesRegex(ValueError,'managed state binding'):
+                self.archive(run_id)
+        self.assertEqual((self.state/'ledger.json').read_bytes(),self.ledger)
+
 
 
     def test_archive_roundtrip_is_private_and_required_for_every_run(self):

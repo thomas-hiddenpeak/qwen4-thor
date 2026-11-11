@@ -99,3 +99,6 @@ R06.3仍进行中：原生根独占隔离I/O和真实证据接线尚未完成。
 独立版本通道11项实际C++/worker CPU首过，见[证据](evidence/serve-version-channel-20261111/README.md)。
 版本I/O与核心journal分进程，不将可选版本恢复失能扩大为核心授权失能。
 R06.4继续登记资格和原生实际故障/整树接管；尚未接自动运行或发布。
+
+资格登记与新版归档20项不同CPU接受，见[证据](evidence/serve-version-registration-20261111/README.md)。
+保留显式修复前周期及已用资格，缺意图不猜测；实际payload切换和独立故障归因继续实现。

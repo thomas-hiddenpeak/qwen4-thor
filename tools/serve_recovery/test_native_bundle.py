@@ -72,7 +72,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 14)
+        self.assertEqual(value['version'], 15)
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
@@ -112,7 +112,10 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V13_SOURCES),
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V14_SOURCES),
+            {'tools/serve_recovery/'+name+'.py' for name in ('version_policy',
+             'version_store', 'version_journal', 'version_contract', 'version_registration')})
+        self.assertEqual(set(bundle.V14_SOURCES)-set(bundle.V13_SOURCES),
                          {'tools/serve_recovery/profile_compat.py'})
         self.assertEqual(set(bundle.V13_SOURCES)-set(bundle.V12_SOURCES),
                          {'tools/serve_recovery/profile_migration.py'})
@@ -153,7 +156,7 @@ class BundleTests(unittest.TestCase):
                 (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
                 (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES),
                 (10, bundle.V10_SOURCES), (11, bundle.V11_SOURCES),
-                (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES)):
+                (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -198,13 +201,14 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 14)
+        self.assertEqual(value['version'], 15)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
         value.pop('recovery_profiles');value.pop('recovery_profile_policy')
+        historical_sources = {'source/'+name for name in bundle.V10_SOURCES}
         value['files'] = {n:h for n,h in value['files'].items()
-                          if not n.startswith('source/tools/serve_recovery/profile_')}
+                          if not n.startswith('source/') or n in historical_sources}
         def sign():
             bundle.engine.save(package/'manifest.json', value)
             digest = bundle.engine.sha(package/'manifest.json')
@@ -223,7 +227,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 14)
+        self.assertEqual(value['version'], 15)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

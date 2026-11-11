@@ -1,0 +1,37 @@
+test_exact_qualification_registration_and_later_replay_keep_consumed_state (tools.serve_recovery.test_version_registration.RegistrationTests.test_exact_qualification_registration_and_later_replay_keep_consumed_state) ... ok
+test_initial_family_marker_failure_resumes_original_unpublished_seed (tools.serve_recovery.test_version_registration.RegistrationTests.test_initial_family_marker_failure_resumes_original_unpublished_seed) ... ok
+test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle (tools.serve_recovery.test_version_registration.RegistrationTests.test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle) ... ok
+test_missing_selected_intent_blocks_launch_without_resetting_state (tools.serve_recovery.test_version_registration.RegistrationTests.test_missing_selected_intent_blocks_launch_without_resetting_state) ... ok
+test_partial_intent_recovers_frozen_seed_without_reading_a_new_boot (tools.serve_recovery.test_version_registration.RegistrationTests.test_partial_intent_recovers_frozen_seed_without_reading_a_new_boot) ... ok
+test_published_missing_state_never_resets (tools.serve_recovery.test_version_registration.RegistrationTests.test_published_missing_state_never_resets) ... ok
+test_registration_requires_owned_locks_and_durable_stop (tools.serve_recovery.test_version_registration.RegistrationTests.test_registration_requires_owned_locks_and_durable_stop) ... ok
+test_resigned_failed_service_business_does_not_qualify_old_payload (tools.serve_recovery.test_version_registration.RegistrationTests.test_resigned_failed_service_business_does_not_qualify_old_payload) ... ok
+test_resigned_registration_or_changed_capacity_cannot_bypass_actual_contract (tools.serve_recovery.test_version_registration.RegistrationTests.test_resigned_registration_or_changed_capacity_cannot_bypass_actual_contract) ... ok
+test_same_deployment_cannot_rearm_a_consumed_cycle (tools.serve_recovery.test_version_registration.RegistrationTests.test_same_deployment_cannot_rearm_a_consumed_cycle) ... ok
+test_managed_v4_and_profile_v5_runs_archive_original_state_binding (tools.serve_recovery.test_retention.RetentionTests.test_managed_v4_and_profile_v5_runs_archive_original_state_binding) ... ok
+test_managed_run_cannot_archive_foreign_limits_or_profile_binding (tools.serve_recovery.test_retention.RetentionTests.test_managed_run_cannot_archive_foreign_limits_or_profile_binding) ... ok
+test_archive_roundtrip_is_private_and_required_for_every_run (tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run) ... ok
+test_unverified_epoch_is_protected_without_disabling_core_launch (tools.serve_recovery.test_retention.RetentionTests.test_unverified_epoch_is_protected_without_disabling_core_launch) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity) ... FAIL
+test_http_profile_seals_normalized_policy_and_preserves_managed_binding (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding) ... ok
+test_sealed_qualification_and_independent_ingress_bind_same_capacity (tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity) ... ok
+
+======================================================================
+FAIL: test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity)
+----------------------------------------------------------------------
+tools.serve_recovery.ledger.LedgerError: recovery source inventory changed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_native_bundle.py", line 217, in test_file_transport_and_client_capacity_require_v11_identity
+    with self.assertRaisesRegex(ValueError, 'file HTTP policy'):
+AssertionError: "file HTTP policy" does not match "recovery source inventory changed"
+
+----------------------------------------------------------------------
+Ran 20 tests in 6.405s
+
+FAILED (failures=1)

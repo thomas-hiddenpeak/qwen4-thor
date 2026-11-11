@@ -141,11 +141,17 @@ def run_directory(state, run_id):
     path, _ = private_directory(root / run_id)
     cfg = native.private_json(path / 'controller.json')
     guardian = native.private_json(path / 'guardian.json')
-    ledger.require(cfg.get('version') in (2, 3) and cfg.get('directory') == str(path) and
+    ledger.require(cfg.get('version') in (2, 3, 4, 5) and cfg.get('directory') == str(path) and
         cfg.get('state_directory') == str(state) and type(cfg.get('package')) is str and
         ledger.HASH.fullmatch(cfg.get('manifest_sha256', '')) and
         guardian.get('directory') == str(state) and guardian.get('service_id') == desc['service_id'],
         'run is not bound to this service')
+    if cfg['version'] >= 4:
+        from tools.serve_recovery import access_store
+        expected = access_store.binding(state, desc['service_id'])
+        ledger.require(cfg.get('limits') == expected and
+            (cfg['version'] < 5 or cfg.get('profiles') == expected),
+            'run managed state binding differs')
     ledger.require(guardian.get('controller', [])[-2:] == ['--config', str(path / 'controller.json')]
         and guardian.get('gateway', [])[-2:] == ['--config', str(path / 'gateway.json')],
         'run launch identity mismatch')

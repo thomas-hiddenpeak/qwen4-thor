@@ -1,0 +1,28 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_version_registration.RegistrationTests",
+    "tools.serve_recovery.test_retention.RetentionTests.test_managed_v4_and_profile_v5_runs_archive_original_state_binding",
+    "tools.serve_recovery.test_retention.RetentionTests.test_managed_run_cannot_archive_foreign_limits_or_profile_binding",
+    "tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run",
+    "tools.serve_recovery.test_retention.RetentionTests.test_unverified_epoch_is_protected_without_disabling_core_launch",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity"
+  ],
+  "expected_cpu_cases": 20,
+  "new_gpu_starts": 0,
+  "scope": "Explicit stopped version registration, accepted fallback qualification, preserved predecessor and frozen partial intent, private locks and no cycle reset; v4/v5 archive bindings and v1-v15 inventory directly affected checks. CPU fake service receipts do not claim actual recovery.",
+  "sources": {
+    "tools/serve_recovery/version_contract.py": "5a3996a0909a99458dcf12e81c37ce41a91525afe848fd1da555d0cda6106b8f",
+    "tools/serve_recovery/version_registration.py": "29618464ec75cb3f4744ff2ca33368c12e64123c5dd909aba87286737a95229c",
+    "tools/serve_recovery/test_version_registration.py": "98723eff0e1ff24b5e89225fc492f8552a0f451c8df9e09e323540b6fd9f1e10",
+    "tools/serve_recovery/retention.py": "bf59ead830b2553cfdca4ff3882f6f79b7d3029606d6441ddf0c2fdcaf01adeb",
+    "tools/serve_recovery/test_retention.py": "7128d175590f9247aa833efc0f3f0f6ff2105c5b1a2a16e3bf2804ea7d92de0d",
+    "tools/serve_recovery/bundle.py": "0d807a361d348ae1adb33a4dda5140a356393fe3920c0219a8808872d825e48c",
+    "tools/serve_recovery/test_native_bundle.py": "a8d298c71196ede3262a88b7c0f0d619b82b575aef11e9e1a3a931aff50c52d1",
+    "tools/serve_recovery/test_profile_integration.py": "1c86e5a5e7242b99225435063d5a23532f72d410c734104a35d3e0af9e8292af"
+  }
+}
