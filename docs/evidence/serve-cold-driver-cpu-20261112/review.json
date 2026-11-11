@@ -1,7 +1,7 @@
 {
   "status": "TARGETED_CPU_PASS",
-  "distinct_tests": 9,
-  "seconds": 0.7628143173642457,
+  "distinct_tests": 10,
+  "seconds": 0.943881249986589,
   "gpu_starts": 0,
   "host_gpu_policy_installed": false,
   "default_unchanged": true,
@@ -90,5 +90,6 @@
     "actual empty host domain qualification",
     "real cold business and cleanup",
     "reversible release"
-  ]
+  ],
+  "entry_review": "Actual child-subreaper enter/restore passed after restoring original acceptance ownership context; no previous CPU test repeated."
 }

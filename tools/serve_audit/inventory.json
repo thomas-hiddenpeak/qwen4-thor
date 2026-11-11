@@ -2023,7 +2023,7 @@
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
     "tools/serve_recovery/bundle.py": "c8294afff8cdfccfb9f452280306c380d757b0b8b80f09aac7422798f3ffcefb",
     "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
-    "tools/serve_recovery/cold_acceptance.py": "d02bbbf0cf733f6a054354aa6fe712669128518c74c9af8b8b618713e92a8274",
+    "tools/serve_recovery/cold_acceptance.py": "24b2900ce3d8b2e2bf6699f6e07ddb50a91a0f4637a149d543fa42c4ef45bbec",
     "tools/serve_recovery/cold_admission.py": "4270bc677e7c36fbcf77b370f3dee6927d27ba06f6400ba0ff2e0586944122ed",
     "tools/serve_recovery/cold_compat.py": "126c0959af0040e1304fe2d6660882248252cc59471596f17f8ad2b132304334",
     "tools/serve_recovery/cold_host_acceptance.py": "71ac3b488d52dd7b37e38eee4a4f72d23ae3cf258a1aa83467cc0525b4cbed15",

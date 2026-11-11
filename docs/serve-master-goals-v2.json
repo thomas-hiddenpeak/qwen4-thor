@@ -1802,7 +1802,7 @@
         "evidence/serve-cold-driver-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 9 targeted CPU passes. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet.",
+      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

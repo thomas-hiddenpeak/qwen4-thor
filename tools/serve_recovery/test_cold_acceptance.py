@@ -1,6 +1,7 @@
 """Validate cold business driver routing before any host maintenance or GPU."""
 import os
 import fcntl
+import ctypes
 from pathlib import Path
 import sys
 import tempfile
@@ -12,6 +13,24 @@ from tools.serve_recovery import cold_acceptance as driver, ledger, lifecycle, u
 
 
 class DriverTests(unittest.TestCase):
+    def test_business_entry_retains_and_restores_real_subreaper(self):
+        libc = ctypes.CDLL(None, use_errno=True)
+        def value():
+            result = ctypes.c_int()
+            self.assertEqual(libc.prctl(37, ctypes.byref(result), 0, 0, 0), 0)
+            return result.value
+        before = value()
+        def run():
+            self.assertEqual(value(), 1)
+            return 23
+        with tempfile.TemporaryDirectory(dir=driver.ROOT/'.q4t-work') as temporary:
+            plan = Path(temporary)/'plan.json'; plan.write_text('{}')
+            with mock.patch.object(sys, 'argv', ['cold_acceptance.py','run','--plan',str(plan)]), \
+                 mock.patch.object(driver, 'Stage') as stage:
+                stage.return_value.run.side_effect = run
+                self.assertEqual(driver.main(), 23)
+        self.assertEqual(value(), before)
+
     def test_driver_hands_admission_only_to_its_own_launcher(self):
         actor = driver.Stage.__new__(driver.Stage)
         launch = [sys.executable, '-I', '-B', driver.LEGACY['__file__'], 'launcher', '--plan', '/plan']

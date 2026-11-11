@@ -280,7 +280,8 @@ def main():
     if args.mode == 'guard': return guard(plan, args.plan)
     if args.mode == 'launcher': return launcher(plan, args.plan)
     if args.mode == 'controller': controller_actor(plan, args.config); return 0
-    return Stage(plan, args.plan).run()
+    from tools.release.release import child_subreaper
+    with child_subreaper(): return Stage(plan, args.plan).run()
 
 
 if __name__ == '__main__': sys.exit(main())

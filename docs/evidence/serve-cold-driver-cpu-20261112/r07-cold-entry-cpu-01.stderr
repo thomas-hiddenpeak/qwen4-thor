@@ -1,0 +1,6 @@
+test_business_entry_retains_and_restores_real_subreaper (tools.serve_recovery.test_cold_acceptance.DriverTests.test_business_entry_retains_and_restores_real_subreaper) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK
