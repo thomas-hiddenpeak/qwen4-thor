@@ -1,0 +1,14 @@
+{
+  "required": [
+    "embedding_tokenizer_matches_reference_ids_with_trained_eos",
+    "embedding_tokenizer_profile_does_not_relax_qwen4_default",
+    "embedding_tokenizer_eos_budget_and_cancellation_are_atomic",
+    "embedding_tokenizer_rejects_wrong_eos_and_fractional_ids",
+    "embedding_architecture_rejects_wrong_compute_contract",
+    "embedding_tensor_contract_pins_actual_names_shapes_and_bytes"
+  ],
+  "cases": 14,
+  "gpu": false,
+  "default_unchanged": true,
+  "scope": "tokenizer and actual architecture/tensor metadata only; full backend not yet implemented"
+}

@@ -657,6 +657,7 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
+| [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端开发中，权重不随代码仓库分发，见[实施计划](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
 | [KVMem](https://github.com/kvmem/kvmem) | 会话身份、完整状态保存/恢复、存储租约与失败处理；借鉴到 SSD 会话缓存 |

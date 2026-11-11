@@ -1154,7 +1154,9 @@
         "A01",
         "A07"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-native-embedding-foundation-20261111/README.md"
+      ],
       "release": null,
       "findings": [
         {
@@ -1211,7 +1213,9 @@
         "state": "STOPPED",
         "main_merged": false
       },
-      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md"
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
+      "native_embedding_plan": "SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md",
+      "native_embedding_state": "foundation_cpu_accepted_compute_and_service_implementation_in_progress"
     },
     {
       "id": "A11",

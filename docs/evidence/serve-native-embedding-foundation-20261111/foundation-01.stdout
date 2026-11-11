@@ -1,0 +1,7 @@
+[PASS] embedding_tokenizer_matches_reference_ids_with_trained_eos
+[PASS] embedding_tokenizer_profile_does_not_relax_qwen4_default
+[PASS] embedding_tokenizer_eos_budget_and_cancellation_are_atomic
+[PASS] embedding_tokenizer_rejects_wrong_eos_and_fractional_ids
+[PASS] embedding_architecture_rejects_wrong_compute_contract
+[PASS] embedding_tensor_contract_pins_actual_names_shapes_and_bytes
+6 tests, 6 passed, 0 failed, 0 skipped

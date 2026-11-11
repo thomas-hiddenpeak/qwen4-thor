@@ -1571,7 +1571,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "00c0b714d46e5f9361a07f1cf074583c152d9fbe29137a66e452c4a8380b070d",
+    "CMakeLists.txt": "c2bda995961e87c3539eda691aaa2a5c1609140145f5b531a392e8baaa4431bb",
     "cmake/ChatProtocolIdentity.cmake": "c8e31b93d461f29d81d681e33033ab2b168f0641fca2fab783cd04fc06a4916a",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
@@ -1990,7 +1990,7 @@
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
-    "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
+    "src/text/tokenizer.cpp": "d468106d6e49e471bf14835443ba3333a5b9242f9d737376c8fef17191acfbd7",
     "src/vision/media_plan.cpp": "d46531462936f89c2563b58de098e0aa0174340c6da8cecbc04441ed7df590a7",
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",

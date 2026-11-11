@@ -1,0 +1,9 @@
+[  0%] Built target q4t_io
+[  0%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 50%] Linking CXX static library libq4t_text.a
+[ 50%] Built target q4t_text
+[ 50%] Building CXX object CMakeFiles/q4t_embedding_contract_tests.dir/src/model/embedding_config.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_embedding_contract_tests.dir/tests/test_main.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_embedding_contract_tests.dir/tests/embedding_contract_test.cpp.o
+[100%] Linking CXX executable q4t_embedding_contract_tests
+[100%] Built target q4t_embedding_contract_tests

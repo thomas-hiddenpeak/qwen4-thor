@@ -173,6 +173,7 @@ add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
+  src/model/embedding_config.cpp
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
@@ -850,6 +851,12 @@ q4t_link_native_documents(q4t_host_tests)
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
+    add_executable(q4t_embedding_contract_tests EXCLUDE_FROM_ALL
+      tests/embedding_contract_test.cpp tests/test_main.cpp
+      src/model/embedding_config.cpp)
+    target_link_libraries(q4t_embedding_contract_tests PRIVATE q4t_text)
+    target_compile_options(q4t_embedding_contract_tests PRIVATE
+      -Wall -Wextra -Werror)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
       tools/serve_reliability/admission_contract_test.cpp

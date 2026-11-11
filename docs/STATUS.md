@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。专用嵌入[基础合同6/6 CPU首过](evidence/serve-native-embedding-foundation-20261111/README.md)，1.534秒；固定权重完整SHA通过，首次构建配置和下载超时原件保留。原生计算/隔离/Serve及真实检索尚待实现，默认3cd4361c保持、0新增GPU；立即继续全部总任务。
+
+2026-11-11。专用嵌入后端基础合同已成组开发：显式Qwen3 tokenizer profile/数组merge/训练EOS、精确ID拒绝、固定dense配置和310个实际BF16张量合同；新增14条独立tokenizers参考夹具。冻结6项基础CPU，尚未执行；原生层计算/资源隔离/路由仍待实现，默认3cd4361c保持，全部任务继续。
+
+2026-11-11。继续[原生专用检索后端](SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md)：已冻结官方Qwen3-Embedding-0.6B提交/权重身份，发现Qwen3分词正则、数组merge及EOS后处理与当前Qwen4不同，须原生实现；dense模型也不能套用HC/QSA层。先成组补固定profile/原生计算和路由隔离，再针对性验收。默认3cd4361c保持，尚无该后端GPU验证，全部总任务继续。
+
 2026-11-11。Embeddings[接口交付完成](evidence/serve-embeddings-delivery-20261111/README.md)：8命令/12.027秒/0GPU，默认3cd4361c、包441be958、generation950db8d5，rev50 STOPPED，原Key/配置/账本保持。原样已验同版本包为恢复锚点；旧ee550cab不能执行新向量任务。继续实现0/2检索表示缺口及全部媒体/工具/恢复总任务，未合main，不将接口交付等同A10完成。
 
 2026-11-11。公共JSON变化后的[9项实际Guardian/journal CPU检查首过](evidence/serve-embeddings-native-cpu-20261111/README.md)，累计49项不同CPU；引擎3cd4361c/原GPU业务保持。冻结8条封包发布与健康检查、0GPU，原Key/配置/用量保持，保留同版本已验恢复包。随后继续0/2检索表示缺口与全部Serve任务。

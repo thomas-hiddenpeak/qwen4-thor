@@ -25,6 +25,9 @@
 namespace q4t {
 namespace text {
 
+// Distinct, pinned model contracts; never infer a profile from loose schema.
+enum class TokenizerProfile { kQwen4Exp, kQwen3Embedding };
+
 // Resource limits enforced while loading the tokenizer JSON and while
 // encoding/decoding caller-controlled text.
 struct TokenizerLimits {
@@ -47,6 +50,9 @@ struct EncodeOptions {
   // loop work. An individual ICU call or string search is not preempted.
   std::function<bool()> cancelled = {};
   EncodeStats* stats = nullptr;
+  // Qwen3 Embedding's trained postprocessor appends EOS. The Qwen4 profile
+  // remains raw regardless of this option. Token-ID inputs bypass Encode.
+  bool add_special_tokens = true;
 };
 
 // GPT-2 style Byte-Level BPE tokenizer loaded from tokenizer.json.
@@ -70,10 +76,12 @@ class Tokenizer {
   // tokenizer and Status is ok; on failure Status carries a message and *out
   // is left unchanged.
   static Status Load(const std::string& path, const TokenizerLimits& limits,
-                     std::unique_ptr<Tokenizer>* out);
+                     std::unique_ptr<Tokenizer>* out,
+                     TokenizerProfile profile = TokenizerProfile::kQwen4Exp);
   // Load and validate from an in-memory JSON document.
   static Status LoadJson(std::string_view json, const TokenizerLimits& limits,
-                         std::unique_ptr<Tokenizer>* out);
+                         std::unique_ptr<Tokenizer>* out,
+                         TokenizerProfile profile = TokenizerProfile::kQwen4Exp);
 
   // Encode text into token ids. Added/special tokens are matched as whole
   // strings before the byte-level BPE path, mirroring the reference

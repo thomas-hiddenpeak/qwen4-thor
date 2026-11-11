@@ -43,6 +43,17 @@ constexpr std::string_view kPretokenizeRegex =
     "[\\p{L}\\p{M}]+|\\p{N}| ?[^\\s\\p{L}\\p{M}\\p{N}]+"
     "[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+";
 
+constexpr std::string_view kEmbeddingRegex =
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?"
+    "\\p{L}+|\\p{N}| ?[^\\s\\p{L}\\p{N}]+"
+    "[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+";
+constexpr uint32_t kEmbeddingEos = 151643;
+
+std::string_view ProfileRegex(TokenizerProfile profile) {
+  return profile == TokenizerProfile::kQwen3Embedding ? kEmbeddingRegex
+                                                     : kPretokenizeRegex;
+}
+
 struct AddedToken {
   std::uint32_t id = 0;
   std::string content;
@@ -56,6 +67,7 @@ struct MergeRule {
 
 struct TokenizerData {
   TokenizerLimits limits;
+  TokenizerProfile profile = TokenizerProfile::kQwen4Exp;
   // GPT-2 byte alphabet: byte value -> the token string for that byte.
   std::array<std::string, 256> byte_encoder{};
   // Reverse of byte_encoder: code point -> byte value.
@@ -163,7 +175,51 @@ bool ValidateUtf8(std::string_view input) {
 }
 
 // Validate the top-level schema is the expected BPE + ByteLevel + NFC shape.
-bool ValidateSchema(const io::Json& root, std::string* err) {
+bool SameJson(const io::Json& actual, const io::Json& expected) {
+  if (actual.type != expected.type) return false;
+  if (actual.IsString()) return actual.str == expected.str;
+  if (actual.IsNumber()) return actual.number == expected.number;
+  if (actual.IsBool()) return actual.boolean == expected.boolean;
+  if (actual.IsArray()) {
+    if (actual.array.size() != expected.array.size()) return false;
+    for (size_t i = 0; i < actual.array.size(); ++i)
+      if (!SameJson(actual.array[i], expected.array[i])) return false;
+  }
+  if (actual.IsObject()) {
+    if (actual.object.size() != expected.object.size()) return false;
+    for (const auto& [key, value] : expected.object) {
+      const auto* found = actual.Find(key);
+      if (!found || !SameJson(*found, value)) return false;
+    }
+  }
+  return true;
+}
+
+bool EmbeddingPostprocessor(const io::Json& root) {
+  constexpr char expected[] = R"({"type":"Sequence","processors":[
+    {"type":"ByteLevel","add_prefix_space":false,"trim_offsets":false,
+     "use_regex":false},
+    {"type":"TemplateProcessing",
+     "single":[{"Sequence":{"id":"A","type_id":0}},
+               {"SpecialToken":{"id":"<|endoftext|>","type_id":0}}],
+     "pair":[{"Sequence":{"id":"A","type_id":0}},
+             {"Sequence":{"id":"B","type_id":0}},
+             {"SpecialToken":{"id":"<|endoftext|>","type_id":0}}],
+     "special_tokens":{"<|endoftext|>":{"id":"<|endoftext|>",
+       "ids":[151643],"tokens":["<|endoftext|>"]}}}]})";
+  io::Json value;
+  const auto* processor = root.Find("post_processor");
+  return processor && io::ParseJson(expected, &value).ok() &&
+         SameJson(*processor, value);
+}
+
+bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
+                    std::string* err) {
+  if (profile != TokenizerProfile::kQwen4Exp &&
+      profile != TokenizerProfile::kQwen3Embedding) {
+    *err = "unknown tokenizer profile";
+    return false;
+  }
   if (root.GetString("version") != "1.0") {
     *err = "tokenizer version is not 1.0";
     return false;
@@ -209,7 +265,7 @@ bool ValidateSchema(const io::Json& root, std::string* err) {
   }
   const io::Json* pattern = split.Find("pattern");
   if (pattern == nullptr || !pattern->IsObject() ||
-      pattern->GetString("Regex") != kPretokenizeRegex) {
+      pattern->GetString("Regex") != ProfileRegex(profile)) {
     *err = "pre_tokenizer[0].pattern.Regex does not match the pinned regex";
     return false;
   }
@@ -223,6 +279,11 @@ bool ValidateSchema(const io::Json& root, std::string* err) {
       decoder->GetString("type") != "ByteLevel" ||
       decoder->GetBool("add_prefix_space")) {
     *err = "decoder must be ByteLevel (no prefix space)";
+    return false;
+  }
+  if (profile == TokenizerProfile::kQwen3Embedding &&
+      !EmbeddingPostprocessor(root)) {
+    *err = "embedding EOS postprocessor does not match the pinned contract";
     return false;
   }
   return true;
@@ -240,7 +301,10 @@ bool ParseModel(const io::Json& root, TokenizerData& data, std::string* err) {
     *err = "vocabulary exceeds max_vocab_size";
     return false;
   }
-  if (vocab->object.size() != Tokenizer::kPinnedBaseVocabSize) {
+  const size_t expected_vocab = data.profile == TokenizerProfile::kQwen3Embedding
+                                    ? kEmbeddingEos
+                                    : Tokenizer::kPinnedBaseVocabSize;
+  if (vocab->object.size() != expected_vocab) {
     *err = "base vocabulary size does not match the pinned tokenizer";
     return false;
   }
@@ -253,11 +317,12 @@ bool ParseModel(const io::Json& root, TokenizerData& data, std::string* err) {
       *err = "vocabulary value is not a number";
       return false;
     }
-    const std::uint64_t id = static_cast<std::uint64_t>(value.number);
-    if (id >= vocab->object.size()) {
+    const int64_t integer = value.AsInt(-1);
+    if (integer < 0 || static_cast<uint64_t>(integer) >= vocab->object.size()) {
       *err = "vocabulary id out of range";
       return false;
     }
+    const auto id = static_cast<uint64_t>(integer);
     if (seen[id]) {
       *err = "vocabulary ids are not unique";
       return false;
@@ -289,26 +354,42 @@ bool ParseModel(const io::Json& root, TokenizerData& data, std::string* err) {
     *err = "merges exceed max_merges";
     return false;
   }
-  if (merges->array.size() != Tokenizer::kPinnedMergeCount) {
+  const size_t expected_merges =
+      data.profile == TokenizerProfile::kQwen3Embedding
+          ? 151387
+          : Tokenizer::kPinnedMergeCount;
+  if (merges->array.size() != expected_merges) {
     *err = "merge count does not match the pinned tokenizer";
     return false;
   }
   data.merges.reserve(merges->array.size());
   for (std::size_t rank = 0; rank < merges->array.size(); ++rank) {
     const io::Json& entry = merges->array[rank];
-    if (!entry.IsString()) {
-      *err = "merge entry must be a string";
-      return false;
+    std::string left, right;
+    if (data.profile == TokenizerProfile::kQwen3Embedding) {
+      if (!entry.IsArray() || entry.array.size() != 2 ||
+          !entry.array[0].IsString() || !entry.array[1].IsString() ||
+          entry.array[0].str.empty() || entry.array[1].str.empty()) {
+        *err = "embedding merge entry must be a two-token array";
+        return false;
+      }
+      left = entry.array[0].str;
+      right = entry.array[1].str;
+    } else {
+      if (!entry.IsString()) {
+        *err = "merge entry must be a string";
+        return false;
+      }
+      const std::string& text = entry.str;
+      const std::size_t sep = text.find(' ');
+      if (sep == std::string::npos || sep == 0 || sep + 1 >= text.size() ||
+          text.find(' ', sep + 1) != std::string::npos) {
+        *err = "merge entry must contain exactly two tokens";
+        return false;
+      }
+      left = text.substr(0, sep);
+      right = text.substr(sep + 1);
     }
-    const std::string& text = entry.str;
-    const std::size_t sep = text.find(' ');
-    if (sep == std::string::npos || sep == 0 || sep + 1 >= text.size() ||
-        text.find(' ', sep + 1) != std::string::npos) {
-      *err = "merge entry must contain exactly two tokens";
-      return false;
-    }
-    const std::string left = text.substr(0, sep);
-    const std::string right = text.substr(sep + 1);
     const auto left_id = data.vocabulary.find(left);
     const auto right_id = data.vocabulary.find(right);
     const auto result_id = data.vocabulary.find(left + right);
@@ -341,6 +422,11 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
     *err = "added tokens exceed max_added_tokens";
     return false;
   }
+  if (data.profile == TokenizerProfile::kQwen3Embedding &&
+      tokens->array.size() != 26) {
+    *err = "embedding added-token count differs";
+    return false;
+  }
   data.added_tokens.reserve(tokens->array.size());
   for (const io::Json& token : tokens->array) {
     if (!token.IsObject()) {
@@ -354,10 +440,23 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
       *err = "added token must have numeric id and string content";
       return false;
     }
-    const std::uint32_t token_id =
-        static_cast<std::uint32_t>(id->number);
-    if (token_id < Tokenizer::kPinnedBaseVocabSize) {
+    const int64_t integer = id->AsInt(-1);
+    if (integer < 0 || integer > std::numeric_limits<uint32_t>::max()) {
+      *err = "added token id must be an exact uint32";
+      return false;
+    }
+    const auto token_id = static_cast<uint32_t>(integer);
+    if (token_id < data.id_to_token.size()) {
       *err = "added token id collides with the base vocabulary";
+      return false;
+    }
+    if (data.profile == TokenizerProfile::kQwen3Embedding &&
+        (token_id >= kEmbeddingEos + 26 || token.GetBool("normalized") ||
+         token.GetBool("single_word") || token.GetBool("lstrip") ||
+         token.GetBool("rstrip") ||
+         (token_id == kEmbeddingEos &&
+          (content->str != "<|endoftext|>" || !token.GetBool("special"))))) {
+      *err = "embedding added-token contract differs";
       return false;
     }
     AddedToken added;
@@ -379,8 +478,8 @@ bool CompileRegex(TokenizerData& data, std::string* err) {
   // Convert the UTF-8 pattern to UTF-16. uregex_open copies the pattern
   // contents, so the temporary UnicodeString may be destroyed afterwards.
   const icu::UnicodeString pattern = icu::UnicodeString::fromUTF8(
-      icu::StringPiece(kPretokenizeRegex.data(),
-                       static_cast<std::int32_t>(kPretokenizeRegex.size())));
+      icu::StringPiece(ProfileRegex(data.profile).data(),
+                       static_cast<int32_t>(ProfileRegex(data.profile).size())));
   UParseError pe;
   data.regex =
       uregex_open(pattern.getBuffer(), pattern.length(), 0, &pe, &status);
@@ -664,19 +763,24 @@ Tokenizer::Tokenizer(Tokenizer&&) noexcept = default;
 Tokenizer& Tokenizer::operator=(Tokenizer&&) noexcept = default;
 
 Status Tokenizer::LoadJson(std::string_view json, const TokenizerLimits& limits,
-                           std::unique_ptr<Tokenizer>* out) {
+                           std::unique_ptr<Tokenizer>* out,
+                           TokenizerProfile profile) {
   if (json.size() > limits.max_tokenizer_bytes) {
     return Status::Fail("tokenizer JSON exceeds max_tokenizer_bytes");
   }
   io::Json root;
-  Status parse = io::ParseJson(std::string(json), &root);
+  io::JsonParseLimits parse_limits;
+  parse_limits.reject_duplicate_keys =
+      profile == TokenizerProfile::kQwen3Embedding;
+  Status parse = io::ParseJson(std::string(json), &root, false, parse_limits);
   if (!parse.ok()) return parse;
   std::string err;
-  if (!ValidateSchema(root, &err)) {
+  if (!ValidateSchema(root, profile, &err)) {
     return Status::Fail("tokenizer schema mismatch: " + err);
   }
   auto impl = std::make_unique<Impl>();
   impl->data.limits = limits;
+  impl->data.profile = profile;
   if (!InitializeByteMapping(impl->data, &err)) {
     return Status::Fail(err);
   }
@@ -694,14 +798,15 @@ Status Tokenizer::LoadJson(std::string_view json, const TokenizerLimits& limits,
 }
 
 Status Tokenizer::Load(const std::string& path, const TokenizerLimits& limits,
-                       std::unique_ptr<Tokenizer>* out) {
+                       std::unique_ptr<Tokenizer>* out,
+                       TokenizerProfile profile) {
   std::ifstream file(path, std::ios::binary);
   if (!file) {
     return Status::Fail("could not open tokenizer file: " + path);
   }
   std::string json((std::istreambuf_iterator<char>(file)),
                    std::istreambuf_iterator<char>());
-  return LoadJson(json, limits, out);
+  return LoadJson(json, limits, out, profile);
 }
 
 Status Tokenizer::Encode(std::string_view text,
@@ -713,6 +818,14 @@ Status Tokenizer::Encode(std::string_view text,
       EncodingCancelled(options, &err)) {
     if (err == "encoding cancelled") out->clear();
     return Status::Fail(err);
+  }
+  if (impl_->data.profile == TokenizerProfile::kQwen3Embedding &&
+      options.add_special_tokens) {
+    if (out->size() >= impl_->data.limits.max_tokens) {
+      out->clear();
+      return Status::Fail("embedding EOS exceeds max_tokens");
+    }
+    out->push_back(kEmbeddingEos);
   }
   return Status();
 }
