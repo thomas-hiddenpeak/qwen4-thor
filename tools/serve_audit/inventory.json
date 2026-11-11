@@ -2048,6 +2048,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "4b45540d7e33413e06d67f5ff96a7b9e0241e39d1c1ff11e687b9d651d38854e",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
+    "tools/serve_recovery/profile_migration.py": "a750ab19de30a48bdfda988463f6c48e054da7db883851a129a0c5419c1874db",
     "tools/serve_recovery/profile_policy.py": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",

@@ -1710,15 +1710,51 @@
     {
       "id": "R06",
       "required": true,
-      "state": "planned",
+      "state": "implementing",
       "implementation": "已验证旧版本有界自动回退、持久预算与防振荡",
       "acceptance": "已验证旧版本有界自动回退、持久预算与防振荡",
       "depends_on": [
         "R03",
         "R05"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-version-migration-contract-20261111/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
+      "development_status": "Same-capacity migration contract accepted by six targeted CPU cases, including actual rename/fsync faults. Continue STOPPED deployment wiring, capacity-history evolution and automatic version recovery; no R06 release yet.",
+      "subtasks": [
+        {
+          "id": "R06.1",
+          "state": "implementing",
+          "title": "资格与迁移合同"
+        },
+        {
+          "id": "R06.2",
+          "state": "planned",
+          "title": "容量变更与格式演进"
+        },
+        {
+          "id": "R06.3",
+          "state": "planned",
+          "title": "持久版本状态机"
+        },
+        {
+          "id": "R06.4",
+          "state": "planned",
+          "title": "原生控制根与接线"
+        },
+        {
+          "id": "R06.5",
+          "state": "planned",
+          "title": "针对性CPU及实际业务验收"
+        },
+        {
+          "id": "R06.6",
+          "state": "planned",
+          "title": "可用交付与继续总目标"
+        }
+      ]
     },
     {
       "id": "R07",
@@ -1819,5 +1855,5 @@
     }
   ],
   "next_task": "R06 qualified older-version fallback, profile qualification migration and persistent anti-oscillation, then remaining R07-R10 and A/Q/G00 tasks",
-  "next": "Resolve observed0/2 retrieval quality with a suitable native backend and real project retrieval evidence, without treating interface delivery as completion; continue all required goals."
+  "next": "R06 qualified older-version fallback, profile qualification migration and persistent anti-oscillation, then remaining R07-R10 and A/Q/G00 tasks"
 }
