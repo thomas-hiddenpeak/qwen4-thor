@@ -41,7 +41,7 @@ def custody_valid(value, boot_id):
 def pending_valid(pending):
     ledger.keys(pending, ('ticket', 'serial', 'boot_id', 'manifest_sha256',
                          'core_sha256', 'core_revision', 'core_generations', 'custody', 'owner',
-                         'cleanup'))
+                         'cleanup', *(('resource',) if 'resource' in pending else ())))
     ledger.require(ledger.identifier(pending['ticket']) and
         revision(pending['serial'], minimum=1) and revision(pending['core_revision']) and
         ledger.identifier(pending['boot_id']), 'invalid pending outer attempt')
@@ -50,6 +50,11 @@ def pending_valid(pending):
     ledger.require(all(revision(n) for n in pending['core_generations'].values()),
                    'invalid original core generations')
     custody_valid(pending['custody'], pending['boot_id'])
+    if 'resource' in pending:
+        from tools.serve_recovery import resource_launch
+        resource_launch.validate(pending['resource'])
+        ledger.require(pending['resource']['publication']['record']['boot_id'] == pending['boot_id'],
+                       'resource attempt boot differs')
     if pending['owner'] is not None:
         ledger.owner_valid(pending['owner'])
         ledger.require(pending['owner']['boot_id'] == pending['boot_id'],
@@ -111,6 +116,9 @@ def validate(value):
     if pending is not None:
         pending_valid(pending)
         ledger.require(pending['serial'] == value['total'], 'outer attempt serial changed')
+        if 'resource' in pending:
+            ledger.require(pending['resource']['publication']['service_id'] == value['service_id'],
+                           'resource attempt service differs')
     last = value['last']
     ledger.require((last is None) == (value['revision'] == 0), 'missing outer transition')
     if last is not None:
@@ -145,13 +153,19 @@ def core_state(args, value):
 
 def request(value, args, stamp, now):
     ledger.keys(args, ('core', 'ticket', 'manifest_sha256', 'cleanup_verified', 'identity_valid',
-                       'custody'))
+                       'custody', *(('resource',) if 'resource' in args else ())))
     core = core_state(args, value)
     ledger.require(ledger.identifier(args['ticket']) and
         type(args['cleanup_verified']) is bool and type(args['identity_valid']) is bool,
         'invalid outer start request')
     hashed(args['manifest_sha256'])
     custody_valid(args['custody'], stamp.boot_id)
+    if 'resource' in args:
+        from tools.serve_recovery import resource_launch
+        publication = resource_launch.validate(args['resource'])['publication']
+        ledger.require(publication['service_id'] == value['service_id'] and
+            publication['record']['boot_id'] == stamp.boot_id,
+            'resource attempt service or boot differs')
     reason = None
     if not value['enabled']: reason = 'disabled'
     elif core['desired'] != 'RUNNING': reason = 'operator_intent'
@@ -175,6 +189,7 @@ def request(value, args, stamp, now):
         manifest_sha256=args['manifest_sha256'], core_sha256=ledger.digest(core),
         core_revision=core['revision'], core_generations=deepcopy(core['generations']),
         custody=deepcopy(args['custody']), owner=None, cleanup=None)
+    if 'resource' in args: value['pending']['resource'] = deepcopy(args['resource'])
     return dict(allowed=True, ticket=args['ticket'], serial=value['total'])
 
 

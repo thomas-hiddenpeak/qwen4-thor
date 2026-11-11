@@ -1,0 +1,33 @@
+{
+  "status": "TARGETED_RESOURCE_LAUNCH_CPU_PASS",
+  "distinct_tests": 29,
+  "cpu_seconds": 14.466256233863533,
+  "first_batch_passed": 28,
+  "added_native_role_integration": 1,
+  "all_first_pass": true,
+  "model_gpu_starts": 0,
+  "native_guardian_with_cpu_roles": true,
+  "real_original_domain_cleanup": true,
+  "old_writer_released_by_domain_cleanup": true,
+  "original_stop_faults_and_budgets_preserved": true,
+  "wrong_domain_deployment_and_live_instance_rejected": true,
+  "owned_test_domains_remaining": [],
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/resource_kernel.py": "c8065aaf90f8d89f56a43685da55286b13fc24140599002e7a08c992aa1e94dc",
+    "tools/serve_recovery/resource_install.py": "6964955f5e2a1fb965fe4bcb362a02f4c6dd6aee29b5aa59070d630d199e85c9",
+    "tools/serve_recovery/resource_launch.py": "46c1edb99b3e8f28fb2bb505af7ef493a0c242330e588a89a22189c836d9e125",
+    "tools/serve_recovery/resource_reconcile.py": "603a66c3c006a3b05b13b80d2c6072014e08d289a9c058faa5cf2f60c3c8d5ed",
+    "tools/serve_recovery/outer_policy.py": "8733ba40805b45aeaae3f774f089d540312a436eea92e245e29d81b40a3fbd0b",
+    "tools/serve_recovery/outer_runtime.py": "270e54b3dd7ae795ae79677804f0ca24fbff6e59c91dee9325382b571bc7163f",
+    "tools/serve_recovery/service.py": "5497381f065694d7ba8174815207dd79a3863d434fa22f421a67e0b7c8e744a6",
+    "tools/serve_recovery/bundle.py": "510102a045243f31f20497934f4b7f9fe5aa2f5530faa91c56a99767d7af3e03",
+    "tools/serve_recovery/test_resource_launch.py": "5fa27ba9d92a466b4ee3f0e379b6f98cde7f245a5b26e3e8ac61941fda6e5639",
+    "tools/serve_recovery/test_outer_runtime.py": "b5ba773aa81b8f2385efe40f7f4ba8d4443846cf33cbd7f087d3cbde970b5095",
+    "tools/serve_recovery/test_native_bundle.py": "fdebc77ff778063ea4cc75dd2b291d07f368dec5aa10c439dd552add8dc24282"
+  },
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "host_reboot_tested": false,
+  "released": false
+}

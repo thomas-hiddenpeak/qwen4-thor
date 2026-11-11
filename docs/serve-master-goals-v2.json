@@ -1843,11 +1843,13 @@
         "R07"
       ],
       "evidence": [
-        "evidence/serve-resource-kernel-cpu-20261112/README.md"
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
-      "development_status": "Direct kernel resource primitives developed in isolated R09 worktree: explicit root-owned outer/service hierarchy, real cgroup-v2 identity, protected limits, self-entry capability and subtree cleanup. Seven actual owned kernel CPU cases accepted/6.470s. First OOM fixture failed to guarantee page residency; only that case corrected/rerun, original failure preserved. Real UID drop, pids cap, memcg OOM and subtree kill passed; all own domains removed. Persistent deployment/resume/uninstall, resource-bound dispatch/reconciliation, R07 composition, unified-DRAM pressure and business/release remain required; no GPU or host device-policy changes. Persistent root installation/resume/removal and v18 source inventory accepted by twelve distinct targeted CPU cases/2.078s. Original fixture/command failures retained; only affected four cases rerun. Own domains and installation directories removed; default unchanged. Runtime binding and remaining master tasks continue."
+      "development_status": "Native resource domains are integrated with the outer runtime without systemd creation. CPU accepted: real kernel limits/self-entry/cleanup (7 cases, 6.470s), durable installation/resume/removal (12 distinct, 2.078s), and source-bound entry/pre-fork resource binding/new-instance cleanup (29 distinct, 14.466s), including actual native Guardian plus CPU controller/gateway/model roles. Original stop, device faults and budgets are preserved. Owned domains removed; no GPU, default or host device-policy changes. Required remaining: cross-boot resource recreation, R07 composition, unified-DRAM pressure integration, applicable model business and reversible delivery. No hard physical-RAM cap claim."
     },
     {
       "id": "R09",
@@ -1869,11 +1871,14 @@
         "evidence/serve-outer-reboot-cpu-20261112/README.md",
         "evidence/serve-outer-observe-cpu-20261112/README.md",
         "evidence/serve-outer-manager-cpu-20261112/README.md",
-        "evidence/serve-outer-runtime-cpu-20261112/README.md"
+        "evidence/serve-outer-runtime-cpu-20261112/README.md",
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
-      "development_status": "CPU accepted: durable policy (12), continuous tree/instance/retirement, managed parent-loss isolation (8), resume/offline stop/v18 inventory (22 distinct), old-boot exact-ticket checkpoint (21 historical-data cases, no host reboot), healthy-root observation adoption (14), explicit durable manager (10 planned + 8 additionally discovered legacy cases), and actual continuous outer runtime (15 distinct, real 30s cooldown, 65.124s). Runtime keeps healthy core on auxiliary error, retains original budgets and stop intent, and serializes actual old-tree cleanup before replacement. No GPU/model acceptance or release. Required remaining: same-boot/new-instance and ambiguous-birth resource-domain proof, optional host installation/start/uninstall, R07 cold-admission/resource-domain composition, applicable business validation and reversible delivery. Default and frozen primary R07 candidate unchanged; all master tasks continue. R08/R09 direct resource kernel primitives developed; seven actual owned CPU kernel cases accepted/6.470s; persistent domain and runtime integration remain required. Persistent root installation/resume/removal and v18 source inventory accepted by twelve distinct targeted CPU cases/2.078s. Original fixture/command failures retained; only affected four cases rerun. Own domains and installation directories removed; default unchanged. Runtime binding and remaining master tasks continue.",
+      "development_status": "CPU accepted: durable policy, continuous tree/instance retirement, managed parent-loss isolation, resume/offline stop, old-boot exact-ticket checkpoint, healthy-root observation adoption, explicit durable manager and continuous runtime (15 distinct, real 30s cooldown). Original resource domains now bind before dispatch and support same-boot new-instance/unknown-birth cleanup; 29 resource integration CPU cases include actual native Guardian and CPU roles. Original budgets, operator stop and device quarantine remain. Required remaining: cross-boot resource recreation/ambiguous-birth composition, optional host installation/start/uninstall, unified daemon entry, R07 cold-admission composition, applicable business and reversible release. No GPU/model acceptance or release; default and primary frozen R07 candidate unchanged. All master tasks continue.",
       "subtasks": [
         {
           "id": "R09.1",

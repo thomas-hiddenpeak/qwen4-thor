@@ -214,16 +214,25 @@ class Scope:
 
     def join_self(self, role, fd):
         ledger.require(role in NAMES and fd >= 3, 'invalid resource self-entry')
+        self.entry_descriptor(role, fd)
+        ledger.require(os.write(fd, b'0\n') == 2, 'short resource self-entry')
+        self.member(role)
+        return dict(joined=role, device_authorized=False)
+
+    def entry_descriptor(self, role, fd):
+        ledger.require(role in NAMES and fd >= 3, 'invalid resource self-entry')
         self.check()
         path = self.root/role/'cgroup.procs'; held = os.fstat(fd)
         ledger.require([held.st_dev, held.st_ino] == identity(path) and
             fcntl.fcntl(fd, fcntl.F_GETFL) & os.O_ACCMODE == os.O_WRONLY,
             'resource entry capability does not match selected leaf')
-        ledger.require(os.write(fd, b'0\n') == 2, 'short resource self-entry')
+
+    def member(self, role):
+        ledger.require(role in NAMES, 'invalid resource membership')
+        self.check()
         lines = Path('/proc/self/cgroup').read_text().splitlines()
         expected = '0::/'+str((self.root/role).relative_to(CGROUP))
         ledger.require(lines == [expected], 'resource self-entry did not take effect')
-        return dict(joined=role, device_authorized=False)
 
     def empty(self, role='service'):
         ledger.require(role in NAMES, 'invalid resource leaf')

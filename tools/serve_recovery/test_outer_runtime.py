@@ -26,7 +26,7 @@ def worker(path):
     original_transaction = outer_store.Store.transact
     original_tick = outer_runtime.Runtime.tick; original_observation = control.outer_observation
     def launch(tree, command, **options):
-        config_path = Path(command[2]); config = json.loads(config_path.read_text())
+        config_path = Path(command[command.index('--config')+1]); config = json.loads(config_path.read_text())
         config.update(usage_handoff=False, quota_enforced=False, version_recovery=None,
             cold_admission=None, lease_path=str(private_lease), term_ms=100, kill_ms=200,
             heartbeat_ms=1000, critical_memory_mib=64,

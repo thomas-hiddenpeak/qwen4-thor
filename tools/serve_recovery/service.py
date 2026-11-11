@@ -165,6 +165,9 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
 
 def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360, resume=False, outer=None):
     ledger.require(outer is None or (resume and not daemon), 'outer dispatch requires foreground resume')
+    ledger.require(outer is not None or not any(name in os.environ for name in
+        ('Q4T_RESOURCE_DIRECTORY', 'Q4T_RESOURCE_ENTRY_FD')),
+        'resource entry requires the outer service runtime')
     desc = descriptor(state, package, digest)
     from tools.serve_recovery import deployment
     deployment.ready(state, desc)

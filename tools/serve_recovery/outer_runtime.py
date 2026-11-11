@@ -15,6 +15,7 @@ import uuid
 from tools.serve_recovery import bundle, control, deployment, ledger, lifecycle
 from tools.serve_recovery import outer_control, outer_instance, outer_manager, outer_observe
 from tools.serve_recovery import outer_policy, outer_reconcile, outer_store, outer_tree, service, store
+from tools.serve_recovery import resource_launch
 
 
 class Runtime:
@@ -29,7 +30,11 @@ class Runtime:
         self.reason = None
         self.last_guardian = None
         self.stop_durable = self.cleaned = False
-        self.server = outer_control.Server(desc['service_id'], self.client)
+        self.resource = resource_launch.inherited(desc['service_id'])
+        try: self.server = outer_control.Server(desc['service_id'], self.client)
+        except BaseException:
+            if self.resource is not None: self.resource.close()
+            raise
 
     def status(self):
         value = dict(state=self.phase, reason=self.reason, service_id=self.desc['service_id'],
@@ -134,10 +139,12 @@ class Runtime:
             with store.Store(self.state, self.desc['service_id']) as core:
                 ledger.require(core.service_contract, 'outer dispatch requires original service state')
                 previous = outer.head['state']['policy']
-                candidate = outer_policy.change(previous, 'request', dict(core=core.state,
+                args = dict(core=core.state,
                     ticket=str(uuid.uuid4()), manifest_sha256=self.digest,
                     cleanup_verified=True, identity_valid=True,
-                    custody=self.tree.binding(self.instance)), store.stamp())
+                    custody=self.tree.binding(self.instance))
+                if self.resource is not None: args['resource'] = self.resource.binding()
+                candidate = outer_policy.change(previous, 'request', args, store.stamp())
                 result = candidate['last']['result']
                 if result['allowed']: self.tree.reserve(self.instance, candidate['pending'])
                 if result['allowed'] or candidate['protected'] != previous['protected']:
@@ -146,6 +153,10 @@ class Runtime:
                     self.reason = result['reason']; self.phase = 'WAITING'
                     return None
                 attempt = candidate['pending']
+                if self.resource is not None:
+                    command = self.resource.dispatch(command, self.manifest['python']['path'],
+                        self.package/'source/tools/serve_recovery/resource_launch.py')
+                    pass_fds = (*pass_fds, self.resource.fd)
                 owner = self.tree.launch(command, env=dict(os.environ),
                     pass_fds=(*pass_fds, self.instance.fd), instance=self.instance,
                     attempt=attempt, stdio=stdio)
@@ -196,7 +207,10 @@ class Runtime:
             if policy['pending'] is not None:
                 # Previous-boot reconciliation uses the actual system boot and
                 # exact tickets. Same-boot new observers need the resource path.
-                outer_reconcile.reboot(self.instance)
+                if self.resource is not None and policy['pending']['boot_id'] == store.stamp().boot_id:
+                    from tools.serve_recovery import resource_reconcile
+                    resource_reconcile.retire(self.instance, self.resource)
+                else: outer_reconcile.reboot(self.instance)
             while True:
                 self.tick()
                 try:
@@ -241,7 +255,9 @@ class Runtime:
         finally:
             self.instance.close(); self.instance = None
 
-    def close(self): self.server.close()
+    def close(self):
+        self.server.close()
+        if self.resource is not None: self.resource.close()
 
 
 def run(state, package, digest, *, activate=False):

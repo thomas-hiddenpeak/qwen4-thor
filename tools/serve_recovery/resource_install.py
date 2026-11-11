@@ -206,6 +206,10 @@ def main(argv=None):
     import argparse
     import json
     import sys
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ['enter']:
+        from tools.serve_recovery import resource_launch
+        return resource_launch.main(argv[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('operation', choices=('init', 'init-resume', 'status', 'remove'))
     parser.add_argument('--directory', type=Path, required=True)
