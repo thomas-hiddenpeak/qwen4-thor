@@ -1,0 +1,156 @@
+"""Bounded STOPPED version-recovery publication; never starts a GPU program."""
+import ast,copy,json,os,shutil,subprocess,sys,time,uuid
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path.cwd();sys.path.insert(0,str(ROOT))
+from tools.serve_recovery import bundle,publication,version_contract,version_registration
+from tools.serve_service import package as p
+BASE=ROOT/'.q4t-work/serve-version-recovery-20261112';OUT=BASE/'release-01';TEST=BASE/'business-03'
+DEFAULT=ROOT/'build';STATE=DEFAULT/'service-native-state'
+OLD='f312f81dea8e25c4a4509290c6d84414b9235547f3ff809da130faeb588c0d92'
+
+def state_hashes():
+ return {str(f.relative_to(STATE)):p.sha(f) for f in STATE.rglob('*') if f.is_file() and
+   (f.name=='ledger.json' or f.relative_to(STATE).parts[0].startswith(('client-','profile-selection')))}
+
+def unchanged_prepare(first,second):
+ def func(path):return ast.dump(next(n for n in ast.parse(path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='prepare'),include_attributes=False)
+ return func(first)==func(second)
+
+def prepare():
+ p.require(not OUT.exists(),'preserve previous delivery attempt')
+ p.require(not subprocess.check_output(['git','status','--porcelain']),'commit reviewed sources first')
+ accepted=p.read(TEST/'acceptance-final.json');plan=p.read(TEST/'plan.json')
+ p.require(accepted['status']=='ACCEPT_BOUNDED_VERSION_RECOVERY' and accepted['all_queries_ok'] and
+   not accepted['env_abort'] and all(accepted['postflight'].values()),'actual version business failed')
+ changed={name for name,digest in plan['sources'].items() if p.sha(ROOT/name)!=digest}
+ p.require(changed=={'tools/serve_recovery/version_runtime.py','tools/serve_recovery/test_version_repair.py'},'unreviewed post-business source change')
+ cpu=p.read(ROOT/'docs/evidence/serve-version-legacy-root-repair-20261112/decision.json')
+ p.require(cpu['status']=='ACCEPT_STOPPED_LEGACY_ROOT_REPAIR' and all(p.sha(ROOT/n)==h for n,h in cpu['sources_sha256'].items()),'STOPPED repair evidence changed')
+ tested=Path(plan['package']['package']);tested_manifest=bundle.verify(tested,plan['package']['manifest_sha256'])
+ p.require(unchanged_prepare(tested/'source/tools/serve_recovery/version_runtime.py',ROOT/'tools/serve_recovery/version_runtime.py'),'runtime preparation changed')
+ p.require(all(p.sha(row['path'])==row['sha256'] for row in plan['protected']),'accepted default changed')
+ current=publication.status(STATE);old=(DEFAULT/'service').resolve(strict=True)
+ p.require(current['ready'] and current['revision']==56 and current['current']['manifest_sha256']==OLD and p.sha(old/'manifest.json')==OLD,'publication predecessor changed')
+ p.require(not version_registration.present(STATE),'unexpected existing version cycle')
+ before=state_hashes();OUT.mkdir(mode=0o700)
+ old_generation=(DEFAULT/'q4t').resolve(strict=True).parent
+ for name in ['q4t','q4t.release.json','service.release.json','service.acceptance.json']:
+  target=OUT/'previous'/name;target.parent.mkdir(exist_ok=True);shutil.copyfile(old_generation/name,target)
+ base=p.read(old/'engine/manifest.json');settings=base['settings']
+ qualified=OUT/'qualified';qualified.mkdir(mode=0o700)
+ p.save(qualified/'registry.json',tested_manifest['recovery_profiles'])
+ for name in ('primary','light'):shutil.copyfile(tested/('profile-'+name+'.json'),qualified/(name+'.json'))
+ receipt=bundle.prepare(old/'engine/q4t',old/'engine/q4t.release.json',base['model_dir'],
+  tested/'bin/q4t-guardian',tested/'bin/q4t-cuda-probe',None,old/'gateway-policy.json',old/'engine/client-policy.json',OUT/'bundle',
+  native_receipt=tested/'native-build.json',native_ingress=tested/'bin/q4t-ingress',
+  capacity_config=dict(version=1,**{k:v for k,v in settings['profile'].items() if k not in ('name','host')}),
+  application_state={k:v for k,v in settings['application_state'].items() if k!='profile'},model_names=settings.get('model_names'),
+  embedding_model_dir=Path(settings['native_embedding']['directory']),recovery_profiles=qualified/'registry.json',
+  recovery_profile_policy=tested_manifest['recovery_profile_policy'])
+ target=Path(receipt['package']);digest=receipt['manifest_sha256'];manifest=bundle.verify(target,digest)
+ delta={name for name in manifest['files'] if manifest['files'][name]!=tested_manifest['files'][name]}
+ p.require(delta=={'source/tools/serve_recovery/version_runtime.py'},'release differs beyond stopped repair helper')
+ p.require(p.read(target/'engine/manifest.json')==p.read(tested/'engine/manifest.json'),'actual engine contract changed')
+ for name in ['engine/q4t','engine/q4t.release.json','gateway-policy.json','engine/client-policy.json']:
+  p.require(p.sha(target/name)==p.sha(old/name),'original business identity changed: '+name)
+ fallback=plan['registration']['payloads']['fallback']['descriptor'];fallback_manifest=bundle.verify(fallback['package'],fallback['manifest_sha256'])
+ root=dict(package=str(target),manifest_sha256=digest)
+ acceptance=plan['registration']['fallback_acceptance']
+ registration=version_contract.prepare(root,root,fallback,str(uuid.uuid4()),fallback_acceptance=acceptance)
+ p.save(OUT/'registration.json',registration);p.save(OUT/'receipt.json',receipt)
+ review=dict(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),previous=current,
+  original_state=before,actual_business=accepted,post_business_sources=sorted(changed),sealed_payload_delta=sorted(delta),
+  runtime_prepare_ast_unchanged=True,targeted_cpu='docs/evidence/serve-version-legacy-root-repair-20261112/README.md',new_gpu_starts=0)
+ p.save(OUT/'review.json',review)
+ original=p.read(OUT/'previous/service.release.json')
+ def metadata(package,digest,manifest,kind,decision_name,output_name,scope):
+  decision=dict(status='PASS_'+kind,acceptance='ACCEPT_'+kind,engine_binary_sha256=receipt['engine_binary_sha256'],manifest_sha256=digest,
+   actual_business=accepted,source_commit=review['source_commit'],control_review=str(OUT/'review.json'),new_gpu_starts=0,
+   remaining_master_tasks_open=True,full_performance=False,long_stability_accepted=False)
+  p.save(OUT/decision_name,decision)
+  release=copy.deepcopy(original)
+  release.update(acceptance=decision['acceptance'],acceptance_record=str(OUT/decision_name),acceptance_sha256=p.sha(OUT/decision_name),
+   previous_acceptance_record=original['acceptance_record'],package=str(package),manifest_sha256=digest,
+   engine_binary_sha256=receipt['engine_binary_sha256'],engine_release_sha256=p.sha(Path(package)/'engine/q4t.release.json'),
+   engine_metadata_unchanged=True,guardian_sha256=p.sha(Path(package)/'bin/q4t-guardian'),ingress_sha256=p.sha(Path(package)/'bin/q4t-ingress'),
+   cuda_probe_sha256=p.sha(Path(package)/'bin/q4t-cuda-probe'),recovery_bundle_profile=manifest['profile'],control_review=str(OUT/'review.json'),scope=scope)
+  return release
+ old_release=metadata(fallback['package'],fallback['manifest_sha256'],fallback_manifest,'RETAINED_VERSION_PROFILE_ADAPTER',
+  'fallback-decision.json','fallback-service.release.json','Retained accepted R05 control root and payload, with profile history representation adapter. R06 actual payload and targeted CPU evidence retained. Explicit manual control-root rollback; no model starts during publication.')
+ old_release['version_recovery_targeted_accepted']=False
+ p.save(OUT/'fallback-service.release.json',old_release)
+ anchor=dict(kind='retained_accepted_control_root_and_payload',package=fallback['package'],manifest_sha256=fallback['manifest_sha256'],
+  service_release=str(OUT/'fallback-service.release.json'),service_release_sha256=p.sha(OUT/'fallback-service.release.json'),
+  automatic_payload_fallback=True,manual_root_rollback_requires_stopped=True,
+  rollback_command='CANDIDATE/engine/q4t service publish-rollback --state STATE --default-root ROOT --package CANDIDATE --manifest-sha256 CURRENT_SHA --generation-sha256 RETAINED_GENERATION --expected-manifest-sha256 CURRENT_SHA --expected-revision CURRENT_REVISION --request-id NEW_UUID',
+  forward_command='CANDIDATE/engine/q4t service publish --state STATE --default-root ROOT --package CANDIDATE --manifest-sha256 CANDIDATE_SHA --service-release CANDIDATE_RELEASE --expected-manifest-sha256 CURRENT_SHA --expected-revision CURRENT_REVISION --request-id NEW_UUID',
+  cycle_never_reset_by_manual_rollback=True)
+ p.save(OUT/'recovery-anchor.json',anchor)
+ release=metadata(target,digest,manifest,'QUALIFIED_VERSION_RECOVERY','decision.json','service.release.json',
+  'Native fixed-root automatic one-shot retained-payload recovery with original budgets, current client usage and application objects. Explicit STOPPED repair and manual root rollback/forward preserve version outcomes. No nginx requirement. Remaining Serve master tasks continue.')
+ release.update(version_recovery_targeted_accepted=True,version_recovery_registration=str(OUT/'registration.json'),
+  version_recovery_registration_sha256=p.sha(OUT/'registration.json'),version_recovery_cycle_id=registration['registry']['cycle_id'],
+  rollback_receipt=str(OUT/'recovery-anchor.json'),rollback_sha256=p.sha(OUT/'recovery-anchor.json'))
+ release['limitations']=[s for s in release['limitations'] if not s.startswith('R06 ')]
+ p.save(OUT/'service.release.json',release)
+ requests={name:str(uuid.uuid4()) for name in ['anchor','candidate','rollback','forward']}
+ p.save(OUT/'requests.json',requests)
+ p.save(BASE/'delivery-plan.json',dict(commands=16,new_gpu_starts=0,from_revision=56,planned_final_revision=64,
+  scope='Retain accepted older root; publish candidate; register unused cycle; real STOPPED rollback/forward; preserve original business/profile journals and cycle; no model starts',
+  candidate=digest,fallback=fallback['manifest_sha256'],requests=requests))
+ print(json.dumps(dict(status='PREPARED',manifest_sha256=digest,fallback=fallback['manifest_sha256'],commands=16)))
+
+def run():
+ started=time.monotonic();review=p.read(OUT/'review.json');before=review['original_state']
+ p.require(state_hashes()==before,'original business state changed before publication')
+ p.require(publication.status(STATE)['revision']==56,'publication changed before run')
+ target=OUT/'bundle';receipt=p.read(OUT/'receipt.json');digest=receipt['manifest_sha256'];registration=p.read(OUT/'registration.json')
+ fallback=registration['payloads']['fallback']['descriptor'];requests=p.read(OUT/'requests.json');cli=target/'engine/q4t'
+ rows=[];version_hashes=None
+ def call(label,args):
+  nonlocal version_hashes
+  p.require(len(rows)<16,'delivery command bound')
+  argv=[str(x) for x in args];began=time.monotonic();r=subprocess.run(argv,capture_output=True,stdin=subprocess.DEVNULL,timeout=45)
+  (OUT/(label+'.stdout')).write_bytes(r.stdout);(OUT/(label+'.stderr')).write_bytes(r.stderr)
+  row=dict(label=label,argv=argv,returncode=r.returncode,seconds=time.monotonic()-began);rows.append(row);p.save(OUT/(label+'.json'),row)
+  p.require(r.returncode==0,'delivery failed: '+label);p.require(state_hashes()==before,'original client/core/profile state changed')
+  if version_hashes is not None:p.require(all(p.sha(STATE/n)==h for n,h in version_hashes.items()),'manual root change reset version cycle')
+  return json.loads(r.stdout)
+ def publish(label,package,sha,release,expected,revision,rid):
+  return call(label,[cli,'service','publish','--state',STATE,'--default-root',DEFAULT,'--package',package,'--manifest-sha256',sha,'--service-release',release,'--expected-manifest-sha256',expected,'--expected-revision',revision,'--request-id',rid])
+ try:
+  p.require(call('previous-check',[cli,'service','check','--state',STATE,'--package',review['previous']['current']['package'],'--manifest-sha256',OLD])['desired']=='STOPPED','default is active')
+  for label,package,sha in [('fallback',fallback['package'],fallback['manifest_sha256']),('candidate',target,digest)]:
+   p.require(call(label+'-check',[cli,'service','check','--package',package,'--manifest-sha256',sha])['status']=='PASS','package check')
+  anchor=publish('anchor-publish',fallback['package'],fallback['manifest_sha256'],OUT/'fallback-service.release.json',OLD,56,requests['anchor'])
+  p.require(anchor['durable'] and anchor['revision']==58,'anchor publication differs')
+  generation=anchor['current']['generation_sha256'];p.save(OUT/'retained-anchor-generation.json',dict(generation_sha256=generation,manifest_sha256=fallback['manifest_sha256']))
+  value=publish('candidate-publish',target,digest,OUT/'service.release.json',fallback['manifest_sha256'],58,requests['candidate'])
+  p.require(value['durable'] and value['revision']==60,'candidate publication differs')
+  value=call('version-register',[DEFAULT/'q4t','service','version-register','--state',STATE,'--registration',OUT/'registration.json'])
+  p.require(value['registered'] and not value['fallback_consumed'],'registration did not create unused cycle')
+  version_hashes={str(f.relative_to(STATE)):p.sha(f) for f in STATE.rglob('*') if f.is_file() and f.relative_to(STATE).parts[0].startswith(('version-selection','version-registrations'))}
+  value=call('version-before',[DEFAULT/'q4t','service','version-status','--state',STATE])
+  p.require(value['cycle_id']==registration['registry']['cycle_id'] and not value['fallback_consumed'],'new cycle changed')
+  value=call('root-rollback',[cli,'service','publish-rollback','--state',STATE,'--default-root',DEFAULT,'--package',target,'--manifest-sha256',digest,'--generation-sha256',generation,'--expected-manifest-sha256',digest,'--expected-revision',60,'--request-id',requests['rollback']])
+  p.require(value['durable'] and value['revision']==62,'manual root rollback failed')
+  p.require(call('old-root-check',[DEFAULT/'q4t','service','check','--state',STATE])['desired']=='STOPPED','old root unavailable')
+  value=publish('root-forward',target,digest,OUT/'service.release.json',fallback['manifest_sha256'],62,requests['forward'])
+  p.require(value['durable'] and value['revision']==64,'manual root forward failed')
+  for action in ['check','status','observe']:
+   value=call('default-'+action,[DEFAULT/'q4t','service',action,'--state',STATE])
+   p.require(value['status']=='PASS' if action=='check' else value['state']=='STOPPED','default health')
+  profiles=call('default-profiles',[DEFAULT/'q4t','service','profiles-status','--state',STATE]);p.require(profiles['enabled'] and profiles['selected']=='primary','profile selection')
+  versions=call('default-version',[DEFAULT/'q4t','service','version-status','--state',STATE]);p.require(versions['cycle_id']==registration['registry']['cycle_id'] and not versions['fallback_consumed'] and versions['launch_payload']=='primary','version selection')
+  final=call('publication',[DEFAULT/'q4t','service','publish-status','--state',STATE]);p.require(final['ready'] and final['revision']==64 and final['current']['manifest_sha256']==digest,'final default identity')
+  p.save(OUT/'result.json',dict(status='PASS_QUALIFIED_VERSION_RECOVERY_DELIVERED',seconds=time.monotonic()-started,commands=rows,publication=final,retained_anchor_generation=generation,versions=versions,profiles=profiles,business_state_preserved=state_hashes()==before,version_state_preserved_after_registration=True,engine_unchanged=True,new_gpu_starts=0,state='STOPPED',remaining_master_tasks_open=True))
+  print(json.dumps(dict(status='PASS_QUALIFIED_VERSION_RECOVERY_DELIVERED',revision=64,commands=len(rows),manifest_sha256=digest,seconds=time.monotonic()-started)))
+ except BaseException as error:
+  p.save(OUT/'result.json',dict(status='FAILED',commands=rows,detail=str(error),category=type(error).__name__,seconds=time.monotonic()-started));raise
+
+if __name__=='__main__':
+ os.umask(0o077)
+ if sys.argv[1:] == ['prepare']:prepare()
+ elif sys.argv[1:] == ['run']:run()
+ else:raise SystemExit('choose prepare or run')

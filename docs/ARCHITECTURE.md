@@ -132,13 +132,16 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 
 2026-11-08用户明确：项目设计应尽量减少外部依赖，兼容nginx前置，
 但不能强制绑定。原生入口及后续TLS已完成CPU和真实模型短验，
-本机默认v4服务包保持停止与原本机策略；旧包与证据作为回退保留。
+本机默认包保持停止与原本机策略，当前身份见 STATUS；旧包与证据
+作为回退保留。原生客户端治理、发布事务、实测轻量配置恢复及
+已验版本回退均已交付，完整 OpenAI 兼容与其他总任务继续实现。
 
 - 默认发行应独立提供原生API、鉴权、准入、健康及有界自恢复，
   无需安装、携带或启动nginx；systemd继续作为可选外层管理器。
 - 原生TLS/LAN、证书生命周期、CORS、客户端治理与标准API兼容也是
   必须补齐的能力。N01—N03已交付原生TLS/IPv4/IPv6、证书轮换及
-  CORS，默认保持本机策略、按需启用；客户端治理与标准API继续推进。
+  CORS，默认保持本机策略、按需启用；密钥和客户端限额已原生治理，
+  标准API与剩余能力继续推进。
   当前配置或未完成能力不能因为
   nginx可选就把能力本身移出目标。实施和验收见
   [Serve总计划](SERVE_MASTER_PLAN_2026-11-08.md)的A/N/R/Q任务。
@@ -162,7 +165,8 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 | 原生推理入口 | 直接`serve`保持；新`q4t-ingress`独立于模型，模型/控制器恢复期间返回503/Retry-After | 真实文本恢复通过；非通用Web代理 |
 | 客户端鉴权 | C++入口验证Bearer并拒绝伪造内部身份；后端`ClientAdmission`继续执行RPM/TPM、公平准入 | 前置只需标准HTTP；每个内部凭据只绑定一个模型代次 |
 | 恢复准入 | 读体前/转发前经PID限定的Unix IPC核对Guardian准入；两次绑定必须相同 | CPU覆盖读体中换代/配额等待、失联；仍等模型自检及完整分钟窗口 |
-| 恢复封装 | v4默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；旧包保留 | 本机v4已交付STOPPED；显式nginx模式保留 |
+| 恢复封装 | 默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；旧包保留 | 当前交付STOPPED；显式nginx模式保留 |
+| 已验版本恢复 | 固定Guardian核对真实致命退出、整树退休及独立CUDA探测，一次切换到已登记旧payload | 保留原Key/用量/预算/profile历史；回退再次失败保护，辅助失能不触发切换 |
 | TLS/浏览器 | 系统OpenSSL按需加载，凭据独立有界读取/轮换；IPv4/IPv6、mTLS/本地CRL和CORS | 原生CPU/浏览器及真实TLS业务通过，坏证书保持有效旧上下文，模型不重启 |
 
 实现入口：[原生HTTP](../include/q4t/server/chat_server.h)、
@@ -173,6 +177,11 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 [私有准入](../tools/serve_recovery/native_ingress.py)。Guardian既有GATEWAY
 角色在新包管理原生入口；它不表示nginx依赖。外部前置不访问这条
 私有IPC，也不控制q4t模型或Guardian生命周期。
+
+当前版本恢复已完成针对性CPU、实际整树回退/工具业务，以及停机
+发布回退再升级，见[R06交付](evidence/serve-version-delivery-20261112/README.md)。
+NVML失能时首次加载的独立独占部署控制仍在R07实现，不能将既有
+连续租约内的恢复能力等同于任意宿主的无监控冷启动。
 
 151项不同CPU检查已覆盖伪造身份、未ready请求、额度保护、SSE中断、停止、
 无nginx运行及可选前置；163来源锚点、8条原生路由和4个审计负控。

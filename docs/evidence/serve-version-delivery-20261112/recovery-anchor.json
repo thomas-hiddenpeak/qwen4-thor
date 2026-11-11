@@ -1,0 +1,12 @@
+{
+  "kind": "retained_accepted_control_root_and_payload",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback",
+  "manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/fallback-service.release.json",
+  "service_release_sha256": "20cef2f9958f587e75f074c6e52ce0411a01f9f44882cfd2420ad8c18391d245",
+  "automatic_payload_fallback": true,
+  "manual_root_rollback_requires_stopped": true,
+  "rollback_command": "CANDIDATE/engine/q4t service publish-rollback --state STATE --default-root ROOT --package CANDIDATE --manifest-sha256 CURRENT_SHA --generation-sha256 RETAINED_GENERATION --expected-manifest-sha256 CURRENT_SHA --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+  "forward_command": "CANDIDATE/engine/q4t service publish --state STATE --default-root ROOT --package CANDIDATE --manifest-sha256 CANDIDATE_SHA --service-release CANDIDATE_RELEASE --expected-manifest-sha256 CURRENT_SHA --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+  "cycle_never_reset_by_manual_rollback": true
+}

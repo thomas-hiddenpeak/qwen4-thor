@@ -147,6 +147,13 @@ TLS和外部前置按部署需要选择；[实际交付证据](docs/evidence/ser
 恢复需持续余量、冷却及持久预算。`service profiles-status`查询当前选择。
 NVML/日志/指标失能不触发切档，原设备故障保护保持。
 
+受管包已支持[已验旧服务版本的有界自动回退](docs/SERVE_VERSION_RECOVERY_2026-11-11.md)：
+确认的代码致命退出经整树清理、独立设备探测和资格核对后，最多
+回退一次；固定 Guardian 保持原启动预算、客户端用量及停止意图。
+`service version-status`查询当前周期、实际 payload 和已用额度。
+辅助依赖失能不触发版本切换，回退版再失败进入持久保护。可回退发布
+及旧控制根停机回退再升级见[交付证据](docs/evidence/serve-version-delivery-20261112/README.md)。
+
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行

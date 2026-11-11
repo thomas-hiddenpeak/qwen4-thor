@@ -116,3 +116,5 @@ R06.4继续登记资格和原生实际故障/整树接管；尚未接自动运�
 2026-11-12。R06[实际版本回退首过](evidence/serve-version-business-20261112/README.md)：123.789秒、2启动/10 POST/1 probe，117次NVML正常；固定根整树回退、工具SSE、原Chat/Batch/File和46.559秒内RPM连续通过。原三角色各1次重启保留，自有进程/端口/锁释放。默认rev56保持，继续可回退交付及全部总任务。
 
 2026-11-12。R06旧控制根回退后的显式升级[5 CPU首过](evidence/serve-version-legacy-root-repair-20261112/README.md)，5.539秒/0新增GPU；已用周期、原业务状态与中断续办保持。运行prepare路径不变，复用真实回退业务，准备保留旧控制根锚点并可回退发布；默认rev56保持，全部任务继续。
+
+2026-11-12。R06[可回退交付完成](evidence/serve-version-delivery-20261112/README.md)：16命令首过/48.926秒/0新增GPU，实走旧根回退再升级；默认rev64 STOPPED，模型96577e45保持，包a3bb4ec8/generation409f63a6。原Key/用量/核心及profile账本保持，新版本周期rev0未消费；旧根f07eead5可回退。继续R07冷启动独占与全部剩余总任务，未合main。

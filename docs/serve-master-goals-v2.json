@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-11",
+  "updated": "2026-11-12",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active_master_goal",
   "app_migration": {
@@ -1710,7 +1710,7 @@
     {
       "id": "R06",
       "required": true,
-      "state": "implementing",
+      "state": "delivered",
       "implementation": "已验证旧版本有界自动回退、持久预算与防振荡",
       "acceptance": "已验证旧版本有界自动回退、持久预算与防振荡",
       "depends_on": [
@@ -1726,55 +1726,72 @@
         "evidence/serve-version-registration-20261111/README.md",
         "evidence/serve-version-native-root-20261112/README.md",
         "evidence/serve-version-observation-repair-20261112/README.md",
-        "evidence/serve-version-business-20261112/README.md"
+        "evidence/serve-version-business-20261112/README.md",
+        "evidence/serve-version-business-driver-20261112/README.md",
+        "evidence/serve-version-legacy-root-repair-20261112/README.md",
+        "evidence/serve-version-delivery-20261112/README.md"
       ],
-      "release": null,
+      "release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "generation_sha256": "409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29",
+        "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+        "service_acceptance_sha256": "19526082572d7e0aa8f4accb544e65667b51d540c3238737e561375ada00a5f7",
+        "service_release_sha256": "1ccf4554047f77b529930abcbd59da085cbae2be9d59efbdd57a12fe5748ef45",
+        "publication_revision": 64,
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "Targeted CPU and real retained-service-version recovery passed: 2 model starts, 10 HTTP POST, 1 CUDA probe, 123.789 seconds; 117 NVML queries healthy. Default rev56 unchanged; reversible publication and all remaining master tasks continue.",
+      "development_status": "Qualified older-service payload recovery delivered at rev64 after 16 commands / 48.926 seconds and actual STOPPED old-root rollback/forward. Runtime acceptance reused: 2 model starts, 10 POST, 1 probe; final STOPPED repair helper separately CPU verified. Same accepted model engine; no claim of different-model-binary GPU validation. Original client/core/profile state and unused recovery cycle preserved. Continue R07 and all remaining master tasks.",
       "subtasks": [
         {
           "id": "R06.1",
-          "state": "cpu_verified",
+          "state": "delivered",
           "title": "资格与迁移合同"
         },
         {
           "id": "R06.2",
-          "state": "cpu_verified",
+          "state": "delivered",
           "title": "容量变更与格式演进"
         },
         {
           "id": "R06.3",
-          "state": "cpu_verified",
+          "state": "delivered",
           "title": "持久版本状态机"
         },
         {
           "id": "R06.4",
-          "state": "cpu_verified",
+          "state": "delivered",
           "title": "原生控制根与接线"
         },
         {
           "id": "R06.5",
-          "state": "verified",
+          "state": "delivered",
           "title": "针对性CPU及实际业务验收"
         },
         {
           "id": "R06.6",
-          "state": "implementing",
+          "state": "delivered",
           "title": "可用交付与继续总目标"
         }
-      ]
+      ],
+      "remaining": []
     },
     {
       "id": "R07",
       "required": true,
-      "state": "planned",
+      "state": "implementing",
       "implementation": "NVML失能时的冷启动独占条件、独立证据及有界探测",
       "acceptance": "NVML失能时的冷启动独占条件、独立证据及有界探测",
       "depends_on": [
         "R03"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "development_status": "Inspect independent cold-start exclusivity enforcement and CUDA health evidence; monitoring unknown is not idle. Implement deployment control before claiming NVML-free startup."
     },
     {
       "id": "R08",
@@ -1862,6 +1879,6 @@
       "release": null
     }
   ],
-  "next_task": "R06 qualified older-version fallback, profile qualification migration and persistent anti-oscillation, then remaining R07-R10 and A/Q/G00 tasks",
-  "next": "R06 qualified older-version fallback, profile qualification migration and persistent anti-oscillation, then remaining R07-R10 and A/Q/G00 tasks"
+  "next_task": "R07 NVML-free cold-start deployment control, independent evidence and bounded probes; then remaining R08-R10 and A/Q/G00 tasks. All tasks required before goal completion.",
+  "next": "R07 NVML-free cold-start deployment control, independent evidence and bounded probes; then remaining R08-R10 and A/Q/G00 tasks. All tasks required before goal completion."
 }

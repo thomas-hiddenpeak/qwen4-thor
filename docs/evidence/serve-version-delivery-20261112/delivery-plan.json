@@ -1,0 +1,15 @@
+{
+  "commands": 16,
+  "new_gpu_starts": 0,
+  "from_revision": 56,
+  "planned_final_revision": 64,
+  "scope": "Retain accepted older root; publish candidate; register unused cycle; real STOPPED rollback/forward; preserve original business/profile journals and cycle; no model starts",
+  "candidate": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+  "fallback": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+  "requests": {
+    "anchor": "2d653ca6-54ed-4c8a-af1c-144f2b82085f",
+    "candidate": "d814d900-017b-45e0-abc4-056f310ebd07",
+    "rollback": "d348dde6-579d-4ce3-8a31-be3fbb6135b6",
+    "forward": "60c8437c-00fa-4834-8a9f-50d9c83365c0"
+  }
+}

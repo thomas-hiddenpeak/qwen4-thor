@@ -1,0 +1,14 @@
+{
+  "label": "candidate-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle/engine/q4t",
+    "service",
+    "check",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+    "--manifest-sha256",
+    "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac"
+  ],
+  "returncode": 0,
+  "seconds": 0.7973434370942414
+}
