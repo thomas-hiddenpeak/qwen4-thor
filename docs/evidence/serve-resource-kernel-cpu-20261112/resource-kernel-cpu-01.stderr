@@ -1,0 +1,26 @@
+test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound (tools.serve_recovery.test_resource_kernel.KernelTests.test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound) ... ok
+test_memory_oom_is_confined_to_payload_and_recorded_by_kernel (tools.serve_recovery.test_resource_kernel.KernelTests.test_memory_oom_is_confined_to_payload_and_recorded_by_kernel) ... ERROR
+test_missing_population_observation_never_grants_cleanup_or_sends_a_signal (tools.serve_recovery.test_resource_kernel.KernelTests.test_missing_population_observation_never_grants_cleanup_or_sends_a_signal) ... ok
+test_real_task_limit_and_subtree_kill_include_forked_descendants (tools.serve_recovery.test_resource_kernel.KernelTests.test_real_task_limit_and_subtree_kill_include_forked_descendants) ... ok
+test_regular_directory_or_wrong_entry_descriptor_cannot_be_a_kernel_domain (tools.serve_recovery.test_resource_kernel.KernelTests.test_regular_directory_or_wrong_entry_descriptor_cannot_be_a_kernel_domain) ... ok
+test_replaced_kernel_leaf_and_namespace_identity_are_rejected (tools.serve_recovery.test_resource_kernel.KernelTests.test_replaced_kernel_leaf_and_namespace_identity_are_rejected) ... ok
+test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive (tools.serve_recovery.test_resource_kernel.KernelTests.test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive) ... ok
+
+======================================================================
+ERROR: test_memory_oom_is_confined_to_payload_and_recorded_by_kernel (tools.serve_recovery.test_resource_kernel.KernelTests.test_memory_oom_is_confined_to_payload_and_recorded_by_kernel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_kernel.py", line 115, in test_memory_oom_is_confined_to_payload_and_recorded_by_kernel
+    self.assertEqual(process.wait(timeout=5), -signal.SIGKILL)
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2045, in _wait
+    raise TimeoutExpired(self.args, timeout)
+subprocess.TimeoutExpired: Command '['/usr/bin/python3', '-I', '-B', '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_kernel.py', '--worker', '{"format": "q4t-resource-kernel-v1", "service_id": "34b42452-b2ea-4ce2-ba1f-19d237c4a342", "domain_id": "352cdeea-ac51-4993-9272-d2dd2a671636", "runtime_uid": 2002, "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8", "root": "/sys/fs/cgroup/q4t-resource-352cdeea-ac51-4993-9272-d2dd2a671636", "root_identity": [29, 202945], "children": {"outer": [29, 203024], "service": [29, 203059]}, "namespaces": {"user": [4, 4026531837], "cgroup": [4, 4026531835]}, "policy": {"service": {"memory_high_bytes": 33554432, "memory_max_bytes": 67108864, "pids_max": 8}, "outer": {"memory_high_bytes": 402653184, "memory_max_bytes": 536870912, "pids_max": 64}, "swap_max_bytes": 0, "oom_group": true, "physical_ram_limit": false}}', 'service', '6', '2002', '2002', 'oom']' timed out after 5 seconds
+
+----------------------------------------------------------------------
+Ran 7 tests in 5.801s
+
+FAILED (errors=1)

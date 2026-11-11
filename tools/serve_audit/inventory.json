@@ -2089,6 +2089,7 @@
     "tools/serve_recovery/quota_policy.py": "65aa19785e2c952e251b1f893f5ec89894dfec6449020d9892d7fdf10d407134",
     "tools/serve_recovery/quota_runtime.py": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a",
     "tools/serve_recovery/quota_store.py": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887",
+    "tools/serve_recovery/resource_kernel.py": "242e0eb0907a45407b2e67bcbddd1128b110c9fbec9c2de8deaa158ea2d96c2b",
     "tools/serve_recovery/retention.py": "e9174f5bec4241a26847ceeaf0e0c3b708b1557e341a7fccc2623e93d5fbb862",
     "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
     "tools/serve_recovery/service.py": "771a0adb1205b4d82ad54f60e58c61187c1955dfa8343e8f9109aca474c63dc6",
