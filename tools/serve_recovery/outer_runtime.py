@@ -210,7 +210,7 @@ class Runtime:
                 if self.resource is not None and policy['pending']['boot_id'] == store.stamp().boot_id:
                     from tools.serve_recovery import resource_reconcile
                     resource_reconcile.retire(self.instance, self.resource)
-                else: outer_reconcile.reboot(self.instance)
+                else: outer_reconcile.reboot(self.instance, resource=self.resource)
             while True:
                 self.tick()
                 try:

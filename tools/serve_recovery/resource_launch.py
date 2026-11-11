@@ -43,6 +43,19 @@ def command_valid(command):
         '\0' not in arg for arg in command), 'bounded absolute resource command required')
 
 
+def successor(previous, current, actual_boot):
+    """Pure lineage contract; callers must also verify actual live capability."""
+    validate(previous); validate(current)
+    old, new = previous['publication'], current['publication']
+    ledger.require(previous['directory'] == current['directory'] and
+        all(old[key] == new[key] for key in ('format', 'service_id', 'domain_id',
+            'runtime_uid', 'runtime_gid')) and new['revision'] > old['revision'] and
+        all(old['record'][key] == new['record'][key] for key in
+            ('service_id', 'domain_id', 'runtime_uid', 'root', 'policy')) and
+        old['record']['boot_id'] != actual_boot == new['record']['boot_id'],
+        'resource renewal does not continue the original installation')
+
+
 def enter(directory, command):
     """Root-only explicit entry. No child exists before membership and UID drop."""
     command_valid(command)

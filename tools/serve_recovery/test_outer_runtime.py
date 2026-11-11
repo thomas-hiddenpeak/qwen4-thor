@@ -73,6 +73,23 @@ def worker(path):
 class RuntimeTests(unittest.TestCase):
     command = test_lifecycle.LifecycleTests.command
 
+    def test_plain_service_launch_cannot_bypass_unresolved_outer_attempt(self):
+        from tools.serve_recovery import outer_instance
+        import uuid
+        with store.Store(self.state, self.sid) as core:
+            core.transact(dict(id=str(uuid.uuid4()), expected_revision=core.state['revision'],
+                               operation='desired', args=dict(state='RUNNING')))
+        with outer_instance.Instance(self.state, self.sid) as instance, outer_tree.Tree() as tree:
+            binding = outer_manager.ready(self.state, self.desc)
+            outer_store.commit_once(binding, 'request', dict(core=self.core(), ticket=str(uuid.uuid4()),
+                manifest_sha256=self.digest, cleanup_verified=True, identity_valid=True,
+                custody=tree.binding(instance)))
+        before = self.core(); policy = self.policy()
+        with mock.patch.object(service, 'acquire_lease', side_effect=AssertionError('GPU forbidden')):
+            with self.assertRaisesRegex(ValueError, 'unresolved outer attempt'):
+                service.launch(self.package, self.digest, self.state)
+        self.assertEqual(self.core(), before); self.assertEqual(self.policy(), policy)
+
     def setUp(self):
         self.fixture = test_native_bundle.BundleTests(); self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)

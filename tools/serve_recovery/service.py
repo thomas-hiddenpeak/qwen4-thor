@@ -171,6 +171,10 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
     desc = descriptor(state, package, digest)
     from tools.serve_recovery import deployment
     deployment.ready(state, desc)
+    if outer is None:
+        from tools.serve_recovery import lifecycle
+        ledger.require(not lifecycle.pending_outer(state, desc),
+                       'unresolved outer attempt requires original tree or resource reconciliation')
     package, state = Path(package).resolve(), Path(state).resolve()
     lease = acquire_lease(manifest['lock_path'])
     parent = endpoint = None

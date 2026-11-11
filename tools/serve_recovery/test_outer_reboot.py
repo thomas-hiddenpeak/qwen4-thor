@@ -16,6 +16,15 @@ from tools.serve_recovery.test_outer_reconcile import cycle, read_core, read_out
 
 
 class RebootTests(unittest.TestCase):
+    def test_another_boot_continues_the_exact_existing_cleanup_checkpoint(self):
+        self.setup_state(); middle = ledger.Stamp(str(uuid.uuid4()), self.now.monotonic_ns)
+        outer_store.commit_once(self.binding, 'prepare_reboot', dict(core=self.before,
+            ticket=self.outer_before['pending']['ticket']), clock=lambda: middle)
+        checkpoint = read_outer(self.binding)['pending']['cleanup']
+        self.assertEqual(checkpoint['boot_id'], middle.boot_id)
+        result = self.reboot(); self.preserve()
+        self.assertEqual(result['observed_boot_id'], store.stamp().boot_id)
+
     def setup_state(self, *, same_boot=False, current_slots=False, stopped=True):
         base=ROOT/'.q4t-work/serve-outer-recovery-20261112/reboot-fixtures'
         base.mkdir(mode=0o700,parents=True,exist_ok=True)

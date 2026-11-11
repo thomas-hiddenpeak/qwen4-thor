@@ -91,7 +91,7 @@ def reboot_checkpoint(core, attempt, actual_boot):
             cleanup['slots'][role], 'reboot cleanup slot was replaced')
 
 
-def reboot(instance):
+def reboot(instance, *, resource=None):
     """Actual new host boot proves prior-boot tasks gone, never GPU readiness.
 
     Persist exact old tickets BEFORE the first retirement; subsequent attempts
@@ -117,11 +117,24 @@ def reboot(instance):
             ledger.require(pending is not None and pending['boot_id'] != now.boot_id and
                 pending['manifest_sha256'] == desc['manifest_sha256'],
                 'no matching previous-boot outer attempt')
+            selected = None
+            def verify_resource():
+                nonlocal selected
+                if 'resource' not in pending: return
+                from tools.serve_recovery import resource_launch
+                ledger.require(type(resource) is resource_launch.Capability,
+                               'original resource entry is required for reboot reconciliation')
+                selected = resource.binding()
+                resource_launch.successor(pending['resource'], selected, store.stamp().boot_id)
+                ledger.require(resource.scope.empty(), 'new resource epoch is populated')
+            verify_resource()
             with store.Store(state, desc['service_id']) as core:
                 ledger.require(core.service_contract, 'reboot cleanup requires service state fence')
-                if pending['cleanup'] is None:
-                    candidate = outer_policy.change(previous, 'prepare_reboot',
-                        dict(ticket=pending['ticket'], core=core.state), now)
+                if pending['cleanup'] is None or pending['cleanup']['boot_id'] != now.boot_id:
+                    args = dict(ticket=pending['ticket'], core=core.state)
+                    if selected is not None: args['resource'] = selected
+                    candidate = outer_policy.change(previous,
+                        'prepare_reboot' if pending['cleanup'] is None else 'advance_reboot', args, now)
                     outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
                     previous = candidate; pending = candidate['pending']
                 reboot_checkpoint(core.state, pending, now.boot_id)
@@ -130,6 +143,7 @@ def reboot(instance):
                     active = core.state['active'][role]
                     if active is None: continue
                     instance.check()
+                    verify_resource()
                     reboot_checkpoint(core.state, pending, store.stamp().boot_id)
                     ticket = active['ticket']
                     core.transact(dict(id=str(uuid.uuid4()), expected_revision=core.state['revision'],

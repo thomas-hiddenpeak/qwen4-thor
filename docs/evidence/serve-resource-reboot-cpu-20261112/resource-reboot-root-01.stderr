@@ -1,0 +1,11 @@
+test_bound_old_domain_resolves_unrecorded_birth_after_offline_stop (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_bound_old_domain_resolves_unrecorded_birth_after_offline_stop) ... ok
+test_resource_bound_attempt_cannot_fall_back_to_metadata_only_reboot (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_resource_bound_attempt_cannot_fall_back_to_metadata_only_reboot) ... ok
+test_different_installation_cannot_retire_old_resource_bound_tickets (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_different_installation_cannot_retire_old_resource_bound_tickets) ... ok
+test_known_current_boot_owner_is_not_retired_by_old_resource_lineage (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_known_current_boot_owner_is_not_retired_by_old_resource_lineage) ... ok
+test_resource_reboot_checkpoint_resumes_with_new_instance_after_write_failure (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_resource_reboot_checkpoint_resumes_with_new_instance_after_write_failure) ... ok
+test_reboot_during_cleanup_advances_boot_without_reselecting_old_slots (tools.serve_recovery.test_resource_reboot.RebootResourceTests.test_reboot_during_cleanup_advances_boot_without_reselecting_old_slots) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.260s
+
+OK
