@@ -1,0 +1,32 @@
+{
+  "status": "TARGETED_OPTIONAL_SYSTEMD_CPU_PASS",
+  "distinct_tests": 19,
+  "invocations": 37,
+  "cpu_seconds": 42.89972211001441,
+  "initial_failures_retained": 14,
+  "initial_failure": "fixture unit directory dict overwrote inherited resource cleanup set; test bodies passed but cleanup failed",
+  "fixture_cleanup_receipt": "fixture-cleanup.json",
+  "kernel_resource_domains_remaining": [],
+  "owned_runtime_units_remaining": [],
+  "persistent_units_changed": false,
+  "real_systemd_timer_invocation": true,
+  "core_intent_stopped_unchanged": true,
+  "real_native_adoption_regression": true,
+  "loaded_timer_file_loss_withdrawal": true,
+  "model_gpu_starts": 0,
+  "existing_host_services_changed": false,
+  "temporary_owned_runtime_registration": true,
+  "temporary_registration_removed": true,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/host_systemd.py": "08902614396dc79e9623dab3f7e8b86da8c8d6a131df0ccb878aed24dbb0f8f4",
+    "tools/serve_recovery/host_entry.py": "46746a37df14ccbbae64e2c9c9c8e3645a7126a0a529fd2fb6f9b6a8a85f5660",
+    "tools/serve_recovery/host_install.py": "8e0a65ee4849be8bbb23daa2a05365a7f8920f5c86066110f20c7a9a2f8bd67a",
+    "tools/serve_recovery/service.py": "23d8119d336250025918c607ab7c2fed42ccd71753db2f9119afca985488abef",
+    "tools/serve_recovery/bundle.py": "7e7d9c5b438aafd6cda4408b8871e53c41ff0d37f67d70a6550d223c320293f3",
+    "tools/serve_recovery/test_host_systemd.py": "03d3be8b4d0d50881371b02411079249d30a8ebdea80ef3d4a15f5bf62573c8a",
+    "tools/serve_recovery/test_host_systemd_live.py": "cc54d0150d0fab74a05efb9039f9caea1904bddeecb31618edecedc9622ac9f1",
+    "tools/serve_recovery/test_native_bundle.py": "f11607c2eece26647bd30d81b429c8a836643d39bfd9602aaa7702d6170756ce"
+  },
+  "released": false
+}

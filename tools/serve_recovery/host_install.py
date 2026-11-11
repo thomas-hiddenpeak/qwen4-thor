@@ -198,8 +198,19 @@ def status(directory):
         value = load(directory)
         try: current = public(directory) == value; reason = None
         except (OSError, ValueError) as error: current = False; reason = type(error).__name__
+        trigger = trigger_phase(directory, value)
+        registered = True if trigger == 'registered' else False if trigger in ('absent', 'removed') else None
         return dict(installation=value, publication_current=current, publication_error=reason,
-                    model_actions=False, host_startup_registered=False)
+                    model_actions=False, host_startup_registered=registered, host_trigger_phase=trigger)
+
+
+def trigger_phase(directory, value):
+    from tools.serve_recovery import host_systemd
+    if not any(os.path.lexists(Path(directory)/'admin'/name) for name in
+        (host_systemd.RECORD, host_systemd.BOUND, host_systemd.RECORD+'.pending', host_systemd.BOUND+'.pending')):
+        return 'absent'
+    try: return host_systemd.load(directory, value)['phase']
+    except (OSError, ValueError): return 'UNKNOWN'
 
 
 def remove(directory):
@@ -212,6 +223,8 @@ def remove(directory):
             value = dict(value, phase='revoking', enabled=False, revision=value['revision']+1)
             commit(directory, value)
         else: publish(directory, value)
+        ledger.require(trigger_phase(directory, value) in ('absent', 'removed'),
+                       'remove the optional host trigger before removing its native entry')
         resource_directory = value['resource']['directory']
         with resources.exclusive(resource_directory) as resource_directory:
             current = resources.load(resource_directory)

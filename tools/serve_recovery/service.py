@@ -307,6 +307,9 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
 def main(argv=None, *, package=None, digest=None, workspace=None):
     os.umask(0o077)
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ['host-systemd']:
+        from tools.serve_recovery import host_systemd
+        return host_systemd.main(argv[1:])
     if argv[:1] == ['host-entry']:
         from tools.serve_recovery import host_install
         return host_install.main(argv[1:])

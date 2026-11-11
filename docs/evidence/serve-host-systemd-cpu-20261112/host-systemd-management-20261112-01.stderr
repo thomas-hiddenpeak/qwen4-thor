@@ -1,0 +1,146 @@
+test_render_is_optional_and_real_systemd_parser_accepts_owned_units (tools.serve_recovery.test_host_systemd.AdapterTests.test_render_is_optional_and_real_systemd_parser_accepts_owned_units) ... ERROR
+test_explicit_registration_and_enablement_leave_model_intent_unchanged (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_registration_and_enablement_leave_model_intent_unchanged) ... ERROR
+test_native_entry_without_optional_registration_never_calls_manager (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_without_optional_registration_never_calls_manager) ... ERROR
+test_first_private_write_loss_cannot_create_units_and_resumes_original_selection (tools.serve_recovery.test_host_systemd.AdapterTests.test_first_private_write_loss_cannot_create_units_and_resumes_original_selection) ... ERROR
+test_partial_unit_copy_resumes_without_replacing_first_published_file (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_copy_resumes_without_replacing_first_published_file) ... ERROR
+test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer (tools.serve_recovery.test_host_systemd.AdapterTests.test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer) ... ERROR
+test_missing_published_history_stays_unknown_even_after_unit_removal (tools.serve_recovery.test_host_systemd.AdapterTests.test_missing_published_history_stays_unknown_even_after_unit_removal) ... ERROR
+test_foreign_same_name_unit_cannot_be_claimed_or_overwritten (tools.serve_recovery.test_host_systemd.AdapterTests.test_foreign_same_name_unit_cannot_be_claimed_or_overwritten) ... ERROR
+test_changed_unit_or_loaded_override_cannot_enable_or_be_removed (tools.serve_recovery.test_host_systemd.AdapterTests.test_changed_unit_or_loaded_override_cannot_enable_or_be_removed) ... ERROR
+test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart (tools.serve_recovery.test_host_systemd.AdapterTests.test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart) ... ERROR
+test_active_helper_delays_removal_without_stopping_native_core (tools.serve_recovery.test_host_systemd.AdapterTests.test_active_helper_delays_removal_without_stopping_native_core) ... ERROR
+test_partial_unit_unlink_resumes_with_original_binding (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_unlink_resumes_with_original_binding) ... ERROR
+test_explicit_repair_restores_only_missing_exact_owned_unit (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_repair_restores_only_missing_exact_owned_unit) ... ERROR
+test_native_entry_uninstall_requires_trigger_removal_and_preserves_history (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_uninstall_requires_trigger_removal_and_preserves_history) ... ERROR
+test_ensure_adopts_live_native_core_after_outer_death_without_model_restart (tools.serve_recovery.test_host_ensure.NativeEnsureTests.test_ensure_adopts_live_native_core_after_outer_death_without_model_restart) ... ok
+
+======================================================================
+ERROR: test_render_is_optional_and_real_systemd_parser_accepts_owned_units (tools.serve_recovery.test_host_systemd.AdapterTests.test_render_is_optional_and_real_systemd_parser_accepts_owned_units)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_explicit_registration_and_enablement_leave_model_intent_unchanged (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_registration_and_enablement_leave_model_intent_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_native_entry_without_optional_registration_never_calls_manager (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_without_optional_registration_never_calls_manager)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_first_private_write_loss_cannot_create_units_and_resumes_original_selection (tools.serve_recovery.test_host_systemd.AdapterTests.test_first_private_write_loss_cannot_create_units_and_resumes_original_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_partial_unit_copy_resumes_without_replacing_first_published_file (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_copy_resumes_without_replacing_first_published_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer (tools.serve_recovery.test_host_systemd.AdapterTests.test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_missing_published_history_stays_unknown_even_after_unit_removal (tools.serve_recovery.test_host_systemd.AdapterTests.test_missing_published_history_stays_unknown_even_after_unit_removal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_foreign_same_name_unit_cannot_be_claimed_or_overwritten (tools.serve_recovery.test_host_systemd.AdapterTests.test_foreign_same_name_unit_cannot_be_claimed_or_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_changed_unit_or_loaded_override_cannot_enable_or_be_removed (tools.serve_recovery.test_host_systemd.AdapterTests.test_changed_unit_or_loaded_override_cannot_enable_or_be_removed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart (tools.serve_recovery.test_host_systemd.AdapterTests.test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_active_helper_delays_removal_without_stopping_native_core (tools.serve_recovery.test_host_systemd.AdapterTests.test_active_helper_delays_removal_without_stopping_native_core)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_partial_unit_unlink_resumes_with_original_binding (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_unlink_resumes_with_original_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_explicit_repair_restores_only_missing_exact_owned_unit (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_repair_restores_only_missing_exact_owned_unit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+======================================================================
+ERROR: test_native_entry_uninstall_requires_trigger_removal_and_preserves_history (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_uninstall_requires_trigger_removal_and_preserves_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 67, in cleanup
+    if not root.exists(): continue
+           ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'exists'
+
+----------------------------------------------------------------------
+Ran 15 tests in 19.016s
+
+FAILED (errors=14)

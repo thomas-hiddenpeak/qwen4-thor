@@ -60,7 +60,7 @@ def probe(directory, checked):
             return dict(result, entry_owned=True, reason='entry_already_owned')
 
 
-def privileged(directory, operation, *, daemon=False):
+def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
     ledger.require(os.geteuid() == 0, 'host entry requires explicit root invocation')
     with host.exclusive(directory) as directory:
         value = host.load(directory)
@@ -70,6 +70,13 @@ def privileged(directory, operation, *, daemon=False):
         root = artifact.verify(directory, value['artifact'])
         ledger.require(root == ROOT, 'privileged entry must execute the installed protected source')
         ledger.require(host.public(directory) == value, 'host private/public authority differs')
+        if systemd_trigger:
+            from tools.serve_recovery import host_systemd
+            ledger.require(operation == 'ensure', 'systemd trigger only permits native ensure')
+            trigger = host_systemd.load(directory, value)
+            if trigger['phase'] != 'registered' or not trigger['enabled']:
+                print(json.dumps(dict(status='NO_ACTION', reason='trigger_disabled', model_actions=False)))
+                return 0
         if operation == 'ensure':
             if value['phase'] != 'ready' or not value['enabled']:
                 print(json.dumps(dict(status='NO_ACTION', reason='host_disabled', model_actions=False)))
@@ -102,10 +109,12 @@ def main(argv=None):
         operations.add_argument('--'+name, action='store_true')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--daemon', action='store_true')
+    parser.add_argument('--systemd-trigger', action='store_true')
     args = parser.parse_args(argv)
     if args.enter or args.ensure or args.stop:
         return privileged(args.directory, 'stop' if args.stop else 'ensure' if args.ensure else 'enter',
-                          daemon=args.daemon)
+                          daemon=args.daemon, systemd_trigger=args.systemd_trigger)
+    ledger.require(not args.systemd_trigger, 'systemd trigger requires privileged ensure')
     no_new_privileges(); checked = check(args.directory)
     if args.check or args.probe:
         print(json.dumps(probe(args.directory, checked) if args.probe else checked, sort_keys=True)); return 0

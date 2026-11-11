@@ -1,0 +1,333 @@
+{
+  "test": "host-systemd-management-20261112-01",
+  "attribution": "14 explicit captured domains; zero before prior accepted group, all created within failed invocation, exact fixture delegation/limits, all empty; /run fixtures already finalized",
+  "validated_before": [
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-8740e05e-2159-4c7e-99c7-cc45b6ecb3f7",
+      "inode": 224050,
+      "ctime_ns": 1794440084134059359,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-ec03907b-b6b1-4b9c-bccc-92067c70d120",
+      "inode": 223007,
+      "ctime_ns": 1794440077532787715,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-64b2af7b-b40c-4ff3-9284-d19dab62f804",
+      "inode": 223305,
+      "ctime_ns": 1794440079396619405,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-83855bfb-3314-4f04-914e-ea467b347684",
+      "inode": 222858,
+      "ctime_ns": 1794440076316189906,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-39fcc840-48a6-49b8-9e47-7ddbb426e0f4",
+      "inode": 224646,
+      "ctime_ns": 1794440088809633190,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-80516e9b-7bd2-4f40-80bd-2dcb2d1f1e4d",
+      "inode": 224348,
+      "ctime_ns": 1794440086914470736,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-c7689431-481f-44ad-9716-4b17622cda72",
+      "inode": 223156,
+      "ctime_ns": 1794440078437586392,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-5a1d996d-e2b8-43f5-ac00-f65cfa5bc432",
+      "inode": 223454,
+      "ctime_ns": 1794440080352091897,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-79088c64-3506-4f84-87fe-7908f5f60132",
+      "inode": 224497,
+      "ctime_ns": 1794440087850175765,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-4299d8fa-906f-44d7-9c63-3d8354811c37",
+      "inode": 222709,
+      "ctime_ns": 1794440075300468786,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-f4d57ba8-d9fe-4214-a277-3d23c7a6c3b0",
+      "inode": 223603,
+      "ctime_ns": 1794440081305715080,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-c335b5b9-5374-4189-8855-47ac087efd23",
+      "inode": 223752,
+      "ctime_ns": 1794440082268648887,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-dd704eed-4fad-4422-878e-3124978c645b",
+      "inode": 223901,
+      "ctime_ns": 1794440083201280387,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/q4t-resource-f4af278f-b98d-4b72-a4c3-25d20a3d6b32",
+      "inode": 224199,
+      "ctime_ns": 1794440085725149522,
+      "roles": {
+        "root": {
+          "memory.high": "max",
+          "memory.max": "max",
+          "pids.max": "max"
+        },
+        "outer": {
+          "memory.high": "402653184",
+          "memory.max": "536870912",
+          "pids.max": "64"
+        },
+        "service": {
+          "memory.high": "33554432",
+          "memory.max": "67108864",
+          "pids.max": "32"
+        }
+      }
+    }
+  ],
+  "removed": [
+    "/sys/fs/cgroup/q4t-resource-8740e05e-2159-4c7e-99c7-cc45b6ecb3f7",
+    "/sys/fs/cgroup/q4t-resource-ec03907b-b6b1-4b9c-bccc-92067c70d120",
+    "/sys/fs/cgroup/q4t-resource-64b2af7b-b40c-4ff3-9284-d19dab62f804",
+    "/sys/fs/cgroup/q4t-resource-83855bfb-3314-4f04-914e-ea467b347684",
+    "/sys/fs/cgroup/q4t-resource-39fcc840-48a6-49b8-9e47-7ddbb426e0f4",
+    "/sys/fs/cgroup/q4t-resource-80516e9b-7bd2-4f40-80bd-2dcb2d1f1e4d",
+    "/sys/fs/cgroup/q4t-resource-c7689431-481f-44ad-9716-4b17622cda72",
+    "/sys/fs/cgroup/q4t-resource-5a1d996d-e2b8-43f5-ac00-f65cfa5bc432",
+    "/sys/fs/cgroup/q4t-resource-79088c64-3506-4f84-87fe-7908f5f60132",
+    "/sys/fs/cgroup/q4t-resource-4299d8fa-906f-44d7-9c63-3d8354811c37",
+    "/sys/fs/cgroup/q4t-resource-f4d57ba8-d9fe-4214-a277-3d23c7a6c3b0",
+    "/sys/fs/cgroup/q4t-resource-c335b5b9-5374-4189-8855-47ac087efd23",
+    "/sys/fs/cgroup/q4t-resource-dd704eed-4fad-4422-878e-3124978c645b",
+    "/sys/fs/cgroup/q4t-resource-f4af278f-b98d-4b72-a4c3-25d20a3d6b32"
+  ],
+  "signals_sent": 0,
+  "remaining_captured": [],
+  "remaining_resource_domains": []
+}
