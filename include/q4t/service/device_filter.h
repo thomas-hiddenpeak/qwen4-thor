@@ -48,6 +48,10 @@ class DeviceFilter {
                      int allowed_cgroup,
                      const std::vector<DeviceNumber>& devices,
                      const DeviceFilterIdentity& expected);
+  // For a nonprivileged Guardian after checking a root-issued admission.
+  // Takes private duplicates and never trusts a bare numeric FD as identity.
+  Status AdoptInherited(int link, int program,
+                        const DeviceFilterIdentity& expected);
   Status RemovePin(const std::string& path) const;
   Status Verify() const;
   const DeviceFilterIdentity& Identity() const { return identity_; }

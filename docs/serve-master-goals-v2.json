@@ -1792,10 +1792,11 @@
       "evidence": [
         "evidence/serve-device-filter-cpu-20261112/README.md",
         "evidence/serve-device-custody-cpu-20261112/README.md",
-        "evidence/serve-device-inventory-cpu-20261112/README.md"
+        "evidence/serve-device-inventory-cpu-20261112/README.md",
+        "evidence/serve-device-admission-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Native rule, durable custody, whole-character-major coverage and bounded kernel/module inventory implemented with targeted CPU evidence. Actual host metadata-width defect repaired; host reports outstanding kernel references, never authorization. Complete host deployment, initial qualification, persistent cold probe budget, Guardian integration and real business remain in progress. Default rev64 unchanged.",
+      "development_status": "Native filtering/custody/inventory and root-issued one-use admission primitives CPU verified. New 10 kernel checks pass, no GPU or host fence. Full host qualification, deployment budget/entry and Guardian/controller integration remain implementing; actual host still busy. Default rev64 unchanged; continue all tasks.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

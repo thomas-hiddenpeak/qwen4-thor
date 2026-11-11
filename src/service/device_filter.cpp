@@ -389,4 +389,20 @@ Status DeviceFilter::RemovePin(const std::string& path) const {
     return Error("remove owned device filter pin");
   return {};
 }
+
+Status DeviceFilter::AdoptInherited(int link, int program,
+                                   const DeviceFilterIdentity& expected) {
+  if (link_.Get() >= 0 || program_.Get() >= 0)
+    return Status::Fail("device filter already attached");
+  DeviceFilter candidate;
+  candidate.link_.Reset(fcntl(link, F_DUPFD_CLOEXEC, 3));
+  candidate.program_.Reset(fcntl(program, F_DUPFD_CLOEXEC, 3));
+  candidate.identity_ = expected;
+  auto status = candidate.Verify();
+  if (!status.ok()) return status;
+  link_ = std::move(candidate.link_);
+  program_ = std::move(candidate.program_);
+  identity_ = expected;
+  return {};
+}
 }  // namespace q4t::service

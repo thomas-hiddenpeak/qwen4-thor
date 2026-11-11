@@ -1,0 +1,11 @@
+[PASS] device_filter_unprivileged_client_cannot_join_allowed_group
+[PASS] device_filter_pin_survives_real_creator_exit_and_reopens
+[PASS] device_filter_adoption_verifies_code_and_retained_identity
+[PASS] device_admission_once_across_processes_and_inherited_filter
+[PASS] device_admission_bad_binding_and_expiry_do_not_spend
+[PASS] device_admission_wrong_group_and_privilege_do_not_spend
+[PASS] device_admission_copied_receipt_or_unprivileged_token_is_not_authority
+[PASS] device_admission_requires_actual_continuous_lease
+[PASS] device_admission_rejects_replaced_kernel_policy
+[PASS] device_admission_rejects_invalid_issuance_without_outputs
+10 tests, 10 passed, 0 failed, 0 skipped

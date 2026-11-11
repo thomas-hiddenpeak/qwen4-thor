@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_device_filter_tests",
+    "device_admission_once_across_processes_and_inherited_filter",
+    "device_admission_bad_binding_and_expiry_do_not_spend",
+    "device_admission_wrong_group_and_privilege_do_not_spend",
+    "device_admission_copied_receipt_or_unprivileged_token_is_not_authority",
+    "device_admission_requires_actual_continuous_lease",
+    "device_admission_rejects_replaced_kernel_policy",
+    "device_admission_rejects_invalid_issuance_without_outputs",
+    "device_filter_pin_survives_real_creator_exit_and_reopens",
+    "device_filter_adoption_verifies_code_and_retained_identity",
+    "device_filter_unprivileged_client_cannot_join_allowed_group"
+  ],
+  "exit_code": 0,
+  "seconds": 0.1316095059737563,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}
