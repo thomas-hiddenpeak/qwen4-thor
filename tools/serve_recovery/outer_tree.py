@@ -50,6 +50,7 @@ class Tree:
         self.instance = None
         self.instance_custody = None
         self.attempt = None
+        self.dispatch_attempted = False
 
     def local(self):
         ledger.require(os.getpid() == self.owner_pid and
@@ -82,7 +83,19 @@ class Tree:
         return dict(supervisor=custody['owner'], instance_token=custody['token'],
                     tree_scope=self.scope_id)
 
-    def launch(self, command, *, env, pass_fds=(), instance=None, attempt=None):
+    def reserve(self, instance, attempt):
+        self.local()
+        ledger.require(self.entered and self.root is None and self.attempt is None and
+            not self.dispatch_attempted and no_children(), 'outer custody is already reserved')
+        ledger.require(type(instance) is outer_instance.Instance, 'actual instance owner required')
+        outer_policy.pending_valid(attempt)
+        ledger.require(attempt['owner'] is None and attempt['boot_id'] == self.boot_id and
+            attempt['custody'] == self.binding(instance), 'outer intent lacks original custody')
+        self.instance_custody = instance.custody()
+        self.instance = instance
+        self.attempt = deepcopy(attempt)
+
+    def launch(self, command, *, env, pass_fds=(), instance=None, attempt=None, stdio=subprocess.DEVNULL):
         self.local()
         ledger.require(self.entered and self.root is None and no_children(),
                        'outer tree can dispatch only one owned root')
@@ -92,17 +105,15 @@ class Tree:
             'invalid bounded outer command')
         ledger.require((instance is None) == (attempt is None), 'partial outer custody binding')
         if instance is not None:
-            ledger.require(type(instance) is outer_instance.Instance, 'actual instance owner required')
-            outer_policy.pending_valid(attempt)
-            ledger.require(attempt['owner'] is None and attempt['boot_id'] == self.boot_id,
-                           'outer attempt was already dispatched or boot changed')
-            ledger.require(attempt['custody'] == self.binding(instance),
-                           'outer dispatch lacks its original durable custody')
-            self.instance_custody = instance.custody()
-            self.instance = instance
-            self.attempt = deepcopy(attempt)
+            if self.attempt is None: self.reserve(instance, attempt)
+            else:
+                ledger.require(self.instance is instance and self.attempt == attempt and
+                    self.instance_custody == instance.custody() and
+                    attempt['custody'] == self.binding(instance), 'reserved outer custody changed')
+        ledger.require(not self.dispatch_attempted, 'outer dispatch was already attempted')
+        self.dispatch_attempted = True
         self.root = subprocess.Popen(command, stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            stdout=stdio, stderr=stdio,
             start_new_session=True, close_fds=True, env=env, pass_fds=pass_fds)
         # It is our unreaped direct child: its PID cannot recycle before poll.
         self.root_identity = dict(pid=self.root.pid,
@@ -175,13 +186,14 @@ class Tree:
                 sent.add(key)
             finally: os.close(fd)
 
-    def drain(self, *, term_seconds=30, kill_seconds=5):
+    def drain(self, *, term_seconds=30, kill_seconds=5, tick=None):
         self.local()
         ledger.require(self.entered and self.root is not None and
             0 <= term_seconds <= 30 and 0 < kill_seconds <= 5,
             'invalid outer cleanup bound')
         started = time.monotonic(); sent = set()
         while True:
+            if tick is not None: tick()
             if self.reap(): return self.witness(self.root_identity)
             elapsed = time.monotonic()-started
             if elapsed >= term_seconds+kill_seconds:

@@ -1,0 +1,6 @@
+test_operator_stop_between_roots_prevents_the_next_start (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_operator_stop_between_roots_prevents_the_next_start) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.247s
+
+OK

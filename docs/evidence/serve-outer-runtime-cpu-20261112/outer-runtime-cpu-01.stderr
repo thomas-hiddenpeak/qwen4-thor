@@ -1,0 +1,29 @@
+test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown) ... ok
+test_failed_fork_and_lost_charge_receipt_retire_only_local_unstarted_attempt (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_failed_fork_and_lost_charge_receipt_retire_only_local_unstarted_attempt) ... ok
+test_lost_spawn_receipt_does_not_signal_or_duplicate_the_healthy_root (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_lost_spawn_receipt_does_not_signal_or_duplicate_the_healthy_root) ... ok
+test_observation_timeout_only_degrades_then_recovers_same_core (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_observation_timeout_only_degrades_then_recovers_same_core) ... ok
+test_operator_stop_between_roots_prevents_the_next_start (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_operator_stop_between_roots_prevents_the_next_start) ... ERROR
+test_outer_loop_exception_leaves_healthy_guardian_running_without_stop_intent (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_outer_loop_exception_leaves_healthy_guardian_running_without_stop_intent) ... ok
+test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance) ... ok
+test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu) ... ok
+test_stop_between_preflight_and_actual_guardian_dispatch_wins (tools.serve_recovery.test_resume.ResumeTests.test_stop_between_preflight_and_actual_guardian_dispatch_wins) ... ok
+test_resume_stopped_never_acquires_gpu_or_creates_a_run (tools.serve_recovery.test_resume.ResumeTests.test_resume_stopped_never_acquires_gpu_or_creates_a_run) ... ok
+test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling (tools.serve_recovery.test_outer_tree.TreeTests.test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling) ... ok
+test_timeout_retains_custody_until_later_actual_cleanup (tools.serve_recovery.test_outer_tree.TreeTests.test_timeout_retains_custody_until_later_actual_cleanup) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+
+======================================================================
+ERROR: test_operator_stop_between_roots_prevents_the_next_start (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_operator_stop_between_roots_prevents_the_next_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_outer_runtime.py", line 179, in test_operator_stop_between_roots_prevents_the_next_start
+    self.wait(waiting)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_outer_runtime.py", line 111, in wait
+    raise TimeoutError('bounded CPU outer scenario did not reach expected state')
+TimeoutError: bounded CPU outer scenario did not reach expected state
+
+----------------------------------------------------------------------
+Ran 14 tests in 57.558s
+
+FAILED (errors=1)
