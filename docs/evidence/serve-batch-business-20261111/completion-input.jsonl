@@ -1,0 +1,1 @@
+{"custom_id":"completion-0","method":"POST","url":"/v1/completions","body":{"model":"qwen3.8-flash-next","temperature":0,"max_tokens":32,"prompt":"<|im_start|>user\nCompute 17 + 25. Reply only with the decimal number.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"}}

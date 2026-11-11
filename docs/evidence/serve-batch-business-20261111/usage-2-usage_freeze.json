@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "error": "",
+  "usage": {
+    "recovered": true,
+    "frozen": true,
+    "receipt_sha256": "366faf3062649dcfc129a3fb3d0b3490373432ac4d741f693d80ca7dfdd0ac3e",
+    "snapshot": {
+      "version": 2,
+      "captured_ns": "2574611742601163",
+      "policy_revision": "0",
+      "policy_sha256": "9aa003de15af6dfaf17caf84dbc6a743e25a3cb04eaa472d266a67f11dd12533",
+      "clients": [
+        {
+          "id": "encryption-test",
+          "window_started": true,
+          "window_ns": "2574565186621652",
+          "requests": "1",
+          "tokens": "501",
+          "rpm_rejected": "0",
+          "tpm_rejected": "0",
+          "admitted": "1",
+          "settled_tokens": "501",
+          "batch": {
+            "window_started": true,
+            "window_ns": "2574560100241340",
+            "requests": "7",
+            "tokens": "855",
+            "rpm_rejected": "0",
+            "tpm_rejected": "0",
+            "admitted": "7",
+            "settled_tokens": "855"
+          }
+        }
+      ]
+    }
+  }
+}

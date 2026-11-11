@@ -1,0 +1,10 @@
+{
+  "status": "PASS_BATCH_BUSINESS_AND_COMPATIBLE_ROLLBACK",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 166
+  },
+  "seconds": 99.29975965013728,
+  "binary_sha256": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18"
+}

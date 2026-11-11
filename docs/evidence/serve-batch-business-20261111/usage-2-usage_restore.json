@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "error": "",
+  "usage": {
+    "recovered": true,
+    "frozen": false,
+    "receipt_sha256": "366faf3062649dcfc129a3fb3d0b3490373432ac4d741f693d80ca7dfdd0ac3e",
+    "snapshot": null
+  }
+}

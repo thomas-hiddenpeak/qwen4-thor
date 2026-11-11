@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 original background terminal/actual failed work usage, finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business and compatible rollback/default, A09.7/8 and all master tasks.",
+      "next": "Compatible Batch format/quota rollback/default delivery; then A09.7 all eight endpoint backends with A10, A09.8 and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1066,8 +1066,7 @@
       "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
-        "Verify available failed/cancelled native usage during the combined actual model business acceptance; capture and original background terminal/drain are CPU accepted. Preserve unknown unsaved process-death tails.",
-        "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed."
+        "Seal compatible fc69 reader and accepted candidate, preserve current policy/state and qualify default delivery."
       ],
       "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
       "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage now have separate targeted CPU acceptance; actual model business/release still required.",
@@ -1085,7 +1084,8 @@
       "application_owner_recovery_component_evidence": "evidence/serve-application-owner-cpu-20261111/README.md",
       "batch_business_plan": "SERVE_BATCH_BUSINESS_2026-11-11.md",
       "batch_business_preparation_evidence": "evidence/serve-batch-business-preparation-20261111/README.md",
-      "batch_business_status": "Preparation CPU4distinct accepted; independent clean fc69 rollback built with compatible state/quota/parent/output-failure sources. Actual2start/8generation business and delivery still required."
+      "batch_business_status": "Actual2starts/8generations/8modelsteps first-round accepted in99.300s under strict lease; native tool SSE, failed/cancelled actual usage, original cross-version receipts and both unexpired minute windows preserved. Compatible package/default delivery still required.",
+      "batch_business_evidence": "evidence/serve-batch-business-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1672,5 +1672,5 @@
     }
   ],
   "next_task": "继续后台Response原终态/实际失败用量、永久容量与辅助所有者恢复，再实际模型业务/兼容回退交付；全部任务继续。",
-  "next": "A09.6 finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business including failed/cancelled usage and compatible rollback/default, A09.7/8 and all master tasks."
+  "next": "Deliver accepted Batch candidate and compatible rollback, then A09.7/A10 and all remaining master tasks."
 }
