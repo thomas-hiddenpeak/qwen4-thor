@@ -1,0 +1,10 @@
+{
+  "label": "candidate-legacy-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/profile-release-01/bundle/bin/q4t",
+    "service",
+    "check"
+  ],
+  "returncode": 0,
+  "seconds": 0.487310484983027
+}

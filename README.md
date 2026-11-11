@@ -142,6 +142,11 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 TLS和外部前置按部署需要选择；[实际交付证据](docs/evidence/serve-access-delivery-20261109/README.md)
 与其余未完成总任务分别记录。
 
+受管默认包已支持[实测轻量配置的自动降级与恢复](docs/SERVE_ADAPTIVE_PROFILES_2026-11-11.md)：
+可靠RAM压力下关闭MTP，保持原上下文、工具、schema和专用嵌入能力；
+恢复需持续余量、冷却及持久预算。`service profiles-status`查询当前选择。
+NVML/日志/指标失能不触发切档，原设备故障保护保持。
+
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行

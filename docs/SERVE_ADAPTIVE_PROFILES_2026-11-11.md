@@ -57,7 +57,7 @@
 
 当前资格合同6项、内存观察隔离14项、持久意图/独立I/O 18项及
 controller/Guardian/入口接线19项不同CPU已通过，内存隔离已交付。
-自动切换源码与真实两档资格/受管切换已通过；默认启用交付待完成。
+自动切换源码、真实两档资格/受管切换及rev56默认启用交付已完成。
 不将本文或现有手动`--no-mtp`称为R05完成。长稳实跑仍由用户负责。
 
 2026-11-11。R05配置资格6项与内存观察隔离14项CPU首次通过，真实CPU子进程在观察失能后同PID保持，可靠低内存/启动拒绝/清理保护仍过。已修运行时UNKNOWN停模遗漏；默认包尚未包含该修复。继续先交付该控制层修复，再实现持久配置选择、接线和实际主/轻量资格，0新增GPU，全部总任务继续。
@@ -71,3 +71,19 @@ controller/Guardian/入口接线19项不同CPU已通过，内存隔离已交付�
 2026-11-11。R05[真实配置资格首过](evidence/serve-adaptive-profile-qualification-20261111/README.md)：2启动/8请求/112.781秒，106次NVML正常并清理。仅关闭MTP，原256输出及应用能力保持；启动预算少9.22GiB、CUDA预留少6.07GiB（不同口径）。默认96577e45/包b2bd575a保持，继续受管自动切换/任务配额连续性及全部总目标。
 
 2026-11-11。R05[真实受管主→轻→主首过](evidence/serve-adaptive-profile-managed-20261111/README.md)：3启动/12请求/225.097秒，210 NVML正常并整树清理；真实7.75GiB压力触发，原Batch/Chat/工具/嵌入与41秒后RPM拒绝均保持，同控制树。默认保持，冻结9命令/0GPU发布默认策略，之后继续R06及全部总任务。
+
+2026-11-11。R05[可用交付完成](evidence/serve-adaptive-profile-delivery-20261111/README.md)：9命令/14.603秒/0GPU，默认引擎96577e45保持，包f312f81d/generation9bcbecc4、rev56 STOPPED，原Key/容量/账本不变。CPU包装器误报预期发布改链已据9命令及不变内容哈希复核，原件保留。继续R06已验版本回退及全部剩余总任务，未合main。
+
+## 使用与后续升级
+
+当前受管默认包已封存资格与默认策略。`./build/q4t service
+profiles-status --state "$PWD/build/service-native-state"`读取选择、待办、
+持久额度及配置，不启动模型。正常`service run/start/stop`沿用原入口。
+直接`q4t serve`不承担Guardian的自动切档职责。
+
+独立prepare通过`--recovery-profiles REGISTRY`和可选
+`--recovery-profile-policy POLICY`封存实测资格/策略；省略资格不启用
+自动切换。资格旁必须保留primary.json、light.json实际业务记录，
+只允许精确身份与配置，不允许借“轻量”减少已承诺容量或模型能力。
+新模型/版本/策略的持久资格迁移及自动旧代码回退继续R06；当前
+已经启用的状态不会因选一个缺资格旧包而默默丢失预算。

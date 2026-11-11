@@ -1,0 +1,7 @@
+{
+  "commands": 9,
+  "new_model_starts": 0,
+  "scope": "Publish exact accepted code with CPU-accepted default timing; preserve current keys/capacity/core ledger/usage, initialize one durable profile family; same qualified package retained, R06 older-version automatic fallback still pending",
+  "from_revision": 54,
+  "from_manifest": "b2bd575ace695b1fcbedc3ab965e7312be39ad14e1a9dfa1da326848a026ea60"
+}

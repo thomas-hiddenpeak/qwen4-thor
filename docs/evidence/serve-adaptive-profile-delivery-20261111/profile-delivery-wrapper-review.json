@@ -1,0 +1,9 @@
+{
+  "status": "ACCEPT_INTENDED_PUBLICATION_RETARGET",
+  "wrapper_exit_code": 3,
+  "child_exit_code": 0,
+  "explanation": "CPU wrapper wrongly applied its no-default-retarget invariant to an explicitly authorized publication. Both engine and engine metadata byte hashes stayed unchanged; only generation symlink targets moved exactly as durable publication rev56 requires. Preserve wrapper failure; do not replay successful publication.",
+  "all_nine_commands_passed": true,
+  "original_business_journals_preserved": true,
+  "new_gpu_starts": 0
+}

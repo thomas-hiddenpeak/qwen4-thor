@@ -1675,23 +1675,37 @@
     {
       "id": "R05",
       "required": true,
-      "state": "implementing",
+      "state": "delivered",
       "implementation": "已验证轻量profile及自动降级/恢复；能力与准入一致",
       "acceptance": "已验证轻量profile及自动降级/恢复；能力与准入一致",
       "depends_on": [
         "R02",
         "R03"
       ],
-      "evidence": [],
-      "release": null,
+      "evidence": [
+        "evidence/serve-adaptive-profile-qualification-20261111/acceptance.json",
+        "evidence/serve-adaptive-profile-managed-20261111/acceptance-final.json",
+        "evidence/serve-adaptive-profile-delivery-20261111/result.json"
+      ],
+      "release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "manifest_sha256": "f312f81dea8e25c4a4509290c6d84414b9235547f3ff809da130faeb588c0d92",
+        "service_release_sha256": "0d49cdb7e06f1f5de995d7fbf9f10a632e0b1da578002e2fce6531130949df4f",
+        "generation_sha256": "9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
-      "development_status": "Actual primary/light qualification and managed automatic primary/light/primary accepted, 3 starts/12 requests/225.097s, original Batch/Chat/tool/native embedding and RPM continuity, 210 NVML all OK and cleanup. Default policy delivery remains.",
+      "development_status": "Qualified primary/light and real automatic managed switching delivered in rev56. R06 migration/older-version rollback and all remaining master tasks continue.",
       "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
       "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md",
       "state_evidence": "evidence/serve-adaptive-profile-state-20261111/README.md",
       "integration_evidence": "evidence/serve-adaptive-profile-integration-20261111/README.md",
       "qualification_evidence": "evidence/serve-adaptive-profile-qualification-20261111/README.md",
-      "managed_business_evidence": "evidence/serve-adaptive-profile-managed-20261111/README.md"
+      "managed_business_evidence": "evidence/serve-adaptive-profile-managed-20261111/README.md",
+      "remaining": []
     },
     {
       "id": "R06",
@@ -1804,6 +1818,6 @@
       "release": null
     }
   ],
-  "next_task": "R05 qualified light profiles and bounded automatic degradation/recovery, then all remaining media/tool/reliability/master tasks",
+  "next_task": "R06 qualified older-version fallback, profile qualification migration and persistent anti-oscillation, then remaining R07-R10 and A/Q/G00 tasks",
   "next": "Resolve observed0/2 retrieval quality with a suitable native backend and real project retrieval evidence, without treating interface delivery as completion; continue all required goals."
 }

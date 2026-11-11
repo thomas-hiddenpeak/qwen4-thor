@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。R05[可用交付完成](evidence/serve-adaptive-profile-delivery-20261111/README.md)：9命令/14.603秒/0GPU，默认引擎96577e45保持，包f312f81d/generation9bcbecc4、rev56 STOPPED，原Key/容量/账本不变。CPU包装器误报预期发布改链已据9命令及不变内容哈希复核，原件保留。继续R06已验版本回退及全部剩余总任务，未合main。
+
 2026-11-11。R05[真实受管主→轻→主首过](evidence/serve-adaptive-profile-managed-20261111/README.md)：3启动/12请求/225.097秒，210 NVML正常并整树清理；真实7.75GiB压力触发，原Batch/Chat/工具/嵌入与41秒后RPM拒绝均保持，同控制树。默认保持，冻结9命令/0GPU发布默认策略，之后继续R06及全部总任务。
 
 2026-11-11。R05受管切换驱动[3 CPU首过](evidence/serve-adaptive-profile-managed-driver-20261111/README.md)，真实辅助进程EOF/分配触顶释放、封包源码导入通过，0GPU。开始冻结同租约3启动/12请求/900秒真实RAM自动主→轻→主及原任务/配额验证；默认保持，全部总任务继续。
