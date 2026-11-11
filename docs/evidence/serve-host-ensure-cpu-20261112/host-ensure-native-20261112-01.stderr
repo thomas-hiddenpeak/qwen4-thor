@@ -1,0 +1,6 @@
+test_ensure_adopts_live_native_core_after_outer_death_without_model_restart (tools.serve_recovery.test_host_ensure.NativeEnsureTests.test_ensure_adopts_live_native_core_after_outer_death_without_model_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 4.534s
+
+OK

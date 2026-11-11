@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import deployment, host_artifact as artifact, host_install as host
 from tools.serve_recovery import ledger, lifecycle, outer_manager, outer_store
 from tools.serve_recovery import resource_launch, service
+from tools.serve_host import native
 
 
 def no_new_privileges():
@@ -32,16 +33,51 @@ def check(directory):
                 manifest_sha256=chosen['manifest_sha256'], outer_enabled=policy['enabled'])
 
 
+def probe(directory, checked):
+    """Read-only intent plus an actual entry lock; never a business health claim."""
+    value = host.public(directory); state = Path(value['state'])
+    result = dict(checked, resume_needed=False, entry_owned=False, model_actions=False)
+    if value['phase'] != 'ready' or not value['enabled']:
+        return dict(result, reason='host_disabled')
+    if not checked['outer_enabled']: return dict(result, reason='outer_disabled')
+    with deployment.claim(state, shared=True):
+        chosen = value['artifact']
+        desc = lifecycle.selected_state(state, chosen['package'], chosen['manifest_sha256'])
+        try:
+            with deployment.claim(state, name='outer-runtime.lock'):
+                policy = lifecycle.read_family(state, desc, outer_store.Store)
+                core = native.read_ledger(dict(state=str(state), descriptor=desc))
+                # A pending old tree still needs original-domain reconciliation,
+                # even when STOPPED or protected; resume cannot activate its model.
+                if policy['pending'] is not None:
+                    return dict(result, resume_needed=True, reason='original_tree_reconciliation')
+                ledger.require(not core['active'], 'unbound core roles require explicit reconciliation')
+                if core['desired'] != 'RUNNING': return dict(result, reason='operator_stopped')
+                if core['quarantined'] or policy['protected']:
+                    return dict(result, reason='protected')
+                return dict(result, resume_needed=True, reason='entry_absent')
+        except BlockingIOError:
+            return dict(result, entry_owned=True, reason='entry_already_owned')
+
+
 def privileged(directory, operation, *, daemon=False):
     ledger.require(os.geteuid() == 0, 'host entry requires explicit root invocation')
     with host.exclusive(directory) as directory:
         value = host.load(directory)
         ledger.require(value['phase'] in ('ready', 'revoking') and
-            (operation == 'stop' or value['phase'] == 'ready' and value['enabled']),
+            (operation in ('stop', 'ensure') or value['phase'] == 'ready' and value['enabled']),
             'host entry is disabled or not ready')
         root = artifact.verify(directory, value['artifact'])
         ledger.require(root == ROOT, 'privileged entry must execute the installed protected source')
         ledger.require(host.public(directory) == value, 'host private/public authority differs')
+        if operation == 'ensure':
+            if value['phase'] != 'ready' or not value['enabled']:
+                print(json.dumps(dict(status='NO_ACTION', reason='host_disabled', model_actions=False)))
+                return 0
+            checked = host.check_runtime(directory, value, probe=True)
+            if not checked['resume_needed']:
+                print(json.dumps(dict(checked, status='NO_ACTION'), sort_keys=True)); return 0
+            operation = 'enter'; daemon = True
         command = [value['artifact']['python']['path'], '-I', '-B',
             str(root/'tools/serve_recovery/host_entry.py'),
             '--runtime-stop' if operation == 'stop' else '--runtime', '--directory', str(directory)]
@@ -62,16 +98,17 @@ def main(argv=None):
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     operations = parser.add_mutually_exclusive_group(required=True)
-    for name in ('check', 'enter', 'stop', 'runtime', 'runtime-stop'):
+    for name in ('check', 'probe', 'enter', 'ensure', 'stop', 'runtime', 'runtime-stop'):
         operations.add_argument('--'+name, action='store_true')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--daemon', action='store_true')
     args = parser.parse_args(argv)
-    if args.enter or args.stop:
-        return privileged(args.directory, 'stop' if args.stop else 'enter', daemon=args.daemon)
+    if args.enter or args.ensure or args.stop:
+        return privileged(args.directory, 'stop' if args.stop else 'ensure' if args.ensure else 'enter',
+                          daemon=args.daemon)
     no_new_privileges(); checked = check(args.directory)
-    if args.check:
-        print(json.dumps(checked, sort_keys=True)); return 0
+    if args.check or args.probe:
+        print(json.dumps(probe(args.directory, checked) if args.probe else checked, sort_keys=True)); return 0
     value = host.public(args.directory); chosen = value['artifact']; state = Path(value['state'])
     if args.runtime_stop:
         return service.main(['stop', '--state', str(state)],

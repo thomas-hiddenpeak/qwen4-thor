@@ -100,12 +100,12 @@ def environment():
     return dict(PATH='/usr/bin:/bin', LANG='C.UTF-8', PYTHONDONTWRITEBYTECODE='1')
 
 
-def check_runtime(directory, value):
+def check_runtime(directory, value, *, probe=False):
     """Run the protected verifier after dropping UID, never import package code."""
     artifact.verify(directory, value['artifact'])
     script = Path(directory)/'source/tools/serve_recovery/host_entry.py'
     result = subprocess.run([value['artifact']['python']['path'], '-I', '-B', str(script),
-        '--check', '--directory', str(directory)], user=value['runtime_uid'],
+        '--probe' if probe else '--check', '--directory', str(directory)], user=value['runtime_uid'],
         group=value['runtime_gid'], extra_groups=[], env=environment(),
         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
     ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
@@ -115,6 +115,10 @@ def check_runtime(directory, value):
         checked.get('manifest_sha256') == value['artifact']['manifest_sha256'] and
         checked.get('runtime_uid') == value['runtime_uid'] and checked.get('checked') is True,
         'host runtime verification receipt differs')
+    if probe:
+        ledger.require(type(checked.get('resume_needed')) is bool and
+            type(checked.get('entry_owned')) is bool and checked.get('model_actions') is False,
+            'host entry probe receipt differs')
     return checked
 
 
@@ -228,11 +232,12 @@ def remove(directory):
 
 
 def entry(directory, *, operation='enter', daemon=False):
-    ledger.require(os.geteuid() == 0 and operation in ('enter', 'stop'), 'explicit privileged host entry required')
+    ledger.require(os.geteuid() == 0 and operation in ('enter', 'ensure', 'stop'),
+                   'explicit privileged host entry required')
     with exclusive(directory) as directory:
         value = load(directory)
         ledger.require(value['phase'] in ('ready', 'revoking') and
-            (operation == 'stop' or value['phase'] == 'ready' and value['enabled']),
+            (operation in ('stop', 'ensure') or value['phase'] == 'ready' and value['enabled']),
             'host entry is disabled or not ready')
         root = artifact.verify(directory, value['artifact'])
         publish(directory, value)
@@ -248,7 +253,7 @@ def main(argv=None):
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='operation', required=True)
-    for operation in ('init', 'init-resume', 'status', 'enable', 'disable', 'remove', 'enter', 'stop'):
+    for operation in ('init', 'init-resume', 'status', 'enable', 'disable', 'remove', 'enter', 'ensure', 'stop'):
         command = commands.add_parser(operation)
         command.add_argument('--directory', type=Path, required=True)
         if operation == 'init':

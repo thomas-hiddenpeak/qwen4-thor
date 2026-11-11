@@ -1,0 +1,29 @@
+{
+  "status": "TARGETED_HOST_ENSURE_CPU_PASS",
+  "distinct_tests": 11,
+  "all_first_pass": true,
+  "cpu_seconds": 18.62330197915435,
+  "actual_entry_lock": true,
+  "unknown_core_never_authorizes_start": true,
+  "original_stop_disable_and_budget_preserved": true,
+  "actual_native_guardian_and_cpu_roles": true,
+  "owned_outer_sigkill": true,
+  "new_outer_adopts_same_live_guardian": true,
+  "guardian_controller_gateway_model_pids_unchanged": true,
+  "outer_policy_and_start_charges_unchanged": true,
+  "synthetic_engine_verifier_in_test_package_only": true,
+  "private_cpu_lease": true,
+  "model_gpu_starts": 0,
+  "host_startup_configuration_changed": false,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "owned_test_domains_remaining": [],
+  "source_sha256": {
+    "tools/serve_recovery/host_install.py": "6831e509a2fa43a067e0c6c47e3e805060f09f08698158278a1e3e4a8f99480d",
+    "tools/serve_recovery/host_entry.py": "39dd4f6081d90665b5629d9a82a20373677e7bb907ad1fb08b91c90eab4a41fe",
+    "tools/serve_recovery/test_host_install.py": "5ee8a9796ddd318ffca955690e4f1cf22179aa7bf63760c69c2689caf2ad15c5",
+    "tools/serve_recovery/test_host_ensure.py": "a64b4221641a1f052ac1b7ffcb4fa80d7ed84e11b42c5d8e7693e974a7a5abad"
+  },
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "released": false
+}

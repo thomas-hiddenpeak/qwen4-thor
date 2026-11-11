@@ -24,11 +24,16 @@ from tools.serve_recovery import outer_manager, resource_install as resources, r
 from tools.serve_recovery import test_native_bundle, test_resource_install as fixtures
 
 
-def prepare(path):
+def prepare(path, *, native=False):
     os.environ['Q4T_TEST_OUTPUT_DIR'] = str(path)
     fixture = test_native_bundle.BundleTests(); fixture.setUp()
     fixture.base['python'] = dict(path=str(Path(sys.executable).resolve()),
                                  sha256=bundle.engine.sha(Path(sys.executable).resolve()))
+    if native:
+        shutil.copyfile(ROOT/'.q4t-work/guardian-build/q4t-guardian', fixture.guardian)
+        build = json.loads(fixture.build.read_text())
+        build['guardian_sha256'] = bundle.engine.sha(fixture.guardian)
+        fixture.save(fixture.build, build)
     receipt = fixture.prepare(); package = Path(receipt['package'])
     injection = '''\n# Explicit CPU fixture: verification substitution only after UID drop.\nif os.geteuid() != 0:\n    import json\n    from tools.serve_recovery import bundle as cpu_bundle, service as cpu_service\n    cpu_bundle.engine.verify = lambda *_a, **_kw: json.loads(%r)\n    def cpu_no_gpu(*_a, **_kw): raise AssertionError('GPU forbidden in host CPU fixture')\n    cpu_service.acquire_lease = cpu_no_gpu\n\n''' % json.dumps(fixture.base)
     manifest = json.loads((package/'manifest.json').read_text())
@@ -45,6 +50,7 @@ def prepare(path):
     outer_manager.configure(state, package, digest, enabled=True)
     desc = service.descriptor(state, package, digest)
     result = dict(package=str(package), digest=digest, state=str(state), service_id=desc['service_id'])
+    (path/'cpu-engine.json').write_text(json.dumps(fixture.base))
     (path/'fixture.json').write_text(json.dumps(result)); print(json.dumps(result), flush=True)
     os._exit(0)  # Parent owns final fixture deletion; no background process.
 
@@ -59,6 +65,21 @@ def change(path, mode):
         from tools.serve_recovery import access_store, outer_store
         outer_store.commit_once(access_store.binding(state, value['service_id']),
                                  'configure', dict(enabled=False))
+    elif mode == 'live-prepare':
+        config = dict(state=str(state), package=value['package'], digest=value['digest'],
+            base=json.loads((path/'cpu-engine.json').read_text()), mode='simple-gateway', activate=True)
+        (path/'runtime-config.json').write_text(json.dumps(config))
+    elif mode == 'live-status':
+        from tools.serve_recovery import control
+        deadline = time.monotonic()+6
+        while time.monotonic() < deadline:
+            try:
+                status = control.request(value['service_id'], 'status', timeout=.2)
+                if status['business_ready']:
+                    print(json.dumps(status), flush=True); return
+            except (OSError, ValueError): pass
+            time.sleep(.02)
+        raise TimeoutError('owned native CPU service did not become ready')
 
 
 class HostTests(fixtures.InstallationTests):
@@ -270,7 +291,8 @@ class HostTests(fixtures.InstallationTests):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == '--helper':
-        if sys.argv[3] == 'prepare': prepare(Path(sys.argv[2]))
+        if sys.argv[3] in ('prepare', 'prepare-native'):
+            prepare(Path(sys.argv[2]), native=sys.argv[3] == 'prepare-native')
         else: change(Path(sys.argv[2]), sys.argv[3])
     elif len(sys.argv) > 1 and sys.argv[1] == '--entry':
         host.entry(Path(sys.argv[2]), operation=sys.argv[3], daemon='--daemon' in sys.argv)
