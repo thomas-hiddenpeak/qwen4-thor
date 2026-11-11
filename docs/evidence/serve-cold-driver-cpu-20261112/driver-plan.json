@@ -1,0 +1,10 @@
+{
+  "cpu_cases": 3,
+  "gpu_starts": 0,
+  "host_policy_changes": 0,
+  "scope": [
+    "exact launcher FD handoff",
+    "preinitialized state identity and quota journal path",
+    "descriptor validation never consumes capability"
+  ]
+}

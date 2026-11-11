@@ -1798,10 +1798,11 @@
         "evidence/serve-device-guardian-cpu-20261112/README.md",
         "evidence/serve-device-package-cpu-20261112/README.md",
         "evidence/serve-device-domain-cpu-20261112/README.md",
-        "evidence/serve-cold-compat-cpu-20261112/README.md"
+        "evidence/serve-cold-compat-cpu-20261112/README.md",
+        "evidence/serve-cold-driver-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks.",
+      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 9 targeted CPU passes. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {
@@ -1821,7 +1822,7 @@
         },
         {
           "id": "R07.4",
-          "state": "planned",
+          "state": "implementing",
           "title": "针对性CPU与真实冷启动业务"
         },
         {

@@ -1,0 +1,8 @@
+test_descriptor_parser_never_creates_or_consumes_a_capability (tools.serve_recovery.test_cold_acceptance.DriverTests.test_descriptor_parser_never_creates_or_consumes_a_capability) ... ok
+test_driver_hands_admission_only_to_its_own_launcher (tools.serve_recovery.test_cold_acceptance.DriverTests.test_driver_hands_admission_only_to_its_own_launcher) ... ok
+test_preinitialized_identity_and_quota_state_share_the_exact_domain_binding (tools.serve_recovery.test_cold_acceptance.DriverTests.test_preinitialized_identity_and_quota_state_share_the_exact_domain_binding) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.015s
+
+OK
