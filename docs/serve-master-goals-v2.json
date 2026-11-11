@@ -1720,11 +1720,12 @@
       "evidence": [
         "evidence/serve-version-migration-contract-20261111/README.md",
         "evidence/serve-version-migration-deployment-20261111/README.md",
-        "evidence/serve-version-profile-history-20261111/README.md"
+        "evidence/serve-version-profile-history-20261111/README.md",
+        "evidence/serve-version-state-20261111/README.md"
       ],
       "release": null,
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "R06.1 STOPPED migration and R06.2 versioned capacity history/narrow old-payload adapter CPU-verified. Original failures and targeted retries retained. Continue durable version selection, native root/payload recovery and actual business; default rev56 unchanged.",
+      "development_status": "R06.1 and R06.2 CPU-verified; version policy/private journal foundation passed 11 CPU cases. Native-root exclusive asynchronous I/O, independently observed fault authority, selected payload wiring and actual recovery remain. Default rev56 unchanged.",
       "subtasks": [
         {
           "id": "R06.1",

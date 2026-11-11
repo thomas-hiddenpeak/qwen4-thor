@@ -2074,6 +2074,8 @@
     "tools/serve_recovery/usage_policy.py": "405fef4ee1f953b12a04e40ea74c67d2d445e7a4f55a6499b0414e0c7e2f61f0",
     "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
     "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
+    "tools/serve_recovery/version_policy.py": "c3c1523aac27544af3f3d9149c275a015a040987ebb463abb2895543f28d48d6",
+    "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",

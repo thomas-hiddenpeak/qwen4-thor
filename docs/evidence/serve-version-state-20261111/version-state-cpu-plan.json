@@ -1,0 +1,17 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_version_policy",
+    "tools.serve_recovery.test_version_store"
+  ],
+  "expected_cpu_cases": 11,
+  "new_gpu_starts": 0,
+  "scope": "One durable fallback per explicit cycle; independent typed fault and stopped/auxiliary exclusions, entire new tree binding, fallback failure latch and real journal rename/fsync/missing-state faults. No native authority wiring or actual recovery claim.",
+  "sources": {
+    "tools/serve_recovery/version_policy.py": "c3c1523aac27544af3f3d9149c275a015a040987ebb463abb2895543f28d48d6",
+    "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
+    "tools/serve_recovery/test_version_policy.py": "09cd35c7d3a665639f56a25bf83f93fdbf6aa95a9f8d88bae60289b48299d8d1",
+    "tools/serve_recovery/test_version_store.py": "5d89160a53b5f5f959e11cea5e4aabda1eefb352d034ecfa63f79e50e116d8a6",
+    "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
+    "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974"
+  }
+}
