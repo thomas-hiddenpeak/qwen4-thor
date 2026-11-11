@@ -118,7 +118,7 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
-             'device_platform', 'device_domain')})
+             'device_platform', 'device_domain', 'cold_compat')})
         self.assertEqual(set(bundle.V16_SOURCES)-set(bundle.V15_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('version_runtime','version_launch')})
         self.assertEqual(set(bundle.V15_SOURCES)-set(bundle.V14_SOURCES),

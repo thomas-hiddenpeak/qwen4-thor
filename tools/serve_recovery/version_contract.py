@@ -96,8 +96,13 @@ def accepted_fallback(receipt, selected):
             ('sources_unchanged', 'owned_processes_gone', 'ports_free', 'lock_released')),
         'fallback needs retained real service business and cleanup evidence')
     if original != selected['descriptor']:
-        profile_compat.verify(original['package'], original['manifest_sha256'],
-            selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
+        try:
+            profile_compat.verify(original['package'], original['manifest_sha256'],
+                selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
+        except ValueError:
+            from tools.serve_recovery import cold_compat
+            cold_compat.verify(original['package'], original['manifest_sha256'],
+                selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
     return copy.deepcopy(receipt)
 
 
@@ -121,6 +126,10 @@ def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
         for name in ('version_journal', 'version_store', 'version_policy')),
         'version control root lacks the native isolated selection contract')
     first, second = payload(primary), payload(fallback)
+    if manifest['version'] >= 17 and 'bin/q4t-device-control' in manifest['files']:
+        from tools.serve_recovery import cold_compat
+        ledger.require(all(cold_compat.aware(item['descriptor']['package']) for item in (first, second)),
+                       'device-domain recovery requires a cold-aware retained controller')
     ledger.require(all(manifest[k] == first['manifest'][k] for k in
         ('repository', 'lock_path', 'python')), 'version recovery root authority differs')
     permit = compatible(first, second)

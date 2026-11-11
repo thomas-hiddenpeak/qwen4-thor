@@ -1797,10 +1797,11 @@
         "evidence/serve-device-management-cpu-20261112/README.md",
         "evidence/serve-device-guardian-cpu-20261112/README.md",
         "evidence/serve-device-package-cpu-20261112/README.md",
-        "evidence/serve-device-domain-cpu-20261112/README.md"
+        "evidence/serve-device-domain-cpu-20261112/README.md",
+        "evidence/serve-cold-compat-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Explicit root device-domain CLI and exact Thor OpenRM profile implemented; 20 targeted CPU cases first-pass, actual host read-only report BUSY. No host-root policy, model start or default change. Real deployment/entry, NVML-free GPU business, fallback combinations and release remain required; all master tasks continue.",
+      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

@@ -1,0 +1,10 @@
+{
+  "tools/evalscope/gpu_exclusive.py": "7cfbae4d8f6caf151aa816c1bb1a580301c329f9c31e591879ebb5b5c0e3a351",
+  "tools/evalscope/test_gpu_exclusive.py": "9657cd90ced4e47e89504a510ae22a0027c768429230bd1f1051b6bf5f18502f",
+  "tools/serve_recovery/cold_compat.py": "126c0959af0040e1304fe2d6660882248252cc59471596f17f8ad2b132304334",
+  "tools/serve_recovery/test_cold_compat.py": "eac828f5263cc063c9df28ff04d579cdc98e194ebbfe0a5d0d2c9e56a6b99370",
+  "tools/serve_recovery/bundle.py": "c8294afff8cdfccfb9f452280306c380d757b0b8b80f09aac7422798f3ffcefb",
+  "tools/serve_recovery/test_native_bundle.py": "eaf1b01b7d51155fcdb1035226e9179364604767c0c20a0ccf5cecdb88f62cc2",
+  "tools/serve_recovery/version_contract.py": "c648bde6c1f023b022af12864d7b9d2ccb3186a218c36761c7e66b7c95b56c87",
+  "tools/serve_recovery/service.py": "b47fdbac27f7fb4d4eaafc455e27bd1f530c4f4d2680d2e04deea4cc08077f4a"
+}

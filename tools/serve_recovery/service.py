@@ -327,10 +327,10 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
                  'limits-migrate', 'usage-status', 'usage-migrate',
                  'deploy', 'rollback', 'deployment-status', 'profiles-status',
-                 'version-prepare', 'version-register', 'version-status',
+                 'version-prepare', 'version-register', 'version-status', 'version-adapt',
                  'publish', 'publish-status', 'publish-resume', 'publish-rollback'):
         command = commands.add_parser(name)
-        command.add_argument('--state', type=Path, required=name != 'check')
+        command.add_argument('--state', type=Path, required=name not in ('check', 'version-adapt'))
         command.add_argument('--package', type=Path, default=package, required=package is None)
         command.add_argument('--manifest-sha256', default=digest, required=digest is None)
         if name == 'reload':
@@ -373,6 +373,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             command.add_argument('--fallback-release',type=Path,required=True)
             command.add_argument('--fallback-decision',type=Path,required=True)
             command.add_argument('--cycle-id',required=True)
+        if name == 'version-adapt':
+            command.add_argument('--output', type=Path, required=True)
         if name in ('version-prepare','version-register'):
             command.add_argument('--registration',type=Path,required=True)
         if name == 'version-register':command.add_argument('--expected-cycle')
@@ -412,6 +414,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     if args.object_store_dir is not None else {}),
                     **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
                        if getattr(args, 'object_'+k) is not None}} or None))
+        elif args.operation == 'version-adapt':
+            from tools.serve_recovery import cold_compat
+            result = cold_compat.prepare(args.package, args.manifest_sha256, args.output)
         else:
             package = args.package
             digest = args.manifest_sha256

@@ -44,6 +44,15 @@ Guardian在原预算下执行有界CUDA探测；卡住的探测不增殖，明�
 启动模型。通过后仍须做真实设备域部署/业务与可回退发行，不能据此
 结束R07或总目标。
 
+旧控制器兼容通过`q4t service version-adapt --package <旧包>
+--manifest-sha256 <旧SHA> --output <新目录>`生成独立包，只回补读取
+冷启动提示和允许向Guardian申请探测两处，不把首次启动伪装成连续
+模型恢复。原引擎和其他控制逻辑保持，可组合既有profile表示适配。
+新设备域包要求登记的回退控制器同样具备冷路径；真实v16来源及CPU
+证据见[冷路径适配](evidence/serve-cold-compat-cpu-20261112/README.md)。
+严格GPU驱动新增显式`--inherit-fd`交接根凭据，外层NVML失败仍然
+ENV_ABORT，不借内层监控降级放宽开发验证的独占规则。
+
 ## 已确认的缺口
 
 当前控制器在 NVML 不可用且没有本根控制器连续模型租约时返回
