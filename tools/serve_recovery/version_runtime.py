@@ -12,7 +12,7 @@ import uuid
 
 from tools.serve_recovery import access_store, deployment, ledger, profile_manager
 from tools.serve_recovery import profile_migration, profile_store, version_contract
-from tools.serve_recovery import version_policy, version_registration
+from tools.serve_recovery import version_policy, version_registration, version_store
 
 
 def repair_sources(binding, root, core, original):
@@ -24,9 +24,19 @@ def repair_sources(binding, root, core, original):
     """
     ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
                    'repair profile selection requires stopped authority')
-    selected = version_registration.load(binding['state_directory'], root)
-    if selected is None:
+    directory = binding['state_directory']
+    if not version_registration.present(directory):
         return [(root['package'], original)], {}
+    with version_store.open_bound(binding) as writer:
+        head = copy.deepcopy(writer.head['state']['policy'])
+    if head['registry']['root_manifest_sha256'] != root['manifest_sha256']:
+        # The durable deployment selected another control root (including a
+        # retained legacy root). Its current profile journal must match that
+        # verified deployment. A stale cycle cannot authorize its migration,
+        # but preserving that cycle must not prevent explicit repair/upgrade.
+        # Launch still requires a matching registration for version recovery.
+        return [(root['package'], original)], {}
+    selected = version_registration.for_state(directory, root, head)
     registration, state = selected['registration'], selected['state']
     first = version_contract.payload(registration['payloads']['primary']['descriptor'])
     sources = [(first['descriptor']['package'], first['manifest'])]

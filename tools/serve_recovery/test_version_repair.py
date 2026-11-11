@@ -141,5 +141,35 @@ class RepairTests(unittest.TestCase):
         self.assertNotEqual(value['profiles'],self.profile_before['profiles'])
         self.assertIn(value['pending']['request_id'],value['history_bindings'])
 
+    def test_legacy_root_rollback_then_forward_keeps_consumed_cycle_and_current_journal(self):
+        self.fallback()
+        old=self.base.fallback
+        deployment.switch(self.state,old['package'],old['manifest_sha256'],
+            expected=self.base.root['manifest_sha256'],request_id=str(uuid.uuid4()),rollback=True)
+        raw=(self.state/'version-selection/policy.json').read_bytes()
+        deployment.switch(self.state,self.base.root['package'],self.base.root['manifest_sha256'],
+            expected=old['manifest_sha256'],request_id=str(uuid.uuid4()))
+        self.preserved(2)
+        self.assertEqual((self.state/'version-selection/policy.json').read_bytes(),raw)
+        run=self.state/'runs'/str(uuid.uuid4());run.mkdir(mode=0o700)
+        cfg=version_launch.configuration(self.state,deployment.read_descriptor(self.state),run)
+        self.assertEqual(cfg['registry'],self.selected['registry'])
+        self.assertIsNotNone(self.base.load()['switch'])
+
+    def test_another_explicit_repair_before_registration_keeps_old_cycle_without_adopting_it(self):
+        self.fallback();self.target();self.repair();self.preserved(2)
+        first=self.digest
+        fixture=self.base.base.fixture
+        fixture.binary.write_bytes(b'CPU second explicit repair')
+        fixture.base['files']['q4t']=bundle.engine.sha(fixture.binary)
+        fixture.base['protocol_sha256']='9'*64
+        package,digest=self.base.base.prepare('second-repair')
+        deployment.switch(self.state,package,digest,expected=first,request_id=str(uuid.uuid4()))
+        self.preserved(3)
+        with self.assertRaisesRegex(ValueError,'explicit version registration'):
+            version_launch.configuration(self.state,deployment.read_descriptor(self.state),
+                                         self.state/'must-remain-stopped')
+        self.assertFalse((self.state/'must-remain-stopped').exists())
+
 
 if __name__=='__main__':unittest.main()
