@@ -61,6 +61,13 @@ std::optional<BatchUsage> BatchResponseUsage(std::string_view endpoint,
                                              const Json& body) {
   const auto* usage = body.Find("usage");
   BatchUsage result;
+  if (usage && endpoint == "/v1/embeddings") {
+    uint64_t total = 0;
+    if (!usage->IsObject() || !Count(*usage, "prompt_tokens", &result.input) ||
+        !Count(*usage, "total_tokens", &total) || result.input != total)
+      return {};
+    return result;
+  }
   if (!usage ||
       (endpoint != "/v1/responses" && endpoint != "/v1/chat/completions" &&
        endpoint != "/v1/completions") ||

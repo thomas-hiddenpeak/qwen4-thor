@@ -9,9 +9,12 @@
 #include "q4t/server/request_limits.h"
 
 namespace q4t::server {
+enum class FiniteResponseFormat { kApplication, kEmbeddings };
 class FiniteResponse {
  public:
-  explicit FiniteResponse(size_t max_bytes = kChatBodyBytes);
+  explicit FiniteResponse(
+      size_t max_bytes = kChatBodyBytes,
+      FiniteResponseFormat format = FiniteResponseFormat::kApplication);
   bool Record(int status, std::string_view content_type, std::string_view body);
   void Reject() noexcept { failed_ = true; }
   bool Complete() const { return received_ && !failed_; }
@@ -22,6 +25,7 @@ class FiniteResponse {
 
  private:
   size_t max_bytes_;
+  FiniteResponseFormat format_;
   int status_ = 0;
   bool received_ = false, failed_ = false;
   std::string body_;

@@ -20,6 +20,7 @@ ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/chat/completions': ('POST', 'data'),
           '/v1/completions': ('POST', 'data'),
           '/v1/moderations': ('POST', 'data'),
+          '/v1/embeddings': ('POST', 'data'),
           '/v1/chat/preflight': ('POST', 'data'),
           '/v1/requests/cancel': ('POST', 'control')}
 DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
@@ -51,6 +52,7 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST', 'DELETE')),
     ('GET', '/v1/chat/completions/{completion_id}/messages', 'control')]
 API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
+API_CONTRACT_BYTES = 2*1024**2
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
                 upstream_idle_seconds=1300)
@@ -96,11 +98,11 @@ def parse(raw):
 
 def validate_routes():
     """Check the selected public surface against the runner's API contract."""
-    paths = parse(read_file(API_CONTRACT))['paths']
+    paths = parse(read_file(API_CONTRACT, maximum=API_CONTRACT_BYTES))['paths']
     expected = {'v1_models': 'control', 'v1_capabilities': 'control',
                 'v1_chat_completions': 'data', 'v1_chat_preflight': 'data',
                 'v1_requests_cancel': 'control', 'v1_completions': 'data',
-                'v1_moderations': 'data'}
+                'v1_moderations': 'data', 'v1_embeddings': 'data'}
     seen = {}
     for path, (method, lane) in ROUTES.items():
         operation = paths.get(path, {}).get(method.lower(), {}).get('operationId')

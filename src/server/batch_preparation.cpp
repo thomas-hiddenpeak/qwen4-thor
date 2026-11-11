@@ -7,6 +7,7 @@
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/completion_plan.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/moderations_plan.h"
@@ -28,7 +29,8 @@ ObjectReply Identity(const std::string& id, std::string_view endpoint,
       row.line > kBatchRequests || !row.body.IsObject())
     return Invalid();
   std::string body;
-  const auto status = InputValueIdentity(row.body, &body);
+  const auto status = InputValueIdentity(
+      row.body, &body, endpoint == "/v1/embeddings" ? 400000 : 262144);
   if (!status)
     return Error(413, "batch_prepared_input_capacity", status.message());
   *metadata = Object({{"format", String("q4t.batch_prepared.v1")},
@@ -90,6 +92,12 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
     auto status = PlanCompletionRequest(row.body, config, &plan, &error);
     if (!status) reply = PlanningError(status, error);
     prepared = Object({{"kind", String("completion")}});
+  } else if (endpoint == "/v1/embeddings") {
+    EmbeddingsRequestPlan plan;
+    ChatPlanError error;
+    const auto status = PlanEmbeddingsRequest(row.body, config, &plan, &error);
+    if (!status) reply = PlanningError(status, error);
+    prepared = Object({{"kind", String("embedding")}});
   } else if (endpoint == "/v1/moderations") {
     ModerationsRequestPlan plan;
     ChatPlanError error;
@@ -196,7 +204,9 @@ ObjectReply BatchPreparation::Read(
       (endpoint == "/v1/completions" &&
        candidate.GetString("kind") != "completion") ||
       (endpoint == "/v1/moderations" &&
-       candidate.GetString("kind") != "moderation"))
+       candidate.GetString("kind") != "moderation") ||
+      (endpoint == "/v1/embeddings" &&
+       candidate.GetString("kind") != "embedding"))
     return Invalid();
   *prepared = std::move(candidate);
   return {};

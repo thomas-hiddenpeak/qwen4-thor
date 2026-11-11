@@ -174,10 +174,14 @@ ObjectReply Collect(const Json& bindings, const Items& items, bool subset,
 }
 }  // namespace
 
-Status InputValueIdentity(const Json& value, std::string* sha256) {
+Status InputValueIdentity(const Json& value, std::string* sha256,
+                          size_t max_values) {
   if (!sha256) return Status::Fail("Missing input identity output");
   sha256->clear();
   Budget budget;
+  if (!max_values || max_values > 400000)
+    return Status::Fail("Invalid input identity value capacity");
+  budget.values = max_values;
   return Hash(value, &budget, 0, sha256);
 }
 ObjectReply BindInputSnapshot(const Json& item, std::string_view path,

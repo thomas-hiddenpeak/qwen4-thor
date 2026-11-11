@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/moderations_plan.h"
 #include "q4t/server/responses_execution.h"
 
@@ -226,6 +227,16 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
       active = Active(access);
       return active.ok() ? reply : active;
     }
+  } else if (endpoint == "/v1/embeddings") {
+    if (prepared.GetString("kind") != "embedding") return Invalid();
+    EmbeddingsRequestPlan plan;
+    status = PlanEmbeddingsRequest(row.body, config, &plan, &error);
+    if (status) {
+      std::vector<std::vector<int32_t>> inputs;
+      status = PrepareEmbeddingInputs(plan, config, encode, &inputs,
+                                       &meter.input.tokens, &error);
+    }
+    meter.output = 0;
   } else if (endpoint == "/v1/moderations") {
     if (prepared.GetString("kind") != "moderation") return Invalid();
     ModerationsRequestPlan plan;

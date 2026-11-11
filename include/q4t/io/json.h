@@ -10,7 +10,10 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <span>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -73,6 +76,18 @@ struct JsonParseLimits {
 Status ParseJson(const std::string& text, Json* out,
                  bool preserve_number_text = false,
                  const JsonParseLimits& limits = {});
+
+// Validate the entire document but retain only selected subtrees. Paths are
+// decoded object keys and "*" for array elements. A rejected subtree becomes
+// null in the projection, while grammar/UTF-8/duplicates and all input budgets
+// are still checked. Never serialize this metadata projection as the original
+// document. Discarded numeric arrays require constant auxiliary space.
+using JsonProjection =
+    std::function<bool(std::span<const std::string_view>)>;
+Status ParseJsonProjection(const std::string& text, Json* out,
+                           const JsonProjection& retain,
+                           const JsonParseLimits& limits,
+                           size_t max_retained_values = 65536);
 
 }  // namespace io
 }  // namespace q4t

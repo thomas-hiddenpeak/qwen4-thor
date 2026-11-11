@@ -69,6 +69,8 @@ export async function execute(input) {
       } else result = value;
     } else if (input.action === 'moderations_create') {
       result = await client.moderations.create(input.request, options);
+    } else if (input.action === 'embeddings_create') {
+      result = await client.embeddings.create(input.request, options);
     } else if (input.action === 'compact') {
       result = await client.responses.compact(input.request, options);
     } else if (input.action === 'input_tokens') {
@@ -106,6 +108,17 @@ export async function execute(input) {
   } catch (problem) {
     error ??= { class: problem.constructor.name, message: problem.message };
   } finally { clearTimeout(timeout); }
+  // Harness evidence: JSON.stringify would erase negative zero in SDK arrays.
+  let embedding_float32_base64;
+  if (input.action === 'embeddings_create' && result?.data?.every(
+      row => Array.isArray(row.embedding))) {
+    embedding_float32_base64 = result.data.map(row => {
+      const bytes = Buffer.alloc(row.embedding.length * 4);
+      row.embedding.forEach((value, index) => bytes.writeFloatLE(value, index * 4));
+      return bytes.toString('base64');
+    });
+  }
   return { ok: !error, result, chunks, error, sdk_version: version,
+    embedding_float32_base64,
     exchanges, wire_base64: Buffer.concat(wire).toString('base64') };
 }

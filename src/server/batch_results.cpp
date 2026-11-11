@@ -8,6 +8,7 @@
 #include "object_protocol.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/batch_usage.h"
+#include "q4t/server/embedding_metadata.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -114,16 +115,22 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
   bool missing_usage = true;
   if (result.error.ok()) {
     Json body;
+    std::string compact;
+    const bool embeddings = endpoint == "/v1/embeddings";
+    const auto parsed = embeddings
+                            ? ParseEmbeddingMetadata(result.response_body,
+                                                       &body, false, &compact)
+                            : io::ParseJson(result.response_body, &body, true,
+                                             kApplicationJsonLimits);
     if (result.http_status < 200 || result.http_status > 599 ||
         (result.http_status >= 300 && result.http_status < 400) ||
         result.request_id.empty() ||
-        !io::ParseJson(result.response_body, &body, true,
-                       kApplicationJsonLimits) ||
+        !parsed ||
         !body.IsObject())
       return Error(500, "batch_response_invalid",
                    "Endpoint did not return a finite JSON response");
     // Formatting newlines in endpoint JSON must not split one JSONL result.
-    const auto compact = OutputJson(body);
+    if (!embeddings) compact = OutputJson(body);
     *usage = BatchResponseUsage(endpoint, body);
     const auto* reported = body.Find("usage");
     missing_usage = !reported || reported->IsNull();
@@ -531,7 +538,11 @@ ObjectReply BatchState::RecountUsage(const BinaryAccess& access,
   limits.max_depth += 4;  // Private JSONL wrapper around the original body.
   limits.max_values += 32;
   limits.max_string_bytes = kExpandedApplicationBytes + 65536;
-  if (!io::ParseJson(line, &result, true, limits) ||
+  const auto endpoint = root.data.Find("batch")->GetString("endpoint");
+  const auto parsed = endpoint == "/v1/embeddings"
+                          ? ParseEmbeddingMetadata(line, &result, true)
+                          : io::ParseJson(line, &result, true, limits);
+  if (!parsed ||
       Digest(result.GetString("custom_id")) !=
           row.GetString("custom_id_sha256"))
     return Corrupt();

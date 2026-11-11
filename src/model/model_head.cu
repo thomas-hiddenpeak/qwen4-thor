@@ -282,6 +282,27 @@ Status ExpandTrunk(const ModelHeadWeights& w, const uint16_t* emb,
   return Status();
 }
 
+Status HeadHidden(const ModelHeadWeights& w, const uint16_t* trunk,
+                  uint16_t* hidden, int T, void* workspace,
+                  size_t workspace_bytes, cudaStream_t stream) {
+  if (T <= 0 || !trunk || !hidden || !workspace || w.hs <= 0 || w.hc <= 0 ||
+      w.hc_dim != w.hs * w.hc ||
+      workspace_bytes < ModelHeadWorkspaceBytes(T, w.hs))
+    return Status::Fail("HeadHidden: invalid input or workspace");
+  // Match HeadForward's workspace offsets and exact mixer implementation.
+  auto* base = static_cast<char*>(workspace);
+  const size_t mixed_bytes = static_cast<size_t>(T) * w.hs * 2;
+  const size_t norm_offset = AlignUp(mixed_bytes, 256);
+  const size_t gemm_offset =
+      AlignUp(norm_offset + static_cast<size_t>(T) * w.hc_dim * 2, 256);
+  if (gemm_offset > workspace_bytes ||
+      kGemmScratch > workspace_bytes - gemm_offset)
+    return Status::Fail("HeadHidden: workspace too small");
+  return HyperConnectionMix(
+      w.mixer, trunk, hidden, reinterpret_cast<uint16_t*>(base + norm_offset),
+      T, base + gemm_offset, kGemmScratch, stream);
+}
+
 Status HeadForward(const ModelHeadWeights& w, const uint16_t* trunk,
                    uint16_t* logits, int T, void* workspace,
                    size_t workspace_bytes, cudaStream_t stream) {

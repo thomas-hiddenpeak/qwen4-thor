@@ -256,6 +256,9 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderations_plan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderations_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embeddings_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embeddings_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embedding_metadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
@@ -268,6 +271,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_access_program_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderations_api_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_embeddings_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp

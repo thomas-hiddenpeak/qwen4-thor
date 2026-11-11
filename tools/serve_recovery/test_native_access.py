@@ -290,6 +290,56 @@ class AccessTests(unittest.TestCase):
         self.assertEqual(len(result['exchanges']), 1)
         self.assertEqual(len(self.stack.forwarded), 2)
 
+    def test_embeddings_sdk_default_base64_float_tls_and_exact_body(self):
+        # Native ingress and official SDK; actual C++ wire fixtures, no model.
+        root = Path(os.environ['Q4T_TEST_OUTPUT_DIR'])
+        floats = json.loads((root/'embeddings-float.json').read_text())
+        encoded = json.loads((root/'embeddings-base64.json').read_text())
+        origin = 'https://client.example'
+        status, headers, raw = self.request('OPTIONS', '/v1/embeddings', auth=False,
+            headers={'Origin':origin, 'Access-Control-Request-Method':'POST',
+                'Access-Control-Request-Headers':'Authorization, Content-Type'})
+        self.assertEqual((status, raw), (204, b''))
+        self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+        self.assertEqual(self.request('POST', '/v1/embeddings', auth=False)[0], 401)
+        self.assertEqual(self.stack.forwarded, [])
+        env = {k:v for k,v in os.environ.items()
+               if k not in ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD')}
+        env['NODE_EXTRA_CA_CERTS'] = str(self.certificates/'ca.pem')
+        command = dict(action='embeddings_create',
+            base_url='https://127.0.0.1:'+str(self.stack.value['policy']['listen_port'])+'/v1',
+            api_key='A'*40, headers={'Origin':origin}, timeout_ms=5000,
+            sdk_directory=str(ROOT/'.q4t-work/serve-protocol-20261103/sdk'))
+        for index, encoding in enumerate([None, 'float', 'base64']):
+            request = dict(model='actual-qwen', input=['x'*8192, 'second'])
+            if encoding: request['encoding_format'] = encoding
+            command['request'] = request
+            expected = floats if encoding == 'float' else encoded
+            self.stack.response_hook = lambda peer, *_: (peer.response(200, expected) or True)
+            run = subprocess.run(['node', str(ROOT/'tools/serve_responses/run_sdk.mjs')],
+                input=json.dumps(command), text=True, capture_output=True, env=env, timeout=10)
+            (self.stack.directory/f'embeddings-sdk-{index}.stdout').write_text(run.stdout)
+            (self.stack.directory/f'embeddings-sdk-{index}.stderr').write_text(run.stderr)
+            self.assertEqual((run.returncode, run.stderr), (0, ''))
+            result = json.loads(run.stdout)
+            self.assertTrue(result['ok'])
+            self.assertEqual(len(result['exchanges']), 1)
+            if encoding == 'base64': self.assertEqual(result['result'], encoded)
+            else:
+                self.assertEqual(result['embedding_float32_base64'],
+                                 [row['embedding'] for row in encoded['data']])
+                for actual, reference in zip(result['result']['data'], floats['data']):
+                    self.assertEqual({k:v for k,v in actual.items() if k != 'embedding'},
+                                     {k:v for k,v in reference.items() if k != 'embedding'})
+                    self.assertEqual(len(actual['embedding']), len(reference['embedding']))
+            forwarded = self.stack.forwarded[-1]
+            self.assertEqual(json.loads(forwarded['body']),
+                dict(request, encoding_format=encoding or 'base64'))
+            self.assertEqual((forwarded['path'], forwarded['client'], forwarded['token']),
+                             ('/v1/embeddings', 'alpha', 'e'*64))
+            self.assertIsNone(forwarded['authorization'])
+        self.assertEqual(len(self.stack.forwarded), 3)
+
     def test_conversations_use_native_tls_cors_and_identity(self):
         self.replace(cors=dict(CORS, allowed_methods=['GET', 'POST', 'DELETE']))
         origin = 'https://client.example'

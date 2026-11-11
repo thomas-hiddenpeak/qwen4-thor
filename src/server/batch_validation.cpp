@@ -5,6 +5,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/batch_quota.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
 
@@ -105,6 +106,19 @@ ObjectReply BatchValidation::Initialize(const Json& data) {
 
 ObjectReply BatchValidation::Check(const BatchInputRow& row,
                                     BatchRowCheck* checked) {
+  if (endpoint_ == "/v1/embeddings") {
+    EmbeddingsRequestPlan plan;
+    ChatPlanError error;
+    const auto status = PlanEmbeddingsRequest(row.body, config_, &plan, &error);
+    if (!status) {
+      auto reply = Error(error.http_status, error.code, status.message());
+      reply.value = Object({{"param", String(error.param)}});
+      return reply;
+    }
+    // Replayed frozen validation rows still count toward the standard total
+    // embedding-input bound; a restart must not reset this counter to zero.
+    checked->embedding_inputs = plan.inputs.size();
+  }
   if (row.line <= frozen_rows_) {
     auto checkpoint = batches_.Row(access_, id_, row.line - 1);
     if (!checkpoint.ok()) return checkpoint;

@@ -16,5 +16,5 @@ BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
     const std::function<void()>& execute,
-    std::shared_ptr<ClientRateLease> rate = {});
+    std::shared_ptr<ClientRateLease> rate = {}, std::string_view endpoint = {});
 }  // namespace q4t::server

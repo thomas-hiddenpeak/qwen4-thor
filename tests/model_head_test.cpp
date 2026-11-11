@@ -14,6 +14,7 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/model_head.h"
 #include "q4t/test.h"
+#include "q4t/server/lifetime.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -299,5 +300,63 @@ Q4T_TEST(model_head_forward) {
   Q4T_CHECK(emb_err < 1e-2f);
   Q4T_CHECK(trunk_err < 1e-2f);
   Q4T_CHECK(logits_err < 3e-2f);
+  return true;
+}
+
+Q4T_TEST(model_head_hidden_matches_generation_final_mixer) {
+  if (!CudaAvailable()) Q4T_SKIP("no CUDA device");
+  constexpr int hs = 32, hc = 4, lowrank = 8, rows = 4;
+  std::mt19937 random(1281);
+  std::normal_distribution<float> distribution(0.0f, 0.3f);
+  const auto values = [&](size_t count) {
+    std::vector<float> result(count);
+    for (auto& value : result) value = distribution(random);
+    return result;
+  };
+  ModelHeadWeights weights;
+  weights.hs = weights.vocab = hs;
+  weights.hc = hc;
+  weights.hc_dim = hc * hs;
+  weights.mixer.hidden_size = hs;
+  weights.mixer.hc_count = hc;
+  weights.mixer.lowrank = lowrank;
+  weights.mixer.eps = 1e-6f;
+  weights.mixer.use_combine = false;
+  weights.mixer.hc_norm = AllocBf16(values(hc * hs));
+  weights.mixer.mix_down = AllocBf16(values(lowrank * hc * hs));
+  weights.mixer.mix_up = AllocBf16(values(hc * hs * lowrank));
+  weights.lm_head = AllocBf16(values(hs * hs));
+  uint16_t* trunk = AllocBf16(values(rows * hc * hs));
+  uint16_t* logits = nullptr;
+  uint16_t* hidden = nullptr;
+  void* workspace = nullptr;
+  q4t::server::ScopeExit cleanup([&] {
+    cudaFree(workspace); cudaFree(hidden); cudaFree(logits); cudaFree(trunk);
+    weights.Free();
+  });
+  const size_t bytes = ModelHeadWorkspaceBytes(rows, hs);
+  Q4T_CHECK(cudaMalloc(&workspace, bytes) == cudaSuccess);
+  Q4T_CHECK(cudaMalloc(reinterpret_cast<void**>(&logits), rows * hs * 2) == cudaSuccess);
+  Q4T_CHECK(cudaMalloc(reinterpret_cast<void**>(&hidden), rows * hs * 2) == cudaSuccess);
+  for (const int count : {rows, 1}) {
+    const auto* input = trunk + (count == 1 ? (rows - 1) * hc * hs : 0);
+    Q4T_CHECK(HeadForward(weights, input, logits, count, workspace, bytes, nullptr));
+    std::vector<uint16_t> expected(count * hs), actual(count * hs);
+    // HeadForward's first scratch row is the actual final mixer passed to
+    // lm_head. Compare all bits, including the distinct T=1 execution path.
+    Q4T_CHECK(cudaMemcpy(expected.data(), workspace, expected.size() * 2,
+                         cudaMemcpyDeviceToHost) == cudaSuccess);
+    auto* original_head = weights.lm_head;
+    weights.lm_head = nullptr;  // Hidden extraction must not require logits.
+    const auto status = q4t::model::HeadHidden(
+        weights, input, hidden, count, workspace, bytes, nullptr);
+    weights.lm_head = original_head;
+    Q4T_CHECK(status);
+    Q4T_CHECK(cudaMemcpy(actual.data(), hidden, actual.size() * 2,
+                         cudaMemcpyDeviceToHost) == cudaSuccess);
+    Q4T_CHECK(actual == expected);
+    Q4T_CHECK(!q4t::model::HeadHidden(weights, input, hidden, count,
+        workspace, 1, nullptr));
+  }
   return true;
 }

@@ -1,0 +1,32 @@
+test_actual_cpp_float_and_base64_fp32 (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_actual_cpp_float_and_base64_fp32) ... FAIL
+test_input_families_and_precise_limits (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_input_families_and_precise_limits) ... ok
+test_sdk_identity_protocol_route_and_compiled_sources (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_sdk_identity_protocol_route_and_compiled_sources) ... ERROR
+test_control_and_data_have_separate_complete_bounds (tools.serve_gateway.test_gateway.GatewayTests.test_control_and_data_have_separate_complete_bounds) ... ok
+
+======================================================================
+ERROR: test_sdk_identity_protocol_route_and_compiled_sources (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_sdk_identity_protocol_route_and_compiled_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_embeddings_contract.py", line 44, in test_sdk_identity_protocol_route_and_compiled_sources
+    validate_routes()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 100, in validate_routes
+    paths = parse(read_file(API_CONTRACT))['paths']
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 80, in read_file
+    require(len(raw) <= maximum, 'input exceeds size limit')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 64, in require
+    raise ValueError(message)
+ValueError: input exceeds size limit
+
+======================================================================
+FAIL: test_actual_cpp_float_and_base64_fp32 (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_actual_cpp_float_and_base64_fp32)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_embeddings_contract.py", line 34, in test_actual_cpp_float_and_base64_fp32
+    self.assertEqual(decoded, struct.pack('<4f', *actual['embedding']))
+AssertionError: b'\x01\x00\x00\x00\x00\x00\x00\x80\xea\xd6\xfc\xbd\x00\x00\x80?' != b'\x01\x00\x00\x00\x00\x00\x00\x00\xea\xd6\xfc\xbd\x00\x00\x80?'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.187s
+
+FAILED (failures=1, errors=1)

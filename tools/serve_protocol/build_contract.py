@@ -611,6 +611,18 @@ def semantics():
         "src/server/batch_preparation.cpp", "src/server/batch_budget.cpp",
         "src/server/chat_http.cpp", "src/server/chat_responses.cpp"],
         "Native moderation runs actual structured classification with the served model or configured alias; omitted model selects the served checkpoint, returned model is canonical. One string or a flat text/image content group yields one result; string arrays yield ordered individual results. Bounds32text inputs/256content parts/1MiB aggregate text; each classifier has512output tokens and real13category scores, local threshold0.5 without cloud calibration. One external admission/cancel owner and RPM span all steps, cumulative input/output use the same client quota; Batch precharges its independent pool with exact native templates and all classifier output before starting its original row. Missing, invalid, incomplete or cancelled scores return a finite error and no partial success/zero-filled safe result. Device/grammar resources drain before the terminal, actual work survives errors and private Batch capture; standard public response contains only id/model/results. Other model families remain required work; schema validity or capabilities do not claim business acceptance."))
+    rules.append(("native-final-hidden-embeddings", [
+        "include/q4t/server/embeddings_plan.h", "src/server/embeddings_plan.cpp",
+        "include/q4t/server/embeddings_execution.h", "src/server/embeddings_execution.cpp",
+        "include/q4t/server/embedding_metadata.h", "src/server/embedding_metadata.cpp",
+        "include/q4t/model/model_head.h", "src/model/model_head.cu",
+        "include/q4t/io/json.h", "src/io/json.cpp", "src/server/chat_embeddings.cpp",
+        "src/server/finite_response.cpp", "src/server/batch_budget.cpp",
+        "src/server/batch_preparation.cpp", "src/server/batch_validation.cpp",
+        "src/server/batch_input.cpp", "src/server/batch_results.cpp",
+        "src/server/batch_usage.cpp", "src/server/batch_execution.cpp",
+        "src/server/chat_responses.cpp", "src/server/chat_http.cpp"],
+        "Native LAST final-mixer hidden states, default2560 dimensions and L2 normalization. Requested dimensions select a prefix then normalize, without a retrieval-training or Matryoshka quality claim. Required served model and raw input support string/string-array/token-array/token-matrix, no ChatML or truncation; limits2048 inputs,8192/model-context tokens per input,300000 cumulative plus client input policy. Float JSON round-trips FP32; base64 is little-endian IEEE754 FP32, supporting the SDK default decoder. One RPM and committed input work, no generated output; cancellation/error drain the real slot/device owners and preserve partial actual usage. Dedicated400000-node input budget and validated metadata projections handle finite large vectors without a giant output DOM or changing ordinary Chat limits. Native Batch original-request binding, input count, precharge, result/usage/recovery use the same endpoint contract. No partial success, zero placeholders, synthesized model floats or silent invalid norm. Actual CPU/model/SDK acceptance and delivery remain separate evidence."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",

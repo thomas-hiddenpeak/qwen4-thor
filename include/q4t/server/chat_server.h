@@ -67,6 +67,8 @@
 
 namespace q4t {
 namespace server {
+struct EmbeddingStepResult;
+class RequestDiagnostics;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -180,6 +182,12 @@ class ChatServer {
   void HandleResponsesTokenCount(int fd, const std::string& body);
   void HandleModerations(int fd, const std::string& body,
                          std::shared_ptr<RequestControl> owner = {});
+  void HandleEmbeddings(int fd, const std::string& body,
+                         std::shared_ptr<RequestControl> owner = {});
+  ObjectReply RunEmbeddingInput(
+      int fd, const std::vector<int32_t>& tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };

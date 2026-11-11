@@ -470,3 +470,17 @@ Q4T_TEST(http_moderations_uses_business_lane_and_normal_json_body_capacity) {
   Q4T_CHECK(Read(wire, &body) && body == payload);
   return true;
 }
+
+Q4T_TEST(http_embeddings_uses_business_lane_and_normal_json_body_capacity) {
+  using namespace q4t::server;
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/embeddings") ==
+            HttpConnectionClass::kBusiness);
+  const std::string payload = "{\"model\":\"served\",\"input\":\"" +
+                              std::string(8192, 'x') + "\"}";
+  const std::string wire = "POST /v1/embeddings HTTP/1.1\r\nHost: local\r\n"
+                           "Content-Type: application/json\r\nContent-Length: " +
+                           std::to_string(payload.size()) + "\r\n\r\n" + payload;
+  std::string body;
+  Q4T_CHECK(Read(wire, &body) && body == payload);
+  return true;
+}

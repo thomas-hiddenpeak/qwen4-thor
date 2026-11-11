@@ -37,6 +37,7 @@ struct ChatPlanConfig {
   int max_prefill = 2048;
   int default_max_tokens = 256;
   int token_vocab = 0;
+  int embedding_dimensions = 0;
   int request_deadline_ms = 1200000;
   AdmissionLimits admission;
   bool allow_media = false;

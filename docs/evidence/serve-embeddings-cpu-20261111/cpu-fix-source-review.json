@@ -1,0 +1,12 @@
+[
+  {
+    "path": "src/server/embeddings_plan.cpp",
+    "old": "799c2ed69aba2a2ed94c0310791df0b6117790cc4dbeb807d8f956f9276e7ec2",
+    "new": "eb76cdc3aa018935594892a1db7091100274f4a368732364363755b05222bb1a"
+  },
+  {
+    "path": "tools/serve_gateway/gateway.py",
+    "old": "985c4d3b9f785c9ce1b4e56201e0e5d2c829eabee3fd9f1c550d312e5673857f",
+    "new": "4c2dd6205c2ad0540216a85b5cab47aea30abde211e5da194bf8b2e141ddcf42"
+  }
+]

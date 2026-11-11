@@ -40,6 +40,15 @@ set(protocol_inputs
   src/server/moderations_plan.cpp
   src/server/moderations_execution.cpp
   src/server/chat_moderations.cpp
+  include/q4t/server/embeddings_plan.h
+  include/q4t/server/embeddings_execution.h
+  include/q4t/server/embedding_metadata.h
+  src/server/embeddings_plan.cpp
+  src/server/embeddings_execution.cpp
+  src/server/embedding_metadata.cpp
+  src/server/chat_embeddings.cpp
+  include/q4t/model/model_head.h
+  src/model/model_head.cu
   src/server/responses_execution_moderation.cpp
   cmake/NativeCrypto.cmake
   include/q4t/server/native_crypto.h

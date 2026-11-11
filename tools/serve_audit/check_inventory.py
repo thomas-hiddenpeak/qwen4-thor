@@ -156,7 +156,7 @@ def current_surface(root):
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
-                 "moderation.cpp", "moderations_plan.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
+                 "moderation.cpp", "moderations_plan.cpp", "embeddings_plan.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
                  "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
@@ -173,7 +173,10 @@ def current_surface(root):
                     if not p.name.startswith("test_")} |
                    {p for p in root.glob("tools/serve_service/*.py")
                     if not p.name.startswith("test_")} | {
-                       root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
+                       root / "src/io/json.cpp", root / "include/q4t/io/json.h",
+                       root / "src/model/model_head.cu",
+                       root / "include/q4t/model/model_head.h",
+                       root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
                        root / "src/runtime/cuda_allocation_quota.cpp",

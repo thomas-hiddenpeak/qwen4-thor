@@ -390,6 +390,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp
   src/server/chat_moderations.cpp
+  src/server/chat_embeddings.cpp
   src/server/chat_model_step.cpp
   src/server/session_cache.cpp
   src/server/cache_io.cpp
@@ -417,6 +418,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/moderation.cpp
     src/server/moderations_plan.cpp
     src/server/moderations_execution.cpp
+    src/server/embeddings_plan.cpp
+    src/server/embeddings_execution.cpp
+    src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
   src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
@@ -643,6 +647,9 @@ if(Q4T_BUILD_TESTS)
     src/server/moderation.cpp
     src/server/moderations_plan.cpp
     src/server/moderations_execution.cpp
+    src/server/embeddings_plan.cpp
+    src/server/embeddings_execution.cpp
+    src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
     src/server/chat_choices.cpp
     src/server/model_catalog.cpp
@@ -656,6 +663,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_access_program_test.cpp
     tests/server_moderation_test.cpp
     tests/server_moderations_api_test.cpp
+    tests/server_embeddings_api_test.cpp
     tests/server_responses_context_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp
@@ -748,7 +756,10 @@ q4t_link_native_documents(q4t_tests)
   endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
-  target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS} ${CMAKE_DL_LIBS})
+  # Serve contract tests also need the current application/state dependencies.
+  # Resolve those from the production library instead of a stale partial list.
+  target_link_libraries(q4t_tests PRIVATE q4t_server ${Q4T_TEST_LIBS}
+                                        ${CMAKE_DL_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 
   # These research replays require retained private raw input or a caller-

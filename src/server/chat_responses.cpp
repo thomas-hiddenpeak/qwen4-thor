@@ -148,6 +148,15 @@ BatchRowResult ChatServer::RunBatchRequest(
   return ExecuteBatchEndpoint(
       control ? control->id() : "", client, permit, control,
       [&] {
+        if (endpoint == "/v1/embeddings") {
+          if (frozen_inputs.GetString("kind") != "embedding") {
+            detail::SendError(-1, 503, "Invalid frozen embedding input", {},
+                              "batch_prepared_input_invalid");
+            return;
+          }
+          HandleEmbeddings(-1, OutputJson(row.body), control);
+          return;
+        }
         if (endpoint == "/v1/moderations") {
           if (frozen_inputs.GetString("kind") != "moderation") {
             detail::SendError(-1, 503, "Invalid frozen moderation input", {},
@@ -177,7 +186,7 @@ BatchRowResult ChatServer::RunBatchRequest(
             -1, OutputJson(row.body), api, control, &frozen_inputs,
             row.background_response ? &*row.background_response : nullptr);
       },
-      std::move(rate));
+      std::move(rate), endpoint);
 }
 
 }  // namespace q4t::server

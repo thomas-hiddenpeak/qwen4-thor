@@ -22,6 +22,7 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .default_max_tokens = max_tokens_default_,
           .token_vocab = std::min(static_cast<int>(tok_->VocabSize()),
                                   model_.Get().cfg.vocab),
+          .embedding_dimensions = model_.Get().cfg.hs,
           .request_deadline_ms = request_deadline_ms_,
           .admission = admission_limits_,
           .allow_media = allow_media_,

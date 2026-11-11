@@ -11,7 +11,7 @@ BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
     const std::function<void()>& execute,
-    std::shared_ptr<ClientRateLease> rate) {
+    std::shared_ptr<ClientRateLease> rate, std::string_view endpoint) {
   using namespace object_detail;
   BatchRowResult result;
   result.request_id = request_id;
@@ -37,7 +37,10 @@ BatchRowResult ExecuteBatchEndpoint(
   if (!control->ClaimInvocation())
     return failure(409, "batch_execution_already_claimed",
                    "The original execution ticket cannot be replayed");
-  FiniteResponse output;
+  FiniteResponse output(kChatBodyBytes,
+                         endpoint == "/v1/embeddings"
+                             ? FiniteResponseFormat::kEmbeddings
+                             : FiniteResponseFormat::kApplication);
   detail::HttpResponseContext http(
       detail::HttpResponseContext::Detached{-1, &output});
   http.SetClient(client, &permit, ClientRateDomain::kBatch);

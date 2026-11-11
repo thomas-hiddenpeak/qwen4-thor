@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/embeddings_plan.cpp: In function ‘q4t::Status q4t::server::BuildEmbeddingsResponse(const EmbeddingsRequestPlan&, std::span<const std::vector<float> >, uint64_t, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/embeddings_plan.cpp:231:43: error: ‘OutputJson’ was not declared in this scope
+  231 |       "{\"object\":\"list\",\"model\":" + OutputJson(String(plan.model)) +
+      |                                           ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:2263: CMakeFiles/q4t_server.dir/src/server/embeddings_plan.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

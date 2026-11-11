@@ -7,6 +7,7 @@
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/embeddings_plan.h"
 
 namespace q4t::server {
 namespace {
@@ -107,7 +108,10 @@ ObjectReply BatchInput::Line(bool newline) {
   row.wire_bytes = buffer_.size() + (newline ? 1 : 0);
   if (!buffer_.empty() && buffer_.back() == '\r') buffer_.pop_back();
   Json value;
-  auto status = io::ParseJson(buffer_, &value, true, kApplicationJsonLimits);
+  auto limits = endpoint_ == "/v1/embeddings" ? kEmbeddingInputJsonLimits
+                                               : kApplicationJsonLimits;
+  if (endpoint_ == "/v1/embeddings") limits.max_values += 32;
+  auto status = io::ParseJson(buffer_, &value, true, limits);
   if (!status) return Fail(Invalid(status.message(), "input_file_id"));
   std::string param;
   status = InputFields(value, {"custom_id", "method", "url", "body"}, &param);

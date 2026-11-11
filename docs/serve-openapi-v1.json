@@ -1551,6 +1551,75 @@
         }
       }
     },
+    "/v1/embeddings": {
+      "post": {
+        "operationId": "v1_embeddings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/embeddings_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/embeddings_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Finite native embedding error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "executor": "actual_final_mixer_hidden",
+          "pooling": "last_input_token",
+          "dimensions": 2560,
+          "dimension_selection": "prefix_then_l2",
+          "quality": "generative hidden states; no retrieval or Matryoshka training claim",
+          "input": "raw text or token IDs; no chat template or truncation",
+          "max_total_input_tokens": 300000,
+          "max_response_bytes": 100663296,
+          "base64": "little-endian IEEE754 float32",
+          "quota": "one RPM, cumulative committed input tokens, no output tokens",
+          "batch": true,
+          "stream": false
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",

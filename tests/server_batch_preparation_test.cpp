@@ -18,6 +18,8 @@
 #include "q4t/server/files.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/moderations_plan.h"
+#include "q4t/server/embeddings_plan.h"
+#include "q4t/server/embedding_metadata.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
@@ -1788,5 +1790,121 @@ Q4T_TEST(batch_moderations_rejects_cumulative_input_limit_and_wrong_kind) {
   Q4T_CHECK(MeasureBatchInput(objects, work.endpoint, work.row, wrong,
                               fixture.config, Access(), BudgetCodec(),
                               &input, &rate).code == "batch_budget_invalid");
+  return true;
+}
+
+Q4T_TEST(batch_embeddings_freeze_raw_inputs_meter_and_restore_original) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  fixture.config.embedding_dimensions = 2560;
+  Work work;
+  {
+    ObjectStore objects(fixture.options);
+    work = Create(objects, Object({{"model", String("cpu-alias")},
+          {"input", Array({String("first"), String("second")})}}),
+          "/v1/embeddings");
+    const auto frozen = Frozen(objects, work, fixture.config);
+    Q4T_CHECK(frozen.GetString("kind") == "embedding");
+    BatchInputBudget input;
+    BatchRateBudget rate;
+    std::string last;
+    Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+        fixture.config, Access(), BudgetCodec(&last), &input, &rate)));
+    Q4T_CHECK(input.tokens == 11 && input.exact && last == "second" &&
+        rate.Total() == 11 && rate.output == 0 && !rate.preparation_output);
+  }
+  ObjectStore objects(fixture.options);
+  Json restored;
+  Q4T_CHECK(Ok(Load(objects, work, &restored)) &&
+            restored.GetString("kind") == "embedding");
+  auto changed = work;
+  Set(&changed.row.body, "input", String("different"));
+  Json invalid;
+  Q4T_CHECK(!Load(objects, changed, &invalid).ok());
+  ClientLimits limits;
+  limits.max_prompt_tokens = 10;
+  fixture.config.client_limits = &limits;
+  BatchInputBudget input;
+  Q4T_CHECK(MeasureBatchInput(objects, work.endpoint, work.row, restored,
+        fixture.config, Access(), BudgetCodec(), &input).code ==
+        "client_prompt_limit_exceeded");
+  return true;
+}
+
+Q4T_TEST(batch_embeddings_large_finite_result_survives_restart_and_recount) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  fixture.config.embedding_dimensions = 2560;
+  Work work;
+  std::string original;
+  {
+    ObjectStore objects(fixture.options);
+    Json inputs = Array(); inputs.array.assign(32, String("a"));
+    const auto request = Object({{"model", String("cpu-alias")},
+                                 {"input", inputs}});
+    work = Create(objects, request, "/v1/embeddings");
+    BatchValidation validation(objects, work.id, fixture.config,
+                                Meter(objects, BudgetCodec()));
+    for (int i = 0; i < 3 && !validation.Complete(); ++i)
+      Q4T_CHECK(Ok(validation.Step(Access())));
+    Q4T_CHECK(validation.Complete());
+    EmbeddingsRequestPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(PlanEmbeddingsRequest(request, fixture.config, &plan, &error));
+    std::vector<std::vector<float>> vectors(32, std::vector<float>(2560));
+    for (auto& vector : vectors) vector[0] = 1;
+    Q4T_CHECK(BuildEmbeddingsResponse(plan, vectors, 32, &original));
+    BatchState batches(objects);
+    auto started = batches.StartRow(Access(), work.id, 0);
+    Q4T_CHECK(Ok(started));
+    BatchRowResult result;
+    result.request_id = started.value.GetString("request_id");
+    result.http_status = 200;
+    result.response_body = original;
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), work.id, 0,
+                                    work.row.custom_id, result)));
+    auto root = batches.Load(Access(), work.id);
+    Q4T_CHECK(Ok(root) && root.value.Find("data")->Find("batch")
+                  ->Find("usage")->GetInt("input_tokens") == 32);
+    // Simulate a pre-accounting checkpoint; original result bytes are the
+    // only source for recovery. No endpoint executor is installed here.
+    auto changed = Request(ObjectKind::kBatch, work.id, ObjectOperation::kPut);
+    changed.expected_revision = root.value.GetInt("revision");
+    changed.created_at = root.value.GetInt("created_at");
+    changed.expires_at = root.value.GetInt("expires_at");
+    changed.data = *root.value.Find("data");
+    std::erase_if(changed.data.object, [](const auto& field) {
+      return field.first == "usage_accounting";
+    });
+    std::erase_if(Field(changed.data, "batch").object, [](const auto& field) {
+      return field.first == "usage";
+    });
+    Q4T_CHECK(Ok(Run(objects, changed)));
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.RecountUsage(Access(), work.id)));
+  const auto root = batches.Load(Access(), work.id);
+  Q4T_CHECK(Ok(root) && root.value.Find("data")->Find("batch")
+                ->Find("usage")->GetInt("input_tokens") == 32 &&
+            root.value.Find("data")->Find("batch")->Find("usage")
+                ->GetInt("output_tokens") == 0);
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), work.id, "completed")));
+  const auto final = batches.Finalize(Access(), work.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed");
+  BinaryRead read;
+  Files files(objects);
+  Q4T_CHECK(Ok(files.Open(Access(), final.value.GetString("output_file_id"), &read)));
+  std::string content;
+  for (size_t i = 0; i < read.manifest.chunks.size(); ++i) {
+    std::string bytes;
+    Q4T_CHECK(Ok(BinaryStore(objects).Read(Access(), read, i, &bytes)));
+    content += bytes;
+  }
+  Q4T_CHECK(content.find(original) != content.npos);
+  Q4T_CHECK(Ok(BinaryStore(objects).Close(Access(), &read)));
+  Json metadata;
+  Q4T_CHECK(ParseEmbeddingMetadata(content, &metadata, true) &&
+            metadata.GetString("custom_id") == work.row.custom_id);
   return true;
 }

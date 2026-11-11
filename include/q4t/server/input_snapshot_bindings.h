@@ -6,7 +6,8 @@ namespace q4t::server {
 // Bounded structural identity: object ordering is irrelevant, exact numbers
 // retain mathematical identity, and large inline file strings are hashed
 // without making another escaped JSON copy. Never an authentication key.
-Status InputValueIdentity(const io::Json& value, std::string* sha256);
+Status InputValueIdentity(const io::Json& value, std::string* sha256,
+                          size_t max_values = 262144);
 // Private paths identify typed content parts within an immutable public item.
 // They are never supplied through the public request schema.
 ObjectReply BindInputSnapshot(const io::Json& item, std::string_view path,

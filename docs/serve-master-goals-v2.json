@@ -1125,7 +1125,10 @@
         "state": "STOPPED",
         "main_merged": false
       },
-      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md"
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
+      "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
+      "embeddings_state": "targeted_cpu_accepted_business_pending",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1171,7 +1174,10 @@
         "state": "STOPPED",
         "main_merged": false
       },
-      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md"
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
+      "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
+      "embeddings_state": "targeted_cpu_accepted_business_pending",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md"
     },
     {
       "id": "A11",
@@ -1730,5 +1736,5 @@
     }
   ],
   "next_task": "A10/A09.7 native embeddings backend, standard API and Batch",
-  "next": "Audit actual final hidden-state extraction and native embedding numerical/wire/usage contract, implement and targeted acceptance; continue all remaining required tasks."
+  "next": "Run frozen native embeddings final-mixer and real SDK/Batch/cancellation/restart business, then usable compatible delivery and all remaining master tasks."
 }
