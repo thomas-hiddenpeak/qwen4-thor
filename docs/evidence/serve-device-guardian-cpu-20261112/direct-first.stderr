@@ -1,0 +1,20 @@
+test_cold_guardian_never_authorizes_nvml_free_probe (tools.serve_recovery.test_runtime.RuntimeTests.test_cold_guardian_never_authorizes_nvml_free_probe) ... ok
+test_probe_permission_is_once_and_survives_controller_replacement (tools.serve_recovery.test_runtime.RuntimeTests.test_probe_permission_is_once_and_survives_controller_replacement) ... ok
+test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe (tools.serve_recovery.test_runtime.RuntimeTests.test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe) ... FAIL
+test_stop_wins_during_controller_recovery (tools.serve_recovery.test_runtime.RuntimeTests.test_stop_wins_during_controller_recovery) ... ok
+
+======================================================================
+FAIL: test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe (tools.serve_recovery.test_runtime.RuntimeTests.test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 481, in test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe
+    degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 171, in wait
+    raise AssertionError(f'lifecycle deadline expired: {latest}')
+AssertionError: lifecycle deadline expired: {'version': 1, 'service_id': '9a7bce3d-c2ee-46da-9a5e-a06e01cafefb', 'state': 'READY_DEGRADED', 'guardian_pid': 1802930, 'guardian_start_ticks': 261085918, 'controller_pid': 1802935, 'controller_generation': 1, 'controller_start_ticks': 261085939, 'controller_events': 113, 'controller_health': {'auxiliary_io': {'acknowledged_operations': 1, 'dropped_bytes': 0, 'failed_operations': 0, 'pending_records': 0, 'queued_bytes': 0, 'queued_records': 0, 'worker_pid': 1802938, 'worker_state': 'AVAILABLE', 'worker_unreaped': False}, 'observation': 'UNKNOWN', 'phase': 'READY', 'reason': 'progress_observation_unavailable'}, 'version_recovery': None, 'version_exit_observation': None, 'auxiliary_projection_errors': 0, 'controller_health_age_ms': 177, 'continuous_model_recovery': True, 'cold_device_recovery': False, 'cold_probe_used': False, 'probe_used_for_generation': 0, 'retry_after_ms': 0, 'journal_pid': 1802931, 'journal_start_ticks': 261085919, 'controller_ready': True, 'model_pid': 1802937, 'model_start_ticks': 261085982, 'model_generation': 1, 'model_binary_sha256': 'c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960', 'model_protocol_sha256': 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc', 'model_capacity_sha256': None, 'model_ready': True, 'model_admission_open': True, 'business_ready': True, 'gateway_pid': 1802932, 'gateway_start_ticks': 261085930, 'gateway_generation': 1, 'gateway_ready': True, 'gateway_bound_model': 1, 'gateway_recovering': False, 'gateway_binding_reason': 'none', 'gateway_binding_model_generation': 1, 'gateway_binding_age_ms': 15, 'quota_wait_ms': 0, 'daemon_detached': False, 'recovery_frozen': False, 'stop_requested': False, 'stop_durable': False, 'cleanup_confirmed': False, 'reason': ''}
+
+----------------------------------------------------------------------
+Ran 4 tests in 19.932s
+
+FAILED (failures=1)

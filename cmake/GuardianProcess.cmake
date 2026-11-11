@@ -37,7 +37,7 @@ add_executable(q4t_guardian
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_version.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp)
 set_target_properties(q4t_guardian PROPERTIES OUTPUT_NAME q4t-guardian)
-target_link_libraries(q4t_guardian PRIVATE q4t_guardian_journal)
+target_link_libraries(q4t_guardian PRIVATE q4t_guardian_journal q4t_device_admission)
 target_compile_options(q4t_guardian PRIVATE -Wall -Wextra -Werror)
 
 if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)

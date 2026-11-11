@@ -6,10 +6,12 @@ from pathlib import Path
 import socket
 import subprocess
 import tempfile
+import time
+import sys
 import unittest
 import uuid
 
-from tools.serve_recovery import device_control as c, ledger
+from tools.serve_recovery import device_control as c, ledger, journal
 
 
 class ControlTests(unittest.TestCase):
@@ -142,6 +144,68 @@ class ControlTests(unittest.TestCase):
                 fcntl.flock(other, fcntl.LOCK_EX | fcntl.LOCK_NB)
         finally: os.close(other)
         self.assertFalse(self.pin.exists())
+
+    def test_unprivileged_launcher_forwards_real_root_objects_without_consuming(self):
+        attached = self.attach()
+        claims = self.admission(attached.result)
+        args = dict(link_fd=attached.fds[0], program_fd=attached.fds[1], admission=claims)
+        with self.control.call('issue', args, inherited=attached.fds) as issued:
+            fds = (*issued.fds, *attached.fds)
+            code = '''import os, sys
+from tools.serve_recovery import cold_admission as c
+service, manifest, lease = sys.argv[1], sys.argv[2], int(sys.argv[3])
+try:
+ c.configuration(service, 'f'*64, lease)
+ raise RuntimeError('wrong manifest accepted')
+except ValueError: pass
+config, copies = c.configuration(service, manifest, lease)
+assert len(copies) == 4 and config['manifest_sha256'] == manifest
+assert all(not os.get_inheritable(fd) for fd in copies)
+for name, fd in zip(c.NAMES, copies): assert config[name] == fd
+for fd in copies: os.close(fd)
+'''
+            def drop():
+                os.setgroups([]); os.setgid(self.gid); os.setuid(self.uid)
+            child = subprocess.run([sys.executable, '-B', '-c', code,
+                claims['service_id'], claims['manifest_sha256'], str(self.lease)],
+                pass_fds=(*fds, self.lease), preexec_fn=drop,
+                env={'Q4T_DEVICE_ADMISSION_FDS': ','.join(map(str, fds))},
+                timeout=5, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.assertEqual(child.returncode, 0, child.stderr.decode())
+            self.assertEqual(len(os.read(issued.fds[1], 33)), 32)
+
+    def test_guardian_refuses_real_root_credential_for_incomplete_host_scope(self):
+        attached = self.attach()
+        claims = self.admission(attached.result)
+        claims.update(boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+                      issued_ns=time.monotonic_ns())
+        claims['expires_ns'] = claims['issued_ns']+300000000000
+        args = dict(link_fd=attached.fds[0], program_fd=attached.fds[1], admission=claims)
+        with self.control.call('issue', args, inherited=attached.fds) as issued:
+            fds = (*issued.fds, *attached.fds)
+            admission = dict(zip(('receipt_fd', 'token_fd', 'link_fd', 'program_fd'), fds))
+            admission['manifest_sha256'] = claims['manifest_sha256']
+            config = dict(version=4, directory=str(self.path), service_id=claims['service_id'],
+                python=sys.executable, journal='/not-executed', controller=['/usr/bin/false'],
+                gateway=[], quota_enforced=False, usage_handoff=False, version_recovery=None,
+                cold_admission=admission, lease_path=str(self.lease_path), lease_fd=self.lease,
+                resource_mode='process', require_hard_memory_limit=False, term_ms=100,
+                kill_ms=100, heartbeat_ms=1000, critical_memory_mib=64,
+                launch=dict(mode='foreground', parent_pid=os.getpid(),
+                    parent_start_ticks=journal.process_start(os.getpid()),
+                    startup_fd=0, timeout_ms=1000))
+            path = self.path/'guardian.json'
+            path.write_text(json.dumps(config)); path.chmod(0o600)
+            os.chown(path, self.uid, self.gid); os.chown(self.path, self.uid, self.gid)
+            def drop():
+                os.setgroups([]); os.setgid(self.gid); os.setuid(self.uid)
+            child = subprocess.run([os.environ['Q4T_GUARDIAN_BINARY'], '--config',
+                str(path), '--activate'], pass_fds=(*fds, self.lease), preexec_fn=drop,
+                env={}, timeout=5, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.assertEqual(child.returncode, 1, child.stderr.decode())
+            self.assertIn(b'lacks current complete host deployment', child.stderr)
+            self.assertFalse((self.path/'writer.lock').exists())
+            self.assertEqual(len(os.read(issued.fds[1], 33)), 32)
 
 
 if __name__ == '__main__': unittest.main()

@@ -1,0 +1,7 @@
+test_unprivileged_launcher_forwards_real_root_objects_without_consuming (tools.serve_recovery.test_device_control.ControlTests.test_unprivileged_launcher_forwards_real_root_objects_without_consuming) ... ok
+test_guardian_refuses_real_root_credential_for_incomplete_host_scope (tools.serve_recovery.test_device_control.ControlTests.test_guardian_refuses_real_root_credential_for_incomplete_host_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.067s
+
+OK

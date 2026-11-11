@@ -1,0 +1,10 @@
+{
+  "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
+  "src/service/guardian_main.cpp": "bb0c05e38dd2181e24b4d870ee5ea3c02a117f022d1a064efdc8ef352d9e4b1b",
+  "tools/serve_recovery/controller.py": "727ce2d77fa9e5dbe02549cf3c52a8dc3cf084ef831e72e35566e8a5216a533f",
+  "tools/serve_recovery/service.py": "9c0f085406bb692f4bc0439649db5a15b3b32956b13fe7b46c56d8312acbcd09",
+  "tools/serve_recovery/cold_admission.py": "4270bc677e7c36fbcf77b370f3dee6927d27ba06f6400ba0ff2e0586944122ed",
+  "tools/serve_recovery/test_cold_admission.py": "ea88ec8b0261a67fb81dd3999bfd5d1a2350dad7d9ff8620cba5f16dede2a237",
+  "tools/serve_recovery/test_device_control.py": "431ee09fbe385487d8348e733327c975bb7b69490b7a04f4eef52d6f1a5c06b2",
+  "tools/serve_recovery/fixture_production.py": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18"
+}

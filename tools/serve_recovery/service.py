@@ -172,6 +172,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
     parent = endpoint = None
     process = None
     diagnostics = None
+    cold_fds = ()
     interrupted = False
     previous = {}
     def stop(_signal, _frame):
@@ -180,6 +181,8 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
         if process is not None and process.poll() is None:
             process.send_signal(signal.SIGTERM)  # This unreaped direct child only.
     try:
+        from tools.serve_recovery import cold_admission
+        cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
         if daemon:
             parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         run = state/'runs'/str(uuid.uuid4())
@@ -218,6 +221,9 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
         versions = version_launch.configuration(state,desc,run)
         if versions is not None:
             config.update(version=3,version_recovery=versions)
+        if cold_config is not None:
+            config.update(version=4, usage_handoff=config.get('usage_handoff', False),
+                          version_recovery=versions, cold_admission=cold_config)
         engine.save(run/'guardian.json', config)
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
             previous[sig] = signal.signal(sig, stop)
@@ -233,7 +239,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
             str(run/'guardian.json'), '--activate'], stdin=subprocess.DEVNULL,
             stdout=diagnostic_stdio, stderr=diagnostic_stdio,
             start_new_session=True,
-            pass_fds=(lease, endpoint.fileno()) if daemon else (lease,))
+            pass_fds=(lease, *cold_fds, *((endpoint.fileno(),) if daemon else ())))
         if endpoint is not None:
             endpoint.close()
             endpoint = None
@@ -272,6 +278,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
             endpoint.close()
         if diagnostics is not None:
             os.close(diagnostics)
+        for fd in cold_fds: os.close(fd)
         os.close(lease)  # No LOCK_UN on a shared open-file description.
 
 

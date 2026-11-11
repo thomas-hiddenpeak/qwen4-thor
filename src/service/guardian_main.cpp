@@ -1,5 +1,6 @@
 // Standalone CPU Guardian. The controller is the only model-launch actor.
 #include "q4t/service/guardian_journal.h"
+#include "q4t/service/device_admission.h"
 #include "q4t/service/guardian_quota.h"
 #include "q4t/service/guardian_version.h"
 #include "q4t/service/guardian_wire.h"
@@ -153,6 +154,7 @@ struct Config {
   bool quota_enforced = false;
   bool usage_handoff = false;
   Json versions;
+  Json cold_admission;
   int lease_fd = -1;
   int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
   int64_t heartbeat_ns = 15 * kSecond;
@@ -168,19 +170,28 @@ Config ReadConfig(const std::string& path) {
           "invalid Guardian config");
   const auto version = Integer(value, "version");
   auto fields = value;
-  if (version == 2 || version == 3) {
+  if (version >= 2 && version <= 4) {
     const auto* handoff = value.Find("usage_handoff");
     Require(handoff && handoff->IsBool(), "invalid usage handoff policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "usage_handoff";
     });
   }
-  if (version == 3) {
+  if (version == 3 || version == 4) {
     Require(value.Find("version_recovery") &&
-                value.Find("version_recovery")->IsObject(),
+                (value.Find("version_recovery")->IsObject() ||
+                 (version == 4 && value.Find("version_recovery")->IsNull())),
             "invalid version recovery policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "version_recovery";
+    });
+  }
+  if (version == 4) {
+    Require(value.Find("cold_admission") &&
+                value.Find("cold_admission")->IsObject(),
+            "invalid cold device admission");
+    std::erase_if(fields.object, [](const auto& item) {
+      return item.first == "cold_admission";
     });
   }
   Require(w::HasKeys(fields,
@@ -190,7 +201,7 @@ Config ReadConfig(const std::string& path) {
                       "heartbeat_ms", "critical_memory_mib", "launch",
                       "gateway", "quota_enforced"}),
           "unknown Guardian configuration fields");
-  Require((version == 1 || version == 2 || version == 3) &&
+  Require((version >= 1 && version <= 4) &&
               Text(value, "resource_mode") == "process",
           "unsupported service mode");
   const auto* hard = value.Find("require_hard_memory_limit");
@@ -230,7 +241,8 @@ Config ReadConfig(const std::string& path) {
   Require(value.Find("quota_enforced")->IsBool(), "invalid quota policy");
   config.quota_enforced = value.Find("quota_enforced")->boolean;
   config.usage_handoff = version >= 2 && value.GetBool("usage_handoff");
-  if (version == 3) config.versions = *value.Find("version_recovery");
+  if (version >= 3) config.versions = *value.Find("version_recovery");
+  if (version == 4) config.cold_admission = *value.Find("cold_admission");
   Require(!config.usage_handoff || config.quota_enforced,
           "usage handoff requires quota protection");
   for (const auto* absolute :
@@ -363,6 +375,7 @@ class Guardian {
     lease_.Reset(fcntl(config_.lease_fd, F_DUPFD_CLOEXEC, 3));
     Require(lease_.Get() >= 0, "cannot retain lease FD");
     close(config_.lease_fd);
+    InitializeColdAdmission();
     // A stable abstract address avoids the Unix socket path-length limit for
     // deep release directories. Every peer is authenticated by kernel UID.
     socket_path_ =
@@ -391,6 +404,55 @@ class Guardian {
         journal_.Start(config_.python, config_.journal, config_.directory,
                        config_.service_id, Now(), 5 * kSecond);
     if (!status.ok()) Freeze(status.message());
+  }
+
+  void InitializeColdAdmission() {
+    if (config_.cold_admission.IsNull()) return;
+    const auto& value = config_.cold_admission;
+    Require(w::HasKeys(value, {"receipt_fd", "token_fd", "link_fd",
+                               "program_fd", "manifest_sha256"}),
+            "unknown cold device admission fields");
+    std::array<s::OwnedFd, 4> inherited;
+    std::set<int> unique;
+    const std::array names{"receipt_fd", "token_fd", "link_fd", "program_fd"};
+    for (size_t index = 0; index < names.size(); ++index) {
+      const auto fd = Integer(value, names[index]);
+      Require(fd >= 3 && fd <= 1000000 &&
+                  static_cast<int>(fd) != lease_.Get() &&
+                  static_cast<int>(fd) != config_.lease_fd &&
+                  static_cast<int>(fd) != instance_.Get() &&
+                  static_cast<int>(fd) != bootstrap_.Get() &&
+                  unique.insert(static_cast<int>(fd)).second,
+              "cold device descriptors collide");
+      inherited[index].Reset(static_cast<int>(fd));
+    }
+    const auto manifest = Text(value, "manifest_sha256");
+    s::DeviceAdmission admission;
+    Require(s::InspectDeviceAdmission(inherited[0].Get(), inherited[1].Get(),
+                                      &admission).ok(),
+            "cold device admission origin invalid");
+    Require(admission.service_id == config_.service_id &&
+                admission.manifest_sha256 == manifest &&
+                admission.boot_id == config_.boot_id &&
+                admission.runtime_uid == geteuid() &&
+                admission.filter.target_cgroup_id == 1,
+            "cold admission lacks current complete host deployment");
+    Require(cold_filter_.AdoptInherited(inherited[2].Get(), inherited[3].Get(),
+                                        admission.filter).ok(),
+            "cold device kernel custody invalid");
+    Require(s::ConsumeDeviceAdmission(inherited[0].Get(), inherited[1].Get(),
+        admission, cold_filter_, lease_.Get(), config_.lease_path,
+        static_cast<uint64_t>(Now())).ok(), "cold device admission unavailable");
+    cold_expires_ns_ = admission.expires_ns;
+    cold_authorized_ = true;
+    // All four original inputs close here. Only private CLOEXEC filter
+    // duplicates remain, never passed to controller, tools or model children.
+  }
+
+  bool ColdProbeAvailable(int64_t now) const {
+    return cold_authorized_ && !cold_probe_used_ && !model_authority_seen_ &&
+           now >= 0 && static_cast<uint64_t>(now) < cold_expires_ns_ &&
+           cold_filter_.Verify().ok();
   }
 
   int Run() {
@@ -599,6 +661,8 @@ class Guardian {
               ? Json{}
               : w::Unsigned((Now() - controller_health_at_) / 1'000'000)},
          {"continuous_model_recovery", w::Boolean(model_authority_seen_)},
+         {"cold_device_recovery", w::Boolean(ColdProbeAvailable(Now()))},
+         {"cold_probe_used", w::Boolean(cold_probe_used_)},
          {"probe_used_for_generation", w::Unsigned(probe_used_generation_)},
          {"retry_after_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
                                 0, (retry_after_ - Now()) / 1'000'000)))},
@@ -1197,13 +1261,16 @@ class Guardian {
         bool valid = !proof.GetBool("device_usable");
         for (const auto& [key, value] : proof.object)
           if (key != "device_usable") valid = valid && value.boolean;
-        if (!valid || !model_authority_seen_ || model_generation_ == 0 ||
-            probe_used_generation_ == model_generation_) {
+        const bool cold = ColdProbeAvailable(now);
+        const bool continuous = model_authority_seen_ && model_generation_ > 0 &&
+                                probe_used_generation_ != model_generation_;
+        if (!valid || (!cold && !continuous)) {
           ReplyModel(false, "probe_not_authorized");
         } else {
-          // Root-local authorization survives controller death. A new Root is
-          // cold and cannot grant any NVML-free probe until a model was
-          // authorized under its own continuously retained lease.
+          // Root-local spending survives controller death/lost replies. Cold
+          // custody was charged durably by explicit deployment before Root
+          // started; it adds one preflight, never a model/role grant or reset.
+          if (cold) cold_probe_used_ = true;
           probe_used_generation_ = model_generation_;
           ReplyModel(
               true,
@@ -1408,6 +1475,8 @@ class Guardian {
         std::string("Q4T_VERSION_RECOVERY=") + (versions_ ? "1" : "0"),
         std::string("Q4T_CONTINUOUS_MODEL_RECOVERY=") +
             (model_authority_seen_ ? "1" : "0"),
+        std::string("Q4T_COLD_DEVICE_RECOVERY=") +
+            (ColdProbeAvailable(now) ? "1" : "0"),
         "Q4T_GUARDIAN_PID=" + std::to_string(getpid()),
         "Q4T_GUARDIAN_START=" + std::to_string(self_.identity.start_ticks)};
     const auto status = s::SpawnProcess(
@@ -1852,6 +1921,9 @@ class Guardian {
   int64_t controller_health_at_ = 0;
   uint64_t auxiliary_projection_errors_ = 0;
   bool model_authority_seen_ = false;
+  s::DeviceFilter cold_filter_;
+  bool cold_authorized_ = false, cold_probe_used_ = false;
+  uint64_t cold_expires_ns_ = 0;
   uint64_t probe_used_generation_ = 0;
   s::ChildProcess gateway_;
   s::OwnedFd gateway_socket_;

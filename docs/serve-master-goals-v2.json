@@ -1794,10 +1794,11 @@
         "evidence/serve-device-custody-cpu-20261112/README.md",
         "evidence/serve-device-inventory-cpu-20261112/README.md",
         "evidence/serve-device-admission-cpu-20261112/README.md",
-        "evidence/serve-device-management-cpu-20261112/README.md"
+        "evidence/serve-device-management-cpu-20261112/README.md",
+        "evidence/serve-device-guardian-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Kernel filter/custody/inventory, one-use root admission, persistent nonreplaying admission budget and disposable native control adapter CPU verified. Latest 19 checks first-pass, 0 GPU/global fence/default changes. Full host qualification, deployment CLI, Guardian integration and actual NVML-free business remain implementing. Default rev64 unchanged; all tasks continue.",
+      "development_status": "Core admission forwarding and native Guardian/controller cold-probe wiring implemented. 12 distinct targeted CPU checks accepted after repairing one stale progress fixture; original failure retained. Full host qualification, deployment entry/versioned package and actual NVML-free cold business remain pending. Root kernel authority does not remove original restart/stop/device protections. Default rev64 unchanged; all tasks continue.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {
@@ -1812,7 +1813,7 @@
         },
         {
           "id": "R07.3",
-          "state": "planned",
+          "state": "implementing",
           "title": "Guardian冷启动预算与探测接线"
         },
         {

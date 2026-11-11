@@ -63,6 +63,7 @@ class Controller:
         self.lease_fd = int(os.environ['Q4T_LEASE_FD'])
         self.lease_path = os.environ['Q4T_LEASE_PATH']
         self.continuous = os.environ['Q4T_CONTINUOUS_MODEL_RECOVERY'] == '1'
+        self.cold_device_recovery = os.environ.get('Q4T_COLD_DEVICE_RECOVERY') == '1'
         child.verify_lease(self.lease_fd, self.lease_path)
         self.stopping = False
         self.phase, self.reason = 'STARTING', 'initializing'
@@ -250,7 +251,7 @@ class Controller:
         if not usable and self.probe_passed:
             usable = True
         if not usable:
-            if not self.continuous:
+            if not (self.continuous or self.cold_device_recovery):
                 self.reason = 'cold_nvml_unavailable'
                 return None
             proof = dict(cleanup_complete=True, resources_safe=True,
