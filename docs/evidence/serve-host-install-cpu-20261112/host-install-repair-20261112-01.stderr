@@ -1,0 +1,50 @@
+test_cli_install_enable_disable_preserves_core_and_uses_protected_source (tools.serve_recovery.test_host_install.HostTests.test_cli_install_enable_disable_preserves_core_and_uses_protected_source) ... ok
+test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu (tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu) ... ok
+test_installed_daemon_resume_keeps_original_stopped_and_zero_starts (tools.serve_recovery.test_host_install.HostTests.test_installed_daemon_resume_keeps_original_stopped_and_zero_starts) ... ok
+test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled) ... FAIL
+test_partial_source_copy_resumes_same_installation_without_core_mutation (tools.serve_recovery.test_host_install.HostTests.test_partial_source_copy_resumes_same_installation_without_core_mutation) ... ok
+test_partial_first_intent_does_not_publish_source_or_reset_core (tools.serve_recovery.test_host_install.HostTests.test_partial_first_intent_does_not_publish_source_or_reset_core) ... ok
+test_lost_ready_publication_repairs_copy_without_resetting_history (tools.serve_recovery.test_host_install.HostTests.test_lost_ready_publication_repairs_copy_without_resetting_history) ... ok
+test_lost_published_private_authority_cannot_bootstrap (tools.serve_recovery.test_host_install.HostTests.test_lost_published_private_authority_cannot_bootstrap) ... ok
+test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot (tools.serve_recovery.test_host_install.HostTests.test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot) ... ok
+test_active_remove_revokes_future_entry_without_signalling_own_payload (tools.serve_recovery.test_host_install.HostTests.test_active_remove_revokes_future_entry_without_signalling_own_payload) ... ok
+test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume (tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume) ... ERROR
+test_outer_disable_is_not_implicitly_reversed_by_host_enable (tools.serve_recovery.test_host_install.HostTests.test_outer_disable_is_not_implicitly_reversed_by_host_enable) ... ok
+test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired (tools.serve_recovery.test_host_install.HostTests.test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired) ... ok
+test_private_umask_keeps_source_traversable_and_admin_private (tools.serve_recovery.test_host_install.HostTests.test_private_umask_keeps_source_traversable_and_admin_private) ... ok
+
+======================================================================
+ERROR: test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume (tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 251, in test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume
+    host.finish(self.host)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+FAIL: test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 167, in test_explicit_stop_remains_available_when_host_entry_disabled
+    result = self.enter(operation='stop'); self.assertTrue(result['cleanup_confirmed'])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 107, in enter
+    self.assertEqual(process.returncode, 0, error.decode()); result = json.loads(out)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: host_entry.py [-h]
+                     {prepare,outer-run,outer-start,outer-init,outer-status,outer-enable,outer-disable,outer-acknowledge,check,reload,init,init-resume,run,start,resume,status,diagnostics,stop,tls-status,tls-reload,observe,metrics,export,retention-plan,retention-archive,retention-apply,retention-resume,retention-migrate,access-status,access-propose,access-apply,access-migrate,limits-status,limits-propose,limits-apply,limits-migrate,usage-status,usage-migrate,deploy,rollback,deployment-status,profiles-status,version-prepare,version-register,version-status,version-adapt,publish,publish-status,publish-resume,publish-rollback}
+                     ...
+host_entry.py: error: unrecognized arguments: --timeout 30
+
+
+----------------------------------------------------------------------
+Ran 14 tests in 15.933s
+
+FAILED (failures=1, errors=1)
