@@ -110,6 +110,7 @@ BatchQueueCharge InspectBatchQueueCharge(std::string_view kind,
 ObjectReply CheckBatchBudgetMutation(const Json& data, const Json* previous) {
   if (!Native(data) && (!previous || !Native(*previous))) return {};
   if (!Native(data)) return Invalid();
+  if (!ValidBatchOutputFailureTransition(data, previous)) return Invalid();
   if (!ValidBatchInputRecount(data)) return Invalid();
   const bool has_budget =
       data.Has("enqueued_input_tokens") || data.Has("metered_rows");
@@ -170,7 +171,12 @@ ObjectReply CheckBatchBudgetMutation(const Json& data, const Json* previous) {
     if (!counts) return Invalid();
     const auto total = counts->GetInt("total", -1);
     if (State(data) == "failed") {
-      if (State(*previous) != "validating" || total != 0) return Invalid();
+      const bool validation = State(*previous) == "validating" && total == 0;
+      const bool output =
+          State(*previous) == "finalizing" && data.Has("output_failure") &&
+          total == rows && data.GetInt("next_row") == total &&
+          counts->GetInt("completed") + counts->GetInt("failed") == total;
+      if (!validation && !output) return Invalid();
     } else if (total != 0) {
       if (State(*previous) != "finalizing" || total != rows ||
           data.GetInt("next_row") != total ||

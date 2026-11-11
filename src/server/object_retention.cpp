@@ -215,6 +215,20 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       if (released && (!released->IsBool() ||
                        (released->boolean && !BatchTerminal(status))))
         inspector.value.uncertain = true;
+      if (!ValidBatchOutputFailure(data)) inspector.value.uncertain = true;
+      if (data.GetBool("resources_released") && data.Has("output_failure")) {
+        BatchOutputFailure failure;
+        if (status != "failed" ||
+            !ParseBatchOutputFailure(*data.Find("output_failure"), &failure) ||
+            failure.retain_until <= 0) {
+          inspector.value.uncertain = true;
+        } else {
+          // Release queue admission independently from the original results.
+          // These references expire; the historical receipt is not a pin.
+          inspector.value.references_before = failure.retain_until;
+          for (const auto& page : pages->array) inspector.Reference(&page);
+        }
+      }
       if (!data.GetBool("resources_released")) {
         inspector.Blob(data);
         for (const auto& page : pages->array) inspector.Reference(&page);

@@ -1067,7 +1067,6 @@
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
         "Verify available failed/cancelled native usage during the combined actual model business acceptance; capture and original background terminal/drain are CPU accepted. Preserve unknown unsaved process-death tails.",
-        "Close deterministic finalization byte/chunk capacity exhaustion finitely, preserve original results and receipt uncertainty; never retry the model or spin finalization forever.",
         "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
         "Complete bounded retry for application task-owner initial construction failure without core restart or duplicate live owners."
       ],
@@ -1078,7 +1077,10 @@
       "batch_background_followthrough_status": "26 distinct targeted CPU accepted: trusted parent/ResponseID with original Start transaction, actual terminal plus cleanup/data/rate drain, fair waiting, actual child death and lost Start/Begin/Finish receipts, cancel/expiry/next-generation revocation, actual TTL pin/unpin and finite absent-observer submission failure. No GPU/default change. Actual failed/cancelled usage has separate 26-check CPU acceptance; business/rollback/delivery remain required.",
       "batch_background_followthrough_component_evidence": "evidence/serve-batch-continuation-cpu-20261111/README.md",
       "batch_actual_usage_status": "26 distinct targeted CPU accepted (9 new/4 extended/13 direct); first25pass/1fixturefailure, only failed case retested after respecting context refund. Native committed-input/output capture, internal preparation merge, failed/cancelled Responses JSON/SSE/reserved terminal and private atomic Batch row/restart recount validated. No GPU/default change; model business still required.",
-      "batch_actual_usage_component_evidence": "evidence/serve-actual-usage-cpu-20261111/README.md"
+      "batch_actual_usage_component_evidence": "evidence/serve-actual-usage-cpu-20261111/README.md",
+      "batch_finalization_plan": "SERVE_BATCH_FINALIZATION_2026-11-11.md",
+      "batch_finalization_status": "22 distinct targeted CPU accepted: first17pass/3fail,6affected followups pass after retained-result read guard fix. Deterministic capacity finite failed terminal/whole-row partial Files, original usage and finite retention, actual lost receipts/dead process and queue release validated. No GPU/default change; actual business and compatible failure-reader rollback/delivery remain required.",
+      "batch_finalization_component_evidence": "evidence/serve-batch-finalization-cpu-20261111/README.md"
     },
     {
       "id": "A10",

@@ -1,0 +1,8 @@
+{
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "f6db289666db121590dcc786bc8b0d2f4614fea891ea6e2e5ee81e8ac6440bf5",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "8e3305fcc04008bfddedd95c4c61c2759926d7b3dc9bc09f176a34812e712d8a",
+  "tools/serve_audit/inventory.json": "0ee2cc0960d34a24dd61eac436aa2d213fafac87fcb21a48f6501fcf991b46ad",
+  "src/server/batch_results.cpp": "5c4682dd67aa02afcc7f775d0781178b28d31cc8d19ae395f3172d0ac28ff24e",
+  "include/q4t/server/batch_state.h": "5e69ad77031abcd4b188b6fc92814a28d2d4793e7610bf4faae44545071e6629",
+  "build/q4t": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+}

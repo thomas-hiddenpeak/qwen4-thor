@@ -1,0 +1,12 @@
+{
+  "base": "05e05e11",
+  "kind": "nonperformance business correctness",
+  "required": 20,
+  "new": 8,
+  "direct": 12,
+  "gpu": 0,
+  "scope": "finite deterministic byte/chunk output failure, whole-row partial files, original result retention/expiry, actual lost receipts/process death, quota release; temporary quota remains retryable",
+  "default": "unchanged",
+  "test_limits": "trusted internal BatchState limits lowered for real small disk fixtures; production defaults8GiB/16384unchanged",
+  "retention_fixture": "first terminal carries historical failed_at with unchanged3600s policy, actual clock reaches reference cutoff; no rewrite of an existing terminal"
+}

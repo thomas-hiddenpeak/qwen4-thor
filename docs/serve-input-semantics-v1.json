@@ -395,6 +395,8 @@
         "src/server/batch_state.cpp",
         "src/server/batch_results.cpp",
         "src/server/batch_jobs.cpp",
+        "src/server/batch_finalization.cpp",
+        "include/q4t/server/batch_finalization.h",
         "src/server/batch_usage.cpp",
         "include/q4t/server/batch_usage.h",
         "include/q4t/server/actual_usage.h",
@@ -423,7 +425,7 @@
         "include/q4t/server/application_routes.h",
         "src/service/ingress_main.cpp"
       ],
-      "contract": "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Actual finite result usage commits atomically with its row and count; cached/reasoning details remain actual. Missing, malformed or overflowed usage is unknown and never a fabricated zero. Original legacy results are recounted before any new row/finalization, with no model replay. Batch Chat observes unbounded reasoning without forcing tokens. Background rows atomically reserve the original Response binding with their start ticket and wait fairly for its terminal plus executor cleanup; cancellation reaches that owner, and process recovery never resubmits the row. Active parent references protect the Response from TTL collection and explicit deletion until the result is copied. Native drained failures/cancellation capture committed input before sequence reset and accepted output including reasoning/cache details, merge internal preparation and preserve choice/step counting; reservations are never usage. Responses failure/cancel resources and SSE terminal carry known observations; private Batch row capture commits with original result/count and supports restart recount without changing standard HTTP error bodies. Live checkpoints never claim complete usage; unsaved work after actual process death remains unknown. Actual model business/release acceptance remains required. Started work or unknown starts never replay. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."
+      "contract": "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Actual finite result usage commits atomically with its row and count; cached/reasoning details remain actual. Missing, malformed or overflowed usage is unknown and never a fabricated zero. Original legacy results are recounted before any new row/finalization, with no model replay. Batch Chat observes unbounded reasoning without forcing tokens. Background rows atomically reserve the original Response binding with their start ticket and wait fairly for its terminal plus executor cleanup; cancellation reaches that owner, and process recovery never resubmits the row. Active parent references protect the Response from TTL collection and explicit deletion until the result is copied. Native drained failures/cancellation capture committed input before sequence reset and accepted output including reasoning/cache details, merge internal preparation and preserve choice/step counting; reservations are never usage. Responses failure/cancel resources and SSE terminal carry known observations; private Batch row capture commits with original result/count and supports restart recount without changing standard HTTP error bodies. Live checkpoints never claim complete usage; unsaved work after actual process death remains unknown. Actual model business/release acceptance remains required. Started work or unknown starts never replay. Deterministic output byte/chunk exhaustion records a private bounded aggregation failure and rebuilds only complete-row result prefixes without model replay; partial Files and failed terminal commit atomically. Queue admission releases at terminal, while original result pages remain referenced only through output expiry. Temporary storage quota or unknown receipts retain their existing reconciliation semantics. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."
     }
   ],
   "sources_sha256": {
@@ -436,6 +438,7 @@
     "include/q4t/server/actual_usage.h": "8eb8a2ca44a418184b1d6248e9859cd9962b127a23305fa19544771d1be6a61b",
     "include/q4t/server/application_routes.h": "89acff55d897a6c3b5c1d8560fd06423e763d250e6fc8250ac0c266ed0b3336d",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
+    "include/q4t/server/batch_finalization.h": "b06c2f9bd96a165d7506bcd4ce283eed88c9f94d381e2c93460abbd0e827bfa8",
     "include/q4t/server/batch_response_link.h": "99e71ab67560a90f8b2d75e414cc4aec9f066720b97364c110a66be84bf58ec6",
     "include/q4t/server/batch_usage.h": "b19a03b8f2a5fe597983c954348992214668d26e2bc4aa052859958ff9dc9fe4",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
@@ -478,12 +481,13 @@
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
     "src/server/batch_budget.cpp": "55bc0152eb46a01e830839469961e372cf5ba240fd71f22059af895f0f03bfdc",
     "src/server/batch_execution.cpp": "5eadbcf39a296543e6b3965782858f33cbb3f4a0655a33ed31e9d6837fb11315",
+    "src/server/batch_finalization.cpp": "979212557f90a6be6dcacd54ca55ceba9de08ac593e3703d5523cfe41b8619e0",
     "src/server/batch_input.cpp": "a064dc01f70e647f0493f00802185d2afbbb7124dcee14ed2961a7436c497859",
     "src/server/batch_jobs.cpp": "70583d24d5e8f88c5600967564a16f85fd7eeef6ff2b02c43d7f1cc2f48745db",
     "src/server/batch_preparation.cpp": "dc411579413b433422a42361d64e01173a5d70b861fd1f7f518a7439246d5bbf",
     "src/server/batch_response_link.cpp": "c2d65ad35c20f7ed2ee20eaf35b431d2c6c7899f4ac9bc819cf52981d99d50e2",
-    "src/server/batch_results.cpp": "f2b2f6657e07bcc675e6abc866b549caa639b029cf9ab935a88d38a49a8e438e",
-    "src/server/batch_state.cpp": "289f8ceee6f567daf881a5c7485eb4bd62f2067151e5272b29344a09c87bd14d",
+    "src/server/batch_results.cpp": "a04b1043f77aa236be542c42b2c493bfab586c4cf45c5bd3102f3e0c5d14b738",
+    "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
     "src/server/batch_usage.cpp": "7837645f02c3f78f7515b90ab062565e75c036c563608b7448a637b85f27171f",
     "src/server/batch_validation.cpp": "f3a5369229c982ca986f00849191229893c765387b308d02ebba84ae321148e4",
     "src/server/cache_io.cpp": "679d821d52da169a81c1bdc6ad68cead9f967e029a3861f418bd3adec31a9c3c",
@@ -533,7 +537,7 @@
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
-    "src/server/object_retention.cpp": "e2768dd5a4ebd301994ecf50887a629dcbcbf6ff87b31de11e4b4c6d6e1e9f95",
+    "src/server/object_retention.cpp": "39fd6699c423fc1bf204476d88eb3659c3a4887152d583b19cb70f44a897ea6f",
     "src/server/object_store.cpp": "cf519691f0c33f49b5808ef9ddf1912c30b803e4f8faf1c2480decfbb3334886",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "b248c6730acc218e63db6231214d4a868bc2a0499e01bd9c1b2094e7bd5391aa",

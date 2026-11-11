@@ -469,3 +469,29 @@ Q4T_TEST(batch_recount_requires_atomic_original_page_and_root_transition) {
       7);
   return true;
 }
+
+Q4T_TEST(batch_output_failure_releases_real_queue_charge_only_at_terminal) {
+  Fixture fixture;
+  fixture.options.batch_model_queue_tokens = 7;
+  fixture.options.batch_client_model_queue_tokens = 7;
+  ObjectStore objects(fixture.options);
+  const auto work = Prepare(objects, 7), next = Prepare(objects, 1);
+  BatchState batches(objects, {1, kBinaryMaxChunks});
+  Q4T_CHECK(Ok(Append(objects, work)) &&
+            Ok(batches.CompleteValidation(Access(), work.id, work.model)));
+  const auto started = batches.StartRow(Access(), work.id, 0);
+  Q4T_CHECK(Ok(started));
+  BatchRowResult result{
+      started.value.GetString("request_id"), 200, "{\"output\":[]}", {}};
+  result.actual_usage = ActualUsage{7, 1, 0, 0, 0};
+  Q4T_CHECK(
+      Ok(batches.FinishRow(Access(), work.id, 0, work.row.custom_id, result)) &&
+      Ok(batches.BeginFinalization(Access(), work.id, "completed")) &&
+      Ok(batches.Finalize(Access(), work.id)) &&
+      Limited(Append(objects, next)));
+  const auto final = batches.Finalize(Access(), work.id);
+  Q4T_CHECK(Ok(final) && final.value.GetString("status") == "failed" &&
+            final.value.Find("usage")->GetInt("total_tokens") == 8 &&
+            Ok(Append(objects, next)) && Ok(batches.Row(Access(), work.id, 0)));
+  return true;
+}

@@ -143,7 +143,8 @@ ObjectReply Public(const Json& stored) {
         !model)
       return Corrupt();
   }
-  if (!ValidBatchInputRecount(*data) || !ValidBatchUsageAccounting(*data))
+  if (!ValidBatchInputRecount(*data) || !ValidBatchUsageAccounting(*data) ||
+      !ValidBatchOutputFailure(*data))
     return Corrupt();
   return result;
 }
@@ -583,6 +584,10 @@ ObjectReply BatchState::Cancel(const BinaryAccess& access,
   auto& batch = Field(root.data, "batch");
   const auto status = batch.GetString("status");
   if (status == "cancelling" || status == "cancelled")
+    return Public(loaded.value);
+  // All execution has drained and the capacity failure is already durable.
+  // Cancellation cannot erase that decision or restart aggregation forever.
+  if (status == "finalizing" && root.data.Has("output_failure"))
     return Public(loaded.value);
   if (BatchTerminal(status))
     return Error(409, "batch_already_terminal", "Batch is already terminal");

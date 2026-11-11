@@ -137,6 +137,8 @@ set(protocol_inputs
   include/q4t/server/batch_state.h
   src/server/batch_state.cpp
   src/server/batch_results.cpp
+  src/server/batch_finalization.cpp
+  include/q4t/server/batch_finalization.h
   src/server/batch_usage.cpp
   src/server/batch_response_link.cpp
   include/q4t/server/batch_usage.h

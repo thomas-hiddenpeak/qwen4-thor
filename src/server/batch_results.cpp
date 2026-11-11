@@ -158,10 +158,20 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
 }  // namespace
 
 ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
-                             size_t index) {
+                             size_t index, bool retained_result) {
   const auto& data = *stored.Find("data");
   const auto count = static_cast<size_t>(data.GetInt("validated_rows"));
-  if (index >= count || data.GetBool("resources_released")) return Conflict();
+  if (index >= count) return Conflict();
+  if (data.GetBool("resources_released")) {
+    const auto* value = data.Find("output_failure");
+    BatchOutputFailure failure;
+    // Releasing execution quota does not discard retained original results.
+    // Only Row may read them, and only until the original output expiry.
+    if (!retained_result || !value ||
+        !ParseBatchOutputFailure(*value, &failure) ||
+        failure.retain_until <= std::time(nullptr))
+      return Conflict();
+  }
   const auto id = data.GetArray("pages")->array[index / kBatchPageRows].str;
   auto page = objects_.Execute(Request(access, id, ObjectKind::kToolRun),
                                access.deadline, access.cancelled);
@@ -249,7 +259,7 @@ ObjectReply BatchState::Row(const BinaryAccess& access, const std::string& id,
                             size_t index) {
   auto loaded = Load(access, id);
   if (!loaded.ok()) return loaded;
-  auto page = Page(access, loaded.value, index);
+  auto page = Page(access, loaded.value, index, true);
   if (!page.ok()) return page;
   ObjectReply reply;
   reply.value =
@@ -590,6 +600,8 @@ ObjectReply BatchState::BeginFinalization(const BinaryAccess& access,
 
 ObjectReply BatchState::Finalize(const BinaryAccess& access,
                                  const std::string& id) {
+  if (!output_limits_.Valid())
+    return Error(500, "batch_output_limits_invalid", "Invalid output limits");
   auto loaded = Owned(access, id);
   if (!loaded.ok()) return loaded;
   auto root = Update(access, loaded.value, ObjectKind::kBatch);
@@ -606,6 +618,31 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
   if (BatchUsageRows(root.data) != static_cast<size_t>(total))
     return Error(503, "batch_usage_recount_required",
                  "Original results require usage reconciliation");
+  std::optional<BatchOutputFailure> output_failure;
+  if (const auto* failure = root.data.Find("output_failure")) {
+    BatchOutputFailure parsed;
+    if (!ParseBatchOutputFailure(*failure, &parsed)) return Corrupt();
+    output_failure = std::move(parsed);
+  }
+  const int64_t target =
+      output_failure ? static_cast<int64_t>(output_failure->row_stop) : total;
+  const auto capacity_failure = [&](size_t before, const char* reason) {
+    // Rebuild from immutable original results to a whole-row boundary. The
+    // previous checkpoint may contain part of the overflowing row. Only
+    // aggregation restarts; invocation tickets and model results never do.
+    if (total <= 0) return Corrupt();
+    BatchOutputFailure failure{std::min(before, static_cast<size_t>(total - 1)),
+                               reason, 0};
+    if (output_failure) {
+      failure.reason = output_failure->reason;
+      if (failure.row_stop >= output_failure->row_stop) failure.row_stop = 0;
+    }
+    Set(&root.data, "output_failure", BatchOutputFailureJson(failure));
+    std::erase_if(root.data.object, [](const auto& field) {
+      return field.first == "finalization";
+    });
+    return Save(objects_, access, root);
+  };
   // A checkpoint owns the output chunks directly. Temporary staging roots
   // exist only within this turn, and disappear atomically with progress.
   // Recovery never needs an expired in-memory stage or an earlier model run.
@@ -615,7 +652,7 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
   size_t source_chunk = 0;
   if (const auto* progress = root.data.Find("finalization")) {
     if (progress->GetString("format") != "q4t.batch_finalization.v1" ||
-        !Integer(*progress, "next_row", 0, total) ||
+        !Integer(*progress, "next_row", 0, target) ||
         !Integer(*progress, "source_chunk", 0, kBinaryMaxChunks) ||
         !Integer(*progress, "completed", 0, counts->GetInt("completed")) ||
         !Integer(*progress, "failed", 0, counts->GetInt("failed")) ||
@@ -626,9 +663,10 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
     index = progress->GetInt("next_row");
     source_chunk = progress->GetInt("source_chunk");
     observed = {progress->GetInt("completed"), progress->GetInt("failed")};
-    if (observed[0] + observed[1] != index || (index == total && source_chunk))
+    if (observed[0] + observed[1] != index || (index == target && source_chunk))
       return Corrupt();
   }
+  const int64_t turn_start = index;
   BinaryStore binary(objects_);
   std::array<BinaryStage, 2> stages;
   std::array<std::string, 2> buffers;
@@ -647,8 +685,9 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
   };
   const auto append = [&](size_t lane, std::string_view bytes) -> ObjectReply {
     const auto staged = stages[lane].manifest.bytes + buffers[lane].size();
-    if (staged > kBinaryMaxBytes - manifests[lane].bytes ||
-        bytes.size() > kBinaryMaxBytes - manifests[lane].bytes - staged)
+    if (manifests[lane].bytes > output_limits_.bytes ||
+        staged > output_limits_.bytes - manifests[lane].bytes ||
+        bytes.size() > output_limits_.bytes - manifests[lane].bytes - staged)
       return Error(413, "binary_capacity_exceeded",
                    "Batch output File exceeds its byte budget");
     while (!bytes.empty()) {
@@ -663,17 +702,23 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
     }
     return {};
   };
+  const auto fits = [&](size_t lane, uint64_t remaining) {
+    const auto staged = stages[lane].manifest.bytes + buffers[lane].size();
+    return manifests[lane].bytes <= output_limits_.bytes &&
+           staged <= output_limits_.bytes - manifests[lane].bytes &&
+           remaining <= output_limits_.bytes - manifests[lane].bytes - staged;
+  };
   // Count the bytes consumed from original result manifests, including a
   // partly consumed row. Large rows cannot monopolize a fair worker turn.
   size_t rows = 0;
   uint64_t consumed = 0;
   constexpr uint64_t kTurnBytes = 4 * kBinaryChunkBytes;
-  while (index < total && rows < kBatchPageRows && consumed < kTurnBytes) {
+  while (index < target && rows < kBatchPageRows && consumed < kTurnBytes) {
     auto page = Page(access, loaded.value, index);
     if (!page.ok()) return page;
     const auto& entries = page.value.Find("data")->GetArray("rows")->array;
     size_t at = index % kBatchPageRows;
-    while (at < entries.size() && rows < kBatchPageRows &&
+    while (index < target && at < entries.size() && rows < kBatchPageRows &&
            consumed < kTurnBytes) {
       const auto& row = entries[at];
       const bool success = row.GetString("status") == "completed";
@@ -683,6 +728,7 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
         if (source_chunk || !ValidBatchInlineResult(row)) return Corrupt();
         const auto text = embedded->GetString("payload");
         if (text.size() > kTurnBytes - consumed) break;
+        if (!fits(lane, text.size())) return capacity_failure(index, "bytes");
         auto reply = append(lane, text);
         if (!reply.ok()) return reply;
         consumed += text.size();
@@ -699,8 +745,14 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
             result_data.GetString("batch_id") != id ||
             result_data.GetInt("line") != index + 1 || !successful ||
             !successful->IsBool() || successful->boolean != success ||
-            !read.manifest.bytes || source_chunk >= read.manifest.chunks.size())
+            !read.manifest.bytes ||
+            read.manifest.bytes > kExpandedApplicationBytes + 65536 ||
+            source_chunk >= read.manifest.chunks.size())
           return Corrupt();
+        uint64_t remaining = read.manifest.bytes;
+        for (size_t chunk = 0; chunk < source_chunk; ++chunk)
+          remaining -= read.manifest.chunks[chunk].bytes;
+        if (!fits(lane, remaining)) return capacity_failure(index, "bytes");
         while (source_chunk < read.manifest.chunks.size()) {
           const auto bytes = read.manifest.chunks[source_chunk].bytes;
           if (bytes > kTurnBytes - consumed) break;
@@ -728,16 +780,18 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
     auto reply = flush(lane);
     if (!reply.ok()) return reply;
     const auto& staged = stages[lane].manifest;
-    if (staged.chunks.size() > kBinaryMaxChunks - manifests[lane].chunks.size())
-      return Error(413, "binary_capacity_exceeded",
-                   "Batch output File exceeds its chunk budget");
+    if (manifests[lane].chunks.size() > output_limits_.chunks ||
+        staged.chunks.size() >
+            output_limits_.chunks - manifests[lane].chunks.size())
+      return capacity_failure(turn_start, "chunks");
     manifests[lane].bytes += staged.bytes;
     manifests[lane].chunks.insert(manifests[lane].chunks.end(),
                                   staged.chunks.begin(), staged.chunks.end());
   }
-  const bool done = index == total;
-  if (done && (source_chunk || observed[0] != counts->GetInt("completed") ||
-               observed[1] != counts->GetInt("failed")))
+  const bool done = index == target;
+  if (done && (source_chunk || (!output_failure &&
+                                (observed[0] != counts->GetInt("completed") ||
+                                 observed[1] != counts->GetInt("failed")))))
     return Corrupt();
   Set(&root.data, "finalization",
       Object({{"format", String("q4t.batch_finalization.v1")},
@@ -778,8 +832,28 @@ ObjectReply BatchState::Finalize(const BinaryAccess& access,
           String(file_id));
       mutations.push_back(std::move(file));
     }
-    Set(&terminal_batch, "status", String(terminal));
-    Set(&terminal_batch, terminal + "_at", Number(std::time(nullptr)));
+    const auto final_status = output_failure ? "failed" : terminal;
+    const auto finished = std::time(nullptr);
+    Set(&terminal_batch, "status", String(final_status));
+    Set(&terminal_batch, final_status + "_at", Number(finished));
+    if (output_failure) {
+      Set(&terminal_batch, "errors",
+          Object(
+              {{"object", String("list")},
+               {"data", Array({Object(
+                            {{"code", String("batch_output_capacity_exceeded")},
+                             {"message",
+                              String("Output File capacity exhausted; partial "
+                                     "Files contain only complete rows before "
+                                     "this line. Original results are retained "
+                                     "until the configured output expiry.")},
+                             {"line", Number(output_failure->row_stop + 1)},
+                             {"param", Json()}})})}}));
+      output_failure->retain_until =
+          finished + root.data.GetInt("output_ttl_seconds");
+      Set(&root.data, "output_failure",
+          BatchOutputFailureJson(*output_failure));
+    }
     Set(&root.data, "resources_released", Boolean(true));
   }
   for (const auto& stage : stages) {
