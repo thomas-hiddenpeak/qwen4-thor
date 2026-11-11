@@ -180,17 +180,23 @@ def finish(directory):
 def configure(directory, *, enabled):
     ledger.require(type(enabled) is bool, 'explicit host enable flag required')
     with exclusive(directory) as directory:
-        value = load(directory)
-        ledger.require(value['phase'] == 'ready', 'host installation is not ready')
-        if enabled:
-            publish(directory, value); check_resource(value)
-            checked = check_runtime(directory, value)
-            ledger.require(checked['outer_enabled'], 'explicit outer recovery enable required')
-        if value['enabled'] != enabled:
-            value = dict(value, enabled=enabled, revision=value['revision']+1)
-            commit(directory, value)
-        else: publish(directory, value)
-        return dict(installation=value, core_intent_changed=False, model_actions=False)
+        return configure_locked(directory, load(directory), enabled=enabled)
+
+
+def configure_locked(directory, value, *, enabled, transaction=None):
+    from tools.serve_recovery import host_handoff
+    ledger.require(type(enabled) is bool and value == load(directory), 'host configuration binding differs')
+    ledger.require(value['phase'] == 'ready', 'host installation is not ready')
+    if enabled:
+        host_handoff.require_admission(directory, value, transaction=transaction)
+        publish(directory, value); check_resource(value)
+        checked = check_runtime(directory, value)
+        ledger.require(checked['outer_enabled'], 'explicit outer recovery enable required')
+    if value['enabled'] != enabled:
+        value = dict(value, enabled=enabled, revision=value['revision']+1)
+        commit(directory, value)
+    else: publish(directory, value)
+    return dict(installation=value, core_intent_changed=False, model_actions=False)
 
 
 def status(directory):
@@ -200,8 +206,12 @@ def status(directory):
         except (OSError, ValueError) as error: current = False; reason = type(error).__name__
         trigger = trigger_phase(directory, value)
         registered = True if trigger == 'registered' else False if trigger in ('absent', 'removed') else None
+        from tools.serve_recovery import host_handoff
+        try: admission = host_handoff.admission(directory, value) or 'permitted'
+        except (OSError, ValueError): admission = 'UNKNOWN'
         return dict(installation=value, publication_current=current, publication_error=reason,
-                    model_actions=False, host_startup_registered=registered, host_trigger_phase=trigger)
+                    model_actions=False, host_startup_registered=registered, host_trigger_phase=trigger,
+                    handoff_admission=admission)
 
 
 def trigger_phase(directory, value):
@@ -216,6 +226,10 @@ def trigger_phase(directory, value):
 def remove(directory):
     with exclusive(directory) as directory:
         value = load(directory)
+        from tools.serve_recovery import host_handoff
+        handoff = host_handoff.selected(directory, value)
+        ledger.require(handoff is None or handoff[0]['phase'] == 'complete',
+                       'complete the original host handoff before removing its entry')
         if value['phase'] == 'removed':
             publish(directory, value)
             return dict(removed=True, history_retained=True, resource_installation_retained=True)

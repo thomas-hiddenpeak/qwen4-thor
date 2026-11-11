@@ -1,0 +1,6 @@
+test_real_runtime_timer_checks_stopped_service_and_is_fully_removed (tools.serve_recovery.test_host_systemd_live.RuntimeTests.test_real_runtime_timer_checks_stopped_service_and_is_fully_removed) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.493s
+
+OK

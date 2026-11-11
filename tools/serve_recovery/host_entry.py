@@ -70,6 +70,13 @@ def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
         root = artifact.verify(directory, value['artifact'])
         ledger.require(root == ROOT, 'privileged entry must execute the installed protected source')
         ledger.require(host.public(directory) == value, 'host private/public authority differs')
+        if operation != 'stop':
+            from tools.serve_recovery import host_handoff
+            reason = host_handoff.admission(directory, value)
+            if reason is not None and operation == 'ensure':
+                print(json.dumps(dict(status='NO_ACTION', reason=reason, model_actions=False)))
+                return 0
+            ledger.require(reason is None, reason or 'host handoff admission denied')
         if systemd_trigger:
             from tools.serve_recovery import host_systemd
             ledger.require(operation == 'ensure', 'systemd trigger only permits native ensure')

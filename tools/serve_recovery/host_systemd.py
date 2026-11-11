@@ -211,27 +211,35 @@ def configure(directory, *, enabled):
     ledger.require(type(enabled) is bool, 'explicit timer enable flag required')
     with host.exclusive(directory) as directory:
         installed = host.load(directory); value = load(directory, installed)
-        ledger.require(value['phase'] == 'registered', 'systemd trigger is not registered')
-        if enabled:
-            loaded_match(value)
-            ledger.require(installed['phase'] == 'ready' and installed['enabled'],
-                           'native host entry must be enabled explicitly')
-            host.check_runtime(directory, installed)
-        # Persist operator intent before external effects; retries repeat the
-        # same selected command without recreating model/outer budget history.
-        if value['enabled'] != enabled:
-            value = dict(value, enabled=enabled, revision=value['revision']+1)
-            commit(directory, value, installed)
-        if not enabled: loaded_match(value)
-        timer = names(installed)[1]
-        scope_args = ('--runtime',) if value['scope'] == 'runtime' else ()
-        if enabled:
-            manager(*scope_args, 'enable', timer)
-            # Never wait for an ensure child while holding its admin lock.
-            manager('--no-block', 'start', timer)
-        else:
-            manager('stop', timer); manager(*scope_args, 'disable', timer)
-        return dict(enabled=enabled, model_actions=False, core_intent_changed=False)
+        return configure_locked(directory, installed, value, enabled=enabled)
+
+
+def configure_locked(directory, installed, value, *, enabled, transaction=None):
+    from tools.serve_recovery import host_handoff
+    ledger.require(type(enabled) is bool and installed == host.load(directory) and
+        value == load(directory, installed), 'trigger configuration binding differs')
+    ledger.require(value['phase'] == 'registered', 'systemd trigger is not registered')
+    if enabled:
+        host_handoff.require_admission(directory, installed, transaction=transaction)
+        loaded_match(value)
+        ledger.require(installed['phase'] == 'ready' and installed['enabled'],
+                       'native host entry must be enabled explicitly')
+        host.check_runtime(directory, installed)
+    # Persist operator intent before external effects; retries repeat the
+    # same selected command without recreating model/outer budget history.
+    if value['enabled'] != enabled:
+        value = dict(value, enabled=enabled, revision=value['revision']+1)
+        commit(directory, value, installed)
+    if not enabled: loaded_match(value)
+    timer = names(installed)[1]
+    scope_args = ('--runtime',) if value['scope'] == 'runtime' else ()
+    if enabled:
+        manager(*scope_args, 'enable', timer)
+        # Never wait for an ensure child while holding its admin lock.
+        manager('--no-block', 'start', timer)
+    else:
+        manager('stop', timer); manager(*scope_args, 'disable', timer)
+    return dict(enabled=enabled, model_actions=False, core_intent_changed=False)
 
 
 def status(directory):

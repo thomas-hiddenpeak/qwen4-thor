@@ -1,0 +1,33 @@
+{
+  "status": "TARGETED_NATIVE_HOST_HANDOFF_CPU_PASS",
+  "distinct_tests": 19,
+  "invocations": 21,
+  "all_first_pass": true,
+  "cpu_seconds": 52.29483623383567,
+  "real_cpu_package_switch_and_rollback": true,
+  "original_core_client_and_outer_policies_preserved": true,
+  "immutable_source_generations_retained": true,
+  "original_entry_retired": true,
+  "partial_gate_and_commit_resume_same_transaction": true,
+  "corrupt_permanent_history_rejected": true,
+  "optional_trigger_selection_preserved": true,
+  "real_systemd_stopped_regression": true,
+  "actual_guardian_cpu_adoption_regression": true,
+  "model_gpu_starts": 0,
+  "existing_host_services_changed": false,
+  "persistent_configuration_changed": false,
+  "owned_runtime_trigger_test_cleaned": true,
+  "owned_domains_remaining": [],
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/host_handoff.py": "0d88e5d81c07a23d441ad5c2e9afbaca6fca4f7cc6cd68c1158a00d3be9f9431",
+    "tools/serve_recovery/test_host_handoff.py": "217cdd5b53b83c6adc98bc095fa6588013c70e2276b452752c1bf71d1a114235",
+    "tools/serve_recovery/host_install.py": "ca93ffc1f688185bbb66b084cc208b7ea4e43cee730156726781bee000d02dc1",
+    "tools/serve_recovery/host_entry.py": "cb83aea5d659e04e65ee0d281076ac4d7d7d1e9ef6bc33cd93f2a4e5ef93434b",
+    "tools/serve_recovery/host_systemd.py": "a96063e872082648838bb08d47340dfcee18828371d61e65354314e789755e38",
+    "tools/serve_recovery/service.py": "5870299d3d57f72aeb35fa016dd8db0db511cb6430de8488bd7e147abdd1ac96",
+    "tools/serve_recovery/bundle.py": "45bc36159c574be511a4c19a99d74b11a99550434f26448a33a8f979d7975605",
+    "tools/serve_recovery/test_native_bundle.py": "9a050e22f522a612a65b20b3ebd078e5b44967d125df34eccc0f0f7670b331aa"
+  },
+  "released": false
+}
