@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。R09外层失能隔离[8 CPU首过](evidence/serve-outer-parent-cpu-20261112/README.md)，5.387秒；Guardian构建5.237秒零警告。实际外层退出后原四角色同PID/原RUNNING及额度保持，报告降级；显式stop、伪信号拒绝与旧前台/daemon合同通过。0GPU/未发行，继续原健康根接管、统一恢复入口与全部任务。
+
+2026-11-12。R09接线审计发现受管外层父死被误作人工STOPPED。已为显式v5实例模式区分外层丢失：存活Guardian保持同核心服务，仅报告READY_DEGRADED/outer_owner_lost；人工stop及旧前台/daemon合同保持。冻结3新+5直接共8 CPU，必要Guardian构建待执行；新外层接管继续实现，0GPU/默认及R07保持，总任务继续。
+
 2026-11-12。R09连续旧slot退休[28 CPU首过](evidence/serve-outer-reconcile-cpu-20261112/README.md)，4.186秒/0GPU。实际孤儿退出核验、STOPPED/故障/预算保持，以及核心写入中断/外层丢回执续办通过；新树、重取锁、错描述符拒绝。未发行，默认及R07保持；继续同boot新外层/跨boot、统一入口和全部任务。
 
 2026-11-12。R09连续外层已开发原slot退休：启动前持久绑定真实外层/实例/树与原核心代次，实际ECHILD后才按原ticket退休，保持STOPPED、故障与预算；丢回执和中断可续办。冻结8新+12策略存储+6实例+2树共28项针对性CPU，尚未执行；同boot新外层/跨boot与完整运行入口继续，0GPU/默认及R07保持，总任务继续。

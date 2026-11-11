@@ -99,3 +99,17 @@ JSON 所称的“外层持锁”。后台 detach 不适用该父层生命周期�
 丢失/跨boot、统一运行和选配宿主入口仍属必做任务。
 
 28项[针对性CPU首过](evidence/serve-outer-reconcile-cpu-20261112/README.md)，4.186秒/0GPU。后续新外层与跨boot仍继续，不把此组完成当总任务终点。
+
+## 外层意外退出与健康业务隔离（CPU 已验证，未发行）
+
+原前台入口使用父死SIGTERM，并写STOPPED；此合同仍适用于普通
+前台启动。显式v5外层监护模式另用父死SIGUSR1观察：核对实际
+getppid变化后报告outer_owner_lost/READY_DEGRADED，存活Guardian
+与核心服务继续，不能把辅助外层退出解释成用户停服。伪造信号
+而原父仍活不改变状态；明确stop照常持久STOPPED并清理。
+
+新外层在旧Guardian仍健康时须接管观察，不主动重启它；旧根退出
+后仍须实际资源域/跨boot或原连续树证明，不能仅以孤儿标记退休
+旧slot。接管与完整运行入口尚未完成，继续实现。
+
+8项[针对性CPU首过](evidence/serve-outer-parent-cpu-20261112/README.md)，5.387秒；必要构建零警告。新观察者/运行接管继续。

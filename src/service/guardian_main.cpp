@@ -36,7 +36,13 @@ namespace w = q4t::service::wire;
 using q4t::io::Json;
 constexpr int64_t kSecond = 1'000'000'000;
 volatile sig_atomic_t stop_signal = 0;
-void SignalHandler(int) { stop_signal = 1; }
+volatile sig_atomic_t outer_loss_signal = 0;
+void SignalHandler(int signum) {
+  if (signum == SIGUSR1)
+    outer_loss_signal = 1;
+  else
+    stop_signal = 1;
+}
 
 int64_t Now() {
   return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -367,7 +373,9 @@ class Guardian {
               "invalid daemon startup channel");
       startup_deadline_ = Now() + config_.startup_ns;
     } else {
-      Require(prctl(PR_SET_PDEATHSIG, SIGTERM, 0, 0, 0) == 0 &&
+      const int parent_signal =
+          config_.outer_instance_fd >= 0 ? SIGUSR1 : SIGTERM;
+      Require(prctl(PR_SET_PDEATHSIG, parent_signal, 0, 0, 0) == 0 &&
                   getppid() == config_.launcher.pid &&
                   s::ReadProcess(config_.launcher.pid, &parent).ok() &&
                   parent.identity == config_.launcher,
@@ -489,6 +497,14 @@ class Guardian {
                             {gateway_socket_.Get(), POLLIN, 0}};
       poll(descriptors, 3, 25);
       const int64_t now = Now();
+      if (outer_loss_signal) {
+        outer_loss_signal = 0;
+        // A managed outer observer is auxiliary to this live control root.
+        // Its death must not invent operator STOPPED or restart healthy work.
+        if (config_.outer_instance_fd >= 0 &&
+            getppid() != config_.launcher.pid)
+          outer_owner_lost_ = true;
+      }
       if (stop_signal) RequestStop(now);
       Clients(now);  // Stop precedes consuming any new durable launch receipt.
       if (versions_) versions_->Tick(now);
@@ -649,6 +665,7 @@ class Guardian {
         : recovering_ || gateway_recovering_ || version_draining_ ? "RECOVERING"
         : quarantined_         ? "QUARANTINED"
         : BusinessReady()      ? (gate_.Frozen() || observations_unknown ||
+                                     outer_owner_lost_ ||
                                      (versions_ && !versions_->Available())
                                       ? "READY_DEGRADED"
                                       : "READY")
@@ -671,6 +688,11 @@ class Guardian {
          {"state", w::String(state)},
          {"guardian_pid", w::Unsigned(getpid())},
          {"guardian_start_ticks", w::Unsigned(self_.identity.start_ticks)},
+         {"outer_supervised", w::Boolean(config_.outer_instance_fd >= 0)},
+         {"outer_owner_lost", w::Boolean(outer_owner_lost_)},
+         {"outer_owner_pid", w::Unsigned(config_.launcher.pid)},
+         {"outer_owner_start_ticks",
+          w::Unsigned(config_.launcher.start_ticks)},
          {"controller_pid", controller_.identity.pid > 0 && !controller_reaped_
                                 ? w::Unsigned(controller_.identity.pid)
                                 : Json{}},
@@ -1925,6 +1947,7 @@ class Guardian {
   Json version_exit_;
   bool activate_ = false, initialized_ = false, desired_running_ = false;
   bool stopping_ = false, stopped_ = false, stop_durable_ = false;
+  bool outer_owner_lost_ = false;
   bool stop_handoff_ = false;
   s::QuotaHandoffGrace quota_handoff_grace_;
   bool recovering_ = false, controller_reaped_ = true;
@@ -1990,6 +2013,7 @@ int main(int argc, char** argv) {
     return 2;
   }
   try {
+    auto config = ReadConfig(argv[2]);
     struct sigaction action {};
     action.sa_handler = SignalHandler;
     sigemptyset(&action.sa_mask);
@@ -1997,7 +2021,10 @@ int main(int argc, char** argv) {
                 sigaction(SIGINT, &action, nullptr) == 0 &&
                 sigaction(SIGHUP, &action, nullptr) == 0,
             "signal control unavailable");
-    Guardian guardian(ReadConfig(argv[2]),
+    if (config.outer_instance_fd >= 0)
+      Require(sigaction(SIGUSR1, &action, nullptr) == 0,
+              "outer ownership observation unavailable");
+    Guardian guardian(std::move(config),
                       std::string(argv[3]) == "--activate");
     guardian.Initialize();
     for (;;) {

@@ -1859,11 +1859,12 @@
         "evidence/serve-outer-policy-cpu-20261112/README.md",
         "evidence/serve-outer-tree-cpu-20261112/README.md",
         "evidence/serve-outer-instance-cpu-20261112/README.md",
-        "evidence/serve-outer-reconcile-cpu-20261112/README.md"
+        "evidence/serve-outer-reconcile-cpu-20261112/README.md",
+        "evidence/serve-outer-parent-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
-      "development_status": "Continuous original outer retirement accepted by 28 first-pass targeted CPU cases (4.186s): pre-dispatch durable custody/core baseline, real orphan reaping, stop/fault/budget preservation, interrupted core and lost outer receipt recovery. Not released. Same-boot new outer, cross-boot verification, full runtime/host integration and delivery remain required; original R07 candidate unchanged, all master tasks continue.",
+      "development_status": "Continuous original outer retirement accepted by 28 first-pass targeted CPU cases (4.186s): pre-dispatch durable custody/core baseline, real orphan reaping, stop/fault/budget preservation, interrupted core and lost outer receipt recovery. Not released. Same-boot new outer, cross-boot verification, full runtime/host integration and delivery remain required; original R07 candidate unchanged, all master tasks continue. Found managed parent-death incorrectly persisted STOPPED; developed v5 auxiliary outer-loss isolation (healthy root preserved), frozen 8 targeted CPU and necessary native build. Healthy existing-root observation adoption remains required. Managed v5 outer death isolation now accepted: 8 CPU first pass, same live core/intent/budgets retained, explicit stop and legacy lifecycle pass; no release.",
       "subtasks": [
         {
           "id": "R09.1",
