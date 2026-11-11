@@ -5,12 +5,27 @@ import json
 import os
 from pathlib import Path
 import struct
+import tempfile
 import unittest
 
 from tools.serve_responses import embeddings_acceptance as stage
 
 
 class EmbeddingsAcceptanceTests(unittest.TestCase):
+    def test_real_size_tokenizer_asset_is_separate_from_package_metadata(self):
+        with tempfile.TemporaryDirectory(dir=stage.ROOT/'.q4t-work') as directory:
+            path = Path(directory)/'tokenizer.json'
+            value = dict(model=dict(vocab={'!':0}), padding=' '*(2*1024**2))
+            path.write_text(json.dumps(value))
+            stage.verify_raw_token(path)
+            value['model']['vocab']['!'] = 1
+            path.write_text(json.dumps(value))
+            with self.assertRaisesRegex(RuntimeError, 'raw token fixture'):
+                stage.verify_raw_token(path)
+            with path.open('wb') as stream: stream.truncate(64*1024**2+1)
+            with self.assertRaisesRegex(RuntimeError, 'asset size bound'):
+                stage.verify_raw_token(path)
+
     def test_fixed_requests_include_raw_inputs_and_bounded_work(self):
         rows = stage.requests()
         self.assertEqual(stage.LIMITS, dict(starts=2, chats=8, controls=2000, seconds=900))

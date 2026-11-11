@@ -106,6 +106,13 @@ def retrieval_observation(rows):
                 total=2, trained_retrieval_quality_claim=False)
 
 
+def verify_raw_token(path):
+    # Model tokenizers are assets, not the service package's <=2 MiB metadata.
+    require(path.stat().st_size <= 64*1024**2, 'tokenizer asset size bound')
+    tokenizer = json.loads(path.read_text())
+    require(tokenizer['model']['vocab']['!'] == 0, 'raw token fixture changed')
+
+
 def prepare(args):
     background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
@@ -116,8 +123,7 @@ def prepare(args):
     require(tests.parent == Path(plan['binary']).parent, 'GPU test build differs')
     required = path.parent/'gpu-required.txt'
     required.write_text(PRIMITIVE+'\n')
-    tokenizer = read(Path(plan['model'])/'tokenizer.json')
-    require(tokenizer['model']['vocab']['!'] == 0, 'raw token fixture changed')
+    verify_raw_token(Path(plan['model'])/'tokenizer.json')
     plan['gpu_test'] = dict(binary=str(tests), sha256=sha(tests),
                            required=str(required), required_sha256=sha(required))
     plan['planned'] = dict(starts=2, requests=8, embedding_chunks_max=18,
