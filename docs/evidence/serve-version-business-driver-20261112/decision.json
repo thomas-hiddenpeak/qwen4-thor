@@ -1,0 +1,25 @@
+{
+  "purpose": "R06 bounded actual version acceptance driver",
+  "cpu_cases": [
+    "tools.serve_recovery.test_version_acceptance.DriverTests.test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget",
+    "tools.serve_recovery.test_version_acceptance.DriverTests.test_owned_cpu_fault_handler_produces_actual_fatal_wait_without_core_pipeline",
+    "tools.serve_recovery.test_version_acceptance.DriverTests.test_probe_budget_exhaustion_precedes_any_module_load_or_device_exec",
+    "tools.serve_recovery.test_version_acceptance.DriverTests.test_empty_environment_probe_verifies_real_inherited_lock_before_cpu_exec"
+  ],
+  "total": 4,
+  "new_gpu_starts": 0,
+  "sources_sha256": {
+    "tools/serve_recovery/test_version_acceptance.py": "79d809cca4ffeac4e7ab2d68e9cb35dd2d9b6f15d71f691568ebbfd8bdc7dfc8",
+    "tools/serve_recovery/version_acceptance.py": "95701dcaba312fc7c606faf7fa91585e4a427485f5cdf1fff52e0a83f8af0df3"
+  },
+  "planned_gpu": {
+    "model_starts": 2,
+    "http_posts_including_selfchecks_and_denials": 10,
+    "probes": 1,
+    "seconds": 900
+  },
+  "status": "ACCEPT_CPU_VERSION_BUSINESS_DRIVER",
+  "seconds": 0.7831618851050735,
+  "actual_model_business": false,
+  "default_unchanged": true
+}

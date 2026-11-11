@@ -1,0 +1,9 @@
+test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget (tools.serve_recovery.test_version_acceptance.DriverTests.test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget) ... ok
+test_empty_environment_probe_verifies_real_inherited_lock_before_cpu_exec (tools.serve_recovery.test_version_acceptance.DriverTests.test_empty_environment_probe_verifies_real_inherited_lock_before_cpu_exec) ... ok
+test_owned_cpu_fault_handler_produces_actual_fatal_wait_without_core_pipeline (tools.serve_recovery.test_version_acceptance.DriverTests.test_owned_cpu_fault_handler_produces_actual_fatal_wait_without_core_pipeline) ... ok
+test_probe_budget_exhaustion_precedes_any_module_load_or_device_exec (tools.serve_recovery.test_version_acceptance.DriverTests.test_probe_budget_exhaustion_precedes_any_module_load_or_device_exec) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.601s
+
+OK
