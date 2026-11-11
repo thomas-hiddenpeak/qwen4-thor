@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py", line 363, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py", line 354, in main
+    if args.mode=='prepare':prepare(args);return 0
+                            ^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py", line 90, in prepare
+    capacity_config=capacity,application_state=application,model_names=settings['model_names'],
+                                                                       ~~~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'model_names'

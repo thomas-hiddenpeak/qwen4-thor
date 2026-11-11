@@ -87,7 +87,7 @@ def prepare(args):
         build/'q4t-guardian',origin/'bin/q4t-cuda-probe',None,
         origin/'gateway-policy.json',origin/'engine/client-policy.json',out/'bundle',
         native_receipt=out/'native-build.json',native_ingress=origin/'bin/q4t-ingress',
-        capacity_config=capacity,application_state=application,model_names=settings['model_names'],
+        capacity_config=capacity,application_state=application,model_names=settings.get('model_names'),
         embedding_model_dir=Path(settings['native_embedding']['directory']),
         recovery_profiles=qualified/'registry.json',recovery_profile_policy=old['recovery_profile_policy'])
     fallback=profile_compat.prepare(origin,old_sha,out/'retained-fallback')
