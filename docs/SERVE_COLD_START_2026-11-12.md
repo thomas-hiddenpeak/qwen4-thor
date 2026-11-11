@@ -89,3 +89,5 @@ Guardian 降权后检查真实 cgroup、持续持有的 flock 和内核规则，
 2026-11-12。R07管理组件[19 CPU首过](evidence/serve-device-management-cpu-20261112/README.md)：11预算/账本、6真实原生IPC与2直接凭据，0GPU/零警告。丢回执不重发、跨boot不清额度、真实降权拒绝与超时自清理通过；自有CPU域/pin回收。默认rev64保持，继续宿主资格、部署CLI与Guardian接线及全部总任务。
 
 2026-11-12。R07接线[12项不同CPU接受](evidence/serve-device-guardian-cpu-20261112/README.md)：首11/12，旧夹具进度遗漏修复后仅补1项通过；原失败保留。真实root局部域凭据拒绝、普通启动器交接、设备故障保护、连续代次探测与停止优先通过。0GPU/默认rev64保持；继续宿主资格、封包/部署入口与真实冷启动及全部任务。
+
+2026-11-12。R07 v17封包[8 CPU首过](evidence/serve-device-package-cpu-20261112/README.md)，0.732秒；当前真实v16包a3bb4ec8只读核验亦过（0.381秒）。隔离目录导入、原生管理程序身份/篡改负控、历史清单及容量保持通过；0GPU/未发布。继续完整宿主资格与设备域管理入口、真实冷启动及全部总任务。

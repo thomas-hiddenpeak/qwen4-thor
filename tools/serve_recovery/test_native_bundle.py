@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -72,7 +73,9 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 16)
+        self.assertEqual(value['version'], 17)
+        self.assertNotIn('bin/q4t-device-control', value['files'])
+        self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
@@ -112,7 +115,10 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V15_SOURCES),
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V16_SOURCES),
+            {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
+             'device_budget', 'device_store', 'device_control', 'device_inventory')})
+        self.assertEqual(set(bundle.V16_SOURCES)-set(bundle.V15_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('version_runtime','version_launch')})
         self.assertEqual(set(bundle.V15_SOURCES)-set(bundle.V14_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('version_policy',
@@ -158,7 +164,8 @@ class BundleTests(unittest.TestCase):
                 (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
                 (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES),
                 (10, bundle.V10_SOURCES), (11, bundle.V11_SOURCES),
-                (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES), (15, bundle.V15_SOURCES)):
+                (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
+                (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -203,7 +210,7 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 16)
+        self.assertEqual(value['version'], 17)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -229,7 +236,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 16)
+        self.assertEqual(value['version'], 17)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],
@@ -380,6 +387,51 @@ class BundleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'native build receipt'):
             self.prepare()
 
+    def test_optional_native_device_control_is_source_bound_and_hash_checked(self):
+        native = self.directory/'device-control'
+        native.write_bytes(b'CPU device control binary fixture')
+        build = json.loads(self.build.read_bytes())
+        build['device_control_sha256'] = bundle.engine.sha(native)
+        self.save(self.build, build)
+        receipt = self.prepare(device_control=native)
+        package = Path(receipt['package'])
+        value = bundle.verify(package, receipt['manifest_sha256'])
+        self.assertEqual(value['files']['bin/q4t-device-control'], build['device_control_sha256'])
+        self.assertIn('src/service/device_control_main.cpp', build['source_files'])
+        self.assertIn('src/service/device_admission.cpp', build['source_files'])
+        self.assertIn('src/service/device_filter.cpp', build['source_files'])
+        copied = package/'bin/q4t-device-control'
+        copied.chmod(0o700); copied.write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'file identity changed'):
+            bundle.verify(package, receipt['manifest_sha256'])
+
+    def test_device_control_receipt_and_custody_source_cannot_be_omitted(self):
+        native = self.directory/'device-control'; native.write_bytes(b'CPU fixture')
+        original = json.loads(self.build.read_bytes())
+        with self.assertRaisesRegex(ValueError, 'native build receipt'):
+            self.prepare(device_control=native)
+        original['device_control_sha256'] = bundle.engine.sha(native)
+        original['source_files'].pop('src/service/device_filter.cpp')
+        self.save(self.build, original)
+        with self.assertRaisesRegex(ValueError, 'native build receipt'):
+            self.prepare(device_control=native)
+        self.assertFalse((self.directory/'package').exists())
+
+    def test_relocated_v17_source_imports_every_cold_management_module(self):
+        receipt = self.prepare()
+        code = '''import sys
+sys.path.insert(0, sys.argv[1])
+from tools.serve_recovery import service, cold_admission, device_budget
+from tools.serve_recovery import device_store, device_control, device_inventory
+assert cold_admission.configuration('unused', 'unused', -1) == (None, ())
+print('isolated cold source imports passed')
+'''
+        result = subprocess.run([sys.executable, '-I', '-B', '-c', code,
+            str(Path(receipt['package'])/'source')], cwd=self.directory,
+            env={}, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(result.stdout, b'isolated cold source imports passed\n')
+
     def test_application_limits_must_be_bound_before_package_creation(self):
         original = json.loads(self.build.read_text())
         name = 'include/q4t/server/request_limits.h'
@@ -435,6 +487,12 @@ class BundleTests(unittest.TestCase):
             self.assertEqual(service.main(arguments), 0)
         self.assertEqual(prepare.call_args.kwargs['ingress_mode'], 'native')
         self.assertIsNone(prepare.call_args.args[5])
+        self.assertIsNone(prepare.call_args.kwargs['device_control'])
+        path = self.directory/'q4t-device-control'
+        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(service.main([*arguments, '--device-control', str(path)]), 0)
+        self.assertEqual(prepare.call_args.kwargs['device_control'], path)
 
     def test_cli_carries_application_state_limits_to_sealed_package(self):
         arguments = ['prepare']

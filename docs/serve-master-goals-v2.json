@@ -1795,10 +1795,11 @@
         "evidence/serve-device-inventory-cpu-20261112/README.md",
         "evidence/serve-device-admission-cpu-20261112/README.md",
         "evidence/serve-device-management-cpu-20261112/README.md",
-        "evidence/serve-device-guardian-cpu-20261112/README.md"
+        "evidence/serve-device-guardian-cpu-20261112/README.md",
+        "evidence/serve-device-package-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Core admission forwarding and native Guardian/controller cold-probe wiring implemented. 12 distinct targeted CPU checks accepted after repairing one stale progress fixture; original failure retained. Full host qualification, deployment entry/versioned package and actual NVML-free cold business remain pending. Root kernel authority does not remove original restart/stop/device protections. Default rev64 unchanged; all tasks continue.",
+      "development_status": "Admission/management/budget and Guardian/controller wiring CPU verified; v17 package/source closure has 8 first-pass targeted checks and actual retained v16 package verifies under current reader. Full host initial qualification, usable device-domain administration, real NVML-free cold launch and release remain in progress. 0 new GPU, default rev64 retained. Continue all master tasks.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

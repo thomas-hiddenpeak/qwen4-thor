@@ -183,6 +183,8 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
     try:
         from tools.serve_recovery import cold_admission
         cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
+        ledger.require(cold_config is None or manifest['version'] >= 17,
+                       'cold device startup requires service profile v17')
         if daemon:
             parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         run = state/'runs'/str(uuid.uuid4())
@@ -297,6 +299,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         prepare.add_argument('--'+name, type=Path, required=True)
     prepare.add_argument('--ingress-mode', choices=('native', 'nginx'), default='native')
     prepare.add_argument('--native-ingress', type=Path)
+    prepare.add_argument('--device-control', type=Path)
     prepare.add_argument('--nginx', type=Path)
     prepare.add_argument('--certificate', type=Path)
     prepare.add_argument('--key', type=Path)
@@ -387,6 +390,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
                 native_ingress=args.native_ingress, ingress_mode=args.ingress_mode,
+                device_control=args.device_control,
                 client_ca=args.client_ca, client_crl=args.client_crl,
                 capacity_config=engine.read(args.capacity_config)
                     if args.capacity_config is not None else None,

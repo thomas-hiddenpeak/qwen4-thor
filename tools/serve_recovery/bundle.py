@@ -47,8 +47,11 @@ V14_SOURCES = tuple(sorted(set(V13_SOURCES) | {
 V15_SOURCES = tuple(sorted(set(V14_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('version_policy', 'version_store', 'version_journal',
                  'version_contract', 'version_registration')}))
-SOURCES = tuple(sorted(set(V15_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+V16_SOURCES = tuple(sorted(set(V15_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('version_runtime', 'version_launch')}))
+SOURCES = tuple(sorted(set(V16_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+    for name in ('cold_admission', 'device_budget', 'device_store',
+                 'device_control', 'device_inventory')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -58,6 +61,9 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     'tools/serve_recovery/build_tools.py',
     'include/q4t/status.h', 'include/q4t/io/json.h', 'src/io/json.cpp',
     'src/service/cuda_probe.cu', 'src/service/guardian_main.cpp',
+    'src/service/device_control_main.cpp',
+    *('include/q4t/service/device_'+name+'.h' for name in ('filter', 'admission')),
+    *('src/service/device_'+name+'.cpp' for name in ('filter', 'admission')),
     *('include/q4t/service/guardian_'+name+'.h' for name in
       ('process', 'journal', 'wire', 'quota', 'version')),
     *('src/service/guardian_'+name+'.cpp' for name in ('process', 'journal', 'wire', 'version')),
@@ -172,7 +178,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
             model_names=None, application_state=None, capacity_config=None,
             repository=None, access_program_policy=None, file_input_policy=None,
-            embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None):
+            embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None,
+            device_control=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -213,7 +220,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         build['source_files'].keys() == NATIVE_SOURCES and
         build.get('guardian_sha256') == engine.sha(guardian) and
         build.get('cuda_probe_sha256') == engine.sha(cuda_probe) and
-        (not native or build.get('ingress_sha256') == engine.sha(native_ingress)),
+        (not native or build.get('ingress_sha256') == engine.sha(native_ingress)) and
+        (device_control is None or build.get('device_control_sha256') == engine.sha(device_control)),
         'native build receipt mismatch')
     for name, digest in build['source_files'].items():
         ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
@@ -229,7 +237,11 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         file_input_policy=file_input_policy, embedding_model_dir=embedding_model_dir)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    for name, source in zip(executables, (guardian, cuda_probe, executable)):
+    programs = list(zip(executables, (guardian, cuda_probe, executable)))
+    if device_control is not None:
+        executables = (*executables, 'q4t-device-control')
+        programs.append(('q4t-device-control', device_control))
+    for name, source in programs:
         shutil.copyfile(source, target/'bin'/name)
         (target/'bin'/name).chmod(0o500)
     for name in SOURCES:
@@ -258,7 +270,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=16, profile='q4t-service-recovery-v16', repository=str(repository),
+    value = dict(version=17, profile='q4t-service-recovery-v17', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -286,10 +298,10 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) else ()),
-        *(('tls_configuration',) if version in (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) else ()),
-        *(('recovery_profiles', 'recovery_profile_policy') if version in (12, 13, 14, 15, 16) else ())))
-    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) and
+        *(('ingress_mode',) if version in range(2, 18) else ()),
+        *(('tls_configuration',) if version in range(4, 18) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 18) else ())))
+    ledger.require(type(version) is int and version in range(1, 18) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -298,7 +310,9 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    sources = (SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
+    if version == 17 and type(value['files']) is dict and 'bin/q4t-device-control' in value['files']:
+        executables = (*executables, 'q4t-device-control')
+    sources = (SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
                V11_SOURCES if version == 11 else
                V10_SOURCES if version == 10 else
                V9_SOURCES if version == 9 else
@@ -311,10 +325,10 @@ def verify(package, digest):
              'gateway-policy.json', 'native-build.json'}
     if value.get('recovery_profiles') is not None:
         names |= {'profile-primary.json', 'profile-light.json'}
-    if version in (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16):
+    if version in range(4, 18):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) and native):
+    if value['tls'] and not (version in range(4, 18) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')
