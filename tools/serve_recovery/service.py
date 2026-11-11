@@ -320,7 +320,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
-    for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'resume', 'status', 'diagnostics', 'stop',
+    for name in ('outer-init', 'outer-status', 'outer-enable', 'outer-disable',
+                 'outer-acknowledge', 'check', 'reload', 'init', 'init-resume', 'run', 'start', 'resume', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
@@ -425,7 +426,17 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 locks.enter_context(deployment.claim(args.state, shared=True))
                 if not args.operation.endswith('-status'):
                     deployment.ready(args.state, descriptor(args.state, package, digest))
-            if args.operation in ('check', 'reload'):
+            if args.operation.startswith('outer-'):
+                from tools.serve_recovery import outer_manager
+                if args.operation in ('outer-enable', 'outer-disable'):
+                    result = outer_manager.configure(args.state, package, digest,
+                        enabled=args.operation == 'outer-enable')
+                else:
+                    entry = {'outer-init': outer_manager.initialize,
+                        'outer-status': outer_manager.status,
+                        'outer-acknowledge': outer_manager.acknowledge}[args.operation]
+                    result = entry(args.state, package, digest)
+            elif args.operation in ('check', 'reload'):
                 from tools.serve_recovery import lifecycle
                 result = (lifecycle.check(package, digest, args.state) if args.operation == 'check' else
                     lifecycle.reload(package, digest, args.state, component=args.component,

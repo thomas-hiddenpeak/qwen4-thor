@@ -1,0 +1,24 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "planned_tests": 10,
+  "planned_first_pass": 10,
+  "additional_discovered_tests": 8,
+  "additional_first_pass": 7,
+  "followup_tests": 1,
+  "distinct_tests": 18,
+  "cpu_seconds": 2.5648344424553216,
+  "first_failure_preserved": true,
+  "followup_reason": "Imported TestCase discovered eight old tests; one relative fixture path needed isolated worktree cwd. Changed import to module alias, reran only the failing old case with correct cwd.",
+  "model_starts": 0,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/outer_manager.py": "2bfbfbded703c03e46c0de93a9b1c81a644344e5624e2b64d93abbd3a6b431ae",
+    "tools/serve_recovery/service.py": "a870516e2b442d04e2a52613e45c58c0ce58184275a376b8129be03f1e512137",
+    "tools/serve_recovery/bundle.py": "2abd3f34bde5e6c64dc451ff6ef4901a852768b3bc4b2a61b3b5b3409eb375b7",
+    "tools/serve_recovery/test_outer_manager.py": "7ac1323875eebf3ddb5a5347a429a178dd7a2985d4aab1d0768e3af820df1041",
+    "tools/serve_recovery/test_native_bundle.py": "a09dfcad9bf162465ae577a6e977ab1c68ece7b40f5c1a33e6c5923a2c6fc0dc"
+  },
+  "automatic_outer_loop_integrated": false,
+  "released": false,
+  "r07_candidate_unchanged": true
+}

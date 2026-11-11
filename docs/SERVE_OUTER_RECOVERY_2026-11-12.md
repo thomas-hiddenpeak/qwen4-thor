@@ -168,3 +168,18 @@ READY_DEGRADED，恢复有效监护后健康闭合，原业务进程保持。
 CPU业务夹具，未验完整自动派生链，不使用GPU。
 
 14项[CPU首过](evidence/serve-outer-observe-cpu-20261112/README.md)，15.149秒；必要Guardian构建零警告。完整自动运行/资源域及全部任务继续。
+
+## 显式管理入口（CPU 已验证，待运行集成）
+
+统一CLI新增outer-init/status/enable/disable/acknowledge。新初始化须
+持实例/核心锁且STOPPED无slot，先持久原始seed，再完成私有journal，
+最后发布complete；所有管理/运行接线须先验证complete，不把部分
+初始化当可用授权。只有未发布的原seed可以续办，已发布历史丢失
+不自动重建；停用/启用及解除保护都保留原恢复额度。
+
+enable/disable只写独立外层journal，可以在核心持锁时执行，不修改
+RUNNING/STOPPED或发业务信号。acknowledge额外要求实例独占、
+STOPPED无slot、外层disabled且无pending；它不清除原设备保护。
+冻结8新+2封包共10 CPU，0GPU。实际自动循环和宿主入口继续接入。
+
+[管理CPU接受](evidence/serve-outer-manager-cpu-20261112/README.md)：计划10首过，额外旧例工作目录失败定点补过，18不同用例/2.565秒/0GPU。实际自动循环及全部任务继续。

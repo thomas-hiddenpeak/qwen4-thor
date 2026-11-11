@@ -55,7 +55,7 @@ V17_SOURCES = tuple(sorted(set(V16_SOURCES) | {'tools/serve_recovery/'+name+'.py
                  'device_domain', 'cold_compat')}))
 SOURCES = tuple(sorted(set(V17_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
-                 'outer_reconcile', 'outer_observe')}))
+                 'outer_reconcile', 'outer_observe', 'outer_manager')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',

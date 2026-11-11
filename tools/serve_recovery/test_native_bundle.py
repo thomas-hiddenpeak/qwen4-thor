@@ -118,7 +118,7 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V17_SOURCES),
                          {'tools/serve_recovery/'+name+'.py' for name in
                           ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
-                           'outer_reconcile', 'outer_observe')})
+                           'outer_reconcile', 'outer_observe', 'outer_manager')})
         self.assertEqual(set(bundle.V17_SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
@@ -445,7 +445,7 @@ print('isolated cold source imports passed')
 sys.path.insert(0, sys.argv[1])
 from tools.serve_recovery import service, lifecycle, outer_policy, outer_store
 from tools.serve_recovery import outer_instance, outer_tree, outer_reconcile
-from tools.serve_recovery import outer_observe
+from tools.serve_recovery import outer_observe, outer_manager
 assert not lifecycle.pending_outer(sys.argv[2], {})
 service.main(['resume', '--help'])
 '''
