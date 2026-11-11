@@ -11,8 +11,10 @@ from unittest import mock
 
 from tools.serve_recovery import access_store, bundle, deployment, ledger
 from tools.serve_recovery import profile_contract, profile_manager, profile_policy
+from tools.serve_recovery import profile_compat
 from tools.serve_recovery import profile_store, service, store
 from tools.serve_recovery import test_native_bundle, test_profile_integration
+from tools.serve_service import supervisor
 
 
 class DeploymentTests(unittest.TestCase):
@@ -44,8 +46,22 @@ class DeploymentTests(unittest.TestCase):
                               for w in deployment.FAMILIES.values())]}
         self.request = str(uuid.uuid4())
 
-    def prepare(self, name, *, legacy=False, config=None):
-        path, _, _ = test_profile_integration.evidence_files(self.fixture)
+    def prepare(self, name, *, legacy=False, config=None, max_tokens=None):
+        path, registry, records = test_profile_integration.evidence_files(self.fixture)
+        if max_tokens is not None:
+            primary = dict(registry['profiles']['primary'], max_tokens=max_tokens)
+            self.fixture.base['settings']['profile'] = primary
+            registry['profiles'] = profile_contract.profiles(primary)
+            for kind, record in records.items():
+                record['capacity'] = registry['profiles'][kind]
+                record['configuration'].update(supervisor.expected_configuration(record['capacity']))
+                record['configuration']['default_output_tokens'] = max_tokens
+                evidence = path.parent/(kind+'.json')
+                bundle.engine.save(evidence, record)
+                registry['qualifications'][kind] = profile_contract.qualification(kind,
+                    record['capacity'], record['identity'], record['capabilities'],
+                    record['configuration'], record['startup_memory'], bundle.engine.sha(evidence))
+            bundle.engine.save(path, registry)
         receipt = self.fixture.prepare(recovery_profiles=path,
                                         recovery_profile_policy=config)
         package = self.fixture.directory/name
@@ -213,6 +229,61 @@ class DeploymentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'another deployment'): self.switch()
         self.assertEqual(self.load_revision_unlocked(), 1)
         self.assertTrue(path.exists())
+
+    def test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent(self):
+        # Retain a real historical v1 representation reader in the old CPU
+        # payload. All qualifications/engines remain explicitly synthetic.
+        historical = self.fixture.directory/'old-v1-reader'
+        shutil.copytree(self.old,historical)
+        self.old = historical
+        source = self.old/profile_compat.SOURCE
+        source.chmod(0o600)
+        source.write_bytes((Path(__file__).resolve().parents[2]/
+            'tests/fixtures/recovery/profile_policy_v1.py.txt').read_bytes())
+        source.chmod(0o400)
+        manifest = bundle.engine.read(self.old/'manifest.json')
+        manifest['files'][profile_compat.SOURCE] = bundle.engine.sha(source)
+        bundle.engine.save(self.old/'manifest.json', manifest)
+        new_old_sha = bundle.engine.sha(self.old/'manifest.json')
+        (self.old/'bin/q4t').chmod(0o700)
+        (self.old/'bin/q4t').write_bytes(bundle.launcher(new_old_sha,manifest['python']['path']))
+        (self.old/'bin/q4t').chmod(0o500)
+        # The predecessor was initialized before this fixture adjustment.
+        # Reinitialize a separate private state; never edit its durable hashes.
+        self.old_sha = new_old_sha
+        self.state = self.fixture.directory/'history-state'
+        result = service.initialize(self.old,self.old_sha,self.state)
+        self.binding = access_store.binding(self.state,result['service_id'])
+        current = self.load()
+        self.pending = profile_policy.prepare(current,'light','sustained_memory_pressure',
+            str(uuid.uuid4()),7,ledger.Stamp(current['clock']['boot_id'],
+                                          current['clock']['monotonic_ns']+ledger.SECOND))
+        profile_store.execute(self.binding,dict(sequence=1,op='commit',
+            request_id=str(uuid.uuid4()),expected_revision=0,candidate=self.pending))
+        unchanged = {name:(self.state/name).read_bytes() for name in
+            ['ledger.json',*(w.directory_name+'/policy.json' for w in deployment.FAMILIES.values())]}
+        self.new,self.new_sha = self.prepare('capacity-new',max_tokens=512)
+        self.switch(); value = self.load()
+        self.assertEqual(value['format'],profile_policy.HISTORY_FORMAT)
+        self.assertEqual(value['pending'],self.pending['pending'])
+        self.assertEqual(value['history'],self.pending['history'])
+        before = (self.state/'service-deployment/policy.json').read_bytes()
+        with self.assertRaisesRegex(ValueError,'history adapter'):
+            deployment.switch(self.state,self.old,self.old_sha,expected=self.new_sha,
+                request_id=str(uuid.uuid4()),rollback=True)
+        self.assertEqual(before,(self.state/'service-deployment/policy.json').read_bytes())
+        adapted = profile_compat.prepare(self.old,self.old_sha,self.fixture.directory/'adapted')
+        self.assertIsNone(profile_compat.retained_origin([],adapted['payload'],
+                                                        adapted['payload_manifest_sha256']))
+        deployment.switch(self.state,adapted['payload'],adapted['payload_manifest_sha256'],
+            expected=self.new_sha,request_id=str(uuid.uuid4()),rollback=True)
+        actual = self.load()
+        self.assertEqual(actual['profiles'],self.pending['profiles'])
+        self.assertEqual(actual['history'],self.pending['history'])
+        self.assertEqual(actual['history_bindings'],value['history_bindings'])
+        self.assertEqual(actual['clock'],self.pending['clock'])
+        self.assertEqual(actual['revision'],3)
+        for name,raw in unchanged.items():self.assertEqual((self.state/name).read_bytes(),raw)
 
 
 if __name__ == '__main__': unittest.main()

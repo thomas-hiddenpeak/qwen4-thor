@@ -1,10 +1,10 @@
-"""Qualified same-capacity migration without changing historical budgets.
+"""Qualified version/capacity migration without changing historical budgets.
 
 Only a STOPPED deployment owner may construct the authorized store contract
 after verifying both sealed packages and a durable deployment intent. Ordinary
 runtime profile workers retain profile_policy and cannot authorize migration.
-Capacity-history format evolution and automatic payload selection are separate
-R06 substeps, not implemented by this pure representation contract.
+Explicit capacity changes retain historical qualifications in state v2. Auto
+fallback remains capacity-preserving and never changes the user's contract.
 """
 import copy
 
@@ -12,6 +12,7 @@ from tools.serve_recovery import ledger, profile_contract, profile_evidence
 from tools.serve_recovery import profile_policy as policy
 
 FORMAT = 'q4t-profile-migration-permit-v1'
+CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 
 
 def observations(registry, evidence):
@@ -29,12 +30,15 @@ def observations(registry, evidence):
 
 
 def permit(previous, target, previous_evidence, target_evidence,
-           previous_config, target_config, *, automatic=False):
+           previous_config, target_config, *, automatic=False,
+           allow_capacity_change=False):
     first = observations(previous, previous_evidence)
     second = observations(target, target_evidence)
     ledger.require(first == second, 'migration would change application capabilities')
-    ledger.require(previous['profiles'] == target['profiles'],
-                   'capacity change requires historical-qualification format migration')
+    changed = previous['profiles'] != target['profiles']
+    ledger.require(type(allow_capacity_change) is bool and
+        (not changed or (allow_capacity_change and not automatic)),
+        'capacity change requires explicit historical-qualification migration')
     for key in ('model_files', 'model_assets', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
                        'migration would change fixed model identity')
@@ -42,7 +46,7 @@ def permit(previous, target, previous_evidence, target_evidence,
     ledger.require(type(automatic) is bool and
         (not automatic or previous_config == target_config),
         'automatic fallback cannot alter profile policy')
-    return validate(dict(format=FORMAT,
+    return validate(dict(format=CAPACITY_FORMAT if changed else FORMAT,
         from_registry=profile_contract.digest(previous),
         to_registry=profile_contract.digest(target),
         profiles={n:ledger.digest(v) for n,v in previous['profiles'].items()},
@@ -50,18 +54,28 @@ def permit(previous, target, previous_evidence, target_evidence,
         to_configuration=copy.deepcopy(target_config),
         from_identity=ledger.digest(previous['identity']),
         to_identity=ledger.digest(target['identity']),
-        capabilities_sha256=ledger.digest(first), automatic=automatic))
+        capabilities_sha256=ledger.digest(first), automatic=automatic,
+        **(dict(target_profiles={n:ledger.digest(v) for n,v in target['profiles'].items()})
+           if changed else {})))
 
 
 def validate(value):
+    capacity_change = type(value) is dict and value.get('format') == CAPACITY_FORMAT
     ledger.keys(value, ('format','from_registry','to_registry','profiles',
         'from_configuration','to_configuration','from_identity','to_identity',
-        'capabilities_sha256','automatic'))
-    ledger.require(value['format'] == FORMAT and type(value['automatic']) is bool,
+        'capabilities_sha256','automatic',
+        *(('target_profiles',) if capacity_change else ())))
+    ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT) and
+                   type(value['automatic']) is bool,
                    'invalid profile migration permit')
+    if capacity_change:
+        ledger.keys(value['target_profiles'], profile_contract.NAMES)
+        ledger.require(not value['automatic'] and value['target_profiles'] != value['profiles'],
+                       'capacity migration must be explicit and change capacity')
     ledger.keys(value['profiles'], profile_contract.NAMES)
     for h in [value[k] for k in ('from_registry','to_registry','from_identity',
-                               'to_identity','capabilities_sha256')]+list(value['profiles'].values()):
+                               'to_identity','capabilities_sha256')]+list(value['profiles'].values())+list(
+                                   value.get('target_profiles', {}).values()):
         ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
                        'invalid profile migration identity')
     policy.configuration(value['from_configuration'])
@@ -80,12 +94,22 @@ def candidate(previous, authorization, stamp):
         'profile migration predecessor differs')
     # No elapsed time, including same-boot STOPPED time, earns new budget.
     value = policy.resume(previous, stamp)
+    if authorization['format'] == CAPACITY_FORMAT:
+        value = policy.historical(value)
+        value['profiles'] = copy.deepcopy(authorization['target_profiles'])
     value.update(registry_sha256=authorization['to_registry'],
                  configuration=copy.deepcopy(authorization['to_configuration']))
     if value['history']:
         value['not_before_ns'] = max(value['not_before_ns'],
             value['history'][-1]['at_logical_ns']+
             value['configuration']['cooldown_seconds']*ledger.SECOND)
+    if value['light_since_ns'] is not None:
+        # Residency was also an established wait, even though v1 represented
+        # it as light_since + configuration rather than a stored deadline.
+        value['not_before_ns'] = max(value['not_before_ns'],
+            value['light_since_ns']+max(
+                previous['configuration']['minimum_light_seconds'],
+                value['configuration']['minimum_light_seconds'])*ledger.SECOND)
     return policy.validate(value)
 
 

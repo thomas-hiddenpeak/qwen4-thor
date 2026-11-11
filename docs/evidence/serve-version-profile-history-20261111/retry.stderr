@@ -1,0 +1,15 @@
+test_adapter_refuses_output_inside_original_before_creating_files (tools.serve_recovery.test_profile_history.HistoryTests.test_adapter_refuses_output_inside_original_before_creating_files) ... ok
+test_capacity_change_requires_explicit_qualified_permission (tools.serve_recovery.test_profile_history.HistoryTests.test_capacity_change_requires_explicit_qualified_permission) ... ok
+test_explicit_residency_reduction_does_not_shorten_existing_wait (tools.serve_recovery.test_profile_history.HistoryTests.test_explicit_residency_reduction_does_not_shorten_existing_wait) ... ok
+test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal (tools.serve_recovery.test_profile_history.HistoryTests.test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal) ... ok
+test_new_switch_preserves_foreign_history_then_expires_matching_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_new_switch_preserves_foreign_history_then_expires_matching_bindings) ... ok
+test_only_actual_migrated_capacity_can_finish_original_pending_intent (tools.serve_recovery.test_profile_history.HistoryTests.test_only_actual_migrated_capacity_can_finish_original_pending_intent) ... ok
+test_pending_original_rows_and_qualification_are_not_rewritten (tools.serve_recovery.test_profile_history.HistoryTests.test_pending_original_rows_and_qualification_are_not_rewritten) ... ok
+test_prior_completion_and_repeated_explicit_migrations_keep_budget_history (tools.serve_recovery.test_profile_history.HistoryTests.test_prior_completion_and_repeated_explicit_migrations_keep_budget_history) ... ok
+test_runtime_cannot_upgrade_format_or_mutate_historical_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_runtime_cannot_upgrade_format_or_mutate_historical_bindings) ... ok
+test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.300s
+
+OK

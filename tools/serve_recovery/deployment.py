@@ -197,12 +197,16 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                 all(d.get('deployment_id') != request_id for d in value['history']),
                 'deployment predecessor changed')
             if rollback:
-                ledger.require(any(d['package'] == target_path and d['manifest_sha256'] == digest
-                    for d in value['history']), 'rollback target is not retained deployment history')
+                direct = any(d['package'] == target_path and d['manifest_sha256'] == digest
+                             for d in value['history'])
+                if not direct:
+                    from tools.serve_recovery import profile_compat
+                    direct = profile_compat.retained_origin(value['history'], target_path, digest) is not None
+                ledger.require(direct, 'rollback target is not retained deployment history')
             target = dict(version=2, service_id=desc['service_id'], package=target_path,
                 manifest_sha256=digest, deployment_revision=desc.get('deployment_revision', 0)+1,
                 deployment_id=request_id)
-            old, _ = check_target(desc, target)
+            old, selected = check_target(desc, target)
             bootstrap = seeds(state, old)
             checked = {}
             for name, writer in FAMILIES.items():
@@ -211,6 +215,8 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                     journals[name] = stack.enter_context(access_store.open_bound(binding, writer))
                     checked[name] = journals[name].head['state']['policy']
             consistent_clients(checked['access'], checked['limits'], target)
+            from tools.serve_recovery import profile_manager
+            profile_manager.preflight(binding, old, selected)
             candidate = policy.prepare(value, target, request_id, bootstrap)
             journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'prepare')), value['revision'], candidate)
             value = candidate

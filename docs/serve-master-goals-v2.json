@@ -1719,11 +1719,12 @@
       ],
       "evidence": [
         "evidence/serve-version-migration-contract-20261111/README.md",
-        "evidence/serve-version-migration-deployment-20261111/README.md"
+        "evidence/serve-version-migration-deployment-20261111/README.md",
+        "evidence/serve-version-profile-history-20261111/README.md"
       ],
       "release": null,
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "Same-capacity migration and STOPPED deployment accepted by 6 contract plus 18 integration CPU cases. Original failure/retry preserved. Continue capacity-history evolution, persistent version selection, native recovery and actual business; no R06 release.",
+      "development_status": "R06.1 STOPPED migration and R06.2 versioned capacity history/narrow old-payload adapter CPU-verified. Original failures and targeted retries retained. Continue durable version selection, native root/payload recovery and actual business; default rev56 unchanged.",
       "subtasks": [
         {
           "id": "R06.1",
@@ -1732,12 +1733,12 @@
         },
         {
           "id": "R06.2",
-          "state": "implementing",
+          "state": "cpu_verified",
           "title": "容量变更与格式演进"
         },
         {
           "id": "R06.3",
-          "state": "planned",
+          "state": "implementing",
           "title": "持久版本状态机"
         },
         {

@@ -1,0 +1,230 @@
+test_adapter_refuses_output_inside_original_before_creating_files (tools.serve_recovery.test_profile_history.HistoryTests.test_adapter_refuses_output_inside_original_before_creating_files) ... ERROR
+test_capacity_change_requires_explicit_qualified_permission (tools.serve_recovery.test_profile_history.HistoryTests.test_capacity_change_requires_explicit_qualified_permission) ... ERROR
+test_explicit_residency_reduction_does_not_shorten_existing_wait (tools.serve_recovery.test_profile_history.HistoryTests.test_explicit_residency_reduction_does_not_shorten_existing_wait) ... ERROR
+test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal (tools.serve_recovery.test_profile_history.HistoryTests.test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal) ... ERROR
+test_new_switch_preserves_foreign_history_then_expires_matching_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_new_switch_preserves_foreign_history_then_expires_matching_bindings) ... ERROR
+test_only_actual_migrated_capacity_can_finish_original_pending_intent (tools.serve_recovery.test_profile_history.HistoryTests.test_only_actual_migrated_capacity_can_finish_original_pending_intent) ... ERROR
+test_pending_original_rows_and_qualification_are_not_rewritten (tools.serve_recovery.test_profile_history.HistoryTests.test_pending_original_rows_and_qualification_are_not_rewritten) ... ERROR
+test_prior_completion_and_repeated_explicit_migrations_keep_budget_history (tools.serve_recovery.test_profile_history.HistoryTests.test_prior_completion_and_repeated_explicit_migrations_keep_budget_history) ... ERROR
+test_runtime_cannot_upgrade_format_or_mutate_historical_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_runtime_cannot_upgrade_format_or_mutate_historical_bindings) ... ERROR
+test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent) ... ERROR
+test_controller_and_host_resume_cannot_expire_budgets_or_pending (tools.serve_recovery.test_profile_policy.PolicyTests.test_controller_and_host_resume_cannot_expire_budgets_or_pending) ... ok
+test_cooldown_residency_hour_and_day_limits_are_independent (tools.serve_recovery.test_profile_policy.PolicyTests.test_cooldown_residency_hour_and_day_limits_are_independent) ... ok
+test_generation_and_capacity_must_confirm_exact_pending_intention (tools.serve_recovery.test_profile_policy.PolicyTests.test_generation_and_capacity_must_confirm_exact_pending_intention) ... ok
+test_invalid_configuration_clock_and_integer_aliases_are_rejected (tools.serve_recovery.test_profile_policy.PolicyTests.test_invalid_configuration_clock_and_integer_aliases_are_rejected) ... ok
+test_pending_intent_does_not_claim_completed_profile_or_model_authority (tools.serve_recovery.test_profile_policy.PolicyTests.test_pending_intent_does_not_claim_completed_profile_or_model_authority) ... ok
+test_transition_rejects_budget_history_identity_or_selection_edits (tools.serve_recovery.test_profile_policy.PolicyTests.test_transition_rejects_budget_history_identity_or_selection_edits) ... ok
+test_new_helper_must_durably_resume_before_switch_eligibility (tools.serve_recovery.test_profile_integration.RuntimeTests.test_new_helper_must_durably_resume_before_switch_eligibility) ... ok
+test_controller_parks_io_before_launch_and_confirms_only_new_live_generation (tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity) ... ok
+test_http_profile_seals_normalized_policy_and_preserves_managed_binding (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_sealed_qualification_and_independent_ingress_bind_same_capacity (tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity) ... ok
+test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state) ... ok
+
+======================================================================
+ERROR: test_adapter_refuses_output_inside_original_before_creating_files (tools.serve_recovery.test_profile_history.HistoryTests.test_adapter_refuses_output_inside_original_before_creating_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_capacity_change_requires_explicit_qualified_permission (tools.serve_recovery.test_profile_history.HistoryTests.test_capacity_change_requires_explicit_qualified_permission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_explicit_residency_reduction_does_not_shorten_existing_wait (tools.serve_recovery.test_profile_history.HistoryTests.test_explicit_residency_reduction_does_not_shorten_existing_wait)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal (tools.serve_recovery.test_profile_history.HistoryTests.test_legacy_reader_adapter_seals_one_delta_and_preserves_current_journal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_new_switch_preserves_foreign_history_then_expires_matching_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_new_switch_preserves_foreign_history_then_expires_matching_bindings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_only_actual_migrated_capacity_can_finish_original_pending_intent (tools.serve_recovery.test_profile_history.HistoryTests.test_only_actual_migrated_capacity_can_finish_original_pending_intent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_pending_original_rows_and_qualification_are_not_rewritten (tools.serve_recovery.test_profile_history.HistoryTests.test_pending_original_rows_and_qualification_are_not_rewritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_prior_completion_and_repeated_explicit_migrations_keep_budget_history (tools.serve_recovery.test_profile_history.HistoryTests.test_prior_completion_and_repeated_explicit_migrations_keep_budget_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_runtime_cannot_upgrade_format_or_mutate_historical_bindings (tools.serve_recovery.test_profile_history.HistoryTests.test_runtime_cannot_upgrade_format_or_mutate_historical_bindings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_history.py", line 31, in setUp
+    self.evidence = test_profile_migration.bind_records(self.new, records)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 24, in bind_records
+    registry['qualifications'][name] = profile_contract.qualification(name,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+======================================================================
+ERROR: test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_deployment.py", line 264, in test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent
+    self.new,self.new_sha = self.prepare('capacity-new',max_tokens=512)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_deployment.py", line 60, in prepare
+    registry['qualifications'][kind] = profile_contract.qualification(kind,
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 139, in qualification
+    configuration(selected, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 100, in configuration
+    capacity.observation(profile, observed)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py", line 63, in observation
+    require(all(k in observed and same_json(observed[k], v)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: effective capacity differs
+
+----------------------------------------------------------------------
+Ran 25 tests in 5.071s
+
+FAILED (errors=10)

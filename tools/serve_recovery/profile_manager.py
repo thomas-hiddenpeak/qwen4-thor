@@ -45,7 +45,23 @@ def compatible(old, new, old_package=None, new_package=None):
     return profile_migration.permit(old['recovery_profiles'],
         new['recovery_profiles'], evidence(old_package, old),
         evidence(new_package, new), old['recovery_profile_policy'],
-        new['recovery_profile_policy'])
+        new['recovery_profile_policy'], allow_capacity_change=True)
+
+
+def preflight(binding, old, new):
+    """Before publishing an intent, verify the target can read current history."""
+    if old.get('recovery_profiles') is None:
+        return
+    with profile_store.open_bound(binding) as writer:
+        current = matches(writer.head['state']['policy'], old)
+        historical = current['format'] == profile_policy.HISTORY_FORMAT
+    capacity_change = old['recovery_profiles']['profiles'] != new['recovery_profiles']['profiles']
+    if historical or capacity_change:
+        # Older control payloads can retain all original logic with only the
+        # qualified representation adapter; do not rewrite their history.
+        name = 'source/tools/serve_recovery/profile_policy.py'
+        ledger.require(new['files'].get(name) == engine.sha(Path(profile_policy.__file__)),
+                       'target needs the qualified profile history adapter')
 
 
 def deploy(binding, intent, old, new, core):

@@ -87,7 +87,7 @@ class IntegrationTests(unittest.TestCase):
     def test_sealed_qualification_and_independent_ingress_bind_same_capacity(self):
         package, digest = self.prepare()
         manifest = bundle.verify(package, digest)
-        self.assertEqual(manifest['version'], 13)
+        self.assertEqual(manifest['version'], 14)
         self.assertEqual(manifest['recovery_profiles'], self.registry)
         config = bundle.gateway_config_for(package, manifest, self.fixture.directory)
         self.assertEqual(config['recovery_profiles'], self.registry)

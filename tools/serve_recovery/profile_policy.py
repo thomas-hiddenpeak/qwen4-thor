@@ -13,6 +13,7 @@ SECOND = ledger.SECOND
 HOUR = 60*ledger.MINUTE
 DAY = ledger.DAY
 FORMAT = 'q4t-profile-selection-v1'
+HISTORY_FORMAT = 'q4t-profile-selection-v2'
 REASONS = ('cold_memory_capacity', 'sustained_memory_pressure',
            'confirmed_memory_fault', 'sustained_memory_recovery')
 DEFAULTS = dict(version=1, degrade_below_mib=8192, recover_above_mib=16384,
@@ -53,10 +54,13 @@ def initial(registry, stamp, config=None):
 
 
 def validate(value):
+    historical = type(value) is dict and value.get('format') == HISTORY_FORMAT
     ledger.keys(value, ('format','revision','registry_sha256','profiles',
         'configuration','selected','pending','clock','not_before_ns',
-        'light_since_ns','completed_generation','history'))
-    ledger.require(value['format'] == FORMAT and ledger.integer(value['revision']),
+        'light_since_ns','completed_generation','history',
+        *(('history_bindings',) if historical else ())))
+    ledger.require(value['format'] in (FORMAT, HISTORY_FORMAT) and
+                   ledger.integer(value['revision']),
                    'invalid profile selection state')
     configuration(value['configuration'])
     ledger.keys(value['profiles'],profile_contract.NAMES)
@@ -76,6 +80,10 @@ def validate(value):
     history=value['history']
     ledger.require(type(history) is list and len(history) <= 4,
                    'unbounded profile switch history')
+    if historical:
+        ledger.require(type(value['history_bindings']) is dict and
+            value['history_bindings'].keys() == {r['request_id'] for r in history},
+            'historical profile qualification keys differ')
     prior=-1;ids=set()
     for row in history:
         ledger.keys(row,('request_id','source','target','reason','source_generation',
@@ -86,8 +94,22 @@ def validate(value):
             ((row['target']=='primary') == (row['reason']=='sustained_memory_recovery')) and
             ledger.integer(row['source_generation']) and
             ledger.integer(row['at_logical_ns']) and prior <= row['at_logical_ns'] <= now and
-            row['target_sha256'] == value['profiles'][row['target']],
+            row['target_sha256'] == (value['history_bindings'][row['request_id']]
+                ['profiles'][row['target']] if historical else
+                value['profiles'][row['target']]),
             'invalid profile switch history entry')
+        if historical:
+            bound = value['history_bindings'][row['request_id']]
+            validate_history_binding(bound, pending=row == value['pending'])
+            executed = bound['execution']
+            if executed is not None:
+                generation = executed['generation']
+                ledger.require(generation is None or
+                    row['source_generation'] < generation <= value['completed_generation'],
+                    'historical execution generation differs')
+                ledger.require(executed['registry_sha256'] != bound['registry_sha256'] or
+                    executed['capacity_sha256'] == row['target_sha256'],
+                    'historical execution changed the same qualified target')
         prior=row['at_logical_ns'];ids.add(row['request_id'])
     pending=value['pending']
     if pending is not None:
@@ -97,6 +119,59 @@ def validate(value):
             'invalid pending profile intention')
     ledger.require(len(ledger.canonical(value)) <= 32*1024,'profile state byte bound')
     return value
+
+
+def validate_history_binding(value, *, pending):
+    ledger.keys(value, ('registry_sha256', 'profiles', 'execution'))
+    ledger.keys(value['profiles'], profile_contract.NAMES)
+    for h in [value['registry_sha256'], *value['profiles'].values()]:
+        ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
+                       'invalid historical qualification identity')
+    executed = value['execution']
+    ledger.require((executed is None) == pending,
+                   'historical completion and pending intent differ')
+    if executed is not None:
+        ledger.keys(executed, ('registry_sha256', 'capacity_sha256', 'generation'))
+        for key in ('registry_sha256', 'capacity_sha256'):
+            ledger.require(type(executed[key]) is str and ledger.HASH.fullmatch(executed[key]),
+                           'invalid historical execution identity')
+        # v1 proves the completed target but did not retain each generation.
+        # Preserve that uncertainty rather than inventing old generation IDs.
+        ledger.require(executed['generation'] is None or
+            ledger.integer(executed['generation'], minimum=1),
+            'invalid historical execution generation')
+
+
+def historical(previous):
+    """Represent v1 history with its original qualification, never rewrite it.
+
+    Only a deployment-authorized transition may persist this conversion.
+    Ordinary runtime transition() cannot change the state format or bindings.
+    """
+    value = copy.deepcopy(validate(previous))
+    if value['format'] == HISTORY_FORMAT:
+        return value
+    value['format'] = HISTORY_FORMAT
+    value['history_bindings'] = {}
+    for row in value['history']:
+        value['history_bindings'][row['request_id']] = dict(
+            registry_sha256=value['registry_sha256'], profiles=copy.deepcopy(value['profiles']),
+            execution=None if row == value['pending'] else dict(
+                registry_sha256=value['registry_sha256'], capacity_sha256=row['target_sha256'],
+                generation=None))
+    return validate(value)
+
+
+def pending_capacity(value):
+    """The explicit migrated qualification may retarget a pending intent.
+
+    Its original row/qualification remains in history_bindings; finish records
+    the actual new qualified target and generation separately.
+    """
+    pending = value['pending']
+    ledger.require(pending is not None, 'no pending profile intention')
+    return (value['profiles'][pending['target']] if value['format'] == HISTORY_FORMAT
+            else pending['target_sha256'])
 
 
 def advanced(previous, stamp):
@@ -162,6 +237,12 @@ def prepare(previous,target,reason,request_id,generation,stamp):
     state.update(revision=state['revision']+1,pending=pending,
         not_before_ns=now+state['configuration']['cooldown_seconds']*SECOND,
         history=[*[row for row in state['history'] if now-row['at_logical_ns'] < DAY],pending])
+    if state['format'] == HISTORY_FORMAT:
+        kept = {row['request_id'] for row in state['history'][:-1]}
+        state['history_bindings'] = {key:value for key,value in
+            state['history_bindings'].items() if key in kept}
+        state['history_bindings'][request_id] = dict(registry_sha256=state['registry_sha256'],
+            profiles=copy.deepcopy(state['profiles']), execution=None)
     return validate(state)
 
 
@@ -169,8 +250,12 @@ def finish(previous,generation,profile_sha256,stamp):
     state=advanced(previous,stamp);pending=state['pending']
     ledger.require(pending is not None and ledger.integer(generation) and
         generation > pending['source_generation'] and
-        profile_sha256 == pending['target_sha256'],
+        profile_sha256 == pending_capacity(state),
         'new generation has not confirmed the pending profile')
+    if state['format'] == HISTORY_FORMAT:
+        state['history_bindings'][pending['request_id']]['execution'] = dict(
+            registry_sha256=state['registry_sha256'], capacity_sha256=profile_sha256,
+            generation=generation)
     state.update(revision=state['revision']+1,selected=pending['target'],pending=None,
         completed_generation=generation,light_since_ns=(state['clock']['logical_ns']
             if pending['target']=='light' else None))
