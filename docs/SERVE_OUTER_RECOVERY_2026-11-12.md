@@ -113,3 +113,21 @@ getppid变化后报告outer_owner_lost/READY_DEGRADED，存活Guardian
 旧slot。接管与完整运行入口尚未完成，继续实现。
 
 8项[针对性CPU首过](evidence/serve-outer-parent-cpu-20261112/README.md)，5.387秒；必要构建零警告。新观察者/运行接管继续。
+
+## 统一恢复和离线停服（CPU 已验证，未发行）
+
+`q4t service resume` 核对已选封包、部署、实例与原核心账本，只
+以Guardian `--resume`恢复RUNNING；人工STOPPED不创建run或取
+GPU lease。preflight与实际exec之间的人工stop仍由Guardian
+重新读取持久意图处理，不使用activate覆盖。已有故障保护、旧
+slot或未退休外层intent仍进入对应核验路径，不能绕过保护。
+
+`stop` 在控制入口已消失、且真实实例/原核心writer可独占时持久
+写STOPPED。旧slot、预算、故障保留；stop_durable与cleanup_confirmed
+分别报告。写入中断按原journal pending续办，重复stop不增revision。
+
+封包v18含全部当前外层源码；v17来源清单冻结保留，历史包继续
+核验。冻结21针对性CPU（8新/13直接，含实际Guardian与隔离封包
+导入），不做完整性能或模型矩阵。新外层运行/接管继续。
+
+22项不同[CPU用例接受](evidence/serve-outer-resume-cpu-20261112/README.md)。复核新增未退休外层attempt状态检查，只有直接3项补验；原v17真实候选只读核验通过。自动外层循环与健康根接管继续。

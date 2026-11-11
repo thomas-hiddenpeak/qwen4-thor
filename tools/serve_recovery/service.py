@@ -163,7 +163,7 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         return launch_owned(package, digest, state, manifest=manifest, daemon=daemon, timeout=timeout)
 
 
-def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360):
+def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360, resume=False):
     desc = descriptor(state, package, digest)
     from tools.serve_recovery import deployment
     deployment.ready(state, desc)
@@ -238,7 +238,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
             diagnostics = None
         diagnostic_stdio = diagnostics if diagnostics is not None else subprocess.DEVNULL
         process = subprocess.Popen([str(package/'bin/q4t-guardian'), '--config',
-            str(run/'guardian.json'), '--activate'], stdin=subprocess.DEVNULL,
+            str(run/'guardian.json'), '--resume' if resume else '--activate'], stdin=subprocess.DEVNULL,
             stdout=diagnostic_stdio, stderr=diagnostic_stdio,
             start_new_session=True,
             pass_fds=(lease, *cold_fds, *((endpoint.fileno(),) if daemon else ())))
@@ -320,7 +320,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
-    for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
+    for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'resume', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
@@ -482,6 +482,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation == 'resume':
+                from tools.serve_recovery import lifecycle
+                result = lifecycle.resume(args.state, package, digest)
             elif args.operation.startswith('usage-'):
                 from tools.serve_recovery import usage_manager
                 desc = descriptor(args.state, package, digest)
@@ -568,7 +571,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                                   business_ready=False, live_control=False)
                     if args.operation in ('status', 'stop'):
                         from tools.serve_recovery import lifecycle
-                        try:result = lifecycle.stopped(args.state, package, digest)
+                        try:result = (lifecycle.request_stop(args.state, package, digest)
+                            if args.operation == 'stop' else
+                            lifecycle.stopped(args.state, package, digest))
                         except (OSError, ValueError, RuntimeError):pass
         print(json.dumps(result, ensure_ascii=False))
         if args.operation == 'stop' and not result.get('cleanup_confirmed'):

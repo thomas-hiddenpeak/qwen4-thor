@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。R09恢复/离线停服[22项不同CPU接受](evidence/serve-outer-resume-cpu-20261112/README.md)：首21全过，复核补1新+2直接全过，累计2.966秒/0GPU。实际exec前STOPPED零角色启动，遗留slot/故障/预算与中断续办保持；v18全源码及原v17真实包可核验。未发行，继续新观察者/自动外层/宿主接管及全部任务。
+
+2026-11-12。resume/离线stop首21 CPU通过（2.434秒），实际停服竞争保持零角色启动，旧v17真实候选只读核验0.382秒通过。交付前复核补齐status的未退休外层attempt检查：人工意图已STOPPED仍不能伪报整树清理；只追加1新+2直接共3 CPU，不重复首21组。0GPU/默认及R07保持，继续全部任务。
+
+2026-11-12。R09统一resume/离线stop已开发：仅恢复原RUNNING，STOPPED不占GPU，原保护/残留slot须先核验；控制入口缺失时可持久写STOPPED但不伪报清理。新增并发停服先于实际Guardian exec的CPU用例；封包v18完整携带外层模块并冻结v17旧清单。冻结8新+13直接共21 CPU，尚未执行，0GPU/默认及R07保持；接管和总任务继续。
+
 2026-11-12。R09外层失能隔离[8 CPU首过](evidence/serve-outer-parent-cpu-20261112/README.md)，5.387秒；Guardian构建5.237秒零警告。实际外层退出后原四角色同PID/原RUNNING及额度保持，报告降级；显式stop、伪信号拒绝与旧前台/daemon合同通过。0GPU/未发行，继续原健康根接管、统一恢复入口与全部任务。
 
 2026-11-12。R09接线审计发现受管外层父死被误作人工STOPPED。已为显式v5实例模式区分外层丢失：存活Guardian保持同核心服务，仅报告READY_DEGRADED/outer_owner_lost；人工stop及旧前台/daemon合同保持。冻结3新+5直接共8 CPU，必要Guardian构建待执行；新外层接管继续实现，0GPU/默认及R07保持，总任务继续。
