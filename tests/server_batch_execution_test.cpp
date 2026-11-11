@@ -17,6 +17,7 @@
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_jobs.h"
 #include "q4t/test.h"
+#include "q4t/model/sequence.h"
 
 namespace {
 using namespace q4t::server;
@@ -600,5 +601,127 @@ Q4T_TEST(
   const auto terminal = ResponsesState(objects).Retrieve(
       id, {"client:alpha", Clock::now() + 5s, {}});
   Q4T_CHECK(Ok(terminal) && terminal.value.GetString("status") == "failed");
+  return true;
+}
+
+Q4T_TEST(actual_usage_steps_nested_work_and_choices_count_once) {
+  ActualUsageCounter counter;
+  Q4T_CHECK(!counter.Total());
+  counter.Enable();
+  Q4T_CHECK(counter.Total() == ActualUsage{});
+  counter.Merge(ActualUsage{7, 2, 0, 0, 0});  // Completed preparation.
+  counter.BeginStep();
+  counter.Observe({10, 3, 2, 1, 4});
+  counter.Observe({10, 3, 2, 1, 4});  // Error + cleanup observe same work.
+  Q4T_CHECK(counter.Total() == (ActualUsage{17, 5, 2, 1, 4}));
+  counter.EndStep();
+  counter.EndStep();
+  counter.BeginStep(false);  // Another candidate, same prompt contract.
+  counter.Observe({10, 4, 2, 2, 4});
+  counter.EndStep();
+  counter.BeginStep(true, false);  // Separately reported moderation work.
+  counter.Observe({900, 900, 0, 0, 0});
+  counter.EndStep();
+  counter.BeginStep();  // A distinct Responses step counts its own prompt.
+  counter.Observe({5, 1, 0, 1, 0});
+  counter.EndStep();
+  Q4T_CHECK(counter.Total() == (ActualUsage{22, 10, 2, 4, 4}));
+  return true;
+}
+
+Q4T_TEST(actual_usage_missing_overflow_and_invalid_details_stay_unknown) {
+  for (const int failure : {0, 1, 2, 3, 4}) {
+    ActualUsageCounter counter;
+    counter.Enable();
+    counter.BeginStep();
+    if (failure == 0) counter.Merge(std::nullopt);
+    if (failure == 1) {
+      counter.Observe({kActualUsageLimit, 0, 0, 0, 0});
+      counter.Merge(ActualUsage{0, 1, 0, 0, 0});
+    }
+    if (failure == 2) counter.Observe({1, 0, 2, 0, 0});
+    if (failure == 3) counter.Observe({1, 1, 1, 0, 1});
+    if (failure == 4) counter.Observe({1, 1, 0, 2, 0});
+    Q4T_CHECK(!counter.Total());
+    counter.EndStep();
+    counter.BeginStep();
+    counter.Observe({1, 1, 0, 0, 0});
+    counter.EndStep();
+    Q4T_CHECK(!counter.Total());
+  }
+  return true;
+}
+
+Q4T_TEST(batch_execution_captures_drained_error_cancel_and_exception_usage) {
+  for (const int mode : {0, 1, 2}) {
+    Fixture fixture(true);
+    ClientLease permit;
+    Q4T_CHECK(
+        permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+    auto control = Control();
+    auto rate = Precharge(fixture, fixture.alpha);
+    Q4T_CHECK(Usage(fixture).reserved == 160);
+    const auto result = ExecuteBatchEndpoint(
+        control->id(), fixture.alpha, permit, control,
+        [&] {
+          auto* http = detail::HttpResponseContext::Current(-1);
+          http->Usage().Enable();
+          http->Usage().BeginStep();
+          ActualUsage committed{8, 3, 2, 1, 0};
+          http->SetUsageRefresh(
+              [](void* value) noexcept {
+                detail::HttpResponseContext::Current(-1)->Usage().Observe(
+                    *static_cast<ActualUsage*>(value));
+              },
+              &committed);
+          ScopeExit cleanup([&] {
+            http->RefreshUsage();
+            http->SetUsageRefresh(nullptr, nullptr);
+            http->Usage().EndStep();
+          });
+          if (mode == 2) throw std::runtime_error("CPU execution unwind");
+          if (mode == 1) {
+            control->Cancel();
+            return;
+          }
+          detail::SendError(-1, 502, "CPU parser failure", {}, "parse_failed");
+        },
+        rate);
+    Q4T_CHECK(result.actual_usage == (ActualUsage{8, 3, 2, 1, 0}));
+    // The 128+32 reservation is not an observed prompt or completion.
+    Q4T_CHECK(Usage(fixture).reserved == 0);  // Context has drained/refunded.
+    if (mode == 1)
+      Q4T_CHECK(result.error.code == "batch_cancelled");
+    else
+      Q4T_CHECK(result.error.ok() && result.http_status >= 500 &&
+                !Parsed(result.response_body).Has("usage"));
+  }
+  return true;
+}
+
+Q4T_TEST(actual_usage_sequence_failure_preserves_only_committed_input) {
+  q4t::model::ModelSequence sequence;
+  Q4T_CHECK(sequence.Begin(0));
+  const std::array<int32_t, 3> tokens{1, 2, 3};
+  auto* borrowed = &sequence;
+  ActualUsageCounter counter;
+  counter.Enable();
+  counter.BeginStep();
+  Q4T_CHECK(
+      sequence.Submit(tokens, q4t::model::ModelSequence::Stage::kPrefill, 20));
+  counter.Observe({static_cast<uint64_t>(sequence.position), 0, 0, 0, 0});
+  Q4T_CHECK(counter.Total() == ActualUsage{});
+  Q4T_CHECK(q4t::model::CompleteSequenceWork(
+      std::span<q4t::model::ModelSequence* const>(&borrowed, 1), q4t::Status(),
+      [] { return q4t::Status(); }));
+  Q4T_CHECK(
+      sequence.Submit(tokens, q4t::model::ModelSequence::Stage::kPrefill, 20));
+  Q4T_CHECK(!q4t::model::CompleteSequenceWork(
+      std::span<q4t::model::ModelSequence* const>(&borrowed, 1), q4t::Status(),
+      [] { return q4t::Status::Fail("CPU device completion failure"); }));
+  counter.Observe({static_cast<uint64_t>(sequence.position), 0, 0, 0, 0});
+  Q4T_CHECK(sequence.End() && sequence.position == 0);
+  counter.EndStep();
+  Q4T_CHECK(counter.Total() == (ActualUsage{3, 0, 0, 0, 0}));
   return true;
 }

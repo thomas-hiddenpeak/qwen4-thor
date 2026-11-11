@@ -5,6 +5,7 @@
 #include <span>
 
 #include "q4t/server/batch_input.h"
+#include "q4t/server/actual_usage.h"
 #include "q4t/server/batch_budget.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/input_snapshot.h"
@@ -31,6 +32,8 @@ struct BatchRowResult {
   // of orchestration uses error instead and publishes response=null.
   std::string response_body;
   ObjectReply error;
+  // Trusted, drained native execution observation; never accepted from JSON.
+  std::optional<ActualUsage> actual_usage = {};
 };
 bool BatchTerminal(std::string_view status);
 

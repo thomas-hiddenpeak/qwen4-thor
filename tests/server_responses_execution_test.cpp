@@ -173,6 +173,7 @@ Q4T_TEST(responses_moderation_cancel_and_errors_discard_all_private_prefixes) {
           Access(), 42, true)));
     else
       Q4T_CHECK(Prepare(&run));
+    ResponsesExecution::ObserveUsage(&run, ActualUsage{7, 2, 1, 1, 0});
     std::string wire;
     Q4T_CHECK(Ok(run.Begin(&wire)));
     if (cancel) Q4T_CHECK(Ok(run.StartRunning(&wire)));
@@ -195,6 +196,9 @@ Q4T_TEST(responses_moderation_cancel_and_errors_discard_all_private_prefixes) {
                   std::string::npos &&
               record.value.Find("response")->GetString("status") ==
                   (cancel ? "cancelled" : "failed"));
+    Q4T_CHECK(
+        record.value.Find("response")->Find("usage")->GetInt("total_tokens") ==
+        9);
     Q4T_CHECK(!run.OutputHeld());
   }
   return true;
@@ -797,6 +801,21 @@ Q4T_TEST(responses_execution_http_errors_close_after_cancelled_caller_cleanup) {
     {
       detail::HttpResponseContext context(sockets[0]);
       context.SetErrorObserver(&ResponsesExecution::ObserveError, &run);
+      context.SetUsageObserver(&ResponsesExecution::ObserveUsage, &run);
+      context.Usage().Enable();
+      context.Usage().BeginStep();
+      ActualUsage work{9, 4, 2, 1, 3};
+      struct Refresh {
+        detail::HttpResponseContext* http;
+        ActualUsage* work;
+      };
+      Refresh refresh{&context, &work};
+      context.SetUsageRefresh(
+          [](void* value) noexcept {
+            auto& current = *static_cast<Refresh*>(value);
+            current.http->Usage().Observe(*current.work);
+          },
+          &refresh);
       context.SetResponsesStream(&ResponsesExecution::RenderStreamError, &run,
                                  run.Sequence());
       if (stream) {
@@ -808,6 +827,8 @@ Q4T_TEST(responses_execution_http_errors_close_after_cancelled_caller_cleanup) {
       run.BindCancellation(Clock::now() - 1s, [] { return true; });
       Q4T_CHECK(Ok(run.CloseUnfinished()));
       context.SetErrorObserver(nullptr, nullptr);
+      context.SetUsageRefresh(nullptr, nullptr);
+      context.SetUsageObserver(nullptr, nullptr);
       context.SetResponsesStream(nullptr, nullptr, nullptr);
     }
     shutdown(sockets[0], SHUT_WR);
@@ -818,9 +839,17 @@ Q4T_TEST(responses_execution_http_errors_close_after_cancelled_caller_cleanup) {
     close(sockets[0]);
     close(sockets[1]);
     Q4T_CHECK(received.find("[DONE]") == received.npos);
-    if (stream) Q4T_CHECK(received.find("response.failed") != received.npos);
+    if (stream) {
+      Q4T_CHECK(received.find("response.failed") != received.npos);
+      Q4T_CHECK(received.find("\"total_tokens\":13") != received.npos);
+    } else
+      Q4T_CHECK(received.find("\"usage\"") == received.npos);
     const auto result = ResponsesState(store).Retrieve(run.Id(), Access());
     Q4T_CHECK(Ok(result) && result.value.GetString("status") == "failed");
+    Q4T_CHECK(result.value.Find("usage")->GetInt("total_tokens") == 13 &&
+              result.value.Find("usage")
+                      ->Find("input_tokens_details")
+                      ->GetInt("cache_write_tokens") == 3);
     Q4T_CHECK(result.value.Find("error")->GetString("code") ==
               "constraint_dependency_unavailable");
   }
@@ -975,6 +1004,7 @@ Q4T_TEST(responses_execution_size_and_quota_rejection_retain_failure) {
     ObjectStore store(f.options);
     ResponsesExecution run(store);
     Q4T_CHECK(Prepare(&run));
+    ResponsesExecution::ObserveUsage(&run, ActualUsage{7, 2, 1, 1, 0});
     std::string wire;
     Q4T_CHECK(Ok(run.Begin(&wire)));
     if (quota) {
@@ -1002,6 +1032,7 @@ Q4T_TEST(responses_execution_size_and_quota_rejection_retain_failure) {
     const auto* response = record.value.Find("response");
     Q4T_CHECK(response->GetString("status") == "failed");
     Q4T_CHECK(response->GetArray("output")->array.empty());
+    Q4T_CHECK(response->Find("usage")->GetInt("total_tokens") == 9);
     Q4T_CHECK(response->Find("error")->GetString("code") == rejected.code);
     Q4T_CHECK(record.value.GetArray("events")->array.empty());
     Q4T_CHECK(!record.value.GetBool("events_retained", true));
@@ -1020,6 +1051,35 @@ Q4T_TEST(responses_execution_size_and_quota_rejection_retain_failure) {
     const auto listed = store.Execute(items, Clock::now() + 5s);
     Q4T_CHECK(Ok(listed) && listed.value.GetArray("data")->array.empty());
     Q4T_CHECK(Ok(run.CloseUnfinished()));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_cancel_usage_distinguishes_queued_drained_and_unknown) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  for (const int mode : {0, 1, 2}) {
+    ResponsesExecution run(store);
+    Q4T_CHECK(Ok(run.Prepare(Parse(R"({"input":"question","background":true})"),
+                             Config(), Access(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    if (mode != 0) Q4T_CHECK(Ok(run.StartRunning(&wire)));
+    if (mode == 1) {
+      ResponsesExecution::ObserveUsage(&run, ActualUsage{8, 3, 2, 1, 0});
+      Q4T_CHECK(Ok(run.Checkpoint()));
+    }
+    auto before = ResponsesState(store).Retrieve(run.Id(), Access());
+    Q4T_CHECK(Ok(before) && before.value.Find("usage")->IsNull());
+    Q4T_CHECK(Ok(run.Cancel()));
+    const auto after = ResponsesState(store).Retrieve(run.Id(), Access());
+    Q4T_CHECK(Ok(after) && after.value.GetString("status") == "cancelled");
+    const auto* usage = after.value.Find("usage");
+    Q4T_CHECK(usage);
+    if (mode == 2)
+      Q4T_CHECK(usage->IsNull());
+    else
+      Q4T_CHECK(usage->GetInt("total_tokens") == (mode == 1 ? 11 : 0));
   }
   return true;
 }

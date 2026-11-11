@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "q4t/server/request_control.h"
+#include "q4t/server/actual_usage.h"
 #include "q4t/server/client_policy.h"
 #include "q4t/server/http_observation.h"
 #include "q4t/server/finite_response.h"
@@ -143,8 +144,25 @@ class HttpResponseContext {
   }
   void ObserveError(int status, std::string_view message,
                     std::string_view code) noexcept {
+    RefreshUsage();
     if (error_observer_)
       error_observer_(error_observer_owner_, status, message, code);
+  }
+  ActualUsageCounter& Usage() noexcept { return usage_; }
+  using UsageObserver = void (*)(void*,
+                                 const std::optional<ActualUsage>&) noexcept;
+  void SetUsageObserver(UsageObserver observer, void* owner) noexcept {
+    usage_observer_ = observer;
+    usage_observer_owner_ = owner;
+  }
+  // Borrowed handler-thread hook; clear before the captured stack objects die.
+  void SetUsageRefresh(void (*hook)(void*) noexcept, void* owner) noexcept {
+    usage_refresh_ = hook;
+    usage_refresh_owner_ = owner;
+  }
+  void RefreshUsage() noexcept {
+    if (usage_refresh_) usage_refresh_(usage_refresh_owner_);
+    if (usage_observer_) usage_observer_(usage_observer_owner_, usage_.Total());
   }
   // Handler-thread-only, non-owning hook. Clear it before its owner dies.
   // Invoked once before terminal publication, including error responses.
@@ -222,6 +240,11 @@ class HttpResponseContext {
   std::shared_ptr<ClientRateLease> batch_rate_;
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   ErrorObserver error_observer_ = nullptr;
+  ActualUsageCounter usage_;
+  UsageObserver usage_observer_ = nullptr;
+  void* usage_observer_owner_ = nullptr;
+  void (*usage_refresh_)(void*) noexcept = nullptr;
+  void* usage_refresh_owner_ = nullptr;
   void* error_observer_owner_ = nullptr;
   void (*terminal_hook_)(void*) noexcept = nullptr;
   void* terminal_owner_ = nullptr;

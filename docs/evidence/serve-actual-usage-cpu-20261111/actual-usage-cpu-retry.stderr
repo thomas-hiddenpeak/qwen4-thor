@@ -1,0 +1,2 @@
+[q4t][http] trace_id=req_tool_run_fixture status=502 error=parse_failed
+[q4t][http] trace_id=req_tool_run_fixture error=internal_error

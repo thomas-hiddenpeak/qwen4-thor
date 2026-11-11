@@ -54,6 +54,9 @@ class ResponsesOutput {
                 bool content_filtered = false);
   Status Fail(std::string_view code, std::string_view message,
               std::string* wire);
+  // Used immediately before a failure/cancellation terminal, never as a
+  // live checkpoint that could be mistaken for complete usage after a crash.
+  Status SetUsage(const ResponsesUsage& usage);
   static std::string RenderStreamError(void* owner, int status,
                                        const std::string& message,
                                        std::string_view code,

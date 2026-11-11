@@ -423,7 +423,8 @@ ObjectReply ResponsesExecution::Cancel() {
     return Error(409, "response_state_invalid", "Response cannot be cancelled");
   DiscardUnreviewedOutput();
   auto candidate = output_;
-  auto status = candidate.Cancel();
+  auto status = ApplyActualUsage(&candidate);
+  if (status) status = candidate.Cancel();
   if (!status) return OutputError(status);
   StateAccess cleanup{
       access_.scope,
@@ -542,6 +543,28 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
   return {};
 }
 
+void ResponsesExecution::ObserveUsage(
+    void* owner, const std::optional<ActualUsage>& usage) noexcept {
+  auto& run = *static_cast<ResponsesExecution*>(owner);
+  run.actual_usage_ = usage && ValidActualUsage(*usage) ? usage : std::nullopt;
+}
+
+Status ResponsesExecution::ApplyActualUsage(ResponsesOutput* output) const {
+  if (output->Terminal()) return {};
+  if (!actual_usage_) {
+    // A still-queued original owner has not invoked any model step.
+    if (output->Snapshot().GetString("status") == "queued")
+      return output->SetUsage({});
+    return {};
+  }
+  const auto& usage = *actual_usage_;
+  return output->SetUsage({static_cast<int64_t>(usage.input),
+                           static_cast<int64_t>(usage.cached),
+                           static_cast<int64_t>(usage.output),
+                           static_cast<int64_t>(usage.reasoning),
+                           static_cast<int64_t>(usage.cache_write)});
+}
+
 void ResponsesExecution::ObserveError(void* owner, int status,
                                       std::string_view message,
                                       std::string_view code) noexcept {
@@ -577,6 +600,9 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
     prefix += "event: error\r\ndata: " + OutputJson(event) + "\r\n\r\n";
     return prefix;
   }
+  // The error observer refreshed committed counters before invoking this
+  // renderer, so JSON retrieval and response.failed share the same usage.
+  (void)run.ApplyActualUsage(&run.output_);
   auto wire = ResponsesOutput::RenderStreamError(&run.output_, status, message,
                                                  code, param);
   // A failed response can still be retrieved when its event journal exceeded
@@ -598,6 +624,8 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
   });
   if (!begun_ || plan_.finished || commit_unknown_) return {};
   if (!output_.Terminal()) {
+    auto usage_status = ApplyActualUsage(&output_);
+    if (!usage_status) return OutputError(usage_status);
     const auto code = failure_status_ ? failure_code_.data()
                                       : "response_execution_interrupted";
     const auto message = failure_status_

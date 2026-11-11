@@ -22,6 +22,11 @@ ObjectReply ExecuteInternalModelStep(
   });
   detail::HttpResponseContext context(
       detail::HttpResponseContext::Detached{fd});
+  ScopeExit usage([&] {
+    context.RefreshUsage();
+    parent->Usage().Merge(context.Usage().Total());
+    parent->RefreshUsage();
+  });
   context.SetClient(parent->Client(), nullptr, parent->RateDomain());
   context.SetTraceId(parent->TraceId());
   context.SetErrorObserver(

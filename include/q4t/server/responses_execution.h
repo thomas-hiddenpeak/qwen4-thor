@@ -6,6 +6,7 @@
 
 #include "q4t/server/file_expansion.h"
 
+#include "q4t/server/actual_usage.h"
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_state.h"
@@ -162,6 +163,8 @@ class ResponsesExecution {
                                        std::string_view param);
   static void ObserveError(void* owner, int status, std::string_view message,
                            std::string_view code) noexcept;
+  static void ObserveUsage(void* owner,
+                           const std::optional<ActualUsage>& usage) noexcept;
 
  private:
   Status Capture(std::string_view wire, io::Json* events, size_t* bytes) const;
@@ -172,6 +175,7 @@ class ResponsesExecution {
   ObjectReply PersistPreparedInputs();
   void ReleasePreparedInputs() noexcept;
   Status RecordOutput(Status status, std::string* wire);
+  Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
   std::unique_ptr<FileExpansion> files_;
   io::Json file_history_;
@@ -216,6 +220,7 @@ class ResponsesExecution {
   std::string moderation_wire_;
   std::shared_ptr<RequestControl> background_control_;
   int failure_status_ = 0;
+  std::optional<ActualUsage> actual_usage_;
   std::array<char, 128> failure_code_{};
   std::array<char, 1024> failure_message_{};
 };

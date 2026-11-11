@@ -1771,6 +1771,7 @@ Q4T_TEST(internal_model_wrapper_failure_and_exception_restore_parent) {
     ModelPreparation accounting(admission, client, rate, 16, 0, 64);
     HttpResponseContext parent(HttpResponseContext::Detached{});
     parent.SetClient(client, nullptr);
+    parent.Usage().Enable();
     auto control = std::make_shared<RequestControl>("parent", "", kDeadline);
     Json request;
     InternalModelStep step{
@@ -1785,6 +1786,11 @@ Q4T_TEST(internal_model_wrapper_failure_and_exception_restore_parent) {
             if (!accounting.ReservePrompt(20).ok() || !accounting.StartStep())
               throw std::logic_error("invalid ownership fixture");
             accounting.ObserveOutput(3);
+            auto* child = HttpResponseContext::Current(-1);
+            child->Usage().Enable();
+            child->Usage().BeginStep();
+            child->Usage().Observe({8, 3, 2, 1, 0});
+            child->Usage().EndStep();
             if (exception) throw std::runtime_error("CPU unwind fixture");
             SendError(-1, 502, "step failed", {}, "test_step_failure");
           });
@@ -1797,6 +1803,7 @@ Q4T_TEST(internal_model_wrapper_failure_and_exception_restore_parent) {
     Q4T_CHECK(HttpResponseContext::Current(-1) == &parent &&
               *parent.State() == ResponseState::kUnsent &&
               accounting.InputTokens() == 20 && accounting.OutputTokens() == 3);
+    Q4T_CHECK(parent.Usage().Total() == (ActualUsage{8, 3, 2, 1, 0}));
     Q4T_CHECK(admission.RateUsage(0).reserved == 100 && control->Cancel());
     rate.Settle();
     Q4T_CHECK(admission.RateUsage(0).tokens == 23);

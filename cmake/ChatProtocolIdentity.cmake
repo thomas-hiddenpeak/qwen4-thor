@@ -140,6 +140,7 @@ set(protocol_inputs
   src/server/batch_usage.cpp
   src/server/batch_response_link.cpp
   include/q4t/server/batch_usage.h
+  include/q4t/server/actual_usage.h
   include/q4t/server/batch_response_link.h
   include/q4t/server/batch_checkpoint.h
   src/server/batch_checkpoint.cpp

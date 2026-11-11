@@ -4,6 +4,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/batch_state.h"
+#include "q4t/server/batch_usage.h"
 
 namespace q4t::server {
 namespace {
@@ -93,7 +94,7 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
       !ValidId(data.GetString("batch_id")))
     return Immutable();
   for (const auto& row : rows->array) {
-    if (!row.IsObject()) return Immutable();
+    if (!row.IsObject() || !ValidBatchCapturedUsage(row)) return Immutable();
     BatchInputBudget budget;
     if (const auto* input = row.Find("input_budget");
         input && !ParseBatchInputBudget(*input, &budget))
@@ -129,6 +130,11 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
   for (size_t i = 0; i < old_rows->array.size(); ++i) {
     const auto& old = old_rows->array[i];
     const auto& next = rows->array[i];
+    if (old.Has("actual_usage") && !Same(old, next, "actual_usage"))
+      return Immutable();
+    if (next.Has("actual_usage") && !old.Has("actual_usage") &&
+        old.GetString("status") != "running")
+      return Immutable();
     for (const auto* key : {"line", "offset", "wire_bytes", "custom_id_sha256",
                             "input_snapshots", "prepared_inline"})
       if (!Same(old, next, key)) return Immutable();

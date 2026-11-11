@@ -1444,3 +1444,157 @@ Q4T_TEST(batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs) {
       kBatchPages, static_cast<long long>(usage.value.GetInt("objects")));
   return true;
 }
+
+Q4T_TEST(batch_captured_usage_survives_inline_binary_recount_and_restart) {
+  Fixture fixture;
+  ReadyBatch ready;
+  std::array<std::string, 3> original;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 3);
+    for (size_t i = 0; i < 3; ++i) {
+      auto result = Start(
+          batches, ready, i, 502,
+          OutputJson(Object(
+              {{"error",
+                Object({{"code", String("failed")},
+                        {"message", String(std::string(i == 1 ? (2 << 20) : 8,
+                                                       'x'))}})}})));
+      if (i == 2) {
+        result.response_body.clear();
+        result.error = Error(499, "batch_cancelled", "Drained cancellation");
+      }
+      result.actual_usage = ActualUsage{8, 3, 2, 1, 0};
+      Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, i,
+                                     ready.rows[i].custom_id, result)));
+      const auto row = batches.Row(Access(), ready.id, i);
+      Q4T_CHECK(Ok(row) && row.value.Find("actual_usage") &&
+                row.value.Find("actual_usage")->GetInt("total_tokens") == 11);
+      Q4T_CHECK(row.value.Has("result_inline") == (i != 1));
+      original[i] = OutputJson(row.value);
+    }
+    Q4T_CHECK(Ok(LegacyUsage(objects, ready.id)));
+    Q4T_CHECK(Ok(batches.RecountUsage(Access(), ready.id)));
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(Ok(batches.RecountUsage(Access(), ready.id)) &&
+            Ok(batches.RecountUsage(Access(), ready.id)));
+  for (size_t i = 0; i < 3; ++i)
+    Q4T_CHECK(OutputJson(batches.Row(Access(), ready.id, i).value) ==
+              original[i]);
+  Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+  const auto final = batches.Finalize(Access(), ready.id);
+  Q4T_CHECK(Ok(final) && final.value.Find("usage") &&
+            OutputJson(*final.value.Find("usage")) ==
+                OutputJson(BatchUsageJson({24, 9, 6, 3})));
+  const auto text = Content(objects, final.value.GetString("error_file_id"));
+  Q4T_CHECK(text.find("actual_usage") == text.npos);
+  const auto lines = Lines(text);
+  Q4T_CHECK(lines.size() == 3 && lines[2].Find("response")->IsNull());
+  for (size_t i = 0; i < 2; ++i)
+    Q4T_CHECK(!lines[i].Find("response")->Find("body")->Has("usage"));
+  return true;
+}
+
+Q4T_TEST(batch_captured_usage_is_immutable_and_not_client_input) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto ready = Ready(objects, 1);
+  auto result =
+      Start(batches, ready, 0, 500,
+            OutputJson(Object({{"error", String(std::string(16384, 'x'))}})));
+  const auto root = batches.Load(Access(), ready.id);
+  const auto page_id = root.value.Find("data")->GetArray("pages")->array[0].str;
+  const auto premature =
+      Edit(objects, page_id, ObjectKind::kToolRun, [](ObjectRequest& page) {
+        Set(&Field(page.data, "rows").array[0], "actual_usage",
+            BatchUsageJson({8, 3, 2, 1}));
+      });
+  Q4T_CHECK(premature.code == "batch_checkpoint_immutable");
+  result.actual_usage = ActualUsage{8, 3, 2, 1, 0};
+  Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+                                 result)));
+  for (int mode : {0, 1, 2}) {
+    const auto changed =
+        Edit(objects, page_id, ObjectKind::kToolRun, [&](ObjectRequest& page) {
+          auto& row = Field(page.data, "rows").array[0];
+          if (mode == 0) Set(&row, "actual_usage", BatchUsageJson({}));
+          if (mode == 1)
+            std::erase_if(row.object, [](const auto& field) {
+              return field.first == "actual_usage";
+            });
+          if (mode == 2)
+            Set(&Field(row, "actual_usage"), "input_tokens",
+                *Parsed("{\"n\":1e20}").Find("n"));
+        });
+    Q4T_CHECK(changed.code == "batch_checkpoint_immutable");
+  }
+  Q4T_CHECK(batches.Row(Access("client:other"), ready.id, 0).http_status ==
+            404);
+  return true;
+}
+
+Q4T_TEST(batch_captured_usage_does_not_override_reported_or_invalid_usage) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  for (const int mode : {0, 1, 2}) {
+    const auto ready = Ready(objects, 1);
+    auto result = Start(batches, ready, 0, 500,
+                        mode == 0   ? UsageBody()
+                        : mode == 1 ? "{\"usage\":{\"input_tokens\":1e20}}"
+                                    : "{\"error\":{}}");
+    result.actual_usage = mode == 2
+                              ? ActualUsage{kActualUsageLimit + 1, 0, 0, 0, 0}
+                              : ActualUsage{8, 3, 2, 1, 0};
+    Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0,
+                                   ready.rows[0].custom_id, result)));
+    Q4T_CHECK(!batches.Row(Access(), ready.id, 0).value.Has("actual_usage"));
+    const auto batch = batches.Retrieve(Access(), ready.id);
+    Q4T_CHECK(Ok(batch) && batch.value.Has("usage") == (mode == 0));
+    if (mode == 0)
+      Q4T_CHECK(batch.value.Find("usage")->GetInt("total_tokens") == 14);
+  }
+  return true;
+}
+
+Q4T_TEST(batch_captured_usage_actual_lost_finish_ack_never_recharges) {
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 250;
+  ReadyBatch ready;
+  BatchRowResult result;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    ready = Ready(objects, 1);
+    result = Start(batches, ready, 0, 500, "{\"error\":{\"code\":\"failed\"}}");
+    result.actual_usage = ActualUsage{8, 3, 2, 1, 0};
+  }
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    const auto missing = batches.FinishRow(Access(), ready.id, 0,
+                                           ready.rows[0].custom_id, result);
+    Q4T_CHECK(!missing.ok() && missing.commit_unknown);
+    Drain(objects);
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(
+      batches.StartRow(Access(), ready.id, 0).http_status == 409 &&
+      batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id, result)
+              .http_status == 409);
+  const auto row = batches.Row(Access(), ready.id, 0);
+  Q4T_CHECK(Ok(row) && row.value.Find("actual_usage") &&
+            row.value.Find("actual_usage")->GetInt("total_tokens") == 11);
+  Q4T_CHECK(Ok(LegacyUsage(objects, ready.id)) &&
+            Ok(batches.RecountUsage(Access(), ready.id)));
+  Q4T_CHECK(batches.Retrieve(Access(), ready.id)
+                .value.Find("usage")
+                ->GetInt("total_tokens") == 11);
+  return true;
+}

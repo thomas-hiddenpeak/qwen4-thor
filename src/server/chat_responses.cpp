@@ -46,6 +46,8 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   // Observe actual failures. Do not use the live SSE error renderer here:
   // cancellation is finalized by the owner after all generation cleanup.
   http.SetErrorObserver(&ResponsesExecution::ObserveError, job.run.get());
+  http.SetUsageObserver(&ResponsesExecution::ObserveUsage, job.run.get());
+  http.Usage().Enable();
   if (!job.permit || !job.permit->Holds(job.client, ClientLane::kData)) {
     detail::SendError(-1, 500, "Background data ownership is invalid", {},
                       "background_admission_lost");

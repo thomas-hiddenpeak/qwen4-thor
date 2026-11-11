@@ -73,6 +73,19 @@ size_t BatchUsageRows(const Json& data) {
   const auto* accounting = data.Find("usage_accounting");
   return accounting ? accounting->GetInt("rows") : 0;
 }
+std::optional<BatchUsage> BatchCapturedUsage(const Json& row) {
+  const auto* value = row.Find("actual_usage");
+  BatchUsage usage;
+  if (!value || !ParseUsage(*value, &usage)) return {};
+  return usage;
+}
+bool ValidBatchCapturedUsage(const Json& row) {
+  if (!row.Has("actual_usage")) return true;
+  const auto status = row.GetString("status");
+  return (status == "completed" || status == "failed") &&
+         !row.GetString("request_id").empty() &&
+         BatchCapturedUsage(row).has_value();
+}
 bool ValidBatchUsageAccounting(const Json& data) {
   const auto* accounting = data.Find("usage_accounting");
   const auto* batch = data.Find("batch");

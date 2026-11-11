@@ -1066,17 +1066,19 @@
       "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
       "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
       "batch_pre_delivery_remaining": [
-        "Capture available actual usage on native errors/cancellation; original background terminal/drain and original-result aggregation/legacy recount are CPU accepted. Never substitute budget estimates or unknown-as-zero.",
+        "Verify available failed/cancelled native usage during the combined actual model business acceptance; capture and original background terminal/drain are CPU accepted. Preserve unknown unsaved process-death tails.",
         "Close deterministic finalization byte/chunk capacity exhaustion finitely, preserve original results and receipt uncertainty; never retry the model or spin finalization forever.",
         "Complete bounded actual model business and compatible state/quota/background-parent binding rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
         "Complete bounded retry for application task-owner initial construction failure without core restart or duplicate live owners."
       ],
       "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
-      "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage capture still required.",
+      "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage now have separate targeted CPU acceptance; actual model business/release still required.",
       "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md",
       "batch_background_followthrough_plan": "SERVE_BATCH_CONTINUATION_2026-11-11.md",
-      "batch_background_followthrough_status": "26 distinct targeted CPU accepted: trusted parent/ResponseID with original Start transaction, actual terminal plus cleanup/data/rate drain, fair waiting, actual child death and lost Start/Begin/Finish receipts, cancel/expiry/next-generation revocation, actual TTL pin/unpin and finite absent-observer submission failure. No GPU/default change. Actual failed/cancelled usage collection and business/rollback/delivery remain required.",
-      "batch_background_followthrough_component_evidence": "evidence/serve-batch-continuation-cpu-20261111/README.md"
+      "batch_background_followthrough_status": "26 distinct targeted CPU accepted: trusted parent/ResponseID with original Start transaction, actual terminal plus cleanup/data/rate drain, fair waiting, actual child death and lost Start/Begin/Finish receipts, cancel/expiry/next-generation revocation, actual TTL pin/unpin and finite absent-observer submission failure. No GPU/default change. Actual failed/cancelled usage has separate 26-check CPU acceptance; business/rollback/delivery remain required.",
+      "batch_background_followthrough_component_evidence": "evidence/serve-batch-continuation-cpu-20261111/README.md",
+      "batch_actual_usage_status": "26 distinct targeted CPU accepted (9 new/4 extended/13 direct); first25pass/1fixturefailure, only failed case retested after respecting context refund. Native committed-input/output capture, internal preparation merge, failed/cancelled Responses JSON/SSE/reserved terminal and private atomic Batch row/restart recount validated. No GPU/default change; model business still required.",
+      "batch_actual_usage_component_evidence": "evidence/serve-actual-usage-cpu-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1663,5 +1665,5 @@
     }
   ],
   "next_task": "继续后台Response原终态/实际失败用量、永久容量与辅助所有者恢复，再实际模型业务/兼容回退交付；全部任务继续。",
-  "next": "A09.6 original background terminal/actual failed work usage, finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business and compatible rollback/default, A09.7/8 and all master tasks."
+  "next": "A09.6 finite permanent finalization failure and bounded auxiliary owner recovery; then actual model business including failed/cancelled usage and compatible rollback/default, A09.7/8 and all master tasks."
 }

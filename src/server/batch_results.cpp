@@ -100,7 +100,7 @@ Json& Entry(ObjectRequest& page, size_t index) {
 }
 ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
                      std::string_view endpoint, std::string* line,
-                     std::optional<BatchUsage>* usage) {
+                     std::optional<BatchUsage>* usage, bool* captured) {
   const auto id = Identity("batch_req_");
   if (id.empty())
     return Error(503, "object_entropy_unavailable", "No result ID");
@@ -111,6 +111,7 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
     return Error(413, "batch_result_capacity_exceeded",
                  "Batch result capacity exceeded");
   std::string response = "null", error = "null";
+  bool missing_usage = true;
   if (result.error.ok()) {
     Json body;
     if (result.http_status < 200 || result.http_status > 599 ||
@@ -124,6 +125,8 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
     // Formatting newlines in endpoint JSON must not split one JSONL result.
     const auto compact = OutputJson(body);
     *usage = BatchResponseUsage(endpoint, body);
+    const auto* reported = body.Find("usage");
+    missing_usage = !reported || reported->IsNull();
     if (compact.size() > kChatBodyBytes)
       return Error(413, "batch_result_capacity_exceeded",
                    "Batch result capacity exceeded");
@@ -141,6 +144,15 @@ ObjectReply JsonLine(const std::string& custom_id, const BatchRowResult& result,
   if (line->size() > kExpandedApplicationBytes + 65536)
     return Error(413, "batch_result_capacity_exceeded",
                  "Batch result capacity exceeded");
+  // A malformed public usage is not silently repaired. Only the native
+  // owner's missing error/cancellation usage may use its drained observation.
+  if (!*usage && missing_usage && result.actual_usage &&
+      ValidActualUsage(*result.actual_usage)) {
+    const auto& value = *result.actual_usage;
+    *usage =
+        BatchUsage{value.input, value.output, value.cached, value.reasoning};
+    *captured = true;
+  }
   return {};
 }
 }  // namespace
@@ -165,6 +177,7 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
   const auto bytes = data.Find("blob")->GetInt("bytes");
   for (size_t i = 0; i < rows->array.size(); ++i) {
     const auto& row = rows->array[i];
+    if (!ValidBatchCapturedUsage(row)) return Corrupt();
     const auto* result = row.Find("result_id");
     BatchInputBudget budget;
     if (const auto* input = row.Find("input_budget");
@@ -392,8 +405,9 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
     return Conflict();
   std::string line;
   std::optional<BatchUsage> usage;
-  auto reply =
-      JsonLine(custom_id, result, batch.GetString("endpoint"), &line, &usage);
+  bool captured = false;
+  auto reply = JsonLine(custom_id, result, batch.GetString("endpoint"), &line,
+                        &usage, &captured);
   if (!reply.ok()) return reply;
   const bool success = result.error.ok() && result.http_status < 300;
   Set(&row, "status", String(success ? "completed" : "failed"));
@@ -406,6 +420,7 @@ ObjectReply BatchState::FinishRow(const BinaryAccess& access,
   // A never-started cancelled/expired row provably consumed no model tokens.
   // A running failure with no result usage remains unknown, not fabricated 0.
   if (!running) usage = BatchUsage{};
+  if (running && captured) Set(&row, "actual_usage", BatchUsageJson(*usage));
   reply = AddBatchUsage(&root.data, index, usage);
   if (!reply.ok()) return reply;
   if (line.size() <= kBatchInlineBytes) {
@@ -522,6 +537,9 @@ ObjectReply BatchState::RecountUsage(const BinaryAccess& access,
     if (code == "batch_cancelled" || code == "batch_expired")
       usage = BatchUsage{};
   }
+  const auto* reported = body ? body->Find("usage") : nullptr;
+  if (!usage && (!reported || reported->IsNull()))
+    usage = BatchCapturedUsage(row);
   auto reply = AddBatchUsage(&root.data, index, usage);
   return reply.ok() ? Save(objects_, access, root) : reply;
 }

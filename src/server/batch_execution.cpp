@@ -30,7 +30,10 @@ BatchRowResult ExecuteBatchEndpoint(
                      "Batch row execution deadline exceeded");
     return failure(499, "batch_cancelled", "Batch row execution cancelled");
   };
-  if (control->Cancelled()) return interrupted();
+  if (control->Cancelled()) {
+    result.actual_usage = ActualUsage{};  // Invocation has not been claimed.
+    return interrupted();
+  }
   if (!control->ClaimInvocation())
     return failure(409, "batch_execution_already_claimed",
                    "The original execution ticket cannot be replayed");
@@ -52,6 +55,8 @@ BatchRowResult ExecuteBatchEndpoint(
   } catch (...) {
     detail::SendExceptionResponse(-1, *http.State());
   }
+  http.RefreshUsage();
+  result.actual_usage = http.Usage().Total();
   // A received terminal stays valid if cancellation arrives during cleanup.
   // Missing or partial output never turns into a success or a model replay.
   if (output.Complete()) {

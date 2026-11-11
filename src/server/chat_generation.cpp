@@ -106,6 +106,7 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                             const BatchResponseLink* batch_parent) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
   auto* context = detail::HttpResponseContext::Current(fd);
+  if (context) context->Usage().Enable();
   auto* state = context ? context->State() : &response;
   std::unique_ptr<ResponsesExecution> responses;
   ScopeExit close_responses([&] {
@@ -127,6 +128,7 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
     if (context) {
       context->SetResponsesStream(nullptr, nullptr, nullptr);
       context->SetErrorObserver(nullptr, nullptr);
+      context->SetUsageObserver(nullptr, nullptr);
     }
   });
   try {
@@ -146,6 +148,8 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
       responses = std::make_unique<ResponsesExecution>(
           *objects_, frozen_background ? nullptr : background_.get(),
           !frozen_background, api == GenerationApi::kCompact);
+      context->SetUsageObserver(&ResponsesExecution::ObserveUsage,
+                                responses.get());
       if (frozen_inputs) {
         if (!owner || api != GenerationApi::kResponse) {
           SendError(fd, 500, "Frozen request owner unavailable", {},
@@ -171,6 +175,7 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                       "background_unavailable");
             return;
           }
+          context->SetUsageObserver(nullptr, nullptr);
           ServePreparedBackgroundResponse(fd, *objects_, *background_,
                                            std::move(responses), access);
           return;
@@ -210,6 +215,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 InternalModelStep* internal,
                                 const io::Json* frozen_inputs) {
   auto* http = detail::HttpResponseContext::Current(fd);
+  if (http) http->Usage().Enable();
+  ScopeExit observe_usage([&] {
+    if (http) http->RefreshUsage();
+  });
   if (!internal)
     metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
@@ -1785,6 +1794,49 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return nullptr;
     };
     int cache_written_tokens = 0;
+    int restored_prefix = 0;
+    model::ModelSequence* usage_sequence = nullptr;
+    const std::vector<int32_t>* usage_generated = nullptr;
+    ActualUsage observed_usage;
+    if (http)
+      http->Usage().BeginStep(completion
+                                  ? choice_index % completion_plan.best_of == 0
+                                  : responses || choice_index == 0,
+                              !moderation_step);
+    auto refresh_usage = [&]() noexcept {
+      if (!http) return;
+      if (usage_sequence) {
+        observed_usage.input = std::max(
+            observed_usage.input,
+            static_cast<uint64_t>(std::clamp(usage_sequence->position, 0,
+                                             static_cast<int>(ids.size()))));
+        observed_usage.cached = std::min(
+            observed_usage.input, static_cast<uint64_t>(restored_prefix));
+        observed_usage.cache_write = static_cast<uint64_t>(
+            std::max(0, cache_written_tokens - restored_prefix));
+      }
+      if (usage_generated) {
+        observed_usage.output = prediction.Completion(usage_generated->size());
+        observed_usage.reasoning =
+            responses && internal_step ? usage_generated->size()
+            : internal || completion   ? 0
+                                       : thinking_budget.ReasoningTokens();
+      }
+      http->Usage().Observe(observed_usage);
+    };
+    if (http)
+      http->SetUsageRefresh(
+          [](void* owner) noexcept {
+            (*static_cast<decltype(refresh_usage)*>(owner))();
+          },
+          &refresh_usage);
+    ScopeExit finish_usage_step([&] {
+      if (!http) return;
+      http->RefreshUsage();
+      http->SetUsageRefresh(nullptr, nullptr);
+      http->Usage().EndStep();
+      http->RefreshUsage();
+    });
     const size_t required_capacity =
         prewarm ? prompt_u32.size() : prompt_budget.required_capacity;
 
@@ -2154,6 +2206,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
     // default stream, so the forward is ordered with the D2H below.
     model::ModelSequence seq;
+    usage_sequence = &seq;
+    const auto end_sequence = [&] {
+      // End clears the committed cursor. Snapshot it first, including early
+      // prefill failure/cancellation; pending speculative rows never count.
+      refresh_usage();
+      usage_sequence = nullptr;
+      return model::ModelEndSequence(&seq);
+    };
     ScopeExit sequence_cleanup([&] {
       if (std::uncaught_exceptions()) {
         if (seq.HasPending()) {
@@ -2165,7 +2225,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         seq.Fail();
       }
-      model::ModelEndSequence(&seq);
+      end_sequence();
     });
     const model::VisionFeatures* vptr =
         (vfeats.num_tokens > 0) ? &vfeats : nullptr;
@@ -2198,7 +2258,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
       }
     }
-    int restored_prefix = 0;
     bool session_gpu_error = false;
     const auto session_copy = [&](void* host, void* state, size_t bytes,
                                   bool restore) -> Status {
@@ -2751,13 +2810,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    "[q4t] prefill cancelled seq=%d position=%d total=%d\n",
                    seq_id, seq.position, T);
       count_abort();
-      model::ModelEndSequence(&seq);
+      end_sequence();
       cleanup();
       send_cancel_error("request cancelled during prefill");
       return;
     }
     if (!s.ok()) {
-      model::ModelEndSequence(&seq);
+      end_sequence();
       cleanup();
       if (RejectUnhealthy(fd)) return;
       SendError(fd, 500, "prefill failed: " + s.message());
@@ -2870,7 +2929,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (response_status && thinking_budget.Tracking())
         response_status =
             thinking_budget.Observe(token, piece, is_stop_token(token));
-      if (!response_status) return false;
+      if (!response_status) {
+        // Accepted output is known, but a failed token decode/observation
+        // cannot supply trustworthy reasoning details. Do not fabricate 0.
+        if (http && !moderation_step && thinking_budget.Tracking())
+          http->Usage().Merge(std::nullopt);
+        return false;
+      }
       if (responses || completion || stream || text_stop.Enabled() ||
           sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
@@ -2883,6 +2948,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     };
 
     std::vector<int32_t> generated;
+    usage_generated = &generated;
+    ScopeExit finish_output_usage([&] {
+      refresh_usage();
+      usage_generated = nullptr;
+    });
     int next_token = -1;
     std::string finish_reason = max_tokens == 0 && !prewarm ? "length" : "stop";
     bool generation_failed = false;
@@ -3656,7 +3726,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (budget_mtp_fallback) metrics_.reasoning_mtp_fallbacks.fetch_add(1);
     }
     if (generation_failed) seq.Fail();
-    model::ModelEndSequence(&seq);
+    end_sequence();
     LogMemorySnapshot("request_end", id);
     if (residency_enabled_) {
       quant::MoEResidency::Stats now, prev;
