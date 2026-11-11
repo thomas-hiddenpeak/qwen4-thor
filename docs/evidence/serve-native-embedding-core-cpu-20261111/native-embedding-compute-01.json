@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--target",
+    "q4t_model",
+    "q4t_host_tests",
+    "q4t_embedding_contract_tests",
+    "--parallel",
+    "4"
+  ],
+  "exit_code": 2,
+  "seconds": 1.993449855595827
+}

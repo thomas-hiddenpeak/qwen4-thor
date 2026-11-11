@@ -174,6 +174,8 @@ target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
   src/model/embedding_config.cpp
+  src/model/embedding_layout.cpp
+  src/model/embedding_model.cu
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
@@ -203,6 +205,16 @@ add_library(q4t_model STATIC
 target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
+
+# Targeted embedding reference replay; no performance acceptance claims.
+if(Q4T_HAS_ICU)
+  add_executable(q4t_embedding_replay EXCLUDE_FROM_ALL
+    tools/native_embedding/model_replay.cpp src/server/embedding_assets.cpp
+    src/server/grammar_process.cpp src/server/worker_io_broker.cpp)
+  target_link_libraries(q4t_embedding_replay PRIVATE
+    q4t_model q4t_text q4t_runtime)
+  target_compile_options(q4t_embedding_replay PRIVATE -Wall -Wextra -Werror)
+endif()
 
 # Standalone A1 diagnostic: never linked by production q4t_model/serve.
 add_library(q4t_moe_replay_gpu STATIC EXCLUDE_FROM_ALL
@@ -264,6 +276,7 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/embedding_assets.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp
@@ -849,11 +862,15 @@ q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
-    target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
+    target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp
+      tests/server_embedding_assets_test.cpp src/server/embedding_assets.cpp
+      src/model/embedding_config.cpp src/model/embedding_layout.cpp)
+    target_compile_definitions(q4t_host_tests PRIVATE
+      Q4T_EMBEDDING_ASSET_WORKER_ENTRY=1)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
     add_executable(q4t_embedding_contract_tests EXCLUDE_FROM_ALL
       tests/embedding_contract_test.cpp tests/test_main.cpp
-      src/model/embedding_config.cpp)
+      src/model/embedding_config.cpp src/model/embedding_layout.cpp)
     target_link_libraries(q4t_embedding_contract_tests PRIVATE q4t_text)
     target_compile_options(q4t_embedding_contract_tests PRIVATE
       -Wall -Wextra -Werror)

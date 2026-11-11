@@ -1,0 +1,2 @@
+embedding_weight_layout_rejects_payload_and_extent_corruption
+embedding_workspace_is_bounded_for_short_and_maximum_inputs

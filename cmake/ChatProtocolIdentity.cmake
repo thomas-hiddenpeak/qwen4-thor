@@ -47,6 +47,14 @@ set(protocol_inputs
   src/server/embeddings_execution.cpp
   src/server/embedding_metadata.cpp
   src/server/chat_embeddings.cpp
+  include/q4t/model/embedding_config.h
+  src/model/embedding_config.cpp
+  include/q4t/model/embedding_layout.h
+  src/model/embedding_layout.cpp
+  include/q4t/model/embedding_model.h
+  src/model/embedding_model.cu
+  include/q4t/server/embedding_assets.h
+  src/server/embedding_assets.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu
   src/server/responses_execution_moderation.cpp

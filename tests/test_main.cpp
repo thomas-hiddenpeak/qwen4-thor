@@ -4,6 +4,10 @@
 #include <fstream>
 #include <string>
 
+#ifdef Q4T_EMBEDDING_ASSET_WORKER_ENTRY
+#include "q4t/server/embedding_assets.h"
+#endif
+
 #if defined(Q4T_GRAMMAR_PROCESS_TESTS) || defined(Q4T_CACHE_WORKER_ENTRY)
 #include "q4t/server/cache_io.h"
 #endif
@@ -38,6 +42,10 @@ int ResponsesJobsFixture(int argc, char** argv);
 #endif
 
 int main(int argc, char** argv) {
+#ifdef Q4T_EMBEDDING_ASSET_WORKER_ENTRY
+  const int embedding = q4t::server::MaybeRunEmbeddingAssetWorker(argc, argv);
+  if (embedding >= 0) return embedding;
+#endif
 #if defined(Q4T_GRAMMAR_PROCESS_TESTS) || defined(Q4T_CACHE_WORKER_ENTRY)
   const int cache_worker = q4t::server::MaybeRunCacheWorker(argc, argv);
   if (cache_worker >= 0) return cache_worker;

@@ -26,6 +26,7 @@
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
+#include "q4t/server/embedding_assets.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/object_store.h"
@@ -911,6 +912,9 @@ int main(int argc, char** argv) {
   }
   const int cache_worker = q4t::server::MaybeRunCacheWorker(argc, argv);
   if (cache_worker >= 0) return cache_worker;
+  const int embedding_worker =
+      q4t::server::MaybeRunEmbeddingAssetWorker(argc, argv);
+  if (embedding_worker >= 0) return embedding_worker;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);

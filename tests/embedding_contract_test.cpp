@@ -1,4 +1,5 @@
 #include "q4t/model/embedding_config.h"
+#include "q4t/model/embedding_layout.h"
 #include "q4t/test.h"
 #include "q4t/text/tokenizer.h"
 
@@ -167,5 +168,78 @@ Q4T_TEST(embedding_tensor_contract_pins_actual_names_shapes_and_bytes) {
     bytes += tensor.bytes;
   }
   Q4T_CHECK(bytes == q4t::model::EmbeddingWeightBytes());
+  return true;
+}
+
+Q4T_TEST(embedding_weight_layout_rejects_payload_and_extent_corruption) {
+  using namespace q4t::model;
+  Json header;
+  Q4T_CHECK(q4t::io::ParseJson(
+      Read(".q4t-work/native-embedding-20261111/tensor-header.json"), &header));
+  EmbeddingWeightLayout layout;
+  const size_t bytes = EmbeddingWeightBytes();
+  Q4T_CHECK(ParseEmbeddingWeightLayout(header, bytes, &layout));
+  Q4T_CHECK(layout.bytes == bytes && layout.tensors.size() == 310);
+  const auto before = layout.tensors[0].offset;
+  const auto bad = [&](const Json& input, size_t length) {
+    return !ParseEmbeddingWeightLayout(input, length, &layout) &&
+           layout.bytes == bytes && layout.tensors.size() == 310 &&
+           layout.tensors[0].offset == before;
+  };
+  Q4T_CHECK(bad(header, bytes - 1) && bad(header, bytes + 1));
+  auto changed = header;
+  changed.object.push_back(changed.object.back());
+  Q4T_CHECK(bad(changed, bytes));
+  changed = header;
+  changed.object.pop_back();
+  Q4T_CHECK(bad(changed, bytes));
+  for (const char* field : {"dtype", "shape", "data_offsets"}) {
+    for (const double delta : {-1.0, 0.5, 2.0}) {
+      changed = header;
+      for (auto& [name, tensor] : changed.object) {
+        if (name != "embed_tokens.weight") continue;
+        for (auto& [key, value] : tensor.object) {
+          if (key != field) continue;
+          if (key == "dtype") value.str = "F16";
+          else if (key == "shape") value.array[0].number += delta;
+          else for (auto& offset : value.array) offset.number += delta;
+        }
+      }
+      Q4T_CHECK(bad(changed, bytes));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(embedding_workspace_is_bounded_for_short_and_maximum_inputs) {
+  using namespace q4t::model;
+  EmbeddingWorkspaceLayout layout;
+  Q4T_CHECK(!PlanEmbeddingWorkspace(0, &layout));
+  Q4T_CHECK(!PlanEmbeddingWorkspace(-1, &layout));
+  Q4T_CHECK(!PlanEmbeddingWorkspace(8193, &layout));
+  Q4T_CHECK(!PlanEmbeddingWorkspace(2147483647, &layout));
+  size_t previous = 0;
+  for (const int tokens : {1, 15, 16, 17, 255, 4096, 8192}) {
+    Q4T_CHECK(PlanEmbeddingWorkspace(tokens, &layout));
+    Q4T_CHECK(layout.tokens == tokens && layout.padded_tokens >= tokens &&
+              layout.padded_tokens - tokens < 16 &&
+              layout.padded_tokens % 16 == 0 &&
+              layout.bytes >= previous && layout.bytes < (512ULL << 20));
+    previous = layout.bytes;
+    const std::vector<size_t> offsets{
+        layout.ids, layout.hidden, layout.normalized, layout.q, layout.k,
+        layout.v, layout.head_q, layout.head_k, layout.transposed_v,
+        layout.rope, layout.scores, layout.head_output, layout.attention,
+        layout.projected, layout.gate, layout.up, layout.gemm};
+    for (size_t i = 0; i < offsets.size(); ++i)
+      Q4T_CHECK(offsets[i] % 256 == 0 && offsets[i] < layout.bytes &&
+                (!i || offsets[i] > offsets[i - 1]));
+    Q4T_CHECK(layout.head_output - layout.scores >=
+              static_cast<size_t>(tokens) * layout.padded_tokens * 2);
+    Q4T_CHECK(layout.bytes - layout.gemm ==
+              EmbeddingWorkspaceLayout::kGemmBytes);
+  }
+  Q4T_CHECK(!PlanEmbeddingWorkspace(8193, &layout) &&
+            layout.tokens == 8192 && layout.bytes == previous);
   return true;
 }
