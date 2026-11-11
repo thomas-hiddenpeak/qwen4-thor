@@ -156,7 +156,7 @@ def current_surface(root):
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
-                 "moderation.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
+                 "moderation.cpp", "moderations_plan.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
                  "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(

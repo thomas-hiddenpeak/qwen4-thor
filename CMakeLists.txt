@@ -389,6 +389,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp
+  src/server/chat_moderations.cpp
   src/server/chat_model_step.cpp
   src/server/session_cache.cpp
   src/server/cache_io.cpp
@@ -414,6 +415,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/responses_reasoning.cpp
     src/server/access_program.cpp
     src/server/moderation.cpp
+    src/server/moderations_plan.cpp
+    src/server/moderations_execution.cpp
     src/server/responses_execution_moderation.cpp
   src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
@@ -638,6 +641,8 @@ if(Q4T_BUILD_TESTS)
     src/server/responses_reasoning.cpp
     src/server/access_program.cpp
     src/server/moderation.cpp
+    src/server/moderations_plan.cpp
+    src/server/moderations_execution.cpp
     src/server/responses_execution_moderation.cpp
     src/server/chat_choices.cpp
     src/server/model_catalog.cpp
@@ -650,6 +655,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_responses_reasoning_test.cpp
     tests/server_access_program_test.cpp
     tests/server_moderation_test.cpp
+    tests/server_moderations_api_test.cpp
     tests/server_responses_context_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp

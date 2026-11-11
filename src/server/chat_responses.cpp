@@ -148,6 +148,15 @@ BatchRowResult ChatServer::RunBatchRequest(
   return ExecuteBatchEndpoint(
       control ? control->id() : "", client, permit, control,
       [&] {
+        if (endpoint == "/v1/moderations") {
+          if (frozen_inputs.GetString("kind") != "moderation") {
+            detail::SendError(-1, 503, "Invalid frozen moderation input", {},
+                              "batch_prepared_input_invalid");
+            return;
+          }
+          HandleModerations(-1, OutputJson(row.body), control);
+          return;
+        }
         const auto api = endpoint == "/v1/responses" ? GenerationApi::kResponse
                         : endpoint == "/v1/completions"
                             ? GenerationApi::kCompletion

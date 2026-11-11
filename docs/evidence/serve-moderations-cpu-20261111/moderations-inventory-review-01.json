@@ -1,0 +1,27 @@
+{
+  "changed_sources": [
+    "CMakeLists.txt",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/moderations_execution.h",
+    "include/q4t/server/moderations_plan.h",
+    "src/server/batch_budget.cpp",
+    "src/server/batch_preparation.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_moderations.cpp",
+    "src/server/chat_responses.cpp",
+    "src/server/http_request.cpp",
+    "src/server/moderations_execution.cpp",
+    "src/server/moderations_plan.cpp",
+    "src/service/ingress_main.cpp",
+    "tools/serve_gateway/gateway.py"
+  ],
+  "new_whitelists": [
+    "moderations_plan.cpp:0:request",
+    "moderations_plan.cpp:1:part",
+    "moderations_plan.cpp:2:part",
+    "moderations_plan.cpp:3:*image"
+  ],
+  "source_anchors": 503,
+  "status": "reviewed-source-only; tests pending"
+}

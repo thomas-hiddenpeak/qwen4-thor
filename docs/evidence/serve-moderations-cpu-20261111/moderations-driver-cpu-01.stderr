@@ -1,0 +1,8 @@
+test_actual_meter_refuses_extra_rpm_reservation_and_unaccounted_work (tools.serve_responses.test_moderations_acceptance.ModerationsAcceptanceTests.test_actual_meter_refuses_extra_rpm_reservation_and_unaccounted_work) ... ok
+test_complete_scores_require_actual_model_flags_and_modality (tools.serve_responses.test_moderations_acceptance.ModerationsAcceptanceTests.test_complete_scores_require_actual_model_flags_and_modality) ... ok
+test_fixed_requests_profiles_and_generation_bound (tools.serve_responses.test_moderations_acceptance.ModerationsAcceptanceTests.test_fixed_requests_profiles_and_generation_bound) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.006s
+
+OK

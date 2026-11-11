@@ -1,0 +1,55 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_io
+[  3%] Built target q4t_ple
+[  3%] Built target q4t_regex_build
+[  6%] Built target q4t_trace
+[  6%] Built target q4t_runtime
+[  6%] Generating service-tools/snapshot.done
+[  6%] Built target q4t_text
+[ 20%] Built target xgrammar
+[ 24%] Built target q4t_quant
+[ 34%] Built target q4t_model
+[ 37%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/cf659c999150b2d21013b4036c6425433ac20f54f8f30005dd141e4e70d043dd", "manifest_sha256": "cf659c999150b2d21013b4036c6425433ac20f54f8f30005dd141e4e70d043dd", "model_actions": false}
+[ 37%] Built target q4t_service_tools
+[ 37%] Built target q4t_service_cli
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_budget.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/batch_preparation.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input_tokens.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_responses.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_moderations.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_request.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/moderations_plan.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/moderations_execution.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 44%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

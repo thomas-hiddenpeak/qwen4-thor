@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/moderations_plan.h"
 #include "q4t/server/responses_execution.h"
 
 namespace q4t::server {
@@ -225,6 +226,29 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
       active = Active(access);
       return active.ok() ? reply : active;
     }
+  } else if (endpoint == "/v1/moderations") {
+    if (prepared.GetString("kind") != "moderation") return Invalid();
+    ModerationsRequestPlan plan;
+    status = PlanModerationsRequest(row.body, config, &plan, &error);
+    uint64_t total = 0;
+    auto classifier_config = config;
+    classifier_config.client_limits = nullptr;
+    if (status) {
+      for (const auto& input : plan.inputs) {
+        status =
+            meter.Chat(input.request, input.chat, classifier_config, &error);
+        if (!status) break;
+        if (meter.input.tokens > kBatchTokenLimit - total) return Invalid();
+        total += meter.input.tokens;
+      }
+    }
+    if (status && config.client_limits &&
+        total > config.client_limits->max_prompt_tokens)
+      return Error(400, "client_prompt_limit_exceeded",
+                   "Moderation exceeds cumulative client input limit");
+    meter.input = {total, true};
+    meter.output = 0;
+    planned.preparation_output = plan.OutputBudget();
   } else {
     return Error(503, "batch_endpoint_executor_unavailable",
                  "Batch endpoint requires its native token meter");

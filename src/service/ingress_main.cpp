@@ -351,6 +351,7 @@ struct RouteSpec {
   bool control;
 };
 constexpr RouteSpec kRoutes[] = {
+    {"POST", "/v1/moderations", false},
     {"POST", "/v1/completions", false},
     {"POST", "/v1/chat/completions", false},
     {"POST", "/v1/chat/preflight", false},

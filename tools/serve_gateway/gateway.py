@@ -19,6 +19,7 @@ ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/capabilities': ('GET', 'control'),
           '/v1/chat/completions': ('POST', 'data'),
           '/v1/completions': ('POST', 'data'),
+          '/v1/moderations': ('POST', 'data'),
           '/v1/chat/preflight': ('POST', 'data'),
           '/v1/requests/cancel': ('POST', 'control')}
 DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
@@ -98,7 +99,8 @@ def validate_routes():
     paths = parse(read_file(API_CONTRACT))['paths']
     expected = {'v1_models': 'control', 'v1_capabilities': 'control',
                 'v1_chat_completions': 'data', 'v1_chat_preflight': 'data',
-                'v1_requests_cancel': 'control', 'v1_completions': 'data'}
+                'v1_requests_cancel': 'control', 'v1_completions': 'data',
+                'v1_moderations': 'data'}
     seen = {}
     for path, (method, lane) in ROUTES.items():
         operation = paths.get(path, {}).get(method.lower(), {}).get('operationId')

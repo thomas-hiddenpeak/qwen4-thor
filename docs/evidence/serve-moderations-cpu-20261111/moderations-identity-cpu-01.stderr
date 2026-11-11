@@ -1,0 +1,6 @@
+test_official_sdk_identity_and_openapi_route (tools.serve_responses.test_moderations_contract.ModerationsContract.test_official_sdk_identity_and_openapi_route) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+OK

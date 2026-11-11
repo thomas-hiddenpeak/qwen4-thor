@@ -358,7 +358,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   const size_t route_limit = streaming ? stream->max_bytes :
       (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
-              *path == "/v1/completions" || IsResponsesTarget(*path) ||
+              *path == "/v1/completions" || *path == "/v1/moderations" ||
+              IsResponsesTarget(*path) ||
               IsConversationTarget(*path) || IsPromptTarget(*path) ||
               IsUploadTarget(*path)
           ? kChatBodyBytes : 4096);

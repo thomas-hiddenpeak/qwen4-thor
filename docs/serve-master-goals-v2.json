@@ -945,7 +945,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.7/A10: native standalone moderation and Batch execution first, then remaining model/API backends and all master tasks.",
+      "next": "Standalone Moderations CPU/native TLS SDK accepted; execute bounded actual text/vision/Batch/cancel business, then compatible delivery and all remaining master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1107,7 +1107,9 @@
           "service_release_sha256": "e2c19d223091490dd169eb9b5c64d18ceba319dfa02b2d647a2c8440a0f742fd"
         },
         "main_merged": false
-      }
+      },
+      "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
+      "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md"
     },
     {
       "id": "A10",
@@ -1136,7 +1138,9 @@
         }
       ],
       "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation",
-      "next": "Native standalone moderation endpoint and Batch wiring using actual existing classifier; continue all other multimodal/backend tasks."
+      "next": "Standalone Moderations CPU/native TLS SDK accepted; execute bounded actual text/vision/Batch/cancel business, then compatible delivery and all remaining master tasks.",
+      "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
+      "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md"
     },
     {
       "id": "A11",
@@ -1694,6 +1698,6 @@
       "release": null
     }
   ],
-  "next_task": "A10",
-  "next": "Native standalone moderation and Batch wiring, remaining five Batch backends and all A/N/R/Q tasks; qualified text Batch default delivered."
+  "next_task": "A09.7/A10 standalone Moderations actual business and delivery",
+  "next": "Continue bounded Moderations SDK text/vision and Batch actual-usage/cancellation acceptance, then all remaining required tasks; no completion from a component."
 }

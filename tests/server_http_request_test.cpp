@@ -312,6 +312,7 @@ Q4T_TEST(http_application_ceiling_and_aggregate_keep_control_independent) {
     Q4T_CHECK(cancellation.Acquire(4096));
     for (const auto* route :
          {"/v1/chat/completions", "/v1/chat/preflight", "/v1/responses",
+          "/v1/moderations",
           "/v1/responses/input_tokens", "/v1/responses/compact",
           "/v1/conversations", "/v1/conversations/conv_1/items"}) {
       for (const size_t size : {size_t{1}, kChatBodyBytes + 1}) {
@@ -454,5 +455,18 @@ Q4T_TEST(http_header_identity_and_pre_body_admission) {
       Q4T_CHECK(!called && status == 400 && !headers.error_param.empty());
     }
   }
+  return true;
+}
+
+Q4T_TEST(http_moderations_uses_business_lane_and_normal_json_body_capacity) {
+  using namespace q4t::server;
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/moderations") ==
+            HttpConnectionClass::kBusiness);
+  const std::string payload = "{\"input\":\"" + std::string(8192, 'x') + "\"}";
+  const std::string wire = "POST /v1/moderations HTTP/1.1\r\nHost: local\r\n"
+                           "Content-Type: application/json\r\nContent-Length: " +
+                           std::to_string(payload.size()) + "\r\n\r\n" + payload;
+  std::string body;
+  Q4T_CHECK(Read(wire, &body) && body == payload);
   return true;
 }

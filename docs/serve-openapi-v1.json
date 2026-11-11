@@ -1485,6 +1485,72 @@
         }
       }
     },
+    "/v1/moderations": {
+      "post": {
+        "operationId": "v1_moderations",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/moderations_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/moderations_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Finite native classification error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "executor": "actual_served_model",
+          "default_model": "served_model",
+          "cardinality": "string array has one result per string; multimodal array is one content group",
+          "max_total_text_utf8_bytes": 1048576,
+          "output_tokens_per_classifier": 512,
+          "threshold": 0.5,
+          "scores": "local model estimates; no cloud calibration claim",
+          "quota": "one RPM and cumulative actual native work; independent Batch pool",
+          "stream": false
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",

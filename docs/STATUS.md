@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。独立Moderations[34项CPU/SDK接入首过](evidence/serve-moderations-cpu-20261111/README.md)：26 C++、4合同、原生TLS官方SDK、3业务驱动；补齐5文件编译期身份并定点重验。候选61649847/入口39757f08零警告，503来源；0GPU/默认保持。冻结2启动/8请求/9步骤/900秒真实文本视觉与Batch业务，随后交付及全部总目标继续。
+
+2026-11-11。独立Moderations/Batch接线已完成，冻结26 C++与4 Python针对性CPU：输入、完整分数、单RPM/累计TPM、取消、真实存储计数和HTTP容量。来源503锚点已审计；尚未构建/验证，默认f23be45c保持。继续业务验收、兼容交付和全部总任务。
+
+2026-11-11。继续[独立Moderations实现](SERVE_MODERATIONS_API_2026-11-11.md)：已核对官方指南/固定SDK，按标准输入基数、真实13类结果、单请求配额/取消、Batch准备计数执行和SDK顺序补齐。先开发纯合同组件，随后原生运行时与针对性验证；默认f23be45c保持，全部总目标继续。
+
 2026-11-11。Batch[可回退交付完成](evidence/serve-batch-delivery-20261111/README.md)：15命令首过、21.989秒、0新增GPU；默认f23be45c/包25061a30/generation223a915c，rev44 STOPPED，兼容fc69回退312678bc已登记rev42。原Key/容量/账本保持。三文本Batch可用，继续独立moderations/其余五后端及全部总任务，未合main。
 
 2026-11-11。Batch[真实业务首次接受](evidence/serve-batch-business-20261111/README.md)：严格租约99.300秒、2启动/8生成/8步骤，三文本端点、真实工具SSE、失败/取消实际计量和独立fc69回退原件/双池配额连续通过。自有进程/端口/锁释放，默认保持。继续兼容发行、适用默认交付及全部总任务，未合main。

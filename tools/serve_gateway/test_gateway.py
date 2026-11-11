@@ -140,6 +140,7 @@ class GatewayTests(unittest.TestCase):
         self.assertNotIn('$request_body',text)
         self.assertNotIn('location /metrics',text)
         self.assertIn('"~^POST:/v1/completions$" data;', text)
+        self.assertIn('"~^POST:/v1/moderations$" data;', text)
         self.assertIn('"~^GET:/v1/models/[^?#]+$" control;', text)
         self.assertIn('"~^DELETE:/v1/models/[^?#]+$" control;', text)
         with self.assertRaises(ValueError):g.policy(dict(self.p,global_inflight=1))

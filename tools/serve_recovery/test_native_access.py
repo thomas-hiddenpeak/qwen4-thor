@@ -232,6 +232,64 @@ class AccessTests(unittest.TestCase):
         self.assertEqual(json.loads(body)['error']['code'], 'model_not_deletable')
         self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
 
+    def test_moderations_sdk_tls_auth_cors_and_exact_body(self):
+        # Actual C++ protocol fixture, not a claim of model classification.
+        expected = json.loads((Path(os.environ['Q4T_TEST_OUTPUT_DIR']) /
+                               'moderations-response.json').read_text())
+        request = dict(input=['benign '+('x' * 8192), 'second input'])
+        self.stack.response_hook = lambda peer, *_: (
+            peer.response(200, expected) or True)
+        origin = 'https://client.example'
+        status, headers, raw = self.request('OPTIONS', '/v1/moderations',
+            auth=False, headers={'Origin': origin,
+                'Access-Control-Request-Method': 'POST',
+                'Access-Control-Request-Headers': 'Authorization, Content-Type'})
+        self.assertEqual((status, raw), (204, b''))
+        self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+        self.assertEqual(self.request('POST', '/v1/moderations', auth=False)[0], 401)
+        self.assertEqual(self.stack.forwarded, [])
+        command = dict(action='moderations_create', request=request,
+            base_url='https://127.0.0.1:' +
+                str(self.stack.value['policy']['listen_port']) + '/v1',
+            api_key='A' * 40, headers={'Origin': origin}, timeout_ms=5000,
+            sdk_directory=str(ROOT/'.q4t-work/serve-protocol-20261103/sdk'))
+        env = {k:v for k,v in os.environ.items()
+               if k not in ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD')}
+        env['NODE_EXTRA_CA_CERTS'] = str(self.certificates/'ca.pem')
+        run = subprocess.run(['node', str(ROOT/'tools/serve_responses/run_sdk.mjs')],
+            input=json.dumps(command), text=True, capture_output=True,
+            env=env, timeout=10)
+        (self.stack.directory/'moderations-sdk.stdout').write_text(run.stdout)
+        (self.stack.directory/'moderations-sdk.stderr').write_text(run.stderr)
+        self.assertEqual((run.returncode, run.stderr), (0, ''))
+        result = json.loads(run.stdout)
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['result'], expected)
+        self.assertEqual(len(result['exchanges']), 1)
+        self.assertEqual(len(self.stack.forwarded), 1)
+        row = self.stack.forwarded[0]
+        self.assertEqual(json.loads(row['body']), request)
+        self.assertEqual((row['path'], row['client'], row['token']),
+                         ('/v1/moderations', 'alpha', 'e' * 64))
+        self.assertIsNone(row['authorization'])
+        # Finite backend errors also survive native TLS without a POST replay.
+        self.stack.response_hook = lambda peer, *_: (
+            peer.response(429, dict(error=dict(type='rate_limit_error',
+                code='client_tpm_exhausted', message='CPU quota fixture'))) or True)
+        command['request'] = dict(input='retry must remain off')
+        run = subprocess.run(['node', str(ROOT/'tools/serve_responses/run_sdk.mjs')],
+            input=json.dumps(command), text=True, capture_output=True,
+            env=env, timeout=10)
+        (self.stack.directory/'moderations-error-sdk.stdout').write_text(run.stdout)
+        (self.stack.directory/'moderations-error-sdk.stderr').write_text(run.stderr)
+        result = json.loads(run.stdout)
+        self.assertEqual((run.returncode, run.stderr), (1, ''))
+        self.assertFalse(result['ok'])
+        self.assertEqual(result['error']['status'], 429)
+        self.assertEqual(result['error']['code'], 'client_tpm_exhausted')
+        self.assertEqual(len(result['exchanges']), 1)
+        self.assertEqual(len(self.stack.forwarded), 2)
+
     def test_conversations_use_native_tls_cors_and_identity(self):
         self.replace(cors=dict(CORS, allowed_methods=['GET', 'POST', 'DELETE']))
         origin = 'https://client.example'

@@ -9,6 +9,7 @@
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/moderations_plan.h"
 #include "q4t/server/responses_execution.h"
 
 namespace q4t::server {
@@ -89,6 +90,12 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
     auto status = PlanCompletionRequest(row.body, config, &plan, &error);
     if (!status) reply = PlanningError(status, error);
     prepared = Object({{"kind", String("completion")}});
+  } else if (endpoint == "/v1/moderations") {
+    ModerationsRequestPlan plan;
+    ChatPlanError error;
+    const auto status = PlanModerationsRequest(row.body, config, &plan, &error);
+    if (!status) reply = PlanningError(status, error);
+    prepared = Object({{"kind", String("moderation")}});
   } else {
     // The remaining native model families are tracked by A10. This private
     // adapter cannot validate them by pretending they are Chat requests.
@@ -187,7 +194,9 @@ ObjectReply BatchPreparation::Read(
       (endpoint == "/v1/chat/completions" &&
        candidate.GetString("kind") != "chat") ||
       (endpoint == "/v1/completions" &&
-       candidate.GetString("kind") != "completion"))
+       candidate.GetString("kind") != "completion") ||
+      (endpoint == "/v1/moderations" &&
+       candidate.GetString("kind") != "moderation"))
     return Invalid();
   *prepared = std::move(candidate);
   return {};

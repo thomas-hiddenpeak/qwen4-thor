@@ -178,6 +178,8 @@ class ChatServer {
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
   void HandleResponsesTokenCount(int fd, const std::string& body);
+  void HandleModerations(int fd, const std::string& body,
+                         std::shared_ptr<RequestControl> owner = {});
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };

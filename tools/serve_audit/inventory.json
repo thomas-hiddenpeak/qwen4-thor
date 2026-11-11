@@ -1021,6 +1021,16 @@
         "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
         "docs/evidence/serve-batch-public-api-cpu-20261111/README.md"
       ]
+    },
+    "POST /v1/moderations": {
+      "boundary": "Implementation under targeted acceptance; route inventory does not certify CPU, SDK, GPU business or delivery.",
+      "evidence": [
+        "docs/SERVE_MODERATIONS_API_2026-11-11.md",
+        "tests/server_moderations_api_test.cpp",
+        "tests/server_batch_preparation_test.cpp",
+        "tools/serve_responses/test_moderations_contract.py"
+      ],
+      "semantics": "Native standalone Moderations: actual constrained classifier, text/array/image input, single request and cumulative quota owner; optional external proxy."
     }
   },
   "whitelists": {
@@ -1526,11 +1536,26 @@
     "batch_state.cpp:0:query": [
       "after",
       "limit"
+    ],
+    "moderations_plan.cpp:0:request": [
+      "input",
+      "model"
+    ],
+    "moderations_plan.cpp:1:part": [
+      "type",
+      "text"
+    ],
+    "moderations_plan.cpp:2:part": [
+      "type",
+      "image_url"
+    ],
+    "moderations_plan.cpp:3:*image": [
+      "url"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4b71afc7b9ea0845404dc2c6479f649bac0dfec1745d65fed0f5eb031bcba552",
-    "cmake/ChatProtocolIdentity.cmake": "d7109096bbd8e9442b59a3c2dcad9ef2914908209f9bfbd7c2817ded3396310a",
+    "CMakeLists.txt": "64c9fadeff6b31212d719af8570d46604d097e4479fa691f7918f26ac224d9f2",
+    "cmake/ChatProtocolIdentity.cmake": "a66aab54c761a4db217f7dc15cf6f5b6947c71ee3e4b67894e7b7f84557e22a4",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1580,7 +1605,7 @@
     "include/q4t/server/chat_plan.h": "0dacfecb796d32754c4ed9b397ab938f8a89d9ab0e2d61d79e0940669efda7f9",
     "include/q4t/server/chat_prompt.h": "40f524f8de1cada46e16a1c982ab8ef29d4a2c404df276bdd5d941b32afe5605",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "054f0ba8e2c954ecf603924b86926691f5b7b170429d0baec5a74e2445118223",
+    "include/q4t/server/chat_server.h": "74cd98a2d22e480a316c49dd48313665ee3b001a4fd89c18f9dadfd28a4d7017",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "62a3dd447e16a74393430ab8ae2d85657e23609cd3c57270ef24c943be587c01",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -1730,13 +1755,13 @@
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
-    "src/server/batch_budget.cpp": "55bc0152eb46a01e830839469961e372cf5ba240fd71f22059af895f0f03bfdc",
+    "src/server/batch_budget.cpp": "dc22ad6e9e68bd7b6a73eb14bbb23e8cfc88ac623d3ef96310fb219cecfc4a85",
     "src/server/batch_checkpoint.cpp": "77f0c0fded325307c6a65c095dd0fc3aa87fa88e74151a00db0c1e802fbd232e",
     "src/server/batch_execution.cpp": "5eadbcf39a296543e6b3965782858f33cbb3f4a0655a33ed31e9d6837fb11315",
     "src/server/batch_finalization.cpp": "979212557f90a6be6dcacd54ca55ceba9de08ac593e3703d5523cfe41b8619e0",
     "src/server/batch_input.cpp": "a064dc01f70e647f0493f00802185d2afbbb7124dcee14ed2961a7436c497859",
     "src/server/batch_jobs.cpp": "d09d4b1645a21a44f29ddf435bc3b226ec38e1ac4edc3a7a84d77ab07b6e2753",
-    "src/server/batch_preparation.cpp": "dc411579413b433422a42361d64e01173a5d70b861fd1f7f518a7439246d5bbf",
+    "src/server/batch_preparation.cpp": "b73ecc1e31e8168cf40f206b62fbed8394b10f71f9b493112a9fe3000cc77b9a",
     "src/server/batch_quota.cpp": "522cd2317e60388170d4cda16e0b7cf8e324c7b745ab833c09e80e285d61de27",
     "src/server/batch_response_link.cpp": "c2d65ad35c20f7ed2ee20eaf35b431d2c6c7899f4ac9bc819cf52981d99d50e2",
     "src/server/batch_results.cpp": "a04b1043f77aa236be542c42b2c493bfab586c4cf45c5bd3102f3e0c5d14b738",
@@ -1748,14 +1773,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "752668050ed7bf8d0092f72918fab32c0010acc6b80f273c62d37a992f8e2307",
+    "src/server/chat_capabilities.cpp": "77521f058c069f8c5eecbdc6d13e9f909fd0cdad6e0c034d8939fb015909d305",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "f93b1524f4cdb71b3f6d2937cda5b6341478072e071a9e4fc03858490cc6c529",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
     "src/server/chat_generation.cpp": "d41c24e85a8fb8609747a6d755163ac4a2ee038f8033bb28eeb99f4fc390eca0",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "6dd0b976e519ccd08b25f56372351f21c69d584af56ec93d7a3b777b1b0d3ae0",
+    "src/server/chat_http.cpp": "96cc8bc2987e64fb6774079aefeb3680200848529d87f0c17d7b10edc28db441",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
@@ -1766,7 +1791,7 @@
     "src/server/chat_preflight.cpp": "df056e7a137999e1933a64b48d7ae081e98e68bbb83f3839f3daf50ed2371cee",
     "src/server/chat_prompt.cpp": "44ee8504faec4d904d4cd320581218253d3e1e62c8f12476e4b509f78c3f1db8",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
-    "src/server/chat_responses.cpp": "70fb73c14f738600f941e8e797ec1f60d724c6131f19a8c14919fc7409e9cf67",
+    "src/server/chat_responses.cpp": "93adea3dd084bcbfd46dd1554194933fc9d418422a232cf79b208518977f6796",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_server.cpp": "3b342a0f0cbb7fce7c4416090f9b42286eb333412d06671cf221cc25a6a7631c",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
@@ -1837,7 +1862,7 @@
     "src/server/grammar_process.cpp": "d6a26c56069e2154b4ce7d960f48056ff7fe1241cc52feb8aa604666fb929d6a",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf",
+    "src/server/http_request.cpp": "19b2e2092b01c6940c19109cd260bc09a75774d528190d5a225b5c84f057f751",
     "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -1928,7 +1953,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "4c0d5cdee36144ba93e12b128b1909824cd1f97723fca337d5dacce7463a68ea",
+    "src/service/ingress_main.cpp": "69c7ded7b67019d71880c5653c24b9881c95678bbf06e82a09c5e0f90368aa37",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -1938,7 +1963,7 @@
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "13172409f808e0fc45b247658fd89a2646dc674e393ff6752db87808bf792688",
+    "tools/serve_gateway/gateway.py": "3b337ea20c9e370fc0cc4180641b984642b17b1835f921efbb3eb2dd99b79574",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
@@ -2026,7 +2051,12 @@
     "tools/serve_service/service.py": "2a19128239506fb1f1f9baed15ce978e4756e09044e1808b1220155a342c61a7",
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
-    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "include/q4t/server/moderations_execution.h": "85014d7bd65cb4710e3cf755f7297e0f4e65bddf595445bb9a16a0600d1f1088",
+    "include/q4t/server/moderations_plan.h": "f33b9685f35057d70b7b969db80d951a894bd687b3d306aa0b74e4637fbe2140",
+    "src/server/chat_moderations.cpp": "172e20218353d4f9109d23e85967c02163070935706908a61810c0b2a7aec4af",
+    "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
+    "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -3229,6 +3259,26 @@
         "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
         "docs/evidence/serve-batch-public-api-cpu-20261111/README.md"
       ]
+    },
+    "OPTIONS /v1/moderations": {
+      "boundary": "Implementation under targeted acceptance; route inventory does not certify CPU, SDK, GPU business or delivery.",
+      "evidence": [
+        "docs/SERVE_MODERATIONS_API_2026-11-11.md",
+        "tests/server_moderations_api_test.cpp",
+        "tests/server_batch_preparation_test.cpp",
+        "tools/serve_responses/test_moderations_contract.py"
+      ],
+      "semantics": "Native standalone Moderations: actual constrained classifier, text/array/image input, single request and cumulative quota owner; optional external proxy."
+    },
+    "POST /v1/moderations": {
+      "boundary": "Implementation under targeted acceptance; route inventory does not certify CPU, SDK, GPU business or delivery.",
+      "evidence": [
+        "docs/SERVE_MODERATIONS_API_2026-11-11.md",
+        "tests/server_moderations_api_test.cpp",
+        "tests/server_batch_preparation_test.cpp",
+        "tools/serve_responses/test_moderations_contract.py"
+      ],
+      "semantics": "Native standalone Moderations: actual constrained classifier, text/array/image input, single request and cumulative quota owner; optional external proxy."
     }
   },
   "observation_io_review_20261108": {

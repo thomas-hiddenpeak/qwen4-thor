@@ -17,6 +17,7 @@
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/files.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/moderations_plan.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
@@ -1721,5 +1722,71 @@ Q4T_TEST(batch_recount_partial_budget_cannot_move_model_and_can_cancel) {
                 "cancelled" &&
             root.value.Find("data")->Find("input_recount")->GetInt("tokens") ==
                 7);
+  return true;
+}
+
+Q4T_TEST(batch_moderations_freezes_original_and_counts_all_classifier_steps) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto request = Object({{"input", Array({String("first actual input"),
+                                                 String("second input")})}});
+  const auto work = Create(objects, request, "/v1/moderations");
+  const auto frozen = Frozen(objects, work, fixture.config);
+  Q4T_CHECK(frozen.GetString("kind") == "moderation");
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  std::string encoded;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(&encoded),
+                                 &input, &rate)));
+  Q4T_CHECK(input.exact && rate.input_exact && rate.prompt_capacity == input.tokens &&
+            rate.output == 0 && rate.auxiliary_output == 0 &&
+            rate.preparation_output == 1024 && rate.Total() == input.tokens + 1024);
+  Q4T_CHECK(encoded.find("second input") != encoded.npos &&
+            encoded.find("first actual input") == encoded.npos);
+  uint64_t total = 0;
+  for (const auto& text : request.GetArray("input")->array) {
+    const auto one = Create(objects, Object({{"input", text}}), work.endpoint);
+    const auto single = Frozen(objects, one, fixture.config);
+    BatchInputBudget count;
+    Q4T_CHECK(Ok(MeasureBatchInput(objects, one.endpoint, one.row, single,
+                                   fixture.config, Access(), BudgetCodec(), &count)));
+    total += count.tokens;
+  }
+  Q4T_CHECK(total == input.tokens);
+  auto changed = work;
+  Set(&changed.row.body, "input", String("different request"));
+  Json altered;
+  Q4T_CHECK(!Load(objects, changed, &altered).ok());
+  return true;
+}
+
+Q4T_TEST(batch_moderations_rejects_cumulative_input_limit_and_wrong_kind) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto work = Create(objects, Object({{"input", Array({String("one"),
+                                                               String("two")})}}),
+                           "/v1/moderations");
+  const auto frozen = Frozen(objects, work, fixture.config);
+  ClientLimits limits;
+  limits.max_output_tokens = 1;
+  limits.max_prompt_tokens = 1;
+  fixture.config.client_limits = &limits;
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  auto result = MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                   fixture.config, Access(), BudgetCodec(),
+                                   &input, &rate);
+  Q4T_CHECK(result.code == "client_prompt_limit_exceeded");
+  limits.max_prompt_tokens = 8192;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)));
+  Q4T_CHECK(rate.preparation_output == 1024 && rate.output == 0);
+  auto wrong = frozen;
+  Set(&wrong, "kind", String("completion"));
+  Q4T_CHECK(MeasureBatchInput(objects, work.endpoint, work.row, wrong,
+                              fixture.config, Access(), BudgetCodec(),
+                              &input, &rate).code == "batch_budget_invalid");
   return true;
 }

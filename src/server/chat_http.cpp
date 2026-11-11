@@ -348,7 +348,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       admission = &counter;
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-            path == "/v1/completions" || IsResponsesTarget(path) ||
+            path == "/v1/completions" || path == "/v1/moderations" ||
+            IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsFileTarget(path) ||
             IsUploadTarget(path))) ||
@@ -422,7 +423,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       return false;
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
-        path == "/v1/completions" || IsResponsesTarget(path) ||
+        path == "/v1/completions" || path == "/v1/moderations" ||
+        IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
         IsPromptTarget(path) || IsBatchTarget(path)) {
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
@@ -589,6 +591,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || path == "/v1/responses" ||
+           path == "/v1/moderations" ||
            path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -663,6 +666,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/completions" && method == "POST") {
     HandleChat(fd, body, GenerationApi::kCompletion);
+    return;
+  }
+  if (path == "/v1/moderations" && method == "POST") {
+    HandleModerations(fd, body);
     return;
   }
   if (path == "/v1/responses" && method == "POST") {
