@@ -1,0 +1,52 @@
+{
+  "active": {
+    "controller": null,
+    "gateway": null,
+    "model": null
+  },
+  "attempts": {
+    "controller": [],
+    "gateway": [],
+    "model": [
+      88000506787,
+      184363151489
+    ]
+  },
+  "circuit_until": {
+    "controller": 0,
+    "gateway": 0,
+    "model": 0
+  },
+  "clock": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "logical_ns": 222673076607,
+    "monotonic_ns": 2595246403277468
+  },
+  "desired": "STOPPED",
+  "failures": [],
+  "generations": {
+    "controller": 1,
+    "gateway": 1,
+    "model": 3
+  },
+  "last": {
+    "digest": "f6301ca06f5f9007e5e338aa23a1c6fa7f02b0adcc05e21088b37114616971ae",
+    "id": "688f9b53-7ebe-405b-83af-8121c6c4e16a",
+    "reply": {
+      "result": {
+        "recorded": true
+      },
+      "revision": 22
+    }
+  },
+  "not_before": {
+    "controller": 0,
+    "gateway": 0,
+    "model": 0
+  },
+  "policy": "q4t-recovery-v1",
+  "quarantine": null,
+  "revision": 22,
+  "service_id": "eadadc0a-a2c3-430b-a7a2-f307a9382132",
+  "version": 1
+}

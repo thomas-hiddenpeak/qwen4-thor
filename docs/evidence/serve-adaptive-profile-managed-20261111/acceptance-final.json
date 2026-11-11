@@ -1,0 +1,58 @@
+{
+  "status": "ACCEPT_MANAGED_ADAPTIVE_PROFILES",
+  "counts": {
+    "starts": 3,
+    "chats": 12,
+    "probes": 0,
+    "controls": 818
+  },
+  "seconds": 225.09699281398207,
+  "nvml_queries": 210,
+  "all_queries_ok": true,
+  "env_abort": false,
+  "default_unchanged": true,
+  "postflight": {
+    "sources_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true
+  },
+  "pressure": {
+    "allocated_bytes": 8321499136,
+    "minimum_observed_available_bytes": 24592707584,
+    "seconds": 5.999316438101232,
+    "all_owned_pages_released": true
+  },
+  "original_batch_and_chat": true,
+  "tool_executions": 1,
+  "original_quota_denied_after_seconds": 41.287999152205884,
+  "same_control_tree": true,
+  "profile_switches": 2,
+  "profile_journal_revision": 10,
+  "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "manifest_sha256": "faff83bee037dd35b9a2a308137580ae1b03a3a1c2ba0fc95a6fd54558342897",
+  "test_policy": {
+    "version": 1,
+    "degrade_below_mib": 24576,
+    "recover_above_mib": 28672,
+    "pressure_seconds": 2,
+    "recovery_seconds": 30,
+    "minimum_light_seconds": 60,
+    "cooldown_seconds": 60,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  },
+  "production_policy": {
+    "version": 1,
+    "degrade_below_mib": 8192,
+    "recover_above_mib": 16384,
+    "pressure_seconds": 30,
+    "recovery_seconds": 120,
+    "minimum_light_seconds": 300,
+    "cooldown_seconds": 300,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  },
+  "policy_timing_cpu_evidence": "docs/evidence/serve-adaptive-profile-state-20261111/README.md",
+  "performance_claim": false
+}

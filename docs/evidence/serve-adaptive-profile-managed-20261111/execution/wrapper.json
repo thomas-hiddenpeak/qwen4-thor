@@ -1,0 +1,21 @@
+{
+  "production": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/managed-01/bundle/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/managed-01/execution/state/runs/067062cc-8fda-4b37-a672-a8e6b7cca9d0/controller.json"
+  ],
+  "validation": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_managed_acceptance.py",
+    "controller",
+    "--plan",
+    ".q4t-work/serve-adaptive-profiles-20261111/managed-01/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/managed-01/execution/state/runs/067062cc-8fda-4b37-a672-a8e6b7cca9d0/controller.json"
+  ]
+}

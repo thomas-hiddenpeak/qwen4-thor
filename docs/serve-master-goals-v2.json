@@ -1685,12 +1685,13 @@
       "evidence": [],
       "release": null,
       "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
-      "development_status": "Foundation/state/integration CPU accepted; actual primary/light qualification passed first attempt, 2 starts/8 requests/112.781 seconds, 106 NVML queries all OK and cleanup. Managed automatic switching, original tasks/quotas and delivery remain.",
+      "development_status": "Actual primary/light qualification and managed automatic primary/light/primary accepted, 3 starts/12 requests/225.097s, original Batch/Chat/tool/native embedding and RPM continuity, 210 NVML all OK and cleanup. Default policy delivery remains.",
       "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
       "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md",
       "state_evidence": "evidence/serve-adaptive-profile-state-20261111/README.md",
       "integration_evidence": "evidence/serve-adaptive-profile-integration-20261111/README.md",
-      "qualification_evidence": "evidence/serve-adaptive-profile-qualification-20261111/README.md"
+      "qualification_evidence": "evidence/serve-adaptive-profile-qualification-20261111/README.md",
+      "managed_business_evidence": "evidence/serve-adaptive-profile-managed-20261111/README.md"
     },
     {
       "id": "R06",

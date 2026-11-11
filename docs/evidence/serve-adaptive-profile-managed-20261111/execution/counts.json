@@ -1,0 +1,100 @@
+{
+  "counts": {
+    "starts": 3,
+    "chats": 12,
+    "probes": 0,
+    "controls": 818
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 2595026550243986
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2595095275155688
+    },
+    {
+      "kind": "chats",
+      "label": "primary-schema",
+      "ordinal": 2,
+      "monotonic_ns": 2595097092251896
+    },
+    {
+      "kind": "chats",
+      "label": "primary-tool",
+      "ordinal": 3,
+      "monotonic_ns": 2595097955901148
+    },
+    {
+      "kind": "chats",
+      "label": "batch-create",
+      "ordinal": 4,
+      "monotonic_ns": 2595101194818852
+    },
+    {
+      "kind": "chats",
+      "label": "beta-before-switch",
+      "ordinal": 5,
+      "monotonic_ns": 2595103458840948
+    },
+    {
+      "kind": "chats",
+      "label": "beta-quota-before",
+      "ordinal": 6,
+      "monotonic_ns": 2595104275879857
+    },
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 2,
+      "monotonic_ns": 2595111753504105
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 7,
+      "monotonic_ns": 2595143974034730
+    },
+    {
+      "kind": "chats",
+      "label": "beta-quota-after",
+      "ordinal": 8,
+      "monotonic_ns": 2595145592345792
+    },
+    {
+      "kind": "chats",
+      "label": "light-tool-result",
+      "ordinal": 9,
+      "monotonic_ns": 2595145650698364
+    },
+    {
+      "kind": "chats",
+      "label": "light-embedding",
+      "ordinal": 10,
+      "monotonic_ns": 2595146722842550
+    },
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 3,
+      "monotonic_ns": 2595208141092992
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 11,
+      "monotonic_ns": 2595242647132456
+    },
+    {
+      "kind": "chats",
+      "label": "primary-final-sse",
+      "ordinal": 12,
+      "monotonic_ns": 2595244313948655
+    }
+  ]
+}
