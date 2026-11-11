@@ -1793,10 +1793,11 @@
         "evidence/serve-device-filter-cpu-20261112/README.md",
         "evidence/serve-device-custody-cpu-20261112/README.md",
         "evidence/serve-device-inventory-cpu-20261112/README.md",
-        "evidence/serve-device-admission-cpu-20261112/README.md"
+        "evidence/serve-device-admission-cpu-20261112/README.md",
+        "evidence/serve-device-management-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Native filtering/custody/inventory and root-issued one-use admission primitives CPU verified. New 10 kernel checks pass, no GPU or host fence. Full host qualification, deployment budget/entry and Guardian/controller integration remain implementing; actual host still busy. Default rev64 unchanged; continue all tasks.",
+      "development_status": "Kernel filter/custody/inventory, one-use root admission, persistent nonreplaying admission budget and disposable native control adapter CPU verified. Latest 19 checks first-pass, 0 GPU/global fence/default changes. Full host qualification, deployment CLI, Guardian integration and actual NVML-free business remain implementing. Default rev64 unchanged; all tasks continue.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

@@ -26,6 +26,10 @@ struct DeviceAdmission {
   bool operator==(const DeviceAdmission&) const = default;
 };
 
+// Bounded exact-integer JSON for the privileged local control channel. Parsing
+// claims alone conveys no authority; consumption still needs kernel objects.
+Status ParseDeviceAdmission(const std::string& bytes, DeviceAdmission* output);
+
 // The privileged deployment path must commit its bounded cold-start charge
 // and qualify a complete host fence BEFORE issuance. No disk access, CUDA,
 // NVML, process spawning or implicit qualification takes place here.

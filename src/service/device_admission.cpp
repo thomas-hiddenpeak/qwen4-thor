@@ -202,6 +202,19 @@ uint64_t CurrentCgroup() {
 }
 }  // namespace
 
+Status ParseDeviceAdmission(const std::string& bytes, DeviceAdmission* output) {
+  try {
+    Need(output && !bytes.empty() && bytes.size() <= kMaximum,
+         "invalid device admission input size");
+    Json value;
+    Need(w::Parse(bytes, &value));
+    *output = Decode(value);
+    return {};
+  } catch (const std::exception& error) {
+    return Status::Fail(error.what());
+  }
+}
+
 Status IssueDeviceAdmission(const DeviceAdmission& admission,
                             const DeviceFilter& filter, int lease_fd,
                             const std::string& lease_path,

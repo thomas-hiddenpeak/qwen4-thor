@@ -26,6 +26,12 @@ target_link_libraries(q4t_device_admission PUBLIC
   q4t_device_filter q4t_guardian_journal)
 target_compile_options(q4t_device_admission PRIVATE -Wall -Wextra -Werror)
 
+add_executable(q4t_device_control
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/device_control_main.cpp)
+set_target_properties(q4t_device_control PROPERTIES OUTPUT_NAME q4t-device-control)
+target_link_libraries(q4t_device_control PRIVATE q4t_device_admission)
+target_compile_options(q4t_device_control PRIVATE -Wall -Wextra -Werror)
+
 add_executable(q4t_guardian
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_version.cpp

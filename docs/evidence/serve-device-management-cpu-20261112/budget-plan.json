@@ -1,0 +1,9 @@
+{
+  "modules": [
+    "tools.serve_recovery.test_device_budget",
+    "tools.serve_recovery.test_device_store"
+  ],
+  "new_cases": 11,
+  "gpu_starts": 0,
+  "scope": "Pure budget and actual private root filesystem transactions only; no devices, host fences, cgroups or services."
+}
