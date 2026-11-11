@@ -1,0 +1,8 @@
+[PASS] device_filter_rejects_invalid_scope_before_attachment
+[PASS] device_filter_enforces_exact_cgroup_in_real_kernel
+[PASS] device_filter_does_not_detach_other_policy_and_detects_detach
+[PASS] device_filter_pin_survives_real_creator_exit_and_reopens
+[PASS] device_filter_adoption_verifies_code_and_retained_identity
+[PASS] device_filter_pin_paths_and_other_registration_are_protected
+[PASS] device_filter_kernel_program_replacement_invalidates_old_receipt
+7 tests, 7 passed, 0 failed, 0 skipped

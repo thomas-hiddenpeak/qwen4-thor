@@ -1790,10 +1790,11 @@
         "R03"
       ],
       "evidence": [
-        "evidence/serve-device-filter-cpu-20261112/README.md"
+        "evidence/serve-device-filter-cpu-20261112/README.md",
+        "evidence/serve-device-custody-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Native device filter passed 6 real kernel CPU checks in 0.132 seconds; only owned test cgroups/zero/null. No GPU or default mutation. Independent initial exclusivity, durable custody and cold-start integration continue; primitive alone does not qualify an idle GPU.",
+      "development_status": "Native device rule and durable bpffs custody validated: 6 foundation checks and 7 custody checks (4 new, 3 direct). Real creator exit, unprivileged kernel identity verification and changed-rule rejection passed. No host GPU policy/default changes. Initial independent exclusivity and cold-start admission integration remain in progress.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

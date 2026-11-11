@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include "q4t/service/guardian_process.h"
@@ -19,6 +20,7 @@ struct DeviceFilterIdentity {
   uint32_t link_id = 0;
   uint64_t target_cgroup_id = 0;
   uint64_t allowed_cgroup_id = 0;
+  std::string program_tag;
   bool operator==(const DeviceFilterIdentity&) const = default;
 };
 
@@ -36,6 +38,15 @@ class DeviceFilter {
  public:
   Status Attach(int target_cgroup, int allowed_cgroup,
                 const std::vector<DeviceNumber>& devices);
+  // Root-owned bpffs custody is explicit and outlives this process. Adoption
+  // independently loads the expected immutable rule without attaching it and
+  // compares kernel program tags; a JSON identity alone is not authority.
+  Status Pin(const std::string& path) const;
+  Status AdoptPinned(const std::string& path, int target_cgroup,
+                     int allowed_cgroup,
+                     const std::vector<DeviceNumber>& devices,
+                     const DeviceFilterIdentity& expected);
+  Status RemovePin(const std::string& path) const;
   Status Verify() const;
   const DeviceFilterIdentity& Identity() const { return identity_; }
   int LinkFd() const { return link_.Get(); }

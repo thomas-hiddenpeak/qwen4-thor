@@ -1,0 +1,18 @@
+{
+  "status": "PASS_TARGETED_DEVICE_CUSTODY_CPU",
+  "tests": 7,
+  "new_tests": 4,
+  "direct_regressions": 3,
+  "seconds": 0.13094901200383902,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "host_gpu_policy_changes": false,
+  "source_sha256": {
+    "src/service/device_filter.cpp": "be774a9a67095fbddbfa06c96288c52f0a6b3fddd3fa12a7759055bc3645db0c",
+    "include/q4t/service/device_filter.h": "20f27561a0fb9927117c2bb27a198258929dd3affa7fb4f759df8a5e133a079c",
+    "tests/device_filter_test.cpp": "76da44cbb0a644f15420e09c3b0293595d8b1a305446a77b971bd4a87aa4644f"
+  },
+  "binary_sha256": "3081a483606d0a7d41ff6a55040014970a04f2a62c9eecd9d58214b3536eb4c7",
+  "initial_exclusivity_certified": false,
+  "cold_start_delivered": false
+}

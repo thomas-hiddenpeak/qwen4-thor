@@ -1,0 +1,5 @@
+[ 50%] Built target q4t_guardian_process
+[100%] Built target q4t_device_filter
+[100%] Building CXX object CMakeFiles/q4t_device_filter_tests.dir/tests/device_filter_test.cpp.o
+[100%] Linking CXX executable q4t_device_filter_tests
+[100%] Built target q4t_device_filter_tests
