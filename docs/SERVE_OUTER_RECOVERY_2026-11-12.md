@@ -150,3 +150,21 @@ slot或未退休外层intent仍进入对应核验路径，不能绕过保护。
 用于后续直接委派适配，不再强制依赖systemd创建scope。
 
 21项[CPU首过](evidence/serve-outer-reboot-cpu-20261112/README.md)，1.283秒；真实宿主重启未执行，自动运行和实际资源域待继续。
+
+## 健康根的监护接管（CPU 已验证，待运行集成）
+
+新`outer_observe.Observer`核对封包、部署inode、原启动boot/owner
+及实际Guardian可执行文件与命名空间，再持有根pidfd。它只提供
+观察关系；私有同UID控制连接的接管与心跳不能启动、停服、清除
+故障或修改预算。旧观察者还健康时，另一客户端不能替代它。
+
+Guardian以实际peer pidfd及3秒心跳观察外层；丢失只报告
+READY_DEGRADED，恢复有效监护后健康闭合，原业务进程保持。
+控制回复失败返回UNKNOWN；只有已固定pidfd退出才报告根退出，
+仍不给整树清理证明。自动循环必须继续做独立旧树/资源域核验。
+
+冻结14 CPU（7新/7直接）：实际接管、心跳过期再恢复、观察者
+退出/并发替代拒绝、来源拒绝、UNKNOWN与根退出区分；复用
+CPU业务夹具，未验完整自动派生链，不使用GPU。
+
+14项[CPU首过](evidence/serve-outer-observe-cpu-20261112/README.md)，15.149秒；必要Guardian构建零警告。完整自动运行/资源域及全部任务继续。

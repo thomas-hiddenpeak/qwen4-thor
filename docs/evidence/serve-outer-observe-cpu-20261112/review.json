@@ -1,0 +1,23 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 14,
+  "cpu_seconds": 15.149067306891084,
+  "build_seconds": 5.3372117299586535,
+  "build_warnings": 0,
+  "model_starts": 0,
+  "default_unchanged": true,
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "source_sha256": {
+    "src/service/guardian_main.cpp": "137ec0fd5c80044b2a8e7b3e5dac0806dc4812641cc33b35aaa2d2578b5f27ae",
+    "tools/serve_recovery/outer_observe.py": "b8dcea7d7610bc90c7230cf5f4b827b5a9af2f64cc5c1d033dd69e37b6391eb6",
+    "tools/serve_recovery/control.py": "24c6cc09bf2442637b23963dc061e966a5050ca4ee24652cd178cc2093961e90",
+    "tools/serve_recovery/bundle.py": "edd6fb58052518c59967e63cbee15e9689a22e0773c685c9043e6f387dbb7ebc",
+    "tools/serve_recovery/test_outer_observe.py": "b43288b547c4766628c401c2ef64a28e9e0dd5d0b7e775c787163a2ed48381e2",
+    "tools/serve_recovery/test_native_bundle.py": "cf27cc565244beb28645e2e51410df3c7a3d9e8be351f5b918d1877a48e7480e"
+  },
+  "automatic_outer_loop_integrated": false,
+  "resource_domain_proof_complete": false,
+  "released": false,
+  "r07_candidate_unchanged": true,
+  "synthetic_engine_and_policy_fixture": true
+}

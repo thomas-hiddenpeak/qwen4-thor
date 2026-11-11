@@ -501,11 +501,12 @@ class Guardian {
         outer_loss_signal = 0;
         // A managed outer observer is auxiliary to this live control root.
         // Its death must not invent operator STOPPED or restart healthy work.
-        if (config_.outer_instance_fd >= 0 &&
+        if (config_.outer_instance_fd >= 0 && !outer_attached_ &&
             getppid() != config_.launcher.pid)
           outer_owner_lost_ = true;
       }
       if (stop_signal) RequestStop(now);
+      CheckOuter(now);
       Clients(now);  // Stop precedes consuming any new durable launch receipt.
       if (versions_) versions_->Tick(now);
       if (versions_ && versions_->NeedsCleanup() && !stopping_ &&
@@ -655,6 +656,8 @@ class Guardian {
     gateway_reason_at_ = now;
   }
   Json Status() const {
+    const auto& outer_owner =
+        outer_attached_ ? outer_observer_.identity : config_.launcher;
     const bool observations_unknown =
         !controller_health_.IsNull() &&
         controller_health_.GetString("observation") != "AVAILABLE";
@@ -690,9 +693,15 @@ class Guardian {
          {"guardian_start_ticks", w::Unsigned(self_.identity.start_ticks)},
          {"outer_supervised", w::Boolean(config_.outer_instance_fd >= 0)},
          {"outer_owner_lost", w::Boolean(outer_owner_lost_)},
-         {"outer_owner_pid", w::Unsigned(config_.launcher.pid)},
-         {"outer_owner_start_ticks",
+         {"outer_owner_pid", w::Unsigned(outer_owner.pid)},
+         {"outer_owner_start_ticks", w::Unsigned(outer_owner.start_ticks)},
+         {"outer_origin_pid", w::Unsigned(config_.launcher.pid)},
+         {"outer_origin_start_ticks",
           w::Unsigned(config_.launcher.start_ticks)},
+         {"outer_heartbeat_age_ms",
+          outer_attached_ ? w::Unsigned((Now() - outer_heartbeat_at_) /
+                                        1'000'000)
+                          : Json{}},
          {"controller_pid", controller_.identity.pid > 0 && !controller_reaped_
                                 ? w::Unsigned(controller_.identity.pid)
                                 : Json{}},
@@ -766,6 +775,41 @@ class Guardian {
     if (failure_.empty()) failure_ = reason;
     gate_.Freeze();
     gateway_gate_.Freeze();
+  }
+  void CheckOuter(int64_t now) {
+    if (!outer_attached_) return;
+    bool exited = false;
+    if (!s::ProcessExited(outer_observer_.pidfd.Get(), &exited).ok() ||
+        exited || now - outer_heartbeat_at_ >= 3 * kSecond)
+      outer_owner_lost_ = true;
+  }
+  bool ObserveOuter(pid_t peer, int64_t now, bool adopt) {
+    if (config_.outer_instance_fd < 0 || stopping_) return false;
+    CheckOuter(now);
+    if (adopt) {
+      const auto& owner =
+          outer_attached_ ? outer_observer_.identity : config_.launcher;
+      if (!outer_owner_lost_ && peer != owner.pid) return false;
+      s::ProcessRecord record;
+      s::OwnedFd capability;
+      if (!s::ReadProcess(peer, &record).ok() ||
+          !s::OpenProcess(record.identity, &capability).ok())
+        return false;
+      outer_observer_.identity = record.identity;
+      outer_observer_.pidfd = std::move(capability);
+      outer_attached_ = true;
+    } else {
+      bool exited = false;
+      if (!outer_attached_ || peer != outer_observer_.identity.pid ||
+          !s::ProcessExited(outer_observer_.pidfd.Get(), &exited).ok() ||
+          exited)
+        return false;
+    }
+    // This only restores an auxiliary observation relationship. It cannot
+    // activate, acknowledge protection, replenish budget, or replace work.
+    outer_heartbeat_at_ = now;
+    outer_owner_lost_ = false;
+    return true;
   }
   void Bootstrap(int64_t now) {
     if (bootstrap_.Get() < 0) return;
@@ -866,6 +910,14 @@ class Guardian {
           if (operation == "status") {
             CheckModel();
             Send(it->fd.Get(), Status());
+          } else if (operation == "outer-adopt" ||
+                     operation == "outer-heartbeat") {
+            const bool accepted =
+                ObserveOuter(it->peer, now, operation == "outer-adopt");
+            Json result = Status();
+            result.object.emplace_back("outer_observation_accepted",
+                                       w::Boolean(accepted));
+            Send(it->fd.Get(), result);
           } else if (operation == "binding" && !gateway_reaped_ &&
                      it->peer == gateway_.identity.pid) {
             CheckModel();
@@ -1948,6 +2000,9 @@ class Guardian {
   bool activate_ = false, initialized_ = false, desired_running_ = false;
   bool stopping_ = false, stopped_ = false, stop_durable_ = false;
   bool outer_owner_lost_ = false;
+  bool outer_attached_ = false;
+  s::ChildProcess outer_observer_;
+  int64_t outer_heartbeat_at_ = 0;
   bool stop_handoff_ = false;
   s::QuotaHandoffGrace quota_handoff_grace_;
   bool recovering_ = false, controller_reaped_ = true;
