@@ -20,6 +20,10 @@ enum class JournalState {
   kStopped
 };
 
+// Separate instances/processes keep optional version-state failures from
+// freezing the core role-authority journal.
+enum class JournalDomain { kCore, kVersion };
+
 struct JournalReply {
   uint64_t sequence = 0;
   uint64_t revision = 0;
@@ -34,7 +38,8 @@ class JournalClient {
   // Start is never retried on this object, even if the worker fails or stalls.
   Status Start(const std::string& python, const std::string& script,
                const std::string& directory, const std::string& service_id,
-               int64_t now_ns, int64_t timeout_ns);
+               int64_t now_ns, int64_t timeout_ns,
+               JournalDomain domain = JournalDomain::kCore);
   Status Submit(const std::string& operation, const io::Json& args,
                 int64_t now_ns, uint64_t* sequence);
   // Tick, Submit and BeginStop contain no waits or ordinary filesystem writes.
@@ -53,6 +58,7 @@ class JournalClient {
   Status Freeze(std::string reason);
   Status Receive();
   JournalState state_ = JournalState::kNew;
+  JournalDomain domain_ = JournalDomain::kCore;
   ChildProcess worker_;
   OwnedFd socket_;
   io::Json snapshot_;

@@ -95,3 +95,7 @@ CPU检查已冻结，尚未执行；自动回退未交付，继续后续全部�
 
 版本策略/journal基础11项CPU首过，见[证据](evidence/serve-version-state-20261111/README.md)。
 R06.3仍进行中：原生根独占隔离I/O和真实证据接线尚未完成。
+
+独立版本通道11项实际C++/worker CPU首过，见[证据](evidence/serve-version-channel-20261111/README.md)。
+版本I/O与核心journal分进程，不将可选版本恢复失能扩大为核心授权失能。
+R06.4继续登记资格和原生实际故障/整树接管；尚未接自动运行或发布。

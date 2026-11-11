@@ -1,0 +1,21 @@
+{
+  "expected_cpu_cases": 11,
+  "new_cases": 4,
+  "direct_regression_cases": 7,
+  "new_gpu_starts": 0,
+  "scope": "Actual native client and private Python worker: version-domain handshake and fixture transactions, SIGSTOP timeout isolation from a concurrently healthy core journal, forbidden core operation, snapshot domain mismatch; seven existing transport/authority regressions.",
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_guardian_journal_tests",
+    "/usr/bin/python3",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/journal.py"
+  ],
+  "sources": {
+    "include/q4t/service/guardian_journal.h": "6ab7166679562584ab71e5d3764abed68c3aa7bf5e6d75c50e74c448b7793b16",
+    "src/service/guardian_journal.cpp": "ca5f71ff90184e0bbe8e00f8384c0733209ddfb34c3f7f3a5757f9143a087ef9",
+    "tests/guardian_journal_test.cpp": "d476fb5e3d38f9504ba99c5eeb0c46c8a4fbaca8f1a5d81816c741f1adff988e",
+    "tools/serve_recovery/version_journal.py": "a1fedb1fd8ffd7b51055a91abefe3373b534f07d42c061bbf4befdaf4edf115c",
+    "tools/serve_recovery/version_policy.py": "c3c1523aac27544af3f3d9149c275a015a040987ebb463abb2895543f28d48d6",
+    "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
+    "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac"
+  }
+}

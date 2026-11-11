@@ -1721,11 +1721,12 @@
         "evidence/serve-version-migration-contract-20261111/README.md",
         "evidence/serve-version-migration-deployment-20261111/README.md",
         "evidence/serve-version-profile-history-20261111/README.md",
-        "evidence/serve-version-state-20261111/README.md"
+        "evidence/serve-version-state-20261111/README.md",
+        "evidence/serve-version-channel-20261111/README.md"
       ],
       "release": null,
       "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
-      "development_status": "R06.1 and R06.2 CPU-verified; version policy/private journal foundation passed 11 CPU cases. Native-root exclusive asynchronous I/O, independently observed fault authority, selected payload wiring and actual recovery remain. Default rev56 unchanged.",
+      "development_status": "R06.1/R06.2 and version policy/journal foundation CPU-verified; native independent version channel passed 11 actual C++/worker cases. Continue qualified registration, native fault attribution/payload tree selection, budget integration and actual recovery. Default rev56 unchanged.",
       "subtasks": [
         {
           "id": "R06.1",
@@ -1739,12 +1740,12 @@
         },
         {
           "id": "R06.3",
-          "state": "implementing",
+          "state": "cpu_verified",
           "title": "持久版本状态机"
         },
         {
           "id": "R06.4",
-          "state": "planned",
+          "state": "implementing",
           "title": "原生控制根与接线"
         },
         {

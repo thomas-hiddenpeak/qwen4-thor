@@ -65,12 +65,13 @@ Status JournalClient::Start(const std::string& python,
                             const std::string& script,
                             const std::string& directory,
                             const std::string& service_id, int64_t now_ns,
-                            int64_t timeout_ns) {
+                            int64_t timeout_ns, JournalDomain domain) {
   if (state_ != JournalState::kNew || !ValidTime(now_ns, timeout_ns) ||
       timeout_ns == 0 || service_id.size() != 36) {
     return Status::Fail("invalid journal startup");
   }
   state_ = JournalState::kStarting;
+  domain_ = domain;
   service_id_ = service_id;
   timeout_ns_ = timeout_ns;
   last_now_ns_ = now_ns;
@@ -179,10 +180,24 @@ Status JournalClient::Receive() {
       return Freeze("invalid journal handshake");
     }
     const auto& snapshot = *message.Find("snapshot");
+    const char* policy = domain_ == JournalDomain::kVersion
+                             ? "q4t-version-selection-v1"
+                             : "q4t-recovery-v1";
     if (snapshot.GetString("service_id") != service_id_ ||
-        snapshot.GetString("policy") != "q4t-recovery-v1" ||
+        snapshot.GetString("policy") != policy ||
         !wire::GetUnsigned(snapshot, "revision", &revision_).ok()) {
       return Freeze("journal snapshot identity mismatch");
+    }
+    if (domain_ == JournalDomain::kVersion) {
+      uint64_t revision = 0;
+      const auto* state = snapshot.Find("state");
+      if (!wire::HasKeys(snapshot,
+                         {"service_id", "policy", "revision", "state"}) ||
+          state == nullptr || state->GetString("format") != policy ||
+          !wire::GetUnsigned(*state, "revision", &revision).ok() ||
+          revision != revision_) {
+        return Freeze("version journal snapshot contract mismatch");
+      }
     }
     snapshot_ = snapshot;
     state_ = JournalState::kReady;
