@@ -1802,7 +1802,7 @@
         "evidence/serve-cold-driver-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet.",
+      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {
@@ -1848,15 +1848,46 @@
     {
       "id": "R09",
       "required": true,
-      "state": "planned",
+      "state": "implementing",
       "implementation": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
       "acceptance": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
       "depends_on": [
         "R03",
         "R06"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-outer-policy-cpu-20261112/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
+      "development_status": "Audit confirmed automatic activate overrides stop intent and stale core slots lack reconciliation. Separate outer policy/journal developed; 12 targeted CPU cases passed (0.181s). No runtime wiring, GPU, optional host install or release yet. R07 maintenance approval remains pending; all master tasks continue.",
+      "subtasks": [
+        {
+          "id": "R09.1",
+          "state": "cpu_verified",
+          "title": "持久外层预算及停止合同"
+        },
+        {
+          "id": "R09.2",
+          "state": "implementing",
+          "title": "旧slot/整树与boot核验"
+        },
+        {
+          "id": "R09.3",
+          "state": "planned",
+          "title": "resume及显式外层入口"
+        },
+        {
+          "id": "R09.4",
+          "state": "planned",
+          "title": "可选宿主适配及安装卸载"
+        },
+        {
+          "id": "R09.5",
+          "state": "planned",
+          "title": "针对性进程/业务验证与可回退交付"
+        }
+      ]
     },
     {
       "id": "R10",

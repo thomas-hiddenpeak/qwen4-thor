@@ -1,0 +1,5 @@
+Read-only validation call (no model/GPU/host policy action):
+from tools.serve_recovery import cold_acceptance; cold_acceptance.LEGACY["verify"](plan)
+exit_code=1
+RuntimeError: production module already loaded outside sealed source: tools.serve_recovery
+Captured from tool output. Root host entry had the same eager checkout import.

@@ -4,6 +4,46 @@
 冷启动授权，使 NVML 失能时仍能在受控部署中恢复 LLM 服务；
 没有证据时拒绝启动是保护行为，不是本任务的交付终点。
 
+## 实际短验维护交接（待确认，尚未操作）
+
+候选已封装，清单 `d53caf4d32171d241e6d3a9f64d8a24cf0c2f4954801fe99a784a80e34b54915`；独立服务 `7fba916b-5d50-4e7a-8ef6-0acb050aa852`，运行 UID/GID 2002；
+模型仍为当前已验 96577e45，默认 rev64 STOPPED 保持。
+端口 18161—18163 只读/空绑定核对可用，封包耗时 1.483 秒、0 GPU。
+完整预算与来源见 [固定计划](evidence/serve-cold-driver-cpu-20261112/business-plan-v2.json)。
+
+宿主目前有两个既有单元持有设备：
+
+- nvargus-daemon.service：相机守护，主 PID 2750/start_ticks 1679；
+  NVIDIA/DRM/UVM 句柄仍在，active/enabled，Restart=on-failure。
+- jtop.service：监控，主 PID 2731017/start_ticks 198505032，
+  持有 NVIDIA/UVM 句柄的子 PID 2731055/start_ticks 198505066；
+  active/enabled，Restart=on-failure。
+
+两者无 TriggeredBy/Triggers/PartOf，允许手动 stop。
+AGENTS 第 8 条规定验证只停止自己的进程；这两项不是本阶段启动，
+故临时维护需要用户确认，不将已有 GPU 测试许可扩大为任意宿主服务操作。
+
+确认后的固定流程：核对单元身份未变化，临时 stop 这两个单元；
+不改 enable/disable、启动命令或持久配置。确认设备引用已清空后，
+由以下根驱动持有同一租约，安装只允许本验证域的新 GPU 访问规则：
+
+```bash
+sudo -n /usr/bin/python3 -I -B tools/serve_recovery/cold_host_acceptance.py \
+  --plan .q4t-work/serve-device-domain-20261112/business-01/plan-v2.json \
+  --device-state /var/lib/q4t-cold-validation-7fba916b-5d50-4e7a-8ef6-0acb050aa852
+```
+
+运行最多 1 次模型、3 条 Chat（1 自检+实际工具 JSON/SSE 闭环）、
+1 次真实 CUDA 探测、600 秒；内层注入 NVML 超时，外层严格实测。
+结束先 STOPPED/自有进程退出，再撤设备规则并核对租约，恢复先前
+active 的两个服务，核对状态。验证期间域外的新 GPU 访问将被拒绝。
+规则撤除前不启动这些服务；域未空/清理失败保留现场并明确报告，
+不盲目释放所有权或自动重试。根私有额度/资格记录保留供审计，
+不留下恢复脚本、定时器、自动启动项，也不改默认发行。
+
+需要维护确认时继续不依赖此 GPU 验收的 R09 开发；R07 仍待真实
+资格、业务和发行，不标记完成，总目标继续全部任务。
+
 ## 本机驱动资格与管理入口（开发中，未交付）
 
 已取得[NVIDIA R39.2.1官方源码包](https://developer.download.nvidia.com/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2)，

@@ -10,16 +10,33 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import runpy
 import signal
 import stat
 import sys
 import time
 import traceback
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import cold_acceptance as business, device_domain as domain
-from tools.serve_recovery import ledger
+# Load validation code as a file, leaving production namespaces untouched until
+# the sealed candidate has been selected. Importing the checkout package here
+# would correctly fail the production provenance gate before any GPU work.
+business = SimpleNamespace(**runpy.run_path(str(ROOT/'tools/serve_recovery/cold_acceptance.py')))
+domain = None
+
+
+def require(value, reason):
+    if not value: raise ValueError(reason)
+
+
+def load_checked(plan):
+    global domain
+    result = business.LEGACY['verify'](plan)
+    from tools.serve_recovery import device_domain
+    domain = device_domain
+    return result
 
 
 def reap(pid, seconds):
@@ -43,7 +60,7 @@ def finish_child(pid):
 
 
 def execute(directory, lease_fd, lease_path, manifest, command, *, seconds=600):
-    ledger.require(0 < seconds <= 600, 'cold host validation deadline bound')
+    require(0 < seconds <= 600 and domain is not None, 'cold host validation deadline/adapter bound')
     result = dict(status='ENV_ABORT', child_exit=None, domain_removed=False,
                   other_services_modified=False)
     pid = None
@@ -84,11 +101,17 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--plan', type=Path, required=True)
-    parser.add_argument('--device-state', type=Path, required=True)
+    parser.add_argument('--device-state', type=Path)
+    parser.add_argument('--check', action='store_true', help='verify sealed sources only; no host/GPU action')
     args = parser.parse_args()
-    ledger.require(os.geteuid() == 0, 'explicit administrator entry required')
     plan = json.loads(args.plan.read_text())
-    business.LEGACY['verify'](plan)
+    manifest = load_checked(plan)
+    if args.check:
+        print(json.dumps(dict(package_verified=True, device_module=domain.__file__,
+                              service_id=plan['service_id'], model_actions=False)))
+        return 0
+    from tools.serve_recovery import ledger
+    ledger.require(os.geteuid() == 0, 'explicit administrator entry required')
     out = Path(plan['output'])
     uid, gid = plan['runtime_uid'], plan['runtime_gid']
     ledger.require(uid > 0 and gid > 0 and out.stat().st_uid == uid and

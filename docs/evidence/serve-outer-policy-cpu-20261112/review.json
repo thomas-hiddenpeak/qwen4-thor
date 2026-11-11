@@ -1,0 +1,15 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 12,
+  "seconds": 0.18116060411557555,
+  "model_starts": 0,
+  "runtime_wired": false,
+  "optional_host_installed": false,
+  "default_unchanged": true,
+  "next": [
+    "actual old-tree/boot reconciliation",
+    "resume and outer runtime",
+    "explicit host adapters",
+    "targeted real process acceptance and reversible release"
+  ]
+}

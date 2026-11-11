@@ -1,0 +1,16 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_outer_policy",
+    "tools.serve_recovery.test_outer_store"
+  ],
+  "expected_tests": 12,
+  "model_starts": 0,
+  "scope": [
+    "stop/quarantine preserved",
+    "3 starts per 15min with durable protection",
+    "reboot no elapsed credit",
+    "lost receipts cannot redispatch",
+    "actual rename/fsync/concurrent/missing journal faults"
+  ],
+  "runtime_wired": false
+}

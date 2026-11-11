@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import tempfile
 import time
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 
@@ -30,9 +31,10 @@ class HostTests(unittest.TestCase):
         return dict(armed=False)
 
     def run_child(self, entry, *, arm=None, disarm=None, seconds=2):
-        with mock.patch.object(host.domain, 'arm', side_effect=arm or (lambda *_:dict(armed=True))), \
-             mock.patch.object(host.domain, 'enter', side_effect=entry), \
-             mock.patch.object(host.domain, 'disarm', side_effect=disarm or self.disarm):
+        adapter = SimpleNamespace(
+            arm=mock.Mock(side_effect=arm or (lambda *_:dict(armed=True))),
+            enter=mock.Mock(side_effect=entry), disarm=mock.Mock(side_effect=disarm or self.disarm))
+        with mock.patch.object(host, 'domain', adapter):
             return host.execute(self.directory, self.held.fileno(), self.path,
                                 'a'*64, ['/bin/true'], seconds=seconds)
 
