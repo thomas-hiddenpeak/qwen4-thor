@@ -1,0 +1,13 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_managed_acceptance"
+  ],
+  "expected_cpu_cases": 3,
+  "new_gpu_starts": 0,
+  "max_cpu_memory_mib": 8,
+  "scope": "Real pressure-helper parent EOF/allocation bound and actual sealed module namespace imports",
+  "sources": {
+    "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
+    "tools/serve_recovery/test_profile_managed_acceptance.py": "cf0cc1e78c13915c25fc528917b7ce1813c4958492060027c86189e7db9c0055"
+  }
+}
