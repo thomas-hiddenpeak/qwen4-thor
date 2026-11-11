@@ -156,6 +156,7 @@ struct Config {
   Json versions;
   Json cold_admission;
   int lease_fd = -1;
+  int outer_instance_fd = -1;
   int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
   int64_t heartbeat_ns = 15 * kSecond;
   uint64_t memory_floor_mib = 1024;
@@ -170,28 +171,35 @@ Config ReadConfig(const std::string& path) {
           "invalid Guardian config");
   const auto version = Integer(value, "version");
   auto fields = value;
-  if (version >= 2 && version <= 4) {
+  if (version >= 2 && version <= 5) {
     const auto* handoff = value.Find("usage_handoff");
     Require(handoff && handoff->IsBool(), "invalid usage handoff policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "usage_handoff";
     });
   }
-  if (version == 3 || version == 4) {
+  if (version >= 3 && version <= 5) {
     Require(value.Find("version_recovery") &&
                 (value.Find("version_recovery")->IsObject() ||
-                 (version == 4 && value.Find("version_recovery")->IsNull())),
+                 (version >= 4 && value.Find("version_recovery")->IsNull())),
             "invalid version recovery policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "version_recovery";
     });
   }
-  if (version == 4) {
+  if (version == 4 || version == 5) {
     Require(value.Find("cold_admission") &&
-                value.Find("cold_admission")->IsObject(),
+                (value.Find("cold_admission")->IsObject() ||
+                 (version == 5 && value.Find("cold_admission")->IsNull())),
             "invalid cold device admission");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "cold_admission";
+    });
+  }
+  if (version == 5) {
+    Require(value.Find("outer_instance_fd"), "missing outer instance custody");
+    std::erase_if(fields.object, [](const auto& item) {
+      return item.first == "outer_instance_fd";
     });
   }
   Require(w::HasKeys(fields,
@@ -201,7 +209,7 @@ Config ReadConfig(const std::string& path) {
                       "heartbeat_ms", "critical_memory_mib", "launch",
                       "gateway", "quota_enforced"}),
           "unknown Guardian configuration fields");
-  Require((version >= 1 && version <= 4) &&
+  Require((version >= 1 && version <= 5) &&
               Text(value, "resource_mode") == "process",
           "unsupported service mode");
   const auto* hard = value.Find("require_hard_memory_limit");
@@ -216,6 +224,12 @@ Config ReadConfig(const std::string& path) {
   const uint64_t lease = Integer(value, "lease_fd");
   Require(lease >= 3 && lease <= 1'000'000, "invalid inherited lease FD");
   config.lease_fd = static_cast<int>(lease);
+  if (version == 5) {
+    const uint64_t instance = Integer(value, "outer_instance_fd");
+    Require(instance >= 3 && instance <= 1'000'000 && instance != lease,
+            "invalid outer instance descriptor");
+    config.outer_instance_fd = static_cast<int>(instance);
+  }
   const auto* command = value.Find("controller");
   Require(command->IsArray() && !command->array.empty() &&
               command->array.size() <= 64,
@@ -242,7 +256,7 @@ Config ReadConfig(const std::string& path) {
   config.quota_enforced = value.Find("quota_enforced")->boolean;
   config.usage_handoff = version >= 2 && value.GetBool("usage_handoff");
   if (version >= 3) config.versions = *value.Find("version_recovery");
-  if (version == 4) config.cold_admission = *value.Find("cold_admission");
+  if (version >= 4) config.cold_admission = *value.Find("cold_admission");
   Require(!config.usage_handoff || config.quota_enforced,
           "usage handoff requires quota protection");
   for (const auto* absolute :
@@ -286,6 +300,8 @@ Config ReadConfig(const std::string& path) {
               : startup == 0,
           "invalid startup channel");
   config.startup_fd = config.daemon ? static_cast<int>(startup) : -1;
+  Require(config.outer_instance_fd < 0 || !config.daemon,
+          "outer instance custody requires foreground lifecycle");
   const auto timeout = Integer(launch, "timeout_ms");
   Require(timeout >= 100 && timeout <= 600'000, "invalid startup deadline");
   config.startup_ns = static_cast<int64_t>(timeout) * 1'000'000;
@@ -363,8 +379,18 @@ class Guardian {
                 (info.st_mode & 0777) == 0700,
             "private service directory required");
     const std::string lock = config_.directory + "/guardian.lock";
-    instance_.Reset(
-        open(lock.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600));
+    if (config_.outer_instance_fd >= 0) {
+      // The explicit outer owner retains this description across child exit,
+      // cleanup and core reconciliation. No second root can interleave. The
+      // descriptor is real kernel custody, never a grant inferred from JSON.
+      Require(s::CheckInheritedLease(config_.outer_instance_fd, lock).ok(),
+              "outer service instance is not continuously held");
+      instance_.Reset(fcntl(config_.outer_instance_fd, F_DUPFD_CLOEXEC, 3));
+      close(config_.outer_instance_fd);
+    } else {
+      instance_.Reset(
+          open(lock.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600));
+    }
     Require(instance_.Get() >= 0 && fstat(instance_.Get(), &info) == 0 &&
                 S_ISREG(info.st_mode) && info.st_uid == geteuid() &&
                 info.st_nlink == 1 && (info.st_mode & 0777) == 0600 &&
@@ -420,6 +446,7 @@ class Guardian {
       Require(fd >= 3 && fd <= 1000000 &&
                   static_cast<int>(fd) != lease_.Get() &&
                   static_cast<int>(fd) != config_.lease_fd &&
+                  static_cast<int>(fd) != config_.outer_instance_fd &&
                   static_cast<int>(fd) != instance_.Get() &&
                   static_cast<int>(fd) != bootstrap_.Get() &&
                   unique.insert(static_cast<int>(fd)).second,

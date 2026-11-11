@@ -63,3 +63,18 @@ pidfd 发给仍属于当前外层的直接子进程，超时保留 custody。
 复制 JSON 或看见“自己没有子进程”来退休上一外层的 slot。
 冻结 5 项真实 CPU 进程用例。完整同 boot 外层丢失/跨 boot 证明、
 原 journal slot 退休与运行接线仍须继续实现。
+
+## 实例锁跨根保管（开发中）
+
+仅在同一连续外层内证明旧树为空，还需要阻止其他启动器在其后
+插入另一棵树。配置 v5 接受真实继承的 `guardian.lock` FD；
+父外层持有同一 open-file-description，Guardian 校验实际 inode、
+权限及flock并保留CLOEXEC副本，旧根退出不释放父层实例独占。
+这使后续核心 slot 退休能在同一连续实例锁下进行，不能仅凭
+JSON 所称的“外层持锁”。后台 detach 不适用该父层生命周期。
+当前只开发并验证此原语，未改默认发行、未接自动重启循环。
+
+隔离工作区：`.q4t-work/serve-outer-recovery-20261112/worktree`，
+分支 `codex/serve-outer-recovery`，基点1750b278；隔离原因是保留
+原工作区 R07 当前plan-v2的源码与真实短验资格。后续合回有效
+主工作分支，不把这个隔离入口永久保留。

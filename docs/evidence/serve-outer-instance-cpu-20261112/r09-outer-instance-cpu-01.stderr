@@ -1,0 +1,15 @@
+test_daemon_detach_cannot_escape_outer_instance_lifecycle (tools.serve_recovery.test_outer_instance.InstanceTests.test_daemon_detach_cannot_escape_outer_instance_lifecycle) ... ok
+test_locked_other_file_cannot_substitute_for_service_instance (tools.serve_recovery.test_outer_instance.InstanceTests.test_locked_other_file_cannot_substitute_for_service_instance) ... ok
+test_parent_close_does_not_unlock_live_guardian_duplicate (tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_close_does_not_unlock_live_guardian_duplicate) ... ok
+test_parent_keeps_actual_instance_after_guardian_stops (tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_keeps_actual_instance_after_guardian_stops) ... ok
+test_resume_keeps_original_stopped_intent_without_role_launch (tools.serve_recovery.test_outer_instance.InstanceTests.test_resume_keeps_original_stopped_intent_without_role_launch) ... ok
+test_unheld_descriptor_is_rejected_before_controller_start (tools.serve_recovery.test_outer_instance.InstanceTests.test_unheld_descriptor_is_rejected_before_controller_start) ... ok
+test_foreground_control_stop_and_lease_release (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release) ... ok
+test_cold_guardian_never_authorizes_nvml_free_probe (tools.serve_recovery.test_runtime.RuntimeTests.test_cold_guardian_never_authorizes_nvml_free_probe) ... ok
+test_daemon_requires_business_readiness_and_explicit_detach (tools.serve_recovery.test_runtime.RuntimeTests.test_daemon_requires_business_readiness_and_explicit_detach) ... ok
+test_foreground_parent_death_is_a_durable_stop (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_parent_death_is_a_durable_stop) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 2.786s
+
+OK
