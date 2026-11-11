@@ -1,0 +1,12 @@
+{
+  "phase": "native_retrieval_publication",
+  "commands": 8,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "seconds": 180,
+  "expected_previous_revision": 50,
+  "target_revision": 52,
+  "preserve_state": "all existing client/keys/capacity/usage hashes; only explicit native model selection added",
+  "recovery": "exact same-version accepted capable package; prior generic executor cannot execute dedicated model",
+  "driver_sha256": "b03f5f208b6987086f7f430de2a34cbd58422aaeb8f4979f22bf7aad80b4ad2a"
+}

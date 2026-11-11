@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。原生专用检索[已可用交付](evidence/serve-native-embedding-delivery-20261111/README.md)：8命令首过/13.284秒/0GPU，默认96577e45、包9e55e265、generationce8b8829，rev52 STOPPED。真实5/5检索、同PID资产恢复及Batch已验；原Key/容量/账本保持，同版本已验恢复包保留。继续R05轻量profile/有界自动恢复与剩余媒体工具总任务，未合main。
+
 2026-11-11。专用检索后端[真实业务首过](evidence/serve-native-embedding-business-20261111/README.md)：2启动/9请求/422步骤/101.891秒，缺权重时同PID Chat正常、请求驱动恢复、真实检索5/5、取消8192 token与原Batch重启通过；96次NVML正常并清理。原生服务三程序身份保持，冻结8命令/0GPU封包发布，默认3cd4361c暂保持；之后继续全部总任务。
 
 2026-11-11。专用嵌入[28项Serve CPU首过](evidence/serve-native-embedding-serve-cpu-20261111/README.md)，引擎96577e45零警告；原8组逐层差异经[实际操作数复核](evidence/serve-native-embedding-rounding-review-20261111/README.md)解释，原FAILED保留、最终14向量阈值不变。冻结同租约2服务启动/9业务请求/450嵌入步骤/900秒，覆盖缺权重同PID恢复及原Batch重启；默认3cd4361c保持，继续实际业务/交付及全部总任务。

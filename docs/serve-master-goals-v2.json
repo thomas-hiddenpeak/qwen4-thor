@@ -1217,10 +1217,20 @@
       },
       "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
       "native_embedding_plan": "SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md",
-      "native_embedding_state": "actual_native_retrieval_5_of_5_asset_isolation_recovery_batch_restart_accepted_delivery_pending",
+      "native_embedding_state": "delivered_native_retrieval_asset_isolation_batch_and_restart_accepted",
       "native_embedding_serve_cpu": "evidence/serve-native-embedding-serve-cpu-20261111/README.md",
       "native_embedding_rounding_review": "evidence/serve-native-embedding-rounding-review-20261111/README.md",
-      "native_embedding_business": "evidence/serve-native-embedding-business-20261111/README.md"
+      "native_embedding_business": "evidence/serve-native-embedding-business-20261111/README.md",
+      "native_embedding_delivery": "evidence/serve-native-embedding-delivery-20261111/README.md",
+      "native_embedding_release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "generation_sha256": "ce8b882927d6d9c9f1e68b2149721fee9bb16fbbdfcb7103220a29ac1f1332db",
+        "manifest_sha256": "9e55e265502feba574ae13e314c06aac3e18dc251edf2e4f267866779eed3be9",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "fe6a69ecdfb2443f13b7b2b175946dd6f1a07fac5617fd2d8375a513dc9f5bcc",
+        "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
+      }
     },
     {
       "id": "A11",
@@ -1778,6 +1788,6 @@
       "release": null
     }
   ],
-  "next_task": "A10 native trained embedding/retrieval representation, then remaining master tasks",
+  "next_task": "R05 qualified light profiles and bounded automatic degradation/recovery, then all remaining media/tool/reliability/master tasks",
   "next": "Resolve observed0/2 retrieval quality with a suitable native backend and real project retrieval evidence, without treating interface delivery as completion; continue all required goals."
 }
