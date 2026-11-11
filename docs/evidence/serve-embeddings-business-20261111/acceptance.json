@@ -1,0 +1,20 @@
+{
+  "status": "ACCEPTED",
+  "embedding_chunks": 12.0,
+  "cancelled_usage": {
+    "input_tokens": 4096,
+    "output_tokens": 0,
+    "total_tokens": 4096,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "exact_text_token_id_match": true,
+  "batch_restart_original": true,
+  "chat_answer": "42",
+  "retrieval_quality_separate": true,
+  "default_unchanged": true
+}

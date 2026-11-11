@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "seconds": 0.31417621579021215,
+  "test": "model_head_hidden_matches_generation_final_mixer"
+}

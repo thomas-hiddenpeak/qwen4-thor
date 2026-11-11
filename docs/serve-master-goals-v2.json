@@ -1127,8 +1127,9 @@
       },
       "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
       "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
-      "embeddings_state": "targeted_cpu_accepted_business_pending",
-      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md"
+      "embeddings_state": "interface_business_accepted_delivery_pending_retrieval_quality_open",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1154,6 +1155,12 @@
           "state": "text_path_resolved_media_path_open",
           "resolution": "A07.6 delivered actual text key/retention/state/usage. A10 still requires actual media fingerprint and state resume; no media completion claim.",
           "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
+        },
+        {
+          "source": "evidence/serve-embeddings-business-20261111/retrieval-observation.json",
+          "issue": "Actual generation-model LAST vectors obtained0/2 top1 on two project-record queries. Native vector protocol/numerical/Batch business passes, but useful retrieval representation remains unimplemented. Implement a suitable native embedding backend or validated retrieval representation; do not close with quality disclaimers.",
+          "state": "open",
+          "acceptance": "Real project/query/document retrieval cases with relevant ranking, suitable trained representation or substantiated native method; CPU or protocol success is insufficient."
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
@@ -1176,8 +1183,9 @@
       },
       "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
       "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
-      "embeddings_state": "targeted_cpu_accepted_business_pending",
-      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md"
+      "embeddings_state": "interface_business_accepted_delivery_pending_retrieval_quality_open",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md"
     },
     {
       "id": "A11",
@@ -1736,5 +1744,5 @@
     }
   ],
   "next_task": "A10/A09.7 native embeddings backend, standard API and Batch",
-  "next": "Run frozen native embeddings final-mixer and real SDK/Batch/cancellation/restart business, then usable compatible delivery and all remaining master tasks."
+  "next": "Deliver accepted native vector interface with an exact capable recovery anchor, then resolve retrieval representation and remaining media/tool/recovery/master tasks."
 }

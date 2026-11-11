@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-11）
 
+2026-11-11。Embeddings[真实接口业务接受](evidence/serve-embeddings-business-20261111/README.md)：2启动/8请求/12向量chunk/85.358秒，最终mixer逐位、SDK/raw ID、Batch真实取消4096token、重启原件和Chat通过；81次NVML正常并清理。实际项目检索top1为0/2，已登记必须实现的质量缺口，不以协议通过结案。默认保持，继续接口交付、原生检索表示和全部总任务。
+
 2026-11-11。Embeddings提交7aa23cdb后冻结准备发现驱动误用服务包2MiB元数据reader读取真实大tokenizer；GPU尚未开始。已改为模型资产独立64MiB上限及实际token0校验，保留未完成plan；补1项大文件/错误ID/超限CPU，随后重新冻结，生产候选3cd4361c与39项原CPU保持。全部总任务继续。
 
 2026-11-11。原生Embeddings[39项不同CPU检查接受](evidence/serve-embeddings-cpu-20261111/README.md)：负零/协议文件界限及夹具比较已修，原失败和定点补验保留；513来源锚点，最终引擎3cd4361c/入口6b676fda零警告。冻结同租约2启动/8请求/18向量chunk/900秒与1合成原语；0GPU/默认ee550cab保持。继续真实业务、可用交付和全部总目标。

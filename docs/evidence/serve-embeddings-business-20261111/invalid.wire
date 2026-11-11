@@ -1,0 +1,1 @@
+{"error":{"message":"Token ID must be an exact integer in the served vocab","type":"invalid_request_error","code":"invalid_request","param":"input[0]"}}

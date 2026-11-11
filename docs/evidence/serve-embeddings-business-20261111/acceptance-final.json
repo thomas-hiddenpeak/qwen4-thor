@@ -1,0 +1,38 @@
+{
+  "status": "ACCEPT_NATIVE_EMBEDDINGS_INTERFACE_BUSINESS",
+  "embedding_chunks": 12.0,
+  "cancelled_usage": {
+    "input_tokens": 4096,
+    "output_tokens": 0,
+    "total_tokens": 4096,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "exact_text_token_id_match": true,
+  "batch_restart_original": true,
+  "chat_answer": "42",
+  "retrieval_quality_separate": true,
+  "default_unchanged": true,
+  "postflight": {
+    "sources_unchanged": true,
+    "default_unchanged": true,
+    "binary_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true
+  },
+  "nvml_queries": 81,
+  "all_queries_ok": true,
+  "env_abort": false,
+  "candidate_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+  "seconds": 85.35826472518966,
+  "retrieval_top1_correct": 0,
+  "retrieval_total": 2,
+  "retrieval_quality_accepted": false,
+  "remaining_quality_implementation_required": true,
+  "performance_claim": false
+}

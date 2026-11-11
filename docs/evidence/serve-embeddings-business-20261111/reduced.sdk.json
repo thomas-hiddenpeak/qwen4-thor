@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "result": {
+    "object": "list",
+    "model": "qwen3.8-flash-next",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": "w0/ZvLuE/Lzg9ik9w09ZvgMHUj5jq1W+ItE/vhkG47xJZoq8jGO9PaNizr1jq9U9zj1TPOnBhr6CdUM9GQZjvSCuIr5Liac9kKn3vQmvkT6KQKC9wiy8PU5dB74X48W9bZlPPklmCr9Eb42+tz5CPUuJJ755OAy+b0qSvk5dB74="
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1,
+      "total_tokens": 1
+    }
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19065/v1/embeddings",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"input\":[0],\"dimensions\":32,\"encoding_format\":\"base64\"}"
+    }
+  ]
+}

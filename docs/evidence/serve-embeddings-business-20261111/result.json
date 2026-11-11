@@ -1,0 +1,10 @@
+{
+  "status": "PASS_NATIVE_EMBEDDINGS_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 143
+  },
+  "seconds": 85.35826472518966,
+  "binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e"
+}

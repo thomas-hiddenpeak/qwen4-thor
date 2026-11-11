@@ -1,0 +1,1 @@
+{"error":{"message":"Embedding minute quota unavailable","type":"rate_limit_error","code":"client_tpm_exhausted","param":null}}

@@ -1,0 +1,54 @@
+{
+  "documents": [
+    [
+      "docs/ARCHITECTURE.md",
+      32,
+      45
+    ],
+    [
+      "docs/ARCHITECTURE.md",
+      133,
+      140
+    ],
+    [
+      "docs/EVALUATION.md",
+      8,
+      14
+    ]
+  ],
+  "cases": [
+    {
+      "query": 4,
+      "expected_document": 1,
+      "ranking": [
+        0,
+        2,
+        1
+      ],
+      "cosine_scores": [
+        0.5963506934725383,
+        0.3535751312029541,
+        0.5783091804093672
+      ],
+      "top1_correct": false
+    },
+    {
+      "query": 5,
+      "expected_document": 2,
+      "ranking": [
+        0,
+        2,
+        1
+      ],
+      "cosine_scores": [
+        0.6685170217406171,
+        0.4012806613758881,
+        0.6155672155548326
+      ],
+      "top1_correct": false
+    }
+  ],
+  "top1_correct": 0,
+  "total": 2,
+  "trained_retrieval_quality_claim": false
+}
