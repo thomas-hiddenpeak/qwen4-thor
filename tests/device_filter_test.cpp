@@ -353,6 +353,39 @@ Q4T_TEST(device_filter_kernel_program_replacement_invalidates_old_receipt) {
   return true;
 }
 
+Q4T_TEST(device_filter_covers_whole_character_major_without_alias_gaps) {
+  Groups groups;
+  Pins pins;
+  s::DeviceFilter original;
+  const std::vector<s::DeviceNumber> rules{{1, 0, true}};
+  Attach(&original, groups, rules);
+  Need(original.Pin(pins.policy.string()));
+  Q4T_CHECK(Child(groups.denied, [] {
+    if (!Zero(false)) return false;
+    s::OwnedFd other(open("/dev/null", O_WRONLY | O_CLOEXEC));
+    return other.Get() < 0 && errno == EPERM;
+  }));
+  Q4T_CHECK(Child(groups.allowed, [] {
+    if (!Zero(true)) return false;
+    s::OwnedFd other(open("/dev/null", O_WRONLY | O_CLOEXEC));
+    return other.Get() >= 0;
+  }));
+  s::DeviceFilter successor;
+  Need(successor.AdoptPinned(pins.policy.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), rules, original.Identity()));
+  for (const std::vector<s::DeviceNumber>& ambiguous : {
+       std::vector<s::DeviceNumber>{{1, 5, true}},
+       std::vector<s::DeviceNumber>{{1, 0, true}, {1, 5}},
+       std::vector<s::DeviceNumber>{{1, 5}, {1, 0, true}}}) {
+    s::DeviceFilter refused;
+    Q4T_CHECK(!refused.Attach(groups.target_fd.Get(), groups.allowed_fd.Get(),
+                              ambiguous).ok());
+    Q4T_CHECK(refused.LinkFd() < 0);
+  }
+  Need(original.RemovePin(pins.policy.string()));
+  return true;
+}
+
 int main(int argc, char** argv) {
   if (geteuid() != 0) {
     std::fputs("This CPU test requires explicit root cgroup privileges\n",

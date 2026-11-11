@@ -61,7 +61,11 @@ std::vector<bpf_insn> Instructions(
   for (const auto& device : devices) {
     add(BPF_JMP | BPF_JNE | BPF_K, 2, 0, 1, device.major);
     matches.push_back(code.size());
-    add(BPF_JMP | BPF_JEQ | BPF_K, 3, 0, 0, device.minor);
+    if (device.all_minors) {
+      add(BPF_JMP | BPF_JA, 0, 0, 0, 0);
+    } else {
+      add(BPF_JMP | BPF_JEQ | BPF_K, 3, 0, 0, device.minor);
+    }
   }
   const size_t allow = code.size();
   add(BPF_ALU64 | BPF_MOV | BPF_K, 0, 0, 0, 1);
@@ -111,12 +115,17 @@ Status LoadProgram(uint64_t allowed, const std::vector<DeviceNumber>& devices,
   if (devices.empty() || devices.size() > 64)
     return Status::Fail("device list must contain 1 to 64 entries");
   std::set<std::pair<uint32_t, uint32_t>> unique;
+  std::set<uint32_t> majors, broad;
   for (const auto& device : devices) {
     // Linux encodes a 12-bit major and 20-bit minor in dev_t.
     if (device.major == 0 || device.major >= (1U << 12) ||
         device.minor >= (1U << 20) ||
+        (device.all_minors && (device.minor != 0 || majors.contains(device.major))) ||
+        broad.contains(device.major) ||
         !unique.emplace(device.major, device.minor).second)
       return Status::Fail("invalid or repeated device number");
+    majors.insert(device.major);
+    if (device.all_minors) broad.insert(device.major);
   }
   auto code = Instructions(allowed, devices);
   std::array<char, 65536> log{};

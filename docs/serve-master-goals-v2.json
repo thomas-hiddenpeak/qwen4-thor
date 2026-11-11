@@ -1791,10 +1791,11 @@
       ],
       "evidence": [
         "evidence/serve-device-filter-cpu-20261112/README.md",
-        "evidence/serve-device-custody-cpu-20261112/README.md"
+        "evidence/serve-device-custody-cpu-20261112/README.md",
+        "evidence/serve-device-inventory-cpu-20261112/README.md"
       ],
       "release": null,
-      "development_status": "Native device rule and durable bpffs custody validated: 6 foundation checks and 7 custody checks (4 new, 3 direct). Real creator exit, unprivileged kernel identity verification and changed-rule rejection passed. No host GPU policy/default changes. Initial independent exclusivity and cold-start admission integration remain in progress.",
+      "development_status": "Native rule, durable custody, whole-character-major coverage and bounded kernel/module inventory implemented with targeted CPU evidence. Actual host metadata-width defect repaired; host reports outstanding kernel references, never authorization. Complete host deployment, initial qualification, persistent cold probe budget, Guardian integration and real business remain in progress. Default rev64 unchanged.",
       "plan": "SERVE_COLD_START_2026-11-12.md",
       "subtasks": [
         {

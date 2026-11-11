@@ -1,0 +1,22 @@
+{
+  "python_tests": "tools.serve_recovery.test_device_inventory",
+  "python_count": 8,
+  "kernel_tests": [
+    "device_filter_covers_whole_character_major_without_alias_gaps",
+    "device_filter_rejects_invalid_scope_before_attachment",
+    "device_filter_enforces_exact_cgroup_in_real_kernel",
+    "device_filter_adoption_verifies_code_and_retained_identity"
+  ],
+  "total_tests": 12,
+  "gpu_starts": 0,
+  "real_host_observations": 1,
+  "host_gpu_policy_changes": false,
+  "scope": "CPU synthetic sysfs faults, own cgroups/character-major 1 only, one read-only host inventory with no GPU device opens",
+  "sources": {
+    "tools/serve_recovery/device_inventory.py": "048a7078833a4c344b4ea99ffe22547f0503bf31947d1ea824926e05d2760368",
+    "tools/serve_recovery/test_device_inventory.py": "af0ca73d1657aed74270f735b212f06adbcee33d1ee586191481cd9bf865cf4c",
+    "include/q4t/service/device_filter.h": "f70151129c3b3f15ec485b600d924861e6b78746009f0d311206569d915dfeb8",
+    "src/service/device_filter.cpp": "203406e06a8f318be9fb03718900655f44f0c3106b6c75c380a694ff57caf6c0",
+    "tests/device_filter_test.cpp": "02e995a53265e6785f0ae07c8bb3ce7e55efe3e9b17c32228bb67e22aa9627fd"
+  }
+}

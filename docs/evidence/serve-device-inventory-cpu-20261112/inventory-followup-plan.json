@@ -1,0 +1,10 @@
+{
+  "reason": "Actual host srcversion uses 23 hex characters; first host observation UNKNOWN preserved as failed platform read acceptance",
+  "tests": [
+    "test_kernel_source_id_preserves_actual_width_instead_of_padding",
+    "test_unloading_bad_counts_or_mismatched_builds_never_appear_quiet"
+  ],
+  "host_observations": 1,
+  "gpu_starts": 0,
+  "source_sha256": "7d1a819799edd5021409e9cdfdcc8f744bffc86714acf8ebd8f649184971639f"
+}

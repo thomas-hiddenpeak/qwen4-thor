@@ -1,0 +1,13 @@
+test_any_change_between_two_complete_snapshots_invalidates_observation (tools.serve_recovery.test_device_inventory.InventoryTests.test_any_change_between_two_complete_snapshots_invalidates_observation) ... ok
+test_extra_kernel_references_block_even_without_any_process_listing (tools.serve_recovery.test_device_inventory.InventoryTests.test_extra_kernel_references_block_even_without_any_process_listing) ... ok
+test_missing_module_and_foreign_holder_path_are_unknown (tools.serve_recovery.test_device_inventory.InventoryTests.test_missing_module_and_foreign_holder_path_are_unknown) ... ok
+test_quiet_full_graph_is_only_observation_never_authorization (tools.serve_recovery.test_device_inventory.InventoryTests.test_quiet_full_graph_is_only_observation_never_authorization) ... ok
+test_read_failures_and_oversized_or_invalid_identity_are_unknown (tools.serve_recovery.test_device_inventory.InventoryTests.test_read_failures_and_oversized_or_invalid_identity_are_unknown) ... ok
+test_unaccounted_or_cyclic_holders_cannot_create_reference_exemptions (tools.serve_recovery.test_device_inventory.InventoryTests.test_unaccounted_or_cyclic_holders_cannot_create_reference_exemptions) ... ok
+test_unknown_alias_and_missing_device_registration_are_rejected (tools.serve_recovery.test_device_inventory.InventoryTests.test_unknown_alias_and_missing_device_registration_are_rejected) ... ok
+test_unloading_bad_counts_or_mismatched_builds_never_appear_quiet (tools.serve_recovery.test_device_inventory.InventoryTests.test_unloading_bad_counts_or_mismatched_builds_never_appear_quiet) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.028s
+
+OK

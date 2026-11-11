@@ -12,6 +12,7 @@ namespace q4t::service {
 struct DeviceNumber {
   uint32_t major = 0;
   uint32_t minor = 0;
+  bool all_minors = false;
   bool operator==(const DeviceNumber&) const = default;
 };
 
@@ -25,6 +26,7 @@ struct DeviceFilterIdentity {
 };
 
 // An immutable filter denies every access to the specified character devices
+// (or entire character major when all_minors is true and minor is zero)
 // outside one exact cgroup. Other devices are unchanged. A cgroup created
 // beneath the allowed group is NOT implicitly allowed. The deployment must
 // restrict membership changes separately and establish the initial absence of

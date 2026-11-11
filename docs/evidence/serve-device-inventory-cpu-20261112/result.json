@@ -1,0 +1,36 @@
+{
+  "status": "PASS_TARGETED_DEVICE_INVENTORY_CPU",
+  "distinct_tests": 13,
+  "python_distinct": 9,
+  "kernel_checks": 4,
+  "first_tests": 12,
+  "followup_tests": 2,
+  "first_host_status": "UNKNOWN",
+  "first_host_failure": "fixed-width srcversion assumption rejected actual 23-character kernel metadata",
+  "final_host_status": "BUSY",
+  "final_host_outstanding": [
+    {
+      "module": "nvidia",
+      "references": 25
+    },
+    {
+      "module": "nvidia_drm",
+      "references": 1
+    },
+    {
+      "module": "nvidia_uvm",
+      "references": 8
+    }
+  ],
+  "gpu_starts": 0,
+  "host_gpu_policy_changes": false,
+  "default_unchanged": true,
+  "cold_start_delivered": false,
+  "source_sha256": {
+    "tools/serve_recovery/device_inventory.py": "7d1a819799edd5021409e9cdfdcc8f744bffc86714acf8ebd8f649184971639f",
+    "tools/serve_recovery/test_device_inventory.py": "2dc4ea67b2187f1156f716f6a6f5256aa3ddc13378752a49f29c67379ac71acb",
+    "src/service/device_filter.cpp": "203406e06a8f318be9fb03718900655f44f0c3106b6c75c380a694ff57caf6c0",
+    "include/q4t/service/device_filter.h": "f70151129c3b3f15ec485b600d924861e6b78746009f0d311206569d915dfeb8",
+    "tests/device_filter_test.cpp": "02e995a53265e6785f0ae07c8bb3ce7e55efe3e9b17c32228bb67e22aa9627fd"
+  }
+}

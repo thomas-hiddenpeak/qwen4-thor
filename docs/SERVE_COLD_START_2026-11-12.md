@@ -46,6 +46,17 @@ bpftool、nginx 或 systemd 强依赖。管理权限仅用于显式设备隔离�
 实现为本项目原创代码；不复制内核 GPL 实现或示例。
 当前能力以实际内核验证为准，不以文档推断代替验收。
 
+进一步依据：[Linux 模块引用与依赖实现](https://github.com/torvalds/linux/blob/v6.8/kernel/module/main.c)
+区分加载器依赖引用与其他持有引用；
+[NVIDIA nvidia 文件操作](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/590.48.01/kernel-open/nvidia/nv.c)
+和 [UVM 文件操作](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/590.48.01/kernel-open/nvidia-uvm/uvm.c)
+绑定模块所有者。当前事实采集据此报告非依赖引用，不能把数字当成
+进程数或完整 GPU 独占证明。实际宿主为 595.78，不能把公开参考版
+源码检查直接冒充该版本的全部硬件资格；完整部署需要结合已保持的
+内核隔离和本机资格。采集器自身不授予任何模型启动权限。
+
 2026-11-12。R07设备过滤器[6真实内核CPU首过](evidence/serve-device-filter-cpu-20261112/README.md)，0.132秒/0GPU；精确域允许/拒绝、保活FD、旧句柄不撤销反例、独立规则与拒绝越域均过，自有域清理完。零警告/548来源锚点；初始独占与持久凭据继续实现，默认rev64保持，全部任务继续。
 
 2026-11-12。R07持久设备规则[7内核CPU首过](evidence/serve-device-custody-cpu-20261112/README.md)，0.131秒/0GPU：实际创建进程退出后规则仍在，重新接管/降权核验通过，篡改规则与他人pin拒绝，全部自有pin/cgroup回收。初始独占证据与业务启动接线继续；默认rev64保持，全部任务继续。
+
+2026-11-12。R07设备初始证据[13项不同CPU接受](evidence/serve-device-inventory-cpu-20261112/README.md)：首12项通过，真实宿主23位srcversion缺陷修复后2项定点补过；宿主现准确报告BUSY（非依赖引用25/1/8），不授权冷启动。整主设备号内核覆盖通过，0GPU/全局策略未改；继续完整部署/启动接线及全部总任务。
