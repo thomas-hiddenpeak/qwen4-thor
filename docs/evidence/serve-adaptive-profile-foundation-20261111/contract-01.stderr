@@ -1,0 +1,11 @@
+test_actual_primary_configuration_and_memory_are_bound (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_actual_primary_configuration_and_memory_are_bound) ... ok
+test_asset_binding_keeps_all_fixed_models_and_rejects_unsafe_paths (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_asset_binding_keeps_all_fixed_models_and_rejects_unsafe_paths) ... ok
+test_capability_equivalence_does_not_hide_media_tools_or_embedding_loss (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_capability_equivalence_does_not_hide_media_tools_or_embedding_loss) ... ok
+test_light_profile_cannot_reduce_service_contract (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_light_profile_cannot_reduce_service_contract) ... ok
+test_pair_digest_binds_source_identity_and_only_explicit_fields (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_pair_digest_binds_source_identity_and_only_explicit_fields) ... ok
+test_receipts_reject_unqualified_capacity_assets_and_single_evidence (tools.serve_recovery.test_profile_contract.ProfileContractTests.test_receipts_reject_unqualified_capacity_assets_and_single_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.056s
+
+OK

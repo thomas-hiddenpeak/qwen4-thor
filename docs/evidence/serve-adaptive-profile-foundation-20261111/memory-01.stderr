@@ -1,0 +1,19 @@
+test_detached_old_process_is_never_notified (tools.serve_service.test_memory.MemoryTests.test_detached_old_process_is_never_notified) ... ok
+test_parser_rejects_invalid_and_oversized_kernel_observations (tools.serve_service.test_memory.MemoryTests.test_parser_rejects_invalid_and_oversized_kernel_observations) ... ok
+test_runtime_unknown_never_signals_and_recovers_in_place (tools.serve_service.test_memory.MemoryTests.test_runtime_unknown_never_signals_and_recovers_in_place) ... ok
+test_signal_failure_retains_protective_cause (tools.serve_service.test_memory.MemoryTests.test_signal_failure_retains_protective_cause) ... ok
+test_startup_unknown_still_refuses_new_allocation (tools.serve_service.test_memory.MemoryTests.test_startup_unknown_still_refuses_new_allocation) ... ok
+test_transient_low_recovers_and_resets_continuous_deadline (tools.serve_service.test_memory.MemoryTests.test_transient_low_recovers_and_resets_continuous_deadline) ... ok
+test_trip_before_attachment_signals_late_owned_child_only_once (tools.serve_service.test_memory.MemoryTests.test_trip_before_attachment_signals_late_owned_child_only_once) ... ok
+test_unknown_cannot_substitute_for_confirmed_low_pressure (tools.serve_service.test_memory.MemoryTests.test_unknown_cannot_substitute_for_confirmed_low_pressure) ... ok
+test_environment_abort_and_manual_stop_cannot_pass_as_memory_trip (tools.serve_service.test_memory_acceptance.TerminalTests.test_environment_abort_and_manual_stop_cannot_pass_as_memory_trip) ... ok
+test_expected_protective_failure_is_not_rewritten_as_clean_exit (tools.serve_service.test_memory_acceptance.TerminalTests.test_expected_protective_failure_is_not_rewritten_as_clean_exit) ... ok
+test_memory_gate_refuses_launch_on_low_or_unknown_sample (tools.serve_service.test_service.Case.test_memory_gate_refuses_launch_on_low_or_unknown_sample) ... ok
+test_memory_trip_interrupts_blocked_probe_and_prevents_restart (tools.serve_service.test_service.Case.test_memory_trip_interrupts_blocked_probe_and_prevents_restart) ... ok
+test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop (tools.serve_service.test_service.Case.test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop) ... ok
+test_operator_stop_cannot_hide_memory_trip_during_cleanup (tools.serve_service.test_service.Case.test_operator_stop_cannot_hide_memory_trip_during_cleanup) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.352s
+
+OK

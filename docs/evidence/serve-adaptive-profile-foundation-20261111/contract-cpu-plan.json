@@ -1,0 +1,17 @@
+{
+  "status": "FROZEN_NOT_RUN",
+  "cases": [
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_light_profile_cannot_reduce_service_contract",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_capability_equivalence_does_not_hide_media_tools_or_embedding_loss",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_actual_primary_configuration_and_memory_are_bound",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_asset_binding_keeps_all_fixed_models_and_rejects_unsafe_paths",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_receipts_reject_unqualified_capacity_assets_and_single_evidence",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_pair_digest_binds_source_identity_and_only_explicit_fields"
+  ],
+  "gpu": 0,
+  "scope": "R05.1 pure qualification contract only; no light-model qualification or runtime switching claim",
+  "sources": {
+    "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
+    "tools/serve_recovery/test_profile_contract.py": "92cba1e7c15841deaf734722bb3fe5ea081dc62759c645d7b1d8a8cec25bf28f"
+  }
+}

@@ -1176,12 +1176,14 @@
         {
           "source": "evidence/serve-embeddings-business-20261111/retrieval-observation.json",
           "issue": "Actual generation-model LAST vectors obtained0/2 top1 on two project-record queries. Native vector protocol/numerical/Batch business passes, but useful retrieval representation remains unimplemented. Implement a suitable native embedding backend or validated retrieval representation; do not close with quality disclaimers.",
-          "state": "open",
-          "acceptance": "Real project/query/document retrieval cases with relevant ranking, suitable trained representation or substantiated native method; CPU or protocol success is insufficient."
+          "state": "resolved_by_delivered_native_dedicated_backend",
+          "acceptance": "Real project/query/document retrieval cases with relevant ranking, suitable trained representation or substantiated native method; CPU or protocol success is insufficient.",
+          "resolution": "Original generic observation0/2 retained. Fixed native Qwen3-Embedding0.6B implemented/delivered with actual original two plus three additional project queries5/5, same-PID asset recovery and Batch/restart.",
+          "evidence": "evidence/serve-native-embedding-delivery-20261111/README.md"
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
+      "next": "Native dedicated retrieval delivered. Continue remaining media/backend/tool/recovery and master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -1667,7 +1669,7 @@
     {
       "id": "R05",
       "required": true,
-      "state": "planned",
+      "state": "implementing",
       "implementation": "已验证轻量profile及自动降级/恢复；能力与准入一致",
       "acceptance": "已验证轻量profile及自动降级/恢复；能力与准入一致",
       "depends_on": [
@@ -1675,7 +1677,10 @@
         "R03"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
+      "development_status": "Qualification contract6CPU and memory observer isolation14CPU passed; controller fix delivery and durable profile switching/actual model qualification pending.",
+      "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md"
     },
     {
       "id": "R06",

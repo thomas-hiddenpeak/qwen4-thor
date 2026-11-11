@@ -14,9 +14,12 @@ SRV-14的DEGRADED只表示准入关闭，模型仍驻留；持续低内存时，
   `--critical-memory-mib`显式设置1..1048576MiB；写入不可变manifest。
   不允许通过环境或CLI替换观测来源，只读固定/proc/meminfo。
 - 启动前新读数缺失/非法或低于门限直接拒绝加载；后台每1秒读取，
-  连续低于门限2秒触发critical_memory_pressure，连续未知5秒触发
-  memory_observation_unavailable。低/未知交替5秒而未恢复正常读数，
-  触发memory_safety_unconfirmed。只有有效且不低于门限才清除不安全期。
+  连续有效低于门限2秒触发critical_memory_pressure。2026-11-11修复
+  运行时观察缺失隔离：未知只记memory_observation_unavailable，不
+  触发SIGTERM；未知样本不能代替持续低内存证据。恢复有效读数后
+  同进程继续监视；已确认并锁存的严重低内存原因不会被未知清除。
+  启动前未知仍拒绝新分配，核心请求准入独立检查实际RAM。历史
+  memory_unknown_seconds配置可读，但不再赋予运行时未知停模权限。
 - 独立线程先锁存原因，使用boot/start/pidfd向所属后端发SIGTERM。
   监督器回收同组及孤儿worker；原因不被正常停止或信号恢复覆盖。
   active请求可能被取消，业务必须按已有结果不确定/幂等合同处理。
