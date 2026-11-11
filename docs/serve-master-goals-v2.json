@@ -1861,11 +1861,12 @@
         "evidence/serve-outer-instance-cpu-20261112/README.md",
         "evidence/serve-outer-reconcile-cpu-20261112/README.md",
         "evidence/serve-outer-parent-cpu-20261112/README.md",
-        "evidence/serve-outer-resume-cpu-20261112/README.md"
+        "evidence/serve-outer-resume-cpu-20261112/README.md",
+        "evidence/serve-outer-reboot-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
-      "development_status": "Continuous tree/core retirement (28 CPU), managed outer-loss isolation (8 CPU), unified resume/offline stop and complete v18 source packaging (22 distinct CPU) accepted. Original v17 frozen candidate verified read-only. No release or GPU. Healthy orphan-root observation adoption, same-boot resource-domain/cross-boot reconciliation, automatic bounded outer loop and optional host adapter lifecycle remain required; all master tasks continue.",
+      "development_status": "Continuous retirement (28 CPU), outer-loss isolation (8 CPU), unified resume/offline stop/v18 sources (22 distinct CPU), and cross-boot exact-ticket checkpoint (21 CPU, historical data only) accepted. No GPU, host reboot or release. Required remaining: actual resource-domain proof for same-boot/new observer or ambiguous birth, healthy-root observation adoption, bounded automatic loop, explicit optional host startup/install/uninstall, business acceptance and reversible delivery. R07 frozen candidate unchanged; all master tasks continue.",
       "subtasks": [
         {
           "id": "R09.1",

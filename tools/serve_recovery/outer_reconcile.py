@@ -77,3 +77,71 @@ def continuous(instance, tree):
                 return dict(reconciled=True, already_retired=False, retired=retired,
                     core_revision=core.state['revision'], witness=witness,
                     device_authorized=False, model_actions=False)
+
+
+def reboot_checkpoint(core, attempt, actual_boot):
+    cleanup = attempt['cleanup']
+    ledger.require(actual_boot != attempt['boot_id'] and cleanup is not None and
+        core['revision'] >= cleanup['core_revision'] and
+        core['generations'] == cleanup['core_generations'],
+        'reboot cleanup checkpoint no longer matches core')
+    for role, active in core['active'].items():
+        if active is None: continue  # Already retired by this persistent intent.
+        ledger.require({key:active[key] for key in ('ticket', 'generation', 'owner')} ==
+            cleanup['slots'][role], 'reboot cleanup slot was replaced')
+
+
+def reboot(instance):
+    """Actual new host boot proves prior-boot tasks gone, never GPU readiness.
+
+    Persist exact old tickets BEFORE the first retirement; subsequent attempts
+    can finish partial cleanup even after stop updated the core's boot clock.
+    Current-boot or unknown-birth grants cannot be swept into that old intent.
+    """
+    instance.check()
+    now = store.stamp()
+    state = instance.path.parent
+    with deployment.claim(state, shared=True):
+        desc = deployment.read_descriptor(state)
+        ledger.require(desc['service_id'] == instance.binding['service_id'], 'foreign reboot state')
+        deployment.ready(state, desc)
+        with outer_store.open_bound(instance.binding) as outer:
+            previous = outer.head['state']['policy']
+            pending = previous['pending']
+            if pending is None:
+                with store.Store(state, desc['service_id']) as core:
+                    ledger.require(core.service_contract and not any(core.state['active'].values()),
+                                   'unbound reboot slots require actual reconciliation')
+                return dict(reconciled=True, mode='no_pending', device_authorized=False,
+                            model_actions=False)
+            ledger.require(pending is not None and pending['boot_id'] != now.boot_id and
+                pending['manifest_sha256'] == desc['manifest_sha256'],
+                'no matching previous-boot outer attempt')
+            with store.Store(state, desc['service_id']) as core:
+                ledger.require(core.service_contract, 'reboot cleanup requires service state fence')
+                if pending['cleanup'] is None:
+                    candidate = outer_policy.change(previous, 'prepare_reboot',
+                        dict(ticket=pending['ticket'], core=core.state), now)
+                    outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
+                    previous = candidate; pending = candidate['pending']
+                reboot_checkpoint(core.state, pending, now.boot_id)
+                before = deepcopy(core.state); retired = []
+                for role in ('model', 'controller', 'gateway'):
+                    active = core.state['active'][role]
+                    if active is None: continue
+                    instance.check()
+                    reboot_checkpoint(core.state, pending, store.stamp().boot_id)
+                    ticket = active['ticket']
+                    core.transact(dict(id=str(uuid.uuid4()), expected_revision=core.state['revision'],
+                        operation='retired', args=dict(role=role, ticket=ticket, verified=True)))
+                    retired.append(dict(role=role, ticket=ticket))
+                ledger.require(not any(core.state['active'].values()) and all(
+                    core.state[key] == before[key] for key in
+                    ('desired', 'quarantine', 'generations', 'failures', 'not_before', 'circuit_until')),
+                    'reboot cleanup changed core protection or history')
+                candidate = outer_policy.change(previous, 'retired',
+                    dict(ticket=pending['ticket'], verified=True), store.stamp())
+                outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
+                return dict(reconciled=True, mode='previous_boot', retired=retired,
+                    original_boot_id=pending['boot_id'], observed_boot_id=now.boot_id,
+                    core_revision=core.state['revision'], device_authorized=False, model_actions=False)
