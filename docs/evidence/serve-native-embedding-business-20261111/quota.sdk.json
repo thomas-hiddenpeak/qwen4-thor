@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "error": {
+    "class": "RateLimitError",
+    "message": "429 Embedding minute quota unavailable",
+    "status": 429,
+    "code": "client_tpm_exhausted",
+    "param": null
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19067/v1/embeddings",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3-embedding-0.6b\",\"input\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"encoding_format\":\"base64\"}"
+    }
+  ]
+}

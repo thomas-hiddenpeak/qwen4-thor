@@ -1,0 +1,1 @@
+{"error":{"message":"Embedding assets are absent or fail identity checks","type":"service_unavailable_error","code":"embedding_assets_invalid","param":null}}

@@ -1,0 +1,1 @@
+{"id":"batch_bfb4ada016f1fb94389193487d3d5ef1","object":"batch","status":"validating","endpoint":"/v1/embeddings","input_file_id":"file_22c0013b26f4a36f683efe7990dd7333","completion_window":"24h","created_at":1794399737,"expires_at":1794486137,"metadata":null,"output_file_id":null,"error_file_id":null,"errors":null,"request_counts":{"total":0,"completed":0,"failed":0}}

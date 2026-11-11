@@ -1,0 +1,37 @@
+{
+  "status": "ACCEPT_NATIVE_RETRIEVAL_BUSINESS",
+  "embedding_steps": 422.0,
+  "cancelled_usage": {
+    "input_tokens": 8192,
+    "output_tokens": 0,
+    "total_tokens": 8192,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "same_pid_asset_recovery": true,
+  "chat_answers": [
+    "42",
+    "42"
+  ],
+  "batch_restart_original": true,
+  "retrieval_top1": 5,
+  "default_unchanged": true,
+  "postflight": {
+    "sources_unchanged": true,
+    "default_unchanged": true,
+    "binary_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true
+  },
+  "nvml_queries": 96,
+  "all_queries_ok": true,
+  "env_abort": false,
+  "candidate_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "seconds": 101.89127440657467,
+  "performance_claim": false
+}

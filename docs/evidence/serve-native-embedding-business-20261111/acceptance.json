@@ -1,0 +1,23 @@
+{
+  "status": "ACCEPTED",
+  "embedding_steps": 422.0,
+  "cancelled_usage": {
+    "input_tokens": 8192,
+    "output_tokens": 0,
+    "total_tokens": 8192,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "same_pid_asset_recovery": true,
+  "chat_answers": [
+    "42",
+    "42"
+  ],
+  "batch_restart_original": true,
+  "retrieval_top1": 5,
+  "default_unchanged": true
+}

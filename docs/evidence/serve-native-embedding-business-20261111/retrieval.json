@@ -1,0 +1,153 @@
+{
+  "cases": [
+    {
+      "query": "PLE \u67e5\u5230\u7684\u6570\u636e\u5982\u4f55\u4ece SSD \u9001\u5230\u6a21\u578b\u5c42\uff1f",
+      "expected_document": 0,
+      "ranking": [
+        0,
+        3,
+        4,
+        1,
+        2
+      ],
+      "cosine_scores": [
+        0.5729157129043362,
+        0.3663154226607436,
+        0.3071984091736449,
+        0.5314303103499541,
+        0.39844114334453007
+      ]
+    },
+    {
+      "query": "\u662f\u5426\u5fc5\u987b\u4e3a q4t \u5b89\u88c5\u6216\u6253\u5305 nginx \u624d\u80fd\u63d0\u4f9b\u670d\u52a1\uff1f",
+      "expected_document": 1,
+      "ranking": [
+        1,
+        4,
+        2,
+        0,
+        3
+      ],
+      "cosine_scores": [
+        0.2732914015040272,
+        0.5875816706166335,
+        0.30517086063804544,
+        0.2692975875189397,
+        0.42299861337748773
+      ]
+    },
+    {
+      "query": "\u4e0d\u6d89\u53ca\u6027\u80fd\u7684\u529f\u80fd\u4fee\u590d\u9700\u8981\u8fd0\u884c\u5b8c\u6574\u6027\u80fd\u77e9\u9635\u5417\uff1f",
+      "expected_document": 2,
+      "ranking": [
+        2,
+        4,
+        0,
+        1,
+        3
+      ],
+      "cosine_scores": [
+        0.44304252911028075,
+        0.4311699756865857,
+        0.7160801756652556,
+        0.4049537815960441,
+        0.44963063208229725
+      ]
+    },
+    {
+      "query": "\u628a\u4e13\u5bb6\u6743\u91cd\u4ece GPU \u79fb\u5230 CPU \u5185\u5b58\uff0c\u80fd\u591f\u51cf\u5c11 Thor \u7684\u7269\u7406 RAM \u9a7b\u7559\u5417\uff1f",
+      "expected_document": 3,
+      "ranking": [
+        3,
+        0,
+        1,
+        4,
+        2
+      ],
+      "cosine_scores": [
+        0.5094139846491171,
+        0.4071396551295537,
+        0.3751866850413161,
+        0.7468031565969642,
+        0.3821708441837946
+      ]
+    },
+    {
+      "query": "\u539f\u751f\u89c2\u6d4b\u91c7\u96c6\u5668\u4f1a\u5bf9\u6a21\u578b\u53d1\u9001\u505c\u6b62\u6216\u91cd\u542f\u547d\u4ee4\u5417\uff1f",
+      "expected_document": 4,
+      "ranking": [
+        4,
+        1,
+        2,
+        3,
+        0
+      ],
+      "cosine_scores": [
+        0.3422110139244725,
+        0.5181602001982596,
+        0.37868967800655134,
+        0.34642093809979907,
+        0.6595509779589005
+      ]
+    }
+  ],
+  "top1_correct": 5,
+  "reference_final_vectors": [
+    {
+      "case": 1,
+      "cosine": 0.999878437370193,
+      "max_normalized_absolute_error": 0.0031896956706966434
+    },
+    {
+      "case": 4,
+      "cosine": 0.9997124498535445,
+      "max_normalized_absolute_error": 0.002525386428236104
+    },
+    {
+      "case": 5,
+      "cosine": 0.9997573721104938,
+      "max_normalized_absolute_error": 0.0021659617800258713
+    },
+    {
+      "case": 6,
+      "cosine": 0.999625673736607,
+      "max_normalized_absolute_error": 0.0028834963860484286
+    },
+    {
+      "case": 7,
+      "cosine": 0.999722811556299,
+      "max_normalized_absolute_error": 0.0031789734926750413
+    },
+    {
+      "case": 8,
+      "cosine": 0.9997968554268613,
+      "max_normalized_absolute_error": 0.002231249892083004
+    },
+    {
+      "case": 9,
+      "cosine": 0.9997018743495326,
+      "max_normalized_absolute_error": 0.002837273857350199
+    },
+    {
+      "case": 10,
+      "cosine": 0.9997419876750708,
+      "max_normalized_absolute_error": 0.0029861771228811285
+    },
+    {
+      "case": 11,
+      "cosine": 0.9996636305164383,
+      "max_normalized_absolute_error": 0.003454324263300654
+    },
+    {
+      "case": 12,
+      "cosine": 0.9997487137726506,
+      "max_normalized_absolute_error": 0.00261472794280679
+    },
+    {
+      "case": 13,
+      "cosine": 0.999772601656812,
+      "max_normalized_absolute_error": 0.0026577081191148377
+    }
+  ],
+  "source": "original actual corpus"
+}

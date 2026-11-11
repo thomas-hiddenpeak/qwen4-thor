@@ -1,0 +1,10 @@
+{
+  "status": "PASS_NATIVE_RETRIEVAL_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 9,
+    "controls": 136
+  },
+  "seconds": 101.89127440657467,
+  "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+}

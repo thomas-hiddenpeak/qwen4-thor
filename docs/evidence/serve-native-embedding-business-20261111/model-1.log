@@ -1,0 +1,121 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":124163129344}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 313 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.99 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=101739793304 runtime_peak=99625978920 estimated_total=101739793304
+[q4t][startup] budget 497 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=2 policy=client_round_robin_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":101739793304,"headroom_bytes":2147483648,"required_bytes":103887276952,"observed_total_bytes":131920637952,"observed_available_bytes":123725635584}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2897 ms
+[q4t][startup] model_load 42138 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 3165 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-memory] {"checkpoint":"before_ready","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":35715473408}}
+[q4t][startup] startup_total 49012 ms
+[q4t] serving on port 19067 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] operations on port 19068 (host 127.0.0.1)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-835cc41380d87640f2a36690263592f6
+[q4t][request] instance=0 id=embd_8cfffdeda65828d993fdd2dbfbd32938 event=registered stage=validation seq=-1 elapsed_ms=0.039 trace_id=req-835cc41380d87640f2a36690263592f6
+[q4t][http] trace_id=req-835cc41380d87640f2a36690263592f6 status=503 error=embedding_assets_invalid
+[q4t][request] instance=0 id=embd_8cfffdeda65828d993fdd2dbfbd32938 event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=324.503 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.107 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req-835cc41380d87640f2a36690263592f6
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=registered stage=validation seq=-1 elapsed_ms=0.132 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][http] trace_id=req-81b3b524d66362145cd3282fbd53855c completion_id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=encode seq=-1 elapsed_ms=0.155 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[sampling] request=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=slot_admission seq=-1 elapsed_ms=0.372 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=admitted stage=slot_admission seq=0 elapsed_ms=0.381 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=encode seq=0 elapsed_ms=0.383 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=prefill seq=0 elapsed_ms=0.496 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=decode seq=0 elapsed_ms=231.824 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 draft_counts=0,1,0,0
+[q4t][mem] phase=request_end id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 dev_used_gb=111.182 dev_total_gb=131.921 rss_mb=948.3 mem_free_gb=16.041 mem_avail_gb=35.374 cached_gb=14.355
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=stage stage=response seq=0 elapsed_ms=355.115 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=1 id=chatcmpl-auto-740e8658ed7be85360672b5dd890d6a7 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=355.241 slot_wait_ms=0.007 model_lock_ms=0.001 tokenizer_lock_ms=0.003 scheduler_completion_ms=101.005 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-81b3b524d66362145cd3282fbd53855c
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=registered stage=validation seq=-1 elapsed_ms=0.028 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=-1 elapsed_ms=1717.925 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1718.005 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1718.031 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1734.063 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1734.124 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1734.128 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1756.526 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1756.588 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1756.593 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1776.959 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1777.027 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1777.031 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1795.531 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1795.601 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1795.605 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1816.550 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1816.617 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1816.622 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1831.979 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1832.046 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1832.051 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1848.714 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1848.783 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1848.787 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1861.735 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1861.793 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1861.797 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1875.431 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1875.487 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1875.491 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=slot_admission seq=0 elapsed_ms=1892.029 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=admitted stage=slot_admission seq=0 elapsed_ms=1892.100 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=prefill seq=0 elapsed_ms=1892.104 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=stage stage=response seq=0 elapsed_ms=1905.130 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=2 id=embd_3a215cd3054605743aeabc0f3dfef120 event=end stage=response seq=0 released=1 outcome=success reason=complete elapsed_ms=1905.231 slot_wait_ms=0.442 model_lock_ms=0.542 tokenizer_lock_ms=2.611 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req-9df0a687e780daea4e056d0916820775
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=registered stage=validation seq=-1 elapsed_ms=0.021 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=stage stage=slot_admission seq=-1 elapsed_ms=0.042 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=admitted stage=slot_admission seq=0 elapsed_ms=0.053 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=stage stage=prefill seq=0 elapsed_ms=0.058 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=stage stage=response seq=0 elapsed_ms=13.297 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=3 id=embd_9928acec410d3f8807a33a3d6bb07984 event=end stage=response seq=0 released=1 outcome=success reason=complete elapsed_ms=13.377 slot_wait_ms=0.010 model_lock_ms=0.048 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req-4f617effbefd8c29f133844c4114f2b6
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-602464edae5ab26837bf8644edef8f02
+[q4t][request] instance=4 id=embd_339a2740119bf8b8cb342a861252c7e0 event=registered stage=validation seq=-1 elapsed_ms=0.018 trace_id=req-602464edae5ab26837bf8644edef8f02
+[q4t][http] trace_id=req-602464edae5ab26837bf8644edef8f02 status=429 error=client_tpm_exhausted
+[q4t][request] instance=4 id=embd_339a2740119bf8b8cb342a861252c7e0 event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.065 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req-602464edae5ab26837bf8644edef8f02
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=registered stage=validation seq=-1 elapsed_ms=0.016 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=stage stage=slot_admission seq=-1 elapsed_ms=0.033 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=admitted stage=slot_admission seq=0 elapsed_ms=0.051 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=stage stage=prefill seq=0 elapsed_ms=0.055 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=stage stage=response seq=0 elapsed_ms=12.882 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=5 id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df event=end stage=response seq=0 released=1 outcome=success reason=complete elapsed_ms=12.913 slot_wait_ms=0.008 model_lock_ms=0.017 tokenizer_lock_ms=0.008 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req_tool_run_6a0af69a2f07692655b9864bc3d3d8df
+[q4t][request] instance=6 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t][request] instance=6 id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f event=registered stage=validation seq=-1 elapsed_ms=0.020 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t][request] instance=6 id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f event=stage stage=slot_admission seq=-1 elapsed_ms=0.040 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t][request] instance=6 id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f event=admitted stage=slot_admission seq=0 elapsed_ms=0.057 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t][request] instance=6 id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f event=stage stage=prefill seq=0 elapsed_ms=0.060 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t][http] trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f status=409 error=explicit_cancel
+[q4t][request] instance=6 id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f event=end stage=prefill seq=0 released=1 outcome=error reason=handler_error elapsed_ms=56.031 slot_wait_ms=0.014 model_lock_ms=0.002 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req_tool_run_aaa7dccce8c8d94f580825a5557b720f
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=1
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":101047296,"live_bytes":101047296,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":87346664856,"entries":6,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

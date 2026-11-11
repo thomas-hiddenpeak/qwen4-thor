@@ -424,6 +424,7 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
+| `--embedding-model-dir` | 可选固定Qwen3-Embedding-0.6B资产绝对路径；原生执行，32～1024维、每条最多8192 token，独立延迟加载/健康，不要求外部推理服务 |
 | `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
 | `--cuda-allocation-limit-mib` | `auto`，生产wrapper请求字节额度为mem_fraction×MemTotal；0显式关闭，正整数指定MiB，独立于`--no-budget`。不覆盖DSO内部/host堆/driver/文件缓存/CUDA池保留，不是整机RAM硬限额；交付状态见STATUS |
 | `--startup-memory-headroom-mib` | `2048`，大分配前要求真实MemAvailable容纳估算总量及余量；元数据前/ready前复查余量，0禁用，`--no-budget`同时绕过此估算检查 |
@@ -436,6 +437,23 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 [src/server/server_options.cpp](src/server/server_options.cpp)。当前 main 使用
 T>1 batch verifier；`--mtp-verifier` 已移除，sequential 实现在历史提交
 `7f6a69c` 中保留。当前交付与基线见 [STATUS](docs/STATUS.md)。
+
+### 原生项目资料检索向量
+
+显式配置`--embedding-model-dir /absolute/path/to/assets`后，
+`/v1/models`增加`qwen3-embedding-0.6b`。固定资产提交、SHA和许可见
+[专用嵌入说明](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md)。
+`POST /v1/embeddings`使用该模型名即可；支持文本/文本数组、raw token
+及矩阵，`encoding_format`为`float`或`base64`，可选`dimensions`为32～1024。
+文本使用其训练分词器并追加EOS，raw token保持调用者输入；检索查询
+需显式提供`Instruct: <检索任务>\nQuery: <问题>`，文档直接提供原文。
+`/v1/batches`也支持该模型。默认生成模型的原始向量接口继续保留。
+
+资产缺失或损坏只使专用嵌入端点降级；修复后5秒冷却期结束，下一
+请求可在同进程恢复。Chat与readiness不依赖该资产，真实CUDA故障
+仍触发设备保护。配置/健康分别见`/v1/config`的`native_embedding`
+和`native_embedding_health`；资产及工作区计入Thor统一RAM。
+真实检索、取消和重启证据见[业务短验](docs/evidence/serve-native-embedding-business-20261111/README.md)。
 
 ### 独立草稿 head 与启动校验
 
@@ -657,7 +675,7 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
-| [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端开发中，权重不随代码仓库分发，见[实施计划](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
+| [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端已完成针对性业务短验，权重不随代码仓库分发，见[实现与验收](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
 | [KVMem](https://github.com/kvmem/kvmem) | 会话身份、完整状态保存/恢复、存储租约与失败处理；借鉴到 SSD 会话缓存 |

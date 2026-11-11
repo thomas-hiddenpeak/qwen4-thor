@@ -1,0 +1,1 @@
+{"custom_id":"batch-0","method":"POST","url":"/v1/embeddings","body":{"model":"qwen3-embedding-0.6b","input":"!","dimensions":32,"encoding_format":"base64"}}
