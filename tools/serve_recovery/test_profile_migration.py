@@ -136,6 +136,74 @@ class MigrationTests(unittest.TestCase):
             migration.permit(old, self.new, same, altered, self.config,
                              self.config, allow_capability_extension=True)
 
+    def discovery_extension(self):
+        records, _ = self.search_extension()
+        self.first = bind_records(self.old, copy.deepcopy(records))
+        target = copy.deepcopy(records)
+        for record in target.values():
+            response = record['capabilities']['responses']
+            response['output_items'].extend(('tool_search_call', 'tool_search_output'))
+            response['tool_discovery'] = dict(profile='q4t-tool-discovery-v1',
+                defer_loading=True, server_paths=True, client_search=True,
+                additional_tools=True, definitions='ordered_history')
+        return target, bind_records(self.new, target)
+
+    def test_discovery_extension_requires_deployment_and_rejects_feature_loss(self):
+        _, evidence = self.discovery_extension()
+        original = copy.deepcopy((self.first, evidence))
+        for automatic in (False, True):
+            with self.subTest(automatic=automatic), self.assertRaisesRegex(
+                    ValueError, 'application capabilities'):
+                self.extended_permit(self.new, evidence, automatic=automatic)
+        grant = self.extended_permit(self.new, evidence,
+                                     allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(self.new, self.old, evidence, self.first,
+                self.config, self.config, allow_capability_extension=True)
+        self.assertEqual((self.first, evidence), original)
+
+    def test_discovery_recovery_keeps_contract_and_pending_history(self):
+        records, evidence = self.discovery_extension()
+        same = bind_records(self.old, copy.deepcopy(records))
+        initial = policy.initial(self.old, self.stamp(0), self.config)
+        pending = policy.prepare(initial, 'light', 'sustained_memory_pressure',
+                                 str(uuid.uuid4()), 7, self.stamp(1))
+        for record in records.values():
+            record['capabilities']['responses']['output_items'].reverse()
+        reordered = bind_records(self.new, records)
+        grant = migration.permit(self.old, self.new, same, reordered,
+                                 self.config, self.config, automatic=True)
+        self.assertEqual(grant['format'], migration.FORMAT)
+        value = migration.candidate(pending, grant, self.stamp(999999))
+        for key in ('history', 'pending', 'not_before_ns', 'selected', 'profiles',
+                    'completed_generation', 'light_since_ns'):
+            self.assertEqual(value[key], pending[key])
+        self.assertEqual(value['clock']['logical_ns'], pending['clock']['logical_ns'])
+
+    def test_discovery_outputs_require_paired_items_and_actual_profile(self):
+        records, _ = self.discovery_extension()
+        valid = records['primary']['capabilities']
+        normalized = migration.semantic_capabilities(valid)
+        self.assertTrue(normalized['responses']['output_items']['tool_search_call'])
+        mutations = [
+            lambda r:r['output_items'].remove('tool_search_output'),
+            lambda r:r['output_items'].remove('tool_search_call'),
+            lambda r:r['output_items'].append('tool_search_output'),
+            lambda r:r.pop('tool_discovery'),
+            lambda r:r.update(tool_discovery=True),
+            lambda r:r['tool_discovery'].update(profile='unknown'),
+            lambda r:r['tool_discovery'].update(definitions='header'),
+            lambda r:r['tool_discovery'].update(server_paths=1),
+            lambda r:r['tool_discovery'].update(client_search=False),
+            lambda r:r['tool_discovery'].update(defer_loading=False),
+            lambda r:r['tool_discovery'].pop('additional_tools')]
+        for mutation in mutations:
+            value = copy.deepcopy(valid)
+            mutation(value['responses'])
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                migration.semantic_capabilities(value)
+
     def test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic(self):
         new, evidence = self.extension()
         with self.assertRaisesRegex(ValueError, 'application capabilities'):

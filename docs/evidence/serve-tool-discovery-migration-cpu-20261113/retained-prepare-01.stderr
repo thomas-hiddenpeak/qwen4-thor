@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/prepare_retained.py", line 78, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/prepare_retained.py", line 62, in main
+    permit = version_contract.compatible(version_contract.payload(root),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_contract.py", line 62, in compatible
+    return profile_migration.permit(old['recovery_profiles'], new['recovery_profiles'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 94, in permit
+    old_contract, new_contract = map(semantic_capabilities, (first, second))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 36, in semantic_capabilities
+    ledger.require(type(items) is list and all(type(x) is str for x in items)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities

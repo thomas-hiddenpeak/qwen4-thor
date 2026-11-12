@@ -36,6 +36,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 回退准备暴露工具发现输出枚举遗漏；已[修复并通过10项CPU及实际资格迁移](evidence/serve-tool-discovery-migration-cpu-20261113/README.md)。
+  主轻2启动8请求已通过；引擎/原生helper不变，继续原定独立回退与
+  整树恢复短验，再可回退发行和实际合main；默认rev110保持。
+
 - 工具发现[真实业务补验通过](evidence/serve-tool-discovery-business-20261113/README.md)：
   1启动/10创建/104.447秒，server函数JSON/custom SSE、client目录外
   定义及additional_tools四次实际读取闭环通过，错误结果400拒绝。

@@ -1,0 +1,14 @@
+{
+  "status": "PASS_TOOL_DISCOVERY_MIGRATION_CPU",
+  "distinct_targeted_cases": 10,
+  "negative_control_cases": 3,
+  "negative_control_old_source_rejected": true,
+  "initial_loader_error": "Wrong unittest class name; nine executed cases passed; corrected one case passed in migration-cpu-02.",
+  "actual_qualified_migration": "PASS",
+  "new_gpu_starts": 0,
+  "default_changed": false,
+  "source_sha256": {
+    "tools/serve_recovery/profile_migration.py": "c4b81816fc711f513ed17b6621da51ec442a8ba730ce5ef00e0f69d1077dcee1",
+    "tools/serve_recovery/test_profile_migration.py": "ed4df331942972f6647a46523c6dbbed5fa825746e56e09a844358985c510beb"
+  }
+}

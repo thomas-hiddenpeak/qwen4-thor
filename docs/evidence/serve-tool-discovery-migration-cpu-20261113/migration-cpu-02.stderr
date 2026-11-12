@@ -1,0 +1,6 @@
+test_actual_profile_migration_keeps_pending_history_clock_and_retry (tools.serve_recovery.test_version_runtime.RuntimeTests.test_actual_profile_migration_keeps_pending_history_clock_and_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.742s
+
+OK
