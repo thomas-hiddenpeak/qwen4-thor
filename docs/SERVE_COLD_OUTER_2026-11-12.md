@@ -63,10 +63,14 @@ R07 资格业务、R08 统一 DRAM 压力与实际恢复、R09 无外部依赖�
 同一 pin；旧低层 RemovePin 保持其引用移除语义。中断后以持久
 保存的原 link/program/规则身份继续撤销，已脱离对象不能被普通
 adopt 或冷启动消费。旧原生helper若没有新操作则明确失败，不能
-把仅unlink当成规则已撤销。尚待针对性CPU，冻结R07旧包保持。
+把仅unlink当成规则已撤销。针对性CPU已通过，冻结R07旧包保持。
 
 接口依据为[Linux 6.8 cgroup BPF实现](https://raw.githubusercontent.com/torvalds/linux/v6.8/kernel/bpf/cgroup.c)
 和[系统调用分派](https://raw.githubusercontent.com/torvalds/linux/v6.8/kernel/bpf/syscall.c)；
 只参考接口，不复制外部实现，实际行为由本机自有CPU域短验确认。
 
 2026-11-12。显式设备撤销[14 CPU首过](evidence/serve-device-detach-cpu-20261112/README.md)，累计1.044秒，必要构建9.246秒零警告。保留FD仍撤规则、已detach pin续办、另一规则保护与原生IPC/持久身份通过；旧helper拒绝降格，自有CPU域/pin全清。0GPU/无宿主根规则，默认和冻结R07保持；继续资源绑定/许可通道/外层组合及全部任务。
+
+2026-11-12。设备/资源绑定已成组开发：显式v2配置借用原service叶及实际FD，双侧永久关联和围栏阶段先持久；撤设备规则保留资源域，资源卸载先确认idle/撤资格/无pin，丢历史不重置。旧v1身份保持；逐代许可通道尚待接线，v2不走错误的旧单次入口。冻结8新真实资源CPU+3旧设备+2卸载+2封包共15项；设备观察/规则控制为明确CPU夹具，0GPU/无宿主根规则。
+
+2026-11-12。设备/资源绑定[15针对性CPU首过](evidence/serve-device-resource-cpu-20261112/README.md)，累计1.314秒。实际原service叶/FD、持久关联及丢历史拒绝、撤设备资格后才可卸资源、旧v1与旧boot边界通过；控制/观察为明确CPU夹具，0GPU/无宿主根规则，自有域全清。默认和冻结R07保持；继续逐代许可通道、外层组合、业务发行及全部计划。

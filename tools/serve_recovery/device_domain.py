@@ -70,24 +70,37 @@ def write_record(path, value):
 
 
 def configuration(value):
+    from tools.serve_recovery import device_resource
+    resource_bound = value.get('format') == device_resource.CONFIG_FORMAT
     ledger.keys(value, ('format', 'service_id', 'domain_id', 'runtime_uid',
-                        'runtime_gid', 'control_sha256'))
-    ledger.require(value['format'] == FORMAT and ledger.identifier(value['service_id']) and
+                        'runtime_gid', 'control_sha256',
+                        *(('resource', 'installation_directory') if resource_bound else ())))
+    ledger.require(value['format'] in (FORMAT, device_resource.CONFIG_FORMAT) and ledger.identifier(value['service_id']) and
         ledger.identifier(value['domain_id']) and
         all(ledger.integer(value[key], minimum=1) and value[key] < 2**32-1
             for key in ('runtime_uid', 'runtime_gid')),
         'invalid device domain configuration')
     device_budget.hashed(value['control_sha256'])
+    if resource_bound:
+        device_resource.validate_selection(value['resource'])
+        path = value['installation_directory']
+        ledger.require(type(path) is str and 0 < len(path) <= 4096 and Path(path).is_absolute(),
+                       'absolute resource device installation required')
     return value
 
 
-def initialize(directory, service_id, uid, gid, executable, executable_sha256):
+def initialize(directory, service_id, uid, gid, executable, executable_sha256, *, resource_directory=None):
     device_store.privileged()
     directory = Path(directory).absolute()
     secure_directory(directory.parent)
-    value = configuration(dict(format=FORMAT, service_id=service_id,
+    value = dict(format=FORMAT, service_id=service_id,
         domain_id=str(uuid.uuid4()), runtime_uid=uid, runtime_gid=gid,
-        control_sha256=executable_sha256))
+        control_sha256=executable_sha256)
+    if resource_directory is not None:
+        from tools.serve_recovery import device_resource
+        value.update(format=device_resource.CONFIG_FORMAT, installation_directory=str(directory),
+            resource=device_resource.selection(resource_directory, service_id, uid, gid))
+    value = configuration(value)
     ledger.require(not directory.exists(), 'device domain already exists; never reset its budget')
     # Copy only an operator-selected, hash-bound native helper. No setuid bit
     # or automatic installation into a search path is introduced.
@@ -121,6 +134,8 @@ def initialize(directory, service_id, uid, gid, executable, executable_sha256):
     try: os.fsync(parent)
     finally: os.close(parent)
     access_store.bootstrap_bound(binding, initial, device_store.Store)
+    if resource_directory is not None:
+        with exclusive(directory): device_resource.initialize(directory, value)
     return dict(configuration=value, armed=False, model_actions=False)
 
 
@@ -149,13 +164,19 @@ def resume_initialize(directory):
             initial['domain_id'] == config['domain_id'] and
             initial['runtime_uid'] == config['runtime_uid'], 'device bootstrap identity changed')
         binding = access_store.binding(directory, config['service_id'])
-        return access_store.bootstrap_bound(binding, initial, device_store.Store)
+        result = access_store.bootstrap_bound(binding, initial, device_store.Store)
+        if 'resource' in config:
+            from tools.serve_recovery import device_resource
+            device_resource.initialize(directory, config)
+        return result
 
 
 @contextmanager
 def managed(directory):
     with exclusive(directory) as directory:
         config = configuration(read_record(directory/'configuration.json'))
+        ledger.require('resource' not in config or config['installation_directory'] == str(directory),
+                       'resource device installation moved')
         executable = directory/'q4t-device-control'
         ledger.require(device_platform.artifact(executable) == config['control_sha256'],
                        'installed device helper changed')
@@ -202,6 +223,10 @@ class Observation:
 
 def names(config):
     name = 'q4t-device-'+config['domain_id']
+    if 'resource' in config:
+        from tools.serve_recovery import resource_kernel
+        return (resource_kernel.CGROUP/('q4t-resource-'+config['resource']['domain_id'])/'service',
+                BPFFS/name)
     return CGROUP/name, BPFFS/name
 
 
@@ -232,6 +257,15 @@ def empty(group):
 def scope(config, *, create=False):
     host_scope()
     group, pins = names(config)
+    if 'resource' in config:
+        from tools.serve_recovery import device_resource
+        with device_resource.scope(config['installation_directory'], config) as (group, allowed):
+            if create: pins.mkdir(mode=0o700, exist_ok=True)
+            secure_directory(pins, private=True)
+            target = os.open(CGROUP, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+            try: yield group, pins/'policy', target, allowed
+            finally: os.close(target)
+        return
     if create:
         group.mkdir(mode=0o755, exist_ok=True)
         pins.mkdir(mode=0o700, exist_ok=True)
@@ -260,6 +294,11 @@ def arm(directory, lease_fd, lease_path):
         observer = Observation(lease_fd)
         before = observer.inspect()  # Busy hosts are untouched, even briefly.
         with scope(config, create=True) as (group, pin, target, allowed):
+            if 'resource' in config:
+                from tools.serve_recovery import device_resource
+                ledger.require(device_resource.lifecycle(directory, config)['phase'] != 'disarming',
+                               'complete original resource device disarm first')
+                device_resource.change(directory, config, 'arming')
             control = device_control.Control(executable, lease_fd, lease_path)
             args = dict(target_fd=target, allowed_fd=allowed, devices=rules(before), pin=str(pin))
             intent = dict(version=1, boot_id=before['facts']['boot_id'],
@@ -292,11 +331,17 @@ def arm(directory, lease_fd, lease_path):
                     filter=retained.result, devices=args['devices'])
                 write_record(directory/'qualification.json', record)
                 policy = device_store.commit_qualification(binding, ledger.digest(record))
+                if 'resource' in config: device_resource.change(directory, config, 'armed')
                 return dict(armed=True, domain_id=config['domain_id'],
                     qualification_sha256=policy['qualification']['sha256'], model_actions=False)
 
 
 def current(directory, config, binding, observer):
+    if 'resource' in config:
+        from tools.serve_recovery import device_resource
+        value = device_resource.lifecycle(directory, config)
+        ledger.require(value['initialized'] and value['phase'] == 'armed' and
+            value['boot_id'] == store.stamp().boot_id, 'resource device fence is not armed')
     record = read_record(directory/'qualification.json')
     ledger.keys(record, ('version', 'domain_id', 'service_id', 'observation', 'filter', 'devices'))
     ledger.require(record['version'] == 1 and record['domain_id'] == config['domain_id'] and
@@ -317,10 +362,22 @@ def disarm(directory, lease_fd, lease_path):
         # Disable the durable grant first. An interrupted detach cannot create
         # another launch, and a subsequent arm must qualify again without reset.
         group, pins = names(config)
+        resource_bound = 'resource' in config
+        if resource_bound:
+            from tools.serve_recovery import device_resource, resource_install
+            with resource_install.exclusive(config['resource']['directory']) as resource_directory:
+                device_resource.check(directory, config, resource_directory,
+                                      resource_install.load(resource_directory))
+            previous = device_resource.lifecycle(directory, config)
+            if not pins.exists() and (previous['phase'] == 'idle' or
+                                      previous['boot_id'] != store.stamp().boot_id):
+                device_store.disable(binding); device_resource.change(directory, config, 'idle')
+                return dict(armed=False, model_actions=False, resource_installation_retained=True)
+            device_resource.change(directory, config, 'disarming')
         if not group.exists() and not pins.exists():
             device_store.disable(binding)
             return dict(armed=False, model_actions=False)
-        with scope(config) as (group, pin, target, allowed):
+        with scope(config, create=resource_bound) as (group, pin, target, allowed):
             device_store.disable(binding)
             if pin.exists():
                 intent = read_record(directory/'fence.json')
@@ -350,7 +407,9 @@ def disarm(directory, lease_fd, lease_path):
                                   inherited=(target, allowed)) as detached:
                     ledger.require(detached.result == 'detached', 'device detach receipt differs')
             # No processes are moved or killed to force this cleanup through.
-        group.rmdir(); pins.rmdir()
+        if not resource_bound: group.rmdir()
+        pins.rmdir()
+        if resource_bound: device_resource.change(directory, config, 'idle')
         return dict(armed=False, model_actions=False)
 
 
@@ -360,6 +419,8 @@ def enter(directory, lease_fd, lease_path, manifest_sha256, command):
         all(type(arg) is str and len(arg) <= 4096 and '\0' not in arg for arg in command),
         'explicit absolute device entry command required')
     with managed(directory) as (directory, config, binding, executable):
+        ledger.require('resource' not in config,
+                       'resource-bound entry requires the per-generation native admission channel')
         held = lease(lease_fd, lease_path, config)
         with scope(config) as (group, pin, target, allowed):
             record = current(directory, config, binding, Observation(lease_fd))
@@ -402,6 +463,12 @@ def status(directory):
         with device_store.open_bound(binding) as writer:
             value = device_budget.describe(writer.head['state']['policy'])
         group, pins = names(config)
+        if 'resource' in config:
+            from tools.serve_recovery import device_resource
+            fence = device_resource.lifecycle(_directory, config)
+            value.update(resource_fence=fence, resource_installation=config['resource']['directory'])
+            value['qualified'] = value['qualified'] and fence['initialized'] and \
+                fence['phase'] == 'armed' and fence['boot_id'] == store.stamp().boot_id
         return dict(value, registered_group=str(group), pin_present=(pins/'policy').exists(),
                     runtime_verified=False)
 
@@ -417,6 +484,7 @@ def run(argv=None):
     parser.add_argument('--runtime-gid', type=int)
     parser.add_argument('--device-control', type=Path)
     parser.add_argument('--device-control-sha256')
+    parser.add_argument('--resource-directory', type=Path)
     parser.add_argument('--lease-path', type=Path)
     parser.add_argument('--lease-fd', type=int)
     parser.add_argument('--manifest-sha256')
@@ -431,7 +499,8 @@ def run(argv=None):
             args.runtime_uid, args.runtime_gid, args.device_control, args.device_control_sha256)),
             'init requires service, runtime user/group and hash-bound device helper')
         result = initialize(args.directory, args.service_id, args.runtime_uid,
-            args.runtime_gid, args.device_control, args.device_control_sha256)
+            args.runtime_gid, args.device_control, args.device_control_sha256,
+            resource_directory=args.resource_directory)
     elif args.operation == 'init-resume': result = resume_initialize(args.directory)
     elif args.operation == 'status': result = status(args.directory)
     else:

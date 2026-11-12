@@ -450,6 +450,7 @@ from tools.serve_recovery import resource_kernel, resource_install, resource_lau
 from tools.serve_recovery import outer_daemon
 from tools.serve_recovery import host_artifact, host_install, host_entry, host_systemd
 from tools.serve_recovery import host_handoff
+from tools.serve_recovery import device_resource
 assert not lifecycle.pending_outer(sys.argv[2], {})
 service.main(['resume', '--help'])
 '''

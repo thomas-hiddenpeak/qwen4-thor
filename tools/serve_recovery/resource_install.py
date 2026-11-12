@@ -197,6 +197,8 @@ def remove(directory):
     """Revoke new entry first; preserve healthy tasks until explicitly stopped."""
     with exclusive(directory) as directory:
         value = load(directory)
+        from tools.serve_recovery import device_resource
+        device_resource.removal_allowed(directory, value)
         ledger.require(value['phase'] not in ('prepared', 'renewing'),
                        'finish unpublished installation before removal')
         if value['phase'] == 'ready':

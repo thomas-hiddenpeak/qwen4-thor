@@ -1,0 +1,27 @@
+{
+  "status": "TARGETED_DEVICE_RESOURCE_BINDING_CPU_PASS",
+  "distinct_tests": 15,
+  "all_first_pass": true,
+  "cpu_seconds": 1.3144910312257707,
+  "actual_kernel_resource_leaf": true,
+  "device_control_and_observation_explicit_cpu_fixtures": true,
+  "actual_native_detach_evidence": "docs/evidence/serve-device-detach-cpu-20261112/review.json",
+  "resource_removal_interlock": true,
+  "published_history_loss_cannot_reset": true,
+  "old_v1_direct_contracts_preserved": true,
+  "model_gpu_starts": 0,
+  "host_root_device_filter_changed": false,
+  "owned_resource_fixture_cleanup_passed": true,
+  "default_unchanged": true,
+  "original_r07_candidate_unchanged": true,
+  "per_generation_admission_pending": true,
+  "released": false,
+  "source_sha256": {
+    "tools/serve_recovery/device_resource.py": "96aa7ede919c9852493c67292d07733ee216aa2f0395fc8d6bcf07055c82f171",
+    "tools/serve_recovery/device_domain.py": "442c4e1fd8f65bcb3821aac4b58565ef795235f2c57ef949e2b9fcbd8a2cc583",
+    "tools/serve_recovery/resource_install.py": "aba10096486af383c546be07b4356ccaa702e6c037e63fb42426bbdd1b2a07b7",
+    "tools/serve_recovery/test_device_resource.py": "659c825a2bc52c96a2c8adfedc5da1dfafedea60d92a227adb0b2527a61f46c8",
+    "tools/serve_recovery/bundle.py": "2e16bc4dcfc274b0150a8d2b5abb304983ebb43d194a1e45ab9d1b932712362f",
+    "tools/serve_recovery/test_native_bundle.py": "09cbd2866c1421bbc4e56843812144c5a5b30805f04525aa8ee50efe4320a3b7"
+  }
+}

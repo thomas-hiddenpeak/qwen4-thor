@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_DEVICE_CONTROL_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/device-detach-build/q4t-device-control",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_device_resource.py",
+    "-v",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_selection_and_actual_allowed_fd_are_original_service_leaf",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_runtime_or_service_identity_mismatch_is_rejected_before_device_install",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_partial_association_blocks_removal_and_resumes_original_ids",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_lost_published_binding_or_fence_history_cannot_reset",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_resource_removal_waits_for_explicit_detach_and_preserves_original_budget",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_populated_service_leaf_blocks_device_scope_without_signalling_it",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_same_boot_replaced_kernel_leaf_does_not_match_resource_binding",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_new_boot_release_preserves_history_without_recreating_old_scope",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_initialized_budget_and_lost_bound_state_are_never_reset",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_disarm_uses_retained_rules_without_monitor_and_preserves_budget",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue",
+    "tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload",
+    "tools.serve_recovery.test_resource_install.InstallationTests.test_partial_removal_checkpoint_resumes_and_rejects_replaced_leaf"
+  ],
+  "exit_code": 0,
+  "seconds": 0.6822183029726148,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}
