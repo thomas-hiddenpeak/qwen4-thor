@@ -1,0 +1,9 @@
+test_carries_exact_consumption_full_lease_interval_and_original_failures (tools.serve_recovery.test_outer_acceptance.RepairTests.test_carries_exact_consumption_full_lease_interval_and_original_failures) ... ok
+test_environment_abort_incomplete_cleanup_and_repeated_repair_are_rejected (tools.serve_recovery.test_outer_acceptance.RepairTests.test_environment_abort_incomplete_cleanup_and_repeated_repair_are_rejected) ... ok
+test_original_and_repair_scenarios_have_distinct_fixed_caps (tools.serve_recovery.test_outer_acceptance.RepairTests.test_original_and_repair_scenarios_have_distinct_fixed_caps) ... ok
+test_repair_budget_admits_only_three_more_starts_without_resetting_other_counts (tools.serve_recovery.test_outer_acceptance.RepairTests.test_repair_budget_admits_only_three_more_starts_without_resetting_other_counts) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.024s
+
+OK

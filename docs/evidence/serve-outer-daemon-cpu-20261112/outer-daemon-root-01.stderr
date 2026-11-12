@@ -1,0 +1,8 @@
+test_complete_runtime_reconciles_old_resource_writer_before_opening_core (tools.serve_recovery.test_resource_launch.LaunchTests.test_complete_runtime_reconciles_old_resource_writer_before_opening_core) ... ok
+test_daemon_forwards_resource_capability_then_closes_it_in_all_roles (tools.serve_recovery.test_resource_launch.LaunchTests.test_daemon_forwards_resource_capability_then_closes_it_in_all_roles) ... ok
+test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 6.330s
+
+OK

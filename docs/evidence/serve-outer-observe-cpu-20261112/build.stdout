@@ -1,0 +1,7 @@
+[ 14%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 57%] Built target q4t_device_filter
+[ 71%] Built target q4t_device_admission
+[ 78%] Building CXX object CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/guardian_main.cpp.o
+[ 85%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian

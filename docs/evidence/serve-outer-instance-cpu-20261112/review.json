@@ -1,0 +1,19 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 10,
+  "cpu_seconds": 2.9343511359766126,
+  "build_seconds": 10.544864044059068,
+  "warnings": 0,
+  "model_starts": 0,
+  "default_unchanged": true,
+  "guardian_sha256": "a8b6b91e02282e5fb254b39173085f3b8b2a4e95455294a5c783cf8628ae9820",
+  "source_sha256": {
+    "src/service/guardian_main.cpp": "372def154f75d284896d560d0186f3e5ad23a1794611fea324577285e8425edf",
+    "tools/serve_recovery/outer_instance.py": "1fc157ca9a2ed3e3387db0ca9a798ae1f047657098ac42eb2fb27df21c3329ee",
+    "tools/serve_recovery/test_outer_instance.py": "ff34c842067759fed99116241ce7bf34c65b65dd9668a9a622f44af271b1a1ad"
+  },
+  "runtime_integrated": false,
+  "branch": "codex/serve-outer-recovery",
+  "base": "1750b278",
+  "r07_candidate_unchanged": true
+}

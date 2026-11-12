@@ -1799,7 +1799,13 @@
         "evidence/serve-device-package-cpu-20261112/README.md",
         "evidence/serve-device-domain-cpu-20261112/README.md",
         "evidence/serve-cold-compat-cpu-20261112/README.md",
-        "evidence/serve-cold-driver-cpu-20261112/README.md"
+        "evidence/serve-cold-driver-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md"
       ],
       "release": null,
       "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
@@ -1830,25 +1836,64 @@
           "state": "planned",
           "title": "可回退交付及总任务接续"
         }
-      ]
+      ],
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "frozen_plan_status": "Old v1 plan is not executable: runtime-group and root-owner validation defects plus protected-default identity changed; refresh fixed source/package/driver before actual cold business, preserving previous evidence and maintenance boundary."
     },
     {
       "id": "R08",
       "required": true,
-      "state": "planned",
+      "state": "implementing",
       "implementation": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
       "acceptance": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
       "depends_on": [
         "R05",
         "R07"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md",
+        "evidence/serve-resource-renew-cpu-20261112/README.md",
+        "evidence/serve-resource-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-daemon-cpu-20261112/README.md",
+        "evidence/serve-resource-delegation-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md",
+        "evidence/serve-resource-memory-cpu-20261112/README.md",
+        "evidence/serve-resource-version-cpu-20261112/README.md",
+        "evidence/serve-outer-resource-business-20261112/README.md",
+        "evidence/serve-outer-resource-delivery-20261112/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
+      "development_status": "Native resource domains are integrated with the outer runtime without systemd creation. CPU accepted: real kernel limits/self-entry/cleanup (7 cases, 6.470s), durable installation/resume/removal (12 distinct, 2.078s), and source-bound entry/pre-fork resource binding/new-instance cleanup (29 distinct, 14.466s), including actual native Guardian plus CPU controller/gateway/model roles. Original stop, device faults and budgets are preserved. Owned domains removed; no GPU, default or host device-policy changes. Required remaining: R07 composition, unified-DRAM pressure integration, applicable model business and reversible delivery. No hard physical-RAM cap claim. Persistent resource epoch recreation/entry/uninstall accepted by 13 targeted CPU cases/4.722s using historical boot fixtures and actual owned domains, not a host reboot; preserves original installation identity and never recreates same-boot losses. Resource-bound cross-boot unknown-birth and repeated-boot checkpoint reconciliation accepted by 31 targeted CPU cases/6.995s, with actual renewed CPU domains and historical boot data. Current-boot owners, wrong installation and ordinary launch bypass rejected. No host reboot or GPU. Host entry and remaining master work continue. Unified foreground/daemon routing and independent outer daemon accepted by 17 CPU cases/20.357s, including actual native Guardian and CPU roles, parent loss/reply isolation, duplicate rejection and resource FD custody. Complete Runtime old-writer ordering corrected and directly accepted. Host installation/enable/uninstall still required. Review found root-open migration FD overprivilege in unpublished candidate. Reworked to kernel-confined runtime-UID opening and format v2; 20 targeted CPU checks passed first attempt in 11.477s: actual inherited FD rejected owned outside same-UID/root test processes, service escape/controller writes rejected, full recovery and native foreground/daemon CPU roles passed. Own domains cleaned, no GPU/default/host configuration changes; all remaining tasks retained.",
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "memory_composition": "Native direct and version-recovery v6 resource observation implemented. Original 17 targeted resource CPU tests accepted; new 18 distinct version/worker/adapter CPU tests accepted across 20 invocations. Real accepted v12 source 10155da3 remains unchanged; exact independent adapter 59934942 verified. Initial fixture errors and wrong v16 source-check assertion retained and corrected only for affected cases. No GPU or business qualification of adapted payload yet. Actual resource/outer/model business, cold device composition and reversible delivery remain required.",
+      "actual_business": "Accepted real normal-NVML outer/resource/version business with preserved service state and native conservative quota gate; cumulative 6 starts/8 Chat/1 probe/283.572s includes two retained failures. Package 5468f36a, Guardian383bcc63, actual fallback59934942. All owned trees/domains/ports/lease cleaned. Reversible delivery, cold composition and remaining task-specific requirements still open; no physical RAM hard-cap claim.",
+      "delivered_subset": {
+        "name": "normal-NVML native outer/resource/version recovery",
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+        "publication_revision": 72,
+        "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
+        "whole_task_complete": false
+      }
     },
     {
       "id": "R09",
       "required": true,
-      "state": "implementing",
+      "state": "partial_delivery_remaining_composition",
       "implementation": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
       "acceptance": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
       "depends_on": [
@@ -1857,11 +1902,38 @@
       ],
       "evidence": [
         "evidence/serve-outer-policy-cpu-20261112/README.md",
-        "evidence/serve-outer-tree-cpu-20261112/README.md"
+        "evidence/serve-outer-tree-cpu-20261112/README.md",
+        "evidence/serve-outer-instance-cpu-20261112/README.md",
+        "evidence/serve-outer-reconcile-cpu-20261112/README.md",
+        "evidence/serve-outer-parent-cpu-20261112/README.md",
+        "evidence/serve-outer-resume-cpu-20261112/README.md",
+        "evidence/serve-outer-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-observe-cpu-20261112/README.md",
+        "evidence/serve-outer-manager-cpu-20261112/README.md",
+        "evidence/serve-outer-runtime-cpu-20261112/README.md",
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md",
+        "evidence/serve-resource-renew-cpu-20261112/README.md",
+        "evidence/serve-resource-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-daemon-cpu-20261112/README.md",
+        "evidence/serve-resource-delegation-cpu-20261112/README.md",
+        "evidence/serve-host-install-cpu-20261112/README.md",
+        "evidence/serve-host-ensure-cpu-20261112/README.md",
+        "evidence/serve-host-systemd-cpu-20261112/README.md",
+        "evidence/serve-host-handoff-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md",
+        "evidence/serve-outer-resource-business-20261112/README.md",
+        "evidence/serve-outer-resource-delivery-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
-      "development_status": "Audit confirmed automatic activate overrides stop intent and stale core slots lack reconciliation. Separate outer policy/journal developed; 12 targeted CPU cases passed (0.181s). No runtime wiring, GPU, optional host install or release yet. R07 maintenance approval remains pending; all master tasks continue. Continuous subreaper custody accepted in 6 distinct CPU cases (Thor discovery correction retained); no slot retirement or runtime wiring yet. Further native instance adoption has 10 targeted CPU passes on the isolated branch; not integrated or released. See development_workspace.",
+      "development_status": "Native outer policies, continuous and new-owner reconciliation, historical-boot renewal, healthy-root adoption, own resource domains, protected host installation, optional systemd trigger and upgrade handoff are CPU-verified. Cold per-generation channel, managed lease/public explicit start and independent native auxiliary restart supervision are CPU-verified. No mandatory nginx/systemd; auxiliary failure cannot signal healthy core. Original stop, core/device/outer budgets and replay fence preserved. Actual combined model business and reversible release remain required; CPU packages are not released.",
       "subtasks": [
         {
           "id": "R09.1",
@@ -1870,31 +1942,45 @@
         },
         {
           "id": "R09.2",
-          "state": "implementing",
+          "state": "cpu_verified",
           "title": "旧slot/整树与boot核验"
         },
         {
           "id": "R09.3",
-          "state": "planned",
+          "state": "cpu_verified",
           "title": "resume及显式外层入口"
         },
         {
           "id": "R09.4",
-          "state": "planned",
+          "state": "cpu_verified",
           "title": "可选宿主适配及安装卸载"
         },
         {
           "id": "R09.5",
-          "state": "planned",
+          "state": "normal_nvml_business_delivered_cold_composition_pending",
           "title": "针对性进程/业务验证与可回退交付"
         }
       ],
       "development_workspace": {
-        "branch": "codex/serve-outer-recovery",
-        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
-        "base": "1750b278",
-        "tip": "3269ccbfad69fd1509b47588f2710df8201d45bb",
-        "reason": "Preserve frozen R07 source identity while implementing native R09 wiring"
+        "branch": "codex/serve-resilience-cd",
+        "path": "/home/rm01/models/dev/qwen4-thor",
+        "retained_evidence_workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+        "retained_branch": "codex/serve-outer-recovery",
+        "retained_tip": "38b0d29f",
+        "reason": "Actual normal-NVML business and reversible release accepted; old cold plan invalidated by confirmed defects and default identity change. Consolidate future work; retain original package/evidence paths."
+      },
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "actual_business": "Accepted real normal-NVML outer/resource/version business with preserved service state and native conservative quota gate; cumulative 6 starts/8 Chat/1 probe/283.572s includes two retained failures. Package 5468f36a, Guardian383bcc63, actual fallback59934942. All owned trees/domains/ports/lease cleaned. Reversible delivery, cold composition and remaining task-specific requirements still open; no physical RAM hard-cap claim.",
+      "delivered_subset": {
+        "name": "normal-NVML native outer/resource/version recovery",
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+        "publication_revision": 72,
+        "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
+        "whole_task_complete": false
       }
     },
     {

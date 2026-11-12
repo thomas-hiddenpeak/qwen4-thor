@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py", line 424, in <module>
+    if __name__ == '__main__':sys.exit(main())
+                                       ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py", line 414, in main
+    try:return host(plan,path)
+               ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py", line 348, in host
+    LEGACY['verify'](plan)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/acceptance.py", line 147, in verify
+    return bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_recovery/bundle.py", line 350, in verify
+    base = engine.verify(package/'engine', value['engine_manifest_sha256'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_service/package.py", line 598, in verify
+    raw, clients = cp.read(package/'client-policy.json')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_gateway/client_policy.py", line 108, in read
+    raw = read_private(path)
+          ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_gateway/client_policy.py", line 87, in read_private
+    require(stat.S_ISREG(info.st_mode) and info.st_uid == os.geteuid() and
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_gateway/client_policy.py", line 20, in require
+    raise ValueError('invalid private gateway client policy')
+ValueError: invalid private gateway client policy

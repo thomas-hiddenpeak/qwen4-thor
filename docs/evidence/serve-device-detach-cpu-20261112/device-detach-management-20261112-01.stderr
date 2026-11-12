@@ -1,0 +1,12 @@
+test_explicit_native_detach_revokes_rule_while_client_keeps_descriptors (tools.serve_recovery.test_device_control.ControlTests.test_explicit_native_detach_revokes_rule_while_client_keeps_descriptors) ... ok
+test_explicit_native_detach_rejects_wrong_original_rules (tools.serve_recovery.test_device_control.ControlTests.test_explicit_native_detach_rejects_wrong_original_rules) ... ok
+test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe (tools.serve_recovery.test_device_control.ControlTests.test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe) ... ok
+test_detach_interruption_resumes_saved_identity_without_recovering_authority (tools.serve_recovery.test_device_domain.DomainTests.test_detach_interruption_resumes_saved_identity_without_recovering_authority) ... ok
+test_pending_detach_cannot_requalify_or_change_its_selected_fence (tools.serve_recovery.test_device_domain.DomainTests.test_pending_detach_cannot_requalify_or_change_its_selected_fence) ... ok
+test_detach_failure_never_falls_back_to_unpin_only_helper (tools.serve_recovery.test_device_domain.DomainTests.test_detach_failure_never_falls_back_to_unpin_only_helper) ... ok
+test_disarm_uses_retained_rules_without_monitor_and_preserves_budget (tools.serve_recovery.test_device_domain.DomainTests.test_disarm_uses_retained_rules_without_monitor_and_preserves_budget) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.055s
+
+OK

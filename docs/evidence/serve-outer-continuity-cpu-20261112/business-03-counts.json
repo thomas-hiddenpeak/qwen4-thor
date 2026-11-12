@@ -1,0 +1,40 @@
+{
+  "counts": {
+    "starts": 4,
+    "chats": 3,
+    "probes": 0,
+    "controls": 563
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 3,
+      "monotonic_ns": 2642646372340362
+    },
+    {
+      "kind": "chats",
+      "label": "primary-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2642686835321620
+    },
+    {
+      "kind": "chats",
+      "label": "first-schema",
+      "ordinal": 2,
+      "monotonic_ns": 2642688501759484
+    },
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 4,
+      "monotonic_ns": 2642700947591722
+    },
+    {
+      "kind": "chats",
+      "label": "primary-self-check",
+      "ordinal": 3,
+      "monotonic_ns": 2642739714637236
+    }
+  ]
+}

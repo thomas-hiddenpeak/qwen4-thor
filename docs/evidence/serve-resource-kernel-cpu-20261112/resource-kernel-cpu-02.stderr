@@ -1,0 +1,6 @@
+test_memory_oom_is_confined_to_payload_and_recorded_by_kernel (tools.serve_recovery.test_resource_kernel.KernelTests.test_memory_oom_is_confined_to_payload_and_recorded_by_kernel) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.301s
+
+OK

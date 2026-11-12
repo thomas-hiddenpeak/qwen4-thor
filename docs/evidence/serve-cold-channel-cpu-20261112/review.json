@@ -1,0 +1,41 @@
+{
+  "status": "TARGETED_COLD_ISSUER_CPU_ACCEPTED",
+  "distinct_tests": 20,
+  "invocations": 23,
+  "cpu_seconds": 13.26152162021026,
+  "first_run": {
+    "passed": 14,
+    "fixture_errors": 3,
+    "reason": "inherited selected policy field shadowed request fixture method"
+  },
+  "targeted_recheck": 3,
+  "actual_root_protected_source": true,
+  "actual_unprivileged_intent_verifier": true,
+  "actual_peer_credentials_pidfd_original_instance_and_lease": true,
+  "per_message_credentials_verified": true,
+  "actual_live_unarmed_issuer_rejection_and_stop": true,
+  "actual_worker_tree_and_lease_retention": true,
+  "device_observation_filter_and_issuance_explicit_fixtures": true,
+  "native_bpf_and_credential_evidence_reused": "docs/evidence/serve-device-detach-cpu-20261112/review.json",
+  "same_outer_attempt_never_reissued": true,
+  "lost_history_never_reinitialized": true,
+  "model_gpu_starts": 0,
+  "host_root_device_filter_changed": false,
+  "owned_fixture_cleanup_passed": true,
+  "default_unchanged": true,
+  "original_r07_candidate_unchanged": true,
+  "outer_generation_integration_pending": true,
+  "released": false,
+  "source_sha256": {
+    "tools/serve_recovery/cold_requests.py": "47b2090dfaaecd0aed09b3ab9a30cf6500a3d1a6181a314d087ce7c92b3ed89c",
+    "tools/serve_recovery/cold_verify.py": "e9c59e57b07cc479d8b099392d1703594a571d33149b9c4e0637fb7468334b9b",
+    "tools/serve_recovery/cold_authority.py": "21c69a7743a8e5a1e27c8cc9c5a5eaae869cf2682d278356fde06d642654ddb6",
+    "tools/serve_recovery/cold_channel.py": "acb084191d97a91a5ea082fc4a3825b00c94effe271c383e0cfb3e367a3b4259",
+    "tools/serve_recovery/cold_issuer.py": "78aaead1281ae90262668c65a0a35abc1bf272e5611a40bbf34bda51ef0f9250",
+    "tools/serve_recovery/device_resource.py": "e3e52f41c0f2537f313ee8cb2a6e60c381a4cb669e6f783594cdaccdd69616a1",
+    "tools/serve_recovery/test_cold_issuer.py": "f7e5e53f7f1bdf0aa6a9f74f66f0386b8c1d36a884d64d5eb7d6d716fffb6900",
+    "tools/serve_recovery/test_host_install.py": "e97cc3afc9469792461cf8724eea5539b654b8d31c3a79aa936f27aa503b3ce4",
+    "tools/serve_recovery/bundle.py": "0bbe94e1920585d721dd58daa3c8a4a8f6d7e65e6059af85651537c568505321",
+    "tools/serve_recovery/test_native_bundle.py": "09bf098d630c813c76cdfab836972ea938cfa6aa1020bd12b4a845d68f17de6a"
+  }
+}

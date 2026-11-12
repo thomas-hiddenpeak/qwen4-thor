@@ -320,6 +320,14 @@ Status DeviceFilter::AdoptPinned(
     const std::string& path, int target_cgroup, int allowed_cgroup,
     const std::vector<DeviceNumber>& devices,
     const DeviceFilterIdentity& expected) {
+  return OpenPinned(path, target_cgroup, allowed_cgroup, devices, expected,
+                    false);
+}
+
+Status DeviceFilter::OpenPinned(
+    const std::string& path, int target_cgroup, int allowed_cgroup,
+    const std::vector<DeviceNumber>& devices,
+    const DeviceFilterIdentity& expected, bool allow_detached) {
   if (link_.Get() >= 0 || program_.Get() >= 0)
     return Status::Fail("device filter already attached");
   DeviceFilterIdentity identity;
@@ -345,7 +353,8 @@ Status DeviceFilter::AdoptPinned(
   if (observed.type != BPF_LINK_TYPE_CGROUP ||
       observed.cgroup.attach_type != BPF_CGROUP_DEVICE ||
       observed.id != expected.link_id || observed.prog_id != expected.program_id ||
-      observed.cgroup.cgroup_id != identity.target_cgroup_id)
+      (observed.cgroup.cgroup_id != identity.target_cgroup_id &&
+       !(allow_detached && observed.cgroup.cgroup_id == 0)))
     return Status::Fail("pinned device link does not match retained identity");
   bpf_attr get_program{};
   get_program.prog_id = observed.prog_id;
@@ -364,7 +373,44 @@ Status DeviceFilter::AdoptPinned(
   identity_ = expected;
   link_ = std::move(link);
   program_ = std::move(program);
-  return Verify();
+  return allow_detached && observed.cgroup.cgroup_id == 0 ? Status{} : Verify();
+}
+
+Status DeviceFilter::DetachPinned(
+    const std::string& path, int target_cgroup, int allowed_cgroup,
+    const std::vector<DeviceNumber>& devices,
+    const DeviceFilterIdentity& expected) {
+  auto status = OpenPinned(path, target_cgroup, allowed_cgroup, devices,
+                           expected, true);
+  if (!status.ok()) return status;
+  bpf_attr attribute{};
+  attribute.link_detach.link_fd = link_.Get();
+  if (Bpf(BPF_LINK_DETACH, &attribute) < 0)
+    return Error("detach owned device filter");
+  bpf_link_info detached{};
+  status = Info(link_.Get(), &detached);
+  if (!status.ok()) return status;
+  if (detached.id != expected.link_id ||
+      detached.prog_id != expected.program_id ||
+      detached.cgroup.cgroup_id != 0)
+    return Status::Fail("device filter detach is not confirmed");
+  PinLocation location;
+  status = LocatePin(path, &location);
+  if (!status.ok()) return status;
+  OwnedFd pinned;
+  status = GetPin(location, &pinned);
+  if (!status.ok()) return status;
+  bpf_link_info current{};
+  status = Info(pinned.Get(), &current);
+  if (!status.ok()) return status;
+  if (current.id != expected.link_id ||
+      current.prog_id != expected.program_id ||
+      current.type != BPF_LINK_TYPE_CGROUP ||
+      current.cgroup.cgroup_id != 0)
+    return Status::Fail("device detach pin was replaced");
+  if (unlinkat(location.parent.Get(), location.name.c_str(), 0) != 0)
+    return Error("remove detached device filter pin");
+  return {};
 }
 
 Status DeviceFilter::RemovePin(const std::string& path) const {

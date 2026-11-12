@@ -1,0 +1,8 @@
+test_corrupt_permanent_binding_cannot_authorize_active_target (tools.serve_recovery.test_host_handoff.HandoffTests.test_corrupt_permanent_binding_cannot_authorize_active_target) ... ok
+test_native_transfer_replay_and_reverse_preserve_original_core_and_budgets (tools.serve_recovery.test_host_handoff.HandoffTests.test_native_transfer_replay_and_reverse_preserve_original_core_and_budgets) ... ok
+test_partial_first_marker_blocks_entry_and_resumes_same_transaction (tools.serve_recovery.test_host_handoff.HandoffTests.test_partial_first_marker_blocks_entry_and_resumes_same_transaction) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 8.332s
+
+OK

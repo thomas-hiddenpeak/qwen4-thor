@@ -1,0 +1,21 @@
+test_acknowledgement_keeps_charges_and_requires_stopped_disabled (tools.serve_recovery.test_outer_policy.PolicyTests.test_acknowledgement_keeps_charges_and_requires_stopped_disabled) ... ok
+test_disabled_and_stopped_intent_never_charge_or_mutate_core (tools.serve_recovery.test_outer_policy.PolicyTests.test_disabled_and_stopped_intent_never_charge_or_mutate_core) ... ok
+test_owner_is_bound_once_to_original_boot_and_ticket (tools.serve_recovery.test_outer_policy.PolicyTests.test_owner_is_bound_once_to_original_boot_and_ticket) ... ok
+test_protection_and_incomplete_runtime_proofs_never_start (tools.serve_recovery.test_outer_policy.PolicyTests.test_protection_and_incomplete_runtime_proofs_never_start) ... ok
+test_reboot_does_not_earn_cooldown_or_allow_counter_tampering (tools.serve_recovery.test_outer_policy.PolicyTests.test_reboot_does_not_earn_cooldown_or_allow_counter_tampering) ... ok
+test_request_binds_original_core_without_resetting_its_budget (tools.serve_recovery.test_outer_policy.PolicyTests.test_request_binds_original_core_without_resetting_its_budget) ... ok
+test_three_starts_latch_protection_across_boot_and_expiry (tools.serve_recovery.test_outer_policy.PolicyTests.test_three_starts_latch_protection_across_boot_and_expiry) ... ok
+test_unreconciled_or_lost_dispatch_requires_actual_retirement (tools.serve_recovery.test_outer_policy.PolicyTests.test_unreconciled_or_lost_dispatch_requires_actual_retirement) ... ok
+test_missing_or_corrupt_state_cannot_recreate_budget (tools.serve_recovery.test_outer_store.StoreTests.test_missing_or_corrupt_state_cannot_recreate_budget) ... ok
+test_pending_rename_spends_attempt_and_never_redispatches (tools.serve_recovery.test_outer_store.StoreTests.test_pending_rename_spends_attempt_and_never_redispatches) ... ok
+test_postrename_fsync_poison_preserves_original_pending_attempt (tools.serve_recovery.test_outer_store.StoreTests.test_postrename_fsync_poison_preserves_original_pending_attempt) ... ok
+test_writer_conflict_and_foreign_service_never_change_journal (tools.serve_recovery.test_outer_store.StoreTests.test_writer_conflict_and_foreign_service_never_change_journal) ... ok
+test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu) ... ok
+test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 2.665s
+
+OK

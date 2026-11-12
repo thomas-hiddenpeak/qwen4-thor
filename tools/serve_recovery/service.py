@@ -163,10 +163,18 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         return launch_owned(package, digest, state, manifest=manifest, daemon=daemon, timeout=timeout)
 
 
-def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360):
+def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360, resume=False, outer=None):
+    ledger.require(outer is None or (resume and not daemon), 'outer dispatch requires foreground resume')
+    ledger.require(outer is not None or not any(name in os.environ for name in
+        ('Q4T_RESOURCE_DIRECTORY', 'Q4T_RESOURCE_ENTRY_FD')),
+        'resource entry requires the outer service runtime')
     desc = descriptor(state, package, digest)
     from tools.serve_recovery import deployment
     deployment.ready(state, desc)
+    if outer is None:
+        from tools.serve_recovery import lifecycle
+        ledger.require(not lifecycle.pending_outer(state, desc),
+                       'unresolved outer attempt requires original tree or resource reconciliation')
     package, state = Path(package).resolve(), Path(state).resolve()
     lease = acquire_lease(manifest['lock_path'])
     parent = endpoint = None
@@ -178,11 +186,16 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
     def stop(_signal, _frame):
         nonlocal interrupted
         interrupted = True
+        if outer is not None: outer.request_stop()
         if process is not None and process.poll() is None:
             process.send_signal(signal.SIGTERM)  # This unreaped direct child only.
     try:
         from tools.serve_recovery import cold_admission
-        cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
+        if outer is not None and outer.cold is not None:
+            prepared, cold_config, cold_fds = outer.prepare_cold(lease)
+            if not prepared: return dict(outer_dispatched=False, cold_admission_waiting=True)
+        else:
+            cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
         ledger.require(cold_config is None or manifest['version'] >= 17,
                        'cold device startup requires service profile v17')
         if daemon:
@@ -199,6 +212,11 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
                 controller.update(version=5, profiles=access)
             # No journal read in this process or silent legacy-key fallback.
             # The isolated reader gates the public credential configuration.
+        if outer is not None and outer.resource is not None:
+            controller.update(version=6, limits=controller.get('limits'),
+                profiles=controller.get('profiles'), resources=outer.resource.binding(),
+                resource_worker=dict(path=str(package/'source/tools/serve_recovery/resource_memory.py'),
+                    sha256=manifest['files']['source/tools/serve_recovery/resource_memory.py']))
         gateway = bundle.gateway_config_for(package, manifest, run, access=access)
         engine.save(run/'controller.json', controller)
         engine.save(run/'gateway.json', gateway)
@@ -220,12 +238,17 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
         if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
             config.update(version=2, usage_handoff=True)
         from tools.serve_recovery import version_launch
-        versions = version_launch.configuration(state,desc,run)
+        versions = version_launch.configuration(state,desc,run,resources=controller.get('resources'))
         if versions is not None:
             config.update(version=3,version_recovery=versions)
         if cold_config is not None:
             config.update(version=4, usage_handoff=config.get('usage_handoff', False),
                           version_recovery=versions, cold_admission=cold_config)
+        if outer is not None:
+            outer.instance.check()
+            config.update(version=5, outer_instance_fd=outer.instance.fd,
+                usage_handoff=config.get('usage_handoff', False), version_recovery=versions,
+                cold_admission=cold_config)
         engine.save(run/'guardian.json', config)
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
             previous[sig] = signal.signal(sig, stop)
@@ -237,11 +260,16 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
             # A failed optional memory sink cannot prevent core startup.
             diagnostics = None
         diagnostic_stdio = diagnostics if diagnostics is not None else subprocess.DEVNULL
-        process = subprocess.Popen([str(package/'bin/q4t-guardian'), '--config',
-            str(run/'guardian.json'), '--activate'], stdin=subprocess.DEVNULL,
-            stdout=diagnostic_stdio, stderr=diagnostic_stdio,
-            start_new_session=True,
-            pass_fds=(lease, *cold_fds, *((endpoint.fileno(),) if daemon else ())))
+        command = [str(package/'bin/q4t-guardian'), '--config',
+                   str(run/'guardian.json'), '--resume' if resume else '--activate']
+        inherited = (lease, *cold_fds, *((endpoint.fileno(),) if daemon else ()))
+        if outer is None:
+            process = subprocess.Popen(command, stdin=subprocess.DEVNULL,
+                stdout=diagnostic_stdio, stderr=diagnostic_stdio,
+                start_new_session=True, pass_fds=inherited)
+        else:
+            process = outer.dispatch(command, pass_fds=inherited, stdio=diagnostic_stdio)
+            if process is None: return dict(outer_dispatched=False, run=str(run))
         if endpoint is not None:
             endpoint.close()
             endpoint = None
@@ -257,12 +285,13 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
                 result.get('guardian_pid') == process.pid, 'daemon commit was not acknowledged')
             return dict(result, run=str(run))
         while process.poll() is None:
+            if outer is not None: outer.tick()
             time.sleep(0.1)
         return dict(guardian_exit_code=process.returncode, interrupted=interrupted, run=str(run))
     except BaseException:
         if parent is not None:
             parent.close()  # A failed startup handshake requests durable stop.
-        if process is not None and process.poll() is None:
+        if outer is None and process is not None and process.poll() is None:
             process.send_signal(signal.SIGTERM)
             try:
                 process.wait(timeout=45)
@@ -287,6 +316,18 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
 def main(argv=None, *, package=None, digest=None, workspace=None):
     os.umask(0o077)
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ['host-handoff']:
+        from tools.serve_recovery import host_handoff
+        return host_handoff.main(argv[1:])
+    if argv[:1] == ['host-systemd']:
+        from tools.serve_recovery import host_systemd
+        return host_systemd.main(argv[1:])
+    if argv[:1] == ['host-entry']:
+        from tools.serve_recovery import host_install
+        return host_install.main(argv[1:])
+    if argv[:1] == ['resource-domain']:
+        from tools.serve_recovery import resource_install
+        return resource_install.main(argv[1:])
     if argv[:1] == ['device-domain']:
         from tools.serve_recovery import device_domain
         return device_domain.main(argv[1:])
@@ -320,7 +361,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
-    for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
+    for name in ('outer-run', 'outer-start', 'outer-init', 'outer-status', 'outer-enable', 'outer-disable',
+                 'outer-acknowledge', 'check', 'reload', 'init', 'init-resume', 'run', 'start', 'resume', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
@@ -353,6 +395,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         if name == 'start':
             command.add_argument('--daemon', action='store_true', required=True)
             command.add_argument('--timeout', type=timeout_seconds, default=360)
+        if name in ('outer-run', 'outer-start'):
+            command.add_argument('--daemon', action='store_true')
+            command.add_argument('--timeout', type=timeout_seconds, default=360)
         if name in ('access-status', 'access-propose', 'limits-status', 'limits-propose'):
             command.add_argument('--request-id')
         if name == 'access-propose':
@@ -375,6 +420,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             command.add_argument('--cycle-id',required=True)
         if name == 'version-adapt':
             command.add_argument('--output', type=Path, required=True)
+            command.add_argument('--resource-observation', action='store_true')
         if name in ('version-prepare','version-register'):
             command.add_argument('--registration',type=Path,required=True)
         if name == 'version-register':command.add_argument('--expected-cycle')
@@ -415,8 +461,11 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
                        if getattr(args, 'object_'+k) is not None}} or None))
         elif args.operation == 'version-adapt':
-            from tools.serve_recovery import cold_compat
-            result = cold_compat.prepare(args.package, args.manifest_sha256, args.output)
+            if args.resource_observation:
+                from tools.serve_recovery import resource_compat as adapter
+            else:
+                from tools.serve_recovery import cold_compat as adapter
+            result = adapter.prepare(args.package, args.manifest_sha256, args.output)
         else:
             package = args.package
             digest = args.manifest_sha256
@@ -425,7 +474,26 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 locks.enter_context(deployment.claim(args.state, shared=True))
                 if not args.operation.endswith('-status'):
                     deployment.ready(args.state, descriptor(args.state, package, digest))
-            if args.operation in ('check', 'reload'):
+            if args.operation in ('outer-run', 'outer-start'):
+                from tools.serve_recovery import outer_runtime
+                if args.daemon:
+                    from tools.serve_recovery import outer_daemon
+                    result = outer_daemon.start(args.state, package, digest,
+                        activate=args.operation == 'outer-start', timeout=args.timeout)
+                else:
+                    result = outer_runtime.run(args.state, package, digest,
+                        activate=args.operation == 'outer-start')
+            elif args.operation.startswith('outer-'):
+                from tools.serve_recovery import outer_manager
+                if args.operation in ('outer-enable', 'outer-disable'):
+                    result = outer_manager.configure(args.state, package, digest,
+                        enabled=args.operation == 'outer-enable')
+                else:
+                    entry = {'outer-init': outer_manager.initialize,
+                        'outer-status': outer_manager.status,
+                        'outer-acknowledge': outer_manager.acknowledge}[args.operation]
+                    result = entry(args.state, package, digest)
+            elif args.operation in ('check', 'reload'):
                 from tools.serve_recovery import lifecycle
                 result = (lifecycle.check(package, digest, args.state) if args.operation == 'check' else
                     lifecycle.reload(package, digest, args.state, component=args.component,
@@ -479,9 +547,21 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     deployment.switch(args.state, package, digest,
                         expected=args.expected_manifest_sha256, request_id=args.request_id,
                         rollback=args.operation == 'rollback'))
-            elif args.operation in ('run', 'start'):
-                result = launch(package, digest, args.state, daemon=args.operation == 'start',
-                                timeout=getattr(args, 'timeout', 360))
+            elif args.operation in ('run', 'start', 'resume'):
+                from tools.serve_recovery import outer_runtime
+                if outer_runtime.selected(args.state, package, digest):
+                    if args.operation == 'start':
+                        from tools.serve_recovery import outer_daemon
+                        result = outer_daemon.start(args.state, package, digest, timeout=args.timeout)
+                    else:
+                        result = outer_runtime.run(args.state, package, digest,
+                            activate=args.operation == 'run')
+                elif args.operation == 'resume':
+                    from tools.serve_recovery import lifecycle
+                    result = lifecycle.resume(args.state, package, digest)
+                else:
+                    result = launch(package, digest, args.state, daemon=args.operation == 'start',
+                                    timeout=getattr(args, 'timeout', 360))
             elif args.operation.startswith('usage-'):
                 from tools.serve_recovery import usage_manager
                 desc = descriptor(args.state, package, digest)
@@ -568,9 +648,15 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                                   business_ready=False, live_control=False)
                     if args.operation in ('status', 'stop'):
                         from tools.serve_recovery import lifecycle
-                        try:result = lifecycle.stopped(args.state, package, digest)
-                        except (OSError, ValueError, RuntimeError):pass
+                        from tools.serve_recovery import outer_control
+                        try: result = outer_control.request(desc['service_id'], args.operation)
+                        except (OSError, ValueError, RuntimeError):
+                            try:result = (lifecycle.request_stop(args.state, package, digest)
+                                if args.operation == 'stop' else
+                                lifecycle.stopped(args.state, package, digest))
+                            except (OSError, ValueError, RuntimeError):pass
         print(json.dumps(result, ensure_ascii=False))
+        if result.get('daemon_start') and not result.get('startup_confirmed'): return 1
         if args.operation == 'stop' and not result.get('cleanup_confirmed'):
             return 1
         if args.operation in ('tls-reload', 'reload') and not result.get('reloaded'):

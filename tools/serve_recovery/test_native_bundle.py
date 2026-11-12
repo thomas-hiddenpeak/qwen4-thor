@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 17)
+        self.assertEqual(value['version'], 18)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -91,6 +91,30 @@ class BundleTests(unittest.TestCase):
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory)
         self.assertEqual(cfg['version'], 2)
         self.assertNotIn('nginx', cfg)
+
+    def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
+        deployment = self.directory/'deployment';deployment.mkdir()
+        subprocess.run(['git','init','-q',str(deployment)],check=True,timeout=5)
+        self.directory = deployment/'.q4t-work/candidate'
+        self.directory.mkdir(parents=True)
+        original = json.loads(self.build.read_text())
+        corrupt = json.loads(self.build.read_text())
+        corrupt['source_files']['src/service/guardian_main.cpp'] = 'f'*64
+        self.save(self.build,corrupt)
+        with self.assertRaisesRegex(ValueError,'native source changed since build'):
+            self.prepare(repository=deployment)
+        self.assertFalse((self.directory/'package').exists())
+        self.save(self.build,original)
+        receipt = self.prepare(repository=deployment)
+        package = Path(receipt['package']);value = bundle.verify(package,receipt['manifest_sha256'])
+        self.assertEqual(value['repository'],str(deployment))
+        self.assertEqual(value['lock_path'],str(deployment/'.q4t-work/gpu-exclusive.lock'))
+        self.assertEqual(json.loads((package/'native-build.json').read_text())['source_files'],
+                         original['source_files'])
+        for name in ('controller.py','resource_client.py'):
+            source = Path('tools/serve_recovery')/name
+            self.assertEqual((package/'source'/source).read_bytes(),(ROOT/source).read_bytes())
+        self.assertFalse((deployment/'src/service/guardian_main.cpp').exists())
 
     def test_changed_native_binary_blocks_before_lease_acquisition(self):
         receipt = self.prepare()
@@ -115,7 +139,16 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V16_SOURCES),
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V17_SOURCES),
+                         {'tools/serve_recovery/'+name+'.py' for name in
+                          ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
+                           'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control',
+                           'outer_runtime', 'resource_kernel', 'resource_install', 'resource_launch',
+                           'resource_reconcile', 'outer_daemon', 'host_artifact', 'host_install',
+                           'host_entry', 'host_systemd', 'host_handoff', 'device_resource',
+                           'cold_requests', 'cold_verify', 'cold_authority', 'cold_channel', 'cold_issuer',
+                           'cold_client', 'cold_host', 'cold_custody', 'cold_watch_policy', 'cold_watch', 'resource_memory', 'resource_client', 'resource_compat', 'runtime_identity')})
+        self.assertEqual(set(bundle.V17_SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
              'device_platform', 'device_domain', 'cold_compat')})
@@ -166,7 +199,8 @@ class BundleTests(unittest.TestCase):
                 (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES),
                 (10, bundle.V10_SOURCES), (11, bundle.V11_SOURCES),
                 (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
-                (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES)):
+                (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES),
+                (17, bundle.V17_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -211,7 +245,7 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 17)
+        self.assertEqual(value['version'], 18)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -237,7 +271,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 17)
+        self.assertEqual(value['version'], 18)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],
@@ -418,7 +452,7 @@ class BundleTests(unittest.TestCase):
             self.prepare(device_control=native)
         self.assertFalse((self.directory/'package').exists())
 
-    def test_relocated_v17_source_imports_every_cold_management_module(self):
+    def test_relocated_v18_source_imports_every_cold_management_module(self):
         receipt = self.prepare()
         code = '''import sys
 sys.path.insert(0, sys.argv[1])
@@ -433,6 +467,29 @@ print('isolated cold source imports passed')
             env={}, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(result.stdout, b'isolated cold source imports passed\n')
+
+    def test_relocated_v18_contains_complete_outer_and_resume_sources(self):
+        receipt = self.prepare()
+        code = '''import sys
+sys.path.insert(0, sys.argv[1])
+from tools.serve_recovery import service, lifecycle, outer_policy, outer_store
+from tools.serve_recovery import outer_instance, outer_tree, outer_reconcile
+from tools.serve_recovery import outer_observe, outer_manager, outer_control, outer_runtime
+from tools.serve_recovery import resource_kernel, resource_install, resource_launch, resource_reconcile
+from tools.serve_recovery import outer_daemon
+from tools.serve_recovery import host_artifact, host_install, host_entry, host_systemd
+from tools.serve_recovery import host_handoff
+from tools.serve_recovery import device_resource
+from tools.serve_recovery import cold_requests, cold_verify, cold_authority, cold_channel, cold_issuer
+from tools.serve_recovery import cold_client, cold_host, cold_custody, cold_watch_policy, cold_watch, resource_memory, resource_client, resource_compat, runtime_identity
+assert not lifecycle.pending_outer(sys.argv[2], {})
+service.main(['resume', '--help'])
+'''
+        result = subprocess.run([sys.executable, '-I', '-B', '-c', code,
+            str(Path(receipt['package'])/'source'), str(self.directory)], cwd=self.directory,
+            env={}, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertIn(b'resume', result.stdout)
 
     def test_application_limits_must_be_bound_before_package_creation(self):
         original = json.loads(self.build.read_text())

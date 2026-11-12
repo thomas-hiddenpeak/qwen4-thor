@@ -1,0 +1,100 @@
+{
+  "status": "PASS_NATIVE_OUTER_RESOURCE_RECOVERY",
+  "acceptance": "ACCEPT_NATIVE_OUTER_RESOURCE_RECOVERY",
+  "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+  "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "actual_business": {
+    "status": "ACCEPT_BOUNDED_OUTER_RESOURCE_VERSION_BUSINESS",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/bundle",
+      "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+      "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+      "recovery_accepted": false
+    },
+    "source_commit": "a31e0bbd2feea0419076c2aff3dedb5d64b439de",
+    "plan_sha256": "f54bbc98c9fd95db18308aeba3d94447ba9ea10fdbf4d8bf0b45ce4f6bb7aa52",
+    "actual_runs": [
+      {
+        "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02",
+        "status": "FAILED",
+        "stage_seconds": 24.958123619668186,
+        "strict_lease_seconds": 26.249602205120027,
+        "cumulative_counts": {
+          "starts": 2,
+          "chats": 0,
+          "probes": 0,
+          "controls": 86
+        },
+        "cleanup_confirmed": true
+      },
+      {
+        "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03",
+        "status": "FAILED",
+        "stage_seconds": 128.9861932117492,
+        "strict_lease_seconds": 130.61365921190009,
+        "cumulative_counts": {
+          "starts": 4,
+          "chats": 3,
+          "probes": 0,
+          "controls": 563
+        },
+        "cleanup_confirmed": true
+      },
+      {
+        "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-04",
+        "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+        "stage_seconds": 125.11218411615118,
+        "strict_lease_seconds": 126.70906121330336,
+        "cumulative_counts": {
+          "starts": 6,
+          "chats": 8,
+          "probes": 1,
+          "controls": 1010
+        },
+        "cleanup_confirmed": true
+      }
+    ],
+    "total_strict_lease_seconds": 283.57232263032347,
+    "cumulative_counts": {
+      "starts": 6,
+      "chats": 8,
+      "probes": 1,
+      "controls": 1010
+    },
+    "caps": {
+      "starts": 6,
+      "chats": 8,
+      "probes": 1,
+      "controls": 2500,
+      "seconds": 900
+    },
+    "prior_failures_retained": true,
+    "first_fixed_runtime_schema_and_outer_restart": "docs/evidence/serve-outer-continuity-cpu-20261112/README.md",
+    "original_service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "original_state_retained": true,
+    "outer_total": 3,
+    "real_tool_executions": 1,
+    "stored_chat_retained": true,
+    "profile_budget_preserved": true,
+    "final_payload": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+    "resource_memory_accounting_scope": "memcg kernel CPU accounting plus independent physical available RAM; not physical GPU/DRAM hard cap",
+    "physical_ram_limit": false,
+    "postflight": {
+      "owned_processes_gone": true,
+      "owned_domains_gone": true,
+      "ports_free": true,
+      "lease_released": true,
+      "default_unchanged": true,
+      "prior_evidence_unchanged": true
+    },
+    "gpu_cold_nvml_loss_accepted": false,
+    "long_stability_accepted": false,
+    "performance_acceptance": false,
+    "remaining_master_tasks_open": true
+  },
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/review.json",
+  "new_gpu_starts": 0,
+  "remaining_master_tasks_open": true,
+  "full_performance": false,
+  "long_stability_accepted": false
+}

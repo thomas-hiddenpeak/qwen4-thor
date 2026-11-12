@@ -1,0 +1,37 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 15,
+  "first_tests": 14,
+  "first_pass": 13,
+  "followups": [
+    {
+      "tests": 1,
+      "reason": "Stop-between-roots fixture used escaped TERM-ignoring gateway leaf; actual 30s tree cleanup consumed cooldown. Narrow case selects simple CPU gateway; original orphan/restart case remains accepted."
+    },
+    {
+      "tests": 2,
+      "reason": "Review found that empty tree cannot imply durable STOPPED. Added writer-contention case, reran directly affected normal stop gap."
+    }
+  ],
+  "cpu_seconds": 65.12437367765233,
+  "production_cooldown_seconds": 30,
+  "real_cooldown_preserved": true,
+  "synthetic_cpu_roles": true,
+  "model_starts": 0,
+  "default_unchanged": true,
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "source_sha256": {
+    "tools/serve_recovery/outer_runtime.py": "eb0a54e23c107eae347cf8101a67f835ef1e79e28ee25117a7a22efadb8f6814",
+    "tools/serve_recovery/outer_control.py": "b490729dac4c8e2cfe05505a04ef3002a3c6b5ce720391c3843abeca1f9cf94d",
+    "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
+    "tools/serve_recovery/service.py": "771a0adb1205b4d82ad54f60e58c61187c1955dfa8343e8f9109aca474c63dc6",
+    "tools/serve_recovery/bundle.py": "5254e77ce5ffb8f13ef4598452d3f564c50c74d1bda77b106484be242f0f26d0",
+    "tools/serve_recovery/test_outer_runtime.py": "883812d2531d977f133c1f4518b09b38a167d783e0e9eec987cf8b8ec2a80d3f",
+    "tools/serve_recovery/test_native_bundle.py": "70b4287b1e2155d5046d198101206ff073c0bbc35ff8fb41974b3bb5e5344edd"
+  },
+  "continuous_outer_loop_integrated": true,
+  "same_boot_new_instance_resource_domain_complete": false,
+  "host_adapters_complete": false,
+  "released": false,
+  "r07_candidate_unchanged": true
+}

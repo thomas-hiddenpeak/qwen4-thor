@@ -4,6 +4,7 @@ import os
 
 from tools.serve_recovery import ledger, policy, profile_contract, profile_memory
 from tools.serve_recovery import profile_policy, profile_runtime
+from tools.serve_recovery import resource_client as resource_memory
 from tools.serve_service import supervisor
 
 
@@ -23,6 +24,7 @@ class Profiles:
         self.selection = profile_runtime.Selection(binding, registry, boot,
             configuration=controller.manifest['recovery_profile_policy'])
         self.detector = None
+        self.resource_pressure = resource_memory.Pressure()
         self.launch = None
         self.memory_fault = False
         self.generation = 0
@@ -75,6 +77,7 @@ class Profiles:
         self.generation = generation
         self.memory_fault = False
         self.detector = None
+        self.resource_pressure.reset()
         self.selection.unpark()
 
     def fault(self, controller, kind):
@@ -90,6 +93,7 @@ class Profiles:
                 if controller.phase == 'READY':
                     controller.reason = runtime.error or 'profile_state_wait'
                 if self.detector is not None: self.detector.reset()
+                self.resource_pressure.reset()
                 return False
             state = runtime.state
             pending = state['pending']
@@ -105,8 +109,18 @@ class Profiles:
                            'active model differs from durable profile')
             if self.detector is None:
                 self.detector = profile_memory.Detector(self.registry, state['configuration'])
-            result = self.detector.assess(self.launch, controller.watchdog.snapshot(),
-                runtime.nanos(), ready=controller.phase == 'READY')
+            now = runtime.nanos()
+            resources = getattr(controller, 'resource_memory', None)
+            observed = None if resources is None else resources.snapshot()
+            q = self.registry['qualifications']
+            extra = q['primary']['startup_required_bytes']-q['light']['startup_required_bytes']
+            recover = resources is None or resource_memory.recovery_clear(observed, now, extra)
+            result = self.detector.assess(self.launch, controller.watchdog.snapshot(), now,
+                ready=controller.phase == 'READY' and (self.launch != 'light' or recover))
+            if self.launch == 'primary' and controller.phase == 'READY':
+                if self.resource_pressure.assess(observed, now, state['configuration']['pressure_seconds']):
+                    result = dict(target='light', reason='sustained_memory_pressure')
+            else: self.resource_pressure.reset()
             if result is not None:
                 runtime.prepare(result['target'], result['reason'], controller.grant['generation'])
             if controller.phase == 'READY' and self.launch == 'light':
@@ -114,11 +128,13 @@ class Profiles:
         except Exception:
             runtime.error = 'profile_state_unavailable'
             if self.detector is not None: self.detector.reset()
+            self.resource_pressure.reset()
         return False
 
     def retired(self):
         self.launch = None
         self.detector = None
+        self.resource_pressure.reset()
         self.selection.park()
 
     def close(self):

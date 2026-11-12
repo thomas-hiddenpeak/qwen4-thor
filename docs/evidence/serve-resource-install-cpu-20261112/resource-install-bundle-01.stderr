@@ -1,0 +1,17 @@
+tools (unittest.loader._FailedTest.tools) ... ERROR
+tools (unittest.loader._FailedTest.tools) ... ERROR
+
+======================================================================
+ERROR: tools (unittest.loader._FailedTest.tools)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'tools'
+
+======================================================================
+ERROR: tools (unittest.loader._FailedTest.tools)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'tools'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+FAILED (errors=2)

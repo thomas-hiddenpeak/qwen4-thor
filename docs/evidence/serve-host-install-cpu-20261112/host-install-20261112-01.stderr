@@ -1,0 +1,295 @@
+test_cli_install_enable_disable_preserves_core_and_uses_protected_source (tools.serve_recovery.test_host_install.HostTests.test_cli_install_enable_disable_preserves_core_and_uses_protected_source) ... ERROR
+test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu (tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu) ... ERROR
+test_installed_daemon_resume_keeps_original_stopped_and_zero_starts (tools.serve_recovery.test_host_install.HostTests.test_installed_daemon_resume_keeps_original_stopped_and_zero_starts) ... ERROR
+test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled) ... ERROR
+test_partial_source_copy_resumes_same_installation_without_core_mutation (tools.serve_recovery.test_host_install.HostTests.test_partial_source_copy_resumes_same_installation_without_core_mutation) ... ERROR
+test_partial_first_intent_does_not_publish_source_or_reset_core (tools.serve_recovery.test_host_install.HostTests.test_partial_first_intent_does_not_publish_source_or_reset_core) ... ERROR
+test_lost_ready_publication_repairs_copy_without_resetting_history (tools.serve_recovery.test_host_install.HostTests.test_lost_ready_publication_repairs_copy_without_resetting_history) ... ERROR
+test_lost_published_private_authority_cannot_bootstrap (tools.serve_recovery.test_host_install.HostTests.test_lost_published_private_authority_cannot_bootstrap) ... ERROR
+test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot (tools.serve_recovery.test_host_install.HostTests.test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot) ... ERROR
+test_active_remove_revokes_future_entry_without_signalling_own_payload (tools.serve_recovery.test_host_install.HostTests.test_active_remove_revokes_future_entry_without_signalling_own_payload) ... ERROR
+test_untrusted_interpreter_hash_is_rejected_before_creating_installation (tools.serve_recovery.test_host_install.HostTests.test_untrusted_interpreter_hash_is_rejected_before_creating_installation) ... ok
+test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume (tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume) ... ERROR
+test_outer_disable_is_not_implicitly_reversed_by_host_enable (tools.serve_recovery.test_host_install.HostTests.test_outer_disable_is_not_implicitly_reversed_by_host_enable) ... ERROR
+test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired (tools.serve_recovery.test_host_install.HostTests.test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired) ... ERROR
+test_entry_drops_privileges_and_child_closes_capability_before_exec (tools.serve_recovery.test_resource_launch.LaunchTests.test_entry_drops_privileges_and_child_closes_capability_before_exec) ... ok
+
+======================================================================
+ERROR: test_cli_install_enable_disable_preserves_core_and_uses_protected_source (tools.serve_recovery.test_host_install.HostTests.test_cli_install_enable_disable_preserves_core_and_uses_protected_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 112, in test_cli_install_enable_disable_preserves_core_and_uses_protected_source
+    result = service.main(['host-entry', 'init', '--directory', str(self.host),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/service.py", line 312, in main
+    return host_install.main(argv[1:])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 262, in main
+    value = initialize(args.directory, args.package, args.digest, args.state, args.service_id,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu (tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 135, in test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu
+    self.initialize_host(); host.configure(self.host, enabled=True); before = self.state_files()
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_installed_daemon_resume_keeps_original_stopped_and_zero_starts (tools.serve_recovery.test_host_install.HostTests.test_installed_daemon_resume_keeps_original_stopped_and_zero_starts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 142, in test_installed_daemon_resume_keeps_original_stopped_and_zero_starts
+    self.initialize_host(); host.configure(self.host, enabled=True)
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 148, in test_explicit_stop_remains_available_when_host_entry_disabled
+    self.initialize_host(); self.helper('running')
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_partial_source_copy_resumes_same_installation_without_core_mutation (tools.serve_recovery.test_host_install.HostTests.test_partial_source_copy_resumes_same_installation_without_core_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 166, in test_partial_source_copy_resumes_same_installation_without_core_mutation
+    ready = host.finish(self.host)['installation']
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_partial_first_intent_does_not_publish_source_or_reset_core (tools.serve_recovery.test_host_install.HostTests.test_partial_first_intent_does_not_publish_source_or_reset_core)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 182, in test_partial_first_intent_does_not_publish_source_or_reset_core
+    self.assertFalse(self.initialize_host()['installation']['enabled'])
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_lost_ready_publication_repairs_copy_without_resetting_history (tools.serve_recovery.test_host_install.HostTests.test_lost_ready_publication_repairs_copy_without_resetting_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 191, in test_lost_ready_publication_repairs_copy_without_resetting_history
+    self.initialize_host()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_lost_published_private_authority_cannot_bootstrap (tools.serve_recovery.test_host_install.HostTests.test_lost_published_private_authority_cannot_bootstrap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 197, in test_lost_published_private_authority_cannot_bootstrap
+    self.initialize_host(); (self.host/'admin'/host.PRIVATE).unlink()
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot (tools.serve_recovery.test_host_install.HostTests.test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 202, in test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot
+    self.initialize_host(); host.configure(self.host, enabled=True)
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_active_remove_revokes_future_entry_without_signalling_own_payload (tools.serve_recovery.test_host_install.HostTests.test_active_remove_revokes_future_entry_without_signalling_own_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 211, in test_active_remove_revokes_future_entry_without_signalling_own_payload
+    self.initialize_host(); host.configure(self.host, enabled=True)
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume (tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 234, in test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume
+    host.finish(self.host)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_outer_disable_is_not_implicitly_reversed_by_host_enable (tools.serve_recovery.test_host_install.HostTests.test_outer_disable_is_not_implicitly_reversed_by_host_enable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 238, in test_outer_disable_is_not_implicitly_reversed_by_host_enable
+    self.initialize_host(); self.helper('outer-disabled'); before = self.state_files()
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+======================================================================
+ERROR: test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired (tools.serve_recovery.test_host_install.HostTests.test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 244, in test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired
+    self.initialize_host(); host.configure(self.host, enabled=True)
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py", line 84, in initialize_host
+    return host.initialize(self.host, self.fixture['package'], self.fixture['digest'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 159, in initialize
+    return finish(directory)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 169, in finish
+    checked = check_runtime(directory, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 111, in check_runtime
+    ledger.require(result.returncode == 0 and len(result.stdout) <= 16384,
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unprivileged host runtime verification failed
+
+----------------------------------------------------------------------
+Ran 15 tests in 6.803s
+
+FAILED (errors=13)

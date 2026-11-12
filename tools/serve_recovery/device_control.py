@@ -12,7 +12,7 @@ import socket
 import subprocess
 import time
 
-from tools.serve_recovery import device_store, ledger, store
+from tools.serve_recovery import cold_custody, device_store, ledger, store
 
 MAXIMUM = 65536
 
@@ -39,11 +39,11 @@ class Control:
 
     def call(self, operation, args, *, inherited=(), timeout=5):
         device_store.privileged()
-        ledger.require(operation in ('attach', 'adopt', 'recover', 'remove', 'issue') and
+        ledger.require(operation in ('attach', 'adopt', 'recover', 'remove', 'detach', 'issue') and
                        0 < timeout <= 5, 'invalid bounded device operation')
         ledger.require(self.pending is None or self.pending.poll() is not None,
                        'device control worker is not reaped')
-        expected = 0 if operation == 'remove' else 2
+        expected = 0 if operation in ('remove', 'detach') else 2
         command = ledger.canonical(dict(version=1, op=operation,
             lease_fd=self.lease_fd, lease_path=self.lease_path, args=args))
         ledger.require(len(command) <= MAXIMUM, 'device control request too large')
@@ -57,7 +57,7 @@ class Control:
             ledger.require(parent.send(command) == len(command), 'short control command')
             self.pending = subprocess.Popen([str(self.executable), '--fd', str(endpoint.fileno())],
                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                env={}, pass_fds=tuple(set((self.lease_fd, endpoint.fileno(), *inherited))))
+                env={}, pass_fds=tuple(set((self.lease_fd, endpoint.fileno(), *inherited, *cold_custody.inherited()))))
             endpoint.close()
             raw, ancillary, flags, _ = parent.recvmsg(MAXIMUM, socket.CMSG_SPACE(4*4),
                                                      socket.MSG_CMSG_CLOEXEC)

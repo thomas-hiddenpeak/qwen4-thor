@@ -1,0 +1,34 @@
+{
+  "status": "TARGETED_NATIVE_RESOURCE_MEMORY_CPU_ACCEPTED",
+  "distinct_tests": 17,
+  "invocations": 18,
+  "cpu_seconds": 20.672463889233768,
+  "original_passed": 13,
+  "original_fixture_timeout": 1,
+  "affected_recheck_passed": 1,
+  "bundle_first_pass": 3,
+  "actual_owned_memcg_high_event": true,
+  "actual_isolated_observer_reaped": true,
+  "actual_guardian_cpu_roles_in_resource_domain": true,
+  "profile_model_qualifications_explicit_fixtures": true,
+  "physical_and_memcg_not_added": true,
+  "collector_fault_does_not_authorize_model_action": true,
+  "model_gpu_starts": 0,
+  "default_unchanged": true,
+  "host_services_unchanged": true,
+  "released": false,
+  "remaining": [
+    "version recovery controller command composition for current and retained payloads",
+    "actual R07/R08/R09 business and reversible release",
+    "all remaining master tasks"
+  ],
+  "source_sha256": {
+    "tools/serve_recovery/resource_memory.py": "530169c8003327c464125bed9998f1168e05337a345c7f4b0d3fd17cdaa84798",
+    "tools/serve_recovery/controller.py": "bda0c0a5b288ea020c089267c624d4d1965244de30316d38d8ea9b93c1bb2486",
+    "tools/serve_recovery/profile_controller.py": "d4e34a51fefd155efb96fe9bfe5f10be6c4ab9b6e90ea559c9ae9477e86c4ded",
+    "tools/serve_recovery/service.py": "3389aaa08291c81467771b7fbcead52ec943ffed04b091cecb77363cb0626bab",
+    "tools/serve_recovery/bundle.py": "8297d454749fa21b5c1c98728d575a4ec0ecdf4de5458f6eb352a41a3fe63303",
+    "tools/serve_recovery/test_resource_memory.py": "c18c45dc70bedd2193f61979eb5135262f8eae6720a5b9265c0efc629100506e",
+    "tools/serve_recovery/test_native_bundle.py": "615e499a66dd7d9951844eba7d19e671e2fe4f56002c6b2a9392f197586536cc"
+  }
+}

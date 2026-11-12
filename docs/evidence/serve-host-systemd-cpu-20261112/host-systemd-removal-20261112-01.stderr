@@ -1,0 +1,8 @@
+test_missing_timer_file_still_withdraws_loaded_trigger (tools.serve_recovery.test_host_systemd.AdapterTests.test_missing_timer_file_still_withdraws_loaded_trigger) ... ok
+test_partial_unit_unlink_resumes_with_original_binding (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_unlink_resumes_with_original_binding) ... ok
+test_active_helper_delays_removal_without_stopping_native_core (tools.serve_recovery.test_host_systemd.AdapterTests.test_active_helper_delays_removal_without_stopping_native_core) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.338s
+
+OK

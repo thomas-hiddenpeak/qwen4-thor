@@ -1,0 +1,18 @@
+[ 14%] Built target q4t_guardian_process
+[ 21%] Building CXX object CMakeFiles/q4t_device_filter.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_filter.cpp.o
+[ 50%] Built target q4t_guardian_journal
+[ 57%] Linking CXX static library libq4t_device_filter.a
+[ 57%] Built target q4t_device_filter
+[ 64%] Building CXX object CMakeFiles/q4t_device_admission.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_admission.cpp.o
+[ 71%] Linking CXX static library libq4t_device_admission.a
+[ 71%] Built target q4t_device_admission
+[ 78%] Building CXX object CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/guardian_main.cpp.o
+[ 85%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian
+[ 16%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 66%] Built target q4t_device_filter
+[ 83%] Built target q4t_device_admission
+[ 91%] Building CXX object CMakeFiles/q4t_device_control.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_control_main.cpp.o
+[100%] Linking CXX executable q4t-device-control
+[100%] Built target q4t_device_control

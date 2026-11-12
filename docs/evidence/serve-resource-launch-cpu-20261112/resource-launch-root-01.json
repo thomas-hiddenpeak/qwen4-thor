@@ -1,0 +1,46 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_launch.py",
+    "-v",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_entry_drops_privileges_and_child_closes_capability_before_exec",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_forged_fd_or_publication_never_executes_payload",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_removed_installation_cannot_enter_or_execute",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_new_instance_cleans_original_orphan_before_writer_lock_and_preserves_protection",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_unrecorded_root_birth_is_reconciled_only_by_original_resource_domain",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_fresh_empty_domain_cannot_retire_the_original_populated_domain",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_changed_deployment_cannot_kill_original_payload",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_live_original_instance_prevents_new_domain_cleanup",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_interrupted_core_retirement_resumes_without_reopening_budget",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_lost_outer_retirement_receipt_replays_without_another_kill_or_charge",
+    "tools.serve_recovery.test_resource_kernel.KernelTests.test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound",
+    "tools.serve_recovery.test_resource_kernel.KernelTests.test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive"
+  ],
+  "exit_code": 0,
+  "seconds": 8.195828509982675,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

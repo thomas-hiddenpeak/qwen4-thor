@@ -1,0 +1,9 @@
+{
+  "commands": 19,
+  "new_gpu_starts": 0,
+  "from_revision": 64,
+  "final_revision": 72,
+  "candidate": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+  "retained": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+  "scope": "STOPPED publish, rollback/forward, explicit unused version-cycle update and native outer enable; no host startup unit or resource installation"
+}

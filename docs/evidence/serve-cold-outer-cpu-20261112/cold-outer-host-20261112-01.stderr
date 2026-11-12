@@ -1,0 +1,79 @@
+test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts) ... ERROR
+test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts) ... ERROR
+test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client) ... ERROR
+test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client) ... ERROR
+test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core) ... ERROR
+test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core) ... ERROR
+test_entry_resource_epoch_renewal_keeps_device_and_replay_history (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_entry_resource_epoch_renewal_keeps_device_and_replay_history) ... ok
+test_automatic_requalification_refuses_idle_and_rechecks_original_armed_boot (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_automatic_requalification_refuses_idle_and_rechecks_original_armed_boot) ... ok
+test_no_device_association_adds_no_issuer_dependency (tools.serve_recovery.test_cold_issuer.NoDeviceHostTests.test_no_device_association_adds_no_issuer_dependency) ... ok
+test_actual_peer_original_intent_and_private_verifier_issue_once (tools.serve_recovery.test_cold_issuer.AuthorityTests.test_actual_peer_original_intent_and_private_verifier_issue_once) ... ok
+test_stop_intent_and_changed_request_never_reach_device_control (tools.serve_recovery.test_cold_issuer.AuthorityTests.test_stop_intent_and_changed_request_never_reach_device_control) ... ok
+test_replaced_instance_fd_and_peer_start_cannot_issue (tools.serve_recovery.test_cold_issuer.AuthorityTests.test_replaced_instance_fd_and_peer_start_cannot_issue) ... ok
+test_actual_installed_root_channel_rejects_unarmed_without_touching_peer (tools.serve_recovery.test_cold_issuer.AuthorityTests.test_actual_installed_root_channel_rejects_unarmed_without_touching_peer) ... ok
+test_stopped_preflight_does_not_spawn_outer_or_modify_intent (tools.serve_recovery.test_host_ensure.EnsureTests.test_stopped_preflight_does_not_spawn_outer_or_modify_intent) ... ok
+test_actual_existing_entry_lock_prevents_restart_despite_unknown_core (tools.serve_recovery.test_host_ensure.EnsureTests.test_actual_existing_entry_lock_prevents_restart_despite_unknown_core) ... ok
+test_ensure_adopts_live_native_core_after_outer_death_without_model_restart (tools.serve_recovery.test_host_ensure.NativeEnsureTests.test_ensure_adopts_live_native_core_after_outer_death_without_model_restart) ... ok
+
+======================================================================
+ERROR: test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_issuer.py", line 277, in test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts
+    status = cold_issuer.control(self.host, 'status')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_issuer.py", line 182, in control
+    ledger.require(result.result.get('ok') is True and
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: cold issuer control identity differs
+
+======================================================================
+ERROR: test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_host.py", line 66, in withdraw
+    peer = cold_channel.credentials(sock); pidfd = os.pidfd_open(peer[0])
+                                                   ^^^^^^^^^^^^^^^^^^^^^^
+ProcessLookupError: [Errno 3] No such process
+
+======================================================================
+ERROR: test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_issuer.py", line 285, in test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client
+    self.assertEqual(first['issuer']['issuer_pid'], second['issuer']['issuer_pid'])
+                     ~~~~~^^^^^^^^^^
+KeyError: 'issuer'
+
+======================================================================
+ERROR: test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_host.py", line 66, in withdraw
+    peer = cold_channel.credentials(sock); pidfd = os.pidfd_open(peer[0])
+                                                   ^^^^^^^^^^^^^^^^^^^^^^
+ProcessLookupError: [Errno 3] No such process
+
+======================================================================
+ERROR: test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_issuer.py", line 293, in test_host_removal_withdraws_issuer_and_preserves_original_core
+    pidfd = os.pidfd_open(started['issuer']['issuer_pid']); self.addCleanup(os.close, pidfd)
+                          ~~~~~~~^^^^^^^^^^
+KeyError: 'issuer'
+
+======================================================================
+ERROR: test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_host.py", line 66, in withdraw
+    peer = cold_channel.credentials(sock); pidfd = os.pidfd_open(peer[0])
+                                                   ^^^^^^^^^^^^^^^^^^^^^^
+ProcessLookupError: [Errno 3] No such process
+
+----------------------------------------------------------------------
+Ran 13 tests in 24.251s
+
+FAILED (errors=6)

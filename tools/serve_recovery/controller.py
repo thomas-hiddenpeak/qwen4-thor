@@ -43,13 +43,18 @@ def model_command(package, base, config, policy_path):
 
 def validate_configuration(config):
     version = config.get('version')
-    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5),
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6),
                    'unsupported controller config')
     ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
         (('state_directory',) if version >= 2 else ()) +
         (('retention_context',) if version >= 3 else ()) +
         (('limits',) if version >= 4 else ()) +
-        (('profiles',) if version >= 5 else ()))
+        (('profiles',) if version >= 5 else ()) +
+        (('resources', 'resource_worker') if version >= 6 else ()))
+    if version >= 6:
+        from tools.serve_recovery import resource_client
+        resource_client.validate_binding(config['resources'])
+        resource_client.validate_worker(config['resource_worker'])
     # Retention-only provenance never participates in model/recovery decisions.
 
 
@@ -102,6 +107,13 @@ class Controller:
         self.policies = None
         self.usage = None
         self.profiles = None
+        self.resource_memory = None
+        if config['version'] >= 6:
+            from tools.serve_recovery import resource_client as resource_memory
+            ledger.require(config['resources']['publication']['service_id'] == channel.service_id,
+                           'resource memory service binding changed')
+            self.resource_memory = resource_memory.Observer(config['resources'], self.lease_fd,
+                worker=config['resource_worker'])
         if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
             from tools.serve_recovery import quota_policy, quota_runtime, usage_runtime
             ledger.require(config['version'] >= 4 and
@@ -113,7 +125,7 @@ class Controller:
             self.usage = usage_runtime.Recovery(config['limits'])
         if self.manifest.get('recovery_profiles') is not None:
             from tools.serve_recovery import profile_controller
-            ledger.require(config['version'] == 5 and config['profiles'] == config['limits'],
+            ledger.require(config['version'] >= 5 and config['profiles'] == config['limits'],
                            'profile state service binding changed')
             self.profiles = profile_controller.Profiles(self,
                 self.manifest['recovery_profiles'], config['profiles'])
@@ -123,7 +135,9 @@ class Controller:
     def observation(self):
         if self.monitor.fatal:
             return 'DEVICE_FAILURE'
-        if (self.monitor.visibility != 'AVAILABLE' or
+        resources = getattr(self, 'resource_memory', None)
+        if (resources is not None and resources.snapshot() is None or
+                self.monitor.visibility != 'AVAILABLE' or
                 self.observations.unavailable or
                 self.ownership_unknown or
                 (self.ready and (self.progress is None or
@@ -135,6 +149,10 @@ class Controller:
         # No detached heartbeat thread. Every receipt, HTTP wait and cleanup
         # progresses this same loop; jobs never block it on NVML or fsync.
         self.monitor.tick(allow_query=allow_query and not self.stopping and not self.frozen)
+        resources = getattr(self, 'resource_memory', None)
+        if resources is not None:
+            try: resources.tick(allow_query=allow_query and not self.stopping and not self.frozen)
+            except Exception: resources.unknown('resource_collector_failed')
         if self.logger is not None:
             self.logger.tick()
         if getattr(self, 'policies', None) is not None:
@@ -171,6 +189,9 @@ class Controller:
                 reason = 'auxiliary_io_unavailable'
             elif self.phase == 'READY' and value is None and not self.monitor.fatal:
                 reason = 'progress_observation_unavailable'
+            if (self.phase == 'READY' and resources is not None and
+                    resources.snapshot() is None and not self.monitor.fatal):
+                reason = 'resource_observation_unavailable'
             self.channel.health(self.phase, self.observation(), reason,
                                 auxiliary_io=self.observations.snapshot(self.logger))
             self.channel.event('heartbeat')
@@ -226,7 +247,8 @@ class Controller:
         if self.ownership_unknown:
             self.reason = 'compute_exit_unconfirmed'
             return None
-        if self.monitor.job is not None:
+        resources = getattr(self, 'resource_memory', None)
+        if self.monitor.job is not None or resources is not None and resources.job is not None:
             self.reason = 'query_pending'
             return None
         try:
@@ -558,7 +580,10 @@ class Controller:
             self.watchdog = None
         if self.logger is not None:
             self.logger.stop()
-        excluded = (() if self.monitor.job is None else (self.monitor.job.process.pid,))
+        resources = getattr(self, 'resource_memory', None)
+        if resources is not None: resources.cancel()
+        observers = [self.monitor, *(() if resources is None else (resources,))]
+        excluded = tuple(o.job.process.pid for o in observers if o.job is not None)
         if not ownership.cleanup(lambda: self.tick(allow_query=False), exclude=excluded):
             self.quarantine('cleanup_failed')
             return False
@@ -572,10 +597,10 @@ class Controller:
         self.capture = None
         self.logger = None
         end = time.monotonic()+7
-        while self.monitor.job is not None and time.monotonic() < end:
+        while any(o.job is not None for o in observers) and time.monotonic() < end:
             self.tick(allow_query=False)
             time.sleep(0.025)
-        if self.monitor.job is not None:
+        if any(o.job is not None for o in observers):
             self.quarantine('cleanup_failed')
             return False
         if self.grant is not None:

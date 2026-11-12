@@ -1,0 +1,14 @@
+test_resource_bound_public_entry_uses_protected_host_and_original_lease (tools.serve_recovery.test_cold_entry.EntryTests.test_resource_bound_public_entry_uses_protected_host_and_original_lease) ... ok
+test_public_host_start_activates_only_explicitly_and_stop_keeps_zero_roles (tools.serve_recovery.test_cold_entry.EntryTests.test_public_host_start_activates_only_explicitly_and_stop_keeps_zero_roles) ... ok
+test_resource_bound_daemon_resume_keeps_stopped_and_forwarded_lease (tools.serve_recovery.test_cold_entry.EntryTests.test_resource_bound_daemon_resume_keeps_stopped_and_forwarded_lease) ... ok
+test_wrong_manifest_arbitrary_command_and_lease_path_never_exec (tools.serve_recovery.test_cold_entry.EntryTests.test_wrong_manifest_arbitrary_command_and_lease_path_never_exec) ... ok
+test_host_entry_rejects_bad_fd_and_wrong_owner_without_weak_fallback (tools.serve_recovery.test_cold_entry.EntryTests.test_host_entry_rejects_bad_fd_and_wrong_owner_without_weak_fallback) ... ok
+test_explicit_descriptor_adapter_keeps_sealed_receipt_and_unconsumed_token (tools.serve_recovery.test_cold_entry.EntryTests.test_explicit_descriptor_adapter_keeps_sealed_receipt_and_unconsumed_token) ... ok
+test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue (tools.serve_recovery.test_device_domain.DomainTests.test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue) ... ok
+test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu (tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu) ... ok
+test_stopped_preflight_does_not_spawn_outer_or_modify_intent (tools.serve_recovery.test_host_ensure.EnsureTests.test_stopped_preflight_does_not_spawn_outer_or_modify_intent) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 15.055s
+
+OK

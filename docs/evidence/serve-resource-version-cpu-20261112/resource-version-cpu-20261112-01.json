@@ -1,0 +1,54 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_GUARDIAN_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/guardian-build/q4t-guardian",
+    "Q4T_RETAINED_SOURCE_PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback/source/tools/serve_recovery",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_compat.py",
+    "-v",
+    "tools.serve_recovery.test_resource_compat.AdapterTests.test_exact_backport_preserves_unrelated_methods_original_and_inventory",
+    "tools.serve_recovery.test_resource_compat.AdapterTests.test_resigned_unrelated_change_is_rejected_and_adapter_cannot_reapply",
+    "tools.serve_recovery.test_resource_compat.AdapterTests.test_changed_hook_cannot_silently_receive_partial_backport",
+    "tools.serve_recovery.test_resource_compat.AdapterTests.test_public_cli_selects_resource_adapter_without_runtime_or_model_action",
+    "tools.serve_recovery.test_resource_compat.WorkerTests.test_actual_worker_executes_verified_bytes_in_fresh_interpreter",
+    "tools.serve_recovery.test_resource_compat.WorkerTests.test_hash_writeability_and_symlink_fail_before_collector_exec",
+    "tools.serve_recovery.test_resource_compat.VersionTests.test_two_payloads_receive_same_original_resource_and_fixed_root_collector",
+    "tools.serve_recovery.test_resource_compat.VersionTests.test_unadapted_payload_never_silently_loses_resource_observation",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_live_cpu_collector_is_reaped_before_slot_is_reused",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_controller_configuration_binds_selected_resource_with_and_without_profiles",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_collector_exception_retains_original_slot_and_only_clears_observation",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram",
+    "tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation",
+    "tools.serve_recovery.test_version_runtime.RuntimeTests.test_qualified_two_commands_share_current_state_and_separate_run_paths",
+    "tools.serve_recovery.test_cold_compat.AdapterTests.test_cli_adaptation_requires_no_live_state_or_model_action"
+  ],
+  "exit_code": 1,
+  "seconds": 8.191168683115393,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

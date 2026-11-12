@@ -1,0 +1,36 @@
+{
+  "status": "TARGETED_CROSS_GUARDIAN_USAGE_DRIVER_CPU_ACCEPTED",
+  "tests": 5,
+  "seconds": 0.28193261520937085,
+  "production_changed": false,
+  "prior_business_status": "FAILED_DRIVER_ASSERTION",
+  "actual_model_starts": 2,
+  "actual_chats": 3,
+  "cumulative_counts": {
+    "starts": 4,
+    "chats": 3,
+    "probes": 0
+  },
+  "real_second_generation": {
+    "gate_deadline": 2642760.9448231724,
+    "business_ready_at": 2642761.601043574,
+    "unknown_usage": true
+  },
+  "original_status": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/execution/status.jsonl",
+    "sha256": "4d45abb2f16be2ab7756b22825e582e06570de8d6930c924566d37e6f7ed1a4a"
+  },
+  "next": {
+    "starts": 2,
+    "chats": 5,
+    "probes": 1,
+    "retains_original_service_state": true,
+    "cumulative_cap": {
+      "starts": 6,
+      "chats": 8,
+      "probes": 1,
+      "seconds": 900
+    }
+  },
+  "business_complete": false
+}

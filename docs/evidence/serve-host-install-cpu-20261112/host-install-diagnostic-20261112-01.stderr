@@ -1,0 +1,6 @@
+test_lost_published_private_authority_cannot_bootstrap (tools.serve_recovery.test_host_install.HostTests.test_lost_published_private_authority_cannot_bootstrap) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.682s
+
+OK

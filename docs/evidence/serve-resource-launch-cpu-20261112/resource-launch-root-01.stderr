@@ -1,0 +1,17 @@
+test_entry_drops_privileges_and_child_closes_capability_before_exec (tools.serve_recovery.test_resource_launch.LaunchTests.test_entry_drops_privileges_and_child_closes_capability_before_exec) ... ok
+test_forged_fd_or_publication_never_executes_payload (tools.serve_recovery.test_resource_launch.LaunchTests.test_forged_fd_or_publication_never_executes_payload) ... ok
+test_removed_installation_cannot_enter_or_execute (tools.serve_recovery.test_resource_launch.LaunchTests.test_removed_installation_cannot_enter_or_execute) ... ok
+test_new_instance_cleans_original_orphan_before_writer_lock_and_preserves_protection (tools.serve_recovery.test_resource_launch.LaunchTests.test_new_instance_cleans_original_orphan_before_writer_lock_and_preserves_protection) ... ok
+test_unrecorded_root_birth_is_reconciled_only_by_original_resource_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_unrecorded_root_birth_is_reconciled_only_by_original_resource_domain) ... ok
+test_fresh_empty_domain_cannot_retire_the_original_populated_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_fresh_empty_domain_cannot_retire_the_original_populated_domain) ... ok
+test_changed_deployment_cannot_kill_original_payload (tools.serve_recovery.test_resource_launch.LaunchTests.test_changed_deployment_cannot_kill_original_payload) ... ok
+test_live_original_instance_prevents_new_domain_cleanup (tools.serve_recovery.test_resource_launch.LaunchTests.test_live_original_instance_prevents_new_domain_cleanup) ... ok
+test_interrupted_core_retirement_resumes_without_reopening_budget (tools.serve_recovery.test_resource_launch.LaunchTests.test_interrupted_core_retirement_resumes_without_reopening_budget) ... ok
+test_lost_outer_retirement_receipt_replays_without_another_kill_or_charge (tools.serve_recovery.test_resource_launch.LaunchTests.test_lost_outer_retirement_receipt_replays_without_another_kill_or_charge) ... ok
+test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound (tools.serve_recovery.test_resource_kernel.KernelTests.test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound) ... ok
+test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive (tools.serve_recovery.test_resource_kernel.KernelTests.test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 7.920s
+
+OK

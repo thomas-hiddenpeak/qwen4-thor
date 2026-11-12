@@ -1,0 +1,29 @@
+{
+  "status": "TARGETED_RESOURCE_DELEGATION_CPU_PASS",
+  "distinct_tests": 20,
+  "all_first_pass": true,
+  "cpu_seconds": 11.477130956947803,
+  "kernel_permission_checks": true,
+  "inherited_fd_outside_same_uid_and_root_targets_denied": true,
+  "targets_created_by_tests_only": true,
+  "service_escape_to_outer_and_parent_denied": true,
+  "privilege_drop_before_service_fd_open": true,
+  "unpublished_resource_format": 2,
+  "native_guardian_with_cpu_roles": true,
+  "model_gpu_starts": 0,
+  "host_startup_configuration_changed": false,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "owned_test_domains_remaining": [],
+  "source_sha256": {
+    "tools/serve_recovery/resource_kernel.py": "13024a2a1759f15c2e83b963c23144553b21853d5911c16160bf3ca53af45cbf",
+    "tools/serve_recovery/resource_install.py": "62777abd2dc31c9fd0deb767aab79c3eb4f9582f65a7936a98a556ad2327efde",
+    "tools/serve_recovery/resource_launch.py": "ceb76f815003f1865852aef4b1dffd3474ca4e548452547342b7daa925829f92",
+    "tools/serve_recovery/test_resource_kernel.py": "1307a46b4bc045f979ee97afc8b138c5cf19861555ac92aceb697e5337c97a8f",
+    "tools/serve_recovery/test_resource_install.py": "c7de18552baa46cd989bb24ccf0f48318d7fa5cea3506cd6b15ca487a9ca8614",
+    "tools/serve_recovery/test_resource_delegation.py": "6c030ddeaf48c90b71d10c193e16483aa099ca63275617ef3b34755e0f5649ad",
+    "tools/serve_recovery/test_resource_launch.py": "5b55a23213df6cc62fb6c73c13a90526de7d32456488b48d1b4df28c86985b22"
+  },
+  "guardian_sha256": "8b2a0407824c30c883e62700522c06f0c12edbf14f04bec7ed414a707764dc95",
+  "released": false
+}

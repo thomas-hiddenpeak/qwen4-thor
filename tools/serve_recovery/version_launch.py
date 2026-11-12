@@ -11,13 +11,21 @@ from tools.serve_recovery import version_contract, version_policy, version_regis
 from tools.serve_service import package as engine
 
 
-def configuration(state, root, run):
+def configuration(state, root, run, *, resources=None):
     selected = version_registration.load(state,root)
     if selected is None:return None
     ledger.require(selected['state']['terminal_fault'] is None,
                    'version recovery exhausted; explicit changed repair required')
     registration = selected['registration']
     root_package = Path(root['package'])
+    resource_worker = None
+    if resources is not None:
+        from tools.serve_recovery import resource_launch
+        resource_launch.validate(resources)
+        manifest = bundle.verify(root_package, root['manifest_sha256'])
+        source = 'source/tools/serve_recovery/resource_memory.py'
+        ledger.require(source in manifest['files'], 'fixed recovery root lacks resource collector')
+        resource_worker = dict(path=str(root_package/source), sha256=manifest['files'][source])
     from tools.serve_recovery import service
     bound = access_store.binding(state,root['service_id'])
     commands = {}
@@ -28,6 +36,11 @@ def configuration(state, root, run):
         controller = service.controller_configuration(package,
             item['descriptor']['manifest_sha256'],state,directory)
         controller.update(version=5,limits=bound,profiles=bound)
+        if resources is not None:
+            from tools.serve_recovery import resource_compat
+            ledger.require(resource_compat.aware(package),
+                           'prepare the retained resource adapter before resource-bound recovery')
+            controller.update(version=6, resources=resources, resource_worker=resource_worker)
         engine.save(directory/'controller.json',controller)
         engine.save(directory/'gateway.json',bundle.gateway_config_for(
             package,manifest,directory,access=bound))

@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/plan.json", "limits": {"starts": 3, "chats": 8, "probes": 1, "controls": 2500, "seconds": 900}, "service_id": "adf3800c-ada2-4fae-b4a1-51d4788d8b34"}

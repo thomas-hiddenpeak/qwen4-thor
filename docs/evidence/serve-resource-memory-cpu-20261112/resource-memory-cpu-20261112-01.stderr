@@ -1,0 +1,38 @@
+test_actual_pressure_requires_fresh_continuous_samples_not_event_history (tools.serve_recovery.test_resource_memory.PressureTests.test_actual_pressure_requires_fresh_continuous_samples_not_event_history) ... ok
+test_missing_corrupt_or_future_observation_cannot_trigger_or_promote (tools.serve_recovery.test_resource_memory.PressureTests.test_missing_corrupt_or_future_observation_cannot_trigger_or_promote) ... ok
+test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram (tools.serve_recovery.test_resource_memory.PressureTests.test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram) ... ok
+test_unknown_memcg_does_not_disable_confirmed_global_pressure (tools.serve_recovery.test_resource_memory.PressureTests.test_unknown_memcg_does_not_disable_confirmed_global_pressure) ... ok
+test_promotion_requires_both_domains_and_resets_after_missing_sample (tools.serve_recovery.test_resource_memory.PressureTests.test_promotion_requires_both_domains_and_resets_after_missing_sample) ... ok
+test_real_cpu_high_counter_and_physical_memory_are_separate (tools.serve_recovery.test_resource_memory.KernelTests.test_real_cpu_high_counter_and_physical_memory_are_separate) ... ERROR
+test_live_cpu_collector_is_reaped_before_slot_is_reused (tools.serve_recovery.test_resource_memory.KernelTests.test_live_cpu_collector_is_reaped_before_slot_is_reused) ... ok
+test_wrong_membership_and_changed_kernel_limit_are_unknown_not_authority (tools.serve_recovery.test_resource_memory.KernelTests.test_wrong_membership_and_changed_kernel_limit_are_unknown_not_authority) ... ok
+test_collector_exception_retains_original_slot_and_only_clears_observation (tools.serve_recovery.test_resource_memory.KernelTests.test_collector_exception_retains_original_slot_and_only_clears_observation) ... ok
+test_controller_configuration_binds_selected_resource_with_and_without_profiles (tools.serve_recovery.test_resource_memory.KernelTests.test_controller_configuration_binds_selected_resource_with_and_without_profiles) ... ok
+test_cached_unknown_and_stale_observations_never_accumulate_pressure (tools.serve_recovery.test_profile_memory.MemoryTests.test_cached_unknown_and_stale_observations_never_accumulate_pressure) ... ok
+test_promotion_requires_extra_allocation_headroom_and_continuous_high_water (tools.serve_recovery.test_profile_memory.MemoryTests.test_promotion_requires_extra_allocation_headroom_and_continuous_high_water) ... ok
+test_controller_parks_io_before_launch_and_confirms_only_new_live_generation (tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation) ... ok
+test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain) ... ok
+
+======================================================================
+ERROR: test_real_cpu_high_counter_and_physical_memory_are_separate (tools.serve_recovery.test_resource_memory.KernelTests.test_real_cpu_high_counter_and_physical_memory_are_separate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_memory.py", line 111, in test_real_cpu_high_counter_and_physical_memory_are_separate
+    value=self.run_sample('high');memory.validate(value)
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_memory.py", line 107, in run_sample
+    raw,error=process.communicate(timeout=12)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2116, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/usr/lib/python3.12/subprocess.py", line 1253, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['/usr/bin/python3', '-I', '-B', '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_memory.py', '--entry', '/run/q4t-resource-install-t91hipjl/installation', 'high']' timed out after 12 seconds
+
+----------------------------------------------------------------------
+Ran 14 tests in 18.641s
+
+FAILED (errors=1)

@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/retained-fallback",
+  "manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/fallback-service.release.json",
+  "service_release_sha256": "c13b5617cb8d617589017f492e78944b5fe714ccae7ef6d887d3d23ee8d4fcda",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

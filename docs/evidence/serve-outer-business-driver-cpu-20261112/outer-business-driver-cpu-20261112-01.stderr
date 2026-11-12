@@ -1,0 +1,52 @@
+test_actual_exited_child_is_reaped_without_signal_or_second_reap (tools.serve_recovery.test_outer_acceptance.DriverTests.test_actual_exited_child_is_reaped_without_signal_or_second_reap) ... ok
+test_actual_subreaper_is_restored_after_business_entry (tools.serve_recovery.test_outer_acceptance.DriverTests.test_actual_subreaper_is_restored_after_business_entry) ... ok
+test_driver_only_rewrites_its_own_launcher_and_preserves_other_dispatch (tools.serve_recovery.test_outer_acceptance.DriverTests.test_driver_only_rewrites_its_own_launcher_and_preserves_other_dispatch) ... ok
+test_launcher_wraps_guardian_after_real_resource_dispatch_prefix (tools.serve_recovery.test_outer_acceptance.DriverTests.test_launcher_wraps_guardian_after_real_resource_dispatch_prefix) ... ok
+test_resource_descriptor_is_actual_and_not_consumed (tools.serve_recovery.test_outer_acceptance.DriverTests.test_resource_descriptor_is_actual_and_not_consumed) ... ok
+test_state_and_accounting_use_exact_preinitialized_resource_service (tools.serve_recovery.test_outer_acceptance.DriverTests.test_state_and_accounting_use_exact_preinitialized_resource_service) ... ok
+test_strict_guard_forwards_only_real_resource_and_held_lease (tools.serve_recovery.test_outer_acceptance.DriverTests.test_strict_guard_forwards_only_real_resource_and_held_lease) ... ok
+test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance) ... ERROR
+test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown) ... ERROR
+
+======================================================================
+ERROR: test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_outer_runtime.py", line 105, in setUp
+    prepared = self.fixture.prepare(); self.package = Path(prepared['package'])
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_native_bundle.py", line 68, in prepare
+    return bundle.prepare(self.binary, self.directory/'release.json', self.model,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/bundle.py", line 240, in prepare
+    target = engine.private_directory(output, repository)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_service/package.py", line 121, in private_directory
+    require(any(path.is_relative_to(repository / name)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: output outside workspace
+
+======================================================================
+ERROR: test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_outer_runtime.py", line 105, in setUp
+    prepared = self.fixture.prepare(); self.package = Path(prepared['package'])
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_native_bundle.py", line 68, in prepare
+    return bundle.prepare(self.binary, self.directory/'release.json', self.model,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/bundle.py", line 240, in prepare
+    target = engine.private_directory(output, repository)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_service/package.py", line 121, in private_directory
+    require(any(path.is_relative_to(repository / name)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: output outside workspace
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.034s
+
+FAILED (errors=2)

@@ -30,6 +30,66 @@ def hashed(value):
                    'invalid outer recovery digest')
 
 
+def custody_valid(value, boot_id):
+    ledger.keys(value, ('supervisor', 'instance_token', 'tree_scope'))
+    ledger.owner_valid(value['supervisor'])
+    ledger.require(value['supervisor']['boot_id'] == boot_id and
+        ledger.identifier(value['instance_token']) and ledger.identifier(value['tree_scope']),
+        'invalid original outer custody')
+
+
+def pending_valid(pending):
+    ledger.keys(pending, ('ticket', 'serial', 'boot_id', 'manifest_sha256',
+                         'core_sha256', 'core_revision', 'core_generations', 'custody', 'owner',
+                         'cleanup', *(('resource',) if 'resource' in pending else ())))
+    ledger.require(ledger.identifier(pending['ticket']) and
+        revision(pending['serial'], minimum=1) and revision(pending['core_revision']) and
+        ledger.identifier(pending['boot_id']), 'invalid pending outer attempt')
+    hashed(pending['manifest_sha256']); hashed(pending['core_sha256'])
+    ledger.keys(pending['core_generations'], ledger.ROLES)
+    ledger.require(all(revision(n) for n in pending['core_generations'].values()),
+                   'invalid original core generations')
+    custody_valid(pending['custody'], pending['boot_id'])
+    if 'resource' in pending:
+        from tools.serve_recovery import resource_launch
+        resource_launch.validate(pending['resource'])
+        ledger.require(pending['resource']['publication']['record']['boot_id'] == pending['boot_id'],
+                       'resource attempt boot differs')
+    if pending['owner'] is not None:
+        ledger.owner_valid(pending['owner'])
+        ledger.require(pending['owner']['boot_id'] == pending['boot_id'],
+                       'outer owner belongs to another boot')
+    cleanup = pending['cleanup']
+    if cleanup is not None:
+        ledger.keys(cleanup, ('boot_id', 'core_revision', 'core_generations', 'slots',
+                             *(('resource',) if 'resource' in cleanup else ())))
+        ledger.require(ledger.identifier(cleanup['boot_id']) and
+            cleanup['boot_id'] != pending['boot_id'] and
+            revision(cleanup['core_revision']) and
+            cleanup['core_revision'] >= pending['core_revision'], 'invalid reboot cleanup epoch')
+        ledger.keys(cleanup['core_generations'], ledger.ROLES)
+        ledger.keys(cleanup['slots'], ledger.ROLES)
+        for role in ledger.ROLES:
+            generation = cleanup['core_generations'][role]
+            ledger.require(revision(generation) and generation >= pending['core_generations'][role],
+                           'reboot cleanup generation regressed')
+            slot = cleanup['slots'][role]
+            if slot is None: continue
+            ledger.keys(slot, ('ticket', 'generation', 'owner'))
+            ledger.require(ledger.identifier(slot['ticket']) and revision(slot['generation'], minimum=1) and
+                slot['generation'] == generation and
+                generation > pending['core_generations'][role], 'invalid reboot cleanup slot')
+            if slot['owner'] is not None:
+                ledger.owner_valid(slot['owner'])
+                ledger.require(slot['owner']['boot_id'] == pending['boot_id'],
+                               'reboot cleanup contains another boot owner')
+        if 'resource' in cleanup:
+            from tools.serve_recovery import resource_launch
+            ledger.require('resource' in pending, 'resource cleanup has no original launch binding')
+            resource_launch.successor(pending['resource'], cleanup['resource'], cleanup['boot_id'])
+    return pending
+
+
 def validate(value):
     ledger.keys(value, ('format', 'revision', 'service_id', 'enabled', 'clock',
                        'total', 'starts', 'pending', 'protected', 'last'))
@@ -59,21 +119,17 @@ def validate(value):
         ledger.require(starts[-1]['serial'] == value['total'], 'lost outer start history')
     pending = value['pending']
     if pending is not None:
-        ledger.keys(pending, ('ticket', 'serial', 'boot_id', 'manifest_sha256',
-                             'core_sha256', 'owner'))
-        ledger.require(ledger.identifier(pending['ticket']) and
-            revision(pending['serial'], minimum=1) and pending['serial'] == value['total'] and
-            ledger.identifier(pending['boot_id']), 'invalid pending outer attempt')
-        hashed(pending['manifest_sha256']); hashed(pending['core_sha256'])
-        if pending['owner'] is not None:
-            ledger.owner_valid(pending['owner'])
-            ledger.require(pending['owner']['boot_id'] == pending['boot_id'],
-                           'outer owner belongs to another boot')
+        pending_valid(pending)
+        ledger.require(pending['serial'] == value['total'], 'outer attempt serial changed')
+        if 'resource' in pending:
+            ledger.require(pending['resource']['publication']['service_id'] == value['service_id'],
+                           'resource attempt service differs')
     last = value['last']
     ledger.require((last is None) == (value['revision'] == 0), 'missing outer transition')
     if last is not None:
         ledger.keys(last, ('operation', 'args', 'result'))
-        ledger.require(last['operation'] in ('configure', 'request', 'spawned', 'retired', 'acknowledge') and
+        ledger.require(last['operation'] in ('configure', 'request', 'spawned', 'retired',
+            'prepare_reboot', 'advance_reboot', 'acknowledge') and
             type(last['args']) is dict and type(last['result']) is dict,
             'invalid outer transition envelope')
     ledger.require(len(ledger.canonical(value)) <= MAX_BYTES, 'outer policy size bound')
@@ -101,12 +157,20 @@ def core_state(args, value):
 
 
 def request(value, args, stamp, now):
-    ledger.keys(args, ('core', 'ticket', 'manifest_sha256', 'cleanup_verified', 'identity_valid'))
+    ledger.keys(args, ('core', 'ticket', 'manifest_sha256', 'cleanup_verified', 'identity_valid',
+                       'custody', *(('resource',) if 'resource' in args else ())))
     core = core_state(args, value)
     ledger.require(ledger.identifier(args['ticket']) and
         type(args['cleanup_verified']) is bool and type(args['identity_valid']) is bool,
         'invalid outer start request')
     hashed(args['manifest_sha256'])
+    custody_valid(args['custody'], stamp.boot_id)
+    if 'resource' in args:
+        from tools.serve_recovery import resource_launch
+        publication = resource_launch.validate(args['resource'])['publication']
+        ledger.require(publication['service_id'] == value['service_id'] and
+            publication['record']['boot_id'] == stamp.boot_id,
+            'resource attempt service or boot differs')
     reason = None
     if not value['enabled']: reason = 'disabled'
     elif core['desired'] != 'RUNNING': reason = 'operator_intent'
@@ -127,7 +191,10 @@ def request(value, args, stamp, now):
     value['total'] += 1
     value['starts'].append(dict(serial=value['total'], at=now, ticket=args['ticket']))
     value['pending'] = dict(ticket=args['ticket'], serial=value['total'], boot_id=stamp.boot_id,
-        manifest_sha256=args['manifest_sha256'], core_sha256=ledger.digest(core), owner=None)
+        manifest_sha256=args['manifest_sha256'], core_sha256=ledger.digest(core),
+        core_revision=core['revision'], core_generations=deepcopy(core['generations']),
+        custody=deepcopy(args['custody']), owner=None, cleanup=None)
+    if 'resource' in args: value['pending']['resource'] = deepcopy(args['resource'])
     return dict(allowed=True, ticket=args['ticket'], serial=value['total'])
 
 
@@ -138,6 +205,50 @@ def apply(value, operation, args, stamp, now):
         value['enabled'] = args['enabled']
         return dict(enabled=value['enabled'], automatic_start=False)
     if operation == 'request': return request(value, args, stamp, now)
+    if operation in ('prepare_reboot', 'advance_reboot'):
+        ledger.keys(args, ('core', 'ticket', *(('resource',) if 'resource' in args else ())))
+        core = core_state(args, value); pending = value['pending']
+        ledger.require(pending is not None and pending['ticket'] == args['ticket'] and
+            pending['boot_id'] != stamp.boot_id,
+            'reboot cleanup requires a new boot and original unresolved attempt')
+        ledger.require(('resource' in args) == ('resource' in pending),
+                       'resource-bound reboot requires its original installation')
+        if 'resource' in args:
+            from tools.serve_recovery import resource_launch
+            resource_launch.successor(pending['resource'], args['resource'], stamp.boot_id)
+        if operation == 'advance_reboot':
+            cleanup = pending['cleanup']
+            ledger.require(cleanup is not None and cleanup['boot_id'] != stamp.boot_id and
+                core['revision'] >= cleanup['core_revision'] and
+                core['generations'] == cleanup['core_generations'],
+                'later reboot must preserve the original cleanup checkpoint')
+            for role, active in core['active'].items():
+                if active is not None:
+                    ledger.require({key: active[key] for key in ('ticket', 'generation', 'owner')} ==
+                        cleanup['slots'][role], 'later reboot cleanup slot changed')
+            cleanup['boot_id'] = stamp.boot_id
+            if 'resource' in args: cleanup['resource'] = deepcopy(args['resource'])
+            return dict(advanced=True, device_authorized=False, model_actions=False)
+        ledger.require(pending['cleanup'] is None, 'reboot cleanup already prepared')
+        ledger.require(core['revision'] >= pending['core_revision'] and all(
+            core['generations'][role] >= pending['core_generations'][role]
+            for role in ledger.ROLES), 'reboot core history regressed')
+        if core['revision'] == pending['core_revision']:
+            ledger.require(ledger.digest(core) == pending['core_sha256'], 'original reboot core changed')
+        slots = {}
+        for role, active in core['active'].items():
+            if active is None:
+                slots[role] = None
+                continue
+            ledger.require(active['generation'] > pending['core_generations'][role] and
+                (active['owner']['boot_id'] == pending['boot_id'] if active['owner'] is not None else
+                 core['clock']['boot_id'] == pending['boot_id'] or 'resource' in args),
+                'reboot cleanup lacks the original slot boot proof')
+            slots[role] = {key:deepcopy(active[key]) for key in ('ticket', 'generation', 'owner')}
+        pending['cleanup'] = dict(boot_id=stamp.boot_id, core_revision=core['revision'],
+            core_generations=deepcopy(core['generations']), slots=slots)
+        if 'resource' in args: pending['cleanup']['resource'] = deepcopy(args['resource'])
+        return dict(prepared=True, device_authorized=False, model_actions=False)
     if operation in ('spawned', 'retired'):
         ledger.keys(args, ('ticket', 'owner' if operation == 'spawned' else 'verified'))
         pending = value['pending']

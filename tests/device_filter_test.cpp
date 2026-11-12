@@ -346,6 +346,69 @@ Q4T_TEST(device_filter_pin_survives_real_creator_exit_and_reopens) {
   return true;
 }
 
+Q4T_TEST(device_filter_explicit_detach_survives_retained_descriptors) {
+  Groups groups;
+  Pins pins;
+  s::DeviceFilter original;
+  Attach(&original, groups);
+  Need(original.Pin(pins.policy.string()));
+  s::OwnedFd retained(fcntl(original.LinkFd(), F_DUPFD_CLOEXEC, 3));
+  Q4T_CHECK(retained.Get() >= 0);
+  Q4T_CHECK(Child(groups.denied, [] { return Zero(false); }));
+  s::DeviceFilter remover;
+  Need(remover.DetachPinned(pins.policy.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), {{1, 5}}, original.Identity()));
+  Q4T_CHECK(!fs::exists(pins.policy));
+  Q4T_CHECK(!original.Verify().ok());
+  Q4T_CHECK(fcntl(retained.Get(), F_GETFD) >= 0);
+  Q4T_CHECK(Child(groups.denied, [] { return Zero(true); }));
+  return true;
+}
+
+Q4T_TEST(device_filter_detached_pin_resumes_only_teardown) {
+  Groups groups;
+  Pins pins;
+  s::DeviceFilter original;
+  Attach(&original, groups);
+  Need(original.Pin(pins.policy.string()));
+  bpf_attr request{};
+  request.link_detach.link_fd = original.LinkFd();
+  Q4T_CHECK(syscall(SYS_bpf, BPF_LINK_DETACH, &request, sizeof(request)) == 0);
+  Q4T_CHECK(fs::exists(pins.policy));
+  s::DeviceFilter refused;
+  Q4T_CHECK(!refused.AdoptPinned(pins.policy.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), {{1, 5}}, original.Identity()).ok());
+  s::DeviceFilter remover;
+  Need(remover.DetachPinned(pins.policy.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), {{1, 5}}, original.Identity()));
+  Q4T_CHECK(!fs::exists(pins.policy));
+  Q4T_CHECK(Child(groups.denied, [] { return Zero(true); }));
+  return true;
+}
+
+Q4T_TEST(device_filter_explicit_detach_keeps_other_owned_rule) {
+  Groups groups;
+  Pins pins;
+  s::DeviceFilter original, other;
+  Attach(&original, groups);
+  Attach(&other, groups);
+  Need(original.Pin(pins.policy.string()));
+  Need(other.Pin(pins.other.string()));
+  s::DeviceFilter refused;
+  Q4T_CHECK(!refused.DetachPinned(pins.other.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), {{1, 5}}, original.Identity()).ok());
+  Need(original.Verify());
+  Need(other.Verify());
+  s::DeviceFilter remover;
+  Need(remover.DetachPinned(pins.policy.string(), groups.target_fd.Get(),
+      groups.allowed_fd.Get(), {{1, 5}}, original.Identity()));
+  Need(other.Verify());
+  Q4T_CHECK(fs::exists(pins.other));
+  Q4T_CHECK(Child(groups.denied, [] { return Zero(false); }));
+  Need(other.RemovePin(pins.other.string()));
+  return true;
+}
+
 Q4T_TEST(device_filter_adoption_verifies_code_and_retained_identity) {
   Groups groups;
   Pins pins;

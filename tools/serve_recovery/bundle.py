@@ -49,10 +49,19 @@ V15_SOURCES = tuple(sorted(set(V14_SOURCES) | {'tools/serve_recovery/'+name+'.py
                  'version_contract', 'version_registration')}))
 V16_SOURCES = tuple(sorted(set(V15_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('version_runtime', 'version_launch')}))
-SOURCES = tuple(sorted(set(V16_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+V17_SOURCES = tuple(sorted(set(V16_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('cold_admission', 'device_budget', 'device_store',
                  'device_control', 'device_inventory', 'device_platform',
                  'device_domain', 'cold_compat')}))
+SOURCES = tuple(sorted(set(V17_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+    for name in ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
+                 'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control', 'outer_runtime',
+                 'resource_kernel', 'resource_install', 'resource_launch', 'resource_reconcile',
+                 'outer_daemon', 'host_artifact', 'host_install', 'host_entry', 'host_systemd',
+                 'host_handoff', 'device_resource', 'cold_requests', 'cold_verify',
+                 'cold_authority', 'cold_channel', 'cold_issuer', 'cold_client', 'cold_host',
+                 'cold_custody', 'cold_watch_policy', 'cold_watch', 'resource_memory', 'resource_client', 'resource_compat',
+                 'runtime_identity')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -225,8 +234,10 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         (device_control is None or build.get('device_control_sha256') == engine.sha(device_control)),
         'native build receipt mismatch')
     for name, digest in build['source_files'].items():
+        # Sources are copied from this builder's ROOT below. The explicit
+        # repository selects deployment paths and its cooperative lease.
         ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
-                       engine.sha(repository/name) == digest, 'native source changed since build')
+                       engine.sha(ROOT/name) == digest, 'native source changed since build')
     if tls is not None:
         tls_control.check(native_ingress, policy, tls, Path(output).parent)
     target = engine.private_directory(output, repository)
@@ -271,7 +282,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=17, profile='q4t-service-recovery-v17', repository=str(repository),
+    value = dict(version=18, profile='q4t-service-recovery-v18', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -299,10 +310,10 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in range(2, 18) else ()),
-        *(('tls_configuration',) if version in range(4, 18) else ()),
-        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 18) else ())))
-    ledger.require(type(version) is int and version in range(1, 18) and
+        *(('ingress_mode',) if version in range(2, 19) else ()),
+        *(('tls_configuration',) if version in range(4, 19) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 19) else ())))
+    ledger.require(type(version) is int and version in range(1, 19) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -311,9 +322,9 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    if version == 17 and type(value['files']) is dict and 'bin/q4t-device-control' in value['files']:
+    if version >= 17 and type(value['files']) is dict and 'bin/q4t-device-control' in value['files']:
         executables = (*executables, 'q4t-device-control')
-    sources = (SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
+    sources = (SOURCES if version == 18 else V17_SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
                V11_SOURCES if version == 11 else
                V10_SOURCES if version == 10 else
                V9_SOURCES if version == 9 else
@@ -326,10 +337,10 @@ def verify(package, digest):
              'gateway-policy.json', 'native-build.json'}
     if value.get('recovery_profiles') is not None:
         names |= {'profile-primary.json', 'profile-light.json'}
-    if version in range(4, 18):
+    if version in range(4, 19):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in range(4, 18) and native):
+    if value['tls'] and not (version in range(4, 19) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')

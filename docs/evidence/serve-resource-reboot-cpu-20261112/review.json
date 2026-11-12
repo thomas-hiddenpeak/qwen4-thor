@@ -1,0 +1,29 @@
+{
+  "status": "TARGETED_RESOURCE_REBOOT_CPU_PASS",
+  "distinct_tests": 31,
+  "all_first_pass": true,
+  "cpu_seconds": 6.995046027004719,
+  "historical_boot_fixtures": true,
+  "host_reboot_tested": false,
+  "real_owned_resource_capability": true,
+  "unknown_birth_after_offline_stop_reconciled": true,
+  "repeated_boot_preserves_checkpoint": true,
+  "current_boot_owner_and_wrong_domain_rejected": true,
+  "ordinary_launch_cannot_bypass_pending": true,
+  "original_protection_and_budgets_preserved": true,
+  "model_gpu_starts": 0,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "owned_test_domains_remaining": [],
+  "source_sha256": {
+    "tools/serve_recovery/resource_launch.py": "d97defa7397c41e5ee7c00177c4c6d80769083b86bbc143593a92577eb4a447d",
+    "tools/serve_recovery/outer_policy.py": "7d2218d0b0d5f6d16a1f95f18ee9b81d45a2e057f8d8646ce3bb75b628d6fffd",
+    "tools/serve_recovery/outer_reconcile.py": "e2999f84538a1b390553c1163726c2cf5c9a28f0d3dbe532aa617d6373d2c4c9",
+    "tools/serve_recovery/outer_runtime.py": "ae8397be684f17a37c8eb5354fe8c5287aed115050bfa681d5f638feeec3b864",
+    "tools/serve_recovery/service.py": "4eb5bb4c0c614740c6c9dcfbcfbdcbaba3735c78a7f69efa0e4cbe2fbb554064",
+    "tools/serve_recovery/test_resource_reboot.py": "af41f33b16adf6fc85c7d1055a00b66b2ce08470de34443096bf0f2325f6ea5e",
+    "tools/serve_recovery/test_outer_reboot.py": "4ece2dd122feda45f0347cb646b8134d211512db942ba86f94566a96eab59a63",
+    "tools/serve_recovery/test_outer_runtime.py": "b747aa012a1affefc3c1601cbfe72e67377c1295d5953ed69498de9c990d9d8d"
+  },
+  "released": false
+}

@@ -1,0 +1,24 @@
+[  8%] Building CXX object CMakeFiles/q4t_guardian_process.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/guardian_process.cpp.o
+[ 16%] Linking CXX static library libq4t_guardian_process.a
+[ 16%] Built target q4t_guardian_process
+[ 25%] Building CXX object CMakeFiles/q4t_device_filter.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_filter.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/guardian_wire.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/io/json.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/guardian_journal.cpp.o
+[ 58%] Linking CXX static library libq4t_guardian_journal.a
+[ 58%] Built target q4t_guardian_journal
+[ 66%] Linking CXX static library libq4t_device_filter.a
+[ 66%] Built target q4t_device_filter
+[ 75%] Building CXX object CMakeFiles/q4t_device_admission.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_admission.cpp.o
+[ 83%] Linking CXX static library libq4t_device_admission.a
+[ 83%] Built target q4t_device_admission
+[ 91%] Building CXX object CMakeFiles/q4t_device_control.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/src/service/device_control_main.cpp.o
+[100%] Linking CXX executable q4t-device-control
+[100%] Built target q4t_device_control
+[ 16%] Built target q4t_guardian_process
+[ 33%] Built target q4t_device_filter
+[ 66%] Built target q4t_guardian_journal
+[ 83%] Built target q4t_device_admission
+[ 91%] Building CXX object CMakeFiles/q4t_device_filter_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tests/device_filter_test.cpp.o
+[100%] Linking CXX executable q4t_device_filter_tests
+[100%] Built target q4t_device_filter_tests

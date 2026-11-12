@@ -1,0 +1,87 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 125.11218411615118,
+  "budget": {
+    "counts": {
+      "starts": 6,
+      "chats": 8,
+      "probes": 1,
+      "controls": 1010
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 5,
+        "monotonic_ns": 2643553830687634
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 4,
+        "monotonic_ns": 2643612539945276
+      },
+      {
+        "kind": "chats",
+        "label": "second-tool",
+        "ordinal": 5,
+        "monotonic_ns": 2643614328926311
+      },
+      {
+        "kind": "probes",
+        "label": "root-version-device-proof",
+        "ordinal": 1,
+        "monotonic_ns": 2643618501127631
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 6,
+        "monotonic_ns": 2643625725710562
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 6,
+        "monotonic_ns": 2643661401343504
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-tool-result-sse",
+        "ordinal": 7,
+        "monotonic_ns": 2643663196636285
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-schema-sse",
+        "ordinal": 8,
+        "monotonic_ns": 2643664283250432
+      }
+    ]
+  },
+  "models": {
+    "3": {
+      "pid": 1885930,
+      "start_ticks": 264355383
+    },
+    "4": {
+      "pid": 1886951,
+      "start_ticks": 264362572
+    }
+  },
+  "quota_deadlines": {
+    "3": 2643613.8068764997,
+    "4": 2643678.354328434
+  },
+  "source_commit": "a31e0bbd2feea0419076c2aff3dedb5d64b439de",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/bundle",
+    "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+    "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

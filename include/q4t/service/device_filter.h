@@ -60,12 +60,25 @@ class DeviceFilter {
   Status AdoptInherited(int link, int program,
                         const DeviceFilterIdentity& expected);
   Status RemovePin(const std::string& path) const;
+  // Explicit administrative teardown after the owned service is empty.
+  // Detaches the exact link even when another process retains a descriptor,
+  // then removes its pin. A detached-but-still-pinned interruption can resume;
+  // it can never be adopted as valid launch authority.
+  Status DetachPinned(const std::string& path, int target_cgroup,
+                      int allowed_cgroup,
+                      const std::vector<DeviceNumber>& devices,
+                      const DeviceFilterIdentity& expected);
   Status Verify() const;
   const DeviceFilterIdentity& Identity() const { return identity_; }
   int LinkFd() const { return link_.Get(); }
   int ProgramFd() const { return program_.Get(); }
 
  private:
+  Status OpenPinned(const std::string& path, int target_cgroup,
+                    int allowed_cgroup,
+                    const std::vector<DeviceNumber>& devices,
+                    const DeviceFilterIdentity& expected,
+                    bool allow_detached);
   OwnedFd program_;
   OwnedFd link_;
   DeviceFilterIdentity identity_;

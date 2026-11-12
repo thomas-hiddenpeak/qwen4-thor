@@ -26,6 +26,11 @@ def request(service_id, operation, *, timeout=3):
     return _request(service_id, operation, timeout=timeout)
 
 
+def outer_observation(service_id, *, adopt=False, timeout=.5):
+    ledger.require(type(adopt) is bool, 'explicit outer observation operation required')
+    return _request(service_id, 'outer-adopt' if adopt else 'outer-heartbeat', timeout=timeout)
+
+
 def binding(service_id, *, timeout=0.5):
     """Credentials are returned only to the Guardian's pinned gateway PID."""
     return _request(service_id, 'binding', timeout=timeout)

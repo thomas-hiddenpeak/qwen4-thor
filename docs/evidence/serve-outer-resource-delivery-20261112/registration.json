@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle",
+    "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "238cfed2-40b7-4750-aff3-f35a073ccf61",
+    "root_manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "binding_sha256": "6e6607ce931eec1d5cf8731b1676613cd69ceac8d10f58f8b6fdefee35438037"
+      },
+      "fallback": {
+        "manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+        "binding_sha256": "f88b41c7728184b7f48eaa0fa2bb44e643833c89dcc6219ea9c18fba7a764064"
+      }
+    },
+    "compatibility_sha256": "f2577bb31666889d1bb6727dd80b620d5d0f41e03325342cf78da49cb31fc517",
+    "qualification_sha256": "1d8b393c191c2c2800cf9f23bc62f22733e7fb9cf16ce9d1925180bc5df3d3a0"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/service.release.json",
+      "sha256": "0d49cdb7e06f1f5de995d7fbf9f10a632e0b1da578002e2fce6531130949df4f"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/service.acceptance.json",
+      "sha256": "a84104fc71b064df959358ba9ca8e30afd4d17a0958b5f972006972aa73e4838"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle",
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8"
+      },
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "controller_sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/retained-fallback",
+        "manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b"
+      },
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "controller_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    }
+  }
+}

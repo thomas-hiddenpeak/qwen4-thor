@@ -1,0 +1,46 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_DEVICE_CONTROL_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/device-detach-build/q4t-device-control",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-c",
+    "import sys,unittest;sys.path.insert(0,'/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree');unittest.main(module=None)",
+    "-v",
+    "tools.serve_recovery.test_device_control.ControlTests.test_explicit_native_detach_revokes_rule_while_client_keeps_descriptors",
+    "tools.serve_recovery.test_device_control.ControlTests.test_explicit_native_detach_rejects_wrong_original_rules",
+    "tools.serve_recovery.test_device_control.ControlTests.test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_detach_interruption_resumes_saved_identity_without_recovering_authority",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_pending_detach_cannot_requalify_or_change_its_selected_fence",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_detach_failure_never_falls_back_to_unpin_only_helper",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_disarm_uses_retained_rules_without_monitor_and_preserves_budget"
+  ],
+  "exit_code": 0,
+  "seconds": 0.28148224018514156,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

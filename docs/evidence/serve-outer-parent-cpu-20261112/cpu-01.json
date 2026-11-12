@@ -1,0 +1,41 @@
+{
+  "argv": [
+    "env",
+    "Q4T_GUARDIAN_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/guardian-build/q4t-guardian",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-recovery-20261112/parent-native",
+    "python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_outer_parent.py",
+    "-v",
+    "tools.serve_recovery.test_outer_parent",
+    "tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_keeps_actual_instance_after_guardian_stops",
+    "tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_close_does_not_unlock_live_guardian_duplicate",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_parent_death_is_a_durable_stop",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_committed_daemon_survives_short_lived_launcher"
+  ],
+  "exit_code": 0,
+  "seconds": 5.387290547136217,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

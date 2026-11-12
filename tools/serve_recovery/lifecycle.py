@@ -4,6 +4,7 @@ import fcntl
 import os
 from pathlib import Path
 import stat
+import uuid
 
 from tools.serve_host import native
 from tools.serve_recovery import access_store, bundle, control, deployment
@@ -104,11 +105,67 @@ def stopped(state, package, digest):
         ledger.require(native.private_json(state/store.LOCK) ==
             dict(version=ledger.VERSION, service_id=desc['service_id']), 'core writer identity changed')
         core = native.read_ledger(dict(state=str(state), descriptor=desc))
-        ledger.require(core['desired'] == 'STOPPED' and not core['active'],
+        ledger.require(core['desired'] == 'STOPPED' and not core['active'] and
+                       not pending_outer(state, desc),
                        'service stop is not confirmed')
         return dict(service_id=desc['service_id'], state='STOPPED', desired='STOPPED',
             live_control=False, business_ready=False, cleanup_confirmed=True,
             model_actions=False, automatic_start=False)
+
+
+def pending_outer(state, desc):
+    from tools.serve_recovery import outer_store
+    if not os.path.lexists(Path(state)/outer_store.Store.marker_name):
+        ledger.require(not os.path.lexists(Path(state)/outer_store.Store.directory_name),
+                       'outer state lost its persistent binding')
+        return False
+    return read_family(state, desc, outer_store.Store)['pending'] is not None
+
+
+def request_stop(state, package, digest):
+    """Persist operator intent even if the live Guardian endpoint is absent.
+
+    A live instance or writer always prevents offline mutation. Old slots are
+    retained for actual reconciliation: STOPPED never implies they are empty.
+    """
+    state = Path(state).absolute()
+    with deployment.claim(state, shared=True), deployment.claim(state, name='guardian.lock'):
+        desc = selected_state(state, package, digest)
+        pending = pending_outer(state, desc)
+        with store.Store(state, desc['service_id']) as current:
+            if current.state['desired'] != 'STOPPED':
+                current.transact(dict(id=str(uuid.uuid4()), expected_revision=current.state['revision'],
+                    operation='desired', args=dict(state='STOPPED')))
+            cleaned = not any(current.state['active'].values()) and not pending
+            return dict(service_id=desc['service_id'], state='STOPPED' if cleaned else 'DRAINING',
+                desired='STOPPED', live_control=False, business_ready=False, stop_durable=True,
+                cleanup_confirmed=cleaned, reconciliation_required=not cleaned,
+                model_actions=False, automatic_start=False)
+
+
+def resume(state, package, digest):
+    """Resume original RUNNING intent; never manufacture an activation.
+
+    The actual Guardian re-reads intent before its own role grants, covering an
+    operator stop between this preflight and process dispatch. Unknown old slots
+    must go through the outer reconciliation path before this entry is called.
+    """
+    from tools.serve_recovery import service
+    manifest = bundle.verify(package, digest)
+    state = Path(state).absolute()
+    with deployment.claim(state, shared=True):
+        with deployment.claim(state, name='guardian.lock'):
+            desc = selected_state(state, package, digest)
+            pending = pending_outer(state, desc)
+            with store.Store(state, desc['service_id']) as current:
+                if current.state['desired'] == 'STOPPED':
+                    return dict(service_id=desc['service_id'], state='STOPPED', desired='STOPPED',
+                        resumed=False, automatic_start=False, model_actions=False,
+                        cleanup_confirmed=not any(current.state['active'].values()) and not pending)
+                ledger.require(current.state['quarantine'] is None and
+                    not any(current.state['active'].values()) and not pending,
+                    'resume requires original unprotected reconciled state')
+        return service.launch_owned(package, digest, state, manifest=manifest, resume=True)
 
 
 def reload(package, digest, state, *, component, proposal=None, wait_seconds=3):

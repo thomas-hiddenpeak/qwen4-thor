@@ -36,7 +36,13 @@ namespace w = q4t::service::wire;
 using q4t::io::Json;
 constexpr int64_t kSecond = 1'000'000'000;
 volatile sig_atomic_t stop_signal = 0;
-void SignalHandler(int) { stop_signal = 1; }
+volatile sig_atomic_t outer_loss_signal = 0;
+void SignalHandler(int signum) {
+  if (signum == SIGUSR1)
+    outer_loss_signal = 1;
+  else
+    stop_signal = 1;
+}
 
 int64_t Now() {
   return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -156,6 +162,7 @@ struct Config {
   Json versions;
   Json cold_admission;
   int lease_fd = -1;
+  int outer_instance_fd = -1;
   int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
   int64_t heartbeat_ns = 15 * kSecond;
   uint64_t memory_floor_mib = 1024;
@@ -170,28 +177,35 @@ Config ReadConfig(const std::string& path) {
           "invalid Guardian config");
   const auto version = Integer(value, "version");
   auto fields = value;
-  if (version >= 2 && version <= 4) {
+  if (version >= 2 && version <= 5) {
     const auto* handoff = value.Find("usage_handoff");
     Require(handoff && handoff->IsBool(), "invalid usage handoff policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "usage_handoff";
     });
   }
-  if (version == 3 || version == 4) {
+  if (version >= 3 && version <= 5) {
     Require(value.Find("version_recovery") &&
                 (value.Find("version_recovery")->IsObject() ||
-                 (version == 4 && value.Find("version_recovery")->IsNull())),
+                 (version >= 4 && value.Find("version_recovery")->IsNull())),
             "invalid version recovery policy");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "version_recovery";
     });
   }
-  if (version == 4) {
+  if (version == 4 || version == 5) {
     Require(value.Find("cold_admission") &&
-                value.Find("cold_admission")->IsObject(),
+                (value.Find("cold_admission")->IsObject() ||
+                 (version == 5 && value.Find("cold_admission")->IsNull())),
             "invalid cold device admission");
     std::erase_if(fields.object, [](const auto& item) {
       return item.first == "cold_admission";
+    });
+  }
+  if (version == 5) {
+    Require(value.Find("outer_instance_fd"), "missing outer instance custody");
+    std::erase_if(fields.object, [](const auto& item) {
+      return item.first == "outer_instance_fd";
     });
   }
   Require(w::HasKeys(fields,
@@ -201,7 +215,7 @@ Config ReadConfig(const std::string& path) {
                       "heartbeat_ms", "critical_memory_mib", "launch",
                       "gateway", "quota_enforced"}),
           "unknown Guardian configuration fields");
-  Require((version >= 1 && version <= 4) &&
+  Require((version >= 1 && version <= 5) &&
               Text(value, "resource_mode") == "process",
           "unsupported service mode");
   const auto* hard = value.Find("require_hard_memory_limit");
@@ -216,6 +230,12 @@ Config ReadConfig(const std::string& path) {
   const uint64_t lease = Integer(value, "lease_fd");
   Require(lease >= 3 && lease <= 1'000'000, "invalid inherited lease FD");
   config.lease_fd = static_cast<int>(lease);
+  if (version == 5) {
+    const uint64_t instance = Integer(value, "outer_instance_fd");
+    Require(instance >= 3 && instance <= 1'000'000 && instance != lease,
+            "invalid outer instance descriptor");
+    config.outer_instance_fd = static_cast<int>(instance);
+  }
   const auto* command = value.Find("controller");
   Require(command->IsArray() && !command->array.empty() &&
               command->array.size() <= 64,
@@ -242,7 +262,7 @@ Config ReadConfig(const std::string& path) {
   config.quota_enforced = value.Find("quota_enforced")->boolean;
   config.usage_handoff = version >= 2 && value.GetBool("usage_handoff");
   if (version >= 3) config.versions = *value.Find("version_recovery");
-  if (version == 4) config.cold_admission = *value.Find("cold_admission");
+  if (version >= 4) config.cold_admission = *value.Find("cold_admission");
   Require(!config.usage_handoff || config.quota_enforced,
           "usage handoff requires quota protection");
   for (const auto* absolute :
@@ -286,6 +306,8 @@ Config ReadConfig(const std::string& path) {
               : startup == 0,
           "invalid startup channel");
   config.startup_fd = config.daemon ? static_cast<int>(startup) : -1;
+  Require(config.outer_instance_fd < 0 || !config.daemon,
+          "outer instance custody requires foreground lifecycle");
   const auto timeout = Integer(launch, "timeout_ms");
   Require(timeout >= 100 && timeout <= 600'000, "invalid startup deadline");
   config.startup_ns = static_cast<int64_t>(timeout) * 1'000'000;
@@ -351,7 +373,9 @@ class Guardian {
               "invalid daemon startup channel");
       startup_deadline_ = Now() + config_.startup_ns;
     } else {
-      Require(prctl(PR_SET_PDEATHSIG, SIGTERM, 0, 0, 0) == 0 &&
+      const int parent_signal =
+          config_.outer_instance_fd >= 0 ? SIGUSR1 : SIGTERM;
+      Require(prctl(PR_SET_PDEATHSIG, parent_signal, 0, 0, 0) == 0 &&
                   getppid() == config_.launcher.pid &&
                   s::ReadProcess(config_.launcher.pid, &parent).ok() &&
                   parent.identity == config_.launcher,
@@ -363,8 +387,18 @@ class Guardian {
                 (info.st_mode & 0777) == 0700,
             "private service directory required");
     const std::string lock = config_.directory + "/guardian.lock";
-    instance_.Reset(
-        open(lock.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600));
+    if (config_.outer_instance_fd >= 0) {
+      // The explicit outer owner retains this description across child exit,
+      // cleanup and core reconciliation. No second root can interleave. The
+      // descriptor is real kernel custody, never a grant inferred from JSON.
+      Require(s::CheckInheritedLease(config_.outer_instance_fd, lock).ok(),
+              "outer service instance is not continuously held");
+      instance_.Reset(fcntl(config_.outer_instance_fd, F_DUPFD_CLOEXEC, 3));
+      close(config_.outer_instance_fd);
+    } else {
+      instance_.Reset(
+          open(lock.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600));
+    }
     Require(instance_.Get() >= 0 && fstat(instance_.Get(), &info) == 0 &&
                 S_ISREG(info.st_mode) && info.st_uid == geteuid() &&
                 info.st_nlink == 1 && (info.st_mode & 0777) == 0600 &&
@@ -420,6 +454,7 @@ class Guardian {
       Require(fd >= 3 && fd <= 1000000 &&
                   static_cast<int>(fd) != lease_.Get() &&
                   static_cast<int>(fd) != config_.lease_fd &&
+                  static_cast<int>(fd) != config_.outer_instance_fd &&
                   static_cast<int>(fd) != instance_.Get() &&
                   static_cast<int>(fd) != bootstrap_.Get() &&
                   unique.insert(static_cast<int>(fd)).second,
@@ -462,7 +497,16 @@ class Guardian {
                             {gateway_socket_.Get(), POLLIN, 0}};
       poll(descriptors, 3, 25);
       const int64_t now = Now();
+      if (outer_loss_signal) {
+        outer_loss_signal = 0;
+        // A managed outer observer is auxiliary to this live control root.
+        // Its death must not invent operator STOPPED or restart healthy work.
+        if (config_.outer_instance_fd >= 0 && !outer_attached_ &&
+            getppid() != config_.launcher.pid)
+          outer_owner_lost_ = true;
+      }
       if (stop_signal) RequestStop(now);
+      CheckOuter(now);
       Clients(now);  // Stop precedes consuming any new durable launch receipt.
       if (versions_) versions_->Tick(now);
       if (versions_ && versions_->NeedsCleanup() && !stopping_ &&
@@ -612,6 +656,8 @@ class Guardian {
     gateway_reason_at_ = now;
   }
   Json Status() const {
+    const auto& outer_owner =
+        outer_attached_ ? outer_observer_.identity : config_.launcher;
     const bool observations_unknown =
         !controller_health_.IsNull() &&
         controller_health_.GetString("observation") != "AVAILABLE";
@@ -622,6 +668,7 @@ class Guardian {
         : recovering_ || gateway_recovering_ || version_draining_ ? "RECOVERING"
         : quarantined_         ? "QUARANTINED"
         : BusinessReady()      ? (gate_.Frozen() || observations_unknown ||
+                                     outer_owner_lost_ ||
                                      (versions_ && !versions_->Available())
                                       ? "READY_DEGRADED"
                                       : "READY")
@@ -644,6 +691,17 @@ class Guardian {
          {"state", w::String(state)},
          {"guardian_pid", w::Unsigned(getpid())},
          {"guardian_start_ticks", w::Unsigned(self_.identity.start_ticks)},
+         {"outer_supervised", w::Boolean(config_.outer_instance_fd >= 0)},
+         {"outer_owner_lost", w::Boolean(outer_owner_lost_)},
+         {"outer_owner_pid", w::Unsigned(outer_owner.pid)},
+         {"outer_owner_start_ticks", w::Unsigned(outer_owner.start_ticks)},
+         {"outer_origin_pid", w::Unsigned(config_.launcher.pid)},
+         {"outer_origin_start_ticks",
+          w::Unsigned(config_.launcher.start_ticks)},
+         {"outer_heartbeat_age_ms",
+          outer_attached_ ? w::Unsigned((Now() - outer_heartbeat_at_) /
+                                        1'000'000)
+                          : Json{}},
          {"controller_pid", controller_.identity.pid > 0 && !controller_reaped_
                                 ? w::Unsigned(controller_.identity.pid)
                                 : Json{}},
@@ -717,6 +775,41 @@ class Guardian {
     if (failure_.empty()) failure_ = reason;
     gate_.Freeze();
     gateway_gate_.Freeze();
+  }
+  void CheckOuter(int64_t now) {
+    if (!outer_attached_) return;
+    bool exited = false;
+    if (!s::ProcessExited(outer_observer_.pidfd.Get(), &exited).ok() ||
+        exited || now - outer_heartbeat_at_ >= 3 * kSecond)
+      outer_owner_lost_ = true;
+  }
+  bool ObserveOuter(pid_t peer, int64_t now, bool adopt) {
+    if (config_.outer_instance_fd < 0 || stopping_) return false;
+    CheckOuter(now);
+    if (adopt) {
+      const auto& owner =
+          outer_attached_ ? outer_observer_.identity : config_.launcher;
+      if (!outer_owner_lost_ && peer != owner.pid) return false;
+      s::ProcessRecord record;
+      s::OwnedFd capability;
+      if (!s::ReadProcess(peer, &record).ok() ||
+          !s::OpenProcess(record.identity, &capability).ok())
+        return false;
+      outer_observer_.identity = record.identity;
+      outer_observer_.pidfd = std::move(capability);
+      outer_attached_ = true;
+    } else {
+      bool exited = false;
+      if (!outer_attached_ || peer != outer_observer_.identity.pid ||
+          !s::ProcessExited(outer_observer_.pidfd.Get(), &exited).ok() ||
+          exited)
+        return false;
+    }
+    // This only restores an auxiliary observation relationship. It cannot
+    // activate, acknowledge protection, replenish budget, or replace work.
+    outer_heartbeat_at_ = now;
+    outer_owner_lost_ = false;
+    return true;
   }
   void Bootstrap(int64_t now) {
     if (bootstrap_.Get() < 0) return;
@@ -817,6 +910,14 @@ class Guardian {
           if (operation == "status") {
             CheckModel();
             Send(it->fd.Get(), Status());
+          } else if (operation == "outer-adopt" ||
+                     operation == "outer-heartbeat") {
+            const bool accepted =
+                ObserveOuter(it->peer, now, operation == "outer-adopt");
+            Json result = Status();
+            result.object.emplace_back("outer_observation_accepted",
+                                       w::Boolean(accepted));
+            Send(it->fd.Get(), result);
           } else if (operation == "binding" && !gateway_reaped_ &&
                      it->peer == gateway_.identity.pid) {
             CheckModel();
@@ -1898,6 +1999,10 @@ class Guardian {
   Json version_exit_;
   bool activate_ = false, initialized_ = false, desired_running_ = false;
   bool stopping_ = false, stopped_ = false, stop_durable_ = false;
+  bool outer_owner_lost_ = false;
+  bool outer_attached_ = false;
+  s::ChildProcess outer_observer_;
+  int64_t outer_heartbeat_at_ = 0;
   bool stop_handoff_ = false;
   s::QuotaHandoffGrace quota_handoff_grace_;
   bool recovering_ = false, controller_reaped_ = true;
@@ -1963,6 +2068,7 @@ int main(int argc, char** argv) {
     return 2;
   }
   try {
+    auto config = ReadConfig(argv[2]);
     struct sigaction action {};
     action.sa_handler = SignalHandler;
     sigemptyset(&action.sa_mask);
@@ -1970,7 +2076,10 @@ int main(int argc, char** argv) {
                 sigaction(SIGINT, &action, nullptr) == 0 &&
                 sigaction(SIGHUP, &action, nullptr) == 0,
             "signal control unavailable");
-    Guardian guardian(ReadConfig(argv[2]),
+    if (config.outer_instance_fd >= 0)
+      Require(sigaction(SIGUSR1, &action, nullptr) == 0,
+              "outer ownership observation unavailable");
+    Guardian guardian(std::move(config),
                       std::string(argv[3]) == "--activate");
     guardian.Initialize();
     for (;;) {

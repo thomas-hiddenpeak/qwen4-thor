@@ -142,6 +142,14 @@ void Execute(int socket, const Json& command) {
           Descriptor(args, "target_fd"), Descriptor(args, "allowed_fd"),
           Devices(*args.Find("devices"))));
     }
+  } else if (operation == "detach") {
+    Fields(args, {"target_fd", "allowed_fd", "devices", "pin", "identity"});
+    Need(filter.DetachPinned(Text(args, "pin"), Descriptor(args, "target_fd"),
+        Descriptor(args, "allowed_fd"), Devices(*args.Find("devices")),
+        ParseIdentity(*args.Find("identity"))));
+    Send(socket, w::Object({{"ok", w::Boolean(true)},
+                           {"result", w::String("detached")}}));
+    return;
   } else if (operation == "adopt" || operation == "remove") {
     Fields(args, {"target_fd", "allowed_fd", "devices", "pin", "identity"});
     Need(filter.AdoptPinned(Text(args, "pin"), Descriptor(args, "target_fd"),

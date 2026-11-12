@@ -1,0 +1,15 @@
+{
+  "status": "TARGETED_OWNER_VERIFICATION_CPU_ACCEPTED",
+  "tests": 2,
+  "seconds": 0.4315308132208884,
+  "real_uid_drop": true,
+  "private_owner_checks_unchanged": true,
+  "model_starts": 0,
+  "resource_installed": false,
+  "initial_failure": "administrator verification rejected ordinary UID private policy before lease/resource actions",
+  "reuse_same_prepared_package_and_state": true,
+  "source_sha256": {
+    "tools/serve_recovery/outer_acceptance.py": "8feee58b48fa8c8a14481952dd6f8d22667dc5abf03710b18a6a123ef3472773",
+    "tools/serve_recovery/test_outer_acceptance.py": "9110f380566036125238a905e9c9a3bdbd5baa438311c0ce1ceed72e4739c524"
+  }
+}

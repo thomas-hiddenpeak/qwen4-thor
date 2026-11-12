@@ -1,0 +1,15 @@
+test_missing_account_and_root_alias_never_grant_fallback_membership (tools.serve_recovery.test_runtime_identity.SelectionTests.test_missing_account_and_root_alias_never_grant_fallback_membership) ... ok
+test_only_target_accounts_existing_device_groups_survive (tools.serve_recovery.test_runtime_identity.SelectionTests.test_only_target_accounts_existing_device_groups_survive) ... ok
+test_actual_old_dac_failure_fixed_without_retaining_admin_or_root (tools.serve_recovery.test_runtime_identity.RuntimeTests.test_actual_old_dac_failure_fixed_without_retaining_admin_or_root) ... ok
+test_no_new_privileges_required_before_any_credential_change (tools.serve_recovery.test_runtime_identity.RuntimeTests.test_no_new_privileges_required_before_any_credential_change) ... ok
+test_entry_drops_privileges_and_child_closes_capability_before_exec (tools.serve_recovery.test_resource_launch.LaunchTests.test_entry_drops_privileges_and_child_closes_capability_before_exec) ... ok
+test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain) ... ok
+test_actual_inherited_fd_rejects_outside_targets_and_service_escape (tools.serve_recovery.test_resource_delegation.DelegationTests.test_actual_inherited_fd_rejects_outside_targets_and_service_escape) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.748s
+
+OK

@@ -1,0 +1,7 @@
+test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance) ... ok
+test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_actual_root_exit_reaps_old_tree_then_restarts_after_real_cooldown) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 36.237s
+
+OK
