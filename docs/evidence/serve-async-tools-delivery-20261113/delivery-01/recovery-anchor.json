@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/retained-02/bundle",
+  "manifest_sha256": "6a163a1debe64597b90a5334f8a6f1ec775536f912f0fdbe1135328f43772c91",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "bed67a66dc6aee276537ebe8d0d0e5ff9826f7398b2ab1d4b4eca7b1bb53a340",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

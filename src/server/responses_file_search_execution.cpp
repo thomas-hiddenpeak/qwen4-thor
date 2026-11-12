@@ -221,4 +221,58 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
     status = FitResponsesContext(envelope, config, check, next, &error);
   return status ? ObjectReply{} : PlanError(status, error);
 }
+
+ObjectReply ResponsesExecution::ContinueAsyncTools(
+    size_t completed_calls, int64_t output_used, const ChatPlanConfig& config,
+    const ResponsesContextCheck& check, ResponsesGenerationPlan* next,
+    bool* continue_answer, std::string* wire) {
+  *next = {};
+  *continue_answer = false;
+  wire->clear();
+  const auto limit = envelope_.options.GetInt("max_output_tokens");
+  if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
+      output_used < 0 || output_used >= limit)
+    return Error(500, "response_state_invalid", "Invalid async continuation");
+  if (async_continued_) return {};
+  auto candidate = output_;
+  std::string events;
+  auto status =
+      candidate.CompleteAsyncCalls(completed_calls, continue_answer, &events);
+  if (!status) return Error(502, "async_tool_incomplete", status.message());
+  if (!*continue_answer) return {};
+  auto envelope = envelope_;
+  Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
+  // One bounded independent-answer step, with no replay/new client dispatch.
+  // Retain definitions for historical custom-tool rendering and constraints.
+  Set(&envelope.request, "tool_choice", String("none"));
+  const std::string instructions =
+      "The asynchronous tool calls in this response have been handed to the "
+      "client. Their results have not arrived. Continue any independent "
+      "part of the user's task now. Do not invent tool results or repeat "
+      "calls. If the remaining work depends on results, state briefly that "
+      "they are pending.";
+  auto history = generation_history_;
+  const auto& output = candidate.Snapshot().GetArray("output")->array;
+  history.array.insert(history.array.end(), output.begin(), output.end());
+  // Resume is a real server scheduling decision after dispatch, not another
+  // user message or an invented tool result. Keep it local to this model step.
+  history.array.push_back(Object(
+      {{"role", String("developer")}, {"content", String(instructions)}}));
+  ChatPlanError error;
+  status = PrepareResponsesGeneration(envelope, history, config, next, &error);
+  if (status)
+    status = FitResponsesContext(envelope, config, check, next, &error);
+  if (!status) return PlanError(status, error);
+  // Persist call completion before handing its done event to a subscriber.
+  // A crash resumes no generated step and replays no client operation.
+  output_ = std::move(candidate);
+  status = RecordOutput({}, &events);
+  if (!status)
+    return Error(503, "response_storage_exhausted", status.message());
+  auto saved = Checkpoint();
+  if (!saved.ok()) return saved;
+  async_continued_ = true;
+  *wire = std::move(events);
+  return {};
+}
 }  // namespace q4t::server

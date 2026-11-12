@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-file-search-20261112/host",
+    "--target",
+    "q4t_host_tests",
+    "--parallel",
+    "6"
+  ],
+  "exit_code": 0,
+  "seconds": 107.78610073728487,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t",
+      "sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t.release.json",
+      "sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t",
+      "sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t.release.json",
+      "sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619"
+    }
+  },
+  "default_unchanged": true
+}

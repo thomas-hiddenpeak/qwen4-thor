@@ -1,0 +1,20 @@
+F
+======================================================================
+FAIL: test_native_async_outputs_and_events_match_official_shapes (tools.serve_responses.test_tool_identity_contract.ToolIdentityContract.test_native_async_outputs_and_events_match_official_shapes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_tool_identity_contract.py", line 15, in test_native_async_outputs_and_events_match_official_shapes
+    self.assertEqual([(list(e.path), e.message[:120])
+AssertionError: Lists differ: [([], "'tool_choice' is a required property")] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+([], "'tool_choice' is a required property")
+
+- [([], "'tool_choice' is a required property")]
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=1)

@@ -56,6 +56,9 @@ struct ChatPlanConfig {
   // Pure validation before request-owned file acquisition. The renderer must
   // receive the expanded request, with this flag cleared.
   bool preparing_file_inputs = false;
+  // Validated Responses history only. Public Chat cannot set this policy.
+  std::vector<std::string> async_tool_call_ids = {};
+  bool responses_tool_media = false;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;
@@ -80,6 +83,8 @@ struct ChatPlanError {
 };
 
 struct ChatRequestPlan {
+  std::vector<std::string> async_tool_call_ids = {};
+  bool responses_tool_media = false;
   std::optional<io::Json> normalized_request;
   bool legacy_output = false;
   OutputConstraints constraints;

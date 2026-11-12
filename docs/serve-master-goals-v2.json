@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Namespace/custom format/public projection and invocation-time output_schema delivered rev102 after real tool closure, primary/light storage and whole-payload fallback. Continue async/caller/defer and typed content; the complete task remains open.",
+      "current_work": "Async function/custom tools delivered rev110: same-response independent continuation, original-ID late results and native image result adaptation, preserved through actual service fallback. Continue deferred discovery, programmatic callers and remaining typed content; full A07 stays open.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "implementation_in_progress",
+        "state": "implemented_targeted_validated_delivered_main_pending",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -933,8 +933,63 @@
           "response_creates": 8,
           "seconds": 900
         },
-        "gpu_started": false,
-        "programmatic_and_deferred_discovery_remain_required": true
+        "gpu_started": true,
+        "programmatic_and_deferred_discovery_remain_required": true,
+        "cpu_required": 36,
+        "cpu_evidence": "docs/evidence/serve-async-tools-cpu-20261113",
+        "first_business": {
+          "starts": 1,
+          "creates": 5,
+          "seconds": 66.4671839,
+          "status": "FAILED",
+          "evidence": "docs/evidence/serve-async-business-history-failure-20261113"
+        },
+        "history_fix_cpu": "docs/evidence/serve-async-history-cpu-20261113",
+        "repair_budget": {
+          "starts": 1,
+          "response_creates": 5,
+          "seconds": 600
+        },
+        "aggregate_budget": {
+          "starts": 2,
+          "response_creates": 10,
+          "seconds": 900
+        },
+        "business_evidence": "docs/evidence/serve-async-business-20261113",
+        "delivery_qualification_budget": {
+          "starts": 5,
+          "business_requests": 14,
+          "cuda_probes": 1,
+          "seconds": 1800
+        },
+        "profile_evidence": "docs/evidence/serve-async-profiles-20261113",
+        "managed_failure": "docs/evidence/serve-async-managed-failure-20261113",
+        "resume_business_budget": {
+          "starts": 1,
+          "response_creates": 8,
+          "seconds": 900
+        },
+        "default_unchanged": false,
+        "resume_cpu": "docs/evidence/serve-async-resume-cpu-20261113",
+        "resume_output_budget": 256,
+        "current_business_evidence": "docs/evidence/serve-async-resume-business-20261113",
+        "current_engine": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "managed_projection_evidence": "docs/evidence/serve-async-managed-projection-20261113",
+        "additional_managed_budget": {
+          "starts": 1,
+          "business_requests": 2,
+          "seconds": 300
+        },
+        "qualification_evidence": "docs/evidence/serve-async-resume-qualification-20261113",
+        "delivery_budget": {
+          "commands": 17,
+          "model_starts": 0
+        },
+        "migration_fix_cpu": "docs/evidence/serve-async-migration-cpu-20261113",
+        "delivery_evidence": "docs/evidence/serve-async-tools-delivery-20261113",
+        "publication_revision": 110,
+        "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
+        "engine_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3"
       }
     },
     {
@@ -2417,14 +2472,12 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "publication_revision": 102,
-        "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
-        "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
-        "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
-        "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
-        "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
-        "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
+        "revision": 110,
+        "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
+        "generation_sha256": "44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9",
+        "evidence": "docs/evidence/serve-async-tools-delivery-20261113",
+        "state": "STOPPED",
+        "main_integration_pending": true
       },
       "merged_foundation": {
         "pr": 22,
@@ -2462,11 +2515,13 @@
       },
       "namespace_main_integration": {
         "pr": 24,
-        "state": "fixture_fixed_pending_CI",
+        "state": "MERGED",
         "merged": false,
-        "evidence": "docs/evidence/serve-ci-custom-views-20261113",
+        "evidence": "docs/evidence/serve-pr24-merged-20261113",
         "cpu_passed": 6,
-        "runtime_changed": false
+        "runtime_changed": false,
+        "current_ci_head": "82240c5e6390205b84742c948a9007e9666748e5",
+        "merge_commit": "79f6e391f4e7e9e7287ec022c16d5dcdf7af824d"
       }
     },
     {

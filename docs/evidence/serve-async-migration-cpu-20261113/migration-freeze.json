@@ -1,0 +1,7 @@
+{
+  "cpu_cases": 10,
+  "new_cases": 3,
+  "gpu_starts": 0,
+  "cause": "tool history implementation SHA misclassified as a functional capability; real business/profile engine identities unchanged",
+  "followup": "17 STOPPED publication checks with original budget and rollback preservation"
+}

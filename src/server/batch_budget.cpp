@@ -57,8 +57,10 @@ struct NativeMeter {
     std::string prompt;
     std::vector<VisionItem> images;
     const auto& normalized = plan.Request(request);
-    auto status = PrepareChatPrompt(normalized, plan.constraints, &prompt,
-                                    &images, &error->param, &error->code);
+    auto status =
+        PrepareChatPrompt(normalized, plan.constraints, &prompt, &images,
+                          &error->param, &error->code, nullptr, false,
+                          plan.async_tool_call_ids, plan.responses_tool_media);
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;
     if (status)
@@ -152,8 +154,12 @@ ObjectReply MeasureResponse(ResponsesExecution& response,
       const uint64_t queries =
           calls * kVectorSearchQueries * model::EmbeddingConfig::kInputTokens;
       const auto steps = (kBatchTokenLimit - queries) / config.max_len;
-      if (steps < 6 + calls || sheets > steps - 6 - calls) return Invalid();
-      budget.prompt_capacity = (sheets + 6 + calls) * config.max_len + queries;
+      const uint64_t async =
+          response.HasAsyncTools() && !envelope.cache.prewarm ? 1 : 0;
+      if (steps < 6 + calls + async || sheets > steps - 6 - calls - async)
+        return Invalid();
+      budget.prompt_capacity =
+          (sheets + 6 + calls + async) * config.max_len + queries;
     }
   }
   if (!budget.prompt_capacity || budget.Total() > kBatchTokenLimit ||

@@ -1,0 +1,700 @@
+{
+  "source_commit": "1d1ccba67100cc12c52f0e5086df692e1cf7c592",
+  "previous": {
+    "status": "PASS",
+    "ready": true,
+    "request_ids": [
+      "0353c541-d0aa-47b6-85b4-51b74e832a8f",
+      "0ae3465b-1c77-4174-9210-0800991bfe50",
+      "0cb79a92-6438-4d86-a159-791804c9d576",
+      "0e5efb54-5828-4b37-9bdd-2015d080462b",
+      "0ea0a50c-b1cb-4a5a-bc64-e0979007c1d2",
+      "1444242d-010d-49cc-9fca-c02f32038064",
+      "170d6d9f-6634-446b-a273-408abeeb1058",
+      "17af76f5-9366-40b6-8dc4-66671427fed2",
+      "2273f03c-e7b3-482e-9ff6-79f981eb2bfc",
+      "299ccc71-497c-40d0-b5b2-7a1661a7d694",
+      "2d653ca6-54ed-4c8a-af1c-144f2b82085f",
+      "313263a6-a2e0-45a4-beee-27f954894425",
+      "35b8a0f3-b302-47d6-8812-2d452af50067",
+      "3a810f49-9e94-4efe-865c-e5884e8a057d",
+      "469523c0-8b96-4b60-b03c-701b48c67ac9",
+      "4c04e9ff-8248-4666-9ca2-d7cddadcf713",
+      "5328a966-b737-45f7-8e66-6412ba1a1e32",
+      "5c164ec6-62fa-4166-9928-fde334d208e0",
+      "5c52cb30-1935-4767-a4d2-d23680852fed",
+      "60c8437c-00fa-4834-8a9f-50d9c83365c0",
+      "62ace7dd-c617-4bec-bc09-3263b29e324a",
+      "640e8672-fa5e-463f-ad19-96e42e20b160",
+      "64ab33e5-fde0-4deb-b8ec-bb27587058bd",
+      "66fceaf2-1a02-4c4f-ba17-224b42f3c71b",
+      "67b171bc-b4a2-4b6e-8238-dacc9fb6d30e",
+      "6e982b73-4c59-425e-af9d-909001b828f1",
+      "79b48140-5caa-4052-affa-806183edab76",
+      "8a3e6835-1f85-41a9-a832-2de36cae2575",
+      "8b8d0559-2909-4195-abf4-4e6b01b46d2b",
+      "8ba2bcf0-eddf-483a-8947-4ead46d6fbc2",
+      "97a856fb-252f-40b4-8273-0132e9316b85",
+      "b1ece6fb-46cf-4192-a50a-fb1f6d03fbe5",
+      "b4994975-9150-41b4-96cc-8b977f5898cb",
+      "bb002d9e-dfcc-4841-befe-1c4b8734b6b8",
+      "bd5566ab-6876-4afd-8318-dd9b3e639e82",
+      "cf9ad6a2-e13a-4b39-b99a-a739f479bce4",
+      "d348dde6-579d-4ce3-8a31-be3fbb6135b6",
+      "d38386f8-854d-42d3-9553-d8d9653f56fa",
+      "d41f8084-f100-4048-938a-013b7247afb7",
+      "d814d900-017b-45e0-abc4-056f310ebd07",
+      "dbe8245d-e095-4a45-b589-cce055c7204b",
+      "de5fcb26-6b3a-453e-b3ed-fd009630d65b",
+      "e2d2f8d3-1917-4a75-97e0-aac1d90fb977",
+      "e9043672-5474-4d41-b6c3-c8aa10845800",
+      "ecc231b2-975c-448c-bc63-c2283115ef21",
+      "ee230623-07b5-4102-806e-b13631b64e7d",
+      "ef3dceb3-4bf2-4d2e-be79-9df37aa12c9b",
+      "f169474f-894c-452c-ac37-f56254142769",
+      "f89a8fbb-1c39-4954-b399-7ef881a878ee",
+      "f915a46d-d5f8-47a3-91ad-9d52ae06819f",
+      "f939c1d8-8988-459e-906d-79ee0d2dc78a"
+    ],
+    "model_actions": false,
+    "automatic_start": false,
+    "revision": 102,
+    "phase": "stable",
+    "root": "/home/rm01/models/dev/qwen4-thor/build",
+    "current": {
+      "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+      "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+      "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
+      "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+      "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
+      "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
+    },
+    "target": null,
+    "request_id": null,
+    "history": [
+      {
+        "previous": {
+          "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+          "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+          "generation_sha256": "0c7d20bda9b014262bcf20f05d206ce32c0e5eda05e7a98868f3c834714f09a9",
+          "manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/retained-fallback",
+          "service_acceptance_sha256": "8342baaf2c3ad147662424866dd6c0fc3ed40754918a9ff2b540176793ff1732",
+          "service_release_sha256": "c13b5617cb8d617589017f492e78944b5fe714ccae7ef6d887d3d23ee8d4fcda"
+        },
+        "request_id": "17af76f5-9366-40b6-8dc4-66671427fed2",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+          "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+          "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+          "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle",
+          "service_acceptance_sha256": "d692d41624fe7a73ecade69ac322d6501a87114d3c07ad4b3d58fd48d4dc0824",
+          "service_release_sha256": "56e56c4a392d2879e940b3d990c1857ca8f27eb8d3287c4074b87616b0401334"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+          "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+          "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+          "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle",
+          "service_acceptance_sha256": "d692d41624fe7a73ecade69ac322d6501a87114d3c07ad4b3d58fd48d4dc0824",
+          "service_release_sha256": "56e56c4a392d2879e940b3d990c1857ca8f27eb8d3287c4074b87616b0401334"
+        },
+        "request_id": "0ea0a50c-b1cb-4a5a-bc64-e0979007c1d2",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "b3120f1cfb46d5fd04488c352d3fcb1c32f2ef7e254c95b6ed33c62233580f66",
+          "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+          "service_acceptance_sha256": "e89488f267468b9f5ce9fc3714c2337b65f4ca4ccf24f0566f4808c054412897",
+          "service_release_sha256": "94929066b0b9153e90b02d7b26828345482dfba165f2931ec6f39b63adc45b2a"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "b3120f1cfb46d5fd04488c352d3fcb1c32f2ef7e254c95b6ed33c62233580f66",
+          "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+          "service_acceptance_sha256": "e89488f267468b9f5ce9fc3714c2337b65f4ca4ccf24f0566f4808c054412897",
+          "service_release_sha256": "94929066b0b9153e90b02d7b26828345482dfba165f2931ec6f39b63adc45b2a"
+        },
+        "request_id": "bd5566ab-6876-4afd-8318-dd9b3e639e82",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2",
+          "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+          "service_acceptance_sha256": "01bb0e59e35b6f1af9b225da2da6f042beb0838139432c1d92c7474086b5d753",
+          "service_release_sha256": "d0cd9c989d20041c8921860dcee306d8945d73004896d0a0a1ec462cbc52d8c8"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2",
+          "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+          "service_acceptance_sha256": "01bb0e59e35b6f1af9b225da2da6f042beb0838139432c1d92c7474086b5d753",
+          "service_release_sha256": "d0cd9c989d20041c8921860dcee306d8945d73004896d0a0a1ec462cbc52d8c8"
+        },
+        "request_id": "0353c541-d0aa-47b6-85b4-51b74e832a8f",
+        "rollback": true,
+        "selected": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "b3120f1cfb46d5fd04488c352d3fcb1c32f2ef7e254c95b6ed33c62233580f66",
+          "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+          "service_acceptance_sha256": "e89488f267468b9f5ce9fc3714c2337b65f4ca4ccf24f0566f4808c054412897",
+          "service_release_sha256": "94929066b0b9153e90b02d7b26828345482dfba165f2931ec6f39b63adc45b2a"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "b3120f1cfb46d5fd04488c352d3fcb1c32f2ef7e254c95b6ed33c62233580f66",
+          "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+          "service_acceptance_sha256": "e89488f267468b9f5ce9fc3714c2337b65f4ca4ccf24f0566f4808c054412897",
+          "service_release_sha256": "94929066b0b9153e90b02d7b26828345482dfba165f2931ec6f39b63adc45b2a"
+        },
+        "request_id": "f89a8fbb-1c39-4954-b399-7ef881a878ee",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2",
+          "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+          "service_acceptance_sha256": "01bb0e59e35b6f1af9b225da2da6f042beb0838139432c1d92c7474086b5d753",
+          "service_release_sha256": "d0cd9c989d20041c8921860dcee306d8945d73004896d0a0a1ec462cbc52d8c8"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+          "engine_release_sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+          "generation_sha256": "407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2",
+          "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+          "service_acceptance_sha256": "01bb0e59e35b6f1af9b225da2da6f042beb0838139432c1d92c7474086b5d753",
+          "service_release_sha256": "d0cd9c989d20041c8921860dcee306d8945d73004896d0a0a1ec462cbc52d8c8"
+        },
+        "request_id": "1444242d-010d-49cc-9fca-c02f32038064",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        },
+        "request_id": "f915a46d-d5f8-47a3-91ad-9d52ae06819f",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "8f8a8a6c76fa747c91768081513007be33d22a2ab2af7f40aa56a002da7ce2ba",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5312a3e644e6233b34f814c866b0fc42251f8038b9c3674b464b013b079f9bb3"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "8f8a8a6c76fa747c91768081513007be33d22a2ab2af7f40aa56a002da7ce2ba",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5312a3e644e6233b34f814c866b0fc42251f8038b9c3674b464b013b079f9bb3"
+        },
+        "request_id": "ecc231b2-975c-448c-bc63-c2283115ef21",
+        "rollback": true,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        },
+        "request_id": "f169474f-894c-452c-ac37-f56254142769",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "8f8a8a6c76fa747c91768081513007be33d22a2ab2af7f40aa56a002da7ce2ba",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5312a3e644e6233b34f814c866b0fc42251f8038b9c3674b464b013b079f9bb3"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "8f8a8a6c76fa747c91768081513007be33d22a2ab2af7f40aa56a002da7ce2ba",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5312a3e644e6233b34f814c866b0fc42251f8038b9c3674b464b013b079f9bb3"
+        },
+        "request_id": "62ace7dd-c617-4bec-bc09-3263b29e324a",
+        "rollback": true,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+          "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+          "service_acceptance_sha256": "2746ffe662033b3a366948e35a6b2b957f7f8d48cfb7a2b7f0ddc9d9da1c5b34",
+          "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8"
+        },
+        "request_id": "ee230623-07b5-4102-806e-b13631b64e7d",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+        },
+        "request_id": "2273f03c-e7b3-482e-9ff6-79f981eb2bfc",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+          "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+          "generation_sha256": "bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38",
+          "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+          "service_acceptance_sha256": "969f02e4d4b46ea20b35e4a6c9745942697d8298a954145fb43e76cc468422a6",
+          "service_release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+          "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+          "generation_sha256": "bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38",
+          "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+          "service_acceptance_sha256": "969f02e4d4b46ea20b35e4a6c9745942697d8298a954145fb43e76cc468422a6",
+          "service_release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a"
+        },
+        "request_id": "d41f8084-f100-4048-938a-013b7247afb7",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "991443bfa0b78d2267a9ad8a552ed1565aa20ddc1bd57569b1a055a3196fd830",
+          "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+          "service_acceptance_sha256": "2e260d5925277496fa9f390ef5b0360d442355e07180f6571f3cebfaef293aee",
+          "service_release_sha256": "971d0d2ee359bc3b56fd69dc706cc141c3a0825f2096284939bd288f5fb95fc7"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "991443bfa0b78d2267a9ad8a552ed1565aa20ddc1bd57569b1a055a3196fd830",
+          "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+          "service_acceptance_sha256": "2e260d5925277496fa9f390ef5b0360d442355e07180f6571f3cebfaef293aee",
+          "service_release_sha256": "971d0d2ee359bc3b56fd69dc706cc141c3a0825f2096284939bd288f5fb95fc7"
+        },
+        "request_id": "5c164ec6-62fa-4166-9928-fde334d208e0",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
+          "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+          "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
+          "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
+          "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+          "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
+          "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
+        },
+        "request_id": "dbe8245d-e095-4a45-b589-cce055c7204b",
+        "rollback": true,
+        "selected": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "991443bfa0b78d2267a9ad8a552ed1565aa20ddc1bd57569b1a055a3196fd830",
+          "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+          "service_acceptance_sha256": "2e260d5925277496fa9f390ef5b0360d442355e07180f6571f3cebfaef293aee",
+          "service_release_sha256": "971d0d2ee359bc3b56fd69dc706cc141c3a0825f2096284939bd288f5fb95fc7"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "991443bfa0b78d2267a9ad8a552ed1565aa20ddc1bd57569b1a055a3196fd830",
+          "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+          "service_acceptance_sha256": "2e260d5925277496fa9f390ef5b0360d442355e07180f6571f3cebfaef293aee",
+          "service_release_sha256": "971d0d2ee359bc3b56fd69dc706cc141c3a0825f2096284939bd288f5fb95fc7"
+        },
+        "request_id": "4c04e9ff-8248-4666-9ca2-d7cddadcf713",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+          "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+          "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
+          "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+          "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
+          "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
+        }
+      }
+    ]
+  },
+  "previous_version": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "completed": null,
+    "faults": [],
+    "format": "q4t-version-selection-v1",
+    "registry": {
+      "compatibility_sha256": "c6d5393efd4396fd1a7b01b93c9273d99cc873c7b0af93c03059f81cd36c9f9e",
+      "cycle_id": "87410126-1479-44fa-b5f9-ac60de0f0b98",
+      "format": "q4t-version-registry-v1",
+      "payloads": {
+        "fallback": {
+          "binding_sha256": "21e6e949572655601c762e78f50c0d1276e8266fcfeab28f2a9498d040af5f9b",
+          "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386"
+        },
+        "primary": {
+          "binding_sha256": "bd4dcc6014a71f62dd768893c150c383b9b3dc2fc9fb16d5374f02428f4ae8a5",
+          "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+        }
+      },
+      "qualification_sha256": "72ef3c90a9cda5d2b1c6072ee4ca54b5560667146638d00dff2cbd86d24f0180",
+      "root_manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+    },
+    "revision": 7,
+    "selected": "primary",
+    "switch": null,
+    "terminal_fault": null
+  },
+  "preserved_state": {
+    "client-access.json": "ae36f4b9304051f3f86fca468b955623d235ecf1cc12fba4a14e170fe57652c6",
+    "outer-management.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "client-limits.json": "feee221ec5cd518bc4d0bd3dd5637909038d34b7bec6cbb0fcb8b065c07339e5",
+    "ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "outer-initialization.json": "19fe585558af1f1d0d2037f9628103ad5a3246df2cd369e9a12c4cb3f15dda7b",
+    "outer-recovery.json": "afc524c288bcebec6dbff584ef1b9b90d344ca27014ce5e10f28951f7eac6b8a",
+    "client-usage.json": "c7ac671d95111232efe8a0d17372e3e3ee613ea236a4c3e90f2dd401656286ce",
+    "client-usage/writer.lock": "a3437fffb54dca8cb3b0f8cff0b75aeab81c7f44f0868d066def399750353d07",
+    "client-usage/policy.json": "8b0a55798498f572abb9ba3e63b944e37940e454785aba23b4c43afedf91051c",
+    "client-limits/writer.lock": "2aecf0e566ff46df26b55e087a0dcfb345d34c4a2b294f52bf66ebb26ff51a82",
+    "client-limits/policy.json": "e0a4b18061e8edf32b73f87dd68acb73c834abb9762e602db73bb3e00fa90343",
+    "client-access/writer.lock": "cde313fe79bad1d3a733e51e5b54384fdf4816e3b23490b0aa6f8cf25131dc79",
+    "client-access/policy.json": "778cbf21aa1672c5812b4981cec6c4f159413692d88332358e030f199d2a2e5d",
+    "outer-recovery/writer.lock": "edeb7727b053fcf3a8770b3a3b92e0c5daa4dae1d957bfb72708578dae7bc17b",
+    "outer-recovery/policy.json": "abce4dd9dff42bd0d6a8642c6623607582e587dcb7d9bf5f6e57bf7db5bd84aa"
+  },
+  "previous_profiles": {
+    "clock": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "logical_ns": 0,
+      "monotonic_ns": 2272987468765683
+    },
+    "completed_generation": 0,
+    "configuration": {
+      "cooldown_seconds": 300,
+      "degrade_below_mib": 8192,
+      "minimum_light_seconds": 300,
+      "pressure_seconds": 30,
+      "recover_above_mib": 16384,
+      "recovery_seconds": 120,
+      "switches_per_day": 4,
+      "switches_per_hour": 2,
+      "version": 1
+    },
+    "format": "q4t-profile-selection-v1",
+    "history": [],
+    "light_since_ns": null,
+    "not_before_ns": 0,
+    "pending": null,
+    "profiles": {
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+    },
+    "registry_sha256": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+    "revision": 4,
+    "selected": "primary"
+  },
+  "expected_profiles": {
+    "clock": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "logical_ns": 0,
+      "monotonic_ns": 2272987468765683
+    },
+    "completed_generation": 0,
+    "configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "format": "q4t-profile-selection-v1",
+    "history": [],
+    "light_since_ns": null,
+    "not_before_ns": 0,
+    "pending": null,
+    "profiles": {
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+    },
+    "registry_sha256": "04c181593b03d329baa7da856113957bc12766f92a9e7771f312b2b61a5c7998",
+    "revision": 5,
+    "selected": "primary"
+  },
+  "profile_upgrade_permit": {
+    "format": "q4t-profile-migration-permit-v3",
+    "from_registry": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+    "to_registry": "04c181593b03d329baa7da856113957bc12766f92a9e7771f312b2b61a5c7998",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+    "to_identity": "fca7332545eea1ca2b74036949b5c09bf8facbafebafb7afed8b798762f951ed",
+    "capabilities_sha256": "1454f6c7cc710bea17ca3017d47c722c05beb90f206a5ac11b227d8b072c43e3",
+    "automatic": false,
+    "target_profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "target_capabilities_sha256": "16b4a0b9f828d73629d8e88856783d0bda91b7f0af47468c0498bb8abe48a507"
+  },
+  "actual_business": {
+    "primary": {
+      "decision": {
+        "status": "PASS_ASYNC_MIGRATION_CONTROL_PATCH",
+        "acceptance": "ACCEPT_ASYNC_MIGRATION_CONTROL_PATCH",
+        "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
+        "engine_binary_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "actual_business": {
+          "status": "ACCEPT_TOOL_IDENTITY_VERSION",
+          "strict_lease_seconds": 112.56089935218915,
+          "nvml_queries": 105,
+          "env_abort": false,
+          "counts": {
+            "starts": 2,
+            "chats": 4,
+            "probes": 1,
+            "controls": 341
+          },
+          "source_commit": "079756482ea3094df3776440566279b989996f98",
+          "plan_sha256": "b671c46d3c7a0012be2d730ab59a71f5ed80197b5e64de9c49c6b175c103b03c",
+          "result_sha256": "639fe9a8462136756c4669974ab6b45088bdc76fbb54e4d0675685837a90eb36",
+          "lease_result_sha256": "5f67cbfb88f583abd3b6415090031345b2b83c1a96d46069612f69b46985f11b",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false,
+        "original_service_acceptance": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/managed-version-02/decision.json",
+          "sha256": "12b5cc6659578bdaa523a46ce7f893b5f4408a5c269bec2323dcf9e06c03959f"
+        },
+        "control_patch_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/review.json",
+        "control_patch_review_sha256": "c7442861146aae34cd006830a72413126eae56c12d0bd5817cd319db6bd8dd01",
+        "actual_business_reused_unchanged_engine_and_supervision": true,
+        "new_gpu_starts": 0
+      },
+      "identity": {
+        "release": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/service-release.json",
+          "sha256": "584d6300c86353070bdff1bdf7ec18af4ec389ab3c7b549f47af9bfc86a7708f"
+        },
+        "decision": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/decision.json",
+          "sha256": "1f6382c69d85c2b853c4ebb438062d9a5750dfaa3e13e9750d040f8ba2a2c9f2"
+        }
+      }
+    },
+    "fallback": {
+      "decision": {
+        "status": "PASS_TOOL_IDENTITY_RETAINED",
+        "acceptance": "ACCEPT_TOOL_IDENTITY_RETAINED",
+        "manifest_sha256": "6a163a1debe64597b90a5334f8a6f1ec775536f912f0fdbe1135328f43772c91",
+        "engine_binary_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "actual_business": {
+          "status": "ACCEPT_TOOL_IDENTITY_RETAINED",
+          "strict_lease_seconds": 52.5697152572684,
+          "nvml_queries": 50,
+          "env_abort": false,
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "probes": 0,
+            "controls": 155
+          },
+          "source_commit": "079756482ea3094df3776440566279b989996f98",
+          "plan_sha256": "8e3c01dfd416653aeef2c050a8aeca6a27b68a47241a90732692ba3ce10fba7d",
+          "result_sha256": "3a1f7155493906edd66221799c8d1d6c47484a32f22730b65f7832fe4d479a55",
+          "lease_result_sha256": "00082fd09009d63e8ba7fc53784ffd65fcff3a685c40fa1394880a5481d448a1",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "identity": {
+        "release": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/managed-retained-03/service-release.json",
+          "sha256": "941afaa31beec5a3dc0f04fd27f07ccbf74b540d142107f9586c5854c72743fc"
+        },
+        "decision": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/managed-retained-03/decision.json",
+          "sha256": "86b327505886ee131010a6a60fc9d8f1f71c3100439dbe1173aa02800badc511"
+        }
+      }
+    }
+  },
+  "exact_tested_manifests": false,
+  "exact_tested_engine_and_native": true,
+  "post_business_control_delta": [
+    "tools/serve_recovery/profile_migration.py"
+  ],
+  "control_patch_review": {
+    "status": "PASS_MIGRATION_CONTROL_PATCH_CPU",
+    "original_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-02/bundle",
+    "original_manifest_sha256": "9c11a13fc1a40a50a5ee72401541d4d9aaf04112aef1f71c2f10f847c6466fe4",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/bundle",
+    "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
+    "source_commit": "1d1ccba67100cc12c52f0e5086df692e1cf7c592",
+    "delta": {
+      "source/tools/serve_recovery/profile_migration.py": {
+        "before": "8450f4c8427788341b5467ed1bec6d284c90e03556e379642f415c67e9db9668",
+        "after": "d552a0df8298406598a352bf6cb342390f29a6b46c3f5ea3d3c36249fa0ee4bb"
+      }
+    },
+    "exact_engine_and_native_bytes": true,
+    "exact_primary_light_qualification": true,
+    "reused_gpu_evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/managed-version-02/decision.json",
+    "cpu_evidence": "docs/evidence/serve-async-migration-cpu-20261113",
+    "new_gpu_starts": 0,
+    "scope": "Only qualified migration capability comparison changes; GPU model, HTTP and supervision sources unchanged. STOPPED publication checks remain required."
+  },
+  "new_gpu_starts": 0
+}

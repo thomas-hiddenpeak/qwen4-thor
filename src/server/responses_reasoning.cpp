@@ -20,8 +20,12 @@ Status Remaining(int limit, int64_t used, int* remaining,
 }
 
 Status Replan(const Json& request, const ChatPlanConfig& config,
-              ChatRequestPlan* plan, ChatPlanError* error) {
-  auto status = PlanChatRequest(request, config, plan, error);
+              const ChatRequestPlan& history, ChatRequestPlan* plan,
+              ChatPlanError* error) {
+  auto adapted = config;
+  adapted.async_tool_call_ids = history.async_tool_call_ids;
+  adapted.responses_tool_media = history.responses_tool_media;
+  auto status = PlanChatRequest(request, adapted, plan, error);
   if (!status) error->param = "reasoning.mode";
   return status;
 }
@@ -76,7 +80,8 @@ Status PlanResponsesDeliberation(const ResponsesGenerationPlan& source,
       Number(std::min(512, std::max(1, remaining / 3))));
   ResponsesSummaryPlan candidate;
   candidate.request = std::move(request);
-  status = Replan(candidate.request, config, &candidate.chat, error);
+  status =
+      Replan(candidate.request, config, source.chat, &candidate.chat, error);
   if (!status) return status;
   candidate.needed = true;
   *plan = std::move(candidate);
@@ -125,7 +130,7 @@ Status PlanResponsesDeliberatedAnswer(const ResponsesGenerationPlan& source,
                 "evidence. "
                 "Return the final answer or the required real tool call.")}}));
   Set(&request, "max_completion_tokens", Number(remaining));
-  status = Replan(request, config, &candidate.chat, error);
+  status = Replan(request, config, source.chat, &candidate.chat, error);
   if (!status) return status;
   *plan = std::move(candidate);
   return {};

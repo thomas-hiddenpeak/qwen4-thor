@@ -66,6 +66,10 @@ class ResponsesOutput {
   // Annotations bind explicit markers to actual prior completed native
   // retrieval items. Text bytes/logprobs remain unchanged.
   Status CiteFileSearchSources(std::string* wire);
+  // Close validated async calls before independent answer generation. Mixed
+  // synchronous calls leave the response at the normal client-tool boundary.
+  Status CompleteAsyncCalls(size_t completed_calls, bool* continue_answer,
+                            std::string* wire);
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,

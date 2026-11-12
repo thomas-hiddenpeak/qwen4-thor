@@ -15,10 +15,13 @@ struct ResponsesInputPlan {
   io::Json messages;  // Native model adapter; no internal HTTP request.
   std::vector<std::string> message_paths;
   std::vector<PromptCacheInputBoundary> cache_boundaries;
+  // Bound to historical call items, never inferred from today's tools.
+  std::vector<std::string> async_tool_call_ids;
 };
 
 struct ResponsesToolIdentity {
   std::string type, name, name_space, model_name, path;
+  bool async = false;
 };
 // Stable model names are independent of declaration order and current tools,
 // so stored calls keep their identity even when a later turn changes tools.

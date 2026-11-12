@@ -1,0 +1,2 @@
+invalid_request items: At most 20 items may be added at a time
+response_storage_exhausted : Cancellation requires an active background response

@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/deliver.py", line 233, in <module>
+    {'prepare':prepare,'run':run}[sys.argv[1]]()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/deliver.py", line 72, in prepare
+    authorization=profile_manager.compatible(original_manifest,manifests['fallback'],
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_manager.py", line 45, in compatible
+    return profile_migration.permit(old['recovery_profiles'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 91, in permit
+    ledger.require(type(allow_capability_extension) is bool and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: migration would change application capabilities without an explicit qualified extension; automatic recovery cannot lose or add features

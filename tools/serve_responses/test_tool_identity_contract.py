@@ -8,6 +8,22 @@ from tools.serve_responses.test_contract import errors
 
 
 class ToolIdentityContract(unittest.TestCase):
+    def test_native_async_outputs_and_events_match_official_shapes(self):
+        root = Path(os.environ['Q4T_TEST_OUTPUT_DIR']) / 'responses'
+        for name in ('async-function', 'async-custom'):
+            value = json.loads((root / (name + '.json')).read_text())
+            self.assertEqual([(list(e.path), e.message[:120])
+                              for e in errors(value, 'response')], [])
+            events = [json.loads(line[6:])
+                      for line in (root / (name + '.wire')).read_text().splitlines()
+                      if line.startswith('data: ')]
+            self.assertEqual([x['sequence_number'] for x in events], list(range(len(events))))
+            for event in events:
+                self.assertEqual([(list(e.path), e.message[:120])
+                                  for e in errors(event, 'response_event')], [])
+            self.assertTrue(value['output'][0]['async'])
+            self.assertEqual(value['output'][0]['caller'], dict(type='direct'))
+
     def test_native_namespace_json_and_events_match_official_shapes(self):
         root = Path(os.environ['Q4T_TEST_OUTPUT_DIR']) / 'responses'
         events_seen = 0

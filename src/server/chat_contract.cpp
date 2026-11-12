@@ -76,14 +76,17 @@ Status TemplateOptions(const io::Json& options) {
 Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                             bool allow_media, std::string* error_param,
                             bool allow_empty_messages,
-                            bool preparing_file_inputs) {
+                            bool preparing_file_inputs,
+                            std::span<const std::string> async_call_ids,
+                            bool responses_tool_media) {
   if (HasLegacyTools(req)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(req, &normalized, error_param);
     if (!status) return status;
     status = ValidateChatContract(normalized.request, model_name, allow_media,
                                   error_param, allow_empty_messages,
-                                  preparing_file_inputs);
+                                  preparing_file_inputs, async_call_ids,
+                                  responses_tool_media);
     if (!status) LegacyToolErrorParam(req, error_param);
     return status;
   }
@@ -334,7 +337,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         if (!allow_media)
           return Status::Fail(
               "media disabled; experimental --allow-media required");
-        if (message.GetString("role") != "user")
+        if (message.GetString("role") != "user" &&
+            !(responses_tool_media && message.GetString("role") == "tool" &&
+              part.Has("image_url")))
           return Status::Fail("media requires user role");
         const bool image = part.Has("image_url");
         const bool video = part.Has("video_frames");
@@ -406,7 +411,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     }
   }
   *error_param = "messages";
-  status = PlanToolResultOrder(*messages);
+  status = PlanToolResultOrder(*messages, nullptr, async_call_ids);
   if (status) error_param->clear();
   return status;
 }

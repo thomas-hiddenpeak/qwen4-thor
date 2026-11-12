@@ -9,27 +9,85 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev102；服务包 `39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4` |
-| Generation | `8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235` |
-| 引擎 | `6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba` |
-| 引擎发布记录 | `8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619` |
+| 发布 | rev110；服务包 `eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1` |
+| Generation | `44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9` |
+| 引擎 | `6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3` |
+| 引擎发布记录 | `82dd88855e8369031dc192589c71a7d724ac9084ef9483350a79c9a627fc0658` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386`；保持新工具能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `6a163a1debe64597b90a5334f8a6f1ec775536f912f0fdbe1135328f43772c91`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-tool-identity-delivery-20261113/README.md)
-包含17项STOPPED交付检查，0新增GPU。新工具业务、当前主轻资格、
-跨重启存储及真实整树切换均已接受；停止竞态修复进入实际默认。
+[发行结果与回退记录](evidence/serve-async-tools-delivery-20261113/README.md)
+包含17项STOPPED交付检查，0新增GPU。异步函数/custom同Response续答、
+迟到真实结果、当前主轻资格及整树切换均已接受；单项迁移比较修复
+经CPU及实际发布验证，保持已验引擎和原生组件。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
 自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
-提交尚未合main，继续单独主线检查及全部master任务。
+提交也已实际合main（PR24，`79f6e391`），
+[合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
+后续async提交尚待独立合入，全部master任务继续。
 
 ## 最近完成的实现和验证
+
+- 异步工具已[可回退交付rev110](evidence/serve-async-tools-delivery-20261113/README.md)：
+  17项实际STOPPED检查全部通过、0GPU；回退再前进、密钥/配额/
+  core/outer及profile预算保持，旧默认备份保留。继续实际合main，
+  随后延迟发现、程序调用及全部master，未以本阶段结束总目标。
+
+- 发布准备发现工具历史源码哈希误作能力变化，已[修复并通过10项CPU、旧版负控及实际资格迁移](evidence/serve-async-migration-cpu-20261113/README.md)。
+  默认未写入，rev102保持；仅更新主包控制模块，复用未改引擎与业务
+  证据，继续17项实际停止态发布及全部master。
+
+- 当前异步引擎的[主轻、独立回退与实际整树切换均通过](evidence/serve-async-resume-qualification-20261113/README.md)。
+  5启动/14业务/1探测，三个阶段正常清理；原调用切换后仍可接收真实
+  迟到结果。默认rev102保持，接着17项STOPPED可回退发行（0GPU），
+  随后合主线并继续延迟发现、程序调用及全部master。
+
+- 新引擎在回退载荷中已正确完成异步独立回答；验收比较空logprobs与
+  GET默认投影时失败，[驱动修复及两项原文回放通过](evidence/serve-async-managed-projection-20261113/README.md)。
+  原失败保留，仅补1启动/2业务/300秒，生产代码与已验主轻资格不变。
+
+- 异步续答修复后的[完整JSON/SSE业务通过](evidence/serve-async-resume-business-20261113/README.md)：
+  1启动/8创建/70.180秒，输出256与实际客户端边界一致，两类真实
+  迟到结果均闭环。新引擎6d7d5e92正在重新取得主轻/回退资格；
+  默认rev102保持，全部master继续。
+
+- 异步续答调度及稳定历史引用[11项CPU最终通过](evidence/serve-async-resume-cpu-20261113/README.md)。
+  原误答仍待真实补验；冻结1启动/8创建/900秒，JSON/SSE都按受控服务
+  256输出预算验证。默认rev102保持，继续所有master。
+
+- 异步候选[受控服务非流式短验失败](evidence/serve-async-managed-failure-20261113/README.md)：
+  调用正确但续答仅省略号，1启动/2业务/50.010秒，正常清理。
+  默认rev102保持；正在补内部续答回合及稳定历史引用，验证通过前不发布。
+
+- 异步候选已取得[当前主/轻配置资格](evidence/serve-async-profiles-20261113/README.md)，
+  2启动/8业务通过并清理，默认rev102保持；继续兼容回退载荷与真实
+  整树切换验证。PR24已合main，async独立交付后继续全部master。
+
+- A07异步工具[真实业务补验已通过](evidence/serve-async-business-20261113/README.md)：
+  两类调用后同Response续答及custom真实迟到结果闭环通过，原函数结果
+  证据显式复用；修后1启动/5创建/61.066秒，累计2/10/127.533秒。
+  59次NVML全正常，模型/端口/锁清理；默认rev102保持。继续主轻配置
+  资格及保持新能力的可回退交付、主线合入和全部master任务。
+
+- 异步历史模板修复已[通过8项CPU及审计](evidence/serve-async-history-cpu-20261113/README.md)。
+  下一轮冻结1启动/5创建/600秒，只补受影响路径；含原失败累计
+  最多2启动/10创建/900秒，默认rev102保持。
+
+- A07异步首轮[真实业务失败原件已保留](evidence/serve-async-business-history-failure-20261113/README.md)：
+  函数闭环通过，custom续答误拒绝；1启动/5创建/66.467秒，资源已清理。
+  定位到禁止新调用时历史工具定义被通用过滤器一起移除，正在修复。
+  默认rev102保持，失败不改判，全部master继续。
+
+- A07原生异步工具的[36项CPU、2项官方SDK及schema检查已通过](evidence/serve-async-tools-cpu-20261113/README.md)。
+  补同Response独立回答、迟到结果、持久身份/计费和图片工具结果接入，
+  失败原件保留；尚未真实模型验收或交付，默认rev102保持。继续
+  冻结的1启动/8创建/900秒短验、PR24实际合入和全部master任务。
 
 - PR24完整CI定位到custom内部Item/公开Conversation投影夹具错用，
   [6项针对性CPU通过](evidence/serve-ci-custom-views-20261113/README.md)。
@@ -37,7 +95,8 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 - A07下一组已冻结[异步工具原生接线及验证计划](SERVE_ASYNC_TOOLS_2026-11-13.md)：
   补历史/模板/持续生成及迟到结果，不只接受async字段；程序调用与
-  延迟发现保留连续任务。先成组开发，当前尚未新增测试，rev102保持。
+  延迟发现保留连续任务。历史/模板/持续生成/绑定及配额已接线，12项新增与24项直接旧例
+  已冻结，尚未执行；实际默认rev102保持。
 
 - 工具命名空间/结果合同与控制器停止修复已[可回退发行rev102](evidence/serve-tool-identity-delivery-20261113/README.md)。
   17项停止态检查通过，实际回退再前进、原账本/恢复预算保持；

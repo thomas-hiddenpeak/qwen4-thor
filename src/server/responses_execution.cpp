@@ -210,6 +210,11 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     reply.value = Object({{"param", String(error.param)}});
     return reply;
   }
+  std::vector<ResponsesToolIdentity> identities;
+  status = PlanResponsesToolIdentities(envelope_.request, &identities, &error);
+  if (!status) return Error(error.http_status, error.code, status.message());
+  has_async_tools_ = std::any_of(identities.begin(), identities.end(),
+                                 [](const auto& tool) { return tool.async; });
   auto result_contracts = plan_.tool_contracts;
   if (encrypted_input) {
     // Opening an authenticated compaction may expand consumed historical

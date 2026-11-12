@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_tool_identity_contract (unittest.loader._FailedTest.test_tool_identity_contract)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_tool_identity_contract
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_tool_identity_contract.py", line 7, in <module>
+    from tools.serve_responses.test_contract import errors
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 9, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

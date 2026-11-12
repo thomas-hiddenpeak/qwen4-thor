@@ -18,7 +18,8 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                           int* image_count, int* video_count,
                           size_t message_index, std::string* error_param,
                           std::string* error_code,
-                          std::vector<size_t>* part_ends) {
+                          std::vector<size_t>* part_ends,
+                          bool responses_tool_media) {
   std::string out;
   const io::Json* content = m.Find("content");
   if (content == nullptr || content->IsNull()) return out;
@@ -37,7 +38,8 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                    std::to_string(part_index) + "]";
     const io::Json* iu = part.Find("image_url");
     if (iu != nullptr) {
-      if (m.GetString("role") != "user") {
+      if (m.GetString("role") != "user" &&
+          !(responses_tool_media && m.GetString("role") == "tool")) {
         *err = "Only user messages may contain images.";
         return {};
       }
@@ -184,15 +186,17 @@ Status PrepareChatPrompt(const io::Json& request,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
                          std::string* error_param, std::string* error_code,
-                         ChatPromptLayout* layout, bool allow_empty) {
+                         ChatPromptLayout* layout, bool allow_empty,
+                         std::span<const std::string> async_call_ids,
+                         bool responses_tool_media) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(request, &normalized, error_param);
     if (!status) return status;
-    status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
-                               items_out, error_param, error_code, layout,
-                               allow_empty);
+    status = PrepareChatPrompt(
+        normalized.request, constraints, prompt_out, items_out, error_param,
+        error_code, layout, allow_empty, async_call_ids, responses_tool_media);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -229,13 +233,15 @@ Status PrepareChatPrompt(const io::Json& request,
       contents.push_back(RenderContent(
           message, &items, &error, vision_id && vision_id->boolean,
           &image_count, &video_count, index, error_param, error_code,
-          layout ? &layout->part_ends[index] : nullptr));
+          layout ? &layout->part_ends[index] : nullptr, responses_tool_media));
       if (!error.empty()) return fail(error);
       error_param->clear();
     }
-    const auto rendered = RenderChatPrompt(req, contents, &prompt,
-                                           layout ? &layout->messages : nullptr,
-                                           allow_empty);
+    const auto* history_tools = request.GetArray("tools");
+    const auto rendered = RenderChatPrompt(
+        req, contents, &prompt, layout ? &layout->messages : nullptr,
+        allow_empty, async_call_ids,
+        history_tools ? history_tools->array : std::span<const io::Json>{});
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

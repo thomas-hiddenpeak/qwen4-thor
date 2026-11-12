@@ -3,6 +3,7 @@
 #pragma once
 
 #include <cstddef>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -38,6 +39,8 @@ Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt,
                         std::vector<ChatMessageSpan>* spans = nullptr,
-                        bool allow_empty = false);
+                        bool allow_empty = false,
+                        std::span<const std::string> async_call_ids = {},
+                        std::span<const io::Json> historical_tools = {});
 
 }  // namespace q4t::server
