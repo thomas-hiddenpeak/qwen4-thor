@@ -1,6 +1,9 @@
 """Negative controls for actual qualification commands and environment receipts."""
 import copy
+import hashlib
+import json
 from pathlib import Path
+import tempfile
 import unittest
 
 from tools.serve_recovery import profile_acceptance as stage
@@ -9,6 +12,51 @@ from tools.serve_service import capacity, package
 
 
 class QualificationDriverTests(unittest.TestCase):
+    def build_fixture(self):
+        work = stage.ROOT/'.q4t-work/profile-build-cpu'
+        work.mkdir(exist_ok=True)
+        temp = tempfile.TemporaryDirectory(dir=work)
+        self.addCleanup(temp.cleanup)
+        directory = Path(temp.name)
+        (directory/'q4t').write_bytes(b'explicit CPU build fixture, never executable')
+        (directory/'CMakeCache.txt').write_text('CPU_FIXTURE=TRUE\n')
+        path = directory/'generated/q4t/server/chat_protocol_sources.json'
+        path.parent.mkdir(parents=True)
+        name = 'src/server/chat_capabilities.cpp'
+        sources = {name:package.sha(stage.ROOT/name)}
+        path.write_text(json.dumps(sources))
+        base = dict(files=dict(q4t='a'*64), protocol_sha256='b'*64,
+                    settings=dict(private='retained'), model_dir='/readonly/model')
+        return directory, path, sources, base
+
+    def test_compiled_candidate_qualification_preserves_retained_settings_and_is_not_release(self):
+        directory, path, sources, base = self.build_fixture()
+        original = copy.deepcopy(base)
+        result, identity = stage.candidate_build_base(base, directory/'q4t', directory)
+        expected = hashlib.sha256(''.join(n+':'+h+'\n' for n,h in
+            sorted(sources.items())).encode()).hexdigest()
+        self.assertEqual(result['protocol_sha256'], expected)
+        self.assertEqual(base, original)
+        self.assertEqual(result['settings'], base['settings'])
+        self.assertEqual(result['model_dir'], base['model_dir'])
+        self.assertEqual(identity['scope'], 'qualification_only_not_release')
+        self.assertTrue(identity['new_package_qualification_pending'])
+        self.assertEqual(identity['compiled_sources']['sha256'], package.sha(path))
+        self.assertEqual(result['files']['q4t'], package.sha(directory/'q4t'))
+
+    def test_compiled_candidate_rejects_source_drift_and_wrong_executable(self):
+        directory, path, sources, base = self.build_fixture()
+        other = directory/'other'
+        other.write_bytes((directory/'q4t').read_bytes())
+        with self.assertRaisesRegex(RuntimeError, 'executable differs'):
+            stage.candidate_build_base(base, other, directory)
+        name = next(iter(sources))
+        for invalid in ({name:'a'*64}, {'../outside':'a'*64},
+                        {str(stage.ROOT/name):sources[name]}, {}, []):
+            path.write_text(json.dumps(invalid))
+            with self.subTest(invalid=invalid), self.assertRaises(RuntimeError):
+                stage.candidate_build_base(base, directory/'q4t', directory)
+
     def test_new_candidate_identity_cannot_relabel_or_modify_retained_settings(self):
         base = dict(files=dict(q4t='a'*64, other='f'*64), protocol_sha256='b'*64,
                     model_dir='/readonly/model', settings=dict(native_embedding=dict(

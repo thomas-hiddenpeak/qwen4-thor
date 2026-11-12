@@ -7,6 +7,7 @@ This does not enable deployment or certify automatic managed profile switching.
 import argparse
 import copy
 import fcntl
+import hashlib
 import http.client
 import json
 import os
@@ -79,6 +80,43 @@ def candidate_base(base, binary_sha, metadata):
     return result
 
 
+def candidate_build_base(base, binary, directory):
+    """Bind an unsealed build for qualification; never certify a release.
+
+    Capability qualification must precede packaging. Bind current compiled
+    protocol inputs and the exact binary, then require the real server's
+    observations during finalization. The accepted package stays unchanged.
+    """
+    directory = directory.resolve(strict=True)
+    require(any(directory.is_relative_to(ROOT/name) for name in ('build', '.q4t-work')),
+            'candidate build must be inside an artifact directory')
+    executable = (directory/'q4t').resolve(strict=True)
+    require(binary.resolve(strict=True) == executable,
+            'candidate build executable differs')
+    source_path = directory/'generated/q4t/server/chat_protocol_sources.json'
+    sources = read(source_path)
+    require(type(sources) is dict and 1 <= len(sources) <= 2048,
+            'compiled protocol inputs missing')
+    for name, digest in sources.items():
+        require(type(name) is str and not Path(name).is_absolute() and
+            not any(p in ('', '.', '..') for p in name.split('/')) and
+            (ROOT/name).resolve().is_relative_to(ROOT) and
+            type(digest) is str and bundle.ledger.HASH.fullmatch(digest) and
+            sha(ROOT/name) == digest, 'compiled protocol source differs')
+    protocol = hashlib.sha256(''.join(n+':'+h+'\n' for n,h in
+        sorted(sources.items())).encode()).hexdigest()
+    cache = directory/'CMakeCache.txt'
+    result = candidate_base(base, sha(executable), dict(binary_sha256=sha(executable),
+        chat_protocol=dict(protocol_sha256=protocol)))
+    identity = dict(scope='qualification_only_not_release', build=str(directory),
+        compiled_sources=dict(path=str(source_path), sha256=sha(source_path)),
+        build_cache=dict(path=str(cache), sha256=sha(cache)),
+        accepted_settings_engine_sha256=base['files']['q4t'],
+        candidate_engine_sha256=sha(executable),
+        original_package_unchanged=True, new_package_qualification_pending=True)
+    return result, identity
+
+
 def prepare(args):
     background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
@@ -87,6 +125,8 @@ def prepare(args):
     base = read(engine/'manifest.json')
     manifest = read(engine.parent/'manifest.json')
     release = getattr(args, 'candidate_release', None)
+    build = getattr(args, 'candidate_build', None)
+    require(not (release and build), 'select one candidate identity source')
     if release is not None:
         release = release.resolve(strict=True)
         metadata = read(release)
@@ -104,6 +144,11 @@ def prepare(args):
             candidate_engine_sha256=plan['binary_sha256'],
             original_package_unchanged=True, new_package_qualification_pending=True)
         base = candidate_base(base, plan['binary_sha256'], metadata)
+    elif build is not None:
+        base, plan['candidate_identity'] = candidate_build_base(base, args.binary, build)
+        for key in ('compiled_sources', 'build_cache'):
+            entry = plan['candidate_identity'][key]
+            plan['sources'][entry['path']] = entry['sha256']
     else:
         require(plan['binary_sha256'] == base['files']['q4t'], 'qualification engine differs')
     require(plan['model'] == base['model_dir'], 'qualification model differs')
@@ -293,8 +338,11 @@ def main():
     p = sub.add_parser('prepare')
     for name in ('binary', 'package', 'output'):
         p.add_argument('--'+name, type=Path, required=True)
-    p.add_argument('--candidate-release', type=Path,
+    candidate = p.add_mutually_exclusive_group()
+    candidate.add_argument('--candidate-release', type=Path,
                    help='accepted new engine identity with retained package settings')
+    candidate.add_argument('--candidate-build', type=Path,
+                   help='unsealed compiled build to qualify before release packaging')
     p.add_argument('--port', type=int, default=19069)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     p = sub.add_parser('finalize'); p.add_argument('--output', type=Path, required=True)

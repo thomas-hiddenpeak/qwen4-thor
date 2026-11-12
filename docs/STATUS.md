@@ -30,7 +30,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 - A11能力发现与profile升级合同已补齐，
   [8项针对性CPU首过](evidence/serve-file-search-capabilities-cpu-20261112/README.md)。
-  默认rev80保持，继续实际主/轻量配置与原生TLS/受监护交付。
+  默认rev80保持；新增绑定未封包构建的资格入口，
+  [5项CPU通过](evidence/serve-profile-build-driver-cpu-20261112/README.md)，执行
+  后续2启动/8模型HTTP/900秒实际主/轻量短验，TLS/受监护交付继续。
 
 - A11实际项目资料检索[真实业务已通过](evidence/serve-file-search-business-20261112/README.md)：
   1启动/6带模型HTTP/85.158秒，JSON/SSE/schema、实际引用、后台/历史及
