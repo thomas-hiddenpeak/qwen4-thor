@@ -1,0 +1,60 @@
+{
+  "status": "TARGETED_RESOURCE_VERSION_CPU_ACCEPTED",
+  "distinct_tests": 18,
+  "test_invocations": 20,
+  "cpu_test_seconds": 11.907994871027768,
+  "original_test_passed": 13,
+  "original_fixture_errors": 2,
+  "affected_rechecks_passed": 2,
+  "bundle_first_pass": 3,
+  "actual_source_checks": 2,
+  "actual_source_seconds": 3.7171383565291762,
+  "source_check_initial_failure": "Hard-coded v16 expectation was wrong; original sealed accepted package is v12. Adapter had completed and verified. Corrected source check verifies same generated package; no recreation.",
+  "actual_source": {
+    "business_acceptance": false,
+    "changed_sources": {
+      "source/tools/serve_recovery/controller.py": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+      "source/tools/serve_recovery/profile_controller.py": "e1845924041cc4e8b5658ac1528dcec88c3ae6d327a0af72652a6f57e1fa4773",
+      "source/tools/serve_recovery/profile_memory.py": "1db918d41e76aad7be089e0b891d8db339e7d46ad45f025d475c937df8cc3a7b"
+    },
+    "engine_manifest_sha256": "567c455c5716512c3125ea61b3e8eb6a67837cec7af5a639f388df647c71ab14",
+    "format": "q4t-resource-controller-compatibility-v1",
+    "historical_inventory_unchanged": true,
+    "model_actions": false,
+    "model_gpu_starts": 0,
+    "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback",
+    "original_manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+    "original_unchanged": true,
+    "original_version": 12,
+    "payload": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-resource-version-20261112/actual-adapter-01",
+    "payload_manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+    "status": "PASS_SOURCE_ADAPTATION_ONLY"
+  },
+  "two_payload_resource_configuration": true,
+  "retained_unrelated_controller_methods_preserved": true,
+  "collector_bytes_verified_then_memfd_exec": true,
+  "synthetic_model_business_receipts_explicit": true,
+  "model_gpu_starts": 0,
+  "host_services_unchanged": true,
+  "default_unchanged": true,
+  "released": false,
+  "remaining": [
+    "actual resource-bound outer/model and retained payload business",
+    "R07 cold device qualification and combined release",
+    "all remaining master tasks"
+  ],
+  "source_sha256": {
+    "tools/serve_recovery/resource_client.py": "eaf41ac8a9eccdf261007b80887b7a6fd9eda95a58290ab65cda196dcfbc6f92",
+    "tools/serve_recovery/resource_compat.py": "1364a46b90f4477d48a62ef4a35141d4a555bbe777a307df9c36438236ca41c1",
+    "tools/serve_recovery/resource_memory.py": "dbecfdcaa361d1abbe10757c0b91f8e467447e124f48573c94fca7a08ef7e967",
+    "tools/serve_recovery/controller.py": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+    "tools/serve_recovery/profile_controller.py": "ad8a1d5ea07b6ec92725a930e58c9496d0fc6b608d09f41a871f5d0f3edc39de",
+    "tools/serve_recovery/service.py": "4d37bc2cb456b08407aadee892543ea6ea9cd7a31baa6f7ef712f18f9bf8e501",
+    "tools/serve_recovery/version_contract.py": "5b4c1e98abfc2aa7f921df362057f7a07b744ba2e598a65a6cda58f16d991bd6",
+    "tools/serve_recovery/version_launch.py": "9a3c5408b3094e9a47a393b5c72a3a96fb573969409c02e64c2a8c695d1b953d",
+    "tools/serve_recovery/bundle.py": "ad386b5c6a9865db5321150db03755d1620777198e6635f2b8ff727d6a6e32d3",
+    "tools/serve_recovery/test_resource_compat.py": "6e5ac6e94e63791c90ff46851a87ef6194cf7f0633038b88a390747bd3412df7",
+    "tools/serve_recovery/test_resource_memory.py": "4fdb43440d4339f03e34feff2ef77ce4027f7f96864a566725cb391d27a5b9e1",
+    "tools/serve_recovery/test_native_bundle.py": "45da0a40f9c292e481f7f607255bead2512f61226e12f6964f089e8ff262c13f"
+  }
+}

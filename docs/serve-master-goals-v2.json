@@ -1866,7 +1866,8 @@
         "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
         "evidence/serve-cold-entry-cpu-20261112/README.md",
         "evidence/serve-cold-watch-cpu-20261112/README.md",
-        "evidence/serve-resource-memory-cpu-20261112/README.md"
+        "evidence/serve-resource-memory-cpu-20261112/README.md",
+        "evidence/serve-resource-version-cpu-20261112/README.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
@@ -1875,7 +1876,7 @@
       "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
       "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
       "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
-      "memory_composition": "Native resource-bound v6 direct-controller path implemented; 17 distinct targeted CPU accepted (18 invocations, original high-pressure fixture timeout retained). Actual owned memcg high event, independent physical RAM accounting, bounded observer/cleanup, qualified profile decisions and native Guardian CPU-role regression passed. Version-recovery generated controller commands still need resource composition for current and retained payloads. Actual model business and reversible delivery remain required; no GPU/default/host-service change."
+      "memory_composition": "Native direct and version-recovery v6 resource observation implemented. Original 17 targeted resource CPU tests accepted; new 18 distinct version/worker/adapter CPU tests accepted across 20 invocations. Real accepted v12 source 10155da3 remains unchanged; exact independent adapter 59934942 verified. Initial fixture errors and wrong v16 source-check assertion retained and corrected only for affected cases. No GPU or business qualification of adapted payload yet. Actual resource/outer/model business, cold device composition and reversible delivery remain required."
     },
     {
       "id": "R09",

@@ -1,0 +1,7 @@
+test_two_payloads_receive_same_original_resource_and_fixed_root_collector (tools.serve_recovery.test_resource_compat.VersionTests.test_two_payloads_receive_same_original_resource_and_fixed_root_collector) ... ok
+test_unadapted_payload_never_silently_loses_resource_observation (tools.serve_recovery.test_resource_compat.VersionTests.test_unadapted_payload_never_silently_loses_resource_observation) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.671s
+
+OK

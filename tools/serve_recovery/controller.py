@@ -50,10 +50,11 @@ def validate_configuration(config):
         (('retention_context',) if version >= 3 else ()) +
         (('limits',) if version >= 4 else ()) +
         (('profiles',) if version >= 5 else ()) +
-        (('resources',) if version >= 6 else ()))
+        (('resources', 'resource_worker') if version >= 6 else ()))
     if version >= 6:
-        from tools.serve_recovery import resource_launch
-        resource_launch.validate(config['resources'])
+        from tools.serve_recovery import resource_client
+        resource_client.validate_binding(config['resources'])
+        resource_client.validate_worker(config['resource_worker'])
     # Retention-only provenance never participates in model/recovery decisions.
 
 
@@ -108,10 +109,11 @@ class Controller:
         self.profiles = None
         self.resource_memory = None
         if config['version'] >= 6:
-            from tools.serve_recovery import resource_memory
+            from tools.serve_recovery import resource_client as resource_memory
             ledger.require(config['resources']['publication']['service_id'] == channel.service_id,
                            'resource memory service binding changed')
-            self.resource_memory = resource_memory.Observer(config['resources'], self.lease_fd)
+            self.resource_memory = resource_memory.Observer(config['resources'], self.lease_fd,
+                worker=config['resource_worker'])
         if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
             from tools.serve_recovery import quota_policy, quota_runtime, usage_runtime
             ledger.require(config['version'] >= 4 and

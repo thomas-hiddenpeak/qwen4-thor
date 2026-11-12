@@ -3,7 +3,8 @@ import copy
 import os
 
 from tools.serve_recovery import ledger, policy, profile_contract, profile_memory
-from tools.serve_recovery import profile_policy, profile_runtime, resource_memory
+from tools.serve_recovery import profile_policy, profile_runtime
+from tools.serve_recovery import resource_client as resource_memory
 from tools.serve_service import supervisor
 
 

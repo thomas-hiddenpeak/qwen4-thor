@@ -131,7 +131,7 @@ class KernelTests(fixtures.InstallationTests):
     def test_collector_exception_retains_original_slot_and_only_clears_observation(self):
         job=mock.Mock();job.tick.side_effect=RuntimeError('injected collector failure')
         factory=mock.Mock(return_value=job)
-        observer=memory.Observer(self.binding,3,factory=factory,clock=lambda:1)
+        observer=memory.Observer(self.binding,3,worker=dict(path='/cpu-collector',sha256='a'*64),factory=factory,clock=lambda:1)
         observer.tick();observer.value=observed(1)
         for _ in range(3):observer.tick()
         self.assertIs(observer.job,job);factory.assert_called_once()
@@ -142,7 +142,7 @@ class KernelTests(fixtures.InstallationTests):
         for profiles in (None,dict(service_id=self.sid,state_directory='/cpu-state',state_identity=[1,2])):
             value=dict(version=6,package='/cpu-package',manifest_sha256='a'*64,directory='/cpu-run',
                 state_directory='/cpu-state',retention_context=None,limits=profiles,profiles=profiles,
-                resources=self.binding)
+                resources=self.binding,resource_worker=dict(path='/cpu-collector',sha256='a'*64))
             controller.validate_configuration(value)
             broken=deepcopy(value);broken['resources']['publication']['device_authorized']=True
             with self.assertRaises(ValueError):controller.validate_configuration(broken)
@@ -162,7 +162,18 @@ def child(directory,mode):
         print(json.dumps(memory.sample(binding)),flush=True);return
     lease=os.open('/dev/null',os.O_RDONLY|os.O_CLOEXEC)
     # This CPU-only observer carries an inert FD, never the actual GPU lease.
-    observer=memory.Observer(binding,lease);end=time.monotonic()+6
+    import hashlib
+    script=Path(memory.__file__).resolve()
+    # Use an owned sealed copy so production source permissions stay unchanged.
+    import tempfile
+    temporary=tempfile.TemporaryDirectory(dir=ROOT/'.q4t-work')
+    selected=Path(temporary.name)/'resource_memory.py'
+    selected.write_bytes(script.read_bytes());selected.chmod(0o400)
+    # Keep the original root imports in this explicit CPU-only collector.
+    data=selected.read_text().replace("ROOT = Path(__file__).resolve().parents[2]","ROOT = Path("+repr(str(ROOT))+")")
+    selected.chmod(0o600);selected.write_text(data);selected.chmod(0o400)
+    worker=dict(path=str(selected),sha256=hashlib.sha256(selected.read_bytes()).hexdigest())
+    observer=memory.Observer(binding,lease,worker=worker);end=time.monotonic()+6
     try:
         while observer.snapshot() is None and time.monotonic()<end:
             observer.tick();time.sleep(.01)
@@ -173,7 +184,7 @@ def child(directory,mode):
         assert observer.job is None
         print(json.dumps(dict(observed=True,reaped=True,models=0)),flush=True)
     finally:
-        observer.cancel();os.close(lease)
+        observer.cancel();os.close(lease);temporary.cleanup()
 
 
 if __name__=='__main__':

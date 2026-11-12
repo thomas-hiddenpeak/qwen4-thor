@@ -101,8 +101,13 @@ def accepted_fallback(receipt, selected):
                 selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
         except ValueError:
             from tools.serve_recovery import cold_compat
-            cold_compat.verify(original['package'], original['manifest_sha256'],
-                selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
+            try:
+                cold_compat.verify(original['package'], original['manifest_sha256'],
+                    selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
+            except ValueError:
+                from tools.serve_recovery import resource_compat
+                resource_compat.verify(original['package'], original['manifest_sha256'],
+                    selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
     return copy.deepcopy(receipt)
 
 

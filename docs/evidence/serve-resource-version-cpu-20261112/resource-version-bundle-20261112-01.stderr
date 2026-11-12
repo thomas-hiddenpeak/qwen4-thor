@@ -1,0 +1,8 @@
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.494s
+
+OK

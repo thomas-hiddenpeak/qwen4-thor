@@ -214,7 +214,9 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
             # The isolated reader gates the public credential configuration.
         if outer is not None and outer.resource is not None:
             controller.update(version=6, limits=controller.get('limits'),
-                profiles=controller.get('profiles'), resources=outer.resource.binding())
+                profiles=controller.get('profiles'), resources=outer.resource.binding(),
+                resource_worker=dict(path=str(package/'source/tools/serve_recovery/resource_memory.py'),
+                    sha256=manifest['files']['source/tools/serve_recovery/resource_memory.py']))
         gateway = bundle.gateway_config_for(package, manifest, run, access=access)
         engine.save(run/'controller.json', controller)
         engine.save(run/'gateway.json', gateway)
@@ -236,7 +238,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
         if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
             config.update(version=2, usage_handoff=True)
         from tools.serve_recovery import version_launch
-        versions = version_launch.configuration(state,desc,run)
+        versions = version_launch.configuration(state,desc,run,resources=controller.get('resources'))
         if versions is not None:
             config.update(version=3,version_recovery=versions)
         if cold_config is not None:
@@ -418,6 +420,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             command.add_argument('--cycle-id',required=True)
         if name == 'version-adapt':
             command.add_argument('--output', type=Path, required=True)
+            command.add_argument('--resource-observation', action='store_true')
         if name in ('version-prepare','version-register'):
             command.add_argument('--registration',type=Path,required=True)
         if name == 'version-register':command.add_argument('--expected-cycle')
@@ -458,8 +461,11 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
                        if getattr(args, 'object_'+k) is not None}} or None))
         elif args.operation == 'version-adapt':
-            from tools.serve_recovery import cold_compat
-            result = cold_compat.prepare(args.package, args.manifest_sha256, args.output)
+            if args.resource_observation:
+                from tools.serve_recovery import resource_compat as adapter
+            else:
+                from tools.serve_recovery import cold_compat as adapter
+            result = adapter.prepare(args.package, args.manifest_sha256, args.output)
         else:
             package = args.package
             digest = args.manifest_sha256

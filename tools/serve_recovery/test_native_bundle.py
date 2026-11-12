@@ -123,7 +123,7 @@ class BundleTests(unittest.TestCase):
                            'resource_reconcile', 'outer_daemon', 'host_artifact', 'host_install',
                            'host_entry', 'host_systemd', 'host_handoff', 'device_resource',
                            'cold_requests', 'cold_verify', 'cold_authority', 'cold_channel', 'cold_issuer',
-                           'cold_client', 'cold_host', 'cold_custody', 'cold_watch_policy', 'cold_watch', 'resource_memory')})
+                           'cold_client', 'cold_host', 'cold_custody', 'cold_watch_policy', 'cold_watch', 'resource_memory', 'resource_client', 'resource_compat')})
         self.assertEqual(set(bundle.V17_SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
@@ -457,7 +457,7 @@ from tools.serve_recovery import host_artifact, host_install, host_entry, host_s
 from tools.serve_recovery import host_handoff
 from tools.serve_recovery import device_resource
 from tools.serve_recovery import cold_requests, cold_verify, cold_authority, cold_channel, cold_issuer
-from tools.serve_recovery import cold_client, cold_host, cold_custody, cold_watch_policy, cold_watch, resource_memory
+from tools.serve_recovery import cold_client, cold_host, cold_custody, cold_watch_policy, cold_watch, resource_memory, resource_client, resource_compat
 assert not lifecycle.pending_outer(sys.argv[2], {})
 service.main(['resume', '--help'])
 '''
