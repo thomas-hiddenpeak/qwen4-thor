@@ -203,9 +203,10 @@ function argumentsObject(raw) {
 }
 
 function message(value) {
-  fields(value, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
+  fields(value, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
   requireValue(value.role === 'assistant' && Object.hasOwn(value, 'content'), 'expected assistant message');
   if (value.content !== null) text(value.content, 'invalid content');
+  if (value.refusal != null) text(value.refusal, 'invalid refusal');
   const reasoning = ['reasoning', 'reasoning_content'].filter(k => value[k] != null);
   requireValue(reasoning.length <= 1, 'mixed reasoning fields');
   for (const key of reasoning) text(value[key], 'invalid reasoning');
@@ -275,6 +276,8 @@ function choiceResults(id, model, values, counts) {
 function completion(id, model, msg, finish, counts, choiceCount = 1) {
   text(id, 'missing completion ID', true); text(model, 'missing model', true);
   const result = message(msg), calls = result.tool_calls ?? [];
+  requireValue(result.refusal == null || (!calls.length && result.function_call == null),
+    'refusal cannot authorize tool execution');
   requireValue(['stop', 'length', 'tool_calls', 'function_call'].includes(finish), 'unsupported finish reason');
   requireValue((finish === 'tool_calls') === (calls.length > 0), 'finish/tool batch mismatch');
   requireValue((finish === 'function_call') === (result.function_call != null), 'finish/function mismatch');
@@ -326,23 +329,26 @@ export function parseSseWire(raw) {
     requireValue(integer(choice.index) && choice.index < 128 && !indices.has(choice.index), 'invalid choice index');
     indices.add(choice.index);
     if (!states.has(choice.index)) states.set(choice.index,
-      { role: false, finish: null, content: '', reasoning: '', reasoningField: undefined, calls: [], functionCall: null, logprobs: null });
+      { role: false, finish: null, content: '', refusal: null, reasoning: '', reasoningField: undefined, calls: [], functionCall: null, logprobs: null });
     const state = states.get(choice.index);
     requireValue(state.finish === null, 'choice after terminal');
     let { role, finish, content, reasoning, reasoningField, calls } = state;
     const delta = choice.delta;
     const probabilities = logprobs(choice.logprobs);
     if (probabilities !== null) {
-      state.logprobs ??= { content: [], refusal: null };
-      state.logprobs.content.push(...(probabilities.content ?? []));
-      if (probabilities.refusal !== null) {
-        state.logprobs.refusal ??= [];
-        state.logprobs.refusal.push(...probabilities.refusal);
+      state.logprobs ??= { content: null, refusal: null };
+      for (const key of ['content', 'refusal']) if (probabilities[key] !== null) {
+        state.logprobs[key] ??= [];
+        state.logprobs[key].push(...probabilities[key]);
       }
     }
-    fields(delta, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
+    fields(delta, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
     if (Object.hasOwn(delta, 'role')) { requireValue(!role && delta.role === 'assistant', 'invalid role delta'); role = true; }
     requireValue(role, 'delta before role');
+    if (delta.refusal != null) {
+      state.refusal ??= '';
+      state.refusal += text(delta.refusal, 'invalid refusal');
+    }
     if (delta.content != null) content += text(delta.content, 'invalid content delta');
     for (const key of ['reasoning', 'reasoning_content']) if (delta[key] != null) {
       requireValue(!reasoningField || reasoningField === key, 'reasoning field changed');
@@ -401,7 +407,8 @@ export function parseSseWire(raw) {
   const choices = [...states.entries()].map(([index, state]) => {
     const { calls, content, reasoning, reasoningField } = state;
     requireValue(state.role, 'choice missing role');
-    const msg = { role: 'assistant', content: (calls.length || state.functionCall) && !content ? null : content };
+    const msg = { role: 'assistant', content: (calls.length || state.functionCall || state.refusal !== null) && !content ? null : content };
+    if (state.refusal !== null) msg.refusal = state.refusal;
     if (reasoning) msg[reasoningField] = reasoning;
     if (calls.length) msg.tool_calls = calls;
     if (state.functionCall) msg.function_call = state.functionCall;

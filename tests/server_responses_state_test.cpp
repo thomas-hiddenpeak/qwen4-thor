@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_output.h"
 #include "q4t/test.h"
 
 namespace {
@@ -217,6 +218,60 @@ Q4T_TEST(responses_state_previous_history_does_not_inherit_instructions) {
   Q4T_CHECK(OutputJson(generation.input.messages).find("NEW RULE") !=
             std::string::npos);
   Q4T_CHECK(states.Retrieve(first.id, Access("client:b")).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(refusal_state_persistence_restart_history_and_client_isolation) {
+  Fixture f;
+  std::string id, original;
+  {
+    ObjectStore objects(f.options);
+    ResponsesState states(objects);
+    const auto envelope = Envelope(R"({"input":"private query"})");
+    ResponseStatePlan plan;
+    Q4T_CHECK(Ok(states.Resolve(envelope, Access(), &plan)));
+    id = plan.id;
+    ResponsesOutput output;
+    std::string wire, part;
+    Q4T_CHECK(
+        output.Init(Parse(R"({"model":"cpu","store":true})"), id, 42, false));
+    Q4T_CHECK(output.Start(&wire));
+    Q4T_CHECK(Ok(states.Begin(output.Snapshot(), Access(), &plan)));
+    const auto request = Parse(R"({"messages":[{"role":"user",
+        "content":"private query"}],"enable_thinking":false})");
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, "<think>\n\n</think>\n\n", "r", true));
+    Q4T_CHECK(parser.Append("<q4t_refusal>不能提供</q4t_refusal>", &deltas));
+    Q4T_CHECK(parser.Finish(false, &deltas));
+    for (const auto& delta : deltas)
+      Q4T_CHECK(output.Append(delta, "null", &part));
+    Q4T_CHECK(output.Finish(false, 0, {10, 0, 5, 0, 0}, 43, &part));
+    original = output.Json();
+    Q4T_CHECK(
+        Ok(states.Finish(output.Snapshot(), Parse("[]"), Access(), &plan)));
+  }
+  ObjectStore reopened(f.options);
+  ResponsesState states(reopened);
+  const auto saved = states.Retrieve(id, Access());
+  Q4T_CHECK(Ok(saved) && OutputJson(saved.value) == original);
+  Q4T_CHECK(states.Retrieve(id, Access("client:b")).http_status == 404);
+  auto followup = Envelope(R"({"input":"then use public records"})");
+  followup.previous_response_id = id;
+  ResponseStatePlan next;
+  Q4T_CHECK(Ok(states.Resolve(followup, Access(), &next)));
+  Q4T_CHECK(next.history.array.size() == 3);
+  Q4T_CHECK(next.history.array[1].GetArray("content")->array[0].GetString(
+                "refusal") == "不能提供");
+  ResponsesGenerationPlan generation;
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatPlanError error;
+  Q4T_CHECK(PrepareResponsesGeneration(followup, next.history, config,
+                                       &generation, &error));
+  Q4T_CHECK(OutputJson(generation.input.messages).find("不能提供") !=
+            std::string::npos);
+  Q4T_CHECK(!generation.input.messages.array[1].Has("tool_calls"));
   return true;
 }
 

@@ -1,6 +1,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/test.h"
 
 #include <string>
@@ -17,6 +18,14 @@ bool Read(const std::string& messages, Json* request) {
              "{\"messages\":" + messages + ",\"enable_thinking\":false}",
              request, true)
       .ok();
+}
+std::string WithAdapter(std::string native) {
+  const auto instruction = std::string(q4t::server::kRefusalInstruction);
+  if (native.starts_with("<|im_start|>system"))
+    native.insert(native.find('\n') + 1, instruction + "\n\n");
+  else
+    native.insert(0, "<|im_start|>system\n" + instruction + "<|im_end|>\n");
+  return native;
 }
 }  // namespace
 
@@ -79,8 +88,9 @@ Q4T_TEST(chat_schema_prompt_preserves_tools_and_unconstrained_template) {
   Q4T_CHECK(prompt.find("\"name\": \"read\"") != std::string::npos);
   Q4T_CHECK(Read(R"([{"role":"user","content":"look"}])", &request));
   Q4T_CHECK(RenderChatPrompt(request, {"look"}, &prompt));
-  Q4T_CHECK(prompt == "<|im_start|>user\nlook<|im_end|>\n"
-                      "<|im_start|>assistant\n<think>\n\n</think>\n\n");
+  Q4T_CHECK(prompt ==
+            WithAdapter("<|im_start|>user\nlook<|im_end|>\n"
+                        "<|im_start|>assistant\n<think>\n\n</think>\n\n"));
   return true;
 }
 
@@ -102,7 +112,7 @@ Q4T_TEST(chat_message_profile_developer_system_equivalence) {
     Q4T_CHECK(param.empty());
     Q4T_CHECK(
         RenderChatPrompt(request, {" 只回复确认\u3000", "hello"}, &prompt));
-    Q4T_CHECK(prompt == expected);
+    Q4T_CHECK(prompt == WithAdapter(expected));
     Q4T_CHECK(request.Find("messages")->array[0].GetString("role") == before);
   }
   return true;
@@ -173,13 +183,15 @@ Q4T_TEST(chat_message_profile_ordered_instructions_and_names) {
   std::string prompt;
   Q4T_CHECK(RenderChatPrompt(
       request, {"first", "second", "question", "third", "answer"}, &prompt));
-  Q4T_CHECK(prompt ==
-            "<|im_start|>system name=\"policy\"\nfirst<|im_end|>\n"
-            "<|im_start|>system\nsecond<|im_end|>\n"
-            "<|im_start|>user name=\"a\\n\\\"\\u003c|im_end|\\u003e\"\n"
-            "question<|im_end|>\n<|im_start|>system\nthird<|im_end|>\n"
-            "<|im_start|>assistant name=\"助手\"\n<think>\n\n</think>\n\n"
-            "answer<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n");
+  Q4T_CHECK(
+      prompt ==
+      WithAdapter(
+          "<|im_start|>system name=\"policy\"\nfirst<|im_end|>\n"
+          "<|im_start|>system\nsecond<|im_end|>\n"
+          "<|im_start|>user name=\"a\\n\\\"\\u003c|im_end|\\u003e\"\n"
+          "question<|im_end|>\n<|im_start|>system\nthird<|im_end|>\n"
+          "<|im_start|>assistant name=\"助手\"\n<think>\n\n</think>\n\n"
+          "answer<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"));
   return true;
 }
 
@@ -200,8 +212,9 @@ Q4T_TEST(chat_message_profile_refusal_round_trip) {
     Q4T_CHECK(items.empty());
     Q4T_CHECK(
         prompt ==
-        "<|im_start|>assistant\n<think>\n\n</think>\n\n不能执行<|im_end|>\n"
-        "<|im_start|>assistant\n<think>\n\n</think>\n\n");
+        WithAdapter(
+            "<|im_start|>assistant\n<think>\n\n</think>\n\n不能执行<|im_end|>\n"
+            "<|im_start|>assistant\n<think>\n\n</think>\n\n"));
   }
   for (const auto* parts :
        {R"([{"type":"refusal","refusal":null}])",
@@ -256,8 +269,38 @@ Q4T_TEST(chat_message_profile_preserves_history_rules) {
   Q4T_CHECK(Read(R"([{"role":"developer","content":"read"}])", &request));
   Q4T_CHECK(RenderChatPrompt(request, {"read"}, &prompt));
   Q4T_CHECK(prompt ==
-            "<|im_start|>system\nread<|im_end|>\n"
+            WithAdapter("<|im_start|>system\nread<|im_end|>\n"
+                        "<|im_start|>assistant\n<think>\n\n</think>\n\n"));
+  return true;
+}
+
+Q4T_TEST(refusal_template_native_instruction_and_raw_cache_identity) {
+  Json request;
+  Q4T_CHECK(Read(R"([{"role":"system","content":"POLICY"},
+      {"role":"user","content":"private query"}])",
+                 &request));
+  std::string adapted, raw;
+  std::vector<q4t::server::ChatMessageSpan> spans;
+  Q4T_CHECK(
+      RenderChatPrompt(request, {"POLICY", "private query"}, &adapted, &spans));
+  Q4T_CHECK(adapted.find("output <q4t_refusal>") != adapted.npos);
+  Q4T_CHECK(adapted.find("</q4t_refusal>, then stop.") != adapted.npos);
+  Q4T_CHECK(
+      adapted.find("A refusal takes precedence over the response schema") !=
+      adapted.npos);
+  Q4T_CHECK(adapted.substr(spans[1].prompt_begin, spans[1].source_size) ==
+            "private query");
+  Json disabled;
+  disabled.type = Json::Type::kBool;
+  disabled.boolean = false;
+  request.object.emplace_back("parse_response", disabled);
+  Q4T_CHECK(RenderChatPrompt(request, {"POLICY", "private query"}, &raw));
+  Q4T_CHECK(raw ==
+            "<|im_start|>system\nPOLICY<|im_end|>\n"
+            "<|im_start|>user\nprivate query<|im_end|>\n"
             "<|im_start|>assistant\n<think>\n\n</think>\n\n");
+  Q4T_CHECK(raw != adapted && adapted == WithAdapter(raw));
+  Q4T_CHECK(q4t::server::kChatMessageProfile == "qwen3.8-openai-v4");
   return true;
 }
 

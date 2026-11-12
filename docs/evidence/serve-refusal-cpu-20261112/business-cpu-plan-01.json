@@ -1,0 +1,11 @@
+{
+  "tests": 2,
+  "selectors": [
+    "test_business_cannot_accept_plain_text_or_fabricated_control_output",
+    "test_business_has_six_frozen_generations_and_one_actual_tool_execution"
+  ],
+  "sources": {
+    "tools/serve_responses/test_refusal_contract.py": "b0abf87dbe4ea8193112e27e654121154cff33d0f6eb9b1daf2d21f87dd0540e",
+    "tools/serve_responses/refusal_acceptance.py": "4710ca8f8167a1ed2b398a1462072e1c1886d8976856415daee1c9daf33eb1d4"
+  }
+}

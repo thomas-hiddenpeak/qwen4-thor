@@ -81,6 +81,38 @@ class Response(io.BytesIO):
 
 
 class ClientContracts(unittest.TestCase):
+    def test_refusal_json_stream_history_and_incomplete_are_preserved(self):
+        message = dict(role='assistant', content=None, refusal='不能提供✅')
+        left = completion(message, 'stop')
+        right = client.read_sse(io.BytesIO(stream(
+            [{'refusal': '不能'}, {'refusal': '提供✅'}], finish='stop')))
+        self.assertEqual(left.message, right.message)
+        self.assertEqual(client.append_final([], right), [message])
+        with self.assertRaises(client.ProtocolError):
+            client.prepare_tool_calls(right, {})
+        partial = client.read_sse(io.BytesIO(stream(
+            [{'refusal': '不能'}], finish='length')))
+        self.assertEqual(partial.message['refusal'], '不能')
+        with self.assertRaises(client.ProtocolError):
+            client.append_final([], partial)
+        with self.assertRaises(client.ProtocolError):
+            completion(dict(MESSAGE, refusal='no'), 'tool_calls')
+        with self.assertRaises(client.ProtocolError):
+            completion(dict(message, refusal=False), 'stop')
+
+    def test_refusal_probabilities_reassemble_without_content_alias(self):
+        row = dict(token='no', logprob=-0.5, bytes=[110, 111], top_logprobs=[])
+        parts = [chunk(dict(role='assistant', content='')),
+                 chunk(dict(refusal='no')), chunk({}, 'stop')]
+        parts[1]['choices'][0]['logprobs'] = dict(content=None, refusal=[row])
+        parts[2]['choices'][0]['logprobs'] = dict(content=None, refusal=[])
+        parts.append(dict(id='request-1', model='qwen3.8-flash-next',
+            object='chat.completion.chunk', choices=[], usage=deepcopy(USAGE)))
+        wire = b''.join(frame(v) for v in parts) + b'data: [DONE]\r\n\r\n'
+        result = client.read_sse(io.BytesIO(wire))
+        self.assertEqual(result.logprobs, dict(content=None, refusal=[row]))
+        self.assertEqual(result.message, dict(role='assistant', content=None, refusal='no'))
+
     def test_preflight_roundtrip_is_read_only_and_exact(self):
         request = dict(model="m", prompt="q", stream=True)
         expected = dict(object="q4t.chat.preflight", profile="q4t-preflight-v1",

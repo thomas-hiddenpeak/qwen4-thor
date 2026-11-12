@@ -13,13 +13,13 @@ namespace q4t::server {
 namespace {
 using namespace responses_detail;
 constexpr size_t kNoCall = std::numeric_limits<size_t>::max();
-Status Probabilities(std::string_view json, io::Json* out) {
+Status Probabilities(std::string_view json, bool refusal, io::Json* out) {
   *out = Array();
   if (json.empty() || json == "null") return {};
   io::Json parsed;
   auto status =
       io::ParseJson(std::string(json), &parsed, true, kRequestJsonLimits);
-  const auto* content = parsed.GetArray("content");
+  const auto* content = parsed.GetArray(refusal ? "refusal" : "content");
   if (!status || !content)
     return Status::Fail("invalid Responses token probability source");
   const auto row_value = [](const io::Json& row, io::Json* result) {
@@ -222,6 +222,8 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
   if (Items().array.size() >= kMaxItems)
     return Status::Fail("Responses output item capacity exhausted");
   io::Json item;
+  const bool refusal = kind == ResponseDelta::Kind::kRefusal;
+  const bool message = kind == ResponseDelta::Kind::kContent || refusal;
   if (kind == ResponseDelta::Kind::kTool) {
     item = Object(
         {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
@@ -230,13 +232,11 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
          {"name", String(call->name)},
          {call->custom ? "input" : "arguments", String("")}});
   } else {
-    item = Object(
-        {{"id", String(detail::NewRequestId(
-                    kind == ResponseDelta::Kind::kContent ? "msg_" : "rs_"))},
-         {"type", String(kind == ResponseDelta::Kind::kContent ? "message"
-                                                               : "reasoning")},
-         {"content", Array()}});
-    if (kind == ResponseDelta::Kind::kContent)
+    item =
+        Object({{"id", String(detail::NewRequestId(message ? "msg_" : "rs_"))},
+                {"type", String(message ? "message" : "reasoning")},
+                {"content", Array()}});
+    if (message)
       Set(&item, "role", String("assistant"));
     else
       Set(&item, "summary", Array());
@@ -252,10 +252,10 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
             {{"output_index", Number(*index)}, {"item", Items().array.back()}}),
         wire);
   if (kind != ResponseDelta::Kind::kTool) {
-    auto part = Object({{"type", String(kind == ResponseDelta::Kind::kContent
-                                            ? "output_text"
-                                            : "reasoning_text")},
-                        {"text", String("")}});
+    auto part = Object({{"type", String(refusal   ? "refusal"
+                                        : message ? "output_text"
+                                                  : "reasoning_text")},
+                        {refusal ? "refusal" : "text", String("")}});
     if (kind == ResponseDelta::Kind::kContent) {
       Set(&part, "annotations", Array());
       Set(&part, "logprobs", Array());
@@ -275,9 +275,10 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
   if (!started_ || terminal_ || response_.GetString("status") != "in_progress")
     return Status::Fail("Responses output is not in progress");
   const bool tool = delta.kind == ResponseDelta::Kind::kTool;
+  const bool refusal = delta.kind == ResponseDelta::Kind::kRefusal;
   if (!tool && delta.text.empty()) return {};
   io::Json probabilities;
-  auto status = Probabilities(chat_logprobs, &probabilities);
+  auto status = Probabilities(chat_logprobs, refusal, &probabilities);
   if (!status) return status;
   const auto& added = tool ? delta.call.arguments : delta.text;
   if (added.size() > limit_ / 6)
@@ -313,9 +314,18 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
     }
   } else {
     const auto type =
-        delta.kind == ResponseDelta::Kind::kContent ? "message" : "reasoning";
+        delta.kind == ResponseDelta::Kind::kReasoning ? "reasoning" : "message";
+    const auto part_type = refusal ? "refusal"
+                           : delta.kind == ResponseDelta::Kind::kContent
+                               ? "output_text"
+                               : "reasoning_text";
+    const auto* parts = Items().array.empty()
+                            ? nullptr
+                            : Items().array.back().GetArray("content");
     if (Items().array.empty() ||
-        Items().array.back().GetString("type") != type) {
+        Items().array.back().GetString("type") != type || !parts ||
+        parts->array.empty() ||
+        parts->array[0].GetString("type") != part_type) {
       status = AddItem(delta.kind, nullptr, &index, wire);
       if (!status) return status;
     } else {
@@ -334,7 +344,7 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
           std::move(fields), wire);
   } else {
     auto& part = Field(item, "content").array[0];
-    Field(part, "text").str += added;
+    Field(part, refusal ? "refusal" : "text").str += added;
     auto fields = Location(index, true);
     Set(&fields, "delta", String(added));
     if (delta.kind == ResponseDelta::Kind::kContent) {
@@ -343,7 +353,8 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
                   probabilities.array.end());
       Set(&fields, "logprobs", EventProbabilities(std::move(probabilities)));
     }
-    Event(delta.kind == ResponseDelta::Kind::kContent
+    Event(refusal ? "response.refusal.delta"
+          : delta.kind == ResponseDelta::Kind::kContent
               ? "response.output_text.delta"
               : "response.reasoning_text.delta",
           std::move(fields), wire);
@@ -447,11 +458,14 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
                             !item.GetArray("content")->array.empty())) {
     const auto& part = Field(item, "content").array[0];
     auto fields = Location(index, true);
-    Set(&fields, "text", *part.Find("text"));
-    if (type == "message")
+    const bool refusal = part.GetString("type") == "refusal";
+    Set(&fields, refusal ? "refusal" : "text",
+        *part.Find(refusal ? "refusal" : "text"));
+    if (type == "message" && !refusal)
       Set(&fields, "logprobs", EventProbabilities(*part.Find("logprobs")));
-    Event(type == "message" ? "response.output_text.done"
-                            : "response.reasoning_text.done",
+    Event(refusal             ? "response.refusal.done"
+          : type == "message" ? "response.output_text.done"
+                              : "response.reasoning_text.done",
           std::move(fields), wire);
     fields = Location(index, true);
     Set(&fields, "part", part);

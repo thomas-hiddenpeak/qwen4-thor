@@ -206,7 +206,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("max_total_tokens":300000,"max_response_bytes":100663296,)"
          R"("prompt_template":"none","batch":true,)"
          R"("quality":"generative_hidden_states_no_retrieval_training_claim",)"
-         R"("native_backend":)" + NativeEmbeddingDescription(native_embedding) + "}" +
+         R"("native_backend":)" +
+         NativeEmbeddingDescription(native_embedding) + "}" +
          R"(,"batches":{"profile":"q4t-batches-v1","endpoint":"/v1/batches",)"
          R"("create":true,"retrieve":true,"list":true,"cancel":true,)"
          R"("completion_window":"24h","max_requests":50000,)"
@@ -270,6 +271,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("logprobs":true,"top_logprobs_max":20,"logprob_distribution":"raw",)"
          R"("selected_outside_raw_top20":-9999,"hidden_only_logprobs":false,)"
          R"("boundary_token_logprobs":"original_bytes_once",)"
+         R"("refusal_output":{"profile":"q4t-refusal-v1",)"
+         R"("signal":"model_generated_frame","chat_json":true,)"
+         R"("chat_sse":true,"logprobs":true,"responses_sse":true,)"
+         R"("schema_exception":"validated_refusal_branch",)"
+         R"("keyword_detection":false,"moderation_substitution":false},)"
          R"("mtp_sampling":"plain_greedy_only","response_max_bytes":33554432,)"
          R"("prediction":{"profile":"q4t-prediction-v1","content":["string","text_parts"],)"
          R"("verification":"target_two_rows","requires_mtp":false,)"

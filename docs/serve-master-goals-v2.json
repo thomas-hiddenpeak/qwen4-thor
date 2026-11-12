@@ -857,7 +857,7 @@
       },
       "execution_audit": "serve-responses-execution-audit-v1.json",
       "refusal_output": {
-        "state": "implementation_preparation",
+        "state": "cpu_passed_real_business_pending",
         "plan": "SERVE_REFUSAL_OUTPUT_2026-11-12.md",
         "required": true,
         "model_special_token_available": false,
@@ -869,7 +869,13 @@
           "requests": 6,
           "seconds": 900
         },
-        "business_budget_used": false
+        "business_budget_used": false,
+        "cpu_frozen_cases": 80,
+        "signal": "model_generated_q4t_refusal_frame_v1",
+        "model_and_transport_not_yet_accepted": true,
+        "cpu_native_cases": 80,
+        "cpu_adapter_cases": 19,
+        "evidence": "docs/evidence/serve-refusal-cpu-20261112/README.md"
       }
     },
     {

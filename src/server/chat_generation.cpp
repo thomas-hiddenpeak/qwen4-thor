@@ -2853,8 +2853,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                     ? Status()
                     : Status::Fail("Private executor emitted non-text output");
           } else if (pro_step) {
-            if (delta.kind == ResponseDelta::Kind::kTool ||
-                delta.text.size() > 1024 * 1024 - pro_notes.size()) {
+            if (delta.kind == ResponseDelta::Kind::kRefusal) {
+              response_status =
+                  responses->Append(delta, logprobs, &response_chunk);
+            } else if (delta.kind == ResponseDelta::Kind::kTool ||
+                       delta.text.size() > 1024 * 1024 - pro_notes.size()) {
               response_status = Status::Fail(
                   "Pro deliberation emitted a tool or exceeded note capacity");
             } else {
@@ -4036,6 +4039,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     if (internal) {
+      if (response_parser.HasRefusal()) {
+        err_guard.ok = false;
+        cleanup();
+        SendError(fd, 502, "Preparation model refused its internal task", {},
+                  "input_preparation_refused");
+        return;
+      }
       internal->content = response_parser.Content();
       internal->finish_reason = finish_reason;
       internal->input_tokens = T;
@@ -4068,8 +4078,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       const ResponsesUsage step_usage{
           T, restored_prefix, static_cast<int64_t>(generated.size()),
-          internal_step ? static_cast<int64_t>(generated.size())
-                        : thinking_budget.ReasoningTokens(),
+          internal_step && !response_parser.HasRefusal()
+              ? static_cast<int64_t>(generated.size())
+              : thinking_budget.ReasoningTokens(),
           std::max(0, cache_written_tokens - restored_prefix)};
       responses_usage.input_tokens += step_usage.input_tokens;
       responses_usage.cached_tokens += step_usage.cached_tokens;
@@ -4124,7 +4135,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           continue;
         }
       }
-      if (pro_step) {
+      if (pro_step && !response_parser.HasRefusal()) {
         if (responses_usage.output_tokens == request_output_limit) {
           // Actual deliberation consumed the caller's whole remaining budget.
           // Publish an incomplete reasoning-only response, never refill it.
@@ -4270,16 +4281,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       stored_chat_response = OutputJson(stored.value);
     }
     if (stream) {
-      const auto finish_chunk = completion
-          ? CompletionChunk(id, model_field, created, choice_index, "",
-                              finish_reason,
-                              visible_logprobs
-                                  ? CompletionProbabilityRows().Json() : "null",
-                              include_usage, completion_plan.include_obfuscation)
-          : detail::SseDeltaChunk(
-                id, model_field, "{}", finish_reason, choice_index, created,
-                include_usage,
-                sampling.logprobs ? R"({"content":[],"refusal":null})" : "null");
+      const auto finish_chunk =
+          completion
+              ? CompletionChunk(
+                    id, model_field, created, choice_index, "", finish_reason,
+                    visible_logprobs ? CompletionProbabilityRows().Json()
+                                     : "null",
+                    include_usage, completion_plan.include_obfuscation)
+              : detail::SseDeltaChunk(id, model_field, "{}", finish_reason,
+                                      choice_index, created, include_usage,
+                                      !sampling.logprobs ? "null"
+                                      : response_parser.HasRefusal()
+                                          ? R"({"content":null,"refusal":[]})"
+                                          : R"({"content":[],"refusal":null})");
       std::string tail;
       if (final_choice) {
         if (include_usage) {

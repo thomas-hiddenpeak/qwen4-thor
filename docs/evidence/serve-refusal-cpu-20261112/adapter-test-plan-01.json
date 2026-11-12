@@ -1,0 +1,11 @@
+{
+  "cpu_schema_cases": 2,
+  "node_sdk_cases": 4,
+  "artifact_source": "cpu-01 native parser/output production",
+  "model_generation_claim": false,
+  "sources": {
+    "tools/serve_responses/test_refusal_contract.py": "de35e336a0666677fc3400fa48c253580a76291e73e1641f9562fa1fe67fcbe3",
+    "tools/serve_responses/test_sdk.mjs": "d72791b69321ce978a928a90cf43d68fc056f0e799627bab87404b698a7040f7",
+    "tools/serve_protocol/sdk.mjs": "b91fbfdb9763abda12908184736e51de4beaa9c5d406e465db1942a78dfd7fec"
+  }
+}

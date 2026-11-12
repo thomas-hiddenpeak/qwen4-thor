@@ -1,0 +1,11 @@
+{
+  "actual_empty_call_fragments": [
+    "header",
+    "{",
+    "}"
+  ],
+  "old_test_expected_fragments": 2,
+  "stream_tool_unchanged_from_HEAD": true,
+  "stream_tool_sha256": "6058cced0b09932f18461793b75d87eb10e0d4bd3372582d9c7852ba5c89601d",
+  "fix": "assert stable call identity, one header, recomposed arguments and 128-call boundary, not incidental chunk count"
+}

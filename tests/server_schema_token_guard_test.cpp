@@ -62,7 +62,8 @@ std::string RichCall(std::string_view arguments) {
          std::string(arguments) + "\n</parameter>\n</function>\n</tool_call>";
 }
 bool RequestRoundTrip(const Json& request, const std::string& text,
-                      size_t calls, std::string_view content) {
+                      size_t calls, std::string_view content,
+                      std::string_view refusal = {}) {
   OutputConstraints plan;
   auto status = PlanOutputConstraints(request, &plan);
   if (!status) std::fprintf(stderr, "plan: %s\n", status.message().c_str());
@@ -101,11 +102,13 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
   const auto* actual_calls = message.GetArray("tool_calls");
   Q4T_CHECK((actual_calls ? actual_calls->array.size() : 0) == calls);
   Q4T_CHECK(message.GetString("content") == content);
-  std::string streamed_content;
+  Q4T_CHECK(message.GetString("refusal") == refusal);
+  std::string streamed_content, streamed_refusal;
   std::vector<std::string> arguments;
   for (const auto& delta : deltas) {
     const auto wire = Parse(delta.ToJson());
     streamed_content += wire.GetString("content");
+    streamed_refusal += wire.GetString("refusal");
     if (const auto* tools = wire.GetArray("tool_calls"))
       for (const auto& tool : tools->array) {
         const auto index = tool.GetInt("index", -1);
@@ -118,6 +121,7 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
       }
   }
   Q4T_CHECK(streamed_content == content && arguments.size() == calls);
+  Q4T_CHECK(streamed_refusal == refusal);
   for (size_t i = 0; i < calls; ++i) {
     const auto& tool = actual_calls->array[i];
     const auto* value = tool.Find("function");
@@ -425,6 +429,67 @@ Q4T_TEST(schema_worker_binding_mismatch_cannot_bypass_semantic_checks) {
   std::unique_ptr<StructuredDecoder> decoder;
   Q4T_CHECK(!StructuredDecoder::Create(plan, vocabulary, 2, {0}, &decoder));
   Q4T_CHECK(!decoder);
+  return true;
+}
+
+Q4T_TEST(refusal_worker_schema_tool_and_text_branches_round_trip) {
+  const auto schema =
+      R"("response_format":{"type":"json_schema","json_schema":{"name":"r",
+          "strict":true,"schema":)" +
+      Object(R"({"type":"string","format":"time"})") + "}}";
+  for (const auto& extra : std::vector<std::string>{
+           schema, R"("response_format":{"type":"json_object"})",
+           R"("tool_choice":"required")", R"("tool_choice":"none")",
+           R"("tool_choice":{"type":"function","function":{"name":"read"}})"}) {
+    Q4T_CHECK(RequestRoundTrip(RichRequest(extra),
+                               "\n<q4t_refusal>拒绝 \"data\"</q4t_refusal>\n",
+                               0, "", "拒绝 \"data\""));
+  }
+  auto no_rich_tools = Parse(R"({"messages":[{"role":"user","content":"q"}],
+      "enable_thinking":false,"tool_choice":"none"})");
+  Q4T_CHECK(RequestRoundTrip(no_rich_tools, "<q4t_refusal>no</q4t_refusal>", 0,
+                             "", "no"));
+  Q4T_CHECK(RequestRoundTrip(no_rich_tools,
+                             "literal <q4t_refusal>data</q4t_refusal>", 0,
+                             "literal <q4t_refusal>data</q4t_refusal>"));
+  return true;
+}
+
+Q4T_TEST(refusal_worker_rejects_truncation_empty_and_mixed_ordinary_branch) {
+  for (const auto& extra : std::vector<std::string>{
+           R"("tool_choice":"none")",
+           R"("response_format":{"type":"json_object"})"}) {
+    const auto request = RichRequest(extra);
+    OutputConstraints plan;
+    Q4T_CHECK(PlanOutputConstraints(request, &plan));
+    const std::vector<std::string> vocabulary{
+        "",
+        "<q4t_refusal>",
+        "no",
+        "</q4t_refusal>",
+        " ",
+        "bad",
+        "</q4t_refusal>tool",
+        "<q4t_refusal>no</q4t_refusal>trailing"};
+    std::unique_ptr<StructuredDecoder> decoder;
+    Q4T_CHECK(StructuredDecoder::Create(plan, vocabulary, vocabulary.size(),
+                                        {0}, &decoder));
+    const std::vector<uint16_t> logits(vocabulary.size(), Bf16(1));
+    int32_t token = -1;
+    Q4T_CHECK(!decoder->Select(logits, &token, 7));
+    Q4T_CHECK(decoder->Select(logits, &token, 1));
+    Q4T_CHECK(!decoder->Select(logits, &token, 0));
+    Q4T_CHECK(!decoder->Select(logits, &token, 3));
+    Q4T_CHECK(decoder->Select(logits, &token, 2));
+    Q4T_CHECK(!decoder->Select(logits, &token, 6));
+    Q4T_CHECK(decoder->Select(logits, &token, 3));
+    Q4T_CHECK(!decoder->Select(logits, &token, 5));
+    Q4T_CHECK(decoder->Select(logits, &token, 4));
+    Q4T_CHECK(decoder->Select(logits, &token, 0));
+    Q4T_CHECK(decoder->Terminated());
+    Q4T_CHECK(decoder->Receipts() ==
+              std::vector<SchemaReceipt>{MakeRefusalReceipt("no")});
+  }
   return true;
 }
 

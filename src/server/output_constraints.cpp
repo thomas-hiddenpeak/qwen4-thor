@@ -9,6 +9,7 @@
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/refusal_frame.h"
 
 namespace q4t::server {
 namespace {
@@ -388,6 +389,15 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       payload =
           R"({"type":"or","elements":[)" + json_payload + ',' + payload + "]}";
   }
+  // Explicit refusal is an alternative to the entire ordinary answer, never
+  // a replacement for an unfinished schema/tool value. The semantic guard
+  // resolves the free-text branch's prefix ambiguity and certifies the frame.
+  const std::string refusal =
+      R"({"type":"sequence","elements":[{"type":"tag","begin":)" +
+      Quote(kRefusalOpen) + R"(,"content":{"type":"any_text","excludes":[)" +
+      Quote(kRefusalClose) + R"(]},"end":)" + Quote(kRefusalClose) + "}," +
+      kWhitespace + "]}";
+  payload = R"({"type":"or","elements":[)" + payload + ',' + refusal + "]}";
   bool thinking = request.GetBool("enable_thinking", true);
   if (const auto* options = request.Find("chat_template_kwargs"))
     thinking = options->GetBool("enable_thinking", thinking);
@@ -399,9 +409,10 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
   out->structural_tag = R"({"type":"structural_tag","format":)"
                         R"({"type":"sequence","elements":[)" +
                         prefix + kWhitespace + ',' + payload + "]}";
-  if (!guard_tools.empty() || (!guard_content.empty() && !forced)) {
-    out->schema_receipts = true;
-    out->structural_tag += R"(,"q4t_guard":{"thinking":)" +
+  {
+    out->schema_receipts =
+        !guard_tools.empty() || (!guard_content.empty() && !forced);
+    out->structural_tag += R"(,"q4t_guard":{"refusal":true,"thinking":)" +
                            std::string(thinking ? "true" : "false");
     if (out->json_output && !forced)
       out->structural_tag += R"(,"json_content":true)";

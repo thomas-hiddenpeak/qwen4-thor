@@ -12,10 +12,10 @@
 
 namespace q4t::server {
 
-inline constexpr std::string_view kChatMessageProfile = "qwen3.8-openai-v3";
+inline constexpr std::string_view kChatMessageProfile = "qwen3.8-openai-v4";
 
 // Both API instruction roles use the model's system ChatML role. Preserve
-// message order; a lone unnamed leading instruction retains native bytes.
+// message order. Parsed generation adds the native refusal adapter instruction.
 bool IsChatInstructionRole(std::string_view role);
 
 // Actual content placement in the rendered prompt. Source coordinates refer

@@ -1,0 +1,11 @@
+[PASS] chat_template_tool_result_order
+[PASS] chat_response_truncation_and_length
+  CHECK failed: deltas.size() == 2 && deltas[0].call.index == i && deltas[1].call.index == i (line 381)
+[FAIL] chat_response_bounds
+[PASS] chat_response_hidden_reasoning_preserves_failure_and_limits
+[PASS] refusal_parser_every_split_preserves_text_and_source_offsets
+[PASS] refusal_parser_marker_data_and_natural_language_are_not_signals
+[PASS] refusal_parser_incomplete_malformed_and_capacity_terminals
+[PASS] refusal_parser_requires_independent_matching_receipt
+[PASS] responses_output_incomplete_parser_preserves_chat_contract
+9 tests, 8 passed, 1 failed, 0 skipped

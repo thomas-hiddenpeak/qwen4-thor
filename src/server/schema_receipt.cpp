@@ -31,5 +31,9 @@ Status MakeSchemaReceipt(std::string_view scope, const io::Json& schema,
   if (status) status = SchemaValueDigest(value, &out->value);
   return status;
 }
+SchemaReceipt MakeRefusalReceipt(std::string_view refusal) {
+  return {Hash("q4t-refusal-binding-v1:<q4t_refusal></q4t_refusal>"),
+          Hash("q4t-refusal-value-v1:" + std::string(refusal))};
+}
 
 }  // namespace q4t::server

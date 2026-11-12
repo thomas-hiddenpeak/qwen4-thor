@@ -1,0 +1,7 @@
+test_business_cannot_accept_plain_text_or_fabricated_control_output (tools.serve_responses.test_refusal_contract.RefusalContract.test_business_cannot_accept_plain_text_or_fabricated_control_output) ... ok
+test_business_has_six_frozen_generations_and_one_actual_tool_execution (tools.serve_responses.test_refusal_contract.RefusalContract.test_business_has_six_frozen_generations_and_one_actual_tool_execution) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

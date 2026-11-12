@@ -1,6 +1,6 @@
 # A07：模型拒绝信号、输出与流式生命周期
 
-状态：实现准备。此项是完整兼容目标的必做任务，不能以返回
+状态：成组实现及针对性CPU验证通过，真实模型业务待验，尚未交付。此项是完整兼容目标的必做任务，不能以返回
 unsupported或仅接受refusal历史字段代替生成能力。
 
 ## 已核对的协议与代码
@@ -13,8 +13,8 @@ unsupported或仅接受refusal历史字段代替生成能力。
 拒绝事件需要稳定item/output/content索引、sequence以及对应增量或
 最终refusal文本，不能把普通text delta改个事件名就当作实现。
 
-当前Chat模板支持assistant的refusal历史；输出解析器只有content、
-reasoning和tool三类。Responses同样没有refusal生产/增量/终态路径。
+接线前Chat模板支持assistant的refusal历史；输出解析器只有content、
+reasoning和tool三类。当时Responses同样没有refusal生产/增量/终态路径。
 inline moderation已有独立结果，不能用其flag伪造模型的拒绝。
 
 只读检查当前模型tokenizer_config的added_tokens_decoder，未发现
@@ -40,13 +40,27 @@ token；须实现并用真实模型验证明确的输出协议适配。
    做直接受影响回归。SDK直接消费实际事件，不能仅用手工构造fixture
    证明模型生产能力。
 
-具体控制帧编码和接线须在读取完整约束/receipt路径后定稿；本文件不
-把设计草案或单独serializer实现标记为已交付。
+具体编码为`<q4t_refusal>非空拒绝文本</q4t_refusal>`，使用普通词表
+字节；仅识别初始最终回答、最多16个ASCII前导空白之后的完整起始
+帧。普通答案开始后、JSON字符串、工具参数及reasoning内的同形
+字节不作为拒绝。完成后仅允许最多16个ASCII空白；混合/未闭合
+帧失败，预算截断走对应incomplete/length合同，不假装完成。
+
+全部已有约束模式都增加独立拒绝分支，worker只为已闭合非空帧发
+`q4t-refusal-binding-v1`/`q4t-refusal-value-v1`独立域receipt，parser
+核对实际重建字节；无拒绝时原rich schema receipt保持。普通未约束
+输出不为此启动grammar worker，仍由解析器核验完整帧。
+Chat模板profile更新为`qwen3.8-openai-v4`，真实提示包含适配指令；
+raw parse_response=false保持原模板，缓存仍用实际编码前缀身份。
+服务不能靠关键词或审核结果制造模型拒绝。本文件不把接线当交付。
 
 ## 有界验证
 
-先成组完成模型适配、解析、约束、transport、状态和logprobs接线，
-再冻结并运行针对性CPU用例；已有且身份未变的能力证据复用。
+成组接线后冻结80项具体CPU selector及来源hash，原件位于
+`.q4t-work/serve-refusal-20261112/cpu-plan-01.json`及
+`cpu-required-01.txt`，涵盖新增项及直接受影响的parser、模板、
+约束、概率和Responses路径；不是完整host/模型质量矩阵。
+已有且身份未变的其他能力证据复用。
 CPU覆盖每个分片边界、转义/同形文本负控、schema/tool分支、预算耗尽、
 错误/取消、完整事件顺序和旧历史回填。
 
@@ -57,3 +71,8 @@ CPU覆盖每个分片边界、转义/同形文本负控、schema/tool分支、�
 
 完成此组后继续A07其余items/字段、A11内建工具执行、A10后端与A12
 矩阵，以及全部R/Q任务；这不是总目标的停止点。
+
+CPU结果见[保留原失败的证据](evidence/serve-refusal-cpu-20261112/README.md)：
+80项原生用例及19项协议/SDK/客户端/驱动检查通过，来源及声明检查通过；
+不代替模型生成验收。Python/JS客户端同步保留拒绝、真实概率和历史，
+拒绝或截断不能授权工具执行。

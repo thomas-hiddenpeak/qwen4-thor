@@ -47,6 +47,39 @@ function toolMessage() {
     type: 'function', function: { name: 'read', arguments: JSON.stringify({ path: 'docs/MODEL.md', start_line: 1, line_count: 8 }) } })) };
 }
 
+test('refusal JSON and streaming SDK preserve history and actual probabilities', async () => {
+  const message = { role: 'assistant', content: null, refusal: '不能提供✅' };
+  const probability = { token: '不能提供✅', logprob: -0.5, bytes: [...Buffer.from('不能提供✅')], top_logprobs: [] };
+  const json = jsonResponse(message);
+  json.choices[0].logprobs = { content: null, refusal: [probability] };
+  const delta = event({ refusal: message.refusal });
+  delta.choices[0].logprobs = json.choices[0].logprobs;
+  const terminal = event({}, 'stop');
+  terminal.choices[0].logprobs = { content: null, refusal: [] };
+  const events = [event({ role: 'assistant', content: '' }), delta, terminal,
+    { ...event({}), choices: [], usage: COUNTS }];
+  const left = client(Buffer.from(JSON.stringify(json)));
+  const right = client(encode(events), { stream: true });
+  const a = await left.api.chat(request(false)), b = await right.api.chat(request(true));
+  assert.deepEqual(a.message, b.message);
+  assert.deepEqual(b.logprobs, json.choices[0].logprobs);
+  assert.deepEqual(appendFinal([], b), [message]);
+  assert.throws(() => prepareToolCalls(b, {}), ProtocolError);
+});
+
+test('refusal truncation or mixed tool output cannot be executed', async () => {
+  const events = [event({ role: 'assistant', content: '' }), event({ refusal: '不能' }),
+    event({}, 'length'), { ...event({}), choices: [], usage: COUNTS }];
+  const fixture = client(encode(events), { stream: true });
+  const partial = await fixture.api.chat(request(true));
+  assert.equal(partial.message.refusal, '不能');
+  assert.throws(() => appendFinal([], partial), ProtocolError);
+  assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(
+    jsonResponse({ ...toolMessage(), refusal: 'no' }, 'tool_calls')))), ProtocolError);
+  assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(
+    jsonResponse({ role: 'assistant', content: null, refusal: false })))), ProtocolError);
+});
+
 test('legacy function JSON and incremental SSE SDK roundtrip', async () => {
   const fn = { name: 'read', arguments: '{"path":"中国/MODEL.md"}' };
   const message = { role: 'assistant', content: null, function_call: fn };

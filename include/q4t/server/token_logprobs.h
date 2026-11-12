@@ -14,8 +14,8 @@
 namespace q4t::server {
 
 // Tracks actual selected tokens through UTF-8 repair, stop lookahead and
-// response parsing. Hidden-only tokens never enter content logprobs. A token
-// crossing a visible boundary retains its actual bytes/probability, once;
+// response parsing. Hidden-only tokens never enter content/refusal logprobs. A
+// token crossing a visible boundary retains its actual bytes/probability, once;
 // inventing a probability for a sliced or re-tokenized fragment is incorrect.
 class TokenLogprobs {
  public:
@@ -60,6 +60,8 @@ class TokenLogprobs {
   size_t queued_bytes_ = 0;
   std::deque<Entry> pending_;
   std::string collected_;
+  std::string collected_refusal_;
+  bool refusal_seen_ = false;
 };
 
 }  // namespace q4t::server

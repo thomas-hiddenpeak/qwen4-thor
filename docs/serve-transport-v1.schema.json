@@ -181,6 +181,9 @@
                       "null"
                     ]
                   },
+                  "refusal": {
+                    "type": ["string", "null"]
+                  },
                   "function_call": {
                     "type": "object",
                     "properties": {
@@ -277,6 +280,9 @@
               "delta": {
                 "type": "object",
                 "properties": {
+                  "refusal": {
+                    "type": ["string", "null"]
+                  },
                   "function_call": {
                     "type": "object",
                     "properties": {

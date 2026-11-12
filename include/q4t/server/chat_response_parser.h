@@ -26,7 +26,7 @@ struct ResponseToolCall {
 };
 
 struct ResponseDelta {
-  enum class Kind { kContent, kReasoning, kTool };
+  enum class Kind { kContent, kReasoning, kTool, kRefusal };
   Kind kind = Kind::kContent;
   std::string text;
   ResponseToolCall call;
@@ -67,6 +67,8 @@ class ChatResponseParser {
   }
   std::string MessageJson() const;
   const std::string& Content() const { return content_; }
+  const std::string& Refusal() const { return refusal_; }
+  bool HasRefusal() const { return refusal_started_; }
   bool HasToolCalls() const { return tool_count_ != 0; }
   const char* ToolFinishReason() const {
     return legacy_function_ ? "function_call" : "tool_calls";
@@ -77,7 +79,7 @@ class ChatResponseParser {
   size_t ConsumedBytes() const { return pending_offset_; }
 
  private:
-  enum class Region { kContent, kReasoning, kTool };
+  enum class Region { kContent, kReasoning, kTool, kRefusal };
   Status Fail(const std::string& message);
   Status VerifySchemaReceipts(bool incomplete = false) const;
   Status ParseTool(std::string_view block, ResponseToolCall* call) const;
@@ -123,6 +125,13 @@ class ChatResponseParser {
   std::unordered_set<std::string> json_argument_tools_;
   std::string content_;
   std::string reasoning_;
+  std::string refusal_;
+  bool final_prefix_pending_ = true;
+  bool refusal_started_ = false;
+  bool refusal_closed_ = false;
+  bool refusal_has_text_ = false;
+  size_t refusal_bytes_ = 0;
+  size_t refusal_tail_ = 0;
   std::vector<ResponseToolCall> calls_;
   const io::Json* request_ = nullptr;
   OutputConstraints constraints_;

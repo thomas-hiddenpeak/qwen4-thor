@@ -134,6 +134,109 @@ Q4T_TEST(responses_output_text_reasoning_full_lifecycle) {
   return true;
 }
 
+Q4T_TEST(refusal_responses_parser_events_and_all_terminal_states) {
+  for (const std::string ending :
+       {"complete", "incomplete", "cancel", "fail"}) {
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(
+        R"({"messages":[{"role":"user","content":"query"}],
+            "enable_thinking":false})",
+        &request));
+    ChatResponseParser parser;
+    Q4T_CHECK(parser.Init(request, "<think>\n\n</think>\n\n", "r", true));
+    ResponsesOutput output;
+    auto options = Options();
+    if (ending == "cancel")
+      for (auto& [key, value] : options.object)
+        if (key == "background") value.boolean = true;
+    std::string wire, part;
+    Q4T_CHECK(output.Init(options, "resp_refusal_" + ending, 42, false));
+    Q4T_CHECK(output.Start(&wire));
+    if (ending == "cancel") {
+      Q4T_CHECK(output.StartRunning(&part));
+      wire += part;
+    }
+    for (const auto* piece : {"<q4t_refusal>不能", "提供私有记录✅"}) {
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Append(piece, &deltas));
+      for (const auto& delta : deltas) {
+        Q4T_CHECK(output.Append(delta, "null", &part));
+        wire += part;
+      }
+    }
+    Q4T_CHECK(wire.find("response.refusal.delta") != wire.npos);
+    Q4T_CHECK(wire.find("response.refusal.done") == wire.npos);
+    std::vector<ResponseDelta> deltas;
+    if (ending == "complete") {
+      Q4T_CHECK(parser.Append("</q4t_refusal>", &deltas));
+      Q4T_CHECK(parser.Finish(false, &deltas) && deltas.empty());
+      Q4T_CHECK(output.Finish(false, 0, {10, 0, 9, 0, 0}, 43, &part));
+      wire += part;
+    } else if (ending == "incomplete") {
+      Q4T_CHECK(parser.Append("</q4t_refu", &deltas));
+      Q4T_CHECK(parser.FinishIncomplete(&deltas) && deltas.empty());
+      Q4T_CHECK(output.Finish(true, 0, {10, 0, 9, 0, 0}, 43, &part));
+      wire += part;
+    } else if (ending == "cancel") {
+      Q4T_CHECK(output.Cancel());
+    } else {
+      Q4T_CHECK(!parser.Finish(false, &deltas));
+      Q4T_CHECK(
+          output.Fail("response_parse_failed", "Unclosed refusal", &part));
+      wire += part;
+    }
+    std::vector<Json> events;
+    Q4T_CHECK(Events(wire, &events));
+    const auto& snapshot = output.Snapshot();
+    Q4T_CHECK(snapshot.GetString("status") ==
+              (ending == "complete" ? "completed"
+               : ending == "cancel" ? "cancelled"
+               : ending == "fail"   ? "failed"
+                                    : "incomplete"));
+    const auto* items = snapshot.GetArray("output");
+    Q4T_CHECK(items && items->array.size() == 1);
+    const auto& message = items->array[0];
+    Q4T_CHECK(message.GetString("type") == "message" &&
+              message.GetString("role") == "assistant");
+    const auto& refusal = message.GetArray("content")->array.at(0);
+    Q4T_CHECK(refusal.GetString("type") == "refusal" &&
+              refusal.GetString("refusal") == "不能提供私有记录✅");
+    Q4T_CHECK(!refusal.Has("text") && !refusal.Has("logprobs"));
+    std::string combined;
+    size_t done = 0, part_done = 0, item_done = 0, completed = 0;
+    for (const auto& event : events) {
+      const auto type = event.GetString("type");
+      if (type.starts_with("response.refusal.")) {
+        Q4T_CHECK(event.GetString("item_id") == message.GetString("id"));
+        Q4T_CHECK(event.GetInt("output_index", -1) == 0 &&
+                  event.GetInt("content_index", -1) == 0);
+        Q4T_CHECK(!event.Has("text") && !event.Has("logprobs"));
+        if (type.ends_with(".delta"))
+          combined += event.GetString("delta");
+        else {
+          ++done;
+          Q4T_CHECK(event.GetString("refusal") == combined);
+        }
+      } else if (type == "response.content_part.done") {
+        Q4T_CHECK(done == 1 &&
+                  OutputJson(*event.Find("part")) == OutputJson(refusal));
+        ++part_done;
+      } else if (type == "response.output_item.done") {
+        Q4T_CHECK(part_done == 1);
+        ++item_done;
+      } else if (type == "response.completed") {
+        Q4T_CHECK(item_done == 1 && ending == "complete");
+        ++completed;
+      }
+    }
+    Q4T_CHECK(combined == refusal.GetString("refusal"));
+    Q4T_CHECK(completed == (ending == "complete" ? 1 : 0));
+    Q4T_CHECK(done == (ending == "complete" || ending == "incomplete" ? 1 : 0));
+    Q4T_CHECK(Save("refusal-" + ending, output, wire));
+  }
+  return true;
+}
+
 Q4T_TEST(responses_summary_has_distinct_item_deltas_and_actual_usage) {
   ResponsesOutput output;
   std::string wire, part;

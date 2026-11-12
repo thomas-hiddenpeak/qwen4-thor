@@ -6,6 +6,7 @@
 
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/request_json.h"
@@ -303,6 +304,8 @@ Q4T_TEST(chat_template_tool_result_order) {
   std::string prompt;
   Q4T_CHECK(q4t::server::RenderChatPrompt(request, contents, &prompt).ok());
   const std::string expected =
+      "<|im_start|>system\n" + std::string(q4t::server::kRefusalInstruction) +
+      "<|im_end|>\n"
       "<|im_start|>user\nq<|im_end|>\n"
       "<|im_start|>assistant\n<think>\n\n</think>\n\n"
       "<tool_call>\n<function=first>\n</function>\n</tool_call>\n"

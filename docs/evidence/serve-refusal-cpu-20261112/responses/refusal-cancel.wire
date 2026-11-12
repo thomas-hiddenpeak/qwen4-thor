@@ -1,0 +1,21 @@
+event: response.created
+data: {"response":{"id":"resp_refusal_cancel","object":"response","created_at":42,"completed_at":null,"status":"queued","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"org/alias","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"}},"reasoning":{},"store":false,"background":true,"truncation":"disabled","access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.queued
+data: {"response":{"id":"resp_refusal_cancel","object":"response","created_at":42,"completed_at":null,"status":"queued","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"org/alias","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"}},"reasoning":{},"store":false,"background":true,"truncation":"disabled","access_programs":null},"type":"response.queued","sequence_number":1}
+
+event: response.in_progress
+data: {"response":{"id":"resp_refusal_cancel","object":"response","created_at":42,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"org/alias","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"}},"reasoning":{},"store":false,"background":true,"truncation":"disabled","access_programs":null},"type":"response.in_progress","sequence_number":2}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"id":"msg_3d768e5e478c043f40f831ec05b3f51d","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":3}
+
+event: response.content_part.added
+data: {"item_id":"msg_3d768e5e478c043f40f831ec05b3f51d","output_index":0,"content_index":0,"part":{"type":"refusal","refusal":""},"type":"response.content_part.added","sequence_number":4}
+
+event: response.refusal.delta
+data: {"item_id":"msg_3d768e5e478c043f40f831ec05b3f51d","output_index":0,"content_index":0,"delta":"不能","type":"response.refusal.delta","sequence_number":5}
+
+event: response.refusal.delta
+data: {"item_id":"msg_3d768e5e478c043f40f831ec05b3f51d","output_index":0,"content_index":0,"delta":"提供私有记录✅","type":"response.refusal.delta","sequence_number":6}
+

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:q4t:serve:message-profile:v3",
-  "title": "qwen3.8-openai-v3 text message profile",
+  "title": "Text message profile v3 with qwen3.8-openai-v4 template",
   "description": "Text message shapes only. Tool association, full request options and runtime admission still require native validation; media uses the vision request schema.",
   "type": "object",
   "required": [
@@ -610,7 +610,7 @@
     }
   },
   "x-q4t": {
-    "profile": "qwen3.8-openai-v3",
+    "profile": "qwen3.8-openai-v4",
     "developer_mapping": "ordered system ChatML messages",
     "name": "JSON quoted participant; angle brackets escaped",
     "name_max_utf8_bytes": 4096,

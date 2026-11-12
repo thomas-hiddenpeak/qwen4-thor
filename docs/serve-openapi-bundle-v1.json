@@ -4591,6 +4591,12 @@
                             "null"
                           ]
                         },
+                        "refusal": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "function_call": {
                           "type": "object",
                           "properties": {
@@ -4687,6 +4693,12 @@
                     "delta": {
                       "type": "object",
                       "properties": {
+                        "refusal": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "function_call": {
                           "type": "object",
                           "properties": {
@@ -8229,7 +8241,7 @@
           }
         ],
         "x-q4t": {
-          "profile": "qwen3.8-openai-v3",
+          "profile": "qwen3.8-openai-v4",
           "scope": "text; experimental media excluded",
           "semantic_contract": "serve-input-semantics-v1.json",
           "required_semantic_validation": true,

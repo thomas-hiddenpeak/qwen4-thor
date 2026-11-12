@@ -283,7 +283,7 @@ def chat_schema():
             when(dict(anyOf=[present(key, {"not": dict(type="null")})
                 for key in ("prompt_cache_key", "prompt_cache_retention")]),
                  {"not": dict(required=["prefix_cache_scope"])})],
-        "x-q4t": dict(profile="qwen3.8-openai-v3", scope="text; experimental media excluded",
+        "x-q4t": dict(profile="qwen3.8-openai-v4", scope="text; experimental media excluded",
             semantic_contract="serve-input-semantics-v1.json", required_semantic_validation=True,
             runtime_preflight="POST /v1/chat/preflight", defaults_are_annotations=True,
             raw_prompt_always_unparsed=True, parsed_messages_default=True,
@@ -418,13 +418,13 @@ def vision_schema():
 def message_schema():
     full = chat_schema()
     return {"$schema": DRAFT, "$id": "urn:q4t:serve:message-profile:v3",
-        "title": "qwen3.8-openai-v3 text message profile",
+        "title": "Text message profile v3 with qwen3.8-openai-v4 template",
         "description": "Text message shapes only. Tool association, full request options and runtime admission still require native validation; media uses the vision request schema.",
         "type": "object", "required": ["messages"],
         "properties": dict(messages=full["properties"]["messages"]),
         "$defs": {k: full["$defs"][k] for k in
                   ("message", "textPart", "refusalPart", "historyCall")},
-        "x-q4t": dict(profile="qwen3.8-openai-v3",
+        "x-q4t": dict(profile="qwen3.8-openai-v4",
             developer_mapping="ordered system ChatML messages",
             name="JSON quoted participant; angle brackets escaped",
             name_max_utf8_bytes=4096, user_message_required=False,
@@ -495,6 +495,11 @@ def semantics():
          "Messages expose the response schema and annotations as exact delimiter-safe system format data; shared preflight and cache prefix include those tokens. Raw prompt stays caller-owned. Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."),
         ("response-parser-prefix", ["src/server/chat_response_parser.cpp", "src/server/thinking_budget.cpp"],
          "Production parser and thinking budget initialization must accept native generation prefix. Real thinking closure token preparation remains execution-time validation."),
+        ("model-refusal", ["include/q4t/server/refusal_frame.h", "src/server/chat_template.cpp",
+             "src/server/chat_response_parser.cpp", "src/server/schema_token_guard.cpp",
+             "src/server/schema_receipt.cpp", "src/server/token_logprobs.cpp",
+             "src/server/responses_output.cpp"],
+         "Parsed messages use the qwen3.8-openai-v4 template and a model-generated explicit refusal frame. Only the initial final-answer prefix recognizes it; ordinary strings, reasoning and tool arguments retain data semantics. Complete nonempty refusal has its own schema-worker receipt domain; missing or wrong receipts cannot bypass schema/tool validation. No keyword inference or moderation substitution. Chat JSON/SSE expose refusal and actual refusal token probabilities; Responses emits refusal parts and delta/done events with stable indices. Truncation/cancellation/error never becomes successful completion. Raw parse_response=false retains its caller-owned protocol."),
         ("sampling-and-choices", ["src/server/sampling.cpp", "src/server/chat_generation.cpp",
              "src/server/token_logprobs.cpp", "src/server/chat_choices.cpp"],
          "Default/null temperature=1; temperature0 is explicit greedy. Per-choice RNG from exact signed64 seed, top_p nucleus, generated-history penalties and token bias are applied to actual target logits after candidate masks. Non-greedy/logprob requests bypass greedy MTP/packed argmax. Token bias IDs must be distinct numerically and in the served vocabulary. Logprobs describe raw finite vocabulary distribution before masks/penalties; selected outside raw top20 is -9999. Hidden-only tokens excluded, boundary-crossing tokens retain actual bytes/probability once. Choices share one request/cancel/admission and prompt charge; output quota/usage sum across choices. JSON response<=32MiB; pending/collected probability storage each<=16MiB."),

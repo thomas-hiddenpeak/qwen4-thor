@@ -3014,7 +3014,7 @@
     }
   ],
   "x-q4t": {
-    "profile": "qwen3.8-openai-v3",
+    "profile": "qwen3.8-openai-v4",
     "scope": "text; experimental media excluded",
     "semantic_contract": "serve-input-semantics-v1.json",
     "required_semantic_validation": true,

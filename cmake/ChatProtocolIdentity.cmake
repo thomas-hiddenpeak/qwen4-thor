@@ -307,6 +307,7 @@ set(protocol_inputs
   include/q4t/server/reasoning_options.h
   include/q4t/server/chat_response_parser.h
   include/q4t/server/chat_template.h
+  include/q4t/server/refusal_frame.h
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
   include/q4t/server/finite_response.h

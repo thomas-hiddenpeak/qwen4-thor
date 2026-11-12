@@ -1,0 +1,11 @@
+test_refusal_json_stream_history_and_incomplete_are_preserved (tools.examples.test_chat_client.ClientContracts.test_refusal_json_stream_history_and_incomplete_are_preserved) ... ok
+test_refusal_probabilities_reassemble_without_content_alias (tools.examples.test_chat_client.ClientContracts.test_refusal_probabilities_reassemble_without_content_alias) ... ok
+test_stream_and_json_preserve_message_and_usage (tools.examples.test_chat_client.ClientContracts.test_stream_and_json_preserve_message_and_usage) ... ok
+test_fragmented_interleaved_tools_and_unicode (tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode) ... ok
+test_stream_identity_order_and_types (tools.examples.test_chat_client.ClientContracts.test_stream_identity_order_and_types) ... ok
+test_tool_and_usage_validation (tools.examples.test_chat_client.ClientContracts.test_tool_and_usage_validation) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.004s
+
+OK

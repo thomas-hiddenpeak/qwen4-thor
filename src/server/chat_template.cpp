@@ -1,4 +1,5 @@
 #include "q4t/server/chat_template.h"
+#include "q4t/server/refusal_frame.h"
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/custom_tools.h"
@@ -528,6 +529,10 @@ Status RenderChatPrompt(const io::Json& request,
       return Status::Fail("reasoning_effort must be xhigh, medium, or low");
     }
   }
+  if (request.GetBool("parse_response", true)) {
+    if (!instructions.empty()) instructions += "\n\n";
+    instructions += kRefusalInstruction;
+  }
   const auto* response_format = request.Find("response_format");
   if (response_format &&
       response_format->GetString("type") == "json_schema") {
@@ -537,7 +542,7 @@ Status RenderChatPrompt(const io::Json& request,
       return Status::Fail("missing response schema specification");
     if (!instructions.empty()) instructions += "\n\n";
     instructions +=
-        "# Response format\n\nWhen returning the final answer, produce one "
+        "# Response format\n\nFor a non-refusal final answer, produce one "
         "JSON object matching the following schema. Choose values according "
         "to their meaning in the task, using the schema's property names "
         "and allowed representations. Tool calls, when needed, still use "

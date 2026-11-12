@@ -131,6 +131,34 @@ Q4T_TEST(sampling_response_boundary_crossing_token_is_never_retokenized) {
   return true;
 }
 
+Q4T_TEST(refusal_logprobs_keep_actual_tokens_and_hide_control_only_tokens) {
+  LogprobPipeline pipe(R"("enable_thinking":false)");
+  Q4T_CHECK(pipe.Push("<q4t_") && pipe.Push("refusal>"));
+  Q4T_CHECK(pipe.Push("\xe4") && pipe.Push("\xb8\xad") && pipe.Push("no</q4"));
+  Q4T_CHECK(pipe.Push("t_refusal>") && pipe.Finish());
+  Q4T_CHECK(pipe.visible.empty() && pipe.parser.Refusal() == "中no");
+  const auto result = Read(pipe.records.Json());
+  Q4T_CHECK(result.Find("content")->IsNull());
+  const auto* rows = result.GetArray("refusal");
+  Q4T_CHECK(rows && rows->array.size() == 3);
+  Q4T_CHECK(rows->array[0].GetArray("bytes")->array[0].number == 228);
+  Q4T_CHECK(rows->array[1].GetArray("bytes")->array.size() == 2);
+  Q4T_CHECK(rows->array[2].GetString("token") == "no</q4");
+  for (const auto& row : rows->array) {
+    Q4T_CHECK(row.Find("logprob")->number == -0.25);
+    Q4T_CHECK(row.GetArray("top_logprobs")->array.size() == 1);
+  }
+  size_t emitted = 0;
+  for (const auto& frame : pipe.frames) {
+    const auto value = Read(frame);
+    if (value.IsNull()) continue;
+    Q4T_CHECK(value.Find("content")->IsNull());
+    emitted += value.GetArray("refusal")->array.size();
+  }
+  Q4T_CHECK(emitted == rows->array.size());
+  return true;
+}
+
 Q4T_TEST(sampling_response_constrained_deferred_content_keeps_provenance) {
   LogprobPipeline pipe(R"("response_format":{"type":"json_object"})");
   Q4T_CHECK(pipe.Push("hidden") && pipe.Push("</think>"));

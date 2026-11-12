@@ -202,10 +202,12 @@ def _message(value):
     require(isinstance(value, dict) and value.get("role") == "assistant",
             "expected assistant message")
     require(not (set(value) - {"role", "content", "reasoning_content", "reasoning",
-                               "tool_calls", "function_call"}), "unsupported message field")
+                               "refusal", "tool_calls", "function_call"}), "unsupported message field")
     require("content" in value, "missing message content")
     if value["content"] is not None:
         _text(value["content"], "invalid content")
+    if value.get("refusal") is not None:
+        _text(value["refusal"], "invalid refusal")
     reasoning_fields = [key for key in ("reasoning_content", "reasoning")
                         if value.get(key) is not None]
     require(len(reasoning_fields) <= 1, "mixed reasoning response fields")
@@ -290,6 +292,8 @@ def _completion(identifier, model, message, finish, usage, logprobs=None,
     has_tools = bool(message.get("tool_calls"))
     require(finish != "tool_calls" or has_tools, "tool finish without calls")
     legacy = message.get("function_call") is not None
+    require(message.get("refusal") is None or not (has_tools or legacy),
+            "refusal cannot authorize tool execution")
     require(finish != "function_call" or legacy, "function finish without call")
     require(not legacy or finish in ("function_call", "length"), "legacy call finish mismatch")
     require(finish != "stop" or not (has_tools or legacy), "tool calls with stop finish")
@@ -360,6 +364,7 @@ class _ChoiceStream:
         self.choice_count = 1
         self.reasoning_field = None
         self.content, self.reasoning, self.calls = [], [], []
+        self.refusal = None
         self.function_call = None
 
     def feed(self, event):
@@ -381,7 +386,7 @@ class _ChoiceStream:
         probabilities = _logprobs(choice.get("logprobs"))
         if probabilities is not None:
             if self.logprobs is None:
-                self.logprobs = dict(content=[], refusal=None)
+                self.logprobs = dict(content=None, refusal=None)
             for key in ("content", "refusal"):
                 if probabilities[key] is not None:
                     if self.logprobs[key] is None:
@@ -390,7 +395,7 @@ class _ChoiceStream:
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
         require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
-                                   "tool_calls", "function_call"}), "unsupported delta field")
+                                   "refusal", "tool_calls", "function_call"}), "unsupported delta field")
         if "role" in delta:
             require(not self.role and delta["role"] == "assistant",
                     "invalid or duplicate assistant role")
@@ -398,6 +403,10 @@ class _ChoiceStream:
         require(self.role, "delta before assistant role")
         if delta.get("content") is not None:
             self.content.append(_text(delta["content"], "invalid content"))
+        if delta.get("refusal") is not None:
+            if self.refusal is None:
+                self.refusal = []
+            self.refusal.append(_text(delta["refusal"], "invalid refusal"))
         for name in ("reasoning_content", "reasoning"):
             if delta.get(name) is None:
                 continue
@@ -456,6 +465,10 @@ class _ChoiceStream:
                 "incomplete SSE terminal")
         content, reasoning = "".join(self.content), "".join(self.reasoning)
         message = dict(role="assistant", content=content)
+        if self.refusal is not None:
+            message["refusal"] = "".join(self.refusal)
+            if not content:
+                message["content"] = None
         if reasoning:
             message[self.reasoning_field] = reasoning
         if self.calls:

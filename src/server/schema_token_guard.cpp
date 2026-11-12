@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "q4t/server/schema_prefix.h"
+#include "q4t/server/refusal_frame.h"
 #include "schema_string.h"
 
 namespace q4t::server {
@@ -32,6 +33,7 @@ struct SchemaTokenGuard::Impl {
   OutputSchemaGraph::StringCheck strings;
   bool thinking = false;
   bool json_content = false;
+  bool refusal = false;
   std::string accepted;
   std::vector<SchemaReceipt> receipts;
 
@@ -69,6 +71,30 @@ struct SchemaTokenGuard::Impl {
         return {};
       }
       text.remove_prefix(close + 8);
+    }
+    if (refusal) {
+      size_t whitespace = 0;
+      const auto prefix = ProbeRefusalPrefix(text, &whitespace);
+      if (prefix == RefusalPrefix::kPending && text.size() != whitespace) {
+        *valid = !stop;
+        return {};
+      }
+      if (prefix == RefusalPrefix::kRefusal) {
+        text.remove_prefix(whitespace + kRefusalOpen.size());
+        const auto end = text.find(kRefusalClose);
+        if (end == text.npos) {
+          *valid = !stop;
+          return {};
+        }
+        const auto body = text.substr(0, end);
+        const auto tail = text.substr(end + kRefusalClose.size());
+        *valid = std::any_of(body.begin(), body.end(),
+                             [](char c) { return !Space(c); }) &&
+                 tail.size() <= kRefusalWhitespace &&
+                 std::all_of(tail.begin(), tail.end(), Space);
+        if (*valid && completed) completed->push_back(MakeRefusalReceipt(body));
+        return {};
+      }
     }
     while (true) {
       while (!text.empty() && Space(text.front())) text.remove_prefix(1);
@@ -174,6 +200,7 @@ Status SchemaTokenGuard::Init(const io::Json& configuration,
   if (!configuration.IsObject()) return Status::Fail("invalid semantic guard");
   impl_->thinking = configuration.GetBool("thinking");
   impl_->json_content = configuration.GetBool("json_content");
+  impl_->refusal = configuration.GetBool("refusal");
   if (const auto* content = configuration.Find("content")) {
     auto status = impl_->Add(*content, &impl_->content, "");
     if (!status) return status;
@@ -197,7 +224,7 @@ Status SchemaTokenGuard::Init(const io::Json& configuration,
   return {};
 }
 bool SchemaTokenGuard::Active() const {
-  return impl_->content || !impl_->tools.empty();
+  return impl_->refusal || impl_->content || !impl_->tools.empty();
 }
 bool SchemaTokenGuard::Covers(std::string_view scope,
                               const io::Json& schema) const {
@@ -247,8 +274,14 @@ Status SchemaTokenGuard::Filter(std::span<const std::string> vocabulary,
     reasoning = end == body.npos;
     if (!reasoning) body.remove_prefix(end + 8);
   }
+  size_t refusal_space = 0;
+  const auto refusal_prefix = impl_->refusal && !reasoning
+                                  ? ProbeRefusalPrefix(body, &refusal_space)
+                                  : RefusalPrefix::kOrdinary;
+  const bool refusing = refusal_prefix == RefusalPrefix::kRefusal;
+  const auto refusal_end = refusing ? body.find(kRefusalClose) : body.npos;
   bool in_string = false, escaped = false;
-  if (!reasoning)
+  if (!reasoning && !refusing)
     for (const char c : body) {
       if (escaped) {
         escaped = false;
@@ -290,7 +323,18 @@ Status SchemaTokenGuard::Filter(std::span<const std::string> vocabulary,
                std::string::npos;
       };
       if (reasoning && !crosses("</think>")) continue;
-      if (!reasoning && free_content && !crosses("<tool_call>")) continue;
+      if (refusing && refusal_end != body.npos) {
+        const auto tail = body.size() - refusal_end - kRefusalClose.size();
+        if (vocabulary[i].size() > kRefusalWhitespace - tail ||
+            !std::all_of(vocabulary[i].begin(), vocabulary[i].end(), Space))
+          mask[i / 32] =
+              static_cast<int32_t>(static_cast<uint32_t>(mask[i / 32]) & ~bit);
+        continue;
+      }
+      if (refusing && !crosses(kRefusalClose)) continue;
+      if (!refusing && !reasoning && free_content && !crosses("<tool_call>") &&
+          !(refusal_prefix == RefusalPrefix::kPending && crosses(kRefusalOpen)))
+        continue;
     }
     std::string candidate = impl_->accepted;
     if (!stop) candidate += vocabulary[i];

@@ -74,6 +74,36 @@ test('official create consumes native JSON, reasoning and probabilities', async 
   });
 });
 
+test('official create consumes native refusal without invented output_text', async () => {
+  await peer('refusal-complete', async sdk => {
+    const response = await sdk.responses.create(request);
+    compareWire(response, expected('refusal-complete'));
+    assert.equal(response.output_text, '');
+    assert.deepEqual(response.output[0].content[0], {
+      type: 'refusal', refusal: '不能提供私有记录✅' });
+  });
+});
+
+for (const ending of ['complete', 'incomplete', 'fail']) {
+  test(`official stream accumulates native refusal ${ending}`, async () => {
+    await peer(`refusal-${ending}`, async sdk => {
+      const stream = sdk.responses.stream(request);
+      const events = [];
+      for await (const event of stream) events.push(event);
+      const final = await stream.finalResponse();
+      compareWire(final, expected(`refusal-${ending}`));
+      assert.equal(final.output_text, '');
+      events.forEach((event, index) => assert.equal(event.sequence_number, index));
+      const deltas = events.filter(e => e.type === 'response.refusal.delta');
+      assert.ok(deltas.length > 0);
+      assert.equal(deltas.map(e => e.delta).join(''), '不能提供私有记录✅');
+      assert.equal(events.some(e => e.type === 'response.completed'), ending === 'complete');
+      assert.equal(events.some(e => e.type === 'response.refusal.done'), ending !== 'fail');
+      assert.ok(!events.some(e => e.type.startsWith('response.output_text.')));
+    });
+  });
+}
+
 for (const name of ['text', 'tools', 'partial', 'failure']) {
   test(`official stream accumulates native ${name} lifecycle`, async () => {
     await peer(name, async sdk => {

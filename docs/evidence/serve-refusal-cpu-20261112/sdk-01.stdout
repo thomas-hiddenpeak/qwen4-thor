@@ -1,0 +1,12 @@
+✔ official create consumes native refusal without invented output_text (41.467792ms)
+✔ official stream accumulates native refusal complete (22.15902ms)
+✔ official stream accumulates native refusal incomplete (10.098889ms)
+✔ official stream accumulates native refusal fail (7.229797ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 229.528035

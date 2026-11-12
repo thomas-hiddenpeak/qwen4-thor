@@ -7,8 +7,13 @@
 
 namespace q4t::server {
 namespace {
-std::string Wrap(std::string_view entries) {
-  return "{\"content\":[" + std::string(entries) + "],\"refusal\":null}";
+std::string Wrap(std::string_view content, std::string_view refusal = {},
+                 bool refused = false) {
+  return "{\"content\":" +
+         (refused && content.empty() ? "null"
+                                     : '[' + std::string(content) + ']') +
+         ",\"refusal\":" +
+         (refused ? '[' + std::string(refusal) + ']' : "null") + '}';
 }
 
 Status Record(double logprob, const std::string& bytes, std::string* json) {
@@ -91,7 +96,11 @@ void TokenLogprobs::Map(std::span<const detail::Utf8Span> spans) {
 
 Status TokenLogprobs::Emit(const ResponseDelta& delta, std::string* json) {
   *json = "null";
-  if (delta.kind != ResponseDelta::Kind::kContent) return Status();
+  const bool refused = delta.kind == ResponseDelta::Kind::kRefusal;
+  if (delta.kind != ResponseDelta::Kind::kContent && !refused) return Status();
+  if (completion_ && refused)
+    return Status::Fail("legacy completion cannot contain refusal fields");
+  refusal_seen_ |= refused;
   if (completion_ && (delta.source_begin != emitted_bytes_ ||
                       delta.source_end < delta.source_begin ||
                       delta.source_end - delta.source_begin != delta.text.size()))
@@ -122,11 +131,13 @@ Status TokenLogprobs::Emit(const ResponseDelta& delta, std::string* json) {
       continue;
     }
     if (collect_) {
-      const auto added = entry.json.size() + (collected_.empty() ? 0 : 1);
-      if (added > kStorageLimit || collected_.size() > kStorageLimit - added)
+      auto& collected = refused ? collected_refusal_ : collected_;
+      const auto added = entry.json.size() + (collected.empty() ? 0 : 1);
+      if (added > kStorageLimit ||
+          collected_.size() + collected_refusal_.size() > kStorageLimit - added)
         return Status::Fail("token logprobs exceed 16 MiB collected storage");
-      if (!collected_.empty()) collected_ += ',';
-      collected_ += entry.json;
+      if (!collected.empty()) collected += ',';
+      collected += entry.json;
     }
     if (!entries.empty()) entries += ',';
     entries += entry.json;
@@ -137,7 +148,7 @@ Status TokenLogprobs::Emit(const ResponseDelta& delta, std::string* json) {
     emitted_bytes_ = delta.source_end;
     *json = rows.Json();
   } else {
-    *json = Wrap(entries);
+    *json = refused ? Wrap({}, entries, true) : Wrap(entries);
   }
   return Status();
 }
@@ -153,7 +164,8 @@ void TokenLogprobs::DiscardBefore(size_t offset) {
 }
 
 std::string TokenLogprobs::Json() const {
-  return completion_ ? completion_rows_.Json() : Wrap(collected_);
+  return completion_ ? completion_rows_.Json()
+                     : Wrap(collected_, collected_refusal_, refusal_seen_);
 }
 
 }  // namespace q4t::server

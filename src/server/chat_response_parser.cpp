@@ -9,6 +9,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/refusal_frame.h"
 
 namespace q4t::server {
 namespace {
@@ -176,7 +177,8 @@ std::string ResponseDelta::ToJson() const {
   }
   const auto field = kind == Kind::kReasoning
                          ? ReasoningFieldName(reasoning_field)
-                         : "content";
+                     : kind == Kind::kRefusal ? "refusal"
+                                              : "content";
   return '{' + Quote(field) + ':' + Quote(text) + '}';
 }
 
@@ -255,10 +257,13 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
                               std::vector<ResponseDelta>* deltas) {
   if (text.empty()) return;
   const bool reasoning = region == Region::kReasoning;
+  const bool refusing = region == Region::kRefusal;
   if (reasoning && !reasoning_options_.include) return;
-  if (collect_) (reasoning ? reasoning_ : content_).append(text);
-  const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
-                              : ResponseDelta::Kind::kContent;
+  if (collect_)
+    (reasoning ? reasoning_ : refusing ? refusal_ : content_).append(text);
+  const auto kind = reasoning  ? ResponseDelta::Kind::kReasoning
+                    : refusing ? ResponseDelta::Kind::kRefusal
+                               : ResponseDelta::Kind::kContent;
   if (!deltas->empty() && deltas->back().kind == kind &&
       deltas->back().source_end == pending_offset_) {
     deltas->back().text.append(text);
@@ -715,6 +720,51 @@ Status ChatResponseParser::Append(std::string_view text,
   }
   pending_.append(text);
   while (!pending_.empty()) {
+    if (refusal_closed_) {
+      if (!Trim(pending_).empty() ||
+          pending_.size() > kRefusalWhitespace - refusal_tail_)
+        return Fail("data after refusal closing frame");
+      refusal_tail_ += pending_.size();
+      pending_offset_ += pending_.size();
+      pending_.clear();
+      return {};
+    }
+    if (region_ == Region::kRefusal) {
+      const auto end = pending_.find(kRefusalClose);
+      const auto available =
+          end == pending_.npos
+              ? pending_.size() - Lookahead(pending_, kRefusalClose)
+              : end;
+      if (available > kMaxToolBytes - refusal_bytes_)
+        return Fail("refusal exceeds 1 MiB");
+      const auto body = std::string_view(pending_).substr(0, available);
+      refusal_bytes_ += available;
+      refusal_has_text_ |= !Trim(body).empty();
+      Emit(region_, body, deltas);
+      pending_offset_ += available;
+      pending_.erase(0, available);
+      if (end == std::string::npos) return {};
+      if (!refusal_has_text_) return Fail("empty refusal frame");
+      pending_offset_ += kRefusalClose.size();
+      pending_.erase(0, kRefusalClose.size());
+      refusal_closed_ = true;
+      region_ = Region::kContent;
+      continue;
+    }
+    if (region_ == Region::kContent && final_prefix_pending_) {
+      size_t whitespace = 0;
+      const auto prefix = ProbeRefusalPrefix(pending_, &whitespace);
+      if (prefix == RefusalPrefix::kPending) return {};
+      final_prefix_pending_ = false;
+      if (prefix == RefusalPrefix::kRefusal) {
+        const auto consumed = whitespace + kRefusalOpen.size();
+        pending_offset_ += consumed;
+        pending_.erase(0, consumed);
+        region_ = Region::kRefusal;
+        refusal_started_ = true;
+        continue;
+      }
+    }
     if (constraints_.json_output && region_ == Region::kContent) {
       // Marker-shaped substrings inside JSON strings are data, not tool or
       // reasoning delimiters. The initial thinking prefix is handled above
@@ -823,7 +873,12 @@ Status ChatResponseParser::FinishIncomplete(
   finished_ = true;
   // Only StreamTool may expose validated incremental argument syntax. Never
   // reinterpret its unfinished delimiter/body as assistant text.
-  if (region_ != Region::kTool &&
+  // A reserved partial opening/closing frame is not visible refusal text.
+  // Already emitted refusal remains partial; only a closed frame has a receipt.
+  if (!refusal_started_ &&
+      !(region_ == Region::kContent && final_prefix_pending_ &&
+        !Trim(pending_).empty()) &&
+      region_ != Region::kTool &&
       (tools_.empty() || !pending_.starts_with("<tool_")))
     Emit(region_, pending_, deltas);
   pending_offset_ += pending_.size();
@@ -836,6 +891,10 @@ Status ChatResponseParser::Finish(bool length_limited,
                                   bool text_stopped) {
   if (!status_) return status_;
   if (!initialized_ || finished_) return Fail("parser already finished");
+  if (length_limited && !constraints_.active &&
+      (refusal_started_ || (region_ == Region::kContent &&
+                            final_prefix_pending_ && !Trim(pending_).empty())))
+    return FinishIncomplete(deltas);
   finished_ = true;
   if (constraints_.active && (length_limited || text_stopped))
     return Fail("constrained response exhausted output/context budget");
@@ -844,6 +903,14 @@ Status ChatResponseParser::Finish(bool length_limited,
     return Fail("incomplete tool call");
   if (region_ == Region::kReasoning && !length_limited && !text_stopped)
     return Fail("reasoning block did not close before stop");
+  if ((refusal_started_ && !refusal_closed_) ||
+      (region_ == Region::kContent && final_prefix_pending_ &&
+       !Trim(pending_).empty()))
+    return Fail("incomplete refusal frame");
+  if (refusal_started_) {
+    const auto status = VerifySchemaReceipts();
+    return status ? status : Fail(status.message());
+  }
   if (!(constraints_.json_output && tool_count_ != 0 && Trim(pending_).empty()))
     Emit(region_, pending_, deltas);
   pending_offset_ += pending_.size();
@@ -871,6 +938,14 @@ Status ChatResponseParser::Finish(bool length_limited,
 }
 
 Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
+  if (refusal_started_ && constraints_.active) {
+    if (!refusal_closed_ && incomplete) return {};
+    if (!refusal_closed_ || !schema_receipts_ ||
+        schema_receipts_->size() != 1 ||
+        schema_receipts_->front() != MakeRefusalReceipt(refusal_))
+      return Status::Fail("refusal semantic receipt missing or mismatched");
+    return {};
+  }
   if (!constraints_.schema_receipts) return {};
   // A partial terminal certifies no current partial JSON value. Completed
   // earlier calls still need the same semantic receipt as a normal terminal.
@@ -917,7 +992,10 @@ Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
 
 std::string ChatResponseParser::MessageJson() const {
   std::string message = "{\"role\":\"assistant\",\"content\":";
-  message += content_.empty() && !calls_.empty() ? "null" : Quote(content_);
+  message += content_.empty() && (!calls_.empty() || refusal_started_)
+                 ? "null"
+                 : Quote(content_);
+  if (refusal_started_) message += ",\"refusal\":" + Quote(refusal_);
   if (!reasoning_.empty())
     message += ',' + Quote(ReasoningFieldName(reasoning_options_.field)) + ':' +
                Quote(reasoning_);

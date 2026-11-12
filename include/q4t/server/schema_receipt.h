@@ -21,5 +21,7 @@ Status SchemaBindingDigest(std::string_view scope, const io::Json& schema,
 Status SchemaValueDigest(const io::Json& value, trace::Digest* out);
 Status MakeSchemaReceipt(std::string_view scope, const io::Json& schema,
                          const io::Json& value, SchemaReceipt* out);
+// Distinct domains prevent a refusal from substituting for a schema value.
+SchemaReceipt MakeRefusalReceipt(std::string_view refusal);
 
 }  // namespace q4t::server
