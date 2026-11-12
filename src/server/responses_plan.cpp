@@ -11,6 +11,8 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_tool_search.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -314,9 +316,9 @@ Status ParseResponsesEnvelope(const io::Json& request,
   if (!status) return status;
   // Omission and explicit null have different contracts in Responses create.
   // Count/compact normalize their own nullable defaults before reaching here.
-  for (const auto* key : {"access_programs", "input", "model",
-                          "prompt_cache_options", "text", "tool_choice",
-                          "tools", "user"})
+  for (const auto* key :
+       {"access_programs", "input", "model", "prompt_cache_options", "text",
+        "tool_choice", "tools", "user"})
     if (const auto* value = request.Find(key); value && value->IsNull())
       return Invalid(error, key, "field must not be null");
   if (const auto* input = request.Find("input");
@@ -405,16 +407,17 @@ Status ParseResponsesEnvelope(const io::Json& request,
   status = ChoiceOption(request, "truncation", {"auto", "disabled"},
                         &truncation, "", error);
   if (status)
-    status = ChoiceOption(request, "service_tier",
-                          {"auto", "default", "flex", "priority", "scale",
-                           "fast", "ultrafast"},
-                          &tier, "", error);
+    status = ChoiceOption(
+        request, "service_tier",
+        {"auto", "default", "flex", "priority", "scale", "fast", "ultrafast"},
+        &tier, "", error);
   if (!status) return status;
   result.truncate = truncation == "auto";
   Set(&result.options, "truncation", String(truncation));
   Set(&result.options, "service_tier",
       String(tier == "auto" ? "default" : tier));
-  Set(&result.options, "prompt_cache_retention", String(result.cache.retention));
+  Set(&result.options, "prompt_cache_retention",
+      String(result.cache.retention));
   Set(&result.options, "prompt_cache_options",
       PublicPromptCacheOptions(result.cache));
   if (const auto* include = request.Find("include");
@@ -470,7 +473,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
   if (!status) return status;
   Set(&result.options, "access_programs", result.access_program.selected);
   if (!result.access_program.provenance.IsNull())
-    Set(&result.options, "q4t_access_program", result.access_program.provenance);
+    Set(&result.options, "q4t_access_program",
+        result.access_program.provenance);
   for (const auto* key : {"moderation"})
     if (const auto* value = request.Find(key); value && !value->IsNull()) {
       if (!value->IsObject())
@@ -492,7 +496,10 @@ Status ParseResponsesEnvelope(const io::Json& request,
 
 namespace {
 Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
-                         Json* effective_tools, ChatPlanError* error) {
+                         Json* effective_tools, ChatPlanError* error,
+                         const Json& resolved_input,
+                         Json* header_tools = nullptr,
+                         Json* active_tools = nullptr) {
   auto& chat = *value;
   const auto& request = envelope.request;
   for (const auto* key :
@@ -506,10 +513,35 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
   for (const auto* key :
        {"request_id", "cancel_token", "request_timeout_ms", "seed"})
     if (const auto* value = request.Find(key)) Set(&chat, key, *value);
-  Json tools, choice;
-  auto status =
-      NormalizeResponsesTools(request, &tools, &choice, error, effective_tools);
+  Json tools, choice, active;
+  auto resolved = request;
+  Set(&resolved, "input", resolved_input);
+  auto status = NormalizeResponsesTools(resolved, &tools, &choice, error,
+                                        effective_tools, header_tools, &active);
   if (!status) return status;
+  if (envelope.native_tools_exhausted) {
+    std::vector<ResponsesFileSearchBinding> bindings;
+    status = PlanResponsesFileSearchBindings(Object({{"tools", active}}),
+                                             &bindings, error);
+    if (!status) return status;
+    std::unordered_set<std::string> disabled{
+        std::string(kResponsesToolSearchModelName)};
+    for (const auto& binding : bindings) disabled.insert(binding.model_name);
+    const auto native = [&](const Json& item) {
+      const auto* function = item.Find("function");
+      return function && disabled.contains(function->GetString("name"));
+    };
+    std::erase_if(tools.array, native);
+    if (header_tools) std::erase_if(header_tools->array, native);
+    if (choice.GetString("type") == "allowed_tools") {
+      auto& allowed = Field(Field(choice, "allowed_tools"), "tools").array;
+      std::erase_if(allowed, native);
+      if (allowed.empty()) choice = String("none");
+    } else if (native(choice)) {
+      choice = String("none");
+    }
+  }
+  if (active_tools) *active_tools = std::move(active);
   Set(&chat, "tools", std::move(tools));
   Set(&chat, "tool_choice", std::move(choice));
   const auto& format = *envelope.options.Find("text")->Find("format");
@@ -558,7 +590,8 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
                                         config.count_input_only, true);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
-  status = GenerationOptions(envelope, &options, effective_tools, error);
+  status = GenerationOptions(envelope, &options, effective_tools, error,
+                             resolved_input);
   if (!status) return status;
   OutputConstraints constraints;
   status = PlanOutputConstraints(options, &constraints, &error->param);
@@ -587,9 +620,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   auto status = NormalizeResponsesInput(request, &result.input, error,
                                         config.count_input_only);
   if (!status) return status;
+  for (size_t i = 0; i < result.input.items.array.size(); ++i)
+    result.input_source_indices.push_back(i);
   result.generation_request = Object({{"messages", result.input.messages}});
   auto& chat = result.generation_request;
-  status = GenerationOptions(envelope, &chat, &result.effective_tools, error);
+  Json header_tools;
+  status =
+      GenerationOptions(envelope, &chat, &result.effective_tools, error,
+                        resolved_input, &header_tools, &result.active_tools);
   if (!status) return status;
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
   std::string guidance = envelope.access_program.instructions;
@@ -648,6 +686,9 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   auto generation_config = config;
   generation_config.prewarm_only = envelope.cache.prewarm;
   generation_config.async_tool_call_ids = result.input.async_tool_call_ids;
+  generation_config.tool_call_formats = result.input.tool_call_formats;
+  if (!header_tools.IsNull())
+    generation_config.header_tools = std::move(header_tools);
   generation_config.responses_tool_media = true;
   status = PlanChatRequest(chat, generation_config, &result.chat, error);
   if (!status) {
@@ -710,18 +751,32 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
     if (!returned.contains(id) && items[index].GetBool("async"))
       protected_from = std::min(protected_from, index);
   int open_calls = 0;
+  size_t previous_removed = 0;
   for (size_t cut = 1; cut <= protected_from; ++cut) {
     open_calls += spanning[cut];
     if (open_calls || items[cut - 1].GetString("type") == "reasoning") continue;
     auto retained = Array();
-    retained.array.assign(items.begin() + cut, items.end());
+    std::vector<size_t> indices;
+    for (size_t i = 0; i < items.size(); ++i) {
+      const auto type = items[i].GetString("type");
+      if (i < cut && type != "additional_tools" && type != "tool_search_call" &&
+          type != "tool_search_output")
+        continue;
+      retained.array.push_back(items[i]);
+      indices.push_back(i < plan->input_source_indices.size()
+                            ? plan->input_source_indices[i]
+                            : i);
+    }
+    const size_t removed = items.size() - retained.array.size();
+    if (removed == previous_removed) continue;
+    previous_removed = removed;
     ResponsesGenerationPlan candidate;
     status = PrepareResponsesGeneration(envelope, retained, config, &candidate,
                                         error);
     if (!status) return status;
     // Preserve paths into the original resolved input, including failures
     // discovered while measuring a retained candidate.
-    const size_t removed = plan->truncated_items + cut;
+    candidate.input_source_indices = indices;
     for (auto& path : candidate.input.message_paths) {
       if (!path.starts_with("input[")) continue;
       const auto end = path.find(']', 6);
@@ -729,12 +784,13 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
       if (end == std::string::npos) continue;
       const auto parsed =
           std::from_chars(path.data() + 6, path.data() + end, index);
-      if (parsed.ec == std::errc{} && parsed.ptr == path.data() + end)
-        path.replace(6, end - 6, std::to_string(index + removed));
+      if (parsed.ec == std::errc{} && parsed.ptr == path.data() + end &&
+          index < indices.size())
+        path.replace(6, end - 6, std::to_string(indices[index]));
     }
     status = check(candidate, error);
     if (status) {
-      candidate.truncated_items = removed;
+      candidate.truncated_items = plan->truncated_items + removed;
       *plan = std::move(candidate);
       return {};
     }

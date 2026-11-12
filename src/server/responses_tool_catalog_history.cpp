@@ -35,8 +35,9 @@ bool SameSlot(const Json& first, const Json& second) {
 }
 void Merge(Json* active, const Json& additions) {
   for (const auto& tool : additions.array) {
-    auto found = std::find_if(active->array.begin(), active->array.end(),
-                              [&](const auto& old) { return SameSlot(old, tool); });
+    auto found =
+        std::find_if(active->array.begin(), active->array.end(),
+                     [&](const auto& old) { return SameSlot(old, tool); });
     if (found == active->array.end()) {
       active->array.push_back(tool);
     } else if (tool.GetString("type") == "namespace") {
@@ -50,6 +51,62 @@ void Merge(Json* active, const Json& additions) {
   }
 }
 }  // namespace
+
+bool HasResponsesToolDiscovery(const Json& tools, const Json& history) {
+  for (const auto& tool : tools.array) {
+    if (tool.GetString("type") == "tool_search" ||
+        tool.GetBool("defer_loading"))
+      return true;
+    if (tool.GetString("type") == "namespace") {
+      const auto* children = tool.GetArray("tools");
+      if (children && HasResponsesToolDiscovery(*children, Json())) return true;
+    }
+  }
+  for (const auto& item : history.array) {
+    const auto type = item.GetString("type");
+    if (type == "tool_search_call" || type == "tool_search_output" ||
+        type == "additional_tools")
+      return true;
+  }
+  return false;
+}
+
+Json ResponsesToolItemDefaults(Json item) {
+  const auto type = item.GetString("type");
+  if ((type != "tool_search_output" && type != "additional_tools") ||
+      !item.GetArray("tools"))
+    return item;
+  for (auto& tool : Field(item, "tools").array) {
+    if (tool.GetString("type") != "function") continue;
+    for (const auto* key : {"parameters", "strict"})
+      if (!tool.Has(key)) Set(&tool, key, Json());
+  }
+  return item;
+}
+
+Status NormalizeActiveResponsesTools(const Json& request,
+                                     const ResponsesToolCatalog& catalog,
+                                     Json* tools, Json* choice,
+                                     ChatPlanError* error) {
+  auto status = NormalizeResponsesCallableTools(request, tools, choice, error);
+  if (!status) return status;
+  for (auto& tool : tools->array) {
+    const auto* function = tool.Find("function");
+    if (!function ||
+        function->GetString("name") != kResponsesToolSearchModelName)
+      continue;
+    auto active = catalog;
+    for (const auto& definition : request.GetArray("tools")->array)
+      if (definition.GetString("type") == "tool_search") {
+        active.search = definition;
+        if (!active.search.Has("execution"))
+          Set(&active.search, "execution", String("server"));
+      }
+    status = NativeResponsesToolSearchDefinition(active, &tool, error);
+    if (!status) return status;
+  }
+  return {};
+}
 
 Status ResolveResponsesToolHistory(const Json& tools, const Json& history,
                                    ResponsesToolHistory* result,
@@ -97,12 +154,14 @@ Status ResolveResponsesToolHistory(const Json& tools, const Json& history,
     if (type == "tool_search_call") {
       if (execution == "server") {
         if (Nonnull(item, "call_id"))
-          return Invalid(error, path + ".call_id", "Server call_id must be null");
+          return Invalid(error, path + ".call_id",
+                         "Server call_id must be null");
         if (terminal == "completed") servers.push_back(i);
       } else {
         if (call_id.empty() || call_id.size() > 256 ||
             !identities.insert(call_id).second)
-          return Invalid(error, path + ".call_id", "Invalid/duplicate search call");
+          return Invalid(error, path + ".call_id",
+                         "Invalid/duplicate search call");
         if (terminal == "completed") clients.emplace(call_id, i);
       }
       continue;
@@ -110,13 +169,15 @@ Status ResolveResponsesToolHistory(const Json& tools, const Json& history,
     if (type == "tool_search_output") {
       if (execution == "server") {
         if (Nonnull(item, "call_id") || servers.empty())
-          return Invalid(error, path + ".call_id", "Orphan server search output");
+          return Invalid(error, path + ".call_id",
+                         "Orphan server search output");
         if (terminal == "in_progress") continue;
         servers.pop_front();
       } else {
         if (call_id.empty() || !clients.contains(call_id))
-          return Invalid(error, path + ".call_id",
-                         "Orphan, duplicate or mismatched client search output");
+          return Invalid(
+              error, path + ".call_id",
+              "Orphan, duplicate or mismatched client search output");
         if (terminal == "in_progress") continue;
         clients.erase(call_id);
       }
@@ -126,15 +187,16 @@ Status ResolveResponsesToolHistory(const Json& tools, const Json& history,
     const auto& definitions = checked.definitions;
     const auto bytes = OutputJson(definitions).size();
     if (plan.activations.size() >= 128 || bytes > kHistoryBytes - loaded_bytes)
-      return Invalid(error, path + ".tools", "Loaded history exceeds budget", true);
+      return Invalid(error, path + ".tools", "Loaded history exceeds budget",
+                     true);
     auto active = plan.active;
     Merge(&active, definitions);
     if (OutputJson(active).size() > kResponsesToolCatalogBytes)
-      return Invalid(error, path + ".tools", "Active tool catalog exceeds budget",
-                     true);
+      return Invalid(error, path + ".tools",
+                     "Active tool catalog exceeds budget", true);
     std::vector<ResponsesToolIdentity> names;
-    status = PlanResponsesToolIdentities(Object({{"tools", active}}), &names,
-                                         error);
+    status =
+        PlanResponsesToolIdentities(Object({{"tools", active}}), &names, error);
     if (!status) {
       error->param = path + '.' + error->param;
       return status;

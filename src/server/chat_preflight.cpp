@@ -32,6 +32,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .structured = kStructuredDecodingAvailable,
           .session_cache = session_cache_.Enabled(),
           .prefix_cache = prefix_cache_.Enabled(),
+          .header_tools = {},
+          .tool_call_formats = {},
           .capacities = seq_capacities_,
           .checkpoints = prefix_cache_checkpoints_,
           .cuda_quota_limit_bytes = cuda_quota_limit_bytes_,
@@ -86,10 +88,10 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"auxiliary_cleanup_failures":)" +
       std::to_string(health.auxiliary_cleanup_failures) + "}," +
       R"("vector_ingestion":)" +
-      VectorJobsHealthJson(vector_jobs_ ? vector_jobs_->Health()
-                                       : VectorJobsHealth{},
-                           bool(vector_jobs_)) + "," +
-      R"("batches":{"state":")" + batch_state +
+      VectorJobsHealthJson(
+          vector_jobs_ ? vector_jobs_->Health() : VectorJobsHealth{},
+          bool(vector_jobs_)) +
+      "," + R"("batches":{"state":")" + batch_state +
       R"(","readiness_dependency":false,"owned":)" +
       std::to_string(batches.owned) + R"(,"active":)" +
       std::to_string(batches.active) + R"(,"reserved_result_bytes":)" +
@@ -127,12 +129,12 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(jobs.foreground_errors) + R"(},"cache_io":{"session":)" +
       CacheIoHealthJson(session_cache_.Health()) + R"(,"prefix":)" +
       CacheIoHealthJson(prefix_cache_.Health()) + "}}";
-  const auto current = value.substr(0, value.size() - 1) +
-      R"(,"current_client_policy":)" +
-      DescribeClientPolicy(clients_, admission_limits_.inflight,
-                           admission_limits_.queued,
-                           client_policy_admin_ &&
-                               client_policy_admin_->PublisherAlive()) + '}';
+  const auto current =
+      value.substr(0, value.size() - 1) + R"(,"current_client_policy":)" +
+      DescribeClientPolicy(
+          clients_, admission_limits_.inflight, admission_limits_.queued,
+          client_policy_admin_ && client_policy_admin_->PublisherAlive()) +
+      '}';
   detail::SendSimple(fd, 200, "OK", current, "application/json");
 }
 
@@ -203,7 +205,8 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   std::vector<VisionItem> items;
   status = PrepareChatPrompt(
       req, plan.constraints, &prompt, &items, &error.param, &error.code,
-      nullptr, false, plan.async_tool_call_ids, plan.responses_tool_media);
+      nullptr, false, plan.async_tool_call_ids, plan.responses_tool_media,
+      plan.HeaderTools(), plan.tool_call_formats);
   if (status) {
     ChatResponseParser parser;
     status = parser.Init(req, prompt, "preflight", true, plan.legacy_output);

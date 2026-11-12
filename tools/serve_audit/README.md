@@ -2,7 +2,8 @@
 
 当前能力入口为[应用服务矩阵](../../docs/APPLICATION_SERVICE.md)，
 最新静态复核见[2026-11-04合同复核](../../docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
-`inventory.json`目前登记38字段、10路由、20处白名单和141源码锚点；
+当前任务以[Serve总计划](../../docs/SERVE_MASTER_PLAN_2026-11-08.md)为准，
+`inventory.json`的实际字段、路由和源码数量由下述检查命令输出；
 以下`run.py`预算及`expected_current`属于历史复现，不能重跑后当作
 当前正确性验收，也不能把该清单当作Python应用/托管工具的全面审计。
 
@@ -48,6 +49,8 @@ IO 库需要 CUDA runtime 链接依赖，但不执行 CUDA API。
 对应修复合同与回归，不将锚点数量当作语义覆盖率。
 `python3 -B tools/serve_audit/check_inventory.py --self-check` 检查代码
 是否新增未登记接口、删除已有接口或使审计来源过期。CI 同步执行。
+同时要求全部`src/server`及`include/q4t/server`的C++源码/头文件进入
+协议身份清单，遗漏即失败；源码和头文件各有一项遗漏负控。
 更改源码后必须重新评审受影响合同、更新结论及来源身份；禁止只为
 通过检查盲目刷新 hash。该检查不理解业务语义，也不代替人工审查和
 真实业务验收；OpenAI / vLLM 外部协议变化仍需定期人工核对。

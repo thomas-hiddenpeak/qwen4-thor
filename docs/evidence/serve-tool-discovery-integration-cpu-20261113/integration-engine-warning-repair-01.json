@@ -1,0 +1,6 @@
+{
+  "observed": "engine-build-01 completed with two missing-field initializer warnings in ChatServer::PlanningConfig; source manifests match",
+  "repair": "explicit empty initialization of the two new internal fields; same values as implicit initialization",
+  "source_sha256": "ec763dcc023d7faeedfc31a7044dd42a3bcaf892cd0e31504bc0be6312d4d489",
+  "validation": "incremental production build, source identity coverage and direct capability CPU check; behavioral passes reused"
+}

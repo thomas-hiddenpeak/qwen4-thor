@@ -63,6 +63,14 @@ class ResponsesOutput {
   Status FailFileSearch(size_t index, std::string* wire);
   Status SkipFileSearch(size_t index, const io::Json& queries,
                         std::string* wire);
+  // Private effective identities can grow without rewriting public tools.
+  Status BindTools(const io::Json& active);
+  Status StartToolSearch(const ResponseToolCall& call, bool server,
+                         size_t* index, std::string* wire);
+  Status CompleteToolSearchCall(size_t index, const io::Json& arguments,
+                                bool incomplete, std::string* wire);
+  Status CompleteToolSearchOutput(size_t call_index, const io::Json& tools,
+                                  std::string* wire);
   // Annotations bind explicit markers to actual prior completed native
   // retrieval items. Text bytes/logprobs remain unchanged.
   Status CiteFileSearchSources(std::string* wire);
@@ -104,6 +112,7 @@ class ResponsesOutput {
   std::unordered_map<size_t, size_t> calls_;
   std::unordered_map<size_t, std::string> model_names_;
   std::vector<ResponsesToolIdentity> tool_identities_;
+  std::unordered_set<size_t> tool_search_results_;
   std::vector<size_t> call_indices_;
   std::unordered_set<size_t> closed_items_;
   size_t summary_item_ = kMaxItems;

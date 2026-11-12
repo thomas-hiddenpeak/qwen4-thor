@@ -24,23 +24,27 @@ std::string Identity(const Json& tool, std::string_view name_space = {}) {
                                                              : type);
 }
 struct Declaration {
-  const Json* schema;
+  Json schema;
   std::string param;
 };
-std::unordered_map<std::string, Declaration> Declarations(const Json& request) {
-  std::unordered_map<std::string, Declaration> result;
+using ToolDeclarations = std::unordered_map<std::string, Declaration>;
+void AddDeclarations(const Json& tools, const std::string& prefix, bool initial,
+                     ToolDeclarations* result) {
   const auto add = [&](const Json& tool, const std::string& space,
                        const std::string& at) {
     const auto type = tool.GetString("type");
-    if (type == "function" || type == "custom")
-      result.emplace(
+    if ((type == "function" || type == "custom") &&
+        !(initial && tool.GetBool("defer_loading"))) {
+      const auto* schema = tool.Find("output_schema");
+      result->insert_or_assign(
           Identity(tool, space),
-          Declaration{tool.Find("output_schema"), at + ".output_schema"});
+          Declaration{schema ? *schema : Json(), at + ".output_schema"});
+    }
   };
-  if (const auto* tools = request.GetArray("tools")) {
-    for (size_t i = 0; i < tools->array.size(); ++i) {
-      const auto& tool = tools->array[i];
-      const auto path = "tools[" + std::to_string(i) + ']';
+  if (tools.IsArray()) {
+    for (size_t i = 0; i < tools.array.size(); ++i) {
+      const auto& tool = tools.array[i];
+      const auto path = prefix + '[' + std::to_string(i) + ']';
       if (tool.GetString("type") != "namespace") {
         add(tool, "", path);
       } else if (const auto* children = tool.GetArray("tools")) {
@@ -50,7 +54,30 @@ std::unordered_map<std::string, Declaration> Declarations(const Json& request) {
       }
     }
   }
+}
+ToolDeclarations Declarations(const Json& request) {
+  ToolDeclarations result;
+  if (const auto* tools = request.GetArray("tools"))
+    AddDeclarations(*tools, "tools", true, &result);
   return result;
+}
+bool ActivatesTools(const Json& item) {
+  return (item.GetString("type") == "additional_tools" &&
+          item.GetString("role") == "developer") ||
+         (item.GetString("type") == "tool_search_output" &&
+          item.GetString("status", "completed") == "completed");
+}
+void SearchSchemaChecks(const Json& tools, const std::string& prefix,
+                        Json* checks) {
+  for (size_t i = 0; i < tools.array.size(); ++i) {
+    const auto& tool = tools.array[i];
+    const auto* schema = tool.Find("parameters");
+    if (tool.GetString("type") == "tool_search" && schema && !schema->IsNull())
+      checks->array.push_back(Object(
+          {{"schema", *schema},
+           {"param",
+            String(prefix + '[' + std::to_string(i) + "].parameters")}}));
+  }
 }
 Json Binding(const Json& item, const Json& schema) {
   auto result = Object({{"item_id", String(item.GetString("id"))},
@@ -126,13 +153,17 @@ ObjectReply BindToolResultContracts(const Json& request, const Json& items,
   // new output to a plan that also owns historical calls.
   if (!items.IsArray() || (!contracts->IsNull() && !contracts->IsArray()))
     return Invalid();
-  const auto declarations = Declarations(request);
+  auto declarations = Declarations(request);
   auto result = contracts->IsArray() ? *contracts : Array();
   std::unordered_map<std::string, const Json*> known;
   for (const auto& binding : contracts->array)
     if (!known.emplace(binding.GetString("item_id"), &binding).second)
       return Invalid();
   for (const auto& item : items.array) {
+    if (ActivatesTools(item)) {
+      if (const auto* definitions = item.GetArray("tools"))
+        AddDeclarations(*definitions, "input.tools", false, &declarations);
+    }
     if (!IsResultBoundToolCall(item)) continue;
     const auto id = item.GetString("id");
     if (!ValidId(id)) return Invalid();
@@ -147,7 +178,7 @@ ObjectReply BindToolResultContracts(const Json& request, const Json& items,
         declarations.find(Identity(item, item.GetString("namespace")));
     const auto* schema = declaration == declarations.end()
                              ? nullptr
-                             : declaration->second.schema;
+                             : &declaration->second.schema;
     result.array.push_back(Binding(item, schema ? *schema : Json()));
   }
   auto reply = Capacity(result);
@@ -167,13 +198,34 @@ ObjectReply CheckToolResultContracts(const Json& request, const Json& history,
       return Invalid();
   }
   auto checks = Array();
-  for (const auto& [name, declaration] : Declarations(request)) {
-    if (declaration.schema && !declaration.schema->IsNull())
-      checks.array.push_back(Object({{"schema", *declaration.schema},
+  ToolDeclarations declared;
+  if (const auto* tools = request.GetArray("tools")) {
+    SearchSchemaChecks(*tools, "tools", &checks);
+    // Validate all declarations before execution, including deferred ones.
+    // Visibility controls binding/dispatch, not validity of their contracts.
+    AddDeclarations(*tools, "tools", false, &declared);
+  }
+  for (const auto& [name, declaration] : declared) {
+    if (!declaration.schema.IsNull())
+      checks.array.push_back(Object({{"schema", declaration.schema},
                                      {"param", String(declaration.param)}}));
   }
   for (size_t i = 0; i < history.array.size(); ++i) {
     const auto& item = history.array[i];
+    if (ActivatesTools(item)) {
+      ToolDeclarations loaded;
+      if (const auto* definitions = item.GetArray("tools"))
+        AddDeclarations(*definitions, "input[" + std::to_string(i) + "].tools",
+                        false, &loaded);
+      if (const auto* definitions = item.GetArray("tools"))
+        SearchSchemaChecks(*definitions,
+                           "input[" + std::to_string(i) + "].tools", &checks);
+      for (const auto& [name, declaration] : loaded)
+        if (!declaration.schema.IsNull())
+          checks.array.push_back(
+              Object({{"schema", declaration.schema},
+                      {"param", String(declaration.param)}}));
+    }
     const auto type = item.GetString("type");
     if (type != "function_call_output" && type != "custom_tool_call_output")
       continue;

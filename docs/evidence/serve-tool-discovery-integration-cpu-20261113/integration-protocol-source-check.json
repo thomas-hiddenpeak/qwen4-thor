@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "build": ".q4t-work/serve-file-search-20261112/host",
+      "manifest_sha256": "88644139810281fb1253e3080a09c33492f660b3190d63e20e1b38da74c4cd07",
+      "all_current": true,
+      "server_files_checked": 393
+    },
+    {
+      "build": ".q4t-work/serve-custom-tools-20261108/engine-build",
+      "manifest_sha256": "88644139810281fb1253e3080a09c33492f660b3190d63e20e1b38da74c4cd07",
+      "all_current": true,
+      "server_files_checked": 393
+    }
+  ],
+  "review": "explicit empty initializer repair preserves default values; behavioral evidence reused"
+}

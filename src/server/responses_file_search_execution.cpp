@@ -104,8 +104,8 @@ ObjectReply ResponsesExecution::RunFileSearches(
       envelope_.options.GetInt("max_tool_calls", INT64_MAX));
   const size_t executing = std::min<uint64_t>(
       plans.size(),
-      user_limit - std::min<uint64_t>(user_limit, file_search_calls_));
-  if (executing > kMaxNativeToolCalls - file_search_calls_)
+      user_limit - std::min<uint64_t>(user_limit, native_tool_calls_));
+  if (executing > kMaxNativeToolCalls - native_tool_calls_)
     return Error(503, "file_search_resource_exhausted",
                  "Native tool execution work budget exhausted");
   const auto emit = [&](Status status, std::string* wire) -> ObjectReply {
@@ -142,7 +142,7 @@ ObjectReply ResponsesExecution::RunFileSearches(
       usage->committed_input += actual.committed_input;
       usage->unknown |= actual.unknown;
     });
-    ++file_search_calls_;  // Never replay a call after its execution begins.
+    ++native_tool_calls_;  // Never replay a call after its execution begins.
     result = ExecuteVectorSearchPlan(
         objects_, {access_.scope, access_.deadline, access_.cancelled},
         binding.tool.store_ids, plans[current], model::EmbeddingConfig::kHidden,
@@ -174,15 +174,20 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      output_used < 0 || output_used >= limit)
+      PendingToolSearch() || output_used < 0 || output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
+  auto history = generation_history_;
+  const auto& output = output_.Snapshot().GetArray("output")->array;
+  history.array.insert(history.array.end(), output.begin(), output.end());
+  ChatPlanError error;
   auto choice = envelope.request.Find("tool_choice")
                     ? *envelope.request.Find("tool_choice")
                     : String("auto");
   const bool exhausted =
-      file_search_calls_ >= static_cast<uint64_t>(envelope.options.GetInt(
+      native_tool_calls_ >= kMaxNativeToolCalls ||
+      native_tool_calls_ >= static_cast<uint64_t>(envelope.options.GetInt(
                                 "max_tool_calls", INT64_MAX));
   if (choice.IsString() && choice.str == "required") choice = String("auto");
   if (choice.GetString("type") == "file_search")
@@ -190,35 +195,16 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
         Object({{"type", String("allowed_tools")},
                 {"mode", String("auto")},
                 {"tools", Array({Object({{"type", String("file_search")}})})}});
-  if (choice.GetString("type") == "allowed_tools") {
+  if (choice.GetString("type") == "allowed_tools")
     Set(&choice, "mode", String("auto"));
-    if (exhausted) {
-      auto& selected = Field(choice, "tools").array;
-      std::erase_if(selected, [](const Json& item) {
-        return item.GetString("type") == "file_search";
-      });
-      if (selected.empty()) choice = String("none");
-    }
-  } else if (exhausted) {
-    auto selected = Array();
-    for (const auto& definition : generation_.effective_tools.array)
-      if (definition.GetString("type") != "file_search")
-        selected.array.push_back(Object({{"type", *definition.Find("type")},
-                                         {"name", *definition.Find("name")}}));
-    choice = selected.array.empty() ? String("none")
-                                    : Object({{"type", String("allowed_tools")},
-                                              {"mode", String("auto")},
-                                              {"tools", std::move(selected)}});
-  }
+  envelope.native_tools_exhausted = exhausted;
   Set(&envelope.request, "tool_choice", std::move(choice));
-  auto history = generation_history_;
-  const auto& output = output_.Snapshot().GetArray("output")->array;
-  history.array.insert(history.array.end(), output.begin(), output.end());
-  ChatPlanError error;
   auto status =
       PrepareResponsesGeneration(envelope, history, config, next, &error);
   if (status)
     status = FitResponsesContext(envelope, config, check, next, &error);
+  if (status) status = BindActiveTools(next->active_tools, &error);
+  if (status) status = output_.BindTools(next->active_tools);
   return status ? ObjectReply{} : PlanError(status, error);
 }
 
@@ -231,7 +217,7 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   wire->clear();
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      output_used < 0 || output_used >= limit)
+      PendingToolSearch() || output_used < 0 || output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid async continuation");
   if (async_continued_) return {};
   auto candidate = output_;

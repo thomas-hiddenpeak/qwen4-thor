@@ -10,7 +10,23 @@ ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = ROOT / "tools/serve_audit/inventory.json"
 
 
+def missing_protocol_sources(root, manifest=None):
+    if manifest is None:
+        manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
+    registered = set(re.findall(
+        r"^\s*((?:src/server|include/q4t/server)/[^\s()]+\.(?:h|cpp))(?=\s|\))",
+        manifest, re.MULTILINE))
+    actual = {str(path.relative_to(root))
+              for directory in ("src/server", "include/q4t/server")
+              for path in (root / directory).glob("*")
+              if path.suffix in (".h", ".cpp")}
+    return sorted(actual - registered)
+
+
 def current_surface(root):
+    missing = missing_protocol_sources(root)
+    if missing:
+        raise ValueError("server files missing from protocol identity: " + str(missing))
     contract = (root / "src/server/chat_contract.cpp").read_text()
     match = re.search(r'Fields\(req,\s*\{([^}]+)\}', contract)
     if not match:
@@ -310,7 +326,13 @@ def mutation_checks(inventory, actual):
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")
-    return len(cases)
+    manifest = (ROOT / "cmake/ChatProtocolIdentity.cmake").read_text()
+    for path in ("src/server/responses_tool_search_execution.cpp",
+                 "include/q4t/server/responses_tool_search.h"):
+        missing = missing_protocol_sources(ROOT, manifest.replace(path, ""))
+        if path not in missing:
+            raise ValueError("protocol source omission escaped detection: " + path)
+    return len(cases) + 2
 
 
 def main():

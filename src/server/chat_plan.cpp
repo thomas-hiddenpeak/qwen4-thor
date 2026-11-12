@@ -100,6 +100,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   }
   plan->async_tool_call_ids = config.async_tool_call_ids;
   plan->responses_tool_media = config.responses_tool_media;
+  plan->header_tools = config.header_tools;
+  plan->tool_call_formats = config.tool_call_formats;
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
   status = ParsePromptCacheOptions(req, &plan->cache, &error->param);
@@ -300,9 +302,9 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"(,"counts_reasoning_and_forced_tokens":true},"sampling":{"temperature":)" +
       std::to_string(plan.sampling.temperature) + R"(,"top_p":)" +
       std::to_string(plan.sampling.top_p) + R"(,"path":)" +
-      Quote(plan.prediction.enabled ? "target_prediction_verify"
+      Quote(plan.prediction.enabled       ? "target_prediction_verify"
             : plan.sampling.PlainGreedy() ? "greedy_mtp_or_scheduler"
-                                        : "target_logits_host_sampler") +
+                                          : "target_logits_host_sampler") +
       R"(,"seed":)" +
       (plan.sampling.seed ? std::to_string(*plan.sampling.seed) : "null") +
       R"(,"logprobs":)" + Bool(plan.sampling.logprobs) +

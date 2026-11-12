@@ -36,6 +36,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 工具发现公开执行链的[77项不同CPU、4项SDK/驱动检查最终通过](evidence/serve-tool-discovery-integration-cpu-20261113/README.md)：
+  原位置加载、真实派发、持久结果合同、异步/推理续答、裁剪压缩及
+  JSON/SSE接线已验证；失败及修正原件保留。补齐19项协议来源漏登，
+  增加来源遗漏检查。接着冻结1启动10创建900秒真实业务；默认rev110
+  保持，尚未宣称GPU通过或对外交付，总目标继续。
+
 - PR25两组CI全过并已实际合main（4e87a03f）。后续[目录/历史加载部件10项CPU通过](evidence/serve-tool-discovery-catalog-cpu-20261113/README.md)，
   失败及修正原件保留；尚待公开执行器/模板/状态接线，不能视为
   tool_search已可用。继续接线和全部master；默认rev110保持，0GPU。

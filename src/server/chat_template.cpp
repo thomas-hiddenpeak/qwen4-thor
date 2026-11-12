@@ -300,7 +300,8 @@ bool NeedsJsonHistoryValue(const io::Json& value) {
 Status AppendToolCalls(const io::Json& request, const io::Json& message,
                        bool has_content, std::string* prompt,
                        std::span<const std::string> async_call_ids,
-                       const std::map<std::string, size_t>& call_references) {
+                       const std::map<std::string, size_t>& call_references,
+                       std::span<const ChatToolCallFormat> call_formats) {
   const io::Json* calls = message.Find("tool_calls");
   if (!calls || calls->IsNull()) return Status();
   if (!calls->IsArray()) return Status::Fail("tool_calls must be an array");
@@ -360,6 +361,11 @@ Status AppendToolCalls(const io::Json& request, const io::Json& message,
             json_arguments = NeedsJsonToolArguments(*definition);
         }
       }
+      for (const auto& format : call_formats)
+        if (format.call_id == call.GetString("id")) {
+          json_arguments = format.json_arguments;
+          break;
+        }
       for (const auto& [key, value] : arguments->object) {
         json_arguments |= !ValidInputName(key) || NeedsJsonHistoryValue(value);
       }
@@ -385,6 +391,38 @@ Status AppendToolCalls(const io::Json& request, const io::Json& message,
 }
 
 }  // namespace
+
+Status RenderChatToolDefinitions(const io::Json& tools, std::string* text) {
+  text->clear();
+  if (!tools.IsArray()) return Status::Fail("tools must be an array");
+  if (tools.array.empty()) return {};
+  *text += "# Tools\n\nYou have access to the following functions:\n\n<tools>";
+  for (const auto& tool : tools.array) {
+    if (!tool.IsObject()) return Status::Fail("tool must be an object");
+    *text += '\n';
+    auto status = ModelToolJson(tool, text);
+    if (!status) return status;
+  }
+  *text += "\n</tools>";
+  *text += kToolInstructions;
+  if (std::any_of(tools.array.begin(), tools.array.end(),
+                  [](const io::Json& tool) {
+                    return tool.GetString("type") == "custom";
+                  })) {
+    *text +=
+        "\nFunctions described as custom input use the same function "
+        "tags and one input parameter:\n"
+        "<tool_call>\n<function=custom_tool_name>\n<parameter=input>\n"
+        "\"JSON-escaped input text\"\n</parameter>\n</function>\n"
+        "</tool_call>\n"
+        "The payload is one JSON string, not a parameter object. Preserve "
+        "the complete input, escaping quotes, backslashes and control "
+        "characters; encode each less-than sign as \\u003c. The declared "
+        "text or grammar format applies to the decoded string. Do not "
+        "add text after a tool call.";
+  }
+  return {};
+}
 
 bool IsChatInstructionRole(std::string_view role) {
   return role == "system" || role == "developer";
@@ -490,7 +528,9 @@ Status RenderChatPrompt(const io::Json& request,
                         std::string* prompt,
                         std::vector<ChatMessageSpan>* spans, bool allow_empty,
                         std::span<const std::string> async_call_ids,
-                        std::span<const io::Json> historical_tools) {
+                        std::span<const io::Json> historical_tools,
+                        const io::Json* header_tools,
+                        std::span<const ChatToolCallFormat> call_formats) {
   prompt->clear();
   if (spans) spans->clear();
   if (HasLegacyTools(request)) {
@@ -498,7 +538,8 @@ Status RenderChatPrompt(const io::Json& request,
     const auto status = NormalizeLegacyTools(request, &normalized);
     return status
                ? RenderChatPrompt(normalized.request, contents, prompt, spans,
-                                  allow_empty, async_call_ids, historical_tools)
+                                  allow_empty, async_call_ids, historical_tools,
+                                  header_tools, call_formats)
                : status;
   }
   auto definitions = ValidateToolDefinitions(request);
@@ -654,39 +695,17 @@ Status RenderChatPrompt(const io::Json& request,
   const std::string system = leading_instruction ? text[0] : "";
   const auto first_header =
       leading_instruction ? Header(ms[0], "system") : "<|im_start|>system\n";
-  const io::Json* tools = request.Find("tools");
+  const io::Json* tools = header_tools ? header_tools : request.Find("tools");
   if (tools && !tools->IsNull() && !tools->IsArray()) {
     return Status::Fail("tools must be an array");
   }
   if (tools && tools->IsArray() && !tools->array.empty()) {
     *prompt = first_header;
     if (!instructions.empty()) *prompt += instructions + "\n\n";
-    *prompt +=
-        "# Tools\n\nYou have access to the following functions:\n\n<tools>";
-    for (const auto& tool : tools->array) {
-      if (!tool.IsObject()) return Status::Fail("tool must be an object");
-      *prompt += '\n';
-      s = ModelToolJson(tool, prompt);
-      if (!s) return s;
-    }
-    *prompt += "\n</tools>";
-    *prompt += kToolInstructions;
-    if (std::any_of(tools->array.begin(), tools->array.end(),
-                    [](const io::Json& tool) {
-                      return tool.GetString("type") == "custom";
-                    })) {
-      *prompt +=
-          "\nFunctions described as custom input use the same function "
-          "tags and one input parameter:\n"
-          "<tool_call>\n<function=custom_tool_name>\n<parameter=input>\n"
-          "\"JSON-escaped input text\"\n</parameter>\n</function>\n"
-          "</tool_call>\n"
-          "The payload is one JSON string, not a parameter object. Preserve "
-          "the complete input, escaping quotes, backslashes and control "
-          "characters; encode each less-than sign as \\u003c. The declared "
-          "text or grammar format applies to the decoded string. Do not "
-          "add text after a tool call.";
-    }
+    std::string definitions;
+    s = RenderChatToolDefinitions(*tools, &definitions);
+    if (!s) return s;
+    *prompt += definitions;
     if (!system.empty()) *prompt += "\n\n";
     if (leading_instruction) begin_content(0);
     *prompt += system;
@@ -729,7 +748,7 @@ Status RenderChatPrompt(const io::Json& request,
       begin_content(i);
       *prompt += text[i];
       s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt,
-                          async_call_ids, call_references);
+                          async_call_ids, call_references, call_formats);
       if (!s) return s;
       *prompt += "<|im_end|>\n";
       end_message(i);

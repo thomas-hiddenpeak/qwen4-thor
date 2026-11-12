@@ -47,26 +47,51 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
 
 size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = 0;
-  for (const auto* value :
-       {&plan_.request, &plan_.history, &plan_.own_input,
-        &plan_.input_snapshots, &plan_.tool_contracts, &plan_.conversation,
-        &plan_.execution_owner, &envelope_.request, &envelope_.options,
-        &generation_.generation_request, &generation_.effective_tools,
-        &generation_.input.items, &generation_.input.messages,
-        &generation_history_, &compaction_.source, &compaction_.retained,
-        &compaction_.request, &compaction_window_, &output_.Snapshot()})
+  for (const auto* value : {&plan_.request,
+                            &plan_.history,
+                            &plan_.own_input,
+                            &plan_.input_snapshots,
+                            &plan_.tool_contracts,
+                            &plan_.conversation,
+                            &plan_.execution_owner,
+                            &envelope_.request,
+                            &envelope_.options,
+                            &generation_.generation_request,
+                            &generation_.effective_tools,
+                            &generation_.active_tools,
+                            &tool_search_catalog_.definitions,
+                            &tool_search_catalog_.deferred,
+                            &tool_search_catalog_.eager,
+                            &tool_search_catalog_.search,
+                            &tool_search_catalog_.summaries,
+                            &generation_.input.items,
+                            &generation_.input.messages,
+                            &generation_history_,
+                            &compaction_.source,
+                            &compaction_.retained,
+                            &compaction_.request,
+                            &compaction_window_,
+                            &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();
+  if (generation_.chat.header_tools)
+    bytes += OutputJson(*generation_.chat.header_tools).size();
+  for (const auto& format : generation_.chat.tool_call_formats)
+    bytes += sizeof(format) + format.call_id.size();
+  for (const auto& format : generation_.input.tool_call_formats)
+    bytes += sizeof(format) + format.call_id.size();
   if (compaction_.chat.normalized_request)
     bytes += OutputJson(*compaction_.chat.normalized_request).size();
   for (const auto& path : generation_.input.message_paths) bytes += path.size();
   bytes += generation_.input.cache_boundaries.size() *
            sizeof(PromptCacheInputBoundary);
+  bytes += generation_.input_source_indices.size() * sizeof(size_t);
   bytes += generation_.chat.constraints.structural_tag.size();
   if (files_) bytes += files_->RetainedBytes();
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   bytes += file_search_argument_bytes_;
+  bytes += tool_search_argument_bytes_;
   for (const auto& binding : file_search_bindings_) {
     bytes += binding.model_name.size() +
              OutputJson(binding.tool.search.filters).size();
@@ -210,11 +235,19 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     reply.value = Object({{"param", String(error.param)}});
     return reply;
   }
-  std::vector<ResponsesToolIdentity> identities;
-  status = PlanResponsesToolIdentities(envelope_.request, &identities, &error);
+  const auto* declarations = envelope_.request.Find("tools");
+  ResponsesToolHistory tools;
+  if (HasResponsesToolDiscovery(declarations ? *declarations : Json(),
+                                generation_history_)) {
+    status = ResolveResponsesToolHistory(declarations ? *declarations : Array(),
+                                         generation_history_, &tools, &error);
+    if (!status) return Error(error.http_status, error.code, status.message());
+    tool_search_catalog_ = std::move(tools.initial);
+  } else {
+    tools.active = effective_tools;
+  }
+  status = BindActiveTools(tools.active, &error);
   if (!status) return Error(error.http_status, error.code, status.message());
-  has_async_tools_ = std::any_of(identities.begin(), identities.end(),
-                                 [](const auto& tool) { return tool.async; });
   auto result_contracts = plan_.tool_contracts;
   if (encrypted_input) {
     // Opening an authenticated compaction may expand consumed historical
@@ -257,6 +290,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   Set(&envelope_.options, "service_tier", String("default"));
   status =
       output_.Init(envelope_.options, plan_.id, created, envelope_.obfuscation);
+  if (!status) return OutputError(status);
+  status = output_.BindTools(tools.active);
   if (!status) return OutputError(status);
   events_ = Array();
   prepared_ = true;
@@ -474,6 +509,8 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
   }
   bool handled = false;
   auto status = AppendFileSearch(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendToolSearch(delta, &handled, wire);
   if (!status || handled) return status;
   return RecordOutput(output_.Append(delta, probabilities, wire), wire);
 }

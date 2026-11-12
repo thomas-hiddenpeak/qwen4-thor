@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <deque>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -13,6 +14,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_tool_search.h"
 #include "q4t/trace/sha256.h"
 #include "responses_json.h"
 
@@ -321,7 +323,9 @@ std::string ResponsesToolModelName(std::string_view name_space,
                                    std::string_view name,
                                    std::string_view type) {
   constexpr std::string_view prefix = "q4t_ns_";
-  if (name_space.empty() && !name.starts_with(prefix)) return std::string(name);
+  if (name_space.empty() && !name.starts_with(prefix) &&
+      !name.starts_with("q4t_builtin_"))
+    return std::string(name);
   const auto key =
       OutputJson(Array({String(std::string(name_space)),
                         String(std::string(name)), String(std::string(type))}));
@@ -450,6 +454,34 @@ Status NormalizeResponsesInput(const io::Json& request,
   if (plan.items.array.size() > 4096)
     return Invalid(error, "input", "input exceeds 4096 items");
 
+  ResponsesToolHistory discovery;
+  const auto* declared = request.Find("tools");
+  const bool dynamic =
+      HasResponsesToolDiscovery(declared ? *declared : Json(), plan.items);
+  std::unordered_map<std::string, bool> call_formats;
+  const auto remember_formats = [&](const Json& tools) {
+    for (const auto& tool : tools.array)
+      if (const auto* function = tool.Find("function"))
+        call_formats[function->GetString("name")] =
+            NeedsJsonToolArguments(*function);
+  };
+  if (dynamic) {
+    auto status = ResolveResponsesToolHistory(declared ? *declared : Array(),
+                                              plan.items, &discovery, error);
+    if (!status) return status;
+    auto initial = discovery.initial.eager;
+    if (!discovery.initial.search.IsNull())
+      initial.array.push_back(discovery.initial.search);
+    Json native, ignored;
+    status = NormalizeActiveResponsesTools(Object({{"tools", initial}}),
+                                           discovery.initial, &native, &ignored,
+                                           error);
+    if (!status) return status;
+    remember_formats(native);
+  }
+  size_t activation = 0;
+  std::deque<std::string> server_searches;
+
   Json assistant =
       Object({{"role", String("assistant")}, {"content", String("")}});
   Json calls = Array();
@@ -464,7 +496,8 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (!returned.contains(call.GetString("id")) &&
           !async_ids.contains(call.GetString("id")))
         return Invalid(error, assistant_path, "missing output for a tool call");
-    if (!reasoning.empty() || !calls.array.empty()) {
+    if (!reasoning.empty() || !calls.array.empty() ||
+        !assistant.GetString("content").empty()) {
       if (!reasoning.empty()) Set(&assistant, "reasoning", String(reasoning));
       if (!calls.array.empty()) Set(&assistant, "tool_calls", calls);
       append(assistant, assistant_path);
@@ -578,6 +611,100 @@ Status NormalizeResponsesInput(const io::Json& request,
           reasoning += part.GetString("text");
         }
       }
+    } else if (type == "tool_search_call") {
+      if (!results.empty()) {
+        status = flush();
+        if (!status) return status;
+      }
+      if (item.GetString("status", "completed") != "completed") {
+        // A skipped/incomplete parallel call may precede a sibling's result.
+        // Keep the explicit record as assistant data without closing that
+        // sibling early or inventing a result for the unfinished call.
+        if (assistant_path.empty()) assistant_path = path;
+        Set(&assistant, "content",
+            String(assistant.GetString("content") +
+                   "\n[Unfinished tool discovery]\n" + OutputJson(item)));
+        continue;
+      }
+      const bool server = item.GetString("execution", "client") == "server";
+      auto id = item.GetString("call_id");
+      if (server) {
+        id = "history_tool_search_" + std::to_string(i);
+        while (call_ids.contains(id) ||
+               std::any_of(plan.items.array.begin(), plan.items.array.end(),
+                           [&](const auto& value) {
+                             return value.GetString("call_id") == id;
+                           }))
+          id += '_';
+        server_searches.push_back(id);
+      }
+      if (!call_ids.insert(id).second)
+        return Invalid(error, path + ".call_id", "Duplicate tool call ID");
+      if (assistant_path.empty()) assistant_path = path;
+      const auto name = std::string(kResponsesToolSearchModelName);
+      calls.array.push_back(Object(
+          {{"id", String(id)},
+           {"type", String("function")},
+           {"function",
+            Object({{"name", String(name)},
+                    {"arguments",
+                     String(OutputJson(Object(
+                         {{"arguments_json", String(OutputJson(*item.Find(
+                                                 "arguments")))}})))}})}}));
+      plan.tool_call_formats.push_back({id, call_formats[name]});
+      expected.emplace(id, false);
+    } else if (type == "tool_search_output" || type == "additional_tools") {
+      if (type == "tool_search_output" &&
+          item.GetString("status", "completed") == "in_progress")
+        continue;
+      std::string definitions;
+      if (activation < discovery.activations.size() &&
+          discovery.activations[activation].item_index == i) {
+        Json native, ignored;
+        status = NormalizeActiveResponsesTools(
+            Object({{"tools", discovery.activations[activation].definitions}}),
+            discovery.initial, &native, &ignored, error);
+        if (status) status = RenderChatToolDefinitions(native, &definitions);
+        if (!status) return status;
+        remember_formats(native);
+        ++activation;
+      }
+      if (type == "additional_tools") {
+        status = flush();
+        if (!status) return status;
+        append(Object({{"role", String("developer")},
+                       {"content", String("Additional available tools:\n" +
+                                          definitions)}}),
+               path);
+        continue;
+      }
+      auto id = item.GetString("call_id");
+      if (item.GetString("execution", "client") == "server") {
+        if (server_searches.empty())
+          return Invalid(error, path, "Orphan server discovery result");
+        id = server_searches.front();
+        server_searches.pop_front();
+      }
+      if (!expected.contains(id) || !returned.insert(id).second)
+        return Invalid(error, path + ".call_id", "Invalid discovery result");
+      results.emplace_back(
+          Object({{"role", String("tool")},
+                  {"tool_call_id", String(id)},
+                  {"content", String("Tool discovery status: " +
+                                     item.GetString("status", "completed") +
+                                     "\n" + definitions)}}),
+          path);
+      // Definitions take effect at this result, before the next model call.
+      // Keep simultaneous search results together until every call closes.
+      const bool closed = std::all_of(
+          calls.array.begin(), calls.array.end(), [&](const auto& call) {
+            const auto key = call.GetString("id");
+            return returned.contains(key) || async_ids.contains(key);
+          });
+      if (closed) {
+        status = flush();
+        if (!status) return status;
+      }
     } else if (type == "file_search_call") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
                                           error, path);
@@ -661,12 +788,14 @@ Status NormalizeResponsesInput(const io::Json& request,
         return Invalid(error, path, "tool payload does not match its type");
       const auto name = item.GetString("name");
       const auto space = item.GetString("namespace");
+      const auto model_name =
+          ResponsesToolModelName(space, name, custom ? "custom" : "function");
+      if (dynamic && !custom)
+        plan.tool_call_formats.push_back({id, call_formats[model_name]});
       names.emplace(id, std::make_pair(name, space));
-      Json payload =
-          Object({{"name", String(ResponsesToolModelName(
-                               space, name, custom ? "custom" : "function"))},
-                  {custom ? "input" : "arguments",
-                   *item.Find(custom ? "input" : "arguments")}});
+      Json payload = Object({{"name", String(model_name)},
+                             {custom ? "input" : "arguments",
+                              *item.Find(custom ? "input" : "arguments")}});
       if (!custom) {
         Json arguments;
         status = io::ParseJson(item.GetString("arguments"), &arguments, true,
@@ -742,9 +871,9 @@ void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
   *param = path == "instructions" || path == "input" ? path : path + suffix;
 }
 
-Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
-                               io::Json* choice, ChatPlanError* error,
-                               io::Json* effective_tools) {
+Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
+                                       io::Json* choice, ChatPlanError* error,
+                                       io::Json* effective_tools) {
   *tools = Array();
   *choice = String("auto");
   *error = {};
@@ -803,6 +932,19 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
         tools->array.push_back(NativeFileSearchDefinition(found->model_name));
         continue;
       }
+      if (type == "tool_search") {
+        ResponsesToolCatalog catalog;
+        catalog.search = definition;
+        if (!catalog.search.Has("execution"))
+          Set(&catalog.search, "execution", String("server"));
+        catalog.summaries = Array();
+        Json native_search;
+        auto status =
+            NativeResponsesToolSearchDefinition(catalog, &native_search, error);
+        if (!status) return status;
+        tools->array.push_back(std::move(native_search));
+        continue;
+      }
       if (type != "function" && type != "custom") return Unresolved(error, at);
       auto status =
           type == "function"
@@ -824,9 +966,6 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
         const auto* value = definition.Find(flag);
         if (value && !value->IsBool())
           return Invalid(error, at + '.' + flag, "tool flag must be boolean");
-        if (std::string_view(flag) == "defer_loading" && value &&
-            value->boolean)
-          return Unresolved(error, at + '.' + flag);
       }
       if (const auto* schema = definition.Find("output_schema");
           schema && !schema->IsNull()) {
@@ -966,5 +1105,47 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     }
   }
   return status;
+}
+
+Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
+                               io::Json* choice, ChatPlanError* error,
+                               io::Json* effective_tools,
+                               io::Json* header_tools, io::Json* active_tools) {
+  if (header_tools) *header_tools = {};
+  const auto* definitions = request.Find("tools");
+  const auto* input = request.GetArray("input");
+  const auto empty = Array();
+  if (!HasResponsesToolDiscovery(definitions ? *definitions : empty,
+                                 input ? *input : empty)) {
+    Json effective;
+    auto status = NormalizeResponsesCallableTools(request, tools, choice, error,
+                                                  &effective);
+    if (effective_tools) *effective_tools = effective;
+    if (active_tools) *active_tools = std::move(effective);
+    return status;
+  }
+  ResponsesToolHistory history;
+  auto status =
+      ResolveResponsesToolHistory(definitions ? *definitions : empty,
+                                  input ? *input : empty, &history, error);
+  if (!status) return status;
+  auto current = request;
+  Set(&current, "tools", history.active);
+  status = NormalizeActiveResponsesTools(current, history.initial, tools,
+                                         choice, error);
+  if (!status) return status;
+  if (header_tools) {
+    auto initial = history.initial.eager;
+    if (!history.initial.search.IsNull())
+      initial.array.push_back(history.initial.search);
+    Json ignored;
+    status = NormalizeActiveResponsesTools(Object({{"tools", initial}}),
+                                           history.initial, header_tools,
+                                           &ignored, error);
+    if (!status) return status;
+  }
+  if (effective_tools) *effective_tools = history.initial.definitions;
+  if (active_tools) *active_tools = std::move(history.active);
+  return {};
 }
 }  // namespace q4t::server

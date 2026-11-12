@@ -5,6 +5,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_input.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/schema_graph.h"
 #include "responses_json.h"
 
@@ -19,12 +20,12 @@ Status Invalid(ChatPlanError* error, std::string path, std::string text,
 }
 
 Status DeclarationSchema(const Json& schema, ChatPlanError* error,
-                          const std::string& path) {
+                         const std::string& path) {
   // This validates an input contract, including open/non-strict schemas.
   // Generation guarantees are selected later by the shared constraint planner.
   OutputSchemaGraph graph;
   auto status = graph.Init(schema, false, &error->param, path,
-                            OutputSchemaPurpose::kToolResult);
+                           OutputSchemaPurpose::kToolResult);
   if (!status) {
     error->code = "invalid_tool_search_schema";
     if (status.message().starts_with("schema_resource_exhausted:")) {
@@ -36,10 +37,10 @@ Status DeclarationSchema(const Json& schema, ChatPlanError* error,
 }
 
 Status SearchDefinition(const Json& value, ChatPlanError* error,
-                         const std::string& path) {
-  auto status = InputFields(value, {"type", "execution", "description",
-                                    "parameters"},
-                            &error->param, path);
+                        const std::string& path) {
+  auto status =
+      InputFields(value, {"type", "execution", "description", "parameters"},
+                  &error->param, path);
   if (!status) return status;
   if (const auto* execution = value.Find("execution");
       execution && (!execution->IsString() ||
@@ -57,13 +58,14 @@ Status SearchDefinition(const Json& value, ChatPlanError* error,
 }
 
 Status ValidationCopy(Json* tool, ChatPlanError* error,
-                       const std::string& path) {
+                      const std::string& path) {
   if (tool->GetString("type") == "namespace") {
     if (const auto* children = tool->GetArray("tools")) {
       auto normalized = *children;
       for (size_t i = 0; i < normalized.array.size(); ++i) {
-        auto status = ValidationCopy(&normalized.array[i], error,
-                                     path + ".tools[" + std::to_string(i) + ']');
+        auto status =
+            ValidationCopy(&normalized.array[i], error,
+                           path + ".tools[" + std::to_string(i) + ']');
         if (!status) return status;
       }
       Set(tool, "tools", std::move(normalized));
@@ -97,8 +99,7 @@ Json Summary(const Json& tool) {
 }
 }  // namespace
 
-Status PlanResponsesToolCatalog(const Json& tools,
-                                ResponsesToolCatalog* result,
+Status PlanResponsesToolCatalog(const Json& tools, ResponsesToolCatalog* result,
                                 ChatPlanError* error) {
   *result = {};
   *error = {};
@@ -115,7 +116,8 @@ Status PlanResponsesToolCatalog(const Json& tools,
     const auto path = "tools[" + std::to_string(i) + ']';
     if (tool.GetString("type") == "tool_search") {
       if (!plan.search.IsNull())
-        return Invalid(error, path, "Only one tool search configuration allowed");
+        return Invalid(error, path,
+                       "Only one tool search configuration allowed");
       auto status = SearchDefinition(tool, error, path);
       if (!status) return status;
       plan.search = tool;
@@ -130,14 +132,15 @@ Status PlanResponsesToolCatalog(const Json& tools,
     source_indices.push_back(i);
   }
   Json normalized, choice, effective;
-  auto status = NormalizeResponsesTools(Object({{"tools", validating}}),
-                                        &normalized, &choice, error, &effective);
+  auto status = NormalizeResponsesCallableTools(
+      Object({{"tools", validating}}), &normalized, &choice, error, &effective);
   if (!status) {
     for (size_t i = 0; i < source_indices.size(); ++i) {
       const auto prefix = "tools[" + std::to_string(i) + ']';
       if (error->param.starts_with(prefix)) {
-        error->param.replace(0, prefix.size(),
-                             "tools[" + std::to_string(source_indices[i]) + ']');
+        error->param.replace(
+            0, prefix.size(),
+            "tools[" + std::to_string(source_indices[i]) + ']');
         break;
       }
     }
@@ -196,20 +199,23 @@ Status DiscoverResponsesTools(const ResponsesToolCatalog& catalog,
   *tools = Array();
   *error = {};
   if (catalog.search.GetString("execution") != "server")
-    return Invalid(error, "tool_search", "Hosted discovery requires server mode");
-  auto status = InputFields(arguments, {"paths"}, &error->param,
-                            "tool_search.arguments");
+    return Invalid(error, "tool_search",
+                   "Hosted discovery requires server mode");
+  auto status =
+      InputFields(arguments, {"paths"}, &error->param, "tool_search.arguments");
   if (!status) return status;
   const auto* values = arguments.GetArray("paths");
   if (!values || values->array.empty())
-    return Invalid(error, "tool_search.arguments.paths", "Expected public paths");
+    return Invalid(error, "tool_search.arguments.paths",
+                   "Expected public paths");
   if (values->array.size() > kResponsesToolSearchPaths)
     return Invalid(error, "tool_search.arguments.paths",
                    "Search path working set exceeds request budget", true);
   std::unordered_set<std::string> paths;
   for (const auto& value : values->array) {
     if (!value.IsString() || value.str.empty() || value.str.size() > 256)
-      return Invalid(error, "tool_search.arguments.paths", "Invalid public path");
+      return Invalid(error, "tool_search.arguments.paths",
+                     "Invalid public path");
     paths.insert(value.str);
   }
   auto result = Array();
@@ -221,7 +227,8 @@ Status DiscoverResponsesTools(const ResponsesToolCatalog& catalog,
     if (tool.GetString("type") != "namespace") continue;
     auto children = Array();
     for (const auto& child : tool.GetArray("tools")->array)
-      if (paths.contains(tool.GetString("name") + '.' + child.GetString("name")))
+      if (paths.contains(tool.GetString("name") + '.' +
+                         child.GetString("name")))
         children.array.push_back(child);
     if (!children.array.empty()) {
       auto subset = tool;
@@ -231,5 +238,115 @@ Status DiscoverResponsesTools(const ResponsesToolCatalog& catalog,
   }
   *tools = std::move(result);
   return {};
+}
+
+Json ResponsesToolSearchArgumentsSchema(const ResponsesToolCatalog& catalog) {
+  if (catalog.search.GetString("execution") == "client") {
+    if (const auto* schema = catalog.search.Find("parameters");
+        schema && !schema->IsNull())
+      return *schema;
+    return Object(
+        {{"type", String("object")}, {"additionalProperties", Boolean(true)}});
+  }
+  auto schema = Object(
+      {{"type", String("object")},
+       {"properties",
+        Object({{"paths",
+                 Object({{"type", String("array")},
+                         {"items", Object({{"type", String("string")},
+                                           {"minLength", Number(1)},
+                                           {"maxLength", Number(256)}})},
+                         {"minItems", Number(1)},
+                         {"maxItems", Number(kResponsesToolSearchPaths)}})}})},
+       {"required", Array({String("paths")})},
+       {"additionalProperties", Boolean(false)}});
+  if (const auto* declared = catalog.search.Find("parameters");
+      declared && !declared->IsNull()) {
+    auto extra = *declared;
+    OutputSchemaGraph graph;
+    if (graph.Init(extra, false, nullptr, "parameters",
+                   OutputSchemaPurpose::kToolResult))
+      for (const auto* node : graph.Nodes())
+        for (auto& [key, value] : const_cast<Json*>(node)->object)
+          if (key == "$ref")
+            value.str = "#/$defs/q4t_server_parameters" + value.str.substr(1);
+    // A local reference and its sibling constraints both apply. This keeps
+    // the original schema intact while requiring bounded hosted paths.
+    Set(&schema, "$defs",
+        Object({{"q4t_server_parameters", std::move(extra)}}));
+    Set(&schema, "$ref", String("#/$defs/q4t_server_parameters"));
+  }
+  return schema;
+}
+
+Status NativeResponsesToolSearchDefinition(const ResponsesToolCatalog& catalog,
+                                           Json* definition,
+                                           ChatPlanError* error) {
+  *definition = {};
+  *error = {};
+  if (catalog.search.IsNull())
+    return Invalid(error, "tools", "Missing tool search configuration");
+  auto schema = ResponsesToolSearchArgumentsSchema(catalog);
+  OutputSchemaGraph graph;
+  auto status =
+      graph.Init(schema, false, &error->param, "tool_search.parameters",
+                 OutputSchemaPurpose::kToolResult);
+  if (!status) return status;
+  // The search schema describes arbitrary JSON, not necessarily a schema the
+  // generation grammar can encode. A stable JSON-text adapter preserves all
+  // roots/references without weakening the real pre-publication validator.
+  auto parameters = Object(
+      {{"type", String("object")},
+       {"properties",
+        Object(
+            {{"arguments_json",
+              Object(
+                  {{"type", String("string")},
+                   {"description",
+                    String(
+                        "The complete public search input "
+                        "as JSON text. Preserve exact numbers and JSON types. "
+                        "This decoded document must match: " +
+                        OutputJson(schema))}})}})},
+       {"required", Array({String("arguments_json")})},
+       {"additionalProperties", Boolean(false)}});
+  std::string description =
+      "Discover and load tools before calling them. Pass the search input "
+      "as JSON text in the arguments_json parameter. ";
+  if (catalog.search.GetString("execution") == "server") {
+    description +=
+        "Use paths from this directory; a namespace path loads its deferred "
+        "members. Unlisted tools are unavailable until discovery completes. "
+        "Directory: " +
+        OutputJson(catalog.summaries);
+  } else {
+    description += "The application will return the matching tool definitions.";
+  }
+  if (!catalog.search.GetString("description").empty())
+    description += "\n" + catalog.search.GetString("description");
+  *definition = Object(
+      {{"type", String("function")},
+       {"function",
+        Object({{"name", String(std::string(kResponsesToolSearchModelName))},
+                {"description", String(std::move(description))},
+                {"parameters", std::move(parameters)},
+                {"strict", Boolean(true)}})}});
+  return {};
+}
+
+Status DecodeResponsesToolSearchArguments(std::string_view model_arguments,
+                                          Json* arguments) {
+  *arguments = {};
+  Json wrapped;
+  auto status = io::ParseJson(std::string(model_arguments), &wrapped, true,
+                              kSchemaJsonLimits);
+  if (!status) return status;
+  if (!wrapped.IsObject() || wrapped.object.size() != 1 ||
+      !wrapped.Find("arguments_json") ||
+      !wrapped.Find("arguments_json")->IsString())
+    return Status::Fail(
+        "Search call requires one arguments_json text parameter");
+  return io::ParseJson(wrapped.GetString("arguments_json"), arguments, true,
+                       kSchemaJsonLimits);
 }
 }  // namespace q4t::server

@@ -997,7 +997,7 @@
         }
       },
       "tool_discovery": {
-        "state": "catalog_history_components_cpu_pass_execution_wiring_in_progress",
+        "state": "execution_integration_cpu_pass_business_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "public_capability_not_yet_enabled": true,
         "gpu_budget": {
@@ -1007,7 +1007,10 @@
         },
         "gpu_started": false,
         "programmatic_and_mcp_remain_required": true,
-        "component_evidence": "docs/evidence/serve-tool-discovery-catalog-cpu-20261113"
+        "component_evidence": "docs/evidence/serve-tool-discovery-catalog-cpu-20261113",
+        "targeted_cpp_passed": 77,
+        "targeted_sdk_driver_passed": 4,
+        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113"
       }
     },
     {
@@ -1635,6 +1638,21 @@
           "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
         },
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+      },
+      "tool_discovery": {
+        "state": "execution_integration_cpu_pass_business_pending",
+        "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
+        "targeted_cpp_passed": 77,
+        "targeted_sdk_driver_passed": 4,
+        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
+        "public_capability_not_yet_enabled": true,
+        "gpu_started": false,
+        "gpu_budget": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 900
+        },
+        "programmatic_and_mcp_remain_required": true
       }
     },
     {
@@ -2534,7 +2552,7 @@
       "namespace_main_integration": {
         "pr": 24,
         "state": "MERGED",
-        "merged": false,
+        "merged": true,
         "evidence": "docs/evidence/serve-pr24-merged-20261113",
         "cpu_passed": 6,
         "runtime_changed": false,
@@ -2560,6 +2578,6 @@
       "release": null
     }
   ],
-  "next_task": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery.",
-  "next": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery."
+  "next_task": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
+  "next": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
 }

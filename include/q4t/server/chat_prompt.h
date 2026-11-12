@@ -30,14 +30,13 @@ struct ChatPromptLayout {
 
 // Shared by generation and preflight after ValidateChatContract. The same
 // constraint adapter and renderer determine the actual generation prefix.
-Status PrepareChatPrompt(const io::Json& request,
-                         const OutputConstraints& constraints,
-                         std::string* prompt, std::vector<VisionItem>* items,
-                         std::string* error_param,
-                         std::string* error_code = nullptr,
-                         ChatPromptLayout* layout = nullptr,
-                         bool allow_empty = false,
-                         std::span<const std::string> async_call_ids = {},
-                         bool responses_tool_media = false);
+Status PrepareChatPrompt(
+    const io::Json& request, const OutputConstraints& constraints,
+    std::string* prompt, std::vector<VisionItem>* items,
+    std::string* error_param, std::string* error_code = nullptr,
+    ChatPromptLayout* layout = nullptr, bool allow_empty = false,
+    std::span<const std::string> async_call_ids = {},
+    bool responses_tool_media = false, const io::Json* header_tools = nullptr,
+    std::span<const ChatToolCallFormat> call_formats = {});
 
 }  // namespace q4t::server

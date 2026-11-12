@@ -12,6 +12,7 @@
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/responses_output.h"
+#include "q4t/server/responses_tool_search.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/tool_result_contracts.h"
 
@@ -94,7 +95,8 @@ ObjectReply Data(const ObjectReply& stored, std::string_view field) {
 ObjectReply Shape(const Json& item, ResponsesItemShape shape,
                   const std::string& path) {
   ChatPlanError error;
-  const auto status = ValidateResponsesItemShape(item, shape, &error, path);
+  const auto status = ValidateResponsesItemShape(
+      ResponsesToolItemDefaults(item), shape, &error, path);
   if (status) return {};
   auto result = Error(error.http_status, error.code, status.message());
   result.value = Object({{"param", String(error.param)}});
@@ -104,6 +106,7 @@ void Default(Json* item, const std::string& key, Json value) {
   if (!Nonnull(*item, key)) Set(item, key, std::move(value));
 }
 void CanonicalItem(Json* item) {
+  *item = ResponsesToolItemDefaults(std::move(*item));
   if (!item->Has("type") && item->Has("role"))
     Set(item, "type", String("message"));
   const auto type = item->GetString("type");
@@ -137,6 +140,15 @@ void CanonicalItem(Json* item) {
         return field.first == "acknowledged_safety_checks";
       });
   }
+}
+ObjectReply BindGeneratedContracts(const Json& snapshot,
+                                   ResponseStatePlan* plan) {
+  auto history = plan->history;
+  const auto* output = snapshot.GetArray("output");
+  if (!output) return StateError("Missing generated output");
+  history.array.insert(history.array.end(), output->array.begin(),
+                       output->array.end());
+  return BindToolResultContracts(plan->request, history, &plan->tool_contracts);
 }
 bool HasFileParts(const Json& value, size_t depth = 0) {
   if (depth > 16) return false;
@@ -394,8 +406,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->history.array.insert(plan->history.array.end(),
                              plan->own_input.array.begin(),
                              plan->own_input.array.end());
-  auto result_contracts = BindToolResultContracts(
-      plan->request, plan->own_input, &plan->tool_contracts);
+  auto result_contracts = BindToolResultContracts(plan->request, plan->history,
+                                                  &plan->tool_contracts);
   if (!result_contracts.ok()) return result_contracts;
   if (plan->history.array.size() > 4096)
     return Error(400, "input_limit_exceeded",
@@ -548,8 +560,7 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
-  bindings = BindToolResultContracts(
-      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
+  bindings = BindGeneratedContracts(snapshot, plan);
   if (!bindings.ok()) return bindings;
   auto written =
       objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
@@ -576,8 +587,7 @@ ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
-  bindings = BindToolResultContracts(
-      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
+  bindings = BindGeneratedContracts(snapshot, plan);
   if (!bindings.ok()) return bindings;
   auto written = objects_.Execute(
       Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
@@ -606,8 +616,7 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
-  bindings = BindToolResultContracts(
-      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
+  bindings = BindGeneratedContracts(snapshot, plan);
   if (!bindings.ok()) return bindings;
   if (!plan->store && plan->conversation_id.empty()) {
     plan->finished = true;

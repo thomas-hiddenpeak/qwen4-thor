@@ -1,0 +1,9 @@
+[PASS] responses_discovery_server_parameters_constrain_paths_and_keep_refs
+[PASS] responses_discovery_cancel_and_reserved_user_name_cannot_dispatch
+[PASS] responses_discovery_redefinition_does_not_rewrite_prior_call_prefix
+  CHECK failed: Ok(run.ContinueFileSearch(16, Config(), {}, &next)) (line 418)
+[FAIL] responses_discovery_builtin_budget_closes_skipped_calls_without_loading
+[PASS] responses_discovery_bad_or_unfinished_arguments_never_dispatch
+[PASS] responses_discovery_compaction_keeps_executable_definitions_exact
+[PASS] responses_discovery_input_count_matches_generation_without_prefix_leak
+7 tests, 6 passed, 1 failed, 0 skipped

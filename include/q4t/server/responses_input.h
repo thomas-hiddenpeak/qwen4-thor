@@ -17,6 +17,7 @@ struct ResponsesInputPlan {
   std::vector<PromptCacheInputBoundary> cache_boundaries;
   // Bound to historical call items, never inferred from today's tools.
   std::vector<std::string> async_tool_call_ids;
+  std::vector<ChatToolCallFormat> tool_call_formats;
 };
 
 struct ResponsesToolIdentity {
@@ -45,5 +46,12 @@ void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
                               std::string* param);
 Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                                io::Json* choice, ChatPlanError* error,
-                               io::Json* effective_tools = nullptr);
+                               io::Json* effective_tools = nullptr,
+                               io::Json* header_tools = nullptr,
+                               io::Json* active_tools = nullptr);
+// Leaf definition adapter used by the request-local discovery planner. It
+// does not load history or grant access to deferred definitions by itself.
+Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
+                                       io::Json* choice, ChatPlanError* error,
+                                       io::Json* effective_tools = nullptr);
 }  // namespace q4t::server

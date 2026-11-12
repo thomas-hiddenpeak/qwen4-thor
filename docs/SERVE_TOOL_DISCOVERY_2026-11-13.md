@@ -57,6 +57,11 @@ server函数JSON闭环2次、server custom SSE闭环2次、client搜索/
 主轻/恢复交付只重验受影响合同并复用未改证据，另冻具体清单。
 
 当前状态：目录及有序历史部件已[通过10项CPU](evidence/serve-tool-discovery-catalog-cpu-20261113/README.md)，
-继续公开执行器、模板/grammar与状态绑定接线；尚未宣称支持
-tool_search或defer_loading。默认rev110保持，PR25已验异步
+公开执行器、模板/grammar与状态绑定已接通，
+[77项不同CPU及4项SDK/驱动检查最终通过](evidence/serve-tool-discovery-integration-cpu-20261113/README.md)。
+搜索输入经稳定JSON文本适配器进入模型，由已有隔离校验器验证原始
+schema；不将生成grammar的保证冒充任意schema保证。协议来源漏登已
+修复并加入防遗漏检查。接着冻结的真实业务；尚未宣称业务验收通过
+或对外交付tool_search/defer_loading。
+默认rev110保持，PR25已验异步
 提交实际合main（4e87a03f）；后续新开发未混入该已检查的head。
