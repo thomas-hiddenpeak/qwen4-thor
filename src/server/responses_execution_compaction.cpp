@@ -145,7 +145,8 @@ ObjectReply ResponsesExecution::CompleteCompaction(
 }
 
 std::string ResponsesExecution::ResultJson() const {
-  if (!standalone_compaction_) return output_.Json();
+  if (!standalone_compaction_)
+    return HasFileSearch() ? OutputJson(PublicResponse()) : output_.Json();
   const auto& snapshot = output_.Snapshot();
   // Only publish this projection after the same terminal/usage checks as
   // ordinary generation. The original full input is never returned as memory.

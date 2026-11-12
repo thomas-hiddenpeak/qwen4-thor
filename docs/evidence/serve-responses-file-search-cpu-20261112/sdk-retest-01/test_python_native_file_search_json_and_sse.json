@@ -1,0 +1,1076 @@
+{
+  "status": "PASS",
+  "version": "3.42.1",
+  "consumed": [
+    {
+      "name": "included",
+      "response": {
+        "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+        "access_programs": null,
+        "created_at": 42.0,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "metadata": {},
+        "model": "cpu",
+        "object": "response",
+        "output": [
+          {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "queries": [
+              "PLE SSD"
+            ],
+            "status": "completed",
+            "type": "file_search_call",
+            "results": [
+              {
+                "attributes": {},
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "score": 1.0,
+                "text": "PLE streams immutable tables from SSD."
+              }
+            ]
+          },
+          {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "content": [
+              {
+                "annotations": [
+                  {
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "index": 59,
+                    "type": "file_citation"
+                  }
+                ],
+                "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                "type": "output_text",
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed",
+            "type": "message",
+            "phase": null
+          }
+        ],
+        "parallel_tool_calls": true,
+        "temperature": 1.0,
+        "tool_choice": {
+          "type": "file_search"
+        },
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+            ],
+            "filters": null,
+            "max_num_results": null,
+            "ranking_options": null
+          }
+        ],
+        "top_p": 1.0,
+        "background": false,
+        "completed_at": 43.0,
+        "conversation": null,
+        "max_output_tokens": 128,
+        "max_tool_calls": 1,
+        "moderation": null,
+        "previous_response_id": null,
+        "prompt": null,
+        "prompt_cache_diagnostics": null,
+        "prompt_cache_key": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m",
+          "comparison_response_id": null
+        },
+        "prompt_cache_retention": "in_memory",
+        "reasoning": {
+          "context": "all_turns",
+          "effort": "none",
+          "generate_summary": null,
+          "mode": "standard",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "status": "completed",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_usage": null,
+        "top_logprobs": 0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 144,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 10,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 154
+        },
+        "user": null,
+        "store": true
+      },
+      "events": [
+        {
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": null,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "in_progress",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": null,
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 0,
+          "type": "response.created"
+        },
+        {
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": null,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "in_progress",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": null,
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 1,
+          "type": "response.in_progress"
+        },
+        {
+          "item": {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "queries": [],
+            "status": "in_progress",
+            "type": "file_search_call",
+            "results": null
+          },
+          "output_index": 0,
+          "sequence_number": 2,
+          "type": "response.output_item.added"
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "sequence_number": 3,
+          "type": "response.file_search_call.in_progress"
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "sequence_number": 4,
+          "type": "response.file_search_call.searching"
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "sequence_number": 5,
+          "type": "response.file_search_call.completed"
+        },
+        {
+          "item": {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "queries": [
+              "PLE SSD"
+            ],
+            "status": "completed",
+            "type": "file_search_call",
+            "results": [
+              {
+                "attributes": {},
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "score": 1.0,
+                "text": "PLE streams immutable tables from SSD."
+              }
+            ]
+          },
+          "output_index": 0,
+          "sequence_number": 6,
+          "type": "response.output_item.done"
+        },
+        {
+          "item": {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "content": [],
+            "role": "assistant",
+            "status": "in_progress",
+            "type": "message",
+            "phase": null
+          },
+          "output_index": 1,
+          "sequence_number": 7,
+          "type": "response.output_item.added"
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          },
+          "sequence_number": 8,
+          "type": "response.content_part.added"
+        },
+        {
+          "content_index": 0,
+          "delta": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "logprobs": [],
+          "output_index": 1,
+          "sequence_number": 9,
+          "type": "response.output_text.delta",
+          "snapshot": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]"
+        },
+        {
+          "annotation": {
+            "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+            "filename": "MODEL.md",
+            "index": 59,
+            "type": "file_citation"
+          },
+          "annotation_index": 0,
+          "content_index": 0,
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "sequence_number": 10,
+          "type": "response.output_text.annotation.added"
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "logprobs": [],
+          "output_index": 1,
+          "sequence_number": 11,
+          "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+          "type": "response.output_text.done",
+          "parsed": null
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "part": {
+            "annotations": [
+              {
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "index": 59,
+                "type": "file_citation"
+              }
+            ],
+            "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+            "type": "output_text",
+            "logprobs": []
+          },
+          "sequence_number": 12,
+          "type": "response.content_part.done"
+        },
+        {
+          "item": {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "content": [
+              {
+                "annotations": [
+                  {
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "index": 59,
+                    "type": "file_citation"
+                  }
+                ],
+                "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                "type": "output_text",
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed",
+            "type": "message",
+            "phase": null
+          },
+          "output_index": 1,
+          "sequence_number": 13,
+          "type": "response.output_item.done"
+        },
+        {
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [
+              {
+                "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+                "queries": [
+                  "PLE SSD"
+                ],
+                "status": "completed",
+                "type": "file_search_call",
+                "results": [
+                  {
+                    "attributes": {},
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "score": 1.0,
+                    "text": "PLE streams immutable tables from SSD."
+                  }
+                ]
+              },
+              {
+                "id": "msg_313dfe33e15d8253acdcb11a30266986",
+                "content": [
+                  {
+                    "annotations": [
+                      {
+                        "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                        "filename": "MODEL.md",
+                        "index": 59,
+                        "type": "file_citation"
+                      }
+                    ],
+                    "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                    "type": "output_text",
+                    "logprobs": [],
+                    "parsed": null
+                  }
+                ],
+                "role": "assistant",
+                "status": "completed",
+                "type": "message",
+                "phase": null
+              }
+            ],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": 43.0,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "completed",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": {
+              "input_tokens": 144,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 10,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 154
+            },
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 14,
+          "type": "response.completed"
+        }
+      ]
+    },
+    {
+      "name": "hidden",
+      "response": {
+        "id": "resp_731a725142e6996b3c1148af869e10b1",
+        "access_programs": null,
+        "created_at": 42.0,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "metadata": {},
+        "model": "cpu",
+        "object": "response",
+        "output": [
+          {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "queries": [
+              "PLE SSD"
+            ],
+            "status": "completed",
+            "type": "file_search_call",
+            "results": null
+          },
+          {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "content": [
+              {
+                "annotations": [
+                  {
+                    "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                    "filename": "MODEL.md",
+                    "index": 59,
+                    "type": "file_citation"
+                  }
+                ],
+                "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+                "type": "output_text",
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed",
+            "type": "message",
+            "phase": null
+          }
+        ],
+        "parallel_tool_calls": true,
+        "temperature": 1.0,
+        "tool_choice": {
+          "type": "file_search"
+        },
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_ec8b24142ea1e58a35596a259e01a741"
+            ],
+            "filters": null,
+            "max_num_results": null,
+            "ranking_options": null
+          }
+        ],
+        "top_p": 1.0,
+        "background": false,
+        "completed_at": 43.0,
+        "conversation": null,
+        "max_output_tokens": 128,
+        "max_tool_calls": 1,
+        "moderation": null,
+        "previous_response_id": null,
+        "prompt": null,
+        "prompt_cache_diagnostics": null,
+        "prompt_cache_key": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m",
+          "comparison_response_id": null
+        },
+        "prompt_cache_retention": "in_memory",
+        "reasoning": {
+          "context": "all_turns",
+          "effort": "none",
+          "generate_summary": null,
+          "mode": "standard",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "status": "completed",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_usage": null,
+        "top_logprobs": 0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 144,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 10,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 154
+        },
+        "user": null,
+        "store": true
+      },
+      "events": [
+        {
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": null,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "in_progress",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": null,
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 0,
+          "type": "response.created"
+        },
+        {
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": null,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "in_progress",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": null,
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 1,
+          "type": "response.in_progress"
+        },
+        {
+          "item": {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "queries": [],
+            "status": "in_progress",
+            "type": "file_search_call",
+            "results": null
+          },
+          "output_index": 0,
+          "sequence_number": 2,
+          "type": "response.output_item.added"
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "sequence_number": 3,
+          "type": "response.file_search_call.in_progress"
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "sequence_number": 4,
+          "type": "response.file_search_call.searching"
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "sequence_number": 5,
+          "type": "response.file_search_call.completed"
+        },
+        {
+          "item": {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "queries": [
+              "PLE SSD"
+            ],
+            "status": "completed",
+            "type": "file_search_call",
+            "results": null
+          },
+          "output_index": 0,
+          "sequence_number": 6,
+          "type": "response.output_item.done"
+        },
+        {
+          "item": {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "content": [],
+            "role": "assistant",
+            "status": "in_progress",
+            "type": "message",
+            "phase": null
+          },
+          "output_index": 1,
+          "sequence_number": 7,
+          "type": "response.output_item.added"
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          },
+          "sequence_number": 8,
+          "type": "response.content_part.added"
+        },
+        {
+          "content_index": 0,
+          "delta": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "logprobs": [],
+          "output_index": 1,
+          "sequence_number": 9,
+          "type": "response.output_text.delta",
+          "snapshot": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]"
+        },
+        {
+          "annotation": {
+            "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+            "filename": "MODEL.md",
+            "index": 59,
+            "type": "file_citation"
+          },
+          "annotation_index": 0,
+          "content_index": 0,
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "sequence_number": 10,
+          "type": "response.output_text.annotation.added"
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "logprobs": [],
+          "output_index": 1,
+          "sequence_number": 11,
+          "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+          "type": "response.output_text.done",
+          "parsed": null
+        },
+        {
+          "content_index": 0,
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "part": {
+            "annotations": [
+              {
+                "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                "filename": "MODEL.md",
+                "index": 59,
+                "type": "file_citation"
+              }
+            ],
+            "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+            "type": "output_text",
+            "logprobs": []
+          },
+          "sequence_number": 12,
+          "type": "response.content_part.done"
+        },
+        {
+          "item": {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "content": [
+              {
+                "annotations": [
+                  {
+                    "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                    "filename": "MODEL.md",
+                    "index": 59,
+                    "type": "file_citation"
+                  }
+                ],
+                "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+                "type": "output_text",
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed",
+            "type": "message",
+            "phase": null
+          },
+          "output_index": 1,
+          "sequence_number": 13,
+          "type": "response.output_item.done"
+        },
+        {
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "access_programs": null,
+            "created_at": 42.0,
+            "error": null,
+            "incomplete_details": null,
+            "instructions": null,
+            "metadata": {},
+            "model": "cpu",
+            "object": "response",
+            "output": [
+              {
+                "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+                "queries": [
+                  "PLE SSD"
+                ],
+                "status": "completed",
+                "type": "file_search_call",
+                "results": null
+              },
+              {
+                "id": "msg_e883349615b3dfb6633164146313ab2d",
+                "content": [
+                  {
+                    "annotations": [
+                      {
+                        "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                        "filename": "MODEL.md",
+                        "index": 59,
+                        "type": "file_citation"
+                      }
+                    ],
+                    "text": "PLE \u4ece SSD \u6d41\u5f0f\u8bfb\u53d6\u3002[file:file_947c6111d41fc4c36509dc1176881b10]",
+                    "type": "output_text",
+                    "logprobs": [],
+                    "parsed": null
+                  }
+                ],
+                "role": "assistant",
+                "status": "completed",
+                "type": "message",
+                "phase": null
+              }
+            ],
+            "parallel_tool_calls": true,
+            "temperature": 1.0,
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ],
+                "filters": null,
+                "max_num_results": null,
+                "ranking_options": null
+              }
+            ],
+            "top_p": 1.0,
+            "background": false,
+            "completed_at": 43.0,
+            "conversation": null,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "moderation": null,
+            "previous_response_id": null,
+            "prompt": null,
+            "prompt_cache_diagnostics": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m",
+              "comparison_response_id": null
+            },
+            "prompt_cache_retention": "in_memory",
+            "reasoning": {
+              "context": "all_turns",
+              "effort": "none",
+              "generate_summary": null,
+              "mode": "standard",
+              "summary": null
+            },
+            "safety_identifier": null,
+            "service_tier": "default",
+            "status": "completed",
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "tool_usage": null,
+            "top_logprobs": 0,
+            "truncation": "disabled",
+            "usage": {
+              "input_tokens": 144,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 10,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 154
+            },
+            "user": null,
+            "store": true
+          },
+          "sequence_number": 14,
+          "type": "response.completed"
+        }
+      ]
+    }
+  ]
+}

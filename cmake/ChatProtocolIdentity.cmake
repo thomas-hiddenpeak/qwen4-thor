@@ -51,6 +51,10 @@ set(protocol_inputs
   src/server/vector_search_execution.cpp
   src/server/vector_query_rewrite.cpp
   src/server/responses_file_search.cpp
+  src/server/responses_file_search_output.cpp
+  src/server/responses_file_search_execution.cpp
+  src/server/responses_file_search_view.cpp
+  src/server/responses_file_citations.cpp
   src/server/vector_search_api.cpp
   include/q4t/server/vector_index.h
   include/q4t/server/vector_stores.h

@@ -829,7 +829,7 @@
       ]
     },
     "POST /v1/responses": {
-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。; native file_search execution, continuation, citations and result projection",
       "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
@@ -837,7 +837,8 @@
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+        "docs/evidence/serve-responses-recovery-20261109/README.md",
+        "docs/evidence/serve-responses-file-search-cpu-20261112/README.md"
       ]
     },
     "POST /v1/responses/compact": {
@@ -1788,8 +1789,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6d2b1420328a211e37f7fd9191985c10cbaf69dd5df8c5e433ad1d01f3284ced",
-    "cmake/ChatProtocolIdentity.cmake": "62859916e160059a575fd4be602e2a8b2234e1a4512985d3c5a6b3b45b251d34",
+    "CMakeLists.txt": "5cd374c532b93be20c666896f3f23429a0aa75e6068df0f37bf7651fee730d72",
+    "cmake/ChatProtocolIdentity.cmake": "9ab50bbc65ac64a46df4e9dd96b5eb783ba356d1e64f21b9dbae525e39288e3f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1928,12 +1929,12 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "327fafbffa00a3a4e68582bc515f8e38bf21e3ef89f795cc49afe854826141dc",
-    "include/q4t/server/responses_file_search.h": "83caca130ec2103195465e5aa0eca2dcf8fccdf79013f25be3f9ee57b98ea09f",
+    "include/q4t/server/responses_execution.h": "16ec11e7198cb9e4610f34f7da4ea1a6b3d88a6062df4e799d9cfd45cd065d41",
+    "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "7bb38653078a57e51ea2dcd98774805ead8f9f49fba11e82ac765d8506da282c",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
-    "include/q4t/server/responses_output.h": "226778f2c04586e2ea6538b58ebc2c1fefa31274eed90e77fbe60f610251b702",
+    "include/q4t/server/responses_output.h": "d2c912734acd72f7a56c71f6c07924436ed3a9b8187144451529405f0fd531c0",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "46abed48f94041355eac19322b3971ebca74a62846bd4e264d87ff649f3a1e83",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
@@ -2043,7 +2044,7 @@
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
-    "src/server/chat_generation.cpp": "e26c18e99ad209c22d82636bc20dc4fc57c081f1c6ca0bc0ba7496e30dc64517",
+    "src/server/chat_generation.cpp": "31973c1ec5bf25c1e00ece941ac5806560c629350dcaa301e17c87114f1c538b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2170,17 +2171,21 @@
     "src/server/responses_api.cpp": "327ba0d075422fb7238a489f6962ed9a3d1dc1b17ace44ed74f03f7aff112da7",
     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "3c9e94e1dc4d12cf495c975349837f8e5f24e3f5b61f7db28522bbe78447d2d5",
-    "src/server/responses_execution_compaction.cpp": "e04a7a1536232b1f9e9a7896c0f00d9e52d066df098589742068aa17c985ccbd",
+    "src/server/responses_execution.cpp": "41d5cf701f421f0ab771fb98e276ba19bf047b68b1bdf14260c13664c08b0fd0",
+    "src/server/responses_execution_compaction.cpp": "d355a08320fe868710f14a2543af4ce205794739c0cd83cbd7393a0c411b3d09",
     "src/server/responses_execution_files.cpp": "7fd03864bfc872d02dbe818aee4a52e220d846b8acc5ec5367608bef0425f994",
     "src/server/responses_execution_inputs.cpp": "962aff416457706b16ae30a87a7bca709a2ed1c636e8220d3a0db2adf98de3ba",
     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
-    "src/server/responses_file_search.cpp": "85259d552ff552974f19103ec6a14e7ae1581d4d431ec2b6e02619a51463bb75",
-    "src/server/responses_input.cpp": "71b10552c00320a9d7e1d1765906c37b3b4ef4ca0fc17f39943afe2d8eca13bc",
+    "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
+    "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
+    "src/server/responses_file_search_execution.cpp": "a6f1a6a808765b75851fab1c5dd4e1bad682ec1bd13b589289c387a8e0a67261",
+    "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
+    "src/server/responses_file_search_view.cpp": "aa4c636f9b02c3a952f5f25f90dd0bf0a2c8480e8531585f58a32fc1eded4caa",
+    "src/server/responses_input.cpp": "c8a1fbc983398bb934383d90cc9a29c728c816b83411a9aa25c317d8a7c8f3ed",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "458310a5147f40228f07b822a0b9502b3b8a2eb1cae335d42d1e7a8f9a308c26",
+    "src/server/responses_output.cpp": "64854e04e7f0acdb91f7628a0faf537d99649a2ab98edb0c41bcb95172cd3c97",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "dfe6656629a7d0c7578488095054910a29be7ecc31849dc31b3f4c930dbe6ecc",
     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
@@ -3323,7 +3328,7 @@
       ]
     },
     "POST /v1/responses": {
-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。; native file_search execution, continuation, citations and result projection",
       "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
@@ -3331,7 +3336,8 @@
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+        "docs/evidence/serve-responses-recovery-20261109/README.md",
+        "docs/evidence/serve-responses-file-search-cpu-20261112/README.md"
       ]
     },
     "POST /v1/responses/compact": {
@@ -4511,5 +4517,11 @@
     "semantics": "scalar arguments only; charge attempts before syscall, no refunds; same owner/pidfd deadline/cancel and unknown-exit slot",
     "evidence": "docs/evidence/serve-file-codec-budget-cpu-20261110",
     "no_full_legacy_or_api_claim": true
+  },
+  "responses_native_file_search_cpu_20261112": {
+    "scope": "Native file_search tool binding/execution/history, same-request continuation, standard events/source citations and include projection",
+    "evidence": "docs/evidence/serve-responses-file-search-cpu-20261112/README.md",
+    "limitations": "CPU vectors/generated deltas; SDK consumes captured producer wire; actual model business and delivery still required",
+    "default_changed": false
   }
 }

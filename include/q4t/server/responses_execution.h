@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <map>
 #include <optional>
 #include <stdexcept>
 
@@ -13,6 +14,8 @@
 #include "q4t/server/request_control.h"
 #include "q4t/server/state_cipher.h"
 #include "q4t/server/prompt_registry.h"
+#include "q4t/server/responses_file_search.h"
+#include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
 
@@ -61,7 +64,9 @@ class ResponsesExecution {
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
   bool VariableInputSteps() const {
     const auto* context = envelope_.request.GetArray("context_management");
-    return PendingFileSheets() || envelope_.moderation.enabled ||
+    return PendingFileSheets() ||
+           (!envelope_.cache.prewarm && HasFileSearch()) ||
+           envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
             (envelope_.reasoning_mode == "pro" || !envelope_.summary.empty() ||
              compaction_trigger_ || (context && !context->array.empty())));
@@ -115,6 +120,18 @@ class ResponsesExecution {
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
   Status AppendSummary(std::string_view text, std::string* wire);
+  Status CiteFileSearchSources(std::string* wire);
+  bool HasFileSearch() const { return !file_search_bindings_.empty(); }
+  bool PendingFileSearch() const { return !file_search_pending_.empty(); }
+  static constexpr size_t kMaxNativeToolCalls = 64;
+  ObjectReply RunFileSearches(
+      size_t completed_calls, const VectorSearchCallbacks& callbacks,
+      VectorSearchUsage* usage, bool* continue_answer,
+      const std::function<bool(const std::string&)>& publish);
+  ObjectReply ContinueFileSearch(int64_t output_used,
+                                 const ChatPlanConfig& config,
+                                 const ResponsesContextCheck& check,
+                                 ResponsesGenerationPlan* next);
   // Selection uses the real expanded input count, before rate reservation.
   ObjectReply SelectCompaction(size_t input_tokens,
                                const ChatPlanConfig& config);
@@ -129,6 +146,9 @@ class ResponsesExecution {
   bool CompactionSelected() const { return compaction_selected_; }
   bool StandaloneCompaction() const { return standalone_compaction_; }
   std::string ResultJson() const;
+  // Storage keeps full result evidence; create-stream projection obeys include.
+  std::string PublicWire(std::string_view wire) const;
+  io::Json PublicResponse() const;
   ObjectReply Finish(bool incomplete, size_t completed_calls,
                      const ResponsesUsage& usage, int64_t completed_at,
                      std::string* wire, bool content_filtered = false);
@@ -175,6 +195,8 @@ class ResponsesExecution {
   ObjectReply PersistPreparedInputs();
   void ReleasePreparedInputs() noexcept;
   Status RecordOutput(Status status, std::string* wire);
+  Status AppendFileSearch(const ResponseDelta& delta, bool* handled,
+                          std::string* wire);
   Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
   std::unique_ptr<FileExpansion> files_;
@@ -195,6 +217,16 @@ class ResponsesExecution {
   ResponsesGenerationPlan generation_;
   ResponseStatePlan plan_;
   ResponsesOutput output_;
+  std::vector<ResponsesFileSearchBinding> file_search_bindings_;
+  struct NativeFileCall {
+    ResponseToolCall call;
+    size_t binding = 0;
+    size_t output_index = 0;
+    bool dispatched = false;
+  };
+  std::map<size_t, NativeFileCall> file_search_pending_;
+  size_t file_search_calls_ = 0;
+  size_t file_search_argument_bytes_ = 0;
   ResponsesCompactionPlan compaction_;
   io::Json compaction_window_;
   std::string compaction_id_;

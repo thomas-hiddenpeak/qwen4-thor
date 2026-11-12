@@ -5,6 +5,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/test.h"
+#include "q4t/server/responses_input.h"
 
 namespace {
 using namespace q4t::server;
@@ -214,5 +215,128 @@ Q4T_TEST(responses_file_search_invalid_runtime_weights_never_publish_hits) {
   Q4T_CHECK(
       !RankVectorSearch(Search(0, 0), Queries(), Chunks(), {}, &hits, &error) &&
       hits.empty());
+  return true;
+}
+
+Q4T_TEST(responses_file_search_private_names_preserve_public_tools) {
+  auto request = Object({{"tools", Array({Definition(), Read(R"({
+    "type":"function","name":"q4t_file_search_0",
+    "parameters":{"type":"object","properties":{},
+    "additionalProperties":false}})")})}});
+  std::vector<ResponsesFileSearchBinding> bindings;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesFileSearchBindings(request, &bindings, &error) &&
+            bindings.size() == 1 && bindings[0].tool_index == 0 &&
+            bindings[0].model_name == "q4t_file_search_0_0");
+  Json tools, choice, effective;
+  Q4T_CHECK(
+      NormalizeResponsesTools(request, &tools, &choice, &error, &effective));
+  Q4T_CHECK(tools.array[0].Find("function")->GetString("name") ==
+                bindings[0].model_name &&
+            OutputJson(effective.array[0]) == OutputJson(Definition()) &&
+            tools.array[1].Find("function")->GetString("name") ==
+                "q4t_file_search_0");
+  return true;
+}
+
+Q4T_TEST(responses_file_search_forced_and_allowed_choices_map_all_bindings) {
+  auto request = Object({{"tools", Array({Definition(), Definition()})},
+                         {"tool_choice", Read(R"({"type":"file_search"})")}});
+  Json tools, choice;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error) &&
+            choice.GetString("type") == "allowed_tools");
+  const auto* allowed = choice.Find("allowed_tools");
+  Q4T_CHECK(allowed->GetString("mode") == "required" &&
+            allowed->GetArray("tools")->array.size() == 2);
+  Set(&request, "tool_choice", Read(R"({"type":"allowed_tools","mode":"auto",
+    "tools":[{"type":"file_search"}]})"));
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error) &&
+            choice.Find("allowed_tools")->GetString("mode") == "auto");
+  for (const auto* bad : {R"({"type":"file_search","name":"private"})",
+                          R"({"type":"allowed_tools","mode":"auto",
+                          "tools":[{"type":"file_search","filters":null}]})"}) {
+    Set(&request, "tool_choice", Read(bad));
+    Q4T_CHECK(!NormalizeResponsesTools(request, &tools, &choice, &error) &&
+              error.param.starts_with("tool_choice"));
+  }
+  Set(&request, "tools", Array());
+  Set(&request, "tool_choice", Read(R"({"type":"file_search"})"));
+  Q4T_CHECK(!NormalizeResponsesTools(request, &tools, &choice, &error));
+  return true;
+}
+
+Q4T_TEST(responses_file_search_result_adapter_never_fabricates_missing_data) {
+  auto page = Read(R"({"object":"vector_store.search_results.page",
+    "has_more":false,"data":[{"file_id":"file_actual","filename":"STATUS.md",
+      "attributes":{"release":80},"score":0.5,
+      "content":[{"type":"text","text":"实际源文档"}]}]})");
+  Json results;
+  Q4T_CHECK(ResponsesFileSearchResults(page, &results) &&
+            results.array.size() == 1 &&
+            results.array[0].GetString("text") == "实际源文档" &&
+            results.array[0].GetNumber("score") == 0.5);
+  for (const auto* field : {"file_id", "filename", "score", "content"}) {
+    auto bad = page;
+    Set(&Field(bad, "data").array[0], field, Json());
+    Q4T_CHECK(!ResponsesFileSearchResults(bad, &results) && results.IsNull());
+  }
+  Set(&page, "has_more", Boolean(true));
+  Q4T_CHECK(!ResponsesFileSearchResults(page, &results) && results.IsNull());
+  return true;
+}
+
+Q4T_TEST(
+    responses_file_search_history_retains_results_with_parallel_functions) {
+  for (const bool native_first : {false, true}) {
+    const auto file = Read(R"({"type":"file_search_call","id":"fs_old",
+      "status":"completed","queries":["PLE"],"results":[
+      {"file_id":"file_real","filename":"MODEL.md","score":0.5,
+       "text":"PLE from SSD"}]})");
+    const auto fn = Read(R"({"type":"function_call","call_id":"call_ext",
+      "name":"lookup","arguments":"{}"})");
+    auto input = Array();
+    input.array.push_back(native_first ? file : fn);
+    input.array.push_back(native_first ? fn : file);
+    input.array.push_back(Read(R"({"type":"function_call_output",
+      "call_id":"call_ext","output":"client result"})"));
+    ResponsesInputPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(
+        NormalizeResponsesInput(Object({{"input", input}}), &plan, &error));
+    Q4T_CHECK(plan.messages.array.size() == 3 &&
+              plan.messages.array[0].GetArray("tool_calls")->array.size() == 2);
+    Q4T_CHECK(OutputJson(plan.messages).find("PLE from SSD") !=
+              std::string::npos);
+    ChatPlanConfig config;
+    config.model = "cpu";
+    ChatRequestPlan chat;
+    Q4T_CHECK(PlanChatRequest(Object({{"messages", plan.messages}}), config,
+                              &chat, &error));
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_file_search_history_missing_or_failed_results_stay_explicit) {
+  for (const auto* state :
+       {"completed", "in_progress", "searching", "failed", "incomplete"}) {
+    auto item = Object({{"type", String("file_search_call")},
+                        {"id", String("fs_history")},
+                        {"status", String(state)},
+                        {"queries", Array({String("missing evidence")})}});
+    ResponsesInputPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(NormalizeResponsesInput(Object({{"input", Array({item})}}), &plan,
+                                      &error));
+    Json result;
+    Q4T_CHECK(Parse(plan.messages.array.back().GetString("content"), &result) &&
+              result.GetString("status") == state &&
+              !result.GetBool("results_available", true) &&
+              result.Find("results")->IsNull());
+    Set(&item, "unrecognized", Boolean(true));
+    Q4T_CHECK(!NormalizeResponsesInput(Object({{"input", Array({item})}}),
+                                       &plan, &error));
+  }
   return true;
 }

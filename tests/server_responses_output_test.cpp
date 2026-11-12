@@ -478,7 +478,8 @@ Q4T_TEST(responses_output_obfuscation_and_malformed_probabilities) {
     if (event.GetString("type").ends_with(".delta")) {
       Q4T_CHECK(!event.GetString("obfuscation").empty());
       padded_delta = true;
-    } else Q4T_CHECK(!event.Has("obfuscation"));
+    } else
+      Q4T_CHECK(!event.Has("obfuscation"));
   }
   Q4T_CHECK(padded_delta);
   Q4T_CHECK(output.Finish(false, 0, {1, 0, 1, 0}, 43, &wire));
@@ -670,5 +671,192 @@ Q4T_TEST(responses_output_http_preheader_errors_still_have_http_status) {
   Q4T_CHECK(wire.starts_with("HTTP/1.1 400 Bad Request\r\n"));
   Q4T_CHECK(wire.find("input[0].role") != wire.npos);
   Q4T_CHECK(wire.find("event:") == wire.npos && *output.Sequence() == 0);
+  return true;
+}
+
+Q4T_TEST(responses_file_search_output_lifecycle_closes_once_before_answer) {
+  ResponsesOutput output;
+  std::string wire, part;
+  Q4T_CHECK(output.Init(Options(), "resp_search", 42, false));
+  Q4T_CHECK(output.Start(&wire));
+  size_t index;
+  Q4T_CHECK(output.StartFileSearch(&index, &part));
+  wire += part;
+  Json queries, results;
+  Q4T_CHECK(q4t::io::ParseJson(R"(["PLE SSD"])", &queries));
+  Q4T_CHECK(q4t::io::ParseJson(R"([{"file_id":"file_real","filename":"MODEL.md",
+    "score":0.5,"text":"PLE streams from SSD"}])",
+                               &results));
+  Q4T_CHECK(output.SearchFileSearch(index, queries, &part));
+  wire += part;
+  Q4T_CHECK(output.CompleteFileSearch(index, results, &part));
+  wire += part;
+  Q4T_CHECK(output.Append(Text("PLE streams from SSD."), "null", &part));
+  wire += part;
+  Q4T_CHECK(output.Finish(false, 0, {25, 0, 8}, 43, &part));
+  wire += part;
+  std::vector<Json> events;
+  Q4T_CHECK(Events(wire, &events));
+  int done = 0, completed = 0;
+  for (const auto& event : events) {
+    const auto type = event.GetString("type");
+    Q4T_CHECK(type.find("function_call_arguments") == type.npos);
+    if (type == "response.output_item.done" &&
+        event.GetInt("output_index", -1) == static_cast<int64_t>(index))
+      ++done;
+    if (type == "response.file_search_call.completed") ++completed;
+  }
+  Q4T_CHECK(done == 1 && completed == 1 &&
+            output.Snapshot().GetArray("output")->array[0].GetString(
+                "status") == "completed");
+  return true;
+}
+
+Q4T_TEST(responses_file_search_output_never_completes_unexecuted_tool) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_search", 42, false) &&
+            output.Start(&wire));
+  size_t index;
+  Q4T_CHECK(output.StartFileSearch(&index, &wire));
+  Q4T_CHECK(!output.Finish(false, 0, {}, 43, &wire) && wire.empty());
+  Q4T_CHECK(output.Finish(true, 0, {}, 43, &wire));
+  Q4T_CHECK(wire.find("file_search_call.completed") == wire.npos &&
+            output.Snapshot().GetArray("output")->array[0].GetString(
+                "status") == "incomplete");
+  return true;
+}
+
+Q4T_TEST(responses_file_search_output_limit_skip_does_not_claim_searching) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_search", 42, false) &&
+            output.Start(&wire));
+  size_t index;
+  Q4T_CHECK(output.StartFileSearch(&index, &wire));
+  Json queries;
+  Q4T_CHECK(q4t::io::ParseJson(R"(["skip"])", &queries));
+  Q4T_CHECK(output.SkipFileSearch(index, queries, &wire) &&
+            wire.find("file_search_call.searching") == wire.npos &&
+            wire.find("file_search_call.completed") == wire.npos);
+  Q4T_CHECK(output.Finish(false, 0, {}, 43, &wire));
+  const auto& item = output.Snapshot().GetArray("output")->array[0];
+  Q4T_CHECK(item.GetString("status") == "incomplete" &&
+            item.GetArray("queries")->array[0].str == "skip" &&
+            item.Find("results")->IsNull());
+  return true;
+}
+
+Q4T_TEST(responses_file_search_output_failure_preserves_prior_completed_tool) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_search", 42, false) &&
+            output.Start(&wire));
+  Json queries, results;
+  Q4T_CHECK(q4t::io::ParseJson(R"(["PLE"])", &queries) &&
+            q4t::io::ParseJson("[]", &results));
+  size_t first, second;
+  Q4T_CHECK(output.StartFileSearch(&first, &wire) &&
+            output.SearchFileSearch(first, queries, &wire) &&
+            output.CompleteFileSearch(first, results, &wire));
+  Q4T_CHECK(output.StartFileSearch(&second, &wire) &&
+            output.FailFileSearch(second, &wire));
+  Q4T_CHECK(wire.find("file_search_call.completed") == wire.npos &&
+            output.Fail("lookup_failed", "source unavailable", &wire));
+  const auto& items = output.Snapshot().GetArray("output")->array;
+  Q4T_CHECK(items[first].GetString("status") == "completed" &&
+            items[second].GetString("status") == "failed");
+  return true;
+}
+
+namespace {
+bool CitationSource(ResponsesOutput* output, std::string* wire) {
+  Json queries, results;
+  if (!q4t::io::ParseJson(R"(["PLE"])", &queries) ||
+      !q4t::io::ParseJson(R"([{"file_id":"file_real","filename":"MODEL.md",
+        "score":0.5,"text":"actual passage"}])",
+                          &results))
+    return false;
+  size_t index;
+  return output->StartFileSearch(&index, wire) &&
+         output->SearchFileSearch(index, queries, wire) &&
+         output->CompleteFileSearch(index, results, wire);
+}
+}  // namespace
+
+Q4T_TEST(
+    responses_file_citations_bind_actual_prior_source_and_unicode_position) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_cite", 42, false) &&
+            output.Start(&wire) && CitationSource(&output, &wire));
+  Q4T_CHECK(output.Append(Text("证😀[file:fi"), "null", &wire) &&
+            output.CiteFileSearchSources(&wire) && wire.empty());
+  Q4T_CHECK(output.Append(Text("le_real]"), "null", &wire) &&
+            output.CiteFileSearchSources(&wire));
+  Q4T_CHECK(wire.find("response.output_text.annotation.added") != wire.npos);
+  const auto& part = output.Snapshot()
+                         .GetArray("output")
+                         ->array.back()
+                         .GetArray("content")
+                         ->array[0];
+  const auto& annotation = part.GetArray("annotations")->array[0];
+  Q4T_CHECK(
+      annotation.GetString("file_id") == "file_real" &&
+      annotation.GetString("filename") == "MODEL.md" &&
+      annotation.GetInt("index") ==
+          2 + static_cast<int64_t>(std::string("[file:file_real]").size()) &&
+      part.GetString("text") == "证😀[file:file_real]");
+  Q4T_CHECK(output.CiteFileSearchSources(&wire) && wire.empty());
+  Q4T_CHECK(output.Finish(false, 0, {10, 0, 8}, 43, &wire));
+  Q4T_CHECK(wire.find("file_citation") != wire.npos);
+  return true;
+}
+
+Q4T_TEST(
+    responses_file_citations_do_not_invent_sources_or_retroactive_evidence) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_cite", 42, false) &&
+            output.Start(&wire));
+  Q4T_CHECK(output.Append(Text("Earlier [file:file_real]"), "null", &wire));
+  Q4T_CHECK(CitationSource(&output, &wire));
+  Q4T_CHECK(output.Append(Text("Unknown [file:file_fake]"), "null", &wire));
+  Q4T_CHECK(output.CiteFileSearchSources(&wire) && wire.empty());
+  const auto& items = output.Snapshot().GetArray("output")->array;
+  Q4T_CHECK(items[0]
+                .GetArray("content")
+                ->array[0]
+                .GetArray("annotations")
+                ->array.empty() &&
+            items.back()
+                .GetArray("content")
+                ->array[0]
+                .GetArray("annotations")
+                ->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    responses_file_citations_preserve_repeated_occurrences_and_event_order) {
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(Options(), "resp_cite", 42, false) &&
+            output.Start(&wire) && CitationSource(&output, &wire));
+  Q4T_CHECK(output.Append(Text("A[file:file_real] B[file:file_real]"), "null",
+                          &wire));
+  Q4T_CHECK(output.CiteFileSearchSources(&wire));
+  const auto& annotations = output.Snapshot()
+                                .GetArray("output")
+                                ->array.back()
+                                .GetArray("content")
+                                ->array[0]
+                                .GetArray("annotations")
+                                ->array;
+  Q4T_CHECK(annotations.size() == 2 &&
+            annotations[0].GetInt("index") < annotations[1].GetInt("index"));
+  const auto first = wire.find("\"annotation_index\":0");
+  const auto second = wire.find("\"annotation_index\":1");
+  Q4T_CHECK(first != wire.npos && second != wire.npos && first < second);
   return true;
 }

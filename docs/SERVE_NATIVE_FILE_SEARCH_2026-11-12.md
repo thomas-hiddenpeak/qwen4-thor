@@ -333,3 +333,39 @@ embedding_weight/text_weight；不能只复用独立search字段而漏掉它。
 
 [16项CPU首过](evidence/serve-vector-multi-store-cpu-20261112/README.md)，
 1.685秒，实际引擎零警告；0GPU/默认保持。继续Responses执行。
+
+
+## Responses原生执行、事件和历史接线组（待验）
+
+2026-11-12。原声明映射私有无碰撞函数，forced/allowed选择保留语义；
+公开file_search_call有in_progress/searching/completed/终态事件，
+内部arguments不泄漏。完整解析/约束回执后才执行多库搜索，再通过
+同一请求继续主模型；max_tool_calls忽略超额调用且后续选择禁用，
+实际执行预算64次。外部函数混合时返回真实客户端待处理调用，不
+制造结果；历史内建调用保留原结果/未知状态，不重复执行。
+
+实际GPU槽/grammar与用量步骤先收尾，再共享公平准入运行embedding；
+保留累计RPM/TPM、实际消费与异常/unknown，截断不执行。输出存储
+保留完整证据，create JSON/SSE遵循include，不破坏后续读取/重放。
+本组冻结19新+10直接CPU及必要实际引擎构建；纯CPU明确模型夹具。
+真实引用绑定、后台/Batch组合与双SDK/实际业务继续补齐，当前未称
+A11或生产file_search交付。首次实际引擎构建发现context测量回调
+签名适配缺失，已补wrapper，原失败保留；0GPU、默认rev80保持。
+
+
+2026-11-12，本组测试前追加真实检索结果引用绑定：模型复制明确
+[file:真实file_id]标记，标准file_citation注释指向此前完成的实际检索，
+保留原文本/概率字节，Unicode位置按字符；未知文件和检索前的文本
+不补造引用。追加3项针对性CPU，累计22新+10直接，仍未开始用例运行。
+
+
+32项CPU已通过：首次22/32，10项共用夹具声明stream_options却漏
+stream=true，补齐夹具后仅重验10项通过，生产合同未放松。审查发现
+prewarm不应因工具声明被当动态执行，已修谓词；追加1项该组合和
+1项引用/历史实链（导出实际JSON/SSE供SDK消费），累计34项CPU。
+SDK追加3项仅消费该实际CPU协议输出/官方客户端，不冒充实时模型。
+
+[34项C++和3项SDK/schema已通过](evidence/serve-responses-file-search-cpu-20261112/README.md)。
+保留原构建/夹具/SDK调用失败，修复后仅重验对应项；实际引擎零警告。
+0GPU、默认rev80保持。继续后台/Batch、审核/加密组合与必要模型业务，
+本组不结束A11或总目标。

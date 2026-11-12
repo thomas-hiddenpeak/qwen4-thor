@@ -4,6 +4,7 @@
 #include <barrier>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <memory>
 #include <thread>
 
@@ -13,6 +14,7 @@
 #include "q4t/server/vector_search_api.h"
 #include "q4t/server/client_request.h"
 #include "q4t/server/http_connection.h"
+#include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
 
 namespace {
@@ -753,9 +755,9 @@ VectorSearchPlan MultiPlan() {
   return plan;
 }
 ObjectReply Multi(Fixture& fixture, const std::vector<std::string>& ids,
-                   Calls& calls, VectorSearchUsage* usage,
-                   VectorSearchPlan plan = MultiPlan(),
-                   BinaryAccess access = Access()) {
+                  Calls& calls, VectorSearchUsage* usage,
+                  VectorSearchPlan plan = MultiPlan(),
+                  BinaryAccess access = Access()) {
   return ExecuteVectorSearchPlan(*fixture.objects, access, ids, plan, 32,
                                  calls.callbacks, usage);
 }
@@ -844,9 +846,10 @@ Q4T_TEST(vector_multi_store_invalid_ids_and_plans_do_not_bypass_empty_corpus) {
   Fixture fixture;
   Calls calls;
   VectorSearchUsage usage;
-  for (const auto& ids :
-       {std::vector<std::string>{}, {fixture.id, fixture.id}, {"vs_../x"},
-        {"file_wrong"}}) {
+  for (const auto& ids : {std::vector<std::string>{},
+                          {fixture.id, fixture.id},
+                          {"vs_../x"},
+                          {"file_wrong"}}) {
     const auto reply = Multi(fixture, ids, calls, &usage);
     Q4T_CHECK(reply.http_status == 400 && !reply.value.Has("data"));
   }
@@ -923,13 +926,14 @@ Q4T_TEST(vector_multi_store_cancel_or_deadline_never_returns_partial_hits) {
     return Embed(tokens, step);
   };
   VectorSearchUsage usage;
-  auto reply = Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(),
-                     access);
+  auto reply =
+      Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(), access);
   Q4T_CHECK(reply.http_status == 499 && !reply.value.Has("data") &&
             calls.embeds == 1 && usage.committed_input > 0);
   access.cancelled = {};
   access.deadline = Clock::now() - 1ms;
-  reply = Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(), access);
+  reply =
+      Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(), access);
   Q4T_CHECK(reply.http_status == 408 && calls.embeds == 1 &&
             !usage.committed_input);
   return true;
@@ -983,5 +987,445 @@ Q4T_TEST(vector_multi_store_aggregate_work_bound_counts_duplicate_memberships) {
   Q4T_CHECK(reply.code == "vector_search_resource_exhausted" &&
             !reply.value.Has("data") && !calls.encodes && !calls.embeds &&
             !calls.reserves && !usage.committed_input);
+  return true;
+}
+
+namespace {
+ChatPlanConfig NativeConfig() {
+  ChatPlanConfig config;
+  config.model = "cpu";
+  config.structured = true;
+  return config;
+}
+StateAccess NativeAccess() {
+  const auto access = Access();
+  return {access.scope, access.deadline, access.cancelled};
+}
+Json NativeRequest(const Fixture& fixture, int limit = 3, bool include = true) {
+  auto request = Object(
+      {{"input", String("Find PLE storage details")},
+       {"stream", Boolean(true)},
+       {"reasoning", Object({{"effort", String("none")}})},
+       {"max_output_tokens", Number(128)},
+       {"max_tool_calls", Number(limit)},
+       {"tools",
+        Array({Object({{"type", String("file_search")},
+                       {"vector_store_ids", Array({String(fixture.id)})}})})},
+       {"tool_choice", Object({{"type", String("file_search")}})},
+       {"stream_options", Object({{"include_obfuscation", Boolean(false)}})}});
+  if (include)
+    Set(&request, "include", Array({String("file_search_call.results")}));
+  return request;
+}
+std::string NativeBegin(ResponsesExecution& run, const Json& request) {
+  Require(run.Prepare(request, NativeConfig(), NativeAccess(), 42));
+  std::string wire;
+  Require(run.Begin(&wire));
+  return wire;
+}
+ResponseDelta NativeDelta(const ResponsesExecution& run, size_t index = 0,
+                          std::string args = R"({"queries":["PLE SSD"]})") {
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call.index = index;
+  delta.call.id = "native_call_" + std::to_string(index);
+  delta.call.name = run.Generation()
+                        .generation_request.GetArray("tools")
+                        ->array[0]
+                        .Find("function")
+                        ->GetString("name");
+  delta.call.arguments = std::move(args);
+  return delta;
+}
+ResponseDelta NativeText(std::string text) {
+  ResponseDelta delta;
+  delta.text = std::move(text);
+  return delta;
+}
+bool Silent(const std::string&) { return true; }
+}  // namespace
+
+Q4T_TEST(responses_native_search_executes_actual_index_and_continues_answer) {
+  Fixture fixture;
+  const auto file = fixture.Add("PLE streams tables from SSD.", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  Q4T_CHECK(run.HasFileSearch() && run.VariableInputSteps());
+  std::string wire, events;
+  Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+  Q4T_CHECK(wire.find("function_call_arguments") == wire.npos &&
+            wire.find("q4t_file_search") == wire.npos);
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer = false;
+  Q4T_CHECK(Ok(run.RunFileSearches(1, calls.callbacks, &usage, &answer,
+                                   [&](const std::string& text) {
+                                     events += text;
+                                     return true;
+                                   })) &&
+            answer && !run.PendingFileSearch() && calls.embeds == 1 &&
+            calls.reserves == 1 && usage.committed_input == calls.reserved);
+  Q4T_CHECK(events.find("file_search_call.searching") != events.npos &&
+            events.find("file_search_call.completed") != events.npos);
+  const auto& item = run.Output().Snapshot().GetArray("output")->array[0];
+  Q4T_CHECK(item.GetArray("results")->array[0].GetString("file_id") == file);
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(Ok(run.ContinueFileSearch(7, NativeConfig(), {}, &next)));
+  Q4T_CHECK(next.generation_request.GetInt("max_completion_tokens") == 121 &&
+            OutputJson(next.generation_request).find("PLE streams tables") !=
+                std::string::npos &&
+            next.generation_request.Find("tool_choice")
+                    ->Find("allowed_tools")
+                    ->GetString("mode") == "auto");
+  Q4T_CHECK(run.Append(NativeText("PLE uses SSD."), "null", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {64, 0, 12}, 43, &wire)));
+  Q4T_CHECK(run.ResultJson().find(file) != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_native_search_projection_keeps_full_durable_evidence) {
+  Fixture fixture;
+  fixture.Add("PRIVATE_RETRIEVED_PASSAGE", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture, 1, false));
+  std::string wire, internal;
+  Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer;
+  Q4T_CHECK(Ok(run.RunFileSearches(1, calls.callbacks, &usage, &answer,
+                                   [&](const std::string& text) {
+                                     internal += text;
+                                     return true;
+                                   })));
+  Q4T_CHECK(internal.find("PRIVATE_RETRIEVED_PASSAGE") != internal.npos &&
+            run.PublicWire(internal).find("PRIVATE_RETRIEVED_PASSAGE") ==
+                std::string::npos);
+  Q4T_CHECK(Ok(run.Finish(false, 0, {40, 0, 6}, 43, &wire)));
+  Q4T_CHECK(run.ResultJson().find("PRIVATE_RETRIEVED_PASSAGE") ==
+                std::string::npos &&
+            run.PublicWire(wire).find("PRIVATE_RETRIEVED_PASSAGE") ==
+                std::string::npos);
+  const auto stored =
+      ResponsesState(*fixture.objects).Retrieve(run.Id(), NativeAccess());
+  Q4T_CHECK(Ok(stored) &&
+            OutputJson(stored.value).find("PRIVATE_RETRIEVED_PASSAGE") !=
+                std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_native_search_truncated_or_invalid_arguments_never_execute) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  for (const bool truncated : {false, true}) {
+    ResponsesExecution run(*fixture.objects);
+    NativeBegin(run, NativeRequest(fixture));
+    std::string wire;
+    Q4T_CHECK(run.Append(
+        NativeDelta(
+            run, 0,
+            truncated
+                ? R"({"queries":["PLE)"
+                : R"({"queries":["PLE"],"vector_store_ids":["vs_other"]})"),
+        "null", &wire));
+    Calls calls;
+    VectorSearchUsage usage;
+    bool answer;
+    const auto result = run.RunFileSearches(truncated ? 0 : 1, calls.callbacks,
+                                            &usage, &answer, Silent);
+    Q4T_CHECK(result.code == (truncated ? "file_search_incomplete"
+                                        : "file_search_arguments_invalid") &&
+              !calls.embeds && !calls.reserves && !answer);
+    if (truncated) {
+      Q4T_CHECK(Ok(run.Finish(true, 0, {10, 0, 4}, 43, &wire)));
+      Q4T_CHECK(wire.find("file_search_call.completed") == wire.npos);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_native_search_max_tool_calls_ignores_excess_and_disables_more) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture, 1));
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeDelta(run, 0), "null", &wire) &&
+            run.Append(NativeDelta(run, 1), "null", &wire));
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer;
+  Q4T_CHECK(
+      Ok(run.RunFileSearches(2, calls.callbacks, &usage, &answer, Silent)) &&
+      answer && calls.embeds == 1 && calls.reserves == 1);
+  const auto& items = run.Output().Snapshot().GetArray("output")->array;
+  Q4T_CHECK(items[0].GetString("status") == "completed" &&
+            items[1].GetString("status") == "incomplete" &&
+            items[1].Find("results")->IsNull());
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(Ok(run.ContinueFileSearch(10, NativeConfig(), {}, &next)) &&
+            next.generation_request.GetString("tool_choice") == "none" &&
+            next.generation_request.GetInt("max_completion_tokens") == 118);
+  return true;
+}
+
+Q4T_TEST(
+    responses_native_search_mixed_client_tool_waits_for_real_client_output) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  auto request = NativeRequest(fixture);
+  Field(request, "tools")
+      .array.push_back(
+          Object({{"type", String("function")},
+                  {"name", String("lookup")},
+                  {"parameters",
+                   Object({{"type", String("object")},
+                           {"properties", Object()},
+                           {"additionalProperties", Boolean(false)}})}}));
+  Set(&request, "tool_choice", String("auto"));
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, request);
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+  auto external = NativeDelta(run, 1, "{}");
+  external.call.name = "lookup";
+  Q4T_CHECK(run.Append(external, "null", &wire));
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer;
+  Q4T_CHECK(
+      Ok(run.RunFileSearches(2, calls.callbacks, &usage, &answer, Silent)) &&
+      !answer && calls.embeds == 1);
+  Q4T_CHECK(Ok(run.Finish(false, 2, {40, 0, 10}, 43, &wire)));
+  auto follow = Object(
+      {{"input", Array({Object({{"type", String("function_call_output")},
+                                {"call_id", String("native_call_1")},
+                                {"output", String("actual client output")}})})},
+       {"previous_response_id", String(run.Id())},
+       {"reasoning", Object({{"effort", String("none")}})}});
+  ResponsesExecution resumed(*fixture.objects);
+  Q4T_CHECK(Ok(resumed.Prepare(follow, NativeConfig(), NativeAccess(), 44)) &&
+            !resumed.PendingFileSearch() && !resumed.HasFileSearch() &&
+            OutputJson(resumed.Generation().generation_request)
+                    .find("actual client output") != std::string::npos &&
+            calls.embeds == 1);
+  return true;
+}
+
+Q4T_TEST(responses_native_search_failed_embedding_preserves_actual_usage) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeDelta(run, 0, R"({"queries":["PLE","SSD"]})"),
+                       "null", &wire));
+  Calls calls;
+  calls.callbacks.embed = [&](const auto& tokens, auto* result) {
+    if (++calls.embeds == 2) {
+      result->committed_input = 3;
+      return Error(503, "embedding_compute_failed", "CPU fault fixture");
+    }
+    return Embed(tokens, result);
+  };
+  VectorSearchUsage usage;
+  bool answer;
+  const auto result =
+      run.RunFileSearches(1, calls.callbacks, &usage, &answer, Silent);
+  Q4T_CHECK(result.code == "embedding_compute_failed" && calls.embeds == 2 &&
+            usage.committed_input ==
+                kVectorQueryInstruction.size() + 3 + 1 + 3 &&
+            !usage.unknown && !answer);
+  const auto& item = run.Output().Snapshot().GetArray("output")->array[0];
+  Q4T_CHECK(item.GetString("status") == "failed" &&
+            item.Find("results")->IsNull());
+  return true;
+}
+
+Q4T_TEST(responses_native_search_exception_keeps_receipt_without_replay) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+  Calls calls;
+  calls.callbacks.embed = [&](const auto&, auto* result) -> ObjectReply {
+    ++calls.embeds;
+    result->committed_input = 4;
+    throw std::runtime_error("Injected embedding exception");
+  };
+  VectorSearchUsage usage;
+  bool answer, thrown = false;
+  try {
+    (void)run.RunFileSearches(1, calls.callbacks, &usage, &answer, Silent);
+  } catch (const std::runtime_error&) {
+    thrown = true;
+  }
+  Q4T_CHECK(thrown && calls.embeds == 1 && usage.committed_input == 4 &&
+            !usage.unknown && !answer);
+  Q4T_CHECK(
+      run.RunFileSearches(1, calls.callbacks, &usage, &answer, Silent).code ==
+          "file_search_already_dispatched" &&
+      calls.embeds == 1);
+  return true;
+}
+
+Q4T_TEST(responses_native_search_subscriber_cancel_precedes_embedding) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer;
+  Q4T_CHECK(run.RunFileSearches(1, calls.callbacks, &usage, &answer,
+                                [](const std::string&) { return false; })
+                    .http_status == 499 &&
+            !calls.embeds && !calls.reserves && !answer);
+  return true;
+}
+
+Q4T_TEST(
+    responses_native_search_fragments_and_identity_never_escape_as_function) {
+  Fixture fixture;
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  std::string wire;
+  auto delta = NativeDelta(run, 0, R"({"queries":)");
+  Q4T_CHECK(run.Append(delta, "null", &wire));
+  const auto before = run.RetainedInputBytes();
+  delta.tool_start = false;
+  delta.call.id.clear();
+  delta.call.name.clear();
+  delta.call.arguments = R"(["PLE"]})";
+  Q4T_CHECK(run.Append(delta, "null", &wire) && wire.empty() &&
+            run.RetainedInputBytes() > before);
+  delta.call.name = "lookup";
+  Q4T_CHECK(!run.Append(delta, "null", &wire) && wire.empty());
+  return true;
+}
+
+Q4T_TEST(responses_native_search_parser_receipt_precedes_actual_execution) {
+  Fixture fixture;
+  fixture.Add("Source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  const auto& request = run.Generation().generation_request;
+  const auto* fn = request.GetArray("tools")->array[0].Find("function");
+  ChatResponseParser parser;
+  Q4T_CHECK(parser.Init(request,
+                        "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+                        "cpu_native_parser", false));
+  Json args;
+  Q4T_CHECK(Parse(R"({"queries":["PLE SSD"]})", &args));
+  SchemaReceipt receipt;
+  Q4T_CHECK(MakeSchemaReceipt(fn->GetString("name"), *fn->Find("parameters"),
+                              args, &receipt));
+  std::vector<SchemaReceipt> receipts{receipt};
+  parser.SetSchemaReceipts(&receipts);
+  const auto text = "<tool_call>\n<function=" + fn->GetString("name") +
+                    ">\n<parameter=arguments>\n" + OutputJson(args) +
+                    "\n</parameter>\n</function>\n</tool_call>";
+  std::vector<ResponseDelta> deltas;
+  std::string wire, all;
+  for (const auto c : text) {
+    deltas.clear();
+    Q4T_CHECK(parser.Append(std::string(1, c), &deltas));
+    for (const auto& delta : deltas) {
+      Q4T_CHECK(run.Append(delta, "null", &wire));
+      all += wire;
+    }
+  }
+  deltas.clear();
+  Q4T_CHECK(parser.Finish(false, &deltas) && parser.CompletedToolCalls() == 1);
+  for (const auto& delta : deltas) Q4T_CHECK(run.Append(delta, "null", &wire));
+  Q4T_CHECK(run.PendingFileSearch() &&
+            all.find("function_call_arguments") == all.npos &&
+            all.find(fn->GetString("name")) == all.npos);
+  Calls calls;
+  VectorSearchUsage usage;
+  bool answer;
+  Q4T_CHECK(Ok(run.RunFileSearches(parser.CompletedToolCalls(), calls.callbacks,
+                                   &usage, &answer, Silent)) &&
+            answer && calls.embeds == 1);
+  return true;
+}
+
+Q4T_TEST(responses_native_search_citation_wire_and_previous_response_reuse) {
+  for (const bool include : {false, true}) {
+    Fixture fixture;
+    const auto file =
+        fixture.Add("PLE streams immutable tables from SSD.", true, 1024);
+    const auto request = NativeRequest(fixture, 1, include);
+    ResponsesExecution run(*fixture.objects);
+    auto all = NativeBegin(run, request);
+    std::string wire;
+    Q4T_CHECK(run.Append(NativeDelta(run), "null", &wire));
+    all += wire;
+    Calls calls;
+    VectorSearchUsage usage;
+    bool answer;
+    Q4T_CHECK(Ok(run.RunFileSearches(1, calls.callbacks, &usage, &answer,
+                                     [&](const std::string& part) {
+                                       all += part;
+                                       return true;
+                                     })) &&
+              answer);
+    Q4T_CHECK(run.Append(NativeText("PLE 从 SSD 流式读取。[file:" + file + ']'),
+                         "null", &wire));
+    all += wire;
+    Q4T_CHECK(run.CiteFileSearchSources(&wire));
+    all += wire;
+    Q4T_CHECK(Ok(run.Finish(
+        false, 0, {static_cast<int64_t>(usage.committed_input + 20), 0, 10}, 43,
+        &wire)));
+    all += wire;
+    const auto& message = run.Output().Snapshot().GetArray("output")->array[1];
+    Q4T_CHECK(message.GetArray("content")
+                  ->array[0]
+                  .GetArray("annotations")
+                  ->array[0]
+                  .GetString("file_id") == file);
+    auto follow = Object({{"input", String("What was retrieved?")},
+                          {"previous_response_id", String(run.Id())},
+                          {"reasoning", Object({{"effort", String("none")}})}});
+    ResponsesExecution resumed(*fixture.objects);
+    Q4T_CHECK(Ok(resumed.Prepare(follow, NativeConfig(), NativeAccess(), 44)) &&
+              !resumed.PendingFileSearch() && !resumed.HasFileSearch() &&
+              OutputJson(resumed.Generation().generation_request)
+                      .find("citation_marker") != std::string::npos &&
+              calls.embeds == 1);
+    const auto directory =
+        std::filesystem::path(std::getenv("Q4T_TEST_OUTPUT_DIR")) /
+        "native-file-search-sdk";
+    std::filesystem::create_directories(directory);
+    const auto prefix = directory / (include ? "included" : "hidden");
+    std::ofstream json(prefix.string() + ".json");
+    json << run.ResultJson() << '\n';
+    std::ofstream events(prefix.string() + ".wire", std::ios::binary);
+    events << run.PublicWire(all);
+    std::ofstream asked(prefix.string() + ".request.json");
+    asked << OutputJson(request) << '\n';
+    Q4T_CHECK(json.good() && events.good() && asked.good());
+  }
+  return true;
+}
+
+Q4T_TEST(responses_native_search_prewarm_has_no_variable_tool_execution) {
+  Fixture fixture;
+  auto request = NativeRequest(fixture);
+  Set(&request, "prompt_cache_key", String("project"));
+  Set(&request, "prompt_cache_options", Object({{"prewarm", Boolean(true)}}));
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, request);
+  Q4T_CHECK(run.HasFileSearch() && run.Envelope().cache.prewarm &&
+            !run.VariableInputSteps() && !run.PendingFileSearch());
+  std::string wire;
+  Q4T_CHECK(Ok(run.Finish(false, 0, {20, 0, 0}, 43, &wire)) &&
+            run.Output().Snapshot().GetArray("output")->array.empty());
   return true;
 }

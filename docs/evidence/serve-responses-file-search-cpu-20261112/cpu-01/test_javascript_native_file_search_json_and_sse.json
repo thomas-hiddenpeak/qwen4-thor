@@ -1,0 +1,960 @@
+{
+  "status": "PASS",
+  "version": "7.47.0",
+  "consumed": [
+    {
+      "name": "included",
+      "response": {
+        "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+        "object": "response",
+        "created_at": 42,
+        "completed_at": 43,
+        "status": "completed",
+        "error": null,
+        "incomplete_details": null,
+        "output": [
+          {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "type": "file_search_call",
+            "status": "completed",
+            "queries": [
+              "PLE SSD"
+            ],
+            "results": [
+              {
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "score": 1,
+                "attributes": {},
+                "text": "PLE streams immutable tables from SSD."
+              }
+            ]
+          },
+          {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                "annotations": [
+                  {
+                    "type": "file_citation",
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "index": 59
+                  }
+                ],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "usage": {
+          "input_tokens": 144,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 10,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 154
+        },
+        "model": "cpu",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 1,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+            ]
+          }
+        ],
+        "tool_choice": {
+          "type": "file_search"
+        },
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": false,
+        "max_output_tokens": 128,
+        "max_tool_calls": 1,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null,
+        "output_text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]"
+      },
+      "events": [
+        {
+          "type": "response.created",
+          "sequence_number": 0,
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": null,
+            "status": "in_progress",
+            "error": null,
+            "incomplete_details": null,
+            "output": [],
+            "usage": null,
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        },
+        {
+          "type": "response.in_progress",
+          "sequence_number": 1,
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": null,
+            "status": "in_progress",
+            "error": null,
+            "incomplete_details": null,
+            "output": [],
+            "usage": null,
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        },
+        {
+          "output_index": 0,
+          "item": {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "type": "file_search_call",
+            "status": "in_progress",
+            "queries": [],
+            "results": null
+          },
+          "type": "response.output_item.added",
+          "sequence_number": 2
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "type": "response.file_search_call.in_progress",
+          "sequence_number": 3
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "type": "response.file_search_call.searching",
+          "sequence_number": 4
+        },
+        {
+          "item_id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+          "output_index": 0,
+          "type": "response.file_search_call.completed",
+          "sequence_number": 5
+        },
+        {
+          "output_index": 0,
+          "item": {
+            "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+            "type": "file_search_call",
+            "status": "completed",
+            "queries": [
+              "PLE SSD"
+            ],
+            "results": [
+              {
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "score": 1,
+                "attributes": {},
+                "text": "PLE streams immutable tables from SSD."
+              }
+            ]
+          },
+          "type": "response.output_item.done",
+          "sequence_number": 6
+        },
+        {
+          "output_index": 1,
+          "item": {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "type": "message",
+            "content": [],
+            "role": "assistant",
+            "status": "in_progress"
+          },
+          "type": "response.output_item.added",
+          "sequence_number": 7
+        },
+        {
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          },
+          "type": "response.content_part.added",
+          "sequence_number": 8
+        },
+        {
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "content_index": 0,
+          "delta": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+          "logprobs": [],
+          "type": "response.output_text.delta",
+          "sequence_number": 9
+        },
+        {
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "content_index": 0,
+          "annotation_index": 0,
+          "annotation": {
+            "type": "file_citation",
+            "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+            "filename": "MODEL.md",
+            "index": 59
+          },
+          "type": "response.output_text.annotation.added",
+          "sequence_number": 10
+        },
+        {
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "content_index": 0,
+          "text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+          "logprobs": [],
+          "type": "response.output_text.done",
+          "sequence_number": 11
+        },
+        {
+          "item_id": "msg_313dfe33e15d8253acdcb11a30266986",
+          "output_index": 1,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+            "annotations": [
+              {
+                "type": "file_citation",
+                "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                "filename": "MODEL.md",
+                "index": 59
+              }
+            ],
+            "logprobs": []
+          },
+          "type": "response.content_part.done",
+          "sequence_number": 12
+        },
+        {
+          "output_index": 1,
+          "item": {
+            "id": "msg_313dfe33e15d8253acdcb11a30266986",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                "annotations": [
+                  {
+                    "type": "file_citation",
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "index": 59
+                  }
+                ],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          },
+          "type": "response.output_item.done",
+          "sequence_number": 13
+        },
+        {
+          "type": "response.completed",
+          "sequence_number": 14,
+          "response": {
+            "id": "resp_af6d9fb2bb1a5f0e6ce39c5f161e4cc9",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": 43,
+            "status": "completed",
+            "error": null,
+            "incomplete_details": null,
+            "output": [
+              {
+                "id": "fs_c310921e5062f755e2f6e2d8cb06c421",
+                "type": "file_search_call",
+                "status": "completed",
+                "queries": [
+                  "PLE SSD"
+                ],
+                "results": [
+                  {
+                    "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                    "filename": "MODEL.md",
+                    "score": 1,
+                    "attributes": {},
+                    "text": "PLE streams immutable tables from SSD."
+                  }
+                ]
+              },
+              {
+                "id": "msg_313dfe33e15d8253acdcb11a30266986",
+                "type": "message",
+                "content": [
+                  {
+                    "type": "output_text",
+                    "text": "PLE 从 SSD 流式读取。[file:file_e3bb3d5c1353b5305811d42ebe4f7fb8]",
+                    "annotations": [
+                      {
+                        "type": "file_citation",
+                        "file_id": "file_e3bb3d5c1353b5305811d42ebe4f7fb8",
+                        "filename": "MODEL.md",
+                        "index": 59
+                      }
+                    ],
+                    "logprobs": []
+                  }
+                ],
+                "role": "assistant",
+                "status": "completed"
+              }
+            ],
+            "usage": {
+              "input_tokens": 144,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 10,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 154
+            },
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden",
+      "response": {
+        "id": "resp_731a725142e6996b3c1148af869e10b1",
+        "object": "response",
+        "created_at": 42,
+        "completed_at": 43,
+        "status": "completed",
+        "error": null,
+        "incomplete_details": null,
+        "output": [
+          {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "type": "file_search_call",
+            "status": "completed",
+            "queries": [
+              "PLE SSD"
+            ],
+            "results": null
+          },
+          {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+                "annotations": [
+                  {
+                    "type": "file_citation",
+                    "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                    "filename": "MODEL.md",
+                    "index": 59
+                  }
+                ],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "usage": {
+          "input_tokens": 144,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 10,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 154
+        },
+        "model": "cpu",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 1,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_ec8b24142ea1e58a35596a259e01a741"
+            ]
+          }
+        ],
+        "tool_choice": {
+          "type": "file_search"
+        },
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": false,
+        "max_output_tokens": 128,
+        "max_tool_calls": 1,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null,
+        "output_text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]"
+      },
+      "events": [
+        {
+          "type": "response.created",
+          "sequence_number": 0,
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": null,
+            "status": "in_progress",
+            "error": null,
+            "incomplete_details": null,
+            "output": [],
+            "usage": null,
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        },
+        {
+          "type": "response.in_progress",
+          "sequence_number": 1,
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": null,
+            "status": "in_progress",
+            "error": null,
+            "incomplete_details": null,
+            "output": [],
+            "usage": null,
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        },
+        {
+          "output_index": 0,
+          "item": {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "type": "file_search_call",
+            "status": "in_progress",
+            "queries": [],
+            "results": null
+          },
+          "type": "response.output_item.added",
+          "sequence_number": 2
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "type": "response.file_search_call.in_progress",
+          "sequence_number": 3
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "type": "response.file_search_call.searching",
+          "sequence_number": 4
+        },
+        {
+          "item_id": "fs_21eb816655d1045616ea19c0cdb0457e",
+          "output_index": 0,
+          "type": "response.file_search_call.completed",
+          "sequence_number": 5
+        },
+        {
+          "output_index": 0,
+          "item": {
+            "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+            "type": "file_search_call",
+            "status": "completed",
+            "queries": [
+              "PLE SSD"
+            ],
+            "results": null
+          },
+          "type": "response.output_item.done",
+          "sequence_number": 6
+        },
+        {
+          "output_index": 1,
+          "item": {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "type": "message",
+            "content": [],
+            "role": "assistant",
+            "status": "in_progress"
+          },
+          "type": "response.output_item.added",
+          "sequence_number": 7
+        },
+        {
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          },
+          "type": "response.content_part.added",
+          "sequence_number": 8
+        },
+        {
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "content_index": 0,
+          "delta": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+          "logprobs": [],
+          "type": "response.output_text.delta",
+          "sequence_number": 9
+        },
+        {
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "content_index": 0,
+          "annotation_index": 0,
+          "annotation": {
+            "type": "file_citation",
+            "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+            "filename": "MODEL.md",
+            "index": 59
+          },
+          "type": "response.output_text.annotation.added",
+          "sequence_number": 10
+        },
+        {
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "content_index": 0,
+          "text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+          "logprobs": [],
+          "type": "response.output_text.done",
+          "sequence_number": 11
+        },
+        {
+          "item_id": "msg_e883349615b3dfb6633164146313ab2d",
+          "output_index": 1,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+            "annotations": [
+              {
+                "type": "file_citation",
+                "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                "filename": "MODEL.md",
+                "index": 59
+              }
+            ],
+            "logprobs": []
+          },
+          "type": "response.content_part.done",
+          "sequence_number": 12
+        },
+        {
+          "output_index": 1,
+          "item": {
+            "id": "msg_e883349615b3dfb6633164146313ab2d",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+                "annotations": [
+                  {
+                    "type": "file_citation",
+                    "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                    "filename": "MODEL.md",
+                    "index": 59
+                  }
+                ],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          },
+          "type": "response.output_item.done",
+          "sequence_number": 13
+        },
+        {
+          "type": "response.completed",
+          "sequence_number": 14,
+          "response": {
+            "id": "resp_731a725142e6996b3c1148af869e10b1",
+            "object": "response",
+            "created_at": 42,
+            "completed_at": 43,
+            "status": "completed",
+            "error": null,
+            "incomplete_details": null,
+            "output": [
+              {
+                "id": "fs_21eb816655d1045616ea19c0cdb0457e",
+                "type": "file_search_call",
+                "status": "completed",
+                "queries": [
+                  "PLE SSD"
+                ],
+                "results": null
+              },
+              {
+                "id": "msg_e883349615b3dfb6633164146313ab2d",
+                "type": "message",
+                "content": [
+                  {
+                    "type": "output_text",
+                    "text": "PLE 从 SSD 流式读取。[file:file_947c6111d41fc4c36509dc1176881b10]",
+                    "annotations": [
+                      {
+                        "type": "file_citation",
+                        "file_id": "file_947c6111d41fc4c36509dc1176881b10",
+                        "filename": "MODEL.md",
+                        "index": 59
+                      }
+                    ],
+                    "logprobs": []
+                  }
+                ],
+                "role": "assistant",
+                "status": "completed"
+              }
+            ],
+            "usage": {
+              "input_tokens": 144,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 10,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 154
+            },
+            "model": "cpu",
+            "instructions": null,
+            "metadata": {},
+            "temperature": 1,
+            "top_p": 1,
+            "parallel_tool_calls": true,
+            "tools": [
+              {
+                "type": "file_search",
+                "vector_store_ids": [
+                  "vs_ec8b24142ea1e58a35596a259e01a741"
+                ]
+              }
+            ],
+            "tool_choice": {
+              "type": "file_search"
+            },
+            "text": {
+              "format": {
+                "type": "text"
+              },
+              "verbosity": "medium"
+            },
+            "reasoning": {
+              "effort": "none",
+              "context": "all_turns",
+              "mode": "standard",
+              "summary": null
+            },
+            "store": true,
+            "background": false,
+            "max_output_tokens": 128,
+            "max_tool_calls": 1,
+            "previous_response_id": null,
+            "prompt_cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "prompt_cache_retention": "in_memory",
+            "service_tier": "default",
+            "truncation": "disabled",
+            "top_logprobs": 0,
+            "access_programs": null
+          }
+        }
+      ]
+    }
+  ]
+}

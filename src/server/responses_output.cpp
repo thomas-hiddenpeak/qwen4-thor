@@ -448,6 +448,7 @@ Status ResponsesOutput::CompleteCompaction(const io::Json& item,
 
 void ResponsesOutput::CloseItem(size_t index, bool incomplete,
                                 std::string* wire) {
+  if (closed_items_.contains(index)) return;
   auto& item = Items().array[index];
   // Compaction has no status/arguments/content fields in the SDK contract.
   // Its done event was published when the authenticated window was ready.
@@ -470,7 +471,7 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     fields = Location(index, true);
     Set(&fields, "part", part);
     Event("response.content_part.done", std::move(fields), wire);
-  } else if (type != "reasoning" && !incomplete) {
+  } else if (type != "reasoning" && type != "file_search_call" && !incomplete) {
     const bool custom = type == "custom_tool_call";
     auto fields = Location(index);
     Set(&fields, custom ? "input" : "arguments",
@@ -495,6 +496,7 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
   }
   Event("response.output_item.done",
         Object({{"output_index", Number(index)}, {"item", item}}), wire);
+  closed_items_.insert(index);
 }
 
 Status ResponsesOutput::Moderation(const io::Json& results,
@@ -569,12 +571,20 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
       if (call >= completed_calls)
         return Status::Fail("cannot complete an unvalidated Responses tool");
     }
+  if (!incomplete)
+    for (size_t i = 0; i < Items().array.size(); ++i)
+      if (Items().array[i].GetString("type") == "file_search_call" &&
+          !closed_items_.contains(i))
+        return Status::Fail("Cannot finish an unexecuted file search");
   for (size_t i = 0; i < Items().array.size(); ++i) {
-    if (Items().array[i].GetString("type") == "compaction") continue;
+    if (Items().array[i].GetString("type") == "compaction" ||
+        closed_items_.contains(i))
+      continue;
     const bool partial =
         incomplete &&
-        (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
-                                     : i + 1 == Items().array.size());
+        (Items().array[i].GetString("type") == "file_search_call" ||
+         (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
+                                      : i + 1 == Items().array.size()));
     Set(&Items().array[i], "status",
         String(partial ? "incomplete" : "completed"));
   }
@@ -613,9 +623,10 @@ Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
   if (!started_ || terminal_)
     return Status::Fail("Responses failure outside active lifecycle");
   // No item/argument done events on a failed response.
-  for (auto& item : Items().array)
-    if (item.GetString("type") != "compaction")
-      Set(&item, "status", String("incomplete"));
+  for (size_t i = 0; i < Items().array.size(); ++i)
+    if (Items().array[i].GetString("type") != "compaction" &&
+        !closed_items_.contains(i))
+      Set(&Items().array[i], "status", String("incomplete"));
   Set(&response_, "status", String("failed"));
   Set(&response_, "error",
       Object({{"code", String(std::string(code))},

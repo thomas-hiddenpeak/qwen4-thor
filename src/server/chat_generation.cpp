@@ -2,6 +2,7 @@
 #include "chat_server_internal.h"
 #include "chat_model_step.h"
 #include "responses_json.h"
+#include "object_protocol.h"
 
 #include <new>
 #include <optional>
@@ -1077,7 +1078,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
     RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
-    if (!cancelled() && WriteAll(fd, data, {.control = control.get()}))
+    const auto visible = responses ? responses->PublicWire(data) : data;
+    if (!cancelled() && WriteAll(fd, visible, {.control = control.get()}))
       return true;
     client_disconnected = true;
     control->Cancel(RequestControl::State::kDisconnect);
@@ -1221,9 +1223,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return true;
   };
   ResponsesGenerationPlan continuation_generation;
-  // At most six model steps and one non-model terminal. No automatic retries
-  // of a generated answer, classification, compaction, or tool call.
-  for (int choice_index = 0; choice_index < (responses ? 7 : sampling.choices);
+  bool file_search_continuation = false;
+  // Every continuation follows a newly executed bounded native tool call.
+  // This never retries an answer, classification, compaction, or tool call.
+  const int response_steps = 7 + (responses && responses->HasFileSearch()
+                                      ? ResponsesExecution::kMaxNativeToolCalls
+                                      : 0);
+  for (int choice_index = 0;
+       choice_index < (responses ? response_steps : sampling.choices);
        ++choice_index) {
     if (responses && response_step == ResponseStep::kFinish) {
       finish_response();
@@ -1281,7 +1288,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                summary_step || moderation_step;
     const bool compacted_primary = compact_step_needed && !internal_step;
     const bool continued_primary =
-        (compact_step_needed || pro_selected) && !internal_step;
+        (compact_step_needed || pro_selected || file_search_continuation) &&
+        !internal_step;
     const auto& step_plan = moderation_step     ? moderation_plan.chat
                             : compaction_step   ? responses->Compaction().chat
                             : pro_step          ? pro_plan.chat
@@ -1313,10 +1321,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (responses && choice_index > 0) {
       err_guard.ok = false;
       diagnostic.Stage("encode");
-      const char* param = moderation_step ? "moderation"
-                          : summary_step  ? "reasoning.summary"
-                          : pro_selected  ? "reasoning.mode"
-                                          : "context_management";
+      const char* param = moderation_step            ? "moderation"
+                          : summary_step             ? "reasoning.summary"
+                          : file_search_continuation ? "tools"
+                          : pro_selected             ? "reasoning.mode"
+                                                     : "context_management";
       s = prepare_step(step_plan, req, moderation_step);
       if (!s) {
         if (cancelled()) {
@@ -4158,6 +4167,111 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           cleanup();
           continue;
         }
+      }
+      if (!internal_step) {
+        std::string citations;
+        s = responses->CiteFileSearchSources(&citations);
+        if (!s) {
+          err_guard.ok = false;
+          SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+          return;
+        }
+        if (stream && !write_stream(citations)) return;
+      }
+      if (!internal_step && !prewarm && finish_reason != "length" &&
+          responses->PendingFileSearch()) {
+        // Commit observed primary usage while sequence memory is still live,
+        // then release its grammar/slot before the embedding model competes.
+        finish_usage_step.Run();
+        structured.reset();
+        trace_outcome = trace::RequestOutcome::kSuccess;
+        cleanup();
+        if (!buffers_ok || RejectUnhealthy(fd)) return;
+        VectorSearchUsage query_usage;
+        ScopeExit settle_search([&] {
+          if (query_usage.unknown) {
+            if (http) http->Usage().Merge(std::nullopt);
+            rate_lease.Start();
+          } else {
+            if (http)
+              http->Usage().Merge(ActualUsage{query_usage.committed_input});
+            responses_usage.input_tokens += query_usage.committed_input;
+            rate_lease.StartPrompt(prepared_input +
+                                   responses_usage.input_tokens +
+                                   moderation_usage.input_tokens);
+          }
+          if (http) http->RefreshUsage();
+        });
+        VectorSearchCallbacks callbacks;
+        callbacks.encode = [&](auto text, const auto& budget, auto* output) {
+          RequestDiagnostics::Scope waiting(diagnostic, Wait::kTokenizer);
+          return EncodeVectorDocument(text, budget, output);
+        };
+        callbacks.embed = [&](const auto& tokens, auto* output) {
+          return RunNativeEmbeddingInput(fd, tokens, control, diagnostic,
+                                         output);
+        };
+        callbacks.reserve = [&](uint64_t count) {
+          if (embedding_model_dir_.empty())
+            return object_detail::Error(503,
+                                        "vector_search_backend_unavailable",
+                                        "Native file search is not configured");
+          const auto consumed = prepared_input + responses_usage.input_tokens +
+                                moderation_usage.input_tokens +
+                                query_usage.committed_input;
+          if (planning_config.client_limits &&
+              (consumed > planning_config.client_limits->max_prompt_tokens ||
+               count >
+                   planning_config.client_limits->max_prompt_tokens - consumed))
+            return object_detail::Error(
+                400, "client_prompt_limit_exceeded",
+                "Tool query exceeds cumulative input limit");
+          const auto result =
+              !planning_config.client_limits || !count
+                  ? ClientRateResult::kAllowed
+                  : rate_lease.ExtendPrompt(clients_, http->Client(), count);
+          if (result == ClientRateResult::kAllowed) return ObjectReply{};
+          const bool quota = result == ClientRateResult::kTpm;
+          return object_detail::Error(
+              quota ? 429 : 503,
+              quota ? "client_tpm_exhausted" : "step_admission_unavailable",
+              "Tool query input reservation unavailable");
+        };
+        bool answer = false;
+        diagnostic.Stage("storage");
+        auto result = responses->RunFileSearches(
+            response_parser.CompletedToolCalls(), callbacks, &query_usage,
+            &answer, [&](const std::string& wire) {
+              return !stream || write_stream(wire);
+            });
+        settle_search.Run();
+        if (!result.ok()) {
+          err_guard.ok = false;
+          SendError(fd, result.http_status, result.ClientMessage(), {},
+                    result.ClientCode(), result.value.GetString("param"));
+          return;
+        }
+        if (answer && responses_usage.output_tokens < request_output_limit) {
+          ResponsesGenerationPlan next;
+          result = responses->ContinueFileSearch(
+              responses_usage.output_tokens, planning_config,
+              [&](const ResponsesGenerationPlan& plan, ChatPlanError* error) {
+                size_t tokens = 0;
+                return measure_context(plan, &tokens, error);
+              },
+              &next);
+          if (!result.ok()) {
+            err_guard.ok = false;
+            SendError(fd, result.http_status, result.ClientMessage(), {},
+                      result.ClientCode(), result.value.GetString("param"));
+            return;
+          }
+          continuation_generation = std::move(next);
+          file_search_continuation = true;
+          response_step = ResponseStep::kPrimary;
+          continue;
+        }
+        if (answer) finish_reason = "length";
       }
       if (!internal_step && !prewarm && finish_reason != "length" &&
           !responses->Envelope().summary.empty()) {

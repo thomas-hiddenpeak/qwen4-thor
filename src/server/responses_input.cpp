@@ -10,6 +10,8 @@
 #include "q4t/server/file_input.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_item_shape.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -41,7 +43,9 @@ Status ItemMetadata(const Json& item, std::string_view path,
   if (const auto* status = item.Find("status");
       status && (!status->IsString() ||
                  (status->str != "in_progress" && status->str != "completed" &&
-                  status->str != "incomplete")))
+                  status->str != "incomplete" &&
+                  !(item.GetString("type") == "file_search_call" &&
+                    (status->str == "searching" || status->str == "failed")))))
     return Invalid(error, std::string(path) + ".status", "invalid item status");
   return {};
 }
@@ -108,10 +112,9 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
     Status status;
     bool cache_boundary = false;
     int cache_ttl = 0;
-    status = ParsePromptCacheBreakpoint(part.Find("prompt_cache_breakpoint"),
-                                       at + ".prompt_cache_breakpoint",
-                                       &cache_boundary, &cache_ttl,
-                                       &error->param);
+    status = ParsePromptCacheBreakpoint(
+        part.Find("prompt_cache_breakpoint"), at + ".prompt_cache_breakpoint",
+        &cache_boundary, &cache_ttl, &error->param);
     if (!status) return status;
     if (part.Has("prompt_cache_breakpoint") && type != "input_text" &&
         type != "input_image" && type != "input_file")
@@ -134,8 +137,9 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
       // This is the actual unresolved part, not a surrogate text prompt.
       mapped = part;
     } else if (type == "input_text" || type == "output_text") {
-      status = InputFields(part, {"type", "text", "annotations", "logprobs",
-                                  "prompt_cache_breakpoint"},
+      status = InputFields(part,
+                           {"type", "text", "annotations", "logprobs",
+                            "prompt_cache_breakpoint"},
                            &error->param, at);
       if (status) status = TextField(part, "text", at, error);
       if (!status) return status;
@@ -161,9 +165,10 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
         return Invalid(error, at + ".type", "refusal requires assistant");
       mapped = part;
     } else if (type == "input_image") {
-      status = InputFields(part, {"type", "detail", "image_url", "file_id",
-                                  "prompt_cache_breakpoint"},
-                           &error->param, at);
+      status = InputFields(
+          part,
+          {"type", "detail", "image_url", "file_id", "prompt_cache_breakpoint"},
+          &error->param, at);
       if (!status) return status;
       if (Nonnull(part, "file_id")) {
         if (!part.Find("file_id")->IsString() ||
@@ -190,7 +195,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
       return Invalid(error, at + ".type", "unresolved Responses content type");
     }
     if (cache_boundary)
-      Set(&mapped, "prompt_cache_breakpoint", *part.Find("prompt_cache_breakpoint"));
+      Set(&mapped, "prompt_cache_breakpoint",
+          *part.Find("prompt_cache_breakpoint"));
     content->array.push_back(std::move(mapped));
   }
   return {};
@@ -259,7 +265,8 @@ Status NormalizeResponsesInput(const io::Json& request,
   const auto append = [&](Json message, std::string path) {
     // Carry annotations through phase insertion/refusal splitting/tool order,
     // then keep them separate from the model's closed Chat request shape.
-    if (const auto* value = message.Find("content"); value && value->IsArray()) {
+    if (const auto* value = message.Find("content");
+        value && value->IsArray()) {
       auto& content = Field(message, "content");
       for (size_t i = 0; i < content.array.size(); ++i) {
         auto& part = content.array[i];
@@ -305,6 +312,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::unordered_map<std::string, bool> expected;
   std::unordered_set<std::string> returned, call_ids, item_ids;
   std::string reasoning, assistant_path;
+  size_t automatic_returns = 0;
   const auto flush = [&]() -> Status {
     if (!calls.array.empty() && returned.size() != expected.size())
       return Invalid(error, assistant_path, "missing output for a tool call");
@@ -321,6 +329,7 @@ Status NormalizeResponsesInput(const io::Json& request,
     results.clear();
     expected.clear();
     returned.clear();
+    automatic_returns = 0;
     reasoning.clear();
     assistant_path.clear();
     return {};
@@ -423,8 +432,52 @@ Status NormalizeResponsesInput(const io::Json& request,
           reasoning += part.GetString("text");
         }
       }
+    } else if (type == "file_search_call") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
+                                          error, path);
+      if (!status) return status;
+      // This is historical evidence, not a request to execute a search. Keep
+      // missing results explicitly unknown, never re-fetch them or treat a
+      // searching/failed item as a successfully completed empty search.
+      std::string id = "history_file_search_" + std::to_string(i);
+      const auto collides = [&](const std::string& candidate) {
+        return call_ids.contains(candidate) ||
+               std::any_of(plan.items.array.begin(), plan.items.array.end(),
+                           [&](const Json& value) {
+                             return value.GetString("call_id") == candidate;
+                           });
+      };
+      while (collides(id)) id += '_';
+      call_ids.insert(id);
+      if (assistant_path.empty()) assistant_path = path;
+      calls.array.push_back(
+          Object({{"id", String(id)},
+                  {"type", String("function")},
+                  {"function",
+                   Object({{"name", String("file_search")},
+                           {"arguments",
+                            String(OutputJson(Object(
+                                {{"queries", *item.Find("queries")}})))}})}}));
+      const auto* data = item.GetArray("results");
+      auto passages = data ? *data : Json();
+      for (auto& passage : passages.array) {
+        const auto file = passage.GetString("file_id");
+        if (!file.empty())
+          Set(&passage, "citation_marker", String("[file:" + file + ']'));
+      }
+      const auto result =
+          Object({{"status", *item.Find("status")},
+                  {"results_available", Boolean(data != nullptr)},
+                  {"results", std::move(passages)}});
+      results.emplace_back(Object({{"role", String("tool")},
+                                   {"tool_call_id", String(id)},
+                                   {"content", String(OutputJson(result))}}),
+                           path);
+      expected.emplace(id, false);
+      returned.insert(id);
+      ++automatic_returns;
     } else if (type == "function_call" || type == "custom_tool_call") {
-      if (!returned.empty())
+      if (returned.size() > automatic_returns)
         return Invalid(error, path,
                        "new call before previous tool results end");
       const bool custom = type == "custom_tool_call";
@@ -536,6 +589,10 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
   *choice = String("auto");
   *error = {};
   if (effective_tools) *effective_tools = Array();
+  std::vector<ResponsesFileSearchBinding> native;
+  auto binding_status =
+      PlanResponsesFileSearchBindings(request, &native, error);
+  if (!binding_status) return binding_status;
   if (const auto* definitions = request.Find("tools")) {
     if (!definitions->IsArray() || definitions->array.size() > 128)
       return Invalid(error, "tools", "tools must be an array up to 128 items");
@@ -549,6 +606,16 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
         return Invalid(error, at + ".type",
                        "tool type must be a nonempty string");
       const auto type = definition.GetString("type");
+      if (type == "file_search") {
+        const auto found = std::find_if(
+            native.begin(), native.end(),
+            [&](const auto& binding) { return binding.tool_index == i; });
+        if (found == native.end())
+          return Invalid(error, at, "Missing native tool binding");
+        tools->array.push_back(NativeFileSearchDefinition(found->model_name));
+        if (effective_tools) effective_tools->array.push_back(definition);
+        continue;
+      }
       if (type != "function" && type != "custom") return Unresolved(error, at);
       auto status =
           type == "function"
@@ -620,7 +687,10 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     }
   }
   if (const auto* original = request.Find("tool_choice")) {
-    auto status = ToolSelection(*original, choice, "tool_choice", error);
+    Json mapped;
+    auto status =
+        MapResponsesFileSearchChoice(*original, native, &mapped, error);
+    if (status) status = ToolSelection(mapped, choice, "tool_choice", error);
     if (!status) return status;
   }
   auto status =

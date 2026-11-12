@@ -7,6 +7,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "q4t/io/json.h"
@@ -47,6 +48,17 @@ class ResponsesOutput {
   Status AppendSummary(std::string_view text, std::string* wire);
   Status StartCompaction(std::string id, std::string* wire);
   Status CompleteCompaction(const io::Json& item, std::string* wire);
+  Status StartFileSearch(size_t* index, std::string* wire);
+  Status SearchFileSearch(size_t index, const io::Json& queries,
+                          std::string* wire);
+  Status CompleteFileSearch(size_t index, const io::Json& results,
+                            std::string* wire);
+  Status FailFileSearch(size_t index, std::string* wire);
+  Status SkipFileSearch(size_t index, const io::Json& queries,
+                        std::string* wire);
+  // Annotations bind explicit markers to actual prior completed native
+  // retrieval items. Text bytes/logprobs remain unchanged.
+  Status CiteFileSearchSources(std::string* wire);
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
@@ -80,6 +92,7 @@ class ResponsesOutput {
   io::Json response_;
   std::unordered_map<size_t, size_t> calls_;
   std::vector<size_t> call_indices_;
+  std::unordered_set<size_t> closed_items_;
   size_t summary_item_ = kMaxItems;
   size_t compaction_item_ = kMaxItems;
   bool compaction_done_ = false;

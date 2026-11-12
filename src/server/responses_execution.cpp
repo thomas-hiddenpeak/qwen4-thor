@@ -65,6 +65,12 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   bytes += generation_.chat.constraints.structural_tag.size();
   if (files_) bytes += files_->RetainedBytes();
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
+  bytes += file_search_argument_bytes_;
+  for (const auto& binding : file_search_bindings_) {
+    bytes += binding.model_name.size() +
+             OutputJson(binding.tool.search.filters).size();
+    for (const auto& id : binding.tool.store_ids) bytes += id.size();
+  }
   return bytes;
 }
 
@@ -115,8 +121,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   // Required application executors remain explicit work in A07--A11. Until
   // attached, do not silently run a different foreground/uncompressed task.
   std::string required;
-  if (envelope_.background && !background_executor)
-    required = "background";
+  if (envelope_.background && !background_executor) required = "background";
   if (!required.empty()) {
     auto reply =
         Error(503, "response_executor_unavailable",
@@ -178,13 +183,12 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   std::erase_if(history.array, [](const auto& item) {
     return item.GetString("type") == "compaction_trigger";
   });
-  const bool encrypted_input =
-      std::any_of(history.array.begin(), history.array.end(),
-                  [](const auto& item) {
-                    return (item.GetString("type") == "reasoning" ||
-                            item.GetString("type") == "compaction") &&
-                           Nonnull(item, "encrypted_content");
-                  });
+  const bool encrypted_input = std::any_of(
+      history.array.begin(), history.array.end(), [](const auto& item) {
+        return (item.GetString("type") == "reasoning" ||
+                item.GetString("type") == "compaction") &&
+               Nonnull(item, "encrypted_content");
+      });
   const bool encrypted_state = envelope_.encrypted_reasoning || encrypted_input;
   if (encrypted_state) {
     auto opened = OpenResponsesReasoning(cipher_, history, config, access_,
@@ -195,8 +199,11 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   }
   ChatPlanError error;
   Json effective_tools;
-  auto status = ValidateResponsesPreparation(envelope_, generation_history_,
-                                             config, &effective_tools, &error);
+  auto status = PlanResponsesFileSearchBindings(envelope_.request,
+                                                &file_search_bindings_, &error);
+  if (status)
+    status = ValidateResponsesPreparation(envelope_, generation_history_,
+                                          config, &effective_tools, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -447,7 +454,18 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
     wire->clear();
     return Status::Fail("Response cannot accept execution output");
   }
+  bool handled = false;
+  auto status = AppendFileSearch(delta, &handled, wire);
+  if (!status || handled) return status;
   return RecordOutput(output_.Append(delta, probabilities, wire), wire);
+}
+
+Status ResponsesExecution::CiteFileSearchSources(std::string* wire) {
+  if (!begun_ || plan_.finished || commit_unknown_) {
+    wire->clear();
+    return Status::Fail("Response cannot accept file citations");
+  }
+  return RecordOutput(output_.CiteFileSearchSources(wire), wire);
 }
 
 Status ResponsesExecution::AppendSummary(std::string_view text,
@@ -598,7 +616,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
                                {"message", String(message)},
                                {"param", Json()}});
     prefix += "event: error\r\ndata: " + OutputJson(event) + "\r\n\r\n";
-    return prefix;
+    return run.PublicWire(prefix);
   }
   // The error observer refreshed committed counters before invoking this
   // renderer, so JSON retrieval and response.failed share the same usage.
@@ -610,7 +628,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
   if (!run.Capture(wire, &run.events_, &run.event_bytes_))
     run.events_ = Array();
   prefix += wire;
-  return prefix;
+  return run.PublicWire(prefix);
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {

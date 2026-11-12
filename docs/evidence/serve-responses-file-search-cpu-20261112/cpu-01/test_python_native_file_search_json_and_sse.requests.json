@@ -1,0 +1,28 @@
+[
+  {
+    "name": "included",
+    "stream": false,
+    "request": {
+      "include": [
+        "file_search_call.results"
+      ],
+      "input": "Find PLE storage details",
+      "max_output_tokens": 128,
+      "max_tool_calls": 1,
+      "reasoning": {
+        "effort": "none"
+      },
+      "tool_choice": {
+        "type": "file_search"
+      },
+      "tools": [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -1284,7 +1284,8 @@
         "evidence/serve-vector-query-cpu-20261112/README.md",
         "evidence/serve-vector-search-api-cpu-20261112/README.md",
         "evidence/serve-file-search-contract-cpu-20261112/README.md",
-        "evidence/serve-vector-multi-store-cpu-20261112/README.md"
+        "evidence/serve-vector-multi-store-cpu-20261112/README.md",
+        "evidence/serve-responses-file-search-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1292,11 +1293,11 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "search_api_sdk_cpu_accepted_responses_business_in_progress",
+        "state": "responses_cpu_sdk_accepted_combinations_business_in_progress",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
         "production_routes": true,
-        "responses_executor": false,
+        "responses_executor": true,
         "default_changed": false,
         "whole_task_complete": false,
         "foundation_evidence": "evidence/serve-vector-search-foundation-20261112/README.md",
@@ -1406,6 +1407,14 @@
           "state": "targeted_cpu_accepted_responses_integration_pending",
           "cpu_cases": 16,
           "evidence": "evidence/serve-vector-multi-store-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "responses_execution": {
+          "state": "targeted_cpu_sdk_accepted_business_pending",
+          "cpu_cases": 34,
+          "sdk_schema_cases": 3,
+          "evidence": "evidence/serve-responses-file-search-cpu-20261112/README.md",
           "gpu_starts": 0,
           "default_changed": false
         }

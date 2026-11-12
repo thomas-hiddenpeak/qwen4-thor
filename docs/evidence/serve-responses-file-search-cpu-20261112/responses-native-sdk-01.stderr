@@ -1,0 +1,30 @@
+test_javascript_native_file_search_json_and_sse (tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_javascript_native_file_search_json_and_sse) ... ok
+test_native_file_search_unified_schema_lifecycle_and_projection (tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_native_file_search_unified_schema_lifecycle_and_projection) ... ok
+test_python_native_file_search_json_and_sse (tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_python_native_file_search_json_and_sse) ... FAIL
+
+======================================================================
+FAIL: test_python_native_file_search_json_and_sse (tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_python_native_file_search_json_and_sse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 135, in test_python_native_file_search_json_and_sse
+    self.sdk(True)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 119, in sdk
+    self.assertEqual(result.returncode, 0, result.stderr.decode())
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 184, in <module>
+    python_sdk(*sys.argv[2:])
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 43, in python_sdk
+    with sdk.responses.stream(**request,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/resources/responses/responses.py", line 405, in stream
+    return stream(
+           ^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/lib/_response_resources.py", line 404, in stream
+    raise ValueError("model must be provided when creating a new response")
+ValueError: model must be provided when creating a new response
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.776s
+
+FAILED (failures=1)

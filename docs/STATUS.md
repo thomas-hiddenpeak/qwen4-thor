@@ -28,6 +28,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11 Responses原生检索循环、标准事件/引用/历史、最大工具数与
+  include投影已通过[34项CPU和3项SDK/schema](evidence/serve-responses-file-search-cpu-20261112/README.md)。
+  原构建、夹具和Python调用问题保留，修复后仅重验受影响项；继续
+  后台/Batch/审核等组合与实际模型业务。0GPU、默认rev80保持，
+  尚未交付这组候选，也未完成A11或总计划。
+
 - A11多库统一查询/加权排序与去重已通过
   [16项CPU首验](evidence/serve-vector-multi-store-cpu-20261112/README.md)，
   所有归属/索引先核验及全局预算、最终源/版本保护保持；继续

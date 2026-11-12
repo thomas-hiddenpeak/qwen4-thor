@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "env",
+    "Q4T_NODE_SDK_DIR=.q4t-work/serve-protocol-20261103/sdk",
+    "Q4T_PYTHON_SDK=.q4t-work/application-service-20261102/sdk-env/bin/python",
+    "Q4T_RESPONSES_FILE_SEARCH_FIXTURES=.q4t-work/serve-file-search-20261112/cpu-01/native-file-search-sdk",
+    "Q4T_TEST_OUTPUT_DIR=.q4t-work/serve-file-search-20261112/sdk-retest-01",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_python_native_file_search_json_and_sse"
+  ],
+  "exit_code": 0,
+  "seconds": 1.3340363996103406,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+      "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+      "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+      "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+      "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+    }
+  },
+  "default_unchanged": true
+}

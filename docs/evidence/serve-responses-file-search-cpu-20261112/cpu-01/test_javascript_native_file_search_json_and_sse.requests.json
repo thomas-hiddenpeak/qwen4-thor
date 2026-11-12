@@ -1,0 +1,108 @@
+[
+  {
+    "name": "included",
+    "stream": false,
+    "request": {
+      "input": "Find PLE storage details",
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 128,
+      "max_tool_calls": 1,
+      "tools": [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+          ]
+        }
+      ],
+      "tool_choice": {
+        "type": "file_search"
+      },
+      "include": [
+        "file_search_call.results"
+      ]
+    }
+  },
+  {
+    "name": "included",
+    "stream": true,
+    "request": {
+      "input": "Find PLE storage details",
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 128,
+      "max_tool_calls": 1,
+      "tools": [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            "vs_08e64ee0c70ff8a7ee011c6b2237e2bc"
+          ]
+        }
+      ],
+      "tool_choice": {
+        "type": "file_search"
+      },
+      "include": [
+        "file_search_call.results"
+      ],
+      "stream_options": {
+        "include_obfuscation": false
+      },
+      "stream": true
+    }
+  },
+  {
+    "name": "hidden",
+    "stream": false,
+    "request": {
+      "input": "Find PLE storage details",
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 128,
+      "max_tool_calls": 1,
+      "tools": [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            "vs_ec8b24142ea1e58a35596a259e01a741"
+          ]
+        }
+      ],
+      "tool_choice": {
+        "type": "file_search"
+      }
+    }
+  },
+  {
+    "name": "hidden",
+    "stream": true,
+    "request": {
+      "input": "Find PLE storage details",
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 128,
+      "max_tool_calls": 1,
+      "tools": [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            "vs_ec8b24142ea1e58a35596a259e01a741"
+          ]
+        }
+      ],
+      "tool_choice": {
+        "type": "file_search"
+      },
+      "stream_options": {
+        "include_obfuscation": false
+      },
+      "stream": true
+    }
+  }
+]
