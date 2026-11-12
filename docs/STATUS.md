@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。R07/R08/R09隔离分支codex/serve-outer-recovery已推送c7c52844：宿主切包交接19不同CPU、显式设备detach14、资源绑定15、保护许可通道20、外层/宿主组合27不同CPU接受。实际两代原生CPU根/30秒冷却、STOPPED竞争、root IPC及辅助退出验证完成，签发/设备正向部分明确为CPU夹具；原失败与修复保留，自有issuer/资源域已清理，0GPU/默认rev64保持。继续公共入口租约交接、issuer失能恢复、实际业务发行及全部API总任务，尚未合main；见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)。本工作区R07 plan-v2运行源码保持，既有服务维护确认仍待回复。
+
 2026-11-12。R08/R09隔离工作分支codex/serve-outer-recovery已推送d1f136da：宿主ensure 11不同CPU及可选systemd触发19不同CPU接受；实际Guardian健康根同PID接管、真实自有/run timer的STOPPED检查/禁用/卸载通过，注册/链接/资源域均清理。触发器组原14夹具清理失败及回收证据保留；0GPU，不改/etc、既有服务或默认rev64。隔离工作区继续宿主升级绑定开发/针对性验证，尚未模型业务/发行或合main；见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)。本工作区R07 plan-v2源码保持，既有服务维护确认仍未收到，全部计划继续。
 
 2026-11-12。R08/R09隔离工作分支codex/serve-outer-recovery已推送704a7c7d：跨boot原域核验31 CPU、统一后台17 CPU、迁移FD权限修复20 CPU、原生宿主安装18不同CPU接受。实际资源FD已改为降权后打开；root保护源码/显式启停与STOPPED零启动通过，均0GPU。宿主安装组原失败和定点修复保留，尚未模型业务/发行或合main。当前实现见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)；继续可选宿主适配/升级绑定、冷准入与全部总计划。本工作区R07 plan-v2源码和默认rev64保持，既有服务维护确认仍未收到。
