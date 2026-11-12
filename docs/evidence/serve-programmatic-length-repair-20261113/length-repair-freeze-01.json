@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-12T23:07:04.788371+00:00",
+  "scope": "Replace linear length-only regex NFA with logarithmic Unicode-scalar count grammar for large bounds; preserve exact min/max, JSON escaping, semantic guards, memory/work/deadline and program byte limits",
+  "tests": [
+    "schema_string_syntax_large_length_compact_exact_boundaries",
+    "structured_decoder_program_code_length_uses_bounded_worker",
+    "schema_string_syntax_counted_length_unicode_and_escape_boundaries",
+    "schema_string_syntax_intersects_formats_patterns_and_lengths",
+    "structured_decoder_large_vocab_discovery_string_uses_bounded_worker",
+    "structured_decoder_required_named_and_parallel_masks",
+    "responses_program_api_routes_and_choice_preserve_only_authorized_calls",
+    "responses_program_namespace_custom_format_dispatch_checked",
+    "responses_program_api_stored_resume_sse_and_final_answer",
+    "responses_program_api_sync_child_blocks_direct_async_answer"
+  ],
+  "gpu_starts": 0,
+  "next_gpu_budget": {
+    "additional_starts": 1,
+    "additional_creates": 8,
+    "additional_seconds": 900,
+    "cumulative_starts": 2,
+    "cumulative_creates": 9,
+    "cumulative_seconds": 1200
+  }
+}

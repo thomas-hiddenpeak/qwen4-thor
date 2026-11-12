@@ -2224,7 +2224,7 @@
     "src/server/schema_receipt.cpp": "14d9eaffc89238dcc7f46b7a237ceb342b65d9d98a74403d940f8c6694d521d8",
     "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
     "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
-    "src/server/schema_string_grammar.cpp": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
+    "src/server/schema_string_grammar.cpp": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a",
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
@@ -4973,5 +4973,18 @@
       "reversible delivery and main merge",
       "other A07/A11 and full master tasks"
     ]
+  },
+  "programmatic_length_review_20261113": {
+    "scope": "Fix actual program minLength1/maxLength65536 compilation with exact compact pure-length grammar; preserve all limits and semantic validation",
+    "sources": {
+      "src/server/schema_string_grammar.cpp": {
+        "before": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
+        "after": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-length-repair-20261113/README.md",
+    "cpu_passed": 11,
+    "real_business": "pending bounded rerun",
+    "default": "rev118 unchanged"
   }
 }

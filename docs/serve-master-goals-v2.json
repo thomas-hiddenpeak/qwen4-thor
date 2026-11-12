@@ -1053,21 +1053,24 @@
         }
       },
       "programmatic": {
-        "state": "public_integration_cpu_passed",
+        "state": "business_failed_repair_cpu_passed",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": false,
-        "gpu_started": false,
+        "gpu_started": true,
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Frozen 1 start/8 creates/900s real project read closure, applicable profile/recovery qualification, reversible release and main merge; full master continues",
+        "next": "Bounded business rerun: additional1 start/8 creates/900s; cumulative2/9/1200s; then applicable qualification, reversible delivery and main",
         "default_capability_delivered": false,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
         "integration_sdk_passed": 2,
-        "integration_python_passed": 7
+        "integration_python_passed": 7,
+        "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
+        "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
+        "length_repair_cpu_passed": 11
       }
     },
     {
@@ -1752,21 +1755,24 @@
         }
       },
       "programmatic": {
-        "state": "public_integration_cpu_passed",
+        "state": "business_failed_repair_cpu_passed",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": false,
-        "gpu_started": false,
+        "gpu_started": true,
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Frozen 1 start/8 creates/900s real project read closure, applicable profile/recovery qualification, reversible release and main merge; full master continues",
+        "next": "Bounded business rerun: additional1 start/8 creates/900s; cumulative2/9/1200s; then applicable qualification, reversible delivery and main",
         "default_capability_delivered": false,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
         "integration_sdk_passed": 2,
-        "integration_python_passed": 7
+        "integration_python_passed": 7,
+        "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
+        "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
+        "length_repair_cpu_passed": 11
       },
       "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required."
     },

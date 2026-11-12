@@ -37,6 +37,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 大长度语法失败已CPU复现并[修复，11项针对性检查通过](evidence/serve-programmatic-length-repair-20261113/README.md)：
+  紧凑计数规则保留min/max、Unicode及JSON转义；不删除约束或放宽资源
+  上限。实际引擎零警告构建，补验固定1启动/8创建/900秒，连原失败
+  累计上限2启动/9创建/1200秒；业务未重验前不交付，rev118保持。
+
+- 程序调用[首次真实短验失败](evidence/serve-programmatic-business-failure-20261113/README.md)：
+  1启动/1创建/38.153秒，首条请求在语法编译阶段返回资源限制，未执行
+  程序或客户端工具。自有进程/端口/锁清理，默认rev118保持；正在CPU
+  复现大字符串长度约束的编译问题，修复后补原业务，不以失败归档结案。
+
 - 程序调用公开接入[54项不同C++、2项官方SDK及7项Python检查最终通过](evidence/serve-programmatic-integration-cpu-20261113/README.md)：
   授权派发、JSON/SSE、认证续接、媒体冻结/审核/共享预算及异步同步
   组合已验证。媒体临时引用和混合同步等待缺口已修复，失败原件保留。
