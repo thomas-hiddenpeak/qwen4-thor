@@ -29,7 +29,6 @@ struct Fixture {
     auto path = (base / "batch-quota-XXXXXX").string();
     if (!mkdtemp(path.data())) throw std::runtime_error("Batch quota fixture");
     options.directory = path + "/objects";
-    options.io_timeout_ms = 250;
     options.restart_backoff_ms = 0;
     options.batch_model_queue_tokens = 10;
     options.batch_client_model_queue_tokens = 10;
@@ -99,7 +98,8 @@ Work Prepare(ObjectStore& objects, uint64_t tokens,
     throw std::runtime_error("quota frozen input");
   return work;
 }
-ObjectReply Append(ObjectStore& objects, const Work& work) {
+ObjectReply Append(ObjectStore& objects, const Work& work,
+                   Clock::time_point deadline = Clock::now() + 10s) {
   BatchRowPosition row{work.row.line,
                        work.row.offset,
                        work.row.wire_bytes,
@@ -108,8 +108,10 @@ ObjectReply Append(ObjectStore& objects, const Work& work) {
                        work.prepared.binding_sha256,
                        work.prepared.inline_input,
                        work.prepared.input_budget};
-  return BatchState(objects).AppendValidatedRow(Access(work.scope), work.id,
-                                                row, work.model);
+  auto access = Access(work.scope);
+  access.deadline = deadline;
+  return BatchState(objects).AppendValidatedRow(access, work.id, row,
+                                                work.model);
 }
 ObjectReply Root(ObjectStore& objects, const Work& work) {
   return BatchState(objects).Load(Access(work.scope), work.id);
@@ -232,8 +234,18 @@ Q4T_TEST(batch_quota_unknown_receipt_and_journal_recovery_charge_once) {
     ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
     {
       ObjectStore objects(fixture.options);
-      const auto written = Append(objects, original);
+      // Worker startup and healthy reads use the normal storage deadline.
+      // Only the deliberately unacknowledged mutation gets the short budget.
+      Q4T_CHECK(Ok(Root(objects, original)));
+      const auto written = Append(objects, original, Clock::now() + 250ms);
       Q4T_CHECK(!written.ok() && written.commit_unknown);
+      const auto cleanup_deadline = Clock::now() + 2s;
+      while (objects.Health().workers_reaped !=
+                 objects.Health().workers_started &&
+             Clock::now() < cleanup_deadline)
+        std::this_thread::sleep_for(1ms);
+      Q4T_CHECK(objects.Health().workers_reaped ==
+                objects.Health().workers_started);
     }
     ObjectWorkerEntryForTesting({});
     ObjectStore objects(fixture.options);
