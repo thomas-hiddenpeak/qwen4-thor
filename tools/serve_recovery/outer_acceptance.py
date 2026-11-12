@@ -28,10 +28,12 @@ VERSION = runpy.run_path(str(ROOT/'tools/serve_recovery/version_acceptance.py'))
 LEGACY = VERSION['LEGACY']
 LIMITS = dict(starts=3, chats=8, probes=1, controls=2500, seconds=900)
 REPAIR_LIMITS = dict(LIMITS, starts=5)
+COMPLETION_LIMITS = dict(LIMITS, starts=6)
 OLD_LIMITS = LEGACY['verify'].__globals__['limits_for']
 LEGACY['verify'].__globals__['limits_for'] = lambda name: (
     LIMITS if name == 'outer_resource_version' else
-    REPAIR_LIMITS if name == 'outer_resource_identity_repair' else OLD_LIMITS(name))
+    REPAIR_LIMITS if name == 'outer_resource_identity_repair' else
+    COMPLETION_LIMITS if name == 'outer_resource_fallback_completion' else OLD_LIMITS(name))
 VERSION['actor'].__globals__['LIMITS'] = LIMITS
 save = LEGACY['save']
 
@@ -74,6 +76,96 @@ def prior_completion(path):
 
 def remaining_seconds(plan):
     return plan['limits']['seconds']-plan.get('prior_seconds',0)
+
+
+def check_usage(usage, state, deadline, now):
+    from tools.serve_recovery import ledger
+    generation = state['model_generation']
+    ledger.require(usage['phase'] == 'active' and usage['generation'] == generation and
+        usage['owner']['pid'] == state['model_pid'] and
+        usage['owner']['start_ticks'] == state['model_start_ticks'], 'usage owner/generation differs')
+    if usage['source'] is not None:
+        ledger.require(usage['source']['generation'] == generation-1 and usage['snapshot'] is not None,
+                       'sealed predecessor differs')
+    elif generation > 1:
+        # Abrupt Guardian loss cannot seal a live predecessor. The real core
+        # gate must expire before the new unknown usage can serve any client.
+        ledger.require(usage['snapshot'] is None and deadline is not None and
+            now >= deadline and state['quota_wait_ms'] == 0, 'unknown usage bypassed conservative gate')
+
+
+def prepare_completion(args):
+    _, _, _, _, _, engine = LEGACY['load_modules']()
+    engine.require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
+                   'commit reviewed completion driver first')
+    path = args.complete_plan.resolve(strict=True); old = engine.read(path)
+    out = Path(old['output']); scope = out/'state'
+    result = engine.read(out/'execution/result.json')
+    counts = result['budget']['counts']; cleanup = engine.read(out/'execution/launcher-result.json')
+    engine.require(old['scenario'] == 'outer_resource_identity_repair' and
+        old['limits'] == REPAIR_LIMITS and old['prior_counts']['starts'] == 2 and
+        counts == engine.read(out/'execution/counts.json')['counts'] and
+        (counts['starts'],counts['chats'],counts['probes']) == (4,3,0) and
+        result['status'] == 'FAILED' and result['cleanup_failure'] is None and
+        "TypeError: 'NoneType' object is not subscriptable" in result['failure'] and
+        'profile_managed_acceptance.py' in result['failure'] and
+        all(cleanup[k] is True for k in ('stop_durable','cleanup_confirmed','tree_cleanup_verified')) and
+        engine.read(out/'host-result.json')['resource_cleanup']['removed'] is True and
+        engine.read(out/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+        'only the cleaned cross-Guardian assertion failure can be completed')
+    core = engine.read(scope/'ledger.json')['state']
+    outer = engine.read(scope/'outer-recovery/policy.json')['state']['policy']
+    engine.require(core['desired'] == 'STOPPED' and not any(core['active'].values()) and
+        core['quarantine'] is None and core['generations']['model'] == 2 and
+        outer['total'] == 2 and outer['pending'] is None and not outer['protected'],
+        'original stopped recovery history changed')
+    rows = [json.loads(line) for line in (out/'execution/status.jsonl').read_text().splitlines()]
+    for generation in (1,2):
+        group = [row for row in rows if row['model_generation'] == generation]
+        ready = next(row for row in group if row['business_ready'])
+        deadlines = [row['monotonic']+row['quota_wait_ms']/1000 for row in group if row['quota_wait_ms']]
+        check_usage(engine.read(out/f'execution/usage-{generation}.json'),ready,
+                    max(deadlines) if deadlines else None, ready['monotonic'])
+    stored = engine.read(out/'execution/first-schema.wire')
+    engine.require(json.loads(stored['choices'][0]['message']['content']) == {'answer':42},
+                   'original real schema evidence differs')
+    events = [json.loads(line) for line in (out/'lease/events.jsonl').read_text().splitlines()]
+    interval = next(e['monotonic'] for e in events if e['event']=='lease_guard_finished')-\
+        next(e['monotonic'] for e in events if e['event']=='lease_acquired')
+    seconds = old['prior_seconds']+max(result['seconds'],interval)
+    engine.require(0 < seconds < COMPLETION_LIMITS['seconds']-70,'no completion time remains')
+    for row in old['prior_evidence']:
+        engine.require(engine.sha(row['path']) == row['sha256'],'original failure evidence changed')
+    destination = args.output.resolve()
+    engine.require(destination.is_relative_to(ROOT/'.q4t-work') and not destination.exists(),
+                   'new completion evidence directory required')
+    destination.mkdir(mode=0o700,parents=True)
+    # Keep the actual service ID, stopped state, package, version cycle and
+    # outer/model histories. The next root is the third permitted root.
+    plan = dict(old,scenario='outer_resource_fallback_completion',limits=COMPLETION_LIMITS,
+        output=str(destination),state=str(scope),prior_counts=counts,prior_seconds=seconds,
+        source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        sources={name:engine.sha(ROOT/name) for name in old['sources']},
+        prior_evidence=list(old['prior_evidence']),stored_schema=stored,
+        planned=dict(starts=2,self_checks=2,business_chats=3,probes=1),
+        sequence=['resume original stopped state and third permitted outer root',
+            'real tool request, owned gateway fatal signal and accepted payload fallback',
+            'tool-result SSE, schema SSE and original stored Chat retention',
+            'durable stop, resource cleanup and original GPU lease release'])
+    for f in [path,*(out/n for n in ('execution/result.json','execution/counts.json',
+        'execution/launcher-result.json','execution/status.jsonl','execution/usage-1.json',
+        'execution/usage-2.json','execution/first-schema.wire','lease/exit.json',
+        'lease/events.jsonl','host-result.json'))]:
+        plan['prior_evidence'].append(dict(path=str(f),sha256=engine.sha(f)))
+    helper = destination/'counted-cuda-probe'
+    helper.write_text('#!'+sys.executable+'\nimport runpy,sys\nsys.argv='+repr([
+        str(Path(__file__).resolve()),'probe','--plan',str(destination/'plan.json')])+\
+        '\nrunpy.run_path(sys.argv[0],run_name="__main__")\n')
+    helper.chmod(0o500)
+    plan['probe_wrapper'] = dict(path=str(helper),sha256=engine.sha(helper))
+    save(destination/'plan.json',plan)
+    print(json.dumps(dict(plan=str(destination/'plan.json'),limits=COMPLETION_LIMITS,
+                         prior_counts=counts,prior_seconds=seconds,original_state=str(scope))))
 
 
 def resource_fd():
@@ -218,7 +310,7 @@ def launcher(plan, path):
         return original(argv, **options)
     subprocess.Popen = spawn
     try:
-        result = outer_runtime.run(Path(plan['output'])/'state',Path(plan['package']['package']),
+        result = outer_runtime.run(Path(plan.get('state',str(Path(plan['output'])/'state'))),Path(plan['package']['package']),
                                    plan['package']['manifest_sha256'],activate=True)
         save(Path(plan['output'])/'execution/launcher-result.json',result)
         return int(result['state'] != 'STOPPED' or not result['cleanup_confirmed'])
@@ -248,12 +340,23 @@ def actor(plan, name, role, config):
 
 class Stage(VERSION['Stage']):
     def initialize_state(self):
-        self.scope = Path(self.plan['output'])/'state'
+        self.scope = Path(self.plan.get('state',str(Path(self.plan['output'])/'state')))
         value = self.service.descriptor(self.scope,self.package,self.plan['package']['manifest_sha256'])
         self.engine.require(value['service_id'] == self.plan['service_id'] and
             self.engine.read(self.scope/'ledger.json')['state']['desired'] == 'STOPPED',
             'private preinitialized stopped state changed')
         return dict(service_id=value['service_id'],state=str(self.scope))
+
+    def ready(self,generation,name):
+        from tools.serve_recovery import ledger
+        state = self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])
+        self.engine.require(state['model_capacity_sha256'] == ledger.digest(self.registry['profiles'][name]),
+                            'unqualified live model binding')
+        usage = self.family('usage')
+        check_usage(usage,state,self.quota_deadlines.get(generation),time.monotonic())
+        save(self.output/f'ready-{generation}.json',state)
+        save(self.output/f'usage-{generation}.json',usage)
+        return state
 
     def family(self,name):
         from tools.serve_recovery import lifecycle, profile_store, usage_store
@@ -301,12 +404,16 @@ class Stage(VERSION['Stage']):
 
     def exercise(self):
         from tools.examples.chat_client import read_sse
-        first = self.resource_ready(1,'primary')
-        stored = self.chat('first-schema',dict(self.plan['requests']['schema'],store=True))
-        self.engine.require(json.loads(stored['choices'][0]['message']['content']) == {'answer':42},'schema quality')
-        self.kill(first,'guardian','owned-root-exit')
-        second = self.resource_ready(2,'primary')
-        self.engine.require(first['guardian_pid'] != second['guardian_pid'], 'outer did not replace root')
+        completion = self.plan['scenario'] == 'outer_resource_fallback_completion'
+        if completion:
+            stored = self.plan['stored_schema']; second = self.resource_ready(3,'primary')
+        else:
+            first = self.resource_ready(1,'primary')
+            stored = self.chat('first-schema',dict(self.plan['requests']['schema'],store=True))
+            self.engine.require(json.loads(stored['choices'][0]['message']['content']) == {'answer':42},'schema quality')
+            self.kill(first,'guardian','owned-root-exit')
+            second = self.resource_ready(2,'primary')
+            self.engine.require(first['guardian_pid'] != second['guardian_pid'], 'outer did not replace root')
         before = self.family('profiles');save(self.output/'profiles-before-fallback.json',before)
         call = self.chat('second-tool',self.plan['requests']['tool'])
         message = call['choices'][0]['message'];calls = message['tool_calls']
@@ -320,7 +427,7 @@ class Stage(VERSION['Stage']):
         save(self.output/'tool-execution.json',dict(executions=1,
             source=dict(path=document,content=(ROOT/document).read_text()),reply=reply))
         self.fatal_gateway(second)
-        third = self.resource_ready(3,'fallback')
+        third = self.resource_ready(4 if completion else 3,'fallback')
         self.engine.require(third['guardian_pid'] == second['guardian_pid'] and
             third['version_recovery']['probe_count'] == 1, 'fallback root/probe differs')
         follow = copy.deepcopy(self.plan['requests']['tool'])
@@ -341,8 +448,10 @@ class Stage(VERSION['Stage']):
         outer = self.engine.read(self.scope/'outer-recovery/policy.json')['state']['policy']
         counts = self.engine.read(self.output/'counts.json')['counts']
         prior = self.plan.get('prior_counts',{})
-        self.engine.require(outer['total'] == 2 and all(counts[k]-prior.get(k,0) == value
-            for k,value in dict(starts=3,chats=7,probes=1).items()), 'unexpected recovery dispatch count')
+        expected = dict(starts=2,chats=5,probes=1) if completion else dict(starts=3,chats=7,probes=1)
+        self.engine.require(outer['total'] == (3 if completion else 2) and
+            all(counts[k]-prior.get(k,0) == value for k,value in expected.items()),
+            'unexpected recovery dispatch count')
         save(self.output/'business-final.json',dict(status='PASS',outer=outer,counts=counts,
             real_tool_executions=1,stored_chat_retained=True,final_state=third,physical_ram_limit=False))
 
@@ -418,7 +527,8 @@ def host(plan,path):
     verify_as_owner(plan);LEGACY['load_modules'](plan)
     from tools.serve_recovery import ledger, resource_install, resource_kernel, resource_launch
     uid,gid = plan['runtime_uid'],plan['runtime_gid'];out = Path(plan['output'])
-    directory = Path('/var/lib')/('q4t-resource-validation-'+plan['service_id'])
+    suffix = '-completion' if plan['scenario'] == 'outer_resource_fallback_completion' else ''
+    directory = Path('/var/lib')/('q4t-resource-validation-'+plan['service_id']+suffix)
     ledger.require(not directory.exists(), 'new private validation resource domain required')
     lock_path = Path(plan['lease_path']);fd = os.open(lock_path,os.O_RDWR|os.O_NOFOLLOW|os.O_CLOEXEC)
     pid = None;held = False
@@ -471,10 +581,13 @@ def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('prepare','host','guard','run','launcher','controller','gateway','probe'))
-    for name in ('package','registration','requests','output','plan','config','native-build','protected-root','prior-plan'):
+    for name in ('package','registration','requests','output','plan','config','native-build','protected-root','prior-plan','complete-plan'):
         parser.add_argument('--'+name,type=Path)
     parser.add_argument('--payload',choices=('primary','fallback'));args = parser.parse_args()
-    if args.mode == 'prepare':prepare(args);return 0
+    if args.mode == 'prepare':
+        if args.complete_plan:prepare_completion(args)
+        else:prepare(args)
+        return 0
     plan = json.loads(args.plan.read_bytes());path = args.plan.resolve()
     if args.mode == 'host':
         def interrupted(*_):raise KeyboardInterrupt('outer validation interrupted; cleanup only')

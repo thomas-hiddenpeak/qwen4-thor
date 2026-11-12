@@ -241,4 +241,67 @@ class RepairTests(unittest.TestCase):
         self.assertEqual(driver.REPAIR_LIMITS,dict(driver.LIMITS,starts=5))
 
 
+class ContinuityTests(unittest.TestCase):
+    setUp = DriverTests.setUp
+
+    def values(self):
+        state=dict(model_generation=2,model_pid=42,model_start_ticks=123,quota_wait_ms=0)
+        usage=dict(phase='active',generation=2,owner=dict(pid=42,start_ticks=123),source=None,snapshot=None)
+        return usage,state
+
+    def test_unsealed_crash_requires_real_expired_gate_and_exact_owner(self):
+        usage,state=self.values();driver.check_usage(usage,state,60,61)
+        for deadline,now in ((None,61),(60,59)):
+            with self.assertRaises(ValueError):driver.check_usage(usage,state,deadline,now)
+        with self.assertRaises(ValueError):driver.check_usage(usage,dict(state,model_pid=43),60,61)
+
+    def test_exact_seal_requires_previous_generation_and_snapshot(self):
+        usage,state=self.values();usage.update(source=dict(generation=1),snapshot=dict(cpu=True))
+        driver.check_usage(usage,state,None,1)
+        for change in (dict(source=dict(generation=2)),dict(snapshot=None)):
+            with self.assertRaises(ValueError):driver.check_usage(dict(usage,**change),state,60,61)
+
+    def test_completion_keeps_state_package_and_all_consumed_evidence(self):
+        path=RepairTests.fixture(self);old=engine.read(path)
+        old.update(scenario='outer_resource_identity_repair',limits=driver.REPAIR_LIMITS,
+            prior_counts=dict(starts=2),prior_seconds=26.25,prior_evidence=[],sources={},
+            registration=dict(cpu=True),service_id='unchanged-cpu-service')
+        engine.save(path,old)
+        result=engine.read(self.path/'execution/result.json');counts=dict(starts=4,chats=3,probes=0,controls=563)
+        result.update(seconds=128.98,budget=dict(counts=counts),
+            failure="profile_managed_acceptance.py TypeError: 'NoneType' object is not subscriptable")
+        engine.save(self.path/'execution/result.json',result)
+        engine.save(self.path/'execution/counts.json',dict(counts=counts))
+        engine.save(self.path/'state/ledger.json',dict(state=dict(desired='STOPPED',active=dict(model=None),
+            quarantine=None,generations=dict(model=2))))
+        (self.path/'state/outer-recovery').mkdir()
+        engine.save(self.path/'state/outer-recovery/policy.json',dict(state=dict(policy=dict(total=2,pending=None,protected=False))))
+        usage,state=self.values();rows=[]
+        for generation in (1,2):
+            value=dict(state,model_generation=generation,business_ready=True,monotonic=161)
+            if generation==2:rows.append(dict(value,business_ready=False,monotonic=100,quota_wait_ms=60000))
+            rows.append(value);engine.save(self.path/f'execution/usage-{generation}.json',dict(usage,generation=generation))
+        (self.path/'execution/status.jsonl').write_text('\n'.join(map(json.dumps,rows)))
+        engine.save(self.path/'execution/first-schema.wire',dict(id='original-chat',choices=[dict(message=dict(content='{"answer":42}'))]))
+        out=self.path/'completion';before={p:p.read_bytes() for p in self.path.rglob('*') if p.is_file()}
+        args=SimpleNamespace(complete_plan=path,output=out)
+        def git(argv,**_):return b'' if 'status' in argv else 'cpu-source\n'
+        with mock.patch.object(subprocess,'check_output',side_effect=git),\
+             mock.patch.dict(driver.LEGACY,load_modules=lambda:(None,None,None,None,None,engine)):
+            driver.prepare_completion(args)
+        after=engine.read(out/'plan.json')
+        self.assertEqual(after['state'],str(self.path/'state'));self.assertEqual(after['package'],old['package'])
+        self.assertEqual(after['registration'],old['registration']);self.assertEqual(after['service_id'],old['service_id'])
+        self.assertEqual(after['prior_counts'],counts);self.assertEqual(after['prior_seconds'],155.23)
+        self.assertEqual(after['planned'],dict(starts=2,self_checks=2,business_chats=3,probes=1))
+        for p,raw in before.items():self.assertEqual(p.read_bytes(),raw)
+        for row in after['prior_evidence']:self.assertEqual(engine.sha(row['path']),row['sha256'])
+        execution=out/'execution';execution.mkdir()
+        budget=driver.LEGACY['Budget'](execution,initialize=True,baseline=counts,limits=after['limits'])
+        self.assertEqual([budget.reserve('starts','remaining') for _ in range(2)],[5,6])
+        with self.assertRaises(RuntimeError):budget.reserve('starts','no-extra')
+        self.assertEqual([budget.reserve('chats','remaining') for _ in range(5)],[4,5,6,7,8])
+        with self.assertRaises(RuntimeError):budget.reserve('chats','no-extra')
+
+
 if __name__ == '__main__':unittest.main(module=None)
