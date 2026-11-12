@@ -1,0 +1,15 @@
+[PASS] vector_search_cosine_uses_vectors_and_actual_norms
+[PASS] vector_search_hybrid_uses_keyword_and_chinese_evidence
+[PASS] vector_search_filters_precede_rank_and_limits_follow_scores
+[PASS] responses_file_search_definition_preserves_controls_and_owner_ids
+[PASS] responses_file_search_bad_definition_never_publishes_partial_plan
+  CHECK failed: !PlanResponsesFileSearchTool(request, &plan, &error) && error.code == "vector_search_resource_exhausted" (line 118)
+[FAIL] responses_file_search_weights_validate_exact_sign_and_precision
+[PASS] responses_file_search_call_cannot_override_trusted_tool_controls
+[PASS] responses_file_search_native_call_schema_uses_real_chat_contract
+[PASS] responses_file_search_weights_control_real_semantic_and_text_ranks
+[PASS] responses_file_search_weight_scaling_cannot_overflow_scores
+[PASS] responses_file_search_invalid_runtime_weights_never_publish_hits
+[PASS] vector_query_actual_files_text_vectors_and_exact_all_query_budget
+[PASS] vector_search_api_rewrite_and_all_queries_share_one_rpm_actual_tpm
+13 tests, 12 passed, 1 failed, 0 skipped

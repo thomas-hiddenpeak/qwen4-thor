@@ -103,6 +103,9 @@ Status RankVectorSearch(const VectorSearchPlan& plan,
   };
   if (queries.empty() || queries.size() != plan.queries.size() ||
       !plan.max_results || plan.max_results > 50 ||
+      !std::isfinite(plan.embedding_weight) || plan.embedding_weight < 0 ||
+      !std::isfinite(plan.text_weight) || plan.text_weight < 0 ||
+      (plan.embedding_weight == 0 && plan.text_weight == 0) ||
       !std::isfinite(plan.score_threshold) || plan.score_threshold < 0 ||
       plan.score_threshold > 1 ||
       (plan.ranker != "none" && plan.ranker != "auto" &&
@@ -223,15 +226,23 @@ Status RankVectorSearch(const VectorSearchPlan& plan,
       // Two nonnegative real evidence channels per query. Dividing by the
       // theoretical best reciprocal rank bounds scores to [0,1]. A zero
       // evidence channel contributes nothing, including at threshold zero.
+      size_t channel_index = 0;
+      const double scale = std::max(plan.embedding_weight, plan.text_weight);
+      const double weights[] = {plan.embedding_weight / scale,
+                                 plan.text_weight / scale};
       for (const auto* channel : {&cosine, &lexical}) {
+        const auto weight = weights[channel_index++];
+        if (!weight) continue;
         std::sort(order.begin(), order.end(), [&](size_t a, size_t b) {
           return (*channel)[a] == (*channel)[b] ? identity_less(a, b)
                                                 : (*channel)[a] > (*channel)[b];
         });
         for (size_t rank = 0; rank < order.size(); ++rank)
           if ((*channel)[order[rank]] > 0)
-            scores[order[rank]] +=
-                61.0 / ((61.0 + rank) * 2.0 * queries.size());
+            scores[order[rank]] += plan.embedding_weight == plan.text_weight
+                ? 61.0 / ((61.0 + rank) * 2.0 * queries.size())
+                : (61.0 / ((61.0 + rank) * queries.size())) *
+                      (weight / (weights[0] + weights[1]));
       }
     }
   }

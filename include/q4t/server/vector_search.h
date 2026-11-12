@@ -26,6 +26,10 @@ struct VectorSearchPlan {
   std::string ranker = "auto";
   double score_threshold = 0;
   bool rewrite_query = false;
+  // Responses file_search hybrid ranking. The standalone search planner
+  // retains its public default weights; no hidden change to old scores.
+  double embedding_weight = 1;
+  double text_weight = 1;
 };
 struct VectorSearchChunk {
   std::string file_id, filename, chunk_id, text;

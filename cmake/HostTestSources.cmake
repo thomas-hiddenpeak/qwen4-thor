@@ -262,6 +262,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_corpus.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_query_rewrite.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_api.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_index.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_stores_internal.cpp
@@ -291,6 +292,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderations_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_embeddings_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_file_search_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_execution_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_index_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_stores_test.cpp

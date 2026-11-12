@@ -445,6 +445,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/vector_search_corpus.cpp
     src/server/vector_search_execution.cpp
     src/server/vector_query_rewrite.cpp
+    src/server/responses_file_search.cpp
     src/server/vector_search_api.cpp
     src/server/vector_index.cpp
     src/server/vector_stores_internal.cpp
@@ -692,6 +693,7 @@ if(Q4T_BUILD_TESTS)
     src/server/vector_search_corpus.cpp
     src/server/vector_search_execution.cpp
     src/server/vector_query_rewrite.cpp
+    src/server/responses_file_search.cpp
     src/server/vector_search_api.cpp
     src/server/vector_index.cpp
     src/server/vector_stores_internal.cpp
@@ -722,6 +724,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_moderations_api_test.cpp
     tests/server_embeddings_api_test.cpp
     tests/server_vector_search_test.cpp
+    tests/server_responses_file_search_test.cpp
     tests/server_vector_search_execution_test.cpp
     tests/server_vector_index_test.cpp
     tests/server_vector_stores_test.cpp

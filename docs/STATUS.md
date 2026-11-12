@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11 Responses file_search定义/调用与混合权重已通过
+  [13项针对性CPU](evidence/serve-file-search-contract-cpu-20261112/README.md)；
+  首次12/13，修复精确极小数错误分类，仅重验该项。继续多库检索、
+  原生工具循环/事件/引用与真实业务，0GPU、默认rev80保持。
+
 - A11原生search/实际模型回调及共享配额已接线，
   [11项C++与3项SDK/schema首过](evidence/serve-vector-search-api-cpu-20261112/README.md)。
   官方JS直连36请求、Python原生TLS34请求；实际Files/存储，CPU

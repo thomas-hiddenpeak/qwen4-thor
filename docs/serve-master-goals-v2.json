@@ -1282,7 +1282,8 @@
         "evidence/serve-vector-batches-cpu-20261112/README.md",
         "evidence/serve-vector-api-cpu-20261112/README.md",
         "evidence/serve-vector-query-cpu-20261112/README.md",
-        "evidence/serve-vector-search-api-cpu-20261112/README.md"
+        "evidence/serve-vector-search-api-cpu-20261112/README.md",
+        "evidence/serve-file-search-contract-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1390,6 +1391,13 @@
           "cpp_cases": 11,
           "sdk_schema_cases": 3,
           "evidence": "evidence/serve-vector-search-api-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "responses_contract": {
+          "state": "targeted_cpu_accepted_execution_pending",
+          "cpu_cases": 13,
+          "evidence": "evidence/serve-file-search-contract-cpu-20261112/README.md",
           "gpu_starts": 0,
           "default_changed": false
         }

@@ -294,3 +294,23 @@ host/引擎/实际q4t_ingress构建，0GPU、不改默认rev80。下一步继续
 Responses内建工具及真实GPU业务验收，A11与总目标仍未完成。
 
 [原生search 11项C++及3项SDK/schema首过](evidence/serve-vector-search-api-cpu-20261112/README.md)，实际引擎/入口零警告，保留首次缺头文件构建失败；0GPU/默认rev80保持。公开search已有生产回调接线，实际模型业务与Responses继续，不能计A11完成。
+
+
+## Responses内建file_search合同与加权排序
+
+2026-11-12。固定SDK的FileSearchTool另外声明hybrid_search的
+embedding_weight/text_weight；不能只复用独立search字段而漏掉它。
+已编码完整定义/调用规划、真实原生function参数schema和加权RRF。
+权重非负且至少一个正数，大有限权重先缩放以免相加溢出；旧等权
+计算次序保持，精确负极小数不当成零。模型只能提供queries，不能
+覆盖原声明中的库IDs、过滤或上限；每次请求最多16库的工作预算，
+超界报资源错误，不能擅自丢库或把超界当该能力不需要实现。
+
+冻结8新+5直接CPU、必要host/引擎构建和来源检查。本组是Responses
+执行接线的合同组成部分，尚未开放该工具声明或宣称服务端循环
+完成；接着多库完整检索、工具事件/引用和主模型继续生成，统一
+必要真实业务。0GPU、默认rev80保持，全部总目标继续。
+
+[13项CPU通过](evidence/serve-file-search-contract-cpu-20261112/README.md)，
+首次12/13及精确数错误分类修复保留；仅重验该项，0GPU/默认保持。
+继续多库和Responses执行，不在合同阶段结束A11或总计划。
