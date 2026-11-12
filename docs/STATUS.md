@@ -31,6 +31,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 异步历史模板修复已[通过8项CPU及审计](evidence/serve-async-history-cpu-20261113/README.md)。
+  下一轮冻结1启动/5创建/600秒，只补受影响路径；含原失败累计
+  最多2启动/10创建/900秒，默认rev102保持。
+
+- A07异步首轮[真实业务失败原件已保留](evidence/serve-async-business-history-failure-20261113/README.md)：
+  函数闭环通过，custom续答误拒绝；1启动/5创建/66.467秒，资源已清理。
+  定位到禁止新调用时历史工具定义被通用过滤器一起移除，正在修复。
+  默认rev102保持，失败不改判，全部master继续。
+
 - A07原生异步工具的[36项CPU、2项官方SDK及schema检查已通过](evidence/serve-async-tools-cpu-20261113/README.md)。
   补同Response独立回答、迟到结果、持久身份/计费和图片工具结果接入，
   失败原件保留；尚未真实模型验收或交付，默认rev102保持。继续

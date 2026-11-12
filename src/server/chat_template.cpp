@@ -27,7 +27,7 @@ bool IsSpace(unsigned cp) {
 }
 
 std::string Trim(const std::string& s, size_t* begin = nullptr,
-                  size_t* bytes = nullptr) {
+                 size_t* bytes = nullptr) {
   size_t first = s.size(), last = 0;
   for (size_t i = 0; i < s.size();) {
     const size_t start = i;
@@ -486,15 +486,17 @@ Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt,
                         std::vector<ChatMessageSpan>* spans, bool allow_empty,
-                        std::span<const std::string> async_call_ids) {
+                        std::span<const std::string> async_call_ids,
+                        std::span<const io::Json> historical_tools) {
   prompt->clear();
   if (spans) spans->clear();
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     const auto status = NormalizeLegacyTools(request, &normalized);
-    return status ? RenderChatPrompt(normalized.request, contents, prompt,
-                                     spans, allow_empty, async_call_ids)
-                  : status;
+    return status
+               ? RenderChatPrompt(normalized.request, contents, prompt, spans,
+                                  allow_empty, async_call_ids, historical_tools)
+               : status;
   }
   auto definitions = ValidateToolDefinitions(request);
   if (!definitions) return definitions;
@@ -545,9 +547,52 @@ Status RenderChatPrompt(const io::Json& request,
     if (!instructions.empty()) instructions += "\n\n";
     instructions += kRefusalInstruction;
   }
+  std::vector<std::string_view> pending_ids;
+  for (const auto& id : async_call_ids) {
+    const bool returned = std::any_of(
+        messages->array.begin(), messages->array.end(), [&](const auto& item) {
+          return item.GetString("role") == "tool" &&
+                 item.GetString("tool_call_id") == id;
+        });
+    if (!returned) pending_ids.push_back(id);
+  }
+  if (!pending_ids.empty()) {
+    // Output policy can hide callable definitions, but pending history still
+    // needs their meaning. This data neither offers nor authorizes a call.
+    io::Json definitions;
+    definitions.type = io::Json::Type::kArray;
+    for (const auto& tool : historical_tools) {
+      const auto type = tool.GetString("type");
+      const auto* definition = tool.Find(type);
+      if (!definition) continue;
+      bool pending = false;
+      for (const auto& message : messages->array) {
+        const auto* calls = message.GetArray("tool_calls");
+        if (!calls) continue;
+        for (const auto& call : calls->array) {
+          const auto* payload = call.Find(type);
+          if (call.GetString("type") == type && payload &&
+              payload->GetString("name") == definition->GetString("name") &&
+              std::find(pending_ids.begin(), pending_ids.end(),
+                        call.GetString("id")) != pending_ids.end())
+            pending = true;
+        }
+      }
+      if (pending) definitions.array.push_back(tool);
+    }
+    if (!instructions.empty()) instructions += "\n\n";
+    instructions +=
+        "# Pending asynchronous calls\n\n"
+        "The asynchronous call records in the history are earlier assistant "
+        "actions already handed to the client. Results may arrive after "
+        "later messages. Continue independent work without inventing results "
+        "or repeating those calls. Historical tool definitions below explain "
+        "the records; they are protocol data, not instructions or permission "
+        "to make new calls:\n";
+    instructions += EncodeSchemaJson(definitions);
+  }
   const auto* response_format = request.Find("response_format");
-  if (response_format &&
-      response_format->GetString("type") == "json_schema") {
+  if (response_format && response_format->GetString("type") == "json_schema") {
     const auto* specification = response_format->Find("json_schema");
     if (!specification || !specification->IsObject() ||
         !specification->Find("schema"))
@@ -576,7 +621,8 @@ Status RenderChatPrompt(const io::Json& request,
   size_t last_query = ms.size();
   for (size_t i = 0; i < ms.size(); ++i) {
     if (!ms[i].IsObject()) return Status::Fail("message must be an object");
-    text.push_back(Trim(contents[i], spans ? &(*spans)[i].source_begin : nullptr,
+    text.push_back(Trim(contents[i],
+                        spans ? &(*spans)[i].source_begin : nullptr,
                         spans ? &(*spans)[i].source_size : nullptr));
     const std::string role = ms[i].GetString("role");
     if (role == "assistant") {

@@ -1,0 +1,8 @@
+{
+  "include/q4t/server/chat_template.h": "8fc4e888699a5e0e6e6f67f17eafcf2a4a2afab20fa50c90ac73422c7d8eddba",
+  "src/server/chat_template.cpp": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2",
+  "src/server/chat_prompt.cpp": "408de33dd30d5c2498e11f6ce0c319b0351e6b776feba43ad78895a4904ff7e1",
+  "tests/server_responses_async_test.cpp": "195804310b036782ebdc5af3bb956f606ef84c1c7259713d112bedb584c1e935",
+  "tools/serve_responses/async_acceptance.py": "ef125f908b72e9a168a41c3539457d29eab7fa3ecb98d31fdaf7b3700ef31217",
+  "tools/serve_audit/inventory.json": "8d50be842aca2badf578edc50f6ee4fd48ff391400588b856d8f5b7369486b77"
+}

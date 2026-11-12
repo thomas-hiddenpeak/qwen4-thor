@@ -237,9 +237,11 @@ Status PrepareChatPrompt(const io::Json& request,
       if (!error.empty()) return fail(error);
       error_param->clear();
     }
-    const auto rendered = RenderChatPrompt(req, contents, &prompt,
-                                           layout ? &layout->messages : nullptr,
-                                           allow_empty, async_call_ids);
+    const auto* history_tools = request.GetArray("tools");
+    const auto rendered = RenderChatPrompt(
+        req, contents, &prompt, layout ? &layout->messages : nullptr,
+        allow_empty, async_call_ids,
+        history_tools ? history_tools->array : std::span<const io::Json>{});
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

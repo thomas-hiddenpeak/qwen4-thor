@@ -307,6 +307,63 @@ Q4T_TEST(responses_async_partial_and_mixed_calls_do_not_continue) {
   return true;
 }
 
+Q4T_TEST(responses_async_history_definitions_survive_none_without_dispatch) {
+  for (bool custom : {false, true}) {
+    auto request = Request(custom);
+    auto& tools = Field(Field(request, "tools").array[0], "tools").array;
+    Set(&tools[0], "description", String("Read approved project documents"));
+    auto unused = tools[0];
+    Set(&unused, "name", String("unused_reader"));
+    Set(&unused, "description", String("UNUSED_DEFINITION"));
+    tools.push_back(std::move(unused));
+    Set(&request, "tool_choice", String("none"));
+    Set(&request, "input",
+        Array(
+            {Call(custom),
+             Read(
+                 R"({"role":"user","content":"Explain LLM while pending"})")}));
+    ResponsesEnvelope envelope;
+    ResponsesGenerationPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(ParseResponsesEnvelope(request, Config(), &envelope, &error));
+    Q4T_CHECK(PrepareResponsesGeneration(envelope, *request.Find("input"),
+                                         Config(), &plan, &error));
+    const auto& chat = plan.chat.Request(plan.generation_request);
+    Q4T_CHECK(ConstraintTemplateRequest(chat, plan.chat.constraints)
+                  .GetArray("tools")
+                  ->array.empty());
+    Q4T_CHECK(plan.chat.constraints.choice ==
+              OutputConstraints::ToolChoice::kNone);
+    std::string prompt;
+    std::vector<VisionItem> media;
+    ChatPromptLayout layout;
+    Q4T_CHECK(PrepareChatPrompt(chat, plan.chat.constraints, &prompt, &media,
+                                &error.param, &error.code, &layout, false,
+                                plan.chat.async_tool_call_ids));
+    Q4T_CHECK(prompt.find("Read approved project documents") != prompt.npos);
+    Q4T_CHECK(prompt.find("Historical tool definitions") != prompt.npos);
+    Q4T_CHECK(prompt.find("UNUSED_DEFINITION") == prompt.npos);
+    Q4T_CHECK(prompt.find("# Tools\n") == prompt.npos);
+    Q4T_CHECK(prompt.find("Do not add text after a tool call") == prompt.npos);
+    Q4T_CHECK(layout.messages.size() ==
+              chat.GetArray("messages")->array.size());
+    Q4T_CHECK(prompt.find("read docs/MODEL.md") != prompt.npos || !custom);
+    Set(&request, "input",
+        Array(
+            {Call(custom), Result(custom),
+             Read(
+                 R"({"role":"user","content":"Now answer from the result"})")}));
+    Q4T_CHECK(ParseResponsesEnvelope(request, Config(), &envelope, &error));
+    Q4T_CHECK(PrepareResponsesGeneration(envelope, *request.Find("input"),
+                                         Config(), &plan, &error));
+    Q4T_CHECK(PrepareChatPrompt(plan.generation_request, plan.chat.constraints,
+                                &prompt, &media, &error.param, &error.code,
+                                nullptr, false, plan.chat.async_tool_call_ids));
+    Q4T_CHECK(prompt.find("# Pending asynchronous calls") == prompt.npos);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_async_execution_restart_queue_late_result_and_isolation) {
   for (bool custom : {false, true}) {
     Fixture fixture;

@@ -1,0 +1,55 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/async_acceptance.py\", line 79, in business\n    require('large language model' in foreground.text(response).lower(),\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: same response did not complete independent work\n",
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 43
+  },
+  "seconds": 66.46718390099704,
+  "binary_sha256": "d9ed8aaf2b7546f761a1fa180dc5d8aa5d4723f1b8110e198b747b2a6353141a",
+  "acceptance": "FAILED; function chain passed; custom independent answer refused",
+  "cleanup": {
+    "owned": {
+      "2095211": {
+        "state": "R",
+        "ppid": 2095205,
+        "pgid": 2095205,
+        "start_ticks": 269597912,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18168",
+          "--operations-port",
+          "18169",
+          "--mtp",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "384",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/business-01/objects"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "default_unchanged": true
+}

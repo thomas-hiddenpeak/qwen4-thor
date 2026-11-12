@@ -1848,7 +1848,7 @@
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
     "include/q4t/server/chat_server.h": "bca38d00df8ecf4d84b3cecf44aa50aab7e95e611f5b69f06eda9d1353213e22",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
-    "include/q4t/server/chat_template.h": "5bda21713d607269c1f4e9332b3b8ebf09513c324ac1b30370367a4221736db8",
+    "include/q4t/server/chat_template.h": "8fc4e888699a5e0e6e6f67f17eafcf2a4a2afab20fa50c90ac73422c7d8eddba",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
     "include/q4t/server/client_policy.h": "19d88b8aece205850bc53b2e644570ca7096c7be3a6467dcfad4bfe05c2d35fe",
@@ -2059,7 +2059,7 @@
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
     "src/server/chat_plan.cpp": "9997e8a80d47f1e394bf5df43c318167bfa6f4d67f0f24c24d6a97ec48a86789",
     "src/server/chat_preflight.cpp": "7f99316cfb14f28e60a5a8039b069ad83bbe9991811c7b615c95ae33285cfafd",
-    "src/server/chat_prompt.cpp": "d3406c8b2c6aaa4e7416ca138aa825fd79abfe2bdbced2f18d655086aacfb5b2",
+    "src/server/chat_prompt.cpp": "408de33dd30d5c2498e11f6ce0c319b0351e6b776feba43ad78895a4904ff7e1",
     "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
     "src/server/chat_responses.cpp": "74fa1e051643821b26d491ef7ab10bb53151b9177d68215d0d12fa9b8a8cd336",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
@@ -2067,7 +2067,7 @@
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "f2d502b5c27316e9621b437d5833275895f656399947906a71b958d846625525",
+    "src/server/chat_template.cpp": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -4576,7 +4576,7 @@
       },
       "include/q4t/server/chat_template.h": {
         "before": "5631a55354862668597bd86325b003fb2c1030dff9554a927255221d2b57df10",
-        "after": "5bda21713d607269c1f4e9332b3b8ebf09513c324ac1b30370367a4221736db8"
+        "after": "8fc4e888699a5e0e6e6f67f17eafcf2a4a2afab20fa50c90ac73422c7d8eddba"
       },
       "include/q4t/server/chat_tool_history.h": {
         "before": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -4624,11 +4624,11 @@
       },
       "src/server/chat_prompt.cpp": {
         "before": "44ee8504faec4d904d4cd320581218253d3e1e62c8f12476e4b509f78c3f1db8",
-        "after": "d3406c8b2c6aaa4e7416ca138aa825fd79abfe2bdbced2f18d655086aacfb5b2"
+        "after": "408de33dd30d5c2498e11f6ce0c319b0351e6b776feba43ad78895a4904ff7e1"
       },
       "src/server/chat_template.cpp": {
         "before": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
-        "after": "f2d502b5c27316e9621b437d5833275895f656399947906a71b958d846625525"
+        "after": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2"
       },
       "src/server/chat_tool_history.cpp": {
         "before": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
@@ -4664,5 +4664,22 @@
       }
     },
     "build_followup": "Explicit empty internal policy initializer removes aggregate warning; generation uses request_plan media policy instead of an invalid local identifier. No contract change."
+  },
+  "async_history_review_20261113": {
+    "reason": "Actual custom continuation refusal exposed callable-definition filtering of pending history. Render only invoked unresolved async definitions as escaped protocol data, preserve none grammar and message spans; returned calls and unused tools omitted. Eight targeted host tests passed. Business repair pending.",
+    "sources": {
+      "include/q4t/server/chat_template.h": {
+        "before": "5bda21713d607269c1f4e9332b3b8ebf09513c324ac1b30370367a4221736db8",
+        "after": "8fc4e888699a5e0e6e6f67f17eafcf2a4a2afab20fa50c90ac73422c7d8eddba"
+      },
+      "src/server/chat_template.cpp": {
+        "before": "f2d502b5c27316e9621b437d5833275895f656399947906a71b958d846625525",
+        "after": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2"
+      },
+      "src/server/chat_prompt.cpp": {
+        "before": "d3406c8b2c6aaa4e7416ca138aa825fd79abfe2bdbced2f18d655086aacfb5b2",
+        "after": "408de33dd30d5c2498e11f6ce0c319b0351e6b776feba43ad78895a4904ff7e1"
+      }
+    }
   }
 }

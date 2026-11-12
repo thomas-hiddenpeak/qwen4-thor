@@ -15,6 +15,59 @@ from tools.serve_service.package import read, require, save, sha
 foreground = identity.foreground
 base = identity.base
 LIMITS = dict(starts=1, chats=8, controls=2000, seconds=900)
+REPAIR_LIMITS = dict(starts=1, chats=5, controls=2000, seconds=600)
+
+
+def reuse_function(directory):
+    directory = directory.resolve(strict=True)
+    previous = read(directory / 'result.json')
+    require(previous['status'] == 'FAILED' and
+            previous['counts']['starts'] == 1 and previous['counts']['chats'] == 5 and
+            'same response did not complete independent work' in previous['error'],
+            'unrecognized async attempt')
+    plan = read(directory / 'plan.json')
+    changed = {name for name, digest in plan['sources'].items()
+               if name.startswith(('src/', 'include/')) and sha(ROOT / name) != digest}
+    require(changed == {'include/q4t/server/chat_template.h',
+                       'src/server/chat_template.cpp', 'src/server/chat_prompt.cpp'},
+            'reuse requires only the reviewed history renderer change')
+    require(plan['sources'][foreground.DOCUMENT] == sha(ROOT / foreground.DOCUMENT),
+            'actual document changed')
+    cleanup = read(directory / 'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+            cleanup['ports_released'] and cleanup['lease_continuously_held'],
+            'previous cleanup incomplete')
+    for label in ['function-call', 'function-independent', 'function-result']:
+        response = read(directory / (label + '.sdk.json'))
+        require(response['ok'], 'previous SDK failure')
+        background.check_response(response['result'], 'completed')
+    require(foreground.text(read(directory / 'function-independent.sdk.json')
+                            ['result']).strip() == '42', 'independent answer differs')
+    rejected = read(directory / 'invalid-result.sdk.json')['error']
+    require(rejected['status'] == 400 and rejected['code'] == 'invalid_tool_output',
+            'result rejection differs')
+    execution = read(directory / 'function-execution.json')
+    answer = json.loads(foreground.text(read(directory / 'function-result.sdk.json')
+                                       ['result']))
+    require(execution['executions'] == 1 and answer['citation'] ==
+            execution['result']['source']['citation'], 'real function closure differs')
+    lease = directory.parent / 'lease-01'
+    events = [json.loads(line) for line in (lease / 'events.jsonl').read_text().splitlines()]
+    guard = read(lease / 'exit.json')
+    require(guard['status'] == 'COMMAND_FAILED' and guard['compute_backend'] == 'nvml' and
+            events[-1]['event'] == 'lease_released' and
+            any(row['event'] == 'monitor' for row in events) and
+            all(not row.get('conflicts') and not row.get('unreadable_processes') and
+                row['event'] not in ('env_abort', 'monitor_error') for row in events),
+            'prior strict environment failed')
+    records = [p for p in directory.iterdir() if p.is_file() and
+               (p.name.startswith(('function-', 'invalid-result')) or
+                p.name in ('plan.json', 'result.json', 'cleanup.json'))]
+    records.extend([lease / 'exit.json', lease / 'events.jsonl'])
+    return dict(directory=str(directory), binary_sha256=plan['binary_sha256'],
+        original_attempt_failed=True, changed_sources=sorted(changed),
+        scope='function late result and output schema only; both initial continuations rechecked',
+        records={str(p): sha(p) for p in records})
 
 
 def requests():
@@ -37,7 +90,9 @@ def requests():
 
 
 def prepare(args):
-    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    prior = reuse_function(args.reuse_function) if args.reuse_function else None
+    background.prepare(args, rows=requests(), limits=REPAIR_LIMITS if prior else LIMITS,
+                       scope=__doc__)
     path = args.output.resolve() / 'plan.json'
     plan = read(path)
     plan['sources']['tools/serve_responses/async_acceptance.py'] = sha(Path(__file__))
@@ -49,6 +104,10 @@ def prepare(args):
         'unrelated turn precedes actual client tool execution and result submission',
         'two pre-generation rejections: wrong output_schema and missing sync result',
         'all model steps share the original output allowance and cancellation; no retries']
+    if prior:
+        plan['reused_function'] = prior
+        plan['derived_requests'].append(
+            'repair: both initial continuations, custom independent/result and missing sync only')
     save(path, plan)
 
 
@@ -56,6 +115,13 @@ class Stage(identity.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_ASYNC_TOOL_LATE_RESULT_BUSINESS'
+
+    def __init__(self, plan):
+        if prior := plan.get('reused_function'):
+            require(reuse_function(Path(prior['directory'])) == prior,
+                    'prior function evidence changed')
+            self.limits = REPAIR_LIMITS
+        super().__init__(plan)
 
     def business(self):
         caps = read(self.out / 'capabilities.json')['responses']['async_tools']
@@ -86,6 +152,8 @@ class Stage(identity.Stage):
                         event['item'].get('call_id') == call['call_id'])
             require(any(event['type'] == 'response.output_text.delta'
                         for event in events[done + 1:]), 'no streamed answer after async done')
+            if not custom and self.plan.get('reused_function'):
+                continue
             independent = copy.deepcopy(rows['independent'])
             independent['conversation' if custom else 'previous_response_id'] = (
                 conversation if custom else response['id'])
@@ -113,9 +181,15 @@ class Stage(identity.Stage):
             dict(role='user', content='Continue without a result')])
         self.sdk('missing-sync', 'create', sync, expected_status=400)
         self.drained('final')
-        save(self.out / 'business-summary.json', dict(model_starts=1, create_requests=8,
-            successful_responses=6, maximum_model_steps=8, rejected_before_generation=2,
-            actual_tool_executions=2, independent_work_before_result=True,
+        repair = bool(self.plan.get('reused_function'))
+        save(self.out / 'business-summary.json', dict(model_starts=1,
+            create_requests=5 if repair else 8,
+            successful_responses=4 if repair else 6,
+            maximum_model_steps=6 if repair else 8,
+            rejected_before_generation=1 if repair else 2,
+            actual_tool_executions=1 if repair else 2,
+            reused_function=self.plan.get('reused_function'),
+            independent_work_before_result=True,
             full_quality_or_performance_claim=False))
 
 
@@ -126,6 +200,7 @@ def main():
     p.add_argument('--binary', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18168)
+    p.add_argument('--reuse-function', type=Path)
     p = modes.add_parser('run')
     p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

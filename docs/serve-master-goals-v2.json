@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "CPU_SDK_validated_business_pending",
+        "state": "history_fix_CPU_pass_repair_business_pending",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -933,10 +933,28 @@
           "response_creates": 8,
           "seconds": 900
         },
-        "gpu_started": false,
+        "gpu_started": true,
         "programmatic_and_deferred_discovery_remain_required": true,
         "cpu_required": 36,
-        "cpu_evidence": "docs/evidence/serve-async-tools-cpu-20261113"
+        "cpu_evidence": "docs/evidence/serve-async-tools-cpu-20261113",
+        "first_business": {
+          "starts": 1,
+          "creates": 5,
+          "seconds": 66.4671839,
+          "status": "FAILED",
+          "evidence": "docs/evidence/serve-async-business-history-failure-20261113"
+        },
+        "history_fix_cpu": "docs/evidence/serve-async-history-cpu-20261113",
+        "repair_budget": {
+          "starts": 1,
+          "response_creates": 5,
+          "seconds": 600
+        },
+        "aggregate_budget": {
+          "starts": 2,
+          "response_creates": 10,
+          "seconds": 900
+        }
       }
     },
     {
