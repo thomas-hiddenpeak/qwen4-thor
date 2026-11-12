@@ -100,8 +100,11 @@ ObjectReply ValidateToolResultSchemas(const io::Json& checks,
   const auto bytes = OutputJson(checks);
   if (bytes.size() > kBytes) return Failure(GrammarFailure::kResource);
   control.domain = IsolatedWorkerDomain::kToolResults;
+  // The real engine's cuBLAS ELF mappings already exceed 512 MiB before main.
+  // Count them in the ceiling while leaving bounded space for validation;
+  // mapping virtual library text is not an allocation of private physical RAM.
   control.address_space_bytes =
-      std::min<uint64_t>(control.address_space_bytes, 512ULL * 1024 * 1024);
+      std::min<uint64_t>(control.address_space_bytes, 1024ULL * 1024 * 1024);
   control.compile_deadline =
       std::min({control.compile_deadline, access.deadline,
                 Clock::now() + std::chrono::seconds(2)});
