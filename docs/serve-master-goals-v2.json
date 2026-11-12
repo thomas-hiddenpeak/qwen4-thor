@@ -2464,9 +2464,12 @@
       },
       "namespace_main_integration": {
         "pr": 24,
-        "head": "6effcb3e",
-        "state": "CI_in_progress",
-        "merged": false
+        "state": "fixture_fixed_pending_CI",
+        "merged": false,
+        "evidence": "docs/evidence/serve-ci-custom-views-20261113",
+        "cpu_passed": 6,
+        "runtime_changed": false,
+        "current_ci_head": "82240c5e"
       }
     },
     {

@@ -1,0 +1,7 @@
+[PASS] responses_custom_output_projection_keeps_conversation_lifecycle
+[PASS] tool_result_contract_conversation_copy_and_frozen_queue_keep_schema
+[PASS] conversation_state_item_identity_ignores_json_object_field_order
+[PASS] conversation_state_pending_tool_and_later_result
+[PASS] conversation_state_resolves_all_declared_input_variants
+[PASS] responses_custom_output_projection_all_terminal_states
+6 tests, 6 passed, 0 failed, 0 skipped
