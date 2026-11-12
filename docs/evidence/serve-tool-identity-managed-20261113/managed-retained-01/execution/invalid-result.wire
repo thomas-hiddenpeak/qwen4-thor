@@ -1,0 +1,1 @@
+{"error":{"message":"Tool result contract was not satisfied","type":"invalid_request_error","code":"invalid_tool_output","param":"input[2].output"}}

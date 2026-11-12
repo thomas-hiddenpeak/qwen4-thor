@@ -1,0 +1,23 @@
+test_native_namespace_json_and_events_match_official_shapes (tools.serve_responses.test_tool_identity_contract.ToolIdentityContract.test_native_namespace_json_and_events_match_official_shapes) ... FAIL
+
+======================================================================
+FAIL: test_native_namespace_json_and_events_match_official_shapes (tools.serve_responses.test_tool_identity_contract.ToolIdentityContract.test_native_namespace_json_and_events_match_official_shapes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_tool_identity_contract.py", line 17, in test_native_namespace_json_and_events_match_official_shapes
+    self.assertEqual([(list(e.path), e.message[:100]) for e in issues], [])
+AssertionError: Lists differ: [(['output', 1], "{'id': 'ctc_3d1bd1dd1343[74 chars]am")] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+(['output', 1], "{'id': 'ctc_3d1bd1dd134397e0347269aba9d9763d', 'type': 'custom_tool_call', 'call_id': 'call_1', 'nam")
+
++ []
+- [(['output', 1],
+-   "{'id': 'ctc_3d1bd1dd134397e0347269aba9d9763d', 'type': 'custom_tool_call', "
+-   "'call_id': 'call_1', 'nam")]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+FAILED (failures=1)

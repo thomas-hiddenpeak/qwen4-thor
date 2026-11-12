@@ -1,0 +1,8 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/execution/state",
+  "service_id": "89554cba-e472-4c34-922a-b7cc650a13aa",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false,
+  "resumed": false
+}

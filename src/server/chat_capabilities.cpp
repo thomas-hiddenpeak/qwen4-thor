@@ -58,6 +58,17 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"responses":{"profile":"q4t-responses-v1",)"
          R"("endpoint":"/v1/responses","shared_native_generation":true,)"
          R"("json":true,"stream":true,"chat_done_sentinel":false,)"
+         R"("tool_identity":{"profile":"q4t-tool-identity-v1",)"
+         R"("namespaces":true,"public_call_namespace":true,)"
+         R"("qualified_choice":"namespace.name","ambiguous_choice":"reject",)"
+         R"("max_expanded_tools":128,"history_identity":"invocation_time"},)"
+         R"("tool_results":{"profile":"q4t-tool-result-contract-v1",)"
+         R"("output_schema":true,"json_value_roots":true,)"
+         R"("content_arrays_constrained":false,"binding":"invocation_time",)"
+         R"("stored_and_queued":true,"pattern_requires_structured_backend":true,)"
+         R"("validator":"isolated_native_worker","max_checks":4096,)"
+         R"("max_validation_bytes":8388608,"max_validation_ms":2000,)"
+         R"("model_restart_on_error":false},)"
          R"("output_items":["message","reasoning","function_call","custom_tool_call","compaction","file_search_call"],)"
          R"("file_search":{"profile":"q4t-file-search-v1",)"
          R"("implemented":true,"enabled":)" +
@@ -199,11 +210,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"execution_requires_native_embedding":true,)"
          R"("management_requires_native_embedding":false,)"
          R"("scope":"authenticated_client","core_readiness_dependency":false,)"
-         R"("max_files_per_store":)" + std::to_string(kVectorStoreFiles) +
-         R"(,"search_max_chunks":)" + std::to_string(kVectorSearchChunks) +
+         R"("max_files_per_store":)" +
+         std::to_string(kVectorStoreFiles) + R"(,"search_max_chunks":)" +
+         std::to_string(kVectorSearchChunks) +
          R"(,"search_max_vector_values":)" +
-         std::to_string(kVectorSearchValues) +
-         R"(,"search_max_text_bytes":)" +
+         std::to_string(kVectorSearchValues) + R"(,"search_max_text_bytes":)" +
          std::to_string(kVectorSearchTextBytes) +
          R"(,"ranking":"native_cosine_bm25_reciprocal_rank_fusion",)"
          R"("cloud_score_equivalence":false,"query_rewrite":"native_model_step",)"

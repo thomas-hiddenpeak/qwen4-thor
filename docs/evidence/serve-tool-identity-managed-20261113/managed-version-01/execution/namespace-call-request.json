@@ -1,0 +1,160 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_output_tokens": 256,
+  "reasoning": {
+    "effort": "none"
+  },
+  "input": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation.",
+  "tools": [
+    {
+      "type": "namespace",
+      "name": "project",
+      "description": "Project records",
+      "tools": [
+        {
+          "type": "function",
+          "name": "read_project_record",
+          "description": "Read bounded real project document lines and citation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "const": "docs/MODEL.md"
+              },
+              "start_line": {
+                "type": "integer",
+                "const": 1
+              },
+              "line_count": {
+                "type": "integer",
+                "const": 3
+              }
+            },
+            "required": [
+              "path",
+              "start_line",
+              "line_count"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true,
+          "output_schema": {
+            "type": "object",
+            "required": [
+              "ok",
+              "source"
+            ],
+            "properties": {
+              "ok": {
+                "const": true
+              },
+              "source": {
+                "type": "object",
+                "required": [
+                  "sha256",
+                  "citation",
+                  "text"
+                ],
+                "properties": {
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "citation": {
+                    "type": "string",
+                    "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "namespace",
+      "name": "catalog",
+      "description": "Catalog records",
+      "tools": [
+        {
+          "type": "function",
+          "name": "read_project_record",
+          "description": "Read bounded real project document lines and citation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "const": "docs/MODEL.md"
+              },
+              "start_line": {
+                "type": "integer",
+                "const": 1
+              },
+              "line_count": {
+                "type": "integer",
+                "const": 3
+              }
+            },
+            "required": [
+              "path",
+              "start_line",
+              "line_count"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true,
+          "output_schema": {
+            "type": "object",
+            "required": [
+              "ok",
+              "source"
+            ],
+            "properties": {
+              "ok": {
+                "const": true
+              },
+              "source": {
+                "type": "object",
+                "required": [
+                  "sha256",
+                  "citation",
+                  "text"
+                ],
+                "properties": {
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "citation": {
+                    "type": "string",
+                    "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "project.read_project_record"
+  },
+  "parallel_tool_calls": false,
+  "stream": true,
+  "stream_options": {
+    "include_obfuscation": false
+  }
+}

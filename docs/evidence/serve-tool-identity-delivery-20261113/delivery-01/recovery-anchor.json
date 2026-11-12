@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+  "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "971d0d2ee359bc3b56fd69dc706cc141c3a0825f2096284939bd288f5fb95fc7",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

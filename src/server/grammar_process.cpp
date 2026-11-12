@@ -57,6 +57,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* files = new WorkerOwner;
   static auto* documents = new WorkerOwner;
   static auto* embeddings = new WorkerOwner;
+  static auto* tool_results = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
@@ -64,6 +65,8 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
     case IsolatedWorkerDomain::kFileFetch: return *files;
     case IsolatedWorkerDomain::kFileParse: return *documents;
     case IsolatedWorkerDomain::kEmbeddingAssets: return *embeddings;
+    case IsolatedWorkerDomain::kToolResults:
+      return *tool_results;
     default: return *grammar;
   }
 }
@@ -150,6 +153,7 @@ void PollRequestWorkers() {
   PollIsolatedWorkers(IsolatedWorkerDomain::kFileFetch);
   PollIsolatedWorkers(IsolatedWorkerDomain::kFileParse);
   PollIsolatedWorkers(IsolatedWorkerDomain::kEmbeddingAssets);
+  PollIsolatedWorkers(IsolatedWorkerDomain::kToolResults);
 }
 
 void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
@@ -193,7 +197,8 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.domain != IsolatedWorkerDomain::kPrefixCache &&
       control.domain != IsolatedWorkerDomain::kFileFetch &&
       control.domain != IsolatedWorkerDomain::kFileParse &&
-      control.domain != IsolatedWorkerDomain::kEmbeddingAssets)
+      control.domain != IsolatedWorkerDomain::kEmbeddingAssets &&
+      control.domain != IsolatedWorkerDomain::kToolResults)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -245,11 +250,14 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char fetch_name[] = "q4t-file-fetch";
     char document_name[] = "q4t-file-document";
     char embedding_name[] = "q4t-embedding-assets";
+    char tool_result_name[] = "q4t-tool-results";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
     if (control.domain == IsolatedWorkerDomain::kSessionCache ||
         control.domain == IsolatedWorkerDomain::kPrefixCache)
       name = cache_name;
+    if (control.domain == IsolatedWorkerDomain::kToolResults)
+      name = tool_result_name;
     if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     if (control.domain == IsolatedWorkerDomain::kFileParse) name = document_name;
     if (control.domain == IsolatedWorkerDomain::kEmbeddingAssets)

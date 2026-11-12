@@ -4,6 +4,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/tool_result_contracts.h"
 
 namespace q4t::server {
 namespace {
@@ -40,20 +41,21 @@ ObjectReply ResponsesExecution::FreezeInputs(Json* inputs) {
     }
     plan_.input_snapshots = files_->Bindings();
   }
-  *inputs = Object(
-      {{"format", String("q4t.responses_prepared.v1")},
-       {"id", String(plan_.id)},
-       {"scope", String(plan_.scope)},
-       {"store", Boolean(plan_.store)},
-       {"ephemeral", Boolean(plan_.ephemeral)},
-       {"history", plan_.history},
-       {"own_input", plan_.own_input},
-       {"input_snapshots", plan_.input_snapshots},
-       {"request", plan_.request},
-       {"options", envelope_.options},
-       {"conversation_id", String(plan_.conversation_id)},
-       {"conversation_revision", Number(plan_.conversation_revision)},
-       {"conversation", plan_.conversation}});
+  *inputs =
+      Object({{"format", String("q4t.responses_prepared.v1")},
+              {"id", String(plan_.id)},
+              {"scope", String(plan_.scope)},
+              {"store", Boolean(plan_.store)},
+              {"ephemeral", Boolean(plan_.ephemeral)},
+              {"history", plan_.history},
+              {"own_input", plan_.own_input},
+              {"input_snapshots", plan_.input_snapshots},
+              {"tool_contracts", plan_.tool_contracts},
+              {"request", plan_.request},
+              {"options", envelope_.options},
+              {"conversation_id", String(plan_.conversation_id)},
+              {"conversation_revision", Number(plan_.conversation_revision)},
+              {"conversation", plan_.conversation}});
   return {};
 }
 
@@ -151,6 +153,14 @@ ObjectReply ResponsesExecution::RestoreInputs(
       MergeInputSnapshots(*bindings, plan_.history, &plan_.input_snapshots);
   if (!reply.ok()) return reply;
   if (plan_.store) plan_.execution_owner = CurrentResponseOwner();
+  if (const auto* contracts = inputs.Find("tool_contracts")) {
+    reply = MergeToolResultContracts(*contracts, plan_.history,
+                                     &plan_.tool_contracts);
+    if (!reply.ok()) return reply;
+  }
+  reply = BindToolResultContracts(object_detail::Object(), plan_.history,
+                                  &plan_.tool_contracts);
+  if (!reply.ok()) return reply;
   require_frozen_inputs_ = true;
   // Never Resolve, Expand a prompt, fetch a URL or publish a queued Response.
   // FileExpansion may only read the immutable snapshots saved at validation.

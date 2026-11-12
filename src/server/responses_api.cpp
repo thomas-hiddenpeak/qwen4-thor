@@ -9,6 +9,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_jobs.h"
+#include "q4t/server/responses_output.h"
 #include <ctime>
 
 namespace q4t::server {
@@ -106,13 +107,15 @@ bool Terminal(std::string_view status) {
 Json ViewResponse(Json response, const ItemViewOptions& view) {
   for (auto& item : Field(response, "output").array)
     item = ProjectStoredItem(item, view);
-  return response;
+  return ResponsesPublicValue(std::move(response));
 }
 Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
   if (event.Has("response"))
     Set(&event, "response", ViewResponse(Field(event, "response"), plan.view));
   if (event.Has("item"))
-    Set(&event, "item", ProjectStoredItem(Field(event, "item"), plan.view));
+    Set(&event, "item",
+        ResponsesPublicValue(
+            ProjectStoredItem(Field(event, "item"), plan.view)));
   if (std::find(plan.view.include.begin(), plan.view.include.end(),
                 "message.output_text.logprobs") == plan.view.include.end()) {
     // The text delta/done event shape requires this array even when the

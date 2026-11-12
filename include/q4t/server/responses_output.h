@@ -13,6 +13,7 @@
 #include "q4t/io/json.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/moderation.h"
+#include "q4t/server/responses_input.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -25,6 +26,12 @@ struct ResponsesUsage {
 };
 using ResponsesReasoningSeal =
     std::function<Status(size_t index, std::string* opaque)>;
+
+// The pinned SDK's ResponseCustomToolCall omits status/created_by, while its
+// stored ResponseItem requires status. Retain that lifecycle internally and
+// project at the Responses output/event boundary. Conversation views likewise
+// use the base type; Responses input_items preserves the Item lifecycle.
+io::Json ResponsesPublicValue(io::Json value);
 
 class ResponsesOutput {
  public:
@@ -91,6 +98,8 @@ class ResponsesOutput {
   void CloseItem(size_t index, bool incomplete, std::string* wire);
   io::Json response_;
   std::unordered_map<size_t, size_t> calls_;
+  std::unordered_map<size_t, std::string> model_names_;
+  std::vector<ResponsesToolIdentity> tool_identities_;
   std::vector<size_t> call_indices_;
   std::unordered_set<size_t> closed_items_;
   size_t summary_item_ = kMaxItems;

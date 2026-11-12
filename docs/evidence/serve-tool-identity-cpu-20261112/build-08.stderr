@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/tool_result_contracts.cpp: In function ‘bool q4t::server::{anonymous}::Same(const q4t::io::Json&, const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/tool_result_contracts.cpp:64:10: error: ‘InputValueIdentity’ was not declared in this scope
+   64 |   return InputValueIdentity(a, &left) && InputValueIdentity(b, &right) &&
+      |          ^~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3523: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tool_result_contracts.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

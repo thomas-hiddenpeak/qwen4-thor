@@ -1,0 +1,10 @@
+{
+  "base": "6effcb3e2f715381df2e08cd4bc3788e205373a7",
+  "runtime_changed": false,
+  "file": "tests/server_conversation_state_test.cpp",
+  "before_sha256": "272238ebc3b03c70417699f546e7df578d5a6cee1ebb11c7426e05f68e1c1afb",
+  "after_sha256": "25dcb19a687aa5fff1ebf9be870b3dcc57aaae44bb714e67c17d243aebb7634c",
+  "contract": "SDK ConversationItem custom base projection omits status/created_by; internal/input_items Item retains lifecycle",
+  "targeted_tests": 6,
+  "gpu_starts": 0
+}

@@ -404,13 +404,25 @@ Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
     // integration must execute compaction before publishing its resulting item.
     if (item.GetString("type") == "compaction_trigger") continue;
     ChatPlanError error;
+    const auto projected =
+        ProjectStoredItem(item, {}, StoredItemView::kConversation);
+    const bool custom = item.GetString("type") == "custom_tool_call" ||
+                        item.GetString("type") == "custom_tool_call_output";
+    // Stored custom Item variants retain status; Conversation uses the SDK's
+    // base variant. Check both contracts instead of treating the private
+    // lifecycle as an extra public field.
+    if (custom) {
+      Q4T_CHECK(item.GetString("status") == "completed");
+      Q4T_CHECK(!projected.Has("status") && !projected.Has("created_by"));
+      Q4T_CHECK(ProjectStoredItem(item, {}, StoredItemView::kInputList)
+                    .GetString("status") == "completed");
+    }
     const auto status = ValidateResponsesItemShape(
-        item, ResponsesItemShape::kConversation, &error);
+        custom ? projected : item, ResponsesItemShape::kConversation, &error);
     if (!status)
       std::fprintf(stderr, "%s: %s %s\n", vector.GetString("name").c_str(),
                    error.param.c_str(), status.message().c_str());
     Q4T_CHECK(status);
-    const auto projected = ProjectStoredItem(item, {});
     Q4T_CHECK(ValidateResponsesItemShape(
         projected, ResponsesItemShape::kConversation, &error));
     ++conversation_shapes;

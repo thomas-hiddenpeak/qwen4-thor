@@ -1,0 +1,31 @@
+{
+  "clock": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "logical_ns": 0,
+    "monotonic_ns": 2692612428999258
+  },
+  "completed_generation": 0,
+  "configuration": {
+    "cooldown_seconds": 300,
+    "degrade_below_mib": 8192,
+    "minimum_light_seconds": 300,
+    "pressure_seconds": 30,
+    "recover_above_mib": 16384,
+    "recovery_seconds": 120,
+    "switches_per_day": 4,
+    "switches_per_hour": 2,
+    "version": 1
+  },
+  "format": "q4t-profile-selection-v1",
+  "history": [],
+  "light_since_ns": null,
+  "not_before_ns": 0,
+  "pending": null,
+  "profiles": {
+    "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+    "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+  },
+  "registry_sha256": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+  "revision": 2,
+  "selected": "primary"
+}

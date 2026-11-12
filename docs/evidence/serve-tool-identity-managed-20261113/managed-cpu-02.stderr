@@ -1,0 +1,10 @@
+test_actual_wire_and_mutations_of_identity_result_or_stream (__main__.FeatureDriverTests.test_actual_wire_and_mutations_of_identity_result_or_stream) ... ok
+test_each_stage_enforces_its_own_exact_predispatch_budget (__main__.FeatureDriverTests.test_each_stage_enforces_its_own_exact_predispatch_budget) ... ok
+test_first_stage_probe_rejected_before_any_device_or_module_load (__main__.FeatureDriverTests.test_first_stage_probe_rejected_before_any_device_or_module_load) ... ok
+test_partial_business_bad_environment_or_missing_lease_cannot_certify (__main__.FeatureDriverTests.test_partial_business_bad_environment_or_missing_lease_cannot_certify) ... ok
+test_selected_sealed_imports_and_owned_fault_wrapper_path (__main__.FeatureDriverTests.test_selected_sealed_imports_and_owned_fault_wrapper_path) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.501s
+
+OK

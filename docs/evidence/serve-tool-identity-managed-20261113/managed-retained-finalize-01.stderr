@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py", line 366, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py", line 349, in main
+    finalize(args.plan); return
+    ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py", line 277, in finalize
+    environment=accepted_run(plan,result,engine.read(lease/'exit.json'),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py", line 256, in accepted_run
+    require(guard.get('status')=='COMPLETED' and guard.get('child_returncode')==0 and
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py", line 244, in require
+    if not condition:raise RuntimeError(reason)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: strict managed environment not accepted

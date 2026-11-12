@@ -1,0 +1,46 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_output_tokens": 256,
+  "reasoning": {
+    "effort": "none"
+  },
+  "input": [
+    {
+      "type": "function_call_output",
+      "call_id": "call_resp_f057878a20c2ef2417da669baac0aacf_0",
+      "output": "{\"ok\":false,\"source\":{}}"
+    }
+  ],
+  "instructions": "Return the actual first-line document title and its exact source citation from the tool result as JSON. Do not call another tool.",
+  "tools": [],
+  "tool_choice": "none",
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "document",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "citation": {
+            "type": "string",
+            "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+          }
+        },
+        "required": [
+          "title",
+          "citation"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "stream": false,
+  "previous_response_id": "resp_f057878a20c2ef2417da669baac0aacf"
+}

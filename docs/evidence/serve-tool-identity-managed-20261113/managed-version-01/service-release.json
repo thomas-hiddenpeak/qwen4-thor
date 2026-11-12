@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "acceptance": "ACCEPT_TOOL_IDENTITY_VERSION",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-version-01/decision.json",
+  "acceptance_sha256": "695f11c942a218f227ef73af2e0471eb5d5eccc07e45a9dad1c154eb0de234f8",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+  "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+  "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+  "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-version-01/execution/state",
+  "service_id": "f883bc6a-9e35-4f8e-8d2e-2b6449c32580",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Exact retained-control/new-engine namespace tool service, then native whole-tree fallback preserving invocation-time result schema and actual document closure.",
+  "default_replaced": false
+}

@@ -1,0 +1,33 @@
+{
+  "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 83,
+    "cleanup_complete": true,
+    "lease_result_sha256": "f3467855d84792ac71c84b774973d3587bfdb80ae53ac2a57425a501a1baaedf"
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 81
+  },
+  "seconds": 87.28853448992595,
+  "registry_sha256": "47c97650c89200d7425ae8772d9dacabcf65890416f073215ca1a6cecfe599b9",
+  "default_unchanged": true,
+  "automatic_managed_switching_accepted": false,
+  "performance_claim": false,
+  "targeted_storage": {
+    "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/profiles-02/storage-business.json",
+    "sha256": "2f899442139789a2f031266dfd07c46a6ef574265178583c2543c61ad15668db",
+    "status": "PASS_ACTUAL_STORAGE_ACROSS_MODEL_SHUTDOWN",
+    "conversation_id": "conv_b0ac9bd7beb4a3d426a770867d78d84e",
+    "metadata": {
+      "checkpoint": "controller-stop-20261113"
+    },
+    "control_requests": 4,
+    "persisted_across_restart": true,
+    "explicit_delete": true
+  }
+}

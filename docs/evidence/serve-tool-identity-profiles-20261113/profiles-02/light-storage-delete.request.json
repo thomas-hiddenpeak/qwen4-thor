@@ -1,0 +1,13 @@
+{
+  "action": "conversation_delete",
+  "request": null,
+  "id": "conv_b0ac9bd7beb4a3d426a770867d78d84e",
+  "query": null,
+  "base_url": "http://127.0.0.1:19069/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "<redacted-validation-credential>"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

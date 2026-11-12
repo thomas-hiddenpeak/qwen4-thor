@@ -1,0 +1,75 @@
+{
+  "status": "PASS_BOUNDED_FEATURE_SERVICE",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 111.6887475270778,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 346
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 2692574632048130
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2692611101536198
+      },
+      {
+        "kind": "chats",
+        "label": "namespace-call",
+        "ordinal": 2,
+        "monotonic_ns": 2692613232926687
+      },
+      {
+        "kind": "probes",
+        "label": "root-version-device-proof",
+        "ordinal": 1,
+        "monotonic_ns": 2692621077387586
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 2,
+        "monotonic_ns": 2692628354484129
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 3,
+        "monotonic_ns": 2692662584980173
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-follow",
+        "ordinal": 4,
+        "monotonic_ns": 2692665451925255
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 2076415,
+      "start_ticks": 269257463
+    },
+    "2": {
+      "pid": 2077333,
+      "start_ticks": 269262835
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+    "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+  },
+  "scenario": "tool_version",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

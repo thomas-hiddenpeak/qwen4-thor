@@ -1,0 +1,10 @@
+[PASS] responses_execution_commits_actual_ordered_events_and_usage
+[PASS] responses_namespace_persistence_restart_and_queued_history
+  CHECK failed: ValidateResponsesItemShape(stored.value, ResponsesItemShape::kConversation, &error) (line 1198)
+[FAIL] responses_custom_output_projection_keeps_conversation_lifecycle
+[PASS] responses_state_tool_result_resolves_original_call_identity
+[PASS] responses_output_parallel_function_custom_and_order
+[PASS] responses_output_failure_has_no_success_or_tool_done
+[PASS] responses_namespace_json_sse_and_fragments_keep_public_calls
+[PASS] responses_custom_output_projection_all_terminal_states
+8 tests, 7 passed, 1 failed, 0 skipped

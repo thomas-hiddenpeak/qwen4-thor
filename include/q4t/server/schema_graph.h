@@ -13,6 +13,7 @@
 namespace q4t::server {
 
 struct SchemaPrefixValue;
+enum class OutputSchemaPurpose { kGeneration, kToolResult };
 
 // Deterministic value identity for a bounded worker receipt. Exact decimal
 // equality and object-key order independence match schema const/enum checks.
@@ -26,7 +27,8 @@ class OutputSchemaGraph {
   using StringCheck =
       std::function<Status(const io::Json&, std::string_view, size_t*, bool*)>;
   Status Init(const io::Json& root, bool strict, std::string* error_param,
-              std::string_view path = "schema");
+              std::string_view path = "schema",
+              OutputSchemaPurpose purpose = OutputSchemaPurpose::kGeneration);
   Status Check(const io::Json& value, const StringCheck& strings = {}) const;
   Status CheckNode(const io::Json& schema, const io::Json& value,
                    const StringCheck& strings = {}) const;
@@ -52,6 +54,7 @@ class OutputSchemaGraph {
   const io::Json* root_ = nullptr;
   std::string* error_param_ = nullptr;
   bool strict_ = false;
+  OutputSchemaPurpose purpose_ = OutputSchemaPurpose::kGeneration;
   bool valid_ = false;
   size_t property_count_ = 0;
   size_t enum_count_ = 0;

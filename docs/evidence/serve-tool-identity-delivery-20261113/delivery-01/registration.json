@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+    "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "87410126-1479-44fa-b5f9-ac60de0f0b98",
+    "root_manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+        "binding_sha256": "bd4dcc6014a71f62dd768893c150c383b9b3dc2fc9fb16d5374f02428f4ae8a5"
+      },
+      "fallback": {
+        "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386",
+        "binding_sha256": "21e6e949572655601c762e78f50c0d1276e8266fcfeab28f2a9498d040af5f9b"
+      }
+    },
+    "compatibility_sha256": "c6d5393efd4396fd1a7b01b93c9273d99cc873c7b0af93c03059f81cd36c9f9e",
+    "qualification_sha256": "72ef3c90a9cda5d2b1c6072ee4ca54b5560667146638d00dff2cbd86d24f0180"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/service-release.json",
+      "sha256": "cc0097cb0104ba4c1072435f8cf9145b23183a57cc970e9545d5014e9fb691b2"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/decision.json",
+      "sha256": "9f0e6ddf14a5b59fb99bbe2e6f695600e548ca874c19de9f5ded5775d4dc98ab"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+        "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+      },
+      "binding": {
+        "binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+        "protocol_sha256": "b5f1454a1893c17f2c344b761b49658b0c2884beb92ab209ce9a30fbef9a020e",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+        "controller_sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+        "ingress_sha256": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+        "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386"
+      },
+      "binding": {
+        "binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+        "protocol_sha256": "b5f1454a1893c17f2c344b761b49658b0c2884beb92ab209ce9a30fbef9a020e",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+        "controller_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+        "ingress_sha256": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a"
+      }
+    }
+  }
+}

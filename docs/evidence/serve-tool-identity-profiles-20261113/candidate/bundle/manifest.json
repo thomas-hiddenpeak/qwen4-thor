@@ -1,0 +1,3376 @@
+{
+  "version": 18,
+  "profile": "q4t-service-recovery-v18",
+  "repository": "/home/rm01/models/dev/qwen4-thor",
+  "ingress_mode": "native",
+  "engine_manifest_sha256": "3fd7e46a359b3a1e18f907c141cccdcfc6cce98534e5e00f1259f7eed57836cd",
+  "files": {
+    "bin/q4t-guardian": "383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc",
+    "bin/q4t-cuda-probe": "9bcdbb39273e2bdf6e68909a81a0eba56bee2dde3d7a7842a9e5b7ddc80ddb8e",
+    "bin/q4t-ingress": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a",
+    "bin/q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f",
+    "source/tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "source/tools/evalscope/gpu_exclusive.py": "7cfbae4d8f6caf151aa816c1bb1a580301c329f9c31e591879ebb5b5c0e3a351",
+    "source/tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "source/tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "source/tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
+    "source/tools/serve_gateway/gateway.py": "f462696017284cdd57e6f8579e3f80d3154b63bb3fe6dd8ad357b371dd457e00",
+    "source/tools/serve_gateway/tls.py": "ee751d5f93c7819dce25dfa0d4aff6f55593b3423314e3f293d657ee76621775",
+    "source/tools/serve_host/native.py": "a565d35cde165245745cab54445ca0400483265887bba45725788ec8f4030206",
+    "source/tools/serve_host/native_exporter.py": "086b1c3ced3471a35cd0450a58e132ca65177fffe141ff4016bc73b6fb1dd482",
+    "source/tools/serve_ops/contracts.py": "a786df6522bd929c53990e7b130fdb29eb211f063e2fdea685b0b2f7d3dac298",
+    "source/tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+    "source/tools/serve_ops/transport.py": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa",
+    "source/tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
+    "source/tools/serve_recovery/access_io.py": "f41f73140426ecbc9968874e123cb7159bdefeb1b89c207cf9ba2bc3fe3102f0",
+    "source/tools/serve_recovery/access_manager.py": "337d6848235ba35d63b603e72c055343472360d00060b5fe80417025553b238d",
+    "source/tools/serve_recovery/access_policy.py": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0",
+    "source/tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
+    "source/tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
+    "source/tools/serve_recovery/bundle.py": "c0d877760b8eabdbb949a373a9ebcd352c18d4cafdb8040f5a499fdd4bdcdc71",
+    "source/tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
+    "source/tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
+    "source/tools/serve_recovery/cold_authority.py": "2243d2e0d2828e70d7e0431869ce270673bd2f75cde4712675214db9f6542807",
+    "source/tools/serve_recovery/cold_channel.py": "e27649148f17f667aa105046c5d84f7817a78f213f584c7c39488239f1fe130f",
+    "source/tools/serve_recovery/cold_client.py": "6411593a4cf2d47aa3cf543bafeab58028516a640280d3cc7487e33e36cbd055",
+    "source/tools/serve_recovery/cold_compat.py": "126c0959af0040e1304fe2d6660882248252cc59471596f17f8ad2b132304334",
+    "source/tools/serve_recovery/cold_custody.py": "8b84fd53d8d2de9e2c3e223cd15021b11c3c0ed7b4b362653b76ac1b15f8d264",
+    "source/tools/serve_recovery/cold_host.py": "7cd677c8b22dddae424c20a8871605c8bc33fe816ab9f686e5fb33b4668287c1",
+    "source/tools/serve_recovery/cold_issuer.py": "00ae8d7ea252c755ec78b1adfec716bff0a59c7f0735eab500bd8af6cde32161",
+    "source/tools/serve_recovery/cold_requests.py": "47b2090dfaaecd0aed09b3ab9a30cf6500a3d1a6181a314d087ce7c92b3ed89c",
+    "source/tools/serve_recovery/cold_verify.py": "e9c59e57b07cc479d8b099392d1703594a571d33149b9c4e0637fb7468334b9b",
+    "source/tools/serve_recovery/cold_watch.py": "b2a611dd90e0c82e0f1d4becc2fb48b61203722ebb6834d24c057495dca8d692",
+    "source/tools/serve_recovery/cold_watch_policy.py": "df5ae447d238ff4dfc7da1681637b22d4483962cf5fe327690894f7032663e1a",
+    "source/tools/serve_recovery/control.py": "24c6cc09bf2442637b23963dc061e966a5050ca4ee24652cd178cc2093961e90",
+    "source/tools/serve_recovery/controller.py": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+    "source/tools/serve_recovery/core_http.py": "91ed363e9aa38b14b643aab9b21dcd7d5bb5f3b5ef91cc6750d873f288d42c4c",
+    "source/tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
+    "source/tools/serve_recovery/deployment.py": "5c47635488b1ec762bb511b67eef0837213d97971727acd0cd44719ada8828b8",
+    "source/tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
+    "source/tools/serve_recovery/device_budget.py": "e98a4dc142eb246d009b9d65b814f43bced006ed8fab54bcc0e7a13da160ae02",
+    "source/tools/serve_recovery/device_control.py": "aedf363009938adc0225722bda104af07987dad83e984697e2422272f900a57c",
+    "source/tools/serve_recovery/device_domain.py": "e3776d3795a8e363136c0ca44291e362167eb3ed5539d276f850b3b43bd9e512",
+    "source/tools/serve_recovery/device_inventory.py": "e4599edb0110d486a368f08cd1f5d32460f90b8908bed3b3e0dfe570ed01e732",
+    "source/tools/serve_recovery/device_platform.py": "325bbadd21fa41c56603c45d9bbb4f338fe549624d838cd3072827716221ac18",
+    "source/tools/serve_recovery/device_resource.py": "8e7a121ccc4d4369dcca9d5ffd30c4d73fea8fd33fd3daf97445d4fa7fb25ec1",
+    "source/tools/serve_recovery/device_store.py": "7a6078aa4a5f30898baa02169e788b20d86f6ebd1bdf389e4861c240d1f9989c",
+    "source/tools/serve_recovery/gateway.py": "272b1a66c251dd6aede2c78d53bcf3a424c4cbb5cbc561b64c3de324b287bacb",
+    "source/tools/serve_recovery/gateway_config.py": "9306adc5736c782a3efea0845cd9dcdf184e4668cde288e60b069da9dca1be7d",
+    "source/tools/serve_recovery/host_artifact.py": "94cf594a7bfefe3a1fafe19fb70ca8c3a1060c219cdb624cca609cc4e4f68c79",
+    "source/tools/serve_recovery/host_entry.py": "e930b878c2d7d29621863e4f371884b75f163a0bfdacc641ce0bdc752cc47940",
+    "source/tools/serve_recovery/host_handoff.py": "0d88e5d81c07a23d441ad5c2e9afbaca6fca4f7cc6cd68c1158a00d3be9f9431",
+    "source/tools/serve_recovery/host_install.py": "b46fa6e3f49fbec060c3370e651fea875f336df7a44765c7a20ce486dbe3170e",
+    "source/tools/serve_recovery/host_systemd.py": "a96063e872082648838bb08d47340dfcee18828371d61e65354314e789755e38",
+    "source/tools/serve_recovery/initialization.py": "652788a3e8950af69d5c70abb92d046a532c20fc128f1279f6a8baf20ab3296d",
+    "source/tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
+    "source/tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
+    "source/tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
+    "source/tools/serve_recovery/lifecycle.py": "570d972afda7a6d14db17872db982c576417aadbc24491c7a2c5f3dae69115e6",
+    "source/tools/serve_recovery/model_admin.py": "ec2780d8cad6a5c7e423c6c15d27fda9394815e5182637077a6ad0bcf17c4542",
+    "source/tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
+    "source/tools/serve_recovery/native_ingress.py": "99bdfa02800e38215e58d189d2ad91fe440a94ef582bf6ac4b69bb17ff4cb4cc",
+    "source/tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "source/tools/serve_recovery/outer_control.py": "b490729dac4c8e2cfe05505a04ef3002a3c6b5ce720391c3843abeca1f9cf94d",
+    "source/tools/serve_recovery/outer_daemon.py": "87aabdf77883e7b51c8bf19c2934957ae3e307c57658021690f90b9809fe83b3",
+    "source/tools/serve_recovery/outer_instance.py": "41a10ff6f59f67bf631d08df99cc96302c7511aaba1e2641ab3ef2a906d06154",
+    "source/tools/serve_recovery/outer_manager.py": "2bfbfbded703c03e46c0de93a9b1c81a644344e5624e2b64d93abbd3a6b431ae",
+    "source/tools/serve_recovery/outer_observe.py": "b8dcea7d7610bc90c7230cf5f4b827b5a9af2f64cc5c1d033dd69e37b6391eb6",
+    "source/tools/serve_recovery/outer_policy.py": "7d2218d0b0d5f6d16a1f95f18ee9b81d45a2e057f8d8646ce3bb75b628d6fffd",
+    "source/tools/serve_recovery/outer_reconcile.py": "e2999f84538a1b390553c1163726c2cf5c9a28f0d3dbe532aa617d6373d2c4c9",
+    "source/tools/serve_recovery/outer_runtime.py": "d9b7e561c516b712afbb2807f29e2df66993d51d71c77d2d620311ea5d242dad",
+    "source/tools/serve_recovery/outer_store.py": "cb62fc68bd0942f532b25b8e5937ca18f5b30d2ed56d709d9bb3754a8e59c39b",
+    "source/tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
+    "source/tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
+    "source/tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "source/tools/serve_recovery/profile_bundle.py": "b2f033b9fd3b6b1136223fda0766652879acf884e14037e911f17d49744ba294",
+    "source/tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
+    "source/tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
+    "source/tools/serve_recovery/profile_controller.py": "ad8a1d5ea07b6ec92725a930e58c9496d0fc6b608d09f41a871f5d0f3edc39de",
+    "source/tools/serve_recovery/profile_evidence.py": "79b26a30527f38cccea1d3db2a019872646484b638b94bffb4c33d2bf7da7cc8",
+    "source/tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
+    "source/tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
+    "source/tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
+    "source/tools/serve_recovery/profile_migration.py": "8450f4c8427788341b5467ed1bec6d284c90e03556e379642f415c67e9db9668",
+    "source/tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
+    "source/tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
+    "source/tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "source/tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
+    "source/tools/serve_recovery/publication.py": "a3211f3c1e117f0f7922fa8f3ddaed7aaeab36d9293ae4a3324f8f78930b0205",
+    "source/tools/serve_recovery/publication_files.py": "9db760bdf1ecf5494fc4474b4fbac2e2b87f734f847b590548e325f5b3d83ec1",
+    "source/tools/serve_recovery/publication_journal.py": "29fb6a8ab795ef6f532de2a3c8eebd6ca2470799c7b181a7e1acae20e4578ee6",
+    "source/tools/serve_recovery/publication_policy.py": "2d5d71e710b85aeb8410ccf9f7d74d05e4995396299042eccaef5b099562b979",
+    "source/tools/serve_recovery/quota_control.py": "5c1852d88c00af0de630c0fefaf9f161b96bc724d8e09b6f96efee226b7bb0df",
+    "source/tools/serve_recovery/quota_manager.py": "259b0380d9bc0ad48a5094d1b35c5fb0a013e79de4b92fbf7b35d44d02814df6",
+    "source/tools/serve_recovery/quota_policy.py": "65aa19785e2c952e251b1f893f5ec89894dfec6449020d9892d7fdf10d407134",
+    "source/tools/serve_recovery/quota_runtime.py": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a",
+    "source/tools/serve_recovery/quota_store.py": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887",
+    "source/tools/serve_recovery/resource_client.py": "eaf41ac8a9eccdf261007b80887b7a6fd9eda95a58290ab65cda196dcfbc6f92",
+    "source/tools/serve_recovery/resource_compat.py": "1364a46b90f4477d48a62ef4a35141d4a555bbe777a307df9c36438236ca41c1",
+    "source/tools/serve_recovery/resource_install.py": "aba10096486af383c546be07b4356ccaa702e6c037e63fb42426bbdd1b2a07b7",
+    "source/tools/serve_recovery/resource_kernel.py": "13024a2a1759f15c2e83b963c23144553b21853d5911c16160bf3ca53af45cbf",
+    "source/tools/serve_recovery/resource_launch.py": "87c545ac01484ec785141611cf30470a8d633d5942afd4176e7342829aa608cf",
+    "source/tools/serve_recovery/resource_memory.py": "dbecfdcaa361d1abbe10757c0b91f8e467447e124f48573c94fca7a08ef7e967",
+    "source/tools/serve_recovery/resource_reconcile.py": "603a66c3c006a3b05b13b80d2c6072014e08d289a9c058faa5cf2f60c3c8d5ed",
+    "source/tools/serve_recovery/retention.py": "e9174f5bec4241a26847ceeaf0e0c3b708b1557e341a7fccc2623e93d5fbb862",
+    "source/tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
+    "source/tools/serve_recovery/runtime_identity.py": "49c737a851df8afe97da6c9d5897f54f2759e3447939f5577940dba735aa5708",
+    "source/tools/serve_recovery/service.py": "4d37bc2cb456b08407aadee892543ea6ea9cd7a31baa6f7ef712f18f9bf8e501",
+    "source/tools/serve_recovery/store.py": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d",
+    "source/tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "source/tools/serve_recovery/usage_control.py": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc",
+    "source/tools/serve_recovery/usage_io.py": "8fb62bf04aa3cc1a8602bf3b79b3efdebdf6a80fe0561502596e98db07071472",
+    "source/tools/serve_recovery/usage_manager.py": "c275ce265478e351c0bde8b6d863d8902995050f308eaaefa272295217f7ed2a",
+    "source/tools/serve_recovery/usage_policy.py": "405fef4ee1f953b12a04e40ea74c67d2d445e7a4f55a6499b0414e0c7e2f61f0",
+    "source/tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
+    "source/tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
+    "source/tools/serve_recovery/version_contract.py": "5b4c1e98abfc2aa7f921df362057f7a07b744ba2e598a65a6cda58f16d991bd6",
+    "source/tools/serve_recovery/version_journal.py": "f3d0ac689ffa0db5a6e1288d6c3950cfbfdae6e560a714d04134973f15f50a8c",
+    "source/tools/serve_recovery/version_launch.py": "9a3c5408b3094e9a47a393b5c72a3a96fb573969409c02e64c2a8c695d1b953d",
+    "source/tools/serve_recovery/version_policy.py": "c3c1523aac27544af3f3d9149c275a015a040987ebb463abb2895543f28d48d6",
+    "source/tools/serve_recovery/version_registration.py": "da973cbeee3e92a52234c7e80c81c4cdd9d05ae1613ae1b83db78a5d02189f0d",
+    "source/tools/serve_recovery/version_runtime.py": "c831ef805a88c9c9966c4717c1dcdd4fd29c069776b813f975e6df64c1e060e2",
+    "source/tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
+    "source/tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "source/tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "source/tools/serve_service/capacity.py": "1ea72fb1a54f80200a18a59acd04161eec5b2a54d2dd0fe5cf55acae9182f526",
+    "source/tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "source/tools/serve_service/memory.py": "24c5d82e19553890f280f9f77242c768a73ffbf161dea3e99e3ef4ec688a8e3f",
+    "source/tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
+    "source/tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "source/tools/serve_service/package.py": "6601f908bd70ca908f7d75fb8d76669ba4aedbde0e53fa19f73dc2ca0b7258a6",
+    "source/tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "source/tools/serve_service/service.py": "27ef45f21a601d9050e1fb1fd95371c6addc89cecdf078be823b1fd6af68bc2d",
+    "source/tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
+    "source/tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "gateway-policy.json": "313d3a8acceb3a40f73d6d509f77a98e9cec7218919bf272e8d48ea2484500b8",
+    "native-build.json": "b28da0b309c71b135c71a6ea1647a581f0a7a2a1097975500465589b106af69b",
+    "profile-primary.json": "108d2232bb3b0c6db09073034026c3327d8eb90ab80147ab746a028edc8aa80a",
+    "profile-light.json": "bee96f3289c35b52de0d51e9cd5ccc79a9e74de564284ccbaa439207daddd942"
+  },
+  "python": {
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "model_assets": {
+    "config.json": {
+      "dev": 66305,
+      "ino": 3293800,
+      "size": 4983,
+      "mtime_ns": 1788440422497571932,
+      "ctime_ns": 1788440422501571931
+    },
+    "configuration.json": {
+      "dev": 66305,
+      "ino": 3293802,
+      "size": 76,
+      "mtime_ns": 1788440422485571936,
+      "ctime_ns": 1788440422485571936
+    },
+    "generation_config.json": {
+      "dev": 66305,
+      "ino": 3293804,
+      "size": 202,
+      "mtime_ns": 1788440422469571940,
+      "ctime_ns": 1788440422469571940
+    },
+    "hf_quant_config.json": {
+      "dev": 66305,
+      "ino": 3293805,
+      "size": 504,
+      "mtime_ns": 1788440422473571939,
+      "ctime_ns": 1788440422477571938
+    },
+    "layer-00000-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293810,
+      "size": 354098208,
+      "mtime_ns": 1788440446477565178,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00000-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293811,
+      "size": 354099528,
+      "mtime_ns": 1788440448761564571,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00000-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293806,
+      "size": 354099528,
+      "mtime_ns": 1788440462149561133,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00000-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293813,
+      "size": 354099528,
+      "mtime_ns": 1788440436829567812,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00001-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293812,
+      "size": 354098208,
+      "mtime_ns": 1788440460621561515,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00001-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293809,
+      "size": 354099528,
+      "mtime_ns": 1788440465905560206,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00001-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293814,
+      "size": 354099528,
+      "mtime_ns": 1788440472253558676,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00001-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293815,
+      "size": 354099528,
+      "mtime_ns": 1788440435633568146,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00002-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293816,
+      "size": 354098208,
+      "mtime_ns": 1788440460069561653,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00002-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293817,
+      "size": 354099528,
+      "mtime_ns": 1788440447765564835,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00002-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293818,
+      "size": 354099528,
+      "mtime_ns": 1788440458901561948,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00002-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293819,
+      "size": 354099528,
+      "mtime_ns": 1788440462009561168,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00003-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293820,
+      "size": 354098208,
+      "mtime_ns": 1788440471117558946,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00003-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293821,
+      "size": 354099528,
+      "mtime_ns": 1788440476937557575,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00003-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293822,
+      "size": 354099528,
+      "mtime_ns": 1788440498597552801,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00003-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293823,
+      "size": 354099528,
+      "mtime_ns": 1788440479765556923,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00004-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293824,
+      "size": 354098208,
+      "mtime_ns": 1788440501865552124,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00004-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293825,
+      "size": 354099528,
+      "mtime_ns": 1788440481853556446,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00004-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293826,
+      "size": 354099528,
+      "mtime_ns": 1788440499945552520,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00004-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293827,
+      "size": 354099528,
+      "mtime_ns": 1788440501965552104,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00005-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293828,
+      "size": 354098208,
+      "mtime_ns": 1788440491945554213,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00005-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293829,
+      "size": 354099528,
+      "mtime_ns": 1788440488889554878,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00005-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293830,
+      "size": 354099528,
+      "mtime_ns": 1788440510169550456,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00005-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293831,
+      "size": 354099528,
+      "mtime_ns": 1788440508749550737,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00006-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293832,
+      "size": 354098208,
+      "mtime_ns": 1788440516613549212,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00006-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293833,
+      "size": 354099528,
+      "mtime_ns": 1788440507605550964,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00006-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293834,
+      "size": 354099528,
+      "mtime_ns": 1788440526529547380,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00006-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293835,
+      "size": 354099528,
+      "mtime_ns": 1788440529833546791,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00007-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293836,
+      "size": 354098208,
+      "mtime_ns": 1788440516241549282,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00007-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293837,
+      "size": 354099528,
+      "mtime_ns": 1788440525849547502,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00007-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293838,
+      "size": 354099528,
+      "mtime_ns": 1788440539633545111,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00007-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293839,
+      "size": 354099528,
+      "mtime_ns": 1788440525241547612,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00008-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293840,
+      "size": 354098208,
+      "mtime_ns": 1788440544697544279,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00008-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293841,
+      "size": 354099528,
+      "mtime_ns": 1788440530133546738,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00008-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293842,
+      "size": 354099528,
+      "mtime_ns": 1788440543989544394,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00008-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293843,
+      "size": 354099528,
+      "mtime_ns": 1788440548085543737,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00009-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293844,
+      "size": 354098208,
+      "mtime_ns": 1788440549557543505,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00009-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293845,
+      "size": 354099528,
+      "mtime_ns": 1788440553777542851,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00009-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293846,
+      "size": 354099528,
+      "mtime_ns": 1788440543793544426,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00009-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293847,
+      "size": 354099528,
+      "mtime_ns": 1788440566693540956,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00010-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293848,
+      "size": 354099744,
+      "mtime_ns": 1788440577049539548,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00010-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293849,
+      "size": 354101064,
+      "mtime_ns": 1788440556445542447,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00010-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293850,
+      "size": 354101064,
+      "mtime_ns": 1788440581893538924,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00010-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293851,
+      "size": 354101064,
+      "mtime_ns": 1788440560109541902,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00011-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293852,
+      "size": 354099744,
+      "mtime_ns": 1788440589981537929,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00011-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293853,
+      "size": 354101064,
+      "mtime_ns": 1788440591925537699,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00011-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293854,
+      "size": 354101064,
+      "mtime_ns": 1788440565565541115,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00011-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293855,
+      "size": 354101064,
+      "mtime_ns": 1788440596137537211,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00012-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293856,
+      "size": 354099744,
+      "mtime_ns": 1788440571073540348,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00012-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293857,
+      "size": 354101064,
+      "mtime_ns": 1788440602053536552,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00012-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293858,
+      "size": 354101064,
+      "mtime_ns": 1788440607753535946,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00012-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293859,
+      "size": 354101064,
+      "mtime_ns": 1788440580805539063,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00013-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293860,
+      "size": 354099744,
+      "mtime_ns": 1788440588381538121,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00013-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293861,
+      "size": 354101064,
+      "mtime_ns": 1788440591529537746,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00013-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293862,
+      "size": 354101064,
+      "mtime_ns": 1788440620497534692,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00013-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293863,
+      "size": 354101064,
+      "mtime_ns": 1788440598325536964,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00014-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293864,
+      "size": 354099744,
+      "mtime_ns": 1788440628285533993,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00014-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293865,
+      "size": 354101064,
+      "mtime_ns": 1788440628105534009,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00014-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293866,
+      "size": 354101064,
+      "mtime_ns": 1788440633213533577,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00014-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293867,
+      "size": 354101064,
+      "mtime_ns": 1788440635373533401,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00015-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293868,
+      "size": 354099744,
+      "mtime_ns": 1788440609473535769,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00015-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293869,
+      "size": 354101064,
+      "mtime_ns": 1788440613849535329,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00015-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293870,
+      "size": 354101064,
+      "mtime_ns": 1788440651329532217,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00015-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293871,
+      "size": 354101064,
+      "mtime_ns": 1788440646037532587,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00016-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293872,
+      "size": 354099744,
+      "mtime_ns": 1788440623461534421,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00016-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293873,
+      "size": 354101064,
+      "mtime_ns": 1788440633797533529,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00016-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293874,
+      "size": 354101064,
+      "mtime_ns": 1788440635093533423,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00016-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293875,
+      "size": 354101064,
+      "mtime_ns": 1788440651185532227,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00017-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293876,
+      "size": 354099744,
+      "mtime_ns": 1788440642837532822,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00017-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293877,
+      "size": 354101064,
+      "mtime_ns": 1788440664677531381,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00017-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293878,
+      "size": 354101064,
+      "mtime_ns": 1788440652145532162,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00017-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293879,
+      "size": 354101064,
+      "mtime_ns": 1788440668613531161,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00018-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293880,
+      "size": 354099744,
+      "mtime_ns": 1788440647101532511,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00018-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293881,
+      "size": 354101064,
+      "mtime_ns": 1788440679697530605,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00018-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293882,
+      "size": 354101064,
+      "mtime_ns": 1788440669809531097,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00018-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293883,
+      "size": 354101064,
+      "mtime_ns": 1788440665049531360,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00019-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293884,
+      "size": 354099744,
+      "mtime_ns": 1788440683457530437,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00019-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293885,
+      "size": 354101064,
+      "mtime_ns": 1788440680141530585,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00019-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293886,
+      "size": 354101064,
+      "mtime_ns": 1788440662657531499,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00019-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293887,
+      "size": 354101064,
+      "mtime_ns": 1788440698945529857,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00020-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293888,
+      "size": 354099744,
+      "mtime_ns": 1788440679153530630,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00020-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293889,
+      "size": 354101064,
+      "mtime_ns": 1788440681857530507,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00020-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293890,
+      "size": 354101064,
+      "mtime_ns": 1788440707285529616,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00020-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293891,
+      "size": 354101064,
+      "mtime_ns": 1788440689681530183,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00021-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293892,
+      "size": 354099744,
+      "mtime_ns": 1788440700289529815,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00021-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293893,
+      "size": 354101064,
+      "mtime_ns": 1788440711305529518,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00021-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293894,
+      "size": 354101064,
+      "mtime_ns": 1788440711621529510,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00021-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293895,
+      "size": 354101064,
+      "mtime_ns": 1788440694017530023,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00022-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293896,
+      "size": 354099744,
+      "mtime_ns": 1788440715237529433,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00022-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293897,
+      "size": 354101064,
+      "mtime_ns": 1788440721081529326,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00022-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293898,
+      "size": 354101064,
+      "mtime_ns": 1788440706697529632,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00022-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293899,
+      "size": 354101064,
+      "mtime_ns": 1788440728837529221,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00023-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293900,
+      "size": 354099744,
+      "mtime_ns": 1788440717477529389,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00023-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293901,
+      "size": 354101064,
+      "mtime_ns": 1788440725349529263,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00023-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293902,
+      "size": 354101064,
+      "mtime_ns": 1788440720981529328,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00023-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293903,
+      "size": 354101064,
+      "mtime_ns": 1788440742657529135,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00024-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293904,
+      "size": 354099744,
+      "mtime_ns": 1788440742737529134,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00024-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293905,
+      "size": 354101064,
+      "mtime_ns": 1788440749649529139,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00024-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293906,
+      "size": 354101064,
+      "mtime_ns": 1788440735265529165,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00024-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293907,
+      "size": 354101064,
+      "mtime_ns": 1788440737161529153,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00025-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293908,
+      "size": 354099744,
+      "mtime_ns": 1788440748101529136,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00025-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293909,
+      "size": 354101064,
+      "mtime_ns": 1788440752185529149,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00025-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293910,
+      "size": 354101064,
+      "mtime_ns": 1788440752197529149,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00025-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293911,
+      "size": 354101064,
+      "mtime_ns": 1788440752985529153,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00026-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293912,
+      "size": 354099744,
+      "mtime_ns": 1788440758593529192,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00026-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293913,
+      "size": 354101064,
+      "mtime_ns": 1788440771449529357,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00026-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293914,
+      "size": 354101064,
+      "mtime_ns": 1788440763949529248,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00026-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293915,
+      "size": 354101064,
+      "mtime_ns": 1788440776145529444,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00027-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293916,
+      "size": 354099744,
+      "mtime_ns": 1788440766965529288,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00027-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293919,
+      "size": 354101064,
+      "mtime_ns": 1788440769533529326,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00027-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293918,
+      "size": 354101064,
+      "mtime_ns": 1788440787621529712,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00027-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293917,
+      "size": 354101064,
+      "mtime_ns": 1788440781257529553,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00028-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293920,
+      "size": 354099744,
+      "mtime_ns": 1788440777309529467,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00028-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293921,
+      "size": 354101064,
+      "mtime_ns": 1788440787037529696,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00028-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293922,
+      "size": 354101064,
+      "mtime_ns": 1788440792525529851,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00028-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293923,
+      "size": 354101064,
+      "mtime_ns": 1788440787057529696,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00029-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293924,
+      "size": 354099744,
+      "mtime_ns": 1788440818433530822,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00029-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293925,
+      "size": 354101064,
+      "mtime_ns": 1788440793745529888,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00029-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293926,
+      "size": 354101064,
+      "mtime_ns": 1788440802957530194,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00029-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293927,
+      "size": 354101064,
+      "mtime_ns": 1788440806889530341,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00030-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293928,
+      "size": 354099744,
+      "mtime_ns": 1788440805069530271,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00030-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293929,
+      "size": 354101064,
+      "mtime_ns": 1788440809357530437,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00030-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293930,
+      "size": 354101064,
+      "mtime_ns": 1788440813669530614,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00030-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293931,
+      "size": 354101064,
+      "mtime_ns": 1788440814837530663,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00031-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293932,
+      "size": 354099744,
+      "mtime_ns": 1788440812893530581,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00031-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293933,
+      "size": 354101064,
+      "mtime_ns": 1788440822029530987,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00031-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293934,
+      "size": 354101064,
+      "mtime_ns": 1788440838333531829,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00031-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293935,
+      "size": 354101064,
+      "mtime_ns": 1788440826049531181,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00032-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293936,
+      "size": 354099744,
+      "mtime_ns": 1788440828713531314,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00032-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293937,
+      "size": 354101064,
+      "mtime_ns": 1788440832657531519,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00032-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293938,
+      "size": 354101064,
+      "mtime_ns": 1788440846289532293,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00032-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293939,
+      "size": 354101064,
+      "mtime_ns": 1788440846785532323,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00033-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293940,
+      "size": 354099744,
+      "mtime_ns": 1788440849389532482,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00033-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293941,
+      "size": 354101064,
+      "mtime_ns": 1788440840117531930,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00033-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293942,
+      "size": 354101064,
+      "mtime_ns": 1788440845841532266,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00033-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293943,
+      "size": 354101064,
+      "mtime_ns": 1788440848869532451,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00034-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293944,
+      "size": 354099744,
+      "mtime_ns": 1788440855893532898,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00034-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293945,
+      "size": 354101064,
+      "mtime_ns": 1788440866305533610,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00034-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293946,
+      "size": 354101064,
+      "mtime_ns": 1788440859545533142,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00034-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293947,
+      "size": 354101064,
+      "mtime_ns": 1788440876489534361,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00035-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293948,
+      "size": 354099744,
+      "mtime_ns": 1788440878193534491,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00035-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293949,
+      "size": 354101064,
+      "mtime_ns": 1788440864945533514,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00035-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293950,
+      "size": 354101064,
+      "mtime_ns": 1788440880849534698,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00035-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293951,
+      "size": 354101064,
+      "mtime_ns": 1788440866301533610,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00036-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293952,
+      "size": 354099744,
+      "mtime_ns": 1788440878533534518,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00036-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293953,
+      "size": 354101064,
+      "mtime_ns": 1788440880417534664,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00036-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293954,
+      "size": 354101064,
+      "mtime_ns": 1788440890253535459,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00036-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293957,
+      "size": 354101064,
+      "mtime_ns": 1788440890073535444,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00037-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293956,
+      "size": 354099744,
+      "mtime_ns": 1788440887349535219,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00037-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293955,
+      "size": 354101064,
+      "mtime_ns": 1788440898297536145,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00037-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293958,
+      "size": 354101064,
+      "mtime_ns": 1788440899517536251,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00037-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293959,
+      "size": 354101064,
+      "mtime_ns": 1788440903245536582,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00038-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293960,
+      "size": 354099744,
+      "mtime_ns": 1788440907869537002,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00038-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293961,
+      "size": 354101064,
+      "mtime_ns": 1788440910117537209,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00038-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293962,
+      "size": 354101064,
+      "mtime_ns": 1788440908953537102,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00038-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293963,
+      "size": 354101064,
+      "mtime_ns": 1788440912293537413,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00039-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293964,
+      "size": 354099744,
+      "mtime_ns": 1788440916357537799,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00039-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293965,
+      "size": 354101064,
+      "mtime_ns": 1788440919553538107,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00039-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293966,
+      "size": 354101064,
+      "mtime_ns": 1788440930389539190,
+      "ctime_ns": 1793470850391156668
+    },
+    "layer-00039-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293967,
+      "size": 354101064,
+      "mtime_ns": 1788440924429538588,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00040-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293968,
+      "size": 354099744,
+      "mtime_ns": 1788440936505539825,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00040-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293969,
+      "size": 354101064,
+      "mtime_ns": 1788440932321539388,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00040-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293970,
+      "size": 354101064,
+      "mtime_ns": 1788440939929540188,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00040-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293971,
+      "size": 354101064,
+      "mtime_ns": 1788440930089539159,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00041-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293972,
+      "size": 354099744,
+      "mtime_ns": 1788440939985540193,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00041-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293973,
+      "size": 354101064,
+      "mtime_ns": 1788440938325540017,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00041-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293974,
+      "size": 354101064,
+      "mtime_ns": 1788440954841325380,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00041-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293975,
+      "size": 354101064,
+      "mtime_ns": 1788440949193436630,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00042-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293976,
+      "size": 354099744,
+      "mtime_ns": 1788440966965090277,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00042-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293977,
+      "size": 354101064,
+      "mtime_ns": 1788440950853403817,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00042-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293978,
+      "size": 354101064,
+      "mtime_ns": 1788440955745307676,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00042-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293979,
+      "size": 354101064,
+      "mtime_ns": 1788440956313296569,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00043-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293980,
+      "size": 354099744,
+      "mtime_ns": 1788440973684962114,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00043-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293981,
+      "size": 354101064,
+      "mtime_ns": 1788440972300988387,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00043-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293982,
+      "size": 354101064,
+      "mtime_ns": 1788440966441100338,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00043-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293983,
+      "size": 354101064,
+      "mtime_ns": 1788440968325064220,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00044-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293984,
+      "size": 354099744,
+      "mtime_ns": 1788440984372761362,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00044-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293985,
+      "size": 354101064,
+      "mtime_ns": 1788440983796772085,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00044-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293986,
+      "size": 354101064,
+      "mtime_ns": 1788440973952957032,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00044-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293987,
+      "size": 354101064,
+      "mtime_ns": 1788440992348613983,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00045-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293988,
+      "size": 354099744,
+      "mtime_ns": 1788440991880622572,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00045-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293989,
+      "size": 354101064,
+      "mtime_ns": 1788440986308725399,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00045-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293990,
+      "size": 354101064,
+      "mtime_ns": 1788440997492520019,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00045-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293991,
+      "size": 354101064,
+      "mtime_ns": 1788440997780514782,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00046-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293992,
+      "size": 354099744,
+      "mtime_ns": 1788440995844550028,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00046-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293993,
+      "size": 354101064,
+      "mtime_ns": 1788441011492268520,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00046-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293994,
+      "size": 354101064,
+      "mtime_ns": 1788441012180256317,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00046-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293995,
+      "size": 354101064,
+      "mtime_ns": 1788441006768352695,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00047-experts-0000-0127.safetensors": {
+      "dev": 66305,
+      "ino": 3293996,
+      "size": 354099744,
+      "mtime_ns": 1788441012344253412,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00047-experts-0128-0255.safetensors": {
+      "dev": 66305,
+      "ino": 3293997,
+      "size": 354101064,
+      "mtime_ns": 1788441019204132581,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00047-experts-0256-0383.safetensors": {
+      "dev": 66305,
+      "ino": 3293998,
+      "size": 354101064,
+      "mtime_ns": 1788441016376182219,
+      "ctime_ns": 1793470850395156649
+    },
+    "layer-00047-experts-0384-0511.safetensors": {
+      "dev": 66305,
+      "ino": 3293999,
+      "size": 354101064,
+      "mtime_ns": 1788441023668054726,
+      "ctime_ns": 1793470850395156649
+    },
+    "merges.txt": {
+      "dev": 66305,
+      "ino": 3294000,
+      "size": 3353259,
+      "mtime_ns": 1788440998460502431,
+      "ctime_ns": 1788440998464502358
+    },
+    "model-bf16-00001.safetensors": {
+      "dev": 66305,
+      "ino": 3294002,
+      "size": 1273114461,
+      "mtime_ns": 1788441072983233526,
+      "ctime_ns": 1793470850395156649
+    },
+    "model-bf16-00010.safetensors": {
+      "dev": 66305,
+      "ino": 3294003,
+      "size": 323564201,
+      "mtime_ns": 1788441027891981608,
+      "ctime_ns": 1793470850395156649
+    },
+    "model-bf16-00011.safetensors": {
+      "dev": 66305,
+      "ino": 3294005,
+      "size": 10727387912,
+      "mtime_ns": 1788441457602701387,
+      "ctime_ns": 1793470850395156649
+    },
+    "model-bf16-00012.safetensors": {
+      "dev": 66305,
+      "ino": 3294007,
+      "size": 3683689888,
+      "mtime_ns": 1788441195229472953,
+      "ctime_ns": 1793470850395156649
+    },
+    "model-plefp8-scale.safetensors": {
+      "dev": 66305,
+      "ino": 3294009,
+      "size": 146,
+      "mtime_ns": 1788441024148046389,
+      "ctime_ns": 1788441024152046319
+    },
+    "model.safetensors.index.json": {
+      "dev": 66305,
+      "ino": 3294010,
+      "size": 35429343,
+      "mtime_ns": 1788441027439989409,
+      "ctime_ns": 1788441027443989340
+    },
+    "mtp/config.json": {
+      "dev": 66305,
+      "ino": 3293801,
+      "size": 4983,
+      "mtime_ns": 1788440422485571936,
+      "ctime_ns": 1788440422485571936
+    },
+    "mtp/generation_config.json": {
+      "dev": 66305,
+      "ino": 3293803,
+      "size": 202,
+      "mtime_ns": 1788440422469571940,
+      "ctime_ns": 1788440422473571939
+    },
+    "mtp/hf_quant_config.json": {
+      "dev": 66305,
+      "ino": 3293807,
+      "size": 504,
+      "mtime_ns": 1788440422921571806,
+      "ctime_ns": 1788440422921571806
+    },
+    "mtp/merges.txt": {
+      "dev": 66305,
+      "ino": 3294001,
+      "size": 3353259,
+      "mtime_ns": 1788440999100490816,
+      "ctime_ns": 1788440999100490816
+    },
+    "mtp/model-bf16-00010.safetensors": {
+      "dev": 66305,
+      "ino": 3294004,
+      "size": 323564201,
+      "mtime_ns": 1788441029623951784,
+      "ctime_ns": 1788441029627951715
+    },
+    "mtp/model-bf16-00011.safetensors": {
+      "dev": 66305,
+      "ino": 3294006,
+      "size": 10727387912,
+      "mtime_ns": 1788441505830304351,
+      "ctime_ns": 1788441505834304319
+    },
+    "mtp/model-bf16-00012.safetensors": {
+      "dev": 66305,
+      "ino": 3294008,
+      "size": 3683689888,
+      "mtime_ns": 1788441190145539169,
+      "ctime_ns": 1788441190149539116
+    },
+    "mtp/model.safetensors.index.json": {
+      "dev": 66305,
+      "ino": 3294011,
+      "size": 2802,
+      "mtime_ns": 1788441027759983886,
+      "ctime_ns": 1788441027759983886
+    },
+    "mtp/preprocessor_config.json": {
+      "dev": 66305,
+      "ino": 3294012,
+      "size": 390,
+      "mtime_ns": 1788441028039979054,
+      "ctime_ns": 1788441028039979054
+    },
+    "mtp/tokenizer.json": {
+      "dev": 66305,
+      "ino": 3294018,
+      "size": 12809320,
+      "mtime_ns": 1788441029863947657,
+      "ctime_ns": 1788441029867947587
+    },
+    "mtp/tokenizer_config.json": {
+      "dev": 66305,
+      "ino": 3294020,
+      "size": 17928,
+      "mtime_ns": 1788441030155942639,
+      "ctime_ns": 1788441030159942571
+    },
+    "mtp/video_preprocessor_config.json": {
+      "dev": 66305,
+      "ino": 3294022,
+      "size": 385,
+      "mtime_ns": 1788441030755932338,
+      "ctime_ns": 1788441030755932338
+    },
+    "mtp/vocab.json": {
+      "dev": 66305,
+      "ino": 3294024,
+      "size": 6722759,
+      "mtime_ns": 1788441031623917455,
+      "ctime_ns": 1788441031627917386
+    },
+    "ple/qwen3.8-flash-next-ple-fp8.bin": {
+      "dev": 66305,
+      "ino": 3294016,
+      "size": 51200245760,
+      "mtime_ns": 1788444005571882565,
+      "ctime_ns": 1788444005571882565
+    },
+    "preprocessor_config.json": {
+      "dev": 66305,
+      "ino": 3294013,
+      "size": 390,
+      "mtime_ns": 1788441028195976367,
+      "ctime_ns": 1788441028195976367
+    },
+    "ssd-stream.json": {
+      "dev": 66305,
+      "ino": 3294017,
+      "size": 493,
+      "mtime_ns": 1788441028751966789,
+      "ctime_ns": 1788441028751966789
+    },
+    "tokenizer.json": {
+      "dev": 66305,
+      "ino": 3294019,
+      "size": 12809320,
+      "mtime_ns": 1788441030615934742,
+      "ctime_ns": 1788441030619934673
+    },
+    "tokenizer_config.json": {
+      "dev": 66305,
+      "ino": 3294021,
+      "size": 17928,
+      "mtime_ns": 1788441030479937076,
+      "ctime_ns": 1788441030479937076
+    },
+    "video_preprocessor_config.json": {
+      "dev": 66305,
+      "ino": 3294023,
+      "size": 385,
+      "mtime_ns": 1788441030907929728,
+      "ctime_ns": 1788441030907929728
+    },
+    "vocab.json": {
+      "dev": 66305,
+      "ino": 3294025,
+      "size": 6722759,
+      "mtime_ns": 1788441031683916426,
+      "ctime_ns": 1788441031683916426
+    }
+  },
+  "weight_shards_rehashed": false,
+  "resource_mode": "process",
+  "require_hard_memory_limit": false,
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "quota_enforced": true,
+  "tls": false,
+  "tls_configuration": null,
+  "recovery_profiles": {
+    "format": "q4t-recovery-profiles-v1",
+    "identity": {
+      "binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+      "protocol_sha256": "b5f1454a1893c17f2c344b761b49658b0c2884beb92ab209ce9a30fbef9a020e",
+      "model_files": {
+        "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+        "configuration.json": "7f5e4dab8f262b1731914cb110764c86dbfc0459a136de7cc3ae4ae375edc828",
+        "generation_config.json": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+        "hf_quant_config.json": "7e69ef4b94302ae5b6f453b913621f698d5631a1d023d8b3e9e3b829721b98e8",
+        "model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+        "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+        "ssd-stream.json": "331bcd03b9798a9688ffe1ddbbf0b334f0b7ba281ad669b768a3f22b1bc8034d",
+        "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+        "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+        "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+      },
+      "model_assets": {
+        "config.json": {
+          "dev": 66305,
+          "ino": 3293800,
+          "size": 4983,
+          "mtime_ns": 1788440422497571932,
+          "ctime_ns": 1788440422501571931
+        },
+        "configuration.json": {
+          "dev": 66305,
+          "ino": 3293802,
+          "size": 76,
+          "mtime_ns": 1788440422485571936,
+          "ctime_ns": 1788440422485571936
+        },
+        "generation_config.json": {
+          "dev": 66305,
+          "ino": 3293804,
+          "size": 202,
+          "mtime_ns": 1788440422469571940,
+          "ctime_ns": 1788440422469571940
+        },
+        "hf_quant_config.json": {
+          "dev": 66305,
+          "ino": 3293805,
+          "size": 504,
+          "mtime_ns": 1788440422473571939,
+          "ctime_ns": 1788440422477571938
+        },
+        "layer-00000-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293810,
+          "size": 354098208,
+          "mtime_ns": 1788440446477565178,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00000-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293811,
+          "size": 354099528,
+          "mtime_ns": 1788440448761564571,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00000-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293806,
+          "size": 354099528,
+          "mtime_ns": 1788440462149561133,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00000-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293813,
+          "size": 354099528,
+          "mtime_ns": 1788440436829567812,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00001-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293812,
+          "size": 354098208,
+          "mtime_ns": 1788440460621561515,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00001-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293809,
+          "size": 354099528,
+          "mtime_ns": 1788440465905560206,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00001-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293814,
+          "size": 354099528,
+          "mtime_ns": 1788440472253558676,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00001-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293815,
+          "size": 354099528,
+          "mtime_ns": 1788440435633568146,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00002-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293816,
+          "size": 354098208,
+          "mtime_ns": 1788440460069561653,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00002-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293817,
+          "size": 354099528,
+          "mtime_ns": 1788440447765564835,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00002-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293818,
+          "size": 354099528,
+          "mtime_ns": 1788440458901561948,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00002-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293819,
+          "size": 354099528,
+          "mtime_ns": 1788440462009561168,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00003-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293820,
+          "size": 354098208,
+          "mtime_ns": 1788440471117558946,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00003-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293821,
+          "size": 354099528,
+          "mtime_ns": 1788440476937557575,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00003-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293822,
+          "size": 354099528,
+          "mtime_ns": 1788440498597552801,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00003-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293823,
+          "size": 354099528,
+          "mtime_ns": 1788440479765556923,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00004-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293824,
+          "size": 354098208,
+          "mtime_ns": 1788440501865552124,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00004-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293825,
+          "size": 354099528,
+          "mtime_ns": 1788440481853556446,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00004-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293826,
+          "size": 354099528,
+          "mtime_ns": 1788440499945552520,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00004-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293827,
+          "size": 354099528,
+          "mtime_ns": 1788440501965552104,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00005-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293828,
+          "size": 354098208,
+          "mtime_ns": 1788440491945554213,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00005-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293829,
+          "size": 354099528,
+          "mtime_ns": 1788440488889554878,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00005-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293830,
+          "size": 354099528,
+          "mtime_ns": 1788440510169550456,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00005-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293831,
+          "size": 354099528,
+          "mtime_ns": 1788440508749550737,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00006-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293832,
+          "size": 354098208,
+          "mtime_ns": 1788440516613549212,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00006-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293833,
+          "size": 354099528,
+          "mtime_ns": 1788440507605550964,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00006-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293834,
+          "size": 354099528,
+          "mtime_ns": 1788440526529547380,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00006-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293835,
+          "size": 354099528,
+          "mtime_ns": 1788440529833546791,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00007-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293836,
+          "size": 354098208,
+          "mtime_ns": 1788440516241549282,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00007-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293837,
+          "size": 354099528,
+          "mtime_ns": 1788440525849547502,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00007-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293838,
+          "size": 354099528,
+          "mtime_ns": 1788440539633545111,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00007-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293839,
+          "size": 354099528,
+          "mtime_ns": 1788440525241547612,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00008-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293840,
+          "size": 354098208,
+          "mtime_ns": 1788440544697544279,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00008-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293841,
+          "size": 354099528,
+          "mtime_ns": 1788440530133546738,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00008-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293842,
+          "size": 354099528,
+          "mtime_ns": 1788440543989544394,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00008-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293843,
+          "size": 354099528,
+          "mtime_ns": 1788440548085543737,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00009-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293844,
+          "size": 354098208,
+          "mtime_ns": 1788440549557543505,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00009-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293845,
+          "size": 354099528,
+          "mtime_ns": 1788440553777542851,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00009-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293846,
+          "size": 354099528,
+          "mtime_ns": 1788440543793544426,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00009-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293847,
+          "size": 354099528,
+          "mtime_ns": 1788440566693540956,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00010-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293848,
+          "size": 354099744,
+          "mtime_ns": 1788440577049539548,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00010-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293849,
+          "size": 354101064,
+          "mtime_ns": 1788440556445542447,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00010-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293850,
+          "size": 354101064,
+          "mtime_ns": 1788440581893538924,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00010-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293851,
+          "size": 354101064,
+          "mtime_ns": 1788440560109541902,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00011-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293852,
+          "size": 354099744,
+          "mtime_ns": 1788440589981537929,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00011-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293853,
+          "size": 354101064,
+          "mtime_ns": 1788440591925537699,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00011-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293854,
+          "size": 354101064,
+          "mtime_ns": 1788440565565541115,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00011-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293855,
+          "size": 354101064,
+          "mtime_ns": 1788440596137537211,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00012-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293856,
+          "size": 354099744,
+          "mtime_ns": 1788440571073540348,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00012-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293857,
+          "size": 354101064,
+          "mtime_ns": 1788440602053536552,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00012-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293858,
+          "size": 354101064,
+          "mtime_ns": 1788440607753535946,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00012-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293859,
+          "size": 354101064,
+          "mtime_ns": 1788440580805539063,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00013-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293860,
+          "size": 354099744,
+          "mtime_ns": 1788440588381538121,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00013-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293861,
+          "size": 354101064,
+          "mtime_ns": 1788440591529537746,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00013-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293862,
+          "size": 354101064,
+          "mtime_ns": 1788440620497534692,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00013-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293863,
+          "size": 354101064,
+          "mtime_ns": 1788440598325536964,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00014-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293864,
+          "size": 354099744,
+          "mtime_ns": 1788440628285533993,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00014-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293865,
+          "size": 354101064,
+          "mtime_ns": 1788440628105534009,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00014-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293866,
+          "size": 354101064,
+          "mtime_ns": 1788440633213533577,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00014-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293867,
+          "size": 354101064,
+          "mtime_ns": 1788440635373533401,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00015-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293868,
+          "size": 354099744,
+          "mtime_ns": 1788440609473535769,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00015-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293869,
+          "size": 354101064,
+          "mtime_ns": 1788440613849535329,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00015-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293870,
+          "size": 354101064,
+          "mtime_ns": 1788440651329532217,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00015-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293871,
+          "size": 354101064,
+          "mtime_ns": 1788440646037532587,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00016-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293872,
+          "size": 354099744,
+          "mtime_ns": 1788440623461534421,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00016-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293873,
+          "size": 354101064,
+          "mtime_ns": 1788440633797533529,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00016-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293874,
+          "size": 354101064,
+          "mtime_ns": 1788440635093533423,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00016-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293875,
+          "size": 354101064,
+          "mtime_ns": 1788440651185532227,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00017-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293876,
+          "size": 354099744,
+          "mtime_ns": 1788440642837532822,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00017-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293877,
+          "size": 354101064,
+          "mtime_ns": 1788440664677531381,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00017-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293878,
+          "size": 354101064,
+          "mtime_ns": 1788440652145532162,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00017-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293879,
+          "size": 354101064,
+          "mtime_ns": 1788440668613531161,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00018-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293880,
+          "size": 354099744,
+          "mtime_ns": 1788440647101532511,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00018-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293881,
+          "size": 354101064,
+          "mtime_ns": 1788440679697530605,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00018-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293882,
+          "size": 354101064,
+          "mtime_ns": 1788440669809531097,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00018-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293883,
+          "size": 354101064,
+          "mtime_ns": 1788440665049531360,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00019-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293884,
+          "size": 354099744,
+          "mtime_ns": 1788440683457530437,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00019-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293885,
+          "size": 354101064,
+          "mtime_ns": 1788440680141530585,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00019-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293886,
+          "size": 354101064,
+          "mtime_ns": 1788440662657531499,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00019-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293887,
+          "size": 354101064,
+          "mtime_ns": 1788440698945529857,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00020-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293888,
+          "size": 354099744,
+          "mtime_ns": 1788440679153530630,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00020-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293889,
+          "size": 354101064,
+          "mtime_ns": 1788440681857530507,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00020-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293890,
+          "size": 354101064,
+          "mtime_ns": 1788440707285529616,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00020-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293891,
+          "size": 354101064,
+          "mtime_ns": 1788440689681530183,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00021-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293892,
+          "size": 354099744,
+          "mtime_ns": 1788440700289529815,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00021-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293893,
+          "size": 354101064,
+          "mtime_ns": 1788440711305529518,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00021-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293894,
+          "size": 354101064,
+          "mtime_ns": 1788440711621529510,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00021-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293895,
+          "size": 354101064,
+          "mtime_ns": 1788440694017530023,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00022-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293896,
+          "size": 354099744,
+          "mtime_ns": 1788440715237529433,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00022-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293897,
+          "size": 354101064,
+          "mtime_ns": 1788440721081529326,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00022-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293898,
+          "size": 354101064,
+          "mtime_ns": 1788440706697529632,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00022-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293899,
+          "size": 354101064,
+          "mtime_ns": 1788440728837529221,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00023-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293900,
+          "size": 354099744,
+          "mtime_ns": 1788440717477529389,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00023-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293901,
+          "size": 354101064,
+          "mtime_ns": 1788440725349529263,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00023-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293902,
+          "size": 354101064,
+          "mtime_ns": 1788440720981529328,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00023-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293903,
+          "size": 354101064,
+          "mtime_ns": 1788440742657529135,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00024-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293904,
+          "size": 354099744,
+          "mtime_ns": 1788440742737529134,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00024-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293905,
+          "size": 354101064,
+          "mtime_ns": 1788440749649529139,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00024-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293906,
+          "size": 354101064,
+          "mtime_ns": 1788440735265529165,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00024-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293907,
+          "size": 354101064,
+          "mtime_ns": 1788440737161529153,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00025-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293908,
+          "size": 354099744,
+          "mtime_ns": 1788440748101529136,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00025-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293909,
+          "size": 354101064,
+          "mtime_ns": 1788440752185529149,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00025-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293910,
+          "size": 354101064,
+          "mtime_ns": 1788440752197529149,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00025-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293911,
+          "size": 354101064,
+          "mtime_ns": 1788440752985529153,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00026-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293912,
+          "size": 354099744,
+          "mtime_ns": 1788440758593529192,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00026-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293913,
+          "size": 354101064,
+          "mtime_ns": 1788440771449529357,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00026-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293914,
+          "size": 354101064,
+          "mtime_ns": 1788440763949529248,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00026-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293915,
+          "size": 354101064,
+          "mtime_ns": 1788440776145529444,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00027-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293916,
+          "size": 354099744,
+          "mtime_ns": 1788440766965529288,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00027-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293919,
+          "size": 354101064,
+          "mtime_ns": 1788440769533529326,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00027-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293918,
+          "size": 354101064,
+          "mtime_ns": 1788440787621529712,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00027-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293917,
+          "size": 354101064,
+          "mtime_ns": 1788440781257529553,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00028-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293920,
+          "size": 354099744,
+          "mtime_ns": 1788440777309529467,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00028-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293921,
+          "size": 354101064,
+          "mtime_ns": 1788440787037529696,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00028-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293922,
+          "size": 354101064,
+          "mtime_ns": 1788440792525529851,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00028-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293923,
+          "size": 354101064,
+          "mtime_ns": 1788440787057529696,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00029-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293924,
+          "size": 354099744,
+          "mtime_ns": 1788440818433530822,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00029-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293925,
+          "size": 354101064,
+          "mtime_ns": 1788440793745529888,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00029-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293926,
+          "size": 354101064,
+          "mtime_ns": 1788440802957530194,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00029-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293927,
+          "size": 354101064,
+          "mtime_ns": 1788440806889530341,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00030-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293928,
+          "size": 354099744,
+          "mtime_ns": 1788440805069530271,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00030-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293929,
+          "size": 354101064,
+          "mtime_ns": 1788440809357530437,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00030-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293930,
+          "size": 354101064,
+          "mtime_ns": 1788440813669530614,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00030-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293931,
+          "size": 354101064,
+          "mtime_ns": 1788440814837530663,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00031-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293932,
+          "size": 354099744,
+          "mtime_ns": 1788440812893530581,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00031-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293933,
+          "size": 354101064,
+          "mtime_ns": 1788440822029530987,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00031-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293934,
+          "size": 354101064,
+          "mtime_ns": 1788440838333531829,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00031-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293935,
+          "size": 354101064,
+          "mtime_ns": 1788440826049531181,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00032-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293936,
+          "size": 354099744,
+          "mtime_ns": 1788440828713531314,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00032-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293937,
+          "size": 354101064,
+          "mtime_ns": 1788440832657531519,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00032-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293938,
+          "size": 354101064,
+          "mtime_ns": 1788440846289532293,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00032-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293939,
+          "size": 354101064,
+          "mtime_ns": 1788440846785532323,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00033-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293940,
+          "size": 354099744,
+          "mtime_ns": 1788440849389532482,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00033-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293941,
+          "size": 354101064,
+          "mtime_ns": 1788440840117531930,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00033-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293942,
+          "size": 354101064,
+          "mtime_ns": 1788440845841532266,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00033-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293943,
+          "size": 354101064,
+          "mtime_ns": 1788440848869532451,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00034-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293944,
+          "size": 354099744,
+          "mtime_ns": 1788440855893532898,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00034-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293945,
+          "size": 354101064,
+          "mtime_ns": 1788440866305533610,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00034-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293946,
+          "size": 354101064,
+          "mtime_ns": 1788440859545533142,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00034-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293947,
+          "size": 354101064,
+          "mtime_ns": 1788440876489534361,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00035-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293948,
+          "size": 354099744,
+          "mtime_ns": 1788440878193534491,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00035-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293949,
+          "size": 354101064,
+          "mtime_ns": 1788440864945533514,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00035-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293950,
+          "size": 354101064,
+          "mtime_ns": 1788440880849534698,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00035-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293951,
+          "size": 354101064,
+          "mtime_ns": 1788440866301533610,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00036-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293952,
+          "size": 354099744,
+          "mtime_ns": 1788440878533534518,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00036-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293953,
+          "size": 354101064,
+          "mtime_ns": 1788440880417534664,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00036-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293954,
+          "size": 354101064,
+          "mtime_ns": 1788440890253535459,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00036-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293957,
+          "size": 354101064,
+          "mtime_ns": 1788440890073535444,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00037-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293956,
+          "size": 354099744,
+          "mtime_ns": 1788440887349535219,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00037-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293955,
+          "size": 354101064,
+          "mtime_ns": 1788440898297536145,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00037-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293958,
+          "size": 354101064,
+          "mtime_ns": 1788440899517536251,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00037-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293959,
+          "size": 354101064,
+          "mtime_ns": 1788440903245536582,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00038-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293960,
+          "size": 354099744,
+          "mtime_ns": 1788440907869537002,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00038-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293961,
+          "size": 354101064,
+          "mtime_ns": 1788440910117537209,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00038-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293962,
+          "size": 354101064,
+          "mtime_ns": 1788440908953537102,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00038-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293963,
+          "size": 354101064,
+          "mtime_ns": 1788440912293537413,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00039-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293964,
+          "size": 354099744,
+          "mtime_ns": 1788440916357537799,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00039-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293965,
+          "size": 354101064,
+          "mtime_ns": 1788440919553538107,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00039-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293966,
+          "size": 354101064,
+          "mtime_ns": 1788440930389539190,
+          "ctime_ns": 1793470850391156668
+        },
+        "layer-00039-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293967,
+          "size": 354101064,
+          "mtime_ns": 1788440924429538588,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00040-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293968,
+          "size": 354099744,
+          "mtime_ns": 1788440936505539825,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00040-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293969,
+          "size": 354101064,
+          "mtime_ns": 1788440932321539388,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00040-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293970,
+          "size": 354101064,
+          "mtime_ns": 1788440939929540188,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00040-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293971,
+          "size": 354101064,
+          "mtime_ns": 1788440930089539159,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00041-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293972,
+          "size": 354099744,
+          "mtime_ns": 1788440939985540193,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00041-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293973,
+          "size": 354101064,
+          "mtime_ns": 1788440938325540017,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00041-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293974,
+          "size": 354101064,
+          "mtime_ns": 1788440954841325380,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00041-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293975,
+          "size": 354101064,
+          "mtime_ns": 1788440949193436630,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00042-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293976,
+          "size": 354099744,
+          "mtime_ns": 1788440966965090277,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00042-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293977,
+          "size": 354101064,
+          "mtime_ns": 1788440950853403817,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00042-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293978,
+          "size": 354101064,
+          "mtime_ns": 1788440955745307676,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00042-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293979,
+          "size": 354101064,
+          "mtime_ns": 1788440956313296569,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00043-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293980,
+          "size": 354099744,
+          "mtime_ns": 1788440973684962114,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00043-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293981,
+          "size": 354101064,
+          "mtime_ns": 1788440972300988387,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00043-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293982,
+          "size": 354101064,
+          "mtime_ns": 1788440966441100338,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00043-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293983,
+          "size": 354101064,
+          "mtime_ns": 1788440968325064220,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00044-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293984,
+          "size": 354099744,
+          "mtime_ns": 1788440984372761362,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00044-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293985,
+          "size": 354101064,
+          "mtime_ns": 1788440983796772085,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00044-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293986,
+          "size": 354101064,
+          "mtime_ns": 1788440973952957032,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00044-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293987,
+          "size": 354101064,
+          "mtime_ns": 1788440992348613983,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00045-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293988,
+          "size": 354099744,
+          "mtime_ns": 1788440991880622572,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00045-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293989,
+          "size": 354101064,
+          "mtime_ns": 1788440986308725399,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00045-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293990,
+          "size": 354101064,
+          "mtime_ns": 1788440997492520019,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00045-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293991,
+          "size": 354101064,
+          "mtime_ns": 1788440997780514782,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00046-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293992,
+          "size": 354099744,
+          "mtime_ns": 1788440995844550028,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00046-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293993,
+          "size": 354101064,
+          "mtime_ns": 1788441011492268520,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00046-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293994,
+          "size": 354101064,
+          "mtime_ns": 1788441012180256317,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00046-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293995,
+          "size": 354101064,
+          "mtime_ns": 1788441006768352695,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00047-experts-0000-0127.safetensors": {
+          "dev": 66305,
+          "ino": 3293996,
+          "size": 354099744,
+          "mtime_ns": 1788441012344253412,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00047-experts-0128-0255.safetensors": {
+          "dev": 66305,
+          "ino": 3293997,
+          "size": 354101064,
+          "mtime_ns": 1788441019204132581,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00047-experts-0256-0383.safetensors": {
+          "dev": 66305,
+          "ino": 3293998,
+          "size": 354101064,
+          "mtime_ns": 1788441016376182219,
+          "ctime_ns": 1793470850395156649
+        },
+        "layer-00047-experts-0384-0511.safetensors": {
+          "dev": 66305,
+          "ino": 3293999,
+          "size": 354101064,
+          "mtime_ns": 1788441023668054726,
+          "ctime_ns": 1793470850395156649
+        },
+        "merges.txt": {
+          "dev": 66305,
+          "ino": 3294000,
+          "size": 3353259,
+          "mtime_ns": 1788440998460502431,
+          "ctime_ns": 1788440998464502358
+        },
+        "model-bf16-00001.safetensors": {
+          "dev": 66305,
+          "ino": 3294002,
+          "size": 1273114461,
+          "mtime_ns": 1788441072983233526,
+          "ctime_ns": 1793470850395156649
+        },
+        "model-bf16-00010.safetensors": {
+          "dev": 66305,
+          "ino": 3294003,
+          "size": 323564201,
+          "mtime_ns": 1788441027891981608,
+          "ctime_ns": 1793470850395156649
+        },
+        "model-bf16-00011.safetensors": {
+          "dev": 66305,
+          "ino": 3294005,
+          "size": 10727387912,
+          "mtime_ns": 1788441457602701387,
+          "ctime_ns": 1793470850395156649
+        },
+        "model-bf16-00012.safetensors": {
+          "dev": 66305,
+          "ino": 3294007,
+          "size": 3683689888,
+          "mtime_ns": 1788441195229472953,
+          "ctime_ns": 1793470850395156649
+        },
+        "model-plefp8-scale.safetensors": {
+          "dev": 66305,
+          "ino": 3294009,
+          "size": 146,
+          "mtime_ns": 1788441024148046389,
+          "ctime_ns": 1788441024152046319
+        },
+        "model.safetensors.index.json": {
+          "dev": 66305,
+          "ino": 3294010,
+          "size": 35429343,
+          "mtime_ns": 1788441027439989409,
+          "ctime_ns": 1788441027443989340
+        },
+        "mtp/config.json": {
+          "dev": 66305,
+          "ino": 3293801,
+          "size": 4983,
+          "mtime_ns": 1788440422485571936,
+          "ctime_ns": 1788440422485571936
+        },
+        "mtp/generation_config.json": {
+          "dev": 66305,
+          "ino": 3293803,
+          "size": 202,
+          "mtime_ns": 1788440422469571940,
+          "ctime_ns": 1788440422473571939
+        },
+        "mtp/hf_quant_config.json": {
+          "dev": 66305,
+          "ino": 3293807,
+          "size": 504,
+          "mtime_ns": 1788440422921571806,
+          "ctime_ns": 1788440422921571806
+        },
+        "mtp/merges.txt": {
+          "dev": 66305,
+          "ino": 3294001,
+          "size": 3353259,
+          "mtime_ns": 1788440999100490816,
+          "ctime_ns": 1788440999100490816
+        },
+        "mtp/model-bf16-00010.safetensors": {
+          "dev": 66305,
+          "ino": 3294004,
+          "size": 323564201,
+          "mtime_ns": 1788441029623951784,
+          "ctime_ns": 1788441029627951715
+        },
+        "mtp/model-bf16-00011.safetensors": {
+          "dev": 66305,
+          "ino": 3294006,
+          "size": 10727387912,
+          "mtime_ns": 1788441505830304351,
+          "ctime_ns": 1788441505834304319
+        },
+        "mtp/model-bf16-00012.safetensors": {
+          "dev": 66305,
+          "ino": 3294008,
+          "size": 3683689888,
+          "mtime_ns": 1788441190145539169,
+          "ctime_ns": 1788441190149539116
+        },
+        "mtp/model.safetensors.index.json": {
+          "dev": 66305,
+          "ino": 3294011,
+          "size": 2802,
+          "mtime_ns": 1788441027759983886,
+          "ctime_ns": 1788441027759983886
+        },
+        "mtp/preprocessor_config.json": {
+          "dev": 66305,
+          "ino": 3294012,
+          "size": 390,
+          "mtime_ns": 1788441028039979054,
+          "ctime_ns": 1788441028039979054
+        },
+        "mtp/tokenizer.json": {
+          "dev": 66305,
+          "ino": 3294018,
+          "size": 12809320,
+          "mtime_ns": 1788441029863947657,
+          "ctime_ns": 1788441029867947587
+        },
+        "mtp/tokenizer_config.json": {
+          "dev": 66305,
+          "ino": 3294020,
+          "size": 17928,
+          "mtime_ns": 1788441030155942639,
+          "ctime_ns": 1788441030159942571
+        },
+        "mtp/video_preprocessor_config.json": {
+          "dev": 66305,
+          "ino": 3294022,
+          "size": 385,
+          "mtime_ns": 1788441030755932338,
+          "ctime_ns": 1788441030755932338
+        },
+        "mtp/vocab.json": {
+          "dev": 66305,
+          "ino": 3294024,
+          "size": 6722759,
+          "mtime_ns": 1788441031623917455,
+          "ctime_ns": 1788441031627917386
+        },
+        "ple/qwen3.8-flash-next-ple-fp8.bin": {
+          "dev": 66305,
+          "ino": 3294016,
+          "size": 51200245760,
+          "mtime_ns": 1788444005571882565,
+          "ctime_ns": 1788444005571882565
+        },
+        "preprocessor_config.json": {
+          "dev": 66305,
+          "ino": 3294013,
+          "size": 390,
+          "mtime_ns": 1788441028195976367,
+          "ctime_ns": 1788441028195976367
+        },
+        "ssd-stream.json": {
+          "dev": 66305,
+          "ino": 3294017,
+          "size": 493,
+          "mtime_ns": 1788441028751966789,
+          "ctime_ns": 1788441028751966789
+        },
+        "tokenizer.json": {
+          "dev": 66305,
+          "ino": 3294019,
+          "size": 12809320,
+          "mtime_ns": 1788441030615934742,
+          "ctime_ns": 1788441030619934673
+        },
+        "tokenizer_config.json": {
+          "dev": 66305,
+          "ino": 3294021,
+          "size": 17928,
+          "mtime_ns": 1788441030479937076,
+          "ctime_ns": 1788441030479937076
+        },
+        "video_preprocessor_config.json": {
+          "dev": 66305,
+          "ino": 3294023,
+          "size": 385,
+          "mtime_ns": 1788441030907929728,
+          "ctime_ns": 1788441030907929728
+        },
+        "vocab.json": {
+          "dev": 66305,
+          "ino": 3294025,
+          "size": 6722759,
+          "mtime_ns": 1788441031683916426,
+          "ctime_ns": 1788441031683916426
+        }
+      },
+      "native_embedding": {
+        "profile": "q4t-native-embedding-v1",
+        "model": "qwen3-embedding-0.6b",
+        "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+        "weight_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+      }
+    },
+    "profiles": {
+      "primary": {
+        "name": "text-managed-capacity-v1",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 2,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": true,
+        "request_deadline_ms": 1200000
+      },
+      "light": {
+        "name": "text-managed-capacity-v1",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 2,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": false,
+        "request_deadline_ms": 1200000
+      }
+    },
+    "qualifications": {
+      "primary": {
+        "profile": "primary",
+        "identity_sha256": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+        "capacity_sha256": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+        "capabilities_sha256": "1b531fd61ccf6d9543ec60971ced13ebbdf8fbbf5430a3f2c57878076a1ba8e7",
+        "startup_required_bytes": 103887276952,
+        "evidence_sha256": "108d2232bb3b0c6db09073034026c3327d8eb90ab80147ab746a028edc8aa80a"
+      },
+      "light": {
+        "profile": "light",
+        "identity_sha256": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+        "capacity_sha256": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+        "capabilities_sha256": "1b531fd61ccf6d9543ec60971ced13ebbdf8fbbf5430a3f2c57878076a1ba8e7",
+        "startup_required_bytes": 93982841120,
+        "evidence_sha256": "bee96f3289c35b52de0d51e9cd5ccc79a9e74de564284ccbaa439207daddd942"
+      }
+    }
+  },
+  "recovery_profile_policy": {
+    "version": 1,
+    "degrade_below_mib": 8192,
+    "recover_above_mib": 16384,
+    "pressure_seconds": 30,
+    "recovery_seconds": 120,
+    "minimum_light_seconds": 300,
+    "cooldown_seconds": 300,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  }
+}

@@ -373,6 +373,16 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             !responses->GetBool("chat_done_sentinel", true));
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
+  const auto* identity = responses->Find("tool_identity");
+  const auto* results = responses->Find("tool_results");
+  Q4T_CHECK(identity && identity->GetBool("namespaces") &&
+            identity->GetBool("public_call_namespace") &&
+            identity->GetInt("max_expanded_tools") == 128);
+  Q4T_CHECK(results && results->GetBool("output_schema") &&
+            results->GetString("binding") == "invocation_time" &&
+            results->GetBool("stored_and_queued") &&
+            !results->GetBool("content_arrays_constrained", true) &&
+            !results->GetBool("model_restart_on_error", true));
   const auto* summary = responses->Find("summary");
   const auto* moderation = responses->Find("moderation");
   Q4T_CHECK(moderation && moderation->GetBool("enabled") &&

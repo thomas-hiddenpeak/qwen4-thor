@@ -9,25 +9,46 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev94；服务包 `e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd` |
-| Generation | `bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38` |
-| 引擎 | `9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7` |
-| 引擎发布记录 | `2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5` |
+| 发布 | rev102；服务包 `39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4` |
+| Generation | `8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235` |
+| 引擎 | `6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba` |
+| 引擎发布记录 | `8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 原rev92包 `32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853`；保留修前已知限制 |
+| 版本回退 | 已验旧控制/当前引擎包 `0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-cache-route-delivery-20261112/README.md)
-包含11项STOPPED交付检查，0新增GPU；真实缓存业务与原资格组合接受。
-旧rev92保留为回退，核心、Key/配额和outer状态保持；profile只更新
-资格绑定，版本周期显式登记并完整保留前驱。回退含修前已知缺陷，
-未重跑未变恢复机制或宣称长稳。总目标仍active。
-PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
-其后的本轮新增实现仍在工作分支，继续Q02主线审查，不把本机发行当作合并。
+[发行结果与回退记录](evidence/serve-tool-identity-delivery-20261113/README.md)
+包含17项STOPPED交付检查，0新增GPU。新工具业务、当前主轻资格、
+跨重启存储及真实整树切换均已接受；停止竞态修复进入实际默认。
+Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
+保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
+自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
+PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
+[合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
+提交尚未合main，继续单独主线检查及全部master任务。
 
 ## 最近完成的实现和验证
+
+- PR24完整CI定位到custom内部Item/公开Conversation投影夹具错用，
+  [6项针对性CPU通过](evidence/serve-ci-custom-views-20261113/README.md)。
+  32输入及31会话形状均保留校验，生产源码/默认rev102未变；继续CI及实际合并。
+
+- A07下一组已冻结[异步工具原生接线及验证计划](SERVE_ASYNC_TOOLS_2026-11-13.md)：
+  补历史/模板/持续生成及迟到结果，不只接受async字段；程序调用与
+  延迟发现保留连续任务。先成组开发，当前尚未新增测试，rev102保持。
+
+- 工具命名空间/结果合同与控制器停止修复已[可回退发行rev102](evidence/serve-tool-identity-delivery-20261113/README.md)。
+  17项停止态检查通过，实际回退再前进、原账本/恢复预算保持；
+  原生现代根与兼容旧控制均具备新应用能力。继续PR实际合入及
+  async/caller/延迟发现等全部master，不以本阶段结束总目标。
+
+- 新工具合同与ObjectStore/CacheIo停止修复已取得[真实主/轻量资格](evidence/serve-tool-identity-profiles-20261113/README.md)，
+  含同一存储会话跨重启读取/删除。兼容回退载荷的独立运行和
+  [实际整树切换后工具闭环](evidence/serve-tool-identity-managed-20261113/README.md)也通过，
+  合计3启动/6生成/1探测/165.913秒，全部资源清理。继续可回退发行；
+  rev94保持，PR23最新17d8dbe2续验中，全部master仍active。
 
 - PR23续验发现HTTP夹具把随机请求ID中的999误判成子用量泄漏；
   已确定性负控复现并只检查真实用量头。批任务正常存储与故障期限
@@ -44,17 +65,45 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
   原失败及新增断言修正保留；生产预算未放宽，0GPU、rev94保持。
   继续真实CI、实际合并与全部master任务。
 
+- A07命名空间/结果合同/标准custom语法的[真实业务已通过](evidence/serve-tool-identity-business-20261112/README.md)：
+  修后1启动6请求66.366秒，含失败累计3启动10请求159.271秒。64次
+  NVML全正常，模型/端口/锁已清理；继续主/轻资格与可回退发行，
+  默认rev94保持，剩余A07及全部master继续。
+
 - PR23的x86文档转换诊断已过；完整CI暴露64MiB上传容量夹具未检查
   错误回复的解引用。[补齐检查和容量IO预算后本机通过](evidence/serve-upload-capacity-fixture-20261112/README.md)。
   生产预算与故障用例未改，继续真实CI及合并，rev94保持。
 
+- A07真实custom请求发现Responses/Chat grammar形状缺转换，已原生
+  [补齐并通过7项针对性CPU](evidence/serve-responses-custom-format-20261112/README.md)。
+  第二轮1启动1请求在生成前失败并清理；新引擎重验1启动6请求，累计
+  上限3启动10请求，默认rev94保持。继续所有master任务。
+
+- A07首轮函数调用/结果拒绝/真实资料JSON闭环通过；整体因SDK分页桥接
+  丢游标FAILED，服务线包正确。[修复后6条CPU回放通过](evidence/serve-tool-identity-business-prefix-20261112/README.md)。
+  首轮1启动3请求52.758秒已清理；只补custom的1启动3请求，rev94保持。
+
+- A07真实引擎CPU worker暴露512MiB小于动态库映射，已改为有界1GiB，
+  [实际正/负例及回收通过](evidence/serve-tool-result-worker-20261112/README.md)。
+  复核候选源码审计锚点；继续1启动/6请求业务短验，默认rev94保持。
+
 - PR23编解码修复的两个生产源码锚点已按实际diff复核并更新审计索引；
   清单与5项防遗漏负控通过，沿用16项CPU证据。继续真实CI及合并。
+
+- A07工具命名空间/custom公开投影/调用时output_schema合同的
+  [37项不同CPU及官方SDK/schema检查已通过](evidence/serve-tool-identity-cpu-20261112/README.md)。
+  独立结果校验worker、存储续接及压缩历史已接线；冻结1启动/6请求/
+  900秒实际业务短验，尚未执行或交付，默认rev94保持。其余A07及
+  全部master缺口继续，不能把这组通过当总目标完成。
 
 - PR23的实际退出已定位为x86旧mkdir未进有界IO代理；已补齐等价ABI，
   [16项针对性CPU通过](evidence/serve-codec-syscall-20261112/README.md)。
   文件创建仍计费、路径仍受Landlock限制，等待真实远端结果再合并；
   0GPU，默认rev94不变，继续全部master。
+
+- A07命名空间19项不同CPU及custom公开投影两项已过，官方SDK与严格
+  schema校验通过；继续调用时output_schema绑定和独立校验worker，
+  冻结14项针对性检查。尚未真实模型验收或交付，默认rev94保持。
 
 - PR23实际沙箱ready后仍有编解码退出，另三项存储/过期夹具
   [针对性CPU通过](evidence/serve-host-storage-codec-20261112/README.md)。
@@ -65,6 +114,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
   夹具竞态；[18项Guardian针对性CPU通过](evidence/serve-host-localtime-exec-20261112/README.md)。
   临时CI路径权限与exec握手已修，生产沙箱/默认rev94保持，原两轮
   失败原件保留，等待真实远端通过再合并；全部master仍active。
+
+- A07命名空间的定义/模型身份/JSON/SSE/历史及存储续接已成组编码，
+  [结果合同的连续计划](SERVE_TOOL_IDENTITY_2026-11-12.md)保留output_schema
+  与其余高级工具任务。冻结19项针对性CPU，尚未验收或交付；0GPU，
+  rev94保持，PR23实际CI仍在运行。
 
 - PR23剩余Batch夹具已[9项针对性CPU通过](evidence/serve-host-prerequisites-batch-20261112/README.md)，
   包含完整50000行/391轮/792对象；故障注入短超时不变，容量用例单独

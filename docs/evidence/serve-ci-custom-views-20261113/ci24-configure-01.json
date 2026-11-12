@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/ci-reviewed/tests/host",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261113/pr24/host",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=g++-14",
+    "-DQ4T_ENABLE_XGRAMMAR=OFF",
+    "-DPython3_EXECUTABLE=/home/rm01/models/dev/qwen4-thor/.q4t-work/venvs/public-host/bin/python3",
+    "-DQ4T_ARCHIVE_INCLUDE_DIR:PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/office-deps/root/usr/include",
+    "-DQ4T_DISTRIBUTION_PYTHON:FILEPATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/venvs/public-host/bin/python3",
+    "-DQ4T_LIBREOFFICE_INCLUDE_DIR:PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-deps/root/usr/include",
+    "-DQ4T_NODE_SDK_DIR:PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+    "-DQ4T_OPENSSL_ARCH_INCLUDE_DIR:PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include/aarch64-linux-gnu",
+    "-DQ4T_OPENSSL_INCLUDE_DIR:PATH=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include",
+    "-DQ4T_SYSTEM_ARCHIVE_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libarchive.so.13",
+    "-DQ4T_SYSTEM_CRYPTO_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libcrypto.so.3",
+    "-DQ4T_SYSTEM_FETCH_SSL_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libssl.so.3",
+    "-DQ4T_SYSTEM_LIBREOFFICE_DIRECTORY:PATH=/usr/lib/libreoffice/program",
+    "-DQ4T_SYSTEM_SSL_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libssl.so.3",
+    "-DQ4T_SYSTEM_XML_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libxml2.so.2",
+    "-DQ4T_XML_INCLUDE_DIR:PATH=/usr/include/libxml2",
+    "-DQ4T_ZLIB_INCLUDE_DIR:PATH=/usr/include"
+  ],
+  "exit_code": 0,
+  "seconds": 0.9366617030464113,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t",
+      "sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t.release.json",
+      "sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t",
+      "sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235/q4t.release.json",
+      "sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619"
+    }
+  },
+  "default_unchanged": true
+}

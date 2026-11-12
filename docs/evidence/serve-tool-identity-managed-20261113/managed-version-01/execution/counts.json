@@ -1,0 +1,52 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 1,
+    "controls": 346
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 1,
+      "monotonic_ns": 2692574632048130
+    },
+    {
+      "kind": "chats",
+      "label": "primary-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2692611101536198
+    },
+    {
+      "kind": "chats",
+      "label": "namespace-call",
+      "ordinal": 2,
+      "monotonic_ns": 2692613232926687
+    },
+    {
+      "kind": "probes",
+      "label": "root-version-device-proof",
+      "ordinal": 1,
+      "monotonic_ns": 2692621077387586
+    },
+    {
+      "kind": "starts",
+      "label": "fallback-model",
+      "ordinal": 2,
+      "monotonic_ns": 2692628354484129
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-self-check",
+      "ordinal": 3,
+      "monotonic_ns": 2692662584980173
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-follow",
+      "ordinal": 4,
+      "monotonic_ns": 2692665451925255
+    }
+  ]
+}

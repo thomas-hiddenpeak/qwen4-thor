@@ -13,6 +13,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
 
 namespace {
@@ -1081,5 +1082,182 @@ Q4T_TEST(responses_cancel_usage_distinguishes_queued_drained_and_unknown) {
     else
       Q4T_CHECK(usage->GetInt("total_tokens") == (mode == 1 ? 11 : 0));
   }
+  return true;
+}
+
+Q4T_TEST(responses_namespace_persistence_restart_and_queued_history) {
+  Fixture fixture;
+  auto config = Config();
+  config.structured = true;
+  std::string response_id, call_item_id;
+  const auto alias = ResponsesToolModelName("crm", "lookup", "function");
+  {
+    ObjectStore store(fixture.options);
+    ResponsesExecution run(store);
+    const auto request = Parse(R"({"input":"Find the project release",
+      "reasoning":{"effort":"none"},"tools":[{"type":"namespace",
+       "name":"crm","description":"Project records","tools":[
+       {"type":"function","name":"lookup"}]}]})");
+    Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+    Q4T_CHECK(run.Generation()
+                  .generation_request.GetArray("tools")
+                  ->array[0]
+                  .Find("function")
+                  ->GetString("name") == alias);
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kTool;
+    delta.tool_start = true;
+    delta.call = {0, "call_project", alias, "{}", false};
+    Q4T_CHECK(run.Append(delta, "null", &wire));
+    Q4T_CHECK(Ok(run.Finish(false, 1, {12, 0, 3, 0}, 43, &wire)));
+    response_id = run.Id();
+    const auto saved = ResponsesState(store).Retrieve(response_id, Access());
+    Q4T_CHECK(Ok(saved));
+    const auto& call = saved.value.GetArray("output")->array[0];
+    Q4T_CHECK(call.GetString("name") == "lookup" &&
+              call.GetString("namespace") == "crm");
+    call_item_id = call.GetString("id");
+  }
+  // Actual store worker restart, a changed current tool list, original output
+  // identity and a queued restore all preserve the historical model spelling.
+  {
+    ObjectStore store(fixture.options);
+    auto request = Parse(R"({"background":true,"reasoning":{"effort":"none"},
+      "input":[{"type":"function_call_output","call_id":"call_project",
+                "output":"rev94"}],
+      "tools":[{"type":"namespace","name":"support","description":"Tickets",
+                "tools":[{"type":"function","name":"lookup"}]}]})");
+    request.object.emplace_back("previous_response_id",
+                                Parse('"' + response_id + '"'));
+    ResponsesExecution run(store);
+    Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 44, true)));
+    Q4T_CHECK(OutputJson(run.Generation().input.messages).find(alias) !=
+              std::string::npos);
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    ResponsesExecution restored(store);
+    Q4T_CHECK(Ok(restored.RestoreQueued(run.Id(), config, Access())));
+    Q4T_CHECK(OutputJson(restored.Generation().input.messages).find(alias) !=
+              std::string::npos);
+    Q4T_CHECK(Ok(restored.Cancel()));
+    auto references = ResponsesState(store).ResolveItems(
+        Parse("[{\"id\":\"" + call_item_id + "\"}]"), Access());
+    Q4T_CHECK(Ok(references) &&
+              references.value.array[0].GetString("namespace") == "crm");
+    auto other = Access();
+    other.scope = "client:other";
+    Q4T_CHECK(ResponsesState(store).Retrieve(response_id, other).http_status ==
+              404);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_custom_output_projection_keeps_conversation_lifecycle) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ConversationState conversations(store);
+  auto conversation = conversations.Create(Parse("{}"), Parse("[]"), Access());
+  Q4T_CHECK(Ok(conversation));
+  const auto id = conversation.value.GetString("id");
+  auto config = Config();
+  config.structured = true;
+  auto request =
+      Parse(R"({"input":"query project","reasoning":{"effort":"none"},
+    "tools":[{"type":"namespace","name":"project","description":"Records",
+    "tools":[{"type":"custom","name":"query"}]}]})");
+  request.object.emplace_back("conversation", Parse('"' + id + '"'));
+  ResponsesExecution run(store);
+  Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.tool_start = true;
+  delta.call = {0, "call_query",
+                ResponsesToolModelName("project", "query", "custom"),
+                "SELECT release", true};
+  Q4T_CHECK(run.Append(delta, "null", &wire));
+  Q4T_CHECK(Ok(run.Checkpoint()));
+  ResponsesReadPlan read;
+  read.id = run.Id();
+  read.stream = true;
+  read.obfuscation = false;
+  ResponsesReplay replay;
+  Q4T_CHECK(Ok(ReadResponsesState(store, read, Access(), &replay)));
+  Q4T_CHECK(replay.wire.find("\"namespace\":\"project\"") != wire.npos);
+  Q4T_CHECK(Ok(run.Finish(false, 1, {8, 0, 3, 0}, 43, &wire)));
+  const auto response = ResponsesState(store).Retrieve(run.Id(), Access());
+  Q4T_CHECK(Ok(response));
+  const auto& call = response.value.GetArray("output")->array[0];
+  Q4T_CHECK(!call.Has("status") && call.GetString("namespace") == "project");
+  ChatPlanError error;
+  Q4T_CHECK(
+      ValidateResponsesItemShape(call, ResponsesItemShape::kOutput, &error));
+  const auto stored =
+      conversations.RetrieveItem(id, call.GetString("id"), {}, Access());
+  Q4T_CHECK(Ok(stored) && !stored.value.Has("status"));
+  Q4T_CHECK(ValidateResponsesItemShape(
+      stored.value, ResponsesItemShape::kConversation, &error));
+  ResponsesExecution next(store);
+  auto follow = Parse(R"({"input":[{"type":"custom_tool_call_output",
+    "call_id":"call_query","output":"rev94"}]})");
+  follow.object.emplace_back("conversation", Parse('"' + id + '"'));
+  Q4T_CHECK(Ok(next.Prepare(follow, config, Access(), 44)));
+  Q4T_CHECK(
+      OutputJson(next.Generation().input.messages).find("SELECT release") !=
+      std::string::npos);
+  Q4T_CHECK(Ok(next.Begin(&wire)));
+  read.id = next.Id();
+  read.operation = ResponsesReadPlan::Operation::kInputItems;
+  auto inputs = ReadResponsesState(store, read, Access(), &replay);
+  Q4T_CHECK(Ok(inputs));
+  bool seen = false;
+  for (const auto& item : inputs.value.GetArray("data")->array) {
+    if (item.GetString("type") == "custom_tool_call") {
+      seen = true;
+      Q4T_CHECK(item.GetString("status") == "completed" &&
+                item.GetString("namespace") == "project");
+    }
+  }
+  Q4T_CHECK(seen);
+  Q4T_CHECK(next.Append(Text("rev94"), "null", &wire));
+  Q4T_CHECK(Ok(next.Finish(false, 1, {10, 0, 1, 0}, 45, &wire)));
+  if (const auto* out = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    const auto root = std::filesystem::path(out) / "responses";
+    std::filesystem::create_directories(root);
+    std::ofstream(root / "custom-conversation.json")
+        << OutputJson(stored.value);
+    std::ofstream(root / "custom-input-list.json") << OutputJson(inputs.value);
+    const auto items = conversations.ListItems(id, {}, Access());
+    Q4T_CHECK(Ok(items));
+    std::ofstream(root / "custom-conversation-list.json")
+        << OutputJson(items.value);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_custom_grammar_standard_shape_reaches_generation_plan) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto config = Config();
+  config.structured = true;
+  ResponsesExecution run(objects);
+  auto request = Parse(R"({"input":"Use raw to read docs/MODEL.md",
+    "reasoning":{"effort":"none"},"parallel_tool_calls":false,
+    "tools":[{"type":"namespace","name":"project","description":"records",
+      "tools":[{"type":"custom","name":"raw","format":{"type":"grammar",
+        "syntax":"regex","definition":"read docs/MODEL\\.md"}}]}],
+    "tool_choice":{"type":"custom","name":"project.raw"}})");
+  Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+  const auto& generation = run.Generation();
+  Q4T_CHECK(generation.generation_request.GetArray("tools") &&
+            generation.generation_request.GetArray("tools")
+                    ->array[0]
+                    .Find("custom")
+                    ->Find("format")
+                    ->Find("grammar")
+                    ->GetString("syntax") == "regex");
   return true;
 }

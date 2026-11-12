@@ -14,16 +14,19 @@ struct ItemViewOptions {
   std::vector<std::string> include;
 };
 
+enum class StoredItemView { kInputList, kConversation };
+
 ObjectReply NormalizeConversationMetadata(const io::Json& metadata);
 
 // Query values have already been decoded from HTTP (limit is a JSON number).
 // Used by Conversations and Responses input-item views; does no storage work.
 Status ParseItemViewOptions(const io::Json& query, ItemViewOptions* options,
                             ChatPlanError* error, bool pagination = true);
-io::Json ProjectStoredItem(const io::Json& item,
-                           const ItemViewOptions& options);
+io::Json ProjectStoredItem(const io::Json& item, const ItemViewOptions& options,
+                           StoredItemView view = StoredItemView::kInputList);
 ObjectReply PageStoredItems(const io::Json& items,
-                            const ItemViewOptions& options);
+                            const ItemViewOptions& options,
+                            StoredItemView view = StoredItemView::kInputList);
 
 // Stores canonical, resolved items, not generation requests. The input adapter
 // resolves references and supplies IDs/status before these methods are called.

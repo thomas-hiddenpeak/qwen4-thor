@@ -1,0 +1,14 @@
+{
+  "revision": 0,
+  "cycle_id": "c7d860b5-2fd1-411c-8229-6f7af7ac4e0e",
+  "selected": "primary",
+  "launch_payload": "primary",
+  "pending": false,
+  "fallback_consumed": false,
+  "protected": false,
+  "model_actions": false,
+  "role_launch_authority": false,
+  "registered": true,
+  "intent_sha256": "6476b8d81fd38d73c2ce1823a3860012fd7fbdbbf8258cc395c2178f5bf0d82a",
+  "automatic_start": false
+}

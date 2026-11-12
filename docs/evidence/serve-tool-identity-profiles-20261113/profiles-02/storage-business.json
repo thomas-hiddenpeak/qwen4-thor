@@ -1,0 +1,10 @@
+{
+  "status": "PASS_ACTUAL_STORAGE_ACROSS_MODEL_SHUTDOWN",
+  "conversation_id": "conv_b0ac9bd7beb4a3d426a770867d78d84e",
+  "metadata": {
+    "checkpoint": "controller-stop-20261113"
+  },
+  "control_requests": 4,
+  "persisted_across_restart": true,
+  "explicit_delete": true
+}

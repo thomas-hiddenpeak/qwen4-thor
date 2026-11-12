@@ -1,0 +1,14 @@
+{
+  "scope": "Current namespace and result contract survives actual native whole-payload fallback",
+  "cpu_cases": 5,
+  "limits": {
+    "starts": 3,
+    "chats": 6,
+    "probes": 1,
+    "seconds": 900
+  },
+  "no_full_quality_or_performance": true,
+  "driver_sha256": "f61f8307bb75dd3ee69fb9c5ddd5bc233c9e802694be2c94ffaea630892a87ef",
+  "tests_sha256": "8e3803f77b69b068b5c4d848226d3d79879277f6cb00eb0f0c0526125515de98",
+  "source_template_sha256": "77833b5dbf1e6212759d35e3db63f50c402f6bcdd50b6132b14e5e463c006429"
+}

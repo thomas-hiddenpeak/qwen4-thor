@@ -147,3 +147,27 @@ test('official helper rejects changing response identity', async () => {
   }, data => data.toString().replace(/("id":"resp_text")(?=[^]*response.in_progress)/,
     '"id":"resp_different"'));
 });
+
+for (const name of ['namespace', 'namespace-incomplete']) {
+  test(`official namespace identity survives native ${name} JSON and SSE`, async () => {
+    await peer(name, async sdk => {
+      const response = await sdk.responses.create(request);
+      compareWire(response, expected(name));
+      assert.deepEqual(response.output.map(item => [item.namespace, item.name]),
+        [['crm', 'read'], ['crm', 'query']]);
+    });
+    await peer(name, async sdk => {
+      const stream = sdk.responses.stream(request);
+      const events = [];
+      for await (const event of stream) events.push(event);
+      compareWire(await stream.finalResponse(), expected(name));
+      assert.ok(!JSON.stringify(events).includes('q4t_ns_'));
+      events.forEach((event, index) => assert.equal(event.sequence_number, index));
+      const calls = events.filter(event => event.type === 'response.output_item.done');
+      assert.deepEqual(calls.map(event => [event.item.namespace, event.item.name]),
+        [['crm', 'read'], ['crm', 'query']]);
+      assert.equal(events.some(event => event.type === 'response.custom_tool_call_input.done'),
+        name === 'namespace');
+    });
+  });
+}

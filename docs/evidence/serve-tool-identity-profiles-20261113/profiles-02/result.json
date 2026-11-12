@@ -1,0 +1,10 @@
+{
+  "status": "PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 81
+  },
+  "seconds": 87.28853448992595,
+  "binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba"
+}

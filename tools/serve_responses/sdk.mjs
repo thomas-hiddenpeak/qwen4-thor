@@ -86,7 +86,7 @@ export async function execute(input) {
       result = await response.json();
     } else if (input.action === 'input_items') {
       const page = await client.responses.inputItems.list(input.id, input.query ?? {}, options);
-      result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
+      result = { data: page.data, has_more: page.has_more };
     } else if (input.action === 'conversation_create') {
       result = await client.conversations.create(input.request ?? {}, options);
     } else if (input.action === 'conversation_retrieve') {
@@ -95,7 +95,7 @@ export async function execute(input) {
       result = await client.conversations.delete(input.id, options);
     } else if (input.action === 'conversation_items') {
       const page = await client.conversations.items.list(input.id, input.query ?? {}, options);
-      result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
+      result = { data: page.data, has_more: page.has_more };
     } else throw new Error('unknown action');
   } catch (problem) {
     error = { class: problem.constructor.name, message: problem.message,
@@ -103,6 +103,14 @@ export async function execute(input) {
   }
   try {
     await Promise.all(captures);
+    if (!error && ['input_items', 'conversation_items'].includes(input.action)) {
+      // CursorPage exposes data/has_more, not every original wire cursor.
+      // Join the capture before preserving the actual response metadata.
+      const page = JSON.parse(Buffer.concat(wire).toString('utf8'));
+      requireValue(JSON.stringify(result.data) === JSON.stringify(page.data) &&
+        result.has_more === page.has_more, 'SDK page differs from wire');
+      result = page;
+    }
     if (chunks && !error) result = responseTerminal(chunks, Buffer.concat(wire).toString('utf8'), input.query?.starting_after ?? -1);
     requireValue(exchanges.length === 1, 'SDK made more than one request');
   } catch (problem) {

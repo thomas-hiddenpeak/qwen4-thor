@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-version-01/plan.json", "limits": {"starts": 2, "chats": 4, "probes": 1, "controls": 2500, "seconds": 600}}

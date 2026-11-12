@@ -431,6 +431,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/completion_response.cpp
     src/server/responses_output.cpp
     src/server/responses_input.cpp
+    src/server/tool_result_schema.cpp
+    src/server/tool_result_contracts.cpp
     src/server/responses_plan.cpp
     src/server/responses_tokens.cpp
     src/server/responses_summary.cpp
@@ -683,6 +685,8 @@ if(Q4T_BUILD_TESTS)
     src/server/completion_response.cpp
     src/server/responses_output.cpp
     src/server/responses_input.cpp
+    src/server/tool_result_schema.cpp
+    src/server/tool_result_contracts.cpp
     src/server/responses_plan.cpp
     src/server/responses_tokens.cpp
     src/server/responses_summary.cpp
@@ -724,6 +728,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_completion_test.cpp
     tests/server_responses_output_test.cpp
     tests/server_responses_input_test.cpp
+    tests/server_tool_result_test.cpp
     tests/server_responses_plan_test.cpp
     tests/server_responses_tokens_test.cpp
     tests/server_responses_reasoning_test.cpp

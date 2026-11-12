@@ -1,0 +1,14 @@
+{
+  "label": "fallback-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle/engine/q4t",
+    "service",
+    "check",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+    "--manifest-sha256",
+    "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386"
+  ],
+  "returncode": 0,
+  "seconds": 0.8194639598950744
+}
