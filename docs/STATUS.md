@@ -33,6 +33,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 异步续答修复后的[完整JSON/SSE业务通过](evidence/serve-async-resume-business-20261113/README.md)：
+  1启动/8创建/70.180秒，输出256与实际客户端边界一致，两类真实
+  迟到结果均闭环。新引擎6d7d5e92正在重新取得主轻/回退资格；
+  默认rev102保持，全部master继续。
+
 - 异步续答调度及稳定历史引用[11项CPU最终通过](evidence/serve-async-resume-cpu-20261113/README.md)。
   原误答仍待真实补验；冻结1启动/8创建/900秒，JSON/SSE都按受控服务
   256输出预算验证。默认rev102保持，继续所有master。
