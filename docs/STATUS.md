@@ -36,6 +36,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- PR26旧head一次CI暴露正常Batch恢复误用150ms故障期限；已将三项
+  同类夹具的正常/注入期限分开，[7项针对性CPU首过](evidence/serve-ci-batch-recount-deadline-20261113/README.md)。
+  生产和rev118字节未变，0GPU；继续最新head检查及实际合main。
+
 - 原生工具发现已[可回退发行rev118](evidence/serve-tool-discovery-delivery-20261113/README.md)：
   17项STOPPED检查全过、0GPU，实际回退再前进，密钥/配额/core/outer
   及恢复预算保持。PR26待检查与实际合main；继续程序调用及全部master。

@@ -1,0 +1,14 @@
+{
+  "ci-batch-targeted-01.json": "58204096bd632acaeb4e63f0e7b5152a6bc388b0bce3ccbbd1b27215deecbd52",
+  "ci-batch-build-01.stdout": "91a03d8c4ea1f060a8937d42fdfb73bb40063b4c380ed4a4a18446538bea9903",
+  "ci-original.log.gz": "1051a26880f1ca65a3ed1ccfcc002a008096349fdef78089067c78453e5a3b20",
+  "result.json": "6b162061daf31dd77367f7b3e852e3b11543062b45236f7f394b93c75df69603",
+  "ci-batch-required-01.txt": "ec0ca037c31075d9a42e8addf86fe69335705ada75b6479393a82c4dda735169",
+  "ci-batch-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-batch-targeted-01.stdout": "d79f684c9df490690fd25bad3350fdde0788f1e4386f370342fde61b0b23cd4f",
+  "ci-batch-build-01.json": "d89a2d6e9e75c151975de208a013a5db9db2a1b3cc4dd5b15ba707ba356668e3",
+  "ci-batch-freeze-01.json": "722632cd6979fa6708eb63e1c06fb517f85fd3c4f8ebb3ccc299fc09b3d52058",
+  "README.md": "0501fa3b4d84671edb4b4dccfce2b7bf95806dff98bd706e39d866f1a86a94d0",
+  ".gitattributes": "80cc7408f798c4d0fac6535a860ea00c33fd3cb03d918dccc4b4f70b1d8e3fc7",
+  "ci-batch-targeted-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

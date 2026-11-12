@@ -1,0 +1,8 @@
+{
+  "status": "PASS_TARGETED_BATCH_FIXTURES",
+  "cases": 7,
+  "production_changed": false,
+  "new_gpu_starts": 0,
+  "original_ci_run": 43306807814,
+  "original_log_sha256": "6ddbb75ccde8bd19a6c65efd03a8593c346f9064a3a53fc4d90faababfe2ed2c"
+}

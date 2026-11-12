@@ -1,0 +1,16 @@
+{
+  "tests": [
+    "batch_validation_driver_unknown_source_pin_is_sticky_and_resumable",
+    "batch_inline_input_actual_lost_page_receipt_survives_restart",
+    "batch_recount_actual_partial_lost_ack_resumes_next_original_row",
+    "batch_recount_native_frozen_file_prefix_resumes_without_fetch",
+    "batch_recount_scope_model_deadline_and_cancel_prevent_publication",
+    "batch_recount_completed_inline_result_and_ticket_are_immutable",
+    "batch_recount_partial_budget_cannot_move_model_and_can_cancel"
+  ],
+  "source_sha256": "b5a6fd2c475f4542816e3487834f0642023330e520f825a587d7865630c046ba",
+  "purpose": "Separate normal 2000ms store deadline from injected 100/150ms loss-only scope; retain actual recovery and loss assertions",
+  "original_failure_run": 43306807814,
+  "production_unchanged": true,
+  "new_gpu_starts": 0
+}

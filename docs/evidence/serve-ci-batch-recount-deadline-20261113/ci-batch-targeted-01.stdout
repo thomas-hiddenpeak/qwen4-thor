@@ -1,0 +1,8 @@
+[PASS] batch_validation_driver_unknown_source_pin_is_sticky_and_resumable
+[PASS] batch_inline_input_actual_lost_page_receipt_survives_restart
+[PASS] batch_recount_native_frozen_file_prefix_resumes_without_fetch
+[PASS] batch_recount_actual_partial_lost_ack_resumes_next_original_row
+[PASS] batch_recount_scope_model_deadline_and_cancel_prevent_publication
+[PASS] batch_recount_completed_inline_result_and_ticket_are_immutable
+[PASS] batch_recount_partial_budget_cannot_move_model_and_can_cancel
+7 tests, 7 passed, 0 failed, 0 skipped
