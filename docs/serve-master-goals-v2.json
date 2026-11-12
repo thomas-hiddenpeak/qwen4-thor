@@ -1053,7 +1053,7 @@
         }
       },
       "programmatic": {
-        "state": "business_failed_repair_cpu_passed",
+        "state": "real_business_passed_qualification_pending",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
@@ -1062,7 +1062,7 @@
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Bounded business rerun: additional1 start/8 creates/900s; cumulative2/9/1200s; then applicable qualification, reversible delivery and main",
+        "next": "Primary/light, retained control and real whole-tree recovery with pending program; reversible release and actual main merge; all master continues",
         "default_capability_delivered": false,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
@@ -1070,7 +1070,15 @@
         "integration_python_passed": 7,
         "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
         "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
-        "length_repair_cpu_passed": 11
+        "length_repair_cpu_passed": 11,
+        "business_evidence": "docs/evidence/serve-programmatic-business-20261113",
+        "business_counts": {
+          "starts": 1,
+          "creates": 8,
+          "seconds": 121.78555771987885,
+          "nvml_queries": 115
+        },
+        "pr": 27
       }
     },
     {
@@ -1755,7 +1763,7 @@
         }
       },
       "programmatic": {
-        "state": "business_failed_repair_cpu_passed",
+        "state": "real_business_passed_qualification_pending",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
@@ -1764,7 +1772,7 @@
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Bounded business rerun: additional1 start/8 creates/900s; cumulative2/9/1200s; then applicable qualification, reversible delivery and main",
+        "next": "Primary/light, retained control and real whole-tree recovery with pending program; reversible release and actual main merge; all master continues",
         "default_capability_delivered": false,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
@@ -1772,7 +1780,15 @@
         "integration_python_passed": 7,
         "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
         "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
-        "length_repair_cpu_passed": 11
+        "length_repair_cpu_passed": 11,
+        "business_evidence": "docs/evidence/serve-programmatic-business-20261113",
+        "business_counts": {
+          "starts": 1,
+          "creates": 8,
+          "seconds": 121.78555771987885,
+          "nvml_queries": 115
+        },
+        "pr": 27
       },
       "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required."
     },

@@ -37,6 +37,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 程序调用[真实资料JSON/SSE闭环通过](evidence/serve-programmatic-business-20261113/README.md)：
+  修后1启动/8创建/121.786秒，115次NVML正常、资源清理；含首次失败
+  累计2启动/9创建/159.939秒。原schema、caller和持久续接保持，实际
+  两次读取资料，纯计算/截断/普通业务均通过。PR27已建；继续主轻与
+  程序等待期间整树恢复、可回退发行及合main，rev118保持，master继续。
+
 - 大长度语法失败已CPU复现并[修复，11项针对性检查通过](evidence/serve-programmatic-length-repair-20261113/README.md)：
   紧凑计数规则保留min/max、Unicode及JSON转义；不删除约束或放宽资源
   上限。实际引擎零警告构建，补验固定1启动/8创建/900秒，连原失败
