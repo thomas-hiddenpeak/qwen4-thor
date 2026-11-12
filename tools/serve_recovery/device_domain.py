@@ -195,12 +195,13 @@ class Observation:
         self.lease_fd, self.pending = lease_fd, None
 
     def inspect(self, timeout=5):
+        from tools.serve_recovery import cold_custody
         ledger.require(self.pending is None or self.pending.poll() is not None,
                        'device observation worker not reaped')
         self.pending = subprocess.Popen([sys.executable, '-I', '-B',
             str(Path(device_platform.__file__).resolve())],
             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-            env={}, pass_fds=(self.lease_fd,))
+            env={}, pass_fds=(self.lease_fd, *cold_custody.inherited()))
         try:
             raw, _ = self.pending.communicate(timeout=timeout)
             ledger.require(self.pending.returncode == 0 and len(raw) <= 65536,

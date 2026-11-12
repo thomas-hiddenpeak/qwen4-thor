@@ -13,7 +13,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import cold_authority, cold_channel as wire, cold_requests
+from tools.serve_recovery import cold_authority, cold_channel as wire, cold_custody, cold_requests
 from tools.serve_recovery import device_resource, host_artifact, host_install as host, ledger, store
 
 
@@ -28,6 +28,10 @@ def protected(directory):
 
 def worker(directory, fd):
     value = protected(directory)
+    if cold_custody.inherited():
+        with host.exclusive(directory):
+            _, _, device, config = cold_authority.selection(directory)
+            cold_custody.verify(device, config)
     with socket.socket(fileno=fd) as channel:
         peer = wire.credentials(channel)
         ledger.require(peer[0] == os.getppid() and peer[1] == 0,
@@ -227,7 +231,9 @@ def main():
     if args.worker_fd is not None: return worker(args.directory, args.worker_fd)
     if args.serve or args.daemon:
         value = protected(args.directory)
-        with host.exclusive(args.directory): cold_authority.selection(args.directory)
+        with host.exclusive(args.directory):
+            _, _, device, config = cold_authority.selection(args.directory)
+            if cold_custody.inherited(): cold_custody.verify(device, config)
         if args.daemon: return daemon(args.directory, value)
         Server(args.directory, value).run(); return 0
     print(json.dumps(control(args.directory, 'stop' if args.stop else 'status'), sort_keys=True))

@@ -12,7 +12,7 @@ import socket
 import subprocess
 import time
 
-from tools.serve_recovery import device_store, ledger, store
+from tools.serve_recovery import cold_custody, device_store, ledger, store
 
 MAXIMUM = 65536
 
@@ -57,7 +57,7 @@ class Control:
             ledger.require(parent.send(command) == len(command), 'short control command')
             self.pending = subprocess.Popen([str(self.executable), '--fd', str(endpoint.fileno())],
                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                env={}, pass_fds=tuple(set((self.lease_fd, endpoint.fileno(), *inherited))))
+                env={}, pass_fds=tuple(set((self.lease_fd, endpoint.fileno(), *inherited, *cold_custody.inherited()))))
             endpoint.close()
             raw, ancillary, flags, _ = parent.recvmsg(MAXIMUM, socket.CMSG_SPACE(4*4),
                                                      socket.MSG_CMSG_CLOEXEC)

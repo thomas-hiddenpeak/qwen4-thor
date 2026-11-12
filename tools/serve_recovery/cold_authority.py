@@ -10,7 +10,7 @@ import select
 import stat
 import subprocess
 
-from tools.serve_recovery import child, cold_requests, device_control, device_domain as domain
+from tools.serve_recovery import child, cold_custody, cold_requests, device_control, device_domain as domain
 from tools.serve_recovery import device_resource, device_store, host_artifact, host_handoff
 from tools.serve_recovery import host_install as host, journal, ledger, resource_install as resources
 from tools.serve_recovery import resource_kernel as kernel, store
@@ -69,7 +69,7 @@ def verify_runtime(directory, value, root, selected, lease_fd, instance_fd):
         '--lease-fd', str(lease_fd), '--instance-fd', str(instance_fd)]
     result = subprocess.run(command, input=ledger.canonical(selected), stdout=subprocess.PIPE,
         stderr=subprocess.PIPE, user=value['runtime_uid'], group=value['runtime_gid'],
-        extra_groups=[], env=host.environment(), pass_fds=(lease_fd, instance_fd), timeout=5)
+        extra_groups=[], env=host.environment(), pass_fds=(lease_fd, instance_fd, *cold_custody.inherited()), timeout=5)
     ledger.require(result.returncode == 0 and 0 < len(result.stdout) <= 16384,
                    'cold original intent verification failed')
     checked = store.decode(result.stdout)

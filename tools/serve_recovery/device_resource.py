@@ -99,8 +99,10 @@ def initialize(directory, config):
             else:
                 ledger.require(not state['initialized'], 'published resource device association is missing')
                 device_domain.write_record(selected, expected)
-        from tools.serve_recovery import cold_requests
+        from tools.serve_recovery import cold_custody, cold_requests, cold_watch_policy
         cold_requests.initialize(directory, config, first=not state['initialized'])
+        cold_watch_policy.initialize(directory, config, first=not state['initialized'])
+        cold_custody.initialize(directory, config, first=not state['initialized'])
         if not state['initialized']:
             ledger.require(state['phase'] == 'idle' and state['revision'] == 0,
                            'unpublished resource fence history was already used')

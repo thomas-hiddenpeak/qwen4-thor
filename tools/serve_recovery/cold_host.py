@@ -8,8 +8,9 @@ import os
 from pathlib import Path
 import select
 import subprocess
+import time
 
-from tools.serve_recovery import cold_authority, cold_channel, cold_issuer, device_domain
+from tools.serve_recovery import cold_authority, cold_channel, cold_custody, cold_issuer, cold_watch, device_domain
 from tools.serve_recovery import device_resource, host_handoff, host_install as host
 from tools.serve_recovery import ledger, resource_install as resources
 
@@ -38,30 +39,51 @@ def ensure(directory):
         host_handoff.require_admission(directory, value)
         if not selected(value): return dict(selected=False, model_actions=False)
         _, root, _, _ = cold_authority.selection(directory)
-    try:
-        status = cold_issuer.control(directory, 'status')
-        return dict(selected=True, available=status['accepting'], issuer=status, model_actions=False)
+    def snapshot(watcher):
+        try:
+            status = cold_issuer.control(directory, 'status')
+            return dict(selected=True, available=status['accepting'], issuer=status,
+                        watcher=watcher, model_actions=False)
+        except (OSError, ValueError, KeyError, TypeError):
+            return dict(selected=True, available=False, reason=watcher['reason'],
+                        watcher=watcher, model_actions=False)
+    try: return snapshot(cold_watch.control(directory, 'status'))
     except (OSError, ValueError, KeyError, TypeError): pass
-    # No admin lock crosses the bootstrap. Its child is detached before the
-    # host entry becomes the ordinary outer supervisor, so trees never mix.
+    # The native watcher and all its children are auxiliary only. It is
+    # detached before the host becomes the ordinary outer supervisor.
     command = [value['artifact']['python']['path'], '-I', '-B',
-        str(root/'tools/serve_recovery/cold_issuer.py'), '--directory', str(directory), '--daemon']
+        str(root/'tools/serve_recovery/cold_watch.py'), '--directory', str(directory), '--daemon']
     try:
         result = subprocess.run(command, env=host.environment(), stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
-        if result.returncode != 0: raise ValueError('cold issuer bootstrap failed')
-        status = cold_issuer.control(directory, 'status')
-        return dict(selected=True, available=status['accepting'], issuer=status, model_actions=False)
+        if result.returncode != 0: raise ValueError('cold watcher bootstrap failed')
+        deadline = time.monotonic()+2
+        while True:
+            watcher = cold_watch.control(directory, 'status'); result = snapshot(watcher)
+            if result['available'] or watcher['reason'] not in ('starting', 'running') or time.monotonic() >= deadline:
+                return result
+            time.sleep(.02)
     except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired):
-        # Runtime keeps cold selected and waits; a healthy core is untouched.
         return dict(selected=True, available=False, reason='issuer_unavailable', model_actions=False)
+
+
+def custody_clear(value):
+    if not selected(value): return
+    with resources.exclusive(value['resource']['directory']) as directory:
+        association = device_domain.read_record(directory/'admin'/device_resource.ASSOCIATION)
+        config = device_domain.configuration(association['configuration'])
+        fd = cold_custody.acquire(association['device_directory'], config)
+        os.close(fd)
 
 
 def withdraw(directory):
     """Only requests auxiliary shutdown. A delayed worker prevents completion."""
     value = host.load(directory)
+    watched = cold_watch.withdraw(directory)
     try: sock = cold_channel.connect(value['installation_id'], timeout=2)
-    except ConnectionRefusedError: return dict(issuer_listener_absent=True, model_actions=False)
+    except ConnectionRefusedError:
+        custody_clear(value)
+        return dict(issuer_exited=watched, issuer_listener_absent=True, model_actions=False)
     with sock:
         peer = cold_channel.credentials(sock); pidfd = os.pidfd_open(peer[0])
         try:
@@ -78,4 +100,5 @@ def withdraw(directory):
             ledger.require(bool(select.select([pidfd], [], [], 5)[0]),
                            'cold issuer still owns its worker slot; retry original removal')
         finally: os.close(pidfd)
+    custody_clear(value)
     return dict(issuer_exited=True, model_actions=False)

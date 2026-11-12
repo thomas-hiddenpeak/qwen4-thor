@@ -14,7 +14,7 @@ import struct
 import subprocess
 import time
 
-from tools.serve_recovery import device_control, ledger, outer_tree, store
+from tools.serve_recovery import cold_custody, device_control, ledger, outer_tree, store
 
 MAXIMUM = 16384
 WORKER_SECONDS = 40
@@ -124,8 +124,8 @@ class Worker:
             envelope = dict(value, descriptors=copies)
             send(parent, envelope); parent.setblocking(False)
             tree.launch([*command, '--worker-fd', str(endpoint.fileno())],
-                env=dict(PATH='/usr/bin:/bin', LANG='C.UTF-8'),
-                pass_fds=(*copies, endpoint.fileno()), stdio=subprocess.DEVNULL)
+                env=cold_custody.environment(dict(PATH='/usr/bin:/bin', LANG='C.UTF-8')),
+                pass_fds=(*copies, endpoint.fileno(), *cold_custody.inherited()), stdio=subprocess.DEVNULL)
             endpoint.close(); endpoint = None
             return cls(tree, parent, copies, time.monotonic()+timeout, sent=set())
         except BaseException:
