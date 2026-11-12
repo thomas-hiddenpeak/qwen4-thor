@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11查询执行/改写合同与搜索快照一致性已通过
+  [18项针对性CPU](evidence/serve-vector-query-cpu-20261112/README.md)：实际源/完整索引、
+  全查询预算、错误消费及并发版本保护；原夹具失败保留，仅重验该项。
+  0GPU、默认rev80保持，继续原生HTTP/search与Responses内建循环。
+
 - A11公开管理与内容读取已接通15条原生操作，统一schema/原生入口/
   客户端RPM及独立取消容量已接线；[12项C++和3项SDK/协议通过](evidence/serve-vector-api-cpu-20261112/README.md)。
   官方JS直连与Python经原生TLS均验证真实文件/索引文本，向量为CPU

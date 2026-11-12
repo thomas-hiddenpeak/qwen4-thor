@@ -18,6 +18,7 @@ ObjectRequest Write(const BinaryAccess& access, ObjectKind kind,
                     int64_t mutate_before = 0);
 const Json* Edge(const Json& data, const std::string& file_id);
 bool ValidateStore(const Json& record);
+int64_t SearchRevision(const Json& record);
 bool ValidateMember(const Json& record, const Json& store);
 Json PublicStore(const Json& data);
 void Summarize(Json* data);

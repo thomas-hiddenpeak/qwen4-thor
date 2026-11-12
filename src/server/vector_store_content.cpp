@@ -42,7 +42,7 @@ ObjectReply VectorStores::ReadIndex(const BinaryAccess& access,
   if (!reply.ok()) return reply;
   auto final = Read(access, id, true);
   if (!final.ok()) return final;
-  if (final.value.GetInt("revision") != root.value.GetInt("revision"))
+  if (SearchRevision(final.value) != SearchRevision(root.value))
     return Error(409, "object_revision_conflict",
                  "Vector store changed during index read");
   source = Files(objects_).Retrieve(access, file_id);

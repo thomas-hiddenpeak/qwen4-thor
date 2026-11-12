@@ -11,6 +11,16 @@ struct VectorIngestionClaim {
   int64_t deadline_at = 0;
 };
 
+// Private request-owned snapshot. Search mutations invalidate this view;
+// metadata reads and activity-only touches do not invalidate concurrent work.
+struct VectorSearchCorpus {
+  std::string store_id, scope;
+  int64_t search_revision = 0;
+  size_t dimensions = 0;
+  std::vector<std::string> file_ids;
+  std::vector<VectorSearchChunk> chunks;
+};
+
 class VectorStores {
  public:
   explicit VectorStores(ObjectStore& objects) : objects_(objects) {}
@@ -38,6 +48,13 @@ class VectorStores {
   ObjectReply ReadIndex(const BinaryAccess& access, const std::string& id,
                         const std::string& file_id, VectorIndex* index,
                         io::Json* attributes);
+  ObjectReply ReadSearchCorpus(const BinaryAccess& access,
+                               const std::string& id, const io::Json& filters,
+                               size_t dimensions, VectorSearchCorpus* corpus);
+  // After actual query/ranking: current scope/source/index revision and one
+  // activity CAS. Conflicts never cause implicit model/query replay.
+  ObjectReply TouchSearch(const BinaryAccess& access,
+                          const VectorSearchCorpus& corpus);
   // Actual search/tool use advances last_active_at; management reads do not.
   ObjectReply Touch(const BinaryAccess& access, const std::string& id);
   ObjectReply CreateBatch(const BinaryAccess& access, const std::string& id,
@@ -91,6 +108,8 @@ class VectorStores {
                    bool require_live = false);
   ObjectReply ReadMember(const BinaryAccess& access, const io::Json& store,
                          const std::string& file_id);
+  ObjectReply CheckSearch(const BinaryAccess& access,
+                          const VectorSearchCorpus& corpus);
   ObjectReply ReadBatch(const BinaryAccess& access, const io::Json& store,
                         const std::string& batch_id);
   ObjectReply ReadExecutionMember(const BinaryAccess& access,

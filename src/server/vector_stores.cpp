@@ -1,5 +1,6 @@
 #include "q4t/server/vector_stores.h"
 
+#include <algorithm>
 #include <ctime>
 
 #include "q4t/server/files.h"
@@ -52,6 +53,15 @@ ObjectReply VectorStores::Publish(const BinaryAccess& access,
   Summarize(&data);
   const auto id = before.GetString("id");
   const auto* previous = before.Find("data");
+  const bool search_changed =
+      !previous ||
+      OutputJson(*previous->Find("members")) != OutputJson(*data.Find("members")) ||
+      std::any_of(children.begin(), children.end(), [](const auto& child) {
+        return child.kind == ObjectKind::kVectorStoreFile;
+      });
+  const auto revision = SearchRevision(before);
+  if (revision < 0 || revision >= 9007199254740991LL) return Corrupt();
+  Set(&data, "search_revision", Number(revision + (search_changed ? 1 : 0)));
   const auto deadline =
       previous ? previous->Find("vector_store")->GetInt("expires_at") : 0;
   auto root = Write(access, ObjectKind::kVectorStore, id,

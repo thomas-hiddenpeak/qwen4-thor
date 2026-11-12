@@ -172,10 +172,21 @@ ObjectReply Fields(const Json& request, bool creating) {
   }
   return {};
 }
+int64_t SearchRevision(const Json& record) {
+  const auto* data = record.Find("data");
+  return data ? data->GetInt("search_revision", record.GetInt("revision"))
+              : record.GetInt("revision");
+}
 bool ValidateStore(const Json& record) {
   const auto* data = record.Find("data");
   const auto* store = data ? data->Find("vector_store") : nullptr;
   const auto* members = data ? data->GetArray("members") : nullptr;
+  if (data && data->Has("search_revision")) {
+    const auto& revision = *data->Find("search_revision");
+    if (!IsInputInteger(revision) || revision.AsInt() < 1 ||
+        revision.AsInt() > 9007199254740991LL)
+      return false;
+  }
   if (!data || data->GetString("format") != kStore || !store ||
       !store->IsObject() || !members ||
       members->array.size() > kVectorStoreFiles ||

@@ -42,8 +42,12 @@ set(protocol_inputs
   src/server/chat_moderations.cpp
   include/q4t/server/embeddings_plan.h
   include/q4t/server/vector_search.h
+  include/q4t/server/vector_search_execution.h
   src/server/vector_search_plan.cpp
   src/server/vector_search_rank.cpp
+  src/server/vector_search_corpus.cpp
+  src/server/vector_search_execution.cpp
+  src/server/vector_query_rewrite.cpp
   include/q4t/server/vector_index.h
   include/q4t/server/vector_stores.h
   include/q4t/server/vector_store_api.h
