@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11受监护检索、版本切换及原生TLS驱动已通过
+  [5项CPU](evidence/serve-retrieval-managed-driver-cpu-20261112/README.md)，
+  后续分三租约累计最多4启动/8请求（含4自检）/1探测/1200秒，
+  使用实际前驱控制回退payload与私有TLS副本，默认rev80保持。
+
 - A11[实际主/轻量资格与候选封包通过](evidence/serve-file-search-profiles-20261112/README.md)：
   2启动/8模型HTTP/90.379秒，新能力声明一致；原始检索业务复用。
   候选32d3b819已含实际资格，显式v3升级许可已核对但未安装；

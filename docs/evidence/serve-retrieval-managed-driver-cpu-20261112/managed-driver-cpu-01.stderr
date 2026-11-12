@@ -1,0 +1,10 @@
+test_actual_retrieval_source_citation_history_and_terminal_oracles (tools.serve_recovery.test_retrieval_acceptance.RetrievalDriverTests.test_actual_retrieval_source_citation_history_and_terminal_oracles) ... ok
+test_each_stage_enforces_its_own_exact_predispatch_budget (tools.serve_recovery.test_retrieval_acceptance.RetrievalDriverTests.test_each_stage_enforces_its_own_exact_predispatch_budget) ... ok
+test_first_stage_probe_rejected_before_any_device_or_module_load (tools.serve_recovery.test_retrieval_acceptance.RetrievalDriverTests.test_first_stage_probe_rejected_before_any_device_or_module_load) ... ok
+test_partial_business_bad_environment_or_missing_lease_cannot_certify (tools.serve_recovery.test_retrieval_acceptance.RetrievalDriverTests.test_partial_business_bad_environment_or_missing_lease_cannot_certify) ... ok
+test_selected_sealed_imports_and_owned_fault_wrapper_path (tools.serve_recovery.test_retrieval_acceptance.RetrievalDriverTests.test_selected_sealed_imports_and_owned_fault_wrapper_path) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.497s
+
+OK
