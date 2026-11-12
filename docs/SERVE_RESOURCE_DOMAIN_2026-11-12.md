@@ -1,9 +1,9 @@
 # R08 / R09：原生资源域与新监护者核验
 
-资源域是总计划的待实现能力，不以“旧版只支持process模式”结案。
-当前已有的`tools/serve_service/resources.py`在创建时依赖用户systemd
-与busctl，运行时虽已能不依赖管理器观察，仍没有解除创建绑定。
-新路径直接使用Linux cgroup v2，既有systemd适配保持可选。
+原生资源安装、前后台进入、旧域清理、跨boot续办与冷许可组合已
+完成针对性CPU验证。创建/运行路径直接使用Linux能力，systemd
+适配是显式选配。当前继续统一DRAM与memcg压力观察/合格profile
+切换组合、适用模型业务和可回退发行；R08尚未完成。
 
 ## 已确定合同
 
@@ -162,3 +162,26 @@ writer回收、原生四角色、后台四角色），1跨boot显式进入、1�
 操作既有服务或宿主开机项。验证后继续宿主适配/冷准入及全部任务。
 
 2026-11-12。资源迁移权限[20针对性CPU首过](evidence/serve-resource-delegation-cpu-20261112/README.md)，累计11.477秒/0GPU。实际继承FD拒绝自建域外同UID/root进程，业务逃逸/改限额拒绝；普通UID进入、pids/OOM、完整恢复和前后台四角色通过。未发行候选v2采用降权后打开FD，域全清/默认与宿主服务保持。继续宿主适配、冷准入和全部任务。
+
+## 原生资源压力组合（开发中）
+
+controller配置v6绑定外层实际安装回执；CPU采集worker须确认自身
+位于原service叶，分别读取memcg、memory.events/pids.events及
+固定/proc/meminfo。独立进程2秒上限、单slot，采集错误/超时只撤
+观测，健康模型继续；未回收slot不能被新worker或新模型绕过。
+
+memcg当前量持续达到已配置memory.high时，沿用合格profile策略
+和持久预算提出light；历史high事件本身不能当当前压力。全局低
+MemAvailable仍独立生效。升档须两类观察都持续有效，资源域还须
+有容纳已合格primary/light差值的余量；该保守约束是额外准入，
+不是把物理内存与memcg相加，也不是GPU分配的计量保证。
+
+新启动仍由现有全局容量、Guardian设备准入与内核已配置限额保护；
+新观察不能发放启动权限、抹除保护或覆盖人工STOPPED。硬memcg
+OOM整组退出继续由原外层资源清理/恢复链处理，不当观察缺失。
+
+2026-11-12。R08原生资源压力组合开始接线：v6 controller绑定原资源回执，独立有界CPU采集器分开读memcg事件/当前量与全局MemAvailable；失败只报观测降级，不信号模型。持续真实memory.high压力接已有合格light切换，升档须全局与资源域共同恢复；不把两个计量相加或声称物理RAM硬上限。新采集slot纳入原整树回收，原停止/设备保护/切换预算保持。尚未测试；继续成组针对性CPU及必要业务交付，全部总任务继续。
+
+2026-11-12。资源压力组冻结17针对性CPU：10新观察/合格profile提议/缺失隔离/实际自有memory.high与worker回收、4直接原合同/持久profile/原生Guardian角色及3封包。当前接线覆盖普通资源外层启动；源码审查已明确版本恢复命令另建v5 controller配置，需要下一组为当前与保留payload补兼容接线和证据，不能把当前普通路径通过称完整R08。CPU组0GPU/不改宿主服务；全部总任务继续。
+
+2026-11-12。原生资源压力[17不同CPU接受](evidence/serve-resource-memory-cpu-20261112/README.md)，18调用累计20.672秒；首1夹具high节流超时保留，定点修复补过。实际内核high/独立物理计量、采集worker回收、合格profile门控与原生CPU角色入域通过，0GPU/自有域全清/默认保持。继续版本恢复当前及保留payload资源接线、实际冷/恢复业务发行及全部总任务。

@@ -1,0 +1,52 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_GUARDIAN_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/guardian-build/q4t-guardian",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_memory.py",
+    "-v",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_actual_pressure_requires_fresh_continuous_samples_not_event_history",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_missing_corrupt_or_future_observation_cannot_trigger_or_promote",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_unknown_memcg_does_not_disable_confirmed_global_pressure",
+    "tools.serve_recovery.test_resource_memory.PressureTests.test_promotion_requires_both_domains_and_resets_after_missing_sample",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_real_cpu_high_counter_and_physical_memory_are_separate",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_live_cpu_collector_is_reaped_before_slot_is_reused",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_wrong_membership_and_changed_kernel_limit_are_unknown_not_authority",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_collector_exception_retains_original_slot_and_only_clears_observation",
+    "tools.serve_recovery.test_resource_memory.KernelTests.test_controller_configuration_binds_selected_resource_with_and_without_profiles",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_cached_unknown_and_stale_observations_never_accumulate_pressure",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_promotion_requires_extra_allocation_headroom_and_continuous_high_water",
+    "tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation",
+    "tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain"
+  ],
+  "exit_code": 1,
+  "seconds": 18.957894042134285,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

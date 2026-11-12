@@ -212,6 +212,9 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
                 controller.update(version=5, profiles=access)
             # No journal read in this process or silent legacy-key fallback.
             # The isolated reader gates the public credential configuration.
+        if outer is not None and outer.resource is not None:
+            controller.update(version=6, limits=controller.get('limits'),
+                profiles=controller.get('profiles'), resources=outer.resource.binding())
         gateway = bundle.gateway_config_for(package, manifest, run, access=access)
         engine.save(run/'controller.json', controller)
         engine.save(run/'gateway.json', gateway)
