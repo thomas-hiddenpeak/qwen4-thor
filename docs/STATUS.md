@@ -37,6 +37,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 程序调用[认证/回放部件19项不同CPU最终通过](evidence/serve-programmatic-authority-cpu-20261113/README.md)：
+  跨客户/模型/代码篡改拒绝、调用时参数/结果合同、结果因果回放、
+  custom文本/regex/Lark、重启及取消/过期已验证。两项适配失败原件
+  保留，仅重验受影响用例；0GPU、rev118保持。继续公开生成与
+  JSON/SSE/持久接线、实际业务及全部master，不以部件通过结束总目标。
+
+- 程序调用的授权/认证续接正在接线：调用时工具及参数/结果合同写入
+  客户/模型/模板绑定的加密指纹，校验子调用身份和结果因果顺序，
+  custom regex/Lark在派发前进入既有隔离校验worker。9项新增及
+  直接受影响CPU准备成组验证；公开接口、业务及发行仍待完成，
+  rev118保持，继续全部master。
+
 - [程序调用隔离执行部件](SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)已通过
   [13项针对性CPU](evidence/serve-programmatic-worker-cpu-20261113/README.md)：
   真实JavaScript、并行/依赖续接、结果顺序、资源限额和回收验证通过；

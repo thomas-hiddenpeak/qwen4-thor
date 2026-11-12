@@ -55,3 +55,9 @@ b376e839b322978313d929fd20663b11ba58b75df5a46c126dd19ea2fa70ad2a。
 [证据](evidence/serve-programmatic-worker-cpu-20261113/README.md)保留。
 公开接线、授权/持久续接、业务验证和发行尚未完成。实际默认rev118保持，
 PR26已实际合main（090f0d48），继续程序调用和全部master任务。
+
+认证/回放部件19项不同CPU最终通过，见[证据](evidence/serve-programmatic-authority-cpu-20261113/README.md)。
+指纹保存调用时权限及schema，绑定客户/模型/模板/原代码；续接有效期
+30天，与默认对象保留期一致，密钥撤销也使待续接状态失效。VM记录
+每次子调用发生前的结果数量，伪造依赖调用时序会被拒绝。公开接线、
+队列/压缩、媒体语义和发行仍待完成，不能把当前部件称为完整能力。

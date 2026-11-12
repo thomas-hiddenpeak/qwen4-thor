@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151",
-    "cmake/ChatProtocolIdentity.cmake": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad",
+    "CMakeLists.txt": "64334cd56560c4461f06031a74289eb0857ab20a0766b16eac8a43f7714e86a3",
+    "cmake/ChatProtocolIdentity.cmake": "707d755222ea1360e3328aa06195824f9f91acb3539032e49e30d392164106ee",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1941,6 +1941,7 @@
     "include/q4t/server/responses_output.h": "0993be925fdcd6bc31ad1a879da7c20412550d17ee90a98022aaad02b1e0aaad",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
+    "include/q4t/server/responses_program.h": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "64196334ba93428071e04d9630673d15a3f58e01c0272d5c0a6ae78577904de2",
     "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
@@ -2165,7 +2166,7 @@
     "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
-    "src/server/program_vm.cpp": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb",
+    "src/server/program_vm.cpp": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6",
     "src/server/program_vm.h": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126",
     "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
@@ -2198,6 +2199,7 @@
     "src/server/responses_output.cpp": "92d92e486d26f569738cc5dcc65ca620e2d7f555480fc10fd078230626a8ab2c",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "a2b4b9bdf25c6ed697cbab075578d7cbbdc13daf7add92980a3a65f94cc724ea",
+    "src/server/responses_program.cpp": "e2d34c45682de8c7c5f36e46b557cdec05f72758513025a411c911815c49f889",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
     "src/server/responses_state.cpp": "a7f280c0ecb9ac6aa71b092ec3cc81955a611b375702352fa690a8f04e250cf3",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
@@ -2235,7 +2237,7 @@
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
     "src/server/tool_result_contracts.cpp": "71f7ae1758ec4c2d0429dc57366d135d3a8007484ebd40b788d202b85bb85033",
-    "src/server/tool_result_schema.cpp": "ce24beb5f6b9c6cfc19553b7eda41a49c5fb8d875e78bacdac42048078a24879",
+    "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
     "src/server/vector_file_page.cpp": "d263b72769290aa4aee209f5d9cc124653f1ec9fff60c527ee07aedab2028802",
@@ -4794,6 +4796,38 @@
     },
     "evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113/README.md",
     "caller_and_state_wiring": "required and pending",
+    "default": "rev118 unchanged"
+  },
+  "programmatic_authority_review_20261113": {
+    "scope": "Authenticated program snapshot and ordered replay component; public dispatch still pending",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151",
+        "after": "64334cd56560c4461f06031a74289eb0857ab20a0766b16eac8a43f7714e86a3"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad",
+        "after": "707d755222ea1360e3328aa06195824f9f91acb3539032e49e30d392164106ee"
+      },
+      "include/q4t/server/responses_program.h": {
+        "before": null,
+        "after": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd"
+      },
+      "src/server/program_vm.cpp": {
+        "before": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb",
+        "after": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6"
+      },
+      "src/server/responses_program.cpp": {
+        "before": null,
+        "after": "e2d34c45682de8c7c5f36e46b557cdec05f72758513025a411c911815c49f889"
+      },
+      "src/server/tool_result_schema.cpp": {
+        "before": "ce24beb5f6b9c6cfc19553b7eda41a49c5fb8d875e78bacdac42048078a24879",
+        "after": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113/README.md",
+    "targeted_cpu_cases": 19,
     "default": "rev118 unchanged"
   }
 }

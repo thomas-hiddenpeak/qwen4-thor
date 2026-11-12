@@ -1059,7 +1059,10 @@
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": true,
         "gpu_started": false,
-        "delivery_pending": true
+        "delivery_pending": true,
+        "authority_cpu_passed": 19,
+        "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
+        "next": "public generation/dispatch, persistent history and JSON/SSE; real business and reversible delivery remain required"
       }
     },
     {
@@ -1750,7 +1753,10 @@
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": true,
         "gpu_started": false,
-        "delivery_pending": true
+        "delivery_pending": true,
+        "authority_cpu_passed": 19,
+        "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
+        "next": "public generation/dispatch, persistent history and JSON/SSE; real business and reversible delivery remain required"
       },
       "current_work": "Deferred server/client discovery and additional_tools delivered rev118 and merged PR26. Programmatic isolated worker passed 13 targeted CPU checks; continue public authorization, persistent authenticated continuation, native dispatch, JSON/SSE, bounded real business and reversible delivery. Remaining typed outputs/MCP/builtins stay mandatory."
     },

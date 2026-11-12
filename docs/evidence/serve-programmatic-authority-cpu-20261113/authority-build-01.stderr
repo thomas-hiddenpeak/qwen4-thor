@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/tool_result_schema.cpp: In function ‘q4t::io::Json q4t::server::{anonymous}::CheckCustom(const q4t::io::Json&, size_t)’:
+/home/rm01/models/dev/qwen4-thor/src/server/tool_result_schema.cpp:90:38: error: ‘kCompiledGrammarLimit’ was not declared in this scope
+   90 |     if (compiled.MemorySizeBytes() > kCompiledGrammarLimit)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3607: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tool_result_schema.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

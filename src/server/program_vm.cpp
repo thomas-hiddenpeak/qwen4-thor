@@ -35,6 +35,7 @@ struct Execution {
   std::vector<JSValue> rejections;
   size_t bytes = 0;
   size_t jobs = 0;
+  size_t result_events = 0;
   std::string fault;
 };
 
@@ -111,14 +112,19 @@ JSValue Tool(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
     const auto& history = run.input->GetArray("calls")->array;
     if (ordinal < history.size() &&
         (history[ordinal].GetString("key") != tool.GetString("key") ||
-         history[ordinal].GetString("arguments") != arguments))
+         history[ordinal].GetString("arguments") != arguments ||
+         (history[ordinal].Has("after_results") &&
+          history[ordinal].GetInt("after_results", -1) !=
+              static_cast<int64_t>(run.result_events))))
       return Fail(context, "program_replay_mismatch");
     JSValue resolving[2];
     auto promise = JS_NewPromiseCapability(context, resolving);
     if (JS_IsException(promise)) return promise;
     run.promises.push_back({resolving[0], resolving[1]});
     run.calls.array.push_back(
-        Object({{"key", *tool.Find("key")}, {"arguments", String(arguments)}}));
+        Object({{"key", *tool.Find("key")},
+                {"arguments", String(arguments)},
+                {"after_results", Number(run.result_events)}}));
     return promise;
   } catch (...) {
     return Fail(context, "program_memory_limit");
@@ -216,7 +222,13 @@ bool Valid(const Json& input) {
   for (const auto& call : calls->array)
     if (!call.IsObject() || !keys.contains(call.GetString("key")) ||
         !call.Find("arguments") || !call.Find("arguments")->IsString() ||
-        call.GetString("arguments").size() > kMaxArgument)
+        call.GetString("arguments").size() > kMaxArgument ||
+        (call.Has("after_results") &&
+         (!call.Find("after_results")->IsNumber() ||
+          call.GetNumber("after_results") < 0 ||
+          call.GetNumber("after_results") > results->array.size() ||
+          std::floor(call.GetNumber("after_results")) !=
+              call.GetNumber("after_results"))))
       return false;
   std::unordered_set<int64_t> completed;
   for (const auto& result : results->array) {
@@ -351,6 +363,7 @@ io::Json EvaluateProgram(const io::Json& input) {
       break;
     }
     const auto bytes = OutputJson(*result.Find("value"));
+    ++run.result_events;
     auto value =
         JS_ParseJSON(context, bytes.data(), bytes.size(), "tool-result");
     auto resolved = JS_IsException(value)

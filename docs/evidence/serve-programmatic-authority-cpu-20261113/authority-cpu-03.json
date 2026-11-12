@@ -1,0 +1,30 @@
+{
+  "argv": [
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-programmatic-tools-20261113/authority-repair-required-01.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 0.13351905439049006,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615/q4t",
+      "sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615/q4t.release.json",
+      "sha256": "a2500b5603f5963d719f3addee02fe1595b1fd09a9bbd4fb6a9172122c0ea3b6"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615/q4t",
+      "sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615/q4t.release.json",
+      "sha256": "a2500b5603f5963d719f3addee02fe1595b1fd09a9bbd4fb6a9172122c0ea3b6"
+    }
+  },
+  "default_unchanged": true
+}

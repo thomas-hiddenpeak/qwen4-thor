@@ -5,6 +5,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_program_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_vm.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_program_worker_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp

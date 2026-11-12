@@ -18,6 +18,8 @@ set(protocol_inputs
   include/q4t/server/tool_result_schema.h
   src/server/tool_result_schema.cpp
   src/server/program_worker.cpp
+  src/server/responses_program.cpp
+  include/q4t/server/responses_program.h
   src/server/program_vm.cpp
   src/server/program_vm.h
   include/q4t/server/program_worker.h
