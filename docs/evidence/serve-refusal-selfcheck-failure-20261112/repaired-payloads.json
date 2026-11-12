@@ -1,0 +1,54 @@
+{
+  "status": "PREPARED_TARGETED_SELF_CHECK_REPAIR",
+  "payloads": {
+    "primary": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+      "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+    },
+    "fallback": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+      "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+    }
+  },
+  "changed_source": "source/tools/serve_recovery/core_http.py",
+  "sha256": "91ed363e9aa38b14b643aab9b21dcd7d5bb5f3b5ef91cc6750d873f288d42c4c",
+  "other_sealed_files_unchanged": true,
+  "engine_qualification_reused": true,
+  "old_payloads_unchanged": true,
+  "compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+    "to_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+    "to_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+    "capabilities_sha256": "e19d3caf6ea213a15effe61c0a474b7b7e471bd0b61647c6e5c799dd63dc06f5",
+    "automatic": true
+  },
+  "actual_business_pending": true
+}

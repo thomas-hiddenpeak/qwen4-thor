@@ -1,0 +1,15 @@
+{
+  "status": "FAILED_RETAINED_SELF_CHECK",
+  "engine_successful_refusal": true,
+  "actual_starts": 1,
+  "actual_chats": 1,
+  "actual_probes": 0,
+  "strict_lease_seconds": 91.58214101754129,
+  "cleanup_confirmed": true,
+  "all_observed_owned_processes_gone": true,
+  "ports_free": true,
+  "lock_released": true,
+  "default_unchanged": true,
+  "original_private_evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-01",
+  "confirmed_cause": "Valid model refusal with null content passed to json.loads; TypeError escapes old controller; bounded wrapper denies any further model launch."
+}

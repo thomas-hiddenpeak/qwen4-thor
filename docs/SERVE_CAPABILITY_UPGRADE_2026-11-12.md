@@ -69,3 +69,15 @@ CPU证据见[迁移与真实本地账本事务](evidence/serve-feature-migration
 2026-11-12：[实际新资格与封包](evidence/serve-refusal-profiles-20261112/README.md)
 已通过2启动/6Chat/2embedding/91.950秒。旧包未改，候选资格齐全；
 接着处理新能力回退payload与控制链、留存和发行，不将封包当总收口。
+
+## 自检原失败及有因补验（2026-11-12）
+
+首轮91.582秒、1启动/1Chat：模型合法refusal触发旧self-check解析器
+TypeError，服务未就绪，资源已清理。已明确修复公开自检提示及
+合法拒绝分支，保留strict JSON独立结论；3项CPU与实际响应CPU回放
+通过，原件见[失败/修复记录](evidence/serve-refusal-selfcheck-failure-20261112/README.md)。
+
+接下来只重验受影响控制链，先新回退1启动/2Chat/300秒，再原定主包
+切换2启动/4Chat/1探测/600秒。计入原失败，累计上限4启动/7Chat/
+1探测/1200秒，不自动重试无关场景；引擎/profile/数值身份未变的
+既有证据复用，新sealed包仅core_http.py修复。

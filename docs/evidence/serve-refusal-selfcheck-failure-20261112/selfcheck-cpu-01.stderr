@@ -1,0 +1,8 @@
+test_self_check_requires_typed_strict_json_and_complete_response (tools.serve_recovery.test_production.ControllerTests.test_self_check_requires_typed_strict_json_and_complete_response) ... ok
+test_self_check_explicit_public_data_and_valid_refusal_do_not_retry (tools.serve_recovery.test_production.ControllerTests.test_self_check_explicit_public_data_and_valid_refusal_do_not_retry) ... ok
+test_malformed_or_mixed_refusal_is_typed_failure_not_controller_type_error (tools.serve_recovery.test_production.ControllerTests.test_malformed_or_mixed_refusal_is_typed_failure_not_controller_type_error) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK

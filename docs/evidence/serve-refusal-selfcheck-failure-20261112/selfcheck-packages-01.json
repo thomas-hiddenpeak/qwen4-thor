@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-refusal-20261112/repair_selfcheck_packages.py"
+  ],
+  "exit_code": 0,
+  "seconds": 2.3349793809466064,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

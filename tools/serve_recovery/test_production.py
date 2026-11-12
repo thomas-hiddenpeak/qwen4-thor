@@ -309,6 +309,39 @@ class ControllerTests(unittest.TestCase):
                         http.self_check(18080, dict(client='alpha', token='a'*64))
                 self.assertEqual(request.call_count, 1)
 
+    def test_self_check_explicit_public_data_and_valid_refusal_do_not_retry(self):
+        reply=dict(id='cpu-refusal',usage=dict(completion_tokens=12),choices=[dict(
+            finish_reason='stop',message=dict(role='assistant',content=None,
+                refusal='I cannot provide that response.'))])
+        with mock.patch.object(http,'request',return_value=dict(http_status=200,
+                body=json.dumps(reply))) as request:
+            result=http.self_check(18080,dict(client='alpha',token='a'*64))
+            self.assertEqual(result,dict(id='cpu-refusal',usage=dict(completion_tokens=12),
+                strict_json=False,native_refusal=True))
+            request.assert_called_once()
+            body=request.call_args.kwargs['body']
+            self.assertIn('{"ok":true}',body['messages'][0]['content'])
+            self.assertEqual(body['max_tokens'],64)
+            self.assertTrue(body['response_format']['json_schema']['strict'])
+
+    def test_malformed_or_mixed_refusal_is_typed_failure_not_controller_type_error(self):
+        good=dict(id='cpu',usage={},choices=[dict(finish_reason='stop',
+            message=dict(role='assistant',content=None,refusal='No.'))])
+        import copy
+        cases=[[],dict(good,choices=[None]),dict(good,choices=[dict(finish_reason='stop')])]
+        for update in [dict(content=None,refusal=None),dict(content='{"ok":true}'),
+            dict(refusal=''),dict(refusal=12),dict(refusal='  '),
+            dict(refusal='<q4t_refusal>no</q4t_refusal>'),
+            dict(tool_calls=[dict(id='call')]),dict(function_call=dict(name='f'))]:
+            bad=copy.deepcopy(good);bad['choices'][0]['message'].update(update);cases.append(bad)
+        bad=copy.deepcopy(good);bad['choices'][0]['finish_reason']='length';cases.append(bad)
+        for reply in cases:
+            with self.subTest(reply=reply),mock.patch.object(http,'request',return_value=dict(
+                    http_status=200,body=json.dumps(reply))) as request:
+                with self.assertRaises(ValueError):
+                    http.self_check(18080,dict(client='alpha',token='a'*64))
+                request.assert_called_once()
+
 
 class PublicEntryTests(unittest.TestCase):
     def setUp(self):

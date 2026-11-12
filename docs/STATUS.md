@@ -43,7 +43,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
   [主/轻量实际资格](evidence/serve-refusal-profiles-20261112/README.md)已通过
   2启动/6Chat/2embedding/91.950秒并封包，版本回退组合及发行继续。
   同能力独立回退包已准备；[受监护驱动5项CPU边界](evidence/serve-feature-driver-cpu-20261112/README.md)已通过，
-  两阶段合计冻结3启动/6Chat/1探测/900秒，不重跑已过的模型全矩阵。
+  首轮发现旧自检把合法refusal的null正文送入JSON解析，已修复并通过3项CPU与真实响应回放；[原失败](evidence/serve-refusal-selfcheck-failure-20261112/README.md)保留，补验累计上限4启动/7Chat/1探测/1200秒，不重跑模型全矩阵。
 - 已发布资源域约束覆盖内核memcg计量及独立物理可用内存观察，
   **没有声称实现统一DRAM/GPU物理硬上限**；R08仍须解决剩余边界。
 
