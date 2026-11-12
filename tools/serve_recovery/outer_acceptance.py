@@ -27,11 +27,53 @@ sys.path.insert(0, str(ROOT))
 VERSION = runpy.run_path(str(ROOT/'tools/serve_recovery/version_acceptance.py'))
 LEGACY = VERSION['LEGACY']
 LIMITS = dict(starts=3, chats=8, probes=1, controls=2500, seconds=900)
+REPAIR_LIMITS = dict(LIMITS, starts=5)
 OLD_LIMITS = LEGACY['verify'].__globals__['limits_for']
 LEGACY['verify'].__globals__['limits_for'] = lambda name: (
-    LIMITS if name == 'outer_resource_version' else OLD_LIMITS(name))
+    LIMITS if name == 'outer_resource_version' else
+    REPAIR_LIMITS if name == 'outer_resource_identity_repair' else OLD_LIMITS(name))
 VERSION['actor'].__globals__['LIMITS'] = LIMITS
 save = LEGACY['save']
+
+
+def prior_completion(path):
+    """Carry the recorded device-DAC failure, never reset or resume its state."""
+    from tools.serve_service import package as engine
+    path = Path(path).resolve(strict=True); old = engine.read(path)
+    out = Path(old['output']).resolve(strict=True)
+    result = engine.read(out/'execution/result.json')
+    counts = engine.read(out/'execution/counts.json')['counts']
+    cleanup = engine.read(out/'execution/launcher-result.json')
+    host = engine.read(out/'host-result.json')
+    engine.require(old['scenario'] == 'outer_resource_version' and old['limits'] == LIMITS and
+        not old.get('prior_counts') and result['status'] == 'FAILED' and
+        result['cleanup_failure'] is None and result['package'] == old['package'] and
+        counts == result['budget']['counts'] and
+        (counts['starts'],counts['chats'],counts['probes']) == (2,0,0) and
+        type(counts['controls']) is int and 0 <= counts['controls'] < LIMITS['controls'] and
+        cleanup['state'] == 'STOPPED' and all(cleanup[k] is True for k in
+            ('stop_durable','cleanup_confirmed','tree_cleanup_verified')) and
+        host['resource_cleanup']['removed'] is True and
+        engine.read(out/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+        'only the cleaned initial two-start device identity failure can be continued')
+    logs = sorted((out/'state/runs').glob('*/primary/controller-1/model-*/model.log'))
+    engine.require(len(logs) == 2 and all('NvRmMemInitNvmap failed: error Permission denied'
+        in p.read_text() for p in logs), 'original device DAC failure logs required')
+    events = [json.loads(line) for line in (out/'lease/events.jsonl').read_text().splitlines()]
+    acquired = [e['monotonic'] for e in events if e['event'] == 'lease_acquired']
+    finished = [e['monotonic'] for e in events if e['event'] == 'lease_guard_finished']
+    engine.require(len(acquired) == len(finished) == 1 and finished[0] > acquired[0],
+                   'original lease interval required')
+    seconds = max(result['seconds'], finished[0]-acquired[0])
+    engine.require(0 < seconds < REPAIR_LIMITS['seconds']-70, 'no bounded repair time remains')
+    files = [path, *(out/n for n in ('execution/result.json','execution/counts.json',
+        'execution/launcher-result.json','host-result.json','lease/exit.json','lease/events.jsonl')), *logs]
+    return dict(prior_counts=counts, prior_seconds=seconds,
+        prior_evidence=[dict(path=str(p),sha256=engine.sha(p)) for p in files])
+
+
+def remaining_seconds(plan):
+    return plan['limits']['seconds']-plan.get('prior_seconds',0)
 
 
 def resource_fd():
@@ -60,6 +102,8 @@ def prepare(args):
     from tools.serve_recovery import outer_manager, resource_compat, version_contract, version_registration
     engine.require(not subprocess.check_output(['git','status','--porcelain'], cwd=ROOT),
                    'commit reviewed validation sources first')
+    prior = prior_completion(args.prior_plan) if args.prior_plan else {}
+    limits = REPAIR_LIMITS if prior else LIMITS
     out = args.output.resolve()
     engine.require(out.is_relative_to(ROOT/'.q4t-work') and not out.exists(), 'new private output required')
     out.mkdir(mode=0o700, parents=True)
@@ -117,7 +161,8 @@ def prepare(args):
         'tools/release','src/service','include/q4t/service'], cwd=ROOT, text=True).splitlines()
     names.append('docs/SERVE_MEMORY_STOP_2026-11-03.md')
     primary = Path(args.protected_root).resolve(strict=True)
-    plan = dict(version=1, scenario='outer_resource_version', limits=LIMITS, package=receipt,
+    plan = dict(version=1, scenario='outer_resource_identity_repair' if prior else 'outer_resource_version',
+        limits=limits, package=receipt,
         registration=registration, output=str(out), source_commit=subprocess.check_output(
             ['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip(),
         sources={n:engine.sha(ROOT/n) for n in sorted(set(names)|bundle.NATIVE_SOURCES)},
@@ -138,7 +183,7 @@ def prepare(args):
             'record first real resource sample only; observation/decisions unchanged',
             'owned gateway SIGUSR1 becomes SIGABRT with dump disabled'],
         physical_ram_limit=False, automatic_request_or_tool_replay=False,
-        default_replacement=False, performance_acceptance=False, foreign_services_modified=False)
+        default_replacement=False, performance_acceptance=False, foreign_services_modified=False, **prior)
     helper = out/'counted-cuda-probe'
     helper.write_text('#!'+sys.executable+'\nimport runpy,sys\nsys.argv='+repr([
         str(Path(__file__).resolve()),'probe','--plan',str(out/'plan.json')])+\
@@ -146,7 +191,7 @@ def prepare(args):
     helper.chmod(0o500)
     plan['probe_wrapper'] = dict(path=str(helper),sha256=engine.sha(helper))
     save(out/'plan.json',plan);save(out/'receipt.json',receipt)
-    print(json.dumps(dict(plan=str(out/'plan.json'),limits=LIMITS,service_id=plan['service_id'])))
+    print(json.dumps(dict(plan=str(out/'plan.json'),limits=limits,service_id=plan['service_id'],**prior)))
 
 
 def launcher(plan, path):
@@ -181,6 +226,7 @@ def launcher(plan, path):
 
 
 def actor(plan, name, role, config):
+    VERSION['actor'].__globals__['LIMITS'] = plan['limits']
     if role == 'controller':
         selected = VERSION['payload_plan'](plan,name); LEGACY['load_modules'](selected)
         from tools.serve_recovery import controller
@@ -294,8 +340,9 @@ class Stage(VERSION['Stage']):
             'not_before_ns','light_since_ns')), 'profile recovery budget changed')
         outer = self.engine.read(self.scope/'outer-recovery/policy.json')['state']['policy']
         counts = self.engine.read(self.output/'counts.json')['counts']
-        self.engine.require(outer['total'] == 2 and counts['starts'] == 3 and counts['chats'] == 7 and
-            counts['probes'] == 1, 'unexpected recovery dispatch count')
+        prior = self.plan.get('prior_counts',{})
+        self.engine.require(outer['total'] == 2 and all(counts[k]-prior.get(k,0) == value
+            for k,value in dict(starts=3,chats=7,probes=1).items()), 'unexpected recovery dispatch count')
         save(self.output/'business-final.json',dict(status='PASS',outer=outer,counts=counts,
             real_tool_executions=1,stored_chat_retained=True,final_state=third,physical_ram_limit=False))
 
@@ -395,7 +442,7 @@ def host(plan,path):
             except BaseException:traceback.print_exc()
             os._exit(1)
         # This parent never enters either leaf or creates model work itself.
-        code = reap(pid,LIMITS['seconds'])
+        code = reap(pid,remaining_seconds(plan))
         if code is None: raise TimeoutError('bounded outer business deadline')
         pid = None;result['child_exit'] = code
         result['status'] = 'PASS' if code == 0 else 'ENV_ABORT' if code == 75 else 'VALIDATION_FAILED'
@@ -424,7 +471,7 @@ def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('prepare','host','guard','run','launcher','controller','gateway','probe'))
-    for name in ('package','registration','requests','output','plan','config','native-build','protected-root'):
+    for name in ('package','registration','requests','output','plan','config','native-build','protected-root','prior-plan'):
         parser.add_argument('--'+name,type=Path)
     parser.add_argument('--payload',choices=('primary','fallback'));args = parser.parse_args()
     if args.mode == 'prepare':prepare(args);return 0
@@ -437,7 +484,9 @@ def main():
     if args.mode == 'guard':return guard(plan,path)
     if args.mode == 'launcher':return launcher(plan,path)
     if args.mode in ('controller','gateway'):return actor(plan,args.payload,args.mode,args.config)
-    if args.mode == 'probe':return VERSION['probe'](plan)
+    if args.mode == 'probe':
+        VERSION['probe'].__globals__['LIMITS'] = plan['limits']
+        return VERSION['probe'](plan)
     from tools.release.release import child_subreaper
     with child_subreaper():return Stage(plan,path).run()
 

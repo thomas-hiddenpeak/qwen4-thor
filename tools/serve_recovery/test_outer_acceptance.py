@@ -178,4 +178,67 @@ class OwnerTests(DriverTests):
         self.assertEqual(os.geteuid(),0)
 
 
+class RepairTests(unittest.TestCase):
+    setUp = DriverTests.setUp
+
+    def fixture(self):
+        counts = dict(starts=2,chats=0,probes=0,controls=86)
+        for name in ('execution','lease','state/runs/fixture/primary/controller-1/model-1',
+                     'state/runs/fixture/primary/controller-1/model-2'):
+            (self.path/name).mkdir(parents=True)
+        plan = dict(output=str(self.path),scenario='outer_resource_version',
+                    limits=driver.LIMITS,package=dict(fixture=True))
+        engine.save(self.path/'plan.json',plan)
+        engine.save(self.path/'execution/result.json',dict(status='FAILED',cleanup_failure=None,
+            package=plan['package'],budget=dict(counts=counts),seconds=24.958))
+        engine.save(self.path/'execution/counts.json',dict(counts=counts,events=[]))
+        engine.save(self.path/'execution/launcher-result.json',dict(state='STOPPED',stop_durable=True,
+            cleanup_confirmed=True,tree_cleanup_verified=True))
+        engine.save(self.path/'host-result.json',dict(resource_cleanup=dict(removed=True)))
+        engine.save(self.path/'lease/exit.json',dict(status='COMMAND_FAILED'))
+        (self.path/'lease/events.jsonl').write_text('\n'.join(json.dumps(e) for e in
+            [dict(event='lease_acquired',monotonic=100),dict(event='lease_guard_finished',monotonic=127)]))
+        for p in (self.path/'state').glob('runs/*/primary/controller-1/model-*'):
+            (p/'model.log').write_text('CPU fixture: NvRmMemInitNvmap failed: error Permission denied')
+        return self.path/'plan.json'
+
+    def test_carries_exact_consumption_full_lease_interval_and_original_failures(self):
+        path = self.fixture(); prior = driver.prior_completion(path)
+        self.assertEqual(prior['prior_counts'],dict(starts=2,chats=0,probes=0,controls=86))
+        self.assertEqual(prior['prior_seconds'],27)
+        self.assertEqual(len(prior['prior_evidence']),9)
+        for row in prior['prior_evidence']:
+            self.assertEqual(row['sha256'],engine.sha(row['path']))
+        self.assertEqual(driver.remaining_seconds(dict(limits=driver.REPAIR_LIMITS,**prior)),873)
+
+    def test_environment_abort_incomplete_cleanup_and_repeated_repair_are_rejected(self):
+        path=self.fixture()
+        for file,key,value in [('lease/exit.json','status','ENV_ABORT'),
+            ('execution/launcher-result.json','cleanup_confirmed',False),
+            ('plan.json','scenario','outer_resource_identity_repair')]:
+            p=self.path/file;old=p.read_bytes();data=json.loads(old);data[key]=value;engine.save(p,data)
+            try:
+                with self.assertRaises(RuntimeError):driver.prior_completion(path)
+            finally:p.write_bytes(old)
+        log=next((self.path/'state').glob('runs/*/primary/controller-1/model-1/model.log'))
+        log.write_text('different failure')
+        with self.assertRaises(RuntimeError):driver.prior_completion(path)
+
+    def test_repair_budget_admits_only_three_more_starts_without_resetting_other_counts(self):
+        prior=driver.prior_completion(self.fixture());out=self.path/'new-execution';out.mkdir()
+        budget=driver.LEGACY['Budget'](out,initialize=True,baseline=prior['prior_counts'],limits=driver.REPAIR_LIMITS)
+        self.assertEqual([budget.reserve('starts','fixed-model') for _ in range(3)],[3,4,5])
+        with self.assertRaises(RuntimeError):budget.reserve('starts','beyond-fixed-repair')
+        self.assertEqual(engine.read(out/'counts.json')['counts']['controls'],86)
+        for kind in ('chats','probes'):
+            for _ in range(driver.REPAIR_LIMITS[kind]):budget.reserve(kind,'bounded')
+            with self.assertRaises(RuntimeError):budget.reserve(kind,'exhausted')
+
+    def test_original_and_repair_scenarios_have_distinct_fixed_caps(self):
+        resolve=driver.LEGACY['verify'].__globals__['limits_for']
+        self.assertEqual(resolve('outer_resource_version')['starts'],3)
+        self.assertEqual(resolve('outer_resource_identity_repair')['starts'],5)
+        self.assertEqual(driver.REPAIR_LIMITS,dict(driver.LIMITS,starts=5))
+
+
 if __name__ == '__main__':unittest.main(module=None)

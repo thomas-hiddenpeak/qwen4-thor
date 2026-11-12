@@ -1,0 +1,24 @@
+{
+  "status": "TARGETED_FAILURE_CARRY_CPU_ACCEPTED",
+  "tests": 4,
+  "seconds": 0.2813538792543113,
+  "limits": {
+    "starts": 5,
+    "chats": 8,
+    "probes": 1,
+    "controls": 2500,
+    "seconds": 900
+  },
+  "prior_counts": {
+    "starts": 2,
+    "chats": 0,
+    "probes": 0,
+    "controls": 86
+  },
+  "recursive_repair": false,
+  "new_gpu_work": false,
+  "source_sha256": {
+    "tools/serve_recovery/outer_acceptance.py": "c2f98400f3e64d8d5b0b040bd785a0eecd07c962cdc9d50ba4ee5462dc56a3c9",
+    "tools/serve_recovery/test_outer_acceptance.py": "5f607a9bd7987fe8a597796c035a9fa7fbd4be25e4f70c6713557f6a068c2a6d"
+  }
+}
