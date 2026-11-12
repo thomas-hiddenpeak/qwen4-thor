@@ -1,5 +1,6 @@
 """Actual CPU child/lease lifecycle; host GPU policy is deliberately mocked."""
 import fcntl
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -69,6 +70,42 @@ class HostTests(unittest.TestCase):
         result = self.run_child(lambda *_:os._exit(0), disarm=ValueError('populated'))
         self.assertEqual(result['status'], 'ENV_ABORT')
         self.assertFalse(result['domain_removed']); self.check_lease()
+
+
+@unittest.skipUnless(os.geteuid()==0,'explicit root CPU source verification')
+class OwnerTests(unittest.TestCase):
+    def setUp(self):
+        self.uid,self.gid=int(os.environ['SUDO_UID']),int(os.environ['SUDO_GID'])
+        self.temp=tempfile.TemporaryDirectory(dir=host.ROOT/'.q4t-work');self.addCleanup(self.temp.cleanup)
+        self.path=Path(self.temp.name);os.chown(self.path,self.uid,self.gid)
+        self.plan=dict(runtime_uid=self.uid,runtime_gid=self.gid,output=str(self.path),
+            package=dict(package=str(self.path)))
+        (self.path/'manifest.json').write_text('{"cpu_fixture":true}')
+        self.private=self.path/'private.json';self.private.write_bytes(b'CPU owner-only policy')
+        os.chown(self.private,self.uid,self.gid);self.private.chmod(0o400)
+        original=host.domain;self.addCleanup(setattr,host,'domain',original)
+
+    def test_privileged_cold_preflight_checks_private_policy_as_original_owner(self):
+        from tools.serve_gateway import client_policy
+        from tools.serve_service import package
+        def verify(_):
+            assert os.getresuid()==(self.uid,)*3 and os.getresgid()==(self.gid,)*3
+            assert os.getgroups()==[] and client_policy.read_private(self.private)==b'CPU owner-only policy'
+            (self.path/'verified.json').write_text(json.dumps(dict(uid=os.geteuid())))
+        with mock.patch.dict(host.business.LEGACY,verify=verify,
+                load_modules=lambda _:(None,None,None,None,None,package)),\
+             mock.patch.object(host,'execute',side_effect=AssertionError('no device action allowed')):
+            self.assertEqual(host.load_checked(self.plan),dict(cpu_fixture=True))
+        self.assertEqual(json.loads((self.path/'verified.json').read_text()),dict(uid=self.uid))
+        self.assertEqual(os.geteuid(),0)
+
+    def test_failed_private_verification_never_loads_privileged_adapter(self):
+        def verify(_):raise ValueError('CPU private identity rejected')
+        loader=mock.Mock(side_effect=AssertionError('adapter loaded after rejection'))
+        with mock.patch.dict(host.business.LEGACY,verify=verify,load_modules=loader),\
+             self.assertRaisesRegex(ValueError,'verification failed'):
+            host.load_checked(self.plan)
+        loader.assert_not_called();self.assertEqual(os.geteuid(),0)
 
 
 if __name__ == '__main__': unittest.main()

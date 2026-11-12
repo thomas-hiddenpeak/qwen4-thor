@@ -33,7 +33,15 @@ def require(value, reason):
 
 def load_checked(plan):
     global domain
-    result = business.LEGACY['verify'](plan)
+    if os.geteuid() == 0:
+        from tools.serve_recovery import acceptance_owner
+        acceptance_owner.verify(plan,business.LEGACY['verify'],reap,finish_child)
+        # Pin the already verified package only after the owner check succeeds.
+        # Reading private client policies as root is intentionally disallowed.
+        *_,engine = business.LEGACY['load_modules'](plan)
+        result = engine.read(Path(plan['package']['package'])/'manifest.json')
+    else:
+        result = business.LEGACY['verify'](plan)
     from tools.serve_recovery import device_domain
     domain = device_domain
     return result

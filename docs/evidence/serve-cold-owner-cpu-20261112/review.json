@@ -1,0 +1,17 @@
+{
+  "status": "ACCEPT_TARGETED_COLD_OWNER_PREFLIGHT_CPU",
+  "tests": 5,
+  "seconds": 0.5325456163845956,
+  "private_policy_owner_checks_preserved": true,
+  "permanent_uid_gid_drop": true,
+  "validation_only": true,
+  "gpu_actions": 0,
+  "device_rules_modified": false,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
+    "tools/serve_recovery/cold_host_acceptance.py": "f1ea9b91a345ee0f1bda6f57ba37dd88f80028cbd8311fc6f90529d5f0644da9",
+    "tools/serve_recovery/outer_acceptance.py": "0f0d188ebe78237b48e31913a63a851790896281d883a4e64d7253b54900607a",
+    "tools/serve_recovery/test_cold_host_acceptance.py": "5446bc625c75be63763defaca9fa672a382158c8b80a445d70b0f9f8d4008584"
+  }
+}

@@ -89,3 +89,7 @@ docs/evidence/serve-binary-cpu-20261110/** -text
 docs/evidence/serve-http-body-stream-cpu-20261110/** -text
 
 docs/evidence/serve-files-core-cpu-20261110/** -text
+
+# Captured outer-recovery evidence is immutable, including CRLF SSE and stderr.
+docs/evidence/serve-outer-resource-business-20261112/*.wire binary
+docs/evidence/serve-outer-instance-cpu-20261112/*.stderr -text -whitespace

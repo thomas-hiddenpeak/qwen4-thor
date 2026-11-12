@@ -1,0 +1,24 @@
+test_failed_private_verification_never_loads_privileged_adapter (tools.serve_recovery.test_cold_host_acceptance.OwnerTests.test_failed_private_verification_never_loads_privileged_adapter) ... Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance_owner.py", line 20, in verify
+    checker(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_host_acceptance.py", line 103, in verify
+    def verify(_):raise ValueError('CPU private identity rejected')
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: CPU private identity rejected
+ok
+test_privileged_cold_preflight_checks_private_policy_as_original_owner (tools.serve_recovery.test_cold_host_acceptance.OwnerTests.test_privileged_cold_preflight_checks_private_policy_as_original_owner) ... ok
+test_real_private_source_check_runs_after_permanent_owner_drop (tools.serve_recovery.test_outer_acceptance.OwnerTests.test_real_private_source_check_runs_after_permanent_owner_drop) ... ok
+test_invalid_owner_or_failed_child_never_advances_to_resource_action (tools.serve_recovery.test_outer_acceptance.OwnerTests.test_invalid_owner_or_failed_child_never_advances_to_resource_action) ... Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance_owner.py", line 20, in verify
+    checker(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_acceptance.py", line 175, in fail
+    def fail(_):raise ValueError('explicit CPU private source rejection')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: explicit CPU private source rejection
+ok
+test_busy_qualification_never_forks_or_enters (tools.serve_recovery.test_cold_host_acceptance.HostTests.test_busy_qualification_never_forks_or_enters) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.209s
+
+OK

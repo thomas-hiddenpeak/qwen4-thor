@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-c",
+    "import sys,unittest;sys.path.insert(0,\"/home/rm01/models/dev/qwen4-thor\");unittest.main(module=None)",
+    "-v",
+    "tools.serve_recovery.test_cold_host_acceptance.OwnerTests",
+    "tools.serve_recovery.test_outer_acceptance.OwnerTests.test_real_private_source_check_runs_after_permanent_owner_drop",
+    "tools.serve_recovery.test_outer_acceptance.OwnerTests.test_invalid_owner_or_failed_child_never_advances_to_resource_action",
+    "tools.serve_recovery.test_cold_host_acceptance.HostTests.test_busy_qualification_never_forks_or_enters"
+  ],
+  "exit_code": 0,
+  "seconds": 0.5325456163845956,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}
