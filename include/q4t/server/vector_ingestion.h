@@ -53,6 +53,7 @@ struct VectorIngestionResult {
   InputSnapshotRef snapshot;
   InputSnapshotHold hold;
   bool published = false;
+  bool usage_unknown = false;
 };
 // reserve must admit the entire exact cost against the authenticated client's
 // existing rate owner (no recursive HTTP or extra external RPM). embed must

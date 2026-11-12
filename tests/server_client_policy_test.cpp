@@ -2389,3 +2389,39 @@ Q4T_TEST(client_batch_precharge_legacy_anonymous_and_live_policy_contracts) {
   }
   return true;
 }
+
+Q4T_TEST(client_rate_durable_internal_input_shares_tpm_without_external_rpm) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 50)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease external;
+  Q4T_CHECK(external.Reserve(admission, client, 0, 0) == ClientRateResult::kAllowed);
+  external.Settle();
+  ClientRateLease work, denied, repeated;
+  Q4T_CHECK(work.ReserveInternalInput(admission, client, 40) == ClientRateResult::kAllowed);
+  Q4T_CHECK(admission.RateUsage(0).requests == 1 && admission.RateUsage(0).reserved == 40);
+  Q4T_CHECK(denied.ReserveInternalInput(admission, client, 11) == ClientRateResult::kTpm);
+  Q4T_CHECK(work.ReserveInternalInput(admission, client, 1) == ClientRateResult::kInvalid);
+  work.StartPrompt(12); work.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 12 && admission.RateUsage(0).reserved == 0);
+  Q4T_CHECK(repeated.Reserve(admission, client, 1, 0) == ClientRateResult::kRpm);
+  return true;
+}
+
+Q4T_TEST(client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries) {
+  ClientAdmission admission, other;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)) && other.Configure(DynamicPolicy(1, 100)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto foreign = other.Authenticate("alpha", kSecret);
+  ClientRateLease wrong, batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(wrong.ReserveInternalInput(admission, foreign, 1) == ClientRateResult::kInvalid);
+  Q4T_CHECK(batch.ReserveInternalInput(admission, client, 1) == ClientRateResult::kInvalid);
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateState snapshot;
+  Q4T_CHECK(admission.FreezeRates(&snapshot));
+  ClientRateLease frozen;
+  Q4T_CHECK(frozen.ReserveInternalInput(admission, client, 1) == ClientRateResult::kFrozen);
+  Q4T_CHECK(admission.RateUsage(0).requests == 0 && admission.RateUsage(0).tokens == 0);
+  return true;
+}

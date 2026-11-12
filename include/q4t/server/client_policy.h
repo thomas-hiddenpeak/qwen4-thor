@@ -243,6 +243,13 @@ class ClientRateLease {
                            ClientClock::time_point now = ClientClock::now(),
                            uint64_t auxiliary_output = 0,
                            uint64_t preparation_output = 0);
+  // Trusted durable work already authorized by an API operation. Shares the
+  // online TPM reservation and concurrency/freeze policy, without inventing
+  // another external request. Never selected by a public body/header field.
+  // Caller must own the durable job and the authenticated client's data lane.
+  ClientRateResult ReserveInternalInput(
+      ClientAdmission& admission, const ClientIdentity& identity,
+      uint64_t prompt, ClientClock::time_point now = ClientClock::now());
   // Trusted Batch scheduling, before a durable execution ticket. Success
   // reserves one RPM plus the input/output envelope; the native handler later
   // calls Reserve exactly once to consume it without charging a second RPM.
@@ -286,6 +293,7 @@ class ClientRateLease {
   uint64_t completion_ = 0;
   bool started_ = false;
   bool attempted_ = false;
+  bool internal_input_ = false;
   bool precharged_ = false, precharge_claimed_ = false;
   ClientIdentity precharged_identity_;
   uint64_t prompt_capacity_ = 0, output_capacity_ = 0;

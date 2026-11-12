@@ -28,6 +28,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11入库的客户端 TPM/并发许可与 BF16 输出适配已编码，
+  [14 项针对性 CPU 通过](evidence/serve-vector-quota-cpu-20261112/README.md)。
+  内部任务不重复外部 RPM，异常保留消费、未知用量保守结算；
+  原生调度器与实际 GPU 回调继续接线，默认 rev80 保持。
 - A11真实Files/隔离文档提取与tokenizer接线已编码，[11项CPU首过](evidence/serve-vector-ingestion-cpu-20261112/README.md)；
   原文件与NFC文本分别绑定，完整分块/EOS预算先准入，失败保留实际
   用量与未知提交身份。生产控制器/API/模型回调仍继续接线。

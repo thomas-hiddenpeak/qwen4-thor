@@ -265,6 +265,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_files.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_ingestion_state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_ingestion.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_embedding_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/embeddings_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/embedding_metadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp

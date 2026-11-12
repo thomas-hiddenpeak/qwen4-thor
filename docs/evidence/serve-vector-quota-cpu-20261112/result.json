@@ -1,0 +1,33 @@
+{
+  "status": "CPU_ACCEPTED_NATIVE_CONTROLLER_PENDING",
+  "cases": 14,
+  "passed": [
+    "client_rate_atomic_concurrency_and_per_client_isolation",
+    "client_rate_checkpoint_drains_reservations_and_never_reopens",
+    "client_rate_durable_internal_input_shares_tpm_without_external_rpm",
+    "client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries",
+    "client_rate_internal_step_preserves_one_rpm_and_charges_actual_input",
+    "client_rate_pending_survives_window_and_settles_in_current_window",
+    "client_rate_refund_cancel_failure_and_preterminal_idempotence",
+    "client_rate_restart_restores_live_window_and_cumulative_usage",
+    "embeddings_execution_one_rpm_actual_usage_and_batch_precharge",
+    "vector_ingestion_cancel_after_committed_model_keeps_usage_without_publication",
+    "vector_ingestion_native_exception_keeps_committed_usage_and_refunds_rest",
+    "vector_ingestion_native_quota_charges_chunks_without_extra_external_rpm",
+    "vector_ingestion_native_quota_requires_owned_data_permit_and_shared_tpm",
+    "vector_ingestion_native_unknown_usage_retains_full_token_reservation"
+  ],
+  "cpu_seconds": 0.3143844334408641,
+  "runner_sha256": "090ffd872e537b4d55d05bbd8639a16ccf65434f1bb70ca2b5e1a04da6e885e0",
+  "initial_failures": 4,
+  "failure_reason": "Private policy fixture omitted required fingerprint; repaired via production policy parser, validation unchanged",
+  "reused_passes": 10,
+  "targeted_rerun_passes": 4,
+  "actual_files_and_storage": true,
+  "actual_client_admission": true,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "production_controller": false,
+  "production_routes": false,
+  "whole_A11_complete": false
+}

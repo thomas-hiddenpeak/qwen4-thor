@@ -6,6 +6,8 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/embedding_assets.h"
+#include "q4t/server/vector_embedding_execution.h"
+#include "q4t/model/embedding_config.h"
 #include "q4t/server/files.h"
 #include "q4t/test.h"
 
@@ -372,5 +374,162 @@ Q4T_TEST(
                 .value.GetString("status") == "completed");
   Q4T_CHECK(result.committed_input == prepared.input_tokens);
   Q4T_CHECK(Ok(InputSnapshotStore(objects).Release(Access(), &result.hold)));
+  return true;
+}
+
+namespace {
+bool ConfigureVectorClient(ClientAdmission* clients, uint32_t tpm = 10000) {
+  const auto wire = OutputJson(Object(
+      {{"version", Number(3)},
+       {"revision", Number(0)},
+       {"fair_queue", Boolean(false)},
+       {"gateway_token", String(std::string(64, 'a'))},
+       {"clients", Array({Object({{"id", String("ingestion")},
+                                  {"max_inflight", Number(2)},
+                                  {"max_control_inflight", Number(1)},
+                                  {"max_prompt_tokens", Number(4096)},
+                                  {"max_output_tokens", Number(64)},
+                                  {"max_body_bytes", Number(4096)},
+                                  {"requests_per_minute", Number(1)},
+                                  {"tokens_per_minute", Number(tpm)}})})}}));
+  GatewayClientPolicy policy;
+  return ParseGatewayClientPolicy(wire, &policy) &&
+         clients->Configure(std::move(policy));
+}
+ObjectReply Hidden(const std::vector<int32_t>& input,
+                   EmbeddingStepResult* step) {
+  step->committed_input = input.size();
+  step->hidden.assign(q4t::model::EmbeddingConfig::kHidden, 0);
+  step->hidden[0] = 0x3f80;  // Explicit CPU BF16 1.0 fixture.
+  return {};
+}
+}  // namespace
+
+Q4T_TEST(
+    vector_ingestion_native_quota_charges_chunks_without_extra_external_rpm) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto claim = Seed(objects, std::string(251, 'a'));
+  VectorIngestionPrepared prepared;
+  Q4T_CHECK(Ok(PrepareVectorIngestion(objects, Access(), claim, Options(),
+                                      Bytes, &prepared)));
+  ClientAdmission clients;
+  Q4T_CHECK(ConfigureVectorClient(&clients));
+  const auto client = clients.Authenticate("ingestion", std::string(64, 'a'));
+  ClientRateLease api;
+  Q4T_CHECK(api.Reserve(clients, client, 0, 0) == ClientRateResult::kAllowed);
+  api.Settle();
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(clients, client, ClientLane::kData));
+  ActualUsageCounter usage;
+  VectorIngestionResult result;
+  Q4T_CHECK(Ok(ExecuteVectorIngestionWithQuota(objects, Access(), prepared,
+                                               clients, client, permit, usage,
+                                               Hidden, &result)));
+  const auto rate = clients.RateUsage(0);
+  Q4T_CHECK(result.published && usage.Total() &&
+            usage.Total()->input == prepared.input_tokens &&
+            rate.requests == 1 && rate.tokens == prepared.input_tokens &&
+            rate.reserved == 0 && !result.usage_unknown);
+  return true;
+}
+
+Q4T_TEST(
+    vector_ingestion_native_quota_requires_owned_data_permit_and_shared_tpm) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto claim = Seed(objects, std::string(251, 'a'));
+  VectorIngestionPrepared prepared;
+  Q4T_CHECK(Ok(PrepareVectorIngestion(objects, Access(), claim, Options(),
+                                      Bytes, &prepared)));
+  ClientAdmission clients;
+  Q4T_CHECK(ConfigureVectorClient(&clients, 50));
+  const auto client = clients.Authenticate("ingestion", std::string(64, 'a'));
+  ClientLease missing;
+  ActualUsageCounter usage;
+  VectorIngestionResult result;
+  size_t calls = 0;
+  auto execute = [&](const auto& input, auto* out) {
+    ++calls;
+    return Hidden(input, out);
+  };
+  Q4T_CHECK(ExecuteVectorIngestionWithQuota(objects, Access(), prepared,
+                                            clients, client, missing, usage,
+                                            execute, &result)
+                .http_status == 403);
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(clients, client, ClientLane::kData));
+  Q4T_CHECK(ExecuteVectorIngestionWithQuota(objects, Access(), prepared,
+                                            clients, client, permit, usage,
+                                            execute, &result)
+                .code == "client_tpm_exhausted");
+  Q4T_CHECK(calls == 0 && clients.RateUsage(0).requests == 0 &&
+            clients.RateUsage(0).reserved == 0 &&
+            clients.RateUsage(0).tokens == 0);
+  return true;
+}
+
+Q4T_TEST(
+    vector_ingestion_native_exception_keeps_committed_usage_and_refunds_rest) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto claim = Seed(objects, std::string(251, 'a'));
+  VectorIngestionPrepared prepared;
+  Q4T_CHECK(Ok(PrepareVectorIngestion(objects, Access(), claim, Options(),
+                                      Bytes, &prepared)));
+  ClientAdmission clients;
+  Q4T_CHECK(ConfigureVectorClient(&clients));
+  const auto client = clients.Authenticate("ingestion", std::string(64, 'a'));
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(clients, client, ClientLane::kData));
+  ActualUsageCounter usage;
+  VectorIngestionResult result;
+  size_t calls = 0;
+  bool caught = false;
+  try {
+    ExecuteVectorIngestionWithQuota(
+        objects, Access(), prepared, clients, client, permit, usage,
+        [&](const auto& input, auto* step) {
+          auto reply = Hidden(input, step);
+          if (++calls == 2) throw std::runtime_error("drained CPU exception");
+          return reply;
+        },
+        &result);
+  } catch (const std::runtime_error&) {
+    caught = true;
+  }
+  Q4T_CHECK(caught && calls == 2 && result.committed_input == 202 &&
+            usage.Total() && usage.Total()->input == 202 &&
+            clients.RateUsage(0).tokens == 202 &&
+            clients.RateUsage(0).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(vector_ingestion_native_unknown_usage_retains_full_token_reservation) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto claim = Seed(objects, std::string(251, 'a'));
+  VectorIngestionPrepared prepared;
+  Q4T_CHECK(Ok(PrepareVectorIngestion(objects, Access(), claim, Options(),
+                                      Bytes, &prepared)));
+  ClientAdmission clients;
+  Q4T_CHECK(ConfigureVectorClient(&clients));
+  const auto client = clients.Authenticate("ingestion", std::string(64, 'a'));
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(clients, client, ClientLane::kData));
+  ActualUsageCounter usage;
+  VectorIngestionResult result;
+  auto reply = ExecuteVectorIngestionWithQuota(
+      objects, Access(), prepared, clients, client, permit, usage,
+      [](const auto& input, auto* step) {
+        Hidden(input, step);
+        ++step->committed_input;
+        return ObjectReply{};
+      },
+      &result);
+  Q4T_CHECK(reply.code == "embedding_result_invalid" && !usage.Total() &&
+            result.usage_unknown && !result.published &&
+            clients.RateUsage(0).tokens == prepared.input_tokens &&
+            clients.RateUsage(0).reserved == 0);
   return true;
 }

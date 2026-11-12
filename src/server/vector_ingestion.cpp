@@ -213,7 +213,7 @@ ObjectReply ExecuteVectorIngestion(
     const std::function<ObjectReply(uint64_t)>& reserve,
     const VectorIndexEmbedding& embed, VectorIngestionResult* result) {
   if (result->committed_input || !result->snapshot.id.empty() ||
-      !result->hold.id.empty() || result->published)
+      !result->hold.id.empty() || result->published || result->usage_unknown)
     return Error(409, "vector_ingestion_already_executed",
                  "Reconcile the original ingestion result before retrying");
   *result = {};

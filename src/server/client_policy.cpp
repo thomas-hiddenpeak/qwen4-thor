@@ -509,7 +509,7 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counter.Advance(now);
   auto& rate = counter.rate;
-  if (limits->requests_per_minute &&
+  if (!internal_input_ && limits->requests_per_minute &&
       rate.requests >= limits->requests_per_minute) {
     rate.rpm_rejected = Add(rate.rpm_rejected, 1);
     return ClientRateResult::kRpm;
@@ -521,7 +521,7 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
     rate.tpm_rejected = Add(rate.tpm_rejected, 1);
     return ClientRateResult::kTpm;
   }
-  rate.requests = Add(rate.requests, 1);
+  if (!internal_input_) rate.requests = Add(rate.requests, 1);
   rate.admitted = Add(rate.admitted, 1);
   rate.reserved += amount;
   ++counter.rate_active;
@@ -531,6 +531,15 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   prompt_ = prompt;
   reserved_ = amount;
   return ClientRateResult::kAllowed;
+}
+
+ClientRateResult ClientRateLease::ReserveInternalInput(
+    ClientAdmission& admission, const ClientIdentity& identity,
+    uint64_t prompt, ClientClock::time_point now) {
+  if (attempted_ || domain_ != ClientRateDomain::kOnline)
+    return ClientRateResult::kInvalid;
+  internal_input_ = true;
+  return Reserve(admission, identity, prompt, 0, now);
 }
 
 ClientRateResult ClientRateLease::PrechargeBatch(

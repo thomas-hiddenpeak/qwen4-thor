@@ -603,7 +603,7 @@
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "580498e43ed4df176f5fb32fdb7ca9302f040020fda5b2a357cb8187da9352df",
+    "src/server/client_policy.cpp": "1e87f542adf319f5aea52e10e4467bb24692978f375f6c834df7e96362063830",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
     "src/server/client_request.cpp": "acacc071b4a1df3e7b58b303e0c6b72935ef5eb0fa251ddf6cab3720f8187cf2",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",

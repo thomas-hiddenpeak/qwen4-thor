@@ -1,0 +1,5 @@
+[PASS] vector_ingestion_native_quota_charges_chunks_without_extra_external_rpm
+[PASS] vector_ingestion_native_quota_requires_owned_data_permit_and_shared_tpm
+[PASS] vector_ingestion_native_exception_keeps_committed_usage_and_refunds_rest
+[PASS] vector_ingestion_native_unknown_usage_retains_full_token_reservation
+4 tests, 4 passed, 0 failed, 0 skipped
