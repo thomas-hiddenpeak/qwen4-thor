@@ -1,0 +1,26 @@
+{
+  "label": "root-rollback",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle/engine/q4t",
+    "service",
+    "publish-rollback",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/bundle",
+    "--manifest-sha256",
+    "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+    "--generation-sha256",
+    "0c7d20bda9b014262bcf20f05d206ce32c0e5eda05e7a98868f3c834714f09a9",
+    "--expected-manifest-sha256",
+    "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+    "--expected-revision",
+    "68",
+    "--request-id",
+    "640e8672-fa5e-463f-ad19-96e42e20b160"
+  ],
+  "returncode": 0,
+  "seconds": 11.470944830216467
+}

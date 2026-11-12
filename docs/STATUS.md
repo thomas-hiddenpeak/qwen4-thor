@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。默认原生外层/资源阶段[可回退发行通过](evidence/serve-outer-resource-delivery-20261112/README.md)：rev72、原样已验包5468f36a、generation a9713e39，engine96577e45/release c527fa7d保持；Guardian383bcc63、原服务ID保持。外层enabled/rev1/0次启动，核心STOPPED。19项实际发布/59934942旧包回退/再次发布/版本注册/状态核对66.325秒通过，0GPU。核心/Key/配额/profile原件保持；版本周期显式更新后回退不重置。R07冷准入、R08物理硬边界及A/Q其余总任务仍继续，旧R07冻结计划须重建来源与默认身份。
+
 2026-11-12。外层/资源/版本[真实业务接受](evidence/serve-outer-resource-business-20261112/README.md)：实际root故障清树重建、配额保守窗口、同服务第三根续办、一次探测后v12适配payload回退、单次真实资料工具及JSON/SSE/原存储Chat/profile预算通过。累计6启动/8Chat/1探测、严格租约283.572秒，两次原失败保留；自有树/端口/资源域/锁清理确认，默认/其他服务保持。R08物理硬边界、R07冷准入与可回退发行尚待完成；已过短验不代表总任务完成，继续交付和其余协议能力。
 
 2026-11-12。跨Guardian配额驱动[5 CPU首过](evidence/serve-outer-continuity-cpu-20261112/README.md)，0.282秒；未知配额真实门限、sealed来源、原服务状态及累计预算保持。03实际已过两启动/schema/外层恢复与原驱动失败一并归档；继续同一候选和状态，只续剩余回退/工具SSE/存储记录，不重跑已过故障，全部总任务保持。
