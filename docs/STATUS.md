@@ -27,9 +27,15 @@ Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
-提交尚未合main，继续单独主线检查及全部master任务。
+提交也已实际合main（PR24，`79f6e391`），
+[合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
+后续async提交尚待独立合入，全部master任务继续。
 
 ## 最近完成的实现和验证
+
+- 异步候选已取得[当前主/轻配置资格](evidence/serve-async-profiles-20261113/README.md)，
+  2启动/8业务通过并清理，默认rev102保持；继续兼容回退载荷与真实
+  整树切换验证。PR24已合main，async独立交付后继续全部master。
 
 - A07异步工具[真实业务补验已通过](evidence/serve-async-business-20261113/README.md)：
   两类调用后同Response续答及custom真实迟到结果闭环通过，原函数结果

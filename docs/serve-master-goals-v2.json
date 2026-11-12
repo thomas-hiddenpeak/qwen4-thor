@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "business_validated_profile_and_delivery_pending",
+        "state": "business_and_profiles_validated_managed_delivery_pending",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -961,7 +961,8 @@
           "business_requests": 14,
           "cuda_probes": 1,
           "seconds": 1800
-        }
+        },
+        "profile_evidence": "docs/evidence/serve-async-profiles-20261113"
       }
     },
     {
@@ -2489,12 +2490,13 @@
       },
       "namespace_main_integration": {
         "pr": 24,
-        "state": "fixture_fixed_pending_CI",
+        "state": "MERGED",
         "merged": false,
-        "evidence": "docs/evidence/serve-ci-custom-views-20261113",
+        "evidence": "docs/evidence/serve-pr24-merged-20261113",
         "cpu_passed": 6,
         "runtime_changed": false,
-        "current_ci_head": "82240c5e"
+        "current_ci_head": "82240c5e6390205b84742c948a9007e9666748e5",
+        "merge_commit": "79f6e391f4e7e9e7287ec022c16d5dcdf7af824d"
       }
     },
     {
