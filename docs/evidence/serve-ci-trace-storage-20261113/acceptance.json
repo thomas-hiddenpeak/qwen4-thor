@@ -1,0 +1,38 @@
+{
+  "status": "PASS_TARGETED_CI_TRACE_AND_STORAGE_FIXTURES",
+  "positive_cases": 17,
+  "positive_seconds": 11.395773380063474,
+  "negative_trace_reproduced": true,
+  "production_runtime_changed": false,
+  "gpu_starts": 0,
+  "default_revision": 94,
+  "source_hashes": {
+    "tests/server_batch_jobs_test.cpp": "6e68e767f177d2e7be7225333a9d3375acaa0735690aeddfde2a24679f701fba",
+    "tests/server_batch_quota_test.cpp": "8837e3b267c8ba2900a5d8790ade848567f222ce26a8c54bd98bda581f3de487",
+    "tests/server_http_response_test.cpp": "3afae1bc51f066aa8b786cf0269357458e2543fa98edabdf7c7001df2b4c2f3e"
+  },
+  "remote_failure_runs": [
+    43258711827,
+    43258729256
+  ],
+  "remote_recheck_pending": true,
+  "source_records": {
+    "ci-a032-push-failed.log.gz": "b47927ddc430bf2e5f5df63039ff680ff3bbe69d6e327afa77758604e6d0bdd1",
+    "preparation-trace-negative-build-01.stdout": "d1d47fbb9c13d530292a7591097bff1de59152f625ea692261abb56e53fd9896",
+    "required-preparation-quota-positive-01.txt": "3bdb3aaf544617f9cfa85eb6deadd1353faa87c11888ee029c8dbd7803388aa6",
+    "preparation-quota-positive-build-01.json": "66da1d22ad11eefe4d1fa39246bdc181bd122d3b8a850fb92a3d828b6f1236ec",
+    "preparation-quota-positive-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preparation-quota-positive-build-01.stdout": "a27a415dc54851a5592763b841f8c2ac9e40b22b7be00041c369158defa45ac3",
+    "preparation-quota-positive-cpu-01.stderr": "a0f023a03174cd650ff389d1de398cd6b83449c05daf6a7a1e45e749972c660b",
+    "preparation-quota-positive-cpu-01.json": "600ba218dfc9d7eb586ddbb6f0e99415679cbf2a67e824e30ace6bebcad5e8b9",
+    "reviewed-test-change.patch.gz": "5c49802f1c51aecca2642fdda3c5ea02b53c80c8a445054d67f59524409dbb90",
+    "preparation-trace-negative-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preparation-quota-positive-cpu-01.stdout": "9b5c88bc843c22327ae974189d3388503ee4c5406f9605a49986e96001b4127a",
+    "preparation-trace-negative-build-01.json": "38f5547d13d92354ef6d48df76f0c4606a6e878058c4feae3381a731a4b35051",
+    "ci-a032-pr-failed.log.gz": "5520d9c4877b8bc8d743ee102bcafd611f45f700c3c28e138c9f2699624ee65b",
+    "required-preparation-trace-negative-01.txt": "7e209f943cbde458b4d963bdccf4a3c0eff01948e487bf648d33e4665ad85505",
+    "preparation-trace-negative-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preparation-trace-negative-cpu-01.json": "869e23c16bb780738b8e61d64fd634944b93ef01e3c0e8f40c806c35bdafb324",
+    "preparation-trace-negative-cpu-01.stdout": "5878231d64b61e95c0f588ab1b1f737cbf499d4ea5e7f3a05de00c0bf2dcdc0c"
+  }
+}

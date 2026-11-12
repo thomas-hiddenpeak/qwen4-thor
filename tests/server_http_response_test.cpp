@@ -38,6 +38,7 @@ Q4T_TEST(server_preparation_usage_headers_preserve_body_and_parent_ownership) {
   for (bool failure : {false, true}) {
     SocketPair sockets;
     HttpResponseContext parent(sockets.fd[0]);
+    Q4T_CHECK(parent.SetTraceId("preparation-999-parent"));
     parent.SetPreparationUsage({157, 23, 2});
     {
       HttpResponseContext child(HttpResponseContext::Detached{sockets.fd[0]});
@@ -60,7 +61,10 @@ Q4T_TEST(server_preparation_usage_headers_preserve_body_and_parent_ownership) {
         wire.find("X-Q4T-Preparation-Input-Tokens: 157\r\n") != wire.npos &&
         wire.find("X-Q4T-Preparation-Output-Tokens: 23\r\n") != wire.npos &&
         wire.find("X-Q4T-Preparation-Model-Steps: 2\r\n") != wire.npos &&
-        wire.find("999") == wire.npos);
+        wire.find("X-Request-Id: preparation-999-parent\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Input-Tokens: 999\r\n") == wire.npos &&
+        wire.find("X-Q4T-Preparation-Output-Tokens: 999\r\n") == wire.npos &&
+        wire.find("X-Q4T-Preparation-Model-Steps: 999\r\n") == wire.npos);
     q4t::io::Json body;
     Q4T_CHECK(q4t::io::ParseJson(
         std::string(wire.substr(wire.find("\r\n\r\n") + 4)), &body, true));

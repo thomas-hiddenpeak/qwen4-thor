@@ -91,8 +91,9 @@ bool Ok(const ObjectReply& reply) {
     std::fprintf(stderr, "%s: %s\n", reply.code.c_str(), reply.message.c_str());
   return reply.ok();
 }
-bool Wait(const std::function<bool()>& predicate) {
-  const auto until = Clock::now() + 5s;
+bool Wait(const std::function<bool()>& predicate,
+          std::chrono::seconds timeout = 5s) {
+  const auto until = Clock::now() + timeout;
   while (Clock::now() < until) {
     if (predicate()) return true;
     std::this_thread::sleep_for(1ms);
@@ -186,13 +187,14 @@ ClientRateUsage BatchUsage(Fixture& fixture, size_t index = 0) {
 }
 ObjectReply Finished(ObjectStore& objects, BatchJobs& jobs,
                      const std::string& id,
-                     std::string scope = "client:alpha") {
+                     std::string scope = "client:alpha",
+                     std::chrono::seconds timeout = 5s) {
   ObjectReply final;
   if (!Wait([&] {
         final = BatchState(objects).Retrieve(Access(scope), id);
         return final.ok() && BatchTerminal(final.value.GetString("status")) &&
                jobs.Health().owned == 0;
-      }))
+      }, timeout))
     return Error(500, "fixture_job_timeout", "Batch did not reach terminal");
   return final;
 }
@@ -214,6 +216,10 @@ std::string Content(ObjectStore& objects, const std::string& id) {
 }
 bool LostReceipt(const char* entry, int expected_calls, int failed) {
   Fixture fixture;
+  // Real post-commit receipt loss can occur four times for two rows. Use the
+  // production storage budget for healthy IO and account for those actual
+  // timeouts in this helper's terminal wait; ordinary cases remain at 5s.
+  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   std::string file;
   {
     ObjectStore objects(fixture.objects);
@@ -228,12 +234,15 @@ bool LostReceipt(const char* entry, int expected_calls, int failed) {
   const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
   Q4T_CHECK(accepted.ok() || accepted.commit_unknown);
   Q4T_CHECK(!accepted.value.GetString("id").empty());
-  const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+  const auto final = Finished(objects, jobs, accepted.value.GetString("id"),
+                              "client:alpha", 20s);
   Q4T_CHECK(Ok(final) && final.value.GetString("status") == "completed" &&
             final.value.Find("request_counts")->GetInt("total") == 2 &&
             final.value.Find("request_counts")->GetInt("failed") == failed &&
             calls == expected_calls &&
-            jobs.Health().reserved_result_bytes == 0);
+            jobs.Health().reserved_result_bytes == 0 &&
+            objects.Health().workers_started > 1 &&
+            objects.Health().workers_reaped > 0);
   const auto id =
       final.value.GetString(failed ? "error_file_id" : "output_file_id");
   const auto bytes = Content(objects, id);

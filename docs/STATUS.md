@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23续验发现HTTP夹具把随机请求ID中的999误判成子用量泄漏；
+  已确定性负控复现并只检查真实用量头。批任务正常存储与故障期限
+  也已分开，[17项针对性CPU首过](evidence/serve-ci-trace-storage-20261113/README.md)。
+  生产运行时与rev94未变；继续真实CI、合并和全部master任务。
+
 - PR23续验定位到真实停止竞态：ObjectStore及session/prefix缓存可能
   丢失唤醒并永久占槽。[三项旧序负控复现、修后16项CPU首过](evidence/serve-controller-stop-race-20261113/README.md)。
   已将停止通知与等待条件用同一把锁；100ms等待及防增殖保护保持。
