@@ -7,6 +7,7 @@
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_item_shape.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -227,6 +228,23 @@ Status CollectModerationOutput(const io::Json& items,
       if (!data || !data->IsString())
         return Invalid(error, "output", "Missing generated tool argument data");
       status = collector.Text("tool_arguments", data->str);
+    } else if (type == "file_search_call") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                          error, "output.file_search_call");
+      if (!status) return status;
+      for (const auto& query : item.GetArray("queries")->array) {
+        status = collector.Text("file_search_query", query.str);
+        if (!status) break;
+      }
+      // The caller supplies the public include projection. Hidden passages
+      // are model context, not returned output to be classified here.
+      if (status)
+        if (const auto* results = item.GetArray("results"))
+          for (const auto& result : results->array) {
+            if (const auto* text = result.Find("text"); text && !text->IsNull())
+              status = collector.Text("file_search_result", text->str);
+            if (!status) break;
+          }
     } else if (type == "message" || type == "reasoning") {
       for (const auto* name : {"content", "summary"}) {
         if (const auto* part = item.Find(name)) {

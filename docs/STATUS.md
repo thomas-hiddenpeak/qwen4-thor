@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11审核识别、匿名Batch动态输入预算和取消状态已修复，
+  [18项组合CPU首过](evidence/serve-file-search-combinations-cpu-20261112/README.md)。
+  实际后台所有者、原ID恢复、审核持有/阻断、Batch冻结和加密/pro/
+  summary/schema及连续检索通过；继续必要真实模型业务，默认保持。
+
 - A11 Responses原生检索循环、标准事件/引用/历史、最大工具数与
   include投影已通过[34项CPU和3项SDK/schema](evidence/serve-responses-file-search-cpu-20261112/README.md)。
   原构建、夹具和Python调用问题保留，修复后仅重验受影响项；继续

@@ -1,6 +1,7 @@
 #include "q4t/server/vector_search_execution.h"
 
 #include <algorithm>
+#include <atomic>
 #include <barrier>
 #include <cstdlib>
 #include <filesystem>
@@ -15,6 +16,9 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_jobs.h"
+#include "q4t/server/responses_reasoning.h"
+#include "q4t/server/batch_preparation.h"
 #include "q4t/test.h"
 
 namespace {
@@ -1427,5 +1431,454 @@ Q4T_TEST(responses_native_search_prewarm_has_no_variable_tool_execution) {
   std::string wire;
   Q4T_CHECK(Ok(run.Finish(false, 0, {20, 0, 0}, 43, &wire)) &&
             run.Output().Snapshot().GetArray("output")->array.empty());
+  return true;
+}
+
+namespace {
+void Must(q4t::Status status) {
+  if (!status) throw std::runtime_error(status.message());
+}
+Json NativeReview(bool flagged) {
+  ModerationPlan plan;
+  plan.model = "cpu";
+  plan.text = true;
+  Json review;
+  Must(ParseModerationResult(flagged
+                                 ? R"({"scores":[1,0,0,0,0,0,0,0,0,0,0,0,0]})"
+                                 : R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0,0]})",
+                             plan, .5, &review));
+  return review;
+}
+void NativeSearch(ResponsesExecution& run, Calls* calls,
+                  std::string* published = nullptr) {
+  std::string wire;
+  Must(run.Append(NativeDelta(run), "null", &wire));
+  if (published) *published += wire;
+  bool answer = false;
+  VectorSearchUsage usage;
+  Require(run.RunFileSearches(1, calls->callbacks, &usage, &answer,
+                              [&](const std::string& part) {
+                                if (published) *published += part;
+                                return true;
+                              }));
+  if (!answer) throw std::runtime_error("Native continuation fixture");
+}
+bool NativeWait(const std::function<bool()>& condition) {
+  const auto until = Clock::now() + 5s;
+  while (!condition() && Clock::now() < until) std::this_thread::sleep_for(1ms);
+  return condition();
+}
+struct NativeClients {
+  ClientAdmission clients;
+  std::string token = std::string(64, 'a');
+  NativeClients() {
+    GatewayClientPolicy policy;
+    Must(ParseGatewayClientPolicy(
+        R"({"version":1,"gateway_token":")" + token +
+            R"(","clients":[{"id":"search","max_inflight":2,)"
+            R"("max_control_inflight":2,"max_body_bytes":1048576,)"
+            R"("max_prompt_tokens":32768,"max_output_tokens":256}]})",
+        &policy));
+    Must(clients.Configure(std::move(policy)));
+  }
+  ObjectReply Submit(ResponsesJobs& jobs, Fixture& fixture) {
+    const auto identity = clients.Authenticate("search", token);
+    ClientLease lease;
+    if (!lease.Acquire(clients, identity, ClientLane::kData))
+      throw std::runtime_error("Native search job permit");
+    auto request = NativeRequest(fixture);
+    Set(&request, "background", Boolean(true));
+    auto run = std::make_unique<ResponsesExecution>(*fixture.objects);
+    Require(run->Prepare(request, NativeConfig(), NativeAccess(),
+                         std::time(nullptr), true));
+    return jobs.Submit(std::move(run), identity, [&](ClientLease& target) {
+      return lease.TransferTo(target);
+    });
+  }
+};
+BatchTokenCodec NativeCodec() {
+  BatchTokenCodec codec;
+  codec.encode = [](std::string_view text, std::vector<uint32_t>* tokens) {
+    tokens->assign(text.begin(), text.end());
+    return q4t::Status{};
+  };
+  codec.decode = [](const std::vector<uint32_t>& tokens, std::string* text) {
+    text->assign(tokens.begin(), tokens.end());
+    return q4t::Status{};
+  };
+  return codec;
+}
+}  // namespace
+
+Q4T_TEST(
+    responses_search_moderation_uses_public_queries_and_result_projection) {
+  for (const bool include : {false, true}) {
+    Fixture fixture;
+    fixture.Add("ACTUAL_PRIVATE_SOURCE", true, 1024);
+    ResponsesExecution run(*fixture.objects);
+    NativeBegin(run, NativeRequest(fixture, 1, include));
+    Calls calls;
+    NativeSearch(run, &calls);
+    std::string wire;
+    Q4T_CHECK(run.Append(NativeText("Actual answer"), "null", &wire));
+    ModerationContent content;
+    ChatPlanError error;
+    Q4T_CHECK(CollectModerationOutput(*run.PublicResponse().GetArray("output"),
+                                      &content, &error));
+    const auto text = OutputJson(content.records);
+    Q4T_CHECK(text.find("PLE SSD") != text.npos &&
+              text.find("Actual answer") != text.npos &&
+              (text.find("ACTUAL_PRIVATE_SOURCE") != text.npos) == include);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_search_moderation_rejects_malformed_or_unbounded_passages) {
+  auto item = Object({{"type", String("file_search_call")},
+                      {"id", String("fs_actual")},
+                      {"status", String("completed")},
+                      {"queries", Array({String("query")})},
+                      {"results", Array()}});
+  ModerationContent content;
+  ChatPlanError error;
+  auto bad = item;
+  Set(&bad, "queries", Array({Number(1)}));
+  Q4T_CHECK(!CollectModerationOutput(Array({bad}), &content, &error));
+  Set(&item, "results",
+      Array({Object({{"text", String(std::string(1024 * 1024 + 1, 'x'))}})}));
+  Q4T_CHECK(!CollectModerationOutput(Array({item}), &content, &error) &&
+            content.records.IsNull());
+  return true;
+}
+
+Q4T_TEST(responses_search_review_hold_hides_retrieval_until_actual_approval) {
+  Fixture fixture;
+  fixture.Add("PRIVATE_SOURCE", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture, 1, false));
+  Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
+  Calls calls;
+  std::string wire;
+  NativeSearch(run, &calls, &wire);
+  Q4T_CHECK(run.Append(NativeText("Actual answer"), "null", &wire) &&
+            wire.empty());
+  const auto before =
+      ResponsesState(*fixture.objects).Retrieve(run.Id(), NativeAccess());
+  Q4T_CHECK(Ok(before) && before.value.GetArray("output")->array.empty());
+  Q4T_CHECK(Ok(run.PublishReviewedOutput(NativeReview(false), &wire)) &&
+            wire.find("PRIVATE_SOURCE") != wire.npos &&
+            run.PublicWire(wire).find("PRIVATE_SOURCE") == wire.npos &&
+            run.PublicWire(wire).find("Actual answer") != wire.npos);
+  Q4T_CHECK(Ok(run.Finish(false, 0, {40, 0, 5}, 43, &wire)));
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_review_block_discards_private_results_without_replay) {
+  Fixture fixture;
+  fixture.Add("PRIVATE_BLOCKED_SOURCE", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture));
+  Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
+  Calls calls;
+  std::string wire;
+  NativeSearch(run, &calls, &wire);
+  Q4T_CHECK(wire.empty() &&
+            run.PublishReviewedOutput(NativeReview(true), &wire).http_status ==
+                403);
+  run.DiscardUnreviewedOutput();
+  Q4T_CHECK(Ok(run.Finish(true, 0, {40, 0, 5}, 43, &wire, true)) &&
+            run.Output().Snapshot().GetArray("output")->array.empty() &&
+            wire.find("PRIVATE_BLOCKED_SOURCE") == wire.npos &&
+            calls.embeds == 1);
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_queued_restore_executes_once_and_started_cannot_resume) {
+  Fixture fixture;
+  fixture.Add("Actual queued source", true, 1024);
+  std::string id;
+  {
+    ResponsesExecution queued(*fixture.objects);
+    auto request = NativeRequest(fixture);
+    Set(&request, "background", Boolean(true));
+    Q4T_CHECK(
+        Ok(queued.Prepare(request, NativeConfig(), NativeAccess(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(queued.Begin(&wire)));
+    id = queued.Id();
+  }
+  fixture.objects.reset();
+  fixture.objects = std::make_unique<ObjectStore>(fixture.options);
+  ResponsesExecution restored(*fixture.objects);
+  Q4T_CHECK(Ok(restored.RestoreQueued(id, NativeConfig(), NativeAccess())) &&
+            restored.HasFileSearch() && !restored.PendingFileSearch());
+  std::string wire;
+  Q4T_CHECK(Ok(restored.StartRunning(&wire)));
+  Calls calls;
+  NativeSearch(restored, &calls);
+  Q4T_CHECK(Ok(restored.Checkpoint()));
+  ResponsesExecution refused(*fixture.objects);
+  Q4T_CHECK(refused.RestoreQueued(id, NativeConfig(), NativeAccess()).code ==
+                "response_not_queued" &&
+            calls.embeds == 1);
+  Q4T_CHECK(restored.Append(NativeText("Answered"), "null", &wire) &&
+            Ok(restored.Finish(false, 0, {40, 0, 5}, 44, &wire)));
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_background_cancel_closes_pending_tool_without_execute) {
+  Fixture fixture;
+  NativeClients clients;
+  std::atomic<bool> pending = false;
+  ResponsesJobs jobs(*fixture.objects, {}, [&](auto& job) {
+    std::string wire;
+    Must(job.run->Append(NativeDelta(*job.run), "null", &wire));
+    Require(job.run->Checkpoint());
+    pending = true;
+    if (!NativeWait([&] { return job.control->Cancelled(); }))
+      throw std::runtime_error("Expected explicit native search cancellation");
+  });
+  const auto submitted = clients.Submit(jobs, fixture);
+  Q4T_CHECK(Ok(submitted) && NativeWait([&] { return pending.load(); }));
+  const auto cancelled =
+      jobs.Cancel(submitted.value.GetString("id"), NativeAccess());
+  Q4T_CHECK(Ok(cancelled) &&
+            cancelled.value.GetString("status") == "cancelled");
+  const auto& item = cancelled.value.GetArray("output")->array[0];
+  Q4T_CHECK(item.GetString("status") == "incomplete" &&
+            item.Find("results")->IsNull() &&
+            NativeWait([&] { return jobs.Health().owned == 0; }));
+  return true;
+}
+
+Q4T_TEST(responses_search_background_owner_completes_actual_single_search) {
+  Fixture fixture;
+  fixture.Add("Actual background source", true, 1024);
+  NativeClients clients;
+  std::atomic<int> executed = 0;
+  ResponsesJobs jobs(*fixture.objects, {}, [&](auto& job) {
+    Calls calls;
+    NativeSearch(*job.run, &calls);
+    executed += calls.embeds;
+    std::string wire;
+    Must(job.run->Append(NativeText("Background answer"), "null", &wire));
+    Require(job.run->Finish(false, 0, {40, 0, 5}, std::time(nullptr), &wire));
+  });
+  const auto submitted = clients.Submit(jobs, fixture);
+  Q4T_CHECK(Ok(submitted) &&
+            NativeWait([&] { return jobs.Health().owned == 0; }));
+  const auto reply =
+      ResponsesState(*fixture.objects)
+          .Retrieve(submitted.value.GetString("id"), NativeAccess());
+  Q4T_CHECK(Ok(reply) && reply.value.GetString("status") == "completed" &&
+            reply.value.GetArray("output")->array[0].GetString("status") ==
+                "completed" &&
+            executed == 1);
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_batch_frozen_input_preserves_control_without_execution) {
+  Fixture fixture;
+  fixture.Add("Actual Batch source", true, 1024);
+  auto request = NativeRequest(fixture, 2);
+  Set(&request, "stream", Boolean(false));
+  std::erase_if(request.object, [](const auto& pair) {
+    return pair.first == "stream_options";
+  });
+  BatchInputRow row;
+  row.line = 1;
+  row.custom_id = "native-query";
+  row.body = request;
+  BatchPreparedInput prepared;
+  BatchPreparation preparation(*fixture.objects);
+  Q4T_CHECK(
+      Ok(preparation.Prepare(Access(), "batch_native_fixture", "/v1/responses",
+                             row, NativeConfig(), &prepared)) &&
+      !prepared.inline_input.IsNull());
+  Json frozen;
+  Q4T_CHECK(Ok(preparation.Read(
+      Access(), "batch_native_fixture", "/v1/responses", row,
+      Object({{"prepared_inline", prepared.inline_input}}), &frozen)));
+  ResponsesExecution run(*fixture.objects);
+  Q4T_CHECK(Ok(run.RestoreInputs(frozen, NativeConfig(), NativeAccess(), 43)) &&
+            run.HasFileSearch() && run.VariableInputSteps() &&
+            !run.PendingFileSearch() && !run.Begun() &&
+            run.Envelope().options.GetInt("max_tool_calls") == 2);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  Calls calls;
+  NativeSearch(run, &calls);
+  Q4T_CHECK(calls.embeds == 1 &&
+            run.Append(NativeText("Batch answer"), "null", &wire) &&
+            Ok(run.Finish(false, 0, {40, 0, 5}, 44, &wire)));
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_anonymous_batch_budget_covers_queries_and_continuations) {
+  Fixture fixture;
+  auto config = NativeConfig();
+  config.max_len = 8192;
+  for (const bool prewarm : {false, true}) {
+    auto request = NativeRequest(fixture, 2);
+    if (prewarm) {
+      Set(&request, "prompt_cache_key", String("project"));
+      Set(&request, "prompt_cache_options",
+          Object({{"prewarm", Boolean(true)}}));
+    }
+    ResponsesExecution run(*fixture.objects);
+    Q4T_CHECK(Ok(run.Prepare(request, config, NativeAccess(), 42)));
+    BatchRateBudget rate;
+    Q4T_CHECK(Ok(MeasureBatchResponseRate(run, config, Access(), NativeCodec(),
+                                          &rate)) &&
+              !run.Begun() && !run.PendingFileSearch());
+    Q4T_CHECK(rate.input_exact == prewarm &&
+              rate.output == (prewarm ? 0 : 128));
+    if (!prewarm)
+      Q4T_CHECK(rate.prompt_capacity == 8 * 8192 + 2 * 16 * 8192);
+    else
+      Q4T_CHECK(rate.prompt_capacity < 8192);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_search_client_batch_keeps_shared_cumulative_input_ceiling) {
+  Fixture fixture;
+  ClientLimits limits;
+  limits.max_prompt_tokens = 32768;
+  limits.max_output_tokens = 256;
+  limits.max_body_bytes = 1 << 20;
+  auto config = NativeConfig();
+  config.max_len = 8192;
+  config.client_limits = &limits;
+  ResponsesExecution run(*fixture.objects);
+  Q4T_CHECK(
+      Ok(run.Prepare(NativeRequest(fixture, 2), config, NativeAccess(), 42)));
+  BatchRateBudget rate;
+  Q4T_CHECK(Ok(MeasureBatchResponseRate(run, config, Access(), NativeCodec(),
+                                        &rate)) &&
+            !rate.input_exact && rate.prompt_capacity == 32768 &&
+            rate.output == 128 && rate.auxiliary_output == 0 && !run.Begun());
+  return true;
+}
+
+Q4T_TEST(responses_search_encrypted_history_keeps_sources_without_reexecution) {
+  Fixture fixture;
+  fixture.Add("Actual encrypted context source", true, 1024);
+  auto request = NativeRequest(fixture);
+  Set(&request, "store", Boolean(false));
+  Set(&request, "reasoning", Object({{"effort", String("low")}}));
+  Set(&request, "include",
+      Array({String("reasoning.encrypted_content"),
+             String("file_search_call.results")}));
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, request);
+  auto notes = NativeText("Actual reasoning before search");
+  notes.kind = ResponseDelta::Kind::kReasoning;
+  std::string wire;
+  Q4T_CHECK(run.Append(notes, "null", &wire));
+  Calls calls;
+  NativeSearch(run, &calls);
+  Q4T_CHECK(run.Append(NativeText("Answer from source"), "null", &wire) &&
+            Ok(run.Finish(false, 0, {40, 0, 10, 3}, 43, &wire)));
+  auto input = *run.Output().Snapshot().GetArray("output");
+  Q4T_CHECK(!input.array[0].GetString("encrypted_content").empty());
+  std::erase_if(input.array[0].object,
+                [](const auto& field) { return field.first == "content"; });
+  input.array.push_back(
+      Object({{"role", String("user")},
+              {"content", String("Use the retrieved source")}}));
+  Set(&request, "input", input);
+  ResponsesExecution follow(*fixture.objects);
+  Q4T_CHECK(Ok(follow.Prepare(request, NativeConfig(), NativeAccess(), 44)) &&
+            !follow.PendingFileSearch() && !follow.Begun());
+  const auto actual = OutputJson(follow.Generation().generation_request);
+  Q4T_CHECK(actual.find("Actual reasoning before search") != actual.npos &&
+            actual.find("Actual encrypted context source") != actual.npos &&
+            calls.embeds == 1);
+  return true;
+}
+
+Q4T_TEST(responses_search_pro_summary_and_schema_keep_actual_notes_and_limits) {
+  Fixture fixture;
+  fixture.Add("Actual structured source", true, 1024);
+  auto request = NativeRequest(fixture, 1);
+  Set(&request, "reasoning",
+      Object({{"effort", String("low")},
+              {"mode", String("pro")},
+              {"summary", String("concise")}}));
+  Set(&request, "text",
+      Object(
+          {{"format",
+            Object({{"type", String("json_schema")},
+                    {"name", String("answer")},
+                    {"strict", Boolean(true)},
+                    {"schema",
+                     Object({{"type", String("object")},
+                             {"properties",
+                              Object({{"answer",
+                                       Object({{"type", String("string")}})}})},
+                             {"required", Array({String("answer")})},
+                             {"additionalProperties", Boolean(false)}})}})}}));
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, request);
+  ResponsesSummaryPlan pro;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesDeliberation(run.Generation(), 128, 0, NativeConfig(),
+                                      &pro, &error) &&
+            pro.request.GetString("tool_choice") == "none");
+  auto notes = NativeText("Actual notes must survive search");
+  notes.kind = ResponseDelta::Kind::kReasoning;
+  std::string wire;
+  Q4T_CHECK(run.Append(notes, "null", &wire));
+  Calls calls;
+  NativeSearch(run, &calls);
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(Ok(run.ContinueFileSearch(12, NativeConfig(), {}, &next)) &&
+            next.generation_request.GetInt("max_completion_tokens") == 116 &&
+            next.generation_request.GetString("tool_choice") == "none");
+  const auto actual = OutputJson(next.generation_request);
+  Q4T_CHECK(
+      actual.find("Actual notes must survive search") != actual.npos &&
+      actual.find("Actual structured source") != actual.npos &&
+      next.generation_request.Find("response_format")->GetString("type") ==
+          "json_schema");
+  Q4T_CHECK(run.Append(NativeText(R"({"answer":"SSD"})"), "null", &wire));
+  ResponsesSummaryPlan summary;
+  Q4T_CHECK(PlanResponsesSummary(run.Envelope(), run.Output().Snapshot(), 128,
+                                 20, NativeConfig(), &summary, &error) &&
+            summary.needed);
+  Q4T_CHECK(run.AppendSummary("Used actual source", &wire) &&
+            Ok(run.Finish(false, 0, {40, 0, 24, 5}, 43, &wire)));
+  return true;
+}
+
+Q4T_TEST(
+    responses_search_multiple_rounds_reuse_model_indices_without_tool_replay) {
+  Fixture fixture;
+  fixture.Add("Actual multi-round source", true, 1024);
+  ResponsesExecution run(*fixture.objects);
+  NativeBegin(run, NativeRequest(fixture, 2));
+  Calls calls;
+  NativeSearch(run, &calls);
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(Ok(run.ContinueFileSearch(5, NativeConfig(), {}, &next)));
+  NativeSearch(run, &calls);
+  Q4T_CHECK(Ok(run.ContinueFileSearch(10, NativeConfig(), {}, &next)) &&
+            next.generation_request.GetString("tool_choice") == "none" &&
+            next.generation_request.GetInt("max_completion_tokens") == 118);
+  std::string wire;
+  Q4T_CHECK(run.Append(NativeText("Two actual searches"), "null", &wire) &&
+            Ok(run.Finish(false, 0, {80, 0, 15}, 43, &wire)) &&
+            calls.embeds == 2);
+  const auto& output = run.Output().Snapshot().GetArray("output")->array;
+  Q4T_CHECK(output.size() == 3 &&
+            output[0].GetString("status") == "completed" &&
+            output[1].GetString("status") == "completed" &&
+            output[0].GetString("id") != output[1].GetString("id"));
   return true;
 }

@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/model/embedding_config.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/embeddings_plan.h"
@@ -138,11 +139,21 @@ ObjectReply MeasureResponse(ResponsesExecution& response,
       budget.prompt_capacity = config.client_limits->max_prompt_tokens;
     } else {
       // Anonymous operation has no minute quota. Still expose a finite bound:
-      // each known sheet plus primary/pro/summary/compaction/two reviews.
+      // Each known sheet, primary/pro/summary/compaction/two reviews, and
+      // every possible native search continuation and query embedding.
       const auto* files = response.FileUsage();
       const uint64_t sheets = files ? files->sheets : 0;
-      if (sheets > kBatchTokenLimit / config.max_len - 6) return Invalid();
-      budget.prompt_capacity = (sheets + 6) * config.max_len;
+      const uint64_t calls =
+          response.HasFileSearch() && !envelope.cache.prewarm
+              ? std::min<uint64_t>(
+                    envelope.options.GetInt("max_tool_calls", INT64_MAX),
+                    ResponsesExecution::kMaxNativeToolCalls)
+              : 0;
+      const uint64_t queries =
+          calls * kVectorSearchQueries * model::EmbeddingConfig::kInputTokens;
+      const auto steps = (kBatchTokenLimit - queries) / config.max_len;
+      if (steps < 6 + calls || sheets > steps - 6 - calls) return Invalid();
+      budget.prompt_capacity = (sheets + 6 + calls) * config.max_len + queries;
     }
   }
   if (!budget.prompt_capacity || budget.Total() > kBatchTokenLimit ||

@@ -1285,7 +1285,8 @@
         "evidence/serve-vector-search-api-cpu-20261112/README.md",
         "evidence/serve-file-search-contract-cpu-20261112/README.md",
         "evidence/serve-vector-multi-store-cpu-20261112/README.md",
-        "evidence/serve-responses-file-search-cpu-20261112/README.md"
+        "evidence/serve-responses-file-search-cpu-20261112/README.md",
+        "evidence/serve-file-search-combinations-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1415,6 +1416,13 @@
           "cpu_cases": 34,
           "sdk_schema_cases": 3,
           "evidence": "evidence/serve-responses-file-search-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "combinations": {
+          "state": "targeted_cpu_accepted_business_pending",
+          "cpu_cases": 18,
+          "evidence": "evidence/serve-file-search-combinations-cpu-20261112/README.md",
           "gpu_starts": 0,
           "default_changed": false
         }

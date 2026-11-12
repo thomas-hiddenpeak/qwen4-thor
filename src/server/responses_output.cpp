@@ -212,6 +212,10 @@ Status ResponsesOutput::Cancel() {
     return Status::Fail("Cancellation requires an active background response");
   Set(&response_, "status", String("cancelled"));
   Set(&response_, "error", io::Json());
+  for (size_t i = 0; i < Items().array.size(); ++i)
+    if (Items().array[i].GetString("type") == "file_search_call" &&
+        !closed_items_.contains(i))
+      Set(&Items().array[i], "status", String("incomplete"));
   terminal_ = true;
   return {};
 }

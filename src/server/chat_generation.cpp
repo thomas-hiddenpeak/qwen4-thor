@@ -4306,9 +4306,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         responses_completed_calls = response_parser.CompletedToolCalls();
       if (moderate_output) {
         ModerationContent content;
-        s = CollectModerationOutput(
-            *responses->Output().Snapshot().GetArray("output"), &content,
-            &planning_error);
+        const auto visible_output = responses->PublicResponse();
+        s = CollectModerationOutput(*visible_output.GetArray("output"),
+                                    &content, &planning_error);
         if (s)
           s = PlanModeration(moderation_options, content, planning_config,
                              kMaxModerationStepTokens, &output_moderation,
