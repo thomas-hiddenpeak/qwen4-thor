@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Namespace, custom format/public projection and invocation-time output_schema passed targeted CPU/SDK and actual HTTP business; next primary/light qualification and reversible delivery. Async/caller/defer and dependent media/builtins remain required.",
+      "current_work": "Namespace/custom format/public projection and invocation-time output_schema delivered rev102 after real tool closure, primary/light storage and whole-payload fallback. Continue async/caller/defer and typed content; the complete task remains open.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -884,7 +884,7 @@
         "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
       },
       "tool_identity_result_contract": {
-        "state": "business_validated_delivery_pending",
+        "state": "delivered_subset_pending_mainline",
         "source_plan": "docs/SERVE_TOOL_IDENTITY_2026-11-12.md",
         "evidence": "docs/evidence/serve-tool-identity-cpu-20261112",
         "distinct_cpp_tests": 37,
@@ -898,9 +898,8 @@
           "seconds": 900
         },
         "business_result": "docs/evidence/serve-tool-identity-business-20261112/acceptance.json",
-        "default": "rev94 unchanged; primary/light qualification and packaging pending",
+        "default": "rev102; compatible retained-control/current-engine automatic fallback accepted",
         "remaining": "async/caller/defer, complete schema dialect and media/builtin integration remain required",
-        "binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7",
         "business_counts": {
           "starts": 1,
           "chats": 6,
@@ -914,8 +913,16 @@
         "new_cpu_custom_shape_tests": 2,
         "profile_evidence": "docs/evidence/serve-tool-identity-profiles-20261113/README.md",
         "managed_recovery_evidence": "docs/evidence/serve-tool-identity-managed-20261113/README.md",
-        "delivery": "pending_reversible_publication",
-        "current_candidate_manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+        "delivery": "docs/evidence/serve-tool-identity-delivery-20261113/README.md",
+        "current_candidate_manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+        "deployed_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+        "source_delta_from_original_business": [
+          "include/q4t/server/cache_io.h",
+          "include/q4t/server/object_store.h",
+          "src/server/cache_io.cpp",
+          "src/server/object_store.cpp"
+        ],
+        "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       }
     },
     {
@@ -1907,11 +1914,12 @@
         "actual_requests": 15
       },
       "controller_stop_race": {
-        "state": "cpu_and_real_primary_light_storage_accepted_pending_delivery",
+        "state": "delivered_rev102_pending_mainline",
         "evidence": [
           "docs/evidence/serve-controller-stop-race-20261113/README.md",
           "docs/evidence/serve-tool-identity-profiles-20261113/README.md"
-        ]
+        ],
+        "delivery": "docs/evidence/serve-tool-identity-delivery-20261113/README.md"
       }
     },
     {
@@ -2397,14 +2405,14 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "publication_revision": 94,
-        "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
-        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
-        "generation_sha256": "bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38",
-        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
-        "service_acceptance_sha256": "969f02e4d4b46ea20b35e4a6c9745942697d8298a954145fb43e76cc468422a6",
-        "service_release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a"
+        "publication_revision": 102,
+        "engine_binary_sha256": "6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba",
+        "engine_release_sha256": "8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619",
+        "generation_sha256": "8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235",
+        "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+        "service_acceptance_sha256": "fd69b31ed6db2f6687ebe9a6190a2742468225a6aea68f114c93851f93c096a7",
+        "service_release_sha256": "4dc7a53572d396963f79ec04a3837bf98ba5a11aae324c6e7dfd34873ecf99ce"
       },
       "merged_foundation": {
         "pr": 22,
@@ -2415,7 +2423,7 @@
       },
       "main_integration": {
         "pr": 23,
-        "state": "ci_failures_being_repaired",
+        "state": "CI_17d8dbe2_in_progress",
         "evidence": "evidence/serve-public-host-repair-20261112/README.md",
         "targeted_cpu_passed": 18,
         "github_document_sandbox_pending": true,
@@ -2437,7 +2445,9 @@
           ],
           "remote_result": "in_progress",
           "merged": false
-        }
+        },
+        "current_ci_head": "17d8dbe2d7f909f7367d9191c00e1a62d6b9d3d7",
+        "latest_fixture_evidence": "docs/evidence/serve-ci-trace-storage-20261113/README.md"
       }
     },
     {
@@ -2453,6 +2463,6 @@
       "release": null
     }
   ],
-  "next_task": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop.",
-  "next": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop."
+  "next_task": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery.",
+  "next": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery."
 }

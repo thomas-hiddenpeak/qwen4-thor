@@ -2,7 +2,7 @@
 
 总计划A07的连续实施。命名空间、output_schema、async、caller及延迟
 发现均是必须解决的缺口；本页将实现按可审查提交拆分，不改变完成条件。
-默认rev94在对应候选完成验收/封包前保持。
+本组已验能力当前默认rev102，剩余高级工具任务继续。
 
 ## 合同来源
 
@@ -52,7 +52,7 @@ C++用例、官方SDK及公开schema通过；标准custom grammar转换、真实
 [实际工具业务](evidence/serve-tool-identity-business-20261112/README.md)、
 [主轻资格及跨停机存储](evidence/serve-tool-identity-profiles-20261113/README.md)、
 [保持新能力的真实服务回退](evidence/serve-tool-identity-managed-20261113/README.md)
-均已通过，继续可回退发行；尚不等于完整A07。
+均已通过并[可回退发行rev102](evidence/serve-tool-identity-delivery-20261113/README.md)；尚不等于完整A07。
 
 结果校验复用当前schema dialect，完整官方支持范围仍须落实。
 async/caller/defer_loading、typed内容数组及其余master任务继续。

@@ -9,25 +9,31 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev94；服务包 `e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd` |
-| Generation | `bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38` |
-| 引擎 | `9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7` |
-| 引擎发布记录 | `2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5` |
+| 发布 | rev102；服务包 `39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4` |
+| Generation | `8b0ef623a785cb8df440e623e62a8196ed266ae8eb22a7912f01a86fc1b9c235` |
+| 引擎 | `6aae5dbedb0361f908107b32643d39acb2d634451c2a89003f090ec7aca604ba` |
+| 引擎发布记录 | `8f406bb1bbcb9183a7eb70cf04b5e0829563c25678b37432f850ed509c0e7619` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 原rev92包 `32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853`；保留修前已知限制 |
+| 版本回退 | 已验旧控制/当前引擎包 `0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-cache-route-delivery-20261112/README.md)
-包含11项STOPPED交付检查，0新增GPU；真实缓存业务与原资格组合接受。
-旧rev92保留为回退，核心、Key/配额和outer状态保持；profile只更新
-资格绑定，版本周期显式登记并完整保留前驱。回退含修前已知缺陷，
-未重跑未变恢复机制或宣称长稳。总目标仍active。
-PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
-其后的本轮新增实现仍在工作分支，继续Q02主线审查，不把本机发行当作合并。
+[发行结果与回退记录](evidence/serve-tool-identity-delivery-20261113/README.md)
+包含17项STOPPED交付检查，0新增GPU。新工具业务、当前主轻资格、
+跨重启存储及真实整树切换均已接受；停止竞态修复进入实际默认。
+Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
+保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
+自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
+PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`正进行CI，
+其后namespace提交尚未合main；继续实际合入及全部master任务。
 
 ## 最近完成的实现和验证
+
+- 工具命名空间/结果合同与控制器停止修复已[可回退发行rev102](evidence/serve-tool-identity-delivery-20261113/README.md)。
+  17项停止态检查通过，实际回退再前进、原账本/恢复预算保持；
+  原生现代根与兼容旧控制均具备新应用能力。继续PR实际合入及
+  async/caller/延迟发现等全部master，不以本阶段结束总目标。
 
 - 新工具合同与ObjectStore/CacheIo停止修复已取得[真实主/轻量资格](evidence/serve-tool-identity-profiles-20261113/README.md)，
   含同一存储会话跨重启读取/删除。兼容回退载荷的独立运行和

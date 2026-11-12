@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    ".q4t-work/serve-tool-namespace-20261112/deliver.py",
+    "run"
+  ],
+  "returncode": 0,
+  "seconds": 53.2309206831269,
+  "scope": "Authorized stopped publication; preserves exact core/client/outer bytes and profile/version budgets; no model start"
+}
