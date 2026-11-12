@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11[实际主/轻量资格与候选封包通过](evidence/serve-file-search-profiles-20261112/README.md)：
+  2启动/8模型HTTP/90.379秒，新能力声明一致；原始检索业务复用。
+  候选32d3b819已含实际资格，显式v3升级许可已核对但未安装；
+  默认rev80保持，继续原生TLS及受监护检索/版本恢复交付。
+
 - A11能力发现与profile升级合同已补齐，
   [8项针对性CPU首过](evidence/serve-file-search-capabilities-cpu-20261112/README.md)。
   默认rev80保持；新增绑定未封包构建的资格入口，

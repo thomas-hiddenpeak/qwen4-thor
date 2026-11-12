@@ -131,3 +131,7 @@ docs/evidence/serve-vector-api-cpu-20261112/*.log -text -whitespace
 # Preserve real native file-search HTTP/SSE and original failure receipts.
 docs/evidence/serve-file-search-business-20261112/** -text -whitespace
 docs/evidence/serve-file-search-business-20261112/**/*.wire binary
+
+# Preserve actual file-search profile qualification and native wire evidence.
+docs/evidence/serve-file-search-profiles-20261112/** -text -whitespace
+docs/evidence/serve-file-search-profiles-20261112/**/*.wire binary

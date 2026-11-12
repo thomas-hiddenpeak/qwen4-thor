@@ -1288,7 +1288,8 @@
         "evidence/serve-responses-file-search-cpu-20261112/README.md",
         "evidence/serve-file-search-combinations-cpu-20261112/README.md",
         "evidence/serve-file-search-business-20261112/README.md",
-        "evidence/serve-file-search-capabilities-cpu-20261112/README.md"
+        "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
+        "evidence/serve-file-search-profiles-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1445,6 +1446,16 @@
           "evidence": "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
           "cpu_cases": 8,
           "gpu_starts": 0,
+          "default_changed": false
+        },
+        "profiles": {
+          "state": "actual_qualified_candidate_packaged_managed_pending",
+          "evidence": "evidence/serve-file-search-profiles-20261112/README.md",
+          "model_starts": 2,
+          "model_http_requests": 8,
+          "driver_seconds": 90.3791492562741,
+          "engine_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "candidate_manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
           "default_changed": false
         }
       }

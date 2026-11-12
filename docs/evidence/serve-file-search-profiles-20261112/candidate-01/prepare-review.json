@@ -1,0 +1,23 @@
+{
+  "previous": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+  "previous_manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+  "engine_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+  "protocol_sha256": "5a4eb86cce0c93bd14b51eb0ab55f19e21e75c196204a8b5dcee3b2f32e6278b",
+  "control_delta": [
+    "tools/serve_recovery/profile_migration.py"
+  ],
+  "native_source_delta": [
+    "CMakeLists.txt",
+    "include/q4t/server/application_routes.h",
+    "include/q4t/server/http_connection.h",
+    "src/service/ingress_main.cpp"
+  ],
+  "runtime_delta": [
+    "src/server/chat_capabilities.cpp"
+  ],
+  "actual_gpu_starts": 0,
+  "default_changed": false,
+  "profile_qualification_pending": false,
+  "native_embedding_preserved": true,
+  "package_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+}
