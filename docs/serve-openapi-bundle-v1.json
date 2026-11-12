@@ -1485,6 +1485,1114 @@
         }
       }
     },
+    "/v1/vector_stores": {
+      "post": {
+        "operationId": "post_v1_vector_stores",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_vector_stores",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "in_progress",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files_file_id_content",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_content"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches": {
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_file_batches",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_batch_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_file_batches_batch_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_file_batches_batch_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "in_progress",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_file_batches_batch_id_cancel",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_batch_cancel"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/moderations": {
       "post": {
         "operationId": "v1_moderations",
@@ -28338,6 +29446,1219 @@
             "required": [],
             "additionalProperties": false
           },
+          "vector_store_create": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 4096
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 4096
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expires_after": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "anchor": {
+                        "const": "last_active_at"
+                      },
+                      "days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                      }
+                    },
+                    "required": [
+                      "anchor",
+                      "days"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "file_ids": {
+                "type": "array",
+                "maxItems": 500,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^file_[A-Za-z0-9_-]+$"
+                }
+              },
+              "chunking_strategy": {
+                "anyOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "auto"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "static"
+                          },
+                          "static": {
+                            "type": "object",
+                            "properties": {
+                              "max_chunk_size_tokens": {
+                                "type": "integer",
+                                "minimum": 100,
+                                "maximum": 4096
+                              },
+                              "chunk_overlap_tokens": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 2048
+                              }
+                            },
+                            "required": [
+                              "max_chunk_size_tokens",
+                              "chunk_overlap_tokens"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "static"
+                        ],
+                        "additionalProperties": false,
+                        "x-q4t-constraint": "overlap <= floor(max_chunk_size_tokens/2)"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "vector_store_update": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expires_after": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "anchor": {
+                        "const": "last_active_at"
+                      },
+                      "days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                      }
+                    },
+                    "required": [
+                      "anchor",
+                      "days"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "vector_store_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "vector_store"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "last_active_at": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 4096
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expires_after": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "anchor": {
+                        "const": "last_active_at"
+                      },
+                      "days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                      }
+                    },
+                    "required": [
+                      "anchor",
+                      "days"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expires_at": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "file_counts": {
+                "type": "object",
+                "properties": {
+                  "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "in_progress": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "cancelled": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "total",
+                  "in_progress",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "additionalProperties": false
+              },
+              "status": {
+                "enum": [
+                  "in_progress",
+                  "completed",
+                  "expired"
+                ]
+              },
+              "usage_bytes": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "last_active_at",
+              "name",
+              "description",
+              "metadata",
+              "expires_after",
+              "expires_at",
+              "file_counts",
+              "status",
+              "usage_bytes"
+            ],
+            "additionalProperties": false
+          },
+          "vector_store_query": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "before": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "default": "desc"
+              }
+            },
+            "required": [],
+            "additionalProperties": false,
+            "not": {
+              "required": [
+                "after",
+                "before"
+              ]
+            }
+          },
+          "vector_store_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_store_resource"
+                }
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "first_id",
+              "last_id",
+              "has_more"
+            ],
+            "additionalProperties": false
+          },
+          "vector_store_deleted": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "vector_store.deleted"
+              },
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_create": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^file_[A-Za-z0-9_-]+$"
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "chunking_strategy": {
+                "anyOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "auto"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "static"
+                          },
+                          "static": {
+                            "type": "object",
+                            "properties": {
+                              "max_chunk_size_tokens": {
+                                "type": "integer",
+                                "minimum": 100,
+                                "maximum": 4096
+                              },
+                              "chunk_overlap_tokens": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 2048
+                              }
+                            },
+                            "required": [
+                              "max_chunk_size_tokens",
+                              "chunk_overlap_tokens"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "static"
+                        ],
+                        "additionalProperties": false,
+                        "x-q4t-constraint": "overlap <= floor(max_chunk_size_tokens/2)"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "file_id"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_update": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "attributes"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^file_[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "vector_store.file"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "vector_store_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "status": {
+                "enum": [
+                  "in_progress",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              },
+              "usage_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "last_error": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "enum": [
+                          "server_error",
+                          "unsupported_file",
+                          "invalid_file"
+                        ]
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "chunking_strategy": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "static"
+                  },
+                  "static": {
+                    "type": "object",
+                    "properties": {
+                      "max_chunk_size_tokens": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 4096
+                      },
+                      "chunk_overlap_tokens": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2048
+                      }
+                    },
+                    "required": [
+                      "max_chunk_size_tokens",
+                      "chunk_overlap_tokens"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "static"
+                ],
+                "additionalProperties": false,
+                "x-q4t-constraint": "overlap <= floor(max_chunk_size_tokens/2)"
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "vector_store_id",
+              "status",
+              "usage_bytes",
+              "last_error",
+              "attributes",
+              "chunking_strategy"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_query": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "before": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "default": "desc"
+              },
+              "filter": {
+                "enum": [
+                  "in_progress",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false,
+            "not": {
+              "required": [
+                "after",
+                "before"
+              ]
+            }
+          },
+          "vector_file_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vector_file_resource"
+                }
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "first_id",
+              "last_id",
+              "has_more"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_deleted": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "vector_store.file.deleted"
+              },
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "vector_batch_create": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "file_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2000,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^file_[A-Za-z0-9_-]+$"
+                    }
+                  },
+                  "attributes": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "maxProperties": 16,
+                        "propertyNames": {
+                          "type": "string",
+                          "maxLength": 64
+                        },
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 512
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "chunking_strategy": {
+                    "anyOf": [
+                      {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "const": "auto"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "const": "static"
+                              },
+                              "static": {
+                                "type": "object",
+                                "properties": {
+                                  "max_chunk_size_tokens": {
+                                    "type": "integer",
+                                    "minimum": 100,
+                                    "maximum": 4096
+                                  },
+                                  "chunk_overlap_tokens": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 2048
+                                  }
+                                },
+                                "required": [
+                                  "max_chunk_size_tokens",
+                                  "chunk_overlap_tokens"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "static"
+                            ],
+                            "additionalProperties": false,
+                            "x-q4t-constraint": "overlap <= floor(max_chunk_size_tokens/2)"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "file_ids"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2000,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "file_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^file_[A-Za-z0-9_-]+$"
+                        },
+                        "attributes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "maxProperties": 16,
+                              "propertyNames": {
+                                "type": "string",
+                                "maxLength": 64
+                              },
+                              "additionalProperties": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 512
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "chunking_strategy": {
+                          "anyOf": [
+                            {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "const": "auto"
+                                    }
+                                  },
+                                  "required": [
+                                    "type"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "const": "static"
+                                    },
+                                    "static": {
+                                      "type": "object",
+                                      "properties": {
+                                        "max_chunk_size_tokens": {
+                                          "type": "integer",
+                                          "minimum": 100,
+                                          "maximum": 4096
+                                        },
+                                        "chunk_overlap_tokens": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 2048
+                                        }
+                                      },
+                                      "required": [
+                                        "max_chunk_size_tokens",
+                                        "chunk_overlap_tokens"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "required": [
+                                    "type",
+                                    "static"
+                                  ],
+                                  "additionalProperties": false,
+                                  "x-q4t-constraint": "overlap <= floor(max_chunk_size_tokens/2)"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "file_id"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "attributes": {},
+                  "chunking_strategy": {}
+                },
+                "required": [
+                  "files"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "vector_batch_cancel": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "vector_batch_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "vector_store.files_batch"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "vector_store_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "status": {
+                "enum": [
+                  "in_progress",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              },
+              "file_counts": {
+                "type": "object",
+                "properties": {
+                  "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "in_progress": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "cancelled": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "total",
+                  "in_progress",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "vector_store_id",
+              "status",
+              "file_counts"
+            ],
+            "additionalProperties": false
+          },
+          "vector_file_content": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "vector_store.file_content.page"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "text"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "text"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "const": false
+              },
+              "next_page": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "next_page"
+            ],
+            "additionalProperties": false
+          },
           "moderations_create": {
             "type": "object",
             "properties": {
@@ -29096,6 +31417,12 @@
                             "null"
                           ]
                         },
+                        "refusal": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "function_call": {
                           "type": "object",
                           "properties": {
@@ -29192,6 +31519,12 @@
                     "delta": {
                       "type": "object",
                       "properties": {
+                        "refusal": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "function_call": {
                           "type": "object",
                           "properties": {
@@ -30999,7 +33332,10 @@
             "src/resources/batches.ts": "71e29b0995aab78190942e05642fbd37c082a3fcadd5005f3eb57b97d417e164",
             "src/resources/moderations.ts": "049998cc81901c26ebaa88f6e039996bb7182db50d1a596a7cbcd95c125c201f",
             "src/resources/embeddings.ts": "5c63eb78df7c5d1870a83df3fefd77f4cb33d26e0ca55e0eb68dba275a675959",
-            "src/lib/embeddings.ts": "7a41271270066c9021c83e8d53887c7b692700ce159bcbbfebc2869df84745cc"
+            "src/lib/embeddings.ts": "7a41271270066c9021c83e8d53887c7b692700ce159bcbbfebc2869df84745cc",
+            "src/resources/vector-stores/vector-stores.ts": "0c00de16d61f78119003d7523c5c854c132c81bc08ef6b956f9f948e751721e9",
+            "src/resources/vector-stores/files.ts": "66a73e8d347b3058eaeb1055eaa0cb9a7bf66e0414031039ecd583febf8ffc6e",
+            "src/resources/vector-stores/file-batches.ts": "6bf7f8d32ecebb25dbf490e9ea193ae845240021aec4b977e3f333c7a63a8638"
           },
           "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
           "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",

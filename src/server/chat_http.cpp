@@ -28,6 +28,7 @@
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/batch_api.h"
+#include "q4t/server/vector_store_api.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/output_schema.h"
@@ -356,8 +357,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             path == "/v1/embeddings" ||
             IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
-            IsBatchTarget(path) || IsFileTarget(path) ||
+            IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+            IsFileTarget(path) ||
             IsUploadTarget(path))) ||
+          (method == "GET" && IsVectorStoreTarget(path) &&
+           !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&
            !IsFileMetadata(method, path))) {
         const auto memory = memory_admission_.Observe();
@@ -432,10 +436,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             path == "/v1/embeddings" ||
         IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
-        IsPromptTarget(path) || IsBatchTarget(path)) {
+        IsPromptTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path)) {
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
                                  IsResponsesTokenCount(path) ||
-                                 IsBatchCancellation(method, path)) &&
+                                 IsBatchCancellation(method, path) ||
+                                 IsVectorStoreCancellation(method, path)) &&
                                 body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -524,7 +529,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
       IsConversationTarget(path) || IsPromptTarget(path) ||
-      IsBatchTarget(path) ||
+      IsBatchTarget(path) || IsVectorStoreTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -550,7 +555,12 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       return;
     }
     auto reply =
-        IsBatchTarget(path)
+        IsVectorStoreTarget(path)
+            ? HandleVectorStoreRequest(
+                  *objects_, clients_, !embedding_model_dir_.empty(), method,
+                  path, body, client,
+                  {access.scope, access.deadline, access.cancelled})
+        : IsBatchTarget(path)
             ? HandleBatchRequest(
                   *objects_, batches_.Get(), method, path, body, client,
                   {access.scope, access.deadline, access.cancelled})

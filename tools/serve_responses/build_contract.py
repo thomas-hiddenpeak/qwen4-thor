@@ -61,6 +61,8 @@ def schema(graph):
     definitions.update(upload_definitions())
     from tools.serve_responses.batches_contract import definitions as batch_definitions
     definitions.update(batch_definitions())
+    from tools.serve_responses.vector_stores_contract import definitions as vector_definitions
+    definitions.update(vector_definitions())
     from tools.serve_responses.moderations_contract import definitions as moderation_definitions
     definitions.update(moderation_definitions())
     from tools.serve_responses.embeddings_contract import definitions as embedding_definitions
@@ -190,6 +192,7 @@ def schema(graph):
     from tools.serve_responses.files_contract import SDK_FILES_SHA256
     from tools.serve_responses.uploads_contract import SOURCES as UPLOAD_SOURCES
     from tools.serve_responses.batches_contract import SDK_BATCHES_SHA256
+    from tools.serve_responses.vector_stores_contract import SDK_SOURCES as VECTOR_SOURCES
     from tools.serve_responses.moderations_contract import SDK_MODERATIONS_SHA256
     from tools.serve_responses.embeddings_contract import SDK_SOURCES as EMBEDDING_SOURCES
     return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses, Conversations, Files, Uploads and Batches wire contract',
@@ -199,7 +202,7 @@ def schema(graph):
                             'src/resources/files.ts': SDK_FILES_SHA256, **UPLOAD_SOURCES,
                             'src/resources/batches.ts': SDK_BATCHES_SHA256,
                             'src/resources/moderations.ts': SDK_MODERATIONS_SHA256,
-                            **EMBEDDING_SOURCES},
+                            **EMBEDDING_SOURCES, **VECTOR_SOURCES},
             license_sha256=graph['license_sha256'],
             compiler_sha256=graph['compiler_sha256'],
             semantics='Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.',
@@ -241,6 +244,8 @@ def add_openapi(paths, response, error):
     """Add actual application routes, preserving each HTTP method/body/query."""
     from tools.serve_responses.batches_contract import add_openapi as add_batches
     add_batches(paths, response, error)
+    from tools.serve_responses.vector_stores_contract import add_openapi as add_vectors
+    add_vectors(paths, response, error)
     from tools.serve_responses.moderations_contract import add_openapi as add_moderations
     add_moderations(paths, response, error)
     from tools.serve_responses.embeddings_contract import add_openapi as add_embeddings

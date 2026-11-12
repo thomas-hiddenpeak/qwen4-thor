@@ -1279,7 +1279,8 @@
         "evidence/serve-vector-ingestion-cpu-20261112/README.md",
         "evidence/serve-vector-quota-cpu-20261112/README.md",
         "evidence/serve-vector-jobs-cpu-20261112/README.md",
-        "evidence/serve-vector-batches-cpu-20261112/README.md"
+        "evidence/serve-vector-batches-cpu-20261112/README.md",
+        "evidence/serve-vector-api-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1287,10 +1288,10 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "native_ingestion_controller_cpu_accepted_public_api_in_progress",
+        "state": "management_api_sdk_cpu_accepted_search_responses_in_progress",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
-        "production_routes": false,
+        "production_routes": true,
         "responses_executor": false,
         "default_changed": false,
         "whole_task_complete": false,
@@ -1304,7 +1305,7 @@
           "gpu_starts": 0,
           "file_ingestion_adapter": true,
           "durable_store_parent": true,
-          "production_routes": false
+          "production_routes": true
         },
         "durable_store": {
           "state": "cpu_accepted_executor_integration_pending",
@@ -1316,7 +1317,7 @@
           "private_recovery_scan": true,
           "recovery_controller": true,
           "ingestion_adapter": true,
-          "http": false,
+          "http": true,
           "default_changed": false
         },
         "ingestion": {
@@ -1329,7 +1330,7 @@
           "gpu_embedding": false,
           "native_quota_owner": true,
           "production_controller": true,
-          "production_http": false,
+          "production_http": true,
           "default_changed": false
         },
         "quota_bridge": {
@@ -1356,7 +1357,17 @@
           "durable_cancellation": true,
           "detached_execution_cleanup": true,
           "batch_request_limit": 2000,
-          "http": false,
+          "http": true,
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "search_route": false,
+        "management_api": {
+          "state": "cpu_sdk_accepted_real_search_business_pending",
+          "operations": 15,
+          "cpp_cases": 12,
+          "sdk_protocol_cases": 3,
+          "evidence": "evidence/serve-vector-api-cpu-20261112/README.md",
           "gpu_starts": 0,
           "default_changed": false
         }

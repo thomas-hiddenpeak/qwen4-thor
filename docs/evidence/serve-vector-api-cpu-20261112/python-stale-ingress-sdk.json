@@ -1,0 +1,57 @@
+{
+  "status": "FAIL",
+  "sdk_version": "3.42.1",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/vectors-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_2a88650c073f13fee4d75277c68f3c2d",
+        "object": "file",
+        "bytes": 70,
+        "created_at": 1794472257,
+        "filename": "STATUS.md",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/vectors-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_dab130b94de1e8a893885409b83a1c4c",
+        "object": "file",
+        "bytes": 70,
+        "created_at": 1794472257,
+        "filename": "release.md",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/vectors-test/v1/vector_stores",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_route_not_found"
+        }
+      },
+      "request": {
+        "file_ids": [
+          "file_2a88650c073f13fee4d75277c68f3c2d"
+        ],
+        "name": "项目记录"
+      }
+    }
+  ],
+  "actual_network": true,
+  "model_starts": 0,
+  "max_retries": 0,
+  "vectors": "explicit_CPU_math_fixture"
+}

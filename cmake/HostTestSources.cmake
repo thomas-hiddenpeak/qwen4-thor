@@ -263,6 +263,8 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_stores_internal.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_stores.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_files.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_api.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_content.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_file_page.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_batches.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_ingestion_state.cpp

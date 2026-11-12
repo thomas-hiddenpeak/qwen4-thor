@@ -31,6 +31,13 @@ class VectorStores {
   // Page is an already decoded query (limit is numeric). No private IDs leak.
   ObjectReply ListFiles(const BinaryAccess& access, const std::string& id,
                         const io::Json& page);
+  ObjectReply FileContent(const BinaryAccess& access, const std::string& id,
+                          const std::string& file_id);
+  // Current complete membership, source existence and immutable index bytes.
+  // A concurrent mutation fails instead of returning mixed old/new data.
+  ObjectReply ReadIndex(const BinaryAccess& access, const std::string& id,
+                        const std::string& file_id, VectorIndex* index,
+                        io::Json* attributes);
   // Actual search/tool use advances last_active_at; management reads do not.
   ObjectReply Touch(const BinaryAccess& access, const std::string& id);
   ObjectReply CreateBatch(const BinaryAccess& access, const std::string& id,

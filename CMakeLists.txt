@@ -445,6 +445,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/vector_stores_internal.cpp
     src/server/vector_stores.cpp
     src/server/vector_store_files.cpp
+    src/server/vector_store_api.cpp
+    src/server/vector_store_content.cpp
     src/server/vector_file_page.cpp
     src/server/vector_store_batches.cpp
     src/server/vector_ingestion_state.cpp
@@ -686,6 +688,8 @@ if(Q4T_BUILD_TESTS)
     src/server/vector_stores_internal.cpp
     src/server/vector_stores.cpp
     src/server/vector_store_files.cpp
+    src/server/vector_store_api.cpp
+    src/server/vector_store_content.cpp
     src/server/vector_file_page.cpp
     src/server/vector_store_batches.cpp
     src/server/vector_ingestion_state.cpp

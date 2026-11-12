@@ -1041,6 +1041,171 @@
         "tests/server_batch_preparation_test.cpp",
         "tools/serve_responses/test_embeddings_contract.py"
       ]
+    },
+    "DELETE /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "DELETE /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files/{file_id}/content": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/file_batches": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
     }
   },
   "whitelists": {
@@ -1568,11 +1733,52 @@
     "batch_state.cpp:0:query": [
       "after",
       "limit"
+    ],
+    "vector_store_api.cpp:0:query": [
+      "after",
+      "before",
+      "limit",
+      "order"
+    ],
+    "vector_stores_internal.cpp:0:value": [
+      "anchor",
+      "days"
+    ],
+    "vector_stores_internal.cpp:1:request": [
+      "name",
+      "description",
+      "metadata",
+      "expires_after",
+      "file_ids",
+      "chunking_strategy"
+    ],
+    "vector_stores_internal.cpp:2:request": [
+      "name",
+      "metadata",
+      "expires_after"
+    ],
+    "vector_stores_internal.cpp:3:request": [
+      "file_id",
+      "attributes",
+      "chunking_strategy"
+    ],
+    "vector_store_batches.cpp:0:request": [
+      "file_ids",
+      "files",
+      "attributes",
+      "chunking_strategy"
+    ],
+    "vector_file_page.cpp:0:page": [
+      "after",
+      "before",
+      "limit",
+      "order",
+      "filter"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "073a0e998d09b17be06e9f93f8e5956d33a9a1e6021e3bdd11ac6b0c3e27c89e",
-    "cmake/ChatProtocolIdentity.cmake": "9bbab1a67d42e4a821805150e962ce0281b37d8f4428bd5df2a6078062a66036",
+    "CMakeLists.txt": "99fbbc712cb962f2db48be98cfdd1ff5460823c06c20153540b0392770efc833",
+    "cmake/ChatProtocolIdentity.cmake": "be00a5d2d4464683b0ac497e99899c9912993f98e0c292fba934ca90b40b7eb5",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1603,7 +1809,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "89acff55d897a6c3b5c1d8560fd06423e763d250e6fc8250ac0c266ed0b3336d",
+    "include/q4t/server/application_routes.h": "67d827f867d8e8d152fa76e77d346feaa7cff7abb7f9e48d8980ee7ac5bb9ae7",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
     "include/q4t/server/batch_checkpoint.h": "ce3e49ef7d94b95d9b813c50e7fbc930c17a77f932437ed428ef17a93db659b9",
@@ -1667,7 +1873,7 @@
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/grammar_process.h": "b70b8426c52e5ec94394b9ce39a3fdcd8a1c2037d2d0b9b9128711c973b5a83c",
-    "include/q4t/server/http_connection.h": "c10f08ad3418f93434a07a91ccd2416275c3c553cd667d498ede1d9caaef0552",
+    "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -1750,7 +1956,8 @@
     "include/q4t/server/vector_ingestion.h": "892299bfcd22b747752b1dd196580638bdf4747fd50719eb80e94e430bca7b34",
     "include/q4t/server/vector_jobs.h": "6694ba76f8b4787bee9a737c7090a1c0461774f859aacd4e1d77eb19a48bc2cf",
     "include/q4t/server/vector_search.h": "2ac47b612d03edd2fce0aa61c4bd20a878f1ca893b82c853e31a7274d6cbbe08",
-    "include/q4t/server/vector_stores.h": "2b9b80e0b129d0cb7446b0d246d8a3b31b70fe068faa483446b0e63bd43170fe",
+    "include/q4t/server/vector_store_api.h": "1f6bf72f96d759d4f2d2883615b6efb0b0a108608d9f987bb6a4d76d90d68adf",
+    "include/q4t/server/vector_stores.h": "3a5938488d29ce6d5855a9ca600ca9cf8926fb11300d6f6214d700df12ce6758",
     "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
     "include/q4t/service/device_admission.h": "3f13bf17b693d839f556f1495d4617a0ffe8fff15b611a086f0aac4391936ac9",
     "include/q4t/service/device_filter.h": "260b36b468198b9c2cc41a7125fdeeb37cc22f45dbe89e1a219dabfcef57b5b7",
@@ -1824,7 +2031,7 @@
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
     "src/server/chat_generation.cpp": "e26c18e99ad209c22d82636bc20dc4fc57c081f1c6ca0bc0ba7496e30dc64517",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "0b6f5b2931eb3d38257250005b03104ceb2dc3b98ec92f034b5876ce2cdec371",
+    "src/server/chat_http.cpp": "16d7be0a66302bfce0b5afcf0da38864e7d821189c61c5b28676a10385025568",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
@@ -1848,7 +2055,7 @@
     "src/server/client_policy.cpp": "1e87f542adf319f5aea52e10e4467bb24692978f375f6c834df7e96362063830",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "acacc071b4a1df3e7b58b303e0c6b72935ef5eb0fa251ddf6cab3720f8187cf2",
+    "src/server/client_request.cpp": "9c2eb3b26ffb92412fc4a685d7265d1f88413fcdcbeff6586a8f29a6069fb961",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -2001,7 +2208,9 @@
     "src/server/vector_jobs.cpp": "59fb0e36d95aabf9d670286f46e80eb0993bb9326b28701d5c31a57537bb1693",
     "src/server/vector_search_plan.cpp": "a3153b74e87cf70797912e83b2a3b9b2fcbaf99c1086e4e00025bfee27b299bf",
     "src/server/vector_search_rank.cpp": "d4e1d690eba20b52cd98ad0b04fbd23d24bb35733df0dddac4c4e1e95de6e6d4",
+    "src/server/vector_store_api.cpp": "d401e3c2da89a0661f027b940d696971abe2f432d837b46da2071f598eb4033a",
     "src/server/vector_store_batches.cpp": "eaa8c0ba3e5688cd423d27b840e43b0ffd1a916e34258d3dfb78e57136d203bc",
+    "src/server/vector_store_content.cpp": "6ee6efd425b390064f9e0ff001d15dde87b136387a968160552df41b7c701dc0",
     "src/server/vector_store_files.cpp": "484cbdfcb7b2d766636cee30413cef21b058b7bb958631b0b80dba2d792bb1e7",
     "src/server/vector_stores.cpp": "96ec57d324200deb34a7aae97d17e23c8b54d21df27e170711ffbc1ef9cbf04c",
     "src/server/vector_stores_internal.cpp": "ced11b849524a93f6b79e888a16c1193dbd6d5f393a2a20978f5716db265ae14",
@@ -2022,7 +2231,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "ecd067e83d8a55ef7ec587c0fc10ca711ec0dc7846a79e3be16453a538ec9778",
+    "src/service/ingress_main.cpp": "1d3dfc296e4c3869eb5015dcea32c0109495b2302c8af8cfe0d976af6f873901",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -3432,6 +3641,270 @@
         "tests/server_embeddings_api_test.cpp",
         "tests/server_batch_preparation_test.cpp",
         "tools/serve_responses/test_embeddings_contract.py"
+      ]
+    },
+    "DELETE /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "DELETE /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "GET /v1/vector_stores/{vector_store_id}/files/{file_id}/content": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/file_batches": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/files/{file_id}/content": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/file_batches": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/files": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "semantics": "Native scoped vector store CRUD, file membership/content and durable file batches; shared native ingress paths and reserved observation/cancel capacity.",
+      "boundary": "12 targeted C++ and 3 official SDK/schema checks accepted. Actual native HTTP/TLS, Files, document worker and index text; vectors are explicit CPU math. Search/Responses/model business and reversible release remain required; current rev80 unchanged.",
+      "evidence": [
+        "src/server/vector_store_api.cpp",
+        "src/server/vector_store_content.cpp",
+        "include/q4t/server/application_routes.h",
+        "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+        "docs/evidence/serve-vector-api-cpu-20261112/README.md"
       ]
     }
   },

@@ -28,6 +28,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11公开管理与内容读取已接通15条原生操作，统一schema/原生入口/
+  客户端RPM及独立取消容量已接线；[12项C++和3项SDK/协议通过](evidence/serve-vector-api-cpu-20261112/README.md)。
+  官方JS直连与Python经原生TLS均验证真实文件/索引文本，向量为CPU
+  数学夹具；原失败保留，仅重验受影响项。实际search/Responses继续
+  实施，0GPU，默认rev80保持。统一应用schema遗漏的Chat refusal
+  类型也已同步，2项复用既有真实JSON/SSE检查通过。
+
 - A11文件入库批次的持久接口已成组编码，
   [17项CPU首过](evidence/serve-vector-batches-cpu-20261112/README.md)：2000文件
   合同、原子计数/取消及批次分页；删除中的旧执行保留至实际清理，

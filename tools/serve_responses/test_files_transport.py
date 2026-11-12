@@ -33,7 +33,8 @@ LIMIT = 512*1024**2+65536
 class Stack:
     def __init__(self, directory, certs, *, native=True, tls=True,
                  core_limit=LIMIT, edge_limit=LIMIT, legacy_core=False,
-                 legacy_edge=False, prefix='', json_limit=1024, batch_fixture=False):
+                 legacy_edge=False, prefix='', json_limit=1024, batch_fixture=False,
+                 vector_fixture=False):
         self.directory = directory
         directory.mkdir(mode=0o700)
         self.logs = []
@@ -54,7 +55,8 @@ class Stack:
         (directory/'policy.json').chmod(0o600)
         try:
             log = (directory/'backend.log').open('xb');self.logs.append(log)
-            fixture = '--batch-api-fixture' if batch_fixture else '--files-api-fixture'
+            fixture = ('--vector-api-fixture' if vector_fixture else
+                       '--batch-api-fixture' if batch_fixture else '--files-api-fixture')
             self.backend = subprocess.Popen([str(HOST), fixture, str(directory)],
                 stdin=subprocess.PIPE, stdout=log, stderr=log, start_new_session=True)
             end = time.monotonic()+5

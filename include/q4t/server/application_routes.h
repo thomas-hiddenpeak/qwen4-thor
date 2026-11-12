@@ -13,6 +13,87 @@ inline bool ValidApplicationId(std::string_view id) {
   return true;
 }
 
+enum class VectorStoreRouteKind {
+  kInvalid, kStores, kStore, kFiles, kFile, kContent, kBatches, kBatch,
+  kBatchFiles, kBatchCancel
+};
+struct VectorStoreRoute {
+  VectorStoreRouteKind kind = VectorStoreRouteKind::kInvalid;
+  std::string_view store, child;
+};
+inline bool IsVectorStoreTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/vector_stores" ||
+         path.starts_with("/v1/vector_stores/");
+}
+inline VectorStoreRoute ParseVectorStoreRoute(std::string_view target) {
+  using Kind = VectorStoreRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/vector_stores";
+  if (path == root) return {Kind::kStores, {}, {}};
+  if (!path.starts_with("/v1/vector_stores/")) return {};
+  path.remove_prefix(root.size() + 1);
+  auto slash = path.find('/');
+  const auto store = path.substr(0, slash);
+  if (!ValidApplicationId(store)) return {};
+  if (slash == path.npos) return {Kind::kStore, store, {}};
+  path.remove_prefix(slash + 1);
+  slash = path.find('/');
+  const auto collection = path.substr(0, slash);
+  const bool files = collection == "files";
+  if (!files && collection != "file_batches") return {};
+  if (slash == path.npos)
+    return {files ? Kind::kFiles : Kind::kBatches, store, {}};
+  path.remove_prefix(slash + 1);
+  slash = path.find('/');
+  const auto child = path.substr(0, slash);
+  if (!ValidApplicationId(child)) return {};
+  if (slash == path.npos)
+    return {files ? Kind::kFile : Kind::kBatch, store, child};
+  const auto action = path.substr(slash);
+  if (files && action == "/content") return {Kind::kContent, store, child};
+  if (!files && action == "/files") return {Kind::kBatchFiles, store, child};
+  if (!files && action == "/cancel") return {Kind::kBatchCancel, store, child};
+  return {};
+}
+inline std::string_view VectorStoreAllowedMethods(VectorStoreRouteKind kind) {
+  using Kind = VectorStoreRouteKind;
+  switch (kind) {
+    case Kind::kStores:
+    case Kind::kFiles: return "GET, POST";
+    case Kind::kStore:
+    case Kind::kFile: return "GET, POST, DELETE";
+    case Kind::kContent:
+    case Kind::kBatch:
+    case Kind::kBatchFiles: return "GET";
+    case Kind::kBatches:
+    case Kind::kBatchCancel: return "POST";
+    case Kind::kInvalid: return {};
+  }
+  return {};
+}
+inline bool VectorStoreMethodAllowed(std::string_view method,
+                                      std::string_view target) {
+  const auto allowed =
+      VectorStoreAllowedMethods(ParseVectorStoreRoute(target).kind);
+  return (method == "GET" || method == "POST" || method == "DELETE") &&
+         allowed.find(method) != allowed.npos;
+}
+inline bool IsVectorStoreCancellation(std::string_view method,
+                                       std::string_view target) {
+  return method == "POST" && ParseVectorStoreRoute(target).kind ==
+                                 VectorStoreRouteKind::kBatchCancel;
+}
+inline bool IsVectorStoreObservation(std::string_view method,
+                                      std::string_view target) {
+  using Kind = VectorStoreRouteKind;
+  const auto kind = ParseVectorStoreRoute(target).kind;
+  return ((method == "GET" || method == "DELETE") &&
+          (kind == Kind::kStore || kind == Kind::kFile)) ||
+         (method == "GET" && kind == Kind::kBatch);
+}
+
 inline bool IsConversationTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/conversations" || path.starts_with("/v1/conversations/");
@@ -200,6 +281,7 @@ inline bool IsCancellationRequest(std::string_view method,
   return (method == "POST" && target == "/v1/requests/cancel") ||
          IsResponseCancellation(method, target) ||
          IsBatchCancellation(method, target) ||
+         IsVectorStoreCancellation(method, target) ||
          IsUploadCancellation(method, target);
 }
 

@@ -46,6 +46,7 @@ set(protocol_inputs
   src/server/vector_search_rank.cpp
   include/q4t/server/vector_index.h
   include/q4t/server/vector_stores.h
+  include/q4t/server/vector_store_api.h
   include/q4t/server/vector_ingestion.h
   include/q4t/server/vector_embedding_execution.h
   include/q4t/server/vector_jobs.h
@@ -54,6 +55,8 @@ set(protocol_inputs
   src/server/vector_stores_internal.cpp
   src/server/vector_stores.cpp
   src/server/vector_store_files.cpp
+  src/server/vector_store_api.cpp
+  src/server/vector_store_content.cpp
   src/server/vector_file_page.cpp
   src/server/vector_store_batches.cpp
   src/server/vector_ingestion_state.cpp

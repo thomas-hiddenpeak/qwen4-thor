@@ -123,3 +123,7 @@ docs/evidence/serve-vector-jobs-cpu-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-jobs-cpu-20261112/*.stderr -text -whitespace
 docs/evidence/serve-vector-batches-cpu-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-batches-cpu-20261112/*.stderr -text -whitespace
+
+docs/evidence/serve-vector-api-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-api-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-api-cpu-20261112/*.log -text -whitespace

@@ -1,0 +1,6 @@
+test_python_sdk_native_tls_prefix_and_client_isolation (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_python_sdk_native_tls_prefix_and_client_isolation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 5.512s
+
+OK

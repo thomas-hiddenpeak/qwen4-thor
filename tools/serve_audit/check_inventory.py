@@ -142,6 +142,33 @@ def current_surface(root):
         if 'server::BatchMethodAllowed(method, path)' in native:
             native_routes.extend((method, path, 'false' if path == '/v1/batches'
                                   else 'true') for method, path in batches)
+    if 'IsVectorStoreTarget(path)' in dispatch:
+        vector_api = (root / 'src/server/vector_store_api.cpp').read_text()
+        if not re.search(r'HandleVectorStoreRequest\(\s*\*objects_', dispatch) or \
+                'stores.CreateBatch(access, id, request)' not in vector_api or \
+                'stores.FileContent(access, id, child)' not in vector_api or \
+                'stores.CancelBatch(access, id, child)' not in vector_api or \
+                'inline VectorStoreRoute ParseVectorStoreRoute' not in application_routes:
+            raise ValueError('review actual vector store handlers before cataloguing')
+        vector_root = '/v1/vector_stores'
+        store = vector_root + '/{vector_store_id}'
+        vectors = [*((method, vector_root) for method in ('GET', 'POST')),
+                   *((method, store) for method in ('GET', 'POST', 'DELETE')),
+                   *((method, store + '/files') for method in ('GET', 'POST')),
+                   *((method, store + '/files/{file_id}')
+                     for method in ('GET', 'POST', 'DELETE')),
+                   ('GET', store + '/files/{file_id}/content'),
+                   ('POST', store + '/file_batches'),
+                   ('GET', store + '/file_batches/{batch_id}'),
+                   ('GET', store + '/file_batches/{batch_id}/files'),
+                   ('POST', store + '/file_batches/{batch_id}/cancel')]
+        routes.extend((path, method) for method, path in vectors)
+        if 'server::VectorStoreMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'true' if
+                path.endswith('/cancel') or
+                (method in ('GET', 'DELETE') and
+                 path.endswith(('/{vector_store_id}', '/{file_id}', '/{batch_id}')))
+                else 'false') for method, path in vectors)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -157,7 +184,9 @@ def current_surface(root):
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
                  "moderation.cpp", "moderations_plan.cpp", "embeddings_plan.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
-                 "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp"):
+                 "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp",
+                 "vector_store_api.cpp", "vector_stores_internal.cpp",
+                 "vector_store_batches.cpp", "vector_file_page.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

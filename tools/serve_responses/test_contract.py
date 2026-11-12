@@ -227,5 +227,41 @@ class ApplicationContract(unittest.TestCase):
             self.assertFalse(validator.is_valid(bad))
 
 
+class DeliveredRefusalSchema(unittest.TestCase):
+    def test_existing_real_json_refusal_uses_unified_application_shape(self):
+        path = ROOT/'docs/evidence/serve-refusal-business-20261112/chat-refusal.wire'
+        value = json.loads(path.read_bytes())
+        self.assertTrue(value['choices'][0]['message']['refusal'])
+        self.assertFalse(errors(value, 'chat_completion'))
+        broken = copy.deepcopy(SCHEMA['$defs'])
+        del broken['chat_completion']['properties']['choices']['items'][
+            'properties']['message']['properties']['refusal']
+        invalid = copy.deepcopy(value)
+        invalid['choices'][0]['message']['refusal'] = 17
+        self.assertTrue(errors(invalid, 'chat_completion'))
+        # SDK response objects allow unknown extensions: omitting the typed
+        # field silently accepts an invalid refusal rather than rejecting it.
+        self.assertTrue(Draft202012Validator(dict(app.ref('chat_completion'),
+            **{'$defs': broken})).is_valid(invalid))
+
+    def test_existing_real_sse_refusal_uses_unified_application_shape(self):
+        path = ROOT/('docs/evidence/serve-refusal-managed-business-20261112/'
+                     'version-business-01/execution/native-refusal.wire')
+        values = [json.loads(line[6:]) for line in path.read_text().splitlines()
+                  if line.startswith('data: ') and line != 'data: [DONE]']
+        refusals = [v for v in values if any(c.get('delta', {}).get('refusal')
+                                             for c in v['choices'])]
+        self.assertTrue(refusals)
+        for value in values:self.assertFalse(errors(value, 'chat_chunk'))
+        broken = copy.deepcopy(SCHEMA['$defs'])
+        del broken['chat_chunk']['properties']['choices']['items'][
+            'properties']['delta']['properties']['refusal']
+        invalid = copy.deepcopy(refusals[0])
+        invalid['choices'][0]['delta']['refusal'] = 17
+        self.assertTrue(errors(invalid, 'chat_chunk'))
+        self.assertTrue(Draft202012Validator(dict(app.ref('chat_chunk'),
+            **{'$defs': broken})).is_valid(invalid))
+
+
 if __name__ == '__main__':
     unittest.main()

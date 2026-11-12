@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/vector_stores_sdk.py", line 93, in <module>
+    if __name__ == '__main__':main()
+                              ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/vector_stores_sdk.py", line 50, in main
+    store = v.create(name='项目记录', file_ids=[a.id])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/resources/vector_stores/vector_stores.py", line 128, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/_base_client.py", line 1474, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/_base_client.py", line 1248, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - Service entrypoint rejected request

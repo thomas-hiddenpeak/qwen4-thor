@@ -14,6 +14,9 @@
 #include "q4t/server/application_routes.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/batch_api.h"
+#include "q4t/server/vector_store_api.h"
+#include "q4t/server/vector_jobs.h"
+#include "../src/server/object_protocol.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
@@ -33,9 +36,11 @@ std::string Read(const fs::path& path) {
 
 int FilesApiFixture(int argc, char** argv) {
   if (argc != 3 || (std::string_view(argv[1]) != "--files-api-fixture" &&
-                    std::string_view(argv[1]) != "--batch-api-fixture"))
+                    std::string_view(argv[1]) != "--batch-api-fixture" &&
+                    std::string_view(argv[1]) != "--vector-api-fixture"))
     return -1;
   const bool batch_fixture = std::string_view(argv[1]) == "--batch-api-fixture";
+  const bool vector_fixture = std::string_view(argv[1]) == "--vector-api-fixture";
   try {
     const auto directory = fs::absolute(argv[2]);
     GatewayClientPolicy policy;
@@ -49,6 +54,37 @@ int FilesApiFixture(int argc, char** argv) {
     options.max_client_bytes = 256ULL << 20;
     options.max_total_bytes = 512ULL << 20;
     ObjectStore objects(options);
+    std::unique_ptr<VectorJobs> vectors;
+    if (vector_fixture) {
+      VectorJobsOptions jobs;
+      jobs.scan_interval = 10ms;
+      jobs.ingestion.dimensions = 32;
+      vectors = std::make_unique<VectorJobs>(
+          objects, clients, jobs,
+          [](auto text, const auto& control, auto* output) {
+            return EncodeVectorText(
+                text,
+                [](auto source, auto* tokens) {
+                  for (unsigned char c : source) tokens->push_back(c);
+                  return q4t::Status{};
+                },
+                [](uint32_t token, auto* piece) {
+                  *piece = std::string(1, static_cast<char>(token));
+                  return q4t::Status{};
+                }, control, output);
+          },
+          [](const auto& tokens, const auto& client, auto& permit,
+             const auto& control, auto* output) {
+            if (!permit.Holds(client, ClientLane::kData) || control->Cancelled())
+              return object_detail::Error(499, "fixture_cancelled", "Cancelled");
+            // Explicit mathematical BF16 fixture, never a retrieval-quality
+            // or native GPU model assertion. Actual storage/ownership/IO run.
+            output->committed_input = tokens.size();
+            output->hidden.assign(1024, 0);
+            output->hidden[0] = 0x3f80;
+            return ObjectReply{};
+          });
+    }
     std::unique_ptr<BatchJobs> batches;
     if (batch_fixture) {
       ChatPlanConfig config;
@@ -132,8 +168,10 @@ int FilesApiFixture(int argc, char** argv) {
     ScopeExit stop_workers([&] {
       stopping.store(true);
       if (batches) batches->RequestStop();
+      if (vectors) vectors->RequestStop();
       for (auto& worker : workers) worker.join();
       if (batches) batches->Join();
+      if (vectors) vectors->Join();
     });
     const auto end = Clock::now() + 120s;
     for (int count = 0; count < 256 && Clock::now() < end;) {
@@ -183,6 +221,9 @@ int FilesApiFixture(int argc, char** argv) {
               }
               if (operations && !IsFileMetadata(method, target) &&
                   !IsUploadCancellation(method, target) &&
+                  !(vector_fixture &&
+                    (IsVectorStoreObservation(method, target) ||
+                     IsVectorStoreCancellation(method, target))) &&
                   !(batch_fixture && (IsBatchObservation(method, target) ||
                                       IsBatchCancellation(method, target)))) {
                 failure = 404;
@@ -194,6 +235,7 @@ int FilesApiFixture(int argc, char** argv) {
               if (IsCancellationRequest(method, target))
                 body_lease.SelectBudget(cancel_budget);
               if (batch_fixture && IsBatchTarget(target)) return true;
+              if (vector_fixture && IsVectorStoreTarget(target)) return true;
               BinaryAccess access{"client:" + std::string(identity.Id()),
                                   Clock::now() + 30s,
                                   [&] { return stopping.load(); }};
@@ -227,7 +269,12 @@ int FilesApiFixture(int argc, char** argv) {
             if (file) {
               file->Serve(fd);
             } else {
-              const auto reply = HandleBatchRequest(
+              const auto reply = vector_fixture
+                  ? HandleVectorStoreRequest(
+                      objects, clients, true, method, target, body, identity,
+                      {"client:" + std::string(identity.Id()), Clock::now() + 30s,
+                       [&] { return stopping.load(); }})
+                  : HandleBatchRequest(
                   objects, batches.get(), method, target, body, identity,
                   {"client:" + std::string(identity.Id()), Clock::now() + 30s,
                    [&] { return stopping.load(); }});
