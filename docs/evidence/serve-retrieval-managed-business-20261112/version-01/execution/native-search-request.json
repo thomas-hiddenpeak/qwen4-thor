@@ -1,0 +1,32 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "store": true,
+  "reasoning": {
+    "effort": "none"
+  },
+  "max_output_tokens": 256,
+  "max_tool_calls": 1,
+  "parallel_tool_calls": false,
+  "tools": [
+    {
+      "type": "file_search",
+      "vector_store_ids": [
+        "vs_5b3bd42d6270b0c4a002e21f8bea925b"
+      ],
+      "max_num_results": 1
+    }
+  ],
+  "tool_choice": {
+    "type": "file_search"
+  },
+  "include": [
+    "file_search_call.results"
+  ],
+  "instructions": "Use file_search with exactly one query. Answer from the actual returned source in at most two sentences. Copy its exact citation_marker into your answer. Do not invent file IDs.",
+  "input": "According to this project, where may MoE expert capacity be offloaded, and why is moving it to CPU memory insufficient? Include the terms SSD and DRAM.",
+  "stream": true,
+  "stream_options": {
+    "include_obfuscation": false
+  }
+}

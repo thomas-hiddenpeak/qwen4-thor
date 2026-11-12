@@ -1,0 +1,47 @@
+{
+  "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 66.94727514497936,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 176
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2674811712404974
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2674850022086591
+      },
+      {
+        "kind": "chats",
+        "label": "native-tls-sdk-search",
+        "ordinal": 2,
+        "monotonic_ns": 2674857172666951
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1994069,
+      "start_ticks": 267481171
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls",
+    "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666"
+  },
+  "scenario": "retrieval_tls",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

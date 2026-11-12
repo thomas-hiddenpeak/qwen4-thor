@@ -1,0 +1,11 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "store": true,
+  "reasoning": {
+    "effort": "none"
+  },
+  "max_output_tokens": 128,
+  "input": "Using the previous source, repeat the permitted offload target and shared memory type. Include SSD and DRAM.",
+  "previous_response_id": "resp_3f8573f89ce4f4afe5041d7906cf21b1"
+}

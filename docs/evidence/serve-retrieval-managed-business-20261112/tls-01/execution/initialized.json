@@ -1,0 +1,8 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/tls-01/execution/state",
+  "service_id": "bd9d7903-99fd-471d-a877-55e397de4b26",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false,
+  "resumed": false
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PASS_NATIVE_RETRIEVAL_TLS",
+  "acceptance": "ACCEPT_NATIVE_RETRIEVAL_TLS",
+  "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
+  "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_RETRIEVAL_TLS",
+    "strict_lease_seconds": 67.96600701427087,
+    "nvml_queries": 64,
+    "env_abort": false,
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 176
+    },
+    "source_commit": "4fa3f21ae99039ac9eb70e3cd400497603533e61",
+    "plan_sha256": "b3c832e0ea8ac46e5e5a27cc06bb9192021b06d4deef3802d40a4399c65b1576",
+    "result_sha256": "1ea1e2e84f07cf0f8ced2e1e66b81a7e3ee8327352455fd70f1a4e617ba065e4",
+    "lease_result_sha256": "5e9ed7188374396f2b9cf520ef6eac8f24c684e4bf75b3e19d81d06f6a4a1954",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

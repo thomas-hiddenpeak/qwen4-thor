@@ -1289,7 +1289,8 @@
         "evidence/serve-file-search-combinations-cpu-20261112/README.md",
         "evidence/serve-file-search-business-20261112/README.md",
         "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
-        "evidence/serve-file-search-profiles-20261112/README.md"
+        "evidence/serve-file-search-profiles-20261112/README.md",
+        "evidence/serve-retrieval-managed-business-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1297,7 +1298,7 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "real_business_accepted_delivery_in_progress",
+        "state": "actual_managed_tls_business_accepted_delivery_pending",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
         "production_routes": true,
@@ -1459,7 +1460,7 @@
           "default_changed": false
         },
         "managed_acceptance": {
-          "state": "retained_and_version_accepted_tls_driver_fixed_retest_pending",
+          "state": "accepted_delivery_pending",
           "retained_manifest": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
           "primary_manifest": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
           "tls_manifest": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
@@ -1471,7 +1472,13 @@
             "probes": 0,
             "seconds": 300
           },
-          "default_changed": false
+          "default_changed": false,
+          "evidence": "evidence/serve-retrieval-managed-business-20261112/README.md",
+          "model_starts_including_failure": 5,
+          "model_http_including_selfchecks": 10,
+          "probes": 1,
+          "driver_seconds": 314.13303343299776,
+          "original_failure_preserved": true
         }
       }
     },

@@ -135,3 +135,7 @@ docs/evidence/serve-file-search-business-20261112/**/*.wire binary
 # Preserve actual file-search profile qualification and native wire evidence.
 docs/evidence/serve-file-search-profiles-20261112/** -text -whitespace
 docs/evidence/serve-file-search-profiles-20261112/**/*.wire binary
+
+# Preserve managed retrieval captures and original failed SDK receipt bytes.
+docs/evidence/serve-retrieval-managed-business-20261112/** -text -whitespace
+docs/evidence/serve-retrieval-managed-business-20261112/**/*.wire binary
