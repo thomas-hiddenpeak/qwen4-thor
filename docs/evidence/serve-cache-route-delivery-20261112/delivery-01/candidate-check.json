@@ -1,0 +1,14 @@
+{
+  "label": "candidate-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle/engine/q4t",
+    "service",
+    "check",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+    "--manifest-sha256",
+    "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd"
+  ],
+  "returncode": 0,
+  "seconds": 0.8335169651545584
+}

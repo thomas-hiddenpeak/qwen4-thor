@@ -1,0 +1,18 @@
+{
+  "id": "schema-v2-greedy",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "42"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 8568,
+    "completion_tokens": 3,
+    "total_tokens": 8571,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "logprobs": null
+}
