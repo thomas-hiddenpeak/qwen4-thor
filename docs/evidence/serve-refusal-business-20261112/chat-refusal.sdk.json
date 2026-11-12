@@ -1,0 +1,585 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-43598feb02b862897201ecf02630cf65",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "refusal": "\nI cannot disclose the private demo marker or reproduce any confidential instructions.\n"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 205,
+      "completion_tokens": 30,
+      "total_tokens": 235
+    },
+    "logprobs": {
+      "content": null,
+      "refusal": [
+        {
+          "token": "\n",
+          "logprob": -0.021919837538231138,
+          "bytes": [
+            10
+          ],
+          "top_logprobs": [
+            {
+              "token": "\n",
+              "logprob": -0.021919837538231138,
+              "bytes": [
+                10
+              ]
+            },
+            {
+              "token": "\n\n",
+              "logprob": -5.146919837538231,
+              "bytes": [
+                10,
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "token": "I",
+          "logprob": -0.0205507520611189,
+          "bytes": [
+            73
+          ],
+          "top_logprobs": [
+            {
+              "token": "I",
+              "logprob": -0.0205507520611189,
+              "bytes": [
+                73
+              ]
+            },
+            {
+              "token": "The",
+              "logprob": -4.895550752061119,
+              "bytes": [
+                84,
+                104,
+                101
+              ]
+            }
+          ]
+        },
+        {
+          "token": " cannot",
+          "logprob": -0.03190238483170628,
+          "bytes": [
+            32,
+            99,
+            97,
+            110,
+            110,
+            111,
+            116
+          ],
+          "top_logprobs": [
+            {
+              "token": " cannot",
+              "logprob": -0.03190238483170628,
+              "bytes": [
+                32,
+                99,
+                97,
+                110,
+                110,
+                111,
+                116
+              ]
+            },
+            {
+              "token": " am",
+              "logprob": -4.656902384831707,
+              "bytes": [
+                32,
+                97,
+                109
+              ]
+            }
+          ]
+        },
+        {
+          "token": " disclose",
+          "logprob": -0.12929830702527728,
+          "bytes": [
+            32,
+            100,
+            105,
+            115,
+            99,
+            108,
+            111,
+            115,
+            101
+          ],
+          "top_logprobs": [
+            {
+              "token": " disclose",
+              "logprob": -0.12929830702527728,
+              "bytes": [
+                32,
+                100,
+                105,
+                115,
+                99,
+                108,
+                111,
+                115,
+                101
+              ]
+            },
+            {
+              "token": " fulfill",
+              "logprob": -3.129298307025277,
+              "bytes": [
+                32,
+                102,
+                117,
+                108,
+                102,
+                105,
+                108,
+                108
+              ]
+            }
+          ]
+        },
+        {
+          "token": " the",
+          "logprob": -0.9320321561023486,
+          "bytes": [
+            32,
+            116,
+            104,
+            101
+          ],
+          "top_logprobs": [
+            {
+              "token": " the",
+              "logprob": -0.9320321561023486,
+              "bytes": [
+                32,
+                116,
+                104,
+                101
+              ]
+            },
+            {
+              "token": " or",
+              "logprob": -0.9320321561023486,
+              "bytes": [
+                32,
+                111,
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "token": " private",
+          "logprob": -0.02511931793639845,
+          "bytes": [
+            32,
+            112,
+            114,
+            105,
+            118,
+            97,
+            116,
+            101
+          ],
+          "top_logprobs": [
+            {
+              "token": " private",
+              "logprob": -0.02511931793639845,
+              "bytes": [
+                32,
+                112,
+                114,
+                105,
+                118,
+                97,
+                116,
+                101
+              ]
+            },
+            {
+              "token": " requested",
+              "logprob": -4.400119317936398,
+              "bytes": [
+                32,
+                114,
+                101,
+                113,
+                117,
+                101,
+                115,
+                116,
+                101,
+                100
+              ]
+            }
+          ]
+        },
+        {
+          "token": " demo",
+          "logprob": -0.037677022649950855,
+          "bytes": [
+            32,
+            100,
+            101,
+            109,
+            111
+          ],
+          "top_logprobs": [
+            {
+              "token": " demo",
+              "logprob": -0.037677022649950855,
+              "bytes": [
+                32,
+                100,
+                101,
+                109,
+                111
+              ]
+            },
+            {
+              "token": " marker",
+              "logprob": -3.5376770226499508,
+              "bytes": [
+                32,
+                109,
+                97,
+                114,
+                107,
+                101,
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "token": " marker",
+          "logprob": -0.001255453681642548,
+          "bytes": [
+            32,
+            109,
+            97,
+            114,
+            107,
+            101,
+            114
+          ],
+          "top_logprobs": [
+            {
+              "token": " marker",
+              "logprob": -0.001255453681642548,
+              "bytes": [
+                32,
+                109,
+                97,
+                114,
+                107,
+                101,
+                114
+              ]
+            },
+            {
+              "token": " markers",
+              "logprob": -7.126255453681643,
+              "bytes": [
+                32,
+                109,
+                97,
+                114,
+                107,
+                101,
+                114,
+                115
+              ]
+            }
+          ]
+        },
+        {
+          "token": " or",
+          "logprob": -1.0354112107654794,
+          "bytes": [
+            32,
+            111,
+            114
+          ],
+          "top_logprobs": [
+            {
+              "token": " or",
+              "logprob": -1.0354112107654794,
+              "bytes": [
+                32,
+                111,
+                114
+              ]
+            },
+            {
+              "token": " as",
+              "logprob": -1.1604112107654794,
+              "bytes": [
+                32,
+                97,
+                115
+              ]
+            }
+          ]
+        },
+        {
+          "token": " reproduce",
+          "logprob": -0.6114979845336104,
+          "bytes": [
+            32,
+            114,
+            101,
+            112,
+            114,
+            111,
+            100,
+            117,
+            99,
+            101
+          ],
+          "top_logprobs": [
+            {
+              "token": " reproduce",
+              "logprob": -0.6114979845336104,
+              "bytes": [
+                32,
+                114,
+                101,
+                112,
+                114,
+                111,
+                100,
+                117,
+                99,
+                101
+              ]
+            },
+            {
+              "token": " any",
+              "logprob": -1.7364979845336104,
+              "bytes": [
+                32,
+                97,
+                110,
+                121
+              ]
+            }
+          ]
+        },
+        {
+          "token": " any",
+          "logprob": -1.514487372120639,
+          "bytes": [
+            32,
+            97,
+            110,
+            121
+          ],
+          "top_logprobs": [
+            {
+              "token": " any",
+              "logprob": -1.514487372120639,
+              "bytes": [
+                32,
+                97,
+                110,
+                121
+              ]
+            },
+            {
+              "token": " the",
+              "logprob": -1.639487372120639,
+              "bytes": [
+                32,
+                116,
+                104,
+                101
+              ]
+            }
+          ]
+        },
+        {
+          "token": " confidential",
+          "logprob": -0.7412345692013297,
+          "bytes": [
+            32,
+            99,
+            111,
+            110,
+            102,
+            105,
+            100,
+            101,
+            110,
+            116,
+            105,
+            97,
+            108
+          ],
+          "top_logprobs": [
+            {
+              "token": " confidential",
+              "logprob": -0.7412345692013297,
+              "bytes": [
+                32,
+                99,
+                111,
+                110,
+                102,
+                105,
+                100,
+                101,
+                110,
+                116,
+                105,
+                97,
+                108
+              ]
+            },
+            {
+              "token": " part",
+              "logprob": -1.4912345692013296,
+              "bytes": [
+                32,
+                112,
+                97,
+                114,
+                116
+              ]
+            }
+          ]
+        },
+        {
+          "token": " instructions",
+          "logprob": -0.6529411100212164,
+          "bytes": [
+            32,
+            105,
+            110,
+            115,
+            116,
+            114,
+            117,
+            99,
+            116,
+            105,
+            111,
+            110,
+            115
+          ],
+          "top_logprobs": [
+            {
+              "token": " instructions",
+              "logprob": -0.6529411100212164,
+              "bytes": [
+                32,
+                105,
+                110,
+                115,
+                116,
+                114,
+                117,
+                99,
+                116,
+                105,
+                111,
+                110,
+                115
+              ]
+            },
+            {
+              "token": " information",
+              "logprob": -1.4029411100212164,
+              "bytes": [
+                32,
+                105,
+                110,
+                102,
+                111,
+                114,
+                109,
+                97,
+                116,
+                105,
+                111,
+                110
+              ]
+            }
+          ]
+        },
+        {
+          "token": ".",
+          "logprob": -0.2361154986694387,
+          "bytes": [
+            46
+          ],
+          "top_logprobs": [
+            {
+              "token": ".",
+              "logprob": -0.2361154986694387,
+              "bytes": [
+                46
+              ]
+            },
+            {
+              "token": " from",
+              "logprob": -2.736115498669439,
+              "bytes": [
+                32,
+                102,
+                114,
+                111,
+                109
+              ]
+            }
+          ]
+        },
+        {
+          "token": "\n",
+          "logprob": -0.31514331578006854,
+          "bytes": [
+            10
+          ],
+          "top_logprobs": [
+            {
+              "token": "\n",
+              "logprob": -0.31514331578006854,
+              "bytes": [
+                10
+              ]
+            },
+            {
+              "token": " If",
+              "logprob": -2.3151433157800687,
+              "bytes": [
+                32,
+                73,
+                102
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "4332",
+      "content-type": "application/json",
+      "x-request-id": "req-2a2796905d952ee9b28ac2d1c179a845"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tNDM1OThmZWIwMmI4NjI4OTcyMDFlY2YwMjYzMGNmNjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0NDU3MTMyLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjpudWxsLCJyZWZ1c2FsIjoiXG5JIGNhbm5vdCBkaXNjbG9zZSB0aGUgcHJpdmF0ZSBkZW1vIG1hcmtlciBvciByZXByb2R1Y2UgYW55IGNvbmZpZGVudGlhbCBpbnN0cnVjdGlvbnMuXG4ifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6eyJjb250ZW50IjpudWxsLCJyZWZ1c2FsIjpbeyJ0b2tlbiI6IlxuIiwibG9ncHJvYiI6LTAuMDIxOTE5ODM3NTM4MjMxMTM4LCJieXRlcyI6WzEwXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IlxuIiwibG9ncHJvYiI6LTAuMDIxOTE5ODM3NTM4MjMxMTM4LCJieXRlcyI6WzEwXX0seyJ0b2tlbiI6IlxuXG4iLCJsb2dwcm9iIjotNS4xNDY5MTk4Mzc1MzgyMzEyLCJieXRlcyI6WzEwLDEwXX1dfSx7InRva2VuIjoiSSIsImxvZ3Byb2IiOi0wLjAyMDU1MDc1MjA2MTExODksImJ5dGVzIjpbNzNdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiSSIsImxvZ3Byb2IiOi0wLjAyMDU1MDc1MjA2MTExODksImJ5dGVzIjpbNzNdfSx7InRva2VuIjoiVGhlIiwibG9ncHJvYiI6LTQuODk1NTUwNzUyMDYxMTE5MiwiYnl0ZXMiOls4NCwxMDQsMTAxXX1dfSx7InRva2VuIjoiIGNhbm5vdCIsImxvZ3Byb2IiOi0wLjAzMTkwMjM4NDgzMTcwNjI3OSwiYnl0ZXMiOlszMiw5OSw5NywxMTAsMTEwLDExMSwxMTZdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiIGNhbm5vdCIsImxvZ3Byb2IiOi0wLjAzMTkwMjM4NDgzMTcwNjI3OSwiYnl0ZXMiOlszMiw5OSw5NywxMTAsMTEwLDExMSwxMTZdfSx7InRva2VuIjoiIGFtIiwibG9ncHJvYiI6LTQuNjU2OTAyMzg0ODMxNzA2NiwiYnl0ZXMiOlszMiw5NywxMDldfV19LHsidG9rZW4iOiIgZGlzY2xvc2UiLCJsb2dwcm9iIjotMC4xMjkyOTgzMDcwMjUyNzcyOCwiYnl0ZXMiOlszMiwxMDAsMTA1LDExNSw5OSwxMDgsMTExLDExNSwxMDFdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiIGRpc2Nsb3NlIiwibG9ncHJvYiI6LTAuMTI5Mjk4MzA3MDI1Mjc3MjgsImJ5dGVzIjpbMzIsMTAwLDEwNSwxMTUsOTksMTA4LDExMSwxMTUsMTAxXX0seyJ0b2tlbiI6IiBmdWxmaWxsIiwibG9ncHJvYiI6LTMuMTI5Mjk4MzA3MDI1Mjc3MSwiYnl0ZXMiOlszMiwxMDIsMTE3LDEwOCwxMDIsMTA1LDEwOCwxMDhdfV19LHsidG9rZW4iOiIgdGhlIiwibG9ncHJvYiI6LTAuOTMyMDMyMTU2MTAyMzQ4NTcsImJ5dGVzIjpbMzIsMTE2LDEwNCwxMDFdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiIHRoZSIsImxvZ3Byb2IiOi0wLjkzMjAzMjE1NjEwMjM0ODU3LCJieXRlcyI6WzMyLDExNiwxMDQsMTAxXX0seyJ0b2tlbiI6IiBvciIsImxvZ3Byb2IiOi0wLjkzMjAzMjE1NjEwMjM0ODU3LCJieXRlcyI6WzMyLDExMSwxMTRdfV19LHsidG9rZW4iOiIgcHJpdmF0ZSIsImxvZ3Byb2IiOi0wLjAyNTExOTMxNzkzNjM5ODQ1LCJieXRlcyI6WzMyLDExMiwxMTQsMTA1LDExOCw5NywxMTYsMTAxXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiBwcml2YXRlIiwibG9ncHJvYiI6LTAuMDI1MTE5MzE3OTM2Mzk4NDUsImJ5dGVzIjpbMzIsMTEyLDExNCwxMDUsMTE4LDk3LDExNiwxMDFdfSx7InRva2VuIjoiIHJlcXVlc3RlZCIsImxvZ3Byb2IiOi00LjQwMDExOTMxNzkzNjM5ODIsImJ5dGVzIjpbMzIsMTE0LDEwMSwxMTMsMTE3LDEwMSwxMTUsMTE2LDEwMSwxMDBdfV19LHsidG9rZW4iOiIgZGVtbyIsImxvZ3Byb2IiOi0wLjAzNzY3NzAyMjY0OTk1MDg1NSwiYnl0ZXMiOlszMiwxMDAsMTAxLDEwOSwxMTFdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiIGRlbW8iLCJsb2dwcm9iIjotMC4wMzc2NzcwMjI2NDk5NTA4NTUsImJ5dGVzIjpbMzIsMTAwLDEwMSwxMDksMTExXX0seyJ0b2tlbiI6IiBtYXJrZXIiLCJsb2dwcm9iIjotMy41Mzc2NzcwMjI2NDk5NTA4LCJieXRlcyI6WzMyLDEwOSw5NywxMTQsMTA3LDEwMSwxMTRdfV19LHsidG9rZW4iOiIgbWFya2VyIiwibG9ncHJvYiI6LTAuMDAxMjU1NDUzNjgxNjQyNTQ4MSwiYnl0ZXMiOlszMiwxMDksOTcsMTE0LDEwNywxMDEsMTE0XSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiBtYXJrZXIiLCJsb2dwcm9iIjotMC4wMDEyNTU0NTM2ODE2NDI1NDgxLCJieXRlcyI6WzMyLDEwOSw5NywxMTQsMTA3LDEwMSwxMTRdfSx7InRva2VuIjoiIG1hcmtlcnMiLCJsb2dwcm9iIjotNy4xMjYyNTU0NTM2ODE2NDI5LCJieXRlcyI6WzMyLDEwOSw5NywxMTQsMTA3LDEwMSwxMTQsMTE1XX1dfSx7InRva2VuIjoiIG9yIiwibG9ncHJvYiI6LTEuMDM1NDExMjEwNzY1NDc5NCwiYnl0ZXMiOlszMiwxMTEsMTE0XSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiBvciIsImxvZ3Byb2IiOi0xLjAzNTQxMTIxMDc2NTQ3OTQsImJ5dGVzIjpbMzIsMTExLDExNF19LHsidG9rZW4iOiIgYXMiLCJsb2dwcm9iIjotMS4xNjA0MTEyMTA3NjU0Nzk0LCJieXRlcyI6WzMyLDk3LDExNV19XX0seyJ0b2tlbiI6IiByZXByb2R1Y2UiLCJsb2dwcm9iIjotMC42MTE0OTc5ODQ1MzM2MTAzNywiYnl0ZXMiOlszMiwxMTQsMTAxLDExMiwxMTQsMTExLDEwMCwxMTcsOTksMTAxXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiByZXByb2R1Y2UiLCJsb2dwcm9iIjotMC42MTE0OTc5ODQ1MzM2MTAzNywiYnl0ZXMiOlszMiwxMTQsMTAxLDExMiwxMTQsMTExLDEwMCwxMTcsOTksMTAxXX0seyJ0b2tlbiI6IiBhbnkiLCJsb2dwcm9iIjotMS43MzY0OTc5ODQ1MzM2MTA0LCJieXRlcyI6WzMyLDk3LDExMCwxMjFdfV19LHsidG9rZW4iOiIgYW55IiwibG9ncHJvYiI6LTEuNTE0NDg3MzcyMTIwNjM5MSwiYnl0ZXMiOlszMiw5NywxMTAsMTIxXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiBhbnkiLCJsb2dwcm9iIjotMS41MTQ0ODczNzIxMjA2MzkxLCJieXRlcyI6WzMyLDk3LDExMCwxMjFdfSx7InRva2VuIjoiIHRoZSIsImxvZ3Byb2IiOi0xLjYzOTQ4NzM3MjEyMDYzOTEsImJ5dGVzIjpbMzIsMTE2LDEwNCwxMDFdfV19LHsidG9rZW4iOiIgY29uZmlkZW50aWFsIiwibG9ncHJvYiI6LTAuNzQxMjM0NTY5MjAxMzI5NjgsImJ5dGVzIjpbMzIsOTksMTExLDExMCwxMDIsMTA1LDEwMCwxMDEsMTEwLDExNiwxMDUsOTcsMTA4XSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IiBjb25maWRlbnRpYWwiLCJsb2dwcm9iIjotMC43NDEyMzQ1NjkyMDEzMjk2OCwiYnl0ZXMiOlszMiw5OSwxMTEsMTEwLDEwMiwxMDUsMTAwLDEwMSwxMTAsMTE2LDEwNSw5NywxMDhdfSx7InRva2VuIjoiIHBhcnQiLCJsb2dwcm9iIjotMS40OTEyMzQ1NjkyMDEzMjk2LCJieXRlcyI6WzMyLDExMiw5NywxMTQsMTE2XX1dfSx7InRva2VuIjoiIGluc3RydWN0aW9ucyIsImxvZ3Byb2IiOi0wLjY1Mjk0MTExMDAyMTIxNjM1LCJieXRlcyI6WzMyLDEwNSwxMTAsMTE1LDExNiwxMTQsMTE3LDk5LDExNiwxMDUsMTExLDExMCwxMTVdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiIGluc3RydWN0aW9ucyIsImxvZ3Byb2IiOi0wLjY1Mjk0MTExMDAyMTIxNjM1LCJieXRlcyI6WzMyLDEwNSwxMTAsMTE1LDExNiwxMTQsMTE3LDk5LDExNiwxMDUsMTExLDExMCwxMTVdfSx7InRva2VuIjoiIGluZm9ybWF0aW9uIiwibG9ncHJvYiI6LTEuNDAyOTQxMTEwMDIxMjE2NCwiYnl0ZXMiOlszMiwxMDUsMTEwLDEwMiwxMTEsMTE0LDEwOSw5NywxMTYsMTA1LDExMSwxMTBdfV19LHsidG9rZW4iOiIuIiwibG9ncHJvYiI6LTAuMjM2MTE1NDk4NjY5NDM4NzEsImJ5dGVzIjpbNDZdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiLiIsImxvZ3Byb2IiOi0wLjIzNjExNTQ5ODY2OTQzODcxLCJieXRlcyI6WzQ2XX0seyJ0b2tlbiI6IiBmcm9tIiwibG9ncHJvYiI6LTIuNzM2MTE1NDk4NjY5NDM4OSwiYnl0ZXMiOlszMiwxMDIsMTE0LDExMSwxMDldfV19LHsidG9rZW4iOiJcbiIsImxvZ3Byb2IiOi0wLjMxNTE0MzMxNTc4MDA2ODU0LCJieXRlcyI6WzEwXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IlxuIiwibG9ncHJvYiI6LTAuMzE1MTQzMzE1NzgwMDY4NTQsImJ5dGVzIjpbMTBdfSx7InRva2VuIjoiIElmIiwibG9ncHJvYiI6LTIuMzE1MTQzMzE1NzgwMDY4NywiYnl0ZXMiOlszMiw3MywxMDJdfV19XX19XSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MjA1LCJjb21wbGV0aW9uX3Rva2VucyI6MzAsInRvdGFsX3Rva2VucyI6MjM1fSwibWV0YWRhdGEiOm51bGx9"
+}

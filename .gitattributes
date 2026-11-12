@@ -93,3 +93,9 @@ docs/evidence/serve-files-core-cpu-20261110/** -text
 # Captured outer-recovery evidence is immutable, including CRLF SSE and stderr.
 docs/evidence/serve-outer-resource-business-20261112/*.wire binary
 docs/evidence/serve-outer-instance-cpu-20261112/*.stderr -text -whitespace
+
+# Preserve original refusal SSE and failed build receipts byte for byte.
+docs/evidence/serve-refusal-cpu-20261112/** -text -whitespace
+docs/evidence/serve-refusal-cpu-20261112/**/*.wire binary
+docs/evidence/serve-refusal-business-20261112/** -text -whitespace
+docs/evidence/serve-refusal-business-20261112/**/*.wire binary

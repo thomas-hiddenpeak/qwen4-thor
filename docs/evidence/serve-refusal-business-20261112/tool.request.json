@@ -1,0 +1,52 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "enable_thinking": false,
+  "max_completion_tokens": 192,
+  "store": true,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read bounded real project document lines and citation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/MODEL.md"
+            },
+            "start_line": {
+              "type": "integer",
+              "const": 1
+            },
+            "line_count": {
+              "type": "integer",
+              "const": 3
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    }
+  ],
+  "tool_choice": "required",
+  "parallel_tool_calls": false
+}

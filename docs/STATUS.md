@@ -37,7 +37,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 - A07拒绝输出已接通模型帧、约束分支及独立receipt、Chat/Responses
   JSON/SSE、真实logprobs和状态回填。80项原生及19项协议/SDK/客户端
   针对性检查通过，[CPU证据](evidence/serve-refusal-cpu-20261112/README.md)
-  保留原失败与修复。真实业务待验，尚未发行；实际默认仍为上表rev72。
+  保留原失败与修复。[真实业务](evidence/serve-refusal-business-20261112/README.md)
+  1启动/6生成/60.217秒通过，含模型拒绝与实际工具闭环；可回退发行
+  待完成，实际默认仍为上表rev72。
 - 已发布资源域约束覆盖内核memcg计量及独立物理可用内存观察，
   **没有声称实现统一DRAM/GPU物理硬上限**；R08仍须解决剩余边界。
 
