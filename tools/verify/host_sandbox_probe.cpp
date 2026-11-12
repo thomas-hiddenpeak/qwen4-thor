@@ -89,6 +89,12 @@ int main(int argc, char** argv) {
   for (const char* path : {"/usr/lib", "/lib", "/etc/ld.so.cache", "/etc/fonts",
                            "/usr/share/fonts", "/var/cache/fontconfig",
                            "/usr/share/fontconfig", "/usr/share/poppler",
+                           "/usr/share/libreoffice", "/etc/libreoffice",
+                           "/usr/share/locale", "/usr/share/mime",
+                           "/usr/share/zoneinfo", "/etc/localtime",
+                           "/etc/passwd", "/etc/group", "/etc/nsswitch.conf",
+                           "/proc/meminfo", "/sys/devices/system/cpu",
+                           "/dev/null",
                            "/lib64/ld-linux-x86-64.so.2",
                            "/lib/ld-linux-aarch64.so.1"}) {
     struct stat info {};

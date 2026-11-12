@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23剩余Batch夹具已[9项针对性CPU通过](evidence/serve-host-prerequisites-batch-20261112/README.md)，
+  包含完整50000行/391轮/792对象；故障注入短超时不变，容量用例单独
+  使用存储预算。CI的legacy资源诊断与信任权限修复已准备，等待真实
+  远端结果；默认rev94保持，不宣称已合主线，继续全部master。
+
 - R01取消清理、N05可选路由和配置schema已[可回退发行rev94](evidence/serve-cache-route-delivery-20261112/README.md)。
   缓存7请求同PID成功并恢复目标/MTP布局，含失败累计4启动15请求。
   11项STOPPED交付保持恢复预算。PR23仍修实际CI的Batch/legacy沙箱，

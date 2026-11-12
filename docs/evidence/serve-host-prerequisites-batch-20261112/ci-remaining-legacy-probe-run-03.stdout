@@ -1,0 +1,26 @@
+kernel=6.8.12-1021-tegra arch=aarch64 landlock_abi=4 errno=0
+path=/usr/lib uid=0 mode=40755 errno=0
+path=/lib uid=0 mode=40755 errno=0
+path=/etc/ld.so.cache uid=0 mode=100644 errno=0
+path=/etc/fonts uid=0 mode=40755 errno=0
+path=/usr/share/fonts uid=0 mode=40755 errno=0
+path=/var/cache/fontconfig uid=0 mode=40755 errno=0
+path=/usr/share/fontconfig uid=0 mode=40755 errno=0
+path=/usr/share/poppler uid=0 mode=40755 errno=0
+path=/usr/share/libreoffice uid=0 mode=40755 errno=0
+path=/etc/libreoffice uid=0 mode=40755 errno=0
+path=/usr/share/locale uid=0 mode=40755 errno=0
+path=/usr/share/mime uid=0 mode=40755 errno=0
+path=/usr/share/zoneinfo uid=0 mode=40755 errno=0
+path=/etc/localtime uid=0 mode=100644 errno=0
+path=/etc/passwd uid=0 mode=100644 errno=0
+path=/etc/group uid=0 mode=100644 errno=0
+path=/etc/nsswitch.conf uid=0 mode=100644 errno=0
+path=/proc/meminfo uid=0 mode=100444 errno=0
+path=/sys/devices/system/cpu uid=0 mode=40755 errno=0
+path=/dev/null uid=0 mode=20666 errno=0
+path=/lib64/ld-linux-x86-64.so.2 uid=0 mode=0 errno=2
+path=/lib/ld-linux-aarch64.so.1 uid=0 mode=100755 errno=0
+sandbox=native reported=1 ready=1 errno=0 status=0
+sandbox=pdf reported=1 ready=1 errno=0 status=0
+sandbox=legacy reported=1 ready=1 errno=0 status=0

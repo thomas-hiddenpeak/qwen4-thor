@@ -2384,7 +2384,8 @@
         "remaining_failures": [
           "Legacy document sandbox prerequisites on hosted runner",
           "Batch fault-injection fixture short I/O timeout also applied to unrelated setup/verification"
-        ]
+        ],
+        "host_prerequisites_batch_evidence": "evidence/serve-host-prerequisites-batch-20261112/README.md"
       }
     },
     {

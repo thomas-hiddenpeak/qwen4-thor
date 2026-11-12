@@ -39,9 +39,16 @@ struct Fixture {
       throw std::runtime_error("fixture directory");
     options.directory = directory + "/objects";
     options.restart_backoff_ms = 0;
-    options.io_timeout_ms = 500;
+    // Ordinary setup/readback uses the production 2s I/O contract. Only the
+    // lost-ack phase needs a short timeout; file size and disk speed are not
+    // the behavior these state-machine tests qualify.
   }
 };
+ObjectStoreOptions LostAckOptions(const Fixture& fixture, int timeout_ms = 250) {
+  auto options = fixture.options;
+  options.io_timeout_ms = timeout_ms;
+  return options;
+}
 struct Injection {
   explicit Injection(std::string value) { ObjectWorkerEntryForTesting(value); }
   ~Injection() { ObjectWorkerEntryForTesting({}); }
@@ -424,7 +431,7 @@ Q4T_TEST(batch_usage_actual_lost_recount_receipt_never_doubles_prefix) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(fixture.options);
+    ObjectStore objects(LostAckOptions(fixture, 500));
     BatchState batches(objects);
     const auto missing = batches.RecountUsage(Access(), ready.id);
     Q4T_CHECK(!missing.ok() && missing.commit_unknown);
@@ -737,14 +744,13 @@ Q4T_TEST(
 
 Q4T_TEST(batch_results_actual_unknown_start_never_grants_duplicate_execution) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
   ReadyBatch ready;
   {
     ObjectStore objects(fixture.options);
     ready = Ready(objects, 1);
   }
   Injection injection("--q4t-object-worker-application-lost-ack");
-  ObjectStore objects(fixture.options);
+  ObjectStore objects(LostAckOptions(fixture));
   BatchState batches(objects);
   auto started = batches.StartRow(Access(), ready.id, 0);
   Q4T_CHECK(!started.ok() && started.commit_unknown &&
@@ -760,7 +766,6 @@ Q4T_TEST(batch_results_actual_unknown_start_never_grants_duplicate_execution) {
 
 Q4T_TEST(batch_results_actual_unknown_finish_commits_result_and_counts_once) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
   ReadyBatch ready;
   BatchRowResult result;
   {
@@ -771,7 +776,7 @@ Q4T_TEST(batch_results_actual_unknown_finish_commits_result_and_counts_once) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(fixture.options);
+    ObjectStore objects(LostAckOptions(fixture));
     BatchState batches(objects);
     auto finished = batches.FinishRow(Access(), ready.id, 0,
                                       ready.rows[0].custom_id, result);
@@ -810,7 +815,6 @@ Q4T_TEST(batch_results_actual_unknown_finish_commits_result_and_counts_once) {
 Q4T_TEST(
     batch_results_actual_unknown_finalization_publishes_both_files_and_terminal_atomically) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
   ReadyBatch ready;
   {
     ObjectStore objects(fixture.options);
@@ -824,7 +828,7 @@ Q4T_TEST(
     Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
   }
   Injection injection("--q4t-object-worker-application-lost-ack");
-  ObjectStore objects(fixture.options);
+  ObjectStore objects(LostAckOptions(fixture));
   BatchState batches(objects);
   auto final = batches.Finalize(Access(), ready.id);
   Q4T_CHECK(!final.ok() && final.commit_unknown &&
@@ -1202,7 +1206,6 @@ Q4T_TEST(batch_finalization_row_budget_and_checkpoint_restart) {
 
 Q4T_TEST(batch_finalization_large_row_lost_checkpoint_resumes_original_bytes) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
   fixture.options.max_client_bytes = 256ULL << 20;
   fixture.options.max_total_bytes = 512ULL << 20;
   ReadyBatch ready;
@@ -1220,7 +1223,7 @@ Q4T_TEST(batch_finalization_large_row_lost_checkpoint_resumes_original_bytes) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(fixture.options);
+    ObjectStore objects(LostAckOptions(fixture));
     auto step = BatchState(objects).Finalize(Access(), ready.id);
     Q4T_CHECK(!step.ok() && step.commit_unknown &&
               step.value.Find("output_file_id")->IsNull());
@@ -1352,7 +1355,10 @@ Q4T_TEST(batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs) {
   fixture.options.max_total_bytes = 1ULL << 30;
   fixture.options.max_client_objects = 1500;
   fixture.options.max_total_objects = 1500;
-  fixture.options.io_timeout_ms = 2000;
+  // This is the full storage-capacity contract, not a disk-latency test.
+  // Keep all 50K rows/391 turns on shared CI disks; lost-ack timeout and
+  // reconciliation are verified separately above at their original bounds.
+  fixture.options.io_timeout_ms = 10000;
   auto objects = std::make_unique<ObjectStore>(fixture.options);
   auto ready = Ready(*objects, kBatchRequests, 0, true);
   auto loaded = BatchState(*objects).Load(Access(), ready.id);
@@ -1569,7 +1575,6 @@ Q4T_TEST(batch_captured_usage_does_not_override_reported_or_invalid_usage) {
 
 Q4T_TEST(batch_captured_usage_actual_lost_finish_ack_never_recharges) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
   ReadyBatch ready;
   BatchRowResult result;
   {
@@ -1581,7 +1586,7 @@ Q4T_TEST(batch_captured_usage_actual_lost_finish_ack_never_recharges) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(fixture.options);
+    ObjectStore objects(LostAckOptions(fixture));
     BatchState batches(objects);
     const auto missing = batches.FinishRow(Access(), ready.id, 0,
                                            ready.rows[0].custom_id, result);
@@ -1739,7 +1744,6 @@ Q4T_TEST(
 Q4T_TEST(batch_output_failure_lost_checkpoint_and_terminal_receipts_reconcile) {
   for (const bool terminal : {false, true}) {
     Fixture fixture;
-    fixture.options.io_timeout_ms = 250;
     ReadyBatch ready;
     {
       ObjectStore objects(fixture.options);
@@ -1756,7 +1760,7 @@ Q4T_TEST(batch_output_failure_lost_checkpoint_and_terminal_receipts_reconcile) {
     }
     {
       Injection injection("--q4t-object-worker-application-lost-ack");
-      ObjectStore objects(fixture.options);
+      ObjectStore objects(LostAckOptions(fixture));
       BatchState batches(objects, {2048, kBinaryMaxChunks});
       const auto missing = batches.Finalize(Access(), ready.id);
       Q4T_CHECK(!missing.ok() && missing.commit_unknown);
