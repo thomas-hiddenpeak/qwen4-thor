@@ -39,6 +39,7 @@ jobs:
           dpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \
             grep -q 'install ok installed' || packages+=(libidn2-0)
           command -v openssl >/dev/null || packages+=(openssl)
+          command -v strace >/dev/null || packages+=(strace)
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           if ((${#packages[@]})); then
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update
@@ -88,6 +89,30 @@ jobs:
         run: >-
           ctest --test-dir build/public-host --no-tests=error
           --output-on-failure --verbose
+      - name: Diagnose document worker failure
+        if: failure()
+        timeout-minutes: 1
+        run: |
+          test -x build/public-host/q4t_host_tests || exit 0
+          mkdir -p build/public-host/codec-diagnostic
+          export Q4T_TEST_OUTPUT_DIR="$PWD/build/public-host/codec-diagnostic"
+          export TMPDIR="$Q4T_TEST_OUTPUT_DIR"
+          printf '%s\n' file_legacy_actual_doc_unicode_and_confirmed_cleanup \
+            > build/public-host/codec-diagnostic/required.txt
+          # Diagnostic only: the failed contract above remains failed. Trace
+          # system calls, never document contents or credentials.
+          set +e
+          timeout 30s strace -ff -s 128 -e trace=%file,%process,%signal,%memory \
+            -o build/public-host/codec-diagnostic/trace \
+            build/public-host/q4t_host_tests --required-list \
+            build/public-host/codec-diagnostic/required.txt
+          result=$?
+          echo "diagnostic_exit=$result"
+          for trace in build/public-host/codec-diagnostic/trace.*; do
+            test -f "$trace" || continue
+            echo "trace_file=$trace"
+            tail -50 "$trace"
+          done
       - name: Verify strict test-runner failures
         run: >-
           python3 tools/verify/test_gate/run.py --cxx g++-14

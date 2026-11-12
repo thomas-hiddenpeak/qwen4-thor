@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23实际沙箱ready后仍有编解码退出，另三项存储/过期夹具
+  [针对性CPU通过](evidence/serve-host-storage-codec-20261112/README.md)。
+  原失败完整保留，远端增加有界系统调用诊断；尚未合并，rev94保持，
+  继续全部master。
+
 - PR23第二轮定位到CI的`/etc/localtime`实际mode0777及exec前父死亡
   夹具竞态；[18项Guardian针对性CPU通过](evidence/serve-host-localtime-exec-20261112/README.md)。
   临时CI路径权限与exec握手已修，生产沙箱/默认rev94保持，原两轮

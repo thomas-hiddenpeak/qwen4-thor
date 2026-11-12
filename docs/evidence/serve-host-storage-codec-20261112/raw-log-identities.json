@@ -1,0 +1,10 @@
+{
+  "ci-b2009-pr-full.log": {
+    "sha256": "24e317ec87785e4f06c2b8bff8c44e5f0f3764b2ecf7dc987ae649db1490adc9",
+    "bytes": 945625
+  },
+  "ci-b2009-push-full.log": {
+    "sha256": "508c99b0be23b1edcb44756212b32fe450ae1d2c192c02dfaac7c45ecbc3c666",
+    "bytes": 538514
+  }
+}

@@ -1080,11 +1080,13 @@ Q4T_TEST(batch_results_historical_receipt_does_not_pin_expired_output_bytes) {
       Ok(Edit(objects, output, ObjectKind::kFile, [&](ObjectRequest& request) {
         // CPU clock fixture only: public output_expires_after still requires
         // >=1h.
-        request.expires_at = request.created_at + 1;
+        // Anchor the synthetic expiry at the mutation, not at creation: a
+        // wall-clock second may already have elapsed while finalizing.
+        request.expires_at = std::time(nullptr) + 2;
         expires = request.expires_at;
         Set(&Field(request.data, "file"), "expires_at", Number(expires));
       })));
-  const auto until = Clock::now() + 2s;
+  const auto until = Clock::now() + 4s;
   while (std::time(nullptr) < expires && Clock::now() < until)
     std::this_thread::sleep_for(2ms);
   Q4T_CHECK(std::time(nullptr) >= expires &&
@@ -1223,9 +1225,16 @@ Q4T_TEST(batch_finalization_large_row_lost_checkpoint_resumes_original_bytes) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(LostAckOptions(fixture));
+    // Four MiB of source/chunk I/O precedes the injected missing commit ACK.
+    // Use the ordinary storage budget here; small ACK-only cases stay 250ms.
+    ObjectStore objects(LostAckOptions(fixture, 2000));
     auto step = BatchState(objects).Finalize(Access(), ready.id);
+    if (step.ok() || !step.commit_unknown || !step.value.Has("output_file_id"))
+      std::fprintf(stderr, "large checkpoint: code=%s unknown=%d value=%s\n",
+                   step.code.c_str(), step.commit_unknown,
+                   OutputJson(step.value).c_str());
     Q4T_CHECK(!step.ok() && step.commit_unknown &&
+              step.value.Has("output_file_id") &&
               step.value.Find("output_file_id")->IsNull());
     Drain(objects);
     auto root = BatchState(objects).Load(Access(), ready.id);

@@ -442,6 +442,9 @@ Q4T_TEST(vector_jobs_detach_reattach_cannot_publish_original_execution) {
 Q4T_TEST(
     vector_jobs_partial_start_failure_drains_and_recovers_auxiliary_owner) {
   Fixture f;
+  // This case qualifies thread-owner recovery, not storage latency. A
+  // transient 100ms disk timeout must not replace the intended fault.
+  f.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(f.objects);
   std::atomic<int> calls{0};
   ApplicationOwner<VectorJobs> owner({5ms, 100ms});
