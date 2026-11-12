@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- A07命名空间/结果合同/标准custom语法的[真实业务已通过](evidence/serve-tool-identity-business-20261112/README.md)：
+  修后1启动6请求66.366秒，含失败累计3启动10请求159.271秒。64次
+  NVML全正常，模型/端口/锁已清理；继续主/轻资格与可回退发行，
+  默认rev94保持，剩余A07及全部master继续。
+
 - PR23的x86文档转换诊断已过；完整CI暴露64MiB上传容量夹具未检查
   错误回复的解引用。[补齐检查和容量IO预算后本机通过](evidence/serve-upload-capacity-fixture-20261112/README.md)。
   生产预算与故障用例未改，继续真实CI及合并，rev94保持。

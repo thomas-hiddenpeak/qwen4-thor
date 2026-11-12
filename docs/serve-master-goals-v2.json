@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Native model-produced refusal signal plus constraints, parser, Chat/Responses JSON/SSE, storage and SDK lifecycle; implementation must precede acceptance. Continue remaining items/tools/media and full master plan.",
+      "current_work": "Namespace, custom format/public projection and invocation-time output_schema passed targeted CPU/SDK and actual HTTP business; next primary/light qualification and reversible delivery. Async/caller/defer and dependent media/builtins remain required.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -884,7 +884,7 @@
         "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
       },
       "tool_identity_result_contract": {
-        "state": "cpu_validated_business_pending",
+        "state": "business_validated_delivery_pending",
         "source_plan": "docs/SERVE_TOOL_IDENTITY_2026-11-12.md",
         "evidence": "docs/evidence/serve-tool-identity-cpu-20261112",
         "distinct_cpp_tests": 37,
@@ -897,9 +897,21 @@
           "create_requests": 6,
           "seconds": 900
         },
-        "business_result": "pending",
-        "default": "rev94 unchanged",
-        "remaining": "async/caller/defer, complete schema dialect and media/builtin integration remain required"
+        "business_result": "docs/evidence/serve-tool-identity-business-20261112/acceptance.json",
+        "default": "rev94 unchanged; primary/light qualification and packaging pending",
+        "remaining": "async/caller/defer, complete schema dialect and media/builtin integration remain required",
+        "binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7",
+        "business_counts": {
+          "starts": 1,
+          "chats": 6,
+          "controls": 50
+        },
+        "aggregate": {
+          "starts": 3,
+          "create_requests": 10,
+          "seconds": 159.27142818830907
+        },
+        "new_cpu_custom_shape_tests": 2
       }
     },
     {
