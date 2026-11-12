@@ -209,7 +209,23 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       inspector.value.references_before = store->GetInt("expires_at");
       for (const auto& member : members->array)
         inspector.Reference(member.Find("id"));
+      if (const auto* batches = data.GetArray("batches")) {
+        if (batches->array.size() > 10000) inspector.value.uncertain = true;
+        else for (const auto& batch : batches->array) inspector.Reference(&batch);
+      } else if (data.Has("batches")) {
+        inspector.value.uncertain = true;
+      }
     }
+  } else if (kind == "vector_store_batch" &&
+             data.GetString("format") == "q4t.vector_store_batch.v1") {
+    // Historical counts and metadata must not pin detached files or indexes.
+    // The live parent retains this receipt; store expiration releases it.
+    inspector.value.collect_when_unreferenced = true;
+    inspector.value.uncertain = !data.GetArray("members") || !data.Find("batch");
+    if (const auto* members = data.GetArray("members"))
+      for (const auto& row : members->array)
+        if (row.GetBool("detached") && row.GetString("status") == "in_progress")
+          inspector.Reference(row.Find("id"));
   } else if (kind == "vector_store_file" &&
              data.GetString("format") == "q4t.vector_store_file.v1") {
     const auto* file = data.Find("file");

@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11文件入库批次的持久接口已成组编码，
+  [17项CPU首过](evidence/serve-vector-batches-cpu-20261112/README.md)：2000文件
+  合同、原子计数/取消及批次分页；删除中的旧执行保留至实际清理，
+  重挂载不能串用。继续公开HTTP/SDK/search/Responses接线。
+
 - A11持久入库调度与真实ChatServer模型回调已接线，
   [18 项 CPU 首过](evidence/serve-vector-jobs-cpu-20261112/README.md)，实际引擎零警告构建：
   有界公平队列、原进程确认退出才恢复、取消持久化及实际清理后闭合，

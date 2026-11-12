@@ -210,6 +210,19 @@ bool ValidateStore(const Json& record) {
         (edge.GetString("status") != "completed" &&
          edge.GetInt("usage_bytes") != 0))
       return false;
+  std::unordered_set<std::string> batches;
+  if (const auto* refs = data->GetArray("batches")) {
+    if (refs->array.size() > kVectorStoreFiles) return false;
+    for (const auto& ref : refs->array)
+      if (!ref.IsString() || !ValidId(ref.str) || !ref.str.starts_with("vsfb_") ||
+          !batches.insert(ref.str).second)
+        return false;
+  } else if (data->Has("batches")) return false;
+  for (const auto& edge : members->array)
+    if (edge.Has("batch_id") &&
+        (!edge.Find("batch_id")->IsString() ||
+         !batches.contains(edge.GetString("batch_id"))))
+      return false;
   auto expected = *data;
   Summarize(&expected);
   const auto* projection = expected.Find("vector_store");
@@ -236,6 +249,8 @@ bool ValidateMember(const Json& record, const Json& store) {
       record.GetInt("expires_at", -1) != 0 ||
       data->GetString("scope").empty() || !Text(*file->Find("id"), 200))
     return false;
+  if (data->GetString("batch_id") != edge->GetString("batch_id")) return false;
+  if (data->Has("detached") && !data->Find("detached")->IsBool()) return false;
   ChatPlanError error;
   VectorChunking chunking;
   if (!file->Find("attributes") ||

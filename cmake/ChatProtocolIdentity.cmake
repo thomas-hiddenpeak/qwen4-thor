@@ -54,6 +54,8 @@ set(protocol_inputs
   src/server/vector_stores_internal.cpp
   src/server/vector_stores.cpp
   src/server/vector_store_files.cpp
+  src/server/vector_file_page.cpp
+  src/server/vector_store_batches.cpp
   src/server/vector_ingestion_state.cpp
   src/server/vector_ingestion.cpp
   src/server/vector_embedding_execution.cpp

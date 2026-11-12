@@ -61,6 +61,9 @@ ObjectReply VectorStores::Publish(const BinaryAccess& access,
   requests.reserve(children.size() + 1);
   requests.push_back(std::move(root));
   requests.insert(requests.end(), children.begin(), children.end());
+  auto synced = SyncBatches(access, before, requests.front().data, children,
+                            &requests);
+  if (!synced.ok()) return synced;
   auto reply =
       objects_.ExecuteBatch(requests, access.deadline, access.cancelled);
   if (reply.commit_unknown) {

@@ -1,0 +1,19 @@
+/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp: In function ‘bool q4t::server::vector_store_detail::ValidateStore(const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp:213:8: error: ‘set’ is not a member of ‘std’
+  213 |   std::set<std::string> batches;
+      |        ^~~
+/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp:11:1: note: ‘std::set’ is defined in header ‘<set>’; this is probably fixable by adding ‘#include <set>’
+   10 | #include "q4t/server/input_contract.h"
+  +++ |+#include <set>
+   11 | 
+/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp:213:23: error: expected primary-expression before ‘>’ token
+  213 |   std::set<std::string> batches;
+      |                       ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp:213:25: error: ‘batches’ was not declared in this scope
+  213 |   std::set<std::string> batches;
+      |                         ^~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3677: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

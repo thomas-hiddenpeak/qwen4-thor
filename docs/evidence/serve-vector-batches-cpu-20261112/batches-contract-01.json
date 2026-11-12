@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-12",
+  "official_sources": [
+    "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create",
+    "https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/cancel",
+    "https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/content"
+  ],
+  "sdk": {
+    "python": "3.42.1",
+    "javascript": "7.47.0"
+  },
+  "sdk_sha256": {
+    ".q4t-work/serve-protocol-20261103/sdk/node_modules/openai/resources/vector-stores/file-batches.d.ts": "8cd03e3c7426cbbdd82a92c08cff49595aa2572c84fb15713b570264b5dc3151",
+    ".q4t-work/serve-protocol-20261103/sdk/node_modules/openai/resources/vector-stores/file-batches.mjs": "5de28b37cb7f79eb4c1fe6cdb465669306b52a55548e4ca2ce042b4469aa4b71",
+    ".q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/types/vector_stores/file_batch_create_params.py": "6b7d3c6791935c4b377c4ea6dfb9539856557082b7e194ef71e144d7abeeda32",
+    ".q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/types/vector_stores/vector_store_file_batch.py": "968c90481c34b5d764d06a7261238781efe32a0f3662408c8927bfed9e09a274"
+  },
+  "batch_limit": 2000,
+  "create_forms": [
+    "file_ids with shared attributes/chunking_strategy",
+    "files with per-file attributes/chunking_strategy; global values ignored"
+  ],
+  "forms_mutually_exclusive": true,
+  "response_object": "vector_store.files_batch",
+  "source_discrepancy": "Both installed official SDK types specify vector_store.files_batch; documentation prose/example uses vector_store.file_batch. SDK client contract chosen; not claiming all documentation variants identical.",
+  "route": "/v1/vector_stores/{vector_store_id}/file_batches",
+  "statuses": [
+    "in_progress",
+    "completed",
+    "failed",
+    "cancelled"
+  ],
+  "cancel_ack": "in_progress until work drains; prior completed results remain intact",
+  "file_content_object": "vector_store.file_content.page",
+  "files_delete_source": false
+}

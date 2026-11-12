@@ -12,6 +12,7 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/server/application_owner.h"
 #include "q4t/server/files.h"
+#include "q4t/server/object_retention.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
@@ -458,5 +459,327 @@ Q4T_TEST(
   Q4T_CHECK(
       q4t::io::ParseJson(VectorJobsHealthJson(owner->Health(), true), &health));
   Q4T_CHECK(!health.GetBool("readiness_dependency", true));
+  return true;
+}
+
+namespace {
+struct BatchSeed {
+  std::string store, id;
+  std::vector<std::string> files;
+  Json request;
+};
+BatchSeed BatchSources(ObjectStore& objects, size_t count = 2) {
+  BatchSeed seed;
+  auto ids = Array();
+  for (size_t i = 0; i < count; ++i) {
+    auto file = Seed(objects);
+    if (!Ok(VectorStores(objects).Detach(Access(), file.store, file.file)))
+      throw std::runtime_error("Detach seed source");
+    if (seed.store.empty()) seed.store = file.store;
+    seed.files.push_back(file.file);
+    ids.array.push_back(String(file.file));
+  }
+  seed.request = Object({{"file_ids", std::move(ids)}});
+  return seed;
+}
+void CreateBatch(ObjectStore& objects, BatchSeed* seed) {
+  auto result =
+      VectorStores(objects).CreateBatch(Access(), seed->store, seed->request);
+  if (!Ok(result)) throw std::runtime_error("Create batch fixture");
+  seed->id = result.value.GetString("id");
+}
+ObjectReply Batch(ObjectStore& objects, const BatchSeed& seed) {
+  return VectorStores(objects).RetrieveBatch(Access(), seed.store, seed.id);
+}
+bool Finished(ObjectStore& objects, const BatchSeed& seed, std::string state) {
+  return Wait(
+      [&] { return Batch(objects, seed).value.GetString("status") == state; });
+}
+ObjectReply Raw(ObjectStore& objects, ObjectKind kind, const std::string& id) {
+  ObjectRequest request;
+  request.scope = Access().scope;
+  request.kind = kind;
+  request.id = id;
+  return objects.Execute(request, Clock::now() + 5s);
+}
+}  // namespace
+
+Q4T_TEST(vector_batches_options_pagination_and_atomic_membership) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects);
+  Set(&seed.request, "attributes", Object({{"category", String("project")}}));
+  CreateBatch(objects, &seed);
+  auto created = Batch(objects, seed);
+  Q4T_CHECK(seed.id.starts_with("vsfb_") &&
+            created.value.GetString("object") == "vector_store.files_batch");
+  Q4T_CHECK(created.value.Find("file_counts")->GetInt("in_progress") == 2);
+  auto first = stores.ListBatchFiles(
+      Access(), seed.store, seed.id,
+      Object({{"limit", Number(1)}, {"order", String("asc")}}));
+  Q4T_CHECK(Ok(first) && first.value.GetBool("has_more"));
+  Q4T_CHECK(first.value.GetArray("data")
+                ->array.front()
+                .Find("attributes")
+                ->GetString("category") == "project");
+  auto second =
+      stores.ListBatchFiles(Access(), seed.store, seed.id,
+                            Object({{"after", *first.value.Find("last_id")},
+                                    {"order", String("asc")}}));
+  Q4T_CHECK(Ok(second) && !second.value.GetBool("has_more") &&
+            second.value.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(stores.Retrieve(Access(), seed.store)
+                .value.Find("file_counts")
+                ->GetInt("total") == 2);
+  auto individual = BatchSources(objects, 1);
+  individual.request =
+      Object({{"files",
+               Array({Object({{"file_id", String(individual.files[0])},
+                              {"attributes",
+                               Object({{"category", String("specific")}})}})})},
+              {"attributes", Object({{"category", String("ignored")}})}});
+  CreateBatch(objects, &individual);
+  Q4T_CHECK(stores.RetrieveFile(Access(), individual.store, individual.files[0])
+                .value.Find("attributes")
+                ->GetString("category") == "specific");
+  return true;
+}
+
+Q4T_TEST(
+    vector_batches_bad_forms_and_foreign_sources_publish_no_partial_files) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  const auto seed = BatchSources(objects);
+  auto duplicate = Object(
+      {{"file_ids", Array({String(seed.files[0]), String(seed.files[0])})}});
+  Q4T_CHECK(stores.CreateBatch(Access(), seed.store, duplicate).http_status ==
+            400);
+  auto both = seed.request;
+  Set(&both, "files", Array());
+  Q4T_CHECK(stores.CreateBatch(Access(), seed.store, both).http_status == 400);
+  Q4T_CHECK(
+      stores.CreateBatch(Access(), seed.store, Object({{"file_ids", Json()}}))
+          .http_status == 400);
+  auto ids = Array();
+  for (size_t i = 0; i < 2001; ++i) ids.array.push_back(String("file_missing"));
+  Q4T_CHECK(
+      stores.CreateBatch(Access(), seed.store, Object({{"file_ids", ids}}))
+          .http_status == 400);
+  ids.array.pop_back();
+  Q4T_CHECK(
+      stores.CreateBatch(Access(), seed.store, Object({{"file_ids", ids}}))
+          .http_status == 404);
+  const auto foreign = Seed(objects, Access("client:beta"));
+  Q4T_CHECK(
+      stores
+          .CreateBatch(Access(), seed.store,
+                       Object({{"file_ids", Array({String(seed.files[0]),
+                                                   String(foreign.file)})}}))
+          .http_status == 404);
+  Q4T_CHECK(stores.Retrieve(Access(), seed.store)
+                .value.Find("file_counts")
+                ->GetInt("total") == 0);
+  auto raw = Raw(objects, ObjectKind::kVectorStore, seed.store);
+  Q4T_CHECK(Ok(raw) && !raw.value.Find("data")->Has("batches"));
+  return true;
+}
+
+Q4T_TEST(vector_batches_execution_and_attribute_changes_update_receipt) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects);
+  CreateBatch(objects, &seed);
+  std::atomic<int> calls{0};
+  VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
+  Q4T_CHECK(Finished(objects, seed, "completed"));
+  Q4T_CHECK(
+      Batch(objects, seed).value.Find("file_counts")->GetInt("completed") == 2);
+  Q4T_CHECK(calls == 2);
+  Q4T_CHECK(Ok(stores.UpdateFile(
+      Access(), seed.store, seed.files[0],
+      Object({{"attributes", Object({{"owner", String("actual")}})}}))));
+  auto page = stores.ListBatchFiles(Access(), seed.store, seed.id, Object());
+  Q4T_CHECK(Ok(page));
+  bool changed = false;
+  for (const auto& file : page.value.GetArray("data")->array)
+    if (file.GetString("id") == seed.files[0])
+      changed = file.Find("attributes")->GetString("owner") == "actual";
+  Q4T_CHECK(changed);
+  Q4T_CHECK(stores.CancelBatch(Access(), seed.store, seed.id)
+                .value.GetString("status") == "completed");
+  Q4T_CHECK(stores.RetrieveBatch(Access("client:beta"), seed.store, seed.id)
+                .http_status == 404);
+  return true;
+}
+
+Q4T_TEST(vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects);
+  CreateBatch(objects, &seed);
+  std::atomic<bool> entered{false}, release{false};
+  std::atomic<int> calls{0};
+  VectorJobs jobs(objects, f.clients, f.jobs, Encode,
+                  [&](const auto& tokens, const auto&, auto&,
+                      const auto& control, auto* result) {
+                    ++calls;
+                    entered = true;
+                    Wait([&] { return control->Cancelled(); });
+                    Wait([&] { return release.load(); });
+                    result->committed_input = tokens.size();
+                    return Error(499, "cancelled",
+                                 "Explicit fixture cancellation");
+                  });
+  Q4T_CHECK(Wait([&] { return entered.load(); }));
+  const auto cancel = stores.CancelBatch(Access(), seed.store, seed.id);
+  Q4T_CHECK(Ok(cancel) && cancel.value.GetString("status") == "in_progress");
+  Q4T_CHECK(Batch(objects, seed).value.GetString("status") == "in_progress");
+  release = true;
+  Q4T_CHECK(Finished(objects, seed, "cancelled") && calls == 1);
+  for (const auto& file : seed.files)
+    Q4T_CHECK(Ok(Files(objects).Retrieve(Access(), file)));
+  Q4T_CHECK(
+      Batch(objects, seed).value.Find("file_counts")->GetInt("cancelled") == 2);
+  return true;
+}
+
+Q4T_TEST(vector_batches_detach_hides_content_and_retains_old_execution) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects, 1);
+  CreateBatch(objects, &seed);
+  const auto original = stores.LoadRecord(Access(), seed.store, seed.files[0]);
+  Q4T_CHECK(Ok(original));
+  const auto member_id = original.value.GetString("id");
+  std::atomic<bool> entered{false}, release{false};
+  std::atomic<int> calls{0};
+  VectorJobs jobs(
+      objects, f.clients, f.jobs, Encode,
+      [&](const auto& tokens, const auto&, auto&, const auto&, auto* result) {
+        if (++calls == 1) {
+          entered = true;
+          Wait([&] { return release.load(); });
+        }
+        return Hidden(tokens, result);
+      });
+  Q4T_CHECK(Wait([&] { return entered.load(); }));
+  Q4T_CHECK(Ok(stores.Detach(Access(), seed.store, seed.files[0])));
+  Q4T_CHECK(stores.LoadFile(Access(), seed.store, seed.files[0]).http_status ==
+            404);
+  Q4T_CHECK(Batch(objects, seed).value.GetString("status") == "in_progress");
+  Q4T_CHECK(
+      Ok(stores.LoadExecution(Access(), seed.store, seed.files[0], member_id)));
+  auto raw = Raw(objects, ObjectKind::kVectorStoreBatch, seed.id);
+  const auto retention =
+      InspectObjectRetention("vector_store_batch", *raw.value.Find("data"));
+  Q4T_CHECK(!retention.uncertain &&
+            retention.references == std::vector<std::string>{member_id});
+  Q4T_CHECK(Ok(stores.Attach(Access(), seed.store,
+                             Object({{"file_id", String(seed.files[0])}}))));
+  release = true;
+  Q4T_CHECK(Finished(objects, seed, "cancelled"));
+  Q4T_CHECK(Wait([&] {
+    return stores.RetrieveFile(Access(), seed.store, seed.files[0])
+               .value.GetString("status") == "completed";
+  }));
+  Q4T_CHECK(calls == 2);
+  raw = Raw(objects, ObjectKind::kVectorStoreBatch, seed.id);
+  Q4T_CHECK(
+      InspectObjectRetention("vector_store_batch", *raw.value.Find("data"))
+          .references.empty());
+  Q4T_CHECK(stores.ListBatchFiles(Access(), seed.store, seed.id, Object())
+                .value.GetArray("data")
+                ->array.empty());
+  return true;
+}
+
+Q4T_TEST(vector_batches_detached_dead_owner_recovers_after_worker_restart) {
+  Fixture f;
+  const auto gone = GoneOwner();
+  BatchSeed seed;
+  {
+    ObjectStore objects(f.objects);
+    VectorStores stores(objects);
+    seed = BatchSources(objects, 1);
+    CreateBatch(objects, &seed);
+    VectorIngestionClaim claim;
+    Q4T_CHECK(Ok(
+        stores.Claim(Access(), seed.store, seed.files[0], gone, 30, &claim)));
+    Q4T_CHECK(Ok(stores.Detach(Access(), seed.store, seed.files[0])));
+    Q4T_CHECK(Batch(objects, seed).value.GetString("status") == "in_progress");
+  }
+  ObjectStore objects(f.objects);
+  std::atomic<int> calls{0};
+  VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
+  Q4T_CHECK(Finished(objects, seed, "cancelled"));
+  Q4T_CHECK(calls == 0 && jobs.Health().recovered == 1);
+  return true;
+}
+
+Q4T_TEST(vector_batches_lost_create_receipt_keeps_original_atomic_batch) {
+  Fixture f;
+  BatchSeed seed;
+  {
+    ObjectStore objects(f.objects);
+    seed = BatchSources(objects);
+  }
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(f.objects);
+    auto created =
+        VectorStores(objects).CreateBatch(Access(), seed.store, seed.request);
+    Q4T_CHECK(created.commit_unknown);
+    seed.id = created.value.GetString("id");
+    Q4T_CHECK(seed.id.starts_with("vsfb_"));
+  }
+  ObjectStore objects(f.objects);
+  Q4T_CHECK(Ok(Batch(objects, seed)));
+  Q4T_CHECK(Batch(objects, seed).value.Find("file_counts")->GetInt("total") ==
+            2);
+  auto root = Raw(objects, ObjectKind::kVectorStore, seed.store);
+  Q4T_CHECK(root.value.Find("data")->GetArray("batches")->array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(vector_batches_lost_cancel_receipt_recovers_without_model) {
+  Fixture f;
+  BatchSeed seed;
+  {
+    ObjectStore objects(f.objects);
+    seed = BatchSources(objects);
+    CreateBatch(objects, &seed);
+  }
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(f.objects);
+    Q4T_CHECK(VectorStores(objects)
+                  .CancelBatch(Access(), seed.store, seed.id)
+                  .commit_unknown);
+  }
+  ObjectStore objects(f.objects);
+  std::atomic<int> calls{0};
+  VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
+  Q4T_CHECK(Finished(objects, seed, "cancelled") && calls == 0);
+  return true;
+}
+
+Q4T_TEST(vector_batches_queued_detach_closes_receipt_without_model) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects, 1);
+  CreateBatch(objects, &seed);
+  Q4T_CHECK(Ok(stores.Detach(Access(), seed.store, seed.files[0])));
+  Q4T_CHECK(Batch(objects, seed).value.GetString("status") == "cancelled");
+  const auto raw = Raw(objects, ObjectKind::kVectorStoreBatch, seed.id);
+  Q4T_CHECK(
+      InspectObjectRetention("vector_store_batch", *raw.value.Find("data"))
+          .references.empty());
+  Q4T_CHECK(Ok(Files(objects).Retrieve(Access(), seed.files[0])));
   return true;
 }

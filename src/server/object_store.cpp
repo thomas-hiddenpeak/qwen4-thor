@@ -92,7 +92,8 @@ bool ApplicationObject(ObjectKind kind) {
          kind == ObjectKind::kConversation ||
          kind == ObjectKind::kConversationItem || kind == ObjectKind::kPrompt ||
          kind == ObjectKind::kBatch || kind == ObjectKind::kVectorStore ||
-         kind == ObjectKind::kVectorStoreFile;
+         kind == ObjectKind::kVectorStoreFile ||
+         kind == ObjectKind::kVectorStoreBatch;
 }
 bool PreparePayload(const ObjectRequest& request) {
   return request.operation == ObjectOperation::kPut &&
@@ -729,6 +730,7 @@ std::string NewObjectId(ObjectKind kind) {
   if (kind == ObjectKind::kConversation) prefix = "conv";
   if (kind == ObjectKind::kChat) prefix = "chatcmpl";
   if (kind == ObjectKind::kVectorStore) prefix = "vs";
+  if (kind == ObjectKind::kVectorStoreBatch) prefix = "vsfb";
   unsigned char bytes[16];
   if (getrandom(bytes, sizeof(bytes), GRND_NONBLOCK) != sizeof(bytes))
     return {};

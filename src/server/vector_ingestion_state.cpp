@@ -100,7 +100,10 @@ ObjectReply VectorStores::ChangeJob(const BinaryAccess& access,
   for (int attempt = 0; attempt < 4; ++attempt) {
     auto root = Read(access, claim.store_id, true);
     if (!root.ok()) return root;
-    auto member = ReadMember(access, root.value, claim.file_id);
+    auto member = action == "completed"
+                      ? ReadMember(access, root.value, claim.file_id)
+                      : ReadExecutionMember(access, root.value, claim.file_id,
+                                             claim.member_id);
     if (Retry(member)) continue;
     if (!member.ok()) return member;
     if (member.value.GetString("id") != claim.member_id)
@@ -153,7 +156,8 @@ ObjectReply VectorStores::ChangeJob(const BinaryAccess& access,
     }
     auto root_data = *root.value.Find("data");
     for (auto& edge : Field(root_data, "members").array)
-      if (edge.GetString("file_id") == claim.file_id) {
+      if (edge.GetString("file_id") == claim.file_id &&
+          edge.GetString("id") == claim.member_id) {
         Set(&edge, "status", *file.Find("status"));
         Set(&edge, "usage_bytes", *file.Find("usage_bytes"));
       }

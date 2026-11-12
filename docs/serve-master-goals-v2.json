@@ -1278,7 +1278,8 @@
         "evidence/serve-vector-stores-cpu-20261112/README.md",
         "evidence/serve-vector-ingestion-cpu-20261112/README.md",
         "evidence/serve-vector-quota-cpu-20261112/README.md",
-        "evidence/serve-vector-jobs-cpu-20261112/README.md"
+        "evidence/serve-vector-jobs-cpu-20261112/README.md",
+        "evidence/serve-vector-batches-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1345,6 +1346,17 @@
           "evidence": "evidence/serve-vector-jobs-cpu-20261112/README.md",
           "cpu_cases": 18,
           "native_engine_built": true,
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "file_batches": {
+          "state": "cpu_accepted_http_business_pending",
+          "evidence": "evidence/serve-vector-batches-cpu-20261112/README.md",
+          "cpu_cases": 17,
+          "durable_cancellation": true,
+          "detached_execution_cleanup": true,
+          "batch_request_limit": 2000,
+          "http": false,
           "gpu_starts": 0,
           "default_changed": false
         }

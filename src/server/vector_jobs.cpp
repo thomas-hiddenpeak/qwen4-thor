@@ -43,7 +43,8 @@ VectorIngestionClaim ClaimFrom(const Json& record) {
 }
 bool Removed(const ObjectReply& reply) {
   return reply.http_status == 404 || reply.http_status == 410 ||
-         reply.code == "vector_store_expired";
+         reply.code == "vector_store_expired" ||
+         reply.code == "vector_ingestion_claim_conflict";
 }
 }  // namespace
 
@@ -179,7 +180,7 @@ ObjectReply VectorJobs::Reconcile(const std::shared_ptr<Job>& job,
                                   const BinaryAccess& access) {
   VectorStores stores(state_->objects);
   if (!job->outcome) return Interrupted();
-  auto current = stores.LoadRecord(access, job->store, job->file);
+  auto current = stores.LoadExecution(access, job->store, job->file, job->member);
   if (!current.ok()) return current;
   if (current.value.GetString("id") != job->member)
     return Error(409, "vector_ingestion_claim_conflict",
@@ -224,7 +225,7 @@ ObjectReply VectorJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
   const BinaryAccess access{
       job->scope, Clock::now() + std::chrono::seconds(2), {}};
   VectorStores stores(state_->objects);
-  auto record = stores.LoadRecord(access, job->store, job->file);
+  auto record = stores.LoadExecution(access, job->store, job->file, job->member);
   if (!record.ok()) {
     if (Removed(record)) *terminal = true;
     return record;

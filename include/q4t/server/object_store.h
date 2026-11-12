@@ -26,7 +26,8 @@ enum class ObjectKind {
   kPrompt,
   kInputSnapshot,
   kVectorStore,
-  kVectorStoreFile
+  kVectorStoreFile,
+  kVectorStoreBatch
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

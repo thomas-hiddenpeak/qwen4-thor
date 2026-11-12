@@ -197,3 +197,25 @@ BF16数学夹具、配额/并发权限、TPM共享/外部RPM不重复、异常�
 Responses工具执行/引用/事件和真实业务验收仍是下一组必做工作。
 
 [持久调度18项CPU首过](evidence/serve-vector-jobs-cpu-20261112/README.md)，实际引擎零警告构建；0GPU、默认rev80保持。继续公开API/file_batches/search、SDK与Responses工具业务，不以本阶段结束总目标。
+
+
+## 文件批次与删除清理实现组
+
+2026-11-12。[官方创建合同](https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create)
+与已安装Python3.42.1/JS7.47.0一致给出最多2000项、file_ids/files互斥；
+files形式逐文件属性/分块覆盖，忽略全局值。公开object采用两SDK实际
+Literal的vector_store.files_batch；官方网页示例单数file_batch差异
+已记录在合同冻结文件，不把两份源误写为完全一致。
+
+批次/成员/父库一次事务提交，完成计数与文件属性随成员变更原子
+更新。取消先持久化全部意图，仍在执行的任务清理后才变终态。
+删除运行中文件立即退出检索；批次保留其私有执行记录直至清理或
+原进程确定退出，随后释放引用。旧执行不影响同file_id的新关联。
+批次历史仅保留计数/元数据，不永久钉住已删除索引或源文件。
+
+冻结9项新增CPU与8项直接回归：真实Files/worker、批次合同和原子
+计数、取消/删除/重挂载、真实子进程退出恢复及提交后丢回执。
+向量为明确CPU数学夹具，0GPU；公开HTTP/SDK和实际模型业务待后续
+接线并统一短验。本组并不宣称公开向量API已发行。
+
+[文件批次17项CPU首过](evidence/serve-vector-batches-cpu-20261112/README.md)，原构建失败保留，最终零警告；0GPU/默认rev80保持。公开HTTP、搜索、SDK、Responses与真实业务继续实施。

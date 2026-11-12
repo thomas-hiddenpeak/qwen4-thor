@@ -28,4 +28,7 @@ ObjectReply PrepareMember(ObjectStore& objects, const BinaryAccess& access,
                           int64_t created_at, Json* data, Json* edge);
 ObjectReply MatchClaim(const Json& data, const VectorIngestionClaim& claim,
                        bool require_live);
+ObjectReply SelectFilePage(std::vector<Json> rows, const Json& page,
+                           std::vector<Json>* selected, bool* more);
+ObjectReply FilePage(Json items, bool more);
 }  // namespace q4t::server::vector_store_detail

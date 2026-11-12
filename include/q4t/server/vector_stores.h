@@ -33,6 +33,14 @@ class VectorStores {
                         const io::Json& page);
   // Actual search/tool use advances last_active_at; management reads do not.
   ObjectReply Touch(const BinaryAccess& access, const std::string& id);
+  ObjectReply CreateBatch(const BinaryAccess& access, const std::string& id,
+                          const io::Json& request);
+  ObjectReply RetrieveBatch(const BinaryAccess& access, const std::string& id,
+                            const std::string& batch_id);
+  ObjectReply CancelBatch(const BinaryAccess& access, const std::string& id,
+                          const std::string& batch_id);
+  ObjectReply ListBatchFiles(const BinaryAccess& access, const std::string& id,
+                             const std::string& batch_id, const io::Json& page);
 
   // The durable claim survives receipt loss. Expiry never grants permission
   // to race a live owner. Only queued work can be claimed; recovery must prove
@@ -62,6 +70,11 @@ class VectorStores {
   // reconciliation. Execution/search must use LoadFile/LoadClaim instead.
   ObjectReply LoadRecord(const BinaryAccess& access, const std::string& id,
                          const std::string& file_id);
+  // Includes an exact detached running member retained by its batch only
+  // until cleanup. Never permits search or completed index publication.
+  ObjectReply LoadExecution(const BinaryAccess& access, const std::string& id,
+                            const std::string& file_id,
+                            const std::string& member_id);
   // Private, scoped, current membership + source-file check for the executor.
   ObjectReply LoadFile(const BinaryAccess& access, const std::string& id,
                        const std::string& file_id);
@@ -71,6 +84,16 @@ class VectorStores {
                    bool require_live = false);
   ObjectReply ReadMember(const BinaryAccess& access, const io::Json& store,
                          const std::string& file_id);
+  ObjectReply ReadBatch(const BinaryAccess& access, const io::Json& store,
+                        const std::string& batch_id);
+  ObjectReply ReadExecutionMember(const BinaryAccess& access,
+                                  const io::Json& store,
+                                  const std::string& file_id,
+                                  const std::string& member_id);
+  ObjectReply SyncBatches(const BinaryAccess& access, const io::Json& before,
+                          const io::Json& data,
+                          std::span<const ObjectRequest> children,
+                          std::vector<ObjectRequest>* mutations);
   ObjectReply Publish(const BinaryAccess& access, const io::Json& before,
                       io::Json data,
                       std::span<const ObjectRequest> children = {});

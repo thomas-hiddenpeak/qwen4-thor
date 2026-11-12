@@ -67,7 +67,8 @@ ObjectReply IoError(bool uncertain = false) {
 bool ApplicationKind(std::string_view kind) {
   return kind == "chat" || kind == "response" || kind == "conversation" ||
          kind == "item" || kind == "prompt" || kind == "batch" ||
-         kind == "vector_store" || kind == "vector_store_file";
+         kind == "vector_store" || kind == "vector_store_file" ||
+         kind == "vector_store_batch";
 }
 ObjectReply SnapshotConflict() {
   return Error(409, "input_snapshot_reference_conflict",
@@ -1309,13 +1310,34 @@ class DiskStore {
       const auto* members = root_data ? root_data->GetArray("members") : nullptr;
       if (!store || !members || members->array.size() > 10000 ||
           (store->GetInt("expires_at") > 0 &&
-           store->GetInt("expires_at") <= std::time(nullptr)) ||
-          std::none_of(members->array.begin(), members->array.end(),
+           store->GetInt("expires_at") <= std::time(nullptr)))
+        continue;
+      bool retained = std::any_of(members->array.begin(), members->array.end(),
                        [&](const auto& member) {
                          return member.GetString("id") == metadata.id &&
                                 member.GetString("file_id") == file->GetString("id");
-                       }))
-        continue;
+                       });
+      if (!retained && data->GetBool("detached")) {
+        const auto batch_id = data->GetString("batch_id");
+        const auto* batches = root_data->GetArray("batches");
+        if (batches && std::any_of(batches->array.begin(), batches->array.end(),
+                                   [&](const auto& b) { return b.str == batch_id; })) {
+          const auto found = records_.find(metadata.owner + ".vector_store_batch." +
+                                            batch_id + ".json");
+          if (found != records_.end()) {
+            Json batch;
+            if (!ReadKnown(found->first, found->second, &batch)) return IoError();
+            const auto* batch_data = batch.Find("data");
+            const auto* rows = batch_data ? batch_data->GetArray("members") : nullptr;
+            retained = rows && std::any_of(rows->array.begin(), rows->array.end(),
+                                            [&](const auto& row) {
+              return row.GetString("id") == metadata.id && row.GetBool("detached") &&
+                     row.GetString("status") == "in_progress";
+            });
+          }
+        }
+      }
+      if (!retained) continue;
       auto scope = data->GetString("scope");
       if (scope.empty() || scope.size() > 256 || Digest(scope) != metadata.owner)
         scope.clear();
