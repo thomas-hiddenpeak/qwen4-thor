@@ -30,6 +30,9 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- Q02 PR23公共检查的旧夹具/SDK准备已修复，[18项针对性CPU通过](evidence/serve-public-host-repair-20261112/README.md)。
+  GitHub文档沙箱失败继续定位，尚未合并或宣称CI通过；0GPU、默认rev92保持。
+
 - A11[原生资料检索已可回退发行](evidence/serve-retrieval-delivery-20261112/README.md)，
   默认rev92。实际检索、引用、历史/后台/schema、受监护版本回退及
   官方SDK原生TLS均通过；人工换根遗漏登记已修复并实际通过18项检查。

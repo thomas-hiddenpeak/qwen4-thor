@@ -1,0 +1,13 @@
+kernel=6.8.12-1021-tegra arch=aarch64 landlock_abi=4 errno=0
+path=/usr/lib uid=0 mode=40755 errno=0
+path=/lib uid=0 mode=40755 errno=0
+path=/etc/ld.so.cache uid=0 mode=100644 errno=0
+path=/etc/fonts uid=0 mode=40755 errno=0
+path=/usr/share/fonts uid=0 mode=40755 errno=0
+path=/var/cache/fontconfig uid=0 mode=40755 errno=0
+path=/usr/share/fontconfig uid=0 mode=40755 errno=0
+path=/usr/share/poppler uid=0 mode=40755 errno=0
+path=/lib64/ld-linux-x86-64.so.2 uid=0 mode=0 errno=2
+path=/lib/ld-linux-aarch64.so.1 uid=0 mode=100755 errno=0
+sandbox=native reported=1 ready=1 errno=0 status=0
+sandbox=pdf reported=1 ready=1 errno=0 status=0

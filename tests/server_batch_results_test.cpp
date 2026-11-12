@@ -1399,6 +1399,11 @@ Q4T_TEST(batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs) {
             Ok(Edit(*objects, ready.id, ObjectKind::kBatch,
                     [&](ObjectRequest& request) {
                       Set(&request.data, "next_row", Number(kBatchRequests));
+                      // Seed accounting for the explicit CPU receipts too.
+                      // These bodies have no model usage; retain it as unknown.
+                      for (size_t row = 0; row < kBatchRequests; ++row)
+                        if (!AddBatchUsage(&request.data, row, {}).ok())
+                          throw std::runtime_error("capacity usage fixture");
                       auto& counts =
                           Field(Field(request.data, "batch"), "request_counts");
                       Set(&counts, "completed",

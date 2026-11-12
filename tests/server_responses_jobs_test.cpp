@@ -32,6 +32,10 @@ using namespace q4t::server;
 using q4t::io::Json;
 using Clock = std::chrono::steady_clock;
 using namespace std::chrono_literals;
+// The explicit byte codec counts the full native refusal instruction. Keep
+// enough room for that prompt while the blocker still forces a minute wait.
+constexpr uint64_t kBatchFixtureTokens = 1024;
+constexpr uint64_t kBatchHeldTokens = 1000;
 Json Parse(std::string text) {
   Json value;
   if (!q4t::io::ParseJson(text, &value, true))
@@ -89,7 +93,8 @@ struct Fixture {
       for (auto& limits : policy.clients) {
         limits.max_inflight = 1;
         limits.requests_per_minute = 10;
-        limits.tokens_per_minute = 512;
+        limits.max_prompt_tokens = kBatchFixtureTokens;
+        limits.tokens_per_minute = kBatchFixtureTokens;
       }
     }
     if (!clients.Configure(std::move(policy)))
@@ -1087,7 +1092,7 @@ Q4T_TEST(responses_batch_recovery_real_exit_waits_and_yields_to_online) {
   const auto before = Raw(objects, id);
   Q4T_CHECK(Ok(before));
   ClientRateLease blocker(ClientRateDomain::kBatch);
-  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), kBatchHeldTokens, 0) ==
             ClientRateResult::kAllowed);
   std::atomic<int> batch{0}, online{0}, plans{0};
   ResponsesJobs jobs(
@@ -1144,7 +1149,7 @@ Q4T_TEST(responses_batch_recovery_minute_wait_cancel_and_original_deadline) {
       });
     const auto original = Raw(objects, id);
     ClientRateLease blocker(ClientRateDomain::kBatch);
-    Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+    Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), kBatchHeldTokens, 0) ==
               ClientRateResult::kAllowed);
     std::atomic<int> calls{0};
     ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; }, BatchAdmission(f));
@@ -1167,7 +1172,7 @@ Q4T_TEST(responses_batch_recovery_minute_wait_cancel_and_original_deadline) {
                                original.value.Find("data")
                                    ->Find("continuation")
                                    ->GetInt("execution_deadline_at"));
-    Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == 500 &&
+    Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == kBatchHeldTokens &&
               jobs.Health().rate_waiting == 0 &&
               f.clients.Usage(0).data_active == 0);
   }
@@ -1220,7 +1225,7 @@ Q4T_TEST(responses_batch_recovery_wait_reacquires_data_without_spending_rpm) {
   ObjectStore objects(f.options);
   const auto id = InterruptedBatch(objects);
   ClientRateLease blocker(ClientRateDomain::kBatch);
-  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), 500, 0) ==
+  Q4T_CHECK(blocker.Reserve(f.clients, f.Identity(), kBatchHeldTokens, 0) ==
             ClientRateResult::kAllowed);
   std::atomic<int> calls{0}, plans{0};
   ResponsesJobs jobs(

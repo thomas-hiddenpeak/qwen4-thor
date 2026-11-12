@@ -24,6 +24,7 @@ from tools.serve_recovery import test_gateway_nginx as fixture
 
 INGRESS = None
 NO_TLS = None
+HOST_TESTS = None
 OPENSSL = shutil.which('openssl')
 CORS = dict(allowed_origins=['https://client.example'], allowed_methods=['GET', 'POST'],
     allowed_headers=['authorization', 'content-type', 'x-request-id'],
@@ -79,6 +80,14 @@ class AccessTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         fixture.NginxTests.setUpClass.__func__(cls)
+        if HOST_TESTS is not None:
+            required = cls.output/'native-access-wire-required.txt'
+            required.write_text('embeddings_fp32_wire_roundtrip_and_base64_byte_order\n'
+                'moderations_public_response_requires_complete_real_reports\n')
+            with (cls.output/'native-access-wire.log').open('wb') as log:
+                subprocess.run([str(HOST_TESTS), '--required-list', str(required)],
+                    env=dict(os.environ, Q4T_TEST_OUTPUT_DIR=str(cls.output)),
+                    stdout=log, stderr=subprocess.STDOUT, check=True, timeout=30)
         cls.certificates = Path(tempfile.mkdtemp(prefix='keys-', dir=cls.output))/'pem'
         certificates(cls.certificates)
 
@@ -252,7 +261,8 @@ class AccessTests(unittest.TestCase):
             base_url='https://127.0.0.1:' +
                 str(self.stack.value['policy']['listen_port']) + '/v1',
             api_key='A' * 40, headers={'Origin': origin}, timeout_ms=5000,
-            sdk_directory=str(ROOT/'.q4t-work/serve-protocol-20261103/sdk'))
+            sdk_directory=os.environ.get('Q4T_NODE_SDK_DIR',
+                str(ROOT/'.q4t-work/serve-protocol-20261103/sdk')))
         env = {k:v for k,v in os.environ.items()
                if k not in ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD')}
         env['NODE_EXTRA_CA_CERTS'] = str(self.certificates/'ca.pem')
@@ -309,7 +319,8 @@ class AccessTests(unittest.TestCase):
         command = dict(action='embeddings_create',
             base_url='https://127.0.0.1:'+str(self.stack.value['policy']['listen_port'])+'/v1',
             api_key='A'*40, headers={'Origin':origin}, timeout_ms=5000,
-            sdk_directory=str(ROOT/'.q4t-work/serve-protocol-20261103/sdk'))
+            sdk_directory=os.environ.get('Q4T_NODE_SDK_DIR',
+                str(ROOT/'.q4t-work/serve-protocol-20261103/sdk')))
         for index, encoding in enumerate([None, 'float', 'base64']):
             request = dict(model='actual-qwen', input=['x'*8192, 'second'])
             if encoding: request['encoding_format'] = encoding
@@ -659,6 +670,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--ingress', type=Path, required=True)
     parser.add_argument('--no-tls-ingress', type=Path, required=True)
+    parser.add_argument('--host-tests', type=Path)
     args, rest = parser.parse_known_args()
     INGRESS, NO_TLS = args.ingress.resolve(strict=True), args.no_tls_ingress.resolve(strict=True)
+    HOST_TESTS = args.host_tests.resolve(strict=True) if args.host_tests else None
     unittest.main(argv=[sys.argv[0], *rest])

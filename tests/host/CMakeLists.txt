@@ -48,7 +48,7 @@ set_tests_properties(q4t_guardian_process_contracts PROPERTIES
   TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${guardian_output}")
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
-set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 180)
+set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 600)
 
 # Offline trace validation shares no runtime/CUDA dependencies.
 add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
@@ -189,9 +189,14 @@ q4t_add_python_contract(q4t_recovery_gateway_contracts
 q4t_add_python_contract(q4t_native_ingress_contracts
   tools/serve_recovery/test_native_ingress.py --ingress $<TARGET_FILE:q4t_ingress>)
 if(Q4T_ENABLE_NATIVE_TLS)
+  set(Q4T_NODE_SDK_DIR "${CMAKE_CURRENT_BINARY_DIR}/sdk" CACHE PATH
+    "Official pinned SDK installed from tools/serve_protocol/package-lock.json")
   q4t_add_python_contract(q4t_native_access_contracts
     tools/serve_recovery/test_native_access.py --ingress $<TARGET_FILE:q4t_ingress>
-    --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>)
+    --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>
+    --host-tests $<TARGET_FILE:q4t_host_tests>)
+  set_property(TEST q4t_native_access_contracts APPEND PROPERTY
+    ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR}")
 endif()
 q4t_add_python_contract(q4t_native_bundle_contracts
   tools/serve_recovery/test_native_bundle.py)

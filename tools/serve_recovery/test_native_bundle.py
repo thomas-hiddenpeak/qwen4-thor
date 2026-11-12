@@ -297,6 +297,15 @@ class BundleTests(unittest.TestCase):
         package = Path(receipt['package'])
         value = bundle.engine.read(package/'manifest.json')
         value.update(version=8, profile='q4t-service-recovery-v8')
+        # A structurally valid v8 inventory must reach the transport check;
+        # newer manifest fields must not make this fail at the keys guard.
+        value.pop('recovery_profiles')
+        value.pop('recovery_profile_policy')
+        names = {*('bin/'+name for name in bundle.EXECUTABLES),
+                 *('source/'+name for name in bundle.V8_SOURCES),
+                 'gateway-policy.json', 'native-build.json'}
+        value['files'] = {name: digest for name, digest in value['files'].items()
+                          if name in names}
         bundle.engine.save(package/'manifest.json', value)
         digest = bundle.engine.sha(package/'manifest.json')
         (package/'bin/q4t').chmod(0o700)

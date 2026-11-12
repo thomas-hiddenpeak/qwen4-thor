@@ -9,11 +9,12 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import controller, core_http as http, jobs, ledger, monitor, ownership, policy, service
+from tools.serve_recovery import controller, core_http as http, jobs, ledger, monitor, ownership, policy, service, store
 
 
 class Clock:
@@ -355,7 +356,8 @@ class PublicEntryTests(unittest.TestCase):
         self.temp.cleanup()
 
     def initialize(self):
-        with mock.patch.object(service.bundle, 'verify', return_value=dict(repository=str(ROOT))), \
+        with mock.patch.object(service.bundle, 'verify', return_value=dict(
+                version=1, repository=str(ROOT))), \
              mock.patch.object(service.subprocess, 'Popen') as spawn:
             result = service.initialize(self.package, 'a'*64, self.state)
             spawn.assert_not_called()
@@ -365,7 +367,8 @@ class PublicEntryTests(unittest.TestCase):
         result = self.initialize()
         self.assertEqual(result['desired'], 'STOPPED')
         self.assertFalse(result['automatic_start'])
-        with mock.patch.object(service.bundle, 'verify', return_value=dict(repository=str(ROOT))):
+        with mock.patch.object(service.bundle, 'verify', return_value=dict(
+                version=1, repository=str(ROOT))):
             with self.assertRaises(FileExistsError):
                 service.initialize(self.package, 'a'*64, self.state)
 
@@ -375,16 +378,24 @@ class PublicEntryTests(unittest.TestCase):
             service.descriptor(self.state, self.package, 'b'*64)
 
     def test_missing_live_guardian_never_uses_old_ready_snapshot(self):
-        self.initialize()
+        initialized = self.initialize()
         (self.state/'status.json').write_text('{"state":"READY","business_ready":true}')
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            result = service.main(['status', '--state', str(self.state)],
-                                  package=self.package, digest='a'*64)
-        self.assertEqual(result, 1)
-        value = json.loads(output.getvalue())
-        self.assertEqual(value['state'], 'UNKNOWN')
-        self.assertFalse(value['business_ready'])
+        for running in (False, True):
+            with self.subTest(running=running):
+                if running:
+                    with store.Store(self.state, initialized['service_id']) as current:
+                        current.transact(dict(id=str(uuid.uuid4()),
+                            expected_revision=current.state['revision'],
+                            operation='desired', args=dict(state='RUNNING')))
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    result = service.main(['status', '--state', str(self.state)],
+                                          package=self.package, digest='a'*64)
+                self.assertEqual(result, int(running))
+                value = json.loads(output.getvalue())
+                self.assertEqual(value['state'], 'UNKNOWN' if running else 'STOPPED')
+                self.assertFalse(value['business_ready'])
+                self.assertFalse(value['live_control'])
 
 
 if __name__ == '__main__':

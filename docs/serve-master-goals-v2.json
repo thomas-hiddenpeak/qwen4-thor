@@ -2339,6 +2339,14 @@
         "merge": "ea0ad39accefd43f2c6819ce7e275a7275c3d5e7",
         "evidence": "evidence/serve-main-integration-20261112/README.md",
         "later_master_work_merged": false
+      },
+      "main_integration": {
+        "pr": 23,
+        "state": "ci_failures_being_repaired",
+        "evidence": "evidence/serve-public-host-repair-20261112/README.md",
+        "targeted_cpu_passed": 18,
+        "github_document_sandbox_pending": true,
+        "merged": false
       }
     },
     {

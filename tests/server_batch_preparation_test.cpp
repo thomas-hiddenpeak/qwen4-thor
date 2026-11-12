@@ -1505,11 +1505,13 @@ Q4T_TEST(
     batch_budget_responses_context_truncation_uses_selected_native_prompt) {
   Fixture fixture;
   fixture.config.token_vocab = 2048;
-  fixture.config.max_len = 300;
+  // Byte tokens include the native refusal instruction as well as messages.
+  // Keep a real fitting suffix and an oversized old turn.
+  fixture.config.max_len = 1024;
   ObjectStore objects(fixture.options);
   auto request = Object(
       {{"input", Array({Object({{"role", String("user")},
-                                {"content", String(std::string(500, 'o'))}}),
+                                {"content", String(std::string(2000, 'o'))}}),
                         Object({{"role", String("assistant")},
                                 {"content", String("old answer")}}),
                         Object({{"role", String("user")},
@@ -1525,7 +1527,7 @@ Q4T_TEST(
       Meter(objects, BudgetCodec(&encoded)))));
   Q4T_CHECK(prepared.input_budget.exact &&
             prepared.input_budget.tokens == encoded.size() &&
-            prepared.input_budget.tokens < 300 &&
+            prepared.input_budget.tokens < 1024 &&
             encoded.find("retain 42") != encoded.npos &&
             encoded.find(std::string(50, 'o')) == encoded.npos);
   return true;

@@ -1,0 +1,141 @@
+{
+  "cpp": [
+    "batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs",
+    "batch_preparation_chat_pdf_restores_original_bytes_and_store_binding",
+    "batch_budget_responses_context_truncation_uses_selected_native_prompt",
+    "batch_config_native_cli_budget_and_effective_discovery",
+    "chat_files_pdf_reaches_template_and_preflight_without_public_rewrite",
+    "chat_files_stored_originals_replay_after_restart_and_decoder_outage",
+    "file_expansion_actual_pdf_page_and_chat_profile_are_complete",
+    "file_expansion_combined_pdf_pages_and_history_budgets_are_enforced",
+    "file_snapshot_real_nested_pages_conversion_and_restart_without_codecs: file_document_isolation_unavailable: Document isolation unavailable",
+    "file_snapshot_real_sheets_and_private_indirect_source_are_exact: file_document_isolation_unavailable: Document isolation unavailable",
+    "file_snapshot_typed_receipt_rejects_wrong_parts_sources_and_pages: file_document_isolation_unavailable: Document isolation unavailable",
+    "file_snapshot_active_budgets_apply_to_history_without_partial_output: file_document_isolation_unavailable: Document isolation unavailable",
+    "file_snapshot_never_persists_incomplete_or_mismatched_extraction: file_document_isolation_unavailable: Document isolation unavailable",
+    "file_extract_actual_pages_text_and_conversion_identity",
+    "file_extract_actual_numbers_coordinates_and_values",
+    "file_extract_actual_keynote_empty_slide_and_provenance",
+    "file_extract_actual_keynote_xml_notes_are_real_document_content",
+    "file_extract_actual_xlsb_binary_workbook_values",
+    "file_nested_actual_legacy_and_pdf_keep_order_pages_and_provenance",
+    "file_nested_multilevel_paths_and_source_identity_are_preserved",
+    "file_nested_failure_discards_earlier_success_and_next_request_works",
+    "file_nested_tree_limits_cover_count_depth_pages_and_rendered_text",
+    "file_nested_cancel_after_first_child_starts_no_later_codec",
+    "file_nested_compressed_iwork_xml_uses_actual_decoder",
+    "file_legacy_actual_doc_unicode_and_confirmed_cleanup",
+    "file_legacy_actual_xls_sheet_coordinates_values_and_formula",
+    "file_legacy_actual_ppt_slide_order",
+    "file_legacy_corrupt_input_is_local_and_next_document_works",
+    "file_legacy_resource_rejection_cleans_and_publishes_nothing",
+    "file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance",
+    "file_extract_pdf_signature_routes_every_page_with_detail",
+    "file_pdf_actual_text_and_every_page_images",
+    "file_pdf_high_detail_preserves_rotated_geometry",
+    "file_pdf_page_and_text_budgets_never_publish_partial",
+    "file_pdf_image_bytes_and_actual_pixel_budgets",
+    "file_pdf_damaged_input_does_not_poison_native_text",
+    "file_pdf_sandbox_enforces_system_read_only_and_no_network_processes",
+    "file_pdf_cancel_and_deadline_reap_only_owned_worker",
+    "responses_files_pdf_and_webp_use_actual_media_planner",
+    "responses_batch_recovery_real_exit_waits_and_yields_to_online",
+    "responses_batch_recovery_minute_wait_cancel_and_original_deadline",
+    "responses_batch_recovery_refreshes_policy_and_replans_original_input",
+    "responses_batch_recovery_wait_reacquires_data_without_spending_rpm",
+    "responses_batch_recovery_unknown_start_refunds_and_never_replays",
+    "responses_batch_recovery_impossible_window_fails_without_waiting"
+  ],
+  "python": [
+    {
+      "title": "ERROR: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/uploads')",
+      "errors": [
+        "40: IndexError: list index out of range"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/uploads/{upload_id}/parts')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/uploads/{upload_id}/complete')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/uploads/{upload_id}/cancel')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/files')",
+      "errors": [
+        "40: AssertionError: 503 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"service_error\",\"param\":null,\"code\":\"service_binding_unavailable\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='GET', path='/v1/files?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\": \"absent\"}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='GET', path='/v1/files/{file_id}?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='DELETE', path='/v1/files/{file_id}')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='GET', path='/v1/files/{file_id}/content?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99')",
+      "errors": [
+        "40: AssertionError: 404 != 200 : b'{\"error\":{\"message\":\"Service entrypoint rejected request\",\"type\":\"gateway_error\",\"param\":null,\"code\":\"gateway_route_not_found\"}}'"
+      ]
+    },
+    {
+      "title": "ERROR: test_embeddings_sdk_default_base64_float_tls_and_exact_body (__main__.AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body)",
+      "errors": [
+        "41: FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_native_access_contracts/embeddings-float.json'"
+      ]
+    },
+    {
+      "title": "ERROR: test_moderations_sdk_tls_auth_cors_and_exact_body (__main__.AccessTests.test_moderations_sdk_tls_auth_cors_and_exact_body)",
+      "errors": [
+        "41: FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_native_access_contracts/moderations-response.json'"
+      ]
+    },
+    {
+      "title": "FAIL: test_http_policy_cannot_claim_an_old_transport_profile (__main__.BundleTests.test_http_policy_cannot_claim_an_old_transport_profile)",
+      "errors": [
+        "42: AssertionError: \"transport profile v9\" does not match \"unexpected record fields\""
+      ]
+    },
+    {
+      "title": "ERROR: test_changed_bundle_cannot_reuse_service_identity (__main__.PublicEntryTests.test_changed_bundle_cannot_reuse_service_identity)",
+      "errors": [
+        "44: KeyError: 'version'"
+      ]
+    },
+    {
+      "title": "ERROR: test_initialize_creates_stopped_identity_without_any_process (__main__.PublicEntryTests.test_initialize_creates_stopped_identity_without_any_process)",
+      "errors": [
+        "44: KeyError: 'version'"
+      ]
+    },
+    {
+      "title": "ERROR: test_missing_live_guardian_never_uses_old_ready_snapshot (__main__.PublicEntryTests.test_missing_live_guardian_never_uses_old_ready_snapshot)",
+      "errors": [
+        "44: KeyError: 'version'"
+      ]
+    }
+  ]
+}

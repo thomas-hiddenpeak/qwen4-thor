@@ -1,0 +1,2 @@
+503 batch_usage_recount_required: Original results require usage reconciliation
+context_length_exceeded messages: prompt tokens must be positive and below context capacity

@@ -10,6 +10,7 @@ import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
+import re
 from pathlib import Path
 import select
 import signal
@@ -105,6 +106,15 @@ class Stack:
                 self.end_headers()
                 self.wfile.write(raw)
                 self.close_connection = True
+            def application_path(self, method):
+                path = self.path.split('?', 1)[0]
+                roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
+                         '/v1/files', '/v1/uploads', '/v1/batches',
+                         '/v1/vector_stores')
+                return (any(path == root or path.startswith(root+'/')
+                            for root in roots) or
+                        path.startswith('/v1/chat/completions/') or
+                        (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
                 if self.path in ('/livez', '/readyz'):
                     self.response(200, dict(status='ready', live=True, ready=True))
@@ -114,10 +124,7 @@ class Stack:
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
                 elif self.path.startswith('/v1/models/'):
                     self.model_detail('GET')
-                elif (self.path.split('?', 1)[0] == '/v1/chat/completions' or
-                      self.path.split('?', 1)[0] == '/v1/prompts' or
-                      self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/',
-                                            '/v1/chat/completions/'))):
+                elif self.application_path('GET'):
                     self.application('GET')
                 else:
                     self.response(404, dict(error='absent'))
@@ -135,7 +142,26 @@ class Stack:
                     self.response(200, dict(id='cpu-fixture', object='model',
                                             created=42, owned_by='q4t'))
             def application(self, method):
-                raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
+                if self.headers.get('Transfer-Encoding', '').lower() == 'chunked':
+                    # Native multipart forwarding streams bounded chunks. This
+                    # CPU HTTP peer must consume them before returning a reply.
+                    parts, size = [], 0
+                    while True:
+                        length = int(self.rfile.readline(128).strip(), 16)
+                        if length == 0:
+                            if self.rfile.read(2) != b'\r\n':
+                                raise ValueError('invalid fixture chunk end')
+                            break
+                        size += length
+                        if size > 16384:
+                            raise ValueError('fixture body limit')
+                        part = self.rfile.read(length)
+                        if len(part) != length or self.rfile.read(2) != b'\r\n':
+                            raise ValueError('invalid fixture chunk')
+                        parts.append(part)
+                    raw = b''.join(parts)
+                else:
+                    raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
                 row = dict(method=method, path=self.path, body=raw.decode(),
                     token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
@@ -158,14 +184,13 @@ class Stack:
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
             def do_DELETE(self):
-                if self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/',
-                                         '/v1/chat/completions/')):
+                if self.application_path('DELETE'):
                     self.application('DELETE')
                 else:
                     self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
-                if self.path.split('?', 1)[0] in ('/v1/prompts', '/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/', '/v1/chat/completions/')):
+                if self.application_path('POST'):
                     self.application('POST')
                     return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
@@ -363,19 +388,30 @@ class NginxTests(unittest.TestCase):
         from tools.serve_gateway.gateway import APPLICATION_ROUTES
         self.ready()
         for method, template, _ in APPLICATION_ROUTES:
-            path = template.replace('{response_id}', 'resp_1').replace(
-                '{conversation_id}', 'conv_1').replace('{item_id}', 'item_1').replace(
-                '{completion_id}', 'chat_1')
+            identities = dict(response_id='resp_1', conversation_id='conv_1',
+                              item_id='item_1', completion_id='chat_1',
+                              upload_id='upload_1', file_id='file_1')
+            self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
+                                 identities.keys())
+            path = template.format(**identities)
             if method == 'GET':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
+            content_type = 'application/json'
+            if method == 'POST' and (template == '/v1/files' or
+                                      template.endswith('/parts')):
+                content_type = 'multipart/form-data; boundary=cpu-route'
+                body = ('--cpu-route\r\nContent-Disposition: form-data; '
+                        'name="file"; filename="fixture.txt"\r\n'
+                        'Content-Type: text/plain\r\n\r\nactual CPU bytes'
+                        '\r\n--cpu-route--\r\n')
             with self.subTest(method=method, path=path):
                 connection = http.client.HTTPConnection('127.0.0.1',
                     self.stack.value['policy']['listen_port'], timeout=4)
                 try:
                     connection.request(method, path, body, {
                         'Authorization': 'Bearer '+'A'*40,
-                        'Content-Type': 'application/json'})
+                        'Content-Type': content_type})
                     response = connection.getresponse()
                     self.assertEqual(response.status, 200, response.read())
                     row = self.stack.application_requests[-1]

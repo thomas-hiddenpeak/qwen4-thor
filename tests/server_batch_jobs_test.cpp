@@ -1121,7 +1121,9 @@ Q4T_TEST(batch_config_native_cli_budget_and_effective_discovery) {
   const auto* batches = capabilities.Find("batches");
   Q4T_CHECK(batches && batches->GetBool("create") &&
             batches->GetBool("cancel") &&
-            batches->GetArray("execution_endpoints")->array.size() == 3 &&
+            OutputJson(*batches->GetArray("execution_endpoints")) ==
+                R"(["/v1/responses","/v1/chat/completions","/v1/completions",)"
+                R"("/v1/moderations","/v1/embeddings"])" &&
             !batches->GetBool("core_readiness_dependency"));
   const auto* out = std::getenv("Q4T_TEST_OUTPUT_DIR");
   const auto directory =

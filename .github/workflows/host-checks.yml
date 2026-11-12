@@ -11,7 +11,9 @@ permissions:
 jobs:
   host-contracts:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Current clean build takes up to ten minutes; the complete host registry
+    # and transport suites have their own finite budgets below.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -46,6 +48,22 @@ jobs:
           g++-14 --version
           cmake --version
           /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
+      - name: Install pinned SDK for native TLS client contracts
+        timeout-minutes: 2
+        run: |
+          node -e 'if (Number(process.versions.node.split(".")[0]) < 22) process.exit(1)'
+          mkdir -p build/public-host/sdk
+          cp tools/serve_protocol/package.json tools/serve_protocol/package-lock.json build/public-host/sdk/
+          npm ci --prefix build/public-host/sdk --ignore-scripts --no-audit --no-fund
+      - name: Describe document sandbox prerequisites
+        timeout-minutes: 1
+        run: |
+          g++-14 -std=c++23 -Wall -Wextra -Werror -Iinclude \
+            tools/verify/host_sandbox_probe.cpp \
+            src/server/file_document_sandbox.cpp src/server/file_pdf_sandbox.cpp \
+            src/server/file_legacy_sandbox.cpp -o build/public-host/sandbox-probe
+          timeout 15s build/public-host/sandbox-probe build/public-host/sandbox-diagnostics |
+            while IFS= read -r line; do echo "::notice title=Document sandbox::$line"; done
       - name: Configure without CUDA or model fixtures
         run: >-
           cmake -S tests/host -B build/public-host
