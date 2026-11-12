@@ -1,0 +1,11 @@
+test_active_file_reference_and_unsafe_destination_are_not_retired (tools.serve_recovery.test_publication_archive.ArchiveTests.test_active_file_reference_and_unsafe_destination_are_not_retired) ... ok
+test_actual_lease_competition_does_not_move_generation (tools.serve_recovery.test_publication_archive.ArchiveTests.test_actual_lease_competition_does_not_move_generation) ... ok
+test_archive_replay_restore_preserve_current_budgets_and_all_original_bytes (tools.serve_recovery.test_publication_archive.ArchiveTests.test_archive_replay_restore_preserve_current_budgets_and_all_original_bytes) ... ok
+test_changed_plan_or_generation_rejected_before_movement (tools.serve_recovery.test_publication_archive.ArchiveTests.test_changed_plan_or_generation_rejected_before_movement) ... ok
+test_current_history_and_not_yet_journaled_intent_are_protected (tools.serve_recovery.test_publication_archive.ArchiveTests.test_current_history_and_not_yet_journaled_intent_are_protected) ... ok
+test_interruption_after_atomic_rename_resumes_original_plan (tools.serve_recovery.test_publication_archive.ArchiveTests.test_interruption_after_atomic_rename_resumes_original_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.880s
+
+OK
