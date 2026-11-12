@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11实际业务驱动已准备，冻结1启动/6带模型HTTP/900秒严格租约，
+  真实文档入库至回答/引用、后台/历史及共享计量；
+  [3项CPU判据检查通过](evidence/serve-file-search-business-driver-20261112/README.md)，
+  尚未运行GPU，默认rev80保持。
+
 - A11审核识别、匿名Batch动态输入预算和取消状态已修复，
   [18项组合CPU首过](evidence/serve-file-search-combinations-cpu-20261112/README.md)。
   实际后台所有者、原ID恢复、审核持有/阻断、Batch冻结和加密/pro/
