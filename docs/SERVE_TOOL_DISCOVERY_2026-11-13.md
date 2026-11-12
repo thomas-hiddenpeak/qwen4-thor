@@ -61,7 +61,15 @@ server函数JSON闭环2次、server custom SSE闭环2次、client搜索/
 [77项不同CPU及4项SDK/驱动检查最终通过](evidence/serve-tool-discovery-integration-cpu-20261113/README.md)。
 搜索输入经稳定JSON文本适配器进入模型，由已有隔离校验器验证原始
 schema；不将生成grammar的保证冒充任意schema保证。协议来源漏登已
-修复并加入防遗漏检查。接着冻结的真实业务；尚未宣称业务验收通过
-或对外交付tool_search/defer_loading。
+修复并加入防遗漏检查。[首轮实际失败](evidence/serve-tool-discovery-business-failure-20261113/README.md)
+已定位为拒答guard的大词表工作预算误拒，[12项CPU修复验证](evidence/serve-tool-discovery-guard-repair-20261113/README.md)
+通过后，[完整真实业务通过](evidence/serve-tool-discovery-business-20261113/README.md)：
+1启动10创建104.447秒，实际四次资料读取；尚待可用发行。
 默认rev110保持，PR25已验异步
 提交实际合main（4e87a03f）；后续新开发未混入该已检查的head。
+
+后续交付资格固定三组：主/轻配置2启动8请求900秒（包含原生embedding
+入口仍正常）；当前引擎及既有旧控制的兼容包独立1启动2请求300秒；
+实际整树切换2启动4请求1次CUDA探测600秒，验证动态发现历史跨恢复
+仍能接收真实结果且新请求也可调用。不做完整性能/质量矩阵，不扩展
+视觉或长稳。每组全程同一严格租约，先完成前一组资格再作为回退来源。

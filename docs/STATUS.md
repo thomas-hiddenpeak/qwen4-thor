@@ -36,6 +36,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 工具发现[真实业务补验通过](evidence/serve-tool-discovery-business-20261113/README.md)：
+  1启动/10创建/104.447秒，server函数JSON/custom SSE、client目录外
+  定义及additional_tools四次实际读取闭环通过，错误结果400拒绝。
+  98次NVML正常，资源清理；连原失败累计2/11/144.311秒。PR26已建，
+  继续主轻/恢复资格、可回退发行及实际合main；默认rev110保持。
+
 - 已用两项大词表CPU负控复现工具发现失败：仅检查拒答的guard重复
   扫描XML候选耗尽工作额度，误报内存。[修后12项针对性CPU通过](evidence/serve-tool-discovery-guard-repair-20261113/README.md)，
   grammar/拒答/停止/schema检查及资源上限保持。补验固定1启动10创建，

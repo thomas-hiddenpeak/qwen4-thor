@@ -997,9 +997,9 @@
         }
       },
       "tool_discovery": {
-        "state": "grammar_resource_root_cause_fixed_cpu_pass_business_repair_pending",
+        "state": "real_business_pass_reversible_delivery_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
-        "public_capability_not_yet_enabled": true,
+        "public_capability_not_yet_enabled": false,
         "gpu_budget": {
           "starts": 1,
           "response_creates": 10,
@@ -1024,7 +1024,15 @@
           "starts": 2,
           "response_creates": 11,
           "seconds": 1200
-        }
+        },
+        "business_evidence": "docs/evidence/serve-tool-discovery-business-20261113",
+        "business": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 104.44730356521904
+        },
+        "default_capability_not_yet_published": true,
+        "pr": 26
       }
     },
     {
@@ -1654,12 +1662,12 @@
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       },
       "tool_discovery": {
-        "state": "grammar_resource_root_cause_fixed_cpu_pass_business_repair_pending",
+        "state": "real_business_pass_reversible_delivery_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
         "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
-        "public_capability_not_yet_enabled": true,
+        "public_capability_not_yet_enabled": false,
         "gpu_started": true,
         "gpu_budget": {
           "starts": 1,
@@ -1680,7 +1688,15 @@
           "starts": 2,
           "response_creates": 11,
           "seconds": 1200
-        }
+        },
+        "business_evidence": "docs/evidence/serve-tool-discovery-business-20261113",
+        "business": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 104.44730356521904
+        },
+        "default_capability_not_yet_published": true,
+        "pr": 26
       }
     },
     {
