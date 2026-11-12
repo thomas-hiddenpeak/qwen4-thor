@@ -1,0 +1,248 @@
+{
+  "status": "PASS",
+  "outer": {
+    "clock": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "logical_ns": 951984233127,
+      "monotonic_ns": 2643547715453166
+    },
+    "enabled": true,
+    "format": "q4t-outer-recovery-v1",
+    "last": {
+      "args": {
+        "owner": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "pid": 1885905,
+          "start_ticks": 264354771
+        },
+        "ticket": "16089cc1-3f71-4223-9fc5-2ecdffb1af62"
+      },
+      "operation": "spawned",
+      "result": {
+        "recorded": true
+      }
+    },
+    "pending": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "cleanup": null,
+      "core_generations": {
+        "controller": 2,
+        "gateway": 2,
+        "model": 2
+      },
+      "core_revision": 27,
+      "core_sha256": "564ae298761fa3290e14574545b7c51c8323b672f23f1f7fe46a950038532bec",
+      "custody": {
+        "instance_token": "bc23af58-59b1-46b6-96de-bacd55b3d132",
+        "supervisor": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "pid": 1885894,
+          "start_ticks": 264354320
+        },
+        "tree_scope": "e394c0b6-6b5e-4c9d-8ed6-ffbf68be516a"
+      },
+      "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+      "owner": {
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "pid": 1885905,
+        "start_ticks": 264354771
+      },
+      "resource": {
+        "directory": "/var/lib/q4t-resource-validation-fa4fc0bc-0950-444f-9fd5-25239bb970df-completion",
+        "publication": {
+          "admission_enabled": true,
+          "device_authorized": false,
+          "domain_id": "2c83912a-0171-4491-86d1-eeec3d342460",
+          "format": "q4t-resource-installation-v2",
+          "model_actions": false,
+          "phase": "ready",
+          "record": {
+            "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+            "children": {
+              "outer": [
+                29,
+                245007
+              ],
+              "service": [
+                29,
+                245042
+              ]
+            },
+            "domain_id": "2c83912a-0171-4491-86d1-eeec3d342460",
+            "format": "q4t-resource-kernel-v2",
+            "namespaces": {
+              "cgroup": [
+                4,
+                4026531835
+              ],
+              "user": [
+                4,
+                4026531837
+              ]
+            },
+            "policy": {
+              "oom_group": true,
+              "outer": {
+                "memory_high_bytes": 402653184,
+                "memory_max_bytes": 536870912,
+                "pids_max": 64
+              },
+              "physical_ram_limit": false,
+              "service": {
+                "memory_high_bytes": 120259084288,
+                "memory_max_bytes": 128849018880,
+                "pids_max": 4096
+              },
+              "swap_max_bytes": 0
+            },
+            "root": "/sys/fs/cgroup/q4t-resource-2c83912a-0171-4491-86d1-eeec3d342460",
+            "root_identity": [
+              29,
+              244928
+            ],
+            "runtime_uid": 2002,
+            "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df"
+          },
+          "revision": 1,
+          "runtime_gid": 2002,
+          "runtime_uid": 2002,
+          "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df"
+        }
+      },
+      "serial": 3,
+      "ticket": "16089cc1-3f71-4223-9fc5-2ecdffb1af62"
+    },
+    "protected": false,
+    "revision": 9,
+    "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "starts": [
+      {
+        "at": 99057766597,
+        "serial": 2,
+        "ticket": "bc83a613-1282-487b-9b00-d4794d2e9f79"
+      },
+      {
+        "at": 951978353154,
+        "serial": 3,
+        "ticket": "16089cc1-3f71-4223-9fc5-2ecdffb1af62"
+      }
+    ],
+    "total": 3
+  },
+  "counts": {
+    "starts": 6,
+    "chats": 8,
+    "probes": 1,
+    "controls": 1010
+  },
+  "real_tool_executions": 1,
+  "stored_chat_retained": true,
+  "final_state": {
+    "version": 1,
+    "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "state": "READY",
+    "guardian_pid": 1885905,
+    "guardian_start_ticks": 264354771,
+    "outer_supervised": true,
+    "outer_owner_lost": false,
+    "outer_owner_pid": 1885894,
+    "outer_owner_start_ticks": 264354320,
+    "outer_origin_pid": 1885894,
+    "outer_origin_start_ticks": 264354320,
+    "outer_heartbeat_age_ms": 54,
+    "controller_pid": 1886942,
+    "controller_generation": 4,
+    "controller_start_ticks": 264362406,
+    "controller_events": 267,
+    "controller_health": {
+      "auxiliary_io": {
+        "acknowledged_operations": 36,
+        "dropped_bytes": 0,
+        "failed_operations": 0,
+        "pending_records": 0,
+        "queued_bytes": 0,
+        "queued_records": 0,
+        "worker_pid": 1886952,
+        "worker_state": "AVAILABLE",
+        "worker_unreaped": false
+      },
+      "observation": "AVAILABLE",
+      "phase": "READY",
+      "reason": "profile_commit_wait"
+    },
+    "version_recovery": {
+      "enabled": true,
+      "root_manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+      "cycle_id": "aa8bca36-9d55-4458-981b-53672326976a",
+      "selected": "fallback",
+      "launch_payload": "fallback",
+      "payload_manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+      "fallback_consumed": true,
+      "protected": false,
+      "pending": false,
+      "payload_prepared": true,
+      "state_available": true,
+      "worker_pid": 1885907,
+      "worker_start_ticks": 264354784,
+      "probe_pid": null,
+      "probe_count": 1,
+      "last_fault": {
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "fingerprint": "3e3a913a14f9c341670936e637184a7aacf77639286c4ec9fbd3b2d588762f9d",
+        "generation": 3,
+        "kind": "native_process_signal",
+        "payload_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "role": "gateway",
+        "signal": 6
+      },
+      "reason": "",
+      "role_launch_authority": false
+    },
+    "version_exit_observation": {
+      "role": "gateway",
+      "generation": 3,
+      "signal": 6,
+      "owned_termination": false,
+      "resources_safe": true,
+      "lease_continuous": true,
+      "device_failure": false,
+      "accepted": true
+    },
+    "auxiliary_projection_errors": 0,
+    "controller_health_age_ms": 198,
+    "continuous_model_recovery": true,
+    "cold_device_recovery": false,
+    "cold_probe_used": false,
+    "probe_used_for_generation": 0,
+    "retry_after_ms": 0,
+    "journal_pid": 1885906,
+    "journal_start_ticks": 264354782,
+    "controller_ready": true,
+    "model_pid": 1886951,
+    "model_start_ticks": 264362572,
+    "model_generation": 4,
+    "model_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "model_protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+    "model_capacity_sha256": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+    "model_ready": true,
+    "model_admission_open": true,
+    "business_ready": true,
+    "gateway_pid": 1886937,
+    "gateway_start_ticks": 264362345,
+    "gateway_generation": 4,
+    "gateway_ready": true,
+    "gateway_bound_model": 4,
+    "gateway_recovering": false,
+    "gateway_binding_reason": "none",
+    "gateway_binding_model_generation": 4,
+    "gateway_binding_age_ms": 198,
+    "quota_wait_ms": 0,
+    "daemon_detached": false,
+    "recovery_frozen": false,
+    "stop_requested": false,
+    "stop_durable": false,
+    "cleanup_confirmed": false,
+    "reason": ""
+  },
+  "physical_ram_limit": false
+}

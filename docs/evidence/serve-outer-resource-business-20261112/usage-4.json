@@ -1,0 +1,46 @@
+{
+  "generation": 4,
+  "owner": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "pid": 1886951,
+    "start_ticks": 264362572
+  },
+  "phase": "active",
+  "revision": 6,
+  "snapshot": {
+    "captured_ns": "2643617627920839",
+    "clients": [
+      {
+        "admitted": "1",
+        "id": "alpha",
+        "requests": "1",
+        "rpm_rejected": "0",
+        "settled_tokens": "426",
+        "tokens": "426",
+        "tpm_rejected": "0",
+        "window_ns": "2643614383065536",
+        "window_started": true
+      },
+      {
+        "admitted": "0",
+        "id": "beta",
+        "requests": "0",
+        "rpm_rejected": "0",
+        "settled_tokens": "0",
+        "tokens": "0",
+        "tpm_rejected": "0",
+        "window_ns": "0",
+        "window_started": false
+      }
+    ],
+    "policy_revision": "0",
+    "policy_sha256": "42c72c47bee82d808fa2807e53a8e903b9c2153d06bf3a054222fe636e3ed348",
+    "version": 1
+  },
+  "source": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "generation": 3
+  },
+  "started_ns": "2643662363169659",
+  "version": 1
+}
