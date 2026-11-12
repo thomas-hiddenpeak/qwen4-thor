@@ -2052,6 +2052,7 @@
     "tools/serve_recovery/device_platform.py": "325bbadd21fa41c56603c45d9bbb4f338fe549624d838cd3072827716221ac18",
     "tools/serve_recovery/device_resource.py": "8e7a121ccc4d4369dcca9d5ffd30c4d73fea8fd33fd3daf97445d4fa7fb25ec1",
     "tools/serve_recovery/device_store.py": "7a6078aa4a5f30898baa02169e788b20d86f6ebd1bdf389e4861c240d1f9989c",
+    "tools/serve_recovery/feature_acceptance.py": "77833b5dbf1e6212759d35e3db63f50c402f6bcdd50b6132b14e5e463c006429",
     "tools/serve_recovery/fixture_controller.py": "1b3790ff118396f02e7aab6f12a6f0e750912931f22c893fae20d9a2ea866cc6",
     "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
     "tools/serve_recovery/fixture_model.py": "dd08bdac7ac3f922338ff9cc308591c7e427721b42405ee7dae0301added8881",
