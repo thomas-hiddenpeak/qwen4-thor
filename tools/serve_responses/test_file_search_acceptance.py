@@ -1,12 +1,27 @@
-"""Reject false retrieval acceptance using actual captured CPU producer output."""
+"""Reject false retrieval acceptance using actual recorded producer output."""
 import copy
 import json
+import os
 import unittest
 
 from tools.serve_responses import file_search_acceptance as stage
 
 
 class FileSearchAcceptanceTests(unittest.TestCase):
+    def test_actual_backend_separates_metadata_load_from_weight_upload(self):
+        from pathlib import Path
+        directory = Path(os.environ.get('Q4T_FILE_SEARCH_BUSINESS_DIR',
+            stage.ROOT/'docs/evidence/serve-file-search-business-20261112'))
+        actual = json.loads((directory/'final-config.wire').read_text())
+        stage.check_backend_health(actual)
+        for key, bad in [('load_attempts', 3), ('load_failures', 1),
+                         ('device_bytes', 0), ('core_readiness_dependency', True),
+                         ('state', 'degraded')]:
+            value = copy.deepcopy(actual)
+            value['native_embedding_health'][key] = bad
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                stage.check_backend_health(value)
+
     def test_actual_wire_oracle_rejects_wrong_source_index_and_projection(self):
         root = stage.ROOT/'docs/evidence/serve-responses-file-search-cpu-20261112/native-file-search-sdk'
         for name in ('included', 'hidden'):

@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "path": "/v1/vector_stores",
+  "body": "{\"name\": \"Real project source records\", \"file_ids\": [\"file_188019cfeb864753e213d5f14a497629\", \"file_281f0d2750175833d13e6492367c608f\"], \"chunking_strategy\": {\"type\": \"static\", \"static\": {\"max_chunk_size_tokens\": 4096, \"chunk_overlap_tokens\": 0}}}",
+  "owner": "encryption-test"
+}

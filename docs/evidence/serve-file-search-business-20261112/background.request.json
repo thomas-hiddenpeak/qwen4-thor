@@ -1,0 +1,41 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "store": true,
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 384,
+    "max_tool_calls": 1,
+    "parallel_tool_calls": false,
+    "tools": [
+      {
+        "type": "file_search",
+        "vector_store_ids": [
+          "vs_e5c99af25ff7bfc3d9e6fc59b7597487"
+        ],
+        "max_num_results": 2
+      }
+    ],
+    "tool_choice": {
+      "type": "file_search"
+    },
+    "instructions": "Use file_search with exactly one query. Answer only from its actual returned sources in at most two sentences. Copy the exact citation_marker of the supporting source into the answer. Do not invent file IDs or claim any other actions.",
+    "input": "According to this project, where may MoE expert capacity be offloaded, and why is moving it to CPU memory insufficient? Use the terms SSD and DRAM in your answer.",
+    "background": true,
+    "include": [
+      "file_search_call.results"
+    ]
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19091/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

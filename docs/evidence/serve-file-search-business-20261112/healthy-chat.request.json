@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "path": "/v1/chat/completions",
+  "body": "{\"model\": \"qwen3.8-flash-next\", \"temperature\": 0, \"enable_thinking\": false, \"max_completion_tokens\": 32, \"messages\": [{\"role\": \"user\", \"content\": \"Compute 17 + 25. Reply only with the decimal number.\"}]}",
+  "owner": "encryption-test"
+}

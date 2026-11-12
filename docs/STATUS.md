@@ -28,10 +28,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
-- A11实际业务驱动已准备，冻结1启动/6带模型HTTP/900秒严格租约，
-  真实文档入库至回答/引用、后台/历史及共享计量；
-  [3项CPU判据检查通过](evidence/serve-file-search-business-driver-20261112/README.md)，
-  尚未运行GPU，默认rev80保持。
+- A11实际项目资料检索[真实业务已通过](evidence/serve-file-search-business-20261112/README.md)：
+  1启动/6带模型HTTP/85.158秒，JSON/SSE/schema、实际引用、后台/历史及
+  共享计量通过。原最终健康判据错误已修正，保留失败并离线复核原件，
+  未重跑GPU。继续能力发现、原生TLS及受监护发行，默认rev80保持。
 
 - A11审核识别、匿名Batch动态输入预算和取消状态已修复，
   [18项组合CPU首过](evidence/serve-file-search-combinations-cpu-20261112/README.md)。
@@ -137,7 +137,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 | A08 | 持久Chat/Responses、Conversations、background/cancel等已交付 |
 | A09 | Files/Uploads/Batch已有实际交付；剩余8类endpoint后端及对应SDK/发行仍须与A10完成 |
 | A10 | 原生embedding检索及moderation等已有交付；audio/realtime/image generation/edit/video等后端、媒体缓存及组合仍待实现 |
-| A11 | 内建工具/MCP及项目资料检索执行边界待实现；权限、超时、取消、输出上限与完整事件是验收要求 |
+| A11 | 原生资料检索/Responses闭环已完成实际业务短验，发行待完成；MCP及其余内建工具仍须实现 |
 | A12 | 官方Python/JS及现有客户端的最终兼容、错误/流、迁移和发行矩阵待闭合 |
 | N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；外部前置保持可选 |
 | R01—R06 | rev80保留已验隔离与恢复；新能力profile升级及同能力回退已验发行，原恢复预算保持；后续组合继续见R07—R10 |

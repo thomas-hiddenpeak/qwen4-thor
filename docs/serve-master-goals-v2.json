@@ -1286,7 +1286,8 @@
         "evidence/serve-file-search-contract-cpu-20261112/README.md",
         "evidence/serve-vector-multi-store-cpu-20261112/README.md",
         "evidence/serve-responses-file-search-cpu-20261112/README.md",
-        "evidence/serve-file-search-combinations-cpu-20261112/README.md"
+        "evidence/serve-file-search-combinations-cpu-20261112/README.md",
+        "evidence/serve-file-search-business-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1294,7 +1295,7 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "responses_cpu_sdk_accepted_combinations_business_in_progress",
+        "state": "real_business_accepted_delivery_in_progress",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
         "production_routes": true,
@@ -1333,7 +1334,7 @@
           "real_files": true,
           "real_document_worker": true,
           "actual_tokenizer": true,
-          "gpu_embedding": false,
+          "gpu_embedding": true,
           "native_quota_owner": true,
           "production_controller": true,
           "production_http": true,
@@ -1386,7 +1387,7 @@
           "native_engine_built": true,
           "gpu_starts": 0,
           "http": true,
-          "actual_model_business": false,
+          "actual_model_business": true,
           "default_changed": false
         },
         "search_api": {
@@ -1424,6 +1425,18 @@
           "cpu_cases": 18,
           "evidence": "evidence/serve-file-search-combinations-cpu-20261112/README.md",
           "gpu_starts": 0,
+          "default_changed": false
+        },
+        "actual_model_business": true,
+        "business": {
+          "state": "accepted_original_business_after_oracle_fix",
+          "evidence": "evidence/serve-file-search-business-20261112/README.md",
+          "model_starts": 1,
+          "model_http_requests": 6,
+          "driver_seconds": 85.15848748898134,
+          "original_failure_preserved": true,
+          "repeated_model_requests": 0,
+          "engine_sha256": "f9ed346bd597e2237e1d6e9ab716674c2b3de6f3257e5d23ac68de61a2cb44c2",
           "default_changed": false
         }
       }

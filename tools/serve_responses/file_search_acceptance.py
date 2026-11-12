@@ -125,6 +125,118 @@ def check_meter(before, after, response):
             'native tool query/primary actual usage mismatch')
 
 
+def check_backend_health(config):
+    health = config['native_embedding_health']
+    # Index preparation loads metadata first; the first embedding later loads
+    # weights. Both count as attempts, while weights are uploaded only once.
+    require(health['state'] == 'ready' and health['reason'] == 'none' and
+            health['load_attempts'] == 2 and health['load_failures'] == 0 and
+            health['device_bytes'] == 1191553024 and
+            not health['core_readiness_dependency'],
+            'native backend lifecycle differs')
+    for section in ('vector_ingestion', 'responses_background'):
+        jobs = config[section]
+        require(jobs['state'] == 'ready' and jobs['owned'] == 0 and
+                jobs.get('active', jobs.get('running')) == 0 and
+                jobs.get('errors', jobs.get('recovery_errors')) == 0,
+                'native application work did not settle: '+section)
+    return health
+
+
+def reconcile(directory, output):
+    """Validate immutable original evidence after the final oracle-only fix."""
+    directory, output = Path(directory).resolve(), Path(output).resolve()
+    require(directory.is_relative_to(ROOT/'.q4t-work') and
+            output.is_relative_to(ROOT/'.q4t-work') and not output.exists(),
+            'reconciliation must preserve original evidence')
+    plan, result = read(directory/'plan.json'), read(directory/'result.json')
+    require(result['status'] == 'FAILED' and
+            result['error'].endswith('RuntimeError: native backend lifecycle differs\n') and
+            result['counts']['starts'] == 1 and result['counts']['chats'] == 6 and
+            result['seconds'] < LIMITS['seconds'], 'different failure or budget')
+    lease = read(directory/'lease/exit.json')
+    require(lease['status'] == 'COMMAND_FAILED' and lease['child_returncode'] == 1 and
+            lease['compute_backend'] == 'nvml' and lease['lease_inherited_by_child'],
+            'original strict lease not valid')
+    cleanup = read(directory/'cleanup.json')
+    require(not cleanup['remaining'] and cleanup['model_exit'] == 0 and
+            cleanup['ports_released'] and cleanup['lease_continuously_held'],
+            'original cleanup incomplete')
+    # Runtime/source/asset identity cannot change to make a failed run pass.
+    # Only this acceptance driver and its direct CPU oracle may differ.
+    changed = []
+    for name, digest in plan['sources'].items():
+        if sha(ROOT/name) != digest:
+            changed.append(name)
+    require(set(changed) <= {
+        'tools/serve_responses/file_search_acceptance.py',
+        'tools/serve_responses/test_file_search_acceptance.py'}, 'runtime source drift')
+    require(sha(plan['binary']) == plan['binary_sha256'] == result['binary_sha256'],
+            'business executable changed')
+    for name, digest in plan['protected'].items():
+        require(sha(name) == digest, 'default changed')
+    for name, digest in plan['embedding_assets_sha256'].items():
+        require(sha(Path(plan['embedding_assets'])/name) == digest, 'embedding asset drift')
+    ids = read(directory/'actual-ids.json')
+    files = ids['files']
+    for index, document in enumerate(plan['documents']):
+        require(sha(ROOT/document['path']) == document['sha256'], 'document source drift')
+        content = read(directory/f'indexed-source-{index}.wire')
+        require([row['text'] for row in content['data']] == [document['text']],
+                'original indexed content differs')
+    search = read(directory/'standalone-search.wire')
+    require(search['data'][0]['file_id'] == files[0] and
+            read(directory/'search-other-owner.http.json')['status'] == 404,
+            'original search/routing differs')
+    before_denied = read(directory/'search-after.metrics.json')[-1]
+    after_denied = read(directory/'search-other-owner-after.metrics.json')[-1]
+    require(before_denied['q4t_prompt_tokens_total'] == after_denied['q4t_prompt_tokens_total'],
+            'denied query used the model')
+    answers = {}
+    for name in ('included', 'hidden', 'background'):
+        sdk = read(directory/(name+'.sdk.json'))
+        require(sdk['ok'] and len(sdk['exchanges']) == 1, 'original SDK did not complete')
+        value = sdk['result']
+        if name == 'background':
+            polls = sorted(directory.glob('background-poll-*.wire'),
+                           key=lambda p:int(p.stem.split('-')[-1]))
+            require(polls, 'original background observation absent')
+            value = read(polls[-1])
+            require(value['id'] == sdk['result']['id'], 'background identity changed')
+        else:
+            check_meter(read(directory/(name+'-before.metrics.json'))[-1],
+                        read(directory/(name+'-after.metrics.json'))[-1], value)
+        answers[name] = check_answer(value, files[1] if name == 'hidden' else files[0],
+                                     included=name != 'hidden', structured=name == 'hidden')
+        for event in sdk.get('chunks') or []:
+            require(not errors(event, 'response_event'), 'original event schema mismatch')
+        retained = read(directory/(name+'-stored.sdk.json'))
+        require(retained['ok'] and retained['result']['id'] == value['id'] and
+                any(item.get('results') for item in retained['result']['output']
+                    if item['type'] == 'file_search_call'), 'original retained evidence missing')
+    follow = read(directory/'history.sdk.json')['result']
+    text = foreground.text(follow)
+    require(follow['status'] == 'completed' and 'SSD' in text and 'DRAM' in text and
+            not any(item['type'] == 'file_search_call' for item in follow['output']),
+            'original history differs')
+    chat = read(directory/'healthy-chat.wire')['choices'][0]
+    require(chat['finish_reason'] == 'stop' and chat['message']['content'].strip() == '42',
+            'original ordinary Chat failed')
+    final = read(directory/'final.metrics.json')[-1]
+    require(final['q4t_execution_steps_total'] <= 6000 and final['q4t_active_chats'] == 0,
+            'original work bound/cleanup differs')
+    health = check_backend_health(read(directory/'final-config.wire'))
+    artifacts = [p for p in directory.iterdir() if p.is_file()]
+    artifacts += [p for p in (directory/'lease').iterdir() if p.is_file()]
+    save(output, dict(status='ACCEPTED_ORIGINAL_BUSINESS_AFTER_ORACLE_FIX',
+        original_status=result['status'], original_lease_status=lease['status'],
+        counts=result['counts'], seconds=result['seconds'], binary_sha256=result['binary_sha256'],
+        original=str(directory), original_plan_sha256=sha(directory/'plan.json'),
+        changed_oracles=changed, actual_answers=answers, backend_health=health,
+        gpu_starts_added=0, repeated_model_requests=0, default_unchanged=True,
+        artifacts_sha256={str(p.relative_to(directory)):sha(p) for p in artifacts}))
+
+
 def prepare(args):
     background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
@@ -303,12 +415,7 @@ class Stage(encrypted.Stage):
         status, raw = self.http('/v1/config', label='final-config')
         require(status == 200, 'final configuration unavailable')
         config = json.loads(raw)
-        health = config['native_embedding_health']
-        require(health['state'] == 'ready' and health['load_attempts'] == 1 and
-                not health['core_readiness_dependency'], 'native backend lifecycle differs')
-        jobs = config['vector_ingestion']
-        require(jobs['state'] == 'ready' and jobs['owned'] == jobs['active'] == 0 and
-                jobs['errors'] == 0, 'native ingestion work did not settle')
+        health = check_backend_health(config)
         save(self.out/'business.json', dict(status='PASS', results=results,
             history_id=follow['id'], source_documents=self.plan['documents'],
             final_metrics=last, native_embedding=health))
@@ -324,9 +431,14 @@ def main():
     command.add_argument('--port', type=int, default=19091)
     command = modes.add_parser('run')
     command.add_argument('--plan', type=Path, required=True)
+    command = modes.add_parser('reconcile')
+    command.add_argument('--original', type=Path, required=True)
+    command.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'prepare':
         prepare(args)
+    elif args.mode == 'reconcile':
+        reconcile(args.original, args.output)
     else:
         def deadline(*_):
             raise TimeoutError('bounded file search business deadline')

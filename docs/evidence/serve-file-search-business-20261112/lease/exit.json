@@ -1,0 +1,25 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_responses/file_search_acceptance.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-file-search-20261112/business-01/plan.json"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "explicit_inherited_fd_count": 0,
+  "finished": {
+    "utc": "2026-11-12T11:05:42.501763+00:00",
+    "monotonic": 2671625.018646845,
+    "pid": 1980002
+  }
+}
