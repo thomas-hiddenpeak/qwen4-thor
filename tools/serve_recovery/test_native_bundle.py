@@ -118,7 +118,11 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V17_SOURCES),
                          {'tools/serve_recovery/'+name+'.py' for name in
                           ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
-                           'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control', 'outer_runtime', 'resource_kernel', 'resource_install', 'resource_launch', 'resource_reconcile', 'outer_daemon')})
+                           'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control',
+                           'outer_runtime', 'resource_kernel', 'resource_install', 'resource_launch',
+                           'resource_reconcile', 'outer_daemon', 'host_artifact', 'host_install',
+                           'host_entry', 'host_systemd', 'host_handoff', 'device_resource',
+                           'cold_requests', 'cold_verify', 'cold_authority', 'cold_channel', 'cold_issuer')})
         self.assertEqual(set(bundle.V17_SOURCES)-set(bundle.V16_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in ('cold_admission',
              'device_budget', 'device_store', 'device_control', 'device_inventory',
@@ -451,6 +455,7 @@ from tools.serve_recovery import outer_daemon
 from tools.serve_recovery import host_artifact, host_install, host_entry, host_systemd
 from tools.serve_recovery import host_handoff
 from tools.serve_recovery import device_resource
+from tools.serve_recovery import cold_requests, cold_verify, cold_authority, cold_channel, cold_issuer
 assert not lifecycle.pending_outer(sys.argv[2], {})
 service.main(['resume', '--help'])
 '''

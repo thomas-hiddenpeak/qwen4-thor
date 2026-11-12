@@ -1,0 +1,55 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_DEVICE_CONTROL_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/device-detach-build/q4t-device-control",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_issuer.py",
+    "-v",
+    "tools.serve_recovery.test_cold_issuer.HistoryTests.test_spent_attempt_survives_lost_reply_new_host_and_new_boot",
+    "tools.serve_recovery.test_cold_issuer.HistoryTests.test_lost_replay_journal_or_marker_cannot_be_reinitialized",
+    "tools.serve_recovery.test_cold_issuer.HistoryTests.test_partial_replay_initialization_resumes_only_unpublished_seed",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_actual_peer_original_intent_and_private_verifier_issue_once",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_issue_failure_spends_both_original_attempt_and_device_charge",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_stop_intent_and_changed_request_never_reach_device_control",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_replaced_instance_fd_and_peer_start_cannot_issue",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_disabled_or_retired_host_does_not_kill_existing_peer",
+    "tools.serve_recovery.test_cold_issuer.AuthorityTests.test_actual_installed_root_channel_rejects_unarmed_without_touching_peer",
+    "tools.serve_recovery.test_cold_issuer.ChannelTests.test_real_worker_returns_fds_only_after_complete_tree_exit",
+    "tools.serve_recovery.test_cold_issuer.ChannelTests.test_orphan_and_timeout_hold_original_slot_and_lease_until_reaped",
+    "tools.serve_recovery.test_cold_issuer.ChannelTests.test_no_reply_times_out_and_reaps_only_own_worker",
+    "tools.serve_recovery.test_cold_issuer.ChannelTests.test_message_credentials_reject_socket_forwarded_to_another_process",
+    "tools.serve_recovery.test_cold_issuer.ChannelTests.test_wrong_fd_count_closes_received_capabilities",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_selection_and_actual_allowed_fd_are_original_service_leaf",
+    "tools.serve_recovery.test_device_resource.ResourceTests.test_partial_association_blocks_removal_and_resumes_original_ids",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue"
+  ],
+  "exit_code": 1,
+  "seconds": 12.248013596050441,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

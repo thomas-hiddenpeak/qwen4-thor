@@ -24,7 +24,7 @@ from tools.serve_recovery import outer_manager, resource_install as resources, r
 from tools.serve_recovery import test_native_bundle, test_resource_install as fixtures
 
 
-def prepare(path, *, native=False):
+def prepare(path, *, native=False, cold=False):
     os.environ['Q4T_TEST_OUTPUT_DIR'] = str(path)
     fixture = test_native_bundle.BundleTests(); fixture.setUp()
     fixture.base['python'] = dict(path=str(Path(sys.executable).resolve()),
@@ -37,11 +37,12 @@ def prepare(path, *, native=False):
     receipt = fixture.prepare(); package = Path(receipt['package'])
     injection = '''\n# Explicit CPU fixture: verification substitution only after UID drop.\nif os.geteuid() != 0:\n    import json\n    from tools.serve_recovery import bundle as cpu_bundle, service as cpu_service\n    cpu_bundle.engine.verify = lambda *_a, **_kw: json.loads(%r)\n    def cpu_no_gpu(*_a, **_kw): raise AssertionError('GPU forbidden in host CPU fixture')\n    cpu_service.acquire_lease = cpu_no_gpu\n\n''' % json.dumps(fixture.base)
     manifest = json.loads((package/'manifest.json').read_text())
-    for name in ('host_entry', 'outer_daemon'):
+    for name in ('host_entry', 'outer_daemon', *(('cold_verify',) if cold else ())):
         relative = 'source/tools/serve_recovery/'+name+'.py'; script = package/relative
         script.chmod(0o600)
         script.write_text(script.read_text().replace("if __name__ == '__main__':", injection+"if __name__ == '__main__':"))
         script.chmod(0o400); manifest['files'][relative] = bundle.engine.sha(script)
+    if cold: manifest['lock_path'] = str(fixture.directory/'private-cold-cpu-lease')
     bundle.engine.save(package/'manifest.json', manifest); digest = bundle.engine.sha(package/'manifest.json')
     launcher = package/'bin/q4t'; launcher.chmod(0o600)
     launcher.write_bytes(bundle.launcher(digest, fixture.base['python']['path'])); launcher.chmod(0o500)
