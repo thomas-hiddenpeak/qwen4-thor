@@ -9,6 +9,26 @@ from tools.serve_service import capacity, package
 
 
 class QualificationDriverTests(unittest.TestCase):
+    def test_new_candidate_identity_cannot_relabel_or_modify_retained_settings(self):
+        base = dict(files=dict(q4t='a'*64, other='f'*64), protocol_sha256='b'*64,
+                    model_dir='/readonly/model', settings=dict(native_embedding=dict(
+                        package.NATIVE_EMBEDDING, directory='/readonly/assets'),
+                        profile=capacity.normalize(dict(version=1))))
+        old = copy.deepcopy(base)
+        metadata = dict(binary_sha256='c'*64, chat_protocol=dict(protocol_sha256='d'*64))
+        value = stage.candidate_base(base, 'c'*64, metadata)
+        self.assertEqual(base, old)
+        self.assertEqual(value['settings'], old['settings'])
+        self.assertEqual(value['model_dir'], old['model_dir'])
+        self.assertEqual(value['files'], dict(q4t='c'*64, other='f'*64))
+        self.assertEqual(value['protocol_sha256'], 'd'*64)
+        value['settings']['profile']['max_tokens'] = 1
+        self.assertEqual(base, old)
+        for invalid in ({}, dict(metadata, binary_sha256='e'*64),
+                        dict(metadata, chat_protocol=dict(protocol_sha256='bad'))):
+            with self.assertRaises(RuntimeError):
+                stage.candidate_base(base, 'c'*64, invalid)
+
     def test_commands_preserve_actual_selected_capacity_and_private_state(self):
         profile = capacity.normalize(dict(version=1))
         base = dict(model_dir='/readonly/model', client_policy={}, settings=dict(

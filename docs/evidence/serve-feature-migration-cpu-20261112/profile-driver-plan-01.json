@@ -1,0 +1,9 @@
+{
+  "cases": 3,
+  "module": "tools.serve_recovery.test_profile_acceptance",
+  "gpu_starts": 0,
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "dc5a6222b09f05d450dd23093c6b980d3b30152086f816b4273d14482e332c10",
+    "tools/serve_recovery/test_profile_acceptance.py": "536b2d0f20af3845467073ed53b824ed85d0ff019817507bfda5ed4e332b78ce"
+  }
+}

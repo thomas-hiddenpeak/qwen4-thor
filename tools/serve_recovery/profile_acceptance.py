@@ -61,6 +61,24 @@ def command(plan, name, directory):
     return args
 
 
+def candidate_base(base, binary_sha, metadata):
+    """Use retained settings to qualify a new engine, never re-sign an old package.
+
+    A package with configured optional backends requires their real observations.
+    Those observations must be obtainable before preparing that new package.
+    This private plan changes only candidate identities, not accepted settings.
+    """
+    require(metadata.get('binary_sha256') == binary_sha and
+        type(metadata.get('chat_protocol')) is dict and
+        type(metadata['chat_protocol'].get('protocol_sha256')) is str and
+        bundle.ledger.HASH.fullmatch(metadata['chat_protocol']['protocol_sha256']),
+        'candidate qualification release identity differs')
+    result = copy.deepcopy(base)
+    result['files']['q4t'] = binary_sha
+    result['protocol_sha256'] = metadata['chat_protocol']['protocol_sha256']
+    return result
+
+
 def prepare(args):
     background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
@@ -68,7 +86,27 @@ def prepare(args):
     engine = args.package.resolve()/'engine'
     base = read(engine/'manifest.json')
     manifest = read(engine.parent/'manifest.json')
-    require(plan['binary_sha256'] == base['files']['q4t'], 'qualification engine differs')
+    release = getattr(args, 'candidate_release', None)
+    if release is not None:
+        release = release.resolve(strict=True)
+        metadata = read(release)
+        decision = Path(metadata['acceptance_decision']).resolve(strict=True)
+        require(sha(decision) == metadata['acceptance_decision_sha256'],
+                'candidate engine acceptance changed')
+        package.accepted_release(metadata, read(decision))
+        declarations = package.verify_declarations(metadata, required=True)
+        for name in package.declaration_files(metadata['release_declarations']['profile']):
+            plan['sources'][str(declarations/name)] = sha(declarations/name)
+        plan['sources'][str(release)] = sha(release)
+        plan['sources'][str(decision)] = sha(decision)
+        plan['candidate_identity'] = dict(release=str(release),
+            release_sha256=sha(release), accepted_settings_engine_sha256=base['files']['q4t'],
+            candidate_engine_sha256=plan['binary_sha256'],
+            original_package_unchanged=True, new_package_qualification_pending=True)
+        base = candidate_base(base, plan['binary_sha256'], metadata)
+    else:
+        require(plan['binary_sha256'] == base['files']['q4t'], 'qualification engine differs')
+    require(plan['model'] == base['model_dir'], 'qualification model differs')
     require(base['settings'].get('native_embedding') is not None,
             'this acceptance requires the delivered native embedding backend')
     require(not base['settings']['application_state']['directory'],
@@ -255,6 +293,8 @@ def main():
     p = sub.add_parser('prepare')
     for name in ('binary', 'package', 'output'):
         p.add_argument('--'+name, type=Path, required=True)
+    p.add_argument('--candidate-release', type=Path,
+                   help='accepted new engine identity with retained package settings')
     p.add_argument('--port', type=int, default=19069)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     p = sub.add_parser('finalize'); p.add_argument('--output', type=Path, required=True)
