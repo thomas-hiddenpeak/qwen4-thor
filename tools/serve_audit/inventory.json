@@ -2067,7 +2067,7 @@
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2",
+    "src/server/chat_template.cpp": "74c2b770f8ef9dae834a91a2ffb939db64bb6f324dfda1e7c8a94e4f933c396b",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2181,7 +2181,7 @@
     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
     "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
-    "src/server/responses_file_search_execution.cpp": "41269dcb4bc61a5b1a7db5ea8ed80e8993f3dbd6be07e6df1debe4a4d5db0538",
+    "src/server/responses_file_search_execution.cpp": "196b826860562e073d9c82129f65348619705e8c72607299e59a34ecc04fc937",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
     "src/server/responses_input.cpp": "f7d31c01376de67049c4f88bd59e7aeac70581a6f2eab4476b17ab11376ec85e",
@@ -4679,6 +4679,19 @@
       "src/server/chat_prompt.cpp": {
         "before": "d3406c8b2c6aaa4e7416ca138aa825fd79abfe2bdbced2f18d655086aacfb5b2",
         "after": "408de33dd30d5c2498e11f6ce0c319b0351e6b776feba43ad78895a4904ff7e1"
+      }
+    }
+  },
+  "async_resume_review_20261113": {
+    "reason": "Use stable model-local call references mapped to actual IDs, never rewrite public/history binding. Append an internal developer resume instruction only to the next model plan after dispatch; no fabricated tool result or public persisted instruction. JSON plus SSE business at actual 256-token managed bound pending.",
+    "sources": {
+      "src/server/chat_template.cpp": {
+        "before": "1239188bcd74f218a8c2cb4076329bb8ba2aed6ae5ae0baf48266e59488c4be2",
+        "after": "74c2b770f8ef9dae834a91a2ffb939db64bb6f324dfda1e7c8a94e4f933c396b"
+      },
+      "src/server/responses_file_search_execution.cpp": {
+        "before": "41269dcb4bc61a5b1a7db5ea8ed80e8993f3dbd6be07e6df1debe4a4d5db0538",
+        "after": "196b826860562e073d9c82129f65348619705e8c72607299e59a34ecc04fc937"
       }
     }
   }

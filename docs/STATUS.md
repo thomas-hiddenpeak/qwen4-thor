@@ -33,6 +33,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 异步续答调度及稳定历史引用[11项CPU最终通过](evidence/serve-async-resume-cpu-20261113/README.md)。
+  原误答仍待真实补验；冻结1启动/8创建/900秒，JSON/SSE都按受控服务
+  256输出预算验证。默认rev102保持，继续所有master。
+
+- 异步候选[受控服务非流式短验失败](evidence/serve-async-managed-failure-20261113/README.md)：
+  调用正确但续答仅省略号，1启动/2业务/50.010秒，正常清理。
+  默认rev102保持；正在补内部续答回合及稳定历史引用，验证通过前不发布。
+
 - 异步候选已取得[当前主/轻配置资格](evidence/serve-async-profiles-20261113/README.md)，
   2启动/8业务通过并清理，默认rev102保持；继续兼容回退载荷与真实
   整树切换验证。PR24已合main，async独立交付后继续全部master。

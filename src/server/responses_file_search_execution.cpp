@@ -245,18 +245,19 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   // One bounded independent-answer step, with no replay/new client dispatch.
   // Retain definitions for historical custom-tool rendering and constraints.
   Set(&envelope.request, "tool_choice", String("none"));
-  auto instructions = envelope.request.GetString("instructions");
-  if (!instructions.empty()) instructions += '\n';
-  instructions +=
+  const std::string instructions =
       "The asynchronous tool calls in this response have been handed to the "
       "client. Their results have not arrived. Continue any independent "
       "part of the user's task now. Do not invent tool results or repeat "
       "calls. If the remaining work depends on results, state briefly that "
       "they are pending.";
-  Set(&envelope.request, "instructions", String(std::move(instructions)));
   auto history = generation_history_;
   const auto& output = candidate.Snapshot().GetArray("output")->array;
   history.array.insert(history.array.end(), output.begin(), output.end());
+  // Resume is a real server scheduling decision after dispatch, not another
+  // user message or an invented tool result. Keep it local to this model step.
+  history.array.push_back(Object(
+      {{"role", String("developer")}, {"content", String(instructions)}}));
   ChatPlanError error;
   status = PrepareResponsesGeneration(envelope, history, config, next, &error);
   if (status)

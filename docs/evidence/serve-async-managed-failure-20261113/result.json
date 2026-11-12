@@ -1,0 +1,47 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/tool_managed_acceptance.py\", line 227, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/tool_managed_acceptance.py\", line 166, in exercise\n    call, args = check_call(tool)\n                 ^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/tool_managed_acceptance.py\", line 73, in check_call\n    raise RuntimeError('async dispatch or independent answer missing')\nRuntimeError: async dispatch or independent answer missing\n",
+  "cleanup_failure": null,
+  "seconds": 50.00953493034467,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 148
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2697298296555412
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2697332810317335
+      },
+      {
+        "kind": "chats",
+        "label": "namespace-call",
+        "ordinal": 2,
+        "monotonic_ns": 2697334786964525
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 2106574,
+      "start_ticks": 269729829
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/retained-01/bundle",
+    "manifest_sha256": "c8570a9579ba8f0765c55ab7ad9b1dd49e2a9f720f019947c2eb92bfeed65a4d"
+  },
+  "scenario": "tool_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

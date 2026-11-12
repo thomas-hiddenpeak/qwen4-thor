@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <charconv>
 #include <cmath>
+#include <map>
 #include <string_view>
 #include <utility>
 
@@ -298,19 +299,21 @@ bool NeedsJsonHistoryValue(const io::Json& value) {
 
 Status AppendToolCalls(const io::Json& request, const io::Json& message,
                        bool has_content, std::string* prompt,
-                       std::span<const std::string> async_call_ids) {
+                       std::span<const std::string> async_call_ids,
+                       const std::map<std::string, size_t>& call_references) {
   const io::Json* calls = message.Find("tool_calls");
   if (!calls || calls->IsNull()) return Status();
   if (!calls->IsArray()) return Status::Fail("tool_calls must be an array");
   for (size_t i = 0; i < calls->array.size(); ++i) {
     const io::Json& call = calls->array[i];
     if (!async_call_ids.empty()) {
-      // The checkpoint has no call-ID token. Keep a safely encoded identity
-      // beside each historical call so late results cannot be positional.
+      // Opaque public IDs are protocol identity, not language-model content.
+      // Local references preserve result association without random-ID noise.
       const auto id = call.GetString("id");
       const bool async = std::find(async_call_ids.begin(), async_call_ids.end(),
                                    id) != async_call_ids.end();
-      *prompt += "\n[Tool call_id: " + EncodeCustomInput(id) +
+      *prompt += "\n[Tool call reference: call_" +
+                 std::to_string(call_references.at(id)) +
                  (async ? "; asynchronous]\n" : "; synchronous]\n");
     }
     if (call.GetString("type") == "custom") {
@@ -610,6 +613,14 @@ Status RenderChatPrompt(const io::Json& request,
     instructions += EncodeSchemaJson(*specification);
   }
   const auto& ms = messages->array;
+  std::map<std::string, size_t> call_references;
+  if (!async_call_ids.empty()) {
+    for (const auto& message : ms)
+      if (const auto* calls = message.GetArray("tool_calls"))
+        for (const auto& call : calls->array)
+          call_references.emplace(call.GetString("id"),
+                                  call_references.size() + 1);
+  }
   if (spans) spans->resize(ms.size());
   const auto begin_content = [&](size_t index) {
     if (spans) (*spans)[index].prompt_begin = prompt->size();
@@ -718,7 +729,7 @@ Status RenderChatPrompt(const io::Json& request,
       begin_content(i);
       *prompt += text[i];
       s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt,
-                          async_call_ids);
+                          async_call_ids, call_references);
       if (!s) return s;
       *prompt += "<|im_end|>\n";
       end_message(i);
@@ -730,8 +741,9 @@ Status RenderChatPrompt(const io::Json& request,
       const auto participant = Participant(ms[result]);
       *prompt += "\n<tool_response>\n";
       if (!async_call_ids.empty())
-        *prompt += "[Tool result call_id: " +
-                   EncodeCustomInput(ms[result].GetString("tool_call_id")) +
+        *prompt += "[Tool result reference: call_" +
+                   std::to_string(call_references.at(
+                       ms[result].GetString("tool_call_id"))) +
                    "]\n";
       if (!participant.empty()) *prompt += participant.substr(1) + "\n";
       begin_content(result);

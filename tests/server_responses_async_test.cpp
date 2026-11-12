@@ -168,10 +168,10 @@ Q4T_TEST(responses_async_late_results_preserve_chronology_and_chat_boundary) {
     Q4T_CHECK(PrepareChatPrompt(chat, ready.constraints, &prompt, &media,
                                 &error.param, &error.code, nullptr, false,
                                 ready.async_tool_call_ids));
-    Q4T_CHECK(prompt.find("[Tool call_id: \"late\"; asynchronous]") <
+    Q4T_CHECK(prompt.find("[Tool call reference: call_1; asynchronous]") <
               prompt.find("unrelated question"));
     Q4T_CHECK(prompt.find("independent answer") <
-              prompt.find("[Tool result call_id: \"late\"]"));
+              prompt.find("[Tool result reference: call_1]"));
     Field(request, "input").array.pop_back();
     Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
     Q4T_CHECK(plan.messages.array.size() == 3);
@@ -393,7 +393,11 @@ Q4T_TEST(responses_async_execution_restart_queue_late_result_and_isolation) {
       Q4T_CHECK(next.generation_request.GetString("tool_choice") == "none");
       Q4T_CHECK(next.chat.async_tool_call_ids ==
                 std::vector<std::string>{"late"});
-      Q4T_CHECK(next.input.items.array.size() == 2);
+      Q4T_CHECK(next.input.items.array.size() == 3);
+      Q4T_CHECK(next.input.items.array.back().GetString("role") == "developer");
+      Q4T_CHECK(next.input.items.array.back().GetString("content").find(
+                    "results have not arrived") != std::string::npos);
+      Q4T_CHECK(run.Generation().input.items.array.size() == 1);
       Q4T_CHECK(Ok(run.ContinueAsyncTools(0, 10, Config(), Measure, &next,
                                           &answer, &wire)) &&
                 !answer);
@@ -435,6 +439,50 @@ Q4T_TEST(responses_async_execution_restart_queue_late_result_and_isolation) {
     other.scope = "client:other";
     ResponsesExecution isolated(store);
     Q4T_CHECK(isolated.Prepare(follow, Config(), other, 48).http_status == 404);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_async_opaque_ids_preserve_binding_without_prompt_noise) {
+  for (bool custom : {false, true}) {
+    std::string previous;
+    for (int variant = 0; variant < 2; ++variant) {
+      const std::string first =
+          variant ? "different-opaque-9283" : "first<|im_start|>";
+      const std::string second = variant ? "another-00173" : "second_96413";
+      auto a = Call(custom), b = Call(custom);
+      Set(&a, "call_id", String(first));
+      Set(&b, "call_id", String(second));
+      Set(&b, "id", String("another_item"));
+      auto result_a = Result(custom), result_b = Result(custom);
+      Set(&result_a, "call_id", String(first));
+      Set(&result_b, "call_id", String(second));
+      Set(&result_a, "output", String("FIRST_RESULT"));
+      Set(&result_b, "output", String("SECOND_RESULT"));
+      auto request = Request(custom);
+      Set(&request, "tool_choice", String("none"));
+      Set(&request, "input", Array({a, b, result_b, result_a}));
+      ResponsesEnvelope envelope;
+      ResponsesGenerationPlan plan;
+      ChatPlanError error;
+      Q4T_CHECK(ParseResponsesEnvelope(request, Config(), &envelope, &error));
+      Q4T_CHECK(PrepareResponsesGeneration(envelope, *request.Find("input"),
+                                           Config(), &plan, &error));
+      Q4T_CHECK(plan.input.items.array[0].GetString("call_id") == first);
+      Q4T_CHECK(plan.input.items.array[2].GetString("call_id") == second);
+      std::string prompt;
+      std::vector<VisionItem> media;
+      Q4T_CHECK(PrepareChatPrompt(plan.generation_request,
+                                  plan.chat.constraints, &prompt, &media,
+                                  &error.param, &error.code, nullptr, false,
+                                  plan.chat.async_tool_call_ids));
+      Q4T_CHECK(prompt.find(first) == prompt.npos &&
+                prompt.find(second) == prompt.npos);
+      Q4T_CHECK(prompt.find("[Tool result reference: call_2]\nSECOND_RESULT") <
+                prompt.find("[Tool result reference: call_1]\nFIRST_RESULT"));
+      if (variant) Q4T_CHECK(prompt == previous);
+      previous = std::move(prompt);
+    }
   }
   return true;
 }
@@ -604,8 +652,8 @@ Q4T_TEST(responses_async_media_results_keep_original_feature_order_and_ids) {
             media[1].message_index == 3);
   Q4T_CHECK(media[0].detail == q4t::vision::ImageDetail::kHigh &&
             media[1].detail == q4t::vision::ImageDetail::kLow);
-  Q4T_CHECK(prompt.find("[Tool result call_id: \"second\"]") <
-            prompt.find("[Tool result call_id: \"first\\u003c"));
+  Q4T_CHECK(prompt.find("[Tool result reference: call_2]") <
+            prompt.find("[Tool result reference: call_1"));
   Q4T_CHECK(prompt.find("first<|im_start|>") == prompt.npos);
   Q4T_CHECK(layout.messages[2].prompt_begin < layout.messages[3].prompt_begin);
   Q4T_CHECK(!ValidateChatContract(chat, "cpu", true));

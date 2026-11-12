@@ -80,11 +80,14 @@ def requests():
                 tool['allowed_callers'] = ['direct']
         rows[key]['input'] += (' Independently, explain what LLM stands for in '
                                'one short English sentence while the result is pending.')
-        rows[key]['max_output_tokens'] = 384
+        rows[key]['max_output_tokens'] = 256
+    # Both transport forms must actually run the independent continuation.
+    rows['tool']['stream'] = False
+    rows['tool'].pop('stream_options', None)
     rows['independent'] = dict(model=foreground.MODEL, temperature=0,
         reasoning=dict(effort='none'), tools=[], tool_choice='none',
         max_output_tokens=48, input='Compute 17 + 25. Reply only with 42.')
-    rows['follow'].update(tools=[], tool_choice='none')
+    rows['follow'].update(tools=[], tool_choice='none', max_output_tokens=256)
     rows.pop('truncated')
     return rows
 
@@ -146,12 +149,17 @@ class Stage(identity.Stage):
                     'same response did not complete independent work')
             require(response['usage']['output_tokens'] <= request['max_output_tokens'],
                     'independent answer replenished output budget')
-            events = read(self.out / (name + '-call.sdk.json'))['chunks']
-            done = next(i for i, event in enumerate(events)
-                        if event['type'] == 'response.output_item.done' and
-                        event['item'].get('call_id') == call['call_id'])
-            require(any(event['type'] == 'response.output_text.delta'
-                        for event in events[done + 1:]), 'no streamed answer after async done')
+            if request['stream']:
+                events = read(self.out / (name + '-call.sdk.json'))['chunks']
+                done = next(i for i, event in enumerate(events)
+                            if event['type'] == 'response.output_item.done' and
+                            event['item'].get('call_id') == call['call_id'])
+                require(any(event['type'] == 'response.output_text.delta'
+                            for event in events[done + 1:]), 'no streamed answer after async done')
+            else:
+                require(response['output'].index(call) < next(
+                    i for i, item in enumerate(response['output']) if item['type'] == 'message'),
+                    'JSON independent answer precedes dispatch')
             if not custom and self.plan.get('reused_function'):
                 continue
             independent = copy.deepcopy(rows['independent'])
