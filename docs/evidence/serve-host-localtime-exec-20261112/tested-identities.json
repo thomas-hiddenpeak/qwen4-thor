@@ -1,0 +1,6 @@
+{
+  "tests/guardian_process_test.cpp": "efc5e23b96b2ff83e9bf5e696871e1c3a9512c9a4e89781c5da82c58a1f12fdc",
+  "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
+  ".github/workflows/host-checks.yml": "19f813b5eb15b3757affa207a54894ce0002d2cb0cb7985de50102c7a774eaef",
+  ".q4t-work/serve-file-search-20261112/host/q4t_guardian_process_tests": "7357cdc861118b1b2453bedbb6f94447095f68d46df4eed835ac236ab5674597"
+}

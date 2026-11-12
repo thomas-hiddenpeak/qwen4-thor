@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[CI可信localtime资源与Guardian exec握手续修](evidence/serve-host-localtime-exec-20261112/README.md)
+
 [A07模型拒绝信号、约束与JSON/SSE完整生命周期](SERVE_REFUSAL_OUTPUT_2026-11-12.md)（实现准备）
 
 [当前实际状态与全部任务入口](STATUS.md) · [2026-11-12完整历史状态快照](HISTORY_STATUS_2026-11-12.md)

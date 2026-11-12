@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23第二轮定位到CI的`/etc/localtime`实际mode0777及exec前父死亡
+  夹具竞态；[18项Guardian针对性CPU通过](evidence/serve-host-localtime-exec-20261112/README.md)。
+  临时CI路径权限与exec握手已修，生产沙箱/默认rev94保持，原两轮
+  失败原件保留，等待真实远端通过再合并；全部master仍active。
+
 - PR23剩余Batch夹具已[9项针对性CPU通过](evidence/serve-host-prerequisites-batch-20261112/README.md)，
   包含完整50000行/391轮/792对象；故障注入短超时不变，容量用例单独
   使用存储预算。CI的legacy资源诊断与信任权限修复已准备，等待真实
