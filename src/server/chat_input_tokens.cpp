@@ -129,9 +129,10 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
     const auto& req = candidate.chat.Request(candidate.generation_request);
     std::string prompt;
     std::vector<VisionItem> items;
-    auto measured =
-        PrepareChatPrompt(req, candidate.chat.constraints, &prompt, &items,
-                          &error->param, &error->code, nullptr, true);
+    auto measured = PrepareChatPrompt(
+        req, candidate.chat.constraints, &prompt, &items, &error->param,
+        &error->code, nullptr, true, candidate.chat.async_tool_call_ids,
+        candidate.chat.responses_tool_media);
     if (!measured) return measured;
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;

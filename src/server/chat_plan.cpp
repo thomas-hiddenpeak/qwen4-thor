@@ -89,7 +89,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   auto status = ValidateChatContract(
       req, model && model->IsString() ? model->str : config.model,
       config.allow_media, &error->param, config.count_input_only,
-      config.preparing_file_inputs);
+      config.preparing_file_inputs, config.async_tool_call_ids,
+      config.responses_tool_media);
   if (!status) {
     if (status.message().starts_with("schema_resource_exhausted:")) {
       error->code = "constraint_resource_exhausted";
@@ -97,6 +98,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     }
     return status;
   }
+  plan->async_tool_call_ids = config.async_tool_call_ids;
+  plan->responses_tool_media = config.responses_tool_media;
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
   status = ParsePromptCacheOptions(req, &plan->cache, &error->param);

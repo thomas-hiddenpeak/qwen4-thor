@@ -4,6 +4,7 @@
 #include <numeric>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
 #include "q4t/server/input_contract.h"
@@ -79,10 +80,52 @@ bool TextResult(const io::Json& message) {
   }
   return true;
 }
+
+// Async history is chronological: a result can arrive after unrelated turns.
+// IDs, rather than result position, associate it with its original call. Only
+// explicitly bound async IDs may remain pending at a message boundary.
+Status AsyncHistory(const io::Json& messages,
+                    std::span<const std::string> async_call_ids) {
+  const std::unordered_set<std::string> async(async_call_ids.begin(),
+                                              async_call_ids.end());
+  std::unordered_set<std::string> seen, pending, synchronous;
+  for (const auto& message : messages.array) {
+    const auto role = message.GetString("role");
+    if (role == "tool") {
+      const auto* id = message.Find("tool_call_id");
+      if (!ValidId(id) || !pending.erase(id->str))
+        return Status::Fail("orphan or duplicate tool_call_id result");
+      synchronous.erase(id->str);
+      continue;
+    }
+    if (!synchronous.empty())
+      return Status::Fail("all synchronous tool results are required");
+    const auto* calls = message.Find("tool_calls");
+    if (role != "assistant" || !calls || calls->IsNull()) continue;
+    if (!calls->IsArray() || calls->array.size() > kMaxCalls)
+      return Status::Fail("tool batch requires at most 128 calls");
+    for (const auto& call : calls->array) {
+      auto status = ValidateCall(call, true);
+      if (!status) return status;
+      const auto id = call.GetString("id");
+      if (!seen.insert(id).second)
+        return Status::Fail("duplicate tool call id in history");
+      pending.insert(id);
+      if (!async.contains(id)) synchronous.insert(id);
+    }
+  }
+  if (!synchronous.empty())
+    return Status::Fail("all synchronous tool results are required");
+  for (const auto& id : async)
+    if (!seen.contains(id))
+      return Status::Fail("async policy references an unknown tool call");
+  return {};
+}
 }  // namespace
 
 Status PlanToolResultOrder(const io::Json& messages,
-                           std::vector<size_t>* render_order) {
+                           std::vector<size_t>* render_order,
+                           std::span<const std::string> async_call_ids) {
   if (render_order) render_order->clear();
   if (!messages.IsArray()) return Status::Fail("messages must be an array");
   const auto& ms = messages.array;
@@ -100,6 +143,11 @@ Status PlanToolResultOrder(const io::Json& messages,
   if (render_order) {
     order.resize(ms.size());
     std::iota(order.begin(), order.end(), size_t{0});
+  }
+  if (!async_call_ids.empty()) {
+    auto status = AsyncHistory(messages, async_call_ids);
+    if (status && render_order) *render_order = std::move(order);
+    return status;
   }
   for (size_t i = 0; i < ms.size();) {
     const auto role = ms[i].GetString("role");

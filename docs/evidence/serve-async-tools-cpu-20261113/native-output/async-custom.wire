@@ -1,0 +1,39 @@
+event: response.created
+data: {"response":{"id":"resp_async","object":"response","created_at":42,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"cpu","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[{"type":"namespace","name":"project","description":"Records","tools":[{"type":"custom","name":"lookup","async":true}]}],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":64,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.in_progress
+data: {"response":{"id":"resp_async","object":"response","created_at":42,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"cpu","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[{"type":"namespace","name":"project","description":"Records","tools":[{"type":"custom","name":"lookup","async":true}]}],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":64,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.in_progress","sequence_number":1}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"id":"ctc_4f82025322ffdfe64dd9adffe3439452","type":"custom_tool_call","call_id":"late","name":"lookup","input":"","namespace":"project","async":true,"caller":{"type":"direct"}},"type":"response.output_item.added","sequence_number":2}
+
+event: response.custom_tool_call_input.delta
+data: {"item_id":"ctc_4f82025322ffdfe64dd9adffe3439452","output_index":0,"delta":"read docs/MODEL.md","type":"response.custom_tool_call_input.delta","sequence_number":3}
+
+event: response.custom_tool_call_input.done
+data: {"item_id":"ctc_4f82025322ffdfe64dd9adffe3439452","output_index":0,"input":"read docs/MODEL.md","type":"response.custom_tool_call_input.done","sequence_number":4}
+
+event: response.output_item.done
+data: {"output_index":0,"item":{"id":"ctc_4f82025322ffdfe64dd9adffe3439452","type":"custom_tool_call","call_id":"late","name":"lookup","input":"read docs/MODEL.md","namespace":"project","async":true,"caller":{"type":"direct"}},"type":"response.output_item.done","sequence_number":5}
+
+event: response.output_item.added
+data: {"output_index":1,"item":{"id":"msg_07866de7a5f4a065891ba75239ce91f0","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":6}
+
+event: response.content_part.added
+data: {"item_id":"msg_07866de7a5f4a065891ba75239ce91f0","output_index":1,"content_index":0,"part":{"type":"output_text","text":"","annotations":[],"logprobs":[]},"type":"response.content_part.added","sequence_number":7}
+
+event: response.output_text.delta
+data: {"item_id":"msg_07866de7a5f4a065891ba75239ce91f0","output_index":1,"content_index":0,"delta":"LLM means large language model.","logprobs":[],"type":"response.output_text.delta","sequence_number":8}
+
+event: response.output_text.done
+data: {"item_id":"msg_07866de7a5f4a065891ba75239ce91f0","output_index":1,"content_index":0,"text":"LLM means large language model.","logprobs":[],"type":"response.output_text.done","sequence_number":9}
+
+event: response.content_part.done
+data: {"item_id":"msg_07866de7a5f4a065891ba75239ce91f0","output_index":1,"content_index":0,"part":{"type":"output_text","text":"LLM means large language model.","annotations":[],"logprobs":[]},"type":"response.content_part.done","sequence_number":10}
+
+event: response.output_item.done
+data: {"output_index":1,"item":{"id":"msg_07866de7a5f4a065891ba75239ce91f0","type":"message","content":[{"type":"output_text","text":"LLM means large language model.","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"},"type":"response.output_item.done","sequence_number":11}
+
+event: response.completed
+data: {"response":{"id":"resp_async","object":"response","created_at":42,"completed_at":43,"status":"completed","error":null,"incomplete_details":null,"output":[{"id":"ctc_4f82025322ffdfe64dd9adffe3439452","type":"custom_tool_call","call_id":"late","name":"lookup","input":"read docs/MODEL.md","namespace":"project","async":true,"caller":{"type":"direct"}},{"id":"msg_07866de7a5f4a065891ba75239ce91f0","type":"message","content":[{"type":"output_text","text":"LLM means large language model.","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"}],"usage":{"input_tokens":20,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0},"output_tokens":10,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":30},"model":"cpu","instructions":null,"metadata":{},"temperature":1,"top_p":1,"parallel_tool_calls":true,"tools":[{"type":"namespace","name":"project","description":"Records","tools":[{"type":"custom","name":"lookup","async":true}]}],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":64,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.completed","sequence_number":12}
+

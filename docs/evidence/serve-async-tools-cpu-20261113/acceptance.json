@@ -1,0 +1,20 @@
+{
+  "status": "PASS_TARGETED_CPU_SDK_SCHEMA",
+  "required_unique_cpu": 36,
+  "required_all_passed": true,
+  "first_attempt": {
+    "passed": 33,
+    "failed": 3
+  },
+  "repair_only": {
+    "passed": 9,
+    "failed": 0
+  },
+  "official_sdk_tests": 2,
+  "official_schema_tests": 1,
+  "cpu_host_builds_zero_warnings": true,
+  "gpu_started": false,
+  "default_revision": 102,
+  "runtime_delivery": false,
+  "source_followup": "Only explicit empty vector initialization and the generation call-site identifier changed after host verification; actual engine build/HTTP validates that target separately. No numerical/inference algorithm changes."
+}

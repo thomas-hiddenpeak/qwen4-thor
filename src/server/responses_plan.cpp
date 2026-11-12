@@ -647,6 +647,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   }
   auto generation_config = config;
   generation_config.prewarm_only = envelope.cache.prewarm;
+  generation_config.async_tool_call_ids = result.input.async_tool_call_ids;
+  generation_config.responses_tool_media = true;
   status = PlanChatRequest(chat, generation_config, &result.chat, error);
   if (!status) {
     if (!guidance.empty() && error->param.starts_with("messages[")) {
@@ -688,6 +690,7 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
   for (size_t i = 0; i < items.size(); ++i)
     if (items[i].GetString("role") == "user") protected_from = i;
   std::unordered_map<std::string, size_t> calls;
+  std::unordered_set<std::string> returned;
   std::vector<int> spanning(items.size() + 1, 0);
   for (size_t i = 0; i < items.size(); ++i) {
     const auto type = items[i].GetString("type");
@@ -697,11 +700,15 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
                type == "custom_tool_call_output") {
       const auto found = calls.find(items[i].GetString("call_id"));
       if (found != calls.end()) {
+        returned.insert(found->first);
         ++spanning[found->second + 1];
         --spanning[i + 1];
       }
     }
   }
+  for (const auto& [id, index] : calls)
+    if (!returned.contains(id) && items[index].GetBool("async"))
+      protected_from = std::min(protected_from, index);
   int open_calls = 0;
   for (size_t cut = 1; cut <= protected_from; ++cut) {
     open_calls += spanning[cut];

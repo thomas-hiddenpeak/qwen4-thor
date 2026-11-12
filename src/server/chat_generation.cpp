@@ -443,7 +443,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             std::vector<VisionItem> media;
             auto measured =
                 PrepareChatPrompt(request, candidate.chat.constraints, &text,
-                                  &media, &error->param, &error->code);
+                                  &media, &error->param, &error->code, nullptr,
+                                  false, candidate.chat.async_tool_call_ids,
+                                  candidate.chat.responses_tool_media);
             if (!measured) return measured;
             std::vector<uint32_t> tokens;
             ChatPromptBudget budget;
@@ -720,9 +722,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::vector<VisionItem> items;
   ChatPromptLayout prompt_layout;
   if (!completion)
-    s = PrepareChatPrompt(req, constraints, &prompt, &items,
-                          &planning_error.param, &planning_error.code,
-                          api_cache ? &prompt_layout : nullptr);
+    s = PrepareChatPrompt(
+        req, constraints, &prompt, &items, &planning_error.param,
+        &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
+        request_plan.async_tool_call_ids, request_plan.responses_tool_media);
   if (!s) {
     SendError(fd, 400, s.message(), {}, planning_error.code,
               planning_error.param);
@@ -827,8 +830,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         candidate.chat.Request(candidate.generation_request);
     std::string text;
     std::vector<VisionItem> media;
-    auto status = PrepareChatPrompt(candidate_req, candidate.chat.constraints,
-                                    &text, &media, &error->param, &error->code);
+    auto status = PrepareChatPrompt(
+        candidate_req, candidate.chat.constraints, &text, &media, &error->param,
+        &error->code, nullptr, false, candidate.chat.async_tool_call_ids,
+        candidate.chat.responses_tool_media);
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;
     auto config = planning_config;
@@ -868,10 +873,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const auto& step_request = step.Request(original);
     items.clear();
     media_plan = {};
-    auto status =
-        PrepareChatPrompt(step_request, step.constraints, &prompt, &items,
-                          &planning_error.param, &planning_error.code,
-                          api_cache ? &prompt_layout : nullptr);
+    auto status = PrepareChatPrompt(
+        step_request, step.constraints, &prompt, &items, &planning_error.param,
+        &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
+        step.async_tool_call_ids, step.responses_tool_media);
     if (status) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock())
@@ -1224,11 +1229,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   };
   ResponsesGenerationPlan continuation_generation;
   bool file_search_continuation = false;
-  // Every continuation follows a newly executed bounded native tool call.
-  // This never retries an answer, classification, compaction, or tool call.
-  const int response_steps = 7 + (responses && responses->HasFileSearch()
-                                      ? ResponsesExecution::kMaxNativeToolCalls
-                                      : 0);
+  // Native tool continuations plus at most one independent async answer.
+  // Neither path retries an answer or a client operation.
+  const int response_steps = 7 +
+                             (responses && responses->HasFileSearch()
+                                  ? ResponsesExecution::kMaxNativeToolCalls
+                                  : 0) +
+                             (responses && responses->HasAsyncTools() ? 1 : 0);
   for (int choice_index = 0;
        choice_index < (responses ? response_steps : sampling.choices);
        ++choice_index) {
@@ -4272,6 +4279,36 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           continue;
         }
         if (answer) finish_reason = "length";
+      }
+      if (!internal_step && !prewarm && finish_reason != "length" &&
+          responses->HasAsyncTools() &&
+          responses_usage.output_tokens < request_output_limit) {
+        ResponsesGenerationPlan next;
+        bool answer = false;
+        std::string wire;
+        auto result = responses->ContinueAsyncTools(
+            response_parser.CompletedToolCalls(), responses_usage.output_tokens,
+            planning_config,
+            [&](const ResponsesGenerationPlan& plan, ChatPlanError* error) {
+              size_t tokens = 0;
+              return measure_context(plan, &tokens, error);
+            },
+            &next, &answer, &wire);
+        if (!result.ok()) {
+          err_guard.ok = false;
+          SendError(fd, result.http_status, result.ClientMessage(), {},
+                    result.ClientCode(), result.value.GetString("param"));
+          return;
+        }
+        if (stream && !write_stream(wire)) return;
+        if (answer) {
+          continuation_generation = std::move(next);
+          file_search_continuation = true;
+          response_step = ResponseStep::kPrimary;
+          trace_outcome = trace::RequestOutcome::kSuccess;
+          cleanup();
+          continue;
+        }
       }
       if (!internal_step && !prewarm && finish_reason != "length" &&
           !responses->Envelope().summary.empty()) {

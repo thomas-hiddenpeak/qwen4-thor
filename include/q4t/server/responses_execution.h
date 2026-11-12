@@ -66,6 +66,7 @@ class ResponsesExecution {
     const auto* context = envelope_.request.GetArray("context_management");
     return PendingFileSheets() ||
            (!envelope_.cache.prewarm && HasFileSearch()) ||
+           (!envelope_.cache.prewarm && HasAsyncTools()) ||
            envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
             (envelope_.reasoning_mode == "pro" || !envelope_.summary.empty() ||
@@ -122,6 +123,7 @@ class ResponsesExecution {
   Status AppendSummary(std::string_view text, std::string* wire);
   Status CiteFileSearchSources(std::string* wire);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
+  bool HasAsyncTools() const { return has_async_tools_; }
   bool PendingFileSearch() const { return !file_search_pending_.empty(); }
   static constexpr size_t kMaxNativeToolCalls = 64;
   ObjectReply RunFileSearches(
@@ -132,6 +134,11 @@ class ResponsesExecution {
                                  const ChatPlanConfig& config,
                                  const ResponsesContextCheck& check,
                                  ResponsesGenerationPlan* next);
+  ObjectReply ContinueAsyncTools(size_t completed_calls, int64_t output_used,
+                                 const ChatPlanConfig& config,
+                                 const ResponsesContextCheck& check,
+                                 ResponsesGenerationPlan* next,
+                                 bool* continue_answer, std::string* wire);
   // Selection uses the real expanded input count, before rate reservation.
   ObjectReply SelectCompaction(size_t input_tokens,
                                const ChatPlanConfig& config);
@@ -227,6 +234,8 @@ class ResponsesExecution {
   std::map<size_t, NativeFileCall> file_search_pending_;
   size_t file_search_calls_ = 0;
   size_t file_search_argument_bytes_ = 0;
+  bool has_async_tools_ = false;
+  bool async_continued_ = false;
   ResponsesCompactionPlan compaction_;
   io::Json compaction_window_;
   std::string compaction_id_;

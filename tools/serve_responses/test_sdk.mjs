@@ -66,6 +66,31 @@ async function peer(name, callback, mutate = value => value) {
 }
 const request = { model: 'org/alias', input: 'CPU protocol fixture', store: false };
 
+for (const name of ['async-function', 'async-custom']) {
+  test(`official async ${name} completes call before independent answer`, async () => {
+    await peer(name, async sdk => {
+      const response = await sdk.responses.create(request);
+      compareWire(response, expected(name));
+      assert.equal(response.output[0].async, true);
+      assert.deepEqual(response.output[0].caller, { type: 'direct' });
+    });
+    await peer(name, async sdk => {
+      const stream = sdk.responses.stream(request);
+      const events = [];
+      for await (const event of stream) events.push(event);
+      compareWire(await stream.finalResponse(), expected(name));
+      events.forEach((event, index) => assert.equal(event.sequence_number, index));
+      const done = events.findIndex(event => event.type === 'response.output_item.done');
+      const text = events.findIndex(event => event.type === 'response.output_text.delta');
+      assert.ok(done >= 0 && text > done);
+      assert.equal(events[done].item.call_id, 'late');
+      assert.equal(events[done].item.async, true);
+      assert.equal(events.filter(event => event.type === 'response.completed').length, 1);
+      assert.equal(events.filter(event => event.type === 'response.output_item.done').length, 2);
+    });
+  });
+}
+
 test('official create consumes native JSON, reasoning and probabilities', async () => {
   await peer('text', async sdk => {
     const response = await sdk.responses.create(request);

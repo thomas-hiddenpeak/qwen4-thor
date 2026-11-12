@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstddef>
+#include <span>
+#include <string>
 #include <vector>
 
 #include "q4t/io/json.h"
@@ -15,6 +17,7 @@ namespace q4t::server {
 // retain legacy template behavior. render_order is cleared on failure; nullptr
 // performs validation only.
 Status PlanToolResultOrder(const io::Json& messages,
-                           std::vector<size_t>* render_order = nullptr);
+                           std::vector<size_t>* render_order = nullptr,
+                           std::span<const std::string> async_call_ids = {});
 
 }  // namespace q4t::server

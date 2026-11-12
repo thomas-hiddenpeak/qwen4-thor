@@ -27,6 +27,16 @@ Status Unresolved(ChatPlanError* error, std::string path) {
   *error = {"responses_input_resolution_required", std::move(path), 503};
   return Status::Fail("Responses input requires client-scoped resolution");
 }
+Status DirectCaller(const Json& item, const std::string& path,
+                    ChatPlanError* error) {
+  const auto* caller = item.Find("caller");
+  if (!caller || caller->IsNull()) return {};
+  if (!caller->IsObject() || caller->GetString("type").empty())
+    return Invalid(error, path + ".caller", "invalid tool caller");
+  if (caller->GetString("type") != "direct")
+    return Unresolved(error, path + ".caller");
+  return InputFields(*caller, {"type"}, &error->param, path + ".caller");
+}
 Status TextField(const Json& value, const char* key, std::string_view path,
                  ChatPlanError* error) {
   const auto* field = value.Find(key);
@@ -348,7 +358,11 @@ Status PlanResponsesToolIdentities(
     const auto model_name = ResponsesToolModelName(space, name, type);
     if (!model_names.insert(model_name).second)
       return Invalid(error, path + ".name", "model tool identity collision");
-    identities->push_back({type, name, space, model_name, path});
+    const auto* async = tool.Find("async");
+    if (async && !async->IsBool())
+      return Invalid(error, path + ".async", "async must be boolean");
+    identities->push_back(
+        {type, name, space, model_name, path, tool.GetBool("async")});
     return {};
   };
   for (size_t i = 0; i < tools->array.size(); ++i) {
@@ -442,26 +456,25 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::vector<std::pair<Json, std::string>> results;
   std::unordered_map<std::string, bool> expected;
   std::unordered_map<std::string, std::pair<std::string, std::string>> names;
-  std::unordered_set<std::string> returned, call_ids, item_ids;
+  std::unordered_set<std::string> returned, call_ids, item_ids, async_ids;
   std::string reasoning, assistant_path;
   size_t automatic_returns = 0;
   const auto flush = [&]() -> Status {
-    if (!calls.array.empty() && returned.size() != expected.size())
-      return Invalid(error, assistant_path, "missing output for a tool call");
+    for (const auto& call : calls.array)
+      if (!returned.contains(call.GetString("id")) &&
+          !async_ids.contains(call.GetString("id")))
+        return Invalid(error, assistant_path, "missing output for a tool call");
     if (!reasoning.empty() || !calls.array.empty()) {
       if (!reasoning.empty()) Set(&assistant, "reasoning", String(reasoning));
       if (!calls.array.empty()) Set(&assistant, "tool_calls", calls);
       append(assistant, assistant_path);
-      for (auto& [message, path] : results)
-        append(std::move(message), std::move(path));
     }
+    for (auto& [message, path] : results)
+      append(std::move(message), std::move(path));
     assistant =
         Object({{"role", String("assistant")}, {"content", String("")}});
     calls = Array();
     results.clear();
-    expected.clear();
-    names.clear();
-    returned.clear();
     automatic_returns = 0;
     reasoning.clear();
     assistant_path.clear();
@@ -529,7 +542,7 @@ Status NormalizeResponsesInput(const io::Json& request,
             path);
       }
     } else if (type == "reasoning") {
-      if (!returned.empty()) {
+      if (!results.empty()) {
         status = flush();
         if (!status) return status;
       }
@@ -610,28 +623,36 @@ Status NormalizeResponsesInput(const io::Json& request,
       returned.insert(id);
       ++automatic_returns;
     } else if (type == "function_call" || type == "custom_tool_call") {
-      if (returned.size() > automatic_returns)
-        return Invalid(error, path,
-                       "new call before previous tool results end");
+      if (results.size() > automatic_returns) {
+        if (async_ids.empty())
+          return Invalid(error, path,
+                         "new call before previous tool results end");
+        status = flush();
+        if (!status) return status;
+      }
       const bool custom = type == "custom_tool_call";
       status = InputFields(item,
                            {"id", "type", "call_id", "name", "arguments",
                             "input", "status", "async", "caller", "namespace"},
                            &error->param, path);
       if (!status) return status;
-      if (Nonnull(item, "caller")) return Unresolved(error, path + ".caller");
+      status = DirectCaller(item, path, error);
+      if (!status) return status;
       if (Nonnull(item, "namespace") &&
           !ValidInputName(item.GetString("namespace")))
         return Invalid(error, path + ".namespace", "invalid tool namespace");
       if (const auto* async = item.Find("async")) {
         if (!async->IsBool())
           return Invalid(error, path + ".async", "async must be boolean");
-        if (async->boolean) return Unresolved(error, path + ".async");
       }
       const auto id = item.GetString("call_id");
       if (id.empty() || id.size() > 256 || !call_ids.insert(id).second)
         return Invalid(error, path + ".call_id",
                        "invalid or duplicate call ID");
+      if (item.GetBool("async")) {
+        async_ids.insert(id);
+        plan.async_tool_call_ids.push_back(id);
+      }
       if (!ValidInputName(item.GetString("name")))
         return Invalid(error, path + ".name", "invalid tool name");
       status = TextField(item, custom ? "input" : "arguments", path, error);
@@ -667,7 +688,8 @@ Status NormalizeResponsesInput(const io::Json& request,
                             "namespace", "caller"},
                            &error->param, path);
       if (!status) return status;
-      if (Nonnull(item, "caller")) return Unresolved(error, path + ".caller");
+      status = DirectCaller(item, path, error);
+      if (!status) return status;
       const auto id = item.GetString("call_id");
       const auto match = expected.find(id);
       if (match == expected.end() || !returned.insert(id).second ||
@@ -802,7 +824,9 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
         const auto* value = definition.Find(flag);
         if (value && !value->IsBool())
           return Invalid(error, at + '.' + flag, "tool flag must be boolean");
-        if (value && value->boolean) return Unresolved(error, at + '.' + flag);
+        if (std::string_view(flag) == "defer_loading" && value &&
+            value->boolean)
+          return Unresolved(error, at + '.' + flag);
       }
       if (const auto* schema = definition.Find("output_schema");
           schema && !schema->IsNull()) {

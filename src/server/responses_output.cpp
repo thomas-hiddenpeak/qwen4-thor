@@ -270,6 +270,8 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
          {call->custom ? "input" : "arguments", String("")}});
     if (identity && !identity->name_space.empty())
       Set(&item, "namespace", String(identity->name_space));
+    if (identity && identity->async) Set(&item, "async", Boolean(true));
+    Set(&item, "caller", Object({{"type", String("direct")}}));
   } else {
     item =
         Object({{"id", String(detail::NewRequestId(message ? "msg_" : "rs_"))},
@@ -344,6 +346,8 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
       if (it == calls_.end())
         return Status::Fail("Responses tool fragment without a start");
       index = it->second;
+      if (closed_items_.contains(index))
+        return Status::Fail("Responses tool fragment after completion");
       const auto& item = Items().array[index];
       if ((!delta.call.id.empty() &&
            delta.call.id != item.GetString("call_id")) ||
@@ -539,6 +543,30 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
   closed_items_.insert(index);
 }
 
+Status ResponsesOutput::CompleteAsyncCalls(size_t completed_calls,
+                                           bool* continue_answer,
+                                           std::string* wire) {
+  wire->clear();
+  *continue_answer = false;
+  if (!started_ || terminal_ || response_.GetString("status") != "in_progress")
+    return Status::Fail("Responses output is not in progress");
+  size_t pending = 0;
+  for (const auto& [call, index] : calls_) {
+    if (closed_items_.contains(index)) continue;
+    if (call >= completed_calls)
+      return Status::Fail("cannot continue an unvalidated async tool");
+    if (!Items().array[index].GetBool("async")) return {};
+    ++pending;
+  }
+  if (!pending) return {};
+  // Public item/event order follows output order, not unordered-map order.
+  for (size_t i = 0; i < Items().array.size(); ++i)
+    if (call_indices_[i] != kNoCall && !closed_items_.contains(i))
+      CloseItem(i, false, wire);
+  *continue_answer = true;
+  return {};
+}
+
 Status ResponsesOutput::Moderation(const io::Json& results,
                                    const ModerationUsage& usage) {
   const auto* input = results.Find("input");
@@ -607,8 +635,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     return Status::Fail("invalid Responses terminal or usage");
   if (!incomplete)
     for (const auto& [call, index] : calls_) {
-      (void)index;
-      if (call >= completed_calls)
+      if (!closed_items_.contains(index) && call >= completed_calls)
         return Status::Fail("cannot complete an unvalidated Responses tool");
     }
   if (!incomplete)

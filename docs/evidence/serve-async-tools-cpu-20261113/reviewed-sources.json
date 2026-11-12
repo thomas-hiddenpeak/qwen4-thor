@@ -1,0 +1,102 @@
+{
+  "include/q4t/server/chat_contract.h": {
+    "before": "b85a04f979e8ceecd1c88494192513e7a93ad53f20ed3dfb18f0efd012b047cd",
+    "after": "14c806c82ccea6b4556dc2c91342dadae390e08b52b2ed1baaea11e6bf910bb0"
+  },
+  "include/q4t/server/chat_plan.h": {
+    "before": "d9e025d9d2b66161d9d47abee903934c0a625ed1954a0a47b89c469580cbf8c6",
+    "after": "1dfe73844064eae77c5660bd64057199e1902e6ea997014dd18596e98eb912b3"
+  },
+  "include/q4t/server/chat_prompt.h": {
+    "before": "40f524f8de1cada46e16a1c982ab8ef29d4a2c404df276bdd5d941b32afe5605",
+    "after": "48701ea363cd9e8ac88b8cc16f1a93c8021dfdfddcb6a5647978b00e1f22c8d0"
+  },
+  "include/q4t/server/chat_template.h": {
+    "before": "5631a55354862668597bd86325b003fb2c1030dff9554a927255221d2b57df10",
+    "after": "5bda21713d607269c1f4e9332b3b8ebf09513c324ac1b30370367a4221736db8"
+  },
+  "include/q4t/server/chat_tool_history.h": {
+    "before": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+    "after": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c"
+  },
+  "include/q4t/server/responses_execution.h": {
+    "before": "16ec11e7198cb9e4610f34f7da4ea1a6b3d88a6062df4e799d9cfd45cd065d41",
+    "after": "51919d2e8078571be58788e5b530aa0fc3962890fd9a511fdf3eb0a10cb0428a"
+  },
+  "include/q4t/server/responses_input.h": {
+    "before": "926ceb79fadb9f27b87a73df72863406d152053e70b6f32e2a97df3efdc2012d",
+    "after": "d491d9a7915682fc39960d080c92a7644bdb75c3d9b2d9646e8bdb6850e3cb29"
+  },
+  "include/q4t/server/responses_output.h": {
+    "before": "26256eb3a9227c9167cff5ed5dea81aa04fffcf74eb4145438d2618255cb39a7",
+    "after": "5467ae53dd52b222a0355526ca2dccfe94d73d9bc84b44009e3db7051d2b0632"
+  },
+  "src/server/batch_budget.cpp": {
+    "before": "c7da301cd80ce4b2762e493641edf59f50cf6b98c3eee51c24ad7f460e6bebda",
+    "after": "5f632c9930b7c72920db5f2c884beea7e6f3c65829652dd380affb919449f958"
+  },
+  "src/server/chat_capabilities.cpp": {
+    "before": "963b6b23f2f3aabee65e299112d7432bdf5dc9017179945b26c2257bbc72bcae",
+    "after": "324c9b9738c2a88db7728ccf6d3cb37c3fa3328704e9bf47a0cf8ab6200f5178"
+  },
+  "src/server/chat_contract.cpp": {
+    "before": "f93b1524f4cdb71b3f6d2937cda5b6341478072e071a9e4fc03858490cc6c529",
+    "after": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c"
+  },
+  "src/server/chat_generation.cpp": {
+    "before": "3c5005c92b78fc0fbd68189c1cd62a49b7a63164eb1296239489cbc751594d51",
+    "after": "6e5b0bb7d5a014e2a2c5e6887e467b5c2bd20942bffde81a9396b676095f70cf"
+  },
+  "src/server/chat_input_tokens.cpp": {
+    "before": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c",
+    "after": "c6e218ef3f29fad2c2ef889f7d1675020e3997d3b3af517ce6996dd095bde335"
+  },
+  "src/server/chat_plan.cpp": {
+    "before": "15a3ee41d3b5ab6af0dcdd930f83a46005873c4e71c605d19bc1081ce68e8654",
+    "after": "9997e8a80d47f1e394bf5df43c318167bfa6f4d67f0f24c24d6a97ec48a86789"
+  },
+  "src/server/chat_preflight.cpp": {
+    "before": "601e393c5122bbfa218778e7c0405aa79945c3d2675af88a939698ca1ec42947",
+    "after": "7f99316cfb14f28e60a5a8039b069ad83bbe9991811c7b615c95ae33285cfafd"
+  },
+  "src/server/chat_prompt.cpp": {
+    "before": "44ee8504faec4d904d4cd320581218253d3e1e62c8f12476e4b509f78c3f1db8",
+    "after": "d3406c8b2c6aaa4e7416ca138aa825fd79abfe2bdbced2f18d655086aacfb5b2"
+  },
+  "src/server/chat_template.cpp": {
+    "before": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
+    "after": "f2d502b5c27316e9621b437d5833275895f656399947906a71b958d846625525"
+  },
+  "src/server/chat_tool_history.cpp": {
+    "before": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+    "after": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9"
+  },
+  "src/server/responses_execution.cpp": {
+    "before": "b3e51f805e3e0ab1fe93d73af6f6bd8bf7d9bd03fb3e730d6e293e6af5eb238b",
+    "after": "1f42328308cf50979fc99260281d383d77ec5b17e941e1ea5ffc2c68b24bc4ca"
+  },
+  "src/server/responses_file_search_execution.cpp": {
+    "before": "a6f1a6a808765b75851fab1c5dd4e1bad682ec1bd13b589289c387a8e0a67261",
+    "after": "41269dcb4bc61a5b1a7db5ea8ed80e8993f3dbd6be07e6df1debe4a4d5db0538"
+  },
+  "src/server/responses_input.cpp": {
+    "before": "aeec7b17e931d000585d581e7c15b08ffeff7124d820cd59aad859e535b6e890",
+    "after": "f7d31c01376de67049c4f88bd59e7aeac70581a6f2eab4476b17ab11376ec85e"
+  },
+  "src/server/responses_output.cpp": {
+    "before": "dba2898af459fc6cf21fe1021777cade59e38f2e5b01bce87b267dd53fa37b47",
+    "after": "92dfbd341ff50ad002649b89ed6e8f717d21b4ad716b85d2830baf1dc67b7e9a"
+  },
+  "src/server/responses_plan.cpp": {
+    "before": "dfe6656629a7d0c7578488095054910a29be7ecc31849dc31b3f4c930dbe6ecc",
+    "after": "4c7b9721dc502cd15816f8811ee3ae1b644f5540e2c607902485087fc4f88ce0"
+  },
+  "src/server/responses_reasoning.cpp": {
+    "before": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
+    "after": "360129944c48fc3586be1814cb5185e4abc20abb2816bc3d9388a86d5511a726"
+  },
+  "src/server/tool_result_contracts.cpp": {
+    "before": "dc07e90c637cb5fe3856193a07f0cfb35f2c6d103525e91748ca02ea3297c496",
+    "after": "197127f01df4b46eb768745658dfdc127251c3772cb6bca0d16869c98f5dc27f"
+  }
+}

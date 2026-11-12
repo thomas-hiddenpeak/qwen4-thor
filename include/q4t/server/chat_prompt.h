@@ -36,6 +36,8 @@ Status PrepareChatPrompt(const io::Json& request,
                          std::string* error_param,
                          std::string* error_code = nullptr,
                          ChatPromptLayout* layout = nullptr,
-                         bool allow_empty = false);
+                         bool allow_empty = false,
+                         std::span<const std::string> async_call_ids = {},
+                         bool responses_tool_media = false);
 
 }  // namespace q4t::server

@@ -297,12 +297,22 @@ bool NeedsJsonHistoryValue(const io::Json& value) {
 }
 
 Status AppendToolCalls(const io::Json& request, const io::Json& message,
-                       bool has_content, std::string* prompt) {
+                       bool has_content, std::string* prompt,
+                       std::span<const std::string> async_call_ids) {
   const io::Json* calls = message.Find("tool_calls");
   if (!calls || calls->IsNull()) return Status();
   if (!calls->IsArray()) return Status::Fail("tool_calls must be an array");
   for (size_t i = 0; i < calls->array.size(); ++i) {
     const io::Json& call = calls->array[i];
+    if (!async_call_ids.empty()) {
+      // The checkpoint has no call-ID token. Keep a safely encoded identity
+      // beside each historical call so late results cannot be positional.
+      const auto id = call.GetString("id");
+      const bool async = std::find(async_call_ids.begin(), async_call_ids.end(),
+                                   id) != async_call_ids.end();
+      *prompt += "\n[Tool call_id: " + EncodeCustomInput(id) +
+                 (async ? "; asynchronous]\n" : "; synchronous]\n");
+    }
     if (call.GetString("type") == "custom") {
       const auto* custom = call.Find("custom");
       if (!custom) return Status::Fail("missing custom tool history");
@@ -475,14 +485,15 @@ Status ValidateChatMessageProfile(const io::Json& messages,
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt,
-                        std::vector<ChatMessageSpan>* spans, bool allow_empty) {
+                        std::vector<ChatMessageSpan>* spans, bool allow_empty,
+                        std::span<const std::string> async_call_ids) {
   prompt->clear();
   if (spans) spans->clear();
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     const auto status = NormalizeLegacyTools(request, &normalized);
-    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans,
-                                     allow_empty)
+    return status ? RenderChatPrompt(normalized.request, contents, prompt,
+                                     spans, allow_empty, async_call_ids)
                   : status;
   }
   auto definitions = ValidateToolDefinitions(request);
@@ -496,7 +507,8 @@ Status RenderChatPrompt(const io::Json& request,
   auto profile = ValidateChatMessageProfile(*messages, nullptr, allow_empty);
   if (!profile) return profile;
   std::vector<size_t> tool_result_order;
-  auto history = PlanToolResultOrder(*messages, &tool_result_order);
+  auto history =
+      PlanToolResultOrder(*messages, &tool_result_order, async_call_ids);
   if (!history) return history;
   const io::Json* options = request.Find("chat_template_kwargs");
   if (options && !options->IsObject()) {
@@ -659,7 +671,8 @@ Status RenderChatPrompt(const io::Json& request,
       }
       begin_content(i);
       *prompt += text[i];
-      s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt);
+      s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt,
+                          async_call_ids);
       if (!s) return s;
       *prompt += "<|im_end|>\n";
       end_message(i);
@@ -670,6 +683,10 @@ Status RenderChatPrompt(const io::Json& request,
       const auto result = tool_result_order[i];
       const auto participant = Participant(ms[result]);
       *prompt += "\n<tool_response>\n";
+      if (!async_call_ids.empty())
+        *prompt += "[Tool result call_id: " +
+                   EncodeCustomInput(ms[result].GetString("tool_call_id")) +
+                   "]\n";
       if (!participant.empty()) *prompt += participant.substr(1) + "\n";
       begin_content(result);
       *prompt += text[result] + "\n</tool_response>";

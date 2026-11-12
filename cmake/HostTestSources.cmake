@@ -148,6 +148,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_query.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_api_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_execution_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_async_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_tool_result_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_files_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_background_test.cpp

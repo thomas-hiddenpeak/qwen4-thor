@@ -53,12 +53,16 @@ std::unordered_map<std::string, Declaration> Declarations(const Json& request) {
   return result;
 }
 Json Binding(const Json& item, const Json& schema) {
-  return Object({{"item_id", String(item.GetString("id"))},
-                 {"call_id", String(item.GetString("call_id"))},
-                 {"type", String(item.GetString("type"))},
-                 {"name", String(item.GetString("name"))},
-                 {"namespace", String(item.GetString("namespace"))},
-                 {"schema", schema}});
+  auto result = Object({{"item_id", String(item.GetString("id"))},
+                        {"call_id", String(item.GetString("call_id"))},
+                        {"type", String(item.GetString("type"))},
+                        {"name", String(item.GetString("name"))},
+                        {"namespace", String(item.GetString("namespace"))},
+                        {"schema", schema}});
+  // Omitted/false and omitted/direct remain the pre-async storage contract.
+  // The true execution policy must survive tool changes and reject rebinding.
+  if (item.GetBool("async")) Set(&result, "async", Boolean(true));
+  return result;
 }
 bool Same(const Json& a, const Json& b) {
   std::string left, right;
