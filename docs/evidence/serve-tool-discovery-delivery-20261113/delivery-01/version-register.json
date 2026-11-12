@@ -1,0 +1,16 @@
+{
+  "label": "version-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/delivery-01/registration.json",
+    "--expected-cycle",
+    "7009808c-ea7a-49f2-b3d6-9a4db1e0a63f"
+  ],
+  "returncode": 0,
+  "seconds": 3.5265958248637617
+}

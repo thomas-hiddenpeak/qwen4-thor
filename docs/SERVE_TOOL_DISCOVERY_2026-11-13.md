@@ -73,3 +73,5 @@ schema；不将生成grammar的保证冒充任意schema保证。协议来源漏�
 实际整树切换2启动4请求1次CUDA探测600秒，验证动态发现历史跨恢复
 仍能接收真实结果且新请求也可调用。不做完整性能/质量矩阵，不扩展
 视觉或长稳。每组全程同一严格租约，先完成前一组资格再作为回退来源。
+
+实际交付：主轻、兼容回退与整树恢复已通过，随后[17项STOPPED检查交付rev118](evidence/serve-tool-discovery-delivery-20261113/README.md)。PR26待当前head检查与实际合main；程序调用等全部master继续。

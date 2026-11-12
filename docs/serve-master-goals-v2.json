@@ -997,7 +997,7 @@
         }
       },
       "tool_discovery": {
-        "state": "qualified_reversible_delivery_pending",
+        "state": "delivered_main_integration_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "public_capability_not_yet_enabled": false,
         "gpu_budget": {
@@ -1017,7 +1017,7 @@
           "response_creates": 1,
           "seconds": 39.86322369938716
         },
-        "default_unchanged": true,
+        "default_unchanged": false,
         "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
         "guard_repair_cpu": 12,
         "aggregate_gpu_budget": {
@@ -1031,7 +1031,7 @@
           "response_creates": 10,
           "seconds": 104.44730356521904
         },
-        "default_capability_not_yet_published": true,
+        "default_capability_not_yet_published": false,
         "pr": 26,
         "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
         "qualification_actual": {
@@ -1041,7 +1041,9 @@
           "nvml_queries": 244
         },
         "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
-        "migration_targeted_cpu": 10
+        "migration_targeted_cpu": 10,
+        "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
+        "default_revision": 118
       }
     },
     {
@@ -1671,7 +1673,7 @@
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       },
       "tool_discovery": {
-        "state": "qualified_reversible_delivery_pending",
+        "state": "delivered_main_integration_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
@@ -1690,7 +1692,7 @@
           "response_creates": 1,
           "seconds": 39.86322369938716
         },
-        "default_unchanged": true,
+        "default_unchanged": false,
         "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
         "guard_repair_cpu": 12,
         "aggregate_gpu_budget": {
@@ -1704,7 +1706,7 @@
           "response_creates": 10,
           "seconds": 104.44730356521904
         },
-        "default_capability_not_yet_published": true,
+        "default_capability_not_yet_published": false,
         "pr": 26,
         "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
         "qualification_actual": {
@@ -1714,7 +1716,9 @@
           "nvml_queries": 244
         },
         "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
-        "migration_targeted_cpu": 10
+        "migration_targeted_cpu": 10,
+        "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
+        "default_revision": 118
       }
     },
     {
@@ -2570,12 +2574,12 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 110,
-        "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
-        "generation_sha256": "44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9",
-        "evidence": "docs/evidence/serve-async-tools-delivery-20261113",
+        "revision": 118,
+        "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+        "generation_sha256": "52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615",
+        "evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
         "state": "STOPPED",
-        "main_integration_pending": false
+        "main_integration_pending": true
       },
       "merged_foundation": {
         "pr": 22,
@@ -2625,6 +2629,10 @@
         "pr": 25,
         "merge_commit": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
         "evidence": "docs/evidence/serve-pr25-merged-20261113"
+      },
+      "tool_discovery_main_integration": {
+        "pr": 26,
+        "merged": false
       }
     },
     {
@@ -2640,6 +2648,6 @@
       "release": null
     }
   ],
-  "next_task": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
+  "next_task": "PR26 actual main integration, then A07/A11 programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
   "next": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
 }

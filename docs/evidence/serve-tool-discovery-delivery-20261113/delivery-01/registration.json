@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/candidate-02/bundle",
+    "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "8188c42c-9f7c-437e-9fb8-93d80fe478ab",
+    "root_manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+        "binding_sha256": "9a2278d622786983bf3a59accc49246ccb5f13dcc39ddedbcb3740b0b228c4a3"
+      },
+      "fallback": {
+        "manifest_sha256": "11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf",
+        "binding_sha256": "6d8fd9c134c29a8865466ce7763bc28adc9db8902e58e27eea4022ec2258577e"
+      }
+    },
+    "compatibility_sha256": "ee295374955029d81c60e9e39ddad547d2d3c53f0227b9eef2d4a705a3ef6603",
+    "qualification_sha256": "ff8b42c3bb6f91b866fc5cc9a84cd7275147cdb32092d71c29f8ec43ef60e336"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/managed-retained-01/service-release.json",
+      "sha256": "f3f9f8ba5a4cc478372ae90cbb29b21157e60cd7355b317884feb88baec1e899"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/managed-retained-01/decision.json",
+      "sha256": "aabea1fa584223c888b20eeab1d4c29f939ee6640c5996bd2767a153bfe74d13"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/candidate-02/bundle",
+        "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2"
+      },
+      "binding": {
+        "binary_sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531",
+        "protocol_sha256": "d69e8d9445bc8eff38558fca6765d23a7322e5d5b1442f54d09a398c316ffc0d",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "5ec1c1fffe5ea18c9fedc921f5d34f4ad41398b04707336a1c1f8126570cb19a",
+        "controller_sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+        "ingress_sha256": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/retained-02/bundle",
+        "manifest_sha256": "11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf"
+      },
+      "binding": {
+        "binary_sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531",
+        "protocol_sha256": "d69e8d9445bc8eff38558fca6765d23a7322e5d5b1442f54d09a398c316ffc0d",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "5ec1c1fffe5ea18c9fedc921f5d34f4ad41398b04707336a1c1f8126570cb19a",
+        "controller_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+        "ingress_sha256": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a"
+      }
+    }
+  }
+}

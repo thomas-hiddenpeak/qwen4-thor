@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    ".q4t-work/serve-tool-discovery-20261113/deliver.py",
+    "run"
+  ],
+  "returncode": 0,
+  "seconds": 53.17895170068368,
+  "default_change_authorized": true,
+  "new_gpu_starts": 0
+}

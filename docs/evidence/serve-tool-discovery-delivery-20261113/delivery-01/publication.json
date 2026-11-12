@@ -1,0 +1,12 @@
+{
+  "label": "publication",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "publish-status",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+  ],
+  "returncode": 0,
+  "seconds": 0.8583999089896679
+}
