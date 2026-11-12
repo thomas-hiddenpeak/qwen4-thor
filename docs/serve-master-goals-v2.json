@@ -239,7 +239,7 @@
         "service_acceptance_sha256": "fe24aecd28f6258da1bf8251bf50b4cd32d036c39a024761fd0164463c71b024",
         "service_release_sha256": "9edaea12f6df8fbe533e14815e061030abcb1463c673e7aa2173d2f3e234d668"
       },
-      "development_status": "A07.1-A07.7, standard input_tokens and remaining core field/default fixes delivered; tool/media/refusal/item/include/SSE integration remains required",
+      "development_status": "Core/state/reasoning/summary/encryption/compaction/input_tokens/defaults and model-native refusal delivered; A09/A10/A11 dependent tools/media/items and advanced execution remain required",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -255,7 +255,6 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "Complete native refusal signal/output and delta/done path without fabricating or relabeling moderation",
         "Complete A09/A10/A11 media/files/builtin tools and all required input/output/include/SSE producers and SDK integration",
         "Enforce max_tool_calls in actual builtin executor; advanced async/caller/namespace/output_schema and typed output remain required",
         "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered"
@@ -1265,7 +1264,7 @@
     {
       "id": "A11",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "Responses内建工具/MCP及资料检索等工具执行适配",
       "acceptance": "自有资料查询优先，权限/超时/取消/输出上限/事件完整；外部服务可选，执行边界明确；禁止假造工具结果",
       "depends_on": [
@@ -1273,11 +1272,24 @@
         "A08",
         "A09"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-vector-search-foundation-20261112/README.md"
+      ],
       "release": null,
       "security_requirements": [
         "Untrusted code execution must isolate the service OS UID, private object/key directory and same-UID state-key admin socket; do not run arbitrary client code under the serving UID without isolation."
-      ]
+      ],
+      "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+      "native_file_search": {
+        "state": "foundation_cpu_accepted_integration_pending",
+        "foundation_cpu_cases": 16,
+        "persistent_index": false,
+        "production_routes": false,
+        "responses_executor": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "foundation_evidence": "evidence/serve-vector-search-foundation-20261112/README.md"
+      }
     },
     {
       "id": "A12",

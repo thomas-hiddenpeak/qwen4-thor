@@ -28,6 +28,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11原生资料检索开始成组实现：官方合同核对完成，参数、精确属性
+  过滤及有界cosine/BM25排序16项CPU首过（0.026秒）；持久索引、
+  API和Responses执行循环接着实现，尚未声明生产file_search可用。
+  [实施与验收计划](SERVE_NATIVE_FILE_SEARCH_2026-11-12.md)，默认rev80保持。
 - 原生外层恢复、真实资源域采集与版本回退组合已验并发行。真实root
   死亡后清树重建、未知配额保守窗口、单次文档工具、JSON/SSE与原存储
   Chat保持通过。[业务记录](evidence/serve-outer-resource-business-20261112/README.md)：

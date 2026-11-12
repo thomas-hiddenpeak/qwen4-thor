@@ -1,0 +1,15 @@
+{
+  "result": "PASS_TARGETED_VECTOR_SEARCH_FOUNDATION",
+  "cases": 16,
+  "seconds": 0.02591292606666684,
+  "gpu_starts": 0,
+  "binary_sha256": "47f8cefb33454c1f13ff541536e1080d1155e29eacd8ae405dc71b8109654e24",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "production_routes": false,
+  "responses_tool_loop": false,
+  "default_changed": false,
+  "build_warnings": 0,
+  "configure_failure": "configure-01 lacked existing private development header paths; configure-02 reuses the already present pinned paths; no dependency installed",
+  "whole_A11_complete": false
+}

@@ -107,3 +107,7 @@ docs/evidence/serve-refusal-profiles-20261112/**/*.wire binary
 # Preserve managed refusal recovery protocol evidence.
 docs/evidence/serve-refusal-managed-business-20261112/** -text -whitespace
 docs/evidence/serve-refusal-managed-business-20261112/**/*.wire binary
+
+# Preserve original compiler/configuration and targeted test output bytes.
+docs/evidence/serve-vector-search-foundation-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-search-foundation-20261112/*.stderr -text -whitespace

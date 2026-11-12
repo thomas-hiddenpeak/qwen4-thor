@@ -1571,8 +1571,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "71e0de70e4b95cb358c07e2b939f6ee6bbb0727a06efc545dae7d7192c1ca016",
-    "cmake/ChatProtocolIdentity.cmake": "0c3d7ff37e74a9829eb6b273dbadc23054d22f9cea728c42d191eb72d7118780",
+    "CMakeLists.txt": "030746db95f2fa4680e1b1474fe9db4d337d2eac88f64ff26eed8b2d2812506e",
+    "cmake/ChatProtocolIdentity.cmake": "7fdfb0c58a00da182cb786039ecdf4cc77ae868f19fa3192368a9517d64d8b5c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1745,6 +1745,7 @@
     "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "ebcc79af8cd4ec1a6d49ab875efededde7c2c32b4ac8362a3337b727866990e3",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
+    "include/q4t/server/vector_search.h": "2ac47b612d03edd2fce0aa61c4bd20a878f1ca893b82c853e31a7274d6cbbe08",
     "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
     "include/q4t/service/device_admission.h": "3f13bf17b693d839f556f1495d4617a0ffe8fff15b611a086f0aac4391936ac9",
     "include/q4t/service/device_filter.h": "260b36b468198b9c2cc41a7125fdeeb37cc22f45dbe89e1a219dabfcef57b5b7",
@@ -1986,6 +1987,8 @@
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
+    "src/server/vector_search_plan.cpp": "a3153b74e87cf70797912e83b2a3b9b2fcbaf99c1086e4e00025bfee27b299bf",
+    "src/server/vector_search_rank.cpp": "d4e1d690eba20b52cd98ad0b04fbd23d24bb35733df0dddac4c4e1e95de6e6d4",
     "src/server/worker_io_broker.cpp": "991b7c3fcc6a23eac20243ee554e7316ec0e0216a556a8195b8f762a265d764c",
     "src/server/worker_io_broker.h": "9a0b353822159b61b40899c5fb78b2691f51a66283ae429d7916f83191b41387",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
