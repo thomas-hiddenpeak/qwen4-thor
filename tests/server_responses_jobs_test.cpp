@@ -1468,7 +1468,6 @@ Q4T_TEST(responses_foreground_unknown_success_preserves_committed_result) {
   ResetForegroundWorker reset;
   ObjectWorkerEntryForTesting("--q4t-object-worker-commit-pause");
   Fixture f;
-  f.options.io_timeout_ms = 100;
   ObjectStore objects(f.options);
   ResponsesJobs jobs(objects, {}, [](auto&) {
     throw std::runtime_error("unexpected execution");
@@ -1478,9 +1477,13 @@ Q4T_TEST(responses_foreground_unknown_success_preserves_committed_result) {
   std::string wire;
   Q4T_CHECK(Ok(run.Begin(&wire)) &&
             run.Append(ForegroundText(), "null", &wire));
+  // Keep the lost-receipt deadline at 100ms, independently of healthy
+  // setup/reconciliation reads and their normal storage budget.
+  run.BindCancellation(Clock::now() + 100ms, {});
   const auto result =
       run.Finish(false, 0, {7, 0, 2, 0}, std::time(nullptr), &wire);
   Q4T_CHECK(!result.ok() && result.commit_unknown && wire.empty());
+  run.BindCancellation(Clock::now() + 5s, {});
   const auto before = Raw(objects, run.Id());
   Q4T_CHECK(Ok(before));
   Q4T_CHECK(Ok(run.CloseUnfinished()));

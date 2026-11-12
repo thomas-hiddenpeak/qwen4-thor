@@ -1,0 +1,45 @@
+{
+  "status": "PASS_TARGETED_FIXTURE_REPAIRS",
+  "cpp_distinct": 10,
+  "python_distinct": 2,
+  "initial_cpp": {
+    "passed": 9,
+    "failed": 1
+  },
+  "affected_recheck": {
+    "passed": 1
+  },
+  "gpu_starts": 0,
+  "production_sources_changed": false,
+  "production_budgets_changed": false,
+  "lost_receipt_deadline_ms": 100,
+  "failed_remote_run": 43249164819,
+  "source_hashes": {
+    "tests/server_batch_state_test.cpp": "97bd6529c8c5247e6c146f07c63a74221f5eae2e115858615dbfabf3754a1e37",
+    "tests/server_batch_jobs_test.cpp": "bb2b88658ca110d5a141da735873263cd9cae141359f9032f41add00dab890a4",
+    "tests/server_responses_jobs_test.cpp": "222325286ce7b059f57f5ff05697961b41536f7f15899e357d85bbef8562c1ed",
+    "tests/server_vector_jobs_test.cpp": "3e722a12aeac7bc953ef09535270ada12c24a8497f9ca541b39789e047d0b55f",
+    "tools/serve_service/test_auxiliary.py": "887c6bf53dbf02f6dc6a9075e2c56481233b48b7457c3f034dae451d93622e57"
+  },
+  "records": {
+    "required-ci-fixture-cursor-02.txt": "33a641b5c33df3b556bb54588bda547e9025864ba1dbb9ce5700bce311ded7e7",
+    "ci-fixture-boundaries-cpp-01.stderr": "6bcfd2c360de1c10ceed665531dc146834a83cc1a495b250eddb7143cb973ff9",
+    "ci-fixture-boundaries-cpp-01.json": "60d2d897f1104193d54cf674fdd348b5eafa8e50f00d19d69fdc6a7827ae8eb8",
+    "ci-fixture-boundaries-build-02.json": "880da1d115c0c53f7bc0199c411ef1df8743ca3f611a3bc1e8e778a81e9c7d2e",
+    "ci-fixture-boundaries-build-02.stdout": "2d8459d3bc9ea2394d7d65794a47c919ecc63ecaba864bdc0ee91bcc6443c2cf",
+    "ci-fixture-boundaries-build-01.stdout": "a07e6374b9fff3d8877076911cf2d3a1a56195946676c16c163eeecbf97bc8ca",
+    "ci-1e4a-push-full.log.gz": "27bb242a26ab36017a08b4f0fce621578b721c27e1572216198d3c5f38b11d3d",
+    "ci-fixture-boundaries-cpp-01.stdout": "e344e1f1a6c98470deecf56f4334430341a90516079cd23f8836325997f81369",
+    "ci-fixture-boundaries-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ci-fixture-boundaries-build-01.json": "479cbe7b8aa445e7046c5fcb4b4f775203f2f0f6ada17ca33482a701cd240e6f",
+    "ci-fixture-boundaries-python-01.stderr": "eb448972048852e9ac3d96454e6ac43d8516c015b41c2f722c94b62f38aa5b60",
+    "ci-fixture-boundaries-build-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ci-fixture-cursor-cpp-02.json": "f8ac6d36c39c5ca8b767da9763f118f54a076f8b057fe1a9717f8f9974ee07f3",
+    "ci-fixture-boundaries-python-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ci-fixture-cursor-cpp-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ci-fixture-boundaries-plan-01.json": "30c5d8eb19f4eb010bb3a6934e39eeb54ec1e01604d8497fffe6dbfcb0036da4",
+    "ci-fixture-cursor-cpp-02.stdout": "1a75f147510a0410becefe6640a6ef679d98f96895b2373a5f5f23967ab47983",
+    "required-ci-fixture-boundaries-01.txt": "f173cd4ca0337410784e86a250637d019bd06bdc8edcc9cacf326e9050a52dde",
+    "ci-fixture-boundaries-python-01.json": "14bf3e1561b481877181de8da617b9ad392e460397ec635f222b9aa2fc928a5e"
+  }
+}

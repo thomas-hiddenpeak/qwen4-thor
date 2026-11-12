@@ -924,6 +924,12 @@ Q4T_TEST(batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion) {
   auto erase = StoredRequest(last.GetString("id"));
   erase.scope = last.GetString("scope");
   erase.operation = ObjectOperation::kErase;
+  // Random IDs can make any active row the cursor. Finish that row before
+  // deletion, independently of its current validation/budget state.
+  Q4T_CHECK(!BatchTerminal(last.GetString("status")));
+  const auto access = Access(erase.scope);
+  Q4T_CHECK(Ok(batches.Cancel(access, erase.id)) &&
+            Ok(batches.FinishCancelled(access, erase.id)));
   Q4T_CHECK(Ok(objects.Execute(erase, Access().deadline)));
   page = objects.ScanBatches(cursor, Access().deadline);
   Q4T_CHECK(Ok(page) && !page.value.GetBool("has_more") &&

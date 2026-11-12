@@ -1,0 +1,2 @@
+[PASS] batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion
+1 tests, 1 passed, 0 failed, 0 skipped

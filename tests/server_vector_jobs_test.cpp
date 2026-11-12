@@ -623,6 +623,8 @@ Q4T_TEST(vector_batches_execution_and_attribute_changes_update_receipt) {
 
 Q4T_TEST(vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files) {
   Fixture f;
+  // Cancellation must wait for the real worker, not an accidental IO timeout.
+  f.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(f.objects);
   VectorStores stores(objects);
   auto seed = BatchSources(objects);
