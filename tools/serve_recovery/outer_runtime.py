@@ -12,7 +12,7 @@ import signal
 import time
 import uuid
 
-from tools.serve_recovery import bundle, control, deployment, ledger, lifecycle
+from tools.serve_recovery import bundle, cold_admission, cold_client, control, deployment, ledger, lifecycle
 from tools.serve_recovery import outer_control, outer_instance, outer_manager, outer_observe
 from tools.serve_recovery import outer_policy, outer_reconcile, outer_store, outer_tree, service, store
 from tools.serve_recovery import resource_launch
@@ -46,7 +46,9 @@ class Runtime:
         self.stop_durable = self.cleaned = False
         self.startup = startup
         self.resource = resource_launch.inherited(desc['service_id'])
-        try: self.server = outer_control.Server(desc['service_id'], self.client)
+        try:
+            self.cold = cold_client.inherited(state, digest, desc['service_id'], self.resource)
+            self.server = outer_control.Server(desc['service_id'], self.client)
         except BaseException:
             if self.resource is not None: self.resource.close()
             raise
@@ -149,6 +151,47 @@ class Runtime:
                     dict(ticket=attempt['ticket'], verified=True), store.stamp())
                 outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
 
+    def reserve(self, outer, core):
+        previous = outer.head['state']['policy']
+        args = dict(core=core.state, ticket=str(uuid.uuid4()), manifest_sha256=self.digest,
+            cleanup_verified=True, identity_valid=True, custody=self.tree.binding(self.instance))
+        if self.resource is not None: args['resource'] = self.resource.binding()
+        candidate = outer_policy.change(previous, 'request', args, store.stamp())
+        result = candidate['last']['result']
+        if result['allowed']: self.tree.reserve(self.instance, candidate['pending'])
+        if result['allowed'] or candidate['protected'] != previous['protected']:
+            outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
+        if not result['allowed']:
+            self.reason = result['reason']; self.phase = 'WAITING'; return None
+        return candidate
+
+    def prepare_cold(self, lease):
+        """The issuer reads released journals; it cannot race a held writer."""
+        self.tick()
+        if self.stop_requested: return False, None, ()
+        try: available = self.cold.available()
+        except (OSError, ValueError, KeyError, TypeError): available = False
+        if not available:
+            self.phase = 'WAITING'; self.reason = 'cold_issuer_unavailable'
+            return False, None, ()
+        self.instance.check(); outer_manager.ready(self.state, self.desc)
+        with outer_store.open_bound(self.binding) as outer, store.Store(self.state, self.desc['service_id']) as core:
+            ledger.require(core.service_contract, 'cold outer requires original core state')
+            candidate = self.reserve(outer, core)
+            if candidate is None: return False, None, ()
+            attempt = candidate['pending']
+        def tick():
+            self.tick()
+            if self.stop_requested: raise InterruptedError('operator stopped during cold admission')
+        try:
+            with self.cold.request(attempt, lease, self.instance.fd, tick=tick) as reply:
+                config, fds = cold_admission.configuration(self.desc['service_id'], self.digest,
+                                                           lease, descriptors=reply.fds)
+                return True, config, fds
+        except (OSError, ValueError, KeyError, TypeError):
+            self.phase = 'WAITING'; self.reason = 'cold_admission_unavailable'
+            return False, None, ()
+
     def dispatch(self, command, *, pass_fds, stdio):
         self.tick()
         if self.stop_requested: return None
@@ -156,20 +199,20 @@ class Runtime:
         with outer_store.open_bound(self.binding) as outer:
             with store.Store(self.state, self.desc['service_id']) as core:
                 ledger.require(core.service_contract, 'outer dispatch requires original service state')
-                previous = outer.head['state']['policy']
-                args = dict(core=core.state,
-                    ticket=str(uuid.uuid4()), manifest_sha256=self.digest,
-                    cleanup_verified=True, identity_valid=True,
-                    custody=self.tree.binding(self.instance))
-                if self.resource is not None: args['resource'] = self.resource.binding()
-                candidate = outer_policy.change(previous, 'request', args, store.stamp())
-                result = candidate['last']['result']
-                if result['allowed']: self.tree.reserve(self.instance, candidate['pending'])
-                if result['allowed'] or candidate['protected'] != previous['protected']:
-                    outer.transact(str(uuid.uuid4()), previous['revision'], candidate)
-                if not result['allowed']:
-                    self.reason = result['reason']; self.phase = 'WAITING'
-                    return None
+                if self.tree.attempt is None:
+                    ledger.require(self.cold is None, 'cold dispatch requires its prepared original attempt')
+                    candidate = self.reserve(outer, core)
+                    if candidate is None: return None
+                else:
+                    candidate = outer.head['state']['policy']
+                    ledger.require(self.cold is not None and candidate['pending'] == self.tree.attempt and
+                        candidate['pending']['owner'] is None, 'cold prepared outer attempt changed')
+                    self.cold.check()
+                    if core.state['desired'] != 'RUNNING' or not candidate['enabled'] or \
+                            candidate['protected'] or core.state['quarantine'] is not None:
+                        self.phase = 'WAITING'; self.reason = 'cold_dispatch_revoked'; return None
+                    ledger.require(ledger.digest(core.state) == candidate['pending']['core_sha256'],
+                                   'core changed after cold credential issuance')
                 attempt = candidate['pending']
                 if self.resource is not None:
                     command = self.resource.dispatch(command, self.manifest['python']['path'],

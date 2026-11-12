@@ -62,6 +62,7 @@ def probe(directory, checked):
 
 def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
     ledger.require(os.geteuid() == 0, 'host entry requires explicit root invocation')
+    checked = None
     with host.exclusive(directory) as directory:
         value = host.load(directory)
         ledger.require(value['phase'] in ('ready', 'revoking') and
@@ -89,15 +90,36 @@ def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
                 print(json.dumps(dict(status='NO_ACTION', reason='host_disabled', model_actions=False)))
                 return 0
             checked = host.check_runtime(directory, value, probe=True)
-            if not checked['resume_needed']:
+            if not checked['resume_needed'] and not checked['entry_owned']:
                 print(json.dumps(dict(checked, status='NO_ACTION'), sort_keys=True)); return 0
-            operation = 'enter'; daemon = True
+        if operation != 'stop': host.check_resource(value, renew=True)
+    # Bootstrap owns no service tree, and no host admin lock crosses exec/fork.
+    # Existing healthy roots can regain an issuer without acquiring their lock.
+    from tools.serve_recovery import cold_client, cold_host
+    cold = cold_host.ensure(directory) if operation != 'stop' else dict(selected=False)
+    if operation == 'ensure' and not checked['resume_needed']:
+        print(json.dumps(dict(checked, status='NO_ACTION', cold_issuer=cold), sort_keys=True)); return 0
+    if operation == 'ensure': operation = 'enter'; daemon = True
+    with host.exclusive(directory) as directory:
+        current = host.load(directory)
+        ledger.require(all(current[n] == value[n] for n in
+            ('installation_id', 'service_id', 'runtime_uid', 'runtime_gid', 'state', 'artifact', 'resource')),
+            'host entry selection changed during issuer setup')
+        if operation != 'stop':
+            from tools.serve_recovery import host_handoff
+            ledger.require(current['phase'] == 'ready' and current['enabled'] and
+                host.public(directory) == current, 'host entry was disabled during issuer setup')
+            host_handoff.require_admission(directory, current)
+            ledger.require(cold_host.selected(current) == cold['selected'],
+                           'host device selection changed during issuer setup')
         command = [value['artifact']['python']['path'], '-I', '-B',
             str(root/'tools/serve_recovery/host_entry.py'),
             '--runtime-stop' if operation == 'stop' else '--runtime', '--directory', str(directory)]
         if daemon: command.append('--daemon')
         if operation == 'enter':
-            host.check_resource(value)
+            host.check_resource(current, renew=True)
+            os.environ.pop(cold_client.ENVIRONMENT, None)
+            if cold['selected']: os.environ[cold_client.ENVIRONMENT] = str(directory)
             resource_launch.enter(value['resource']['directory'], command)
         else:
             # Explicit stop needs no resource admission and works while the

@@ -89,9 +89,13 @@ def resource_matches(value, current):
         current['policy'] == value['resource']['policy'], 'host resource installation differs')
 
 
-def check_resource(value):
+def check_resource(value, *, renew=False):
     with resources.exclusive(value['resource']['directory']) as directory:
-        current = resources.load(directory); resource_matches(value, current)
+        current = resources.load(directory)
+        if renew and (current['phase'] == 'renewing' or current['phase'] == 'ready' and
+                      current['record']['boot_id'] != store.stamp().boot_id):
+            resources.renew_locked(directory, current); current = resources.load(directory)
+        resource_matches(value, current)
         ledger.require(resources.read_public(directory) == resources.public_value(current),
                        'host resource publication differs')
 
@@ -239,6 +243,8 @@ def remove(directory):
         else: publish(directory, value)
         ledger.require(trigger_phase(directory, value) in ('absent', 'removed'),
                        'remove the optional host trigger before removing its native entry')
+        from tools.serve_recovery import cold_host
+        cold_host.withdraw(directory)
         resource_directory = value['resource']['directory']
         with resources.exclusive(resource_directory) as resource_directory:
             current = resources.load(resource_directory)

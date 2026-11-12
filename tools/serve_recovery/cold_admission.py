@@ -14,8 +14,12 @@ ENVIRONMENT = 'Q4T_DEVICE_ADMISSION_FDS'
 NAMES = ('receipt_fd', 'token_fd', 'link_fd', 'program_fd')
 
 
-def configuration(service_id, manifest_sha256, lease_fd):
+def configuration(service_id, manifest_sha256, lease_fd, *, descriptors=None):
     raw = os.environ.get(ENVIRONMENT)
+    if descriptors is not None:
+        ledger.require(raw is None and type(descriptors) in (list, tuple) and
+            all(type(fd) is int for fd in descriptors), 'mixed inherited and per-generation cold admission')
+        raw = ','.join(map(str, descriptors))
     if raw is None: return None, ()
     numbers = raw.split(',')
     ledger.require(len(numbers) == 4 and all(n.isdecimal() and len(n) <= 7 for n in numbers),

@@ -17,8 +17,8 @@ import time
 from tools.serve_recovery import device_control, ledger, outer_tree, store
 
 MAXIMUM = 16384
-WORKER_SECONDS = 25
-CLIENT_SECONDS = 30
+WORKER_SECONDS = 40
+CLIENT_SECONDS = 45
 
 
 def address(host_id):
@@ -56,6 +56,7 @@ def receive(sock, *, count=None, peer=None):
             numbers = array('i'); size = numbers.itemsize
             numbers.frombytes(data[:len(data)//size*size]); fds.extend(numbers)
             invalid |= len(data) % size != 0
+        if not raw: raise ConnectionResetError('cold channel peer closed before its reply')
         ledger.require(raw and not flags & (socket.MSG_TRUNC | socket.MSG_CTRUNC) and
             not invalid and len(fds) <= 4 and (count is None or len(fds) == count) and
             (peer is None or actual_peer == peer),

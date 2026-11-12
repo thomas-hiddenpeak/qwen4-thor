@@ -1802,7 +1802,8 @@
         "evidence/serve-cold-driver-cpu-20261112/README.md",
         "evidence/serve-device-detach-cpu-20261112/README.md",
         "docs/evidence/serve-device-resource-cpu-20261112/review.json",
-        "docs/evidence/serve-cold-channel-cpu-20261112/review.json"
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json"
       ],
       "release": null,
       "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
@@ -1836,7 +1837,8 @@
       ],
       "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
       "composition_status": "Required: bind device fence to original resource service leaf, protected per-generation one-use admission channel, outer intent/cleanup/STOPPED and bounded worker custody; preserve v1 frozen candidate and all original budgets. CPU-first development; no host device rule or GPU changes. Explicit own-link detach added and accepted by 14 CPU cases/1.044s with real owned cgroups, retained FDs, native IPC and resumable removal; no host-root rule or GPU change. Build 9.246s, zero warnings. Actual resource/device composition still required. Resource-bound v2 configuration, actual existing service-leaf selection, permanent association/fence lifecycle and uninstall interlock implemented; 15 targeted CPU checks frozen, not run. Per-generation native admission channel remains required; new v2 never enters the wrong legacy single-domain route.",
-      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required."
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation native outer and root host issuer integration accepted in 27 targeted CPU tests (31 invocations); managed lease/public CLI, issuer process-loss recovery, actual cold GPU business and release remain required."
     },
     {
       "id": "R08",
@@ -1858,14 +1860,16 @@
         "evidence/serve-resource-delegation-cpu-20261112/README.md",
         "evidence/serve-device-detach-cpu-20261112/README.md",
         "docs/evidence/serve-device-resource-cpu-20261112/review.json",
-        "docs/evidence/serve-cold-channel-cpu-20261112/review.json"
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
       "development_status": "Native resource domains are integrated with the outer runtime without systemd creation. CPU accepted: real kernel limits/self-entry/cleanup (7 cases, 6.470s), durable installation/resume/removal (12 distinct, 2.078s), and source-bound entry/pre-fork resource binding/new-instance cleanup (29 distinct, 14.466s), including actual native Guardian plus CPU controller/gateway/model roles. Original stop, device faults and budgets are preserved. Owned domains removed; no GPU, default or host device-policy changes. Required remaining: R07 composition, unified-DRAM pressure integration, applicable model business and reversible delivery. No hard physical-RAM cap claim. Persistent resource epoch recreation/entry/uninstall accepted by 13 targeted CPU cases/4.722s using historical boot fixtures and actual owned domains, not a host reboot; preserves original installation identity and never recreates same-boot losses. Resource-bound cross-boot unknown-birth and repeated-boot checkpoint reconciliation accepted by 31 targeted CPU cases/6.995s, with actual renewed CPU domains and historical boot data. Current-boot owners, wrong installation and ordinary launch bypass rejected. No host reboot or GPU. Host entry and remaining master work continue. Unified foreground/daemon routing and independent outer daemon accepted by 17 CPU cases/20.357s, including actual native Guardian and CPU roles, parent loss/reply isolation, duplicate rejection and resource FD custody. Complete Runtime old-writer ordering corrected and directly accepted. Host installation/enable/uninstall still required. Review found root-open migration FD overprivilege in unpublished candidate. Reworked to kernel-confined runtime-UID opening and format v2; 20 targeted CPU checks passed first attempt in 11.477s: actual inherited FD rejected owned outside same-UID/root test processes, service escape/controller writes rejected, full recovery and native foreground/daemon CPU roles passed. Own domains cleaned, no GPU/default/host configuration changes; all remaining tasks retained.",
       "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
       "composition_status": "Required: bind device fence to original resource service leaf, protected per-generation one-use admission channel, outer intent/cleanup/STOPPED and bounded worker custody; preserve v1 frozen candidate and all original budgets. CPU-first development; no host device rule or GPU changes. Explicit own-link detach added and accepted by 14 CPU cases/1.044s with real owned cgroups, retained FDs, native IPC and resumable removal; no host-root rule or GPU change. Build 9.246s, zero warnings. Actual resource/device composition still required. Resource-bound v2 configuration, actual existing service-leaf selection, permanent association/fence lifecycle and uninstall interlock implemented; 15 targeted CPU checks frozen, not run. Per-generation native admission channel remains required; new v2 never enters the wrong legacy single-domain route.",
-      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required."
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation native outer and root host issuer integration accepted in 27 targeted CPU tests (31 invocations); managed lease/public CLI, issuer process-loss recovery, actual cold GPU business and release remain required."
     },
     {
       "id": "R09",
@@ -1901,7 +1905,8 @@
         "evidence/serve-host-handoff-cpu-20261112/README.md",
         "evidence/serve-device-detach-cpu-20261112/README.md",
         "docs/evidence/serve-device-resource-cpu-20261112/review.json",
-        "docs/evidence/serve-cold-channel-cpu-20261112/review.json"
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -1941,7 +1946,8 @@
       },
       "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
       "composition_status": "Required: bind device fence to original resource service leaf, protected per-generation one-use admission channel, outer intent/cleanup/STOPPED and bounded worker custody; preserve v1 frozen candidate and all original budgets. CPU-first development; no host device rule or GPU changes. Explicit own-link detach added and accepted by 14 CPU cases/1.044s with real owned cgroups, retained FDs, native IPC and resumable removal; no host-root rule or GPU change. Build 9.246s, zero warnings. Actual resource/device composition still required. Resource-bound v2 configuration, actual existing service-leaf selection, permanent association/fence lifecycle and uninstall interlock implemented; 15 targeted CPU checks frozen, not run. Per-generation native admission channel remains required; new v2 never enters the wrong legacy single-domain route.",
-      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required."
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation native outer and root host issuer integration accepted in 27 targeted CPU tests (31 invocations); managed lease/public CLI, issuer process-loss recovery, actual cold GPU business and release remain required."
     },
     {
       "id": "R10",

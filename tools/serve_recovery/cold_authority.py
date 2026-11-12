@@ -89,20 +89,31 @@ def issue(directory, selected, lease_fd, instance_fd, peer, pidfd):
             value['service_id'] == selected['service_id'] and
             value['artifact']['manifest_sha256'] == selected['manifest_sha256'],
             'cold request host or selected package differs')
+        checked = verify_runtime(directory, value, root, selected, lease_fd, instance_fd)
+        child.verify_lease(instance_fd, str(Path(value['state'])/'guardian.lock'))
+        instance = os.fstat(instance_fd)
+        ledger.require(stat.S_ISREG(instance.st_mode) and instance.st_uid == value['runtime_uid'] and
+            stat.S_IMODE(instance.st_mode) == 0o600, 'cold instance descriptor ownership differs')
+        held = domain.lease(lease_fd, checked['lease_path'], expected_config)
+        ledger.require((held.st_dev, held.st_ino) == (selected['lease_device'], selected['lease_inode']),
+                       'cold request actual lease differs')
+        current = resources.read_public(expected_config['resource']['directory'])
+        ledger.require(checked['resource'] == dict(directory=expected_config['resource']['directory'],
+            publication=current), 'cold request resource epoch changed')
+        with kernel.Scope(current['record']) as original:
+            ledger.require(original.empty(), 'cold original service leaf is populated')
+            peer_identity(peer, pidfd, selected, value, current['record'])
+        previous = device_resource.lifecycle(device_directory, expected_config)
+        if previous['phase'] == 'armed' and previous['boot_id'] != store.stamp().boot_id:
+            # Continue only a previously armed installation. Manual disarm,
+            # lost history and same-boot rule loss never imply automatic arm.
+            # arm() checks this condition again under the original admin lock.
+            domain.arm(device_directory, lease_fd, checked['lease_path'], renew_boot=True)
         with domain.managed(device_directory) as (device_directory, config, binding, executable):
             ledger.require(config == expected_config, 'cold device selection changed')
-            checked = verify_runtime(directory, value, root, selected, lease_fd, instance_fd)
-            child.verify_lease(instance_fd, str(Path(value['state'])/'guardian.lock'))
-            instance = os.fstat(instance_fd)
-            ledger.require(stat.S_ISREG(instance.st_mode) and instance.st_uid == value['runtime_uid'] and
-                stat.S_IMODE(instance.st_mode) == 0o600, 'cold instance descriptor ownership differs')
-            held = domain.lease(lease_fd, checked['lease_path'], config)
-            ledger.require((held.st_dev, held.st_ino) == (selected['lease_device'], selected['lease_inode']),
-                           'cold request actual lease differs')
             with domain.scope(config) as (group, pin, target, allowed):
-                current = resources.read_public(config['resource']['directory'])
-                ledger.require(checked['resource'] == dict(directory=config['resource']['directory'],
-                    publication=current), 'cold request resource epoch changed')
+                ledger.require(resources.read_public(config['resource']['directory']) == current,
+                               'cold request resource epoch changed after verification')
                 peer_identity(peer, pidfd, selected, value, current['record'])
                 record = domain.current(device_directory, config, binding, domain.Observation(lease_fd))
                 control = device_control.Control(executable, lease_fd, checked['lease_path'])

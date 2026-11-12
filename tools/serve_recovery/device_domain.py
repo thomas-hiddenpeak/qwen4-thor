@@ -288,9 +288,16 @@ def lease(lease_fd, lease_path, config):
     return info
 
 
-def arm(directory, lease_fd, lease_path):
+def arm(directory, lease_fd, lease_path, *, renew_boot=False):
     with managed(directory) as (directory, config, binding, executable):
         lease(lease_fd, lease_path, config)
+        if renew_boot:
+            from tools.serve_recovery import device_resource
+            ledger.require('resource' in config, 'automatic renewal requires resource-bound device history')
+            previous = device_resource.lifecycle(directory, config)
+            ledger.require(previous['phase'] == 'armed' and
+                previous['boot_id'] != store.stamp().boot_id,
+                'automatic renewal requires an armed original fence from a previous boot')
         observer = Observation(lease_fd)
         before = observer.inspect()  # Busy hosts are untouched, even briefly.
         with scope(config, create=True) as (group, pin, target, allowed):

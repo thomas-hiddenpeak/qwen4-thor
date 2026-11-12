@@ -191,7 +191,11 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360,
             process.send_signal(signal.SIGTERM)  # This unreaped direct child only.
     try:
         from tools.serve_recovery import cold_admission
-        cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
+        if outer is not None and outer.cold is not None:
+            prepared, cold_config, cold_fds = outer.prepare_cold(lease)
+            if not prepared: return dict(outer_dispatched=False, cold_admission_waiting=True)
+        else:
+            cold_config, cold_fds = cold_admission.configuration(desc['service_id'], digest, lease)
         ledger.require(cold_config is None or manifest['version'] >= 17,
                        'cold device startup requires service profile v17')
         if daemon:

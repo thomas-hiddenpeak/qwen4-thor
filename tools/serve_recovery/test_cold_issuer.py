@@ -24,7 +24,8 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import access_store, bundle, cold_authority as authority, cold_channel as wire
-from tools.serve_recovery import cold_issuer, cold_requests as requests, device_control, device_domain as domain
+from tools.serve_recovery import cold_client, cold_host, cold_issuer, cold_requests as requests
+from tools.serve_recovery import device_control, device_domain as domain, device_resource
 from tools.serve_recovery import device_store, host_install as host, ledger, outer_instance, outer_manager
 from tools.serve_recovery import outer_store, outer_tree, resource_install, resource_launch, store
 from tools.serve_recovery import test_host_install as fixtures, test_device_resource as resource_fixtures
@@ -67,6 +68,9 @@ def peer_runtime(path, channel_fd):
                     with wire.request(selected['host_id'], selected, lease, instance.fd):
                         wire.send(control, dict(issued=True))
                 except (OSError, ValueError): wire.send(control, dict(issued=False))
+            elif operation == 'client-status':
+                client = cold_client.Host(args['host'], state, args['digest'], args['service_id'], capability)
+                wire.send(control, dict(available=client.available()))
             else: raise ValueError('unknown CPU peer operation')
     capability.close(); os.close(lease)
 
@@ -133,6 +137,7 @@ class AuthorityTests(fixtures.HostTests):
                           hashlib.sha256(binary.read_bytes()).hexdigest(), resource_directory=self.directory)
         self.config = domain.configuration(domain.read_record(self.device/'configuration.json'))
         self.operations = []; self.peer = None
+        self.addCleanup(cold_host.withdraw, self.host)
 
     def start_peer(self):
         data = dict(self.fixture, base=json.loads((self.path/'cpu-engine.json').read_text()), host=str(self.host))
@@ -264,6 +269,90 @@ class AuthorityTests(fixtures.HostTests):
         self.assertIsNone(self.peer.poll())
 
 
+class HostIntegrationTests(AuthorityTests):
+    def test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts(self):
+        before = self.state_files()
+        result = self.enter()
+        self.assertEqual(result['state'], 'STOPPED'); self.assertTrue(result['cleanup_confirmed'])
+        status = cold_issuer.control(self.host, 'status')
+        self.assertEqual(status['admission_state'], 'unarmed')
+        self.assertEqual(self.state_files(), before)
+        self.assertTrue(cold_host.withdraw(self.host)['issuer_exited'])
+
+    def test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client(self):
+        first = cold_host.ensure(self.host); self.assertTrue(first['selected'])
+        second = cold_host.ensure(self.host)
+        self.assertEqual(first['issuer']['issuer_pid'], second['issuer']['issuer_pid'])
+        self.start_peer(); before = self.state_files()
+        wire.send(self.peer_control, dict(operation='client-status'))
+        with wire.receive(self.peer_control, count=0) as reply: self.assertFalse(reply.result['available'])
+        self.assertEqual(before, self.state_files()); self.assertIsNone(self.peer.poll())
+
+    def test_host_removal_withdraws_issuer_and_preserves_original_core(self):
+        before = self.state_files(); started = cold_host.ensure(self.host)
+        pidfd = os.pidfd_open(started['issuer']['issuer_pid']); self.addCleanup(os.close, pidfd)
+        result = host.remove(self.host)
+        self.assertTrue(result['removed']); self.assertTrue(select.select([pidfd], [], [], 0)[0])
+        self.assertEqual(before, self.state_files())
+
+    def test_lost_shutdown_reply_never_claims_live_issuer_exited(self):
+        selected = host.public(self.host)
+        process = subprocess.Popen([sys.executable, '-I', '-B', __file__, '--reset-issuer',
+            selected['installation_id']], env=host.environment(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.processes.append(process)
+        try:
+            self.assertTrue(select.select([process.stdout], [], [], 3)[0])
+            self.assertEqual(process.stdout.readline().strip(), b'ready')
+            with self.assertRaisesRegex(ValueError, 'still owns'): cold_host.withdraw(self.host)
+            self.assertIsNone(process.poll())
+        finally:
+            if process.poll() is None: process.terminate()
+            process.wait(timeout=3)
+
+    def test_entry_resource_epoch_renewal_keeps_device_and_replay_history(self):
+        original = resource_install.load(self.directory); old = deepcopy(original)
+        old['record']['boot_id'] = str(uuid.uuid4())
+        resource_install.commit(self.directory, old)
+        with fixtures.kernel.Scope(original['record']) as scope:
+            self.assertTrue(scope.empty()); self.assertTrue(scope.empty('outer'))
+        path = Path(original['record']['root'])
+        for name in fixtures.kernel.NAMES: (path/name).rmdir()
+        path.rmdir()
+        record = self.device/requests.Store.directory_name/'policy.json'; raw = record.read_bytes()
+        host.check_resource(host.load(self.host), renew=True)
+        current = resource_install.load(self.directory)
+        self.assertEqual(current['domain_id'], original['domain_id'])
+        self.assertNotEqual(current['record']['root_identity'], original['record']['root_identity'])
+        self.assertEqual(current['record']['boot_id'], store.stamp().boot_id)
+        self.assertEqual(record.read_bytes(), raw)
+        self.assertEqual(domain.configuration(domain.read_record(self.device/'configuration.json')), self.config)
+
+    def test_automatic_requalification_refuses_idle_and_rechecks_original_armed_boot(self):
+        self.start_peer()
+        with mock.patch.object(domain.Observation, 'inspect') as inspect:
+            with self.assertRaisesRegex(ValueError, 'armed original fence'):
+                domain.arm(self.device, self.lease, self.lease_path(), renew_boot=True)
+            inspect.assert_not_called()
+        with self.fake_devices():
+            binding = access_store.binding(self.device, self.sid)
+            held = os.fstat(self.lease)
+            device_store.charge_once(binding, self.fixture['digest'], held.st_dev, held.st_ino)
+            previous = device_resource.lifecycle(self.device, self.config)
+            domain.write_record(self.device/device_resource.FENCE, dict(previous, boot_id=str(uuid.uuid4())))
+            _, pins = domain.names(self.config); (pins/'policy').unlink(); pins.rmdir()
+            domain.arm(self.device, self.lease, self.lease_path(), renew_boot=True)
+            self.assertEqual(domain.status(self.device)['charged_total'], 1)
+            self.assertEqual(device_resource.lifecycle(self.device, self.config)['boot_id'], store.stamp().boot_id)
+
+
+class NoDeviceHostTests(fixtures.HostTests):
+    def test_no_device_association_adds_no_issuer_dependency(self):
+        self.initialize_host(); host.configure(self.host, enabled=True)
+        with mock.patch.object(cold_host.subprocess, 'run', side_effect=AssertionError('no issuer expected')):
+            result = cold_host.ensure(self.host)
+        self.assertFalse(result['selected']); self.assertFalse(result['model_actions'])
+
+
 def fixture_worker(mode, fd):
     with socket.socket(fileno=fd) as channel:
         with wire.receive(channel, count=0) as incoming: value = incoming.result
@@ -353,6 +442,13 @@ class ChannelTests(unittest.TestCase):
             self.assertEqual(set(Path('/proc/self/fd').iterdir()), before)
         finally: parent.close(); endpoint.close()
 
+    def test_closed_peer_is_transport_loss_without_received_capabilities(self):
+        parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        endpoint.close(); parent.settimeout(2)
+        try:
+            with self.assertRaises(ConnectionResetError): wire.receive(parent, count=0)
+        finally: parent.close()
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == '--prepare':
@@ -365,4 +461,9 @@ if __name__ == '__main__':
         peer_runtime(Path(sys.argv[2]), int(sys.argv[3]))
     elif len(sys.argv) > 1 and sys.argv[1] == '--fixture-worker':
         fixture_worker(sys.argv[2], int(sys.argv[4]))
+    elif len(sys.argv) > 1 and sys.argv[1] == '--reset-issuer':
+        with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET) as listener:
+            listener.bind(wire.address(sys.argv[2])); listener.listen(1)
+            print('ready', flush=True)
+            connection, _ = listener.accept(); connection.close(); time.sleep(10)
     else: unittest.main(module=None)

@@ -14,7 +14,7 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import cold_authority, cold_channel as wire, cold_requests
-from tools.serve_recovery import host_artifact, host_install as host, ledger
+from tools.serve_recovery import device_resource, host_artifact, host_install as host, ledger, store
 
 
 def protected(directory):
@@ -68,9 +68,18 @@ class Server:
     def stop(self, *_args): self.stopping = True
 
     def status(self):
+        admission = 'unknown'
+        try:
+            with host.exclusive(self.directory):
+                _, _, directory, config = cold_authority.selection(self.directory)
+                fence = device_resource.lifecycle(directory, config)
+                admission = 'unarmed'
+                if fence['phase'] == 'armed':
+                    admission = 'armed' if fence['boot_id'] == store.stamp().boot_id else 'requalify_required'
+        except (OSError, ValueError, KeyError, TypeError): pass
         return dict(host_id=self.value['installation_id'], service_id=self.value['service_id'],
             issuer_pid=os.getpid(), accepting=not self.stopping,
-            worker_pending=self.pending is not None, model_actions=False)
+            worker_pending=self.pending is not None, admission_state=admission, model_actions=False)
 
     def answer(self, sock, value, fds=()):
         try: wire.send(sock, value, fds)
@@ -167,10 +176,43 @@ def control(directory, operation):
     value = host.public(directory)
     ledger.require(operation in ('status', 'stop'), 'invalid cold issuer control')
     with wire.connect(value['installation_id'], timeout=2) as sock:
+        peer = wire.credentials(sock)
         wire.send(sock, dict(version=1, operation=operation))
         with wire.receive(sock, count=0) as result:
-            ledger.require(result.result.get('ok') is True, 'cold issuer control rejected')
+            ledger.require(result.result.get('ok') is True and
+                result.result['result']['host_id'] == value['installation_id'] and
+                result.result['result']['service_id'] == value['service_id'] and
+                result.result['result']['issuer_pid'] == peer[0], 'cold issuer control identity differs')
             return result.result['result']
+
+
+def daemon(directory, value):
+    parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+    try: pid = os.fork()
+    except BaseException: parent.close(); endpoint.close(); raise
+    if pid:
+        endpoint.close(); parent.settimeout(5)
+        try:
+            with wire.receive(parent, count=0) as reply:
+                ledger.require(reply.result == dict(ready=True, issuer_pid=pid),
+                               'cold issuer bootstrap receipt differs')
+            return 0
+        finally: parent.close()
+    parent.close(); os.setsid()
+    null = os.open('/dev/null', os.O_RDWR | os.O_CLOEXEC)
+    for target in (0, 1, 2): os.dup2(null, target)
+    if null > 2: os.close(null)
+    code = 0
+    try:
+        # AF_UNIX records the creator/listener credentials. Bind only here,
+        # after fork, so clients pin this actual long-lived issuer, not the
+        # short-lived bootstrap parent. No service process is its descendant.
+        server = Server(directory, value)
+        try: wire.send(endpoint, dict(ready=True, issuer_pid=os.getpid()))
+        except (OSError, ValueError): pass  # An explicit daemon survives a lost startup receipt.
+        endpoint.close(); server.run()
+    except BaseException: code = 1
+    finally: os._exit(code)
 
 
 def main():
@@ -179,13 +221,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--directory', type=Path, required=True)
     operations = parser.add_mutually_exclusive_group(required=True)
-    for name in ('serve', 'status', 'stop'): operations.add_argument('--'+name, action='store_true')
+    for name in ('serve', 'daemon', 'status', 'stop'): operations.add_argument('--'+name, action='store_true')
     operations.add_argument('--worker-fd', type=int)
     args = parser.parse_args()
     if args.worker_fd is not None: return worker(args.directory, args.worker_fd)
-    if args.serve:
+    if args.serve or args.daemon:
         value = protected(args.directory)
         with host.exclusive(args.directory): cold_authority.selection(args.directory)
+        if args.daemon: return daemon(args.directory, value)
         Server(args.directory, value).run(); return 0
     print(json.dumps(control(args.directory, 'stop' if args.stop else 'status'), sort_keys=True))
     return 0
