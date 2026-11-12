@@ -869,7 +869,7 @@
           "requests": 6,
           "seconds": 900
         },
-        "business_budget_used": false,
+        "business_budget_used": true,
         "cpu_frozen_cases": 80,
         "signal": "model_generated_q4t_refusal_frame_v1",
         "model_and_transport_not_yet_accepted": false,
@@ -878,7 +878,8 @@
         "evidence": "docs/evidence/serve-refusal-cpu-20261112/README.md",
         "business_evidence": "docs/evidence/serve-refusal-business-20261112/README.md",
         "delivery_pending": true,
-        "qualified_package": "docs/evidence/serve-refusal-profiles-20261112/README.md"
+        "qualified_package": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md"
       }
     },
     {
@@ -2070,12 +2071,14 @@
       "evidence": [],
       "release": null,
       "capability_upgrade": {
-        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
+        "state": "managed_and_version_passed_delivery_pending",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
         "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
         "existing_default_rev72_preserved": true,
         "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
-        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+        "candidate_manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+        "fallback_manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md"
       }
     },
     {

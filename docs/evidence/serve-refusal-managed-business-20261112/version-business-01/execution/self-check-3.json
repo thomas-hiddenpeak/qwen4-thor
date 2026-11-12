@@ -1,0 +1,5 @@
+{
+  "http_status": 200,
+  "content_type": "application/json",
+  "body": "{\"id\":\"chatcmpl-auto-6cb3fceefd5912d5302f60e26c9856c1\",\"object\":\"chat.completion\",\"created\":1794460401,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"ok\\\":true}\"},\"finish_reason\":\"stop\",\"logprobs\":null}],\"usage\":{\"prompt_tokens\":288,\"completion_tokens\":6,\"total_tokens\":294}}"
+}

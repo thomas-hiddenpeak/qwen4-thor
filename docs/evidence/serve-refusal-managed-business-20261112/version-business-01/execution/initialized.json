@@ -1,0 +1,8 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/version-business-01/execution/state",
+  "service_id": "dd74a470-e947-4708-a3f6-86c7b4d0891f",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false,
+  "resumed": false
+}

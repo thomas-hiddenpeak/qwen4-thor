@@ -1,0 +1,52 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 1,
+    "controls": 350
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 1,
+      "monotonic_ns": 2650401574605286
+    },
+    {
+      "kind": "chats",
+      "label": "primary-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2650438353492105
+    },
+    {
+      "kind": "chats",
+      "label": "native-refusal",
+      "ordinal": 2,
+      "monotonic_ns": 2650440254757039
+    },
+    {
+      "kind": "probes",
+      "label": "root-version-device-proof",
+      "ordinal": 1,
+      "monotonic_ns": 2650442548508800
+    },
+    {
+      "kind": "starts",
+      "label": "fallback-model",
+      "ordinal": 2,
+      "monotonic_ns": 2650449818602463
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-self-check",
+      "ordinal": 3,
+      "monotonic_ns": 2650483899854385
+    },
+    {
+      "kind": "chats",
+      "label": "fallback-public",
+      "ordinal": 4,
+      "monotonic_ns": 2650485837949376
+    }
+  ]
+}

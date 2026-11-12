@@ -1,0 +1,7 @@
+{
+  "pid": 1912706,
+  "start_ticks": 265039927,
+  "trigger": "SIGUSR1",
+  "actual_wait_signal": "SIGABRT",
+  "monotonic": 2650441.571650908
+}

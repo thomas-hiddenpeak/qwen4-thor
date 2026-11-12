@@ -1,0 +1,8 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/execution/state",
+  "service_id": "4183aafc-065e-4f97-817c-7ee0dd53d422",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false,
+  "resumed": false
+}
