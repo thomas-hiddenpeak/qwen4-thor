@@ -1,0 +1,31 @@
+{
+  "frames": 149,
+  "bytes": 41624,
+  "snapshots": 149,
+  "error": null,
+  "last": {
+    "sequence": 149,
+    "observed_ns": 2680930922087662,
+    "complete": true,
+    "identity": {
+      "pid": 2017809,
+      "start_ticks": 268089387,
+      "pid_namespace": 4026531836,
+      "controller_generation": 1,
+      "model_generation": 1,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "service_id": "850c24c8-2e24-4b55-b96a-330c682e18ff"
+    },
+    "active": 0,
+    "untracked": 0,
+    "successes": 0,
+    "steps": 0,
+    "rows": [],
+    "wire_version": 2
+  },
+  "cache_wait_samples": 0,
+  "cache_device_samples": 0,
+  "unknown": {
+    "progress_disconnected": 8
+  }
+}

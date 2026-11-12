@@ -2971,6 +2971,57 @@
             "retry_after_ms",
             "last_failure"
           ]
+        },
+        "vector_ingestion": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
         }
       },
       "required": [
@@ -3127,6 +3178,77 @@
         "retry_delay_ms"
       ],
       "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+    },
+    "vector_ingestion": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "recovery_scanned": {
+          "type": "boolean"
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_waiting": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_deferrals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_pending": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "recovery_scanned",
+        "owned",
+        "active",
+        "rate_waiting",
+        "rate_deferrals",
+        "turns",
+        "errors",
+        "recovered",
+        "recovery_errors",
+        "recovery_pending"
+      ],
+      "additionalProperties": false,
+      "description": "Native vector ingestion job health; auxiliary failure does not affect core readiness. Historical config-v1 producers omit this property."
     }
   },
   "required": [

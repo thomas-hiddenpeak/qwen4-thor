@@ -1,0 +1,48 @@
+{
+  "owned": {
+    "2017809": {
+      "state": "R",
+      "ppid": 2017804,
+      "pgid": 2017804,
+      "start_ticks": 268089387,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18771",
+        "--operations-port",
+        "18772",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "16384",
+        "--seq-capacities",
+        "16384",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "384",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "2",
+        "--session-cache-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/cache-business-01/private-cache",
+        "--prefix-cache-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/cache-business-01/shared-cache",
+        "--prefix-cache-checkpoints",
+        "1024"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true
+}
