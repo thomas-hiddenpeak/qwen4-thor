@@ -36,6 +36,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 已用两项大词表CPU负控复现工具发现失败：仅检查拒答的guard重复
+  扫描XML候选耗尽工作额度，误报内存。[修后12项针对性CPU通过](evidence/serve-tool-discovery-guard-repair-20261113/README.md)，
+  grammar/拒答/停止/schema检查及资源上限保持。补验固定1启动10创建，
+  含原失败累计2启动11创建1200秒；默认rev110未变，全部master继续。
+
+- 工具发现[首次真实短验失败](evidence/serve-tool-discovery-business-failure-20261113/README.md)：
+  1启动/1创建/39.863秒，首请求触发grammar资源错误。39次NVML查询
+  正常，进程/端口/锁已清理，默认rev110保持。正在CPU复现语义guard
+  工作预算与内存错误的混淆，修复后补原业务闭环，不把失败归档当收口。
+
 - 工具发现公开执行链的[77项不同CPU、4项SDK/驱动检查最终通过](evidence/serve-tool-discovery-integration-cpu-20261113/README.md)：
   原位置加载、真实派发、持久结果合同、异步/推理续答、裁剪压缩及
   JSON/SSE接线已验证；失败及修正原件保留。补齐19项协议来源漏登，

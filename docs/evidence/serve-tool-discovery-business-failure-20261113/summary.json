@@ -1,0 +1,28 @@
+{
+  "status": "FAILED",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 35
+  },
+  "seconds": 39.86322369938716,
+  "binary_sha256": "791e6f73f8825c2bc4431bb1ed777f414b3613e0b0056624984d5876b80fbf39",
+  "source_commit": "f58155de7f4bc6d09ddb9ecbe302fec8703a7a3a",
+  "error": {
+    "class": "InternalServerError",
+    "message": "503 grammar worker memory limit exceeded",
+    "status": 503,
+    "code": "constraint_resource_exhausted",
+    "param": null
+  },
+  "env_abort": false,
+  "nvml_queries": 39,
+  "postflight": {
+    "sources_unchanged": true,
+    "default_unchanged": true,
+    "processes_gone": true,
+    "ports_free": true,
+    "lock_free": true
+  },
+  "no_business_acceptance": true
+}

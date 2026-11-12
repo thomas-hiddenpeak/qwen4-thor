@@ -115,6 +115,37 @@ Q4T_TEST(structured_decoder_required_named_and_parallel_masks) {
   return true;
 }
 
+Q4T_TEST(structured_decoder_large_vocab_discovery_string_uses_bounded_worker) {
+  const auto plan = Plan(R"("enable_thinking":false,"tools":[
+    {"type":"function","function":{"name":"q4t_builtin_tool_search",
+     "strict":true,"parameters":{"type":"object",
+      "properties":{"arguments_json":{"type":"string"}},
+      "required":["arguments_json"],"additionalProperties":false}}}],
+    "tool_choice":"required","parallel_tool_calls":false)");
+  std::vector<std::string> vocabulary(300000, "a");
+  vocabulary[0] = "";
+  vocabulary[1] =
+      "<tool_call>\n<function=q4t_builtin_tool_search>\n"
+      "<parameter=arguments_json>\n";
+  vocabulary[2] = "{\"paths\":[\"project\"]}";
+  vocabulary[3] = "</parameter>\n</function>\n</tool_call>";
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(StructuredDecoder::Create(plan, vocabulary, vocabulary.size(), {0},
+                                      &decoder));
+  const std::vector<uint16_t> logits(vocabulary.size(), Bf16(1));
+  for (int32_t expected : {1, 2, 3, 0}) {
+    int32_t selected = -1;
+    const auto status = decoder->Select(logits, &selected, expected);
+    if (!status)
+      std::fprintf(stderr, "token=%d failure=%d: %s\n", expected,
+                   static_cast<int>(decoder->Failure()),
+                   status.message().c_str());
+    Q4T_CHECK(status && selected == expected);
+  }
+  Q4T_CHECK(decoder->Terminated());
+  return true;
+}
+
 Q4T_TEST(structured_decoder_legacy_single_function_and_none_masks) {
   const std::string definitions =
       R"("enable_thinking":false,"functions":[{"name":"read","parameters":{)"

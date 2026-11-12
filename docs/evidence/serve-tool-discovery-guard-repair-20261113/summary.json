@@ -1,0 +1,15 @@
+{
+  "status": "PASS_TARGETED_CPU_BUSINESS_REPAIR_PENDING",
+  "negative_cases": 2,
+  "passed_cases": 12,
+  "source_commit_before": "f58155de7f4bc6d09ddb9ecbe302fec8703a7a3a",
+  "source_sha256": {
+    "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
+    "src/server/structured_decoder.cpp": "7a63e79a3f7d47394ffeb3238f15fd017e2076b4c1ce340f8974eb25bd18dcfe",
+    "tests/server_schema_token_guard_test.cpp": "215359c9bc93b96f904a7d85ec1a0e71d632e5ffff30156e6b186c37269fcab8",
+    "tests/server_structured_decoder_test.cpp": "926d5c2d0317ce0783a64cc1c9a3e49df3d35250f21f8fc758d0451d387033df"
+  },
+  "engine_sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531",
+  "limits_unchanged": true,
+  "default_unchanged": true
+}

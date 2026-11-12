@@ -1,0 +1,33 @@
+{
+  "tests": [
+    "schema_guard_refusal_only_legacy_tool_has_bounded_mask_work",
+    "structured_decoder_large_vocab_discovery_string_uses_bounded_worker",
+    "schema_guard_thinking_tools_and_payload_marker_boundaries",
+    "schema_guard_filters_completed_format_tokens_and_receipts",
+    "schema_guard_dependency_error_is_not_an_invalid_candidate",
+    "schema_guard_large_vocabulary_skips_uncompleted_string_checks",
+    "schema_worker_binding_mismatch_cannot_bypass_semantic_checks",
+    "refusal_worker_schema_tool_and_text_branches_round_trip",
+    "refusal_worker_rejects_truncation_empty_and_mixed_ordinary_branch",
+    "schema_worker_dependency_and_resource_errors_recover_per_request",
+    "structured_decoder_expired_and_memory_failure_are_closed",
+    "responses_discovery_real_parser_receipt_and_sse_items_are_consistent"
+  ],
+  "purpose": "fix false resource exhaustion for refusal-only ordinary tool strings; lexical and semantic checks retained, resource ceilings unchanged",
+  "production_sha256": {
+    "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
+    "src/server/structured_decoder.cpp": "7a63e79a3f7d47394ffeb3238f15fd017e2076b4c1ce340f8974eb25bd18dcfe"
+  },
+  "negative_control": "guard-negative-01 (two failures)",
+  "gpu_repair_budget": {
+    "starts": 1,
+    "response_creates": 10,
+    "seconds": 900
+  },
+  "aggregate_limit_after_failed_original": {
+    "starts": 2,
+    "response_creates": 11,
+    "seconds": 1200
+  },
+  "no_automatic_retries": true
+}

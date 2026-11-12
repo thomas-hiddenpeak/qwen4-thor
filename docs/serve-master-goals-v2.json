@@ -997,7 +997,7 @@
         }
       },
       "tool_discovery": {
-        "state": "execution_integration_cpu_pass_business_pending",
+        "state": "grammar_resource_root_cause_fixed_cpu_pass_business_repair_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "public_capability_not_yet_enabled": true,
         "gpu_budget": {
@@ -1005,12 +1005,26 @@
           "response_creates": 10,
           "seconds": 900
         },
-        "gpu_started": false,
+        "gpu_started": true,
         "programmatic_and_mcp_remain_required": true,
         "component_evidence": "docs/evidence/serve-tool-discovery-catalog-cpu-20261113",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
-        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113"
+        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
+        "business_failure": "docs/evidence/serve-tool-discovery-business-failure-20261113",
+        "actual_attempt": {
+          "starts": 1,
+          "response_creates": 1,
+          "seconds": 39.86322369938716
+        },
+        "default_unchanged": true,
+        "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
+        "guard_repair_cpu": 12,
+        "aggregate_gpu_budget": {
+          "starts": 2,
+          "response_creates": 11,
+          "seconds": 1200
+        }
       }
     },
     {
@@ -1640,19 +1654,33 @@
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       },
       "tool_discovery": {
-        "state": "execution_integration_cpu_pass_business_pending",
+        "state": "grammar_resource_root_cause_fixed_cpu_pass_business_repair_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
         "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
         "public_capability_not_yet_enabled": true,
-        "gpu_started": false,
+        "gpu_started": true,
         "gpu_budget": {
           "starts": 1,
           "response_creates": 10,
           "seconds": 900
         },
-        "programmatic_and_mcp_remain_required": true
+        "programmatic_and_mcp_remain_required": true,
+        "business_failure": "docs/evidence/serve-tool-discovery-business-failure-20261113",
+        "actual_attempt": {
+          "starts": 1,
+          "response_creates": 1,
+          "seconds": 39.86322369938716
+        },
+        "default_unchanged": true,
+        "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
+        "guard_repair_cpu": 12,
+        "aggregate_gpu_budget": {
+          "starts": 2,
+          "response_creates": 11,
+          "seconds": 1200
+        }
       }
     },
     {

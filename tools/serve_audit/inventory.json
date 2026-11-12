@@ -2217,7 +2217,7 @@
     "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
     "src/server/schema_string_grammar.cpp": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
-    "src/server/schema_token_guard.cpp": "17d60f1b88ea8ad8ee59a37aaeec3e9d7317fb0b8dcbf7b2debb0be90861a74c",
+    "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/server_options.cpp": "a41231b29ec11016c6a70caceb95d28ef62d3f639a084ddff15038d64907eca8",
     "src/server/session_cache.cpp": "43263b8298973f4717a784272ceb7d1b06219781eb27ddd5d338a44fb4b40d2c",
@@ -2226,7 +2226,7 @@
     "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
     "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
     "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
-    "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
+    "src/server/structured_decoder.cpp": "7a63e79a3f7d47394ffeb3238f15fd017e2076b4c1ce340f8974eb25bd18dcfe",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
@@ -4734,5 +4734,12 @@
       "A11 MCP and other builtins",
       "remaining master tasks"
     ]
+  },
+  "discovery_guard_work_review_20261113": {
+    "evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113/README.md",
+    "scope": "refusal-only guard ordinary-branch candidates are constrained by the unchanged lexical matcher; keep empty/stop and all JSON/bound-schema/refusal checks, resource limits unchanged",
+    "negative_cpu_cases": 2,
+    "repaired_cpu_cases": 12,
+    "business": "repair pending; original 1/1 failed, default rev110 retained"
   }
 }

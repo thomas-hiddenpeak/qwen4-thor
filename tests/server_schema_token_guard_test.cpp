@@ -366,6 +366,30 @@ Q4T_TEST(schema_guard_large_vocabulary_skips_uncompleted_string_checks) {
   return true;
 }
 
+Q4T_TEST(schema_guard_refusal_only_legacy_tool_has_bounded_mask_work) {
+  SchemaTokenGuard guard;
+  Q4T_CHECK(guard.Init(Parse(R"({"refusal":true,"thinking":false})")));
+  const std::string prefix =
+      "<tool_call>\n<function=q4t_builtin_tool_search>\n"
+      "<parameter=arguments_json>\n";
+  Q4T_CHECK(guard.Accept(prefix, false));
+  std::vector<std::string> vocabulary(300000, "a");
+  vocabulary[0] = "";
+  vocabulary[1] = "";  // Non-stop empty/special vocabulary must stay masked.
+  std::vector<int32_t> mask((vocabulary.size() + 31) / 32, -1);
+  const std::vector<int32_t> stops{0};
+  const auto status = guard.Filter(vocabulary, stops, mask);
+  if (!status) std::fprintf(stderr, "%s\n", status.message().c_str());
+  Q4T_CHECK(status && !Allowed(mask, 0) && !Allowed(mask, 1));
+  for (size_t i = 2; i < vocabulary.size(); ++i) Q4T_CHECK(Allowed(mask, i));
+  Q4T_CHECK(
+      guard.Accept("{\"paths\":[\"project\"]}\n</parameter>\n"
+                   "</function>\n</tool_call>",
+                   false));
+  Q4T_CHECK(guard.Accept("", true) && guard.Receipts().empty());
+  return true;
+}
+
 Q4T_TEST(schema_worker_masks_native_semantics_and_returns_value_receipt) {
   const auto schema = Object(R"({"type":"string","format":"time"})");
   const std::vector<std::string> vocabulary{"", R"({"v":"23:59:60Z"})",
