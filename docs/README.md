@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [原生异步工具与高级调用连续计划](SERVE_ASYNC_TOOLS_2026-11-13.md)
+
 - [工具身份与结果合同真实业务验收](evidence/serve-tool-identity-business-20261112/README.md)
 
 - [工具身份与结果合同CPU候选](evidence/serve-tool-identity-cpu-20261112/README.md)

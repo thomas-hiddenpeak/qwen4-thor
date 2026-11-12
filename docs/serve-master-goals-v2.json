@@ -923,6 +923,18 @@
           "src/server/object_store.cpp"
         ],
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
+      },
+      "async_tool_execution": {
+        "state": "implementation_in_progress",
+        "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
+        "public_flag_only_is_not_completion": true,
+        "gpu_budget": {
+          "starts": 1,
+          "response_creates": 8,
+          "seconds": 900
+        },
+        "gpu_started": false,
+        "programmatic_and_deferred_discovery_remain_required": true
       }
     },
     {
