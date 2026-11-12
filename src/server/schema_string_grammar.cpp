@@ -1,6 +1,7 @@
 #include "schema_string_grammar.h"
 
 #include <algorithm>
+#include <bit>
 #include <stdexcept>
 
 #include "custom_regex.h"
@@ -78,6 +79,46 @@ std::string Email() {
                        "[\\x21-\\x5a\\x5e-\\x7e]+)";
   return local + '@' + "(?:" + Host() + "|\\[" + literal + "\\])";
 }
+
+// A pure length bound needs a counter, not one regex-NFA node per scalar.
+// Power-of-two rules retain the exact language with logarithmic depth/size.
+// Each leaf is one Unicode scalar; the existing encoder handles JSON escapes.
+std::string LargeLength(int64_t minimum, int64_t maximum) {
+  const auto power = [](int bit) { return "p" + std::to_string(bit); };
+  const auto exact = [&](uint32_t count) {
+    std::string result;
+    for (int bit = 30; bit >= 0; --bit)
+      if (count & (uint32_t{1} << bit)) result += power(bit) + ' ';
+    return result.empty() ? "\"\"" : result;
+  };
+  std::string rules = "p0 ::= [\\u0000-\\ud7ff\\ue000-\\U0010ffff]\n";
+  const auto largest =
+      static_cast<uint32_t>(maximum == 2147483647 ? minimum : maximum);
+  for (int bit = 1; bit < static_cast<int>(std::bit_width(largest)); ++bit)
+    rules +=
+        power(bit) + " ::= " + power(bit - 1) + ' ' + power(bit - 1) + '\n';
+  std::string suffix;
+  if (maximum == 2147483647) {
+    suffix = "p0*";
+  } else {
+    auto remaining = static_cast<uint32_t>(maximum - minimum);
+    suffix = "r" + std::to_string(remaining);
+    while (remaining) {
+      const int bit = static_cast<int>(std::bit_width(remaining)) - 1;
+      const auto rest = remaining - (uint32_t{1} << bit);
+      std::string below;
+      for (int lower = bit - 1; lower >= 0; --lower)
+        below += power(lower) + "? ";
+      if (below.empty()) below = "\"\"";
+      rules += "r" + std::to_string(remaining) + " ::= " + below + " | " +
+               power(bit) + " r" + std::to_string(rest) + '\n';
+      remaining = rest;
+    }
+    rules += "r0 ::= \"\"\n";
+  }
+  return EncodeJsonStringGrammar("root ::= " + exact(minimum) + ' ' + suffix +
+                                 '\n' + rules);
+}
 std::string Format(std::string_view format) {
   if (format == "date") return Date();
   if (format == "time") return Time();
@@ -110,6 +151,9 @@ std::string CompileSchemaStringSyntax(
     }
   }
   if (minimum > maximum) return "root ::= [^\\u0000-\\U0010ffff]\n";
+  if (patterns.empty() &&
+      (minimum > 1024 || (maximum > 1024 && maximum != 2147483647)))
+    return LargeLength(minimum, maximum);
   // Unbounded .* imposes no extra constraint. Avoid multiplying a large
   // format automaton by an unnecessary length counter.
   if (minimum || maximum != 2147483647 || patterns.empty())

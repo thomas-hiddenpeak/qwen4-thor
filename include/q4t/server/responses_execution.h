@@ -16,6 +16,7 @@
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_tool_search.h"
+#include "q4t/server/responses_program.h"
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
@@ -68,6 +69,7 @@ class ResponsesExecution {
     return PendingFileSheets() ||
            (!envelope_.cache.prewarm && HasFileSearch()) ||
            (!envelope_.cache.prewarm && HasToolSearch()) ||
+           (!envelope_.cache.prewarm && HasPrograms()) ||
            (!envelope_.cache.prewarm && HasAsyncTools()) ||
            envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
@@ -125,12 +127,19 @@ class ResponsesExecution {
   Status AppendSummary(std::string_view text, std::string* wire);
   Status CiteFileSearchSources(std::string* wire);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
-  bool HasAsyncTools() const { return has_async_tools_; }
+  bool HasAsyncTools() const { return has_async_tools_ || program_async_wait_; }
   bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
   bool PendingToolSearch() const { return !tool_search_pending_.empty(); }
+  bool HasPrograms() const { return program_enabled_ || !programs_.empty(); }
+  bool PendingPrograms() const { return !program_pending_.empty(); }
+  bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
-    return file_search_pending_.size() + tool_search_pending_.size();
+    return file_search_pending_.size() + tool_search_pending_.size() +
+           program_pending_.size();
   }
+  ObjectReply RunPrograms(
+      size_t completed_calls, bool* client_wait,
+      const std::function<bool(const std::string&)>& publish);
   ObjectReply RunToolSearches(
       size_t completed_calls, bool* client_wait,
       const std::function<bool(const std::string&)>& publish);
@@ -216,6 +225,8 @@ class ResponsesExecution {
                           std::string* wire);
   Status AppendToolSearch(const ResponseDelta& delta, bool* handled,
                           std::string* wire);
+  Status AppendProgram(const ResponseDelta& delta, bool* handled,
+                       std::string* wire);
   Status BindActiveTools(const io::Json& active, ChatPlanError* error);
   Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
@@ -255,6 +266,18 @@ class ResponsesExecution {
   };
   std::map<size_t, NativeSearchCall> tool_search_pending_;
   size_t tool_search_argument_bytes_ = 0;
+  bool program_enabled_ = false;
+  io::Json program_tools_;
+  std::vector<ResponsesProgramState> programs_;
+  bool program_resumed_ = false;
+  bool program_client_wait_ = false;
+  bool program_async_wait_ = false;
+  std::map<size_t, ResponseToolCall> program_pending_;
+  size_t program_argument_bytes_ = 0;
+  FileExpansionOptions program_file_options_;
+  FileExpansionUsage program_media_usage_;
+  uint64_t program_media_retained_ = 0, program_media_rendered_ = 0;
+  ObjectReply PrepareProgramMedia(io::Json* items);
   bool has_async_tools_ = false;
   bool async_continued_ = false;
   ResponsesCompactionPlan compaction_;

@@ -1,0 +1,33 @@
+{
+  "state": "PASS_COMPONENT_ONLY",
+  "targeted_distinct_cpu_passed": 19,
+  "first_run": {
+    "passed": 18,
+    "failed": 1
+  },
+  "repair_runs": [
+    {
+      "passed": 0,
+      "failed": 1
+    },
+    {
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "remaining": [
+    "public generation and dispatch",
+    "persistent queued/context integration",
+    "JSON/SSE SDK",
+    "real business acceptance and reversible delivery"
+  ],
+  "source_sha256": {
+    "src/server/responses_program.cpp": "e2d34c45682de8c7c5f36e46b557cdec05f72758513025a411c911815c49f889",
+    "include/q4t/server/responses_program.h": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd",
+    "src/server/program_vm.cpp": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6",
+    "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
+    "tests/server_responses_program_test.cpp": "bbfb902e63755a06db88ffb3745d32f8a6473543901cd0a77d072e4dcb826651"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-12T22:56:13.116223+00:00",
+  "scope": "Block direct asynchronous continuation while a synchronous program child is pending; validate business request schema and failure-sensitive public output oracles",
+  "cpu": [
+    "responses_program_api_sync_child_blocks_direct_async_answer",
+    "responses_program_api_async_children_allow_one_independent_answer",
+    "responses_async_partial_and_mixed_calls_do_not_continue",
+    "responses_program_api_stored_resume_sse_and_final_answer"
+  ],
+  "python": [
+    "tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_requests_match_sdk_and_frozen_limits",
+    "tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_actual_cpp_program_and_resume_match_wire_schema",
+    "tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_child_oracle_rejects_identity_order_and_status_errors",
+    "tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_completion_and_get_projection_are_failure_sensitive"
+  ],
+  "gpu_starts": 0,
+  "reused": "53 prior C++ checks, 2 official SDK checks, 3 publication Python checks except directly affected async checks above"
+}

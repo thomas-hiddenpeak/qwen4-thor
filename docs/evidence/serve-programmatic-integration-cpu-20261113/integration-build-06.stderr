@@ -1,0 +1,54 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp: In function ‘bool q4t_test_fn_responses_program_api_media_quota_cannot_refill_between_programs()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:628:25: error: no match for ‘operator=’ (operand types are ‘std::shared_ptr<const q4t::server::FileExpansionOptions>’ and ‘q4t::server::FileExpansionOptions*’)
+  628 |   config.file_inputs = &limits;
+      |                         ^~~~~~
+In file included from /usr/include/c++/14/memory:80,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_plan.h:4,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_expansion.h:4,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/responses_execution.h:8,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:1:
+/usr/include/c++/14/bits/shared_ptr.h:417:9: note: candidate: ‘template<class _Yp> std::shared_ptr<_Tp>::_Assignable<const std::shared_ptr<_Yp>&> std::shared_ptr<_Tp>::operator=(const std::shared_ptr<_Yp>&) [with _Tp = const q4t::server::FileExpansionOptions]’
+  417 |         operator=(const shared_ptr<_Yp>& __r) noexcept
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:417:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:628:25: note:   mismatched types ‘const std::shared_ptr<_Tp>’ and ‘q4t::server::FileExpansionOptions*’
+  628 |   config.file_inputs = &limits;
+      |                         ^~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:428:9: note: candidate: ‘template<class _Yp> std::shared_ptr<_Tp>::_Assignable<std::auto_ptr<_Up> > std::shared_ptr<_Tp>::operator=(std::auto_ptr<_Up>&&) [with _Tp = const q4t::server::FileExpansionOptions]’
+  428 |         operator=(auto_ptr<_Yp>&& __r)
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:428:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:628:25: note:   mismatched types ‘std::auto_ptr<_Up>’ and ‘q4t::server::FileExpansionOptions*’
+  628 |   config.file_inputs = &limits;
+      |                         ^~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:445:9: note: candidate: ‘template<class _Yp> std::shared_ptr<_Tp>::_Assignable<std::shared_ptr<_Yp> > std::shared_ptr<_Tp>::operator=(std::shared_ptr<_Yp>&&) [with _Tp = const q4t::server::FileExpansionOptions]’
+  445 |         operator=(shared_ptr<_Yp>&& __r) noexcept
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:445:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:628:25: note:   mismatched types ‘std::shared_ptr<_Tp>’ and ‘q4t::server::FileExpansionOptions*’
+  628 |   config.file_inputs = &limits;
+      |                         ^~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:453:9: note: candidate: ‘template<class _Yp, class _Del> std::shared_ptr<_Tp>::_Assignable<std::unique_ptr<_Up, _Ep> > std::shared_ptr<_Tp>::operator=(std::unique_ptr<_Up, _Ep>&&) [with _Del = _Yp; _Tp = const q4t::server::FileExpansionOptions]’
+  453 |         operator=(unique_ptr<_Yp, _Del>&& __r)
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:453:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp:628:25: note:   mismatched types ‘std::unique_ptr<_Tp, _Dp>’ and ‘q4t::server::FileExpansionOptions*’
+  628 |   config.file_inputs = &limits;
+      |                         ^~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:413:19: note: candidate: ‘std::shared_ptr<_Tp>& std::shared_ptr<_Tp>::operator=(const std::shared_ptr<_Tp>&) [with _Tp = const q4t::server::FileExpansionOptions]’
+  413 |       shared_ptr& operator=(const shared_ptr&) noexcept = default;
+      |                   ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:413:29: note:   no known conversion for argument 1 from ‘q4t::server::FileExpansionOptions*’ to ‘const std::shared_ptr<const q4t::server::FileExpansionOptions>&’
+  413 |       shared_ptr& operator=(const shared_ptr&) noexcept = default;
+      |                             ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:437:7: note: candidate: ‘std::shared_ptr<_Tp>& std::shared_ptr<_Tp>::operator=(std::shared_ptr<_Tp>&&) [with _Tp = const q4t::server::FileExpansionOptions]’
+  437 |       operator=(shared_ptr&& __r) noexcept
+      |       ^~~~~~~~
+/usr/include/c++/14/bits/shared_ptr.h:437:30: note:   no known conversion for argument 1 from ‘q4t::server::FileExpansionOptions*’ to ‘std::shared_ptr<const q4t::server::FileExpansionOptions>&&’
+  437 |       operator=(shared_ptr&& __r) noexcept
+      |                 ~~~~~~~~~~~~~^~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:163: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

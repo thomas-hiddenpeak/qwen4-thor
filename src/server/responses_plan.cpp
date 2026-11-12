@@ -13,6 +13,7 @@
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_tool_search.h"
+#include "q4t/server/responses_program.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -525,7 +526,7 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
                                              &bindings, error);
     if (!status) return status;
     std::unordered_set<std::string> disabled{
-        std::string(kResponsesToolSearchModelName)};
+        std::string(kResponsesToolSearchModelName), kResponsesProgramModelName};
     for (const auto& binding : bindings) disabled.insert(binding.model_name);
     const auto native = [&](const Json& item) {
       const auto* function = item.Find("function");
@@ -760,7 +761,10 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
     for (size_t i = 0; i < items.size(); ++i) {
       const auto type = items[i].GetString("type");
       if (i < cut && type != "additional_tools" && type != "tool_search_call" &&
-          type != "tool_search_output")
+          type != "tool_search_output" && type != "program" &&
+          type != "program_output" &&
+          !(items[i].Find("caller") &&
+            items[i].Find("caller")->GetString("type") == "program"))
         continue;
       retained.array.push_back(items[i]);
       indices.push_back(i < plan->input_source_indices.size()

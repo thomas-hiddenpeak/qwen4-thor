@@ -1,0 +1,21 @@
+{
+  "created": "2026-11-12T23:05:28.607558+00:00",
+  "reason": "Actual program code minLength1/maxLength65536 grammar fails during compilation; reproduce directly and through real isolated worker on CPU",
+  "tests": [
+    "schema_string_syntax_large_length_compact_exact_boundaries",
+    "structured_decoder_program_code_length_uses_bounded_worker"
+  ],
+  "expected_before_repair": "FAIL; preserve failures",
+  "gpu_starts": 0,
+  "first_failed_business": {
+    "state": "FAILED_NOT_ACCEPTED",
+    "starts": 1,
+    "creates": 1,
+    "seconds": 38.15326643129811,
+    "error": "503 constraint_resource_exhausted at grammar compilation, before program execution",
+    "binary_sha256": "16286da8e8107ca82f193790d01c2a20dd782813ea658242e63f0e8d11042f47",
+    "guard": "COMMAND_FAILED",
+    "default_unchanged": true,
+    "next": "CPU reproduction of 65536-character string bound, language-preserving repair and affected real-business rerun"
+  }
+}

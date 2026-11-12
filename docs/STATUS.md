@@ -32,9 +32,58 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
 异步实现已实际合main（PR25，`4e87a03f`），
 [合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev118可用，
-工具发现已发行，PR26仍待当前head检查及实际合main；程序调用等全部master继续。
+工具发现已发行并实际合main（PR26，`090f0d48`），
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用等全部master继续。
 
 ## 最近完成的实现和验证
+
+- 程序调用[真实资料JSON/SSE闭环通过](evidence/serve-programmatic-business-20261113/README.md)：
+  修后1启动/8创建/121.786秒，115次NVML正常、资源清理；含首次失败
+  累计2启动/9创建/159.939秒。原schema、caller和持久续接保持，实际
+  两次读取资料，纯计算/截断/普通业务均通过。PR27已建；继续主轻与
+  程序等待期间整树恢复、可回退发行及合main，rev118保持，master继续。
+
+- 大长度语法失败已CPU复现并[修复，11项针对性检查通过](evidence/serve-programmatic-length-repair-20261113/README.md)：
+  紧凑计数规则保留min/max、Unicode及JSON转义；不删除约束或放宽资源
+  上限。实际引擎零警告构建，补验固定1启动/8创建/900秒，连原失败
+  累计上限2启动/9创建/1200秒；业务未重验前不交付，rev118保持。
+
+- 程序调用[首次真实短验失败](evidence/serve-programmatic-business-failure-20261113/README.md)：
+  1启动/1创建/38.153秒，首条请求在语法编译阶段返回资源限制，未执行
+  程序或客户端工具。自有进程/端口/锁清理，默认rev118保持；正在CPU
+  复现大字符串长度约束的编译问题，修复后补原业务，不以失败归档结案。
+
+- 程序调用公开接入[54项不同C++、2项官方SDK及7项Python检查最终通过](evidence/serve-programmatic-integration-cpu-20261113/README.md)：
+  授权派发、JSON/SSE、认证续接、媒体冻结/审核/共享预算及异步同步
+  组合已验证。媒体临时引用和混合同步等待缺口已修复，失败原件保留。
+  实际引擎零警告构建已通过，冻结1启动/8创建/900秒资料闭环，再完成
+  适用恢复资格与发行；0GPU、rev118保持，全部master继续。
+
+- 程序调用公开执行链正在接线：program-only工具从直接生成通道移除，
+  原生程序输出及caller进入JSON/SSE，持久结果合同从认证快照绑定，
+  历史/压缩保留程序依赖；续接进入原共享预算、审核与终结流程。
+  这组尚未验证或发行，媒体组合等仍需补齐；rev118保持，全部master继续。
+
+- 程序调用[认证/回放部件19项不同CPU最终通过](evidence/serve-programmatic-authority-cpu-20261113/README.md)：
+  跨客户/模型/代码篡改拒绝、调用时参数/结果合同、结果因果回放、
+  custom文本/regex/Lark、重启及取消/过期已验证。两项适配失败原件
+  保留，仅重验受影响用例；0GPU、rev118保持。继续公开生成与
+  JSON/SSE/持久接线、实际业务及全部master，不以部件通过结束总目标。
+
+- 程序调用的授权/认证续接正在接线：调用时工具及参数/结果合同写入
+  客户/模型/模板绑定的加密指纹，校验子调用身份和结果因果顺序，
+  custom regex/Lark在派发前进入既有隔离校验worker。9项新增及
+  直接受影响CPU准备成组验证；公开接口、业务及发行仍待完成，
+  rev118保持，继续全部master。
+
+- [程序调用隔离执行部件](SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)已通过
+  [13项针对性CPU](evidence/serve-programmatic-worker-cpu-20261113/README.md)：
+  真实JavaScript、并行/依赖续接、结果顺序、资源限额和回收验证通过；
+  构建零警告、0GPU、默认rev118保持。公开授权/持久续接/执行接线、
+  真实业务与发行仍待完成，不能算对外能力已交付；全部master继续。
+
+- PR26精确head `1282ece2`的push/PR两组CI均通过，已实际合main
+  （`090f0d48`）；[回执](evidence/serve-pr26-merged-20261113/README.md)保留。
 
 - PR26旧head一次CI暴露正常Batch恢复误用150ms故障期限；已将三项
   同类夹具的正常/注入期限分开，[7项针对性CPU首过](evidence/serve-ci-batch-recount-deadline-20261113/README.md)。

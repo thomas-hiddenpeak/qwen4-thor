@@ -77,11 +77,11 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
     Q4T_CHECK(search->GetString("results_include") ==
               "file_search_call.results");
     const auto* items = response->GetArray("output_items");
-    Q4T_CHECK(items && items->array.size() == 8);
+    Q4T_CHECK(items && items->array.size() == 10);
     for (const auto* type :
          {"message", "reasoning", "function_call", "custom_tool_call",
           "compaction", "file_search_call", "tool_search_call",
-          "tool_search_output"})
+          "tool_search_output", "program", "program_output"})
       Q4T_CHECK(std::count_if(items->array.begin(), items->array.end(),
                               [&](const auto& item) {
                                 return item.IsString() && item.str == type;

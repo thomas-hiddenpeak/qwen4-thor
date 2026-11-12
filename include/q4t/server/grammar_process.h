@@ -40,7 +40,8 @@ enum class IsolatedWorkerDomain {
   kFileFetch,
   kFileParse,
   kEmbeddingAssets,
-  kToolResults
+  kToolResults,
+  kPrograms
 };
 
 // Independent lifetime: deferred cleanup never retains a server/request

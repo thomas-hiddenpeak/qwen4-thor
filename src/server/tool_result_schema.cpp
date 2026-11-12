@@ -6,9 +6,17 @@
 #include <cstring>
 
 #include "object_protocol.h"
+#include "q4t/server/custom_grammar.h"
+#include "q4t/server/custom_tools.h"
+#include "q4t/server/output_constraints.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/schema_graph.h"
+#include "q4t/server/structured_admission.h"
 #include "schema_string.h"
+#ifdef Q4T_ENABLE_XGRAMMAR
+#include <xgrammar/compiler.h>
+#include <xgrammar/matcher.h>
+#endif
 
 namespace q4t::server {
 namespace {
@@ -35,9 +43,86 @@ Json Result(int status, std::string code, size_t index,
                  {"index", Number(index)},
                  {"param", String(std::move(param))}});
 }
+Json CheckCustom(const Json& check, size_t index) {
+  const auto& original = *check.Find("custom");
+  // Authorization/lifecycle fields belong to the Responses declaration, not
+  // the internal Chat custom-format parser. Retain the actual format verbatim.
+  auto definition = Object({{"name", String("program_input")}});
+  for (const auto* key : {"description", "format"})
+    if (const auto* value = original.Find(key); value && !value->IsNull())
+      Set(&definition, key, *value);
+  if (const auto* format = definition.Find("format");
+      format && format->GetString("type") == "grammar") {
+    Set(&definition, "format",
+        Object({{"type", String("grammar")},
+                {"grammar",
+                 Object({{"syntax", String(format->GetString("syntax"))},
+                         {"definition",
+                          String(format->GetString("definition"))}})}}));
+  }
+  CustomToolFormat format;
+  std::string param;
+  auto status = ParseCustomToolFormat(definition, &format, &param);
+  if (!status) return Result(400, "invalid_custom_tool_format", index, param);
+  const auto* output = check.Find("output");
+  if (output && !output->IsString())
+    return Result(400, "invalid_program_arguments", index);
+  if (format.kind == CustomToolFormat::Kind::kText)
+    return Result(200, "", index);
+#ifndef Q4T_ENABLE_XGRAMMAR
+  return Result(503, "tool_result_validation_unavailable", index);
+#else
+  try {
+    OutputConstraints plan;
+    status = PlanOutputConstraints(
+        Object({{"messages", Array({Object({{"role", String("user")},
+                                            {"content", String("check")}})})},
+                {"enable_thinking", Boolean(false)},
+                {"tools", Array({Object({{"type", String("custom")},
+                                         {"custom", definition}})})},
+                {"tool_choice",
+                 Object({{"type", String("custom")},
+                         {"custom",
+                          Object({{"name", String("program_input")}})}})}}),
+        &plan);
+    if (!status) return Result(400, "invalid_custom_tool_format", index);
+    std::vector<std::string> vocabulary(257);
+    for (int c = 0; c < 256; ++c) vocabulary[c + 1] = char(c);
+    xgrammar::TokenizerInfo tokenizer(vocabulary, xgrammar::VocabType::RAW, 257,
+                                      std::vector<int32_t>{0}, false);
+    xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
+    const auto compiled = compiler.CompileStructuralTag(
+        ExpandCustomGrammarFormats(plan.structural_tag));
+    if (compiled.MemorySizeBytes() > kCompiledGrammarLimit)
+      return Result(503, "tool_result_validation_capacity", index);
+    if (output) {
+      const auto text =
+          "<tool_call>\n<function=program_input>\n<parameter=input>\n" +
+          EncodeCustomInput(output->str) +
+          "\n</parameter>\n</function>\n</tool_call>";
+      xgrammar::GrammarMatcher matcher(compiled);
+      if (!matcher.AcceptString(text) || !matcher.AcceptToken(0) ||
+          !matcher.IsTerminated())
+        return Result(400, "invalid_program_arguments", index);
+    }
+    return Result(200, "", index);
+  } catch (const std::bad_alloc&) {
+    return Result(503, "tool_result_validation_capacity", index);
+  } catch (const std::length_error&) {
+    return Result(503, "tool_result_validation_capacity", index);
+  } catch (...) {
+    return Result(400, "invalid_custom_tool_format", index);
+  }
+#endif
+}
 Json Check(const Json& checks) {
   for (size_t i = 0; i < checks.array.size(); ++i) {
     const auto& check = checks.array[i];
+    if (check.Has("custom")) {
+      const auto result = CheckCustom(check, i);
+      if (result.GetInt("status") != 200) return result;
+      continue;
+    }
     const auto* schema = check.Find("schema");
     if (!schema) return Result(503, "tool_result_validation_unavailable", i);
     OutputSchemaGraph graph;

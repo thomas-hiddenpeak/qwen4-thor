@@ -1,0 +1,15 @@
+{
+  "state": "PASS_TARGETED_REPAIR_CPU",
+  "initial_reproductions_failed": 2,
+  "distinct_cpu_passed": 11,
+  "gpu_starts": 0,
+  "engine_binary_sha256": "eb8f096b871f27ccea904b44875900528c743ece917379bf1db14be8b93412e8",
+  "sources": {
+    "src/server/schema_string_grammar.cpp": {
+      "before": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
+      "after": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a"
+    }
+  },
+  "actual_business": "failed original preserved, repair not yet verified on model",
+  "default_unchanged": true
+}

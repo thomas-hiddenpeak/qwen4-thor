@@ -17,6 +17,17 @@ set(protocol_inputs
   src/server/responses_input.cpp
   include/q4t/server/tool_result_schema.h
   src/server/tool_result_schema.cpp
+  src/server/program_worker.cpp
+  src/server/responses_program.cpp
+  src/server/responses_program_plan.cpp
+  src/server/responses_program_output.cpp
+  src/server/responses_program_execution.cpp
+  include/q4t/server/responses_program.h
+  src/server/program_vm.cpp
+  src/server/program_vm.h
+  include/q4t/server/program_worker.h
+  cmake/NativeProgrammatic.cmake
+  third_party/quickjs/SOURCE.json
   include/q4t/server/tool_result_contracts.h
   src/server/tool_result_contracts.cpp
   include/q4t/server/prompt_registry.h

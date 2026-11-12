@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Async function/custom tools delivered rev110: same-response independent continuation, original-ID late results and native image result adaptation, preserved through actual service fallback. Continue deferred discovery, programmatic callers and remaining typed content; full A07 stays open.",
+      "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -997,7 +997,7 @@
         }
       },
       "tool_discovery": {
-        "state": "delivered_main_integration_pending",
+        "state": "delivered_main_merged",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "public_capability_not_yet_enabled": false,
         "gpu_budget": {
@@ -1043,7 +1043,42 @@
         "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
         "migration_targeted_cpu": 10,
         "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
-        "default_revision": 118
+        "default_revision": 118,
+        "main_integration": {
+          "pr": 26,
+          "merged": true,
+          "head": "1282ece2f4c15977a077c44ff803332d76cf44f6",
+          "commit": "090f0d4892c2d5315ce492b219546f0cd5842356",
+          "evidence": "docs/evidence/serve-pr26-merged-20261113"
+        }
+      },
+      "programmatic": {
+        "state": "real_business_passed_qualification_pending",
+        "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
+        "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
+        "component_cpu_passed": 13,
+        "public_capability_not_yet_enabled": false,
+        "gpu_started": true,
+        "delivery_pending": true,
+        "authority_cpu_passed": 19,
+        "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
+        "next": "Primary/light, retained control and real whole-tree recovery with pending program; reversible release and actual main merge; all master continues",
+        "default_capability_delivered": false,
+        "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
+        "integration_cpu_passed": 54,
+        "integration_sdk_passed": 2,
+        "integration_python_passed": 7,
+        "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
+        "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
+        "length_repair_cpu_passed": 11,
+        "business_evidence": "docs/evidence/serve-programmatic-business-20261113",
+        "business_counts": {
+          "starts": 1,
+          "creates": 8,
+          "seconds": 121.78555771987885,
+          "nvml_queries": 115
+        },
+        "pr": 27
       }
     },
     {
@@ -1673,7 +1708,7 @@
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       },
       "tool_discovery": {
-        "state": "delivered_main_integration_pending",
+        "state": "delivered_main_merged",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
@@ -1718,8 +1753,44 @@
         "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
         "migration_targeted_cpu": 10,
         "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
-        "default_revision": 118
-      }
+        "default_revision": 118,
+        "main_integration": {
+          "pr": 26,
+          "merged": true,
+          "head": "1282ece2f4c15977a077c44ff803332d76cf44f6",
+          "commit": "090f0d4892c2d5315ce492b219546f0cd5842356",
+          "evidence": "docs/evidence/serve-pr26-merged-20261113"
+        }
+      },
+      "programmatic": {
+        "state": "real_business_passed_qualification_pending",
+        "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
+        "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
+        "component_cpu_passed": 13,
+        "public_capability_not_yet_enabled": false,
+        "gpu_started": true,
+        "delivery_pending": true,
+        "authority_cpu_passed": 19,
+        "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
+        "next": "Primary/light, retained control and real whole-tree recovery with pending program; reversible release and actual main merge; all master continues",
+        "default_capability_delivered": false,
+        "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
+        "integration_cpu_passed": 54,
+        "integration_sdk_passed": 2,
+        "integration_python_passed": 7,
+        "first_business_failure": "docs/evidence/serve-programmatic-business-failure-20261113",
+        "length_repair_evidence": "docs/evidence/serve-programmatic-length-repair-20261113",
+        "length_repair_cpu_passed": 11,
+        "business_evidence": "docs/evidence/serve-programmatic-business-20261113",
+        "business_counts": {
+          "starts": 1,
+          "creates": 8,
+          "seconds": 121.78555771987885,
+          "nvml_queries": 115
+        },
+        "pr": 27
+      },
+      "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required."
     },
     {
       "id": "A12",
@@ -2548,7 +2619,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "staged_releases_delivered_main_integration_pending",
+      "state": "staged_releases_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -2579,7 +2650,7 @@
         "generation_sha256": "52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615",
         "evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
         "state": "STOPPED",
-        "main_integration_pending": true
+        "main_integration_pending": false
       },
       "merged_foundation": {
         "pr": 22,
@@ -2632,7 +2703,10 @@
       },
       "tool_discovery_main_integration": {
         "pr": 26,
-        "merged": false
+        "merged": true,
+        "head": "1282ece2f4c15977a077c44ff803332d76cf44f6",
+        "commit": "090f0d4892c2d5315ce492b219546f0cd5842356",
+        "evidence": "docs/evidence/serve-pr26-merged-20261113"
       }
     },
     {
@@ -2648,6 +2722,6 @@
       "release": null
     }
   ],
-  "next_task": "PR26 actual main integration, then A07/A11 programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
-  "next": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
+  "next_task": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
+  "next": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
 }

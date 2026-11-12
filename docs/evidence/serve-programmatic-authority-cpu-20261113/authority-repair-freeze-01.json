@@ -1,0 +1,12 @@
+{
+  "tests": [
+    "responses_program_namespace_custom_format_dispatch_checked"
+  ],
+  "cause": "Responses declaration type/allowed_callers were incorrectly passed to the closed internal Chat custom-format parser",
+  "fix": "Pass only original description/format and private matcher name; preserve regex/Lark checks and bounds",
+  "reuse": "18 unchanged passing cases from authority-cpu-01",
+  "source_sha256": {
+    "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
+    "tests/server_responses_program_test.cpp": "6d06ef77ce5a53da9a0b5d8121a698431742774350371798f1ab00bdd6f57161"
+  }
+}

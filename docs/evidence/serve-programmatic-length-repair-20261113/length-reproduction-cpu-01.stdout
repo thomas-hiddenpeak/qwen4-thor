@@ -1,0 +1,4 @@
+[FAIL] schema_string_syntax_large_length_compact_exact_boundaries: schema regex intersection exceeds resource bound
+  CHECK failed: created (line 183)
+[FAIL] structured_decoder_program_code_length_uses_bounded_worker
+2 tests, 0 passed, 2 failed, 0 skipped

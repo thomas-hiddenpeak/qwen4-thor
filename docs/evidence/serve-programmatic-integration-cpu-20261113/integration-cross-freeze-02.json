@@ -1,0 +1,30 @@
+{
+  "scope": "Program asynchronous independent answer and mixed-sync barrier, ordered discovery authority, count authentication without execution, shared media capacity",
+  "created": "2026-11-12T22:46:27.505649+00:00",
+  "tests": [
+    "responses_program_api_async_children_allow_one_independent_answer",
+    "responses_program_api_discovery_loads_namespace_authority_at_position",
+    "responses_program_api_count_authenticates_without_running_program",
+    "responses_program_api_media_quota_cannot_refill_between_programs",
+    "responses_program_api_stored_resume_sse_and_final_answer",
+    "responses_program_api_serial_promise_all_keeps_sealed_policy",
+    "responses_program_api_media_is_prepared_reviewed_and_replayable",
+    "responses_async_done_precedes_independent_text_and_only_once",
+    "responses_async_partial_and_mixed_calls_do_not_continue",
+    "responses_async_rate_reserves_one_extra_step_and_cancel_keeps_call",
+    "responses_tokens_encrypted_state_restored_only_for_original_client",
+    "responses_tokens_previous_history_replaces_instructions_without_write",
+    "responses_tokens_empty_null_and_empty_array_use_real_template"
+  ],
+  "gpu_starts": 0,
+  "previous_43_distinct_passed": true,
+  "sources": {
+    "src/server/responses_program_execution.cpp": "932a8640a218813f68bb0679b7a83cad84a4daf3fcf5ff511c549768e33fbaac",
+    "src/server/responses_file_search_execution.cpp": "f085d20a5935c98e40334dbc97f2833d21d84ad19315f4d560e74ea286fcc15f",
+    "src/server/responses_tokens.cpp": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
+    "src/server/chat_generation.cpp": "516e37bc4f4ff9b348f68c4fdd9edad953903c7c236f3b7f03ffa1d44b549e52",
+    "tests/server_responses_program_execution_test.cpp": "57b949202225cf6263482a5290b35ac4f4a392fad93b1f42c3dd8b57a8d784f6"
+  },
+  "prior": "integration-cross-freeze-01.json",
+  "build_fix": "FileExpansionOptions fixture uses owning shared_ptr required by ChatPlanConfig"
+}

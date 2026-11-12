@@ -1,6 +1,8 @@
 // Opt-in real XGrammar CPU contracts. Defined/compiled, not executed during
 // the development-only stage. No synthetic test substitutes for Thor E2E.
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/responses_program.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/thinking_budget.h"
 
@@ -158,6 +160,34 @@ Q4T_TEST(structured_decoder_legacy_single_function_and_none_masks) {
   Q4T_CHECK(!Exact(named, std::string(kCall) + kCall));
   Q4T_CHECK(Exact(Plan(definitions + R"("none")"), "ordinary text"));
   Q4T_CHECK(!Exact(Plan(definitions + R"("none")"), kCall));
+  return true;
+}
+
+Q4T_TEST(structured_decoder_program_code_length_uses_bounded_worker) {
+  const auto native = q4t::server::NativeResponsesProgramDefinition({}, false);
+  const auto plan = Plan(
+      R"("enable_thinking":false,"tools":[)" +
+      q4t::server::OutputJson(native) +
+      R"(],"tool_choice":"required","parallel_tool_calls":false)");
+  std::vector<std::string> vocabulary(300000, "a");
+  vocabulary[0] = "";
+  vocabulary[1] =
+      "<tool_call>\n<function=q4t_builtin_program>\n"
+      "<parameter=arguments>\n";
+  vocabulary[2] = R"({"code":"text(6*7);"})";
+  vocabulary[3] = "\n</parameter>\n</function>\n</tool_call>";
+  std::unique_ptr<StructuredDecoder> decoder;
+  const auto created = StructuredDecoder::Create(
+      plan, vocabulary, vocabulary.size(), {0}, &decoder);
+  if (!created) std::fprintf(stderr, "%s\n", created.message().c_str());
+  Q4T_CHECK(created);
+  const std::vector<uint16_t> logits(vocabulary.size(), Bf16(1));
+  for (int32_t expected : {1, 2, 3, 0}) {
+    int32_t selected = -1;
+    Q4T_CHECK(decoder->Select(logits, &selected, expected) &&
+              selected == expected);
+  }
+  Q4T_CHECK(decoder->Terminated());
   return true;
 }
 

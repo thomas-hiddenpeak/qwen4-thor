@@ -1,0 +1,9 @@
+{
+  "created": "2026-11-12T23:08:49.252744+00:00",
+  "scope": "New compact grammar has large lower-bound/exact/range/unbounded branches beyond the initial min1 max65536 case; exercise these directly once",
+  "tests": [
+    "schema_string_syntax_large_lower_and_interval_bounds"
+  ],
+  "previous_10_passed_reused": true,
+  "gpu_starts": 0
+}

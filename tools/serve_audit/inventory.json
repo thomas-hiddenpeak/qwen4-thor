@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "3adcdc6576e25900154c79962a963dd490d2a9a491c1840a6fbb77665ee778ca",
-    "cmake/ChatProtocolIdentity.cmake": "fca656a5fd04e3f8dca973784644f39da9987742a4d17119d09950b958b6b9a8",
+    "CMakeLists.txt": "696f0d2392346a1053d0c8147bfbe43a5f9fe24a5be1c2dec2675f4e1b2679b2",
+    "cmake/ChatProtocolIdentity.cmake": "485ac7ba70b7b1b9494ee3fff7d24c5185cf5d34f570b7146d08ec541d547f72",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1887,7 +1887,7 @@
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
-    "include/q4t/server/grammar_process.h": "cc0d110a991a97ee590072984fafd1ba34884d9ce9db52f9395f8c9bcc5ff74a",
+    "include/q4t/server/grammar_process.h": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
     "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -1916,6 +1916,7 @@
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
     "include/q4t/server/prediction.h": "2b641a3cb00cb9c788d4418e3a4719e8b4c884352fee4068a7f6f47b9be049fb",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/program_worker.h": "7ecbe959e69b3cbe9ed65ebef2680d9f86a5687143a0ab7feede3ae18efca0e9",
     "include/q4t/server/progress_context.h": "fc6ed010388bd5e33951d0c585a1b33f7edb07570866cc38c66e7cbee16bcbb3",
     "include/q4t/server/progress_transport.h": "90adb59393f339d011c37d2a602cff6ffaa955e20bbf0c1725b1455640b9a9e3",
     "include/q4t/server/prompt_cache_diagnostics.h": "f6701c9eaabda5c613121c6b0d9f4a441e203d03ab4d5cec020cda56dc50cedd",
@@ -1932,14 +1933,15 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "430b749ee5e46dcf094d2257cdcb35eb148a8822f0488b151bbd9284dd904ff3",
+    "include/q4t/server/responses_execution.h": "19a36ae77f7768d10c4401002690812842aa657fc1ceb067234cefbc3ea93725",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
-    "include/q4t/server/responses_input.h": "37504da32ba7e939768f67387f9b4189b9804942357e3f267ce2fc500762e2c0",
+    "include/q4t/server/responses_input.h": "00bacde441fa080f215fd8bfc35460942bdf06de326587ab174db174b91d3c7c",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
-    "include/q4t/server/responses_output.h": "0993be925fdcd6bc31ad1a879da7c20412550d17ee90a98022aaad02b1e0aaad",
+    "include/q4t/server/responses_output.h": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
+    "include/q4t/server/responses_program.h": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "64196334ba93428071e04d9630673d15a3f58e01c0272d5c0a6ae78577904de2",
     "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
@@ -1967,7 +1969,7 @@
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "ebcc79af8cd4ec1a6d49ab875efededde7c2c32b4ac8362a3337b727866990e3",
-    "include/q4t/server/tool_result_contracts.h": "353479ad81d4d514a9a40508d91c6b09407a4326d0e9b02aa6c1fd22a1a26504",
+    "include/q4t/server/tool_result_contracts.h": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770",
     "include/q4t/server/tool_result_schema.h": "9b458aff192168e0872f67f4e1fc4c7aec16a3044b74e0f345612814305d57fa",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/server/vector_embedding_execution.h": "ac94fed5ad80a57a201e30f5ec869a813c57a82f9c09e378ff8e6611f809239e",
@@ -2005,7 +2007,7 @@
     "include/q4t/vision/timing.h": "1cf7c2342f1fbd58085a5ce4421ff0872fe56c247daadf3719ea34959d3b8ebf",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "f5751e6844057a62b5a8fd7ec0faf05deec00c2bb19d2bd955e63e85abdbe619",
+    "src/main.cpp": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "fd855fab933d9538c6326c1d9d7d003e3d0e6af52c33f84b07bec7480513625e",
@@ -2043,14 +2045,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "a026b7d7ebba731622d688a13c7b9f992257bf471a7f9ac88500de9c66501472",
+    "src/server/chat_capabilities.cpp": "cd42b60c0d0509a139092b2ed2f653487ee1bb1bf1a22119018e6e3e5b815e83",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
-    "src/server/chat_generation.cpp": "9c5b3e9a3cc55145d62535631d0b0b47fd5e90c58de18cbe63552d5e23b52b50",
+    "src/server/chat_generation.cpp": "516e37bc4f4ff9b348f68c4fdd9edad953903c7c236f3b7f03ffa1d44b549e52",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2095,7 +2097,7 @@
     "src/server/file_document.cpp": "f07f0319930b224263c53eefb248d4378528ad801f9dd24d634e37997ff56ade",
     "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
     "src/server/file_document_worker.cpp": "0d3bd998e76f2b14b0d15e46179dacaa1f1fdcaf221a83d95b6cff150c3dea86",
-    "src/server/file_expansion.cpp": "3f024279ebaa3bd67fda4e381c4cde59fdb9a0190942e7e663388d8a19d17236",
+    "src/server/file_expansion.cpp": "ab874b3175a5b1223f3db3d8b821310e819dce2c912da28aa107377cd83e7886",
     "src/server/file_extract.cpp": "00bc6a2bddace95dbca1ef92f3fa84fae597625f8e07972227d2fc62a89754e3",
     "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
     "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
@@ -2138,20 +2140,20 @@
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
-    "src/server/grammar_process.cpp": "72bebd0f5893829436ed7501e6529b0538d272cd53800295290d77a05469fa5c",
+    "src/server/grammar_process.cpp": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "a963e1099af8505277ca04dd75f18da090bcab5fd8c058eb826ff10e3a25a8b1",
     "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
-    "src/server/input_snapshot_bindings.cpp": "0cbdcb89a73ca495a7df4e423d97e09bd770aafde6bb25bbc40ddcb202301b93",
+    "src/server/input_snapshot_bindings.cpp": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "3076bb74055173b514a6de758238cd2c25b8240cd6f51026e673e3c103cd6e96",
-    "src/server/moderation.cpp": "15d6f5ef709f6b1e9cde6ec2f2f155cdc3bd69a58d6e605e7ee2c635d8b3dc41",
+    "src/server/moderation.cpp": "101571d57bd094560859c4d85dd7896ef7a40eb7710ed493a6c0bc915d88646c",
     "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
     "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
@@ -2164,6 +2166,9 @@
     "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+    "src/server/program_vm.cpp": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686",
+    "src/server/program_vm.h": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126",
+    "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
     "src/server/prompt_api.cpp": "03b07433d0586bd24cc9bda3fe99fa647a82527c18a20cbfd820dff1068d22d7",
     "src/server/prompt_cache_diagnostics.cpp": "521e46dbe3259d0d267bc295fe6a14c9c1923e425a754a32dac4efa13d5cc6d7",
@@ -2175,32 +2180,36 @@
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
     "src/server/responses_api.cpp": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
-    "src/server/responses_compaction.cpp": "7553a4f9f88cd0fba369bbdc3521813a2e09fd839e81ab16e20749578bd96d19",
+    "src/server/responses_compaction.cpp": "06c36dccc8cab791dfcc002e60fc40c40422ebe819829bdf9e206a8feaf0a84e",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "d91a97ece4e446748e2ea9d0884d7ec050f98857f333b7e9c1c32ef31645c101",
+    "src/server/responses_execution.cpp": "5042eaed1b135c45da9de40fb68a09fc98b4da54f22cb20599a80276a4aab736",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
-    "src/server/responses_execution_files.cpp": "7fd03864bfc872d02dbe818aee4a52e220d846b8acc5ec5367608bef0425f994",
+    "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
     "src/server/responses_execution_inputs.cpp": "734d9d81a2659e40026be9c5979d6708f887d1ad0a906712d01844657c8848eb",
     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
     "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
-    "src/server/responses_file_search_execution.cpp": "8e95d69049087a6769339a8a0bf0be08cf3c623e9d5f1075c3783e8850f81783",
+    "src/server/responses_file_search_execution.cpp": "9e1602cfccb2893858cf19901c52e58624d2ea6b093ea2fb2c7fbbdee45a6837",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
-    "src/server/responses_input.cpp": "9d055469e3426dc06ccc43a0a1983b7023509861f54a423d074d83f6a5759065",
+    "src/server/responses_input.cpp": "bc26f9e215a4a9d02b2d52fce89df1ca656fac22d131ca99184bef20d6aede11",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "92d92e486d26f569738cc5dcc65ca620e2d7f555480fc10fd078230626a8ab2c",
+    "src/server/responses_output.cpp": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
-    "src/server/responses_plan.cpp": "a2b4b9bdf25c6ed697cbab075578d7cbbdc13daf7add92980a3a65f94cc724ea",
+    "src/server/responses_plan.cpp": "3d111362a52c66846f6b6f245449a0490ef3d13cd3606b27f7f7c01eab6118cf",
+    "src/server/responses_program.cpp": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
+    "src/server/responses_program_execution.cpp": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94",
+    "src/server/responses_program_output.cpp": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587",
+    "src/server/responses_program_plan.cpp": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "a7f280c0ecb9ac6aa71b092ec3cc81955a611b375702352fa690a8f04e250cf3",
+    "src/server/responses_state.cpp": "d28d4e47b6f6947418d5d984e65e1a92c64aafdcf026a6a1e479dacd05db5f5c",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
-    "src/server/responses_tokens.cpp": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
+    "src/server/responses_tokens.cpp": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
     "src/server/responses_tool_catalog_history.cpp": "2b8011bf99d9264a92a9b1f9c6fa42bb3a229600833c5b29b84a27bdee4210bb",
     "src/server/responses_tool_search.cpp": "b73429e8dbac20630baf88c3ef89667e31e6d4bc15b20c7e56f9ad1d7b44cb9d",
-    "src/server/responses_tool_search_execution.cpp": "9046a68713a27663ad1175cd1725c1052c4fe9db176a95b5e8f2f07752bbc2a5",
+    "src/server/responses_tool_search_execution.cpp": "db8c125522dd1f9e68d2b5d26e9a883a49bd244d33f2d104816c2d834c09c4d6",
     "src/server/responses_tool_search_output.cpp": "270895f1134a0fefee6abcc6913fab858f20c355d141692dfeb0ee757c6ef9fc",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
@@ -2215,7 +2224,7 @@
     "src/server/schema_receipt.cpp": "14d9eaffc89238dcc7f46b7a237ceb342b65d9d98a74403d940f8c6694d521d8",
     "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
     "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
-    "src/server/schema_string_grammar.cpp": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
+    "src/server/schema_string_grammar.cpp": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a",
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
@@ -2230,8 +2239,8 @@
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
-    "src/server/tool_result_contracts.cpp": "71f7ae1758ec4c2d0429dc57366d135d3a8007484ebd40b788d202b85bb85033",
-    "src/server/tool_result_schema.cpp": "ce24beb5f6b9c6cfc19553b7eda41a49c5fb8d875e78bacdac42048078a24879",
+    "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
+    "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
     "src/server/vector_file_page.cpp": "d263b72769290aa4aee209f5d9cc124653f1ec9fff60c527ee07aedab2028802",
@@ -2362,7 +2371,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "c4b81816fc711f513ed17b6621da51ec442a8ba730ce5ef00e0f69d1077dcee1",
+    "tools/serve_recovery/profile_migration.py": "fa69991f8f8bc4d4af8f0b9ebdb0f98f476680561c56fb8945f849052a023ab6",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -2424,7 +2433,7 @@
     "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "6601f908bd70ca908f7d75fb8d76669ba4aedbde0e53fa19f73dc2ca0b7258a6",
+    "tools/serve_service/package.py": "9e7b3ff721096dbe8ab129f0e52415e05e6e41a212785bc2595f9245500d9688",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
@@ -4747,5 +4756,235 @@
     "change": "Recognize paired native tool discovery output types only with known ordered-loading capability; explicit extension only, automatic feature equality and original evidence/history retained.",
     "evidence": "docs/evidence/serve-tool-discovery-migration-cpu-20261113/README.md",
     "engine_and_native_unchanged": true
+  },
+  "programmatic_component_review_20261113": {
+    "scope": "Isolated bounded JavaScript core only; no public programmatic tool acceptance or execution claim",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "3adcdc6576e25900154c79962a963dd490d2a9a491c1840a6fbb77665ee778ca",
+        "after": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "fca656a5fd04e3f8dca973784644f39da9987742a4d17119d09950b958b6b9a8",
+        "after": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad"
+      },
+      "include/q4t/server/grammar_process.h": {
+        "before": "cc0d110a991a97ee590072984fafd1ba34884d9ce9db52f9395f8c9bcc5ff74a",
+        "after": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660"
+      },
+      "include/q4t/server/program_worker.h": {
+        "before": null,
+        "after": "7ecbe959e69b3cbe9ed65ebef2680d9f86a5687143a0ab7feede3ae18efca0e9"
+      },
+      "src/main.cpp": {
+        "before": "f5751e6844057a62b5a8fd7ec0faf05deec00c2bb19d2bd955e63e85abdbe619",
+        "after": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56"
+      },
+      "src/server/grammar_process.cpp": {
+        "before": "72bebd0f5893829436ed7501e6529b0538d272cd53800295290d77a05469fa5c",
+        "after": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e"
+      },
+      "src/server/program_vm.cpp": {
+        "before": null,
+        "after": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb"
+      },
+      "src/server/program_vm.h": {
+        "before": null,
+        "after": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126"
+      },
+      "src/server/program_worker.cpp": {
+        "before": null,
+        "after": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113/README.md",
+    "caller_and_state_wiring": "required and pending",
+    "default": "rev118 unchanged"
+  },
+  "programmatic_authority_review_20261113": {
+    "scope": "Authenticated program snapshot and ordered replay component; public dispatch still pending",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151",
+        "after": "64334cd56560c4461f06031a74289eb0857ab20a0766b16eac8a43f7714e86a3"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad",
+        "after": "707d755222ea1360e3328aa06195824f9f91acb3539032e49e30d392164106ee"
+      },
+      "include/q4t/server/responses_program.h": {
+        "before": null,
+        "after": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd"
+      },
+      "src/server/program_vm.cpp": {
+        "before": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb",
+        "after": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6"
+      },
+      "src/server/responses_program.cpp": {
+        "before": null,
+        "after": "e2d34c45682de8c7c5f36e46b557cdec05f72758513025a411c911815c49f889"
+      },
+      "src/server/tool_result_schema.cpp": {
+        "before": "ce24beb5f6b9c6cfc19553b7eda41a49c5fb8d875e78bacdac42048078a24879",
+        "after": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113/README.md",
+    "targeted_cpu_cases": 19,
+    "default": "rev118 unchanged"
+  },
+  "programmatic_execution_review_20261113": {
+    "scope": "Native public program dispatch, authenticated resume, media and SDK output; CPU verified, real business and release remain required",
+    "review": [
+      "program-only tools cannot bypass direct routing; original sealed parameters/result contracts persist",
+      "resume is local deterministic replay with caller/causal identity, no external re-execution",
+      "JSON/SSE completion checkpoint precedes publication; budget, cancellation and retention shared",
+      "typed media is frozen and reviewed in existing file pipeline with bounded shared capacity and owning lifetime",
+      "async answer requires all pending program and direct calls to allow it; serial policy sealed",
+      "QuickJS MIT required in distribution; recovery pairs program output types and preserves capability/budgets"
+    ],
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "64334cd56560c4461f06031a74289eb0857ab20a0766b16eac8a43f7714e86a3",
+        "after": "696f0d2392346a1053d0c8147bfbe43a5f9fe24a5be1c2dec2675f4e1b2679b2"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "707d755222ea1360e3328aa06195824f9f91acb3539032e49e30d392164106ee",
+        "after": "485ac7ba70b7b1b9494ee3fff7d24c5185cf5d34f570b7146d08ec541d547f72"
+      },
+      "include/q4t/server/responses_execution.h": {
+        "before": "430b749ee5e46dcf094d2257cdcb35eb148a8822f0488b151bbd9284dd904ff3",
+        "after": "19a36ae77f7768d10c4401002690812842aa657fc1ceb067234cefbc3ea93725"
+      },
+      "include/q4t/server/responses_input.h": {
+        "before": "37504da32ba7e939768f67387f9b4189b9804942357e3f267ce2fc500762e2c0",
+        "after": "00bacde441fa080f215fd8bfc35460942bdf06de326587ab174db174b91d3c7c"
+      },
+      "include/q4t/server/responses_output.h": {
+        "before": "0993be925fdcd6bc31ad1a879da7c20412550d17ee90a98022aaad02b1e0aaad",
+        "after": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480"
+      },
+      "include/q4t/server/responses_program.h": {
+        "before": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd",
+        "after": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a"
+      },
+      "include/q4t/server/tool_result_contracts.h": {
+        "before": "353479ad81d4d514a9a40508d91c6b09407a4326d0e9b02aa6c1fd22a1a26504",
+        "after": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770"
+      },
+      "src/server/chat_capabilities.cpp": {
+        "before": "a026b7d7ebba731622d688a13c7b9f992257bf471a7f9ac88500de9c66501472",
+        "after": "cd42b60c0d0509a139092b2ed2f653487ee1bb1bf1a22119018e6e3e5b815e83"
+      },
+      "src/server/chat_generation.cpp": {
+        "before": "9c5b3e9a3cc55145d62535631d0b0b47fd5e90c58de18cbe63552d5e23b52b50",
+        "after": "516e37bc4f4ff9b348f68c4fdd9edad953903c7c236f3b7f03ffa1d44b549e52"
+      },
+      "src/server/file_expansion.cpp": {
+        "before": "3f024279ebaa3bd67fda4e381c4cde59fdb9a0190942e7e663388d8a19d17236",
+        "after": "ab874b3175a5b1223f3db3d8b821310e819dce2c912da28aa107377cd83e7886"
+      },
+      "src/server/input_snapshot_bindings.cpp": {
+        "before": "0cbdcb89a73ca495a7df4e423d97e09bd770aafde6bb25bbc40ddcb202301b93",
+        "after": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985"
+      },
+      "src/server/moderation.cpp": {
+        "before": "15d6f5ef709f6b1e9cde6ec2f2f155cdc3bd69a58d6e605e7ee2c635d8b3dc41",
+        "after": "101571d57bd094560859c4d85dd7896ef7a40eb7710ed493a6c0bc915d88646c"
+      },
+      "src/server/program_vm.cpp": {
+        "before": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6",
+        "after": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686"
+      },
+      "src/server/responses_compaction.cpp": {
+        "before": "7553a4f9f88cd0fba369bbdc3521813a2e09fd839e81ab16e20749578bd96d19",
+        "after": "06c36dccc8cab791dfcc002e60fc40c40422ebe819829bdf9e206a8feaf0a84e"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "d91a97ece4e446748e2ea9d0884d7ec050f98857f333b7e9c1c32ef31645c101",
+        "after": "5042eaed1b135c45da9de40fb68a09fc98b4da54f22cb20599a80276a4aab736"
+      },
+      "src/server/responses_execution_files.cpp": {
+        "before": "7fd03864bfc872d02dbe818aee4a52e220d846b8acc5ec5367608bef0425f994",
+        "after": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4"
+      },
+      "src/server/responses_file_search_execution.cpp": {
+        "before": "8e95d69049087a6769339a8a0bf0be08cf3c623e9d5f1075c3783e8850f81783",
+        "after": "9e1602cfccb2893858cf19901c52e58624d2ea6b093ea2fb2c7fbbdee45a6837"
+      },
+      "src/server/responses_input.cpp": {
+        "before": "9d055469e3426dc06ccc43a0a1983b7023509861f54a423d074d83f6a5759065",
+        "after": "bc26f9e215a4a9d02b2d52fce89df1ca656fac22d131ca99184bef20d6aede11"
+      },
+      "src/server/responses_output.cpp": {
+        "before": "92d92e486d26f569738cc5dcc65ca620e2d7f555480fc10fd078230626a8ab2c",
+        "after": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1"
+      },
+      "src/server/responses_plan.cpp": {
+        "before": "a2b4b9bdf25c6ed697cbab075578d7cbbdc13daf7add92980a3a65f94cc724ea",
+        "after": "3d111362a52c66846f6b6f245449a0490ef3d13cd3606b27f7f7c01eab6118cf"
+      },
+      "src/server/responses_program.cpp": {
+        "before": "e2d34c45682de8c7c5f36e46b557cdec05f72758513025a411c911815c49f889",
+        "after": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582"
+      },
+      "src/server/responses_program_execution.cpp": {
+        "before": null,
+        "after": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94"
+      },
+      "src/server/responses_program_output.cpp": {
+        "before": null,
+        "after": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587"
+      },
+      "src/server/responses_program_plan.cpp": {
+        "before": null,
+        "after": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398"
+      },
+      "src/server/responses_state.cpp": {
+        "before": "a7f280c0ecb9ac6aa71b092ec3cc81955a611b375702352fa690a8f04e250cf3",
+        "after": "d28d4e47b6f6947418d5d984e65e1a92c64aafdcf026a6a1e479dacd05db5f5c"
+      },
+      "src/server/responses_tokens.cpp": {
+        "before": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
+        "after": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c"
+      },
+      "src/server/responses_tool_search_execution.cpp": {
+        "before": "9046a68713a27663ad1175cd1725c1052c4fe9db176a95b5e8f2f07752bbc2a5",
+        "after": "db8c125522dd1f9e68d2b5d26e9a883a49bd244d33f2d104816c2d834c09c4d6"
+      },
+      "src/server/tool_result_contracts.cpp": {
+        "before": "71f7ae1758ec4c2d0429dc57366d135d3a8007484ebd40b788d202b85bb85033",
+        "after": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af"
+      },
+      "tools/serve_recovery/profile_migration.py": {
+        "before": "c4b81816fc711f513ed17b6621da51ec442a8ba730ce5ef00e0f69d1077dcee1",
+        "after": "fa69991f8f8bc4d4af8f0b9ebdb0f98f476680561c56fb8945f849052a023ab6"
+      },
+      "tools/serve_service/package.py": {
+        "before": "6601f908bd70ca908f7d75fb8d76669ba4aedbde0e53fa19f73dc2ca0b7258a6",
+        "after": "9e7b3ff721096dbe8ab129f0e52415e05e6e41a212785bc2595f9245500d9688"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113/README.md",
+    "default": "rev118 unchanged",
+    "remaining": [
+      "real model business",
+      "primary/light and fallback qualification",
+      "reversible delivery and main merge",
+      "other A07/A11 and full master tasks"
+    ]
+  },
+  "programmatic_length_review_20261113": {
+    "scope": "Fix actual program minLength1/maxLength65536 compilation with exact compact pure-length grammar; preserve all limits and semantic validation",
+    "sources": {
+      "src/server/schema_string_grammar.cpp": {
+        "before": "8ad48bcd658895a01c7a6d4a2e14c8018f55fdf407939dab688c5c6dc5263d3d",
+        "after": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-length-repair-20261113/README.md",
+    "cpu_passed": 11,
+    "real_business": "pending bounded rerun",
+    "default": "rev118 unchanged"
   }
 }

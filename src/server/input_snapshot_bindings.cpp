@@ -6,6 +6,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/schema_graph.h"
+#include "q4t/server/responses_program.h"
 
 namespace q4t::server {
 namespace {
@@ -67,10 +68,17 @@ ObjectReply Invalid() {
   return Error(503, "input_snapshot_binding_invalid",
                "Stored input snapshot does not match its original content");
 }
-const Json* Part(const Json& item, std::string_view path) {
+const Json* Part(const Json& item, std::string_view path, Json* decoded) {
   if (path.empty() || path.size() > 256 || !path.starts_with('/'))
     return nullptr;
   const Json* current = &item;
+  if (item.GetString("type") == "program_output" &&
+      path.starts_with("/result/")) {
+    if (!DecodeResponsesProgramOutput(item.GetString("result"), decoded))
+      return nullptr;
+    current = decoded;
+    path.remove_prefix(7);
+  }
   size_t depth = 0;
   while (!path.empty()) {
     if (++depth > 16 || !path.starts_with('/')) return nullptr;
@@ -152,7 +160,8 @@ ObjectReply Collect(const Json& bindings, const Items& items, bool subset,
       if (subset) continue;
       return Invalid();
     }
-    const auto* part = Part(*found->second, binding.path);
+    Json decoded;
+    const auto* part = Part(*found->second, binding.path, &decoded);
     std::string digest;
     if (!part || !Hash(*part, &budget, 0, &digest) || digest != binding.digest)
       return Invalid();
@@ -189,7 +198,8 @@ ObjectReply BindInputSnapshot(const Json& item, std::string_view path,
                               Json* binding) {
   if (!binding) return Invalid();
   *binding = {};
-  const auto* part = Part(item, path);
+  Json decoded;
+  const auto* part = Part(item, path, &decoded);
   InputSnapshotRef parsed;
   std::string digest;
   if (!part || !ValidId(item.GetString("id")) ||

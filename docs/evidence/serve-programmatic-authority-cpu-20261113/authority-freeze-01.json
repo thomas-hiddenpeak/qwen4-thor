@@ -1,0 +1,35 @@
+{
+  "tests": [
+    "responses_program_callers_are_exact_and_default_direct",
+    "responses_program_authenticated_restart_and_real_results",
+    "responses_program_fingerprint_rejects_scope_model_and_code_changes",
+    "responses_program_direct_only_and_unloaded_tools_do_not_execute",
+    "responses_program_argument_and_original_result_schema_enforced",
+    "responses_program_result_caller_and_identity_cannot_be_rebound",
+    "responses_program_causal_replay_rejects_forged_arguments_and_order",
+    "responses_program_namespace_custom_format_dispatch_checked",
+    "responses_program_cancel_and_expiry_do_not_dispatch",
+    "tool_result_schema_json_roots_open_objects_and_exact_numbers",
+    "tool_result_schema_formats_patterns_and_definition_errors",
+    "tool_result_schema_worker_cancel_deadline_and_independent_slot",
+    "tool_result_schema_does_not_relax_generation_contract",
+    "tool_result_invocation_schema_survives_restart_changed_tools_and_refs",
+    "tool_result_contract_conversation_copy_and_frozen_queue_keep_schema",
+    "tool_result_schema_content_array_and_legacy_unbound_are_independent",
+    "program_worker_parallel_calls_resume_with_actual_results",
+    "program_worker_result_order_preserves_race_and_dependent_call",
+    "program_worker_replay_mismatch_and_duplicate_results_fail_closed"
+  ],
+  "source_sha256": {
+    "src/server/responses_program.cpp": "f759aa9ba16de71510d910909aad30250f99f74203daccfad2db8d397cd5a1f9",
+    "include/q4t/server/responses_program.h": "ada15bf9a049ca270d1096ba1f5372c3a27918344d9c8cfe4834357b077f30cd",
+    "src/server/program_vm.cpp": "07856f2452b271353313e368ccc119b934a927015dace5f8ab61aa65ad252eb6",
+    "src/server/tool_result_schema.cpp": "07626c5f359125bb0a30cb8fd56fb1ef3971b6e7978037fddf3ca34f9bf0cb1e",
+    "tests/server_responses_program_test.cpp": "6cbea4f7173c28ccb77de6796b93cd5c85a8e0a7af5c676071e63c6913b0a746",
+    "tests/server_tool_result_test.cpp": "1f2441023dd0eed85671307748e86d465626ed15cc31c5f2114c5e299c1f481b"
+  },
+  "scope": "Program authority/replay component and affected JSON/custom validator; public dispatch remains pending",
+  "new_gpu_starts": 0,
+  "default": "rev118 unchanged",
+  "build_only_repair": "Missing structured_admission.h for compiled grammar ceiling, fixed before tests"
+}
