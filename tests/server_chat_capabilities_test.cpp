@@ -9,6 +9,8 @@
 #include "q4t/server/file_limits.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/text_stop.h"
+#include "q4t/server/responses_execution.h"
+#include "q4t/server/vector_stores.h"
 #include "q4t/test.h"
 
 namespace {
@@ -19,15 +21,84 @@ bool Hash(const std::string& text) {
 }
 }  // namespace
 
+Q4T_TEST(chat_capabilities_vector_management_and_execution_configuration) {
+  using namespace q4t::server;
+  for (bool enabled : {false, true}) {
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(
+        ChatCapabilitiesJson("m", false, true, 0, nullptr, enabled), &value));
+    const auto* stores = value.Find("vector_stores");
+    Q4T_CHECK(stores && stores->GetString("profile") == "q4t-vector-stores-v1");
+    for (const auto* field : {"management", "file_content", "file_batches",
+                              "search", "execution_requires_native_embedding"})
+      Q4T_CHECK(stores->GetBool(field));
+    Q4T_CHECK(stores->GetBool("native_embedding_configured") == enabled);
+    Q4T_CHECK(!stores->GetBool("management_requires_native_embedding", true));
+    Q4T_CHECK(!stores->GetBool("core_readiness_dependency", true));
+    Q4T_CHECK(!stores->GetBool("cloud_score_equivalence", true));
+    Q4T_CHECK(stores->GetString("scope") == "authenticated_client");
+    Q4T_CHECK(stores->GetInt("max_files_per_store") ==
+              static_cast<int64_t>(kVectorStoreFiles));
+    Q4T_CHECK(stores->GetInt("search_max_chunks") ==
+              static_cast<int64_t>(kVectorSearchChunks));
+    Q4T_CHECK(stores->GetInt("search_max_vector_values") ==
+              static_cast<int64_t>(kVectorSearchValues));
+    Q4T_CHECK(stores->GetInt("search_max_text_bytes") ==
+              static_cast<int64_t>(kVectorSearchTextBytes));
+  }
+  return true;
+}
+
+Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
+  using namespace q4t::server;
+  for (bool native : {false, true}) {
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(
+        ChatCapabilitiesJson("m", false, true, 0, nullptr, native), &value));
+    const auto* response = value.Find("responses");
+    const auto* search = response->Find("file_search");
+    Q4T_CHECK(search && search->GetString("profile") == "q4t-file-search-v1");
+    Q4T_CHECK(search->GetBool("implemented"));
+    Q4T_CHECK(search->GetBool("enabled") ==
+              (native && kStructuredDecodingAvailable));
+    for (const auto* field :
+         {"requires_native_embedding", "requires_structured_backend",
+          "max_tool_calls", "shared_output_budget", "background", "batch"})
+      Q4T_CHECK(search->GetBool(field));
+    Q4T_CHECK(!search->GetBool("external_service_required", true));
+    Q4T_CHECK(!search->GetBool("history_replays_search", true));
+    Q4T_CHECK(
+        search->GetInt("max_calls_per_response") ==
+            static_cast<int64_t>(ResponsesExecution::kMaxNativeToolCalls) &&
+        search->GetInt("max_stores_per_tool") ==
+            static_cast<int64_t>(kVectorSearchStores) &&
+        search->GetInt("max_queries_per_call") ==
+            static_cast<int64_t>(kVectorSearchQueries));
+    Q4T_CHECK(search->GetString("results_include") ==
+              "file_search_call.results");
+    const auto* items = response->GetArray("output_items");
+    Q4T_CHECK(items && items->array.size() == 6);
+    for (const auto* type :
+         {"message", "reasoning", "function_call", "custom_tool_call",
+          "compaction", "file_search_call"})
+      Q4T_CHECK(std::count_if(items->array.begin(), items->array.end(),
+                              [&](const auto& item) {
+                                return item.IsString() && item.str == type;
+                              }) == 1);
+  }
+  return true;
+}
+
 Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
   q4t::io::Json value;
   Q4T_CHECK(q4t::io::ParseJson(
       q4t::server::ChatCapabilitiesJson("m", false, true), &value));
   const auto* files = value.Find("files");
   Q4T_CHECK(files && files->GetString("profile") == "q4t-files-v1");
-  for (const auto* field : {"create", "retrieve", "list", "delete", "content",
-                            "multipart", "binary_streaming",
-                            "legacy_limits_preserved", "storage_quota_separate"})
+  for (const auto* field :
+       {"create", "retrieve", "list", "delete", "content", "multipart",
+        "binary_streaming", "legacy_limits_preserved",
+        "storage_quota_separate"})
     Q4T_CHECK(files->GetBool(field));
   Q4T_CHECK(files->GetInt("max_file_bytes") ==
                 static_cast<int64_t>(q4t::server::kFileBytes) &&

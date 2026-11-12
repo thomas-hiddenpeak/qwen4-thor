@@ -15,6 +15,8 @@ from tools.serve_recovery import profile_policy as policy
 FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
+RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
+    'custom_tool_call', 'compaction', 'file_search_call'))
 
 
 def semantic_capabilities(value):
@@ -26,6 +28,21 @@ def semantic_capabilities(value):
     Unknown template revisions and other changed values are not normalized.
     """
     result = copy.deepcopy(value)
+    responses = result.get('responses')
+    if type(responses) is dict and 'output_items' in responses:
+        items = responses['output_items']
+        ledger.require(type(items) is list and all(type(x) is str for x in items)
+            and len(set(items)) == len(items) and
+            set(items) <= RESPONSE_OUTPUT_TYPES, 'invalid response output capabilities')
+        if 'file_search_call' in items:
+            search = responses.get('file_search')
+            ledger.require(type(search) is dict and
+                search.get('profile') == 'q4t-file-search-v1' and
+                search.get('implemented') is True,
+                'file search output lacks its implementation capability')
+        # This field declares an unordered set of output types. Normalize only
+        # this reviewed enum; all other arrays retain exact-value comparison.
+        responses['output_items'] = {item: True for item in items}
     template = result.get('template')
     if isinstance(template, dict):
         renderer = template.pop('renderer_source_sha256', None)

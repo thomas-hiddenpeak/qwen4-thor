@@ -74,6 +74,68 @@ class MigrationTests(unittest.TestCase):
         return migration.permit(self.old, new, self.first, evidence,
             self.config, self.config, **kwargs)
 
+    def search_extension(self):
+        previous = {n:copy.deepcopy(row['record']) for n,row in self.first.items()}
+        for record in previous.values():
+            record['capabilities'].setdefault('responses', {})['output_items'] = [
+                'message', 'reasoning', 'function_call', 'custom_tool_call', 'compaction']
+        self.first = bind_records(self.old, previous)
+        target = copy.deepcopy(previous)
+        for record in target.values():
+            response = record['capabilities']['responses']
+            response['output_items'].append('file_search_call')
+            response['file_search'] = dict(profile='q4t-file-search-v1', implemented=True,
+                                           enabled=True, shared_output_budget=True)
+        return target, bind_records(self.new, target)
+
+    def test_search_output_extension_requires_explicit_upgrade_and_preserves_original(self):
+        _, evidence = self.search_extension()
+        original = copy.deepcopy((self.first, evidence))
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            self.extended_permit(self.new, evidence)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            self.extended_permit(self.new, evidence, automatic=True,
+                                 allow_capability_extension=True)
+        grant = self.extended_permit(self.new, evidence, allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        self.assertEqual((self.first, evidence), original)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(self.new, self.old, evidence, self.first, self.config,
+                             self.config, allow_capability_extension=True)
+
+    def test_search_output_enum_rejects_unknown_duplicate_type_and_missing_implementation(self):
+        records, _ = self.search_extension()
+        valid = records['primary']['capabilities']
+        mutations = [
+            lambda r:r['output_items'].append('web_search_call'),
+            lambda r:r['output_items'].append('file_search_call'),
+            lambda r:r['output_items'].append(True),
+            lambda r:r.update(output_items={'file_search_call':True}),
+            lambda r:r.pop('file_search'),
+            lambda r:r['file_search'].update(implemented=False),
+            lambda r:r['file_search'].update(implemented=1),
+            lambda r:r['file_search'].update(profile='unknown')]
+        for mutation in mutations:
+            value = copy.deepcopy(valid)
+            mutation(value['responses'])
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                migration.semantic_capabilities(value)
+
+    def test_same_search_capabilities_can_recover_but_other_arrays_stay_exact(self):
+        records, evidence = self.search_extension()
+        old = copy.deepcopy(self.old)
+        same = bind_records(old, copy.deepcopy(records))
+        grant = migration.permit(old, self.new, same, evidence, self.config,
+                                 self.config, automatic=True)
+        self.assertEqual(grant['format'], migration.FORMAT)
+        changed = copy.deepcopy(records)
+        for record in changed.values():
+            record['capabilities']['template']['roles'].append('new_role')
+        altered = bind_records(self.new, changed)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(old, self.new, same, altered, self.config,
+                             self.config, allow_capability_extension=True)
+
     def test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic(self):
         new, evidence = self.extension()
         with self.assertRaisesRegex(ValueError, 'application capabilities'):

@@ -127,3 +127,7 @@ docs/evidence/serve-vector-batches-cpu-20261112/*.stderr -text -whitespace
 docs/evidence/serve-vector-api-cpu-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-api-cpu-20261112/*.stderr -text -whitespace
 docs/evidence/serve-vector-api-cpu-20261112/*.log -text -whitespace
+
+# Preserve real native file-search HTTP/SSE and original failure receipts.
+docs/evidence/serve-file-search-business-20261112/** -text -whitespace
+docs/evidence/serve-file-search-business-20261112/**/*.wire binary

@@ -12,6 +12,8 @@
 #include "q4t/server/thinking_budget.h"
 #include "q4t/server/text_stop.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/responses_execution.h"
+#include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
 namespace {
@@ -56,7 +58,22 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"responses":{"profile":"q4t-responses-v1",)"
          R"("endpoint":"/v1/responses","shared_native_generation":true,)"
          R"("json":true,"stream":true,"chat_done_sentinel":false,)"
-         R"("output_items":["message","reasoning","function_call","custom_tool_call","compaction"],)"
+         R"("output_items":["message","reasoning","function_call","custom_tool_call","compaction","file_search_call"],)"
+         R"("file_search":{"profile":"q4t-file-search-v1",)"
+         R"("implemented":true,"enabled":)" +
+         (native_embedding && constrained ? "true" : "false") +
+         R"(,"requires_native_embedding":true,"requires_structured_backend":true,)"
+         R"("executor":"native_query_and_answer","external_service_required":false,)"
+         R"("max_calls_per_response":)" +
+         std::to_string(ResponsesExecution::kMaxNativeToolCalls) +
+         R"(,"max_stores_per_tool":)" + std::to_string(kVectorSearchStores) +
+         R"(,"max_queries_per_call":)" + std::to_string(kVectorSearchQueries) +
+         R"(,"max_tool_calls":true,"shared_output_budget":true,)"
+         R"("quota":"one_request_cumulative_work","background":true,"batch":true,)"
+         R"("results_include":"file_search_call.results",)"
+         R"("citation":"actual_prior_completed_search_file",)"
+         R"("citation_index":"unicode_scalar","history_replays_search":false,)"
+         R"("runtime_status":"/v1/config.native_embedding_health"},)"
          R"("reasoning_text":true,"reasoning_summary":true,)"
          R"("reasoning_execution":{"modes":["standard","pro"],)"
          R"("pro":"native_deliberation_then_answer",)"
@@ -175,6 +192,27 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("retention":"explicit_expiry_or_batch_30_days_otherwise_permanent",)"
          R"("purposes":["assistants","batch","fine-tune","vision","user_data","evals"],)"
          R"("purpose_is_storage_metadata":true,"file_resolution_pending":false})"
+         R"(,"vector_stores":{"profile":"q4t-vector-stores-v1",)"
+         R"("endpoint":"/v1/vector_stores","management":true,"file_content":true,)"
+         R"("file_batches":true,"search":true,"native_embedding_configured":)" +
+         (native_embedding ? "true" : "false") +
+         R"(,"execution_requires_native_embedding":true,)"
+         R"("management_requires_native_embedding":false,)"
+         R"("scope":"authenticated_client","core_readiness_dependency":false,)"
+         R"("max_files_per_store":)" + std::to_string(kVectorStoreFiles) +
+         R"(,"search_max_chunks":)" + std::to_string(kVectorSearchChunks) +
+         R"(,"search_max_vector_values":)" +
+         std::to_string(kVectorSearchValues) +
+         R"(,"search_max_text_bytes":)" +
+         std::to_string(kVectorSearchTextBytes) +
+         R"(,"ranking":"native_cosine_bm25_reciprocal_rank_fusion",)"
+         R"("cloud_score_equivalence":false,"query_rewrite":"native_model_step",)"
+         R"("query_rewrite_requires_structured_backend":true,)"
+         R"("index_identity":"source_embedding_tokenizer_and_chunking",)"
+         R"("recovery":"verified_dead_owner_bounded_unfinished_ingestion",)"
+         R"("recovery_resets_deadline":false,)"
+         R"("unknown_commit":"reconcile_original_index_without_replay",)"
+         R"("runtime_status":"/v1/config.vector_ingestion"})"
          R"(,"uploads":{"profile":"q4t-uploads-v1","endpoint":"/v1/uploads",)"
          R"("create":true,"parts":true,"complete":true,"cancel":true,)"
          R"("max_bytes":8589934592,"max_part_bytes":67108864,)"
