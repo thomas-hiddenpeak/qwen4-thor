@@ -46,6 +46,7 @@ ChatServer::~ChatServer() {
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
   batches_.RequestStop();
+  vector_jobs_.RequestStop();
   background_.RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
@@ -58,6 +59,7 @@ ChatServer::~ChatServer() {
   // freed).
   StopScheduler();
   batches_.Join();
+  vector_jobs_.Join();
   background_.Join();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
@@ -807,6 +809,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
 
 void ChatServer::RecoverApplicationJobs() noexcept {
   if (stop_requested_.load() || !model_ready_.load() || !objects_) return;
+  if (!embedding_model_dir_.empty()) {
+    vector_jobs_.TryStart([this] {
+      return std::make_unique<VectorJobs>(
+          *objects_, clients_, VectorJobsOptions{},
+          [this](auto text, const auto& control, auto* output) {
+            return EncodeVectorDocument(text, control, output);
+          },
+          [this](const auto& tokens, const auto& client, auto& permit,
+                 const auto& control, auto* result) {
+            return RunVectorEmbedding(tokens, client, permit, control, result);
+          });
+    });
+  }
   background_.TryStart([this] {
     return std::make_unique<ResponsesJobs>(
         *objects_, background_options_,

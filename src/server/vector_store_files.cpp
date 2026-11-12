@@ -44,7 +44,7 @@ ObjectReply VectorStores::Attach(const BinaryAccess& access,
   }
   return Error(409, "object_revision_conflict", "Vector store kept changing");
 }
-ObjectReply VectorStores::LoadFile(const BinaryAccess& access,
+ObjectReply VectorStores::LoadRecord(const BinaryAccess& access,
                                    const std::string& id,
                                    const std::string& file_id) {
   for (int attempt = 0; attempt < 4; ++attempt) {
@@ -53,11 +53,17 @@ ObjectReply VectorStores::LoadFile(const BinaryAccess& access,
     auto reply = ReadMember(access, root.value, file_id);
     if (Retry(reply)) continue;
     if (!reply.ok()) return reply;
-    auto source = Files(objects_).Retrieve(access, file_id);
-    if (!source.ok()) return source;
     return reply;
   }
   return Error(409, "object_revision_conflict", "Vector store kept changing");
+}
+ObjectReply VectorStores::LoadFile(const BinaryAccess& access,
+                                   const std::string& id,
+                                   const std::string& file_id) {
+  auto reply = LoadRecord(access, id, file_id);
+  if (!reply.ok()) return reply;
+  auto source = Files(objects_).Retrieve(access, file_id);
+  return source.ok() ? reply : source;
 }
 ObjectReply VectorStores::RetrieveFile(const BinaryAccess& access,
                                        const std::string& id,

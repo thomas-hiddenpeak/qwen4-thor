@@ -55,6 +55,13 @@ class VectorStores {
   // not an HTTP cancellation acknowledgement while work is still running.
   ObjectReply Cancel(const BinaryAccess& access,
                      const VectorIngestionClaim& claim);
+  // Durable intent only; running work remains in_progress until drained.
+  ObjectReply RequestCancel(const BinaryAccess& access, const std::string& id,
+                            const std::string& file_id);
+  // Private membership state, including a deleted source, for terminal
+  // reconciliation. Execution/search must use LoadFile/LoadClaim instead.
+  ObjectReply LoadRecord(const BinaryAccess& access, const std::string& id,
+                         const std::string& file_id);
   // Private, scoped, current membership + source-file check for the executor.
   ObjectReply LoadFile(const BinaryAccess& access, const std::string& id,
                        const std::string& file_id);

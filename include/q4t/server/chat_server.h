@@ -61,6 +61,7 @@
 #include "q4t/server/responses_jobs.h"
 #include "q4t/server/batch_execution.h"
 #include "q4t/server/batch_jobs.h"
+#include "q4t/server/vector_jobs.h"
 #include "q4t/server/application_owner.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
@@ -196,6 +197,13 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
+  ObjectReply EncodeVectorDocument(std::string_view text,
+                                    const VectorSearchControl& control,
+                                    VectorEncodedText* output);
+  ObjectReply RunVectorEmbedding(
+      const std::vector<int32_t>& tokens, const ClientIdentity& client,
+      ClientLease& permit, const std::shared_ptr<RequestControl>& control,
+      EmbeddingStepResult* result);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };
@@ -255,6 +263,7 @@ class ChatServer {
   BatchJobsOptions batch_options_;
   ApplicationOwner<ResponsesJobs> background_;
   ApplicationOwner<BatchJobs> batches_;
+  ApplicationOwner<VectorJobs> vector_jobs_;
   ApplicationStartup background_scanner_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;

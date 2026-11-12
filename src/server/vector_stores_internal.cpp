@@ -244,6 +244,9 @@ bool ValidateMember(const Json& record, const Json& store) {
       !ParseVectorChunking(*file->Find("chunking_strategy"), &chunking, &error))
     return false;
   const auto state = job->GetString("state");
+  if (job->Has("cancel_requested") &&
+      !job->Find("cancel_requested")->IsBool())
+    return false;
   if (job->GetInt("attempts", -1) < 0 || job->GetInt("attempts") > 3 ||
       job->GetInt("execution_deadline_at") <= record.GetInt("created_at"))
     return false;
@@ -350,6 +353,8 @@ ObjectReply MatchClaim(const Json& data, const VectorIngestionClaim& claim,
   if (require_live && claim.deadline_at <= std::time(nullptr))
     return Error(408, "vector_ingestion_deadline",
                  "Ingestion deadline exceeded");
+  if (require_live && job->GetBool("cancel_requested"))
+    return Error(499, "vector_ingestion_cancelled", "Ingestion cancelled");
   return {};
 }
 }  // namespace q4t::server::vector_store_detail

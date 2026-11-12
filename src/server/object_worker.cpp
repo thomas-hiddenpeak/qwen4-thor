@@ -1325,6 +1325,7 @@ class DiskStore {
            {"store_id", String(store_id)},
            {"file_id", String(file->GetString("id"))},
            {"state", String(job->GetString("state"))},
+           {"cancel_requested", Boolean(job->GetBool("cancel_requested"))},
            {"token", String(job->GetString("token"))},
            {"owner", String(job->GetString("owner"))},
            {"deadline_at", Number(job->GetInt("deadline_at"))},

@@ -28,6 +28,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11持久入库调度与真实ChatServer模型回调已接线，
+  [18 项 CPU 首过](evidence/serve-vector-jobs-cpu-20261112/README.md)，实际引擎零警告构建：
+  有界公平队列、原进程确认退出才恢复、取消持久化及实际清理后闭合，
+  未知提交只核对原索引。辅助健康独立于核心readiness；公开API/
+  SDK/Responses工具循环继续实施，默认rev80尚未变更。
+
 - A11入库的客户端 TPM/并发许可与 BF16 输出适配已编码，
   [14 项针对性 CPU 通过](evidence/serve-vector-quota-cpu-20261112/README.md)。
   内部任务不重复外部 RPM，异常保留消费、未知用量保守结算；

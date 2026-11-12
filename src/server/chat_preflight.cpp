@@ -68,6 +68,8 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"application_startup":{"responses":)" +
       ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
       ApplicationStartupJson(batches_.StartupHealth()) +
+      R"(,"vector_ingestion":)" +
+      ApplicationStartupJson(vector_jobs_.StartupHealth()) +
       R"(,"response_scanner":)" +
       ApplicationStartupJson(background_scanner_.Health()) + "}," +
       R"("application_state_health":{"state":")" +
@@ -83,6 +85,10 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(health.controller_recoveries) +
       R"(,"auxiliary_cleanup_failures":)" +
       std::to_string(health.auxiliary_cleanup_failures) + "}," +
+      R"("vector_ingestion":)" +
+      VectorJobsHealthJson(vector_jobs_ ? vector_jobs_->Health()
+                                       : VectorJobsHealth{},
+                           bool(vector_jobs_)) + "," +
       R"("batches":{"state":")" + batch_state +
       R"(","readiness_dependency":false,"owned":)" +
       std::to_string(batches.owned) + R"(,"active":)" +

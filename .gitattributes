@@ -119,3 +119,5 @@ docs/evidence/serve-vector-ingestion-cpu-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-ingestion-cpu-20261112/*.stderr -text -whitespace
 docs/evidence/serve-vector-quota-cpu-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-quota-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-jobs-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-jobs-cpu-20261112/*.stderr -text -whitespace

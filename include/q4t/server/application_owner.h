@@ -19,7 +19,9 @@ enum class ApplicationThreadKind {
   kResponseWorker,
   kResponseScanner,
   kBatchWorker,
-  kBatchScanner
+  kBatchScanner,
+  kVectorWorker,
+  kVectorScanner
 };
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 inline std::atomic<int> application_failed_thread{-1};

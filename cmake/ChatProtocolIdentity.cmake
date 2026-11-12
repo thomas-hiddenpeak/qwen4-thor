@@ -48,6 +48,7 @@ set(protocol_inputs
   include/q4t/server/vector_stores.h
   include/q4t/server/vector_ingestion.h
   include/q4t/server/vector_embedding_execution.h
+  include/q4t/server/vector_jobs.h
   src/server/vector_stores_internal.h
   src/server/vector_index.cpp
   src/server/vector_stores_internal.cpp
@@ -56,6 +57,7 @@ set(protocol_inputs
   src/server/vector_ingestion_state.cpp
   src/server/vector_ingestion.cpp
   src/server/vector_embedding_execution.cpp
+  src/server/vector_jobs.cpp
   include/q4t/server/embeddings_execution.h
   include/q4t/server/embedding_metadata.h
   src/server/embeddings_plan.cpp
@@ -63,6 +65,7 @@ set(protocol_inputs
   src/server/embedding_metadata.cpp
   src/server/chat_embeddings.cpp
   src/server/chat_embedding_backend.cpp
+  src/server/chat_vector_ingestion.cpp
   include/q4t/model/embedding_config.h
   src/model/embedding_config.cpp
   include/q4t/model/embedding_layout.h

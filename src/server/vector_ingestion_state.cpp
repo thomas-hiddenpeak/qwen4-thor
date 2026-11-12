@@ -210,4 +210,30 @@ ObjectReply VectorStores::Cancel(const BinaryAccess& access,
                                  const VectorIngestionClaim& claim) {
   return ChangeJob(access, claim, "cancelled", {});
 }
+ObjectReply VectorStores::RequestCancel(const BinaryAccess& access,
+                                        const std::string& id,
+                                        const std::string& file_id) {
+  for (int attempt = 0; attempt < 4; ++attempt) {
+    auto root = Read(access, id, true);
+    if (!root.ok()) return root;
+    auto member = ReadMember(access, root.value, file_id);
+    if (Retry(member)) continue;
+    if (!member.ok()) return member;
+    auto data = *member.value.Find("data");
+    const auto& file = Field(data, "file");
+    if (file.GetString("status") != "in_progress" ||
+        Field(data, "job").GetBool("cancel_requested"))
+      return Result(file);
+    Set(&Field(data, "job"), "cancel_requested", Boolean(true));
+    auto write = Write(access, ObjectKind::kVectorStoreFile,
+                       member.value.GetString("id"),
+                       member.value.GetInt("revision"), data);
+    auto reply =
+        Publish(access, root.value, *root.value.Find("data"), {&write, 1});
+    if (Retry(reply)) continue;
+    if (reply.ok()) reply.value = file;
+    return reply;
+  }
+  return Error(409, "object_revision_conflict", "Vector store kept changing");
+}
 }  // namespace q4t::server

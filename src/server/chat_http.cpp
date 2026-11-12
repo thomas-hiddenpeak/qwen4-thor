@@ -75,6 +75,7 @@ void ChatServer::RequestStop() {
   stop_requested_.store(true);
   background_.PreventStart();
   batches_.PreventStart();
+  vector_jobs_.PreventStart();
   background_scanner_.PreventStart();
 }
 
@@ -200,6 +201,7 @@ Status ChatServer::Run() {
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
         batches_.RequestStop();
+        vector_jobs_.RequestStop();
         background_.RequestStop();
         {
           const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -256,6 +258,7 @@ Status ChatServer::Run() {
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
   batches_.RequestStop();
+  vector_jobs_.RequestStop();
   background_.RequestStop();
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
@@ -268,6 +271,7 @@ Status ChatServer::Run() {
   }
   seq_cv_.notify_all();
   batches_.Join();
+  vector_jobs_.Join();
   background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
