@@ -1648,7 +1648,7 @@
     {
       "id": "N05",
       "required": true,
-      "state": "delivered",
+      "state": "delivered_native_optional_route_fix_pending_delivery",
       "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
       "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
       "depends_on": [
@@ -1673,11 +1673,20 @@
         "rollback_sha256": "916783a879e54776017c42c843f9bbb1c333b2cc55b0b42acccd7bb319600a58",
         "state": "STOPPED",
         "merged_main": false,
-        "whole_task_complete": true
+        "whole_task_complete": false
       },
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
-      "remaining": [],
-      "development_status": "All N05 targeted contracts, actual business and qualified default/manual rollback delivery complete. Remaining master tasks active."
+      "remaining": [
+        "Deliver and mainline the renewed optional frontend route table for all current public operations"
+      ],
+      "development_status": "Prior native transport remains delivered; audit found optional nginx route drift after newer APIs. Full route parity repaired and targeted CPU HTTP accepted; renewed package/mainline delivery pending.",
+      "optional_route_parity": {
+        "state": "implemented_targeted_cpu_verified",
+        "added_operations": 29,
+        "total_public_api_operations": 66,
+        "evidence": "evidence/serve-optional-route-parity-20261112/README.md",
+        "default_changed": false
+      }
     },
     {
       "id": "N06",

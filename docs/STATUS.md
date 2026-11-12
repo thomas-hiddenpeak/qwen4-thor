@@ -30,6 +30,9 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- N05重审发现可选nginx入口漏同步29项后续API；[路由全集已补齐并通过7项CPU/实际双入口HTTP](evidence/serve-optional-route-parity-20261112/README.md)。
+  当前66项公开API逐项闭合，续验主线/封包前保持待交付；原生默认不受影响。
+
 - Q02 PR23公共检查的旧夹具/SDK准备已修复，[18项针对性CPU通过](evidence/serve-public-host-repair-20261112/README.md)。
   GitHub文档沙箱失败继续定位，尚未合并或宣称CI通过；0GPU、默认rev92保持。
 
@@ -176,9 +179,9 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 | A08 | 持久Chat/Responses、Conversations、background/cancel等已交付 |
 | A09 | Files/Uploads/Batch已有实际交付；剩余8类endpoint后端及对应SDK/发行仍须与A10完成 |
 | A10 | 原生embedding检索及moderation等已有交付；audio/realtime/image generation/edit/video等后端、媒体缓存及组合仍待实现 |
-| A11 | 原生资料检索/Responses闭环已完成实际业务短验，发行待完成；MCP及其余内建工具仍须实现 |
+| A11 | 原生资料检索/Responses闭环已完成实际业务短验并发行；MCP及其余内建工具仍须实现 |
 | A12 | 官方Python/JS及现有客户端的最终兼容、错误/流、迁移和发行矩阵待闭合 |
-| N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；外部前置保持可选 |
+| N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；N05可选前置新增路由已验，封包/主线交付待完成 |
 | R01—R06 | rev80保留已验隔离与恢复；新能力profile升级及同能力回退已验发行，原恢复预算保持；后续组合继续见R07—R10 |
 | R07 | NVML失能冷准入代码/CPU验证已推进；实际设备独占资格、冷业务与组合验收未完成 |
 | R08 | 原生资源域、压力观察与实际恢复组合已推进；物理内存硬边界及完整资源验收仍须完成 |

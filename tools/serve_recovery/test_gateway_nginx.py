@@ -163,6 +163,7 @@ class Stack:
                 else:
                     raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
                 row = dict(method=method, path=self.path, body=raw.decode(),
+                    upstream_port=self.server.server_port,
                     token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
                     authorization=self.headers.get('Authorization'))
@@ -384,13 +385,36 @@ class Stack:
 
 
 class NginxTests(unittest.TestCase):
+    def test_static_response_operations_are_not_response_ids(self):
+        self.ready()
+        for operation in ('compact', 'input_tokens'):
+            for method in ('GET', 'DELETE'):
+                with self.subTest(operation=operation, method=method):
+                    connection = http.client.HTTPConnection('127.0.0.1',
+                        self.stack.value['policy']['listen_port'], timeout=4)
+                    try:
+                        connection.request(method, '/v1/responses/'+operation+
+                            '?fixture=reserved', headers={
+                                'Authorization': 'Bearer '+'A'*40})
+                        response = connection.getresponse()
+                        self.assertEqual(response.status, 404, response.read())
+                        self.assertEqual(self.stack.application_requests, [])
+                    finally:
+                        connection.close()
+
     def test_application_routes_preserve_methods_queries_and_identity(self):
         from tools.serve_gateway.gateway import APPLICATION_ROUTES
         self.ready()
-        for method, template, _ in APPLICATION_ROUTES:
+        for method, template, lane in APPLICATION_ROUTES:
+            if not self.stack.native_ingress and lane == 'control':
+                # The optional frontend's real 10 r/s control budget remains
+                # enabled. Route coverage must not exceed that separate gate.
+                time.sleep(0.11)
             identities = dict(response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
-                              upload_id='upload_1', file_id='file_1')
+                              upload_id='upload_1', file_id='file_1',
+                              prompt_id='pmpt_1', version='1', batch_id='batch_1',
+                              vector_store_id='vs_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)
@@ -419,6 +443,9 @@ class NginxTests(unittest.TestCase):
                                      (method, path, body))
                     self.assertEqual((row['client'], row['token']),
                                      ('alpha', 'e'*64))
+                    self.assertEqual(row['upstream_port'],
+                        self.stack.value['policy']['upstream_operations_port'
+                            if lane == 'control' else 'upstream_port'])
                     self.assertIsNone(row['authorization'])
                 finally:
                     connection.close()

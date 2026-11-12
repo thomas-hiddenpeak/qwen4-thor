@@ -27,6 +27,31 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # Application identities are bounded ASCII tokens; backend owns query parsing.
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
+    *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/prompts/{prompt_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('POST', '/v1/prompts/{prompt_id}/versions', 'data'),
+    ('GET', '/v1/prompts/{prompt_id}/versions/{version}', 'control'),
+    *((method, '/v1/batches', 'data') for method in ('GET', 'POST')),
+    ('GET', '/v1/batches/{batch_id}', 'control'),
+    ('POST', '/v1/batches/{batch_id}/cancel', 'control'),
+    *((method, '/v1/vector_stores', 'data') for method in ('GET', 'POST')),
+    *((method, '/v1/vector_stores/{vector_store_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('POST', '/v1/vector_stores/{vector_store_id}/search', 'data'),
+    *((method, '/v1/vector_stores/{vector_store_id}/files', 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/vector_stores/{vector_store_id}/files/{file_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('GET', '/v1/vector_stores/{vector_store_id}/files/{file_id}/content', 'data'),
+    ('POST', '/v1/vector_stores/{vector_store_id}/file_batches', 'data'),
+    ('GET', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}', 'control'),
+    ('GET', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files', 'data'),
+    ('POST', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel', 'control'),
     ('POST', '/v1/uploads', 'data'),
     ('POST', '/v1/uploads/{upload_id}/parts', 'data'),
     ('POST', '/v1/uploads/{upload_id}/complete', 'data'),
@@ -36,6 +61,8 @@ APPLICATION_ROUTES = [
     *((method, '/v1/files/{file_id}', 'control') for method in ('GET', 'DELETE')),
     ('GET', '/v1/files/{file_id}/content', 'data'),
     ('POST', '/v1/responses', 'data'),
+    ('POST', '/v1/responses/compact', 'data'),
+    ('POST', '/v1/responses/input_tokens', 'data'),
     *((method, '/v1/responses/{response_id}', 'control')
       for method in ('GET', 'DELETE')),
     ('POST', '/v1/responses/{response_id}/cancel', 'control'),
@@ -118,6 +145,18 @@ def validate_routes():
     for method, path, _ in APPLICATION_ROUTES:
         require(method.lower() in paths.get(path, {}),
                 'application route differs from formal API contract')
+    declared = [(method, path) for path, (method, _) in ROUTES.items()]
+    declared += [(method, path) for path, methods in DYNAMIC_ROUTES.items()
+                 for method in methods]
+    declared += [(method, path) for method, path, _ in APPLICATION_ROUTES]
+    # Configuration is operations-only. All other published /v1 operations
+    # must also be reachable through the optional external frontend.
+    public = {(method.upper(), path) for path, methods in paths.items()
+              if path.startswith('/v1/') and path != '/v1/config'
+              for method in methods if method in ('get', 'post', 'delete',
+                                                   'put', 'patch')}
+    require(len(declared) == len(set(declared)) and set(declared) == public,
+            'public API route inventory differs from optional frontend')
     return sha(API_CONTRACT)
 
 
@@ -127,6 +166,9 @@ def route_map():
             for path, (method, lane) in ROUTES.items()]
     rows.extend('    "~^'+method+':/v1/models/[^?#]+$" control;'
                 for method in DYNAMIC_ROUTES['/v1/models/{model}'])
+    # Static POST operations are reserved names, not retrievable Response IDs.
+    rows.append('    "~^(GET|DELETE):/v1/responses/(compact|input_tokens)'
+                '(?:[?][^#]*)?$" "";')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))

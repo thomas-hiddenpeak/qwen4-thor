@@ -2266,7 +2266,7 @@
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "4c2dd6205c2ad0540216a85b5cab47aea30abde211e5da194bf8b2e141ddcf42",
+    "tools/serve_gateway/gateway.py": "f462696017284cdd57e6f8579e3f80d3154b63bb3fe6dd8ad357b371dd457e00",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
@@ -2340,7 +2340,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "dc5a6222b09f05d450dd23093c6b980d3b30152086f816b4273d14482e332c10",
+    "tools/serve_recovery/profile_acceptance.py": "5409c8c3cf67ed2116ca4c90aa1e617a90d8ff987642c71cc270fe904cc9adf1",
     "tools/serve_recovery/profile_bundle.py": "b2f033b9fd3b6b1136223fda0766652879acf884e14037e911f17d49744ba294",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
@@ -2424,7 +2424,8 @@
     "tools/serve_service/service.py": "27ef45f21a601d9050e1fb1fd95371c6addc89cecdf078be823b1fd6af68bc2d",
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
-    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "tools/serve_recovery/retrieval_acceptance.py": "4cb55e544591ee31cbd131d41bd1d526a47abd4d0d8af0127dd721c88cda1b20"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
