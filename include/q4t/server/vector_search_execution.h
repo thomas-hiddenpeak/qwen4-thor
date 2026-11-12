@@ -36,6 +36,17 @@ ObjectReply ExecuteVectorSearchRequest(
     const io::Json& request, size_t dimensions,
     const VectorSearchCallbacks& callbacks, VectorSearchUsage* usage);
 
+// One query embedding set and global ranking across authorized stores. Every
+// input store is checked before model work; every original snapshot/source is
+// rechecked before results are published. This is not a cross-store write
+// transaction. Duplicate immutable file/chunk identities are returned once,
+// using attributes from the first matching membership in request order.
+ObjectReply ExecuteVectorSearchPlan(
+    ObjectStore& objects, const BinaryAccess& access,
+    const std::vector<std::string>& store_ids, const VectorSearchPlan& plan,
+    size_t dimensions, const VectorSearchCallbacks& callbacks,
+    VectorSearchUsage* usage);
+
 struct VectorRewritePlan {
   io::Json request;
   uint64_t output_tokens = 0;

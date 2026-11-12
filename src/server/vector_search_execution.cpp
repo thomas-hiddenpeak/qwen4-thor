@@ -1,6 +1,10 @@
 #include "q4t/server/vector_search_execution.h"
 
 #include <algorithm>
+#include <cmath>
+#include <set>
+
+#include "q4t/server/application_routes.h"
 
 #include "object_protocol.h"
 #include "q4t/model/embedding_config.h"
@@ -43,6 +47,46 @@ ObjectReply ExecuteVectorSearchRequest(ObjectStore& objects,
   ChatPlanError error;
   auto status = PlanVectorSearch(request, &plan, &error);
   if (!status) return PlanningError(status, error);
+  return ExecuteVectorSearchPlan(objects, access, {id}, plan, dimensions,
+                                 callbacks, usage);
+}
+
+ObjectReply ExecuteVectorSearchPlan(
+    ObjectStore& objects, const BinaryAccess& access,
+    const std::vector<std::string>& store_ids, const VectorSearchPlan& plan,
+    size_t dimensions, const VectorSearchCallbacks& callbacks,
+    VectorSearchUsage* usage) {
+  *usage = {};
+  // Validate trusted plans too: empty corpora must not bypass query/control
+  // checks merely because ranking would have no work to perform.
+  Json threshold;
+  threshold.type = Json::Type::kNumber;
+  threshold.number = plan.score_threshold;
+  VectorSearchPlan checked;
+  ChatPlanError error;
+  auto status = PlanVectorSearch(
+      Object({{"query", QueryArray(plan.queries)},
+              {"filters", plan.filters},
+              {"max_num_results", Number(plan.max_results)},
+              {"rewrite_query", Boolean(plan.rewrite_query)},
+              {"ranking_options", Object({{"ranker", String(plan.ranker)},
+                                          {"score_threshold", threshold}})}}),
+      &checked, &error);
+  if (!status) return PlanningError(status, error);
+  if (!std::isfinite(plan.embedding_weight) || plan.embedding_weight < 0 ||
+      !std::isfinite(plan.text_weight) || plan.text_weight < 0 ||
+      (plan.embedding_weight == 0 && plan.text_weight == 0))
+    return Error(400, "invalid_request", "Invalid hybrid ranking weights");
+  if (store_ids.empty())
+    return Error(400, "invalid_request", "Expected vector store IDs");
+  if (store_ids.size() > kVectorSearchStores)
+    return Error(503, "vector_search_resource_exhausted",
+                 "Vector store working set exceeds request budget");
+  std::set<std::string> ids;
+  for (const auto& id : store_ids)
+    if (!ValidApplicationId(id) || !id.starts_with("vs_") ||
+        !ids.insert(id).second)
+      return Error(400, "invalid_request", "Invalid or duplicate vector store ID");
   if (!callbacks.reserve || !callbacks.encode || !callbacks.embed ||
       (plan.rewrite_query && !callbacks.rewrite))
     return Error(503, "vector_search_backend_unavailable",
@@ -50,10 +94,43 @@ ObjectReply ExecuteVectorSearchRequest(ObjectStore& objects,
   auto active = Active(access);
   if (!active.ok()) return active;
   VectorStores stores(objects);
-  VectorSearchCorpus corpus;
-  auto reply =
-      stores.ReadSearchCorpus(access, id, plan.filters, dimensions, &corpus);
-  if (!reply.ok()) return reply;
+  std::vector<VectorSearchCorpus> corpora;
+  std::vector<VectorSearchChunk> chunks;
+  std::set<std::pair<std::string, std::string>> identities;
+  size_t encountered = 0, values = 0, bytes = 0;
+  ObjectReply reply;
+  const auto capacity = [] {
+    return Error(503, "vector_search_resource_exhausted",
+                 "Complete multi-store search corpus exceeds bounded capacity");
+  };
+  for (const auto& id : store_ids) {
+    VectorSearchCorpus corpus;
+    reply = stores.ReadSearchCorpus(access, id, plan.filters, dimensions,
+                                    &corpus);
+    if (!reply.ok()) return reply;
+    // Charge all inspected memberships, including duplicates. Reading many
+    // aliases cannot evade the aggregate work bound. Only one temporary
+    // corpus and the bounded combined candidate set are retained at a time.
+    if (corpus.chunks.size() > kVectorSearchChunks - encountered)
+      return capacity();
+    encountered += corpus.chunks.size();
+    for (auto& chunk : corpus.chunks) {
+      const auto metadata = chunk.file_id.size() + chunk.filename.size() +
+                            chunk.chunk_id.size() +
+                            OutputJson(chunk.attributes).size();
+      if (chunk.embedding.size() > kVectorSearchValues - values ||
+          metadata > kVectorSearchTextBytes - bytes)
+        return capacity();
+      values += chunk.embedding.size();
+      bytes += metadata;
+      if (chunk.text.size() > kVectorSearchTextBytes - bytes) return capacity();
+      bytes += chunk.text.size();
+      if (identities.emplace(chunk.file_id, chunk.chunk_id).second)
+        chunks.push_back(std::move(chunk));
+    }
+    std::vector<VectorSearchChunk>().swap(corpus.chunks);
+    corpora.push_back(std::move(corpus));
+  }
   auto queries = plan.queries;
   if (plan.rewrite_query) {
     queries.clear();
@@ -71,7 +148,7 @@ ObjectReply ExecuteVectorSearchRequest(ObjectStore& objects,
   uint64_t total = 0;
   // An empty, fully checked corpus has no vectors to compare. Still perform
   // requested rewriting and request admission; do not manufacture vectors.
-  if (!corpus.chunks.empty()) {
+  if (!chunks.empty()) {
     for (const auto& query : queries) {
       active = Active(access);
       if (!active.ok()) return active;
@@ -128,13 +205,13 @@ ObjectReply ExecuteVectorSearchRequest(ObjectStore& objects,
     vectors.push_back(std::move(vector));
   }
   auto rows = Array();
-  if (!corpus.chunks.empty()) {
+  if (!chunks.empty()) {
     std::vector<VectorSearchHit> hits;
     status =
-        RankVectorSearch(plan, vectors, corpus.chunks, control, &hits, &error);
+        RankVectorSearch(plan, vectors, chunks, control, &hits, &error);
     if (!status) return PlanningError(status, error);
     for (const auto& hit : hits) {
-      const auto& chunk = corpus.chunks[hit.chunk];
+      const auto& chunk = chunks[hit.chunk];
       Json score;
       score.type = Json::Type::kNumber;
       score.number = hit.score;
@@ -147,8 +224,10 @@ ObjectReply ExecuteVectorSearchRequest(ObjectStore& objects,
                                       {"text", String(chunk.text)}})})}}));
     }
   }
-  reply = stores.TouchSearch(access, corpus);
-  if (!reply.ok()) return reply;
+  for (const auto& corpus : corpora) {
+    reply = stores.TouchSearch(access, corpus);
+    if (!reply.ok()) return reply;
+  }
   reply.value = Object({{"object", String("vector_store.search_results.page")},
                         {"search_query", QueryArray(queries)},
                         {"data", std::move(rows)},

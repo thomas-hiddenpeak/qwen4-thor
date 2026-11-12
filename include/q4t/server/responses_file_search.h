@@ -4,7 +4,7 @@
 #include "q4t/server/vector_search.h"
 
 namespace q4t::server {
-inline constexpr size_t kResponsesSearchStores = 16;
+inline constexpr size_t kResponsesSearchStores = kVectorSearchStores;
 struct ResponsesFileSearchTool {
   std::vector<std::string> store_ids;
   VectorSearchPlan search;

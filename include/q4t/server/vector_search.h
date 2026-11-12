@@ -10,6 +10,7 @@
 
 namespace q4t::server {
 inline constexpr size_t kVectorSearchQueries = 16;
+inline constexpr size_t kVectorSearchStores = 16;
 inline constexpr size_t kVectorSearchChunks = 4096;
 inline constexpr size_t kVectorSearchDimensions = 4096;
 inline constexpr size_t kVectorSearchValues = 8ULL << 20;

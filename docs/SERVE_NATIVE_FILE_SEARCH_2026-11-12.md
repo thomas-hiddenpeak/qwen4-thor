@@ -314,3 +314,22 @@ embedding_weight/text_weight；不能只复用独立search字段而漏掉它。
 [13项CPU通过](evidence/serve-file-search-contract-cpu-20261112/README.md)，
 首次12/13及精确数错误分类修复保留；仅重验该项，0GPU/默认保持。
 继续多库和Responses执行，不在合同阶段结束A11或总计划。
+
+
+## 多库统一查询与执行预算组
+
+2026-11-12。成组实现共享ExecuteVectorSearchPlan：所有库的scope、
+实际源/后端索引在模型执行前核验；查询仅编码/计算一次，在全部
+候选上加权排序后统一max_results。每库原search_revision及源在
+发布前重核，不声称存在跨库写事务；失败无部分结果或模型重放。
+重复不可变file/chunk仅返回一次，取请求顺序第一个匹配成员的属性。
+所有实际读取成员包括重复项均计4096块/8M浮点/16MiB文本预算，
+不会用去重绕过总工作边界；只保留一个临时库和一个有界候选集合。
+
+冻结11新+5直接CPU，真实Files/worker/索引和明确CPU数学夹具；
+覆盖后库拒绝/变更/源删除、归属、取消/期限、空库、混合权重、去重
+及全局工作预算。必要host/引擎构建/来源检查，0GPU/默认保持。
+随后立即推进Responses执行与标准事件/历史，不在本组成组后停止。
+
+[16项CPU首过](evidence/serve-vector-multi-store-cpu-20261112/README.md)，
+1.685秒，实际引擎零警告；0GPU/默认保持。继续Responses执行。

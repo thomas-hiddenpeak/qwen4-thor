@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11多库统一查询/加权排序与去重已通过
+  [16项CPU首验](evidence/serve-vector-multi-store-cpu-20261112/README.md)，
+  所有归属/索引先核验及全局预算、最终源/版本保护保持；继续
+  Responses执行/事件/历史，0GPU、默认rev80保持。
+
 - A11 Responses file_search定义/调用与混合权重已通过
   [13项针对性CPU](evidence/serve-file-search-contract-cpu-20261112/README.md)；
   首次12/13，修复精确极小数错误分类，仅重验该项。继续多库检索、

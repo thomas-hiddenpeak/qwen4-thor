@@ -82,8 +82,13 @@ struct Fixture {
     const auto source = upload.Finish();
     Require(source);
     const auto file = source.value.GetString("id");
+    return Index(file, complete, dimensions);
+  }
+  std::string Index(const std::string& file, bool complete = true,
+                    size_t dimensions = 32, Json extra = Object()) {
     VectorStores stores(*objects);
-    Require(stores.Attach(Access(), id, Object({{"file_id", String(file)}})));
+    Set(&extra, "file_id", String(file));
+    Require(stores.Attach(Access(), id, extra));
     if (!complete) return file;
     VectorIngestionClaim claim;
     Require(stores.Claim(Access(), id, file, "cpu-query-fixture", 60, &claim));
@@ -731,5 +736,252 @@ Q4T_TEST(vector_search_api_rewrite_uses_actual_primary_chat_planning) {
             !rewrite.request.Has("tools"));
   config.structured = false;
   Q4T_CHECK(!PlanChatRequest(rewrite.request, config, &plan, &error));
+  return true;
+}
+
+namespace {
+std::string NewSearchStore(Fixture& fixture, BinaryAccess access = Access()) {
+  const auto reply = VectorStores(*fixture.objects).Create(access, Object());
+  Require(reply);
+  return reply.value.GetString("id");
+}
+VectorSearchPlan MultiPlan() {
+  VectorSearchPlan plan;
+  ChatPlanError error;
+  if (!PlanVectorSearch(Query(), &plan, &error))
+    throw std::runtime_error("Multi-store plan fixture");
+  return plan;
+}
+ObjectReply Multi(Fixture& fixture, const std::vector<std::string>& ids,
+                   Calls& calls, VectorSearchUsage* usage,
+                   VectorSearchPlan plan = MultiPlan(),
+                   BinaryAccess access = Access()) {
+  return ExecuteVectorSearchPlan(*fixture.objects, access, ids, plan, 32,
+                                 calls.callbacks, usage);
+}
+}  // namespace
+
+Q4T_TEST(vector_multi_store_global_weighted_rank_and_single_query_admission) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add("PLE tables live on SSD.");
+  fixture.id = NewSearchStore(fixture);
+  const auto second_file = fixture.Add("quantum physics experiments");
+  auto plan = MultiPlan();
+  plan.queries = {"quantum", "physics"};
+  plan.ranker = "auto";
+  plan.embedding_weight = 0;
+  plan.text_weight = 1;
+  plan.max_results = 1;
+  Calls calls;
+  VectorSearchUsage usage;
+  const auto result = Multi(fixture, {first, fixture.id}, calls, &usage, plan);
+  Q4T_CHECK(Ok(result) && calls.reserves == 1 && calls.embeds == 2 &&
+            calls.encodes == 2 && usage.committed_input == calls.reserved);
+  const auto* data = result.value.GetArray("data");
+  Q4T_CHECK(data && data->array.size() == 1 &&
+            data->array.front().GetString("file_id") == second_file &&
+            data->array.front().GetNumber("score") == 1);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_duplicate_chunks_use_first_matching_membership) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  const auto file = fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  fixture.Index(file, true, 32,
+                Object({{"attributes", Object({{"kind", String("run")}})}}));
+  Calls calls;
+  VectorSearchUsage usage;
+  auto result = Multi(fixture, {first, fixture.id}, calls, &usage);
+  Q4T_CHECK(Ok(result));
+  const auto* rows = result.value.GetArray("data");
+  Q4T_CHECK(rows && rows->array.size() == 1 &&
+            rows->array[0].Find("attributes")->object.empty());
+  auto plan = MultiPlan();
+  plan.filters = Object({{"key", String("kind")}, {"value", String("run")}});
+  result = Multi(fixture, {first, fixture.id}, calls, &usage, plan);
+  Q4T_CHECK(Ok(result));
+  rows = result.value.GetArray("data");
+  Q4T_CHECK(rows && rows->array.size() == 1 &&
+            rows->array[0].Find("attributes")->GetString("kind") == "run");
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_missing_or_other_scope_precedes_any_model) {
+  Fixture fixture;
+  fixture.Add();
+  const auto other = NewSearchStore(fixture, Access("client:other"));
+  Calls calls;
+  VectorSearchUsage usage;
+  for (const auto& id : {std::string("vs_absent"), other}) {
+    auto plan = MultiPlan();
+    plan.rewrite_query = true;
+    const auto reply = Multi(fixture, {fixture.id, id}, calls, &usage, plan);
+    Q4T_CHECK(reply.http_status == 404 && !reply.value.Has("data"));
+  }
+  Q4T_CHECK(!calls.encodes && !calls.embeds && !calls.rewrites &&
+            !calls.reserves && !usage.admitted_input);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_second_backend_mismatch_has_no_model_side_effect) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  fixture.Add("Other backend", true, 64);
+  Calls calls;
+  VectorSearchUsage usage;
+  Q4T_CHECK(Multi(fixture, {first, fixture.id}, calls, &usage).code ==
+                "vector_search_backend_mismatch" &&
+            !calls.embeds && !calls.encodes && !calls.reserves);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_invalid_ids_and_plans_do_not_bypass_empty_corpus) {
+  Fixture fixture;
+  Calls calls;
+  VectorSearchUsage usage;
+  for (const auto& ids :
+       {std::vector<std::string>{}, {fixture.id, fixture.id}, {"vs_../x"},
+        {"file_wrong"}}) {
+    const auto reply = Multi(fixture, ids, calls, &usage);
+    Q4T_CHECK(reply.http_status == 400 && !reply.value.Has("data"));
+  }
+  std::vector<std::string> ids(kVectorSearchStores + 1, fixture.id);
+  Q4T_CHECK(Multi(fixture, ids, calls, &usage).code ==
+            "vector_search_resource_exhausted");
+  for (int variant = 0; variant < 4; ++variant) {
+    auto plan = MultiPlan();
+    if (variant == 0) plan.queries.clear();
+    if (variant == 1) plan.embedding_weight = -1;
+    if (variant == 2) plan.max_results = 0;
+    if (variant == 3) plan.score_threshold = 2;
+    Q4T_CHECK(!Multi(fixture, {fixture.id}, calls, &usage, plan).ok());
+  }
+  Q4T_CHECK(!calls.encodes && !calls.embeds && !calls.reserves);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_later_mutation_hides_all_results_without_replay) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  const auto second_file = fixture.Add("Release notes");
+  Calls calls;
+  calls.callbacks.embed = [&](const auto& tokens, auto* step) {
+    ++calls.embeds;
+    Require(VectorStores(*fixture.objects)
+                .UpdateFile(Access(), fixture.id, second_file,
+                            Object({{"attributes",
+                                     Object({{"revision", Number(2)}})}})));
+    return Embed(tokens, step);
+  };
+  VectorSearchUsage usage;
+  const auto reply = Multi(fixture, {first, fixture.id}, calls, &usage);
+  Q4T_CHECK(reply.code == "vector_search_snapshot_changed" &&
+            !reply.value.Has("data") && calls.embeds == 1 &&
+            calls.reserves == 1 && usage.committed_input > 0);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_later_source_deleted_hides_retained_index) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  const auto second_file = fixture.Add("Release notes");
+  Calls calls;
+  calls.callbacks.embed = [&](const auto& tokens, auto* step) {
+    ++calls.embeds;
+    Require(Files(*fixture.objects).Erase(Access(), second_file));
+    return Embed(tokens, step);
+  };
+  VectorSearchUsage usage;
+  const auto reply = Multi(fixture, {first, fixture.id}, calls, &usage);
+  Q4T_CHECK(reply.http_status == 404 && !reply.value.Has("data") &&
+            calls.embeds == 1 && usage.committed_input > 0);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_cancel_or_deadline_never_returns_partial_hits) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  fixture.Add("Run results");
+  Calls calls;
+  bool cancelled = false;
+  auto access = Access();
+  access.cancelled = [&] { return cancelled; };
+  calls.callbacks.embed = [&](const auto& tokens, auto* step) {
+    ++calls.embeds;
+    cancelled = true;
+    return Embed(tokens, step);
+  };
+  VectorSearchUsage usage;
+  auto reply = Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(),
+                     access);
+  Q4T_CHECK(reply.http_status == 499 && !reply.value.Has("data") &&
+            calls.embeds == 1 && usage.committed_input > 0);
+  access.cancelled = {};
+  access.deadline = Clock::now() - 1ms;
+  reply = Multi(fixture, {first, fixture.id}, calls, &usage, MultiPlan(), access);
+  Q4T_CHECK(reply.http_status == 408 && calls.embeds == 1 &&
+            !usage.committed_input);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_metadata_writes_preserve_all_search_snapshots) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  fixture.Add();
+  fixture.id = NewSearchStore(fixture);
+  fixture.Add("Run results");
+  Calls calls;
+  calls.callbacks.embed = [&](const auto& tokens, auto* step) {
+    ++calls.embeds;
+    for (const auto& id : {first, fixture.id})
+      Require(VectorStores(*fixture.objects)
+                  .Update(Access(), id, Object({{"name", String("renamed")}})));
+    return Embed(tokens, step);
+  };
+  VectorSearchUsage usage;
+  const auto reply = Multi(fixture, {first, fixture.id}, calls, &usage);
+  Q4T_CHECK(Ok(reply) && reply.value.GetArray("data")->array.size() == 2 &&
+            calls.embeds == 1 && calls.reserves == 1);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_empty_corpora_rewrite_once_and_reserve_zero) {
+  Fixture fixture;
+  const auto second = NewSearchStore(fixture);
+  Calls calls;
+  auto plan = MultiPlan();
+  plan.rewrite_query = true;
+  VectorSearchUsage usage;
+  const auto reply = Multi(fixture, {fixture.id, second}, calls, &usage, plan);
+  Q4T_CHECK(Ok(reply) && reply.value.GetArray("data")->array.empty() &&
+            reply.value.GetArray("search_query")->array[0].str == "PLE SSD" &&
+            calls.rewrites == 1 && calls.reserves == 1 && !calls.reserved &&
+            !calls.embeds && !calls.encodes && !usage.committed_input);
+  return true;
+}
+
+Q4T_TEST(vector_multi_store_aggregate_work_bound_counts_duplicate_memberships) {
+  Fixture fixture;
+  const auto first = fixture.id;
+  const auto file = fixture.Add(std::string(830000, 'x'));
+  fixture.id = NewSearchStore(fixture);
+  fixture.Index(file);
+  Calls calls;
+  VectorSearchUsage usage;
+  const auto reply = Multi(fixture, {first, fixture.id}, calls, &usage);
+  Q4T_CHECK(reply.code == "vector_search_resource_exhausted" &&
+            !reply.value.Has("data") && !calls.encodes && !calls.embeds &&
+            !calls.reserves && !usage.committed_input);
   return true;
 }

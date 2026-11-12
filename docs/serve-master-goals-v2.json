@@ -1283,7 +1283,8 @@
         "evidence/serve-vector-api-cpu-20261112/README.md",
         "evidence/serve-vector-query-cpu-20261112/README.md",
         "evidence/serve-vector-search-api-cpu-20261112/README.md",
-        "evidence/serve-file-search-contract-cpu-20261112/README.md"
+        "evidence/serve-file-search-contract-cpu-20261112/README.md",
+        "evidence/serve-vector-multi-store-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1398,6 +1399,13 @@
           "state": "targeted_cpu_accepted_execution_pending",
           "cpu_cases": 13,
           "evidence": "evidence/serve-file-search-contract-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": false
+        },
+        "multi_store_execution": {
+          "state": "targeted_cpu_accepted_responses_integration_pending",
+          "cpu_cases": 16,
+          "evidence": "evidence/serve-vector-multi-store-cpu-20261112/README.md",
           "gpu_starts": 0,
           "default_changed": false
         }
