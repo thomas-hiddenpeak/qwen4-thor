@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/serve_protocol/build_contract.py",
+    "--check"
+  ],
+  "exit_code": 0,
+  "seconds": 0.11409276630729437
+}

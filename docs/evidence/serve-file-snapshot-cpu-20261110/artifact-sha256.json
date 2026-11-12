@@ -1,0 +1,23 @@
+{
+  "README.md": "b50c125916b156212514751931ece7638154db1d876e8f89aa8a4113788994e0",
+  "file-snapshot-budget-01.json": "63f9e814b52009a56eb2e8ef66e90d3fe0daf562893193108d5440211e94706e",
+  "file-snapshot-cpu-01.json": "26f83bfed08997b4972c3888b358702a6e6ccd795ce3527a120d846d75d0efc7",
+  "file-snapshot-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "file-snapshot-cpu-01.stdout": "e33ccccbbbfc089aa82b7112c2d38dab878172ea5affbf8e285d7e0a7c512370",
+  "file-snapshot-engine-build-01.json": "90dc5edb7a7d0316eb49dc125dcad098424bf5369d5ce606e8b30c7060896585",
+  "file-snapshot-engine-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "file-snapshot-engine-build-01.stdout": "f94c459cff999ea5ce47e54be4324219dfa2064379e99a8764700e27818898c0",
+  "file-snapshot-host-build-01.json": "821300fc3370f694f7d199ef9467880323349e4edb52d4f97888fd20a481ae23",
+  "file-snapshot-host-build-01.stderr": "7e5afaaa74ae9658f881a86cc2edf2665c180018931abd009d6c10967e1b3ee1",
+  "file-snapshot-host-build-01.stdout": "d4443976d69ebc1c5e33f55b4121b3844705c953174ba41ccf06ee37c33bd38a",
+  "file-snapshot-host-build-02.json": "4766c11e4e4c863e781def3572acceee60af02b9da513529c2570eea18753962",
+  "file-snapshot-host-build-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "file-snapshot-host-build-02.stdout": "630f44eff60dc006befcf4839ec419be46d833b2f7d3a6b99b6e94b63964c9a3",
+  "file-snapshot-identities-01.json": "f86294b4314e65e9adede31ba00ed6318597a727d6c7ad781ec242750ec5ec9f",
+  "file-snapshot-inventory-01.json": "9ab898404be0d050c6e5ec4c892f63ff8803526cff16234d607ffe4393ad338e",
+  "file-snapshot-inventory-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "file-snapshot-inventory-01.stdout": "a17102dd39cded36318b8af5d9ce5605bac3f8c2a9da0ba3b534130ac237147c",
+  "file-snapshot-inventory-review.json": "beb382863801f68e4de9599be575d478f7183d702af47d36eea2320ed615cc92",
+  "file-snapshot-required-01.txt": "ce4d444ae1af2570a4769da7939be8b38b8ebb6e1cb76c816d1fbe51db8eef32",
+  "file-snapshot-spreadsheet-contract.json": "0b16a24ee7a5914387b4e048a23b7e4e7970e7688c226d2f37f55c83e2befa24"
+}

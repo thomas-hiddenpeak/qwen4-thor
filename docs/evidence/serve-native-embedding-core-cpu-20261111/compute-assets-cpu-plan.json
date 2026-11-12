@@ -1,0 +1,20 @@
+{
+  "layout": [
+    "embedding_weight_layout_rejects_payload_and_extent_corruption",
+    "embedding_workspace_is_bounded_for_short_and_maximum_inputs"
+  ],
+  "assets": [
+    "embedding_assets_invalid_path_cancel_and_deadline_start_no_child",
+    "embedding_assets_actual_worker_rejects_missing_fifo_and_symlink",
+    "embedding_assets_reject_hash_before_allocating_weight_staging",
+    "embedding_assets_timeout_retains_only_its_domain_until_reaped",
+    "grammar_process_memory_limit_and_descriptor_isolation",
+    "grammar_process_object_domain_keeps_grammar_capacity",
+    "grammar_process_output_empty_success_is_distinct_from_bad_exit",
+    "grammar_process_output_eof_does_not_hide_stalled_exit"
+  ],
+  "total": 10,
+  "GPU": false,
+  "scope": "CPU layout and isolated asset loader only; native forward not yet numerically accepted or integrated",
+  "timeout_seconds": 1200
+}

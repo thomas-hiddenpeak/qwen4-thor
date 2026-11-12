@@ -1,0 +1,28 @@
+{
+  "exit_code": 0,
+  "result": {
+    "durable": {
+      "revision": 3,
+      "generation": 2,
+      "phase": "active",
+      "sha256": "8445f5e1105a3841a4f5abea9f1988acbae7f5d6d154f0c821da6dfdc1a28093",
+      "sealed": false,
+      "model_actions": false,
+      "snapshot_kind": "restore_source"
+    },
+    "durable_error": "",
+    "live": {
+      "recovered": true,
+      "frozen": false,
+      "receipt_sha256": "8940c2b6c5c0875dc9ac7bc07b40a62b5866830bc7de5f8ec6cad9a571012037",
+      "sealed_snapshot": false,
+      "model_generation": 2,
+      "model_pid": 1046061,
+      "model_start_ticks": 239815217,
+      "quota_wait_ms": 0
+    },
+    "live_error": "",
+    "continuity": "exact",
+    "model_actions": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "native final-value format checker, nine pinned official-format corpora and pattern composition; no string generation or HTTP claim",
+  "tests": [
+    "schema_string_format_date_corpus",
+    "schema_string_format_datetime_corpus",
+    "schema_string_format_time_corpus",
+    "schema_string_format_duration_corpus",
+    "schema_string_format_email_corpus",
+    "schema_string_format_hostname_corpus",
+    "schema_string_format_ipv4_corpus",
+    "schema_string_format_ipv6_corpus",
+    "schema_string_format_uuid_corpus",
+    "schema_string_format_nullable_graph_and_local_checks",
+    "schema_string_pattern_and_format_both_apply"
+  ],
+  "binary_sha256": "e60221f4fef62cde50d2373a6c5f375b1a9025267e3c3145761db8708e3d2bbe",
+  "corpus_identity_sha256": "d4f7e24116199a5fcd4fcadb7875d3dd81ac606ca348c0372bf2257443df5f66",
+  "timeout_seconds": 90
+}

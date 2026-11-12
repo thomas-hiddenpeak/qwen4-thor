@@ -1,0 +1,76 @@
+{
+  "page_requests": [
+    {
+      "method": "GET",
+      "path": "/",
+      "host": "127.0.0.1:40483"
+    },
+    {
+      "method": "GET",
+      "path": "/denied-origin",
+      "host": "localhost:40483"
+    },
+    {
+      "method": "POST",
+      "path": "/result"
+    }
+  ],
+  "result": {
+    "status": 200,
+    "json": {
+      "generation": 1,
+      "cpu_fixture": true
+    },
+    "request_id": null,
+    "error_status": 401,
+    "error_request_id": "req-86f99cc15c4b7c120e165315721dc871",
+    "error": {
+      "error": {
+        "message": "Service entrypoint rejected request",
+        "type": "gateway_error",
+        "param": null,
+        "code": "gateway_unauthorized"
+      }
+    },
+    "stream_status": 200,
+    "sse": "data: {\"generation\":1}\n\n",
+    "forbidden_header": "TypeError",
+    "denied_origin": "TypeError"
+  },
+  "events": [
+    {
+      "browser_version": "148.0.7778.0"
+    },
+    {
+      "console": "Failed to load resource: the server responded with a status of 401 (Response)"
+    },
+    {
+      "url": "https://127.0.0.1:58433/v1/chat/completions",
+      "failed": "net::ERR_ABORTED"
+    },
+    {
+      "console": "Access to fetch at 'https://127.0.0.1:58433/v1/models' from origin 'http://127.0.0.1:40483' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status."
+    },
+    {
+      "url": "https://127.0.0.1:58433/v1/models",
+      "failed": "net::ERR_FAILED"
+    },
+    {
+      "console": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "console": "Access to fetch at 'https://127.0.0.1:58433/v1/models' from origin 'http://localhost:40483' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "url": "https://127.0.0.1:58433/v1/models",
+      "failed": "net::ERR_FAILED"
+    },
+    {
+      "console": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "url": "http://127.0.0.1:40483/result",
+      "failed": "net::ERR_ABORTED"
+    }
+  ]
+}

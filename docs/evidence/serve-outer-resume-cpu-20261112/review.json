@@ -1,0 +1,23 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 22,
+  "first_pass_tests": 21,
+  "followup_tests": 3,
+  "followup_reason": "One new unresolved-outer-attempt status case and two directly affected stop/status regressions after pre-delivery review; no full repetition.",
+  "cpu_seconds": 2.965794568415731,
+  "retained_v17_check_seconds": 0.3818800221197307,
+  "model_starts": 0,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/service.py": "ad600f49bd33074021c5c04805ffe446e3e55586486ee95ab72e85536c05f070",
+    "tools/serve_recovery/lifecycle.py": "570d972afda7a6d14db17872db982c576417aadbc24491c7a2c5f3dae69115e6",
+    "tools/serve_recovery/bundle.py": "d31dc12fa538f0dce2012c95bb0163ce017c9f53ffca5477c650407a831b5059",
+    "tools/serve_recovery/test_resume.py": "404c51f03d364da1bca0aac47915051b1cdbb2d37380d7377b7134703f08d99b",
+    "tools/serve_recovery/test_native_bundle.py": "cdaeaf815b673a7ae7c6cc8de17357a855753f418f2c3211fff832859edaa98a",
+    "tools/serve_recovery/test_profile_integration.py": "0e605ce3ee17f7f6b51e69bb65d12bc3b66646693fba1d24a4adf11a80c579ee"
+  },
+  "runtime_entry_integrated": true,
+  "automatic_outer_loop_integrated": false,
+  "released": false,
+  "r07_candidate_unchanged": true
+}

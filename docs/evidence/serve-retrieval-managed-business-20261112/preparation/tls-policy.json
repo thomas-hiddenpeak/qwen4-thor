@@ -1,0 +1,27 @@
+{
+  "allowed_client_cidrs": [
+    "127.0.0.1/32"
+  ],
+  "body_bytes": 16777216,
+  "burst": 10,
+  "clients": [
+    {
+      "api_key": "453f1aa1a90fbfabb65b2891384372e47366ca8fdde56074",
+      "id": "alpha"
+    },
+    {
+      "api_key": "f140a24e62fc7d75cc07e28b9d67e7fe5cf697f5edb8f8fd",
+      "id": "beta"
+    }
+  ],
+  "global_inflight": 8,
+  "listen_host": "127.0.0.1",
+  "listen_port": 19108,
+  "per_client_inflight": 2,
+  "per_client_rps": 5,
+  "server_name": "127.0.0.1",
+  "upstream_idle_seconds": 1300,
+  "upstream_operations_port": 19110,
+  "upstream_port": 19109,
+  "version": 2
+}

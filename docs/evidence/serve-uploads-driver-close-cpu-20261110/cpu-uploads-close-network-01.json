@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/close-network-01",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_cancelled_part_error_survives_body_sent_after_response",
+    "tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_early_core_limit_interrupts_paused_tls_part",
+    "tools.serve_responses.test_files_transport.FilesTransportTests.test_legacy_gateway_cap_and_json_cap_remain_independent"
+  ],
+  "exit_code": 0,
+  "seconds": 2.427139526233077
+}

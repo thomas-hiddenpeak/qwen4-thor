@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/test.h"
 
 namespace {
@@ -39,12 +41,12 @@ std::string Call(const std::string& body = {},
 bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
                const std::string& reasoning_field = "reasoning_content",
                bool hidden = false) {
-  std::string content, reasoning;
-  const auto other = reasoning_field == "reasoning" ? "reasoning_content"
-                                                   : "reasoning";
+  std::string content, reasoning, refusal;
+  const auto other =
+      reasoning_field == "reasoning" ? "reasoning_content" : "reasoning";
   Q4T_CHECK(!message.Has(other));
   Q4T_CHECK(!hidden || !message.Has(reasoning_field));
-  std::vector<Json> calls;
+  std::vector<q4t::server::ResponseToolCall> calls;
   for (const auto& delta : deltas) {
     const auto frame = q4t::server::detail::SseDeltaChunk(
         "request", "model", delta.ToJson(), "", 0);
@@ -56,34 +58,45 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
     Q4T_CHECK(choice.Find("finish_reason")->IsNull());
     const auto* field = choice.Find("delta");
     content += field->GetString("content");
+    refusal += field->GetString("refusal");
     Q4T_CHECK(!field->Has(other));
     Q4T_CHECK(!hidden || !field->Has(reasoning_field));
     reasoning += field->GetString(reasoning_field);
     if (const auto* tools = field->GetArray("tool_calls")) {
       for (const auto& call : tools->array) {
-        Q4T_CHECK(call.GetInt("index", -1) ==
-                  static_cast<int64_t>(calls.size()));
-        Q4T_CHECK(call.GetString("type") == "function");
-        Q4T_CHECK(call.GetString("id") ==
-                  "call_request_" + std::to_string(calls.size()));
-        calls.push_back(call);
+        const auto index = call.GetInt("index", -1);
+        Q4T_CHECK(index >= 0 && index <= static_cast<int64_t>(calls.size()));
+        const auto* fn = call.Find("function");
+        Q4T_CHECK(fn);
+        if (index == static_cast<int64_t>(calls.size())) {
+          Q4T_CHECK(call.GetString("type") == "function");
+          Q4T_CHECK(call.GetString("id") ==
+                    "call_request_" + std::to_string(calls.size()));
+          calls.push_back({static_cast<size_t>(index),
+                           call.GetString("id"),
+                           fn->GetString("name"),
+                           {}});
+        } else {
+          Q4T_CHECK(!call.Has("id") && !call.Has("type") && !fn->Has("name"));
+        }
+        calls[index].arguments += fn->GetString("arguments");
       }
     }
   }
   Q4T_CHECK(content == message.GetString("content"));
+  Q4T_CHECK(refusal == message.GetString("refusal"));
   Q4T_CHECK(reasoning == message.GetString(reasoning_field));
   const auto* expected = message.GetArray("tool_calls");
   Q4T_CHECK(calls.size() == (expected ? expected->array.size() : 0));
   for (size_t i = 0; i < calls.size(); ++i) {
     const auto& want = expected->array[i];
-    Q4T_CHECK(calls[i].GetString("id") == want.GetString("id"));
-    const auto* actual_fn = calls[i].Find("function");
+    Q4T_CHECK(calls[i].id == want.GetString("id"));
     const auto* wanted_fn = want.Find("function");
-    Q4T_CHECK(actual_fn->GetString("name") == wanted_fn->GetString("name"));
-    Q4T_CHECK(actual_fn->GetString("arguments") ==
-              wanted_fn->GetString("arguments"));
+    Q4T_CHECK(calls[i].name == wanted_fn->GetString("name"));
+    Q4T_CHECK(calls[i].arguments == wanted_fn->GetString("arguments"));
     Json arguments;
-    Q4T_CHECK(q4t::io::ParseJson(actual_fn->GetString("arguments"), &arguments)
+    Q4T_CHECK(q4t::io::ParseJson(calls[i].arguments, &arguments, true,
+                                 q4t::server::kSchemaJsonLimits)
                   .ok() &&
               arguments.IsObject());
   }
@@ -135,6 +148,52 @@ bool EverySplit(const Json& request, const std::string& text,
 }
 }  // namespace
 
+Q4T_TEST(chat_response_json_arguments_stream_exact_object_without_wrapper) {
+  const auto request = Request();
+  const std::string arguments =
+      R"({"text":"null\u003c/tool_call>中😀","optional":null,"count":9007199254740993,"ratio":1e400,"a\"\n":[true,{}]})";
+  const auto call =
+      Call("<parameter=arguments>\n  " + arguments + " \n</parameter>\n");
+  Json message;
+  Q4T_CHECK(EverySplit(request, call + Call("", "noop") + call, kClosed, "", "",
+                       3, &message));
+  const auto& calls = message.GetArray("tool_calls")->array;
+  Q4T_CHECK(calls[0].Find("function")->GetString("arguments") == arguments);
+  Q4T_CHECK(calls[1].Find("function")->GetString("arguments") == "{}");
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+  Q4T_CHECK(
+      parser.Append("<tool_call>\n<function=lookup>\n<parameter=arguments>\n"
+                    "{\"text\":\"partial",
+                    &deltas));
+  std::string partial;
+  for (const auto& delta : deltas)
+    if (delta.kind == ResponseDelta::Kind::kTool)
+      partial += delta.call.arguments;
+  Q4T_CHECK(partial == "{\"text\":\"partial");
+  Q4T_CHECK(!parser.Finish(true, &deltas));
+  return true;
+}
+
+Q4T_TEST(chat_response_json_arguments_rejects_bad_payload_and_framing) {
+  const auto request = Request();
+  for (const std::string body :
+       {"<parameter=arguments>[]</parameter>\n",
+        "<parameter=arguments>{\"a\":1,\"a\":2}</parameter>\n",
+        "<parameter=arguments>{\"a\":01}</parameter>\n",
+        "<parameter=arguments>{}</parameter><parameter=x>1</parameter>\n",
+        "<parameter=arguments>{\"a\":\"x\"</parameter>\n",
+        "<parameter=arguments>{}\n"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+    const auto appended = parser.Append(Call(body), &deltas);
+    Q4T_CHECK(!appended || !parser.Finish(false, &deltas));
+  }
+  return true;
+}
+
 Q4T_TEST(chat_response_reasoning_and_prefilled_prefix) {
   const auto request = Request();
   const std::string reason = "先分析✅ <tool_call>只是思考中的示例</tool_call>";
@@ -172,16 +231,18 @@ Q4T_TEST(chat_response_tools_typed_and_multiple) {
   return true;
 }
 
-Q4T_TEST(chat_response_tool_publication_is_atomic) {
+Q4T_TEST(chat_response_tool_fragments_wait_for_validated_terminal) {
   const auto request = Request();
   ChatResponseParser parser;
   std::vector<ResponseDelta> deltas;
   Q4T_CHECK(parser.Init(request, kClosed, "request", true).ok());
   Q4T_CHECK(
       parser.Append("<tool_call><function=noop></function>", &deltas).ok());
-  Q4T_CHECK(deltas.empty() && !parser.HasToolCalls());
+  Q4T_CHECK(deltas.size() == 1 && !parser.HasToolCalls());
+  Q4T_CHECK(deltas[0].tool_start && deltas[0].call.arguments == "{");
   Q4T_CHECK(parser.Append("</tool_call>", &deltas).ok());
-  Q4T_CHECK(deltas.size() == 1 && parser.HasToolCalls());
+  Q4T_CHECK(deltas.size() == 2 && parser.HasToolCalls());
+  Q4T_CHECK(!deltas[1].tool_start && deltas[1].call.arguments == "}");
   Q4T_CHECK(parser.Finish(false, &deltas).ok());
   Json message;
   Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message).ok());
@@ -244,7 +305,7 @@ Q4T_TEST(chat_response_truncation_and_length) {
       Q4T_CHECK(parser.Init(request, kClosed, "request", true).ok());
       Q4T_CHECK(parser.Append(text, &deltas).ok());
       Q4T_CHECK(!parser.Finish(length, &deltas).ok());
-      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(!parser.HasToolCalls());
     }
     ChatResponseParser parser;
     std::vector<ResponseDelta> deltas;
@@ -290,7 +351,7 @@ Q4T_TEST(chat_response_bounds) {
     std::vector<ResponseDelta> output;
     Q4T_CHECK(boundary.Init(request, kClosed, "request", false).ok());
     Q4T_CHECK(boundary.Append("<tool_call>" + block + partial, &output).ok());
-    Q4T_CHECK(output.empty());
+    Q4T_CHECK(!output.empty() && !boundary.HasToolCalls());
     Q4T_CHECK(
         boundary
             .Append(
@@ -298,7 +359,7 @@ Q4T_TEST(chat_response_bounds) {
                 &output)
             .ok());
     Q4T_CHECK(boundary.Finish(false, &output).ok());
-    Q4T_CHECK(output.size() == 1);
+    Q4T_CHECK(output.size() > 1 && boundary.HasToolCalls());
   }
   ChatResponseParser parser;
   std::vector<ResponseDelta> deltas;
@@ -314,7 +375,15 @@ Q4T_TEST(chat_response_bounds) {
   for (size_t i = 0; i < ChatResponseParser::kMaxCalls; ++i) {
     deltas.clear();
     Q4T_CHECK(many.Append(Call(), &deltas).ok());
-    Q4T_CHECK(deltas.size() == 1 && deltas[0].call.index == i);
+    Q4T_CHECK(!deltas.empty() && deltas[0].tool_start);
+    std::string arguments;
+    for (size_t part = 0; part < deltas.size(); ++part) {
+      Q4T_CHECK(deltas[part].kind == ResponseDelta::Kind::kTool &&
+                deltas[part].call.index == i &&
+                deltas[part].tool_start == (part == 0));
+      arguments += deltas[part].call.arguments;
+    }
+    Q4T_CHECK(arguments == "{}");
   }
   deltas.clear();
   Q4T_CHECK(!many.Append(Call(), &deltas).ok());
@@ -359,9 +428,10 @@ Q4T_TEST(chat_response_reasoning_selection_and_hidden_splits) {
       Q4T_CHECK(EverySplit(request, "<think>" + reason + "</think>" + answer,
                            kClosed, answer, expected, 0));
       // A second reasoning region must follow the same hiding/field contract.
-      Q4T_CHECK(EverySplit(request, reason + "</think>" + answer +
-                           "<think>" + reason + "</think>", kThinking,
-                           answer, expected + expected, 0));
+      Q4T_CHECK(EverySplit(
+          request,
+          reason + "</think>" + answer + "<think>" + reason + "</think>",
+          kThinking, answer, expected + expected, 0));
     }
   }
   return true;
@@ -369,8 +439,8 @@ Q4T_TEST(chat_response_reasoning_selection_and_hidden_splits) {
 
 Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
   Json request;
-  Q4T_CHECK(q4t::io::ParseJson(
-      R"({"messages":[],"include_reasoning":false})", &request));
+  Q4T_CHECK(q4t::io::ParseJson(R"({"messages":[],"include_reasoning":false})",
+                               &request));
   for (bool collect : {false, true}) {
     for (bool limited : {false, true}) {
       ChatResponseParser parser;
@@ -384,14 +454,15 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
     }
   }
   Q4T_CHECK(q4t::io::ParseJson(R"({"messages":[],"include_reasoning":false,
-      "response_format":{"type":"json_object"}})", &request));
-  for (const auto* payload : {R"({"text":"<think>literal</think>✅"})",
-                              R"({"text":)", "[]"}) {
+      "response_format":{"type":"json_object"}})",
+                               &request));
+  for (const auto* payload :
+       {R"({"text":"<think>literal</think>✅"})", R"({"text":)", "[]"}) {
     ChatResponseParser parser;
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kThinking, "r", true));
     Q4T_CHECK(parser.Append(std::string("private</think>") + payload, &deltas));
-    Q4T_CHECK(deltas.empty());  // Strict payload stays deferred until valid.
+    Q4T_CHECK(!deltas.empty());  // JSON deltas are provisional until Finish.
     const bool valid = std::string(payload).ends_with("}");
     Q4T_CHECK(parser.Finish(false, &deltas).ok() == valid);
     if (valid) {
@@ -400,7 +471,7 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
       Q4T_CHECK(message.GetString("content") == payload);
       Q4T_CHECK(CheckWire(message, deltas, "reasoning_content", true));
     } else {
-      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(!deltas.empty());
     }
   }
   ChatResponseParser bounded;
@@ -409,5 +480,176 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
   Q4T_CHECK(!bounded.Append(
       std::string(ChatResponseParser::kMaxToolBytes + 1, 'x'), &deltas));
   Q4T_CHECK(deltas.empty());
+  return true;
+}
+
+Q4T_TEST(chat_response_string_arguments_stream_before_parameter_close) {
+  auto request = Request();
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "request", true));
+  Q4T_CHECK(
+      parser.Append("<tool_call><function=lookup><parameter=text>\r", &deltas));
+  Q4T_CHECK(!parser.HasToolCalls() && !deltas.empty());
+  Q4T_CHECK(deltas.front().tool_start && deltas.front().call.name == "lookup");
+  std::string opening;
+  for (const auto& delta : deltas) opening += delta.call.arguments;
+  Q4T_CHECK(opening == "{\"text\":\"");
+  Q4T_CHECK(parser.Append("\n中国✅\\\"abc", &deltas));
+  std::string partial;
+  for (const auto& delta : deltas) partial += delta.call.arguments;
+  Q4T_CHECK(partial.find("中国✅\\\\\\\"") != partial.npos);
+  Q4T_CHECK(partial.starts_with("{\"text\":\"") && !partial.ends_with('}'));
+  Q4T_CHECK(!parser.HasToolCalls());
+  Q4T_CHECK(parser.Append("def\r\n</parameter></function>", &deltas));
+  Q4T_CHECK(!parser.HasToolCalls());
+  Q4T_CHECK(parser.Append("</tool_call>", &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  Json message;
+  Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message));
+  Q4T_CHECK(CheckWire(message, deltas));
+  return true;
+}
+
+Q4T_TEST(chat_response_partial_error_has_no_successful_terminal) {
+  const auto request = Request();
+  for (const auto* suffix : {"", "</parameter><parameter=text>duplicate",
+                             "</parameter></function>oops</tool_call>"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+    Q4T_CHECK(parser.Append(
+        "<tool_call><function=lookup><parameter=text>partial", &deltas));
+    Q4T_CHECK(!deltas.empty() && !parser.HasToolCalls());
+    parser.Append(suffix, &deltas);
+    Q4T_CHECK(!parser.Finish(false, &deltas));
+    Q4T_CHECK(!parser.HasToolCalls());
+  }
+  return true;
+}
+
+Q4T_TEST(refusal_parser_every_split_preserves_text_and_source_offsets) {
+  using namespace q4t::server;
+  const auto request = Request(false);
+  const std::string body = "不能提供该私有资料。可查询公开记录✅";
+  for (const bool thinking : {false, true}) {
+    const std::string lead =
+        thinking ? "reason <q4t_refusal>data</think>\n\n" : "\n ";
+    const std::string generated = lead + std::string(kRefusalOpen) + body +
+                                  std::string(kRefusalClose) + "\n";
+    Json message;
+    Q4T_CHECK(EverySplit(request, generated, thinking ? kThinking : kClosed, "",
+                         thinking ? "reason <q4t_refusal>data" : "", 0,
+                         &message));
+    Q4T_CHECK(message.Find("content")->IsNull());
+    Q4T_CHECK(message.GetString("refusal") == body);
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, thinking ? kThinking : kClosed, "r", true));
+    Q4T_CHECK(parser.Append(generated, &deltas));
+    Q4T_CHECK(parser.Finish(false, &deltas) && parser.HasRefusal());
+    for (const auto& delta : deltas) {
+      if (delta.kind != ResponseDelta::Kind::kRefusal) continue;
+      Q4T_CHECK(delta.source_begin >= lead.size() + kRefusalOpen.size());
+      Q4T_CHECK(delta.source_end <=
+                lead.size() + kRefusalOpen.size() + body.size());
+      Q4T_CHECK(generated.substr(delta.source_begin,
+                                 delta.source_end - delta.source_begin) ==
+                delta.text);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(refusal_parser_marker_data_and_natural_language_are_not_signals) {
+  using namespace q4t::server;
+  auto request = Request(false);
+  for (const std::string& text : std::vector<std::string>{
+           "I'm sorry, that result is unavailable.",
+           "Literal <q4t_refusal>example</q4t_refusal> text.",
+           "<q4t_refused>not a frame</q4t_refused>",
+           std::string(17, ' ') + "<q4t_refusal>ordinary</q4t_refusal>"}) {
+    Json message;
+    Q4T_CHECK(EverySplit(request, text, kClosed, text, "", 0, &message));
+    Q4T_CHECK(!message.Has("refusal"));
+  }
+  Json format;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"json_object"})", &format));
+  request.object.emplace_back("response_format", format);
+  const std::string json = R"({"v":"<q4t_refusal>x</q4t_refusal>"})";
+  Q4T_CHECK(EverySplit(request, json, kClosed, json, "", 0));
+  Q4T_CHECK(EverySplit(
+      Request(),
+      Call("<parameter=text><q4t_refusal>x</q4t_refusal></parameter>\n"),
+      kClosed, "", "", 1));
+  auto raw = Request(false);
+  Json disabled;
+  disabled.type = Json::Type::kBool;
+  disabled.boolean = false;
+  raw.object.emplace_back("parse_response", disabled);
+  const std::string frame = "<q4t_refusal>raw</q4t_refusal>";
+  Q4T_CHECK(EverySplit(raw, frame, "", frame, "", 0));
+  return true;
+}
+
+Q4T_TEST(refusal_parser_incomplete_malformed_and_capacity_terminals) {
+  const auto request = Request(false);
+  for (const auto* text :
+       {"<q4t_refusal></q4t_refusal>", "<q4t_refusal> \n </q4t_refusal>",
+        "<q4t_refusal>x</q4t_refusal>ordinary",
+        "<q4t_refusal>x</q4t_refusal><tool_call>",
+        "<q4t_refusal>x</q4t_refusal><q4t_refusal>again",
+        "<q4t_refusal>x</q4t_refu", "<q4t_refu"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "r", false));
+    const auto appended = parser.Append(text, &deltas);
+    Q4T_CHECK(!appended || !parser.Finish(false, &deltas));
+    Q4T_CHECK(!parser.HasToolCalls());
+  }
+  for (const bool responses : {false, true}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "r", true));
+    Q4T_CHECK(parser.Append("<q4t_refusal>partial</q4t_refu", &deltas));
+    Q4T_CHECK(responses ? parser.FinishIncomplete(&deltas)
+                        : parser.Finish(true, &deltas));
+    Json message;
+    Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message));
+    Q4T_CHECK(message.GetString("refusal") == "partial");
+    Q4T_CHECK(CheckWire(message, deltas));
+    Q4T_CHECK(!parser.Finish(false, &deltas));
+  }
+  ChatResponseParser bounded;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(bounded.Init(request, kClosed, "r", false));
+  Q4T_CHECK(bounded.Append("<q4t_refusal>", &deltas));
+  Q4T_CHECK(bounded.Append(std::string(ChatResponseParser::kMaxToolBytes, 'x'),
+                           &deltas));
+  deltas.clear();
+  Q4T_CHECK(!bounded.Append("x", &deltas));
+  return true;
+}
+
+Q4T_TEST(refusal_parser_requires_independent_matching_receipt) {
+  using namespace q4t::server;
+  auto request = Request(false);
+  Json format;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"json_object"})", &format));
+  request.object.emplace_back("response_format", format);
+  const auto right = MakeRefusalReceipt("declined");
+  const auto wrong = MakeRefusalReceipt("another refusal");
+  SchemaReceipt other_domain;
+  Q4T_CHECK(MakeSchemaReceipt("refusal", format, format, &other_domain));
+  const std::vector<std::vector<SchemaReceipt>> receipts{
+      {}, {wrong}, {other_domain}, {right, right}, {right}};
+  for (size_t i = 0; i <= receipts.size(); ++i) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "r", true));
+    if (i < receipts.size()) parser.SetSchemaReceipts(&receipts[i]);
+    Q4T_CHECK(parser.Append("<q4t_refusal>declined</q4t_refusal>", &deltas));
+    Q4T_CHECK(parser.Finish(false, &deltas).ok() == (i == 4));
+  }
   return true;
 }

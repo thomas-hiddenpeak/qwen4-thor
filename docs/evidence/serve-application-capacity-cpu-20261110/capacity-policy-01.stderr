@@ -1,0 +1,7 @@
+test_native_and_optional_gateway_preserve_explicit_lower_limit (tools.serve_gateway.test_application_capacity.ApplicationCapacityPolicy.test_native_and_optional_gateway_preserve_explicit_lower_limit) ... ok
+test_private_policy_versions_keep_same_numeric_limits_and_digest (tools.serve_gateway.test_application_capacity.ApplicationCapacityPolicy.test_private_policy_versions_keep_same_numeric_limits_and_digest) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

@@ -1,0 +1,18 @@
+{
+  "reviewed": [
+    "include/q4t/server/chat_prompt.h",
+    "include/q4t/vision/media_plan.h",
+    "include/q4t/vision/processor.h",
+    "src/server/chat_contract.cpp",
+    "src/server/chat_input.cpp",
+    "src/server/chat_prompt.cpp",
+    "src/server/file_input.cpp",
+    "src/server/media_admission.cpp",
+    "src/vision/media_plan.cpp",
+    "src/vision/processor.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 448,
+  "review": "Per-image policy reaches contract, native planner and actual pixels; original never shrinks to pass budgets; plan mismatches include detail even with identical geometry. Auto numeric path unchanged and full-pixel oracle passed. Discovery describes native model policy."
+}

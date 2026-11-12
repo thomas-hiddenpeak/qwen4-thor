@@ -1,0 +1,7 @@
+test_tls_12_and_13_preserve_json_authentication_and_private_binding (__main__.AccessTests.test_tls_12_and_13_preserve_json_authentication_and_private_binding) ... ok
+test_certificate_rotation_keeps_same_process_and_existing_sse (__main__.AccessTests.test_certificate_rotation_keeps_same_process_and_existing_sse) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.222s
+
+OK

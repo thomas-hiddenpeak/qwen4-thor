@@ -1,0 +1,48 @@
+{
+  "status": "PASS_QUALIFIED_VERSION_RECOVERY",
+  "acceptance": "ACCEPT_QUALIFIED_VERSION_RECOVERY",
+  "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+  "actual_business": {
+    "status": "ACCEPT_BOUNDED_VERSION_RECOVERY",
+    "counts": {
+      "starts": 2,
+      "chats": 10,
+      "probes": 1,
+      "controls": 409
+    },
+    "seconds": 123.78911669924855,
+    "nvml_queries": 117,
+    "all_queries_ok": true,
+    "env_abort": false,
+    "default_unchanged": true,
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "manifest_sha256": "e4bf8dcb0366f7dfe56c910ed77431be025352ef1fa9de1155dbc495c6a01726",
+    "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "fallback_manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+    "fixed_root": true,
+    "whole_payload_replaced": true,
+    "original_role_restart_counts": {
+      "controller": 1,
+      "gateway": 1,
+      "model": 1
+    },
+    "original_batch_and_chat": true,
+    "tool_executions": 1,
+    "original_quota_denied_after_seconds": 46.55867721512914,
+    "profile_budget_preserved": true,
+    "version_revision": 5,
+    "performance_claim": false
+  },
+  "source_commit": "9324ca5f7d41a32ab6acff2e18c75d85c4c11a83",
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/review.json",
+  "new_gpu_starts": 0,
+  "remaining_master_tasks_open": true,
+  "full_performance": false,
+  "long_stability_accepted": false
+}

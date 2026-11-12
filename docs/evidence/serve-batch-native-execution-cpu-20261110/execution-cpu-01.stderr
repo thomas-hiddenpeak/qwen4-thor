@@ -1,0 +1,6 @@
+[q4t][http] trace_id=req-4bf1c0f5728f303481d26d5333244c99 status=502 error=test_step_failure
+[q4t][http] trace_id=req_tool_run_fixture status=429 error=client_tpm_exhausted
+[q4t][http] trace_id=req_tool_run_fixture error=internal_error
+[q4t][http] trace_id=req_tool_run_fixture error=host_memory_exhausted
+[q4t][http] trace_id=req-b358b48e55ccb663f5d1663d42099b70 status=404 error=object_not_found
+[q4t][http] trace_id=req-133d71e3765ab524817ec379d70179da status=400 error=invalid_request

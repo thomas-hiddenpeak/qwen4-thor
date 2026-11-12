@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/evalscope/gpu_exclusive.py",
+    "--inherit-lease",
+    "--output",
+    ".q4t-work/serve-access-20261109/business-02/lease",
+    "--",
+    "python3",
+    "-B",
+    "tools/serve_access/acceptance.py",
+    "run",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-02/plan.json"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1794206887.3070326
+}

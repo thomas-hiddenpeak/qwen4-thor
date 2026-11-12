@@ -1,0 +1,20 @@
+{
+  "business_acceptance": false,
+  "changed_sources": {
+    "source/tools/serve_recovery/controller.py": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+    "source/tools/serve_recovery/profile_controller.py": "e1845924041cc4e8b5658ac1528dcec88c3ae6d327a0af72652a6f57e1fa4773",
+    "source/tools/serve_recovery/profile_memory.py": "1db918d41e76aad7be089e0b891d8db339e7d46ad45f025d475c937df8cc3a7b"
+  },
+  "engine_manifest_sha256": "567c455c5716512c3125ea61b3e8eb6a67837cec7af5a639f388df647c71ab14",
+  "format": "q4t-resource-controller-compatibility-v1",
+  "historical_inventory_unchanged": true,
+  "model_actions": false,
+  "model_gpu_starts": 0,
+  "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback",
+  "original_manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+  "original_unchanged": true,
+  "original_version": 12,
+  "payload": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-resource-version-20261112/actual-adapter-01",
+  "payload_manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+  "status": "PASS_SOURCE_ADAPTATION_ONLY"
+}

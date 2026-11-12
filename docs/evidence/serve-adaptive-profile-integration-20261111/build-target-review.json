@@ -1,0 +1,7 @@
+{
+  "first": "build-profile-guardian-01",
+  "first_target": "q4t-guardian",
+  "finding": "Existing output filename was accepted as a make goal and performed no build. No native CPU validation was run against it. Rebuild the actual CMake target q4t_guardian.",
+  "corrected": "build-profile-guardian-02",
+  "performance_claim": false
+}

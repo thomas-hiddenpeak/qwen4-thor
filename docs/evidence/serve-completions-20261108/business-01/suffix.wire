@@ -1,0 +1,1 @@
+{"id":"cmpl-auto-31a87080ddd7a07bbdd123b9a9484df7","object":"text_completion","created":1794147097,"model":"qwen3.8-flash-next","choices":[{"index":0,"text":"a + b","finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":26,"completion_tokens":4,"total_tokens":30}}

@@ -1,0 +1,82 @@
+{
+  "README.md": {
+    "bytes": 949,
+    "sha256": "806e12e01fd79fcffb76b8e1277543e1cbbc9faa930996fa25c94741d18d4e99"
+  },
+  "archive_primitive.py": {
+    "bytes": 2626,
+    "sha256": "8f33b2af85fd81fb0c6d1ecbdf06a0171033c41815cc0e06760ad516b542582a"
+  },
+  "build-01/commands.json": {
+    "bytes": 363,
+    "sha256": "a713a844fd72301558d9c0fe9635337b6aeef00a9d9825e2802996f7a279c103"
+  },
+  "build-01/driver.py": {
+    "bytes": 1148,
+    "sha256": "61626d65fc2f7b622ee513c6e27b6ef180f38f68c4993002f21e1e26202e2c30"
+  },
+  "build-01/result.json": {
+    "bytes": 54,
+    "sha256": "27672cc4b1ca857d465a32939f8f8b7c145ae9af78c97c1aa848519ba4f94b21"
+  },
+  "build-01/sources.json": {
+    "bytes": 513,
+    "sha256": "27e029dfe86e2336a8a905a7b31224652a310e6a2ea79c2ff09a31b9c5fccb1d"
+  },
+  "build-01/stderr.txt": {
+    "bytes": 243,
+    "sha256": "d6fcce9d01977df3ce9fc71d5a96db9c369ac4cc870560177d4ace5c2a68bb47"
+  },
+  "build-01/stdout.txt": {
+    "bytes": 425,
+    "sha256": "89ff8fdd7b6215539361c51de8cbcdc3e74966be7b98097761a6d6364b94a463"
+  },
+  "build-02/commands.json": {
+    "bytes": 398,
+    "sha256": "e5aa961388b7e1720a39eb2785846c1c893e07d770b78f255baefbf013f97bc0"
+  },
+  "build-02/result.json": {
+    "bytes": 53,
+    "sha256": "f4e62a127f20fc0478a53f9ac53677a613993aaed0f4936568e28ac06b9d5d73"
+  },
+  "build-02/sources.json": {
+    "bytes": 513,
+    "sha256": "27e029dfe86e2336a8a905a7b31224652a310e6a2ea79c2ff09a31b9c5fccb1d"
+  },
+  "build-02/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-02/stdout.txt": {
+    "bytes": 1577,
+    "sha256": "cb27877ccaf38c0697113cea45e1e8b70105ba94517550806b6c5eea8f7bd190"
+  },
+  "build_primitive.py": {
+    "bytes": 1178,
+    "sha256": "b996eee2e7fc80062b0fe1fbb8a678795fb8e493e2aae810f070f4bf5ad25fea"
+  },
+  "decision.json": {
+    "bytes": 662,
+    "sha256": "93ee154dc3e86a49503e1302a04363fc193b0702260e229ee640b0b4b488b7d1"
+  },
+  "identity.json": {
+    "bytes": 505,
+    "sha256": "6bd05898a9d1e73778cdc6abb27b4e69367f9378472309454c3159e74516bae9"
+  },
+  "primitive-cpu-01/command.json": {
+    "bytes": 66,
+    "sha256": "39c6ed4428265f0325496a71ae92e897d1e122cc41e367a63404694ff5f2009b"
+  },
+  "primitive-cpu-01/result.json": {
+    "bytes": 143,
+    "sha256": "fcf6f6868d337b7631d0cffe1bb2214ae448ec03245352d58b3a378a50ed4f39"
+  },
+  "primitive-cpu-01/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "primitive-cpu-01/stdout.txt": {
+    "bytes": 340,
+    "sha256": "d5eb2d83c8454fd02b46964015955700582db164520849f905c6557b3b013d2b"
+  }
+}

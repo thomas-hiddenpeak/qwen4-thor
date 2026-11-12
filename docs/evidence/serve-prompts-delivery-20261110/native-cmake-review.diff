@@ -1,0 +1,95 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b13c36b0..6f641c3c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -275,6 +275,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/application_query.cpp
+   src/server/conversation_state.cpp
+   src/server/conversation_api.cpp
++  src/server/prompt_template.cpp
++  src/server/prompt_registry.cpp
++  src/server/prompt_api.cpp
+   src/server/chat_storage.cpp
+   src/server/chat_storage_options.cpp
+   src/server/responses_item_shape.cpp
+diff --git a/include/q4t/server/application_routes.h b/include/q4t/server/application_routes.h
+index 92dce344..460c82be 100644
+--- a/include/q4t/server/application_routes.h
++++ b/include/q4t/server/application_routes.h
+@@ -27,6 +27,35 @@ inline bool IsResponsesCompaction(std::string_view target) {
+   return target.substr(0, target.find('?')) == "/v1/responses/compact";
+ }
+ 
++inline bool IsPromptTarget(std::string_view target) {
++  const auto path = target.substr(0, target.find('?'));
++  return path == "/v1/prompts" || path.starts_with("/v1/prompts/");
++}
++
++inline bool PromptMethodAllowed(std::string_view method,
++                                 std::string_view target) {
++  if (target.find('#') != target.npos) return false;
++  auto path = target.substr(0, target.find('?'));
++  constexpr std::string_view root = "/v1/prompts";
++  if (path == root) return method == "GET" || method == "POST";
++  if (!path.starts_with("/v1/prompts/")) return false;
++  path.remove_prefix(root.size() + 1);
++  const auto end = path.find('/');
++  if (!ValidApplicationId(path.substr(0, end))) return false;
++  if (end == path.npos)
++    return method == "GET" || method == "POST" || method == "DELETE";
++  path.remove_prefix(end);
++  if (path == "/versions") return method == "POST";
++  return path.starts_with("/versions/") &&
++         ValidApplicationId(path.substr(10)) && method == "GET";
++}
++
++inline bool IsPromptObservation(std::string_view method,
++                                 std::string_view target) {
++  return (method == "GET" || method == "DELETE") &&
++         PromptMethodAllowed(method, target);
++}
++
+ inline bool IsStoredChatTarget(std::string_view target) {
+   const auto path = target.substr(0, target.find('?'));
+   return path == "/v1/chat/completions" ||
+diff --git a/include/q4t/server/http_connection.h b/include/q4t/server/http_connection.h
+index 2e2f48ed..2e7cca0a 100644
+--- a/include/q4t/server/http_connection.h
++++ b/include/q4t/server/http_connection.h
+@@ -37,6 +37,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
+   if (method == "DELETE" && IsModelDetailPath(path))
+     return HttpConnectionClass::kControl;
+   if (IsResponsesObservation(method, path) ||
++      IsPromptObservation(method, path) ||
+       IsStoredChatManagement(method, path))
+     return HttpConnectionClass::kObservation;
+   return HttpConnectionClass::kBusiness;
+diff --git a/src/server/http_request.cpp b/src/server/http_request.cpp
+index 582c2eb3..6578307e 100644
+--- a/src/server/http_request.cpp
++++ b/src/server/http_request.cpp
+@@ -325,7 +325,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
+   const size_t route_limit =
+       IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
+               *path == "/v1/completions" || IsResponsesTarget(*path) ||
+-              IsConversationTarget(*path)
++              IsConversationTarget(*path) || IsPromptTarget(*path)
+           ? kChatBodyBytes : 4096;
+   const auto reserve = [&](size_t bytes) {
+     if (bytes > std::min(route_limit, headers->body_limit)) {
+diff --git a/src/service/ingress_main.cpp b/src/service/ingress_main.cpp
+index 8a6b8f61..12cbdc8f 100644
+--- a/src/service/ingress_main.cpp
++++ b/src/service/ingress_main.cpp
+@@ -350,9 +350,11 @@ constexpr RouteSpec kRoutes[] = {
+ 
+ bool Route(const std::string& method, const std::string& path, bool* control) {
+   if (server::ConversationMethodAllowed(method, path) ||
++      server::PromptMethodAllowed(method, path) ||
+       server::ResponsesMethodAllowed(method, path) ||
+       server::StoredChatMethodAllowed(method, path)) {
+     *control = server::IsResponsesObservation(method, path) ||
++               server::IsPromptObservation(method, path) ||
+                server::IsResponseCancellation(method, path) ||
+                server::IsStoredChatManagement(method, path);
+     return true;

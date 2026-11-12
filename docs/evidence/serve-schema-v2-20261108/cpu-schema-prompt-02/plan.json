@@ -1,0 +1,18 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests"
+  ],
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-schema-prompt-02/required.txt"
+  ],
+  "timeout_seconds": 30,
+  "scope": "Only failed obsolete pre-legacy error-path expectation; accepted 27 prompt/media cases reused"
+}

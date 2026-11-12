@@ -1,0 +1,41 @@
+[  0%] Built target q4t_trace
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[ 11%] Built target q4t_text
+[ 33%] Built target xgrammar
+[ 40%] Built target q4t_quant
+[ 62%] Built target q4t_model
+[ 66%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t
+[  0%] Built target q4t_trace
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[ 29%] Built target xgrammar
+[ 33%] Built target q4t_text
+[ 40%] Built target q4t_quant
+[ 62%] Built target q4t_model
+[ 66%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t_preflight_probe
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[ 29%] Built target xgrammar
+[ 33%] Built target q4t_text
+[100%] Built target q4t_host_tests
+[  0%] Built target q4t_trace
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[ 28%] Built target xgrammar
+[ 32%] Built target q4t_text
+[ 39%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[100%] Built target q4t_contract_probe

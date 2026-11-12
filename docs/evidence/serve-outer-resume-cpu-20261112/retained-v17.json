@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-c",
+    "import json,sys; from pathlib import Path; root=Path(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree\");sys.path.insert(0,str(root)); from tools.serve_recovery import bundle; assert bundle.ROOT==root; package=Path(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-domain-20261112/business-01/bundle\"); digest=\"d53caf4d32171d241e6d3a9f64d8a24cf0c2f4954801fe99a784a80e34b54915\"; value=bundle.verify(package,digest); print(json.dumps(dict(version=value[\"version\"],manifest_sha256=digest,model_actions=False,gpu_queries=False)))"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3818800221197307,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

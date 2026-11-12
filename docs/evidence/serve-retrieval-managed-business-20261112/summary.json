@@ -1,0 +1,77 @@
+{
+  "stages": [
+    {
+      "stage": "retained-01",
+      "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+      "guard": "COMPLETED",
+      "seconds": 64.81851811800152,
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 169
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+        "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434"
+      },
+      "cleanup_failure": null
+    },
+    {
+      "stage": "version-01",
+      "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+      "guard": "COMPLETED",
+      "seconds": 120.5504292040132,
+      "counts": {
+        "starts": 2,
+        "chats": 4,
+        "probes": 1,
+        "controls": 362
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+        "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+      },
+      "cleanup_failure": null
+    },
+    {
+      "stage": "tls-01",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "seconds": 61.816810966003686,
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 154
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls",
+        "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666"
+      },
+      "cleanup_failure": null
+    },
+    {
+      "stage": "tls-02",
+      "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+      "guard": "COMPLETED",
+      "seconds": 66.94727514497936,
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 176
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls",
+        "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666"
+      },
+      "cleanup_failure": null
+    }
+  ],
+  "cumulative_starts": 5,
+  "cumulative_chat_http": 10,
+  "cumulative_probes": 1,
+  "cumulative_seconds": 314.13303343299776,
+  "gpu_lease_polling_not_proof_of_no_subsample_interference": true
+}

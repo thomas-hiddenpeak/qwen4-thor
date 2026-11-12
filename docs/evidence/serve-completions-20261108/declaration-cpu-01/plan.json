@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_service.test_declarations.Declarations.test_completion_schemas_travel_with_optional_registry_and_verify_offline",
+    "tools.serve_service.test_declarations.Declarations.test_copied_bundle_survives_original_removal",
+    "tools.serve_service.test_declarations.Declarations.test_historical_package_without_extension_remains_verifiable"
+  ]
+}

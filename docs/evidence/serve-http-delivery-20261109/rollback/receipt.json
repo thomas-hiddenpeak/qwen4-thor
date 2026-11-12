@@ -1,0 +1,34 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+  "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "old_engine_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+  "old_engine_release_sha256": "4c5d11a117fa9b20dc7321878a7833330f6dc492a39109df8cc41fe8c88fe1dd",
+  "sealed_selection_tool": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle/source/tools/serve_recovery/service.py",
+  "sealed_selection_tool_sha256": "f66027517f73fbdbfed6a2b12f12842c704d95178878a3340930ab740f394b23",
+  "selection_command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle/source/tools/serve_recovery/service.py",
+    "rollback",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+    "--manifest-sha256",
+    "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--expected-manifest-sha256",
+    "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+    "--request-id",
+    "NEW_UUID"
+  ],
+  "files": {
+    "q4t": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+    "q4t.release.json": "4c5d11a117fa9b20dc7321878a7833330f6dc492a39109df8cc41fe8c88fe1dd",
+    "service.release.json": "816114b3e0cd590ae81d6d66dbf21a4c1d50c321fec13ed085dfdb0be0579b55"
+  },
+  "preserve_current_journals": true,
+  "requires_stopped_and_global_ownership": true,
+  "procedure": "Run the pinned NEW module to select the retained v8 target; then restore only these default engine/metadata files and service symlink. Never restore service.json, keys, limits, usage or core journals. New v9 package path must remain retained for this command. This is manual rollback, not R06 automatic recovery."
+}

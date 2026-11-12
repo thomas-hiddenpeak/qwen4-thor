@@ -1,0 +1,7 @@
+CMake Error at /home/rm01/models/dev/qwen4-thor/cmake/NativeDocuments.cmake:3 (find_path):
+  Could not find Q4T_ARCHIVE_INCLUDE_DIR using the following files: archive.h
+Call Stack (most recent call first):
+  /home/rm01/models/dev/qwen4-thor/cmake/HostTestSources.cmake:1 (include)
+  CMakeLists.txt:9 (include)
+
+

@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "file_expansion_pending_and_augmented_snapshots_are_separate_immutable_versions",
+    "file_expansion_unknown_persistence_never_replays_or_erases_owned_state",
+    "file_expansion_frozen_history_survives_delete_restart_and_codec_outage",
+    "file_expansion_combined_pdf_pages_and_history_budgets_are_enforced"
+  ],
+  "count": 4,
+  "gpu": 0,
+  "network": 0,
+  "reason": "Fix actual Persist immutable version incorrectly passing old reference to Save, and retain the complete first unknown acknowledgement including param. Two failures plus two directly affected persistence/restore paths; reuse remaining 12 CPU results."
+}

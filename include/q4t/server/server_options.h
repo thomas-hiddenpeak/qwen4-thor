@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 #include "q4t/runtime/sequence_capacity.h"
@@ -30,11 +31,26 @@ struct ServerOptions {
   std::string host = "127.0.0.1";
   std::string
       client_policy_file;  // Private immutable gateway policy, optional.
+  std::string access_program_policy_file;  // Optional native policy snapshot.
+  std::string file_input_policy_file;  // Optional trusted preparation policy.
   int port = 8000;
   // Optional independent local operations listener; 0 disables. Always
   // 127.0.0.1, with its own bounded handlers; never serves generation.
   int operations_port = 0;
   std::string model_dir;
+  // Explicit optional trained embedding assets; never inferred/downloaded.
+  std::string embedding_model_dir;
+  std::string served_model_name = "qwen3.8-flash-next";
+  std::vector<std::string> model_aliases;
+  // Durable application state, independent of model assets and KV caches.
+  // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
+  std::string object_store_dir;
+  int object_max_object_mib = 16;
+  int object_max_client_mib = 64;
+  int object_max_total_mib = 256;
+  int object_max_client_objects = 1000;
+  int object_max_total_objects = 10000;
+  int object_io_timeout_ms = 2000;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
   // Max sequence length (sizes the full-attention KV/indexer/rope caches).
@@ -54,7 +70,7 @@ struct ServerOptions {
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;
   bool mtp_suffix = false;  // Explicit request-local text, fixed-k3 suffix.
-  std::string session_cache_dir;  // Explicit bounded same-process SSD cache.
+  std::string session_cache_dir;  // Explicit bounded isolated SSD cache.
   std::string prefix_cache_dir;   // Separate bounded, scope-keyed shared pool.
   std::vector<int> prefix_cache_checkpoints{8192, 32768, 65536};
   std::string mtp_subset_head;  // Explicit experimental BF16 artifact.
@@ -100,6 +116,15 @@ struct ServerOptions {
   // 1200000 (20 min) is the historical default; raise it for workloads whose
   // first request carries long on-demand expert loads (tiered residency).
   int request_deadline_ms = 1200000;
+  // Logical retained payloads across background jobs, not an RSS estimate.
+  int background_max_input_mib = 512;
+  // Native Batch task/input capacity, independent of per-minute client rates.
+  int batch_workers = 1;
+  int batch_max_jobs = 8;
+  int batch_max_client_jobs = 4;
+  int batch_max_result_mib = 256;
+  uint64_t batch_model_queue_tokens = 1ULL << 30;
+  uint64_t batch_client_model_queue_tokens = 1ULL << 28;
 };
 
 // Derived once from validated options, never a second configuration source.

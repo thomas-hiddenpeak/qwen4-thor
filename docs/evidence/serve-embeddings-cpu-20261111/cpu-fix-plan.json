@@ -1,0 +1,15 @@
+{
+  "cpp": [
+    "embeddings_fp32_wire_roundtrip_and_base64_byte_order"
+  ],
+  "python": [
+    "EmbeddingsContract.test_actual_cpp_float_and_base64_fp32",
+    "EmbeddingsContract.test_sdk_identity_protocol_route_and_compiled_sources",
+    "GatewayTests.test_protocol_contract_has_separate_bounded_capacity"
+  ],
+  "tls": [
+    "AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body"
+  ],
+  "different_total_checks": 36,
+  "reused_other_passes": true
+}

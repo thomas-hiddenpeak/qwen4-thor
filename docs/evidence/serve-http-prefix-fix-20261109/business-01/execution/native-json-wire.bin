@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 279
+Connection: keep-alive
+Cache-Control: no-store
+X-Request-Id: req-62b7f580a622b0c04be2a63fa6c46169
+Vary: Origin
+Access-Control-Allow-Origin: https://client.example
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: x-request-id, retry-after
+
+{"id":"n05-native-json","object":"chat.completion","created":1794214864,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"42"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":27,"completion_tokens":3,"total_tokens":30}}

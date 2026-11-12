@@ -1,0 +1,1145 @@
+{
+  "numerical": [
+    {
+      "case": 0,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9999909713339503,
+      "max_normalized_absolute_error": 0.001590739258029425,
+      "max_relative_l2_error": 0.004261588324113139,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-00.bf16",
+      "min_cosine": 0.9999999999999996,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-01.bf16",
+      "min_cosine": 0.9999999999999989,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-02.bf16",
+      "min_cosine": 1.0000000000000009,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-03.bf16",
+      "min_cosine": 1.0000000000000013,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-04.bf16",
+      "min_cosine": 0.9999999999999992,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-05.bf16",
+      "min_cosine": 1.0000000000000002,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-06.bf16",
+      "min_cosine": 1.0000000000000007,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-07.bf16",
+      "min_cosine": 1.0000000000000002,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-08.bf16",
+      "min_cosine": 0.9999999999993694,
+      "max_normalized_absolute_error": 1.121843185989622e-06,
+      "max_relative_l2_error": 1.1240321929860942e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-09.bf16",
+      "min_cosine": 0.9999999999993584,
+      "max_normalized_absolute_error": 1.1218363312710876e-06,
+      "max_relative_l2_error": 1.13273882915647e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-10.bf16",
+      "min_cosine": 0.9999999999986805,
+      "max_normalized_absolute_error": 1.1218302542796656e-06,
+      "max_relative_l2_error": 1.6247849467436273e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-11.bf16",
+      "min_cosine": 0.9999999999986405,
+      "max_normalized_absolute_error": 1.1218269262234647e-06,
+      "max_relative_l2_error": 1.6488250544387671e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-12.bf16",
+      "min_cosine": 0.9999999999982051,
+      "max_normalized_absolute_error": 1.121820117120704e-06,
+      "max_relative_l2_error": 1.895666465002799e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-13.bf16",
+      "min_cosine": 0.999999999997586,
+      "max_normalized_absolute_error": 1.1218221008582867e-06,
+      "max_relative_l2_error": 2.197154568221325e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-14.bf16",
+      "min_cosine": 0.9999999999942849,
+      "max_normalized_absolute_error": 2.243641423990716e-06,
+      "max_relative_l2_error": 3.3809500812066324e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-15.bf16",
+      "min_cosine": 0.9999999999938842,
+      "max_normalized_absolute_error": 2.2436365799047547e-06,
+      "max_relative_l2_error": 3.497445852995715e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-16.bf16",
+      "min_cosine": 0.9999999999907537,
+      "max_normalized_absolute_error": 2.2436362813650244e-06,
+      "max_relative_l2_error": 4.300144474824949e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-17.bf16",
+      "min_cosine": 0.9999999999807436,
+      "max_normalized_absolute_error": 4.4872845492925076e-06,
+      "max_relative_l2_error": 6.205768503643259e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-18.bf16",
+      "min_cosine": 0.9999999999702182,
+      "max_normalized_absolute_error": 4.487346611318816e-06,
+      "max_relative_l2_error": 7.717768899324821e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-19.bf16",
+      "min_cosine": 0.999999999955429,
+      "max_normalized_absolute_error": 4.487342678789275e-06,
+      "max_relative_l2_error": 9.44157790745027e-06,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-20.bf16",
+      "min_cosine": 0.9999999999284576,
+      "max_normalized_absolute_error": 4.487445816528672e-06,
+      "max_relative_l2_error": 1.1961782437057564e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-21.bf16",
+      "min_cosine": 0.9999999999050725,
+      "max_normalized_absolute_error": 4.487510062225488e-06,
+      "max_relative_l2_error": 1.3778831469815265e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-22.bf16",
+      "min_cosine": 0.999999999875058,
+      "max_normalized_absolute_error": 4.487055570568505e-06,
+      "max_relative_l2_error": 1.5807708865274435e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-23.bf16",
+      "min_cosine": 0.9999999998066388,
+      "max_normalized_absolute_error": 8.973130657867565e-06,
+      "max_relative_l2_error": 1.9665173193552377e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-24.bf16",
+      "min_cosine": 0.9999999997624873,
+      "max_normalized_absolute_error": 8.972131469200538e-06,
+      "max_relative_l2_error": 2.179509959204985e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-25.bf16",
+      "min_cosine": 0.9999999996025541,
+      "max_normalized_absolute_error": 8.969933848534148e-06,
+      "max_relative_l2_error": 2.8193845567247354e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-26.bf16",
+      "min_cosine": 0.9999999994383009,
+      "max_normalized_absolute_error": 8.966832335799413e-06,
+      "max_relative_l2_error": 3.3517179535095e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-27.bf16",
+      "min_cosine": 0.9999999991070329,
+      "max_normalized_absolute_error": 9.338061310173854e-06,
+      "max_relative_l2_error": 4.226040373791338e-05,
+      "accepted": true
+    },
+    {
+      "case": 0,
+      "tensor": "layer-28.bf16",
+      "min_cosine": 0.9999945409935906,
+      "max_normalized_absolute_error": 0.0007164225305168956,
+      "max_relative_l2_error": 0.003372484031794593,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9998784374011436,
+      "max_normalized_absolute_error": 0.003189698018358139,
+      "max_relative_l2_error": 0.01620376651111152,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-00.bf16",
+      "min_cosine": 0.9999999999999996,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-01.bf16",
+      "min_cosine": 0.9999999177253479,
+      "max_normalized_absolute_error": 0.0002407921374122171,
+      "max_relative_l2_error": 0.0004060783402230369,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-02.bf16",
+      "min_cosine": 0.9999875544701224,
+      "max_normalized_absolute_error": 0.0021408939309813246,
+      "max_relative_l2_error": 0.005171954458573424,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-03.bf16",
+      "min_cosine": 0.9999804774804795,
+      "max_normalized_absolute_error": 0.0008654605435175627,
+      "max_relative_l2_error": 0.006788300026908722,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-04.bf16",
+      "min_cosine": 0.9999722977066338,
+      "max_normalized_absolute_error": 0.001279120456571775,
+      "max_relative_l2_error": 0.007662350925390817,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-05.bf16",
+      "min_cosine": 0.9999646351486382,
+      "max_normalized_absolute_error": 0.0011745290776399298,
+      "max_relative_l2_error": 0.008610911527964995,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-06.bf16",
+      "min_cosine": 0.9999572413592586,
+      "max_normalized_absolute_error": 0.0016633958683885952,
+      "max_relative_l2_error": 0.009342820472814756,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-07.bf16",
+      "min_cosine": 0.9999513369608115,
+      "max_normalized_absolute_error": 0.0034097435337256954,
+      "max_relative_l2_error": 0.010196279743279484,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-08.bf16",
+      "min_cosine": 0.9999507850686784,
+      "max_normalized_absolute_error": 0.003334770986916369,
+      "max_relative_l2_error": 0.010099688133732833,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-09.bf16",
+      "min_cosine": 0.9999451629683265,
+      "max_normalized_absolute_error": 0.0011877703001204817,
+      "max_relative_l2_error": 0.0104726838884677,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-10.bf16",
+      "min_cosine": 0.9999353644224204,
+      "max_normalized_absolute_error": 0.002820369827737368,
+      "max_relative_l2_error": 0.011568455618089652,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-11.bf16",
+      "min_cosine": 0.999949006168535,
+      "max_normalized_absolute_error": 0.0013179283022710653,
+      "max_relative_l2_error": 0.010099877956928347,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-12.bf16",
+      "min_cosine": 0.9999463431257594,
+      "max_normalized_absolute_error": 0.002005399008868286,
+      "max_relative_l2_error": 0.0106579753908632,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-13.bf16",
+      "min_cosine": 0.9999462315374176,
+      "max_normalized_absolute_error": 0.002029153090259722,
+      "max_relative_l2_error": 0.010371918908715704,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-14.bf16",
+      "min_cosine": 0.9999390808645325,
+      "max_normalized_absolute_error": 0.002014788649304669,
+      "max_relative_l2_error": 0.01103917568870983,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-15.bf16",
+      "min_cosine": 0.9999456427593955,
+      "max_normalized_absolute_error": 0.0015820252389839307,
+      "max_relative_l2_error": 0.010429207564198979,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-16.bf16",
+      "min_cosine": 0.9999454964478189,
+      "max_normalized_absolute_error": 0.001140859783541684,
+      "max_relative_l2_error": 0.010446068983183931,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-17.bf16",
+      "min_cosine": 0.999954222037271,
+      "max_normalized_absolute_error": 0.0015817718199629405,
+      "max_relative_l2_error": 0.009572506435380199,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-18.bf16",
+      "min_cosine": 0.9999548737196893,
+      "max_normalized_absolute_error": 0.0012672598008368896,
+      "max_relative_l2_error": 0.009507040999688158,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-19.bf16",
+      "min_cosine": 0.9999509131918652,
+      "max_normalized_absolute_error": 0.0010902280549761334,
+      "max_relative_l2_error": 0.009910595321666387,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-20.bf16",
+      "min_cosine": 0.9999491460524079,
+      "max_normalized_absolute_error": 0.001328965609921573,
+      "max_relative_l2_error": 0.0103792146133856,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-21.bf16",
+      "min_cosine": 0.9999603044384613,
+      "max_normalized_absolute_error": 0.0012103739133196845,
+      "max_relative_l2_error": 0.00891643175388594,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-22.bf16",
+      "min_cosine": 0.9999714583146693,
+      "max_normalized_absolute_error": 0.0009719747721774613,
+      "max_relative_l2_error": 0.007562489189904232,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-23.bf16",
+      "min_cosine": 0.999973155714948,
+      "max_normalized_absolute_error": 0.0007968909996098079,
+      "max_relative_l2_error": 0.0073277191669004595,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-24.bf16",
+      "min_cosine": 0.9999752601489658,
+      "max_normalized_absolute_error": 0.0008106612316234104,
+      "max_relative_l2_error": 0.007037986137359425,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-25.bf16",
+      "min_cosine": 0.9999779171270327,
+      "max_normalized_absolute_error": 0.0007300692578951348,
+      "max_relative_l2_error": 0.006649694701126892,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-26.bf16",
+      "min_cosine": 0.9999767900801941,
+      "max_normalized_absolute_error": 0.000711519159930704,
+      "max_relative_l2_error": 0.006813254259457451,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-27.bf16",
+      "min_cosine": 0.9999828571704303,
+      "max_normalized_absolute_error": 0.0013408093646518626,
+      "max_relative_l2_error": 0.006145707400496845,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "tensor": "layer-28.bf16",
+      "min_cosine": 0.99792678163907,
+      "max_normalized_absolute_error": 0.05720597716074799,
+      "max_relative_l2_error": 0.07409991319688075,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9996839991168305,
+      "max_normalized_absolute_error": 0.0029863067163691456,
+      "max_relative_l2_error": 0.0251992972261664,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-00.bf16",
+      "min_cosine": 0.9999999999999996,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-01.bf16",
+      "min_cosine": 0.9999998953362208,
+      "max_normalized_absolute_error": 0.00024167487812876837,
+      "max_relative_l2_error": 0.00045772500570021615,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-02.bf16",
+      "min_cosine": 0.9999901430085909,
+      "max_normalized_absolute_error": 0.0021131446478926397,
+      "max_relative_l2_error": 0.004679166469857693,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-03.bf16",
+      "min_cosine": 0.9999764105766895,
+      "max_normalized_absolute_error": 0.0011505607547005192,
+      "max_relative_l2_error": 0.007241339339801761,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-04.bf16",
+      "min_cosine": 0.9999717475074992,
+      "max_normalized_absolute_error": 0.003462184412700381,
+      "max_relative_l2_error": 0.017404240483622272,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-05.bf16",
+      "min_cosine": 0.99994596211933,
+      "max_normalized_absolute_error": 0.004663563171779406,
+      "max_relative_l2_error": 0.017751519284299723,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-06.bf16",
+      "min_cosine": 0.9998408719791995,
+      "max_normalized_absolute_error": 0.006919705754393074,
+      "max_relative_l2_error": 0.021454429624547203,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "layer-07.bf16",
+      "min_cosine": 0.9998094413908132,
+      "max_normalized_absolute_error": 0.0064431609581446225,
+      "max_relative_l2_error": 0.022128786555487858,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "layer-08.bf16",
+      "min_cosine": 0.9998255837160971,
+      "max_normalized_absolute_error": 0.005014189270342084,
+      "max_relative_l2_error": 0.020146413501426184,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "layer-09.bf16",
+      "min_cosine": 0.9997485668945201,
+      "max_normalized_absolute_error": 0.008121656945733802,
+      "max_relative_l2_error": 0.023319165457484598,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "layer-10.bf16",
+      "min_cosine": 0.9997723706595667,
+      "max_normalized_absolute_error": 0.004874030612149194,
+      "max_relative_l2_error": 0.021524617726877276,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-11.bf16",
+      "min_cosine": 0.9997770315369753,
+      "max_normalized_absolute_error": 0.004478541647039536,
+      "max_relative_l2_error": 0.021235139118488525,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-12.bf16",
+      "min_cosine": 0.9998330686352879,
+      "max_normalized_absolute_error": 0.002798528652511248,
+      "max_relative_l2_error": 0.018443059489389502,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-13.bf16",
+      "min_cosine": 0.9998593604953707,
+      "max_normalized_absolute_error": 0.002474003391158802,
+      "max_relative_l2_error": 0.016867707163431153,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-14.bf16",
+      "min_cosine": 0.9998458955144833,
+      "max_normalized_absolute_error": 0.002984946232462815,
+      "max_relative_l2_error": 0.017571184818238154,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-15.bf16",
+      "min_cosine": 0.999840975308744,
+      "max_normalized_absolute_error": 0.004402179675311646,
+      "max_relative_l2_error": 0.01784220395853932,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-16.bf16",
+      "min_cosine": 0.9998517198898729,
+      "max_normalized_absolute_error": 0.0030441260405140724,
+      "max_relative_l2_error": 0.01732901486635885,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-17.bf16",
+      "min_cosine": 0.9998546491762389,
+      "max_normalized_absolute_error": 0.002581210955784327,
+      "max_relative_l2_error": 0.017088097556704727,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-18.bf16",
+      "min_cosine": 0.9998534149258183,
+      "max_normalized_absolute_error": 0.0024413551010466494,
+      "max_relative_l2_error": 0.017177627876914663,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-19.bf16",
+      "min_cosine": 0.9998531031904206,
+      "max_normalized_absolute_error": 0.0023268339811807967,
+      "max_relative_l2_error": 0.017240714510956354,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-20.bf16",
+      "min_cosine": 0.9998824887263079,
+      "max_normalized_absolute_error": 0.002770676388598143,
+      "max_relative_l2_error": 0.01535455046646347,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-21.bf16",
+      "min_cosine": 0.9998966258769122,
+      "max_normalized_absolute_error": 0.0019078760871772318,
+      "max_relative_l2_error": 0.014420250708644717,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-22.bf16",
+      "min_cosine": 0.9999137742927183,
+      "max_normalized_absolute_error": 0.0015904552497810753,
+      "max_relative_l2_error": 0.01344103867603427,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-23.bf16",
+      "min_cosine": 0.999926610590554,
+      "max_normalized_absolute_error": 0.001901685956093635,
+      "max_relative_l2_error": 0.012296167448110275,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-24.bf16",
+      "min_cosine": 0.9999017474544379,
+      "max_normalized_absolute_error": 0.005686968099775869,
+      "max_relative_l2_error": 0.014030810638604462,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "tensor": "layer-25.bf16",
+      "min_cosine": 0.9999314327337276,
+      "max_normalized_absolute_error": 0.0030293226516152627,
+      "max_relative_l2_error": 0.012135917275524663,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-26.bf16",
+      "min_cosine": 0.9999285662180727,
+      "max_normalized_absolute_error": 0.0025072928538122374,
+      "max_relative_l2_error": 0.01230499446911834,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-27.bf16",
+      "min_cosine": 0.999960337832123,
+      "max_normalized_absolute_error": 0.0014327542330028198,
+      "max_relative_l2_error": 0.009300445080435977,
+      "accepted": true
+    },
+    {
+      "case": 2,
+      "tensor": "layer-28.bf16",
+      "min_cosine": 0.9963046977952648,
+      "max_normalized_absolute_error": 0.07969376804921144,
+      "max_relative_l2_error": 0.09485667173742945,
+      "accepted": false
+    },
+    {
+      "case": 3,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9998916194170375,
+      "max_normalized_absolute_error": 0.0027456611930505997,
+      "max_relative_l2_error": 0.015039318842691541,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-00.bf16",
+      "min_cosine": 0.9999999999999996,
+      "max_normalized_absolute_error": 0.0,
+      "max_relative_l2_error": 0.0,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-01.bf16",
+      "min_cosine": 0.9999953546202857,
+      "max_normalized_absolute_error": 0.000955211912925219,
+      "max_relative_l2_error": 0.0031177995113182513,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-02.bf16",
+      "min_cosine": 0.9999688011307006,
+      "max_normalized_absolute_error": 0.002222272199775527,
+      "max_relative_l2_error": 0.008060437531734934,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-03.bf16",
+      "min_cosine": 0.9999902074828801,
+      "max_normalized_absolute_error": 0.0006084654790379637,
+      "max_relative_l2_error": 0.00542117806160755,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-04.bf16",
+      "min_cosine": 0.9999862471628445,
+      "max_normalized_absolute_error": 0.0015271525797272423,
+      "max_relative_l2_error": 0.008827498874273535,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-05.bf16",
+      "min_cosine": 0.9999765113685632,
+      "max_normalized_absolute_error": 0.0013860806729484032,
+      "max_relative_l2_error": 0.009431261359584001,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-06.bf16",
+      "min_cosine": 0.9999447401309383,
+      "max_normalized_absolute_error": 0.002982884346592718,
+      "max_relative_l2_error": 0.01102456370620276,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-07.bf16",
+      "min_cosine": 0.9999252213180119,
+      "max_normalized_absolute_error": 0.003133105369830913,
+      "max_relative_l2_error": 0.01265094013139737,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-08.bf16",
+      "min_cosine": 0.9999255894130884,
+      "max_normalized_absolute_error": 0.002330022539479809,
+      "max_relative_l2_error": 0.012433741082762852,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-09.bf16",
+      "min_cosine": 0.9998950895630752,
+      "max_normalized_absolute_error": 0.003134563689835751,
+      "max_relative_l2_error": 0.014547955713736264,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-10.bf16",
+      "min_cosine": 0.9998661202181914,
+      "max_normalized_absolute_error": 0.0029515683546496724,
+      "max_relative_l2_error": 0.016472869494662666,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-11.bf16",
+      "min_cosine": 0.9998291294766006,
+      "max_normalized_absolute_error": 0.00342649420583499,
+      "max_relative_l2_error": 0.018517617570530824,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-12.bf16",
+      "min_cosine": 0.9998298360234107,
+      "max_normalized_absolute_error": 0.002960204284978271,
+      "max_relative_l2_error": 0.01844752385736224,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-13.bf16",
+      "min_cosine": 0.9998568295834378,
+      "max_normalized_absolute_error": 0.0027209186560553794,
+      "max_relative_l2_error": 0.016934736261680433,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-14.bf16",
+      "min_cosine": 0.9998392874526019,
+      "max_normalized_absolute_error": 0.00258366221870375,
+      "max_relative_l2_error": 0.017930648476679186,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-15.bf16",
+      "min_cosine": 0.999847453631264,
+      "max_normalized_absolute_error": 0.0024229148684568186,
+      "max_relative_l2_error": 0.017475067307291186,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-16.bf16",
+      "min_cosine": 0.9998485409003923,
+      "max_normalized_absolute_error": 0.0023629112334876586,
+      "max_relative_l2_error": 0.017528002290420067,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-17.bf16",
+      "min_cosine": 0.9998906638363563,
+      "max_normalized_absolute_error": 0.0020862291516866166,
+      "max_relative_l2_error": 0.014807574909436834,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-18.bf16",
+      "min_cosine": 0.999895546302197,
+      "max_normalized_absolute_error": 0.0021507294098696284,
+      "max_relative_l2_error": 0.014476725625528472,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-19.bf16",
+      "min_cosine": 0.9999060746063945,
+      "max_normalized_absolute_error": 0.0017954508958842597,
+      "max_relative_l2_error": 0.013723360032126016,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-20.bf16",
+      "min_cosine": 0.9999383021657053,
+      "max_normalized_absolute_error": 0.0019059455878984721,
+      "max_relative_l2_error": 0.01141650290780628,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-21.bf16",
+      "min_cosine": 0.9999529452837389,
+      "max_normalized_absolute_error": 0.0019381873029304525,
+      "max_relative_l2_error": 0.00970117247116897,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-22.bf16",
+      "min_cosine": 0.9999684278829278,
+      "max_normalized_absolute_error": 0.001659526571991643,
+      "max_relative_l2_error": 0.007986958794703099,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-23.bf16",
+      "min_cosine": 0.999976707649676,
+      "max_normalized_absolute_error": 0.0011934737025659642,
+      "max_relative_l2_error": 0.006827221340867891,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-24.bf16",
+      "min_cosine": 0.9999802998307091,
+      "max_normalized_absolute_error": 0.0011608196312166696,
+      "max_relative_l2_error": 0.006277533994965891,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-25.bf16",
+      "min_cosine": 0.999983372319851,
+      "max_normalized_absolute_error": 0.0010796701209434267,
+      "max_relative_l2_error": 0.005775275022440392,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-26.bf16",
+      "min_cosine": 0.9999848735823219,
+      "max_normalized_absolute_error": 0.0009330576605310337,
+      "max_relative_l2_error": 0.005510804889572253,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-27.bf16",
+      "min_cosine": 0.9999913293040339,
+      "max_normalized_absolute_error": 0.0011962869481578903,
+      "max_relative_l2_error": 0.005696221366409406,
+      "accepted": true
+    },
+    {
+      "case": 3,
+      "tensor": "layer-28.bf16",
+      "min_cosine": 0.9963046977952648,
+      "max_normalized_absolute_error": 0.07969376804921144,
+      "max_relative_l2_error": 0.09485667173742945,
+      "accepted": false
+    },
+    {
+      "case": 4,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997124509537977,
+      "max_normalized_absolute_error": 0.0025253836143992736,
+      "max_relative_l2_error": 0.02415702242975892,
+      "accepted": true
+    },
+    {
+      "case": 5,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997573698124513,
+      "max_normalized_absolute_error": 0.0021659621162715484,
+      "max_relative_l2_error": 0.022253904754607753,
+      "accepted": true
+    },
+    {
+      "case": 6,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9996256749979242,
+      "max_normalized_absolute_error": 0.002883495132088666,
+      "max_relative_l2_error": 0.028637144459290338,
+      "accepted": true
+    },
+    {
+      "case": 7,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997228114161755,
+      "max_normalized_absolute_error": 0.0031789716762458953,
+      "max_relative_l2_error": 0.02363963292257689,
+      "accepted": true
+    },
+    {
+      "case": 8,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997968580666803,
+      "max_normalized_absolute_error": 0.002231250818110474,
+      "max_relative_l2_error": 0.020224682501783213,
+      "accepted": true
+    },
+    {
+      "case": 9,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997018737398431,
+      "max_normalized_absolute_error": 0.002837275698119514,
+      "max_relative_l2_error": 0.02548106702482518,
+      "accepted": true
+    },
+    {
+      "case": 10,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997419881931127,
+      "max_normalized_absolute_error": 0.0029861785368249377,
+      "max_relative_l2_error": 0.02272202783025868,
+      "accepted": true
+    },
+    {
+      "case": 11,
+      "tensor": "last.bf16",
+      "min_cosine": 0.999663631050324,
+      "max_normalized_absolute_error": 0.003454325380980859,
+      "max_relative_l2_error": 0.02800030281405653,
+      "accepted": true
+    },
+    {
+      "case": 12,
+      "tensor": "last.bf16",
+      "min_cosine": 0.99974871280945,
+      "max_normalized_absolute_error": 0.0026147280016463412,
+      "max_relative_l2_error": 0.02268139091678809,
+      "accepted": true
+    },
+    {
+      "case": 13,
+      "tensor": "last.bf16",
+      "min_cosine": 0.9997726029064191,
+      "max_normalized_absolute_error": 0.0026577102457443075,
+      "max_relative_l2_error": 0.021325885638948557,
+      "accepted": true
+    }
+  ],
+  "retrieval": [
+    {
+      "query": "PLE 查到的数据如何从 SSD 送到模型层？",
+      "expected_document": 0,
+      "scores": [
+        0.5729157143646847,
+        0.36631542181914684,
+        0.30719840960824174,
+        0.5314303091417075,
+        0.3984411451412769
+      ],
+      "ranking": [
+        0,
+        3,
+        4,
+        1,
+        2
+      ],
+      "top1_correct": true
+    },
+    {
+      "query": "是否必须为 q4t 安装或打包 nginx 才能提供服务？",
+      "expected_document": 1,
+      "scores": [
+        0.27329140155118703,
+        0.5875816703410581,
+        0.3051708616216929,
+        0.26929758764251704,
+        0.4229986164542239
+      ],
+      "ranking": [
+        1,
+        4,
+        2,
+        0,
+        3
+      ],
+      "top1_correct": true
+    },
+    {
+      "query": "不涉及性能的功能修复需要运行完整性能矩阵吗？",
+      "expected_document": 2,
+      "scores": [
+        0.4430425330921211,
+        0.4311699758129489,
+        0.716080177343232,
+        0.404953783552193,
+        0.4496306362480326
+      ],
+      "ranking": [
+        2,
+        4,
+        0,
+        1,
+        3
+      ],
+      "top1_correct": true
+    },
+    {
+      "query": "把专家权重从 GPU 移到 CPU 内存，能够减少 Thor 的物理 RAM 驻留吗？",
+      "expected_document": 3,
+      "scores": [
+        0.5094139836254571,
+        0.40713965463843765,
+        0.3751866866367316,
+        0.7468031564478039,
+        0.382170846463832
+      ],
+      "ranking": [
+        3,
+        0,
+        1,
+        4,
+        2
+      ],
+      "top1_correct": true
+    },
+    {
+      "query": "原生观测采集器会对模型发送停止或重启命令吗？",
+      "expected_document": 4,
+      "scores": [
+        0.34221101636198337,
+        0.5181601992246625,
+        0.37868967985955737,
+        0.3464209380110524,
+        0.6595509802650119
+      ],
+      "ranking": [
+        4,
+        1,
+        2,
+        3,
+        0
+      ],
+      "top1_correct": true
+    }
+  ],
+  "numerical_accepted": false,
+  "top1_correct": 5,
+  "total_queries": 5,
+  "accepted": false
+}

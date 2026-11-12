@@ -1,0 +1,13 @@
+[
+  "env",
+  "Q4T_CURRENT_APPLICATION_WIRE=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/declarations-sdk-01/work",
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_responses.test_contract.ApplicationContract",
+  "tools.serve_service.test_declarations.Declarations.test_application_schemas_required_and_portable",
+  "tools.serve_service.test_declarations.Declarations.test_application_schema_tampering_and_old_completion_profile",
+  "tools.serve_service.test_declarations.Declarations.test_completion_schemas_travel_with_optional_registry_and_verify_offline"
+]

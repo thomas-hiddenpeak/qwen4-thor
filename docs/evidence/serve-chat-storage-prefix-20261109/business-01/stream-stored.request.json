@@ -1,0 +1,9 @@
+{
+  "action": "retrieve",
+  "request": null,
+  "id": "chatcmpl-auto-efb7b046dddfd13bd3371d8a3e1a4d0b",
+  "query": null,
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

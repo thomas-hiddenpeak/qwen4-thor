@@ -1,0 +1,67 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  3%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  7%] Built target q4t_trace
+[ 10%] Built target q4t_io
+[ 14%] Built target q4t_ple
+[ 14%] Built target q4t_text
+[ 21%] Built target q4t_quant
+[ 39%] Built target xgrammar
+[ 53%] Built target q4t_model
+[ 57%] Built target q4t_startup_plan
+[ 57%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_server.dir/src/server/cache_io.cpp.o
+[ 60%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  0%] Built target q4t_regex_build
+[  3%] Built target q4t_io
+[  3%] Built target q4t_text
+[ 21%] Built target xgrammar
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/cache_io.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_cache_io_test.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/test_main.cpp.o
+[ 21%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  0%] Building CXX object CMakeFiles/q4t_session_storage_contract.dir/src/server/cache_io.cpp.o
+[  0%] Linking CXX executable q4t_session_storage_contract
+[100%] Built target q4t_session_storage_contract
+[  0%] Building CXX object CMakeFiles/q4t_prefix_storage_contract.dir/src/server/cache_io.cpp.o
+[  0%] Linking CXX executable q4t_prefix_storage_contract
+[100%] Built target q4t_prefix_storage_contract
+[  0%] Building CXX object CMakeFiles/q4t_incremental_storage_contract.dir/tools/session_incremental/storage_contract.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_incremental_storage_contract.dir/src/server/cache_io.cpp.o
+[  0%] Linking CXX executable q4t_incremental_storage_contract
+[100%] Built target q4t_incremental_storage_contract
+[  0%] Built target q4t_regex_build
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[ 10%] Built target q4t_io
+[ 13%] Built target q4t_ple
+[ 24%] Built target q4t_text
+[ 31%] Built target xgrammar
+[ 37%] Built target q4t_quant
+[ 51%] Built target q4t_model
+[ 55%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[ 96%] Building CXX object CMakeFiles/q4t_session_target_contract.dir/tests/server_session_target_test.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_session_target_contract.dir/tests/test_main.cpp.o
+[100%] Linking CXX executable q4t_session_target_contract
+[100%] Built target q4t_session_target_contract

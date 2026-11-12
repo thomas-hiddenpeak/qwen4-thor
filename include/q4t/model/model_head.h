@@ -66,6 +66,13 @@ Status HeadForward(const ModelHeadWeights& w, const uint16_t* trunk,
                    uint16_t* logits, int T, void* workspace,
                    size_t workspace_bytes, cudaStream_t stream);
 
+// The same final mixer before lm_head, returning actual [T, hs] BF16 states.
+// Caller owns the output and ModelHeadWorkspaceBytes(T, hs) scratch; no logits
+// or sampling are produced. Output must not alias trunk or scratch.
+Status HeadHidden(const ModelHeadWeights& w, const uint16_t* trunk,
+                  uint16_t* hidden, int T, void* workspace,
+                  size_t workspace_bytes, cudaStream_t stream);
+
 // Device bytes for the HeadForward `workspace` (mixer GEMM + lm_head GEMM).
 size_t ModelHeadWorkspaceBytes(int T, int hs);
 

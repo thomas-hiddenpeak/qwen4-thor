@@ -1,0 +1,21 @@
+{
+  "expected_cpu_cases": 1,
+  "tests": [
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity"
+  ],
+  "production_unchanged": true,
+  "changed": [
+    "tools/serve_recovery/test_native_bundle.py"
+  ],
+  "sources": {
+    "tools/serve_recovery/version_contract.py": "5a3996a0909a99458dcf12e81c37ce41a91525afe848fd1da555d0cda6106b8f",
+    "tools/serve_recovery/version_registration.py": "29618464ec75cb3f4744ff2ca33368c12e64123c5dd909aba87286737a95229c",
+    "tools/serve_recovery/test_version_registration.py": "98723eff0e1ff24b5e89225fc492f8552a0f451c8df9e09e323540b6fd9f1e10",
+    "tools/serve_recovery/retention.py": "bf59ead830b2553cfdca4ff3882f6f79b7d3029606d6441ddf0c2fdcaf01adeb",
+    "tools/serve_recovery/test_retention.py": "7128d175590f9247aa833efc0f3f0f6ff2105c5b1a2a16e3bf2804ea7d92de0d",
+    "tools/serve_recovery/bundle.py": "0d807a361d348ae1adb33a4dda5140a356393fe3920c0219a8808872d825e48c",
+    "tools/serve_recovery/test_native_bundle.py": "f519deb69cc663ef7897d39596074f13f596de679c004ede3cc41e8d3e9ed3bc",
+    "tools/serve_recovery/test_profile_integration.py": "1c86e5a5e7242b99225435063d5a23532f72d410c734104a35d3e0af9e8292af"
+  },
+  "new_gpu_starts": 0
+}

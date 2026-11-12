@@ -1,0 +1,16 @@
+{
+  "label": "previous-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle/engine/q4t",
+    "service",
+    "check",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle",
+    "--manifest-sha256",
+    "1b1acb1777337fa6184261d7da08da45dcabd8e756cf65ccffab31a3d0102115"
+  ],
+  "returncode": 0,
+  "seconds": 1.0066284821368754
+}

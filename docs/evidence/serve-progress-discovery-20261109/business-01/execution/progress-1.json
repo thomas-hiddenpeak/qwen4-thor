@@ -1,0 +1,42 @@
+{
+  "phase": "READY",
+  "reason": "serving",
+  "monotonic": 2371284.690991602,
+  "progress_reason": "available",
+  "snapshot": {
+    "sequence": 162,
+    "observed_ns": 2371284609736474,
+    "complete": true,
+    "identity": {
+      "pid": 982101,
+      "start_ticks": 237124422,
+      "pid_namespace": 4026531836,
+      "controller_generation": 1,
+      "model_generation": 1,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "service_id": "1d1dee70-cf56-4a81-b1cd-82ea4c9fb350"
+    },
+    "active": 1,
+    "untracked": 0,
+    "successes": 1,
+    "steps": 6,
+    "rows": [
+      {
+        "ticket": 2,
+        "deadline_ns": 0,
+        "stage": 10,
+        "stage_since_ns": 2371283277458693,
+        "wait": 0,
+        "wait_since_ns": 2371283277458415,
+        "work": 8,
+        "work_id": 79,
+        "work_since_ns": 2371284597606666,
+        "completed": 78,
+        "last_completed_ns": 2371284597606490,
+        "updated_ns": 2371284597606666
+      }
+    ],
+    "wire_version": 2
+  },
+  "fault": null
+}

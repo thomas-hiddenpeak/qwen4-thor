@@ -1,0 +1,66 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"temperature must be in [0,2] or null","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"top_p must be in [0,1] or null","type":"invalid_request_error","code":"invalid_request","param":"top_p"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid integer selection option","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"frequency_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"frequency_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"presence_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"presence_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact signed 64-bit integer","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"logprobs must be boolean","type":"invalid_request_error","code":"invalid_request","param":"logprobs"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid integer selection option","type":"invalid_request_error","code":"invalid_request","param":"top_logprobs"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid token bias","type":"invalid_request_error","code":"invalid_request","param":"logit_bias.unexpected"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"temperature must be in [0,2] or null","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"temperature must be in [0,2] or null","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"top_p must be in [0,1] or null","type":"invalid_request_error","code":"invalid_request","param":"top_p"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid integer selection option","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer selection option","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"presence_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"presence_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"frequency_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"frequency_penalty"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"top_logprobs requires logprobs=true","type":"invalid_request_error","code":"invalid_request","param":"top_logprobs"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer selection option","type":"invalid_request_error","code":"invalid_request","param":"top_logprobs"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid token bias","type":"invalid_request_error","code":"invalid_request","param":"logit_bias[\"01\"]"}}}
+{"accepted":false,"response":{"error":{"message":"logit_bias token outside served vocabulary","type":"invalid_request_error","code":"invalid_request","param":"logit_bias[\"100\"]"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: number outside supported finite range at offset 94","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact signed 64-bit integer","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact signed 64-bit integer","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}

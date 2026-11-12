@@ -1,0 +1,14 @@
+file:///home/rm01/models/dev/qwen4-thor/tools/examples/js/chat_client.mjs:18
+  if (!value) throw new ProtocolError(message);
+                    ^
+
+ProtocolError: expected explicit /v1 base URL
+    at requireValue (file:///home/rm01/models/dev/qwen4-thor/tools/examples/js/chat_client.mjs:18:21)
+    at new ChatClient (file:///home/rm01/models/dev/qwen4-thor/tools/examples/js/chat_client.mjs:518:5)
+    at file:///home/rm01/models/dev/qwen4-thor/[eval1]:1:65
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:224:26
+    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.18.0

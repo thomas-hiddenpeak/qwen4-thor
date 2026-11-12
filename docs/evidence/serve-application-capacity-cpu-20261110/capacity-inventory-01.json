@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "python3",
+    "tools/serve_audit/check_inventory.py",
+    "--self-check"
+  ],
+  "exit_code": 0,
+  "seconds": 0.11406254721805453
+}

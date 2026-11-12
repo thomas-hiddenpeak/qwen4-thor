@@ -1,0 +1,59 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f10390ab..4f426bae 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -321,6 +321,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/chat_prompt.cpp
+   src/server/chat_plan.cpp
+   src/server/chat_preflight.cpp
++  src/server/chat_input_tokens.cpp
+   src/server/chat_metrics.cpp
+   src/server/chat_admission.cpp
+   src/server/chat_scheduler.cpp
+@@ -345,6 +346,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+     src/server/responses_output.cpp
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
++    src/server/responses_tokens.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
+     src/server/access_program.cpp
+@@ -565,6 +567,7 @@ if(Q4T_BUILD_TESTS)
+     src/server/responses_output.cpp
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
++    src/server/responses_tokens.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
+     src/server/access_program.cpp
+@@ -577,6 +580,7 @@ if(Q4T_BUILD_TESTS)
+     tests/server_responses_output_test.cpp
+     tests/server_responses_input_test.cpp
+     tests/server_responses_plan_test.cpp
++    tests/server_responses_tokens_test.cpp
+     tests/server_responses_reasoning_test.cpp
+     tests/server_access_program_test.cpp
+     tests/server_moderation_test.cpp
+diff --git a/include/q4t/server/application_routes.h b/include/q4t/server/application_routes.h
+index 460c82be..ba9380be 100644
+--- a/include/q4t/server/application_routes.h
++++ b/include/q4t/server/application_routes.h
+@@ -27,6 +27,10 @@ inline bool IsResponsesCompaction(std::string_view target) {
+   return target.substr(0, target.find('?')) == "/v1/responses/compact";
+ }
+ 
++inline bool IsResponsesTokenCount(std::string_view target) {
++  return target.substr(0, target.find('?')) == "/v1/responses/input_tokens";
++}
++
+ inline bool IsPromptTarget(std::string_view target) {
+   const auto path = target.substr(0, target.find('?'));
+   return path == "/v1/prompts" || path.starts_with("/v1/prompts/");
+@@ -91,6 +95,7 @@ inline bool ResponsesMethodAllowed(std::string_view method,
+   constexpr std::string_view root = "/v1/responses";
+   if (path == root) return method == "POST";
+   if (IsResponsesCompaction(path)) return method == "POST";
++  if (IsResponsesTokenCount(path)) return method == "POST";
+   if (!path.starts_with("/v1/responses/")) return false;
+   path.remove_prefix(root.size() + 1);
+   const auto end = path.find('/');

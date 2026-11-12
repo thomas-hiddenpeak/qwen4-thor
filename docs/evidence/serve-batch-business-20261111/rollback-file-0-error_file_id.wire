@@ -1,0 +1,1 @@
+{"id":"batch_req_tool_run_9ede8fa22048ccb156bafe29f606ee74","custom_id":"chat-1","response":{"status_code":502,"request_id":"req_tool_run_aacfea1cc66d92413ca14124cce9e035","body":{"error":{"message":"constrained response did not reach a grammar-accepted stop token","type":"server_error","code":"structured_output_incomplete","param":null}}},"error":null}

@@ -1,0 +1,47 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retrieval_acceptance.py\", line 314, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retrieval_acceptance.py\", line 254, in exercise\n    sdk=self.sdk_search(request); response=sdk['response']\n        ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retrieval_acceptance.py\", line 238, in sdk_search\n    self.engine.require(result.returncode == 0 and not result.stderr,'official SDK failure')\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls/source/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: official SDK failure\n",
+  "cleanup_failure": null,
+  "seconds": 61.816810966003686,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 154
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2674067067664855
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2674101289351415
+      },
+      {
+        "kind": "chats",
+        "label": "native-tls-sdk-search",
+        "ordinal": 2,
+        "monotonic_ns": 2674108508733504
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1992260,
+      "start_ticks": 267406706
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls",
+    "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666"
+  },
+  "scenario": "retrieval_tls",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

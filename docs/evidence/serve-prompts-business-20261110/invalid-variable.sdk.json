@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "error": {
+    "class": "BadRequestError",
+    "message": "400 Prompt variable type mismatch",
+    "status": 400,
+    "code": "invalid_prompt",
+    "param": "prompt.variables.context"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18989/v1/responses",
+      "method": "POST",
+      "body": "{\"prompt\":{\"id\":\"prompt_e03158be5f593d560f4dea8e6a44990d\",\"variables\":{\"context\":42}},\"input\":\"What is the authoritative project code?\",\"store\":true}"
+    }
+  ]
+}

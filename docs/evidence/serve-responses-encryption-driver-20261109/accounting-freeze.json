@@ -1,0 +1,10 @@
+{
+  "reason": "Source review: rejected encrypted input counts a handler error before sampling; check negative count separately from model steps.",
+  "tests": [
+    "test_budget_and_accounting_reject_extra_generation_or_missing_usage"
+  ],
+  "sources": {
+    "tools/serve_responses/encryption_acceptance.py": "a0c45e08325d148ee9aa2957169dbb0529b277d80888892ac9577e6b25ffa18a",
+    "tools/serve_responses/test_encryption_acceptance.py": "f8238aada5e6f1eea7dab3d6b9246358c52697fb8f163413083e891b5028d7af"
+  }
+}

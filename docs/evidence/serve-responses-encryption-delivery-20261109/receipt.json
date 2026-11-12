@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/release-01/bundle",
+  "manifest_sha256": "dca3b450388b8439b7bf0af9ea55ff3b2ad9b846eb5b80303f8d91b0e160a850",
+  "engine_binary_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+  "recovery_accepted": false
+}

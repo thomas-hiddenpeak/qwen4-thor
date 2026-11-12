@@ -1,0 +1,20 @@
+{
+  "new": [
+    "responses_execution_active_checkpoint_preserves_replay_prefix",
+    "responses_execution_size_checkpoint_is_visible_before_terminal",
+    "responses_execution_size_and_quota_rejection_retain_failure",
+    "responses_state_checkpoints_require_scope_and_current_revision",
+    "responses_state_terminal_reserve_cannot_publish_success_or_cross_scope",
+    "responses_state_item_identity_preserves_exact_numbers_and_array_order",
+    "conversation_state_item_identity_ignores_json_object_field_order"
+  ],
+  "regressions": [
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_execution_conflict_cannot_publish_completed_or_consume_sequence",
+    "responses_execution_lost_commit_receipt_never_overwrites_or_replays",
+    "responses_api_subscriber_timeout_never_cancels_generation_or_fakes_terminal"
+  ],
+  "gpu_starts": 0,
+  "default_changed": false,
+  "purpose": "Durable active events, quota terminal closure, semantic item identity"
+}

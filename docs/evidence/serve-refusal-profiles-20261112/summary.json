@@ -1,0 +1,75 @@
+{
+  "status": "PASS_REFUSAL_PRIMARY_LIGHT_AND_PACKAGE_PENDING_VERSION_DELIVERY",
+  "qualification": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 86,
+      "cleanup_complete": true,
+      "lease_result_sha256": "af92c81da6e74af30acbf2633a677845dc5c4d5507ae848f32969bc285592fef"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 77
+    },
+    "seconds": 91.38722964702174,
+    "registry_sha256": "3f7bf5b4a71becd9e35ecf6a36a254ce4a7ca340a72945a6b105b021eb7c5895",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/candidate-03/unqualified-bundle",
+    "manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384",
+    "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+    "recovery_accepted": false
+  },
+  "upgrade_permit": {
+    "format": "q4t-profile-migration-permit-v3",
+    "from_registry": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+    "to_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "040ba351a7c42bc3ff39a7c6d86647a0957af445396545c1e7db1a0ebfd847bf",
+    "to_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+    "capabilities_sha256": "68c3349531cf8ff042ee582a53fbdf227cb73cc6a5e7f0c9679f1409faded1d7",
+    "automatic": false,
+    "target_profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "target_capabilities_sha256": "e19d3caf6ea213a15effe61c0a474b7b7e471bd0b61647c6e5c799dd63dc06f5"
+  },
+  "default_unchanged": true,
+  "default_revision": 72,
+  "automatic_version_switching_accepted": false,
+  "full_performance": false,
+  "remaining_master_tasks_open": true
+}

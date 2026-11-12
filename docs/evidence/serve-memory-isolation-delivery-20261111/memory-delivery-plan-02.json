@@ -1,0 +1,12 @@
+{
+  "status": "FROZEN_NOT_RUN",
+  "commands": 8,
+  "seconds": 180,
+  "new_gpu_starts": 0,
+  "engine_unchanged": true,
+  "expected_revision": 52,
+  "target_revision": 54,
+  "driver_sha256": "20ff9ad20b400cd8622c8b35244ecb51ed2525653f231619b8da239de25fc9b1",
+  "prior_failed_attempt": "memory-delivery-01.json",
+  "retry_scope": "packaging/8 first actual CLI commands only; no model or test rerun"
+}

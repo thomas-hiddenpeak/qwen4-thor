@@ -1,0 +1,22 @@
+{
+  "status": "PASS_READ_ONLY_V8_PACKAGES",
+  "seconds": 0.4310925896279514,
+  "packages": [
+    {
+      "name": "default",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+      "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+      "version": 8,
+      "binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3"
+    },
+    {
+      "name": "rollback",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/rollback-bundle",
+      "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+      "version": 8,
+      "binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3"
+    }
+  ],
+  "gpu_operations": 0,
+  "mutations": 0
+}

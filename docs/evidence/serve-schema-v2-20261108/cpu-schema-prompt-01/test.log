@@ -1,0 +1,30 @@
+[PASS] chat_schema_prompt_preserves_contract_and_message_boundaries
+[PASS] chat_schema_prompt_preserves_tools_and_unconstrained_template
+[PASS] chat_message_profile_developer_system_equivalence
+  CHECK failed: param == expected (line 130)
+[FAIL] chat_message_profile_rejects_invalid_shapes
+[PASS] chat_message_profile_instruction_content_before_media
+[PASS] chat_message_profile_ordered_instructions_and_names
+[PASS] chat_message_profile_refusal_round_trip
+[PASS] chat_message_profile_name_byte_limit
+[PASS] chat_message_profile_preserves_history_rules
+[PASS] chat_reasoning_history_alias_contract
+[PASS] chat_reasoning_history_conflicts_rejected_before_render
+[PASS] chat_reasoning_controls_require_parsed_messages
+[PASS] output_constraints_template_filters_preserve_request
+[PASS] output_constraints_allowed_tools_filter_template_grammar_and_output
+[PASS] chat_plan_schema_resource_errors_keep_status_and_parameter
+[PASS] chat_plan_uniform_output_and_null_defaults
+[PASS] chat_plan_explicit_slot_boundaries
+[PASS] chat_plan_output_spelling_and_capacity_cap
+[PASS] chat_plan_cache_configuration_and_seed_boundary
+[PASS] chat_plan_native_template_and_constraint_adapter
+[PASS] chat_plan_encoder_failure_and_raw_identity
+[PASS] chat_preflight_envelope_and_opt_in_preview
+[PASS] chat_config_effective_sources_and_redaction
+[PASS] chat_config_admission_snapshot_and_queue_policy
+[PASS] chat_config_operations_listener_reports_independent_capacity
+[PASS] chat_plan_structured_cache_checks_actual_configuration
+[PASS] media_constraints_preserve_input_and_force_output_contract
+[PASS] media_prompt_instruction_names_and_refusal_positions
+28 tests, 27 passed, 1 failed, 0 skipped

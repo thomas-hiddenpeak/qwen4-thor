@@ -1,0 +1,17 @@
+{
+  "status": "PASS_TARGETED_CPU_PENDING_REAL_BUSINESS",
+  "cpp_passed": 19,
+  "cpp_failed": 0,
+  "python_passed": 2,
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "binaries": {
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "dab3574c34b037f1c117ed08a1795574bde2c0921698e6d69403945204ac5073"
+  },
+  "initial_build_failure": "test prompt helper omitted required error_param; corrected fixture only",
+  "initial_test_failure": "18/19: empty normalized tools mistakenly forced structured backend for plain pro",
+  "fix": "Only nonempty definitions force none; empty tools auto cannot authorize a call; output parser still rejects emitted calls",
+  "reuse": "Seven directly affected planner cases rerun; twelve unchanged passes and actual C++ output reused. No GPU/default changes.",
+  "default_changed": false
+}

@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-auto-72fe5f4255b51485c46701de329d9a8c",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "**First line title:** `# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0`\n\n**Exact citation:** `[docs/MODEL.md:L1-L16]`"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 551,
+    "completion_tokens": 48,
+    "total_tokens": 599
+  },
+  "logprobs": null
+}

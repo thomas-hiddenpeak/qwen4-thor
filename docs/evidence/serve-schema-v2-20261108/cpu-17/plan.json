@@ -1,0 +1,14 @@
+{
+  "scope": "rich function model definitions and exact native JSON argument history; refs relocated, null/text/huge decimal/marker/keys preserved, affected legacy/custom history only",
+  "tests": [
+    "chat_tool_history_json_adapter_preserves_refs_null_and_exact_values",
+    "chat_tool_history_arbitrary_json_keys_are_data_without_definitions",
+    "chat_tool_history_no_silent_argument_loss",
+    "chat_tool_history_legacy_shapes_are_explicit",
+    "chat_template_tool_result_order",
+    "chat_template_tool_result_names_follow_ids",
+    "custom_tools_plan_choice_filter_and_history"
+  ],
+  "binary_sha256": "d6df03940acaa108cbee6a796aea68a83ffea8ae621f89cc04daf680aa651af4",
+  "timeout_seconds": 90
+}

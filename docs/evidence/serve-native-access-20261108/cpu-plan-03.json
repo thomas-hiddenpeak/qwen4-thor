@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "kind": "targeted CPU, non-performance",
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "host_cases": [
+    "http_valid_length_and_header_names",
+    "http_rejects_duplicate_or_empty_authorization",
+    "http_rejects_ambiguous_framing",
+    "http_request_line_and_header_budget",
+    "http_body_capacity_and_trailing_bytes",
+    "http_preflight_body_uses_shared_chat_reservation",
+    "http_absolute_deadline_and_body_budget",
+    "http_header_identity_and_pre_body_admission",
+    "http_observation_receive_shape_and_size_reasons",
+    "http_observation_receive_eof_deadline_and_socket",
+    "http_observation_body_rejection_preserves_other_lease"
+  ],
+  "native_access_cases": 18,
+  "native_browser_cases": 1,
+  "suites": [
+    "native_ingress",
+    "native_admission",
+    "native_bundle",
+    "gateway.BindingTests"
+  ],
+  "source_files": {
+    "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
+    "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
+    "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
+    "include/q4t/service/ingress_address.h": "a931eda14ef69728f90401ff626ded167763d27a1da6e41f9184d4a976f191f9",
+    "include/q4t/service/ingress_admin.h": "119e08883d819bf6f5b6e721929013d1b2c428f99bf207992624363bac839265",
+    "include/q4t/service/ingress_cors.h": "0382a8147351fb09bc53e859edd4cee405b8327fb31460603744a171e70ddd7d",
+    "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
+    "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
+    "include/q4t/service/ingress_transport.h": "3cce6e9af213308a4c3b0f2c780b4b32d2c4ad7dc97a7512db70c312fa0ece2b",
+    "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
+    "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
+    "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
+    "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
+    "src/service/ingress_main.cpp": "4839d6823ac2702eeead2a983fd2c871d1bd30758f4f39ff0cb4d69a32c8e9a9",
+    "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
+    "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
+    "tests/host/CMakeLists.txt": "3a0b205a0c1ae8d1e20af0f07dafcda523cb2792b7b1260266abdbfd763bd1b5",
+    "tools/serve_gateway/gateway.py": "612e2ece14be7f9b6e6914079cf4a9516658a34c5974bc559d5cb98cc0949348",
+    "tools/serve_recovery/bundle.py": "f35d8eb336293577f9b32b60bf3f1e725468b59c1b0d1836d1273ae6400eec0c",
+    "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
+    "tools/serve_recovery/gateway_config.py": "7aa7cee50a9e3eda0ad79d7bf5e43bf80f11f96a8867f7a00403191ddff48ba8",
+    "tools/serve_recovery/native_ingress.py": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
+    "tools/serve_recovery/service.py": "d060fee9d7532a6b6ae3f79b14fd65aa792e0274d765705ed2d909c8a48b0711",
+    "tools/serve_recovery/test_gateway_nginx.py": "a9de1f897c74e90dea383746e21cffb180f3265fe2d32ac15d1fd401dd4749df",
+    "tools/serve_recovery/test_native_access.py": "5d7769cfd716bed236b84b1c6e1d1ac6f0c543c9e51b77cf1d8c142b63d77ceb",
+    "tools/serve_recovery/test_native_browser.py": "5d42dd0c5fa45036cb6c7908e384c0877b33e26a11e9881ce3c3c8ed91c5fd6a",
+    "tools/serve_recovery/test_native_bundle.py": "40f70999dd64bc971dc12af1053f35925a21b6e638259b91b2cb8a6ce0cbba82",
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee"
+  },
+  "default_engine": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "default_service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/bundle",
+  "reused_passes": {
+    "configuration": 15,
+    "host": 11,
+    "native": 17,
+    "admission": 4
+  },
+  "rerun": [
+    "access",
+    "browser"
+  ],
+  "reason": "Targeted real TLS early-rejection close fix: bound close_notify plus TCP tail drain to avoid losing a 401 to RST. TLS suite rerun because connection shutdown changed. Plaintext/contracts unchanged; reuse 47 prior cases. Plaintext-to-TLS fixture accepts valid reset; browser captures navigation diagnostics and disables hardware video.",
+  "changes": [
+    {
+      "path": "include/q4t/service/ingress_transport.h",
+      "before": "4223cec78a1bcd246a5e4ba40b3e6840347cf8fd3ee1a4982803b44092d7c08c",
+      "after": "3cce6e9af213308a4c3b0f2c780b4b32d2c4ad7dc97a7512db70c312fa0ece2b"
+    },
+    {
+      "path": "src/service/ingress_transport.cpp",
+      "before": "0dd0b25252de32293bb06e9b6e502aedf0d98bef68e6c221aeb757cee52b7577",
+      "after": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454"
+    },
+    {
+      "path": "tools/serve_recovery/test_native_access.py",
+      "before": "7116470ff8d653ee931450fb798b669c964651a4bdd7d0057b4b7e00d6df8366",
+      "after": "5d7769cfd716bed236b84b1c6e1d1ac6f0c543c9e51b77cf1d8c142b63d77ceb"
+    },
+    {
+      "path": "tools/serve_recovery/test_native_browser.py",
+      "before": "ee53e5c163f47bde17fa123e6f9c0bbc3884b5ea9c861d7d006482a7f2c1e510",
+      "after": "5d42dd0c5fa45036cb6c7908e384c0877b33e26a11e9881ce3c3c8ed91c5fd6a"
+    }
+  ]
+}

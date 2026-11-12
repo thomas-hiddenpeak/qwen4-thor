@@ -1,0 +1,10 @@
+{
+  "status": "PASS_FILE_INTEGRATION_AND_COMPATIBLE_ROLLBACK",
+  "counts": {
+    "starts": 3,
+    "chats": 7,
+    "controls": 118
+  },
+  "seconds": 192.37963839108124,
+  "binary_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+}

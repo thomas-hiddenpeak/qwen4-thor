@@ -1,0 +1,5 @@
+{
+  "error": "KeyError: cpp; actual prior key is host_tests",
+  "stage": "CPU plan preparation",
+  "tests_executed": 0
+}

@@ -1,0 +1,20 @@
+{
+  "CMakeLists.txt": "b6d898664e885209733a1a0636c9b1c998392cc9d283b2debc768fb6b0e7697f",
+  "cmake/ChatProtocolIdentity.cmake": "4ed5e8ef166891b616a6ea746d2ea873f99a89cd1035909d3d5a607317a66416",
+  "cmake/HostTestSources.cmake": "59bce1f55ecfa0ed2277974cb2d47e8102e0c71f1e05ba6528d53059c72c16d1",
+  "include/q4t/server/batch_jobs.h": "64af24958b4618ee3123897f4de76b85435d50a4a1cda5fcd0c0ca89792624d3",
+  "include/q4t/server/batch_preparation.h": "b1f8ed9521efebdbc705d9fba88091206dff5ba03152f0fb1def31361570f049",
+  "include/q4t/server/batch_state.h": "20fb420074841a74c4d99cb58c899f74fa67b18429c81d9ffe0323904851f96d",
+  "include/q4t/server/batch_validation.h": "a79b8691a715ea2d9f2d3b9fb36cf64d70bc88ca82f7367aaedc052812829b91",
+  "include/q4t/server/chat_server.h": "ba7267d22633532fc56eef63f2ca91c9f3d2468fc0d65ee539b064023a8abfaa",
+  "src/server/batch_checkpoint.cpp": "54adf5f3d8192ddf422c92daad67ee34f3b00c43917765f9906b9267b77f376d",
+  "src/server/batch_jobs.cpp": "b1514a8165460a80f98fd0cd621417dc30c6415524619a00632f1c5da85a44f2",
+  "src/server/batch_preparation.cpp": "dc411579413b433422a42361d64e01173a5d70b861fd1f7f518a7439246d5bbf",
+  "src/server/batch_results.cpp": "b8433afb4cf12b1a1f9ac841cce7028c8cb1d39ef2baae97432030de10c0637c",
+  "src/server/batch_state.cpp": "2e69c41f2cd8a784f4cfa858f0e6d42fe10b054a1fb6fe92a8a7258d5c82a2ff",
+  "src/server/batch_validation.cpp": "aa6eecec2fc438b0b11971d73144528409625278abb65a38179f16cdd5e3a704",
+  "src/server/chat_responses.cpp": "3acc8c54d579a4bdb246c75867bbd824dcc2340c0820756f84866ff4adc2cd10",
+  "tests/server_batch_preparation_test.cpp": "06c721b7efad6bfbf14dc9cf21b2a9f88269d31ccf0aac60e142871176895541",
+  "include/q4t/server/batch_budget.h": "a3b18bf6080e62ed5e69af9b024e51a6c5f2d23a98e52dec4998845748a084fe",
+  "src/server/batch_budget.cpp": "1778c6f73ebebcfd5388068f6e9916b6c6ed3b9527321e8f4bab9a727606837c"
+}

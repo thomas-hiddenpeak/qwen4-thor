@@ -1,0 +1,24 @@
+✔ JSON and SSE SDK interpretation agrees with strict captured bytes (44.392633ms)
+✔ strict JSON rejects duplicate object keys (0.491984ms)
+✔ strict JSON rejects nested duplicate keys (0.159131ms)
+✔ strict JSON rejects near integer rounding (0.118593ms)
+✔ strict JSON rejects unsafe integer (0.08888ms)
+✔ strict JSON rejects nonfinite number (0.080028ms)
+✔ strict JSON rejects unpaired surrogate (0.09314ms)
+✔ strict JSON rejects trailing document (0.086037ms)
+✔ strict JSON rejects trailing comma (0.090575ms)
+✔ strict JSON accepts exact integral exponents and harmless prototype keys (0.228288ms)
+✔ split tool deltas produce one complete validated batch (37.810968ms)
+✔ tool stream provisional fragments cannot complete before terminal and EOF (34.816018ms)
+✔ tool stream later error invalidates all earlier complete fragments (950.265166ms)
+✔ custom raw input survives SDK mixed JSON/SSE and explicit validators (95.945901ms)
+✔ schema-v2 exact numeric data survives actual SDK serialization and tool response (16.280215ms)
+✔ schema-v2 root references and no-user instructions preserve caller history (0.469363ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1332.818175

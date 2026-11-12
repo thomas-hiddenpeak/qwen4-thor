@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "schema_sha256": "dde0944dced3c0f87597978b1c164d948c968e5295fc4442e80b3c3d807d262c",
+  "wire_sha256": "dc0ac8d2a67dbb0eb35f06615c839acc9373e52a0d511d3584be46c445963902",
+  "current_native": true,
+  "historical_v1": true,
+  "negative_cases": [
+    "media_limits.profile",
+    "media_limits.mtp",
+    "media_limits.max_execution_slots",
+    "media_limits.missing_video_time_unit",
+    "application_state.max_object_mib",
+    "application_state.directory",
+    "application_state.core_readiness_dependency"
+  ]
+}

@@ -1,0 +1,11 @@
+usage: q4t [-h]
+           {prepare,init,run,start,status,diagnostics,stop,tls-status,tls-reload,observe,metrics,export,retention-plan,retention-archive,retention-apply,retention-resume,retention-migrate}
+           ...
+
+Unified recovery service entrypoint; no systemd, shell loop or auto install.
+
+positional arguments:
+  {prepare,init,run,start,status,diagnostics,stop,tls-status,tls-reload,observe,metrics,export,retention-plan,retention-archive,retention-apply,retention-resume,retention-migrate}
+
+options:
+  -h, --help            show this help message and exit

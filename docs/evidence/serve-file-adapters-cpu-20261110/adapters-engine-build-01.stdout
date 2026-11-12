@@ -1,0 +1,46 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_io
+[  3%] Built target q4t_ple
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[  7%] Built target q4t_service_tools
+[  7%] Built target q4t_text
+[ 21%] Built target xgrammar
+[ 25%] Built target q4t_quant
+[ 25%] Built target q4t_service_cli
+[ 39%] Built target q4t_model
+[ 39%] Built target q4t_startup_plan
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document_worker.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_document_sandbox.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_package.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_package_runtime.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office_common.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office_xml.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office_text.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office_sheet.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_office_odf.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_rtf.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_rtf_encoding.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_legacy.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_legacy_worker.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_legacy_sandbox.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_extract.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_source.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf_worker.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_pdf_sandbox.cpp.o

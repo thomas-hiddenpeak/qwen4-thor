@@ -1,0 +1,34 @@
+{
+  "type": "non_performance_cache_cancellation_bugfix_and_optional_frontend_routes",
+  "runtime_sources": [
+    "include/q4t/server/cache_io.h",
+    "src/server/cache_io.cpp",
+    "include/q4t/server/session_cache.h",
+    "src/server/session_cache.cpp"
+  ],
+  "qualification": {
+    "driver": "tools/serve_recovery/profile_acceptance.py",
+    "model_starts": 2,
+    "requests": 8,
+    "seconds": 900
+  },
+  "cache_business": {
+    "driver": "tools/serve_cache_io/acceptance.py",
+    "model_starts": 1,
+    "requests": 8,
+    "seconds": 600
+  },
+  "aggregate_bounds": {
+    "model_starts": 3,
+    "requests": 16,
+    "seconds": 1500
+  },
+  "constraints": [
+    "Each whole phase holds one strict shared GPU lease",
+    "No automatic model restart or intervention in other services",
+    "No performance or full model quality matrix",
+    "Reuse unchanged runtime, native ingress and recovery evidence",
+    "Fail preserves evidence and existing default"
+  ],
+  "default": "rev92 remains until actual qualification and applicable cache business pass"
+}

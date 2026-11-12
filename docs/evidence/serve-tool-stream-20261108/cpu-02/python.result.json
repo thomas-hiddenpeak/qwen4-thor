@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+    "tools.examples.test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion",
+    "tools.examples.test_chat_client.ClientContracts.test_error_after_complete_call_is_failure",
+    "tools.examples.test_chat_client.ClientContracts.test_must_read_through_eof",
+    "tools.examples.test_chat_client.ClientContracts.test_stream_identity_order_and_types",
+    "tools.examples.test_chat_client.ClientContracts.test_tool_and_usage_validation",
+    "tools.examples.test_chat_client.ClientContracts.test_length_is_observable_but_never_executable_or_final",
+    "tools.examples.test_chat_client.ClientContracts.test_unknown_tools_and_arguments_rejected_before_dispatch",
+    "tools.examples.test_chat_client.DemoContracts.test_partial_stream_never_reaches_tool_plan"
+  ],
+  "exit_code": 0,
+  "seconds": 0.16397312516346574
+}

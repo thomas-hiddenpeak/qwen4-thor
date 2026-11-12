@@ -1,0 +1,69 @@
+{
+  "status": "PASS_TARGETED_NATIVE_HTTP_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_HTTP_TRANSPORT",
+  "binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+  "protocol_sha256": "6c554e3528fec04bd94a388a58d579b8df110970a920b7b1dd48484a074f7a82",
+  "source_commit": "fc902f458e7fb5641bae4a312d64b76a19e897f7",
+  "actual_business": {
+    "status": "PASS_TARGETED_NATIVE_HTTP_TRANSPORT",
+    "acceptance": "ACCEPT_TARGETED_NATIVE_HTTP_TRANSPORT",
+    "binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+    "protocol_sha256": "6c554e3528fec04bd94a388a58d579b8df110970a920b7b1dd48484a074f7a82",
+    "source_commit": "f906b6f7d807876d0f0813c39ae0e4fa148bfdbd",
+    "cumulative_counts": {
+      "starts": 2,
+      "chats": 12,
+      "probes": 0,
+      "controls": 333
+    },
+    "actual_generations": 11,
+    "reserved_not_dispatched": 1,
+    "cumulative_seconds": 103.06259878072888,
+    "first_failure_preserved": true,
+    "first_passed_transport_reused": true,
+    "lease_status": "COMPLETED",
+    "nvml_samples": 101,
+    "all_nvml_ok": true,
+    "cleanup_confirmed": true,
+    "default_changed": false,
+    "full_performance": false,
+    "full_model_quality": false,
+    "long_stability": false,
+    "remaining_master_tasks_open": true
+  },
+  "evidence": {
+    "serve-http-framing-20261109": {
+      "index_sha256": "00460903dc08588dd63e9602687bd86042aa17069d2767da8f50bee8a050e78c",
+      "files": 12
+    },
+    "serve-http-session-20261109": {
+      "index_sha256": "4276295636a47fdefd0b2517ece8d931cff0c74aa606f64d0f5b011438569984",
+      "files": 23
+    },
+    "serve-http-proxy-20261109": {
+      "index_sha256": "ee5c12c484c565ca250f3cfa5b24835c93723bf4ef99aa651052c76bf31f159a",
+      "files": 17
+    },
+    "serve-http-package-20261109": {
+      "index_sha256": "32575b98c3e987740e98e1039ad219b4caa8657cad18d2add6d3337a7145629f",
+      "files": 20
+    },
+    "serve-http-driver-20261109": {
+      "index_sha256": "e45a5c437feb2e84e5c4dd75ee811f3e4db82e596e567c21f0d62d835299fde9",
+      "files": 19
+    },
+    "serve-http-prefix-fix-20261109": {
+      "index_sha256": "09212e74adf25e85a35c87323ac604c59a13ba2ed01265da150f66ba8d380073",
+      "files": 56
+    },
+    "serve-http-business-20261109": {
+      "index_sha256": "fb3d3dc458dd1a0eca1eeb3483066237a43b3b8909d4b347aa24fb0bdf610088",
+      "files": 53
+    }
+  },
+  "additional_gpu_tests": 0,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

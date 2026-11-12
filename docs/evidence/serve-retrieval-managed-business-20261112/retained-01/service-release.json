@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "acceptance": "ACCEPT_NATIVE_RETRIEVAL_RETAINED",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/retained-01/decision.json",
+  "acceptance_sha256": "20f9656f917d6cc032316d3f5455dbef99940c8358f431dc6ce4877d8ca5df88",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+  "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+  "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+  "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/retained-01/execution/state",
+  "service_id": "d2bdb2f7-59cd-4e93-8123-4bcc8c845980",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Exact managed native retrieval; optional TLS SDK or actual whole-tree fallback preserving files/index/response/history.",
+  "default_replaced": false
+}

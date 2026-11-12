@@ -1,0 +1,3 @@
+[PASS] conversation_state_resolves_all_declared_input_variants
+[PASS] conversation_state_screenshot_absence_and_include_contract
+2 tests, 2 passed, 0 failed, 0 skipped

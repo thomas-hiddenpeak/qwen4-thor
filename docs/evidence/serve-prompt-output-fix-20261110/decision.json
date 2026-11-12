@@ -1,0 +1,27 @@
+{
+  "status": "PASS_PROMPT_OUTPUT_FIX_CPU",
+  "cpp_pass": 4,
+  "python_pass": 4,
+  "actual_wire_values": 14,
+  "build_warnings": 0,
+  "binaries": {
+    "engine": {
+      "path": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+      "sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05"
+    },
+    "host": {
+      "path": ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "sha256": "6a60a639125953263cbe713ff9d860bd10467f464ef833a813152ec6ff437953"
+    },
+    "ingress": {
+      "path": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+      "sha256": "5d49abe92dfb97465b342f8f2709637253d1e1d2e8d22f65ac4b4ea0eda40c57"
+    }
+  },
+  "first_oracle_failure_preserved": true,
+  "models": 0,
+  "chats": 0,
+  "gpu_seconds": 0,
+  "reuse": "serve-prompts-cpu-20261109; directly affected cases rerun, other source-specific behavior unchanged",
+  "business_pending": true
+}

@@ -1,0 +1,9 @@
+{
+  "own_processes_gone": true,
+  "ports_released": true,
+  "shared_lock_free": true,
+  "default_unchanged": true,
+  "nvml_queries": 122,
+  "all_nvml_ok": true,
+  "model_exit": 0
+}

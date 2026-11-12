@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tools/serve_responses/test_conversations_sdk.mjs"
+  ],
+  "environment": {
+    "Q4T_NODE_SDK_DIR": ".q4t-work/serve-protocol-20261103/sdk",
+    "Q4T_HOST_TESTS": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests"
+  },
+  "executable_sha256": "3d4d6af3663459043b1372cb9c25fcceb0c976aace36944f7e0bb6edde155131",
+  "exit_code": 0,
+  "seconds": 5.4022568189539015
+}

@@ -1,0 +1,14 @@
+{
+  "include/q4t/service/device_filter.h": "47464b28db144b734441ab587b03951a5bf8134dde2c78c4fb8149f83b5b744d",
+  "src/service/device_filter.cpp": "2b01f24bcb959757cc48960a794bd90ca86a2b41d25c41a13e35747c9575c89f",
+  "src/service/device_control_main.cpp": "fde4ce03a6b6d775835996d74884b8dae4377cf1f2a5f63d253b9755273765d8",
+  "tools/serve_recovery/device_control.py": "bbdb8c56fb9f402c0d650c5674260fcec01d613193a3bcfdb00af08c8f350fe0",
+  "tools/serve_recovery/device_inventory.py": "e4599edb0110d486a368f08cd1f5d32460f90b8908bed3b3e0dfe570ed01e732",
+  "tools/serve_recovery/device_platform.py": "325bbadd21fa41c56603c45d9bbb4f338fe549624d838cd3072827716221ac18",
+  "tools/serve_recovery/device_domain.py": "a92f0e88136ee317e8533a30f983082498ee4bae60c1a29de3fd7cd6b50b6899",
+  "tools/serve_recovery/test_device_domain.py": "fae82eeeb9f46b37d62a951e84aa141820a8d186c23c66a4d40567520acdbafe",
+  "tools/serve_recovery/test_device_control.py": "2fa17d91eafce5c14e09e9a60e1cfaff213d209d14ae606baeb238c733c89971",
+  "tools/serve_recovery/service.py": "13e87bbfbf908278054c3af9a97021dbb935adf05230935f83e39b120bfae799",
+  "tools/serve_recovery/bundle.py": "f3069d9a3be52d217f710275ec9b067a4c647bf761aacf64f929bf3a1e9f21ed",
+  "tools/serve_recovery/test_native_bundle.py": "bd7cfde22034ee13a4378ebdd10c13b5ca9496536886ca7e5f1ffe72d67da353"
+}

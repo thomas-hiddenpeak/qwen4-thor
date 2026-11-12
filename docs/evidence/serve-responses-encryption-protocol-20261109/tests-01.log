@@ -1,0 +1,37 @@
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+invalid_encrypted_content: Invalid authenticated reasoning state
+  CHECK failed: Ok(follow.Prepare(Follow(input), Config(), Access(), 44)) (line 141)
+[FAIL] responses_crypto_stateless_roundtrip_restores_actual_reasoning
+  CHECK failed: Ok(follow.Prepare(Follow(history), Config(), Access(), 44)) (line 168)
+[FAIL] responses_crypto_origin_prefix_full_suffix_and_conflict
+  CHECK failed: Ok(follow.Prepare(Follow(input), Config(), Access(), 44)) (line 212)
+[FAIL] responses_crypto_sse_summary_and_persisted_events_share_ciphertext
+  CHECK failed: Ok(run.Prepare(request, Config(), Access(), 44)) (line 233)
+[FAIL] responses_crypto_previous_response_survives_store_restart
+  CHECK failed: Ok(run.Prepare(request, Config(), Access(), 44)) (line 258)
+[FAIL] responses_crypto_conversation_restores_without_mutating_stored_items
+  CHECK failed: Ok(follow.Prepare(Follow(output), Config(), Access(), 45)) (line 289)
+[FAIL] responses_crypto_background_queued_restore_uses_persistent_keys
+[PASS] responses_crypto_wrong_owner_model_and_plaintext_are_rejected
+  CHECK failed: Ok(follow.Prepare(Follow(input), Config(), Access(), 44)) (line 332)
+[FAIL] responses_crypto_restored_tool_context_does_not_execute_tools
+  CHECK failed: Ok(follow.Prepare(Follow(output), Config(), Access(), 44)) (line 348)
+[FAIL] responses_crypto_incomplete_reasoning_is_not_promoted_to_complete
+  CHECK failed: Ok(follow.Prepare(request, Config(), Access(), 44)) (line 364)
+[FAIL] responses_crypto_restored_context_is_measured_and_truncated_normally
+[PASS] responses_crypto_seal_failure_never_publishes_success_terminal
+[PASS] responses_summary_checkpoint_replay_and_followup_keep_derived_item
+[PASS] responses_execution_stateless_does_not_depend_on_storage
+[PASS] chat_capabilities_native_responses_state_and_recovery
+[PASS] responses_output_text_reasoning_full_lifecycle
+[PASS] responses_output_parallel_function_custom_and_order
+[PASS] responses_output_incomplete_never_completes_partial_tool
+[PASS] responses_output_usage_limits_and_no_double_terminal
+18 tests, 9 passed, 9 failed, 0 skipped

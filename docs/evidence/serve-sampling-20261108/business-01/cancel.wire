@@ -1,0 +1,8 @@
+data: {"id":"sampling-cancel","object":"chat.completion.chunk","created":1794098745,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"sampling-cancel","object":"chat.completion.chunk","created":1794098745,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"###"},"finish_reason":null,"logprobs":{"content":[{"token":"###","logprob":-4.1531926577155218,"bytes":[35,35,35],"top_logprobs":[]}],"refusal":null}}],"usage":null}
+
+data: {"error":{"message":"request cancelled","type":"conflict_error","code":"explicit_cancel","param":null}}
+
+data: [DONE]
+

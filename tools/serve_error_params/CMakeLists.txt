@@ -26,3 +26,5 @@ target_compile_options(error_param_probe PRIVATE -Wall -Wextra -Werror)
 find_package(Threads REQUIRED)
 target_link_libraries(error_param_probe PRIVATE Threads::Threads)
 q4t_link_structured_output(error_param_probe)
+
+q4t_link_native_documents(error_param_probe)

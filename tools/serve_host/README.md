@@ -1,4 +1,26 @@
-# 托管 host 资源观测
+# 原生服务与旧托管 host 资源观测
+
+当前Guardian服务使用项目原生观察入口，无nginx/NVML/Prometheus要求：
+
+```bash
+build/service/bin/q4t service observe --state build/service-native-state
+build/service/bin/q4t service metrics --state build/service-native-state
+build/service/bin/q4t service export --state build/service-native-state --port 19448
+```
+
+新入口随v6包发行；当前实现/验收以[STATUS](../../docs/STATUS.md)为准。
+export前台监听127.0.0.1，提供只读GET/HEAD `/metrics`、`/status`；
+不启动服务或发生成/探测/重启请求。采集器独立进程，单worker最多
+3次/60秒启动，未回收保留容量；采集4秒无回复终止该采集器。HTTP
+16连接、8KiB头、128KiB响应、2秒连接期限，内存快照超过3秒即UNKNOWN。
+公开状态不包含PID、路径、凭据或请求内容；固定标签，不无限增加代次
+标签。服务可接单与辅助观察UNKNOWN分别表示；资源缺失省略数值。
+/proc RSS/Threads仅该进程记账，不是Thor总RAM或硬资源限额。
+observe/metrics是显式一次只读采集，export独占该state的观察器锁；
+只有export自动有界恢复自己的采集器，不能操作模型或Guardian。
+
+以下为保留的旧backend v5/v6与可选nginx exporter入口，不是当前原生
+服务的默认部署依赖。
 
 只读绑定一个 v5 后端包及一次 run，读取受管 cgroup 的 host 内存、
 任务计数和保护事件，并为 Prometheus 提供独立的 loopback `/metrics`。
@@ -103,3 +125,24 @@ host scrape 为 15 秒、规则为 5 秒；30 秒过期门限并不等于最坏�
 ```bash
 python3 -B tools/serve_host/projection_fix.py verify
 ```
+
+
+## 当前原生服务run留存（v6）
+
+`service retention-plan --state STATE --plan-output PLAN`生成只读计划，
+可设置`--max-age-days`、`--max-runs`、`--max-bytes`。只计算runs中文件
+实际分配块；未知字节不会冒充0，受保护对象超额单独报告。state、
+应用对象、模型目录、发行/回退包不是清理候选，归档数量不在该限额中。
+
+`service retention-archive --state STATE --run UUID --archive DIRECTORY`
+先复制到state之外的私有work/build目录，完整字节和身份核验后登记。
+未归档现场、活动引用、发行/回退依赖保留。`service retention-apply
+--state STATE --plan PLAN`复核原计划后执行；异常中断用`service
+retention-resume --state STATE --run UUID`，只删除原清单的未变残留。
+归档及删除均不会停止模型或获取核心持久锁。
+
+旧格式或跨boot身份不明确时，先在服务已持久STOPPED且无活动代次
+时执行`service retention-migrate --state STATE --run UUID`。它不主动
+停止服务；非阻塞核对三把拥有权锁，在锁内不做文件I/O，前后核对
+账本后写外部证明，保留历史配置。任一锁忙、账本变动或归档损坏
+均拒绝；新启动仍必须使用新UUID。清理只在显式命令下执行。

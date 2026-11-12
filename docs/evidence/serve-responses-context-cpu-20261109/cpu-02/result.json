@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "cases": 16,
+  "seconds": 0.11392500810325146,
+  "host_sha256": "c67507ecd8e64d2714131f662c73864f4e5e2d3dd3e4f96685c58d94f64c0dc5",
+  "engine_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+  "warnings": 0,
+  "default_unchanged": true
+}

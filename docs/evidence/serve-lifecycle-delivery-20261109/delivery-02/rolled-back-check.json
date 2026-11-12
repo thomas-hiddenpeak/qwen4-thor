@@ -1,0 +1,16 @@
+{
+  "label": "rolled-back-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+    "service",
+    "check",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+    "--manifest-sha256",
+    "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab"
+  ],
+  "exit_code": 0,
+  "seconds": 1.0082557741552591
+}

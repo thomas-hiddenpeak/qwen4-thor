@@ -1,0 +1,263 @@
+{
+  "status": "PASS_TARGETED_FILE_INPUTS_CANDIDATE",
+  "acceptance": "ACCEPT_TARGETED_FILE_INPUTS",
+  "binary_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "engine_source_commit": "93923d5b",
+  "package_source_commit": "75c0548dd24d7470792bbd66d5e28d585ddc896d",
+  "protocol_sha256": "e8fdc5f8c255e57cf57738805775ee7f055877cfa175c2678d1428c29333b2d1",
+  "actual_business": {
+    "status": "ACCEPT_FILE_INTEGRATION_AND_FORMAT_COMPATIBILITY",
+    "result": {
+      "status": "PASS_FILE_INTEGRATION_AND_COMPATIBLE_ROLLBACK",
+      "counts": {
+        "starts": 3,
+        "chats": 7,
+        "controls": 118
+      },
+      "seconds": 192.37963839108124,
+      "binary_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+    },
+    "model_steps_by_process": [
+      1,
+      6,
+      2
+    ],
+    "nvml_queries": 180,
+    "lease_events": 184,
+    "env_abort": false,
+    "all_queries_ok": true,
+    "cleanup": {
+      "owned": {
+        "1440148": {
+          "state": "R",
+          "ppid": 1440143,
+          "pgid": 1440143,
+          "start_ticks": 249827042,
+          "argv": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+            "serve",
+            "--model-dir",
+            "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "19041",
+            "--operations-port",
+            "19042",
+            "--mtp",
+            "--max-seq",
+            "1",
+            "--max-len",
+            "8192",
+            "--max-prefill",
+            "2048",
+            "--max-tokens",
+            "384",
+            "--max-inflight-requests",
+            "8",
+            "--max-queued-requests",
+            "2",
+            "--object-store-dir",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/objects",
+            "--client-policy-file",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/client-policy.json",
+            "--object-max-client-mib",
+            "256",
+            "--object-max-total-mib",
+            "512"
+          ],
+          "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+        },
+        "1440954": {
+          "state": "R",
+          "ppid": 1440143,
+          "pgid": 1440143,
+          "start_ticks": 249830991,
+          "argv": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+            "serve",
+            "--model-dir",
+            "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "19041",
+            "--operations-port",
+            "19042",
+            "--mtp",
+            "--max-seq",
+            "1",
+            "--max-len",
+            "8192",
+            "--max-prefill",
+            "2048",
+            "--max-tokens",
+            "384",
+            "--max-inflight-requests",
+            "8",
+            "--max-queued-requests",
+            "2",
+            "--object-store-dir",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/objects",
+            "--client-policy-file",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/client-policy.json",
+            "--object-max-client-mib",
+            "256",
+            "--object-max-total-mib",
+            "512",
+            "--no-mtp",
+            "--allow-media"
+          ],
+          "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+        },
+        "1441917": {
+          "state": "R",
+          "ppid": 1440143,
+          "pgid": 1440143,
+          "start_ticks": 249840120,
+          "argv": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source/.q4t-work/engine-build/q4t",
+            "serve",
+            "--model-dir",
+            "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "19041",
+            "--operations-port",
+            "19042",
+            "--mtp",
+            "--max-seq",
+            "1",
+            "--max-len",
+            "8192",
+            "--max-prefill",
+            "2048",
+            "--max-tokens",
+            "384",
+            "--max-inflight-requests",
+            "8",
+            "--max-queued-requests",
+            "2",
+            "--object-store-dir",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/objects",
+            "--client-policy-file",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/integration-business-01/client-policy.json",
+            "--object-max-client-mib",
+            "256",
+            "--object-max-total-mib",
+            "512",
+            "--no-mtp",
+            "--allow-media"
+          ],
+          "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source/.q4t-work/engine-build/q4t"
+        }
+      },
+      "remaining": [],
+      "model_exit": 0,
+      "ports_released": true,
+      "lease_continuously_held": true
+    },
+    "postflight": {
+      "protected_unchanged": true,
+      "frozen_sources_unchanged": true,
+      "binary_identities_unchanged": true,
+      "lock_reacquired_and_released": true,
+      "preexisting_proxy_identity_preserved": true
+    },
+    "usage": [
+      {
+        "label": "default-mtp-chat",
+        "usage": {
+          "prompt_tokens": 28,
+          "completion_tokens": 3,
+          "total_tokens": 31
+        }
+      },
+      {
+        "label": "pdf",
+        "usage": {
+          "prompt_tokens": 1478,
+          "completion_tokens": 11,
+          "total_tokens": 1489
+        }
+      },
+      {
+        "label": "fresh-csv-sse",
+        "usage": {
+          "input_tokens": 856,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 176,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1032
+        }
+      },
+      {
+        "label": "frozen-follow",
+        "usage": {
+          "input_tokens": 512,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 6,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 518
+        }
+      },
+      {
+        "label": "same-media-model-chat",
+        "usage": {
+          "prompt_tokens": 28,
+          "completion_tokens": 3,
+          "total_tokens": 31
+        }
+      },
+      {
+        "label": "rollback-frozen-follow",
+        "usage": {
+          "input_tokens": 512,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 6,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 518
+        }
+      },
+      {
+        "label": "rollback-pdf",
+        "usage": {
+          "prompt_tokens": 1478,
+          "completion_tokens": 11,
+          "total_tokens": 1489
+        }
+      }
+    ],
+    "count_preparation": {
+      "input_tokens": 379,
+      "output_tokens": 169
+    },
+    "candidate_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+    "compatible_reader_sha256": "2657eb168192aa6c9cf3e1dd77c52d1f9dea053d237777dc4b56e18d30134a96",
+    "compatible_reader_source": "eee091b4634d95f855e8c5937bb0a4a3c500bcda",
+    "compatible_reader_limits": "Older16MiB body/4MiB prompt/64MiB background limits remain; new-format state read/replay passed. Sealed package/deployment still pending.",
+    "production_files_unchanged": true,
+    "remaining": "Seal compatible rollback and candidate packages, bounded publication check, and all master tasks. No full quality/performance or long-run claim."
+  },
+  "source_review_sha256": "3e26ba451d2c3ece834af79b385d8ea21b090a5816b648f38cd17251cd50b807",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

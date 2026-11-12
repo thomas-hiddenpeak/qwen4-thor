@@ -1,0 +1,11 @@
+/home/rm01/models/dev/qwen4-thor/src/server/finite_response.cpp: In member function ‘bool q4t::server::FiniteResponse::Record(int, std::string_view, std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/src/server/finite_response.cpp:37:15: error: cannot convert ‘const q4t::Status’ to ‘int’ in assignment
+   37 |     status_ = status;
+      |               ^~~~~~
+      |               |
+      |               const q4t::Status
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1409: CMakeFiles/q4t_server.dir/src/server/finite_response.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

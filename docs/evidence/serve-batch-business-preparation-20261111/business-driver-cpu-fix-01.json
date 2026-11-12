@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_actual_usage_rejects_unknown_invalid_or_reserved_substitutes",
+    "tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_jsonl_rejects_truncated_reordered_or_missing_receipts",
+    "tools.serve_responses.test_batches_acceptance.BatchAcceptanceTests.test_terminal_and_counts_cannot_hide_unfinished_or_failed_rows",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.31436851574108005
+}

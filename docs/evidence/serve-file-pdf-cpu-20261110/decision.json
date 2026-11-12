@@ -1,0 +1,29 @@
+{
+  "status": "PASS_TARGETED_PDF_COMPONENT_CPU",
+  "unique_cpp_tests": 18,
+  "python_actual_pixel_tests": 1,
+  "first_cpp": {
+    "passed": 13,
+    "failed": 5,
+    "seconds": 0.6146503859199584
+  },
+  "followup_cpp": {
+    "passed": 6,
+    "failed": 0,
+    "scope": "five failed PDF cases plus directly affected sandbox",
+    "seconds": 0.4644827009178698
+  },
+  "diagnostic": "one synthetic PDF strace confirms ELF exec EACCES; kept original; no host package installation",
+  "first_build_failure": "Operation namespace ambiguity; explicit Digest/Error imports fixed",
+  "host_sha256": "374c938b5e3499f7a9a57a9585f4b2e33daa2d79367d17439e98f9d698745318",
+  "candidate_engine_sha256": "f06fea1cb563ec920ffd84e92e16d4b24877b10964bd4402b70d1b0a51360ae0",
+  "build_warnings": 0,
+  "default_changed": false,
+  "default_engine": "cdb5ced9",
+  "default_state": "STOPPED",
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "api_business_pending": true,
+  "office_rtf_pending": true,
+  "all_master_tasks_continue": true
+}

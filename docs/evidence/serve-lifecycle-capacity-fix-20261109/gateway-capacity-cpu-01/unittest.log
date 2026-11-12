@@ -1,0 +1,14 @@
+test_actual_classifier_accepts_selected_capacity_for_native_and_optional_nginx (tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests.test_actual_classifier_accepts_selected_capacity_for_native_and_optional_nginx) ... ok
+test_missing_selected_profile_reproduces_failure_and_mismatch_still_refuses (tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests.test_missing_selected_profile_reproduces_failure_and_mismatch_still_refuses) ... ok
+test_profile_validation_does_not_allow_wrong_types_or_client_capacity (tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests.test_profile_validation_does_not_allow_wrong_types_or_client_capacity) ... ok
+test_bundle_projects_verified_engine_capacity_into_independent_admission (tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests.test_bundle_projects_verified_engine_capacity_into_independent_admission) ... ok
+test_resume_charges_failed_start_and_self_check_and_requires_cleanup (tools.serve_lifecycle.test_native_acceptance.NativeDriverTests.test_resume_charges_failed_start_and_self_check_and_requires_cleanup) ... ok
+test_new_generation_verifies_policy_and_elf_without_metrics (tools.serve_recovery.test_gateway.AdmissionTests.test_new_generation_verifies_policy_and_elf_without_metrics) ... ok
+test_failed_verification_closes_binding_without_recovery_action (tools.serve_recovery.test_gateway.AdmissionTests.test_failed_verification_closes_binding_without_recovery_action) ... ok
+test_generation_changes_during_verification_are_rejected (tools.serve_recovery.test_gateway.AdmissionTests.test_generation_changes_during_verification_are_rejected) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.081s
+
+OK

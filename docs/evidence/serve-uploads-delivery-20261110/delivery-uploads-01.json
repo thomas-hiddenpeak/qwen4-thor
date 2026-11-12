@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-uploads-20261110/deliver.py"
+  ],
+  "exit_code": 0,
+  "seconds": 11.678691416978836
+}

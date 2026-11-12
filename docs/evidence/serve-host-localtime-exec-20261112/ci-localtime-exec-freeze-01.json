@@ -1,0 +1,15 @@
+{
+  "source": "12951dcd46ecbbb3e4a6d1335b0fb26469fec342",
+  "ci_runs": [
+    43234236958,
+    43234247688
+  ],
+  "confirmed_prerequisite": "/etc/localtime resolves to root-owned mode 0777; production SystemPath rejects group/other writes",
+  "repair": "CI only chmod go-w on actual trusted /etc/localtime, no production sandbox policy change",
+  "fixture": "Wait for child exec-status EOF before parent-death SIGTERM assertion",
+  "cpu_cases": 18,
+  "timeout_seconds": 60,
+  "gpu_starts": 0,
+  "default": "rev94 unchanged",
+  "master": "active"
+}

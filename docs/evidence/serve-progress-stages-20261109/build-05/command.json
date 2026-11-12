@@ -1,0 +1,11 @@
+[
+  "cmake",
+  "--build",
+  ".q4t-work/serve-custom-tools-20261108/engine-build",
+  "--parallel",
+  "8",
+  "--target",
+  "q4t",
+  "q4t_host_tests",
+  "q4t_progress_media_tests"
+]

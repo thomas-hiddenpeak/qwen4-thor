@@ -1,0 +1,38 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/required-cpu-fix.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.015673904214054346
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_input_tokens_contract",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16387743828818202
+  },
+  {
+    "name": "native-ingress",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_input_tokens_ingress",
+      "-v"
+    ],
+    "exit_code": 1,
+    "seconds": 0.1639663828536868
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle/bin/q4t",
+    "service",
+    "retention-archive",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged-01/state",
+    "--run",
+    "39a1d4ea-50e3-4b00-8bec-2aee7a55cb99",
+    "--archive",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged-03/archive"
+  ],
+  "exit_code": 0
+}

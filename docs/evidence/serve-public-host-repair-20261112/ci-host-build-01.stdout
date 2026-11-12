@@ -1,0 +1,8 @@
+[  0%] Built target q4t_regex_build
+[  8%] Built target xgrammar
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp.o
+[  9%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

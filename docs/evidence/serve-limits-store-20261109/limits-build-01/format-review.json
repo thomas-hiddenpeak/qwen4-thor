@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_STYLE_CHECK",
+  "build_passed": true,
+  "files": [
+    "tools/serve_recovery/client_policy_check.cpp",
+    "src/server/client_policy.cpp"
+  ],
+  "reason": "new stream/initializer wrapping required clang-format",
+  "tests_run": 0
+}

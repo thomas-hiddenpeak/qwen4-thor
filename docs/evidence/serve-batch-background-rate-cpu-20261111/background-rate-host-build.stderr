@@ -1,0 +1,169 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘q4t::server::ResponsesJobs::RateAdmission {anonymous}::BatchAdmission(Fixture&, std::atomic<int>*)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:225:67: error: a function-definition is not allowed here before ‘{’ token
+  225 |   void CompleteBatch(Fixture & fixture, ResponsesJobs::Job & job) {
+      |                                                                   ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:249:49: error: a function-definition is not allowed here before ‘{’ token
+  249 |   ClientRateUsage BatchUsage(Fixture & fixture) {
+      |                                                 ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:256:67: error: a function-definition is not allowed here before ‘{’ token
+  256 |       const std::function<bool(std::string_view)>& received = {}) {
+      |                                                                   ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_jobs_http_creation_transfers_owner_and_cancel_is_idempotent()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:436:24: error: ‘Exchange’ was not declared in this scope
+  436 |   const auto created = Exchange([&](int fd) {
+      |                        ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_jobs_http_stream_disconnect_retains_job_and_original_replay()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:492:23: error: ‘Exchange’ was not declared in this scope
+  492 |   const auto stream = Exchange(
+      |                       ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In instantiation of ‘{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)> [with auto:65 = q4t::server::ResponsesJobs::Job]’:
+/usr/include/c++/14/type_traits:2640:26:   required by substitution of ‘template<class _Fn, class ... _Args> static std::__result_of_success<decltype (declval<_Fn>()((declval<_Args>)()...)), std::__invoke_other> std::__result_of_other_impl::_S_test(int) [with _Fn = {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>&; _Args = {q4t::server::ResponsesJobs::Job&}]’
+ 2640 |       std::declval<_Fn>()(std::declval<_Args>()...)
+      |       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/type_traits:2651:60:   required from ‘struct std::__result_of_impl<false, false, {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>&, q4t::server::ResponsesJobs::Job&>’
+ 2651 |       using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
+      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/usr/include/c++/14/bits/std_function.h:348:9:   recursively required by substitution of ‘template<class _Result, class _Ret> struct std::__is_invocable_impl<_Result, _Ret, true, std::__void_t<typename _CTp::type> > [with _Result = std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>&, q4t::server::ResponsesJobs::Job&>; _Ret = void]’
+  348 |         struct _Callable
+      |                ^~~~~~~~~
+/usr/include/c++/14/bits/std_function.h:348:9:   required from ‘struct std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>&, q4t::server::ResponsesJobs::Job&> >’
+/usr/include/c++/14/bits/std_function.h:353:41:   required by substitution of ‘template<class _Res, class ... _ArgTypes> template<class _Cond, class _Tp> using std::function<_Res(_ArgTypes ...)>::_Requires = std::__enable_if_t<((bool)_Cond::value), _Tp> [with _Cond = std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>&, q4t::server::ResponsesJobs::Job&> >; _Tp = void; _Res = void; _ArgTypes = {q4t::server::ResponsesJobs::Job&}]’
+  353 |         using _Requires = __enable_if_t<_Cond::value, _Tp>;
+      |                                                ^~~~~
+/usr/include/c++/14/bits/std_function.h:434:9:   required by substitution of ‘template<class _Functor, class _Constraints> std::function<void(q4t::server::ResponsesJobs::Job&)>::function(_Functor&&) [with _Functor = {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()::<lambda(auto:65&)>; _Constraints = <missing>]’
+  434 |                typename _Constraints = _Requires<_Callable<_Functor>>>
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1102:32:   required from here
+ 1102 |       BatchAdmission(f, &plans));
+      |                                ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1096:24: error: ‘CompleteBatch’ was not declared in this scope
+ 1096 |           CompleteBatch(f, job);
+      |           ~~~~~~~~~~~~~^~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:27:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_real_exit_waits_and_yields_to_online()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1112:27: error: ‘BatchUsage’ was not declared in this scope
+ 1112 |   Q4T_CHECK(batch == 0 && BatchUsage(f).admitted == 1);
+      |                           ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1125:22: error: ‘BatchUsage’ was not declared in this scope
+ 1125 |   const auto usage = BatchUsage(f);
+      |                      ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_minute_wait_cancel_and_original_deadline()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1168:15: error: ‘BatchUsage’ was not declared in this scope
+ 1168 |     Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == 500 &&
+      |               ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In instantiation of ‘{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)> [with auto:67 = q4t::server::ResponsesJobs::Job]’:
+/usr/include/c++/14/type_traits:2640:26:   required by substitution of ‘template<class _Fn, class ... _Args> static std::__result_of_success<decltype (declval<_Fn>()((declval<_Args>)()...)), std::__invoke_other> std::__result_of_other_impl::_S_test(int) [with _Fn = {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>&; _Args = {q4t::server::ResponsesJobs::Job&}]’
+ 2640 |       std::declval<_Fn>()(std::declval<_Args>()...)
+      |       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/type_traits:2651:60:   required from ‘struct std::__result_of_impl<false, false, {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>&, q4t::server::ResponsesJobs::Job&>’
+ 2651 |       using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
+      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/usr/include/c++/14/bits/std_function.h:348:9:   recursively required by substitution of ‘template<class _Result, class _Ret> struct std::__is_invocable_impl<_Result, _Ret, true, std::__void_t<typename _CTp::type> > [with _Result = std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>&, q4t::server::ResponsesJobs::Job&>; _Ret = void]’
+  348 |         struct _Callable
+      |                ^~~~~~~~~
+/usr/include/c++/14/bits/std_function.h:348:9:   required from ‘struct std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>&, q4t::server::ResponsesJobs::Job&> >’
+/usr/include/c++/14/bits/std_function.h:353:41:   required by substitution of ‘template<class _Res, class ... _ArgTypes> template<class _Cond, class _Tp> using std::function<_Res(_ArgTypes ...)>::_Requires = std::__enable_if_t<((bool)_Cond::value), _Tp> [with _Cond = std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>&, q4t::server::ResponsesJobs::Job&> >; _Tp = void; _Res = void; _ArgTypes = {q4t::server::ResponsesJobs::Job&}]’
+  353 |         using _Requires = __enable_if_t<_Cond::value, _Tp>;
+      |                                                ^~~~~
+/usr/include/c++/14/bits/std_function.h:434:9:   required by substitution of ‘template<class _Functor, class _Constraints> std::function<void(q4t::server::ResponsesJobs::Job&)>::function(_Functor&&) [with _Functor = {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()::<lambda(auto:67&)>; _Constraints = <missing>]’
+  434 |                typename _Constraints = _Requires<_Callable<_Functor>>>
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1195:34:   required from here
+ 1195 |         BatchAdmission(f, &plans));
+      |                                  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1193:24: error: ‘CompleteBatch’ was not declared in this scope
+ 1193 |           CompleteBatch(f, job);
+      |           ~~~~~~~~~~~~~^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_refreshes_policy_and_replans_original_input()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1209:15: error: ‘BatchUsage’ was not declared in this scope
+ 1209 |     Q4T_CHECK(BatchUsage(f).admitted == (reject_input ? 1 : 2) &&
+      |               ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In instantiation of ‘{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)> [with auto:68 = q4t::server::ResponsesJobs::Job]’:
+/usr/include/c++/14/type_traits:2640:26:   required by substitution of ‘template<class _Fn, class ... _Args> static std::__result_of_success<decltype (declval<_Fn>()((declval<_Args>)()...)), std::__invoke_other> std::__result_of_other_impl::_S_test(int) [with _Fn = {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>&; _Args = {q4t::server::ResponsesJobs::Job&}]’
+ 2640 |       std::declval<_Fn>()(std::declval<_Args>()...)
+      |       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/type_traits:2651:60:   required from ‘struct std::__result_of_impl<false, false, {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>&, q4t::server::ResponsesJobs::Job&>’
+ 2651 |       using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
+      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/usr/include/c++/14/bits/std_function.h:348:9:   recursively required by substitution of ‘template<class _Result, class _Ret> struct std::__is_invocable_impl<_Result, _Ret, true, std::__void_t<typename _CTp::type> > [with _Result = std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>&, q4t::server::ResponsesJobs::Job&>; _Ret = void]’
+  348 |         struct _Callable
+      |                ^~~~~~~~~
+/usr/include/c++/14/bits/std_function.h:348:9:   required from ‘struct std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>&, q4t::server::ResponsesJobs::Job&> >’
+/usr/include/c++/14/bits/std_function.h:353:41:   required by substitution of ‘template<class _Res, class ... _ArgTypes> template<class _Cond, class _Tp> using std::function<_Res(_ArgTypes ...)>::_Requires = std::__enable_if_t<((bool)_Cond::value), _Tp> [with _Cond = std::function<void(q4t::server::ResponsesJobs::Job&)>::_Callable<{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>, {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>, std::__invoke_result<{anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>&, q4t::server::ResponsesJobs::Job&> >; _Tp = void; _Res = void; _ArgTypes = {q4t::server::ResponsesJobs::Job&}]’
+  353 |         using _Requires = __enable_if_t<_Cond::value, _Tp>;
+      |                                                ^~~~~
+/usr/include/c++/14/bits/std_function.h:434:9:   required by substitution of ‘template<class _Functor, class _Constraints> std::function<void(q4t::server::ResponsesJobs::Job&)>::function(_Functor&&) [with _Functor = {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()::<lambda(auto:68&)>; _Constraints = <missing>]’
+  434 |                typename _Constraints = _Requires<_Callable<_Functor>>>
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1230:32:   required from here
+ 1230 |       BatchAdmission(f, &plans));
+      |                                ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1228:22: error: ‘CompleteBatch’ was not declared in this scope
+ 1228 |         CompleteBatch(f, job);
+      |         ~~~~~~~~~~~~~^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_wait_reacquires_data_without_spending_rpm()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1238:41: error: ‘BatchUsage’ was not declared in this scope
+ 1238 |   Q4T_CHECK(calls == 0 && plans == 1 && BatchUsage(f).admitted == 1 &&
+      |                                         ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1245:41: error: ‘BatchUsage’ was not declared in this scope
+ 1245 |   Q4T_CHECK(calls == 1 && plans == 1 && BatchUsage(f).admitted == 2 &&
+      |                                         ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_unknown_start_refunds_and_never_replays()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1272:13: error: ‘BatchUsage’ was not declared in this scope
+ 1272 |   Q4T_CHECK(BatchUsage(f).admitted == 1 && BatchUsage(f).reserved == 0 &&
+      |             ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_missing_admission_waits_and_shutdown_drains()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1287:13: error: ‘BatchUsage’ was not declared in this scope
+ 1287 |             BatchUsage(f).admitted == 0 && !jobs.Health().failed);
+      |             ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_impossible_window_fails_without_waiting()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1316:50: error: ‘BatchUsage’ was not declared in this scope
+ 1316 |   Q4T_CHECK(jobs.Health().rate_deferrals == 0 && BatchUsage(f).admitted == 0 &&
+      |                                                  ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_responses_batch_recovery_invalid_owner_or_budget_never_starts()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1348:15: error: ‘BatchUsage’ was not declared in this scope
+ 1348 |     Q4T_CHECK(BatchUsage(f).admitted == 0 &&
+      |               ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp: At global scope:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:1574:2: error: expected ‘}’ at end of input
+ 1574 | }
+      |  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:29:11: note: to match this ‘{’
+   29 | namespace {
+      |           ^
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp:294:5: error: ‘int {anonymous}::ResponsesJobsFixture(int, char**)’ defined but not used [-Werror=unused-function]
+  294 | int ResponsesJobsFixture(int argc, char** argv) {
+      |     ^~~~~~~~~~~~~~~~~~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2053: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

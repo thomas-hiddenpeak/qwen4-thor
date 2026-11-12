@@ -1,9 +1,10 @@
 """Strict, offline parser for request-local vision wall-clock diagnostics."""
 import math
 
-STAGES = ("prepare", "decode_png", "decode_jpeg", "resize", "normalize",
+STAGES_V1 = ("prepare", "decode_png", "decode_jpeg", "resize", "normalize",
           "patchify", "pack", "pixels_allocate", "pixels_upload", "workspace",
           "output_allocate", "forward", "cleanup")
+STAGES = (*STAGES_V1, "decode_gif")
 PREFIX = "[q4t][vision-timing] "
 
 
@@ -16,8 +17,10 @@ def parse_records(text):
     result = {}
     expected = {"version", "id", "clock", "completed", "items", "frames",
                 "patches", "total_ms", "other_ms"}
-    expected.update(name + suffix for name in STAGES
-                    for suffix in ("_ms", "_calls"))
+    legacy = expected | {name + suffix for name in STAGES_V1
+                         for suffix in ("_ms", "_calls")}
+    current = expected | {name + suffix for name in STAGES
+                          for suffix in ("_ms", "_calls")}
     for line in text.splitlines():
         if not line.startswith("[q4t][vision-timing]"):
             continue
@@ -25,10 +28,13 @@ def parse_records(text):
         pairs = [field.split("=", 1) for field in line[len(PREFIX):].split()]
         require(all(len(pair) == 2 for pair in pairs), "malformed timing field")
         row = dict(pairs)
+        expected = legacy if row.get("version") == "1" else current
         require(len(row) == len(pairs) and set(row) == expected,
                 "duplicate/missing/unknown timing fields")
-        require(row["version"] == "1" and row["clock"] == "host_wall",
+        require(row["version"] in ("1", "2") and row["clock"] == "host_wall",
                 "unsupported timing contract")
+        if row["version"] == "1":
+            row.update(decode_gif_ms="0", decode_gif_calls="0")
         require(row["id"] and row["id"] not in result, "duplicate request id")
         require(row["completed"] in ("0", "1"), "invalid completion flag")
         for name in ("completed", "items", "frames", "patches",
@@ -43,7 +49,7 @@ def parse_records(text):
         for stage in STAGES:
             require(row[stage + "_calls"] or row[stage + "_ms"] == 0,
                     "duration without a call: " + stage)
-        # Six decimal places per field, 14 summands. This only covers printed
+        # Six decimal places per field, 15 summands. This only covers printed
         # rounding; it is not a performance tolerance or a measurement limit.
         accounted = row["other_ms"] + sum(row[s + "_ms"] for s in STAGES)
         require(abs(accounted - row["total_ms"]) <= .00001,
@@ -53,7 +59,7 @@ def parse_records(text):
 
 
 def input_counts(body):
-    items = frames = png = jpeg = 0
+    items = frames = png = jpeg = gif = 0
     for message in body["messages"]:
         parts = message.get("content")
         if not isinstance(parts, list):
@@ -71,9 +77,11 @@ def input_counts(body):
                     png += 1
                 elif url.startswith("data:image/jpeg;base64,"):
                     jpeg += 1
+                elif url.startswith("data:image/gif;base64,"):
+                    gif += 1
                 else:
                     raise ValueError("unknown fixed fixture codec")
-    return dict(items=items, frames=frames, png=png, jpeg=jpeg)
+    return dict(items=items, frames=frames, png=png, jpeg=jpeg, gif=gif)
 
 
 def validate_request(row, body):
@@ -83,7 +91,7 @@ def validate_request(row, body):
     require(row["items"] == counts["items"] and
             row["frames"] == counts["frames"] and row["patches"] > 0,
             "wrong input geometry counts")
-    for codec in ("png", "jpeg"):
+    for codec in ("png", "jpeg", "gif"):
         require(row["decode_" + codec + "_calls"] == counts[codec],
                 "wrong decoder count: " + codec)
     for stage in ("prepare", "resize", "normalize", "patchify"):

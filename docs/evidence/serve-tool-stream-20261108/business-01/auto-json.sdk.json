@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-0d8dc21a5c3504a812861c15af10b696",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-0d8dc21a5c3504a812861c15af10b696_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\":\"docs/MODEL.md\",\"start_line\":1,\"line_count\":16}"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 398,
+      "completion_tokens": 55,
+      "total_tokens": 453
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "535",
+      "content-type": "application/json",
+      "x-request-id": "req-0c6e7515fdc54780e93530beb9cbd705"
+    }
+  },
+  "planned_tools": [
+    {
+      "call_id": "call_chatcmpl-auto-0d8dc21a5c3504a812861c15af10b696_0",
+      "name": "read_project_record",
+      "arguments": {
+        "path": "docs/MODEL.md",
+        "start_line": 1,
+        "line_count": 16
+      }
+    }
+  ],
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tMGQ4ZGMyMWE1YzM1MDRhODEyODYxYzE1YWYxMGI2OTYiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTAxOTE4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjpudWxsLCJ0b29sX2NhbGxzIjpbeyJpZCI6ImNhbGxfY2hhdGNtcGwtYXV0by0wZDhkYzIxYTVjMzUwNGE4MTI4NjFjMTVhZjEwYjY5Nl8wIiwidHlwZSI6ImZ1bmN0aW9uIiwiZnVuY3Rpb24iOnsibmFtZSI6InJlYWRfcHJvamVjdF9yZWNvcmQiLCJhcmd1bWVudHMiOiJ7XCJwYXRoXCI6XCJkb2NzL01PREVMLm1kXCIsXCJzdGFydF9saW5lXCI6MSxcImxpbmVfY291bnRcIjoxNn0ifX1dfSwiZmluaXNoX3JlYXNvbiI6InRvb2xfY2FsbHMiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjozOTgsImNvbXBsZXRpb25fdG9rZW5zIjo1NSwidG90YWxfdG9rZW5zIjo0NTN9fQ=="
+}

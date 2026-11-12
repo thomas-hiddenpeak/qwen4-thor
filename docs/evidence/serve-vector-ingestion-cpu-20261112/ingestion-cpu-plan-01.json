@@ -1,0 +1,33 @@
+{
+  "stage": "A11.2 actual Files extraction and tokenizer ingestion adapter",
+  "tests": [
+    "vector_ingestion_real_tokenizer_preserves_source_identity_and_exact_eos_cost",
+    "vector_ingestion_actual_utf16_csv_and_signature_extraction",
+    "vector_ingestion_rejects_incomplete_rows_and_empty_content_before_encoding",
+    "vector_ingestion_scope_source_and_cancel_checks_precede_embedding",
+    "vector_ingestion_reserves_full_cost_before_any_model_and_preserves_partial_usage",
+    "vector_ingestion_cancel_after_committed_model_keeps_usage_without_publication",
+    "vector_ingestion_unknown_snapshot_commit_is_reconciled_without_model_replay",
+    "vector_ingestion_unknown_parent_commit_retains_original_hold_and_published_index",
+    "file_extract_native_path_does_not_require_converter",
+    "file_extract_corrupt_package_never_falls_back_to_converter",
+    "vector_index_token_chunks_preserve_utf8_and_bound_overlap"
+  ],
+  "source_sha256": {
+    "include/q4t/server/vector_ingestion.h": "b343889c9a4e092206c10b2d0816596e4e0f38884be0a2ca70634573ddb88ad7",
+    "src/server/vector_ingestion.cpp": "47743b5ae5bbbfb263fa5b7dbe5daa354fa6bf9bbf68dd7b5dd9f92d7f9d8467",
+    "tests/server_vector_ingestion_test.cpp": "56fa4574d05b5b3394b33383164421db29dce7685cd7b492630b4ed135aea81a",
+    "include/q4t/server/file_extract.h": "ec9f067883305d447327091c65bc7d0cea44c3460f505fb3be0326d7fe84f17c",
+    "src/server/file_extract.cpp": "00bc6a2bddace95dbca1ef92f3fa84fae597625f8e07972227d2fc62a89754e3"
+  },
+  "runner": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+  "gpu_starts": 0,
+  "full_quality": false,
+  "performance_test": false,
+  "default_changed": false,
+  "real_files": true,
+  "real_tokenizer": true,
+  "embedding_vectors": "explicit CPU math fixture, not GPU semantic evidence",
+  "production_http": false,
+  "production_recovery_controller": false
+}

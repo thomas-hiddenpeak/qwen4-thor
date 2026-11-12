@@ -1,0 +1,8 @@
+{
+  "tools/serve_responses/input_tokens_null_acceptance.py": "a18d1062f6723b01abb0114198a3c37e51f2926189843dde234f5ef4adb24f4c",
+  "docs/serve-input-semantics-v1.json": "1908141062d6da3138f98bdc7245a2349f783fbf1dde0ccbc4942e7ba69a659b",
+  "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
+  "tests/server_responses_tokens_test.cpp": "13be4a27b9bd789afdad75b928c32657e051701bc6b262f9479864bd2f59b6df",
+  "tools/serve_audit/inventory.json": "6595ef7577f4e75aa14a0bffccfe3d02743551a16c794e1c9363b7974d238951",
+  "tools/serve_responses/test_input_tokens_acceptance.py": "f943cbece842ea158ceda92b82b3039978903969cc30146922ad7dd48f2af61b"
+}

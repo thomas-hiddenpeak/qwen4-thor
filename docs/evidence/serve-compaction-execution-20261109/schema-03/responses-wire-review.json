@@ -1,0 +1,11 @@
+{
+  "checked": 43,
+  "rejected": [],
+  "sources_sha256": {
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures/responses/summary.wire": "b6ddb6a0d000e5240b928b3de799595b5ddb80bc67deb0e694014e2b69866239",
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures/responses/summary_partial_0.wire": "8d54d57238a41c90b8d4aba68bf0c3310fb437e84b41418a0cc49ab01b3a57d7",
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures/responses/summary_partial_1.wire": "f1e722606b162f0996fa64345a049a5e37f50dc97babf1c6d386526e5a2a2f66",
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures/responses/summary_partial_2.wire": "5e96c636f29ad1e761de90cd38e9054146ce05950fc411a3c92d65f407a76561"
+  },
+  "legacy_nonconforming_not_reaccepted": false
+}

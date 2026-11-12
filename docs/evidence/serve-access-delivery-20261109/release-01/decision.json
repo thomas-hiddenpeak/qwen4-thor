@@ -1,0 +1,213 @@
+{
+  "status": "PASS_TARGETED_NATIVE_ACCESS_QUOTA_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+  "binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+  "protocol_sha256": "cdd4b06d9d6e76b1bd9f8c95a430cebb08c43ed59a7e5706b199719b1c17c472",
+  "source_commit": "5b1a0bfdd489255c13a2ab3b5c268307570b6fca",
+  "evidence": {
+    "serve-access-primitive-20261109": {
+      "index_sha256": "da45829ff473decdf3aacf0998eb964871c39a8967f871d7c399e3a5e5e868f8",
+      "files": 20
+    },
+    "serve-access-store-20261109": {
+      "index_sha256": "1317465c9ea09a30a48d42ba2a68bf623ad6e372035b36400874caa9ccd5cb7d",
+      "files": 18
+    },
+    "serve-access-native-20261109": {
+      "index_sha256": "18e352dd02b5a0373c0727f78d37aff721db1b69671adc03539f91eaea16cc74",
+      "files": 16
+    },
+    "serve-access-io-20261109": {
+      "index_sha256": "80a81b47e21b2c4d06e4a90f967334ce3ab02a452ac6da00ac24df53578e4389",
+      "files": 8
+    },
+    "serve-access-managed-20261109": {
+      "index_sha256": "79883b7ff6e3e23dc33a896f98afd911b98d06ef2dbbe8a79334756c0aa62b67",
+      "files": 20
+    },
+    "serve-client-policy-20261109": {
+      "index_sha256": "f6f87822211e9e0f2b6231f221d502db9da1bd91e0404f8d4faed9759df74222",
+      "files": 14
+    },
+    "serve-limits-store-20261109": {
+      "index_sha256": "cd00f356fd1c9fa547896b9346531df5be865ecc96055325970526fd05db7b87",
+      "files": 18
+    },
+    "serve-policy-admin-20261109": {
+      "index_sha256": "f0eec8d4ff72e9755cb2d25d83eeba8b4ba0116d2ef0b5ee1dbfd264818c2dcd",
+      "files": 24
+    },
+    "serve-policy-runtime-20261109": {
+      "index_sha256": "68e56f0e822ad69f062428a76347f27a1dbc849ce25d8728cdff1e7c5dd1b615",
+      "files": 17
+    },
+    "serve-policy-coordination-20261109": {
+      "index_sha256": "1fec149a73fa04ede3bb90d7e5286a965dabf2e4fe244aac30dbd90522091d4d",
+      "files": 9
+    },
+    "serve-usage-primitive-20261109": {
+      "index_sha256": "91facc011ca983ce83eaf6c5e4a63da347f2960946d1b57509420e11a09efef9",
+      "files": 15
+    },
+    "serve-usage-store-20261109": {
+      "index_sha256": "31e43408fdfdf2c0753c6e2c2b0f325fd8adc4c251cdefe968dcfbf728edc029",
+      "files": 14
+    },
+    "serve-usage-runtime-20261109": {
+      "index_sha256": "804fba526aefb07b8b09bb4b7989a1cf3854e26cbeff09fb11975bbbb00645e6",
+      "files": 16
+    },
+    "serve-usage-management-20261109": {
+      "index_sha256": "3d91dced47ff7921673eb1a0c06f04278a8dd3ce5be242546eb40a778bc0533b",
+      "files": 14
+    },
+    "serve-deployment-20261109": {
+      "index_sha256": "c4f621e9d92673077417b78336ac9503539ea4daf3ee57a715ff50ae89a7fba1",
+      "files": 15
+    },
+    "serve-initialization-20261109": {
+      "index_sha256": "5b0d1df5acc7a8c337c59c3eae9e5be80535704dbda7b0b54de083abcb2e8746",
+      "files": 10
+    },
+    "serve-access-driver-20261109": {
+      "index_sha256": "94c5bbffd166d6f16a7083732024e82395018542954171600ad29e82f126875d",
+      "files": 15
+    },
+    "serve-access-driver-fix-20261109": {
+      "index_sha256": "e12e72c25e9d80cd2ec8b1713c661cb22fe7fc076779f27003ff6dddceb98f02",
+      "files": 33
+    },
+    "serve-access-config-fix-20261109": {
+      "index_sha256": "beb9b7f23295c73b7ba4e796b46ec1cce3008ade6a0004c1845e9be5613e72ee",
+      "files": 37
+    },
+    "serve-access-checkpoint-20261109": {
+      "index_sha256": "f8b8381d67954a1ce98bb5cc04654ed36482eda9eb578f73171ccd71d038d599",
+      "files": 98
+    },
+    "serve-access-business-20261109": {
+      "index_sha256": "5e4b9a77570149de38bbc3ee1482dd4b61d7b254768fab6139f0b23a4330932a",
+      "files": 51
+    },
+    "serve-native-observation-delivery-20261109": {
+      "index_sha256": "7b61349e5f61625d6c421a605b3e14acbbdac34b4e2fd207b8a4164c45e877ad",
+      "files": 79
+    },
+    "serve-cache-progress-delivery-20261109": {
+      "index_sha256": "f588c40f73662a03ed21779dbf0ad07bdd73dcc4ba81bfbca94255dd6fda3eb4",
+      "files": 36
+    }
+  },
+  "actual_business": {
+    "status": "PASS_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+    "acceptance": "ACCEPT_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+    "binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+    "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+    "protocol_sha256": "cdd4b06d9d6e76b1bd9f8c95a430cebb08c43ed59a7e5706b199719b1c17c472",
+    "source_commit": "9bebbf6373b0e8e0c2aa61343dae1b0fdee042d8",
+    "counts": {
+      "starts": 4,
+      "chats": 15,
+      "probes": 1,
+      "controls": 1012
+    },
+    "seconds": 304.47355449944735,
+    "rounds": [
+      {
+        "round": 1,
+        "status": "COMMAND_FAILED",
+        "seconds": 66.43207156891003,
+        "nvml_queries": 63
+      },
+      {
+        "round": 2,
+        "status": "COMMAND_FAILED",
+        "seconds": 49.345081123989075,
+        "nvml_queries": 47
+      },
+      {
+        "round": 3,
+        "status": "COMMAND_FAILED",
+        "seconds": 67.78058162890375,
+        "nvml_queries": 64
+      },
+      {
+        "round": 4,
+        "status": "COMPLETED",
+        "seconds": 120.91582017764449,
+        "nvml_queries": 113
+      }
+    ],
+    "nvml_queries": 287,
+    "all_nvml_ok": true,
+    "lease_status": "COMPLETED",
+    "first_three_failures_preserved": true,
+    "default_changed": false,
+    "production_runtime_changed_during_retries": false,
+    "actual_business": {
+      "rotation": true,
+      "new_client": true,
+      "off_on_usage": true,
+      "auxiliary_loss_same_model": true,
+      "stored_identity": true,
+      "exact_restore": true,
+      "same_window_checked": false,
+      "unknown_guard": true,
+      "compatible_rollback": true,
+      "official_sdk": true,
+      "actual_document_tool": true,
+      "reused_passed_first_generation": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-03/execution"
+    },
+    "same_live_minute_gpu_observed": false,
+    "same_minute_contract_reused": "Real C++ interprocess CPU usage tests preserve unexpired quotas; real model exact restore here observed naturally expired window after preserved checkpoint.",
+    "ready_observed": {
+      "2": 2398192.560967376,
+      "3": 2398264.854902157
+    },
+    "quota_deadlines": {
+      "2": 2398212.152698624,
+      "3": 2398264.1554618613
+    },
+    "unknown_guard_satisfied": true,
+    "exact_restore_released_before_conservative_deadline": true,
+    "cleanup_confirmed": true,
+    "standalone_accepted_cli_pending": true,
+    "accepted_default_delivery_pending": true,
+    "evidence": {
+      "serve-access-driver-fix-20261109": {
+        "index_sha256": "e12e72c25e9d80cd2ec8b1713c661cb22fe7fc076779f27003ff6dddceb98f02",
+        "files": 33
+      },
+      "serve-access-config-fix-20261109": {
+        "index_sha256": "beb9b7f23295c73b7ba4e796b46ec1cce3008ade6a0004c1845e9be5613e72ee",
+        "files": 37
+      },
+      "serve-access-checkpoint-20261109": {
+        "index_sha256": "f8b8381d67954a1ce98bb5cc04654ed36482eda9eb578f73171ccd71d038d599",
+        "files": 98
+      },
+      "serve-usage-runtime-20261109": {
+        "index_sha256": "804fba526aefb07b8b09bb4b7989a1cf3854e26cbeff09fb11975bbbb00645e6",
+        "files": 16
+      },
+      "serve-usage-primitive-20261109": {
+        "index_sha256": "91facc011ca983ce83eaf6c5e4a63da347f2960946d1b57509420e11a09efef9",
+        "files": 15
+      },
+      "serve-usage-store-20261109": {
+        "index_sha256": "31e43408fdfdf2c0753c6e2c2b0f325fd8adc4c251cdefe968dcfbf728edc029",
+        "files": 14
+      }
+    },
+    "performance_acceptance": false,
+    "full_model_quality_run": false,
+    "long_stability_accepted": false,
+    "remaining_master_tasks_open": true
+  },
+  "additional_gpu_tests": 0,
+  "previous_application_and_cache_evidence_reused": true,
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

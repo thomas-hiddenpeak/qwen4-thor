@@ -1,0 +1,14 @@
+{
+  "status": "PASS_TARGETED_FEATURE_MIGRATION_CPU",
+  "cases": 16,
+  "seconds": 2.686087494250387,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "sources_sha256": {
+    "tools/serve_recovery/profile_migration.py": "d9426cb8f85ddbe1648eff8c79d417ad3ec26248980bf872f938ee511e554be2",
+    "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
+    "tools/serve_recovery/test_profile_migration.py": "b9d62d20f02d200346898a6e80f02331f81e96ee61d7c486d306b432c8297fe1",
+    "tools/serve_recovery/test_profile_deployment.py": "4e39b9ada5e458f97e48c388c5a1f9b25b46f6e36e6c45c0922cc3021de8b30f"
+  },
+  "actual_profile_qualification_pending": true
+}

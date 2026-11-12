@@ -1,0 +1,6 @@
+test_answer_oracle_uses_real_encrypted_response (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_answer_oracle_uses_real_encrypted_response) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+OK

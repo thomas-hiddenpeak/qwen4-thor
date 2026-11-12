@@ -1,0 +1,19 @@
+{
+  "tests": [
+    "vector_api_exact_routes_and_reserved_client_lanes",
+    "vector_api_store_crud_and_bidirectional_pagination",
+    "vector_api_scope_and_identity_are_not_request_fields",
+    "vector_api_strict_body_query_and_method_contracts",
+    "vector_api_batch_create_poll_cancel_and_public_file_views",
+    "vector_api_one_external_rpm_and_real_internal_usage",
+    "vector_api_unconfigured_ingestion_preserves_management_and_sources",
+    "vector_api_content_is_actual_index_and_tracks_live_membership",
+    "vector_api_content_source_deletion_cancellation_and_deadline",
+    "vector_api_content_rejects_corrupt_source_index_identity",
+    "vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files",
+    "client_rate_durable_internal_input_shares_tpm_without_external_rpm"
+  ],
+  "reason": "Native vector store API/content and directly affected cancellation/rate contracts",
+  "gpu_starts": 0,
+  "default_unchanged": true
+}

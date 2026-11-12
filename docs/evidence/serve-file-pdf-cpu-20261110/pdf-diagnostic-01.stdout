@@ -1,0 +1,3 @@
+  CHECK failed: reply.ok() && document.pages.size() == 2 && document.text.find("Q4T actual PDF page 1") != std::string::npos && document.text.find("Q4T actual PDF page 2") != std::string::npos && document.source_sha256 == Digest(input.bytes) && document.encoding == "utf-8" && Clean(control, 4) (line 140)
+[FAIL] file_pdf_actual_text_and_every_page_images
+1 tests, 0 passed, 1 failed, 0 skipped

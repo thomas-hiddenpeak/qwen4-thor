@@ -1,0 +1,12 @@
+{
+  "client-access.json": "ae36f4b9304051f3f86fca468b955623d235ecf1cc12fba4a14e170fe57652c6",
+  "service.json": "738cea3603de606e0b338d45870ce1eed1b7a6d504e35de8436298c3f8f30b6d",
+  "client-limits.json": "feee221ec5cd518bc4d0bd3dd5637909038d34b7bec6cbb0fcb8b065c07339e5",
+  "ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+  "service-deployment.json": "5832031873800deba1d0477567ae2561cc5eeb3caedf17b717ca4868b44d9b85",
+  "client-usage.json": "c7ac671d95111232efe8a0d17372e3e3ee613ea236a4c3e90f2dd401656286ce",
+  "client-usage/policy.json": "8b0a55798498f572abb9ba3e63b944e37940e454785aba23b4c43afedf91051c",
+  "service-deployment/policy.json": "9efbb37743a20a36ff1b7775c4c2a42454e14cefade14b81ba392c5a528d9ddd",
+  "client-limits/policy.json": "e0a4b18061e8edf32b73f87dd68acb73c834abb9762e602db73bb3e00fa90343",
+  "client-access/policy.json": "778cbf21aa1672c5812b4981cec6c4f159413692d88332358e030f199d2a2e5d"
+}

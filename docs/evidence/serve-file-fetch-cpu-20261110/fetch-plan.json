@@ -1,0 +1,40 @@
+{
+  "task": "A09.5/FI02_native_fetch",
+  "cpp_tests": [
+    "file_fetch_url_and_relative_redirect_contracts",
+    "file_fetch_address_policy_blocks_private_and_mapped_bypasses",
+    "file_fetch_deployment_policy_is_strict_and_roundtrips",
+    "file_fetch_http_content_length_chunked_and_close_exact_bytes",
+    "file_fetch_http_rejects_ambiguous_truncated_or_partial_file",
+    "file_fetch_redirects_revalidate_target_and_never_forward_credentials",
+    "file_fetch_size_errors_empty_files_and_failed_remote_status",
+    "file_fetch_redirect_loops_and_limits_do_not_publish_content",
+    "file_fetch_deadline_reaps_stalled_network_without_partial_output",
+    "file_fetch_cancellation_interrupts_actual_network_wait",
+    "\n    file_fetch_unreaped_domain_keeps_its_slot_without_blocking_other_domains",
+    "file_fetch_unowned_invalid_and_denied_inputs_start_no_process",
+    "grammar_process_memory_limit_and_descriptor_isolation",
+    "grammar_process_deadline_reaps_blocked_worker",
+    "grammar_process_object_domain_keeps_grammar_capacity",
+    "file_input_stored_owner_and_size_gate_precede_pin_and_content"
+  ],
+  "python_tests": [
+    "NativeFileFetchTls.test_valid_chain_and_hostname_deliver_original_file",
+    "NativeFileFetchTls.test_wrong_name_untrusted_and_missing_ca_do_not_send_http",
+    "NativeFileFetchTls.test_verified_https_redirect_cannot_downgrade_to_plaintext",
+    "NativeFileFetchTls.test_stalled_tls_handshake_has_bounded_owned_cleanup"
+  ],
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "default_changed": false,
+  "api_execution_integration_pending": true,
+  "remaining_master_tasks_open": true,
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc9112.html",
+    "https://docs.openssl.org/3.0/man3/SSL_set1_host/",
+    "https://docs.openssl.org/3.0/man3/SSL_CTX_load_verify_locations/",
+    "https://docs.openssl.org/3.0/man3/X509_VERIFY_PARAM_set_flags/",
+    "https://www.iana.org/assignments/iana-ipv4-special-registry/",
+    "https://www.iana.org/assignments/iana-ipv6-special-registry/"
+  ]
+}

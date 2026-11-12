@@ -1,0 +1,22 @@
+numeric case: positive tenths
+numeric case: signed quarters
+numeric case: exact large integer
+[PASS] schema_language_intersection_search_length_and_assertions
+[PASS] schema_language_matcher_unicode_fullmatch_and_work_bound
+[PASS] schema_language_counted_chains_preserve_holes_and_dead_prefixes
+[PASS] schema_language_number_exact_range_and_multiple
+[PASS] schema_language_number_fractional_bounds_are_not_rounded
+[PASS] schema_language_number_scaled_modulo_integer_oracle
+[PASS] schema_language_number_integer_bounds_and_empty_range
+[PASS] schema_language_invalid_and_capacity_errors_are_distinct
+[PASS] schema_string_syntax_date_and_datetime_external_corpus
+[PASS] schema_string_syntax_time_and_duration_external_corpus
+[PASS] schema_string_syntax_ip_external_corpus
+[PASS] schema_string_syntax_hostname_email_uuid_external_corpus
+[PASS] schema_string_syntax_intersects_formats_patterns_and_lengths
+[PASS] schema_string_syntax_counted_length_unicode_and_escape_boundaries
+[PASS] schema_worker_masks_native_semantics_and_returns_value_receipt
+[PASS] schema_worker_idna_and_exact_number_constraints_use_same_path
+[PASS] tokenizer_schema_bounded_title_with_tools_real_vocabulary
+[PASS] tokenizer_schema_bounded_pattern_with_tools_real_vocabulary
+18 tests, 18 passed, 0 failed, 0 skipped

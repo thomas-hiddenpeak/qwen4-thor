@@ -1,0 +1,15 @@
+{
+  "scope": "JSON prefix parsing and schema completion boundary validation helpers only; not token-mask or HTTP integration",
+  "tests": [
+    "schema_prefix_every_byte_utf8_escape_and_nested_values",
+    "schema_prefix_invalid_syntax_and_duplicates_are_not_incomplete",
+    "schema_prefix_completion_reports_protocol_suffix_and_resource",
+    "schema_prefix_string_format_checked_at_closing_quote",
+    "schema_prefix_anyof_keeps_valid_branch_and_rejects_bad_value",
+    "schema_prefix_exact_number_and_array_limits_at_completion",
+    "schema_prefix_recursive_ref_const_and_unicode_length",
+    "schema_prefix_dependency_and_budget_keep_failure_category"
+  ],
+  "binary_sha256": "6f79e9ff6f47af93ee91c3c83691f4b6a725f086280f5c1237f5d60408691407",
+  "timeout_seconds": 90
+}

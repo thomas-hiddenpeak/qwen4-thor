@@ -1,0 +1,91 @@
+{
+  "previous_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-storage-20261109/release-01/bundle",
+  "files": {
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_gateway/client_policy.py": "fe0933bab4f288dab00f2e1871efdd312fa7c2a2eb496f7802cad7bad81e4ba7",
+    "tools/serve_gateway/gateway.py": "1e4b200477a5382d62b9fb42c79f816be04451c51629234c8dc31681d89201e4",
+    "tools/serve_gateway/tls.py": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+    "tools/serve_ops/contracts.py": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+    "tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+    "tools/serve_ops/transport.py": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa",
+    "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
+    "tools/serve_recovery/bundle.py": "807b98ca96868e5cacce8c929350b1c4d0f934e1bc4ebd42196ff5a89456fe6c",
+    "tools/serve_recovery/child.py": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f",
+    "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
+    "tools/serve_recovery/controller.py": "bdfaf3794b709d56457e1973bc2397521c36fbf7dfcda712b002fedfa24b81c4",
+    "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
+    "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
+    "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
+    "tools/serve_recovery/gateway_config.py": "38cde468cd2d8c4f3c7ce7c484eb1ad4ca7626af33150f2fab80f4238ac8309a",
+    "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
+    "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
+    "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
+    "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
+    "tools/serve_recovery/native_ingress.py": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
+    "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
+    "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
+    "tools/serve_recovery/service.py": "1e4fa0e4f8508c774b38560003d6da2cdf306e489bd0b7013b3e319752c53d00",
+    "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "ff283c216e5c1e6b0f68b363c8cf58b89b98eefec7b59b5d060dfd6b86e7605c",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "c525aa1d969cc12938a8643190b7de58e9a056fe55f75df713a488acefb2417d",
+    "tools/serve_service/supervisor.py": "21348143c5e4f46fed07a338977f984a58d6eb7c5e2f1e08caa29157929d6764",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+  },
+  "changed": {
+    "tools/serve_recovery/bundle.py": {
+      "before": "65239b2f193b78dbb9a1b4775d3e7cb711e4b6498dbae68762e5b2170f11006c",
+      "after": "807b98ca96868e5cacce8c929350b1c4d0f934e1bc4ebd42196ff5a89456fe6c"
+    },
+    "tools/serve_recovery/child.py": {
+      "before": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
+      "after": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f"
+    },
+    "tools/serve_recovery/controller.py": {
+      "before": "4564e6975060a2beaa815999b26c24d71e03f0c951dc1cd8c85f63ddc576ecbe",
+      "after": "bdfaf3794b709d56457e1973bc2397521c36fbf7dfcda712b002fedfa24b81c4"
+    },
+    "tools/serve_recovery/policy.py": {
+      "before": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
+      "after": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2"
+    },
+    "tools/serve_recovery/progress.py": {
+      "before": null,
+      "after": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761"
+    }
+  },
+  "unchanged_count": 37,
+  "coverage": "Native controller v5 actual same-controller model recovery and observation loss are accepted. Cache resource work budget has direct CPU coverage and actual file waits do not cause false recovery. Ingress/Guardian/CUDA probe bytes are unchanged and previous accepted behavior is reused.",
+  "reused_cpu": {
+    "serve-cache-io-cpu-20261109/primitive-01": "dc59ad8f5fe1a69553ac2f20bccd5d6784348bbae5e4d894abc17f5db700f7fe",
+    "serve-cache-io-cpu-20261109/integration-01": "fc58c7a749b9c30b709b89798069874e5ce6df7cc43a522d1a4f5653cb8b518d",
+    "serve-cache-io-cpu-20261109/session-02": "9f93c70e1e92a294d67ee486e6432ec44f143eaa6450024e1786fdc17c267388",
+    "serve-cache-io-cpu-20261109/prefix-02": "3fdf51b18be913b30065f849131ee6e66d851e7612e7e84ffc6ef55ec29adeca",
+    "serve-cache-io-cpu-20261109/incremental-01": "edfdca9c491c4f8e2b9c6f1b16b417245c49c2ff05b42aaa090ffccb064935e2",
+    "serve-cache-io-cpu-20261109/target-01": "2922dd564bb6570318bae9c02d4a80a30158612e3a6d02ca792e68705c4e4cd3",
+    "serve-cache-io-cpu-20261109/target-02": "990331385db10d3441f0aeb230d1f7fa5451388d6ff8ff3d31c20b5ecdd336dd",
+    "serve-cache-io-cpu-20261109/health-01": "4c27ac68fd9f8388d189550b5e0f50b571fbd21ce427f235d40c45fa79e2f013",
+    "serve-cache-io-cpu-20261109/inventory-02": "75bb7765b93ce41d5fe326ccaa0aa31910ccf8e5d712400e6061742e5de024c4",
+    "serve-cache-io-cpu-20261109/declarations-02": "cf70fb4b1ca9857f96985cf80d03d9424e685b32647f57b32c15add9c2bcd8a9",
+    "serve-cache-io-cpu-20261109/build-05": "987d826af8b03913423c379ed02396d939d5554ea5c6784c692cd93220b00883",
+    "serve-progress-controller-20261109/controller-cpu-01": "f24533690728003a2afda4a708ee7ea2d818bfd87a378910fe079ffc95597e05",
+    "serve-progress-controller-20261109/rollback-verify-01": "b71b1cf35b1c507a7a094564871f469361dc265708bd5aa351b9e93837c8cdae",
+    "serve-progress-resource-20261109/resource-cpu-01": "eb4aa2fa98c8480d811b07722b2e717a8e8f736e91d1ffa26db5021c8c991bd7",
+    "serve-progress-resource-20261109/resource-python-01": "1e01c70d338dc34f80f273c9ea2cb9f0241f416064babb256c646df116b323e1"
+  },
+  "recovery_business": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-progress-business-20261109/decision.json",
+  "actual_configuration_provenance": "declarations/configuration.json is unmodified actual cache validation (16384 max length, cache enabled). Bundle settings remain managed 8192/cache off; that profile used actual R03 validation. No projected config is labeled observed.",
+  "additional_gpu_tests": 0
+}

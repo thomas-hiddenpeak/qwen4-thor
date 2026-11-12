@@ -1,0 +1,2 @@
+compaction_window_capacity_never_returns_an_unreplayable_result
+compaction_output_lifecycle_has_one_done_and_no_tool_events

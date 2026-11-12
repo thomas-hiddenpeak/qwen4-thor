@@ -1,0 +1,9 @@
+{
+  "tests": [
+    "exact_synthetic_reference_and_retrieval_pass",
+    "normalization_cannot_hide_wrong_hidden_magnitude",
+    "numerically_valid_but_wrong_retrieval_is_not_complete"
+  ],
+  "gpu": false,
+  "reason": "separate calculation agreement from trained representation quality; reject wrong magnitude"
+}

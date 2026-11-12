@@ -1,0 +1,17 @@
+{
+  "sources": {
+    "include/q4t/server/http_response.h": "20c637014ea7cdeaa9810013922c843db7f8d65d1512263cb302f2eb5a70948e",
+    "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
+    "src/server/chat_capabilities.cpp": "dfd798a6942246b19f3214323aa694b30eb790ea4c0b67d9597a1be076188b6e",
+    "src/server/chat_input_tokens.cpp": "aa52109b39d58a475b0f2706185326d1cd3c5e3baddcb191fe6905a05f5d7046",
+    "src/server/http_response.cpp": "81462d227c40c8c5da5fe5fd64e3557afab3d67006a98784dad5a74492d7905a",
+    "src/server/responses_tokens.cpp": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
+    "tests/server_http_response_test.cpp": "cbbd294631c5ab28e07fd9ef5a968ae9324dc66776df84bcb5fa1caf6766022d",
+    "tests/server_responses_tokens_test.cpp": "ac8a16516470dadd0b5821d44588e3b90f87e7b7f47bf750528e3050cc000943",
+    "tools/serve_responses/input_tokens_acceptance.py": "37717a971d77026692b5a064236a767535d79a53977638f12e8b3d2c3f3c6cd9"
+  },
+  "binaries": {
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "624e428d5f042567522eaf7b8440cd61f0afc801c193a82209fb41978d4e9049",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "1e8cf398fc64fa7e5cdac3cdba21d5fa5ee4b1a9c5c840368082605b45632ac7"
+  }
+}

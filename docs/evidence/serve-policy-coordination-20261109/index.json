@@ -1,0 +1,38 @@
+{
+  "README.md": {
+    "bytes": 1100,
+    "sha256": "811bd0e8923632f0a2cd377a74a54210395f0b35d13ea33fd80c3e46838d1f06"
+  },
+  "coordination-cpu-01/binaries.json": {
+    "bytes": 179,
+    "sha256": "d3910960dad2d00636f1b3310842ff67397bf6e0cd31004dcaef6912731a8d45"
+  },
+  "coordination-cpu-01/commands.json": {
+    "bytes": 1530,
+    "sha256": "40aeaced2f136e68d5920dcf5544c88363ff1b59420c57614b4b203a49650892"
+  },
+  "coordination-cpu-01/result.json": {
+    "bytes": 93,
+    "sha256": "eafec9271c375fb4865e78c0718e8c9c5c820a9603b9124701dee4d11a29ce92"
+  },
+  "coordination-cpu-01/selection.json": {
+    "bytes": 1484,
+    "sha256": "6db023b55c25b7114e0e0044d99bd95ee5bc34a926609920c93e2f4d016e6066"
+  },
+  "coordination-cpu-01/sources.json": {
+    "bytes": 1550,
+    "sha256": "bc56fca91b9d6f5f6bc83e822c53b2479f4c0ddb43d3ca93359191bfc7483a9c"
+  },
+  "coordination-cpu-01/tests.log": {
+    "bytes": 6491,
+    "sha256": "7260532eb80ad63bc4127e0873f2d4b3636157eafe1c98c0aa6c8488f3794f51"
+  },
+  "decision.json": {
+    "bytes": 566,
+    "sha256": "d7fed6dc78659075a722a8cfe27fb78f7162929fdc6ec228de69facf71f9603b"
+  },
+  "identity.json": {
+    "bytes": 582,
+    "sha256": "f16e2821214da23d9da1d18dadfd90ca5231f5221d8306d2fea36468f2fcf8a1"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "label": "publish",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/release-01/bundle/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/release-01/bundle",
+    "--manifest-sha256",
+    "dca3b450388b8439b7bf0af9ea55ff3b2ad9b846eb5b80303f8d91b0e160a850",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/release-01/service.release.json",
+    "--expected-manifest-sha256",
+    "bbb4c13bc4b149fec303215b90819dc0d9c3db473f8553402c4838886715cc09",
+    "--expected-revision",
+    "12",
+    "--request-id",
+    "5328a966-b737-45f7-8e66-6412ba1a1e32"
+  ],
+  "returncode": 0,
+  "seconds": 4.307804080192
+}

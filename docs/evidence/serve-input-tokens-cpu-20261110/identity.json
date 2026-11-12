@@ -1,0 +1,22 @@
+{
+  "q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "sha256": "05c1649efbea57f110389c8f8f07a3c83067783fc193a4782a9670a4ba1ce7f3"
+  },
+  "q4t-ingress": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "sha256": "87d576d00f51e0d3f662f61a73cad0c35078f2434b282669a95b8e45511bfbcc"
+  },
+  "q4t-guardian": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-guardian",
+    "sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571"
+  },
+  "q4t-cuda-probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-cuda-probe",
+    "sha256": "9bcdbb39273e2bdf6e68909a81a0eba56bee2dde3d7a7842a9e5b7ddc80ddb8e"
+  },
+  "q4t_host_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "sha256": "e495824ca6bc0535c65db35d8c06f2424f6ba9425fd08f047249fdd23789c96a"
+  }
+}

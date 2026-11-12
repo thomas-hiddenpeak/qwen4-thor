@@ -11,14 +11,35 @@ find_package(Threads REQUIRED)
 add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES} ../../src/io/json.cpp)
 target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
 q4t_link_structured_output(q4t_host_tests)
+q4t_link_native_crypto(q4t_host_tests)
+q4t_link_native_documents(q4t_host_tests)
 target_include_directories(q4t_host_tests PRIVATE ../../include)
+target_include_directories(q4t_host_tests SYSTEM PRIVATE ../../third_party)
 target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
-target_link_libraries(q4t_host_tests PRIVATE Threads::Threads)
+target_link_libraries(q4t_host_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
+
+add_executable(q4t_client_policy_check
+  ../../tools/serve_recovery/client_policy_check.cpp
+  ../../src/server/client_policy.cpp ../../src/server/client_rate_state.cpp
+  ../../src/trace/sha256.cpp ../../src/io/json.cpp)
+target_include_directories(q4t_client_policy_check PRIVATE ../../include)
+target_compile_options(q4t_client_policy_check PRIVATE -Wall -Wextra -Werror)
+target_link_libraries(q4t_client_policy_check PRIVATE Threads::Threads)
+
+add_executable(q4t_client_policy_fixture
+  ../client_policy_admin_fixture.cpp ../../src/server/client_policy.cpp
+  ../../src/server/client_rate_state.cpp
+  ../../src/server/client_policy_admin.cpp ../../src/service/guardian_process.cpp
+  ../../src/trace/sha256.cpp ../../src/io/json.cpp)
+target_include_directories(q4t_client_policy_fixture PRIVATE ../../include)
+target_compile_options(q4t_client_policy_fixture PRIVATE -Wall -Wextra -Werror)
+target_link_libraries(q4t_client_policy_fixture PRIVATE Threads::Threads)
 
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
 include(../../cmake/NativeIngress.cmake)
+include(../../cmake/ServiceCLI.cmake)
 set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
 file(MAKE_DIRECTORY "${guardian_output}")
 add_test(NAME q4t_guardian_process_contracts
@@ -27,7 +48,10 @@ set_tests_properties(q4t_guardian_process_contracts PROPERTIES
   TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${guardian_output}")
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
-set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 180)
+set(host_output "${CMAKE_CURRENT_BINARY_DIR}/public-host-tests")
+file(MAKE_DIRECTORY "${host_output}")
+set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 600
+  ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${host_output};TMPDIR=${host_output}")
 
 # Offline trace validation shares no runtime/CUDA dependencies.
 add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
@@ -167,12 +191,24 @@ q4t_add_python_contract(q4t_recovery_gateway_contracts
   tools/serve_recovery/test_gateway.py)
 q4t_add_python_contract(q4t_native_ingress_contracts
   tools/serve_recovery/test_native_ingress.py --ingress $<TARGET_FILE:q4t_ingress>)
+if(Q4T_ENABLE_NATIVE_TLS)
+  set(Q4T_NODE_SDK_DIR "${CMAKE_CURRENT_BINARY_DIR}/sdk" CACHE PATH
+    "Official pinned SDK installed from tools/serve_protocol/package-lock.json")
+  q4t_add_python_contract(q4t_native_access_contracts
+    tools/serve_recovery/test_native_access.py --ingress $<TARGET_FILE:q4t_ingress>
+    --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>
+    --host-tests $<TARGET_FILE:q4t_host_tests>)
+  set_property(TEST q4t_native_access_contracts APPEND PROPERTY
+    ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR}")
+endif()
 q4t_add_python_contract(q4t_native_bundle_contracts
   tools/serve_recovery/test_native_bundle.py)
 q4t_add_python_contract(q4t_native_admission_contracts
   tools/serve_recovery/test_native_admission.py --ingress $<TARGET_FILE:q4t_ingress>)
 q4t_add_python_contract(q4t_recovery_production_contracts
   tools/serve_recovery/test_production.py)
+q4t_add_python_contract(q4t_recovery_observation_io_contracts
+  tools/serve_recovery/test_observation_io.py)
 q4t_add_python_contract(q4t_recovery_acceptance_contracts
   tools/serve_recovery/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the

@@ -1,0 +1,13 @@
+{
+  "CMakeLists.txt": "5d7b009d49171e07ebb1478e434e864d6e8810202a3421077bb1ff31c60bdf9b",
+  "cmake/HostTestSources.cmake": "82805217a436666ed8870240ca22a77c827311f72e3b28852e4e119f97da24e0",
+  "include/q4t/server/batch_jobs.h": "50e39afc780fc9fc02265057243c38b9ce39ff2d7d7c01e5c94c20b8a3112c30",
+  "src/server/batch_jobs.cpp": "3fe428df150d1c7e153e8bf851c240269d75b1758dbc49a74354a3010cf4f295",
+  "include/q4t/server/batch_state.h": "0918770fb0d34770545d946a1e9fbb59c79dfb2764fdc36fe3342aa5b7d4b7f0",
+  "src/server/batch_state.cpp": "faefd70fc43b87484080d209be2eca663281c1f73cfeb7fb0c856a9167fe9146",
+  "src/server/batch_results.cpp": "b997f93e1c7057401d58430cd8fc014de0a4343c5a7daa479761e7b944459d93",
+  "include/q4t/server/client_policy.h": "6d700ae8e614c2d54f2cb9f8384556751e425ddaaea60c4ba22e7c7c9b43fcab",
+  "src/server/client_policy.cpp": "7a189b2fd0416bdb8eaec4f37e9380a307727940e28e9848dc163a688164113c",
+  "src/server/object_worker.cpp": "ed09e5c312fcc6598ac83fb83f3cf27d421f072f6d673866dba597f9e05409aa",
+  "tests/server_batch_jobs_test.cpp": "a455c56a854e163d4634e200636f2d55b1fd7002df08041a5b29f938f1aa8c6d"
+}

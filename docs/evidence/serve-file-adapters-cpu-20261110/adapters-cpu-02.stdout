@@ -1,0 +1,7 @@
+  CHECK failed: document.text.find("[Slide 1]") != document.text.npos && document.text.find("Transition") == document.text.npos && Provenance(input, document, "odp") && fixture.Clean() (line 109)
+[FAIL] file_extract_actual_keynote_empty_slide_and_provenance
+[PASS] file_extract_actual_keynote_xml_notes_are_real_document_content
+[PASS] file_extract_actual_xlsb_binary_workbook_values
+[PASS] file_office_word_actual_stories_tables_and_rtf_import
+[PASS] file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache
+5 tests, 4 passed, 1 failed, 0 skipped

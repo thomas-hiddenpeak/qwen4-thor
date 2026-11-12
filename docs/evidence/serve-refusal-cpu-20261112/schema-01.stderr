@@ -1,0 +1,7 @@
+test_native_json_and_original_events_match_official_shapes (tools.serve_responses.test_refusal_contract.RefusalContract.test_native_json_and_original_events_match_official_shapes) ... ok
+test_refusal_fields_and_event_discriminators_are_not_text_aliases (tools.serve_responses.test_refusal_contract.RefusalContract.test_refusal_fields_and_event_discriminators_are_not_text_aliases) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.018s
+
+OK

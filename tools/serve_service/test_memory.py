@@ -39,21 +39,37 @@ class MemoryTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'critical_memory_pressure'):
             self.watch.check()
 
-    def test_unknown_deadline_then_trip_is_latched_after_memory_recovers(self):
+    def test_runtime_unknown_never_signals_and_recovers_in_place(self):
+        self.watch.attach(dict(pid=42))
         self.sample(0, None)
         self.sample(4.99, None)
         self.watch.check()
-        self.sample(5, None)
-        self.sample(6, 4*1024**3)
+        self.sample(500, None)
         self.assertEqual(self.watch.snapshot()['reason'],
                          'memory_observation_unavailable')
-        self.assertEqual(self.watch.snapshot()['samples'], 3)
+        self.assertFalse(self.watch.tripped.is_set())
+        self.assertFalse(self.sent)
+        self.sample(501, 4*1024**3)
+        self.assertEqual(self.watch.snapshot()['state'], 'OPEN')
+        self.assertIsNone(self.watch.snapshot()['reason'])
+        self.watch.check()
 
-    def test_alternating_unknown_and_low_cannot_reset_all_deadlines(self):
+    def test_unknown_cannot_substitute_for_confirmed_low_pressure(self):
         for when in range(6):
             self.sample(when, 0 if when % 2 else None)
-        self.assertEqual(self.watch.snapshot()['reason'],
-                         'memory_safety_unconfirmed')
+        self.assertFalse(self.watch.tripped.is_set())
+        self.sample(7, 0)
+        self.assertTrue(self.watch.tripped.is_set())
+        self.assertEqual(self.watch.snapshot()['reason'], 'critical_memory_pressure')
+        self.sample(500, None)
+        self.assertEqual(self.watch.snapshot()['reason'], 'critical_memory_pressure')
+
+    def test_startup_unknown_still_refuses_new_allocation(self):
+        self.value = dict(total_bytes=8*1024**3, available_bytes=None)
+        self.watch.sample(startup=True)
+        with self.assertRaisesRegex(RuntimeError, 'memory_observation_unavailable'):
+            self.watch.check()
+        self.assertFalse(self.sent)
 
     def test_trip_before_attachment_signals_late_owned_child_only_once(self):
         self.sample(0, 0)

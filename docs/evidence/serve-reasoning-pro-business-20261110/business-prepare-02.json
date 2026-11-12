@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/serve_responses/reasoning_acceptance.py",
+    "prepare",
+    "--binary",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "--output",
+    ".q4t-work/serve-reasoning-pro-20261110/business-02",
+    "--port",
+    "18993",
+    "--resume-from",
+    ".q4t-work/serve-reasoning-pro-20261110/business-01"
+  ],
+  "exit_code": 0,
+  "seconds": 0.9658393347635865
+}

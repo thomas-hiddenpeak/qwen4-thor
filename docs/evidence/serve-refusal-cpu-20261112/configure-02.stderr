@@ -1,0 +1,9 @@
+CMake Error at /home/rm01/models/dev/qwen4-thor/cmake/RustRegex.cmake:4 (find_program):
+  Could not find Q4T_RUSTC using the following names: rustc
+Call Stack (most recent call first):
+  /home/rm01/models/dev/qwen4-thor/cmake/StructuredOutput.cmake:57 (include)
+  /home/rm01/models/dev/qwen4-thor/cmake/ChatProtocolIdentity.cmake:3 (include)
+  /home/rm01/models/dev/qwen4-thor/cmake/HostTestSources.cmake:3 (include)
+  CMakeLists.txt:9 (include)
+
+

@@ -5,6 +5,8 @@
 #include "q4t/server/server_options.h"
 
 int main(int argc, char** argv) {
+  const int worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (worker >= 0) return worker;
   if (SessionStorageContract(argc, argv)) return 1;
   using namespace q4t;
   using namespace q4t::server;
@@ -33,7 +35,10 @@ int main(int argc, char** argv) {
             options.prefix_cache_checkpoints == std::vector<int>({1024, 8193}),
             "custom unaligned checkpoints");
     options.no_mtp = true;
-    require(!ValidateServerOptions(options), "plain shared unsupported");
+    require(ValidateServerOptions(options).ok(), "plain shared supported");
+    options.seq_capacities.clear();
+    require(ValidateServerOptions(options).ok(), "plain uniform slots supported");
+    options.seq_capacities = {208896, 65536, 65536, 65536};
     options.no_mtp = false;
     options.allow_media = true;
     require(!ValidateServerOptions(options), "media shared unsupported");

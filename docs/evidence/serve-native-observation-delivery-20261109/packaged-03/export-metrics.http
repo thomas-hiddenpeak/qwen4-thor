@@ -1,0 +1,30 @@
+HTTP/1.1 200 OK
+Content-Type: text/plain; version=0.0.4
+Content-Length: 990
+Connection: close
+Cache-Control: no-store
+X-Content-Type-Options: nosniff
+
+q4t_service_sample_timestamp_seconds 1794189895.9290228
+q4t_service_state{state="STARTING"} 0
+q4t_service_state{state="READY"} 0
+q4t_service_state{state="READY_DEGRADED"} 0
+q4t_service_state{state="DRAINING"} 0
+q4t_service_state{state="RECOVERING"} 0
+q4t_service_state{state="QUARANTINED"} 0
+q4t_service_state{state="WAIT_DEPENDENCY"} 0
+q4t_service_state{state="CIRCUIT_OPEN"} 0
+q4t_service_state{state="STOPPED"} 1
+q4t_service_state{state="UNKNOWN"} 0
+q4t_service_reason{reason="none"} 1
+q4t_service_reason{reason="source_unavailable"} 0
+q4t_service_reason{reason="identity_changed"} 0
+q4t_service_reason{reason="source_stale"} 0
+q4t_service_reason{reason="collector_unavailable"} 0
+q4t_service_reason{reason="collector_timeout"} 0
+q4t_service_reason{reason="collector_budget"} 0
+q4t_service_source_known{source="guardian"} 0
+q4t_service_source_known{source="ledger"} 1
+q4t_service_source_known{source="process"} 0
+q4t_service_source_known{source="runtime"} 0
+q4t_service_business_ready 0

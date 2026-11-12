@@ -1,0 +1,20 @@
+[
+  {
+    "argv": [
+      "--help"
+    ],
+    "returncode": 0,
+    "stdout": "usage: q4t [-h] {prepare,init,run,start,status,diagnostics,stop} ...\n\nUnified recovery service entrypoint; no systemd, shell loop or auto install.\n\npositional arguments:\n  {prepare,init,run,start,status,diagnostics,stop}\n\noptions:\n  -h, --help            show this help message and exit\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "status",
+      "--state",
+      "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+    ],
+    "returncode": 1,
+    "stdout": "{\"service_id\": \"dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d\", \"state\": \"UNKNOWN\", \"business_ready\": false, \"live_control\": false}\n",
+    "stderr": ""
+  }
+]

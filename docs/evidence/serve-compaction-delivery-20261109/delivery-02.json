@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-responses-compaction-20261109/deliver.py"
+  ],
+  "exit_code": 0,
+  "seconds": 11.516419204883277
+}

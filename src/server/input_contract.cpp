@@ -1,5 +1,7 @@
 #include "q4t/server/input_contract.h"
 
+#include "q4t/server/custom_tools.h"
+
 #include <algorithm>
 #include <cmath>
 #include <unordered_set>
@@ -24,6 +26,7 @@ bool ValidInputName(std::string_view name) {
 
 bool ValidRequestId(std::string_view id) {
   return !id.empty() && id.size() <= 128 && !id.starts_with("chatcmpl-auto-") &&
+         !id.starts_with("cmpl-auto-") &&
          std::all_of(id.begin(), id.end(), [](unsigned char c) {
            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                   (c >= '0' && c <= '9') || c == '-' || c == '_';
@@ -81,10 +84,25 @@ Status ValidateToolDefinitions(const io::Json& request,
   if (!tools || tools->IsNull()) return Status();
   if (!tools->IsArray())
     return invalid("tools", "tools must be an array or null");
+  if (tools->array.size() > 128)
+    return invalid("tools", "tools must contain at most 128 declarations");
   std::unordered_set<std::string> names;
   for (size_t index = 0; index < tools->array.size(); ++index) {
     const auto& tool = tools->array[index];
     const auto path = "tools[" + std::to_string(index) + "]";
+    if (tool.GetString("type") == "custom") {
+      auto status = InputFields(tool, {"type", "custom"}, error_param, path);
+      if (!status) return status;
+      const auto* custom = tool.Find("custom");
+      if (!custom) return invalid(path + ".custom", "missing custom definition");
+      CustomToolFormat format;
+      status = ParseCustomToolFormat(*custom, &format, error_param,
+                                     path + ".custom");
+      if (!status) return status;
+      if (!names.insert(custom->GetString("name")).second)
+        return invalid(path + ".custom.name", "duplicate tool name");
+      continue;
+    }
     const auto fn_path = path + ".function";
     auto status = InputFields(tool, {"type", "function"}, error_param, path);
     if (!status) return status;

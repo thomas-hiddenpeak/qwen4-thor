@@ -137,3 +137,23 @@ Q4T_TEST(json_strict_unicode_and_controls) {
   Q4T_CHECK(j.str.size() == 2 && j.str[0] == '\0');
   return true;
 }
+
+Q4T_TEST(json_exact_decimal_opt_in_does_not_relax_control_numbers) {
+  Json value;
+  q4t::io::JsonParseLimits limits;
+  limits.allow_exact_number_text = true;
+  for (const char* text : {"1e400", "1e-400", "-2e999"}) {
+    Q4T_CHECK(!ParseJson(text, &value));
+    Q4T_CHECK(!ParseJson(text, &value, true));
+    Q4T_CHECK(!ParseJson(text, &value, false, limits));
+    Q4T_CHECK(ParseJson(text, &value, true, limits));
+    Q4T_CHECK(value.IsNumber() && value.str == text);
+    Q4T_CHECK(std::isnan(value.number) && value.AsInt(19) == 19);
+  }
+  for (const char* text : {"NaN", "Infinity", "1e", "01", "--1"})
+    Q4T_CHECK(!ParseJson(text, &value, true, limits));
+  Q4T_CHECK(ParseJson("0.3", &value, true, limits));
+  Q4T_CHECK(value.number == 0.3 && value.str == "0.3");
+  Q4T_CHECK(!ParseJson(std::string(16385, '9'), &value, true, limits));
+  return true;
+}

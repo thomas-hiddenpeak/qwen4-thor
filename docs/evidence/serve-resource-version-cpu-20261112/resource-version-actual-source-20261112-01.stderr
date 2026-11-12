@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-resource-version-20261112/check_actual.py", line 17, in <module>
+    assert before['version']==16
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError

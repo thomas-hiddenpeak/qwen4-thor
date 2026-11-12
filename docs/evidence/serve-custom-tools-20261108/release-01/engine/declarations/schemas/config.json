@@ -1,0 +1,1224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Q4T private extension, not an OpenAI or vLLM endpoint compatibility claim.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "object": {
+      "const": "q4t.serve.config"
+    },
+    "profile": {
+      "const": "q4t-config-v1"
+    },
+    "protocol_source_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "model": {
+      "type": "string"
+    },
+    "max_context_tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ]
+    },
+    "max_sequences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ]
+    },
+    "prefill_chunk_tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ]
+    },
+    "default_output_tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ]
+    },
+    "request_deadline_ms": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ]
+    },
+    "slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capacities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "policy": {
+          "enum": [
+            "uniform_context_clip",
+            "explicit_full_budget"
+          ]
+        },
+        "availability_endpoint": {
+          "const": "/metrics"
+        },
+        "reservation": {
+          "const": false
+        }
+      },
+      "required": [
+        "capacities",
+        "policy",
+        "availability_endpoint",
+        "reservation"
+      ]
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mtp_requested": {
+          "type": "boolean"
+        },
+        "mtp_enabled": {
+          "type": "boolean"
+        },
+        "mtp_k": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "media_enabled": {
+          "type": "boolean"
+        },
+        "structured_backend": {
+          "type": "boolean"
+        },
+        "session_cache": {
+          "type": "boolean"
+        },
+        "prefix_cache": {
+          "type": "boolean"
+        },
+        "prefix_checkpoints": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "memory_budget_enabled": {
+          "type": "boolean"
+        },
+        "whole_server_ram_limit": {
+          "const": false
+        },
+        "media_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "profile": {
+              "const": "q4t-media-admission-v1"
+            },
+            "experimental": {
+              "const": true
+            },
+            "roles": {
+              "const": [
+                "user"
+              ]
+            },
+            "formats": {
+              "const": [
+                "png",
+                "jpeg"
+              ]
+            },
+            "data_url_mime": {
+              "const": [
+                "image/png",
+                "image/jpeg"
+              ]
+            },
+            "raw_base64": {
+              "const": true
+            },
+            "base64": {
+              "const": "canonical_standard_padded"
+            },
+            "image_detail": {
+              "const": [
+                "auto"
+              ]
+            },
+            "remote_urls": {
+              "const": false
+            },
+            "max_items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_frames_per_item": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_encoded_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_source_edge": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_source_pixels": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_decoded_rgb_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_patches": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_workspace_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "decoder_owned_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "attention_shared_bytes": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "unknown_device_limit": {
+              "const": "reject"
+            },
+            "whole_server_ram_limit": {
+              "const": false
+            },
+            "cancellation": {
+              "const": "item_frame_and_before_gpu_not_preemptive"
+            }
+          },
+          "required": [
+            "profile",
+            "experimental",
+            "roles",
+            "formats",
+            "data_url_mime",
+            "raw_base64",
+            "base64",
+            "image_detail",
+            "remote_urls",
+            "max_items",
+            "max_frames_per_item",
+            "max_encoded_bytes",
+            "max_source_edge",
+            "max_source_pixels",
+            "max_decoded_rgb_bytes",
+            "max_patches",
+            "max_workspace_bytes",
+            "decoder_owned_bytes",
+            "attention_shared_bytes",
+            "unknown_device_limit",
+            "whole_server_ram_limit",
+            "cancellation"
+          ],
+          "description": "Optional for historical v1 records; emitted by the media admission implementation. Logical source/decoder/workspace limits do not reserve physical RAM."
+        }
+      },
+      "required": [
+        "mtp_requested",
+        "mtp_enabled",
+        "mtp_k",
+        "media_enabled",
+        "structured_backend",
+        "session_cache",
+        "prefix_cache",
+        "prefix_checkpoints",
+        "memory_budget_enabled",
+        "whole_server_ram_limit"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text_requests": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "preflight_shares_text_admission": {
+          "const": true
+        },
+        "business_connections": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "control_connections": {
+          "const": 4
+        },
+        "observation_connections": {
+          "const": 4
+        },
+        "connection_handlers": {
+          "type": "integer",
+          "minimum": 9
+        },
+        "unclassified_shares_total": {
+          "type": "boolean"
+        },
+        "body_bytes": {
+          "const": 16777216
+        },
+        "aggregate_body_bytes": {
+          "const": 50331648
+        },
+        "tokenizer_input_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tokenizer_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "preflight_response_bytes": {
+          "const": 8388608
+        },
+        "queued_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queue_policy": {
+          "enum": [
+            "capacity_fifo_best_fit",
+            "client_round_robin_best_fit"
+          ]
+        },
+        "queue_order": {
+          "const": "slot_admission_arrival"
+        },
+        "queue_excludes_preparation": {
+          "const": true
+        },
+        "public_connection_handlers": {
+          "type": "integer",
+          "minimum": 9
+        },
+        "operations_connection_handlers": {
+          "enum": [
+            0,
+            8
+          ]
+        }
+      },
+      "required": [
+        "text_requests",
+        "preflight_shares_text_admission",
+        "business_connections",
+        "control_connections",
+        "observation_connections",
+        "connection_handlers",
+        "unclassified_shares_total",
+        "body_bytes",
+        "aggregate_body_bytes",
+        "tokenizer_input_bytes",
+        "tokenizer_tokens",
+        "preflight_response_bytes",
+        "queued_requests",
+        "queue_policy",
+        "queue_order",
+        "queue_excludes_preparation"
+      ]
+    },
+    "configuration_mutable": {
+      "const": false
+    },
+    "paths_redacted": {
+      "const": true
+    },
+    "max_inflight_requests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ],
+      "description": "Requested auto sentinel 0; effective value derived after startup budget. Request count, not RAM or connection reservation."
+    },
+    "max_queued_requests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": -1
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ],
+      "description": "Requested auto sentinel -1; effective value derived after startup budget. Request count, not RAM or connection reservation."
+    },
+    "memory_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "source": {
+          "const": "linux_global_mem_available"
+        },
+        "min_available_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "recovery_margin_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "recovery_threshold_mib": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2097152
+        },
+        "sample_max_age_ms": {
+          "const": 250
+        },
+        "failure_policy": {
+          "const": "reject_new_work"
+        },
+        "active_generation": {
+          "const": "continue"
+        },
+        "hard_limit": {
+          "const": false
+        }
+      },
+      "required": [
+        "enabled",
+        "source",
+        "min_available_mib",
+        "recovery_margin_mib",
+        "recovery_threshold_mib",
+        "sample_max_age_ms",
+        "failure_policy",
+        "active_generation",
+        "hard_limit"
+      ]
+    },
+    "startup_memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "headroom_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "enum": [
+                "zero_disables",
+                "budget_disabled"
+              ]
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "source": {
+          "const": "linux_global_mem_available"
+        },
+        "estimate": {
+          "const": "allocation_budget_peak"
+        },
+        "failure_policy": {
+          "const": "stop_startup"
+        },
+        "snapshot_is_reservation": {
+          "const": false
+        },
+        "hard_limit": {
+          "const": false
+        },
+        "checks": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "before_metadata": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                },
+                "before_allocations": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                },
+                "before_ready": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                }
+              },
+              "required": [
+                "before_metadata",
+                "before_allocations",
+                "before_ready"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "enabled",
+        "headroom_mib",
+        "source",
+        "estimate",
+        "failure_policy",
+        "snapshot_is_reservation",
+        "hard_limit",
+        "checks"
+      ]
+    },
+    "cuda_allocation_quota": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "q4t-linked-cuda-quota-v1"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "requested_mib": {
+          "oneOf": [
+            {
+              "const": "auto"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            }
+          ]
+        },
+        "effective_limit_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "enum": [
+            "builtin_default",
+            "server_options",
+            "cli"
+          ]
+        },
+        "resolution": {
+          "enum": [
+            "mem_fraction_times_mem_total",
+            "explicitly_disabled",
+            "requested_mib"
+          ]
+        },
+        "scope": {
+          "const": "process_requested_cuda_bytes"
+        },
+        "allocation_entries": {
+          "const": 16384
+        },
+        "stream_entries": {
+          "const": 256
+        },
+        "no_budget_bypasses_quota": {
+          "const": false
+        },
+        "external_library_calls_covered": {
+          "const": false
+        },
+        "physical_ram_limit": {
+          "const": false
+        },
+        "reconfiguration": {
+          "const": "new_process"
+        },
+        "async_credit": {
+          "const": "successful_sync"
+        },
+        "excluded": {
+          "const": [
+            "host_heap",
+            "file_cache",
+            "driver",
+            "external_library_allocations",
+            "cuda_pool_retained"
+          ]
+        }
+      },
+      "required": [
+        "profile",
+        "enabled",
+        "requested_mib",
+        "effective_limit_bytes",
+        "source",
+        "resolution",
+        "scope",
+        "allocation_entries",
+        "stream_entries",
+        "no_budget_bypasses_quota",
+        "external_library_calls_covered",
+        "physical_ram_limit",
+        "reconfiguration",
+        "async_credit",
+        "excluded"
+      ],
+      "additionalProperties": false
+    },
+    "client_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-gateway-clients-v1"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{64})?$"
+        },
+        "clients": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "namespace": {
+          "const": "client_id"
+        },
+        "credential_values_redacted": {
+          "const": true
+        },
+        "mutable": {
+          "const": false
+        },
+        "per_client_ram_limit": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "enabled",
+        "sha256",
+        "clients",
+        "namespace",
+        "credential_values_redacted",
+        "mutable",
+        "per_client_ram_limit"
+      ]
+    },
+    "observability_version": {
+      "const": 5
+    },
+    "listeners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "public": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          },
+          "required": [
+            "host",
+            "port"
+          ]
+        },
+        "operations": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "const": "127.0.0.1"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "builtin_default",
+                "server_options"
+              ]
+            },
+            "unclassified_shares_operations_total": {
+              "const": true
+            }
+          },
+          "required": [
+            "host",
+            "port",
+            "enabled",
+            "source",
+            "unclassified_shares_operations_total"
+          ]
+        }
+      },
+      "required": [
+        "public",
+        "operations"
+      ]
+    },
+    "client_governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-client-governance-v1"
+        },
+        "policy_version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "fair_queue": {
+          "type": "boolean"
+        },
+        "window_seconds": {
+          "const": 60
+        },
+        "window": {
+          "const": "fixed_monotonic"
+        },
+        "zero_disables": {
+          "const": true
+        },
+        "scope": {
+          "const": "single_process"
+        },
+        "restart": {
+          "const": "reset"
+        },
+        "preflight_charged": {
+          "const": false
+        },
+        "reservation": {
+          "const": "prompt_plus_available_output"
+        },
+        "settlement": {
+          "const": "logical_tokens_in_completion_window"
+        },
+        "pending_survives_window": {
+          "const": true
+        },
+        "fairness_scope": {
+          "const": "prepared_slot_admission"
+        },
+        "preemption": {
+          "const": false
+        },
+        "latency_guarantee": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "policy_version",
+        "fair_queue",
+        "window_seconds",
+        "window",
+        "zero_disables",
+        "scope",
+        "restart",
+        "preflight_charged",
+        "reservation",
+        "settlement",
+        "pending_survives_window",
+        "fairness_scope",
+        "preemption",
+        "latency_guarantee"
+      ]
+    }
+  },
+  "required": [
+    "object",
+    "profile",
+    "protocol_source_sha256",
+    "model",
+    "max_context_tokens",
+    "max_sequences",
+    "prefill_chunk_tokens",
+    "default_output_tokens",
+    "request_deadline_ms",
+    "slots",
+    "runtime",
+    "limits",
+    "configuration_mutable",
+    "paths_redacted",
+    "max_inflight_requests",
+    "max_queued_requests",
+    "memory_admission",
+    "startup_memory",
+    "cuda_allocation_quota"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "observability_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "listeners"
+        ],
+        "properties": {
+          "limits": {
+            "required": [
+              "public_connection_handlers",
+              "operations_connection_handlers"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "limits": {
+            "properties": {
+              "unclassified_shares_total": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

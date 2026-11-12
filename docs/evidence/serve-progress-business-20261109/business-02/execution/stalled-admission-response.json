@@ -1,0 +1,20 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "123",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-60793429df61d1a688b810cd56717783",
+    "Retry-After": "1"
+  },
+  "seconds": 0.000936856959015131,
+  "value": {
+    "error": {
+      "message": "Service entrypoint rejected request",
+      "type": "service_error",
+      "param": null,
+      "code": "service_recovering"
+    }
+  }
+}

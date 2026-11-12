@@ -1,0 +1,16 @@
+{
+  "controller_module": "tools.serve_recovery.test_cold_admission",
+  "controller_cases": 6,
+  "root_cases": [
+    "tools.serve_recovery.test_device_control.ControlTests.test_unprivileged_launcher_forwards_real_root_objects_without_consuming",
+    "tools.serve_recovery.test_device_control.ControlTests.test_guardian_refuses_real_root_credential_for_incomplete_host_scope"
+  ],
+  "direct_cases": [
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_cold_guardian_never_authorizes_nvml_free_probe",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_probe_permission_is_once_and_survives_controller_replacement",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_stop_wins_during_controller_recovery"
+  ],
+  "gpu_starts": 0,
+  "scope": "Actual native Guardian and CPU probe/backend fixtures; no global filter and no GPU. Real qualified cold launch remains pending deployment and business acceptance."
+}

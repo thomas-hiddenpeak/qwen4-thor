@@ -1,0 +1,40 @@
+test_bound_entry_can_select_a_different_explicit_deployment_target (tools.serve_recovery.test_lifecycle.LifecycleTests.test_bound_entry_can_select_a_different_explicit_deployment_target) ... ok
+test_check_preserves_all_journals_and_never_launches (tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches) ... ERROR
+test_missing_core_lock_or_active_grant_cannot_confirm_stop (tools.serve_recovery.test_lifecycle.LifecycleTests.test_missing_core_lock_or_active_grant_cannot_confirm_stop) ... ok
+test_pending_policy_or_bad_envelope_stays_unknown_without_repair (tools.serve_recovery.test_lifecycle.LifecycleTests.test_pending_policy_or_bad_envelope_stays_unknown_without_repair) ... ok
+test_reload_limits_reports_durable_commit_separate_from_live_application (tools.serve_recovery.test_lifecycle.LifecycleTests.test_reload_limits_reports_durable_commit_separate_from_live_application) ... ok
+test_reload_routes_tls_without_model_actions_and_validates_arguments (tools.serve_recovery.test_lifecycle.LifecycleTests.test_reload_routes_tls_without_model_actions_and_validates_arguments) ... ok
+test_status_and_repeated_stop_confirm_durable_stopped (tools.serve_recovery.test_lifecycle.LifecycleTests.test_status_and_repeated_stop_confirm_durable_stopped) ... ok
+test_writer_and_guardian_ownership_prevent_false_stopped (tools.serve_recovery.test_lifecycle.LifecycleTests.test_writer_and_guardian_ownership_prevent_false_stopped) ... ok
+test_acknowledge_requires_stopped_disabled_empty_and_preserves_all_charges (tools.serve_recovery.test_outer_manager.ManagerTests.test_acknowledge_requires_stopped_disabled_empty_and_preserves_all_charges) ... ok
+test_enable_disable_with_live_core_locks_keeps_intent_faults_and_budget (tools.serve_recovery.test_outer_manager.ManagerTests.test_enable_disable_with_live_core_locks_keeps_intent_faults_and_budget) ... ok
+test_explicit_cli_initialization_never_changes_core_or_starts_business (tools.serve_recovery.test_outer_manager.ManagerTests.test_explicit_cli_initialization_never_changes_core_or_starts_business) ... ok
+test_lost_completion_receipt_stays_inactive_until_explicit_resume (tools.serve_recovery.test_outer_manager.ManagerTests.test_lost_completion_receipt_stays_inactive_until_explicit_resume) ... ok
+test_missing_published_history_cannot_be_reseeded (tools.serve_recovery.test_outer_manager.ManagerTests.test_missing_published_history_cannot_be_reseeded) ... ok
+test_partial_first_intent_has_no_policy_authority_and_can_resume (tools.serve_recovery.test_outer_manager.ManagerTests.test_partial_first_intent_has_no_policy_authority_and_can_resume) ... ok
+test_partial_policy_bootstrap_reuses_original_seed (tools.serve_recovery.test_outer_manager.ManagerTests.test_partial_policy_bootstrap_reuses_original_seed) ... ok
+test_source_change_and_active_instance_cannot_reinitialize (tools.serve_recovery.test_outer_manager.ManagerTests.test_source_change_and_active_instance_cannot_reinitialize) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+
+======================================================================
+ERROR: test_check_preserves_all_journals_and_never_launches (tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_lifecycle.py", line 47, in test_check_preserves_all_journals_and_never_launches
+    value = lifecycle.check(self.package, self.digest, self.state.relative_to(ROOT))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/lifecycle.py", line 81, in check
+    with deployment.claim(state, shared=True):
+  File "/usr/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/deployment.py", line 31, in claim
+    fd = os.open(path, os.O_RDWR | (os.O_CREAT if create else 0) |
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/manager-cpu/tmp0y5yar17/state/deployment.lock'
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.983s
+
+FAILED (errors=1)

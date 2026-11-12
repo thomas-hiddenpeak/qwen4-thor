@@ -30,6 +30,29 @@ Q4T_TEST(admission_client_rotation_and_per_client_oldest_eligible) {
   return true;
 }
 
+Q4T_TEST(admission_client_append_preserves_rotation_and_existing_tickets) {
+  Queue queue;
+  queue.ConfigureClients(2);
+  Ticket active(1, 0), a(1, 0), b(1, 1), c(1, 2), extra(1, 0);
+  queue.Granted(active);
+  Q4T_CHECK(queue.Enqueue(a, 4) && queue.Enqueue(extra, 4) &&
+            queue.Enqueue(b, 4));
+  queue.AppendClients(3);
+  // The share shrinks for new arrivals, but grandfathered tickets stay owned.
+  Ticket overflow(1, 0);
+  Q4T_CHECK(!queue.Enqueue(overflow, 4) && a.Queued() && extra.Queued());
+  Q4T_CHECK(queue.Enqueue(c, 4));
+  queue.AppendClients(1);  // No shrinking/reassignment of live identities.
+  const std::array free{true};
+  for (auto* expected : {&b, &c, &a, &extra}) {
+    Q4T_CHECK(queue.Select(*expected, {}, 8192, free) == 0);
+    queue.Granted(*expected);
+    queue.Remove(*expected);
+  }
+  Q4T_CHECK(queue.Size() == 0);
+  return true;
+}
+
 Q4T_TEST(admission_client_queue_share_cancel_and_idle_work_conservation) {
   Queue queue;
   queue.ConfigureClients(2);

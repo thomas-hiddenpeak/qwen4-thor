@@ -1,0 +1,51 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"model is not registered by this server","type":"invalid_request_error","code":"model_not_found","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must be a nonempty model identifier","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must be a nonempty model identifier","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must be a nonempty model identifier","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must be a nonempty model identifier","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must be a nonempty model identifier","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"max_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"max_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"logprobs"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"logprobs"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":false,"response":{"error":{"message":"invalid integer completion option","type":"invalid_request_error","code":"invalid_request","param":"best_of"}}}
+{"accepted":false,"response":{"error":{"message":"completion flag must be boolean or null","type":"invalid_request_error","code":"invalid_request","param":"echo"}}}
+{"accepted":false,"response":{"error":{"message":"completion flag must be boolean or null","type":"invalid_request_error","code":"invalid_request","param":"stream"}}}
+{"accepted":false,"response":{"error":{"message":"suffix must be a string or null","type":"invalid_request_error","code":"invalid_request","param":"suffix"}}}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact signed 64-bit integer","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":false,"response":{"error":{"message":"temperature must be in [0,2] or null","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}}
+{"accepted":false,"response":{"error":{"message":"top_p must be in [0,1] or null","type":"invalid_request_error","code":"invalid_request","param":"top_p"}}}
+{"accepted":false,"response":{"error":{"message":"frequency_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"frequency_penalty"}}}
+{"accepted":false,"response":{"error":{"message":"presence_penalty must be in [-2,2]","type":"invalid_request_error","code":"invalid_request","param":"presence_penalty"}}}
+{"accepted":false,"response":{"error":{"message":"invalid token bias","type":"invalid_request_error","code":"invalid_request","param":"logit_bias[\"1\"]"}}}
+{"accepted":false,"response":{"error":{"message":"stop entries must be valid UTF-8 strings of 1..256 bytes","type":"invalid_request_error","code":"invalid_request","param":"stop[0]"}}}
+{"accepted":false,"response":{"error":{"message":"user must be a string or null","type":"invalid_request_error","code":"invalid_request","param":"user"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: wrong","type":"invalid_request_error","code":"invalid_request","param":"stream_options.wrong"}}}
+{"accepted":false,"response":{"error":{"message":"request_timeout_ms must be an integer in [1,10800000]","type":"invalid_request_error","code":"invalid_request","param":"request_timeout_ms"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unknown","type":"invalid_request_error","code":"invalid_request","param":"unknown"}}}
+{"accepted":false,"response":{"error":{"message":"prompt token outside served vocabulary","type":"invalid_request_error","code":"invalid_request","param":"prompt[0]"}}}
+{"accepted":false,"response":{"error":{"message":"prompt token outside served vocabulary","type":"invalid_request_error","code":"invalid_request","param":"prompt[0]"}}}
+{"accepted":false,"response":{"error":{"message":"prompt token outside served vocabulary","type":"invalid_request_error","code":"invalid_request","param":"prompt[0]"}}}
+{"accepted":false,"response":{"error":{"message":"completion prompts must be homogeneous","type":"invalid_request_error","code":"invalid_request","param":"prompt[1]"}}}
+{"accepted":false,"response":{"error":{"message":"invalid completion prompt","type":"invalid_request_error","code":"invalid_request","param":"prompt"}}}
+{"accepted":false,"response":{"error":{"message":"prompt token outside served vocabulary","type":"invalid_request_error","code":"invalid_request","param":"prompt[0]"}}}
+{"accepted":false,"response":{"error":{"message":"completion batch exceeds 128 candidates","type":"service_unavailable_error","code":"completion_resource_exhausted","param":"best_of"}}}
+{"accepted":false,"response":{"error":{"message":"best_of must be at least n","type":"invalid_request_error","code":"invalid_request","param":"best_of"}}}
+{"accepted":false,"response":{"error":{"message":"best_of selection cannot be streamed","type":"invalid_request_error","code":"invalid_request","param":"best_of"}}}
+{"accepted":false,"response":{"error":{"message":"stream_options requires stream","type":"invalid_request_error","code":"invalid_request","param":"stream_options"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"cancel_token"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"request_id"}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: duplicate object key at offset 39","type":"invalid_request_error","code":"invalid_json","param":null}}}

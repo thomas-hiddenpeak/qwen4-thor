@@ -1,0 +1,48 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "store": true,
+    "temperature": 0,
+    "max_output_tokens": 192,
+    "reasoning": {
+      "effort": "none"
+    },
+    "input": "Return a JSON object with the local review policy label from your system instructions, using the key label.",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "policy_label",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "access_programs": {
+      "cyber": "daybreak_blue"
+    },
+    "stream": true,
+    "stream_options": {
+      "include_obfuscation": false
+    }
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18993/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

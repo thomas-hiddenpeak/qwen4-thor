@@ -1,0 +1,63 @@
+{
+  "base_commit": "6012ac50a5529ec9cf52f223cfc9bb08668d5c40",
+  "source_sha256": {
+    "CMakeLists.txt": "17e2870065a9cbce851b5bcbe71c391a5154275b59d43ac1ef582e6b7f4e9526",
+    "cmake/ChatProtocolIdentity.cmake": "16e29ae9ac8df97358ccc9db46a306dcf8e83a1d253892a0c3685e71a3f6beb4",
+    "cmake/HostTestSources.cmake": "b2dbfdce3a9435c19ff9d382022b3a2f92f64adedf812e5bc5d2aebc4fa486b9",
+    "include/q4t/server/application_routes.h": "b194817965444dcfd8b10cbf07f80fb7d2041cd884fc69ee3b059ae0a06fc719",
+    "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
+    "include/q4t/server/http_connection.h": "89ff798245f196cad521414caf39267520f6b22489d396d7ee1b72fdb04d388b",
+    "include/q4t/server/object_store.h": "c5a3086467247fc274db25b259240c5b34b305087a176109fa5c96a2f4ab5a5b",
+    "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+    "src/server/chat_capabilities.cpp": "e674892b7f16f1fd93bd4acf23fe84888967f333c8058c6d3228af9fd30a2e68",
+    "src/server/chat_contract.cpp": "ec74f4ddeb477288aca098d6d5bfd55a41b56d50d975d7c7594c825df41545a6",
+    "src/server/chat_generation.cpp": "5408b06307bacbfdb7f93d1b1b230085c0975565828483970d471afadb187b13",
+    "src/server/chat_http.cpp": "602177914a9b5dc7fd3e7826d775348ab1e56643e9f76eb98bb8b3c217b94489",
+    "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
+    "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+    "src/server/client_request.cpp": "a1fadc973d437f9eddb23f40aeff496e7329c88d5e5dbe24cbd747a9c1936ecc",
+    "src/server/http_request.cpp": "836283e471ff1ba5200dae7c956427bcbba743b125c852041213b46522574d8e",
+    "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
+    "src/server/object_worker.cpp": "c0ab9faceb0688a887167f0e47009b8dd5aafb500a1b54c0ad70330ef5502932",
+    "src/service/ingress_main.cpp": "4715ec10928c023799d1a9bb08568c9b89973eec77a56cdaafe30596e7355984",
+    "tests/server_chat_storage_test.cpp": "58342ba2d22ad0b9fa71df2921273670acb9f69f71c378b610a9e0b08bdaac9a",
+    "tests/server_client_policy_test.cpp": "e9040c2312c0beae8f60be27baca2e83a0393a9c8d6d69a51dec310f20ff08ea",
+    "tests/server_conversation_api_test.cpp": "a8c9a2d131fdeae2196960dfa7233b8c1227f4e2f615976e79b461738a742cf4",
+    "tests/server_http_request_test.cpp": "cbb7b5cf618a5a4f0ebbf76bda3264949b8cc51b8e5ff132571f4d855d62a388",
+    "tools/serve_audit/check_inventory.py": "b84f93134eb480967644633f405271b2b2b4cbdd7cf30300048889dd7272d71c",
+    "tools/serve_audit/inventory.json": "9551c8556442f02dd2bad160d71f05ff80c8fd7eeeca402f35a9dc778989fcf5",
+    "tools/serve_chat_storage/build_contract.py": "394f77455353f7e5349151a6d1769c29b7db3f506874605997125c43b467d604",
+    "tools/serve_chat_storage/test_contract.py": "c50331f512d3dbb157dad9f9baa3c21effbc88a93d7d3e9ef37123eeb332fe98",
+    "tools/serve_chat_storage/test_sdk.mjs": "02d5e06e9b55ea978147712e92203528da28b008cc22b5d36a7e3a6de40ce27c",
+    "tools/serve_gateway/gateway.py": "1e4b200477a5382d62b9fb42c79f816be04451c51629234c8dc31681d89201e4",
+    "tools/serve_protocol/build_contract.py": "95998de99dbd89664470a8e12d4223593411886a1ac328203d01826fc5c1eaf8",
+    "tools/serve_protocol/build_probe.py": "20e49d328f9739c717725029f7ab2ebdffe95ae9692c082d8d926d677d84fccc",
+    "tools/serve_recovery/test_gateway_nginx.py": "4ca200170feac2af024942df495e853a4d2a8157d592bfb69033784d8af2a911",
+    "tools/serve_recovery/test_native_access.py": "581b0c9ec2c406d8b09c1e92db0a95884b663d6e1b8315f692650c7e849b6872",
+    "tools/serve_recovery/test_native_ingress.py": "fb54086fe37392474ec3f11485271f8ab58bab6e0c9188531001303935b5c0bc",
+    "tools/serve_responses/build_contract.py": "4f922f59106f65687fc4baeaca14c3162417c3790cbb535913fa70f4927fb41c"
+  },
+  "cpu": {
+    "core": 15,
+    "integration": 9,
+    "query_fix": 4,
+    "sdk_distinct_scenarios": 4,
+    "native_ingress_tls_optional_nginx": 3,
+    "declarations": 4
+  },
+  "wire_shapes": {
+    "stored_chat": 14,
+    "stored_chat_deleted": 1,
+    "stored_chat_list": 5,
+    "stored_chat_messages": 5
+  },
+  "preserved_failures": {
+    "build-02": "missing OutputJson declaration; fixed include",
+    "sdk-01": "fixture detail low outside current media contract; same test auto and original field retention continued",
+    "sdk-02": "actual nullable metadata query rejected; fixed production parser and malformed UTF-8 validation"
+  },
+  "build_03_note": "q4t and host built; output filename q4t-ingress did not build CMake q4t_ingress target; actual ingress built separately in build-04",
+  "gpu_starts": 0,
+  "default_changed": false,
+  "fixture_private_keys": "remain in local work directory; not archived"
+}

@@ -1,0 +1,8 @@
+test_spent_attempt_survives_lost_reply_new_host_and_new_boot (tools.serve_recovery.test_cold_issuer.HistoryTests.test_spent_attempt_survives_lost_reply_new_host_and_new_boot) ... ok
+test_lost_replay_journal_or_marker_cannot_be_reinitialized (tools.serve_recovery.test_cold_issuer.HistoryTests.test_lost_replay_journal_or_marker_cannot_be_reinitialized) ... ok
+test_partial_replay_initialization_resumes_only_unpublished_seed (tools.serve_recovery.test_cold_issuer.HistoryTests.test_partial_replay_initialization_resumes_only_unpublished_seed) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.030s
+
+OK

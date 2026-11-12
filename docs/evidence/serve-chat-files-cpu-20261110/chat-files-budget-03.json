@@ -1,0 +1,8 @@
+{
+  "tests": [
+    "chat_files_stored_originals_replay_after_restart_and_decoder_outage",
+    "chat_files_unknown_parent_publication_retains_absolute_holds"
+  ],
+  "reason": "Final ownership review: after durable publication, auxiliary hold cleanup must not propagate exceptions or inherit a disconnected/expired caller. Bound cleanup to 250ms; recheck only successful/uncertain publication paths.",
+  "gpu_starts": 0
+}

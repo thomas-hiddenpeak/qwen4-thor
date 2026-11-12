@@ -1,0 +1,58 @@
+{
+  "state": "CPU_AND_OFFICIAL_SDK_ACCEPTED_REAL_MODEL_SEARCH_PENDING",
+  "cpp_unique": 12,
+  "cpp_initial_passed": 11,
+  "cpp_failed_fixture_recheck_passed": 1,
+  "sdk_unique": 3,
+  "actual_gpu_starts": 0,
+  "default_changed": false,
+  "source_management_operations": 15,
+  "whole_A11_complete": false,
+  "artifacts": {
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "sha256": "a9465c8d3de8ef6437357b60ca261fd4f935aa983ac55a1f44a21f6bd12f5098"
+    },
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+      "sha256": "f18f85471866701c89afe31c2ed3622afab46b925a29ba7b9b02b972ec948a5f"
+    },
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+      "sha256": "8106ef0082cea549607a6980d378de67589f132ed0b56970458733fddf1d756d"
+    },
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+      "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+      "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+    }
+  },
+  "owned_temporary_processes_remaining": [],
+  "sdk": {
+    "js-core-sdk.json": {
+      "version": "7.47.0",
+      "requests": 31,
+      "status": "PASS"
+    },
+    "python-tls-sdk.json": {
+      "version": "3.42.1",
+      "requests": 29,
+      "status": "PASS"
+    }
+  },
+  "failures_preserved": [
+    "unrelated source fixture membership ingested; removed only that test membership",
+    "Python3.42.1 transport driver used legacy httpx import; actual installed dependency is httpx2",
+    "build target used executable output name q4t-ingress, leaving stale ingress; rebuilt actual target q4t_ingress",
+    "Refusal schema negative-control first assumed unknown extensions rejected; corrected to invalid known-field type, confirming old untyped schema allowed it"
+  ],
+  "additional_refusal_schema_cases": 2,
+  "targeted_unique_total": 17,
+  "refusal_evidence_reused": [
+    "docs/evidence/serve-refusal-business-20261112/chat-refusal.wire",
+    "docs/evidence/serve-refusal-managed-business-20261112/version-business-01/execution/native-refusal.wire"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": 401,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "125",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-f037e09c901e4ddd4cfedf450217dbf2",
+    "WWW-Authenticate": "Bearer realm=\"q4t\"",
+    "Vary": "Origin"
+  },
+  "seconds": 0.003145418129861355,
+  "value": {
+    "error": {
+      "message": "Service entrypoint rejected request",
+      "type": "gateway_error",
+      "param": null,
+      "code": "gateway_unauthorized"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+PASS_SERVICE_PYTHON
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[  0%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document_sandbox.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document_worker.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_legacy.cpp.o

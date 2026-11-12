@@ -1,0 +1,17 @@
+{
+  "status": "PASS_TARGETED_RESPONSES_ENCRYPTION_PROTOCOL_CPU",
+  "distinct_cpu": 18,
+  "executions": 28,
+  "first_failed": 9,
+  "recheck": 10,
+  "schema_values": 22,
+  "gpu": 0,
+  "engine_sha256": "687fc18fd3b0ebf03ade36385a112269dbd1f6b0d2be2fa2c020f90b9ec498b4",
+  "default_delivered": false,
+  "remaining": [
+    "native key management",
+    "real SDK/model business",
+    "usable release",
+    "all master tasks"
+  ]
+}

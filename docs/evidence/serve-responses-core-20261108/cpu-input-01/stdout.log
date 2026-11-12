@@ -1,0 +1,13 @@
+[PASS] responses_output_incomplete_parser_preserves_chat_contract
+[PASS] responses_input_instructions_roles_and_original_metadata
+[PASS] responses_input_plain_text_empty_parts_and_refusal_order
+[PASS] responses_input_reasoning_parallel_calls_and_reverse_results
+[PASS] responses_input_custom_history_keeps_unstructured_bytes
+[PASS] responses_input_invalid_tools_never_fabricate_results
+[PASS] responses_input_image_detail_and_tool_media_not_dropped
+[PASS] responses_input_unresolved_state_explicit_and_malformed_distinct
+[PASS] responses_input_tools_resolve_strict_defaults_and_effective_schema
+[PASS] responses_input_tools_strict_opt_out_fallback_and_explicit_failure
+  CHECK failed: PlanOutputConstraints(chat, &constraints) (line 265)
+[FAIL] responses_input_tools_allowed_custom_and_source_errors
+11 tests, 10 passed, 1 failed, 0 skipped

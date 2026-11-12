@@ -1,0 +1,10 @@
+test_native_checker_uses_actual_parser_and_redacts (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_native_checker_uses_actual_parser_and_redacts) ... ok
+test_native_rejects_invalid_or_raced_policy_without_fallback (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_native_rejects_invalid_or_raced_policy_without_fallback) ... ok
+test_old_declaration_cannot_claim_policy_support (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_old_declaration_cannot_claim_policy_support) ... ok
+test_sealed_package_survives_removal_and_rejects_tampering (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_sealed_package_survives_removal_and_rejects_tampering) ... ok
+test_unconfigured_package_keeps_existing_startup (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_unconfigured_package_keeps_existing_startup) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.527s
+
+OK

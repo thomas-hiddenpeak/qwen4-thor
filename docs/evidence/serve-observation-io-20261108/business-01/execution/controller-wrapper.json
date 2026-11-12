@@ -1,0 +1,27 @@
+{
+  "original_command": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/business-01/execution/state/runs/bb1d9b1c-f2ff-4264-a987-85d33a46711a/controller.json"
+  ],
+  "validation_command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py",
+    "controller",
+    "--plan",
+    ".q4t-work/serve-observation-io-20261108/business-01/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/business-01/execution/state/runs/bb1d9b1c-f2ff-4264-a987-85d33a46711a/controller.json"
+  ],
+  "production_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle",
+    "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  }
+}

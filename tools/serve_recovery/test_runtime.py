@@ -52,7 +52,10 @@ class Service:
                  device_unknown=False, escape_model=False, bad_ledger=False,
                  stale_grant=False, daemon=False, startup_ms=300000,
                  gateway=False, quota=False, probe_lifecycle=False,
-                 probe_only=False, aux_health=False, production=False):
+                 probe_only=False, aux_health=False, production=False,
+                 usage_handoff=False, quota_restore=None, stop_handoff=False,
+                 gateway_diagnostics=False, capacity_fingerprint=None,
+                 version_fixture=None):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -87,12 +90,18 @@ class Service:
             command.append('--escape-model-child')
         if gateway:
             command.append('--bind-model')
+        if capacity_fingerprint is not None:
+            command += ['--capacity-fingerprint', capacity_fingerprint]
         if probe_lifecycle:
             command.append('--probe-lifecycle')
         if probe_only:
             command.append('--probe-only')
         if aux_health:
             command.append('--aux-health')
+        if quota_restore:
+            command += ['--quota-restore', quota_restore]
+        if stop_handoff:
+            command.append('--stop-handoff')
         if production:
             command = [sys.executable, '-I', '-B',
                 str(ROOT/'tools/serve_recovery/fixture_production.py'),
@@ -115,6 +124,12 @@ class Service:
                 parent_start_ticks=journal.process_start(os.getpid()),
                 startup_fd=bootstrap_child.fileno() if daemon else 0,
                 timeout_ms=startup_ms))
+        if usage_handoff:self.config.update(version=2, usage_handoff=True, term_ms=1000)
+        if gateway_diagnostics:
+            self.config['gateway'] += ['--diagnostics-dir', str(self.directory)]
+        if version_fixture is not None:
+            self.config.update(version=3,usage_handoff=usage_handoff,
+                               version_recovery=version_fixture(self))
         self.config_path = self.directory/'config.json'
         self.config_path.write_text(json.dumps(self.config))
         self.config_path.chmod(0o600)
@@ -264,6 +279,42 @@ class RuntimeTests(unittest.TestCase):
                             service.persistent()['active'].values()))
         service.assert_lease_free()
 
+    def test_qualified_capacity_binding_survives_independent_gateway_admission(self):
+        service = self.launch(models=True, gateway=True, capacity_fingerprint='a'*64)
+        current = service.wait(lambda s: s['business_ready'])
+        self.assertEqual(current['model_capacity_sha256'], 'a'*64)
+        reply = json.loads((service.directory/'capacity-binding.json').read_text())
+        self.assertTrue(reply['ok'])
+        self.assertEqual(current['model_generation'], 1)
+        self.assertNotIn('binding', current)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_malformed_capacity_cannot_open_model_and_recovery_spends_budget(self):
+        service = self.launch(models=True, gateway=True, capacity_fingerprint='not-qualified')
+        current = service.wait(lambda s: s['controller_generation'] >= 2)
+        attempt = json.loads((service.directory/'capacity-attempt-1.json').read_text())
+        self.assertEqual(attempt['capacity_sha256'], 'not-qualified')
+        self.assertEqual(attempt['controller_generation'], 1)
+        self.assertFalse(Path(f"/proc/{attempt['owner']['pid']}").exists())
+        # A rejection reply may be read before the invalid controller is
+        # retired. Neither delivery nor that scheduling race is required.
+        reply_path = service.directory/'capacity-binding.json'
+        if reply_path.exists():
+            self.assertFalse(json.loads(reply_path.read_text())['ok'])
+        self.assertFalse(current['business_ready'])
+        self.assertFalse(current['recovery_frozen'])
+        self.assertIsNone(current['model_capacity_sha256'])
+        self.assertEqual(len(service.persistent()['attempts']['controller']), 1)
+        observations = [json.loads(line) for line in
+                        (service.directory/'observations.jsonl').read_text().splitlines()]
+        self.assertTrue(observations)
+        self.assertTrue(all(not row['business_ready'] and
+                            row['model_capacity_sha256'] is None
+                            for row in observations))
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
     def test_gateway_failure_preserves_controller_and_model(self):
         service = self.launch(models=True, gateway=True)
         first = service.wait(lambda s: s['business_ready'])
@@ -344,6 +395,21 @@ class RuntimeTests(unittest.TestCase):
         result = service.stop()
         self.assertFalse(result['stop_durable'])
 
+    def test_malformed_optional_observation_keeps_model_and_controller(self):
+        service = self.launch(models=True, aux_health=True)
+        first = service.wait(lambda s: s['business_ready'])
+        (service.directory/'auxiliary-invalid.json').write_text(json.dumps(
+            dict(queued_bytes=999999, worker_state='not a control command')))
+        degraded = service.wait(lambda s: s['auxiliary_projection_errors'] > 0 and
+            s['controller_health']['reason'] == 'auxiliary_io_invalid')
+        self.assertTrue(degraded['business_ready'])
+        self.assertEqual(degraded['controller_health']['observation'], 'UNKNOWN')
+        for key in ('model_pid', 'controller_pid', 'model_generation'):
+            self.assertEqual(degraded[key], first[key])
+        (service.directory/'auxiliary-invalid.json').unlink()
+        service.wait(lambda s: s['controller_health']['reason'] == 'query_timeout')
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
     def test_model_quota_denial_keeps_loop_and_gateway_alive(self):
         service = self.launch(models=True, gateway=True, quota=True)
         first = service.wait(lambda s: s['business_ready'])
@@ -355,6 +421,38 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(second['gateway_pid'], first['gateway_pid'])
         self.assertEqual(second['controller_pid'], first['controller_pid'])
         self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_quota_restore_receipt_opens_only_the_current_bound_generation(self):
+        service = self.launch(models=True, gateway=True, quota=True,
+                              usage_handoff=True, quota_restore='valid')
+        first = service.wait(lambda s: s['business_ready'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2)
+        self.assertEqual(second['quota_wait_ms'], 0)
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_invalid_quota_receipts_keep_conservative_gate_without_restarting(self):
+        for mode in ('stale', 'boot', 'digest'):
+            with self.subTest(mode=mode):
+                service = self.launch(models=True, gateway=True, quota=True,
+                                      usage_handoff=True, quota_restore=mode)
+                first = service.wait(lambda s: s['business_ready'])
+                signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+                blocked = service.wait(lambda s: s['model_generation'] == 2 and
+                    (service.directory/'quota-blocked.json').exists())
+                self.assertFalse(blocked['business_ready'])
+                self.assertGreater(blocked['quota_wait_ms'], 40000)
+                self.assertEqual(blocked['controller_pid'], first['controller_pid'])
+                self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_planned_stop_allows_controller_handoff_before_signalling_model(self):
+        service = self.launch(models=True, gateway=True, quota=True,
+                              usage_handoff=True, stop_handoff=True)
+        service.wait(lambda s: s['business_ready'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        receipt = json.loads((service.directory/'handoff-order.json').read_bytes())
+        self.assertTrue(receipt['before_alive'] and receipt['after_alive'])
 
     def test_production_controller_cpu_backend_model_and_controller_recovery(self):
         service = self.launch(production=True, gateway=True)
@@ -368,6 +466,25 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(third['gateway_pid'], first['gateway_pid'])
         self.assertEqual(len(service.persistent()['attempts']['model']), 2)
         self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_production_blocked_log_preserves_business_and_control_generation(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        model_directory = service.directory/'controller-1/model-1'
+        os.mkfifo(model_directory/'model.log', 0o600)
+        (service.directory/'log.flood').touch()
+        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+            s['controller_health']['auxiliary_io']['worker_state'] == 'DISABLED', timeout=12)
+        self.assertTrue((service.directory/'log.drained').exists())
+        self.assertTrue(degraded['business_ready'])
+        for field in ('model_pid', 'model_generation', 'controller_pid', 'gateway_pid'):
+            self.assertEqual(degraded[field], first[field])
+        stats = degraded['controller_health']['auxiliary_io']
+        self.assertGreater(stats['dropped_bytes'], 0)
+        self.assertLessEqual(stats['queued_bytes'], 128*1024)
+        self.assertEqual(degraded['controller_health']['reason'], 'auxiliary_io_unavailable')
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
 
     def test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe(self):
         service = self.launch(production=True, gateway=True)

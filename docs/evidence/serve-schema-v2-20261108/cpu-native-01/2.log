@@ -1,0 +1,7 @@
+test_generation_rebind_rotates_token_and_strips_forged_client_headers (__main__.NativeTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers) ... ok
+test_duplicate_bearer_and_ambiguous_framing_never_reach_backend (__main__.NativeTests.test_duplicate_bearer_and_ambiguous_framing_never_reach_backend) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.989s
+
+OK

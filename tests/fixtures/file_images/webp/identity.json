@@ -1,0 +1,18 @@
+{
+  "producer": "Pillow 12.3.0",
+  "decoder": "1.6.0",
+  "source": "generate.py",
+  "sha256": {
+    "alpha.png": "32f585a2e934eacc31799ca20d28a041246089bb2d79723be96f72e1ebe9b090",
+    "alpha.webp": "c63eec49cb8b4ff49251c2a7d1ac2c9c4e926851e4416e5e1de3536c4d8a8f4f",
+    "animated.webp": "288156c15f01a31845a6061027b1c37c5861a1cd3c130bbec685204b5ad28803",
+    "lossless.png": "88de047d2f5b9fbedd8ee93f8950b36db076e130715a21961e8ec57f9c23a3ea",
+    "lossless.webp": "c682e5398c1c12a0d772e21cc62edcbb2b191b3c55585b14c400813a9eab3392",
+    "lossy.png": "a44293140b777caec76900692e72462511a5a9710719c38d925fac4c67bd7eff",
+    "lossy.webp": "e54e74e98e17d713ddb335405f8e36cff2c4330c8e429d0b947f4bd9d2740050",
+    "metadata.png": "44890f6faa58f8171ac6adbe120d3c031683e963cb5b2130d37c6a45e0da1bf1",
+    "metadata.webp": "8ddb3d7496affe8cd14989b5fd72f6962409490a3cf4eed84a1226e7f2f8938a",
+    "noise.png": "238b4b44ef164fd15c3ee87d88ed1a43f355cf64100c95c931053acadc7fa3e8",
+    "noise.webp": "52b47088825663ea1f40fbb1305d2cf84f9d90118f52d03982ac49c68a25fd2e"
+  }
+}

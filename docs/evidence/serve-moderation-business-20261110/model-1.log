@@ -1,0 +1,423 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":124156055552}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 309 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=93.39 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=97137396808 runtime_peak=95023582424 estimated_total=97137396808
+[q4t][startup] budget 492 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=2 policy=client_round_robin_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":97137396808,"headroom_bytes":2147483648,"required_bytes":99284880456,"observed_total_bytes":131920637952,"observed_available_bytes":123710652416}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2862 ms
+[q4t][startup] model_load 30423 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2791 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-memory] {"checkpoint":"before_ready","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":35399401472}}
+[q4t][startup] startup_total 36879 ms
+[q4t] serving on port 18993 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] operations on port 18994 (host 127.0.0.1)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=registered stage=validation seq=-1 elapsed_ms=1.249 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][http] trace_id=req-e132721fd2fddb82b5b9472aa3991cae completion_id=resp_02da61e610c95330b8509d8ed87d567e
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=-1 elapsed_ms=1.276 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[sampling] request=resp_02da61e610c95330b8509d8ed87d567e choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=structured_admission seq=-1 elapsed_ms=3.512 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=grammar_compile seq=-1 elapsed_ms=6.608 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=slot_admission seq=-1 elapsed_ms=173.195 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=admitted stage=slot_admission seq=0 elapsed_ms=173.258 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=0 elapsed_ms=173.262 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=prefill seq=0 elapsed_ms=173.277 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=decode seq=0 elapsed_ms=812.828 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=resp_02da61e610c95330b8509d8ed87d567e dev_used_gb=107.991 dev_total_gb=131.921 rss_mb=931.2 mem_free_gb=17.089 mem_avail_gb=35.523 cached_gb=11.461
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=response seq=0 elapsed_ms=2437.328 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=0 elapsed_ms=2443.829 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[sampling] request=resp_02da61e610c95330b8509d8ed87d567e choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=structured_admission seq=0 elapsed_ms=2444.559 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=grammar_compile seq=0 elapsed_ms=2444.564 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=slot_admission seq=0 elapsed_ms=2605.873 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=admitted stage=slot_admission seq=0 elapsed_ms=2605.923 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=0 elapsed_ms=2605.927 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=prefill seq=0 elapsed_ms=2605.942 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=decode seq=0 elapsed_ms=2893.963 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][mem] phase=request_end id=resp_02da61e610c95330b8509d8ed87d567e dev_used_gb=108.095 dev_total_gb=131.921 rss_mb=934.6 mem_free_gb=16.985 mem_avail_gb=35.419 cached_gb=11.461
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=response seq=0 elapsed_ms=3270.917 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=232271872 wait_status=9
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=0 elapsed_ms=3277.457 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[sampling] request=resp_02da61e610c95330b8509d8ed87d567e choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=structured_admission seq=0 elapsed_ms=3279.223 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=grammar_compile seq=0 elapsed_ms=3279.229 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=slot_admission seq=0 elapsed_ms=3444.571 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=admitted stage=slot_admission seq=0 elapsed_ms=3444.621 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=encode seq=0 elapsed_ms=3444.624 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=prefill seq=0 elapsed_ms=3444.639 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=decode seq=0 elapsed_ms=3953.543 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][mem] phase=request_end id=resp_02da61e610c95330b8509d8ed87d567e dev_used_gb=108.208 dev_total_gb=131.921 rss_mb=935.6 mem_free_gb=16.872 mem_avail_gb=35.307 cached_gb=11.462
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=response seq=0 elapsed_ms=8167.094 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=stage stage=storage seq=0 elapsed_ms=8173.629 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=0 id=resp_02da61e610c95330b8509d8ed87d567e event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=8179.983 slot_wait_ms=0.097 model_lock_ms=0.028 tokenizer_lock_ms=0.041 scheduler_completion_ms=1436.458 stream_write_ms=0.000 scheduler_waits=3 trace_id=req-e132721fd2fddb82b5b9472aa3991cae
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=registered stage=validation seq=-1 elapsed_ms=0.256 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][http] trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce completion_id=resp_b70cef2be982a7f7dcbd277d16df0265
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=encode seq=-1 elapsed_ms=0.279 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[sampling] request=resp_b70cef2be982a7f7dcbd277d16df0265 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=structured_admission seq=-1 elapsed_ms=2.256 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=grammar_compile seq=-1 elapsed_ms=3.791 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=slot_admission seq=-1 elapsed_ms=165.464 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=admitted stage=slot_admission seq=0 elapsed_ms=165.522 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=encode seq=0 elapsed_ms=165.537 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=prefill seq=0 elapsed_ms=165.551 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=decode seq=0 elapsed_ms=695.210 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][mem] phase=request_end id=resp_b70cef2be982a7f7dcbd277d16df0265 dev_used_gb=108.228 dev_total_gb=131.921 rss_mb=935.6 mem_free_gb=16.852 mem_avail_gb=35.291 cached_gb=11.465
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=response seq=0 elapsed_ms=6514.082 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=stage stage=storage seq=0 elapsed_ms=6520.590 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=1 id=resp_b70cef2be982a7f7dcbd277d16df0265 event=end stage=storage seq=0 released=1 outcome=success reason=content_filter elapsed_ms=6525.169 slot_wait_ms=0.035 model_lock_ms=0.026 tokenizer_lock_ms=0.033 scheduler_completion_ms=529.653 stream_write_ms=0.058 scheduler_waits=1 trace_id=req-0b8f83c537dc846b968e9e39ca9aa5ce
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=registered stage=validation seq=-1 elapsed_ms=0.330 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][http] trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9 completion_id=resp_df0b57970b489f1eac0ddc6e4c1010f6
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=-1 elapsed_ms=0.362 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[sampling] request=resp_df0b57970b489f1eac0ddc6e4c1010f6 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=structured_admission seq=-1 elapsed_ms=2.610 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=grammar_compile seq=-1 elapsed_ms=4.538 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=slot_admission seq=-1 elapsed_ms=167.145 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=admitted stage=slot_admission seq=0 elapsed_ms=167.201 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=0 elapsed_ms=167.206 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=prefill seq=0 elapsed_ms=167.222 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=decode seq=0 elapsed_ms=675.975 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][mem] phase=request_end id=resp_df0b57970b489f1eac0ddc6e4c1010f6 dev_used_gb=108.139 dev_total_gb=131.921 rss_mb=935.6 mem_free_gb=16.941 mem_avail_gb=35.380 cached_gb=11.466
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=response seq=0 elapsed_ms=2998.121 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233480192 wait_status=9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=0 elapsed_ms=3004.628 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[sampling] request=resp_df0b57970b489f1eac0ddc6e4c1010f6 choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=structured_admission seq=0 elapsed_ms=3005.378 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=grammar_compile seq=0 elapsed_ms=3005.388 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=slot_admission seq=0 elapsed_ms=3166.448 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=admitted stage=slot_admission seq=0 elapsed_ms=3166.499 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=0 elapsed_ms=3166.503 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=prefill seq=0 elapsed_ms=3166.518 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=decode seq=0 elapsed_ms=3437.389 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][mem] phase=request_end id=resp_df0b57970b489f1eac0ddc6e4c1010f6 dev_used_gb=108.097 dev_total_gb=131.921 rss_mb=935.6 mem_free_gb=16.983 mem_avail_gb=35.423 cached_gb=11.466
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=response seq=0 elapsed_ms=4130.432 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=232669184 wait_status=9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=0 elapsed_ms=4136.977 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[sampling] request=resp_df0b57970b489f1eac0ddc6e4c1010f6 choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=structured_admission seq=0 elapsed_ms=4138.840 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=grammar_compile seq=0 elapsed_ms=4138.851 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=slot_admission seq=0 elapsed_ms=4301.106 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=admitted stage=slot_admission seq=0 elapsed_ms=4301.159 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=encode seq=0 elapsed_ms=4301.164 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=prefill seq=0 elapsed_ms=4301.178 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=decode seq=0 elapsed_ms=4812.040 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][mem] phase=request_end id=resp_df0b57970b489f1eac0ddc6e4c1010f6 dev_used_gb=108.076 dev_total_gb=131.921 rss_mb=935.6 mem_free_gb=17.003 mem_avail_gb=35.445 cached_gb=11.468
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=response seq=0 elapsed_ms=10571.614 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=stage stage=storage seq=0 elapsed_ms=10578.206 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=2 id=resp_df0b57970b489f1eac0ddc6e4c1010f6 event=end stage=storage seq=0 released=1 outcome=success reason=content_filter elapsed_ms=10583.395 slot_wait_ms=0.102 model_lock_ms=0.039 tokenizer_lock_ms=0.055 scheduler_completion_ms=1290.461 stream_write_ms=0.050 scheduler_waits=3 trace_id=req-f5c08a18f819cd89df0d49cf5c9742c9
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=registered stage=validation seq=-1 elapsed_ms=0.337 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][http] trace_id=req-c5a75c1d9a7913343e4f8b687c79d782 completion_id=resp_e2ea23e3548f25b31ee94980b949805e
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=-1 elapsed_ms=0.376 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=structured_admission seq=-1 elapsed_ms=11.481 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=grammar_compile seq=-1 elapsed_ms=13.815 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=-1 elapsed_ms=175.933 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=175.985 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=175.987 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=176.001 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=1276.599 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=108.069 dev_total_gb=131.921 rss_mb=942.6 mem_free_gb=17.030 mem_avail_gb=35.453 cached_gb=11.468
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=2966.028 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=2973.598 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=0 elapsed_ms=2977.468 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=2977.481 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=2977.484 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=2978.001 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=3948.975 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=resp_e2ea23e3548f25b31ee94980b949805e draft_counts=0,1,0,0
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=107.935 dev_total_gb=131.921 rss_mb=947.6 mem_free_gb=17.166 mem_avail_gb=35.591 cached_gb=11.472
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=4157.665 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=4161.852 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=0 elapsed_ms=4162.405 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=4162.415 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=4162.418 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=4162.668 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=4430.748 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[mtp-accept] request=resp_e2ea23e3548f25b31ee94980b949805e draft_counts=7,7,8,30
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=107.876 dev_total_gb=131.921 rss_mb=947.6 mem_free_gb=17.227 mem_avail_gb=35.655 cached_gb=11.478
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=9447.588 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=9447.737 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=3/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=0 elapsed_ms=9448.921 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=9448.933 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=9448.936 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=9449.251 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=9821.482 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[mtp-accept] request=resp_e2ea23e3548f25b31ee94980b949805e draft_counts=0,1,2,16
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=107.873 dev_total_gb=131.921 rss_mb=947.6 mem_free_gb=17.230 mem_avail_gb=35.660 cached_gb=11.479
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=11628.661 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=11628.759 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=4/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=0 elapsed_ms=11629.940 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=11629.952 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=11629.955 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=11630.780 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=11999.183 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[mtp-accept] request=resp_e2ea23e3548f25b31ee94980b949805e draft_counts=1,4,3,7
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=107.894 dev_total_gb=131.921 rss_mb=947.6 mem_free_gb=17.209 mem_avail_gb=35.643 cached_gb=11.483
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=13429.735 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=13429.920 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[sampling] request=resp_e2ea23e3548f25b31ee94980b949805e choice=5/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=structured_admission seq=0 elapsed_ms=13432.604 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=grammar_compile seq=0 elapsed_ms=13432.628 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=slot_admission seq=0 elapsed_ms=13595.737 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=admitted stage=slot_admission seq=0 elapsed_ms=13595.794 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=encode seq=0 elapsed_ms=13595.798 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=prefill seq=0 elapsed_ms=13595.812 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=decode seq=0 elapsed_ms=14245.329 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][mem] phase=request_end id=resp_e2ea23e3548f25b31ee94980b949805e dev_used_gb=108.054 dev_total_gb=131.921 rss_mb=955.1 mem_free_gb=17.048 mem_avail_gb=35.488 cached_gb=11.487
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=response seq=0 elapsed_ms=16603.190 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=stage stage=storage seq=0 elapsed_ms=16615.294 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=3 id=resp_e2ea23e3548f25b31ee94980b949805e event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=16634.823 slot_wait_ms=0.103 model_lock_ms=0.022 tokenizer_lock_ms=0.120 scheduler_completion_ms=10006.096 stream_write_ms=0.116 scheduler_waits=92 trace_id=req-c5a75c1d9a7913343e4f8b687c79d782
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=registered stage=validation seq=-1 elapsed_ms=0.087 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][http] trace_id=resp_ca4413d893d0b8647fa634f5ac909f92 completion_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=-1 elapsed_ms=0.119 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[sampling] request=resp_ca4413d893d0b8647fa634f5ac909f92 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=structured_admission seq=-1 elapsed_ms=1.730 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=grammar_compile seq=-1 elapsed_ms=1.738 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=slot_admission seq=-1 elapsed_ms=165.813 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=admitted stage=slot_admission seq=0 elapsed_ms=165.868 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=165.872 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=prefill seq=0 elapsed_ms=165.885 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=decode seq=0 elapsed_ms=664.753 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][mem] phase=request_end id=resp_ca4413d893d0b8647fa634f5ac909f92 dev_used_gb=108.012 dev_total_gb=131.921 rss_mb=962.9 mem_free_gb=17.090 mem_avail_gb=35.530 cached_gb=11.488
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=response seq=0 elapsed_ms=2276.403 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=2283.973 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[sampling] request=resp_ca4413d893d0b8647fa634f5ac909f92 choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=slot_admission seq=0 elapsed_ms=2284.373 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=admitted stage=slot_admission seq=0 elapsed_ms=2284.383 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=2284.385 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=prefill seq=0 elapsed_ms=2284.661 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=decode seq=0 elapsed_ms=2528.911 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[mtp-accept] request=resp_ca4413d893d0b8647fa634f5ac909f92 draft_counts=2,2,2,11
+[q4t][mem] phase=request_end id=resp_ca4413d893d0b8647fa634f5ac909f92 dev_used_gb=107.845 dev_total_gb=131.921 rss_mb=962.9 mem_free_gb=17.258 mem_avail_gb=35.697 cached_gb=11.488
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=response seq=0 elapsed_ms=4129.284 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=4129.428 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[sampling] request=resp_ca4413d893d0b8647fa634f5ac909f92 choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=structured_admission seq=0 elapsed_ms=4130.208 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=grammar_compile seq=0 elapsed_ms=4130.214 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=slot_admission seq=0 elapsed_ms=4293.692 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=admitted stage=slot_admission seq=0 elapsed_ms=4293.746 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=4293.751 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=prefill seq=0 elapsed_ms=4293.763 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=decode seq=0 elapsed_ms=4665.082 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][mem] phase=request_end id=resp_ca4413d893d0b8647fa634f5ac909f92 dev_used_gb=108.008 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.095 mem_avail_gb=35.534 cached_gb=11.488
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=response seq=0 elapsed_ms=4988.974 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=232288256 wait_status=9
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=4996.558 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[sampling] request=resp_ca4413d893d0b8647fa634f5ac909f92 choice=3/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=structured_admission seq=0 elapsed_ms=4997.954 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=grammar_compile seq=0 elapsed_ms=4997.959 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=slot_admission seq=0 elapsed_ms=5160.581 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=admitted stage=slot_admission seq=0 elapsed_ms=5160.629 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=encode seq=0 elapsed_ms=5160.633 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=prefill seq=0 elapsed_ms=5160.644 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=decode seq=0 elapsed_ms=5722.639 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][mem] phase=request_end id=resp_ca4413d893d0b8647fa634f5ac909f92 dev_used_gb=107.996 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.107 mem_avail_gb=35.548 cached_gb=11.489
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=response seq=0 elapsed_ms=8061.980 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233488384 wait_status=9
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=stage stage=storage seq=0 elapsed_ms=8071.933 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=4 id=resp_ca4413d893d0b8647fa634f5ac909f92 event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=8084.180 slot_wait_ms=0.099 model_lock_ms=0.020 tokenizer_lock_ms=0.041 scheduler_completion_ms=3003.891 stream_write_ms=0.000 scheduler_waits=20 trace_id=resp_ca4413d893d0b8647fa634f5ac909f92
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=registered stage=validation seq=-1 elapsed_ms=0.385 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][http] trace_id=req-79bb9132be550ae091f396996b9e6c0e completion_id=resp_b7dec8c26d7560c493a22a2938df09e1
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=-1 elapsed_ms=0.429 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[sampling] request=resp_b7dec8c26d7560c493a22a2938df09e1 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=structured_admission seq=-1 elapsed_ms=3.465 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=grammar_compile seq=-1 elapsed_ms=5.428 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=slot_admission seq=-1 elapsed_ms=167.408 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=admitted stage=slot_admission seq=0 elapsed_ms=167.470 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=0 elapsed_ms=167.474 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=prefill seq=0 elapsed_ms=167.486 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=decode seq=0 elapsed_ms=699.581 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][mem] phase=request_end id=resp_b7dec8c26d7560c493a22a2938df09e1 dev_used_gb=108.070 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.033 mem_avail_gb=35.474 cached_gb=11.489
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=response seq=0 elapsed_ms=3034.836 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233484288 wait_status=9
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=0 elapsed_ms=3042.422 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[sampling] request=resp_b7dec8c26d7560c493a22a2938df09e1 choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=structured_admission seq=0 elapsed_ms=3043.899 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=grammar_compile seq=0 elapsed_ms=3043.910 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=slot_admission seq=0 elapsed_ms=3206.576 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=admitted stage=slot_admission seq=0 elapsed_ms=3206.625 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=0 elapsed_ms=3206.628 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=prefill seq=0 elapsed_ms=3206.642 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=decode seq=0 elapsed_ms=3683.039 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][mem] phase=request_end id=resp_b7dec8c26d7560c493a22a2938df09e1 dev_used_gb=108.060 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.043 mem_avail_gb=35.484 cached_gb=11.489
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=response seq=0 elapsed_ms=6331.374 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=232808448 wait_status=9
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=0 elapsed_ms=6338.983 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[sampling] request=resp_b7dec8c26d7560c493a22a2938df09e1 choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=structured_admission seq=0 elapsed_ms=6340.841 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=grammar_compile seq=0 elapsed_ms=6340.853 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=slot_admission seq=0 elapsed_ms=6503.613 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=admitted stage=slot_admission seq=0 elapsed_ms=6503.676 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=encode seq=0 elapsed_ms=6503.679 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=prefill seq=0 elapsed_ms=6503.692 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=decode seq=0 elapsed_ms=7032.545 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][mem] phase=request_end id=resp_b7dec8c26d7560c493a22a2938df09e1 dev_used_gb=108.034 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.069 mem_avail_gb=35.511 cached_gb=11.490
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=response seq=0 elapsed_ms=11253.107 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233500672 wait_status=9
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=stage stage=storage seq=0 elapsed_ms=11262.311 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=5 id=resp_b7dec8c26d7560c493a22a2938df09e1 event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=11268.587 slot_wait_ms=0.098 model_lock_ms=0.041 tokenizer_lock_ms=0.057 scheduler_completion_ms=1537.325 stream_write_ms=0.093 scheduler_waits=3 trace_id=req-79bb9132be550ae091f396996b9e6c0e
+[q4t][request] instance=6 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=registered stage=validation seq=-1 elapsed_ms=1.436 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][http] trace_id=req-840c04a7e7e19a3e327418edb71c68a6 completion_id=resp_0850b2c6f30e7c1c671b743d20031e5f
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=-1 elapsed_ms=1.492 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[sampling] request=resp_0850b2c6f30e7c1c671b743d20031e5f choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=structured_admission seq=-1 elapsed_ms=5.107 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=grammar_compile seq=-1 elapsed_ms=7.013 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=slot_admission seq=-1 elapsed_ms=169.072 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=admitted stage=slot_admission seq=0 elapsed_ms=169.129 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=0 elapsed_ms=169.134 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=prefill seq=0 elapsed_ms=169.153 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=decode seq=0 elapsed_ms=817.581 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][mem] phase=request_end id=resp_0850b2c6f30e7c1c671b743d20031e5f dev_used_gb=108.056 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.047 mem_avail_gb=35.494 cached_gb=11.494
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=response seq=0 elapsed_ms=3175.155 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=0 elapsed_ms=3182.744 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[sampling] request=resp_0850b2c6f30e7c1c671b743d20031e5f choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=structured_admission seq=0 elapsed_ms=3184.296 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=grammar_compile seq=0 elapsed_ms=3184.302 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=slot_admission seq=0 elapsed_ms=3356.156 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=admitted stage=slot_admission seq=0 elapsed_ms=3356.207 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=0 elapsed_ms=3356.211 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=prefill seq=0 elapsed_ms=3356.224 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=decode seq=0 elapsed_ms=3869.254 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][mem] phase=request_end id=resp_0850b2c6f30e7c1c671b743d20031e5f dev_used_gb=108.070 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.033 mem_avail_gb=35.480 cached_gb=11.494
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=response seq=0 elapsed_ms=10124.557 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=231227392 wait_status=9
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=0 elapsed_ms=10132.165 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[sampling] request=resp_0850b2c6f30e7c1c671b743d20031e5f choice=2/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=structured_admission seq=0 elapsed_ms=10134.057 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=grammar_compile seq=0 elapsed_ms=10134.064 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=slot_admission seq=0 elapsed_ms=10296.641 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=admitted stage=slot_admission seq=0 elapsed_ms=10296.695 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=encode seq=0 elapsed_ms=10296.700 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=prefill seq=0 elapsed_ms=10296.714 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=decode seq=0 elapsed_ms=10845.934 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][mem] phase=request_end id=resp_0850b2c6f30e7c1c671b743d20031e5f dev_used_gb=108.046 dev_total_gb=131.921 rss_mb=968.2 mem_free_gb=17.057 mem_avail_gb=35.504 cached_gb=11.494
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=response seq=0 elapsed_ms=12458.475 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233484288 wait_status=9
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=stage stage=storage seq=0 elapsed_ms=12467.463 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=6 id=resp_0850b2c6f30e7c1c671b743d20031e5f event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=12475.958 slot_wait_ms=0.099 model_lock_ms=0.028 tokenizer_lock_ms=0.048 scheduler_completion_ms=1710.649 stream_write_ms=0.000 scheduler_waits=3 trace_id=req-840c04a7e7e19a3e327418edb71c68a6
+[q4t][request] instance=7 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=registered stage=validation seq=-1 elapsed_ms=0.387 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][http] trace_id=req-17c49dc1a29c48132964a2b85f6efe68 completion_id=resp_4669f45a46abbb0ee361126d5d9b6dc8
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=encode seq=-1 elapsed_ms=0.444 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[sampling] request=resp_4669f45a46abbb0ee361126d5d9b6dc8 choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=structured_admission seq=-1 elapsed_ms=11.056 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=grammar_compile seq=-1 elapsed_ms=13.642 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=slot_admission seq=-1 elapsed_ms=176.230 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=admitted stage=slot_admission seq=0 elapsed_ms=176.280 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=encode seq=0 elapsed_ms=176.283 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=prefill seq=0 elapsed_ms=176.296 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=decode seq=0 elapsed_ms=1693.511 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][mem] phase=request_end id=resp_4669f45a46abbb0ee361126d5d9b6dc8 dev_used_gb=108.121 dev_total_gb=131.921 rss_mb=969.4 mem_free_gb=16.981 mem_avail_gb=35.431 cached_gb=11.497
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=response seq=0 elapsed_ms=6197.699 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=encode seq=0 elapsed_ms=6205.269 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[sampling] request=resp_4669f45a46abbb0ee361126d5d9b6dc8 choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=structured_admission seq=0 elapsed_ms=6210.199 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=grammar_compile seq=0 elapsed_ms=6210.206 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=slot_admission seq=0 elapsed_ms=6372.415 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=admitted stage=slot_admission seq=0 elapsed_ms=6372.463 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=encode seq=0 elapsed_ms=6372.468 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=prefill seq=0 elapsed_ms=6372.481 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[session-cache] request=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=restore prefix=0 ms=0.002 error=none source=session layout=target
+[session-cache] request=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=save prefix=1740 ms=223.730 disk_bytes=165163008 error=none layout=target source=shared
+[prefix-cache] request=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=write prefix=1740 ttl=1800 saved=1 bytes=165163008
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=decode seq=0 elapsed_ms=7780.623 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][mem] phase=request_end id=resp_4669f45a46abbb0ee361126d5d9b6dc8 dev_used_gb=108.083 dev_total_gb=131.921 rss_mb=973.3 mem_free_gb=17.020 mem_avail_gb=35.469 cached_gb=11.497
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=response seq=0 elapsed_ms=8191.726 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=232288256 wait_status=9
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=encode seq=0 elapsed_ms=8199.342 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=stage stage=storage seq=0 elapsed_ms=8201.142 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=7 id=resp_4669f45a46abbb0ee361126d5d9b6dc8 event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=8210.865 slot_wait_ms=0.061 model_lock_ms=0.021 tokenizer_lock_ms=0.034 scheduler_completion_ms=1517.210 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-17c49dc1a29c48132964a2b85f6efe68
+[q4t][request] instance=8 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=registered stage=validation seq=-1 elapsed_ms=0.347 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][http] trace_id=req-8c06372b690c79055298f3ef1dd37d63 completion_id=resp_181f97a549d225533b824b0ef9899a8e
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=encode seq=-1 elapsed_ms=0.389 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[sampling] request=resp_181f97a549d225533b824b0ef9899a8e choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=structured_admission seq=-1 elapsed_ms=11.010 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=grammar_compile seq=-1 elapsed_ms=13.205 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=slot_admission seq=-1 elapsed_ms=175.244 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=admitted stage=slot_admission seq=0 elapsed_ms=175.307 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=encode seq=0 elapsed_ms=175.311 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=prefill seq=0 elapsed_ms=175.324 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=decode seq=0 elapsed_ms=2226.051 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][mem] phase=request_end id=resp_181f97a549d225533b824b0ef9899a8e dev_used_gb=108.118 dev_total_gb=131.921 rss_mb=974.3 mem_free_gb=16.984 mem_avail_gb=35.448 cached_gb=11.510
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=response seq=0 elapsed_ms=4724.593 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4085837824 reported_post_exec_rss_bytes=233496576 wait_status=9
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=encode seq=0 elapsed_ms=4732.166 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[sampling] request=resp_181f97a549d225533b824b0ef9899a8e choice=1/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=slot_admission seq=0 elapsed_ms=4737.372 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=admitted stage=slot_admission seq=0 elapsed_ms=4737.388 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=encode seq=0 elapsed_ms=4737.391 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=prefill seq=0 elapsed_ms=4738.042 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[session-cache] request=resp_181f97a549d225533b824b0ef9899a8e event=restore prefix=0 ms=0.004 error=none source=session layout=mtp
+[prefix-cache] request=resp_181f97a549d225533b824b0ef9899a8e event=write prefix=2149 ttl=43200 saved=1 bytes=347123712
+[prefix-cache] request=resp_181f97a549d225533b824b0ef9899a8e event=write prefix=2181 ttl=1800 saved=1 bytes=530096128
+[mtp-prefill] request=resp_181f97a549d225533b824b0ef9899a8e streamed=1 chunks=4 trunk_bytes=41943040 ready=0
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=decode seq=0 elapsed_ms=7227.002 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][mem] phase=request_end id=resp_181f97a549d225533b824b0ef9899a8e dev_used_gb=107.937 dev_total_gb=131.921 rss_mb=974.8 mem_free_gb=17.165 mem_avail_gb=35.629 cached_gb=11.510
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=response seq=0 elapsed_ms=7227.317 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=stage stage=storage seq=0 elapsed_ms=7227.448 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=8 id=resp_181f97a549d225533b824b0ef9899a8e event=end stage=storage seq=0 released=1 outcome=success reason=completed elapsed_ms=7234.246 slot_wait_ms=0.049 model_lock_ms=0.010 tokenizer_lock_ms=0.020 scheduler_completion_ms=2050.722 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-8c06372b690c79055298f3ef1dd37d63
+[q4t][request] instance=9 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=registered stage=validation seq=-1 elapsed_ms=0.094 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][http] trace_id=req-68822ca0046e25bc0707e219fcb62934 completion_id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=encode seq=-1 elapsed_ms=0.113 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[sampling] request=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=slot_admission seq=-1 elapsed_ms=0.320 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=admitted stage=slot_admission seq=0 elapsed_ms=0.331 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=encode seq=0 elapsed_ms=0.332 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=prefill seq=0 elapsed_ms=0.449 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=decode seq=0 elapsed_ms=157.079 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[mtp-accept] request=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd draft_counts=0,1,0,0
+[q4t][mem] phase=request_end id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd dev_used_gb=107.888 dev_total_gb=131.921 rss_mb=974.8 mem_free_gb=17.214 mem_avail_gb=35.678 cached_gb=11.510
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=stage stage=response seq=0 elapsed_ms=260.412 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t][request] instance=9 id=chatcmpl-auto-8f2c9a97364e0dd295f9b651496997fd event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=260.534 slot_wait_ms=0.008 model_lock_ms=0.001 tokenizer_lock_ms=0.003 scheduler_completion_ms=85.512 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-68822ca0046e25bc0707e219fcb62934
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=105
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":127225856,"live_bytes":127225856,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":86481924168,"entries":8,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

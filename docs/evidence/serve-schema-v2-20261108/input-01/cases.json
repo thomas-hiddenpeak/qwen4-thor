@@ -1,0 +1,443 @@
+[
+  {
+    "id": "history-args-385",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-386",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-387",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"[]\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-388",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{\\\"a\\\":1,\\\"a\\\":2}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-389",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{\\\"bad<name\\\":1}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-390",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":null}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "advisory-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}]}"
+    }
+  },
+  {
+    "id": "none-ignores-argument-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}],\"tool_choice\":\"none\"}"
+    }
+  },
+  {
+    "id": "strict-compiles-schema",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}]}"
+    }
+  },
+  {
+    "id": "json-with-tools-auto",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"response_format\":{\"type\":\"json_object\"}}"
+    }
+  },
+  {
+    "id": "json-with-tools-none",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"response_format\":{\"type\":\"json_object\"},\"tool_choice\":\"none\"}"
+    }
+  },
+  {
+    "id": "output-schema-410",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-411",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false,\"maximum\":1}}}}"
+    }
+  },
+  {
+    "id": "output-schema-412",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"string\"}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-413",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"integer\",\"enum\":[1]}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-414",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"additionalProperties\":true}}}}"
+    }
+  },
+  {
+    "id": "strict-all-required",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"string\"}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "json-nullable-string",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"a\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "xml-nullable-string",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"a\"],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "schema-v2-numeric-enum",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"number\",\"enum\":[0.3,9007199254740993]}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-numeric-range",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"number\",\"minimum\":0,\"maximum\":12,\"exclusiveMinimum\":0,\"exclusiveMaximum\":12,\"multipleOf\":0.3}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-type-union",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":[\"string\",\"number\",\"null\"]}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-anyof",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"anyOf\":[{\"type\":\"string\",\"pattern\":\"^[A-Z]+$\"},{\"type\":\"integer\",\"minimum\":1}]}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-pattern-length",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"pattern\":\"^[a-z]+$\",\"minLength\":2,\"maxLength\":30}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-array-65",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"array\",\"items\":{\"type\":\"integer\"},\"maxItems\":65}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-const",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"const\":\"null</parameter>\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-empty-object",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"object\",\"additionalProperties\":false}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-date-time",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"date-time\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-time",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"time\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-date",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"date\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-duration",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"duration\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-email",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"email\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-hostname",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"hostname\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-ipv4",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"ipv4\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-ipv6",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"ipv6\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-format-uuid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"string\",\"format\":\"uuid\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-local-ref",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"$ref\":\"#/$defs/value\"}},\"required\":[\"v\"],\"additionalProperties\":false,\"$defs\":{\"value\":{\"type\":[\"string\",\"null\"]}}}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-root-ref",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"$ref\":\"#/$defs/root\",\"$defs\":{\"root\":{\"type\":\"object\",\"properties\":{\"v\":{\"$ref\":\"#/$defs/root/$defs/value\"}},\"required\":[\"v\"],\"additionalProperties\":false,\"$defs\":{\"value\":{\"type\":[\"string\",\"null\"]}}}}}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-invalid-nonlocal-ref",
+    "expected": false,
+    "shape_expected": false,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"$ref\":\"https://example.invalid/schema\"}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-invalid-unknown-keyword",
+    "expected": false,
+    "shape_expected": false,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"allOf\":[]}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-invalid-negative-multiple",
+    "expected": false,
+    "shape_expected": false,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"v\":{\"type\":\"number\",\"multipleOf\":-1}},\"required\":[\"v\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-exact-1e400",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"answer\", \"strict\": true, \"schema\": {\"type\": \"object\", \"properties\": {\"v\": {\"type\": \"number\", \"enum\": [1e400]}}, \"required\": [\"v\"], \"additionalProperties\": false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-exact-1e-400",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"answer\", \"strict\": true, \"schema\": {\"type\": \"object\", \"properties\": {\"v\": {\"type\": \"number\", \"enum\": [1e-400]}}, \"required\": [\"v\"], \"additionalProperties\": false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-exact-9007199254740993",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"answer\", \"strict\": true, \"schema\": {\"type\": \"object\", \"properties\": {\"v\": {\"type\": \"number\", \"enum\": [9007199254740993]}}, \"required\": [\"v\"], \"additionalProperties\": false}}}}"
+    }
+  },
+  {
+    "id": "schema-v2-tools-128",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"f0\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f1\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f2\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f3\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f4\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f5\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f6\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f7\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f8\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f9\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f10\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f11\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f12\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f13\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f14\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f15\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f16\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f17\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f18\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f19\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f20\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f21\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f22\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f23\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f24\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f25\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f26\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f27\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f28\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f29\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f30\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f31\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f32\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f33\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f34\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f35\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f36\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f37\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f38\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f39\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f40\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f41\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f42\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f43\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f44\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f45\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f46\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f47\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f48\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f49\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f50\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f51\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f52\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f53\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f54\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f55\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f56\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f57\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f58\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f59\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f60\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f61\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f62\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f63\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f64\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f65\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f66\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f67\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f68\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f69\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f70\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f71\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f72\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f73\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f74\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f75\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f76\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f77\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f78\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f79\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f80\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f81\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f82\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f83\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f84\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f85\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f86\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f87\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f88\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f89\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f90\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f91\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f92\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f93\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f94\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f95\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f96\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f97\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f98\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f99\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f100\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f101\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f102\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f103\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f104\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f105\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f106\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f107\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f108\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f109\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f110\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f111\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f112\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f113\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f114\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f115\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f116\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f117\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f118\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f119\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f120\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f121\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f122\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f123\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f124\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f125\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f126\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f127\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"required\"}"
+    }
+  },
+  {
+    "id": "schema-v2-tools-129",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"f0\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f1\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f2\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f3\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f4\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f5\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f6\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f7\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f8\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f9\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f10\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f11\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f12\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f13\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f14\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f15\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f16\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f17\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f18\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f19\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f20\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f21\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f22\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f23\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f24\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f25\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f26\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f27\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f28\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f29\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f30\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f31\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f32\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f33\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f34\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f35\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f36\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f37\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f38\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f39\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f40\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f41\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f42\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f43\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f44\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f45\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f46\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f47\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f48\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f49\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f50\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f51\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f52\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f53\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f54\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f55\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f56\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f57\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f58\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f59\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f60\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f61\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f62\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f63\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f64\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f65\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f66\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f67\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f68\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f69\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f70\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f71\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f72\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f73\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f74\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f75\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f76\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f77\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f78\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f79\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f80\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f81\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f82\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f83\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f84\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f85\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f86\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f87\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f88\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f89\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f90\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f91\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f92\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f93\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f94\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f95\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f96\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f97\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f98\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f99\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f100\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f101\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f102\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f103\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f104\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f105\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f106\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f107\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f108\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f109\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f110\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f111\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f112\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f113\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f114\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f115\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f116\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f117\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f118\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f119\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f120\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f121\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f122\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f123\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f124\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f125\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f126\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f127\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"f128\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"required\"}"
+    }
+  },
+  {
+    "id": "schema-v2-json-required-tool",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"required\"}"
+    }
+  },
+  {
+    "id": "schema-v2-json-custom-auto",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"tools\":[{\"type\":\"custom\",\"custom\":{\"name\":\"read\"}}]}"
+    }
+  },
+  {
+    "id": "schema-v2-arbitrary-history-keys",
+    "expected": true,
+    "shape_expected": true,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{\"\":null,\"bad<name\":\"</tool_call>\"}}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  }
+]

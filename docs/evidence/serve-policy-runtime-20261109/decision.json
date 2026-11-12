@@ -1,0 +1,17 @@
+{
+  "state": "PASS_POLICY_RUNTIME_TARGETED_CPU_PENDING_FULL_MANAGED_DELIVERY",
+  "targeted_tests": 21,
+  "python_tests": 18,
+  "cpp_tests": 3,
+  "build_warnings": 0,
+  "production_build": true,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "remaining": [
+    "controller lifecycle synchronization and coordinated new clients",
+    "minute usage recovery and management CLI",
+    "native TLS SDK real business and rollback-capable delivery"
+  ],
+  "all_master_tasks_continue": true
+}

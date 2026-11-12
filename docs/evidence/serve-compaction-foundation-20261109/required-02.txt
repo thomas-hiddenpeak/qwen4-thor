@@ -1,0 +1,2 @@
+compaction_optional_id_enters_actual_response_generation_plan
+compaction_returned_window_is_replayable_without_losing_message_data

@@ -1,0 +1,6 @@
+{
+  "command": "python3 tools/serve_protocol/build_contract.py --check",
+  "result": "AssertionError: generated contract drift: docs/serve-input-semantics-v1.json",
+  "reason": "Semantic source hashes changed during clang-format after generation; request shape remains unchanged.",
+  "observed_in_prior_tool_call": true
+}

@@ -1,0 +1,9 @@
+{
+  "reason": "PDF driver request was checked against text-only Chat schema; use the existing explicit vision request schema. Production and driver request unchanged.",
+  "cpu_tests": [
+    "test_requests_profiles_and_original_pdf_identity"
+  ],
+  "reused_passed": 3,
+  "source_sha256": "b1cba709d31ccbfd75013a78bfd753772745471d40dd3729c42b6c8b4fe7cc33",
+  "gpu_starts": 0
+}

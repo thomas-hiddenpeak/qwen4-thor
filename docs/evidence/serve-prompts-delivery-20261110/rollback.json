@@ -1,0 +1,13 @@
+{
+  "previous": {
+    "engine_binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+    "engine_release_sha256": "11eeb4dfb61eb49ba2ca4e20370dd1860af63c7597a5c12d26295a1a031026fa",
+    "generation_sha256": "f1663bf0f34c939b67eca03c0ddcf72250d9e15da80acf7d3c4f378387a6ad0d",
+    "manifest_sha256": "c59afb3d81c9919265737de164292f49a2f004ac9b5328b73a447f0763ab0635",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-compaction-20261109/release-01/bundle",
+    "service_acceptance_sha256": "36e5f9385f5abe2e17dbbd83049ffd1e074f7ce2aaa6d8d49d7d5d5024b5f193",
+    "service_release_sha256": "04c2f6c6386360d85c08faf342b8f705857ca462f7f695e1a69b6befad2ce514"
+  },
+  "previous_revision": 16,
+  "command": "Use current q4t service publish-rollback with retained generation/current revision/new request UUID; never restore business journals."
+}

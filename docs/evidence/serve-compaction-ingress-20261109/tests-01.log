@@ -1,0 +1,7 @@
+test_compact_auth_preserves_body_and_client_scope (tools.serve_responses.test_compact_ingress.CompactIngress.test_compact_auth_preserves_body_and_client_scope) ... ok
+test_compact_uses_data_capacity_and_keeps_observation_available (tools.serve_responses.test_compact_ingress.CompactIngress.test_compact_uses_data_capacity_and_keeps_observation_available) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.463s
+
+OK

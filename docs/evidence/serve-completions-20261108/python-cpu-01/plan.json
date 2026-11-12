@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_completions.test_managed",
+    "tools.serve_completions.test_acceptance",
+    "tools.serve_gateway.test_gateway.GatewayTests.test_real_nginx_parse_and_private_package_verification",
+    "tools.serve_gateway.test_gateway.GatewayTests.test_control_and_data_have_separate_complete_bounds"
+  ]
+}

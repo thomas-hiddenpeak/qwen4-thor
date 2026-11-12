@@ -68,13 +68,15 @@ bool ThinkingBudget::State::Feed(std::string_view bytes) {
 }
 
 Status ThinkingBudget::Init(int64_t limit, std::string_view prompt,
-                            bool json_output, bool tool_regions) {
+                            bool json_output, bool tool_regions,
+                            bool observe_unbounded) {
   if (initialized_) return Status::Fail("thinking budget already initialized");
   initialized_ = true;
   if (limit < -1 || limit > std::numeric_limits<int32_t>::max())
     return Status::Fail("invalid thinking budget");
   limit_ = limit;
-  if (!Enabled()) return Status();
+  observe_unbounded_ = observe_unbounded;
+  if (!Tracking()) return Status();
   state_.json_output = json_output;
   state_.tool_regions = tool_regions;
   if (prompt.ends_with("<think>\n"))
@@ -167,7 +169,14 @@ int32_t ThinkingBudget::ForcedToken() {
 
 Status ThinkingBudget::Observe(int32_t token, std::string_view bytes,
                                bool stop) {
-  if (!Enabled()) return Status();
+  if (!Tracking()) return Status();
+  if (!Enabled()) {
+    if (stop) return Status();
+    const bool before = Thinking();
+    const bool entered = state_.Feed(bytes);
+    if (before || entered) ++consumed_;
+    return Status();
+  }
   if (!prepared_) return Status::Fail("thinking budget tokens not prepared");
   const int32_t forced = ForcedToken();
   if (forced >= 0 && token != forced)

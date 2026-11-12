@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_vector_search.cpp: In member function ‘void q4t::server::ChatServer::HandleVectorSearch(int, const std::string&, const std::string&, const std::string&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_vector_search.cpp:125:49: error: ‘OutputJson’ was not declared in this scope
+  125 |     success = detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
+      |                                                 ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1927: CMakeFiles/q4t_server.dir/src/server/chat_vector_search.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1414: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1561: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:623: q4t] Error 2

@@ -1,0 +1,12 @@
+{
+  "additional_generations": 1,
+  "model_steps": 1,
+  "combined_generations": 4,
+  "combined_starts": 3,
+  "exact_get_projection": true,
+  "encrypted_state_continues_after_restart": true,
+  "exact_per_process_usage": true,
+  "production_unchanged": true,
+  "reused_prior_business": true,
+  "performance_claim": false
+}

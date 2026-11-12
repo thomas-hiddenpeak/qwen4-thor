@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "starts": 0,
+    "chats": 0,
+    "probes": 1,
+    "controls": 236
+  },
+  "events": [
+    {
+      "kind": "probes",
+      "label": "compiled-native-probe",
+      "ordinal": 1,
+      "monotonic_ns": 2396534558757150
+    }
+  ]
+}

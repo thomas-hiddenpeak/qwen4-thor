@@ -1,0 +1,5 @@
+{
+  "input_file_id": "file_d137c98719c8bfb4cf89927dd8e547b5",
+  "endpoint": "/v1/embeddings",
+  "completion_window": "24h"
+}

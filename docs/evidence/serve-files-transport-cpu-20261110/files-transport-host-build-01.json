@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-access-20261109/host",
+    "--target",
+    "q4t_host_tests",
+    "q4t_ingress",
+    "q4t_client_policy_check",
+    "q4t_client_policy_fixture",
+    "--parallel",
+    "4"
+  ],
+  "exit_code": 0,
+  "seconds": 90.65232818201184
+}

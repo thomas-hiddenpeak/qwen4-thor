@@ -1,14 +1,16 @@
-"""Small standard-library client for Q4T's parsed, single-choice chat API.
+"""Small standard-library client for Q4T's parsed Chat API.
 
 Development candidate; see docs/AGENT_TOOL_CLIENT_2026-11-02.md. No requests,
 tool execution, retries, or model imports happen when this module is imported.
 """
 from copy import deepcopy
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 import json
 import math
 import secrets
 import ipaddress
+import re
 import ssl
 import time
 import urllib.error
@@ -84,24 +86,77 @@ def _constant(value):
     raise ProtocolError("non-JSON number: " + value)
 
 
-def load_json(value):
+def _exact_number(token):
+    require(len(token) <= 16384, "JSON number spelling limit")
+    exact = Decimal(token)
+    require(exact.is_finite(), "non-JSON number")
+    if not any(c in token for c in ".eE") and len(token) <= 4096:
+        return int(token)
+    rounded = float(exact)
+    if math.isfinite(rounded) and Decimal(str(rounded)) == exact:
+        return rounded
+    return exact
+
+
+def dump_json(value):
+    """Bounded JSON encoder retaining Decimal and arbitrary integer data."""
+    nodes = 0
+    def encode(item, depth=0):
+        nonlocal nodes
+        nodes += 1
+        require(depth <= 64 and nodes <= 65536, "JSON complexity limit")
+        if item is None: return "null"
+        if type(item) is bool: return "true" if item else "false"
+        if isinstance(item, str):
+            return json.dumps(_text(item, "invalid JSON text"), ensure_ascii=False)
+        if isinstance(item, Decimal) or type(item) is int:
+            if type(item) is int:
+                require(item.bit_length() <= 54430, "JSON number spelling limit")
+                encoded = str(Decimal(item))
+            else:
+                require(item.is_finite(), "non-JSON number")
+                encoded = str(item)
+            require(len(encoded) <= 16384, "JSON number spelling limit")
+            return encoded
+        if type(item) is float:
+            require(math.isfinite(item), "non-JSON number")
+            return json.dumps(item, allow_nan=False)
+        if isinstance(item, list):
+            return "[" + ",".join(encode(v, depth + 1) for v in item) + "]"
+        require(isinstance(item, dict), "value must be JSON")
+        require(all(isinstance(k, str) for k in item), "JSON keys must be text")
+        return "{" + ",".join(encode(k, depth + 1) + ":" + encode(v, depth + 1)
+                              for k, v in item.items()) + "}"
+    try:
+        encoded = encode(value)
+        require(len(encoded.encode("utf-8")) <= 16 * 1024 * 1024,
+                "JSON exceeds 16 MiB")
+        return encoded
+    except (ValueError, RecursionError, OverflowError) as error:
+        raise ProtocolError("invalid JSON: " + str(error)) from error
+
+
+def load_json(value, *, exact_numbers=False):
     try:
         if isinstance(value, (bytes, bytearray)):
             value = value.decode("utf-8")
-        return json.loads(value, object_pairs_hook=_object, parse_float=_float,
+        return json.loads(value, object_pairs_hook=_object,
+                          parse_float=_exact_number if exact_numbers else _float,
+                          parse_int=_exact_number if exact_numbers else int,
                           parse_constant=_constant)
-    except (ValueError, UnicodeError, RecursionError) as error:
+    except (ValueError, UnicodeError, RecursionError, InvalidOperation,
+            OverflowError) as error:
         raise ProtocolError("invalid JSON: " + str(error)) from error
 
 
 def _arguments(value):
     _text(value, "tool arguments must be a JSON string")
-    args = load_json(value)
+    args = load_json(value, exact_numbers=True)
     require(isinstance(args, dict), "tool arguments must contain an object")
     return args
 
 
-def _usage(value):
+def _usage(value, choice_count=1):
     require(isinstance(value, dict), "missing usage")
     for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
         require(type(value.get(key)) is int and value[key] >= 0,
@@ -116,6 +171,12 @@ def _usage(value):
         require(type(reasoning) is int and
                 0 <= reasoning <= value["completion_tokens"],
                 "invalid reasoning token count")
+        prediction_keys = ("accepted_prediction_tokens", "rejected_prediction_tokens")
+        if any(key in details for key in prediction_keys):
+            require(all(type(details.get(key)) is int and details[key] >= 0
+                        for key in prediction_keys) and
+                    sum(details[key] for key in prediction_keys) <= value["completion_tokens"],
+                    "invalid prediction token count")
     budget = value.get("q4t_thinking_budget")
     if budget is not None:
         require(isinstance(budget, dict) and details is not None,
@@ -123,8 +184,9 @@ def _usage(value):
         for key in ("limit", "consumed", "forced_closure_tokens"):
             require(type(budget.get(key)) is int and budget[key] >= 0,
                     "invalid thinking budget field: " + key)
-        require(budget["consumed"] <= budget["limit"] <= 2147483647 and
-                budget["forced_closure_tokens"] <= 14 and
+        require(budget["consumed"] <= budget["limit"] * choice_count and
+                budget["limit"] <= 2147483647 and
+                budget["forced_closure_tokens"] <= 14 * choice_count and
                 budget["consumed"] + budget["forced_closure_tokens"] ==
                 details["reasoning_tokens"], "inconsistent thinking budget usage")
     if "prompt_tokens_details" in value:
@@ -140,10 +202,12 @@ def _message(value):
     require(isinstance(value, dict) and value.get("role") == "assistant",
             "expected assistant message")
     require(not (set(value) - {"role", "content", "reasoning_content", "reasoning",
-                               "tool_calls"}), "unsupported message field")
+                               "refusal", "tool_calls", "function_call"}), "unsupported message field")
     require("content" in value, "missing message content")
     if value["content"] is not None:
         _text(value["content"], "invalid content")
+    if value.get("refusal") is not None:
+        _text(value["refusal"], "invalid refusal")
     reasoning_fields = [key for key in ("reasoning_content", "reasoning")
                         if value.get(key) is not None]
     require(len(reasoning_fields) <= 1, "mixed reasoning response fields")
@@ -153,16 +217,58 @@ def _message(value):
     require(isinstance(calls, list) and len(calls) <= MAX_TOOL_CALLS,
             "invalid tool call list")
     ids = set()
+    function = value.get("function_call")
+    if function is not None:
+        require(not calls and isinstance(function, dict) and
+                set(function) == {"name", "arguments"}, "invalid legacy function call")
+        _text(function.get("name"), "missing function name", True)
+        _arguments(function.get("arguments"))
     for call in calls:
-        require(isinstance(call, dict) and call.get("type") == "function",
-                "expected function tool call")
+        require(isinstance(call, dict) and call.get("type") in ("function", "custom"),
+                "expected function or custom tool call")
+        kind = call["type"]
+        require(set(call) == {"id", "type", kind}, "invalid tool call fields")
         identifier = _text(call.get("id"), "missing tool call id", True)
         require(identifier not in ids, "duplicate tool call id")
         ids.add(identifier)
-        function = call.get("function")
-        require(isinstance(function, dict), "missing function")
-        _text(function.get("name"), "missing function name", True)
-        _arguments(function.get("arguments"))
+        value_field = "input" if kind == "custom" else "arguments"
+        definition = call.get(kind)
+        require(isinstance(definition, dict) and set(definition) == {"name", value_field},
+                "invalid tool payload")
+        _text(definition.get("name"), "missing tool name", True)
+        if kind == "custom":
+            _text(definition.get("input"), "custom input must be text")
+        else:
+            _arguments(definition.get("arguments"))
+    return deepcopy(value)
+
+
+def _logprobs(value):
+    if value is None:
+        return None
+    require(isinstance(value, dict) and set(value) == {"content", "refusal"},
+            "invalid logprobs container")
+
+    def token(item, top=False):
+        required = {"token", "logprob", "bytes"} | (set() if top else {"top_logprobs"})
+        require(isinstance(item, dict) and set(item) == required,
+                "invalid token logprobs")
+        _text(item["token"], "invalid token string")
+        probability = item["logprob"]
+        require(type(probability) in (int, float) and math.isfinite(probability)
+                and probability <= 0, "invalid token probability")
+        require(item["bytes"] is None or (isinstance(item["bytes"], list) and
+            all(type(byte) is int and 0 <= byte <= 255 for byte in item["bytes"])),
+            "invalid token bytes")
+        if not top:
+            require(isinstance(item["top_logprobs"], list) and
+                    len(item["top_logprobs"]) <= 20, "invalid alternatives")
+            for alternative in item["top_logprobs"]:
+                token(alternative, True)
+    for entries in value.values():
+        require(entries is None or isinstance(entries, list), "invalid logprobs list")
+        for item in entries or []:
+            token(item)
     return deepcopy(value)
 
 
@@ -173,18 +279,62 @@ class Completion:
     message: dict
     finish_reason: str
     usage: dict
+    logprobs: dict | None = None
 
 
-def _completion(identifier, model, message, finish, usage):
+def _completion(identifier, model, message, finish, usage, logprobs=None,
+                choice_count=1):
     _text(identifier, "missing response id", True)
     _text(model, "missing response model", True)
     message = _message(message)
-    require(finish in ("stop", "tool_calls", "length"),
+    require(finish in ("stop", "tool_calls", "function_call", "length"),
             "unsupported or missing finish_reason")
     has_tools = bool(message.get("tool_calls"))
     require(finish != "tool_calls" or has_tools, "tool finish without calls")
-    require(finish != "stop" or not has_tools, "tool calls with stop finish")
-    return Completion(identifier, model, message, finish, _usage(usage))
+    legacy = message.get("function_call") is not None
+    require(message.get("refusal") is None or not (has_tools or legacy),
+            "refusal cannot authorize tool execution")
+    require(finish != "function_call" or legacy, "function finish without call")
+    require(not legacy or finish in ("function_call", "length"), "legacy call finish mismatch")
+    require(finish != "stop" or not (has_tools or legacy), "tool calls with stop finish")
+    return Completion(identifier, model, message, finish, _usage(usage, choice_count),
+                      _logprobs(logprobs))
+
+
+@dataclass(frozen=True)
+class MultiCompletion:
+    id: str
+    model: str
+    choices: list
+    usage: dict
+
+    def select(self, index):
+        require(type(index) is int and 0 <= index < len(self.choices),
+                "invalid choice selection")
+        choice = self.choices[index]
+        return _completion(self.id, self.model, choice["message"],
+                           choice["finish_reason"], self.usage,
+                           choice["logprobs"], len(self.choices))
+
+
+def _choices_completion(identifier, model, choices, usage):
+    require(isinstance(choices, list) and 1 <= len(choices) <= 128,
+            "invalid choice count")
+    require(all(isinstance(choice, dict) and type(choice.get("index")) is int
+                for choice in choices), "invalid choice index")
+    choices = sorted(choices, key=lambda choice: choice["index"])
+    require([choice["index"] for choice in choices] == list(range(len(choices))),
+            "missing or duplicate choice index")
+    result = []
+    for choice in choices:
+        item = _completion(identifier, model, choice.get("message"),
+                           choice.get("finish_reason"), usage,
+                           choice.get("logprobs"), len(choices))
+        result.append(dict(index=choice["index"], message=item.message,
+                           finish_reason=item.finish_reason, logprobs=item.logprobs))
+    if len(choices) == 1:
+        return item
+    return MultiCompletion(identifier, model, result, _usage(usage, len(choices)))
 
 
 def _envelope(value, kind):
@@ -206,12 +356,16 @@ def _choice(choices):
     return choice
 
 
-class _Stream:
+class _ChoiceStream:
     def __init__(self):
         self.identifier = self.model = self.finish = self.usage = None
         self.role = False
+        self.logprobs = None
+        self.choice_count = 1
         self.reasoning_field = None
         self.content, self.reasoning, self.calls = [], [], []
+        self.refusal = None
+        self.function_call = None
 
     def feed(self, event):
         _envelope(event, "chat.completion.chunk")
@@ -229,10 +383,19 @@ class _Stream:
         require(self.finish is None and event.get("usage") is None,
                 "choice after terminal or usage on a choice")
         choice = _choice(choices)
+        probabilities = _logprobs(choice.get("logprobs"))
+        if probabilities is not None:
+            if self.logprobs is None:
+                self.logprobs = dict(content=None, refusal=None)
+            for key in ("content", "refusal"):
+                if probabilities[key] is not None:
+                    if self.logprobs[key] is None:
+                        self.logprobs[key] = []
+                    self.logprobs[key].extend(probabilities[key])
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
         require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
-                                   "tool_calls"}), "unsupported delta field")
+                                   "refusal", "tool_calls", "function_call"}), "unsupported delta field")
         if "role" in delta:
             require(not self.role and delta["role"] == "assistant",
                     "invalid or duplicate assistant role")
@@ -240,6 +403,10 @@ class _Stream:
         require(self.role, "delta before assistant role")
         if delta.get("content") is not None:
             self.content.append(_text(delta["content"], "invalid content"))
+        if delta.get("refusal") is not None:
+            if self.refusal is None:
+                self.refusal = []
+            self.refusal.append(_text(delta["refusal"], "invalid refusal"))
         for name in ("reasoning_content", "reasoning"):
             if delta.get(name) is None:
                 continue
@@ -251,52 +418,120 @@ class _Stream:
         require(isinstance(calls, list), "invalid tool delta list")
         for call in calls:
             self.tool(call)
+        function = delta.get("function_call")
+        if function is not None:
+            require(not self.calls and isinstance(function, dict) and
+                    not (set(function) - {"name", "arguments"}), "invalid legacy function delta")
+            if self.function_call is None:
+                self.function_call = dict(name=[], arguments=[])
+            for name, value in function.items():
+                self.function_call[name].append(_text(value, "invalid function " + name))
         finish = choice.get("finish_reason")
         if finish is not None:
-            require(finish in ("stop", "tool_calls", "length"),
+            require(finish in ("stop", "tool_calls", "function_call", "length"),
                     "unsupported finish_reason")
             self.finish = finish
 
     def tool(self, delta):
+        require(self.function_call is None, "mixed function and tool delta dialects")
         require(isinstance(delta, dict), "invalid tool delta")
         index = delta.get("index")
         require(type(index) is int and 0 <= index <= len(self.calls),
                 "non-contiguous tool index")
-        function = delta.get("function", {})
-        require(isinstance(function, dict), "invalid tool function delta")
         if index == len(self.calls):
-            require(index < MAX_TOOL_CALLS and delta.get("type") == "function",
+            require(index < MAX_TOOL_CALLS and delta.get("type") in ("function", "custom"),
                     "invalid tool type or too many calls")
             identifier = _text(delta.get("id"), "missing tool id", True)
-            require(all(c["id"] != identifier for c in self.calls),
-                    "duplicate tool id")
-            _text(function.get("name"), "missing function name", True)
-            self.calls.append(dict(id=identifier, type="function", name=[],
-                                   arguments=[]))
+            require(all(c["id"] != identifier for c in self.calls), "duplicate tool id")
+            kind = delta["type"]
+            require(isinstance(delta.get(kind), dict), "missing initial tool payload")
+            _text(delta[kind].get("name"), "missing tool name", True)
+            self.calls.append(dict(id=identifier, type=kind, name=[], value=[]))
         call = self.calls[index]
-        require(delta.get("id", call["id"]) == call["id"] and
-                delta.get("type", "function") == "function",
-                "tool identity changed mid-stream")
-        for name in ("name", "arguments"):
-            if name in function:
-                call[name].append(_text(function[name], "invalid tool " + name))
+        kind = call["type"]
+        value_field = "input" if kind == "custom" else "arguments"
+        require(not (set(delta) - {"index", "id", "type", kind}) and
+                delta.get("id", call["id"]) == call["id"] and
+                delta.get("type", kind) == kind, "tool identity changed mid-stream")
+        definition = delta.get(kind, {})
+        require(isinstance(definition, dict) and not (set(definition) - {"name", value_field}),
+                "invalid tool delta fields")
+        for source, target in (("name", "name"), (value_field, "value")):
+            if source in definition:
+                call[target].append(_text(definition[source], "invalid tool " + source))
 
     def result(self):
         require(self.role and self.finish is not None and self.usage is not None,
                 "incomplete SSE terminal")
         content, reasoning = "".join(self.content), "".join(self.reasoning)
         message = dict(role="assistant", content=content)
+        if self.refusal is not None:
+            message["refusal"] = "".join(self.refusal)
+            if not content:
+                message["content"] = None
         if reasoning:
             message[self.reasoning_field] = reasoning
         if self.calls:
-            message["tool_calls"] = [dict(id=c["id"], type="function",
-                function=dict(name="".join(c["name"]),
-                              arguments="".join(c["arguments"])))
+            message["tool_calls"] = [dict(id=c["id"], type=c["type"], **{c["type"]:
+                dict(name="".join(c["name"]), **{
+                    "input" if c["type"] == "custom" else "arguments": "".join(c["value"])})})
                 for c in self.calls]
             if not content:
                 message["content"] = None
+        if self.function_call is not None:
+            message["function_call"] = {k: "".join(v) for k,v in self.function_call.items()}
+            if not content:
+                message["content"] = None
         return _completion(self.identifier, self.model, message,
-                           self.finish, self.usage)
+                           self.finish, self.usage, self.logprobs, self.choice_count)
+
+
+class _Stream:
+    def __init__(self):
+        self.identity = None
+        self.choices = {}
+        self.usage = None
+
+    @property
+    def finish(self):
+        return True if self.choices and all(state.finish is not None
+                        for state in self.choices.values()) else None
+
+    def feed(self, event):
+        _envelope(event, "chat.completion.chunk")
+        identity = (event["id"], event["model"], event.get("created"))
+        if self.identity is None:
+            self.identity = identity
+        require(self.identity == identity, "response identity changed mid-stream")
+        choices = event["choices"]
+        if not choices:
+            require(self.finish is not None and self.usage is None,
+                    "unexpected or duplicate usage terminal")
+            self.usage = _usage(event.get("usage"), len(self.choices))
+            return
+        require(self.usage is None and event.get("usage") is None and
+                len(choices) <= 128, "choice after usage or mixed usage")
+        seen = set()
+        for choice in choices:
+            require(isinstance(choice, dict), "invalid choice")
+            index = choice.get("index")
+            require(type(index) is int and 0 <= index < 128 and index not in seen,
+                    "invalid or duplicate choice index")
+            seen.add(index)
+            state = self.choices.setdefault(index, _ChoiceStream())
+            state.feed(dict(event, choices=[dict(choice, index=0)]))
+
+    def result(self):
+        require(self.finish is not None and self.usage is not None,
+                "incomplete SSE terminal")
+        values = []
+        for index, state in self.choices.items():
+            state.usage = self.usage
+            state.choice_count = len(self.choices)
+            item = state.result()
+            values.append(dict(index=index, message=item.message,
+                               finish_reason=item.finish_reason, logprobs=item.logprobs))
+        return _choices_completion(*self.identity[:2], values, self.usage)
 
 
 def read_sse(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES,
@@ -350,9 +585,8 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
         sink(raw)
     event = load_json(raw)
     _envelope(event, "chat.completion")
-    choice = _choice(event["choices"])
-    return _completion(event["id"], event["model"], choice.get("message"),
-                       choice.get("finish_reason"), event.get("usage"))
+    return _choices_completion(event["id"], event["model"], event["choices"],
+                               event.get("usage"))
 
 
 SCHEMA_INSTRUCTION = (
@@ -361,72 +595,57 @@ SCHEMA_INSTRUCTION = (
     "Do not include markdown fences.\n")
 
 
-def _schema_json_value(value, depth=0):
-    require(depth <= 64, "schema JSON nesting limit")
-    if isinstance(value, dict):
-        require(all(isinstance(k, str) for k in value), "schema keys must be text")
-        for key, item in value.items():
-            _text(key, "invalid schema key")
-            _schema_json_value(item, depth + 1)
-    elif isinstance(value, list):
-        for item in value:
-            _schema_json_value(item, depth + 1)
-    elif isinstance(value, str):
-        _text(value, "invalid schema string")
-    elif type(value) in (int, float):
-        require(math.isfinite(value) and
-                (value != int(value) or abs(value) <= 9007199254740991),
-                "schema number outside interoperable JSON range")
-    else:
-        require(value is None or type(value) is bool, "schema must be JSON")
-
-
 def with_json_schema(body, schema, *, name="answer"):
     """Opt in to schema semantics AND decoding, for text/media/final tool turns.
 
     Append to the last user message, preserving actual tool results. This is
     application prompt construction, not a server guarantee of factual truth.
-    Tools must already be disabled for a constrained final answer. No retries.
+    Tools may remain active; their successful terminal still gates execution.
+    Decimal and integer schema values retain exact JSON spelling. No retries.
     """
     require(isinstance(body, dict) and "response_format" not in body,
             "response_format already set or invalid request")
-    require(isinstance(schema, dict) and schema.get("type") == "object",
+    require(isinstance(schema, dict) and
+            (schema.get("type") == "object" or isinstance(schema.get("$ref"), str)),
             "an object JSON Schema is required")
     require(isinstance(name, str) and 1 <= len(name) <= 64 and
             all(c in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "0123456789_-" for c in name), "invalid schema name")
-    # Round-trip through the strict parser: no NaN, invalid Unicode, lossy keys
-    # or values outside the interoperable JSON number range.
     try:
-        _schema_json_value(schema)
-        encoded = json.dumps(schema, ensure_ascii=False, allow_nan=False,
-                             separators=(",", ":"))
-        require(len(encoded.encode("utf-8")) <= 65536, "schema exceeds 64 KiB")
-        checked = load_json(encoded)
-        require(checked == schema, "schema must contain only JSON values")
+        encoded = dump_json(schema)
+        require(len(encoded.encode("utf-8")) <= 2 * 1024 * 1024,
+                "schema exceeds 2 MiB")
+        checked = load_json(encoded, exact_numbers=True)
     except (TypeError, ValueError, UnicodeError, RecursionError, OverflowError) as error:
         raise ProtocolError("invalid JSON schema: " + str(error)) from error
-    require(not body.get("tools") or body.get("tool_choice") == "none",
-            "schema plus tools requires explicit tool_choice=none")
-    require(body.get("parse_response") is not False and
-            "session_id" not in body and "prefix_cache_scope" not in body,
-            "schema requires parsed messages without session/prefix cache")
+    tools = body.get("tools")
+    require(tools is None or (isinstance(tools, list) and len(tools) <= 128),
+            "tools must be an array with at most 128 declarations")
+    for tool in tools or []:
+        require(isinstance(tool, dict) and tool.get("type") in ("function", "custom"),
+                "invalid tool definition")
+        definition = tool.get(tool["type"])
+        require(isinstance(definition, dict) and
+                isinstance(definition.get("name"), str) and definition["name"],
+                "tool definition requires name")
+    require(body.get("parse_response") is not False,
+            "schema requires parsed messages")
     messages = body.get("messages")
     require(isinstance(messages, list) and messages and
             all(isinstance(m, dict) for m in messages) and
-            messages[-1].get("role") in ("user", "tool"),
-            "schema requires a user or completed tool history")
+            any(m.get("role") in ("system", "developer", "user", "assistant")
+                for m in messages), "schema requires a valid message history")
     result = deepcopy(body)
     user = next((m for m in reversed(result["messages"])
                  if m.get("role") == "user"), None)
-    require(user is not None, "schema requires a user message")
-    content = user.get("content")
     instruction = SCHEMA_INSTRUCTION + encoded
-    if isinstance(content, str):
-        user["content"] = content + "\n\n" + instruction
+    if user is None:
+        result["messages"].insert(0, dict(role="system", content=instruction))
+    elif isinstance(user.get("content"), str):
+        user["content"] += "\n\n" + instruction
     else:
-        require(isinstance(content, list), "invalid user content")
-        content.append(dict(type="text", text=instruction))
+        require(isinstance(user.get("content"), list), "invalid user content")
+        user["content"].append(dict(type="text", text=instruction))
     result["response_format"] = dict(type="json_schema", json_schema=dict(
         name=name, strict=True, schema=checked))
     return result
@@ -540,11 +759,14 @@ class ChatClient:
     def __init__(self, base_url, *, api_key=None, ca_file=None,
                  connect_host=None, timeout=None):
         url = urllib.parse.urlsplit(base_url)
+        path = url.path.removesuffix('/')
         require(url.scheme in ("http", "https") and url.hostname and
                 not url.username and not url.password and not url.query and
-                not url.fragment and url.path.rstrip("/") in ("", "/v1"),
-                "base URL must be an http(s) origin or /v1 endpoint")
-        self.base = urllib.parse.urlunsplit((url.scheme, url.netloc, "/v1", "", ""))
+                not url.fragment and len(url.path) <= 516 and
+                (not path or re.fullmatch(r'(?:/[A-Za-z0-9._~-]+)*/v1', path)) and
+                not {'.', '..'}.intersection(path.split('/')),
+                "base URL must be an http(s) origin or prefixed /v1 endpoint")
+        self.base = urllib.parse.urlunsplit((url.scheme, url.netloc, path or "/v1", "", ""))
         self.api_key = api_key
         require(api_key is None or isinstance(api_key, str) and 1 <= len(api_key) <= 4096 and
                 all(33 <= ord(c) <= 126 for c in api_key), "invalid API key")
@@ -563,7 +785,7 @@ class ChatClient:
             deadline_http.HTTPSHandler(context, connect_host))
 
     def _post(self, path, body, timeout):
-        data = json.dumps(body, ensure_ascii=False, allow_nan=False).encode()
+        data = dump_json(body).encode()
         require(len(data) <= 16 * 1024 * 1024, "request exceeds 16 MiB")
         headers = {"Content-Type": "application/json"}
         if self.api_key:
@@ -682,6 +904,8 @@ class ChatClient:
             require(response.headers.get_content_type() == expected,
                     "unexpected response content type")
             result = (read_sse if stream else read_json)(response, sink=sink)
+        require((len(result.choices) if isinstance(result, MultiCompletion) else 1) ==
+                (body.get("n") or 1), "response choice count mismatch")
         require(result.id == body.get("request_id") and
                 result.model == body.get("model"), "response identity mismatch")
         return result
@@ -703,17 +927,43 @@ class ToolInvocation:
     arguments: dict
 
 
-def prepare_tool_calls(completion, validators):
+@dataclass(frozen=True)
+class CustomToolInvocation:
+    call_id: str
+    name: str
+    input: str
+    type: str = "custom"
+
+
+def _invocation_calls(message):
+    if message.get("function_call") is not None:
+        # Legacy result association uses the function name, not a wire ID.
+        function = message["function_call"]
+        return [dict(id=function["name"], type="function", function=function)]
+    return message.get("tool_calls", [])
+
+
+def prepare_tool_calls(completion, validators, *, custom_validators=None):
+    require(hasattr(completion, "message") and hasattr(completion, "finish_reason"),
+            "select an explicit choice before preparing tools")
     """Validate the entire batch without executing any tool or changing history.
 
     validators maps allowed names to pure checks: return None or raise.
     The application, not this helper, owns execution and any side effects.
     """
-    require(completion.finish_reason == "tool_calls", "not a completed tool turn")
-    calls = _message(completion.message).get("tool_calls", [])
+    require(completion.finish_reason in ("tool_calls", "function_call"), "not a completed tool turn")
+    calls = _invocation_calls(_message(completion.message))
     require(calls, "missing tool calls")
     planned = []
     for call in calls:
+        if call["type"] == "custom":
+            name, value = call["custom"]["name"], call["custom"]["input"]
+            registry = custom_validators or {}
+            require(name in registry and callable(registry[name]),
+                    "unregistered custom tool: " + name)
+            require(registry[name](value) is None, "custom validator must return None or raise")
+            planned.append(CustomToolInvocation(call["id"], name, value))
+            continue
         name = call["function"]["name"]
         require(name in validators and callable(validators[name]),
                 "unregistered tool: " + name)
@@ -725,22 +975,24 @@ def prepare_tool_calls(completion, validators):
 
 
 def append_tool_results(history, completion, results):
-    require(completion.finish_reason == "tool_calls", "not a completed tool turn")
+    require(completion.finish_reason in ("tool_calls", "function_call"), "not a completed tool turn")
     message = _message(completion.message)
-    calls = message.get("tool_calls", [])
+    calls = _invocation_calls(message)
     require(calls and isinstance(results, dict) and
             set(results) == {c["id"] for c in calls},
             "provide exactly one result for every tool call id")
     following = [message]
     for call in calls:
         content = _text(results[call["id"]], "tool results must be text")
-        following.append(dict(role="tool", tool_call_id=call["id"],
-                              content=content))
+        following.append(dict(role="function", name=call["function"]["name"], content=content)
+                         if message.get("function_call") is not None else
+                         dict(role="tool", tool_call_id=call["id"], content=content))
     return deepcopy(history) + following
 
 
 def append_final(history, completion):
     require(completion.finish_reason == "stop" and
-            not completion.message.get("tool_calls"),
+            not completion.message.get("tool_calls") and
+            not completion.message.get("function_call"),
             "length or tool turn is not a final answer")
     return deepcopy(history) + [_message(completion.message)]

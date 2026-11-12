@@ -1,0 +1,875 @@
+[
+  {
+    "id": "completion-defaults",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-null",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-empty",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-text",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-ids",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-empty-ids",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-strings",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-batches",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-all-options",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-nullable-options",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-stream",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-alias",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-unknown",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model is not registered by this server",
+          "type": "invalid_request_error",
+          "code": "model_not_found",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'model' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must be a nonempty model identifier",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must be a nonempty model identifier",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-empty",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'' should be non-empty",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must be a nonempty model identifier",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-space",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'has space' does not match '^[^\\\\x00-\\\\x20\\\\x7f]+$'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must be a nonempty model identifier",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-model-oversize",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "UTF-8 byte limit exceeded",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must be a nonempty model identifier",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-max_tokens-18",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('-1') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-max_tokens-19",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('1.5') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-logprobs-20",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('6') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-logprobs-21",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "True is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-n-22",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('0') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "n"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-best_of-23",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('129') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "best_of"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-echo-24",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('1') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "completion flag must be boolean or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "echo"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-stream-25",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'yes' is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "completion flag must be boolean or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stream"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-suffix-26",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "suffix must be a string or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "suffix"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-seed-27",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('9223372036854775808') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact signed 64-bit integer",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-temperature-28",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('2.1') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-top_p-29",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('-0.1') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_p must be in [0,1] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_p"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-frequency_penalty-30",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('3') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "frequency_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "frequency_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-presence_penalty-31",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('-3') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "presence_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "presence_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-logit_bias-32",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'1': Decimal('101')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid token bias",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logit_bias[\"1\"]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-stop-33",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[''] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop entries must be valid UTF-8 strings of 1..256 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-user-34",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{} is not of type 'string', 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "user must be a string or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "user"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-stream_options-35",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'wrong': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: wrong",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stream_options.wrong"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-request_timeout_ms-36",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('0') is less than the minimum of 1",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_timeout_ms must be an integer in [1,10800000]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_timeout_ms"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-invalid-unknown-37",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Additional properties are not allowed ('unknown' was unexpected)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unknown",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "unknown"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-negative",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[Decimal('-1')] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt token outside served vocabulary",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-fractional",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[Decimal('1.2')] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt token outside served vocabulary",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-bool",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[True] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt token outside served vocabulary",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-mixed",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "['x', [Decimal('1')]] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "completion prompts must be homogeneous",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt[1]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-dict",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid completion prompt",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-vocab",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt token outside served vocabulary",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-prompt-invalid-batch-candidates",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "completion batch exceeds 128 candidates",
+          "type": "service_unavailable_error",
+          "code": "completion_resource_exhausted",
+          "param": "best_of"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-best-of-less-n",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "best_of must be at least n",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "best_of"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-best-of-stream",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "best_of selection cannot be streamed",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "best_of"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-options-without-stream",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'stream' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stream_options requires stream",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stream_options"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-orphan-id",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'cancel_token' is a dependency of 'request_id'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "cancel_token"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-reserved-id",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'cmpl-auto-x' should not be valid under {'pattern': '^(chatcmpl|cmpl)-auto-'}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "completion-duplicate",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "duplicate JSON key",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: duplicate object key at offset 39",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  }
+]

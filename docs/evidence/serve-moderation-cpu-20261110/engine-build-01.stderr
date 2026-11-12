@@ -1,0 +1,24 @@
+/home/rm01/models/dev/qwen4-thor/src/server/moderation.cpp: In function ‘q4t::Status q4t::server::ParseModerationResult(std::string_view, const ModerationPlan&, double, q4t::io::Json*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/moderation.cpp:316:22: error: ‘kSchemaJsonLimits’ was not declared in this scope
+  316 |                      kSchemaJsonLimits) ||
+      |                      ^~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp: In member function ‘q4t::server::ObjectReply q4t::server::ResponsesExecution::HoldUnreviewedOutput()’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp:27:12: error: ‘Error’ was not declared in this scope; did you mean ‘perror’?
+   27 |     return Error(409, "moderation_hold_invalid",
+      |            ^~~~~
+      |            perror
+/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp: In member function ‘q4t::server::ObjectReply q4t::server::ResponsesExecution::PublishReviewedOutput(const q4t::io::Json&, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp:40:12: error: ‘Error’ was not declared in this scope; did you mean ‘perror’?
+   40 |     return Error(409, "moderation_hold_invalid",
+      |            ^~~~~
+      |            perror
+/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp:44:12: error: ‘Error’ was not declared in this scope; did you mean ‘perror’?
+   44 |     return Error(decision == ModerationDecision::kBlocked ? 403 : 503,
+      |            ^~~~~
+      |            perror
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1269: CMakeFiles/q4t_server.dir/src/server/moderation.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1283: CMakeFiles/q4t_server.dir/src/server/responses_execution_moderation.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

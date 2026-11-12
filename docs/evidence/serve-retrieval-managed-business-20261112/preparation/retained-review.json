@@ -1,0 +1,61 @@
+{
+  "status": "NEW_PAYLOAD_ACTUAL_ACCEPTANCE_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+    "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+  },
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+    "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+    "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434"
+  },
+  "changed_files": [
+    "bin/q4t-ingress",
+    "native-build.json",
+    "profile-light.json",
+    "profile-primary.json"
+  ],
+  "actual_older_control_retained": true,
+  "new_engine_and_ingress": true,
+  "older_model_implementation": false,
+  "original_acceptance_not_relabelled": true,
+  "automatic_compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "911c5374051d1d87df692ed55c2fe546e1d9374fad1c2e569013308829629c9b",
+    "to_registry": "911c5374051d1d87df692ed55c2fe546e1d9374fad1c2e569013308829629c9b",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "8c261eafaf02809944a820743d9a18bcbded54d14f2e2d80198bf0aaefa76fbe",
+    "to_identity": "8c261eafaf02809944a820743d9a18bcbded54d14f2e2d80198bf0aaefa76fbe",
+    "capabilities_sha256": "69081666dea0434b7545417d60cde85afadf5b15e1fdac79fb6b696af412865a",
+    "automatic": true
+  },
+  "default_unchanged": true
+}

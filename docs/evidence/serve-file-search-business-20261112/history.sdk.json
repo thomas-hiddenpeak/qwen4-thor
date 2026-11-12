@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_3cae99a86b42226950089e0c606e5721",
+    "object": "response",
+    "created_at": 1794481538,
+    "completed_at": 1794481540,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_508835cdc873488ce8fb44fdffd7cc80",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The permitted capacity offload target is SSD, and the memory type is DRAM.",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1395,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1388
+      },
+      "output_tokens": 18,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1413
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 128,
+    "max_tool_calls": null,
+    "previous_response_id": "resp_9f1b04e0f8e3ed29c41cb03948d1155c",
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "The permitted capacity offload target is SSD, and the memory type is DRAM."
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19091/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"store\":true,\"reasoning\":{\"effort\":\"none\"},\"max_output_tokens\":128,\"input\":\"Using the previous retrieved source, repeat the permitted capacity offload target and memory type. Include SSD and DRAM.\",\"previous_response_id\":\"resp_9f1b04e0f8e3ed29c41cb03948d1155c\"}"
+    }
+  ]
+}

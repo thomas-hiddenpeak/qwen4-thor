@@ -1,0 +1,150 @@
+event: response.created
+data: {"response":{"id":"resp_4aa782ea875245e805cb793cf634aebe","object":"response","created_at":1794233744,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.in_progress
+data: {"response":{"id":"resp_4aa782ea875245e805cb793cf634aebe","object":"response","created_at":1794233744,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.in_progress","sequence_number":1}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","type":"reasoning","content":[],"summary":[],"status":"in_progress"},"type":"response.output_item.added","sequence_number":2}
+
+event: response.content_part.added
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":""},"type":"response.content_part.added","sequence_number":3}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"The","type":"response.reasoning_text.delta","sequence_number":4}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" user","type":"response.reasoning_text.delta","sequence_number":5}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" is","type":"response.reasoning_text.delta","sequence_number":6}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" asking","type":"response.reasoning_text.delta","sequence_number":7}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" about","type":"response.reasoning_text.delta","sequence_number":8}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":9}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" result","type":"response.reasoning_text.delta","sequence_number":10}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" of","type":"response.reasoning_text.delta","sequence_number":11}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":12}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" preceding","type":"response.reasoning_text.delta","sequence_number":13}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" calculation","type":"response.reasoning_text.delta","sequence_number":14}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":",","type":"response.reasoning_text.delta","sequence_number":15}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" which","type":"response.reasoning_text.delta","sequence_number":16}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" was","type":"response.reasoning_text.delta","sequence_number":17}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":18}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"1","type":"response.reasoning_text.delta","sequence_number":19}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"7","type":"response.reasoning_text.delta","sequence_number":20}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" +","type":"response.reasoning_text.delta","sequence_number":21}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":22}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":23}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"5","type":"response.reasoning_text.delta","sequence_number":24}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" =","type":"response.reasoning_text.delta","sequence_number":25}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":26}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"4","type":"response.reasoning_text.delta","sequence_number":27}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":28}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":".","type":"response.reasoning_text.delta","sequence_number":29}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" They","type":"response.reasoning_text.delta","sequence_number":30}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" want","type":"response.reasoning_text.delta","sequence_number":31}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" only","type":"response.reasoning_text.delta","sequence_number":32}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":33}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" decimal","type":"response.reasoning_text.delta","sequence_number":34}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":" number","type":"response.reasoning_text.delta","sequence_number":35}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":".","type":"response.reasoning_text.delta","sequence_number":36}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"delta":"\n","type":"response.reasoning_text.delta","sequence_number":37}
+
+event: response.output_item.added
+data: {"output_index":1,"item":{"id":"msg_629efdc91c3bd60d16ba42fc0c985336","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":38}
+
+event: response.content_part.added
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"part":{"type":"output_text","text":"","annotations":[],"logprobs":[]},"type":"response.content_part.added","sequence_number":39}
+
+event: response.output_text.delta
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"delta":"\n\n","logprobs":[],"type":"response.output_text.delta","sequence_number":40}
+
+event: response.output_text.delta
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"delta":"4","logprobs":[],"type":"response.output_text.delta","sequence_number":41}
+
+event: response.output_text.delta
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":42}
+
+event: response.reasoning_text.done
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42. They want only the decimal number.\n","type":"response.reasoning_text.done","sequence_number":43}
+
+event: response.content_part.done
+data: {"item_id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42. They want only the decimal number.\n"},"type":"response.content_part.done","sequence_number":44}
+
+event: response.output_item.done
+data: {"output_index":0,"item":{"id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","type":"reasoning","content":[{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42. They want only the decimal number.\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:4a58c96daea10f5c8acef5113774c236:13abe5cd26d92f741a6690b3:5182950c2fa445ba39a6270fb8fe6d9f:83a7d62df32e26407d0be622844b9a55e846b993095b2efe698ed12d33ae2cc640c82b676a26f0d672f343588e747df489aacdbc235502698693b33c360effb1c276cba331f7366afc0ac07273c7a55899918a252ab30e5ce341291015db919e9f4e28d085d28811fa10d4379a4749ba69e1044e5e72feb2988975a631896b53e2324dc08c112718d368a383c938cf37b5c949046158a421b2e78dc04d3d24b9aa075128fefd9978f33c2c59f96a5fa64526f0ca7d395d636e83cd272ca46f09f8fb2901a0206b8b8121160c3441b556f20a272e00a9d287542a24ec0bcd837deb20175f2851c9720ab0b606a14b7fc01d2d94e19958e0934997d740745022f882b1d7276cec7766f3d5ce1a03846261bf3e4163c55d5d251154fd3c9d8368e437ad5e67b557dd32b34b5be6de250be44771165e0e09ec93ea386b3f1be5362263124ad912ddcc8303e2393621e00ce315472cce35e83e9f162d1c966c3eee950c1d6797929133cc104d8a24fc048ce6a63d71fab5e45b04e3bdc69e375c6321d37db148f68ce9f76e5aa50b15a4907be9b435779a9f666fdb24f1010a094e3712515e27c70b4406d8a6765f91ef1a98d89050dd2dfda6546ddcb64980946c984a26fb7492a23cc4dfd89f936f295428d24c24f287a4494dac891b9c65b9d1ffb77d46df67dadf11b526d866da905e90691231f8d34510912cba173d2612180f4587afd69063780db200269ce19f7ecb331396c00326fa765a208c81b4b99f01e94c49ef62106c3bcb5d1c9da292ebb9bf866d1b02a31231f4be6466b0727312f9aa8dc98ecb87c9153d331bca4ae2469eb6015ebd3f09efb76c50fbe195160642b4b83d3a419662b2f16fb7769e0c837e2822d3ea4932e9d086c9d4f7cfd97eae3c63bbbfab7be00e92c31eb0aef58acf4f25db1a872d003eb2250a53d5a3cdc581622eb292cea555d9fc1ced0db027f9bc52aa863132be85a4b5bedf538483a55ffd5941dc99e9d6aa6e328d268ff08907c47a0f19594e0682705a90d6c3a2a78e4209763ca17ef4d08a74fe7f77079d3af41afd686aff7476d5b4d1896f802c1ff85465c6dcb82d12b8dced6e32e8d21cb9f433f8a7af771e7bdd1147bf96840c66ee2ccb17dfea5185b8ef12ad4f5b77770b38dbe3ca0eca00f041706521ec09387d89750d621f22122980153a0e2b1bf52a80be6b02c37468cb91f0e224e33e75667d57c25dd0b84820f40244639556223395fcdb9ba4f208204db421c02c8a4a5bf442a9060941108552f4ffef60b7343de0e06a3e15f9823b3fc891b15d26fbc33fb598b0a50319f25e201ff54e4786b6bcb2b8572251450bf9f1add71b482d6c25b0e47bfda14b8398bd23d8fe8faeddfe63bffdd6069537ace8da0217d73b4c3ad89f0a087e65ccb2d78505b5b4867d8bd9880305be56da37be5b97f4fbbdb4e9e11b60cfd74acce8fd8eb4a25719106691d926b674d52d44c3b7fab5c2fe8d1c18e480c2ab7963798a6f799225ab2eba8cd922581283d7d1ea804c905ba6a0a9095e191b3e24134fa3b53472e46824239a6a3000a38977d0f565f22e38e89bd1a574b7280321aabe15ab535e7736d4dec3335b968d043d28c2a940c62e8d5d7dea5569c2f09c94812fe50768df96d7fea822a1b9cde3d340fd6721d46cd30f611db8151bfd5d46b862a1ae3d4e7bbba76b8ab84bb2b7dab8a77e899b7cf718c7dd93aa4a2fbd2863331ce1c1fe6afd78242bce8067c04275120501a66bf4bb51e7d837518e32cca4d7fb805272c4ce07b4dc99b27c2e022dfcbd320666b4b022f9be98d0b68cc2bbe4c028c0fed9e6bb76abe7fc4a324188ecfe42258c40e5a5d8806a59cadc11fbc321af227517e6f20cadca9748a48e238525350837538d1521191be26c024bc7e3d7b91676492cd6cfedaf4133e93244993aa20341fd6ab4c08e8c0266e2553c3486ea72ad639be66238012edba8c23fd7"},"type":"response.output_item.done","sequence_number":45}
+
+event: response.output_text.done
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"text":"\n\n42","logprobs":[],"type":"response.output_text.done","sequence_number":46}
+
+event: response.content_part.done
+data: {"item_id":"msg_629efdc91c3bd60d16ba42fc0c985336","output_index":1,"content_index":0,"part":{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]},"type":"response.content_part.done","sequence_number":47}
+
+event: response.output_item.done
+data: {"output_index":1,"item":{"id":"msg_629efdc91c3bd60d16ba42fc0c985336","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"},"type":"response.output_item.done","sequence_number":48}
+
+event: response.completed
+data: {"response":{"id":"resp_4aa782ea875245e805cb793cf634aebe","object":"response","created_at":1794233744,"completed_at":1794233745,"status":"completed","error":null,"incomplete_details":null,"output":[{"id":"rs_45f05d44c2c5d0d1a6da1f7ff7896633","type":"reasoning","content":[{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42. They want only the decimal number.\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:4a58c96daea10f5c8acef5113774c236:13abe5cd26d92f741a6690b3:5182950c2fa445ba39a6270fb8fe6d9f:83a7d62df32e26407d0be622844b9a55e846b993095b2efe698ed12d33ae2cc640c82b676a26f0d672f343588e747df489aacdbc235502698693b33c360effb1c276cba331f7366afc0ac07273c7a55899918a252ab30e5ce341291015db919e9f4e28d085d28811fa10d4379a4749ba69e1044e5e72feb2988975a631896b53e2324dc08c112718d368a383c938cf37b5c949046158a421b2e78dc04d3d24b9aa075128fefd9978f33c2c59f96a5fa64526f0ca7d395d636e83cd272ca46f09f8fb2901a0206b8b8121160c3441b556f20a272e00a9d287542a24ec0bcd837deb20175f2851c9720ab0b606a14b7fc01d2d94e19958e0934997d740745022f882b1d7276cec7766f3d5ce1a03846261bf3e4163c55d5d251154fd3c9d8368e437ad5e67b557dd32b34b5be6de250be44771165e0e09ec93ea386b3f1be5362263124ad912ddcc8303e2393621e00ce315472cce35e83e9f162d1c966c3eee950c1d6797929133cc104d8a24fc048ce6a63d71fab5e45b04e3bdc69e375c6321d37db148f68ce9f76e5aa50b15a4907be9b435779a9f666fdb24f1010a094e3712515e27c70b4406d8a6765f91ef1a98d89050dd2dfda6546ddcb64980946c984a26fb7492a23cc4dfd89f936f295428d24c24f287a4494dac891b9c65b9d1ffb77d46df67dadf11b526d866da905e90691231f8d34510912cba173d2612180f4587afd69063780db200269ce19f7ecb331396c00326fa765a208c81b4b99f01e94c49ef62106c3bcb5d1c9da292ebb9bf866d1b02a31231f4be6466b0727312f9aa8dc98ecb87c9153d331bca4ae2469eb6015ebd3f09efb76c50fbe195160642b4b83d3a419662b2f16fb7769e0c837e2822d3ea4932e9d086c9d4f7cfd97eae3c63bbbfab7be00e92c31eb0aef58acf4f25db1a872d003eb2250a53d5a3cdc581622eb292cea555d9fc1ced0db027f9bc52aa863132be85a4b5bedf538483a55ffd5941dc99e9d6aa6e328d268ff08907c47a0f19594e0682705a90d6c3a2a78e4209763ca17ef4d08a74fe7f77079d3af41afd686aff7476d5b4d1896f802c1ff85465c6dcb82d12b8dced6e32e8d21cb9f433f8a7af771e7bdd1147bf96840c66ee2ccb17dfea5185b8ef12ad4f5b77770b38dbe3ca0eca00f041706521ec09387d89750d621f22122980153a0e2b1bf52a80be6b02c37468cb91f0e224e33e75667d57c25dd0b84820f40244639556223395fcdb9ba4f208204db421c02c8a4a5bf442a9060941108552f4ffef60b7343de0e06a3e15f9823b3fc891b15d26fbc33fb598b0a50319f25e201ff54e4786b6bcb2b8572251450bf9f1add71b482d6c25b0e47bfda14b8398bd23d8fe8faeddfe63bffdd6069537ace8da0217d73b4c3ad89f0a087e65ccb2d78505b5b4867d8bd9880305be56da37be5b97f4fbbdb4e9e11b60cfd74acce8fd8eb4a25719106691d926b674d52d44c3b7fab5c2fe8d1c18e480c2ab7963798a6f799225ab2eba8cd922581283d7d1ea804c905ba6a0a9095e191b3e24134fa3b53472e46824239a6a3000a38977d0f565f22e38e89bd1a574b7280321aabe15ab535e7736d4dec3335b968d043d28c2a940c62e8d5d7dea5569c2f09c94812fe50768df96d7fea822a1b9cde3d340fd6721d46cd30f611db8151bfd5d46b862a1ae3d4e7bbba76b8ab84bb2b7dab8a77e899b7cf718c7dd93aa4a2fbd2863331ce1c1fe6afd78242bce8067c04275120501a66bf4bb51e7d837518e32cca4d7fb805272c4ce07b4dc99b27c2e022dfcbd320666b4b022f9be98d0b68cc2bbe4c028c0fed9e6bb76abe7fc4a324188ecfe42258c40e5a5d8806a59cadc11fbc321af227517e6f20cadca9748a48e238525350837538d1521191be26c024bc7e3d7b91676492cd6cfedaf4133e93244993aa20341fd6ab4c08e8c0266e2553c3486ea72ad639be66238012edba8c23fd7"},{"id":"msg_629efdc91c3bd60d16ba42fc0c985336","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"}],"usage":{"input_tokens":177,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0},"output_tokens":39,"output_tokens_details":{"reasoning_tokens":35},"total_tokens":216},"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.completed","sequence_number":49}
+

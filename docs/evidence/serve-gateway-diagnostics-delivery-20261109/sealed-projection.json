@@ -1,0 +1,13 @@
+{
+  "label": "sealed-projection",
+  "argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/projection.py",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle/source",
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-progress-business-20261109/business-02/execution/ready-2.json"
+  ],
+  "returncode": 0,
+  "seconds": 0.07240532664582133
+}

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-compaction-20261109/execution-cpu-01/required-04.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 0.0035724518820643425,
+  "host_sha256": "e0d0435b29bf8e2b7548ee054eceadc4cc3c2886042b240f2b1d1bfe11821e57"
+}

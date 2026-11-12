@@ -1,0 +1,70 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 10,
+    "probes": 1,
+    "controls": 603
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 2,
+      "monotonic_ns": 2397477938751011
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 2,
+      "monotonic_ns": 2397516348309453
+    },
+    {
+      "kind": "chats",
+      "label": "project-tool",
+      "ordinal": 3,
+      "monotonic_ns": 2397520772529668
+    },
+    {
+      "kind": "chats",
+      "label": "project-final",
+      "ordinal": 4,
+      "monotonic_ns": 2397524128461619
+    },
+    {
+      "kind": "chats",
+      "label": "new-client-sdk",
+      "ordinal": 5,
+      "monotonic_ns": 2397528513985287
+    },
+    {
+      "kind": "chats",
+      "label": "rpm-off-on-kept",
+      "ordinal": 6,
+      "monotonic_ns": 2397529619619309
+    },
+    {
+      "kind": "chats",
+      "label": "tpm-off-on-kept",
+      "ordinal": 7,
+      "monotonic_ns": 2397531777572965
+    },
+    {
+      "kind": "chats",
+      "label": "limits-lost-sse",
+      "ordinal": 8,
+      "monotonic_ns": 2397535788897093
+    },
+    {
+      "kind": "chats",
+      "label": "beta-stored",
+      "ordinal": 9,
+      "monotonic_ns": 2397536835439621
+    },
+    {
+      "kind": "chats",
+      "label": "rpm-at-close",
+      "ordinal": 10,
+      "monotonic_ns": 2397537799054172
+    }
+  ]
+}

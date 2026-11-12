@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+    "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "ca5419bc-9700-4224-99a7-aebbb171b2b2",
+    "root_manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+        "binding_sha256": "60f23b2d8b5c21a3f64e80330d46aaf305b6f245c2d9c4011d787d8eaf959272"
+      },
+      "fallback": {
+        "manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+        "binding_sha256": "e73453c8029e08b845ef3bdd522ad857fd3d6d6a02e5fbd6ad873fd1bde23601"
+      }
+    },
+    "compatibility_sha256": "f2577bb31666889d1bb6727dd80b620d5d0f41e03325342cf78da49cb31fc517",
+    "qualification_sha256": "1d8b393c191c2c2800cf9f23bc62f22733e7fb9cf16ce9d1925180bc5df3d3a0"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/service.release.json",
+      "sha256": "0d49cdb7e06f1f5de995d7fbf9f10a632e0b1da578002e2fce6531130949df4f"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/service.acceptance.json",
+      "sha256": "a84104fc71b064df959358ba9ca8e30afd4d17a0958b5f972006972aa73e4838"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+        "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac"
+      },
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "controller_sha256": "15b518085923ae039afa198907e77baa863ae800ee23d9032d688f3ef2e40725",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback",
+        "manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0"
+      },
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "controller_sha256": "e7d200550a8f9d19ca67f06959e03025ae374c8dfe1ac29b307b1e839613ddd2",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    }
+  }
+}

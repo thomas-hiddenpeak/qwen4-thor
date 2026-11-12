@@ -1,0 +1,14 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal"
+  ],
+  "expected_cpu_cases": 1,
+  "scope": "Retry only deterministic CPU EOF-before-wait with fixture-only dump suppression. Diagnostic timestamps showed actual SIGABRT after 50 ms but SIGKILL reap under host apport pipeline. Production unchanged; actual unknown exits remain unclassified and use existing budgets.",
+  "new_gpu_starts": 0,
+  "sources": {
+    "src/service/guardian_main.cpp": "93ad190348629567689c391b2c0053892f1bedc4394650d021726a6a06360c40",
+    "src/service/guardian_version.cpp": "6fb3c51bc9399f02abaa3a5211d80a1bfb5c369e9dedcf1b4b2f982c20e0165a",
+    "tools/serve_recovery/fixture_model.py": "dd08bdac7ac3f922338ff9cc308591c7e427721b42405ee7dae0301added8881",
+    "tools/serve_recovery/test_version_native.py": "866220653a6af7e30650cd586eea8fecaf2c92a71df398ab8557d7307f80a7ee"
+  }
+}

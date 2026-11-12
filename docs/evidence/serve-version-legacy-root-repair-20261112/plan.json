@@ -1,0 +1,17 @@
+{
+  "total": 5,
+  "cpu_cases": [
+    "tools.serve_recovery.test_version_repair.RepairTests.test_legacy_root_rollback_then_forward_keeps_consumed_cycle_and_current_journal",
+    "tools.serve_recovery.test_version_repair.RepairTests.test_another_explicit_repair_before_registration_keeps_old_cycle_without_adopting_it",
+    "tools.serve_recovery.test_version_repair.RepairTests.test_terminal_fallback_repairs_current_state_then_explicitly_registers_new_cycle",
+    "tools.serve_recovery.test_version_repair.RepairTests.test_pending_automatic_profile_migration_resumes_only_original_switch_then_repairs",
+    "tools.serve_recovery.test_version_repair.RepairTests.test_descriptor_advanced_before_failure_replays_using_retained_control_root"
+  ],
+  "new_gpu_starts": 0,
+  "runtime_prepare_ast_unchanged": true,
+  "sources_sha256": {
+    "tools/serve_recovery/version_runtime.py": "c831ef805a88c9c9966c4717c1dcdd4fd29c069776b813f975e6df64c1e060e2",
+    "tools/serve_recovery/test_version_repair.py": "5cad0ad63c5b292e4b00339a9384269629e83a797c0db411dde78711baad6737"
+  },
+  "reuse_actual_business": "docs/evidence/serve-version-business-20261112/README.md"
+}

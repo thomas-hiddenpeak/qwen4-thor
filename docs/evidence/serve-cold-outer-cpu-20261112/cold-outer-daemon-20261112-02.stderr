@@ -1,0 +1,25 @@
+test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_stopped_host_entry_selects_detached_issuer_and_retains_zero_starts) ... ok
+test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_actual_unarmed_status_is_unavailable_to_original_unprivileged_client) ... ok
+test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core) ... ERROR
+
+======================================================================
+ERROR: test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_issuer.py", line 294, in test_host_removal_withdraws_issuer_and_preserves_original_core
+    result = host.remove(self.host)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/host_install.py", line 247, in remove
+    cold_host.withdraw(directory)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_host.py", line 69, in withdraw
+    with cold_channel.receive(sock, count=0) as reply:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/cold_channel.py", line 47, in receive
+    raw, ancillary, flags, _ = sock.recvmsg(MAXIMUM, size, socket.MSG_CMSG_CLOEXEC)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.176s
+
+FAILED (errors=1)

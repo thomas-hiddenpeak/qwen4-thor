@@ -1,0 +1,7 @@
+test_count_auth_preserves_body_and_client_scope (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_auth_preserves_body_and_client_scope) ... ok
+test_count_uses_data_capacity_and_keeps_observation_available (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_uses_data_capacity_and_keeps_observation_available) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.516s
+
+OK

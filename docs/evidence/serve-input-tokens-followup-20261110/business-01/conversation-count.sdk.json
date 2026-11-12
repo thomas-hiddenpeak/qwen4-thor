@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "object": "response.input_tokens",
+    "input_tokens": 37
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/responses/input_tokens",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"conversation\":\"conv_9fd4e0f86ee089b87c15d52c6f4d8fc7\",\"input\":\"Continue this calculation.\",\"reasoning\":{\"effort\":\"none\"}}"
+    }
+  ]
+}

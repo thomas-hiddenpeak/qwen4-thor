@@ -6,12 +6,18 @@
 
 namespace q4t::server {
 
+// Completed target prefix only: attention, recurrent/PLE and effective RoPE.
+// Text-only; callers check rope_delta==0 before publication. No sampler,
+// grammar state, draft, scratch or model-owned page table is transferred.
+Status TargetSessionStateRanges(const model::Model& model, int slot, int prefix,
+                                std::vector<SessionRange>* ranges);
+
 // Effective state at a completed target+shifted-draft prefix. Page tables and
 // all workspace/checkpoint ownership stay with the destination slot. Text
 // rope_delta must be zero; every effective RoPE position is copied explicitly.
 Status SessionStateRanges(const model::Model& model, const mtp::MtpModel& draft,
-                           int slot, int prefix, uint16_t* rolling_g,
-                           uint16_t* last_main_trunk,
-                           std::vector<SessionRange>* ranges);
+                          int slot, int prefix, uint16_t* rolling_g,
+                          uint16_t* last_main_trunk,
+                          std::vector<SessionRange>* ranges);
 
 }  // namespace q4t::server

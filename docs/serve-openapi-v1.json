@@ -12,6 +12,81 @@
     }
   ],
   "paths": {
+    "/v1/completions": {
+      "post": {
+        "operationId": "v1_completions",
+        "parameters": [
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-completion-transport-v1.schema.json#/$defs/completion"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "x-q4t-event-schema": {
+                  "$ref": "serve-completion-transport-v1.schema.json#/$defs/chunk"
+                },
+                "x-q4t-stream-contract": "Indexed text/probability deltas; per-choice finish; optional aggregate usage; DONE then EOF. Error terminal never publishes successful aggregate usage."
+              }
+            }
+          },
+          "default": {
+            "description": "Error before stream starts; exact code/param come from production validation",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-completion-request-v1.schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/chat/completions": {
       "post": {
         "operationId": "v1_chat_completions",
@@ -93,6 +168,128 @@
             }
           }
         }
+      },
+      "get": {
+        "operationId": "get_v1_chat_completions",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "maxProperties": 16,
+                  "propertyNames": {
+                    "maxLength": 64
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "maxLength": 512
+                  }
+                }
+              ]
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/stored_chat_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "stored_chat_query",
+        "x-q4t-body-contract": "empty body only"
       }
     },
     "/v1/chat/preflight": {
@@ -262,7 +459,7 @@
                     "maxLength": 128,
                     "pattern": "^[A-Za-z0-9_-]+$",
                     "not": {
-                      "pattern": "^chatcmpl-auto-"
+                      "pattern": "^(chatcmpl|cmpl)-auto-"
                     }
                   },
                   "cancel_token": {
@@ -318,7 +515,7 @@
                     "data": {
                       "type": "array",
                       "minItems": 1,
-                      "maxItems": 1,
+                      "maxItems": 33,
                       "items": {
                         "type": "object",
                         "properties": {
@@ -356,6 +553,193 @@
           },
           "default": {
             "description": "Error before stream starts; exact code/param come from production validation",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/models/{model}": {
+      "get": {
+        "operationId": "v1_models_get",
+        "parameters": [
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exact registered identifier or alias; percent-encoded once"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "object": {
+                      "const": "model"
+                    },
+                    "created": {
+                      "type": "integer"
+                    },
+                    "owned_by": {
+                      "const": "q4t"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "object",
+                    "created",
+                    "owned_by"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error before stream starts; exact code/param come from production validation",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Model not registered",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1_models_delete",
+        "parameters": [
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+            }
+          },
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exact registered identifier or alias; percent-encoded once"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error before stream starts; exact code/param come from production validation",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Model not registered",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Loaded base models are read-only; this registry contains no user-owned fine-tuned models",
             "headers": {
               "X-Request-Id": {
                 "schema": {
@@ -823,16 +1207,4074 @@
           }
         }
       }
+    },
+    "/v1/batches": {
+      "post": {
+        "operationId": "post_v1_batches",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/batch_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_batches",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/batch_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        }
+      }
+    },
+    "/v1/batches/{batch_id}": {
+      "get": {
+        "operationId": "get_v1_batches_batch_id",
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        }
+      }
+    },
+    "/v1/batches/{batch_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_batches_batch_id_cancel",
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/batch_cancel"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores": {
+      "post": {
+        "operationId": "post_v1_vector_stores",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_store_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_vector_stores",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_store_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_store_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_store_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vector_stores_vector_store_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_store_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/search": {
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_search",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_search_page"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped source-bound retrieval with actual query embedding, optional real model rewriting, exact shared quota and complete snapshot checks; auto ranking uses local cosine/BM25 RRF, not the private hosted ranker.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_search_request"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "in_progress",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_file_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      },
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_file_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vector_stores_vector_store_id_files_file_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_files_file_id_content",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_content"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches": {
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_file_batches",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_batch_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_file_batches_batch_id",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+      "get": {
+        "operationId": "get_v1_vector_stores_vector_store_id_file_batches_batch_id_files",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "in_progress",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
+      }
+    },
+    "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_vector_stores_vector_store_id_file_batches_batch_id_cancel",
+        "parameters": [
+          {
+            "name": "vector_store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/vector_batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/vector_batch_cancel"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/moderations": {
+      "post": {
+        "operationId": "v1_moderations",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/moderations_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/moderations_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Finite native classification error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "executor": "actual_served_model",
+          "default_model": "served_model",
+          "cardinality": "string array has one result per string; multimodal array is one content group",
+          "max_total_text_utf8_bytes": 1048576,
+          "output_tokens_per_classifier": 512,
+          "threshold": 0.5,
+          "scores": "local model estimates; no cloud calibration claim",
+          "quota": "one RPM and cumulative actual native work; independent Batch pool",
+          "stream": false
+        }
+      }
+    },
+    "/v1/embeddings": {
+      "post": {
+        "operationId": "v1_embeddings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/embeddings_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/embeddings_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Finite native embedding error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "executor": "actual_final_mixer_hidden",
+          "pooling": "last_input_token",
+          "dimensions": 2560,
+          "dimension_selection": "prefix_then_l2",
+          "quality": "generative hidden states; no retrieval or Matryoshka training claim",
+          "input": "raw text or token IDs; no chat template or truncation",
+          "max_total_input_tokens": 300000,
+          "max_response_bytes": 100663296,
+          "base64": "little-endian IEEE754 float32",
+          "quota": "one RPM, cumulative committed input tokens, no output tokens",
+          "batch": true,
+          "stream": false
+        }
+      }
+    },
+    "/v1/files": {
+      "post": {
+        "operationId": "post_v1_files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/file_multipart"
+              }
+            }
+          }
+        },
+        "x-q4t-sdk-request-shape": {
+          "$ref": "serve-application-v1.schema.json#/$defs/file_create"
+        },
+        "x-q4t-limits": {
+          "file_bytes": 536870912,
+          "wire_bytes": 536936448,
+          "batch_bytes": 209715200,
+          "filename_utf8_bytes": 1024,
+          "client_field": "max_file_body_bytes",
+          "native_ingress_field": "file_body_bytes",
+          "storage_quota": "Separately configured; actual JSON/base64 overhead charged"
+        }
+      },
+      "get": {
+        "operationId": "get_v1_files",
+        "parameters": [
+          {
+            "name": "purpose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000,
+              "default": 10000
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      },
+      "delete": {
+        "operationId": "delete_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_files_file_id_content",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Original binary bytes, bounded streaming with Content-Length",
+            "headers": {
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/uploads": {
+      "post": {
+        "operationId": "post_v1_uploads",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/parts": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_parts",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_part_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_part_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/complete": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_complete",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_complete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 2097152,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_cancel",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_cancel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/prompts": {
+      "post": {
+        "operationId": "post_v1_prompts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/prompt_create"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "get": {
+        "operationId": "get_v1_prompts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "prompt_query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}": {
+      "get": {
+        "operationId": "get_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "post": {
+        "operationId": "post_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_select",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/prompt_select"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "delete": {
+        "operationId": "delete_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}/versions": {
+      "post": {
+        "operationId": "post_v1_prompts_prompt_id_versions",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_append",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/prompt_append"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}/versions/{version}": {
+      "get": {
+        "operationId": "get_v1_prompts_prompt_id_versions_version",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/prompt_version"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/responses": {
+      "post": {
+        "operationId": "post_v1_responses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response_event"
+                },
+                "x-q4t-stream-contract": "Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event."
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "response_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/response_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/responses/compact": {
+      "post": {
+        "operationId": "post_v1_responses_compact",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/compacted_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "response_compact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/response_compact"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/responses/input_tokens": {
+      "post": {
+        "operationId": "post_v1_responses_input_tokens",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "input_tokens_request",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/responses/{response_id}": {
+      "get": {
+        "operationId": "get_v1_responses_response_id",
+        "parameters": [
+          {
+            "name": "response_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1110"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include_obfuscation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/157"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "starting_after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "stream",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/157"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response_event"
+                },
+                "x-q4t-stream-contract": "Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event."
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "response_retrieve",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "delete": {
+        "operationId": "delete_v1_responses_response_id",
+        "parameters": [
+          {
+            "name": "response_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/responses/{response_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_responses_response_id_cancel",
+        "parameters": [
+          {
+            "name": "response_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission."
+      }
+    },
+    "/v1/responses/{response_id}/input_items": {
+      "get": {
+        "operationId": "get_v1_responses_response_id_input_items",
+        "parameters": [
+          {
+            "name": "response_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/27"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1110"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1136"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/input_items_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "input_items_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/conversations": {
+      "post": {
+        "operationId": "post_v1_conversations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "conversation_create",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/conversation_create"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/conversations/{conversation_id}": {
+      "get": {
+        "operationId": "get_v1_conversations_conversation_id",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_conversations_conversation_id",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "conversation_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/conversation_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_conversations_conversation_id",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/conversations/{conversation_id}/items": {
+      "post": {
+        "operationId": "post_v1_conversations_conversation_id_items",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1110"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation_items"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "item_include_query",
+        "x-q4t-body-contract": "conversation_items_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/conversation_items_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_conversations_conversation_id_items",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/27"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1110"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1136"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation_items"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "conversation_items_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/conversations/{conversation_id}/items/{item_id}": {
+      "get": {
+        "operationId": "get_v1_conversations_conversation_id_items_item_id",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/1110"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation_item"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "item_include_query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "delete": {
+        "operationId": "delete_v1_conversations_conversation_id_items_item_id",
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/conversation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/chat/completions/{completion_id}": {
+      "get": {
+        "operationId": "get_v1_chat_completions_completion_id",
+        "parameters": [
+          {
+            "name": "completion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/stored_chat"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_chat_completions_completion_id",
+        "parameters": [
+          {
+            "name": "completion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/stored_chat"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "stored_chat_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/stored_chat_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_chat_completions_completion_id",
+        "parameters": [
+          {
+            "name": "completion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/stored_chat_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/chat/completions/{completion_id}/messages": {
+      "get": {
+        "operationId": "get_v1_chat_completions_completion_id_messages",
+        "parameters": [
+          {
+            "name": "completion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/stored_chat_messages"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "stored_chat_messages_query",
+        "x-q4t-body-contract": "empty body only"
+      }
     }
   },
   "x-q4t": {
     "semantic_contract": "serve-input-semantics-v1.json",
-    "query_parameters": "unsupported;400",
+    "query_parameters": "route-specific closed fields; unlisted fields return400",
     "get_request_body": "unsupported;400",
     "wrong_method": "405 with Allow",
     "post_content_type": "application/json; optional charset=utf-8",
     "unsupported_media_type": 415,
     "builtin_authentication": false,
+    "native_ingress": {
+      "optional_external_gateway": true,
+      "bearer_api_keys": true,
+      "tls": true,
+      "mtls": true,
+      "cors": true,
+      "backend_identity": "native ingress authenticates and replaces internal identity headers"
+    },
     "gateway_client_policy": {
       "profile": "q4t-gateway-clients-v1",
       "enabled_by": "--client-policy-file",
@@ -847,11 +5289,19 @@
         "request_id",
         "cancellation",
         "session_id",
-        "prefix_cache_scope"
+        "prefix_cache_scope",
+        "responses",
+        "conversations",
+        "application_items",
+        "stored_chat",
+        "files",
+        "uploads",
+        "batches"
       ],
       "limits": [
         "data/control inflight",
         "body bytes",
+        "explicit file body bytes",
         "expanded prompt tokens including vision",
         "total output tokens",
         "optional v2 fixed-window requests/tokens per minute"
@@ -868,9 +5318,11 @@
         "profile": "q4t-client-governance-v1",
         "policy_versions": [
           1,
-          2
+          2,
+          3,
+          4
         ],
-        "enabled_by": "explicit v2 policy fields; zero disables rates",
+        "enabled_by": "v2 rates; v3 revisioned administration; v4 explicit file capacity; zero disables rates",
         "window_seconds": 60,
         "window": "fixed_monotonic",
         "restart": "reset",

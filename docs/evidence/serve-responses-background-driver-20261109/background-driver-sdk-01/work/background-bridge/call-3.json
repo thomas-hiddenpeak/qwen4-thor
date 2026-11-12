@@ -1,0 +1,53 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_ab72bc24a7b2f319c7abe635d7f4d46a",
+    "object": "response",
+    "created_at": 1794169072,
+    "completed_at": null,
+    "status": "queued",
+    "error": null,
+    "incomplete_details": null,
+    "output": [],
+    "usage": null,
+    "model": "cpu",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 1,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": true,
+    "max_output_tokens": 256,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": ""
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:38617/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"cpu\",\"input\":\"question\",\"background\":true,\"reasoning\":{\"effort\":\"none\"}}"
+    }
+  ],
+  "wire_base64": "eyJpZCI6InJlc3BfYWI3MmJjMjRhN2IyZjMxOWM3YWJlNjM1ZDdmNGQ0NmEiLCJvYmplY3QiOiJyZXNwb25zZSIsImNyZWF0ZWRfYXQiOjE3OTQxNjkwNzIsImNvbXBsZXRlZF9hdCI6bnVsbCwic3RhdHVzIjoicXVldWVkIiwiZXJyb3IiOm51bGwsImluY29tcGxldGVfZGV0YWlscyI6bnVsbCwib3V0cHV0IjpbXSwidXNhZ2UiOm51bGwsIm1vZGVsIjoiY3B1IiwiaW5zdHJ1Y3Rpb25zIjpudWxsLCJtZXRhZGF0YSI6e30sInRlbXBlcmF0dXJlIjoxLCJ0b3BfcCI6MSwicGFyYWxsZWxfdG9vbF9jYWxscyI6dHJ1ZSwidG9vbHMiOltdLCJ0b29sX2Nob2ljZSI6ImF1dG8iLCJ0ZXh0Ijp7ImZvcm1hdCI6eyJ0eXBlIjoidGV4dCJ9LCJ2ZXJib3NpdHkiOiJtZWRpdW0ifSwicmVhc29uaW5nIjp7ImVmZm9ydCI6Im5vbmUiLCJjb250ZXh0IjoiYWxsX3R1cm5zIiwibW9kZSI6InN0YW5kYXJkIiwic3VtbWFyeSI6bnVsbH0sInN0b3JlIjp0cnVlLCJiYWNrZ3JvdW5kIjp0cnVlLCJtYXhfb3V0cHV0X3Rva2VucyI6MjU2LCJtYXhfdG9vbF9jYWxscyI6bnVsbCwicHJldmlvdXNfcmVzcG9uc2VfaWQiOm51bGwsInNlcnZpY2VfdGllciI6ImRlZmF1bHQiLCJ0cnVuY2F0aW9uIjoiZGlzYWJsZWQiLCJ0b3BfbG9ncHJvYnMiOjAsImFjY2Vzc19wcm9ncmFtcyI6bnVsbH0="
+}

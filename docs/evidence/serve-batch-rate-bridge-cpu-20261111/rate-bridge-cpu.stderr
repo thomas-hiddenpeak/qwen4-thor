@@ -1,0 +1,7 @@
+[q4t][http] trace_id=req_tool_run_fixture status=429 error=client_tpm_exhausted
+[q4t][http] trace_id=req_tool_run_fixture error=internal_error
+[q4t][http] trace_id=req_tool_run_fixture error=host_memory_exhausted
+[q4t][http] trace_id=req-873f381faf29bb27b3e128f62674091f status=502 error=upstream_error
+[q4t][http] trace_id=req-adfe7188ac644e81640d1486ee12780a status=503 error=service_unavailable
+[q4t][http] trace_id=req-f912a5e7198d530315d46bc14b799f56 status=503 error=service_unavailable
+[q4t][http] trace_id=req-cd1692e2e1d7f1e7d2189d65dad5c993 error=internal_error

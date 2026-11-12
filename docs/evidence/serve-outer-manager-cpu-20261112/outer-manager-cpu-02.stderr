@@ -1,0 +1,6 @@
+test_check_preserves_all_journals_and_never_launches (tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.101s
+
+OK

@@ -26,8 +26,19 @@
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
+#include "q4t/server/embedding_assets.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/object_store.h"
+#include "q4t/server/file_fetch.h"
+#include "q4t/server/file_input_policy.h"
+#include "q4t/server/file_document_worker.h"
+#include "q4t/server/file_pdf.h"
+#include "q4t/server/file_webp.h"
+#include "q4t/server/file_legacy.h"
+#include "q4t/server/state_key_admin.h"
+#include "q4t/server/cache_io.h"
+#include "q4t/service/service_cli.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
@@ -55,17 +66,35 @@ void PrintUsage(const char* prog) {
       "  models    List catalogued model descriptors\n"
       "  generate  Single greedy generation\n"
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
+      "  service   Manage native service lifecycle and deployment\n"
+      "            (q4t service --help)\n"
+      "  state-keys  Inspect/rotate native encrypted-state keys\n"
+      "              (q4t state-keys --help)\n"
+      "  state-retention  Inspect/collect protected application state\n"
+      "              (q4t state-retention --help)\n"
+      "  file-input-policy-check FILE  Validate file policy without a model\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
       "[--operations-port N] [--model-dir DIR] "
+      "[--served-model-name ID] [--model-alias ID] "
+      "[--embedding-model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--max-inflight-requests N] [--max-queued-requests N] "
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "
       "[--startup-memory-headroom-mib N] "
       "[--cuda-allocation-limit-mib auto|0|N] "
-      "[--client-policy-file FILE] "
+      "[--client-policy-file FILE] [--access-program-policy-file FILE] "
+      "[--file-input-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
+      "[--object-store-dir DIR] [--object-max-object-mib N] "
+      "[--object-max-client-mib N] [--object-max-total-mib N] "
+      "[--object-max-client-objects N] [--object-max-total-objects N] "
+      "[--object-io-timeout-ms N] "
+      "[--background-max-input-mib N] "
+      "[--batch-workers N] [--batch-max-jobs N] "
+      "[--batch-max-client-jobs N] [--batch-max-result-mib N] "
+      "[--batch-model-queue-tokens N] [--batch-client-model-queue-tokens N] "
       "[--prefix-cache-checkpoints 8192,32768,65536] "
       "[--mtp-subset-head DIR] "
       "[--allow-media] "
@@ -877,6 +906,32 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  if (argc > 1 && std::strcmp(argv[1], "file-input-policy-check") == 0)
+    return q4t::server::RunFileInputPolicyCheck(argc, argv);
+  if (argc > 1 && std::strcmp(argv[1], "service") == 0) {
+    return q4t::service::RunService(argc, argv);
+  }
+  const int cache_worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (cache_worker >= 0) return cache_worker;
+  const int embedding_worker =
+      q4t::server::MaybeRunEmbeddingAssetWorker(argc, argv);
+  if (embedding_worker >= 0) return embedding_worker;
+  const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
+  if (object_worker >= 0) return object_worker;
+  const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
+  if (fetch_worker >= 0) return fetch_worker;
+  const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);
+  if (document_worker >= 0) return document_worker;
+  const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);
+  if (webp_worker >= 0) return webp_worker;
+  const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
+  if (pdf_worker >= 0) return pdf_worker;
+  const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
+  if (legacy_worker >= 0) return legacy_worker;
+  const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
+  if (state_keys >= 0) return state_keys;
+  const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
+  if (retention >= 0) return retention;
   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
   if (worker >= 0) return worker;
   if (argc < 2) {

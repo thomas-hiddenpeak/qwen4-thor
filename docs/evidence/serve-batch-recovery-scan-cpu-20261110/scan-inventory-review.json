@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "include/q4t/server/object_store.h",
+    "include/q4t/server/responses_owner.h",
+    "src/server/object_store.cpp",
+    "src/server/object_worker.cpp",
+    "src/server/responses_owner.cpp"
+  ],
+  "anchors": 472,
+  "public_routes_changed": false
+}

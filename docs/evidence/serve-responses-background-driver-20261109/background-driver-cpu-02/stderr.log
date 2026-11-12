@@ -1,0 +1,6 @@
+test_phase_alarm_reserves_cleanup_and_disarms_on_failure (tools.serve_responses.test_background_acceptance.Driver.test_phase_alarm_reserves_cleanup_and_disarms_on_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+OK

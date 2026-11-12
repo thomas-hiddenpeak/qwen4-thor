@@ -1,0 +1,6 @@
+{
+  "request_id": "35b8a0f3-b302-47d6-8812-2d452af50067",
+  "expected_revision": 34,
+  "expected_manifest_sha256": "cde078faafcf71f89442d9ecad18a0f0cf43f8d560799e51fc058ad8b27f7797",
+  "target_manifest_sha256": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871"
+}

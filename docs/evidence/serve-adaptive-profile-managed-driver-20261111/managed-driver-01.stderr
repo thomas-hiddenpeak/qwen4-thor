@@ -1,0 +1,8 @@
+test_actual_pressure_helper_cannot_exceed_allocation_budget (tools.serve_recovery.test_profile_managed_acceptance.ManagedDriverTests.test_actual_pressure_helper_cannot_exceed_allocation_budget) ... ok
+test_actual_pressure_helper_owner_eof_releases_without_allocation (tools.serve_recovery.test_profile_managed_acceptance.ManagedDriverTests.test_actual_pressure_helper_owner_eof_releases_without_allocation) ... ok
+test_managed_driver_loads_sealed_controller_and_profile_runtime (tools.serve_recovery.test_profile_managed_acceptance.ManagedDriverTests.test_managed_driver_loads_sealed_controller_and_profile_runtime) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.792s
+
+OK

@@ -1,0 +1,33 @@
+{
+  "returncode": 0,
+  "value": {
+    "status": "PASS",
+    "package_verified": true,
+    "capacity": {
+      "name": "text-managed-capacity-v1",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 4096,
+      "max_prefill": 1024,
+      "max_tokens": 128,
+      "mtp_k": 3,
+      "max_inflight_requests": 6,
+      "max_queued_requests": 4,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": true,
+      "request_deadline_ms": 180000
+    },
+    "state_checked": true,
+    "credentials_checked": false,
+    "model_actions": false,
+    "gpu_queries": false,
+    "automatic_start": false,
+    "service_id": "962a43e2-38c6-4ffc-b6d4-ab983a0291ad",
+    "desired": "RUNNING",
+    "active_grants": true,
+    "client_state_valid": true,
+    "client_count": 2
+  }
+}

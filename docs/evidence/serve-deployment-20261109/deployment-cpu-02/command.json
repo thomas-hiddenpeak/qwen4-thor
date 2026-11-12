@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_deployment",
+  "tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires"
+]

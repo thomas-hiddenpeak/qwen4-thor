@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "error": {
+    "class": "BadRequestError",
+    "message": "400 Token ID must be an exact integer in the served vocab",
+    "status": 400,
+    "code": "invalid_request",
+    "param": "input[0]"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19065/v1/embeddings",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"input\":[-1],\"encoding_format\":\"base64\"}"
+    }
+  ]
+}

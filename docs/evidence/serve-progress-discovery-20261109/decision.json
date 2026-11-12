@@ -1,0 +1,26 @@
+{
+  "status": "PARTIAL_SELF_CHECK_AND_DRIVER_REPAIR",
+  "actual_business_result": "FAILED_DISCOVERY_DRIVER_MISSING_CREDENTIALS",
+  "model_starts": 1,
+  "chats": 1,
+  "seconds": 45.652702992782,
+  "cleanup_passed": true,
+  "cpu_regressions_passed": 2,
+  "default_changed": false,
+  "runtime_changed": false,
+  "cumulative_limits": {
+    "starts": 3,
+    "chats": 9,
+    "probes": 1,
+    "seconds": 900
+  },
+  "driver_sources": {
+    "tools/serve_progress/test_discovery.py": "2b75776454200045c136189dc6fcba7dfe65bc3da694b7551e03ce28069af175",
+    "tools/serve_progress/pause.py": "0146f0320cf2ff24708b6b2c3bcdd0fe85ee55d59860cdd8a53a24cdece1dae5",
+    "tools/serve_progress/prepare.py": "8de33a1dc3dc1bc9168b17dac1be50d1d16b36bfd9a4c74cd4a5731ac1c96b4a",
+    "tools/serve_progress/continue.py": "4159323d7f1de45b37c66858105279e0b103281f405953362fa4636a508f617d",
+    "tools/serve_progress/test_pause.py": "7069dec3968508e7c78f191bf33da6b0dbc5c1877cd33f4f8f9de225d8992be3",
+    "tools/serve_progress/test_acceptance.py": "347cacabcb7c1eca32868c034a2a4eff5a07cf5aedf6e25892334c6300ef899e",
+    "tools/serve_progress/acceptance.py": "d9618fd82661b83517aadf1d552fdaad9c5ae8b0b0e0a287dfbe09620f7dcda2"
+  }
+}

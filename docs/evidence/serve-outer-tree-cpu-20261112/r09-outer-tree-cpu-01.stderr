@@ -1,0 +1,133 @@
+test_cannot_close_custody_or_claim_foreign_root_while_live (tools.serve_recovery.test_outer_tree.TreeTests.test_cannot_close_custody_or_claim_foreign_root_while_live) ... FAIL
+test_normal_exit_keeps_exact_wait_status_and_root_identity (tools.serve_recovery.test_outer_tree.TreeTests.test_normal_exit_keeps_exact_wait_status_and_root_identity) ... ok
+test_preexisting_children_are_never_taken_over (tools.serve_recovery.test_outer_tree.TreeTests.test_preexisting_children_are_never_taken_over) ... ok
+test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling (tools.serve_recovery.test_outer_tree.TreeTests.test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling) ... FAIL
+test_timeout_retains_custody_until_later_actual_cleanup (tools.serve_recovery.test_outer_tree.TreeTests.test_timeout_retains_custody_until_later_actual_cleanup) ... FAIL
+
+======================================================================
+FAIL: test_cannot_close_custody_or_claim_foreign_root_while_live (tools.serve_recovery.test_outer_tree.TreeTests.test_cannot_close_custody_or_claim_foreign_root_while_live)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 104, in test_cannot_close_custody_or_claim_foreign_root_while_live
+    self.assertTrue(self.run_case('close')['kernel_echild'])
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 87, in run_case
+    self.assertEqual(result.returncode,0,result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 64, in scenario
+    result = tree.drain(term_seconds=.05,kill_seconds=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 139, in drain
+    self.signal_children(signal.SIGTERM if elapsed < term_seconds else signal.SIGKILL, sent)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 102, in signal_children
+    with path.open('rb') as stream: raw = stream.read(65537)
+         ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/self/task/1812231/children'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 112, in <module>
+    print(json.dumps(scenario(sys.argv[1],Path(sys.argv[2]))))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 47, in scenario
+    with outer_tree.Tree() as tree:
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 161, in __exit__
+    def __exit__(self, *_args): self.close()
+                                ^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 154, in close
+    ledger.require(self.entered and no_children(),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: cannot abandon outer custody while children remain
+
+
+======================================================================
+FAIL: test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling (tools.serve_recovery.test_outer_tree.TreeTests.test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 97, in test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling
+    value = self.run_case('orphan');self.assertTrue(value['kernel_echild'])
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 87, in run_case
+    self.assertEqual(result.returncode,0,result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 64, in scenario
+    result = tree.drain(term_seconds=.05,kill_seconds=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 139, in drain
+    self.signal_children(signal.SIGTERM if elapsed < term_seconds else signal.SIGKILL, sent)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 102, in signal_children
+    with path.open('rb') as stream: raw = stream.read(65537)
+         ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/self/task/1812240/children'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 112, in <module>
+    print(json.dumps(scenario(sys.argv[1],Path(sys.argv[2]))))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 47, in scenario
+    with outer_tree.Tree() as tree:
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 161, in __exit__
+    def __exit__(self, *_args): self.close()
+                                ^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 154, in close
+    ledger.require(self.entered and no_children(),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: cannot abandon outer custody while children remain
+
+
+======================================================================
+FAIL: test_timeout_retains_custody_until_later_actual_cleanup (tools.serve_recovery.test_outer_tree.TreeTests.test_timeout_retains_custody_until_later_actual_cleanup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 101, in test_timeout_retains_custody_until_later_actual_cleanup
+    self.assertTrue(self.run_case('timeout')['kernel_echild'])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 87, in run_case
+    self.assertEqual(result.returncode,0,result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 64, in scenario
+    result = tree.drain(term_seconds=.05,kill_seconds=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 139, in drain
+    self.signal_children(signal.SIGTERM if elapsed < term_seconds else signal.SIGKILL, sent)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 102, in signal_children
+    with path.open('rb') as stream: raw = stream.read(65537)
+         ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/self/task/1812244/children'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 112, in <module>
+    print(json.dumps(scenario(sys.argv[1],Path(sys.argv[2]))))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_outer_tree.py", line 47, in scenario
+    with outer_tree.Tree() as tree:
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 161, in __exit__
+    def __exit__(self, *_args): self.close()
+                                ^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/outer_tree.py", line 154, in close
+    ledger.require(self.entered and no_children(),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: cannot abandon outer custody while children remain
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.654s
+
+FAILED (failures=3)

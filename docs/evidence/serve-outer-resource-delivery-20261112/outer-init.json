@@ -1,0 +1,12 @@
+{
+  "label": "outer-init",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "outer-init",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+  ],
+  "returncode": 0,
+  "seconds": 1.0920907109975815
+}

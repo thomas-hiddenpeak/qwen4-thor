@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-11",
+  "base": "da67b9a76215c33696b66ea5e066854cfacb598a",
+  "kind": "business correctness, no performance acceptance claim",
+  "scope": "native failed/cancelled committed-input/accepted-output capture, nested preparation, Responses JSON/SSE terminal, private atomic Batch original-result/recount",
+  "required_list": "actual-usage-required.txt",
+  "required_count": 26,
+  "new": 9,
+  "extended": 4,
+  "direct": 13,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "reuse": "prior unmodified SDK ordinary routes; new captured-failure model business still required with combined Batch delivery",
+  "next": "finite permanent output failure; bounded auxiliary initial owner recovery; actual model business, compatible rollback/default and full master plan"
+}

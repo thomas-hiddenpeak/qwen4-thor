@@ -1,0 +1,33 @@
+{
+  "phase": "A07.2 targeted CPU",
+  "frozen_at": "2026-11-09T20:49:53.048246",
+  "cases": [
+    "responses_summary_has_distinct_item_deltas_and_actual_usage",
+    "responses_summary_incomplete_failed_and_cancelled_never_complete",
+    "responses_summary_plan_uses_actual_reasoning_and_shared_budget",
+    "responses_summary_plan_no_fabricated_analysis_or_replenished_budget",
+    "responses_summary_checkpoint_replay_and_followup_keep_derived_item",
+    "responses_summary_checkpoint_failure_preserves_prefix_without_success",
+    "client_rate_internal_step_preserves_one_rpm_and_charges_actual_input",
+    "client_rate_internal_step_rejection_keeps_original_reservation",
+    "client_rate_internal_step_legacy_is_bound_and_cumulative",
+    "client_rate_internal_step_window_and_freeze_do_not_reset_admission",
+    "responses_output_text_reasoning_full_lifecycle",
+    "responses_output_parallel_function_custom_and_order",
+    "responses_output_incomplete_never_completes_partial_tool",
+    "responses_execution_stateless_does_not_depend_on_storage",
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_checkpoint_failure_delivers_original_prefix_before_error",
+    "responses_execution_active_checkpoint_preserves_replay_prefix",
+    "client_rate_completion_batch_charges_only_admitted_prompts_once",
+    "client_rate_refund_cancel_failure_and_preterminal_idempotence",
+    "client_dynamic_quota_off_on_keeps_usage_and_rollover_reservations",
+    "client_dynamic_stale_identity_uses_current_limits_legacy_stays_fixed",
+    "client_rate_checkpoint_drains_reservations_and_never_reopens",
+    "chat_capabilities_native_responses_state_and_recovery"
+  ],
+  "gpu": false,
+  "full_performance": false,
+  "full_model_correctness": false,
+  "sdk_wire_validation": "official pinned schema for generated summary JSON and SSE"
+}

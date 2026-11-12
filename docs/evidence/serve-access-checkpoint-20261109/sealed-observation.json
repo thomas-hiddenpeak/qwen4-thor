@@ -1,0 +1,31 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-03/execution/first-sealed.json",
+  "source_sha256": "26f4605a68a512f3f6254b28d2c495566998d7033f95250cdb21c30b7aed3aa9",
+  "phase": "sealed",
+  "generation": 1,
+  "snapshot_sha256": "8940c2b6c5c0875dc9ac7bc07b40a62b5866830bc7de5f8ec6cad9a571012037",
+  "closed_client_usage": [
+    {
+      "admitted": "3",
+      "id": "alpha",
+      "requests": "3",
+      "rpm_rejected": "0",
+      "settled_tokens": "913",
+      "tokens": "913",
+      "tpm_rejected": "1",
+      "window_ns": "2397520802185954",
+      "window_started": true
+    },
+    {
+      "admitted": "2",
+      "id": "beta",
+      "requests": "2",
+      "rpm_rejected": "2",
+      "settled_tokens": "60",
+      "tokens": "60",
+      "tpm_rejected": "0",
+      "window_ns": "2397528695196393",
+      "window_started": true
+    }
+  ]
+}

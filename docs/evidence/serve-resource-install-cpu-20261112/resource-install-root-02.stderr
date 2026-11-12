@@ -1,0 +1,7 @@
+test_active_removal_revokes_entry_without_signalling_payload (tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload) ... ok
+test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged (tools.serve_recovery.test_resource_install.InstallationTests.test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.332s
+
+OK

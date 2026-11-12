@@ -1,0 +1,15 @@
+{
+  "task": "R07 strict validation handoff and retained-controller cold awareness",
+  "new_cpu": 6,
+  "direct_cpu": 4,
+  "actual_retained_adapter": 1,
+  "gpu_starts": 0,
+  "model_actions": false,
+  "scope": [
+    "2 explicit FD guard cases",
+    "4 narrow backport / preserved false continuity / root permission / sealed delta / CLI checks",
+    "2 directly affected controller gate/device fault checks",
+    "2 package closure checks",
+    "one actual v16 retained-package adaptation and accepted-origin verification; no business acceptance claim"
+  ]
+}

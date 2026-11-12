@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_source_tampering_refuses_before_import_and_ignores_pythonpath",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_interpreter_identity_change_refuses_native_dispatch",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_no_tools_is_explicit_error_without_model_or_fallback_command",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_runtime_requirement_refuses_incomplete_python_before_creating_tools",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_default_engine_and_service_identity_cannot_diverge"
+  ],
+  "tests_count": 8,
+  "reason": "Explicit qualified system Python; interpreter change affects native entry cases. Correct mutable deployment history assertion.",
+  "previous_result": ".q4t-work/serve-lifecycle-20261109/cli-cpu-02/result.json",
+  "gpu_starts": 0
+}

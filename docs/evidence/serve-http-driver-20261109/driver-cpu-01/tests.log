@@ -1,0 +1,9 @@
+test_chunk_end_required_and_next_response_is_not_consumed (tools.serve_http.test_acceptance.DriverTests.test_chunk_end_required_and_next_response_is_not_consumed) ... ok
+test_continue_rejection_never_sends_body_and_valid_continue_is_chunked (tools.serve_http.test_acceptance.DriverTests.test_continue_rejection_never_sends_body_and_valid_continue_is_chunked) ... ok
+test_generation_budget_is_reserved_before_any_network_write (tools.serve_http.test_acceptance.DriverTests.test_generation_budget_is_reserved_before_any_network_write) ... ok
+test_pending_release_requires_exact_identity_and_preserves_default_gate (tools.serve_http.test_acceptance.DriverTests.test_pending_release_requires_exact_identity_and_preserves_default_gate) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK

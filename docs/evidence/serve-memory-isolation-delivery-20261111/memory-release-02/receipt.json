@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/memory-release-02/bundle",
+  "manifest_sha256": "b2bd575ace695b1fcbedc3ab965e7312be39ad14e1a9dfa1da326848a026ea60",
+  "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "recovery_accepted": false
+}

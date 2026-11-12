@@ -1,0 +1,72 @@
+{
+  "status": "ACCEPT_TARGETED_STORED_CHAT",
+  "binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+  "protocol_sha256": "7cf94e90fc7e5a12ec5ae16c877f506f173d9f77896846eef06c1d53927e06a5",
+  "source_commit": "a7868bac234d24e2ecbd28303428a16226480f22",
+  "sources": 717,
+  "attempts": [
+    {
+      "index": 1,
+      "status": "FAILED",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "controls": 41
+      },
+      "seconds": 42.49692832957953,
+      "nvml_samples": 42,
+      "cleanup_confirmed": true
+    },
+    {
+      "index": 2,
+      "status": "FAILED",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "controls": 40
+      },
+      "seconds": 53.830317293293774,
+      "nvml_samples": 52,
+      "cleanup_confirmed": true
+    },
+    {
+      "index": 3,
+      "status": "PASS_STORED_CHAT_CORRECTED_FAULT_AND_RECOVERY",
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "controls": 46
+      },
+      "seconds": 44.74854543386027,
+      "nvml_samples": 44,
+      "cleanup_confirmed": true
+    }
+  ],
+  "counts": {
+    "starts": 3,
+    "chats": 8,
+    "controls": 127
+  },
+  "seconds": 141.07579105673358,
+  "all_nvml_ok": true,
+  "nvml_samples": 138,
+  "lease_status": "COMPLETED",
+  "config_schema_samples": 2,
+  "original_failures_preserved": true,
+  "accepted_prior_normal_prefix": "serve-chat-storage-prefix-20261109",
+  "accepted_prior_tool_prefix": "serve-chat-unknown-20261109",
+  "corrected_sources": [
+    "include/q4t/server/object_store.h",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/responses_api.cpp"
+  ],
+  "corrected_fault": true,
+  "same_model_continued": true,
+  "all_allocations_released": true,
+  "all_ports_and_locks_released": true,
+  "default_changed": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "master_tasks_remaining": true
+}

@@ -1,0 +1,27 @@
+{
+  "original_command": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/business-01/bundle/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/business-02/execution/state/runs/d806d88d-82ec-4031-8b28-15a69ce531fb/controller.json"
+  ],
+  "validation_command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_http/acceptance.py",
+    "controller",
+    "--plan",
+    ".q4t-work/serve-http-20261109/business-02/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/business-02/execution/state/runs/d806d88d-82ec-4031-8b28-15a69ce531fb/controller.json"
+  ],
+  "production_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/business-01/bundle",
+    "manifest_sha256": "39e2acce017f3131a9be95f9279fb1134ec653a2d17aee568e0fcd3214decbe1",
+    "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+    "recovery_accepted": false
+  }
+}

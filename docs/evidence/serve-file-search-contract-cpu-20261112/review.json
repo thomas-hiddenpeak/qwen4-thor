@@ -1,0 +1,27 @@
+{
+  "state": "TARGETED_CPU_ACCEPTED_INTEGRATION_PENDING",
+  "unique_cases": 13,
+  "invocations": 14,
+  "seconds": 0.15914241271093488,
+  "original_failure": "Positive exact underflow is represented by NaN by the JSON reader; finite check prematurely returned invalid_request. Validate exact sign first, then report precision resource exhaustion. Only failing case rerun.",
+  "sources_sha256": {
+    "CMakeLists.txt": "6d2b1420328a211e37f7fd9191985c10cbaf69dd5df8c5e433ad1d01f3284ced",
+    "cmake/ChatProtocolIdentity.cmake": "62859916e160059a575fd4be602e2a8b2234e1a4512985d3c5a6b3b45b251d34",
+    "cmake/HostTestSources.cmake": "2772232ceede2249070aecccc60360d3cfb8bea3962f698ac1196dca1c6027ef",
+    "include/q4t/server/vector_search.h": "b581badb7d1d74e60e9692a53171dec4dbe32ec7c748b223c2b659fdafed5231",
+    "src/server/vector_search_rank.cpp": "6a0de6a9ad6fd561b40734f4a7423519f9315114f6cff51b1058dd58cf49c5e8",
+    "tools/serve_audit/inventory.json": "89ae6fa2e87d08d6dc6c77afc4dd9277eb52df0973d5453dca825d7536205382",
+    "include/q4t/server/responses_file_search.h": "7a512cf3b858ed48e7946e75725ee2c6b0e52a121484caaa3930fa7ef34df6d4",
+    "src/server/responses_file_search.cpp": "85259d552ff552974f19103ec6a14e7ae1581d4d431ec2b6e02619a51463bb75",
+    "tests/server_responses_file_search_test.cpp": "a7888ac4f07ca2bab733d70ceecbbfdc3b3061c99d7ed0b1f8948ad0846c0274"
+  },
+  "binaries_sha256": {
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "bcce9dc55a218ecf515c3737d9266b81592b9373407017169c32305342c10983",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "66ac49f8d4c68d4eb84682b966e908d3be2c1961f136cceb8e19c62ac06bba3c"
+  },
+  "warning_count": 0,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "responses_executor": false,
+  "whole_task_complete": false
+}

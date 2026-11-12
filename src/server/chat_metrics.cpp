@@ -187,31 +187,35 @@ void ChatServer::HandleMetrics(int fd) {
   counter("q4t_structured_prepare_failed_total",
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
+  detail::PollRequestWorkers();
+  gauge("q4t_structured_cleanup_pending",
+        "Unconfirmed cleanup retains the process-wide structured capacity.",
+        detail::GrammarCleanupPending() ? 1 : 0);
   counter("q4t_structured_workers_started_total", "Grammar worker execs.",
-          metrics_.structured_workers_started.load());
+          metrics_.structured_workers->started.load());
   counter("q4t_structured_workers_ready_total",
           "Workers with limits installed.",
           metrics_.structured_workers_ready.load());
   counter("q4t_structured_compiles_started_total", "Worker compiler entries.",
           metrics_.structured_compiles_started.load());
   counter("q4t_structured_workers_reaped_total", "Grammar workers reaped.",
-          metrics_.structured_workers_reaped.load());
+          metrics_.structured_workers->reaped.load());
   counter("q4t_structured_compile_timeouts_total", "Hard preparation timeouts.",
           metrics_.structured_compile_timeouts.load());
   counter("q4t_structured_resource_exhausted_total",
           "Preparation memory limits.",
           metrics_.structured_resource_exhausted.load());
   gauge("q4t_structured_workers_active", "Owned unreaped grammar processes.",
-        metrics_.structured_workers_active.load());
+        metrics_.structured_workers->active.load());
   gauge("q4t_structured_worker_lifetime_max_rss_bytes",
         "wait4 ru_maxrss includes pre-exec inherited mm; not AS-limited peak.",
-        metrics_.structured_worker_max_rss_bytes.load());
+        metrics_.structured_workers->max_rss_bytes.load());
   gauge("q4t_structured_worker_reported_rss_bytes",
         "Maximum reported post-exec VmHWM; may omit tail before abrupt kill.",
-        metrics_.structured_worker_reported_rss_bytes.load());
+        metrics_.structured_workers->reported_rss_bytes.load());
   counter("q4t_structured_worker_rss_reports_total",
           "Reaped workers with a valid post-exec VmHWM report.",
-          metrics_.structured_worker_rss_reports.load());
+          metrics_.structured_workers->rss_reports.load());
   counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",
@@ -256,8 +260,10 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_operations_control_connections",
         "Operations control connections (limit 4).",
         operations_control_conns_.load());
-  gauge("q4t_request_body_bytes", "Reserved chat body bytes (48 MiB cap).",
+  gauge("q4t_request_body_bytes", "Reserved application body bytes (48 MiB cap).",
         body_budget_.Used());
+  gauge("q4t_cancel_body_bytes", "Reserved cancellation bytes (32 MiB cap).",
+        cancel_body_budget_.Used());
   gauge("q4t_active_chats", "Admitted chat/preflight through output cleanup.",
         active_chats_.load());
   gauge("q4t_queued_requests", "Slot waiters, excluding preprocessing.",
@@ -358,17 +364,46 @@ void ChatServer::HandleHealth(int fd) {
 }
 
 void ChatServer::HandleModels(int fd) {
-  const std::string body =
-      "{\"object\":\"list\",\"data\":[{\"id\":\"" +
-      detail::JsonEscape(model_name_) + "\",\"object\":\"model\",\"created\":" +
-      std::to_string(std::time(nullptr)) + ",\"owned_by\":\"q4t\"}]}";
+  auto body = model_catalog_.ListJson();
+  if (!embedding_model_dir_.empty()) {
+    body.resize(body.size() - 2);
+    body += ',' + embedding_catalog_.RetrieveJson(
+                      model::EmbeddingConfig::kModelId) + "]}";
+  }
   SendSimple(fd, 200, "OK", body, "application/json");
+}
+
+void ChatServer::HandleModel(int fd, const std::string& method,
+                             const std::string& path) {
+  std::string model;
+  const auto decoded = DecodeModelPath(path, &model);
+  if (!decoded) {
+    detail::SendError(fd, 400, decoded.message(), {}, "invalid_model_path",
+                      "model");
+  } else if (!model_catalog_.Contains(model) &&
+             (embedding_model_dir_.empty() ||
+              !embedding_catalog_.Contains(model))) {
+    detail::SendError(fd, 404, "model is not registered by this server", {},
+                      "model_not_found", "model");
+  } else if (method == "DELETE") {
+    // The standard delete operation is for user-owned fine-tuned models.
+    // This registry owns no such assets; loaded base weights remain read-only.
+    detail::SendError(fd, 403, "loaded base models cannot be deleted", {},
+                      "model_not_deletable", "model");
+  } else {
+    const auto& catalog = model_catalog_.Contains(model) ? model_catalog_
+                                                        : embedding_catalog_;
+    SendSimple(fd, 200, "OK", catalog.RetrieveJson(model),
+               "application/json");
+  }
 }
 
 void ChatServer::HandleCapabilities(int fd) {
   SendSimple(fd, 200, "OK",
              ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_,
-                                  vision_device_budget_.attention_shared_bytes),
+                                  vision_device_budget_.attention_shared_bytes,
+                                  access_program_policy_.get(),
+                                  !embedding_model_dir_.empty()),
              "application/json");
 }
 

@@ -1,0 +1,28 @@
+{
+  "status": "PREPARED_ACTUAL_MANAGED_ACCEPTANCE_PENDING",
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+    "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+  },
+  "retained": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+    "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434"
+  },
+  "tls": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls",
+    "manifest_sha256": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
+    "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+    "recovery_accepted": false
+  },
+  "private_ca": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/certs/ca.pem",
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "external_frontend_required": false,
+  "system_trust_modified": false,
+  "protected": {
+    "build/q4t": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+    "build/q4t.release.json": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee",
+    "build/service/manifest.json": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+    "build/service.release.json": "d0cd9c989d20041c8921860dcee306d8945d73004896d0a0a1ec462cbc52d8c8"
+  }
+}

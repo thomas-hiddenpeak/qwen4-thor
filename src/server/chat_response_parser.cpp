@@ -1,10 +1,15 @@
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/schema_prefix.h"
 
 #include <algorithm>
 #include <charconv>
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/legacy_tools.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/refusal_frame.h"
 
 namespace q4t::server {
 namespace {
@@ -118,7 +123,7 @@ Status Argument(std::string_view raw, const io::Json* schema,
     return Status();
   }
   io::Json value;
-  const io::JsonParseLimits limits{32, 65536, 1024 * 1024, true};
+  const io::JsonParseLimits limits{64, 65536, 1024 * 1024, true, true};
   const auto status =
       io::ParseJson(std::string(Trim(raw)), &value, true, limits);
   if (status && (types.empty() ||
@@ -143,9 +148,12 @@ std::string ToolJson(const ResponseToolCall& call, bool indexed) {
   return "{" +
          (indexed ? "\"index\":" + std::to_string(call.index) + ','
                   : std::string()) +
-         "\"id\":" + Quote(call.id) + ",\"type\":\"function\",\"function\":{" +
-         "\"name\":" + Quote(call.name) +
-         ",\"arguments\":" + Quote(call.arguments) + "}}";
+         "\"id\":" + Quote(call.id) +
+         ",\"type\":" + Quote(call.custom ? "custom" : "function") + ',' +
+         Quote(call.custom ? "custom" : "function") + ":{" +
+         "\"name\":" + Quote(call.name) + ',' +
+         Quote(call.custom ? "input" : "arguments") + ':' +
+         Quote(call.arguments) + "}}";
 }
 
 size_t Lookahead(std::string_view text, std::string_view marker) {
@@ -156,23 +164,46 @@ size_t Lookahead(std::string_view text, std::string_view marker) {
 }  // namespace
 
 std::string ResponseDelta::ToJson() const {
-  if (kind == Kind::kTool)
-    return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
+  if (kind == Kind::kTool) {
+    if (legacy_function)
+      return "{\"function_call\":{" +
+             (tool_start ? "\"name\":" + Quote(call.name) + ',' : "") +
+             "\"arguments\":" + Quote(call.arguments) + "}}";
+    if (tool_start) return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
+    return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) + ',' +
+           Quote(call.custom ? "custom" : "function") + ":{" +
+           Quote(call.custom ? "input" : "arguments") + ':' +
+           Quote(call.arguments) + "}}]}";
+  }
   const auto field = kind == Kind::kReasoning
-                         ? ReasoningFieldName(reasoning_field) : "content";
+                         ? ReasoningFieldName(reasoning_field)
+                     : kind == Kind::kRefusal ? "refusal"
+                                              : "content";
   return '{' + Quote(field) + ':' + Quote(text) + '}';
 }
 
 Status ChatResponseParser::Init(const io::Json& request,
                                 std::string_view prompt,
-                                const std::string& request_id, bool collect) {
+                                const std::string& request_id, bool collect,
+                                bool legacy_function) {
   if (initialized_) return Fail("parser already initialized");
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    const auto status = NormalizeLegacyTools(request, &normalized);
+    if (!status) return Fail(status.message());
+    normalized_request_ = std::move(normalized.request);
+    return Init(*normalized_request_, prompt, request_id, collect,
+                normalized.legacy_output);
+  }
   initialized_ = true;
+  legacy_function_ = legacy_function;
   request_ = &request;
   auto reason_status = ParseReasoningOptions(request, &reasoning_options_);
   if (!reason_status) return Fail(reason_status.message());
   auto plan_status = PlanOutputConstraints(request, &constraints_);
   if (!plan_status) return Fail(plan_status.message());
+  if (legacy_function_ && constraints_.parallel)
+    return Fail("legacy response cannot contain parallel calls");
   collect_ = collect || constraints_.active;
   parsed_ = request.Has("messages") && request.GetBool("parse_response", true);
   id_prefix_ = "call_" + request_id + '_';
@@ -184,6 +215,19 @@ Status ChatResponseParser::Init(const io::Json& request,
   const auto* definitions = request.GetArray("tools");
   if (!definitions) return Status();
   for (const auto& tool : definitions->array) {
+    if (tool.GetString("type") == "custom") {
+      const auto* custom = tool.Find("custom");
+      if (!custom || legacy_function_)
+        return Fail("custom definition cannot use legacy response dialect");
+      CustomToolFormat format;
+      const auto status = ParseCustomToolFormat(*custom, &format);
+      if (!status) return Fail(status.message());
+      const auto name = custom->GetString("name");
+      if (!tools_.emplace(name, custom).second)
+        return Fail("duplicate tool name");
+      custom_tools_.insert(name);
+      continue;
+    }
     const auto* fn = tool.Find("function");
     if (tool.GetString("type") != "function" || !fn || !fn->IsObject())
       return Fail("parsed responses require function tool definitions");
@@ -193,6 +237,7 @@ Status ChatResponseParser::Init(const io::Json& request,
         !tools_.emplace(name, fn).second)
       return Fail("invalid or duplicate tool name");
     const auto* parameters = fn->Find("parameters");
+    if (NeedsJsonToolArguments(*fn)) json_argument_tools_.insert(name);
     if (parameters && !parameters->IsObject())
       return Fail("tool parameters must be a schema object");
     const auto* properties =
@@ -212,37 +257,96 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
                               std::vector<ResponseDelta>* deltas) {
   if (text.empty()) return;
   const bool reasoning = region == Region::kReasoning;
+  const bool refusing = region == Region::kRefusal;
   if (reasoning && !reasoning_options_.include) return;
-  if (collect_) (reasoning ? reasoning_ : content_).append(text);
-  const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
-                              : ResponseDelta::Kind::kContent;
-  auto* target = constraints_.active ? &deferred_ : deltas;
-  if (constraints_.active && !target->empty() && target->back().kind == kind)
-    target->back().text.append(text);
-  else
-    target->push_back({kind, std::string(text), {}, reasoning_options_.field});
+  if (collect_)
+    (reasoning ? reasoning_ : refusing ? refusal_ : content_).append(text);
+  const auto kind = reasoning  ? ResponseDelta::Kind::kReasoning
+                    : refusing ? ResponseDelta::Kind::kRefusal
+                               : ResponseDelta::Kind::kContent;
+  if (!deltas->empty() && deltas->back().kind == kind &&
+      deltas->back().source_end == pending_offset_) {
+    deltas->back().text.append(text);
+    deltas->back().source_end += text.size();
+  } else {
+    deltas->push_back({kind,
+                       std::string(text),
+                       {},
+                       reasoning_options_.field,
+                       pending_offset_,
+                       pending_offset_ + text.size()});
+  }
 }
 
 Status ChatResponseParser::ParseTool(std::string_view block,
                                      ResponseToolCall* call) const {
   block = Trim(block);
   if (!block.starts_with("<function="))
-    return Status::Fail("tool call must start with a function");
+    return Status::Fail("tool call must start with function");
   const auto end = block.find('>');
   if (end == block.npos) return Status::Fail("incomplete function name");
   call->name = std::string(block.substr(10, end - 10));
-  if (constraints_.choice == OutputConstraints::ToolChoice::kNone)
-    return Status::Fail("tool call forbidden by tool_choice=none");
-  if (constraints_.choice == OutputConstraints::ToolChoice::kNamed &&
-      call->name != constraints_.named_tool)
-    return Status::Fail("generated tool does not match named choice");
+  if (!constraints_.AllowsTool(call->name))
+    return Status::Fail("generated tool forbidden by tool_choice");
   if ((!constraints_.parallel ||
        constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
       tool_count_ != 0)
     return Status::Fail("multiple tool calls forbidden by request");
   const auto fn = tools_.find(call->name);
   if (fn == tools_.end()) return Status::Fail("unknown generated tool name");
+  call->custom = custom_tools_.contains(call->name);
+  if (call->custom) {
+    block.remove_prefix(end + 1);
+    block = Trim(block);
+    constexpr std::string_view opening = "<parameter=input>";
+    constexpr std::string_view closing = "</function>";
+    constexpr std::string_view parameter_close = "</parameter>";
+    if (!block.ends_with(closing))
+      return Status::Fail("incomplete custom closing tag");
+    block.remove_suffix(closing.size());
+    block = Trim(block);
+    if (!block.starts_with(opening) || !block.ends_with(parameter_close))
+      return Status::Fail("custom tool requires one input parameter");
+    block.remove_prefix(opening.size());
+    block.remove_suffix(parameter_close.size());
+    io::Json value;
+    auto status = io::ParseJson(std::string(Trim(block)), &value, true,
+                                {8, 16, kMaxToolBytes, true});
+    if (!status || !value.IsString())
+      return Status::Fail("custom payload must be one JSON string");
+    call->arguments = std::move(value.str);
+    call->index = tool_count_;
+    call->id = id_prefix_ + std::to_string(tool_count_);
+    return Status();
+  }
   const auto* parameters = fn->second->Find("parameters");
+  if (json_argument_tools_.contains(call->name) &&
+      (constraints_.active ||
+       Trim(block.substr(end + 1)).starts_with("<parameter=arguments>"))) {
+    block = Trim(block.substr(end + 1));
+    constexpr std::string_view opening = "<parameter=arguments>";
+    constexpr std::string_view function_close = "</function>";
+    constexpr std::string_view parameter_close = "</parameter>";
+    if (!block.starts_with(opening) || !block.ends_with(function_close))
+      return Status::Fail("JSON arguments require one arguments parameter");
+    block.remove_prefix(opening.size());
+    block.remove_suffix(function_close.size());
+    block = Trim(block);
+    if (!block.ends_with(parameter_close))
+      return Status::Fail("incomplete JSON arguments closing tag");
+    block.remove_suffix(parameter_close.size());
+    call->arguments = std::string(Trim(block));
+    io::Json value;
+    auto status =
+        io::ParseJson(call->arguments, &value, true, kSchemaJsonLimits);
+    if (!status || !value.IsObject())
+      return Status::Fail("arguments payload must be one JSON object");
+    // Schema/format validation belongs to the isolated worker. Finish binds
+    // its completed-value receipt to these independently parsed arguments.
+    call->index = tool_count_;
+    call->id = id_prefix_ + std::to_string(tool_count_);
+    return {};
+  }
   const auto* properties =
       parameters ? parameters->Find("properties") : nullptr;
   block.remove_prefix(end + 1);
@@ -282,6 +386,324 @@ Status ChatResponseParser::ParseTool(std::string_view block,
   return Status();
 }
 
+void ChatResponseParser::ToolFragment(std::string text, bool start,
+                                      std::vector<ResponseDelta>* deltas) {
+  partial_call_.arguments += text;
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call.index = partial_call_.index;
+  delta.call.custom = partial_call_.custom;
+  if (start) {
+    delta.call.id = partial_call_.id;
+    delta.call.name = partial_call_.name;
+  }
+  delta.call.arguments = std::move(text);
+  delta.tool_start = start;
+  delta.legacy_function = legacy_function_;
+  deltas->push_back(std::move(delta));
+}
+
+Status ChatResponseParser::StreamTool(size_t available, bool complete,
+                                      std::vector<ResponseDelta>* deltas) {
+  // The original block remains bounded and is independently validated at its
+  // closing tag. Incremental fragments are provisional until the successful
+  // response terminal. No parser, SDK or tool runner dispatches them here.
+  const std::string_view block(pending_.data(), available);
+  const auto whitespace = [&](size_t* offset) {
+    while (*offset < block.size() &&
+           std::string_view(" \t\r\n").find(block[*offset]) != block.npos)
+      ++*offset;
+  };
+  if (!tool_header_) {
+    whitespace(&tool_parse_offset_);
+    const auto rest = block.substr(tool_parse_offset_);
+    constexpr std::string_view prefix = "<function=";
+    if (prefix.starts_with(rest) && !complete) return Status();
+    if (!rest.starts_with(prefix)) return Status::Fail("invalid tool tag");
+    const auto end = rest.find('>');
+    if (end == rest.npos) {
+      if (rest.size() > 266 || complete)
+        return Status::Fail("incomplete function name");
+      return Status();
+    }
+    partial_call_.name =
+        std::string(rest.substr(prefix.size(), end - prefix.size()));
+    if (!tools_.contains(partial_call_.name) ||
+        !constraints_.AllowsTool(partial_call_.name))
+      return Status::Fail("unknown or forbidden generated tool");
+    partial_call_.custom = custom_tools_.contains(partial_call_.name);
+    if (tool_count_ == kMaxCalls ||
+        ((!constraints_.parallel ||
+          constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
+         tool_count_))
+      return Status::Fail("too many generated tool calls");
+    partial_call_.index = tool_count_;
+    partial_call_.id = id_prefix_ + std::to_string(tool_count_);
+    tool_parse_offset_ += end + 1;
+    tool_header_ = true;
+    ToolFragment(partial_call_.custom ||
+                         json_argument_tools_.contains(partial_call_.name)
+                     ? ""
+                     : "{",
+                 true, deltas);
+  }
+  if (json_argument_tools_.contains(partial_call_.name) &&
+      !tool_mode_selected_) {
+    whitespace(&tool_parse_offset_);
+    const auto rest = block.substr(tool_parse_offset_);
+    constexpr std::string_view opening = "<parameter=arguments>";
+    if (!complete && opening.starts_with(rest)) return {};
+    tool_json_mode_ = rest.starts_with(opening);
+    if (!tool_json_mode_ && constraints_.active)
+      return Status::Fail("constrained JSON tool requires arguments parameter");
+    // Unconstrained advisory tools also accept the prior native parameter
+    // form. A constrained rich schema must use its verified JSON encoding.
+    if (!tool_json_mode_) ToolFragment("{", false, deltas);
+    tool_mode_selected_ = true;
+  }
+  if (tool_json_mode_) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view opening = "<parameter=arguments>";
+      if (!complete && opening.starts_with(rest)) return {};
+      if (!rest.starts_with(opening))
+        return Status::Fail("JSON tool requires one arguments parameter");
+      tool_parse_offset_ += opening.size();
+      tool_parameter_ = true;
+    }
+    if (!tool_json_complete_) {
+      if (!tool_value_begin_) {
+        whitespace(&tool_parse_offset_);
+        if (tool_parse_offset_ == block.size())
+          return complete ? Status::Fail("missing JSON arguments") : Status();
+        tool_value_begin_ = tool_value_sent_ = tool_parse_offset_;
+      }
+      SchemaPrefixValue prefix;
+      size_t consumed = 0, work = 8 * 1024 * 1024;
+      auto status = ParseSchemaPrefix(block.substr(tool_value_begin_), &prefix,
+                                      &consumed, &work);
+      if (!status) return status;
+      if (prefix.started && !prefix.value.IsObject())
+        return Status::Fail("arguments payload must be a JSON object");
+      size_t end = tool_value_begin_ + consumed;
+      if (prefix.complete)
+        while (end > tool_value_begin_ &&
+               std::string_view(" \t\r\n").find(block[end - 1]) != block.npos)
+          --end;
+      if (end > tool_value_sent_) {
+        size_t lead = end - 1;
+        while (lead > tool_value_sent_ &&
+               (static_cast<unsigned char>(block[lead]) & 0xc0) == 0x80)
+          --lead;
+        const auto first = static_cast<unsigned char>(block[lead]);
+        const size_t width = first < 0x80   ? 1
+                             : first < 0xe0 ? 2
+                             : first < 0xf0 ? 3
+                                            : 4;
+        if (end - lead < width) end = lead;
+      }
+      if (end > tool_value_sent_) {
+        ToolFragment(
+            std::string(block.substr(tool_value_sent_, end - tool_value_sent_)),
+            false, deltas);
+        tool_value_sent_ = end;
+      }
+      if (!prefix.complete)
+        return complete ? Status::Fail("incomplete JSON arguments") : Status();
+      tool_parse_offset_ = tool_value_begin_ + consumed;
+      tool_json_complete_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    if (!custom_parameter_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</parameter>";
+      if (!complete && closing.starts_with(rest)) return {};
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid arguments closing tag");
+      tool_parse_offset_ += closing.size();
+      custom_parameter_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    if (!tool_function_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</function>";
+      if (!complete && closing.starts_with(rest)) return {};
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid JSON function closing tag");
+      tool_parse_offset_ += closing.size();
+      tool_function_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    return tool_parse_offset_ == block.size()
+               ? Status()
+               : Status::Fail("data after JSON function closing tag");
+  }
+  if (partial_call_.custom) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view opening = "<parameter=input>";
+      if (!complete && opening.starts_with(rest)) return Status();
+      if (!rest.starts_with(opening))
+        return Status::Fail("custom tool requires one input parameter");
+      tool_parse_offset_ += opening.size();
+      tool_parameter_ = true;
+    }
+    if (!custom_input_.Started()) whitespace(&tool_parse_offset_);
+    if (!custom_input_.Done()) {
+      size_t consumed = 0;
+      std::string decoded;
+      auto status = custom_input_.Append(block.substr(tool_parse_offset_),
+                                         &consumed, &decoded);
+      if (!status) return status;
+      tool_parse_offset_ += consumed;
+      if (!decoded.empty()) ToolFragment(std::move(decoded), false, deltas);
+      if (!custom_input_.Done())
+        return complete ? Status::Fail("incomplete custom input") : Status();
+    }
+    whitespace(&tool_parse_offset_);
+    if (!custom_parameter_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</parameter>";
+      if (!complete && closing.starts_with(rest)) return Status();
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid custom input closing tag");
+      tool_parse_offset_ += closing.size();
+      custom_parameter_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    if (!tool_function_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</function>";
+      if (!complete && closing.starts_with(rest)) return Status();
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid custom closing tag");
+      tool_parse_offset_ += closing.size();
+      tool_function_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    return tool_parse_offset_ == block.size()
+               ? Status()
+               : Status::Fail("data after custom closing tag");
+  }
+  while (!tool_function_closed_) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</function>";
+      constexpr std::string_view prefix = "<parameter=";
+      if (rest.starts_with(closing)) {
+        tool_parse_offset_ += closing.size();
+        tool_function_closed_ = true;
+        break;
+      }
+      if (!complete && (closing.starts_with(rest) || prefix.starts_with(rest)))
+        return Status();
+      if (!rest.starts_with(prefix))
+        return Status::Fail("invalid parameter or function closing tag");
+      const auto end = rest.find('>');
+      if (end == rest.npos) {
+        if (rest.size() > 267 || complete)
+          return Status::Fail("incomplete parameter name");
+        return Status();
+      }
+      tool_parameter_name_ =
+          std::string(rest.substr(prefix.size(), end - prefix.size()));
+      const auto& name = tool_parameter_name_;
+      if (name.empty() || name.size() > 256 ||
+          name.find_first_of("<>\r\n") != name.npos ||
+          !tool_parameters_.insert(name).second)
+        return Status::Fail("invalid or duplicate tool parameter");
+      const auto* parameters =
+          tools_.at(partial_call_.name)->Find("parameters");
+      const auto* properties =
+          parameters ? parameters->Find("properties") : nullptr;
+      const auto* schema = properties ? properties->Find(name) : nullptr;
+      const auto* type = schema ? schema->Find("type") : nullptr;
+      tool_string_ = type && ((type->IsString() && type->str == "string") ||
+                              (type->IsArray() && type->array.size() == 1 &&
+                               type->array[0].IsString() &&
+                               type->array[0].str == "string"));
+      tool_value_begin_ = tool_parse_offset_ + end + 1;
+      tool_value_scan_ = tool_value_begin_;
+      tool_value_sent_ = tool_value_begin_;
+      tool_string_started_ = false;
+      tool_parameter_ = true;
+      ToolFragment((tool_parameters_.size() == 1 ? "" : ",") + Quote(name) +
+                       ':' + (tool_string_ ? "\"" : ""),
+                   false, deltas);
+    }
+    constexpr std::string_view closing = "</parameter>";
+    const auto close = block.find(closing, tool_value_scan_);
+    const bool ended = close != block.npos;
+    const size_t safe =
+        ended ? close
+              : block.size() -
+                    Lookahead(block.substr(tool_value_begin_), closing);
+    tool_value_scan_ =
+        block.size() > closing.size()
+            ? std::max(tool_value_begin_, block.size() - closing.size())
+            : tool_value_begin_;
+    if (tool_string_) {
+      if (!tool_string_started_) {
+        const auto raw =
+            block.substr(tool_value_begin_, safe - tool_value_begin_);
+        if (!ended && (raw.empty() || raw == "\r")) return Status();
+        if (raw.starts_with("\r\n"))
+          tool_value_sent_ += 2;
+        else if (raw.starts_with('\n'))
+          ++tool_value_sent_;
+        tool_string_started_ = true;
+      }
+      size_t end = safe;
+      if (ended) {
+        const auto raw =
+            block.substr(tool_value_sent_, safe - tool_value_sent_);
+        if (raw.ends_with("\r\n"))
+          end -= 2;
+        else if (raw.ends_with('\n'))
+          --end;
+      } else {
+        // Hold a possible framing CRLF and never split a UTF-8 codepoint.
+        end = safe - tool_value_sent_ > 2 ? safe - 2 : tool_value_sent_;
+        while (end > tool_value_sent_ &&
+               (static_cast<unsigned char>(block[end]) & 0xc0) == 0x80)
+          --end;
+      }
+      if (end > tool_value_sent_) {
+        auto escaped =
+            Quote(block.substr(tool_value_sent_, end - tool_value_sent_));
+        ToolFragment(escaped.substr(1, escaped.size() - 2), false, deltas);
+        tool_value_sent_ = end;
+      }
+      if (ended) ToolFragment("\"", false, deltas);
+    } else if (ended) {
+      const auto* parameters =
+          tools_.at(partial_call_.name)->Find("parameters");
+      const auto* properties =
+          parameters ? parameters->Find("properties") : nullptr;
+      std::string value;
+      auto status = Argument(
+          block.substr(tool_value_begin_, close - tool_value_begin_),
+          properties ? properties->Find(tool_parameter_name_) : nullptr,
+          &value);
+      if (!status) return status;
+      ToolFragment(std::move(value), false, deltas);
+    }
+    if (!ended)
+      return complete ? Status::Fail("incomplete tool parameter") : Status();
+    tool_parse_offset_ = close + closing.size();
+    tool_parameter_ = false;
+  }
+  whitespace(&tool_parse_offset_);
+  if (tool_parse_offset_ != block.size())
+    return Status::Fail("data after function closing tag");
+  if (complete && !tool_function_closed_)
+    return Status::Fail("incomplete function closing tag");
+  return Status();
+}
+
 Status ChatResponseParser::Append(std::string_view text,
                                   std::vector<ResponseDelta>* deltas) {
   if (!status_) return status_;
@@ -293,17 +715,75 @@ Status ChatResponseParser::Append(std::string_view text,
   }
   if (!parsed_) {
     Emit(Region::kContent, text, deltas);
+    pending_offset_ += text.size();
     return Status();
   }
   pending_.append(text);
   while (!pending_.empty()) {
+    if (refusal_closed_) {
+      if (!Trim(pending_).empty() ||
+          pending_.size() > kRefusalWhitespace - refusal_tail_)
+        return Fail("data after refusal closing frame");
+      refusal_tail_ += pending_.size();
+      pending_offset_ += pending_.size();
+      pending_.clear();
+      return {};
+    }
+    if (region_ == Region::kRefusal) {
+      const auto end = pending_.find(kRefusalClose);
+      const auto available =
+          end == pending_.npos
+              ? pending_.size() - Lookahead(pending_, kRefusalClose)
+              : end;
+      if (available > kMaxToolBytes - refusal_bytes_)
+        return Fail("refusal exceeds 1 MiB");
+      const auto body = std::string_view(pending_).substr(0, available);
+      refusal_bytes_ += available;
+      refusal_has_text_ |= !Trim(body).empty();
+      Emit(region_, body, deltas);
+      pending_offset_ += available;
+      pending_.erase(0, available);
+      if (end == std::string::npos) return {};
+      if (!refusal_has_text_) return Fail("empty refusal frame");
+      pending_offset_ += kRefusalClose.size();
+      pending_.erase(0, kRefusalClose.size());
+      refusal_closed_ = true;
+      region_ = Region::kContent;
+      continue;
+    }
+    if (region_ == Region::kContent && final_prefix_pending_) {
+      size_t whitespace = 0;
+      const auto prefix = ProbeRefusalPrefix(pending_, &whitespace);
+      if (prefix == RefusalPrefix::kPending) return {};
+      final_prefix_pending_ = false;
+      if (prefix == RefusalPrefix::kRefusal) {
+        const auto consumed = whitespace + kRefusalOpen.size();
+        pending_offset_ += consumed;
+        pending_.erase(0, consumed);
+        region_ = Region::kRefusal;
+        refusal_started_ = true;
+        continue;
+      }
+    }
     if (constraints_.json_output && region_ == Region::kContent) {
       // Marker-shaped substrings inside JSON strings are data, not tool or
       // reasoning delimiters. The initial thinking prefix is handled above
       // this region by the same native parser as ordinary requests.
-      Emit(region_, pending_, deltas);
-      pending_.clear();
-      return Status();
+      if (!json_content_started_) {
+        const auto trimmed = Trim(pending_);
+        if (trimmed.empty() || kToolOpen.starts_with(trimmed)) return {};
+        if (!trimmed.starts_with(kToolOpen)) {
+          if (tool_count_ != 0)
+            return Fail("JSON content cannot follow tool-only output");
+          json_content_started_ = true;
+        }
+      }
+      if (json_content_started_) {
+        Emit(region_, pending_, deltas);
+        pending_offset_ += pending_.size();
+        pending_.clear();
+        return {};
+      }
     }
     if (region_ == Region::kTool) {
       const auto end = pending_.find(kToolClose, tool_scan_);
@@ -313,6 +793,8 @@ Status ChatResponseParser::Append(std::string_view text,
               : end;
       if (body_size > kMaxToolBytes) return Fail("tool block exceeds 1 MiB");
       if (end == pending_.npos) {
+        const auto status = StreamTool(body_size, false, deltas);
+        if (!status) return Fail(status.message());
         tool_scan_ = pending_.size() > kToolClose.size()
                          ? pending_.size() - kToolClose.size()
                          : 0;
@@ -323,10 +805,19 @@ Status ChatResponseParser::Append(std::string_view text,
       ResponseToolCall call;
       auto status = ParseTool(std::string_view(pending_).substr(0, end), &call);
       if (!status) return Fail(status.message());
+      status = StreamTool(end, true, deltas);
+      if (!status) return Fail(status.message());
+      const bool json_arguments = tool_json_mode_;
+      if ((call.custom || json_arguments
+               ? partial_call_.arguments
+               : partial_call_.arguments + '}') != call.arguments ||
+          partial_call_.name != call.name ||
+          partial_call_.custom != call.custom)
+        return Fail("incremental tool arguments differ from validated call");
+      if (!call.custom && !json_arguments) ToolFragment("}", false, deltas);
       ++tool_count_;
       if (collect_) calls_.push_back(call);
-      auto* target = constraints_.active ? &deferred_ : deltas;
-      target->push_back({ResponseDelta::Kind::kTool, {}, std::move(call)});
+      pending_offset_ += end + kToolClose.size();
       pending_.erase(0, end + kToolClose.size());
       region_ = Region::kContent;
       continue;
@@ -335,7 +826,7 @@ Status ChatResponseParser::Append(std::string_view text,
     auto found = pending_.find(marker);
     size_t keep = Lookahead(pending_, marker);
     if (region_ == Region::kContent &&
-        (!tools_.empty() ||
+        (!tools_.empty() || constraints_.restrict_tools ||
          constraints_.choice == OutputConstraints::ToolChoice::kNone)) {
       const auto tool = pending_.find(kToolOpen);
       if (tool != pending_.npos && (found == pending_.npos || tool < found)) {
@@ -348,17 +839,51 @@ Status ChatResponseParser::Append(std::string_view text,
       Emit(region_,
            std::string_view(pending_).substr(0, pending_.size() - keep),
            deltas);
+      pending_offset_ += pending_.size() - keep;
       pending_.erase(0, pending_.size() - keep);
       return Status();
     }
-    Emit(region_, std::string_view(pending_).substr(0, found), deltas);
+    if (!(constraints_.json_output && marker == kToolOpen))
+      Emit(region_, std::string_view(pending_).substr(0, found), deltas);
+    pending_offset_ += found + marker.size();
     pending_.erase(0, found + marker.size());
     region_ = marker == kToolOpen    ? Region::kTool
               : marker == kThinkOpen ? Region::kReasoning
                                      : Region::kContent;
     tool_scan_ = 0;
+    if (region_ == Region::kTool) {
+      partial_call_ = {};
+      custom_input_ = {};
+      custom_parameter_closed_ = false;
+      tool_json_complete_ = false;
+      tool_json_mode_ = tool_mode_selected_ = false;
+      tool_value_begin_ = tool_value_sent_ = 0;
+      tool_parse_offset_ = 0;
+      tool_header_ = tool_parameter_ = tool_function_closed_ = false;
+      tool_parameters_.clear();
+    }
   }
   return Status();
+}
+
+Status ChatResponseParser::FinishIncomplete(
+    std::vector<ResponseDelta>* deltas) {
+  if (!status_) return status_;
+  if (!initialized_ || finished_) return Fail("parser already finished");
+  finished_ = true;
+  // Only StreamTool may expose validated incremental argument syntax. Never
+  // reinterpret its unfinished delimiter/body as assistant text.
+  // A reserved partial opening/closing frame is not visible refusal text.
+  // Already emitted refusal remains partial; only a closed frame has a receipt.
+  if (!refusal_started_ &&
+      !(region_ == Region::kContent && final_prefix_pending_ &&
+        !Trim(pending_).empty()) &&
+      region_ != Region::kTool &&
+      (tools_.empty() || !pending_.starts_with("<tool_")))
+    Emit(region_, pending_, deltas);
+  pending_offset_ += pending_.size();
+  pending_.clear();
+  return VerifySchemaReceipts(true);
 }
 
 Status ChatResponseParser::Finish(bool length_limited,
@@ -366,6 +891,10 @@ Status ChatResponseParser::Finish(bool length_limited,
                                   bool text_stopped) {
   if (!status_) return status_;
   if (!initialized_ || finished_) return Fail("parser already finished");
+  if (length_limited && !constraints_.active &&
+      (refusal_started_ || (region_ == Region::kContent &&
+                            final_prefix_pending_ && !Trim(pending_).empty())))
+    return FinishIncomplete(deltas);
   finished_ = true;
   if (constraints_.active && (length_limited || text_stopped))
     return Fail("constrained response exhausted output/context budget");
@@ -374,32 +903,106 @@ Status ChatResponseParser::Finish(bool length_limited,
     return Fail("incomplete tool call");
   if (region_ == Region::kReasoning && !length_limited && !text_stopped)
     return Fail("reasoning block did not close before stop");
-  Emit(region_, pending_, deltas);
+  if ((refusal_started_ && !refusal_closed_) ||
+      (region_ == Region::kContent && final_prefix_pending_ &&
+       !Trim(pending_).empty()))
+    return Fail("incomplete refusal frame");
+  if (refusal_started_) {
+    const auto status = VerifySchemaReceipts();
+    return status ? status : Fail(status.message());
+  }
+  if (!(constraints_.json_output && tool_count_ != 0 && Trim(pending_).empty()))
+    Emit(region_, pending_, deltas);
+  pending_offset_ += pending_.size();
   pending_.clear();
   if (constraints_.active) {
     if ((constraints_.choice == OutputConstraints::ToolChoice::kRequired ||
          constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
         tool_count_ == 0)
       return Fail("required tool call missing");
-    if (constraints_.json_output) {
-      const auto status = ValidateConstrainedContent(*request_, content_);
+    if (constraints_.json_output && tool_count_ == 0) {
+      const auto* format = request_->Find("response_format");
+      const auto* spec = format ? format->Find("json_schema") : nullptr;
+      const auto* schema = spec ? spec->Find("schema") : nullptr;
+      // Rich schemas are checked by a receipt, never an optional native
+      // library inside the parent model process.
+      const auto status = schema && NeedsSchemaGuard(*schema)
+                              ? Status()
+                              : ValidateConstrainedContent(*request_, content_);
       if (!status) return Fail(status.message());
     }
-    // No usable content/reasoning/tool frames escape before the entire
-    // constrained response passes. A later invalid call invalidates the batch.
-    for (auto& delta : deferred_) deltas->push_back(std::move(delta));
-    deferred_.clear();
+    const auto status = VerifySchemaReceipts();
+    if (!status) return Fail(status.message());
   }
   return Status();
 }
 
+Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
+  if (refusal_started_ && constraints_.active) {
+    if (!refusal_closed_ && incomplete) return {};
+    if (!refusal_closed_ || !schema_receipts_ ||
+        schema_receipts_->size() != 1 ||
+        schema_receipts_->front() != MakeRefusalReceipt(refusal_))
+      return Status::Fail("refusal semantic receipt missing or mismatched");
+    return {};
+  }
+  if (!constraints_.schema_receipts) return {};
+  // A partial terminal certifies no current partial JSON value. Completed
+  // earlier calls still need the same semantic receipt as a normal terminal.
+  if (incomplete && calls_.empty()) return {};
+  if (!schema_receipts_)
+    return Status::Fail("structured semantic receipt source missing");
+  std::vector<SchemaReceipt> expected;
+  const auto add = [&](std::string_view scope, const io::Json& schema,
+                       std::string_view json) -> Status {
+    io::Json value;
+    auto status =
+        io::ParseJson(std::string(json), &value, true, kSchemaJsonLimits);
+    if (!status || !value.IsObject())
+      return Status::Fail("semantic receipt requires one JSON object");
+    SchemaReceipt receipt;
+    status = MakeSchemaReceipt(scope, schema, value, &receipt);
+    if (status) expected.push_back(receipt);
+    return status;
+  };
+  for (const auto& call : calls_) {
+    if (call.custom || !json_argument_tools_.contains(call.name)) continue;
+    const auto* schema = tools_.at(call.name)->Find("parameters");
+    if (!schema) return Status::Fail("semantic tool schema missing");
+    const auto status = add(call.name, *schema, call.arguments);
+    if (!status) return status;
+  }
+  if (!incomplete && constraints_.json_output && tool_count_ == 0) {
+    const auto* format = request_->Find("response_format");
+    const auto* spec = format ? format->Find("json_schema") : nullptr;
+    const auto* schema = spec ? spec->Find("schema") : nullptr;
+    if (schema && NeedsSchemaGuard(*schema)) {
+      const auto status = add("", *schema, content_);
+      if (!status) return status;
+    }
+  }
+  if (incomplete
+          ? expected.size() > schema_receipts_->size() ||
+                !std::equal(expected.begin(), expected.end(),
+                             schema_receipts_->begin())
+          : expected != *schema_receipts_)
+    return Status::Fail("structured semantic receipt mismatch");
+  return {};
+}
+
 std::string ChatResponseParser::MessageJson() const {
   std::string message = "{\"role\":\"assistant\",\"content\":";
-  message += content_.empty() && !calls_.empty() ? "null" : Quote(content_);
+  message += content_.empty() && (!calls_.empty() || refusal_started_)
+                 ? "null"
+                 : Quote(content_);
+  if (refusal_started_) message += ",\"refusal\":" + Quote(refusal_);
   if (!reasoning_.empty())
     message += ',' + Quote(ReasoningFieldName(reasoning_options_.field)) + ':' +
                Quote(reasoning_);
-  if (!calls_.empty()) {
+  if (legacy_function_ && !calls_.empty()) {
+    message += ",\"function_call\":{\"name\":" + Quote(calls_[0].name) +
+               ",\"arguments\":" + Quote(calls_[0].arguments) + '}';
+  } else if (!calls_.empty()) {
     message += ",\"tool_calls\":[";
     for (size_t i = 0; i < calls_.size(); ++i) {
       if (i) message += ',';

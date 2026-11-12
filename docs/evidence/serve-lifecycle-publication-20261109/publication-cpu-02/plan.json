@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable",
+    "tools.serve_recovery.test_publication.PublicationTests.test_generation_partial_with_public_permissions_or_link_is_never_reused"
+  ],
+  "tests_count": 2,
+  "reason": "Fix only generation partial artifact mode verification; retain exact 0600 for mutable journals",
+  "gpu_starts": 0,
+  "chat_requests": 0
+}

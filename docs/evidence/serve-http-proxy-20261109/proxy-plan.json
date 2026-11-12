@@ -1,0 +1,41 @@
+{
+  "cpp": [
+    "ingress_http_policy_validation_is_transactional",
+    "ingress_proxy_untrusted_metadata_is_never_authority",
+    "ingress_proxy_chain_stops_at_first_untrusted_source",
+    "ingress_proxy_ipv6_and_port_syntax",
+    "ingress_xforwarded_parallel_lists_and_safe_singletons",
+    "ingress_proxy_invalid_or_ambiguous_chain_never_falls_back",
+    "ingress_prefix_preserves_encoding_and_requires_stripping_authority",
+    "ingress_forwarding_headers_have_bounded_unambiguous_storage"
+  ],
+  "python": [
+    "tools.serve_http.test_proxy.PolicyTests.test_defaults_normalize_and_match_cpp",
+    "tools.serve_http.test_proxy.PolicyTests.test_limits_boolean_unknown_fields_and_prefix_rejected",
+    "tools.serve_http.test_proxy.PolicyTests.test_proxy_overlap_unknown_mode_and_missing_authority_rejected",
+    "tools.serve_http.test_proxy.PolicyTests.test_dual_stack_proxy_profile_matches_cpp",
+    "tools.serve_http.test_proxy.PolicyTests.test_legacy_policy_shapes_stay_unchanged_and_v4_is_explicit",
+    "tools.serve_http.test_proxy.ProxyTests.test_direct_prefix_preserves_query_encoded_model_and_scope",
+    "tools.serve_http.test_proxy.ProxyTests.test_forwarded_chain_uses_trusted_boundary_and_public_host",
+    "tools.serve_http.test_proxy.ProxyTests.test_untrusted_forwarding_cannot_enter_allowed_client_network",
+    "tools.serve_http.test_proxy.ProxyTests.test_stripped_prefix_requires_exact_configured_authority",
+    "tools.serve_http.test_proxy.ProxyTests.test_bad_trusted_metadata_and_private_identity_do_not_dispatch",
+    "tools.serve_http.test_proxy.ProxyTests.test_xforwarded_profile_and_wrong_host",
+    "tools.serve_http.test_proxy.ProxyTests.test_configured_count_idle_and_absolute_request_deadline",
+    "tools.serve_http.test_proxy.ProxyTests.test_optional_real_proxy_and_direct_entry_both_work",
+    "tools.serve_http.test_proxy.TlsProxyTests.test_native_tls_and_proxy_prefix_keep_cors_and_identity",
+    "tools.serve_recovery.test_native_ingress.NativeTests.test_untrusted_forwarded_headers_do_not_change_identity",
+    "tools.serve_recovery.test_native_ingress.NativeTests.test_cidr_checks_actual_peer_not_loopback_listener",
+    "tools.serve_recovery.test_native_ingress.NativeTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers",
+    "tools.serve_http.test_keepalive.KeepAliveTests.test_sequential_reauth_trace_and_upstream_error",
+    "tools.serve_http.test_keepalive.TlsKeepAliveTests.test_tls_buffered_pipeline"
+  ],
+  "counts": {
+    "cpp": 8,
+    "python": 19,
+    "total": 27
+  },
+  "gpu_operations": 0,
+  "default_changed": false,
+  "scope": "Native policy/proxy/prefix and directly affected transport only; package and actual model delivery remain"
+}

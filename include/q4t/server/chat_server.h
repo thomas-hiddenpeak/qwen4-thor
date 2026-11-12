@@ -1,9 +1,8 @@
 // OpenAI-compatible HTTP server for q4t (Phase 1 `serve` command).
 //
-// A minimal, dependency-free HTTP/1.1 server built on POSIX sockets. It serves
-// bounded routes: /healthz, /livez, /readyz, /metrics, /v1/models,
-// /v1/capabilities, /v1/config, /v1/chat/preflight, /v1/chat/completions,
-// and /v1/requests/cancel. Preflight/config are private protocol extensions.
+// Native HTTP/1.1 on POSIX sockets: Chat, Completions, Responses, Conversations
+// and operational routes. Optional crypto/schema/media dependencies are scoped
+// to the features that use them. Preflight/config are protocol extensions.
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
 // steps). B1 makes requests concurrent: each client is handled on its own
@@ -28,16 +27,22 @@
 #include "q4t/trace/router_collector.h"
 #include "q4t/server/suffix_token_cache.h"
 #include "q4t/server/session_cache.h"
+#include "q4t/server/prompt_cache_diagnostics.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
 #include "q4t/server/sequence_admission.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/model_catalog.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
+#include "q4t/model/embedding_model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
+#include "q4t/server/progress_transport.h"
+#include "q4t/server/client_policy_admin.h"
+#include "q4t/server/state_key_admin.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
@@ -51,12 +56,21 @@
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/structured_admission.h"
 #include "q4t/server/device_memory.h"
+#include "q4t/server/grammar_process.h"
+#include "q4t/server/object_store.h"
+#include "q4t/server/responses_jobs.h"
+#include "q4t/server/batch_execution.h"
+#include "q4t/server/batch_jobs.h"
+#include "q4t/server/vector_jobs.h"
+#include "q4t/server/application_owner.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
 
 namespace q4t {
 namespace server {
+struct EmbeddingStepResult;
+class RequestDiagnostics;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -89,14 +103,10 @@ struct ServeMetrics {
   std::atomic<uint64_t> structured_rejected{0};
   std::atomic<uint64_t> structured_prepare_failed{0};
   std::atomic<uint64_t> structured_vocab_bytes{0};
-  std::atomic<int> structured_workers_active{0};
-  std::atomic<uint64_t> structured_workers_started{0};
+  std::shared_ptr<GrammarWorkerCounters> structured_workers =
+      std::make_shared<GrammarWorkerCounters>();
   std::atomic<uint64_t> structured_workers_ready{0};
   std::atomic<uint64_t> structured_compiles_started{0};
-  std::atomic<uint64_t> structured_workers_reaped{0};
-  std::atomic<uint64_t> structured_worker_max_rss_bytes{0};
-  std::atomic<uint64_t> structured_worker_reported_rss_bytes{0};
-  std::atomic<uint64_t> structured_worker_rss_reports{0};
   std::atomic<uint64_t> structured_compile_timeouts{0};
   std::atomic<uint64_t> structured_resource_exhausted{0};
   std::atomic<uint64_t> prompt_tokens_total{0};
@@ -153,6 +163,8 @@ class ChatServer {
   void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
                                  const char* site) noexcept;
   void HandleClient(int fd, bool operations = false);
+  bool HandleRequest(int fd, bool operations, HttpRequestState* state,
+                     bool allow_keep_alive);
   void StartConnection(int fd, bool operations);
   void FinishConnection(int fd, bool operations) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,
@@ -165,14 +177,75 @@ class ChatServer {
   void RejectMemoryAdmission(int fd, MemoryState state,
                              MemoryCheckpoint checkpoint);
   void HandleModels(int fd);
+  void HandleModel(int fd, const std::string& method, const std::string& path);
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
+  void HandleResponsesTokenCount(int fd, const std::string& body);
+  void HandleModerations(int fd, const std::string& body,
+                         std::shared_ptr<RequestControl> owner = {});
+  void HandleVectorSearch(int fd, const std::string& method,
+                           const std::string& path, const std::string& body);
+  void HandleEmbeddings(int fd, const std::string& body,
+                         std::shared_ptr<RequestControl> owner = {});
+  ObjectReply RunEmbeddingInput(
+      int fd, const std::vector<int32_t>& tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
+  ObjectReply EnsureNativeEmbedding(bool weights, const BinaryAccess& access,
+                                    RequestDiagnostics* diagnostic = nullptr);
+  ObjectReply RunNativeEmbeddingInput(
+      int fd, const std::vector<int32_t>& tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
+  std::string NativeEmbeddingHealthJson() const;
+  ObjectReply EncodeVectorDocument(std::string_view text,
+                                    const VectorSearchControl& control,
+                                    VectorEncodedText* output);
+  ObjectReply RunVectorEmbedding(
+      const std::vector<int32_t>& tokens, const ClientIdentity& client,
+      ClientLease& permit, const std::shared_ptr<RequestControl>& control,
+      EmbeddingStepResult* result);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
-  void HandleChat(int fd, const std::string& body);
+  enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };
+  void HandleChat(int fd, const std::string& body,
+                  GenerationApi api = GenerationApi::kChat,
+                  std::shared_ptr<RequestControl> owner = {},
+                  const io::Json* frozen_inputs = nullptr,
+                  const BatchResponseLink* batch_parent = nullptr);
   void HandleChatImpl(int fd, const std::string& body,
-                      detail::ResponseState* response_state);
+                      detail::ResponseState* response_state, bool completion,
+                      class ResponsesExecution* responses,
+                      std::shared_ptr<RequestControl> background = {},
+                      struct InternalModelStep* internal = nullptr,
+                      const io::Json* frozen_inputs = nullptr);
+  BatchRowResult RunBatchRequest(const std::string& endpoint,
+                                 const BatchInputRow& row,
+                                 const io::Json& frozen_inputs,
+                                 const ClientIdentity& client,
+                                 ClientLease& permit,
+                                 const std::shared_ptr<RequestControl>& control,
+                                 std::shared_ptr<ClientRateLease> rate = {});
+  ObjectReply MeasureBatchRequest(std::string_view endpoint,
+                                  const BatchInputRow& row,
+                                  const io::Json& prepared,
+                                  const ChatPlanConfig& config,
+                                  const BinaryAccess& access,
+                                  BatchInputBudget* budget,
+                                  BatchRateBudget* rate = nullptr);
+  BatchTokenCodec BatchCodec(const BinaryAccess& access,
+                             bool native_embedding = false);
+  ObjectReply MeasureBackgroundBatchRate(ResponsesExecution& response,
+                                         const ChatPlanConfig& config,
+                                         const BinaryAccess& access,
+                                         BatchRateBudget* budget);
+  ObjectReply AdmitBackgroundBatch(ResponsesJobs::Job& job);
+  ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
+                                   std::shared_ptr<RequestControl> control);
+  bool TryHandleBackgroundResponse(int fd, const std::string& body);
+  void RunBackgroundResponse(ResponsesJobs::Job& job);
+  void RecoverApplicationJobs() noexcept;
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
@@ -182,6 +255,18 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
+  std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
+  std::unique_ptr<ObjectStore> objects_;
+  std::shared_ptr<const FileExpansionOptions> file_inputs_;
+  std::string file_input_policy_sha256_;
+  std::unique_ptr<StateKeyAdmin> state_key_admin_;
+  ResponsesJobsOptions background_options_;
+  BatchJobsOptions batch_options_;
+  ApplicationOwner<ResponsesJobs> background_;
+  ApplicationOwner<BatchJobs> batches_;
+  ApplicationOwner<VectorJobs> vector_jobs_;
+  ApplicationStartup background_scanner_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);
@@ -321,6 +406,7 @@ class ChatServer {
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
+  HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};
@@ -352,6 +438,8 @@ class ChatServer {
   Status ExecutionStatus() const;
   bool RejectUnhealthy(int fd, const detail::WriteOptions& options = {});
   ServeMetrics metrics_;  // /metrics observability
+  RequestProgress progress_;
+  std::unique_ptr<ProgressPublisher> progress_publisher_;
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features
@@ -373,6 +461,28 @@ class ChatServer {
 
   std::string effective_config_;
   std::string model_name_;
+  ModelCatalog model_catalog_;
+  ModelCatalog embedding_catalog_;
+  std::string embedding_model_dir_;
+  // Optional model ownership is independent of Chat readiness. Asset I/O
+  // never holds model_mu_; published immutable weights live until drain.
+  std::mutex embedding_mu_;
+  std::mutex embedding_tok_mu_;
+  std::unique_ptr<text::Tokenizer> embedding_tok_;
+  uint8_t* d_embedding_weights_ = nullptr;
+  model::EmbeddingDeviceWeights embedding_weights_;
+  std::atomic<bool> embedding_loading_{false};
+  std::atomic<bool> embedding_tokenizer_ready_{false};
+  std::atomic<bool> embedding_ready_{false};
+  std::atomic<uint64_t> embedding_device_bytes_{0};
+  enum class EmbeddingFailure {
+    kNone, kAssets, kTimeout, kWorker, kResource, kDevice, kCompute
+  };
+  std::atomic<EmbeddingFailure> embedding_failure_{EmbeddingFailure::kNone};
+  std::atomic<uint64_t> embedding_load_attempts_{0};
+  std::atomic<uint64_t> embedding_load_failures_{0};
+  // Protected by embedding_mu_. Request-driven retries only, no model restart.
+  std::chrono::steady_clock::time_point embedding_retry_after_{};
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;
@@ -401,7 +511,8 @@ class ChatServer {
   // Calls are serialized with tok_mu_; Run drains requests before destruction.
   SuffixTokenCache suffix_token_cache_;
   SessionCache session_cache_;
-  SessionCache prefix_cache_;
+  SessionCache prefix_cache_{IsolatedWorkerDomain::kPrefixCache};
+  PromptCacheDiagnostics prompt_cache_diagnostics_;
   std::vector<int> prefix_cache_checkpoints_;
   // Global intervals sampled at request completion under model_mu_. With
   // concurrent slots an interval can include work from several requests.

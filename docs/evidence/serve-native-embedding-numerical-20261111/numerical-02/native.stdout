@@ -1,0 +1,15 @@
+case=0 tokens=1 workspace_bytes=33717248 layers=28
+case=1 tokens=2 workspace_bytes=33748480 layers=28
+case=2 tokens=17 workspace_bytes=34349056 layers=28
+case=3 tokens=129 workspace_bytes=38801152 layers=28
+case=4 tokens=203 workspace_bytes=41683968 layers=28
+case=5 tokens=164 workspace_bytes=40176896 layers=28
+case=6 tokens=127 workspace_bytes=38602496 layers=28
+case=7 tokens=236 workspace_bytes=43005696 layers=28
+case=8 tokens=173 workspace_bytes=40461056 layers=28
+case=9 tokens=35 workspace_bytes=35044608 layers=28
+case=10 tokens=40 workspace_bytes=35201024 layers=28
+case=11 tokens=34 workspace_bytes=35013120 layers=28
+case=12 tokens=48 workspace_bytes=35451648 layers=28
+case=13 tokens=38 workspace_bytes=35138560 layers=28
+cases=14 native_buffers_released=true

@@ -1,0 +1,12 @@
+test_cancel_stays_admissible_while_two_parts_fill_client_data_slots (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_cancel_stays_admissible_while_two_parts_fill_client_data_slots) ... ok
+test_early_core_limit_interrupts_paused_tls_part (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_early_core_limit_interrupts_paused_tls_part) ... ok
+test_json_requests_do_not_inherit_file_capacity_and_legacy_part_limit (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_json_requests_do_not_inherit_file_capacity_and_legacy_part_limit) ... ok
+test_malformed_http_trailer_does_not_publish_valid_multipart_part (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_malformed_http_trailer_does_not_publish_valid_multipart_part) ... ok
+test_native_complete_json_larger_than_four_k_uses_ordinary_json_limit (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_native_complete_json_larger_than_four_k_uses_ordinary_json_limit) ... ok
+test_official_sdk_direct_core_order_md5_and_large_part (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_official_sdk_direct_core_order_md5_and_large_part) ... ok
+test_official_sdk_native_tls_prefix_order_md5_and_large_part (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_official_sdk_native_tls_prefix_order_md5_and_large_part) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 10.126s
+
+OK

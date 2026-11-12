@@ -1,0 +1,8 @@
+{
+  "test": "file_fetch_unreaped_domain_keeps_its_slot_without_blocking_other_domains",
+  "reason": "Retire deferred one-shot fetch children from the native event loop even when no subsequent file request arrives; verify reaped counters through exactly that poll helper",
+  "reuse_unaffected_cpp": 15,
+  "reuse_tls": 4,
+  "model_starts": 0,
+  "gpu_queries": 0
+}

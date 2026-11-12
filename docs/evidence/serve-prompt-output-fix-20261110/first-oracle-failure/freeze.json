@@ -1,0 +1,12 @@
+{
+  "required": [
+    "test_frozen_requests_and_definitions_use_sdk_shapes",
+    "test_version_oracle_requires_actual_answer_identity_and_usage",
+    "test_padding_oracle_rejects_lifecycle_and_missing_delta_padding"
+  ],
+  "sources": {
+    "tools/serve_responses/prompt_acceptance.py": "6a937f2500a5d050682d91cf86cca18c9492b0035c7d9db0d27d89c64a27c012",
+    "tools/serve_responses/test_prompt_acceptance.py": "62c63b5e22a750501e2e0c050cb4db28525a60bb053edf1d87894706852ca545"
+  },
+  "gpu": false
+}

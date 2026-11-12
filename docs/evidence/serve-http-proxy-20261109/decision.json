@@ -1,0 +1,16 @@
+{
+  "status": "PASS_TARGETED_HTTP_PROXY_CPU",
+  "distinct_tests": 27,
+  "cpp": 8,
+  "python_native": 19,
+  "gpu_operations": 0,
+  "default_changed": false,
+  "n05_delivered": false,
+  "ingress_candidate_sha256": "da2d65b49c935b83cba2a3e1c7db05eb04f40d95c6f148e5f00e9c7f3d3001b5",
+  "remaining": [
+    "package and historical compatibility",
+    "actual model/SDK business",
+    "rollback and default delivery",
+    "all remaining master tasks"
+  ]
+}

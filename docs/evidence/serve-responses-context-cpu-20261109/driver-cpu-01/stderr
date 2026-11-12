@@ -1,0 +1,7 @@
+test_work_is_bounded_and_expected_failures_cannot_be_accepted (tools.serve_responses.test_context_acceptance.ContextAcceptance.test_work_is_bounded_and_expected_failures_cannot_be_accepted) ... ok
+test_history_oracle_rejects_dropped_edited_or_reordered_items (tools.serve_responses.test_context_acceptance.ContextAcceptance.test_history_oracle_rejects_dropped_edited_or_reordered_items) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK

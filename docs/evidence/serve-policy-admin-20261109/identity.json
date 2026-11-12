@@ -1,0 +1,12 @@
+{
+  "parent_commit": "44230c2e307327238b5b95e6b9a4904944137176",
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  },
+  "model_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false
+}

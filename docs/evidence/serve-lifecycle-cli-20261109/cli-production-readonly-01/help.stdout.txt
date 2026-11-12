@@ -1,0 +1,11 @@
+usage: -c [-h]
+          {prepare,check,reload,init,init-resume,run,start,status,diagnostics,stop,tls-status,tls-reload,observe,metrics,export,retention-plan,retention-archive,retention-apply,retention-resume,retention-migrate,access-status,access-propose,access-apply,access-migrate,limits-status,limits-propose,limits-apply,limits-migrate,usage-status,usage-migrate,deploy,rollback,deployment-status}
+          ...
+
+Unified recovery service entrypoint; no systemd, shell loop or auto install.
+
+positional arguments:
+  {prepare,check,reload,init,init-resume,run,start,status,diagnostics,stop,tls-status,tls-reload,observe,metrics,export,retention-plan,retention-archive,retention-apply,retention-resume,retention-migrate,access-status,access-propose,access-apply,access-migrate,limits-status,limits-propose,limits-apply,limits-migrate,usage-status,usage-migrate,deploy,rollback,deployment-status}
+
+options:
+  -h, --help            show this help message and exit

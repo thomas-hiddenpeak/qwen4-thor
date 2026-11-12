@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-08456da9450ad8ffa77a2da6baad5403",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-08456da9450ad8ffa77a2da6baad5403_0",
+          "type": "custom",
+          "custom": {
+            "name": "read_project_record_regex",
+            "input": "READ docs/MODEL.md 1 16"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 536,
+      "completion_tokens": 39,
+      "total_tokens": 575
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "493",
+      "content-type": "application/json",
+      "x-request-id": "req-8c86f1d58b3b0bfd53298a30a0d2f2c0"
+    }
+  },
+  "planned_tools": [
+    {
+      "call_id": "call_chatcmpl-auto-08456da9450ad8ffa77a2da6baad5403_0",
+      "type": "custom",
+      "name": "read_project_record_regex",
+      "input": "READ docs/MODEL.md 1 16"
+    }
+  ],
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tMDg0NTZkYTk0NTBhZDhmZmE3N2EyZGE2YmFhZDU0MDMiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTI0NTY4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjpudWxsLCJ0b29sX2NhbGxzIjpbeyJpZCI6ImNhbGxfY2hhdGNtcGwtYXV0by0wODQ1NmRhOTQ1MGFkOGZmYTc3YTJkYTZiYWFkNTQwM18wIiwidHlwZSI6ImN1c3RvbSIsImN1c3RvbSI6eyJuYW1lIjoicmVhZF9wcm9qZWN0X3JlY29yZF9yZWdleCIsImlucHV0IjoiUkVBRCBkb2NzL01PREVMLm1kIDEgMTYifX1dfSwiZmluaXNoX3JlYXNvbiI6InRvb2xfY2FsbHMiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjo1MzYsImNvbXBsZXRpb25fdG9rZW5zIjozOSwidG90YWxfdG9rZW5zIjo1NzV9fQ=="
+}

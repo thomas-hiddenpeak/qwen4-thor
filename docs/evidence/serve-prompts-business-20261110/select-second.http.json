@@ -1,0 +1,10 @@
+{
+  "method": "POST",
+  "path": "/v1/prompts/prompt_e03158be5f593d560f4dea8e6a44990d",
+  "request": {
+    "default_version": "2",
+    "expected_revision": 3
+  },
+  "status": 200,
+  "seconds": 0.0013289558701217175
+}

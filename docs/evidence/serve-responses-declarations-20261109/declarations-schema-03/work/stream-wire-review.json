@@ -1,0 +1,9 @@
+{
+  "checked": 18,
+  "rejected": [],
+  "sources_sha256": {
+    ".q4t-work/serve-responses-20261108/declarations-sdk-02/work/stream/events.jsonl": "3f576c1048475c022d991b91c60f390b736317bffd5c46a7eb17760b798f8ba0",
+    ".q4t-work/serve-responses-20261108/declarations-sdk-02/work/stream/wire.jsonl": "d5e0b8036611a4a020d65dc5c4b70e668655566d9b01934e114031bc8d85865c"
+  },
+  "legacy_nonconforming_not_reaccepted": false
+}

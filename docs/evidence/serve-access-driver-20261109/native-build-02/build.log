@@ -1,0 +1,17 @@
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 33%] Building CXX object CMakeFiles/q4t_ingress_access.dir/src/service/ingress_access.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress_access.dir/src/trace/sha256.cpp.o
+[ 33%] Linking CXX static library libq4t_ingress_access.a
+[ 33%] Built target q4t_ingress_access
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_admin.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_access_admin.cpp.o
+[ 33%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[  0%] Built target q4t_guardian_process
+[100%] Built target q4t_guardian_journal
+[100%] Built target q4t_guardian
+Building CUDA object CMakeFiles/q4t_cuda_probe.dir/src/service/cuda_probe.cu.o
+Linking CUDA executable q4t-cuda-probe
+Built target q4t_cuda_probe

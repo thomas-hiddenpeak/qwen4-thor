@@ -1,0 +1,22 @@
+[PASS] input_snapshot_exact_binary_metadata_and_empty_parts_survive_restart
+[PASS] input_snapshot_live_application_roots_retain_and_last_delete_reclaims
+[PASS] input_snapshot_abandoned_preparation_expires_without_permanent_orphans
+[PASS] input_snapshot_scope_binding_root_digest_and_pinned_metadata
+[PASS] input_snapshot_allocation_budgets_and_known_quota_failure_are_atomic
+[PASS] input_snapshot_cancel_between_durable_chunks_aborts_only_own_stage
+[PASS] input_snapshot_unknown_stage_commit_is_not_replayed_or_erased
+  CHECK failed: Ok(snapshots.Read(Access(), reference, kBinding, {}, &value)) && value.parts == std::vector<std::string>{"actual payload"} (line 340)
+[FAIL] input_snapshot_unknown_publish_recovers_original_root_and_hold
+  CHECK failed: InspectObjectRetention("chat", parent.data).uncertain (line 357)
+[FAIL] input_snapshot_retention_uses_only_private_typed_bindings
+[PASS] binary_durable_chunks_exact_bytes_private_files_and_restart
+[PASS] binary_empty_file_and_scope_isolation
+[PASS] binary_download_pin_survives_file_deletion_then_releases_chunks
+[PASS] binary_abandoned_upload_and_reader_expire_after_restart
+[PASS] binary_unknown_publication_recovers_file_and_removes_stage
+[PASS] object_retention_extracts_typed_dependencies_not_user_strings
+[PASS] object_retention_active_roots_preserve_chain_with_owner_isolation
+[PASS] object_retention_automatic_expiry_preserves_live_same_owner_reference
+[PASS] object_retention_inspect_is_readonly_and_stale_plan_cannot_collect
+[PASS] object_retention_partial_atomic_collection_recovers_without_replay
+19 tests, 17 passed, 2 failed, 0 skipped

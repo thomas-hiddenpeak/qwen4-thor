@@ -1,0 +1,14 @@
+{
+  "tools/serve_gateway/gateway.py": {
+    "before": "4c2dd6205c2ad0540216a85b5cab47aea30abde211e5da194bf8b2e141ddcf42",
+    "after": "f462696017284cdd57e6f8579e3f80d3154b63bb3fe6dd8ad357b371dd457e00"
+  },
+  "tools/serve_recovery/profile_acceptance.py": {
+    "before": "dc5a6222b09f05d450dd23093c6b980d3b30152086f816b4273d14482e332c10",
+    "after": "5409c8c3cf67ed2116ca4c90aa1e617a90d8ff987642c71cc270fe904cc9adf1"
+  },
+  "tools/serve_recovery/retrieval_acceptance.py": {
+    "before": null,
+    "after": "4cb55e544591ee31cbd131d41bd1d526a47abd4d0d8af0127dd721c88cda1b20"
+  }
+}

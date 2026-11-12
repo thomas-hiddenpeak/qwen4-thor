@@ -1,0 +1,28 @@
+{
+  "starts": 3,
+  "generations": 7,
+  "model_steps": 9,
+  "original_pdf_sha256": "7b9fe6a89654dd19c8571c1c2387d9dd50ca1830b02113ef0eb0f489c91f2023",
+  "original_csv_sha256": "66814afaa0478832bfb0abc7d51d68c3d219697c90f57115d13a4274cefd1f76",
+  "default_mtp": true,
+  "native_pdf_vision": true,
+  "preflight_token_parity": true,
+  "fresh_preparation_sse": true,
+  "count_preparation_usage": {
+    "input_tokens": 379,
+    "output_tokens": 169
+  },
+  "frozen_count_and_generation": true,
+  "large_cross_version_state": true,
+  "rollback": {
+    "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source/.q4t-work/engine-build/q4t",
+    "sha256": "2657eb168192aa6c9cf3e1dd77c52d1f9dea053d237777dc4b56e18d30134a96",
+    "source_commit": "eee091b4634d95f855e8c5937bb0a4a3c500bcda",
+    "source_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source",
+    "cmake_cache_sha256": "a5550c5898747cf25c44d530b8d374036843532ac8bce8403a81314fecbe1532",
+    "qualification": "pending actual cross-version read/replay; not the old Uploads package"
+  },
+  "exact_rpm_tpm": true,
+  "production_state_unchanged": true,
+  "performance_claim": false
+}

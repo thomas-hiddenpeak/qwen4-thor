@@ -1,0 +1,9 @@
+{
+  "branch": "codex/serve-self-recovery",
+  "local_exists": true,
+  "remote_deleted": false,
+  "worktree_deleted": false,
+  "old_tip": "34b06bc1cd5997af8d03db322674b694d27d818b",
+  "retaining_main_merge": "ea0ad39accefd43f2c6819ce7e275a7275c3d5e7",
+  "local_deleted": true
+}

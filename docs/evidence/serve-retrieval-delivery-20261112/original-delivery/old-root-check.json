@@ -1,0 +1,12 @@
+{
+  "label": "old-root-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "check",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+  ],
+  "returncode": 1,
+  "seconds": 2.5420843181200325
+}

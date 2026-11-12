@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve:completion-transport:v1",
+  "$defs": {
+    "completion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "text_completion"
+        },
+        "created": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "logprobs": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/logprobs"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "finish_reason": {
+                "enum": [
+                  "stop",
+                  "length",
+                  "content_filter"
+                ]
+              }
+            },
+            "required": [
+              "text",
+              "index",
+              "logprobs",
+              "finish_reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "usage": {
+          "$ref": "#/$defs/usage"
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices",
+        "usage"
+      ],
+      "additionalProperties": false
+    },
+    "chunk": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "text_completion"
+        },
+        "created": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "logprobs": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/logprobs"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "finish_reason": {
+                "enum": [
+                  null,
+                  "stop",
+                  "length",
+                  "content_filter"
+                ]
+              }
+            },
+            "required": [
+              "text",
+              "index",
+              "logprobs",
+              "finish_reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/usage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "obfuscation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices"
+      ],
+      "additionalProperties": false
+    },
+    "logprobs": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_logprobs": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "top_logprobs": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "maximum": 0
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "text_offset": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "tokens",
+        "token_logprobs",
+        "top_logprobs",
+        "text_offset"
+      ],
+      "additionalProperties": false
+    },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "prompt_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_tokens": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "prompt_tokens",
+        "completion_tokens",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-q4t": {
+    "equal_probability_array_lengths": true,
+    "offsets": "Unicode scalar positions in returned text, original NFC source alignment",
+    "selected_logprobs": "full raw target distribution; no Chat top20 sentinel",
+    "best_of": "mean generated token probability, includes actual EOS; ties keep candidate order",
+    "usage": "prompt once per input; all generated candidates including discarded ones",
+    "stream": "indexed text deltas, per-choice finish, optional aggregate usage, DONE and EOF"
+  }
+}

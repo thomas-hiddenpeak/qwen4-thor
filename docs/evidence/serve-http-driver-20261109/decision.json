@@ -1,0 +1,9 @@
+{
+  "status": "PASS_TARGETED_HTTP_DISCOVERY_AND_DRIVER_CPU",
+  "distinct_tests": 5,
+  "discovery_cli_error_preserved": true,
+  "engine_candidate_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+  "gpu_operations": 0,
+  "default_changed": false,
+  "n05_delivered": false
+}

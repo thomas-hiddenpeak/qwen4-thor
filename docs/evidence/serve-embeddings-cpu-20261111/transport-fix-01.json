@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "tools.serve_recovery.test_native_access",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "--no-tls-ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "-v",
+    "AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body"
+  ],
+  "exit_code": 1,
+  "seconds": 2.3412128360942006,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd/q4t",
+      "sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd/q4t.release.json",
+      "sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd/q4t",
+      "sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd/q4t.release.json",
+      "sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd"
+    }
+  },
+  "default_unchanged": true
+}

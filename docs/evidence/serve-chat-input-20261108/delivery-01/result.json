@@ -1,0 +1,17 @@
+{
+  "status": "PASS_CHAT_INPUT_DEFAULT_INSTALL",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/bundle",
+  "manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+  "engine_binary_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+  "engine_release_sha256": "ef9183ed0a603656f86db3d883b8e409d9c56be584915302d7989cfc09f43022",
+  "service_release_sha256": "d05b470acc7d374b3d92ce70b1eeffe069a9a5427b74ae29db4f545a8a926257",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "ledger_preserved": true,
+  "desired": "STOPPED",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "1a445654efe520fc225566bc899af5d82b0e06fa506c4cac007bd0a068bd08dc",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "policy_keys_quota_unchanged": true
+}

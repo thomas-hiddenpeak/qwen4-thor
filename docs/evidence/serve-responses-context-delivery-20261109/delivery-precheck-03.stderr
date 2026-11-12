@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/deliver.py", line 205, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/deliver.py", line 96, in main
+    metadata = p.read(DEFAULT/'q4t.release.json')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 83, in read
+    regular(path)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 79, in regular
+    require(stat.S_ISREG(value.st_mode), 'regular file required')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: regular file required

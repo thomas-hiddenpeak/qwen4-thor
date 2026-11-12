@@ -1,0 +1,1 @@
+{"proposed": true, "request_id": "a075a54f-26ca-4530-8efb-b0bcafc2db63", "expected_revision": 0, "candidate": {"configured": true, "revision": 1, "sha256": "18f0daa017eb2b6583a532c1613c31d87347132789e99e30f89592e478ecd029", "clients": 2, "active_keys": 2, "revoked_clients": 0, "history_keys": 3, "credential_values_redacted": true}, "committed": false, "live_applied": false}

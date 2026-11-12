@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "result": {
+    "object": "list",
+    "data": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation."
+          }
+        ],
+        "status": "completed",
+        "id": "item_8daf1db29329225aa63a271defd83607"
+      },
+      {
+        "id": "fc_cca2cf1729bc19b4e2afce1a03ff157f",
+        "type": "function_call",
+        "call_id": "call_resp_a19cf5e7a429150f25a7f012b78cf501_0",
+        "name": "read_project_record",
+        "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+        "status": "completed"
+      },
+      {
+        "type": "function_call_output",
+        "call_id": "call_resp_a19cf5e7a429150f25a7f012b78cf501_0",
+        "output": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 3, \"citation\": \"[docs/MODEL.md:L1-L3]\", \"text\": \"1: # MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\\n2: \\n3: > \u5bf9\u76ee\u6807\u6a21\u578b\u7684\u7406\u89e3\u7b14\u8bb0, \u968f\u7814\u8bfb\u6df1\u5165\u6301\u7eed\u66f4\u65b0\u3002\", \"truncated\": false}, \"total_lines\": 311}",
+        "status": "completed",
+        "id": "item_61ba2d0e46fee43abd67d1e6592bd7e9"
+      }
+    ],
+    "has_more": false
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/responses/resp_8436206b7674233a35d92e10beca1712/input_items?order=asc&limit=100",
+      "method": "GET"
+    }
+  ]
+}

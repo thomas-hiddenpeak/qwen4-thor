@@ -1,0 +1,378 @@
+{
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-00.bf16": {
+    "bytes": 264192,
+    "sha256": "67a6a71f2d1265df8861d55d26f35845244e2990ce626ca6c4734009483cb648"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-22.bf16": {
+    "bytes": 264192,
+    "sha256": "3b06399164291f72416dbf40e2c1ef40f50a99a68ede86bf87611cb8a6ac4c28"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-27.bf16": {
+    "bytes": 264192,
+    "sha256": "d7d8fc57d6b9af7467bf353a2fbb1f1ce17b6def09d0e372c2314fa91ba12369"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-10.bf16": {
+    "bytes": 264192,
+    "sha256": "6664a4ecfaa384a226d15abcd79e9e851ebba77e25625c1bd6fa9b5ed91531a3"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/last.bf16": {
+    "bytes": 2048,
+    "sha256": "8755d10e02a8ce1f8eb2b256b21c6e54618d3ff7aec0dd03b204a63b7086f47f"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-20.bf16": {
+    "bytes": 264192,
+    "sha256": "32e9f3ba931e807b27c39ddf52e93de06244a5509f6fea4bc18c09e1eaa6e5e2"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-05.bf16": {
+    "bytes": 264192,
+    "sha256": "bc51ff04b86b93d37c7db065a841c842e995a8115dae1b5faad0c5fa6a71c7b3"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-16.bf16": {
+    "bytes": 264192,
+    "sha256": "7db6ca39511999b6276ece8e749b860c13f593f7dbb66aee32126676b0111528"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-08.bf16": {
+    "bytes": 264192,
+    "sha256": "0b2f59c767f3e126bd42903308376b1bf508f750d078bba4cf58deafdb90dfee"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-09.bf16": {
+    "bytes": 264192,
+    "sha256": "0ee7dfcad00117d45be6b8cba3446082ef1c68d77383b3612be15c69856f617c"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-04.bf16": {
+    "bytes": 264192,
+    "sha256": "4310978305ec08fec84df2679f57fb8eadfe7351c9ab8c0553d04c617014471f"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-06.bf16": {
+    "bytes": 264192,
+    "sha256": "844be126c90a8bb8a1b86a84475d8183e9163a179eaa7d3d96faf306cc702f1a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-12.bf16": {
+    "bytes": 264192,
+    "sha256": "64e067ee629ff1127cb8b2ae38ae4e16d7aa24793ddd8b64126734c6342922ec"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-26.bf16": {
+    "bytes": 264192,
+    "sha256": "341af77a2a714fe3b12403252039afb45d4928c11d71cd39e1ab1367bc5dee8b"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-07.bf16": {
+    "bytes": 264192,
+    "sha256": "2e192469fa375c4e7f742190fa9ec25ba21e9707b563bd78232c914fa6eff586"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-25.bf16": {
+    "bytes": 264192,
+    "sha256": "cff003b07762b1b85cf2b4858ab828ae5053351390554aeca7f3f05433eb77d9"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-14.bf16": {
+    "bytes": 264192,
+    "sha256": "adbd3db5d8be3826bc759090317cf17182a39ed00f1b0c8ce28a7cdf913189f1"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-03.bf16": {
+    "bytes": 264192,
+    "sha256": "48aeea5aa8c57218db21ec29c4f3c088059377397a0b15dde138c31f0a0cc870"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-23.bf16": {
+    "bytes": 264192,
+    "sha256": "24c418d039bf81794bbc180244381e6f737cbd1d5b598ace8d49810d4c3f113b"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-15.bf16": {
+    "bytes": 264192,
+    "sha256": "c93bd4647b0676faf87d108e466060c236e2d8bc9a8680c257ee30a03fe29371"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-19.bf16": {
+    "bytes": 264192,
+    "sha256": "d380a548e9d980253c4aebdcdebd1534e7a297c6f3a4f72e5aeb28ac4b66281a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-17.bf16": {
+    "bytes": 264192,
+    "sha256": "b109efeef5137b77dd6b812f17af304249dfd6cd9c28a01dab607000b5da39ba"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-13.bf16": {
+    "bytes": 264192,
+    "sha256": "804399bbaa926bdedb0a27299ffa5c6818b7066e73d84abd137ca5357ec87c28"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-01.bf16": {
+    "bytes": 264192,
+    "sha256": "021efba5465b5ffebc750941e5d3c31e9fe53d07dbba8471820e74a8a2d1c519"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-11.bf16": {
+    "bytes": 264192,
+    "sha256": "4983cc5b1d0aa455f5d8cdb37ae4d5b0f5cb15b686fc22378672189106ca8292"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-24.bf16": {
+    "bytes": 264192,
+    "sha256": "d2e8c2cea16d6cebb0c9a7712adfab4582c408abd71011900e023d090878c0bd"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-28.bf16": {
+    "bytes": 264192,
+    "sha256": "0ef3c6670d634d831ec9fc13e9546df8faa00a4578e23daa4b7131be528273f5"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-02.bf16": {
+    "bytes": 264192,
+    "sha256": "ddb78b075b08a6e20c19eb3d02b9698169c6881e11cf6519878886436342b123"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-18.bf16": {
+    "bytes": 264192,
+    "sha256": "16e70e75359f51ef62fc03717c4d6644d72ad2455904c7bd5f3c3eff7437c4fc"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/layer-21.bf16": {
+    "bytes": 264192,
+    "sha256": "b2229d6a802437f114a22c32db7e4e7a629cee114abc5080631710ca508f1241"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_8.bf16": {
+    "bytes": 33024,
+    "sha256": "e6d417377df769f80d6d33796ffd020567bcd5ea66e84b749469c7985b08545a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_2.bf16": {
+    "bytes": 37152,
+    "sha256": "db7807294f32e471cac8705edd9c388a6b831077735581e04c3a12f568760563"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_9.bf16": {
+    "bytes": 33024,
+    "sha256": "e139cbb070168469401f864a8c39b00100ce4941c6b982389c53b83fcc4090dc"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_11.bf16": {
+    "bytes": 37152,
+    "sha256": "d2c0b3ab71b618464e8fbece647458bc6edb27597cca3da41f7c71fbd889eb88"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_15.bf16": {
+    "bytes": 37152,
+    "sha256": "6a539fb649bb0d76ed51676daf63694d99e1abb452c866f90b6339fbae99c20f"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/attention_projected.bf16": {
+    "bytes": 264192,
+    "sha256": "48513a6971b6c861460da1473293784d27ef68775b679a74130e96e577dcd8b8"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_7.bf16": {
+    "bytes": 33024,
+    "sha256": "0b4963ec2dd19a3e5764bb4fdc7884d140ab754e7beb79ed6c447440abd88327"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_6.bf16": {
+    "bytes": 37152,
+    "sha256": "9f9ab4b9ad80e90ab9f4f3e12ef7b58cbf6ed5458a709e7fd48e615a28d9cc91"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_3.bf16": {
+    "bytes": 37152,
+    "sha256": "f8e0540cf6627fc7daf47c6bc8f5647688fb64868940d23a64ee0049d111d479"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_13.bf16": {
+    "bytes": 37152,
+    "sha256": "29142987287459d7163f53380b650be114cc0071b720c1330e92692c8213a15d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_14.bf16": {
+    "bytes": 37152,
+    "sha256": "128a2d6d03f5048a5e8434a541396936012f4659f5ef2dee7f0fa31289b4b380"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_2.bf16": {
+    "bytes": 37152,
+    "sha256": "6388ea1652c56ed6e48c13e8f7348c2f01e3eb4c97798aa392b34b8f8bf83523"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/q.bf16": {
+    "bytes": 528384,
+    "sha256": "685979a2710d60d2cee7bde792adcc4d57da78c6b07166d401414a95ed3cf4b5"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_0.bf16": {
+    "bytes": 33024,
+    "sha256": "49c8193d5de3d52bd19e43a2e697b7f25ce5f725846f594634880e112f4a1f44"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/attention.bf16": {
+    "bytes": 528384,
+    "sha256": "f2a6f7dccdebfa9e34f44e5ae1f191f6e8161ae827f812c1f920303186140ffc"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_5.bf16": {
+    "bytes": 37152,
+    "sha256": "25875d2111d0c8346535baf439428707f7f8b7d0388a11ba6e932df84dd55e7a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_2.bf16": {
+    "bytes": 33024,
+    "sha256": "725777f42edcbfb615f2d04b1eac51742f57cb91794b95d559b728a29d5a11a3"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_4.bf16": {
+    "bytes": 37152,
+    "sha256": "02665d012f19fb383f9d523b9ace572cbe8046a5178f7c345d93fdaff9025e5d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_13.bf16": {
+    "bytes": 37152,
+    "sha256": "f85a7ed22db464e310e4ea772306f8925032f208072376d40152fba8c19a511d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_14.bf16": {
+    "bytes": 33024,
+    "sha256": "be7c06bed51008b88870eae2f85788bdf5fe1d42e88897816c23231c47bcc221"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_8.bf16": {
+    "bytes": 37152,
+    "sha256": "1957361dbe9cba0c997762374c5404aa0abe29a7c9340af8385eb596b340d62d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_10.bf16": {
+    "bytes": 37152,
+    "sha256": "424ef7a45321c5b572841ef2849514354f006e7d01a06f0f11d77ff132ef9c72"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/post_norm.bf16": {
+    "bytes": 264192,
+    "sha256": "ca390adb6b63258fea09c99a5be47b874e455004fe47f1b3e99f61ed63e8f9bd"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_10.bf16": {
+    "bytes": 37152,
+    "sha256": "adeb628bb69547971a27f38b98851cb87117960aaa32962f3cfd872d6946e454"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_1.bf16": {
+    "bytes": 37152,
+    "sha256": "c3d0eac51b3dabb17b604d8f5052c296773f74fe5b6bff15b88947cf6c2746e7"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_14.bf16": {
+    "bytes": 37152,
+    "sha256": "23b3e4daee066ffbb74956527c26d1ea430b29900b7ca4a148cb02a205694fc9"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_12.bf16": {
+    "bytes": 33024,
+    "sha256": "628e0f426a501db1ae3437346b3adb004e1378e55365eb00c873d6df3de8fb4e"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/up.bf16": {
+    "bytes": 792576,
+    "sha256": "3ba3c4057adaf62299608387700dc8c491fcef62e41beb39eaf1edccd482e442"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_5.bf16": {
+    "bytes": 33024,
+    "sha256": "c19d5b4800bc84f67c99dd4380e0c2d8aad7fdd81a4f3fb2f33f0a3702dd3a7e"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_3.bf16": {
+    "bytes": 33024,
+    "sha256": "dc19e17b560d1892854f89cdd2714b05e1d4fa449d37700d002262dba3b27d07"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_0.bf16": {
+    "bytes": 37152,
+    "sha256": "2bd0274276f1cb46a5ede1bf97707f637abb0c97ba3eaca276127ee66083c8cc"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_11.bf16": {
+    "bytes": 37152,
+    "sha256": "984f1965d2fd1e36e31ab81d36ecfa9ad6e2bbb56ddb4a154b019e0896b96dce"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/gate.bf16": {
+    "bytes": 792576,
+    "sha256": "44daefc7181680fa8fd04176247053a0e5bcb9091ddc71a58e58e653b5bc538d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_12.bf16": {
+    "bytes": 37152,
+    "sha256": "841e4a81ac6ea464fbc2a3fb2f403c5b253115375ded93794adb58a519944a74"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/gate_raw.bf16": {
+    "bytes": 792576,
+    "sha256": "59af5fa242d31f9df73a76929524388207f98db59121ac19978793559d52a12a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/v.bf16": {
+    "bytes": 264192,
+    "sha256": "94af8bd40acbcbd92b5e862c02079de7d8153cdb5b37841f095aef285761c3ac"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_6.bf16": {
+    "bytes": 33024,
+    "sha256": "a6ad33e789a19bc14547b29ff1089c7686c53a905351aea5858c8fed100a31bf"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/projected.bf16": {
+    "bytes": 264192,
+    "sha256": "5c38ed7e1269fa5deef210b76c0670fd0f6d09f799e6dabe089030ce414ef61d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/attention_residual.bf16": {
+    "bytes": 264192,
+    "sha256": "5f8ee7df70d32e930d5d3adc577473c8521393eac054e9e49998e3f65cf0a1aa"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_6.bf16": {
+    "bytes": 37152,
+    "sha256": "07dacab49112ae8090c9d6c44eb92408d392863a1f62ee65751c6516cb453030"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_10.bf16": {
+    "bytes": 33024,
+    "sha256": "76643152b89a3345013aa6dc0db79627cc47717c0214f2a8b699d7ab8bde63a7"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_1.bf16": {
+    "bytes": 33024,
+    "sha256": "af2e6239a7d4d3f463157471169073ca94b02f39f137dce59951fbd242089e1e"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_4.bf16": {
+    "bytes": 33024,
+    "sha256": "3d56ed88be421d33e936e844e8fa23983bedece4fad21d2e9c31ba34bb6b4568"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/rope.bf16": {
+    "bytes": 33024,
+    "sha256": "869a790ba773e5d13f4e0ea7d38deefe0d145a344482d4a81e72b9a1945203d7"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_4.bf16": {
+    "bytes": 37152,
+    "sha256": "fd46911b28cb10390fda9e72718a076d68c0f418f2cc8128cf8cdf50a342ce73"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_15.bf16": {
+    "bytes": 37152,
+    "sha256": "e0fd5d8aff019e362940a905995c79d25d6e4d61f7c67dd52b7dd4f2bc61240f"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_9.bf16": {
+    "bytes": 37152,
+    "sha256": "edbd7ca82b73b8a64589955d1a9de432a07b229bae8a49f47a565fa3347d6584"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_15.bf16": {
+    "bytes": 33024,
+    "sha256": "9ba509782e64fb3cabdaebe255bf245eb524bf6b115afff78712881b511da994"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_0.bf16": {
+    "bytes": 37152,
+    "sha256": "7951dff43f00e3ea434c67343357f7383acff76cd4e5023d1c2171fa6326e6b8"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/head_q.bf16": {
+    "bytes": 589824,
+    "sha256": "3b042acc814d44efc3c8c4d87de46e622e330ebf8f9da3aaa3f111eec8d31bc9"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/head_k.bf16": {
+    "bytes": 294912,
+    "sha256": "f0599e486c9bc96197f5428d7fe66e0a9fcee1f5675f2c78279e4892eaab044c"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/input_norm.bf16": {
+    "bytes": 264192,
+    "sha256": "de0cf92ea2cfaf2202795a6d11228667c64be5f0b4661b370cea3384efb46af3"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_1.bf16": {
+    "bytes": 37152,
+    "sha256": "978cd9b8745e07cb5e091036bb4c05bb7796ba9633dc2a3dc3f794af51dd81f9"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_5.bf16": {
+    "bytes": 37152,
+    "sha256": "c5764009882bebef83a4c1b24e14b3b8c388ea76d2d4c8bc1a3cb38e0c76f7c4"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_7.bf16": {
+    "bytes": 37152,
+    "sha256": "dd357b2c6a19ec6b4f8c3890521fe5e7907f614eb87f7021d65ad6dd1a571430"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_13.bf16": {
+    "bytes": 33024,
+    "sha256": "d89579c9afb574ef7f3d85faf7433c2669bbe58ff1af2216fbe8ececdab81720"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/k.bf16": {
+    "bytes": 264192,
+    "sha256": "d0923e6bde58fd9490e622c10894c96c769c0bf26dcb923895de205dc9d0d53a"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_9.bf16": {
+    "bytes": 37152,
+    "sha256": "d1fd771b089e2d7f862df9b7277d00f8ebb05358f27cf387d11df2b4cae8638d"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_8.bf16": {
+    "bytes": 37152,
+    "sha256": "2d66641d71800975baa9ba965956d9cbd7b5816c318be7b49c72593a0df55b4c"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/transposed_v.bf16": {
+    "bytes": 294912,
+    "sha256": "f50e0d53d8ce70a31bd4d591579b49ead4a5f871872e1b5fa5845e642a0e4594"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_12.bf16": {
+    "bytes": 37152,
+    "sha256": "3ec82029d2d1cf4a9bf589dca0120e94e869db9565e682b52041dd70da2093b0"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/qk_7.bf16": {
+    "bytes": 37152,
+    "sha256": "a480520cd9f92fafe77be6988ce720f0b8f80479d8ed66b4807649efe7f7e963"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/pv_11.bf16": {
+    "bytes": 33024,
+    "sha256": "4d53f676645ca860b3a779944b159fd4e70937d33dfe370fc9a6baca0ebba13e"
+  },
+  ".q4t-work/native-embedding-20261111/operands-01/native/case-0/operands/probabilities_3.bf16": {
+    "bytes": 37152,
+    "sha256": "0694d647fcae7fe27535c884db640237c74261270a565d9915beb1d952400c62"
+  }
+}

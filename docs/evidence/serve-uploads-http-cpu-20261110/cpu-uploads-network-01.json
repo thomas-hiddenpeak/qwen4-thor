@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/network-state-01",
+    "Q4T_NODE_SDK_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_uploads_transport.UploadsTransportTests"
+  ],
+  "exit_code": 0,
+  "seconds": 10.326688168104738
+}

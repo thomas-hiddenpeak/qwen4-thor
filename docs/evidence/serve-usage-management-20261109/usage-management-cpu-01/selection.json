@@ -1,0 +1,14 @@
+{
+  "count": 16,
+  "selection": [
+    "tools.serve_recovery.test_usage_management",
+    "tools.serve_recovery.test_usage_store.UsageStoreTests.test_cross_boot_keeps_totals_but_never_reuses_monotonic_window",
+    "tools.serve_recovery.test_quota_managed",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_live_gateway_credentials_are_not_public_status"
+  ],
+  "scope": "5 new management/native identity; one affected cross-boot; 6 managed policy; 3 bundle; one actual Guardian privilege boundary",
+  "gpu_starts": 0
+}

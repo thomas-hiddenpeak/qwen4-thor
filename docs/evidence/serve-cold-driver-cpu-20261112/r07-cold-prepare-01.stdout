@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-domain-20261112/business-01/plan.json", "service_id": "7fba916b-5d50-4e7a-8ef6-0acb050aa852", "limits": {"starts": 1, "chats": 3, "probes": 1, "controls": 2000, "seconds": 600}, "manifest_sha256": "d53caf4d32171d241e6d3a9f64d8a24cf0c2f4954801fe99a784a80e34b54915", "model_actions": false}

@@ -1,0 +1,134 @@
+{
+  "status": "PASS_RESPONSES_PRO_TARGETED_BUSINESS",
+  "binary_sha256": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3",
+  "protocol_sha256": "ac95d0620be8866b059b81f0deb81da735e743f661370fdc754043383c9ca626",
+  "counts": {
+    "starts": 2,
+    "chats": 9,
+    "controls": 85
+  },
+  "seconds": 129.20126201352105,
+  "nvml_queries": 124,
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "model_exits": [
+    0,
+    0
+  ],
+  "checks": {
+    "external_requests": 9,
+    "actual_model_steps": 17,
+    "actual_tool_executions": 1,
+    "json_sse_background": true,
+    "original_input_and_sse": true,
+    "summary_encryption_compaction_combination": true,
+    "exact_shared_budget_and_client_accounting": true,
+    "tiny_incomplete_no_answer": true,
+    "prewarm_no_deliberation": true,
+    "default_unchanged": true,
+    "performance_claim": false
+  },
+  "usage": {
+    "tiny.sdk.json": {
+      "input_tokens": 95,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 1,
+      "output_tokens_details": {
+        "reasoning_tokens": 1
+      },
+      "total_tokens": 96
+    },
+    "tool.sdk.json": {
+      "input_tokens": 682,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 178,
+      "output_tokens_details": {
+        "reasoning_tokens": 128
+      },
+      "total_tokens": 860
+    },
+    "structured.sdk.json": {
+      "input_tokens": 354,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 57
+      },
+      "total_tokens": 418
+    },
+    "follow.sdk.json": {
+      "input_tokens": 1300,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 169,
+      "output_tokens_details": {
+        "reasoning_tokens": 128
+      },
+      "total_tokens": 1469
+    },
+    "background.sdk.json": {
+      "input_tokens": 354,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 57
+      },
+      "total_tokens": 418
+    },
+    "summary.sdk.json": {
+      "input_tokens": 611,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 230,
+      "output_tokens_details": {
+        "reasoning_tokens": 226
+      },
+      "total_tokens": 841
+    },
+    "prewarm.sdk.json": {
+      "input_tokens": 2209,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 2181
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2209
+    },
+    "compacted.sdk.json": {
+      "input_tokens": 1806,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 175,
+      "output_tokens_details": {
+        "reasoning_tokens": 172
+      },
+      "total_tokens": 1981
+    }
+  },
+  "first_failure": "driver double startup, 1 model/0 requests; production unchanged; retained in serve-reasoning-pro-driver-fix-20261110",
+  "default_changed": false,
+  "performance_acceptance": false,
+  "long_stability": false,
+  "remaining_master_tasks_open": true
+}

@@ -1,0 +1,7 @@
+[
+  "node",
+  "--test",
+  "--test-name-pattern",
+  "management bridge",
+  "tools/serve_chat_storage/test_bridge.mjs"
+]

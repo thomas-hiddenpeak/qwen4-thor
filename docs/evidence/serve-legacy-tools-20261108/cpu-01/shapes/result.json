@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": 53,
+  "fields": 5,
+  "accepted": 25,
+  "rejected": 28,
+  "failures": [],
+  "probe_sha256": "01c2f8478261fc3e0e4dc9e2b5000587e225f782125d7b751b5921e17450922d",
+  "scope": "CPU request shapes/lexemes/native semantic initialization; no tokens/GPU/model/grammar compilation",
+  "selection": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/cpu-01/contract-required.txt",
+    "sha256": "a21433c1da9d2b85012060fc0338d5147c4cca9d4f4c977328a0e68af5a94aec",
+    "complete_request_contract": false
+  }
+}

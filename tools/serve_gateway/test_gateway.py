@@ -55,11 +55,23 @@ class GatewayTests(unittest.TestCase):
         policy.write_text(json.dumps(self.p));policy.chmod(0o600)
         return g.prepare(policy,self.nginx,self.cert,self.key,self.folder/'package')
 
+    def test_protocol_contract_has_separate_bounded_capacity(self):
+        self.assertEqual(g.validate_routes(), g.sha(g.API_CONTRACT))
+        ordinary = self.folder/'ordinary.json'
+        ordinary.write_bytes(b' ' * 131073)
+        with self.assertRaisesRegex(ValueError, 'size limit'):
+            g.read_file(ordinary)
+        oversized = self.folder/'protocol.json'
+        oversized.write_bytes(b' ' * (g.API_CONTRACT_BYTES + 1))
+        with mock.patch.object(g, 'API_CONTRACT', oversized):
+            with self.assertRaisesRegex(ValueError, 'size limit'):
+                g.validate_routes()
+
     def test_policy_rejects_remote_wildcard_and_unbounded_limits(self):
         cases=[('listen_host','0.0.0.0'),('listen_host','8.8.8.8'),
             ('listen_host','localhost'),('listen_host','::1'),('listen_host',167772161),
             ('listen_port',True),('listen_port',443),('global_inflight',9),
-            ('per_client_inflight',0),('body_bytes',16*1024**2+1),
+            ('per_client_inflight',0),('body_bytes',96*1024**2+1),
             ('upstream_idle_seconds',0),('burst',0),('version',True),
             ('server_name','good;include bad'),('server_name','a..b'),
             ('server_name','-a.local'),('clients',[]),('extra',1)]
@@ -139,6 +151,11 @@ class GatewayTests(unittest.TestCase):
         self.assertNotIn('proxy_set_header Authorization',text)
         self.assertNotIn('$request_body',text)
         self.assertNotIn('location /metrics',text)
+        self.assertIn('"~^POST:/v1/completions$" data;', text)
+        self.assertIn('"~^POST:/v1/moderations$" data;', text)
+        self.assertIn('"~^POST:/v1/embeddings$" data;', text)
+        self.assertIn('"~^GET:/v1/models/[^?#]+$" control;', text)
+        self.assertIn('"~^DELETE:/v1/models/[^?#]+$" control;', text)
         with self.assertRaises(ValueError):g.policy(dict(self.p,global_inflight=1))
 
     def test_backend_identity_requires_ready_pinned_loopback(self):

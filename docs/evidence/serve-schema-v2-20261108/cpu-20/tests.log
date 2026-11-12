@@ -1,0 +1,6 @@
+[PASS] chat_tool_history_native_values_keep_exact_decimal_spelling
+[PASS] chat_tool_history_no_silent_argument_loss
+[PASS] chat_response_tools_typed_and_multiple
+[PASS] chat_response_exact_integer_spellings
+[PASS] output_constraints_none_required_and_length_terminals
+5 tests, 5 passed, 0 failed, 0 skipped

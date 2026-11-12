@@ -1,0 +1,9 @@
+test_busy_qualification_never_forks_or_enters (tools.serve_recovery.test_cold_host_acceptance.HostTests.test_busy_qualification_never_forks_or_enters) ... ok
+test_populated_domain_cleanup_never_reports_success (tools.serve_recovery.test_cold_host_acceptance.HostTests.test_populated_domain_cleanup_never_reports_success) ... ok
+test_real_child_exit_keeps_parent_lease_through_disarm (tools.serve_recovery.test_cold_host_acceptance.HostTests.test_real_child_exit_keeps_parent_lease_through_disarm) ... ok
+test_real_timed_out_child_is_reaped_before_disarm (tools.serve_recovery.test_cold_host_acceptance.HostTests.test_real_timed_out_child_is_reaped_before_disarm) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.306s
+
+OK

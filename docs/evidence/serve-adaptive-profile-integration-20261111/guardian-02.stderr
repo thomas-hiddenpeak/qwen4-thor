@@ -1,0 +1,7 @@
+test_malformed_capacity_cannot_open_model_or_create_another_generation (__main__.RuntimeTests.test_malformed_capacity_cannot_open_model_or_create_another_generation) ... ok
+test_controller_failure_keeps_gateway_and_rebinds_new_model (__main__.RuntimeTests.test_controller_failure_keeps_gateway_and_rebinds_new_model) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 6.908s
+
+OK

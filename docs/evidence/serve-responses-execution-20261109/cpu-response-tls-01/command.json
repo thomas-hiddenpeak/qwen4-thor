@@ -1,0 +1,11 @@
+[
+  "python3",
+  "-B",
+  "tools/serve_recovery/test_native_access.py",
+  "--ingress",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+  "--no-tls-ingress",
+  ".q4t-work/serve-native-access-20261108/host-off/q4t-ingress",
+  "-v",
+  "AccessTests.test_responses_use_native_tls_cors_and_identity"
+]

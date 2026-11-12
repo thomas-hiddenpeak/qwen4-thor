@@ -1,0 +1,51 @@
+test_active_removal_revokes_entry_without_signalling_payload (tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload) ... FAIL
+test_cli_init_status_and_repeat_preserve_original_kernel_identity (tools.serve_recovery.test_resource_install.InstallationTests.test_cli_init_status_and_repeat_preserve_original_kernel_identity) ... ok
+test_first_private_write_interruption_resumes_without_published_authority (tools.serve_recovery.test_resource_install.InstallationTests.test_first_private_write_interruption_resumes_without_published_authority) ... ok
+test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged (tools.serve_recovery.test_resource_install.InstallationTests.test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged) ... FAIL
+test_lost_published_private_authority_never_bootstraps_again (tools.serve_recovery.test_resource_install.InstallationTests.test_lost_published_private_authority_never_bootstraps_again) ... ok
+test_partial_kernel_setup_resumes_only_same_empty_unpublished_domain (tools.serve_recovery.test_resource_install.InstallationTests.test_partial_kernel_setup_resumes_only_same_empty_unpublished_domain) ... ok
+test_partial_removal_checkpoint_resumes_and_rejects_replaced_leaf (tools.serve_recovery.test_resource_install.InstallationTests.test_partial_removal_checkpoint_resumes_and_rejects_replaced_leaf) ... ok
+test_ready_publication_loss_repairs_copy_without_reinitializing_private_history (tools.serve_recovery.test_resource_install.InstallationTests.test_ready_publication_loss_repairs_copy_without_reinitializing_private_history) ... ok
+test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound (tools.serve_recovery.test_resource_kernel.KernelTests.test_actual_kernel_limits_and_identity_do_not_claim_physical_ram_bound) ... ok
+test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive (tools.serve_recovery.test_resource_kernel.KernelTests.test_unprivileged_self_entry_and_service_kill_leave_outer_observer_alive) ... ok
+
+======================================================================
+FAIL: test_active_removal_revokes_entry_without_signalling_payload (tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 156, in test_active_removal_revokes_entry_without_signalling_payload
+    self.initialize(); process, result = self.run_worker('join')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 90, in run_worker
+    self.fail(process.communicate(timeout=2)[1].decode())
+AssertionError: Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 195, in <module>
+    if len(sys.argv) > 1 and sys.argv[1] == '--worker': worker()
+                                                        ^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 25, in worker
+    os.setresuid(int(uid), int(uid))
+TypeError: setresuid expected 3 arguments, got 2
+
+
+======================================================================
+FAIL: test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged (tools.serve_recovery.test_resource_install.InstallationTests.test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 188, in test_identity_drift_and_lock_contention_reject_while_public_is_readable_unprivileged
+    process, result = self.run_worker('read')
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 90, in run_worker
+    self.fail(process.communicate(timeout=2)[1].decode())
+AssertionError: Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 195, in <module>
+    if len(sys.argv) > 1 and sys.argv[1] == '--worker': worker()
+                                                        ^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_install.py", line 25, in worker
+    os.setresuid(int(uid), int(uid))
+TypeError: setresuid expected 3 arguments, got 2
+
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.646s
+
+FAILED (failures=2)

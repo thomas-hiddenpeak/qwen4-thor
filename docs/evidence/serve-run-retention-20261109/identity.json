@@ -1,0 +1,18 @@
+{
+  "base_commit": "6e06286d1ae86d8b5db0ef795157ef331338792a",
+  "current_sources": {
+    "tools/serve_recovery/retention.py": "6ccee61e41f986e76cd71e9d1e5b21deb20d3fb08708f426b58595dd3cda8897",
+    "tools/serve_recovery/test_retention.py": "95a0d892df9e562185c85aed9ceeebb782fcf6beda6019ff8c2575ecc17d51ed",
+    "tools/serve_recovery/service.py": "a56e4ae96591475141cae8e783ec85b46a367be215680d1c0d74a690af9997bc",
+    "tools/serve_recovery/controller.py": "7aa77d671c25f2c15a78e75edf71545a4180661f06350ecc4fdad6c5e3aca0b8",
+    "tools/serve_recovery/bundle.py": "7623c657c4d30a001c5b767fe5d59a983fcb2936e2e350cb582982c9c80c505c",
+    "tools/serve_recovery/test_native_bundle.py": "a1d6d8ce0af61c9ea7ad2a029e2f942f80a82607d4636ce25555fc3c14392ba2"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  },
+  "scope": "Each failure and targeted repair retained. First two runs precede current boot-bound provenance; unchanged archive/policy branches are reused, not claimed to run with final bytes."
+}

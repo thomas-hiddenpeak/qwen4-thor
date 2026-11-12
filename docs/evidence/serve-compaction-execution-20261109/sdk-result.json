@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tools/serve_responses/test_compaction_sdk.mjs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.26452412316575646
+}

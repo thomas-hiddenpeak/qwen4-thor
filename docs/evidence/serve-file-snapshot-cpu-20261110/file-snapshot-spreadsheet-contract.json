@@ -1,0 +1,6 @@
+{
+  "reviewed": "2026-11-10",
+  "source": "https://developers.openai.com/api/docs/guides/file-inputs#how-spreadsheet-augmentation-works",
+  "contract": "First 1000 rows per sheet; model-generated summary and header metadata. This is not a plain CSV truncation. All actual preprocessing model work needs bounded execution, input/output accounting, immutable reuse and failure handling; count endpoint parity must account for it.",
+  "implementation_state": "required; not claimed implemented by document snapshot"
+}

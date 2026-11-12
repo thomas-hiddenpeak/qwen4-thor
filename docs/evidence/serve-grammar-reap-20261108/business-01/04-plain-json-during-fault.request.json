@@ -1,0 +1,13 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_tokens": 32,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u53ea\u56de\u590d\u6570\u5b5742\uff0c\u4e0d\u8981\u89e3\u91ca\u3002"
+    }
+  ]
+}

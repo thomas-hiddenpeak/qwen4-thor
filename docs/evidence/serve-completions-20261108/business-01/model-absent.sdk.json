@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "error": {
+    "class": "NotFoundError",
+    "message": "404 model is not registered by this server",
+    "status": 404,
+    "code": "model_not_found",
+    "param": "model"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/models/not-registered",
+      "method": "GET"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 267, in dependencies
+    value = native.private_json(path, MAX_MANIFEST)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/native.py", line 37, in private_json
+    ledger.require(stat.S_ISREG(info.st_mode) and info.st_uid == os.geteuid()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: private observation source required

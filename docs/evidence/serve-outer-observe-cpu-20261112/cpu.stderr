@@ -1,0 +1,19 @@
+test_actual_root_exit_is_distinct_from_unknown_observation_and_tree_cleanup (tools.serve_recovery.test_outer_observe.ObserveTests.test_actual_root_exit_is_distinct_from_unknown_observation_and_tree_cleanup) ... ok
+test_adopted_observer_process_exit_preserves_root_and_can_be_readopted (tools.serve_recovery.test_outer_observe.ObserveTests.test_adopted_observer_process_exit_preserves_root_and_can_be_readopted) ... ok
+test_changed_release_identity_cannot_adopt_or_mutate_live_core (tools.serve_recovery.test_outer_observe.ObserveTests.test_changed_release_identity_cannot_adopt_or_mutate_live_core) ... ok
+test_existing_observer_cannot_be_displaced_by_another_live_client (tools.serve_recovery.test_outer_observe.ObserveTests.test_existing_observer_cannot_be_displaced_by_another_live_client) ... ok
+test_heartbeat_timeout_only_degrades_and_same_live_observer_can_recover (tools.serve_recovery.test_outer_observe.ObserveTests.test_heartbeat_timeout_only_degrades_and_same_live_observer_can_recover) ... ok
+test_observation_error_neither_stops_nor_retires_healthy_root (tools.serve_recovery.test_outer_observe.ObserveTests.test_observation_error_neither_stops_nor_retires_healthy_root) ... ok
+test_verified_observer_restores_health_without_changing_any_core_journal (tools.serve_recovery.test_outer_observe.ObserveTests.test_verified_observer_restores_health_without_changing_any_core_journal) ... ok
+test_explicit_stop_before_parent_exit_remains_stopped (tools.serve_recovery.test_outer_parent.ParentTests.test_explicit_stop_before_parent_exit_remains_stopped) ... ok
+test_outer_death_preserves_same_healthy_core_and_original_running_intent (tools.serve_recovery.test_outer_parent.ParentTests.test_outer_death_preserves_same_healthy_core_and_original_running_intent) ... ok
+test_signal_while_parent_is_alive_cannot_invent_owner_loss (tools.serve_recovery.test_outer_parent.ParentTests.test_signal_while_parent_is_alive_cannot_invent_owner_loss) ... ok
+test_foreground_parent_death_is_a_durable_stop (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_parent_death_is_a_durable_stop) ... ok
+test_committed_daemon_survives_short_lived_launcher (tools.serve_recovery.test_runtime.RuntimeTests.test_committed_daemon_survives_short_lived_launcher) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 14.905s
+
+OK

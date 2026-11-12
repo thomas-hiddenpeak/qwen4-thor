@@ -1,0 +1,38 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-request-fields-20261110/required-cpu.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06372081255540252
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_request_fields_contract",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16383951203897595
+  },
+  {
+    "name": "driver",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_request_fields_acceptance",
+      "-v"
+    ],
+    "exit_code": 1,
+    "seconds": 0.3141493578441441
+  }
+]

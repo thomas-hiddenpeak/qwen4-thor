@@ -1,0 +1,13 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 45,
+  "completion_fields": 21,
+  "routes": 71,
+  "native_routes": 117,
+  "reviewed_source_anchors": 637,
+  "mutation_checks": 5,
+  "errors": [
+    "sources_sha256 requires renewed review: ['tools/serve_gateway/gateway.py', 'tools/serve_recovery/profile_acceptance.py', 'tools/serve_recovery/retrieval_acceptance.py']"
+  ]
+}

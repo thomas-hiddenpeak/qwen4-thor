@@ -1,0 +1,73 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "ingress_mode": "native",
+  "acceptance": "ACCEPT_TARGETED_SAMPLING",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/release-01/decision.json",
+  "acceptance_sha256": "82b32d58802ae5a2b42a284c34d20082b39168262c314a2b5d5083c468f926cc",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/release-01/bundle",
+  "manifest_sha256": "78b76a7b71ddaa57ba0e6675881512759a5df7a2a8e5fa8acbabe37f5cc368c6",
+  "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+  "nginx_required": false,
+  "engine_binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215",
+  "engine_release_sha256": "b3dde20298f55e3f6630d9d6d74f72fc07ccfceae4885356875c224ea517afda",
+  "entry": "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+  "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "listen": "127.0.0.1:18161",
+  "upstream": "127.0.0.1:18162",
+  "operations": "127.0.0.1:18163",
+  "clients": [
+    {
+      "id": "alpha",
+      "rpm": 30,
+      "tpm": 6000
+    },
+    {
+      "id": "beta",
+      "rpm": 1,
+      "tpm": 6000
+    }
+  ],
+  "scope": "Accepted actual sampling/choices/logprobs; native ingress/TLS/CORS/recovery bytes and policy/keys unchanged. prediction and remaining master tasks continue.",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "2ee6b361fd9dc6c4664f717affd89012d53e95d83bd346ad75cc7f40bdf1c70e",
+  "engine_default_replaced": true,
+  "gpu_starts_for_install": 0,
+  "long_stability_accepted": false,
+  "tls_lan_accepted": true,
+  "dependencies": [
+    "q4t native entrypoint and Guardian",
+    "pinned Python control/journal/monitor runtime",
+    "CUDA/driver, model assets and system C/C++ libraries",
+    "system OpenSSL 3 loaded only when TLS is explicitly configured"
+  ],
+  "limitations": [
+    "Remaining OpenAI inference/application compatibility tasks A01-A12 are active",
+    "Key/policy reload and remaining HTTP ingress capabilities N04/N05 remain active",
+    "Progress watchdog, automatic profile/version fallback remain active",
+    "Physical RAM hard protection and NVML-free cold start remain active",
+    "Host/whole-tree recovery integration and user-run long stability remain pending",
+    "Actual cross-host production DNS/certificates are deployment configuration; this stage used local NIC with its own /32 CIDR."
+  ],
+  "guardian_sha256": "7a57af7198cbde10831de8c0bf4e1ed30518f3a395d7c4bd0876158c1d7b4a11",
+  "observation_isolation_accepted": true,
+  "previous_acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/decision.json",
+  "state_ledger_preserved": true,
+  "diagnostics": "private bounded 64KiB memfd, Guardian lifetime",
+  "grammar_bounded_cleanup_accepted": true,
+  "unchanged_control_evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/release-01/unchanged-control.json",
+  "browser_cors_accepted": true,
+  "tls_enabled_by_default": false,
+  "cors_enabled_by_default": false,
+  "private_fixture_certificates_installed": false,
+  "chat_input_profile": "qwen3.8-openai-v3",
+  "chat_input_targeted_accepted": true,
+  "full_openai_compatibility": false,
+  "sampling_profile": "q4t-sampling-v1",
+  "sampling_targeted_accepted": true,
+  "prediction_implemented": false
+}

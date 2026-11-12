@@ -1,0 +1,2021 @@
+{
+  "captured_date": "2026-11-08",
+  "provider": "OpenAI official developer documentation MCP list_api_endpoints",
+  "path_count": 245,
+  "not_a_support_claim": true,
+  "unresolved_families": "G00 scope decision; do not silently exclude",
+  "endpoints": [
+    {
+      "path": "/agents",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations/{invocation_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/pause",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/resume",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/environments",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/environments/templates",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/environments/{environment_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/environments/{environment_id}/files",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/events",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/traces",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/agents/{agent_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/assistants",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/assistants/{assistant_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/speech",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/transcriptions",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/translations",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/voice_consents",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/voice_consents/{consent_id}",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/voices",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/audio/voices/{voice_id}",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/batches",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/batches/{batch_id}",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/batches/{batch_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chat/completions",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chat/completions/{completion_id}",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chat/completions/{completion_id}/messages",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chatkit/sessions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chatkit/sessions/{session_id}/cancel",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chatkit/threads",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}/items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/completions",
+      "tasks": [
+        "A06"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/containers",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/containers/{container_id}",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/containers/{container_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/content_provenance_checks",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/conversations",
+      "tasks": [
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/conversations/{conversation_id}",
+      "tasks": [
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/conversations/{conversation_id}/items",
+      "tasks": [
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/conversations/{conversation_id}/items/{item_id}",
+      "tasks": [
+        "A08"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/decisions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/embeddings",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/files",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/files/{file_id}",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/files/{file_id}/content",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/alpha/graders/run",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/alpha/graders/validate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/cancel",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/events",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/pause",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/resume",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/images/edits",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/images/generations",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/images/variations",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/fork",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/live/sessions/{session_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/models",
+      "tasks": [
+        "A06"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/models/{model}",
+      "tasks": [
+        "A06"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/moderations",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/admin_api_keys",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/admin_api_keys/{key_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/audit_logs",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/certificates",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/certificates/activate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/certificates/deactivate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/certificates/{certificate_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/costs",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/data_retention",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_keys",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_keys/{external_key_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_keys/{external_key_id}/validate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_storage",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_storage/{external_storage_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/external_storage/{external_storage_id}/validate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups/{group_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups/{group_id}/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups/{group_id}/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups/{group_id}/users",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/groups/{group_id}/users/{user_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/invites",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/invites/{invite_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/api_keys",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/api_keys/{api_key_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/archive",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates/activate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates/deactivate",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/data_retention",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/groups",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/groups/{group_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/hosted_tool_permissions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/model_permissions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/rate_limits",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/rate_limits/{rate_limit_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts/{service_account_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts/{service_account_id}/api_keys",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_tier_settings",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_alerts",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_alerts/{alert_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_limit",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/users",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/projects/{project_id}/users/{user_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/spend_alerts",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/spend_alerts/{alert_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/spend_limit",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/audio_speeches",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/audio_transcriptions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/code_interpreter_sessions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/completions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/decisions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/embeddings",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/file_search_calls",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/images",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/moderations",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/vector_stores",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/usage/web_search_calls",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/users",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/users/{user_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/users/{user_id}/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/users/{user_id}/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/workload_identity_providers",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}/federation_rules",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}/federation_rules/{workload_identity_federation_rule_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/groups/{group_id}/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/groups/{group_id}/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/users/{user_id}/roles",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/projects/{project_id}/users/{user_id}/roles/{role_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/calls",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/calls/{call_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/calls/{call_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/calls/{call_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/calls/{call_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/transcription_sessions",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/realtime/translations/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/compact",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/compact?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/input_tokens",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/input_tokens?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}/cancel",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}/cancel?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}/input_items",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}/input_items?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses/{response_id}?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/responses?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/safety/alerts/{id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/safety/cases/{id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills/{skill_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills/{skill_id}/content",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}/content",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/messages",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/uploads",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/uploads/{upload_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/uploads/{upload_id}/complete",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/uploads/{upload_id}/parts",
+      "tasks": [
+        "A09"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vaults",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vaults/{vault_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/search",
+      "tasks": [
+        "A11"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/characters",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/characters/{character_id}",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/edits",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/extensions",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/{video_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/videos/{video_id}/remix",
+      "tasks": [
+        "A10"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/webhook_endpoints",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/test",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    },
+    {
+      "path": "/webhook_event_types",
+      "tasks": [
+        "G00"
+      ],
+      "audit_state": "endpoint_semantics_pending",
+      "evidence": []
+    }
+  ]
+}

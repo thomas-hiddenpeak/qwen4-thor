@@ -1,0 +1,170 @@
+{
+  "status": "FAILED",
+  "commands": [
+    {
+      "label": "previous-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+        "--manifest-sha256",
+        "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+      ],
+      "returncode": 0,
+      "seconds": 2.7323640063405037
+    },
+    {
+      "label": "candidate-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "check",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+        "--manifest-sha256",
+        "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+      ],
+      "returncode": 0,
+      "seconds": 0.8261114051565528
+    },
+    {
+      "label": "fallback-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "check",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+        "--manifest-sha256",
+        "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434"
+      ],
+      "returncode": 0,
+      "seconds": 0.8357867677696049
+    },
+    {
+      "label": "anchor-publish",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "publish",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--default-root",
+        "/home/rm01/models/dev/qwen4-thor/build",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+        "--manifest-sha256",
+        "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+        "--service-release",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/fallback-service.release.json",
+        "--expected-manifest-sha256",
+        "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+        "--expected-revision",
+        "80",
+        "--request-id",
+        "1444242d-010d-49cc-9fca-c02f32038064"
+      ],
+      "returncode": 0,
+      "seconds": 9.177436619065702
+    },
+    {
+      "label": "candidate-publish",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "publish",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--default-root",
+        "/home/rm01/models/dev/qwen4-thor/build",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+        "--manifest-sha256",
+        "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "--service-release",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/primary-service.release.json",
+        "--expected-manifest-sha256",
+        "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+        "--expected-revision",
+        "82",
+        "--request-id",
+        "f915a46d-d5f8-47a3-91ad-9d52ae06819f"
+      ],
+      "returncode": 0,
+      "seconds": 5.815981471911073
+    },
+    {
+      "label": "version-register",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "version-register",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--registration",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/registration.json",
+        "--expected-cycle",
+        "682222b7-6a8e-4f97-9147-a14ddb23b111"
+      ],
+      "returncode": 0,
+      "seconds": 3.531235336791724
+    },
+    {
+      "label": "version-before",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "version-status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 2.2348999241366982
+    },
+    {
+      "label": "root-rollback",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+        "service",
+        "publish-rollback",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--default-root",
+        "/home/rm01/models/dev/qwen4-thor/build",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+        "--manifest-sha256",
+        "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "--generation-sha256",
+        "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+        "--expected-manifest-sha256",
+        "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "--expected-revision",
+        "84",
+        "--request-id",
+        "ecc231b2-975c-448c-bc63-c2283115ef21"
+      ],
+      "returncode": 0,
+      "seconds": 8.862989795394242
+    },
+    {
+      "label": "old-root-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 1,
+      "seconds": 2.5420843181200325
+    }
+  ],
+  "category": "RuntimeError",
+  "detail": "delivery failed: old-root-check",
+  "seconds": 36.970861022826284
+}

@@ -1,0 +1,17 @@
+{
+  "state": "PASS_MANAGED_POLICY_COORDINATION_CPU_PENDING_USAGE_AND_REAL_DELIVERY",
+  "targeted_tests": 33,
+  "cpp_unchanged_build_reused": true,
+  "core_readiness_synthetic": true,
+  "actual_policy_ipc": true,
+  "actual_private_admission_socket": true,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "remaining": [
+    "runtime quota usage persistence and conservative recovery",
+    "native TLS SDK and actual model business",
+    "rollback-capable default delivery and remaining master tasks"
+  ],
+  "all_master_tasks_continue": true
+}

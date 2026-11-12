@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "tests": [
+    "compaction_optional_id_enters_actual_response_generation_plan",
+    "compaction_returned_window_is_replayable_without_losing_message_data"
+  ],
+  "host_sha256": "71fc04969047ca2b4f5c0145c08a920f1b30cf790efaa4302d60b68a478c3362",
+  "seconds": 0.02256052801385522,
+  "gpu": 0
+}

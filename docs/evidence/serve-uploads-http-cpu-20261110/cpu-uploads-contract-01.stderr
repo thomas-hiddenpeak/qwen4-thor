@@ -1,0 +1,8 @@
+test_actual_native_resources_match_published_schema (tools.serve_responses.test_uploads_contract.UploadsContractTests.test_actual_native_resources_match_published_schema) ... ok
+test_closed_control_fields_nulls_capacities_and_optional_checksum (tools.serve_responses.test_uploads_contract.UploadsContractTests.test_closed_control_fields_nulls_capacities_and_optional_checksum) ... ok
+test_pinned_sdk_and_actual_json_multipart_routes (tools.serve_responses.test_uploads_contract.UploadsContractTests.test_pinned_sdk_and_actual_json_multipart_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.010s
+
+OK

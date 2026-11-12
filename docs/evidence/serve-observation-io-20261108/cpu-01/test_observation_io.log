@@ -1,0 +1,22 @@
+test_lost_observations_do_not_turn_into_core_fault_or_model_action (__main__.ControllerIsolationTests.test_lost_observations_do_not_turn_into_core_fault_or_model_action) ... ok
+test_true_device_failure_still_wins_over_ordinary_io_failure (__main__.ControllerIsolationTests.test_true_device_failure_still_wins_over_ordinary_io_failure) ... ok
+test_ack_observed_after_deadline_is_not_claimed_as_timely_success (__main__.WriterTests.test_ack_observed_after_deadline_is_not_claimed_as_timely_success) ... ok
+test_blocked_file_open_cannot_backpressure_cpu_business_stdout (__main__.WriterTests.test_blocked_file_open_cannot_backpressure_cpu_business_stdout) ... ok
+test_enospc_and_erofs_acknowledgements_never_escape_to_caller (__main__.WriterTests.test_enospc_and_erofs_acknowledgements_never_escape_to_caller) ... ok
+test_pidfd_failure_retains_owned_process_until_real_reap (__main__.WriterTests.test_pidfd_failure_retains_owned_process_until_real_reap) ... ok
+test_queue_and_oversized_record_drop_instead_of_waiting (__main__.WriterTests.test_queue_and_oversized_record_drop_instead_of_waiting) ... ok
+test_real_writer_preserves_bytes_and_self_check_is_observation_copy (__main__.WriterTests.test_real_writer_preserves_bytes_and_self_check_is_observation_copy) ... ok
+test_reap_os_error_keeps_owned_slot_and_does_not_escape_to_capture (__main__.WriterTests.test_reap_os_error_keeps_owned_slot_and_does_not_escape_to_capture) ... ok
+test_record_count_bound_also_covers_zero_length_records (__main__.WriterTests.test_record_count_bound_also_covers_zero_length_records) ... ok
+test_repeated_stop_never_blocks_or_releases_unconfirmed_slot (__main__.WriterTests.test_repeated_stop_never_blocks_or_releases_unconfirmed_slot) ... ok
+test_returned_disk_error_backoff_reuses_same_worker_and_keeps_history (__main__.WriterTests.test_returned_disk_error_backoff_reuses_same_worker_and_keeps_history) ... ok
+test_sequence_mismatch_disables_instead_of_claiming_write_success (__main__.WriterTests.test_sequence_mismatch_disables_instead_of_claiming_write_success) ... ok
+test_socket_creation_failure_leaves_disabled_sink_without_throwing (__main__.WriterTests.test_socket_creation_failure_leaves_disabled_sink_without_throwing) ... ok
+test_stalled_snapshot_worker_is_subject_to_same_deadline (__main__.WriterTests.test_stalled_snapshot_worker_is_subject_to_same_deadline) ... ok
+test_unconfirmed_reap_keeps_identity_and_cannot_spawn_replacement (__main__.WriterTests.test_unconfirmed_reap_keeps_identity_and_cannot_spawn_replacement) ... ok
+test_worker_holds_inherited_lease_until_actual_exit (__main__.WriterTests.test_worker_holds_inherited_lease_until_actual_exit) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 2.154s
+
+OK

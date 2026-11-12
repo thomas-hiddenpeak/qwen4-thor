@@ -1,0 +1,18 @@
+test_selection_and_actual_allowed_fd_are_original_service_leaf (tools.serve_recovery.test_device_resource.ResourceTests.test_selection_and_actual_allowed_fd_are_original_service_leaf) ... ok
+test_runtime_or_service_identity_mismatch_is_rejected_before_device_install (tools.serve_recovery.test_device_resource.ResourceTests.test_runtime_or_service_identity_mismatch_is_rejected_before_device_install) ... ok
+test_partial_association_blocks_removal_and_resumes_original_ids (tools.serve_recovery.test_device_resource.ResourceTests.test_partial_association_blocks_removal_and_resumes_original_ids) ... ok
+test_lost_published_binding_or_fence_history_cannot_reset (tools.serve_recovery.test_device_resource.ResourceTests.test_lost_published_binding_or_fence_history_cannot_reset) ... ok
+test_resource_removal_waits_for_explicit_detach_and_preserves_original_budget (tools.serve_recovery.test_device_resource.ResourceTests.test_resource_removal_waits_for_explicit_detach_and_preserves_original_budget) ... ok
+test_populated_service_leaf_blocks_device_scope_without_signalling_it (tools.serve_recovery.test_device_resource.ResourceTests.test_populated_service_leaf_blocks_device_scope_without_signalling_it) ... ok
+test_same_boot_replaced_kernel_leaf_does_not_match_resource_binding (tools.serve_recovery.test_device_resource.ResourceTests.test_same_boot_replaced_kernel_leaf_does_not_match_resource_binding) ... ok
+test_new_boot_release_preserves_history_without_recreating_old_scope (tools.serve_recovery.test_device_resource.ResourceTests.test_new_boot_release_preserves_history_without_recreating_old_scope) ... ok
+test_initialized_budget_and_lost_bound_state_are_never_reset (tools.serve_recovery.test_device_domain.DomainTests.test_initialized_budget_and_lost_bound_state_are_never_reset) ... ok
+test_disarm_uses_retained_rules_without_monitor_and_preserves_budget (tools.serve_recovery.test_device_domain.DomainTests.test_disarm_uses_retained_rules_without_monitor_and_preserves_budget) ... ok
+test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue (tools.serve_recovery.test_device_domain.DomainTests.test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue) ... ok
+test_active_removal_revokes_entry_without_signalling_payload (tools.serve_recovery.test_resource_install.InstallationTests.test_active_removal_revokes_entry_without_signalling_payload) ... ok
+test_partial_removal_checkpoint_resumes_and_rejects_replaced_leaf (tools.serve_recovery.test_resource_install.InstallationTests.test_partial_removal_checkpoint_resumes_and_rejects_replaced_leaf) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.460s
+
+OK

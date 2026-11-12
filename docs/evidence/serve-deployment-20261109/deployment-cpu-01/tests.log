@@ -1,0 +1,176 @@
+test_actual_retained_legacy_store_cannot_grant_after_upgrade (tools.serve_recovery.test_deployment.DeploymentTests.test_actual_retained_legacy_store_cannot_grant_after_upgrade) ... ERROR
+test_bad_package_or_client_capacity_does_not_publish_pending_switch (tools.serve_recovery.test_deployment.DeploymentTests.test_bad_package_or_client_capacity_does_not_publish_pending_switch) ... ERROR
+test_before_and_after_descriptor_rename_resume_same_transaction (tools.serve_recovery.test_deployment.DeploymentTests.test_before_and_after_descriptor_rename_resume_same_transaction) ... ERROR
+test_bootstrap_outer_marker_publication_can_resume_without_reseeding (tools.serve_recovery.test_deployment.DeploymentTests.test_bootstrap_outer_marker_publication_can_resume_without_reseeding) ... ERROR
+test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys (tools.serve_recovery.test_deployment.DeploymentTests.test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys) ... ERROR
+test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets (tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets) ... ERROR
+test_owned_locks_nonstopped_state_and_changed_request_refuse_switch (tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch) ... ERROR
+test_partial_unpublished_bootstrap_recovers_but_published_loss_never_resets (tools.serve_recovery.test_deployment.DeploymentTests.test_partial_unpublished_bootstrap_recovers_but_published_loss_never_resets) ... ERROR
+test_readonly_observation_and_retention_protect_selected_and_rollback_packages (tools.serve_recovery.test_deployment.DeploymentTests.test_readonly_observation_and_retention_protect_selected_and_rollback_packages) ... ERROR
+test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage (tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage) ... ERROR
+test_commit_before_ack_survives_reopen_with_occupied_ticket (tools.serve_recovery.test_ledger.StoreTests.test_commit_before_ack_survives_reopen_with_occupied_ticket) ... ok
+test_complete_pending_transaction_is_charged_on_reopen (tools.serve_recovery.test_ledger.StoreTests.test_complete_pending_transaction_is_charged_on_reopen) ... ok
+test_corrupt_ledger_and_checksum_mismatch_freeze (tools.serve_recovery.test_ledger.StoreTests.test_corrupt_ledger_and_checksum_mismatch_freeze) ... ok
+test_deployment_fence_preserves_budget_and_survives_later_transactions (tools.serve_recovery.test_ledger.StoreTests.test_deployment_fence_preserves_budget_and_survives_later_transactions) ... ok
+test_durable_stop_is_preserved_on_reopen (tools.serve_recovery.test_ledger.StoreTests.test_durable_stop_is_preserved_on_reopen) ... ok
+test_missing_ledger_is_not_a_new_service (tools.serve_recovery.test_ledger.StoreTests.test_missing_ledger_is_not_a_new_service) ... ok
+test_partial_deployment_fence_replays_without_rebuilding_core_state (tools.serve_recovery.test_ledger.StoreTests.test_partial_deployment_fence_replays_without_rebuilding_core_state) ... ok
+test_partial_pending_never_falls_back_to_old_free_budget (tools.serve_recovery.test_ledger.StoreTests.test_partial_pending_never_falls_back_to_old_free_budget) ... ok
+test_post_rename_fsync_failure_never_returns_or_refunds_grant (tools.serve_recovery.test_ledger.StoreTests.test_post_rename_fsync_failure_never_returns_or_refunds_grant) ... ok
+test_private_mode_symlink_and_hardlink_are_required (tools.serve_recovery.test_ledger.StoreTests.test_private_mode_symlink_and_hardlink_are_required) ... ok
+test_real_writer_crash_before_rename_keeps_spent_authorization (tools.serve_recovery.test_ledger.StoreTests.test_real_writer_crash_before_rename_keeps_spent_authorization) ... ok
+test_second_initialization_never_truncates_history (tools.serve_recovery.test_ledger.StoreTests.test_second_initialization_never_truncates_history) ... ok
+test_short_writes_are_completed_before_commit (tools.serve_recovery.test_ledger.StoreTests.test_short_writes_are_completed_before_commit) ... ok
+test_single_writer_and_service_identity_are_enforced (tools.serve_recovery.test_ledger.StoreTests.test_single_writer_and_service_identity_are_enforced) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_birth_namespace_and_descriptor_replacement_are_not_trusted (tools.serve_host.test_native.NativeTests.test_birth_namespace_and_descriptor_replacement_are_not_trusted) ... ok
+test_legacy_run_migrates_then_archives_and_retires (tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires) ... ok
+test_whole_journal_loss_cannot_rebootstrap_and_launch_stays_deferred (tools.serve_recovery.test_access_management.ManagementTests.test_whole_journal_loss_cannot_rebootstrap_and_launch_stays_deferred) ... ok
+test_cli_propose_apply_query_replay_and_stale_revision (tools.serve_recovery.test_access_management.ManagementTests.test_cli_propose_apply_query_replay_and_stale_revision) ... ok
+
+======================================================================
+ERROR: test_actual_retained_legacy_store_cannot_grant_after_upgrade (tools.serve_recovery.test_deployment.DeploymentTests.test_actual_retained_legacy_store_cannot_grant_after_upgrade)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmp4li14q0a/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_bad_package_or_client_capacity_does_not_publish_pending_switch (tools.serve_recovery.test_deployment.DeploymentTests.test_bad_package_or_client_capacity_does_not_publish_pending_switch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmpra84pj_b/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_before_and_after_descriptor_rename_resume_same_transaction (tools.serve_recovery.test_deployment.DeploymentTests.test_before_and_after_descriptor_rename_resume_same_transaction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmpa3iwzy72/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_bootstrap_outer_marker_publication_can_resume_without_reseeding (tools.serve_recovery.test_deployment.DeploymentTests.test_bootstrap_outer_marker_publication_can_resume_without_reseeding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmp60_b4sg6/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys (tools.serve_recovery.test_deployment.DeploymentTests.test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmp9yyxtz9n/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets (tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmp87acwbya/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_owned_locks_nonstopped_state_and_changed_request_refuse_switch (tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmpa7n1z1hv/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_partial_unpublished_bootstrap_recovers_but_published_loss_never_resets (tools.serve_recovery.test_deployment.DeploymentTests.test_partial_unpublished_bootstrap_recovers_but_published_loss_never_resets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmp40xd91oy/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_readonly_observation_and_retention_protect_selected_and_rollback_packages (tools.serve_recovery.test_deployment.DeploymentTests.test_readonly_observation_and_retention_protect_selected_and_rollback_packages)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmpu7ug4ts3/legacy/bin/q4t'
+
+======================================================================
+ERROR: test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage (tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 38, in setUp
+    (self.legacy/'bin/q4t').write_bytes(bundle.launcher(self.old_digest, value['python']['path']))
+  File "/usr/lib/python3.12/pathlib.py", line 1038, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/deployment-cpu-01/fixtures/tmppyfj0zd5/legacy/bin/q4t'
+
+----------------------------------------------------------------------
+Ran 31 tests in 1.068s
+
+FAILED (errors=10)

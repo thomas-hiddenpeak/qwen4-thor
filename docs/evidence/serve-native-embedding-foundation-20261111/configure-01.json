@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    ".",
+    "-B",
+    ".q4t-work/serve-custom-tools-20261108/engine-build"
+  ],
+  "exit_code": 0,
+  "seconds": 0.6582753020338714
+}

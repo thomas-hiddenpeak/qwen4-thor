@@ -1,0 +1,9 @@
+[PASS] ingress_http_policy_validation_is_transactional
+[PASS] ingress_proxy_untrusted_metadata_is_never_authority
+[PASS] ingress_proxy_chain_stops_at_first_untrusted_source
+[PASS] ingress_proxy_ipv6_and_port_syntax
+[PASS] ingress_xforwarded_parallel_lists_and_safe_singletons
+[PASS] ingress_proxy_invalid_or_ambiguous_chain_never_falls_back
+[PASS] ingress_prefix_preserves_encoding_and_requires_stripping_authority
+[PASS] ingress_forwarding_headers_have_bounded_unambiguous_storage
+8 tests, 8 passed, 0 failed, 0 skipped

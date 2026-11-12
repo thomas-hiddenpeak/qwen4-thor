@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+  "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+  "engine_binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+  "recovery_accepted": false
+}

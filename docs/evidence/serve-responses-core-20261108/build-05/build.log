@@ -1,0 +1,52 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[  4%] Built target q4t_text
+[ 28%] Built target xgrammar
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_choices.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_response_parser.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/completion_plan.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/completion_response.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/custom_grammar.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/custom_regex.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/custom_tools.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/http_response.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/input_contract.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/model_catalog.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/output_constraints.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/output_schema.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/responses_output.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/schema_grammar.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/text_stop.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/token_logprobs.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_contract_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_response_parser_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_sampling_response_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_client_policy_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_completion_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_custom_tools_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_http_observation_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_http_response_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_legacy_tools_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_output_constraints_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_responses_output_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_schema_token_guard_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_service_health_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_text_stop_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_thinking_budget_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 40%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

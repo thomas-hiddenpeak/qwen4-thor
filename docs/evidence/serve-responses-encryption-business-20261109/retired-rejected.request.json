@@ -1,0 +1,58 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "store": false,
+    "reasoning": {
+      "effort": "low"
+    },
+    "max_output_tokens": 384,
+    "include": [
+      "reasoning.encrypted_content"
+    ],
+    "input": [
+      {
+        "id": "rs_e7b35426485d3dba3e0b2d02b7afddab",
+        "type": "reasoning",
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:4a58c96daea10f5c8acef5113774c236:eab72015786d89bebdb83c18:f72847b68a1c6adf861ebc6c7a0bc14e:4294f31ef7c1a1c015fc51f0644f73ee9adbc1b89f981ae04dcf665cb320e0f5ebe012dc0db193ad30f01f924c93bb1f9c22a06cd8fd9c24617f64aeaacb9d34888e474a5802a6c161f42919a76540d4e77559fe890a765c82b5a23c680ffc029860121b75ed5ea9c04639cb4869be2caf257a34ecd44bba699eddd00325a2a070923f5c08f04174eab47c93fe3e338bfe49f8d50916d090f6dbd62a03adeec09d8ed11c3a228d4b4c521703109f627798f671f87d6cdf5908b58174e314a41895a33607ecf9827ae245d2a97935043706f0ef63111d92d6d015369b0f33ed84f1c4e8faacab33ae64a2bd38a67147fc2976053401be81b7883f580b62e493cbc36ee940419e89b0f2adf6b5c3621968c0b0648e2d99ed6a7b37ba66939a10dd261c2d76f5827ba624e211a9519129a27a7df7f4dc31e13c3cde1568c7234d5f341edf3e19bd531b00f40304e48c04296218a83f69c4a354a50ae8483aadc88687fe422ddc2098ec6a0aa15f8c2c5154c74ed14a3810253206880d4cec9934f69a2a412f7f6532f006df5e00a0d41b43113d564cbf0747c67ad0a9bcec6795f5fab05f63dd3b640088712274afbc23bc5a91e1a83eaf516ea53bd89c6014703f25afb8ec31df19f583044a040a2fb4ba5ee4"
+      },
+      {
+        "id": "msg_bd97c178f1a7f88ddb452d16da3d3514",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "id": "rs_53062e2af49969ef28ede33cb74579b9",
+        "type": "reasoning",
+        "status": "completed",
+        "summary": [],
+        "encrypted_content": "q4t1:4a58c96daea10f5c8acef5113774c236:28faae1d56b943cd42163678:bfa5811d0703c5b27bf3ae95b6f558aa:c3a20edc9a4c3c2e894bbd71951504ca971079db5c73af89efea96ebf60978ef02c4b3016fd526bbd8a28296e101cbc725481f089d2ca98959050e037f5aa9d045574202ab278aa3ee462aeabd36c08467fb62f07b74da3b6df57e892afc796110c59109e4cc32e52028265a1ef7a569b8ee12060ef67ad159dd13550d2e0454c081730845f93a2abd4390b1cb8f1c78531f2737abb25581ff0bb7dde7edd5008b577d3c6a6fd7fcb653397807a1713ef6b2088d6bbf8aa235837ced8ad83e3f64599729a270e256c5bb02ffc0e8caed4eefaf6817c802fe6b0382fe13dd0bfff56eea6bca7a34c8bf74874f66fda4ab19c5569ee3040922f65096453b79da3f3f425e02bc6b1e7d93b85448ac6793e4e5795963da6dfc372802d29b3e5d41f4c27d6cd8e8c5461ad320dd71a04c332f72667f6d313c26a75d42a73f1bb94f90d879b24c667cafd6409c15681ecbdd5080a25cd082b86d3961e5764d528ce5d956a0d157b6efe1544a0dee8d2e9ee9f8852f02ad4f330059cf53f83f4f94cce23b02760658f42c91a1818db0cc63994cdab3c7079461872844c2f41d8decf7b355b163babf983ea048775cf457b597be6358e2300d7a629ba8968682c572179307afc33e3c98929661232b9cfcdc2473bf6d1dc23bc7dc03bb3ebbd2f340f76cf00d0c31a62bc2f44bd40867f528815f5da3009075d9c61d18222f53c64e66e5d56b65e1955ef22289299b1736bb6f9f89cd05d274f8181e3754da967b9e8c00ca40fdd12bd78fa534fba14b9abfb41bb28c92aab8545577715eb5cdd8c6ef9d74744cd864592733fe0e14e757918baf98801ed0d308c90cfcb215de48eddf49ad2bd35bb041af8bc959bee48a1908056381a471d8d55846d550e6345e1d675a9349eff5c4a06715c5821a9188e2688c4b6d095a7368c6d39b93800e1a0c665d31b58f280efcdba4d047d9c9515f1e98cc4581ceee34736141a76508a76ddbf8cb0c4f74091f20b57cac1768dcb88286b91b8e491d7291f21edddbbae1c738806316a4205bdcfce7d8b391671175df8f922d6b411fa71d70ae97c64a57df3be5707ed7270082cb9ad5bc8d57570fda0b62601b027394845e1c1c56594043f547f66195022c43ea6f104c7965fa60bde71fd6258a0b2a981d08f27970e1b06291e3b41d99774c63e8f7e1403db1fdcc72eafb156cf8ae1243aead050b354432b6aa951ef36be167add5903319c1e4b03bbbf55bae70c80fb1e48a319a9288463167f65cc789bff2264423"
+      },
+      {
+        "role": "user",
+        "content": "What was the result of the preceding calculation? Reply only with the decimal number."
+      }
+    ]
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18985/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

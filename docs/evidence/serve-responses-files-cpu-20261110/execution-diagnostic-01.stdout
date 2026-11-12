@@ -1,0 +1,43 @@
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+[New Thread 0xfffff7a5f060 (LWP 1376039)]
+[Detaching after vfork from child process 1376040]
+[Thread 0xfffff7a5f060 (LWP 1376039) exited]
+[New Thread 0xfffff7a5f060 (LWP 1376041)]
+[Detaching after vfork from child process 1376042]
+[Thread 0xfffff7a5f060 (LWP 1376041) exited]
+[New Thread 0xfffff7a5f060 (LWP 1376043)]
+[Detaching after vfork from child process 1376044]
+[Thread 0xfffff7a5f060 (LWP 1376043) exited]
+[New Thread 0xfffff7a5f060 (LWP 1376045)]
+[Detaching after vfork from child process 1376046]
+[Thread 0xfffff7a5f060 (LWP 1376045) exited]
+[New Thread 0xfffff7a5f060 (LWP 1376047)]
+[Detaching after vfork from child process 1376048]
+[Thread 0xfffff7a5f060 (LWP 1376047) exited]
+[New Thread 0xfffff6dbf060 (LWP 1376049)]
+[Detaching after vfork from child process 1376050]
+[Thread 0xfffff6dbf060 (LWP 1376049) exited]
+[New Thread 0xfffff6dbf060 (LWP 1376051)]
+[Detaching after vfork from child process 1376052]
+[Thread 0xfffff6dbf060 (LWP 1376051) exited]
+[New Thread 0xfffff6dbf060 (LWP 1376053)]
+[Detaching after vfork from child process 1376054]
+[Detaching after vfork from child process 1376055]
+[Thread 0xfffff6dbf060 (LWP 1376053) exited]
+[New Thread 0xfffff6dbf060 (LWP 1376056)]
+[Detaching after vfork from child process 1376057]
+
+Thread 1 "q4t_host_tests" received signal SIGSEGV, Segmentation fault.
+0x0000aaaaab286834 in q4t::server::PrepareChatPrompt(q4t::io::Json const&, q4t::server::OutputConstraints const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<q4t::server::VisionItem, std::allocator<q4t::server::VisionItem> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, q4t::server::ChatPromptLayout*, bool) ()
+#0  0x0000aaaaab286834 in q4t::server::PrepareChatPrompt(q4t::io::Json const&, q4t::server::OutputConstraints const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<q4t::server::VisionItem, std::allocator<q4t::server::VisionItem> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, q4t::server::ChatPromptLayout*, bool) ()
+#1  0x0000aaaaaaeeb2f4 in (anonymous namespace)::Prompt(q4t::server::ResponsesExecution const&) ()
+#2  0x0000aaaaaaeec66c in q4t_test_fn_responses_files_inline_reaches_actual_template_without_state_io() ()
+#3  0x0000aaaaaaff6578 in q4t::test::RunTests(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&, bool) ()
+#4  0x0000aaaaaaad9adc in main ()

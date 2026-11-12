@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "binary_sha256": "7ca39aa66157ca4c71ebb575ec578b8435aec025e6ca7cad4878ba31ea168fdc",
+  "scope": "CPU-only shared production semantics; no tokenizer, model or CUDA"
+}

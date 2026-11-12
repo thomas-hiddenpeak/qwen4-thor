@@ -1,0 +1,6 @@
+test_real_cpu_high_counter_and_physical_memory_are_separate (tools.serve_recovery.test_resource_memory.KernelTests.test_real_cpu_high_counter_and_physical_memory_are_separate) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.762s
+
+OK

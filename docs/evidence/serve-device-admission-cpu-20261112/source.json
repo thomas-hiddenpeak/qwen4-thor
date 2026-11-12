@@ -1,0 +1,8 @@
+{
+  "cmake/GuardianProcess.cmake": "71c98f31c01e0b795b5c48a3ff8a796a2f7e5328b1ba05ce45781fbdbdeea1dd",
+  "include/q4t/service/device_admission.h": "c0f7d3d4a5248b16d3e8f57ec21f21d16a8fc0e1d90f4cd93666fd7b1a7d68b2",
+  "src/service/device_admission.cpp": "ccd6c70932e278617768893639a53fce9a74fb12e1cc732f70f5d72f7d1366a7",
+  "include/q4t/service/device_filter.h": "9c36b2d8dce3967b556d6a9880bcf2256f54d400e4fa22fc901b4abb61ac1df6",
+  "src/service/device_filter.cpp": "1b36733d41e9a5e76f80627e1d96462531dd6111af2cbd28c77317dc9f0f5800",
+  "tests/device_filter_test.cpp": "dc6fb2fba1a4133d66ea021d0b44ee70adb835b1599827fb925e38f4f375330e"
+}

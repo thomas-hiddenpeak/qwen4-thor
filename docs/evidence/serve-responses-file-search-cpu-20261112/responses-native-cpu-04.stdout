@@ -1,0 +1,3 @@
+[PASS] responses_native_search_citation_wire_and_previous_response_reuse
+[PASS] responses_native_search_prewarm_has_no_variable_tool_execution
+2 tests, 2 passed, 0 failed, 0 skipped

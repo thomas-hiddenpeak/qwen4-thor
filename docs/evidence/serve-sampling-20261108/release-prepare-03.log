@@ -1,0 +1,11 @@
+{
+  "receipt": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/release-01/bundle",
+    "manifest_sha256": "78b76a7b71ddaa57ba0e6675881512759a5df7a2a8e5fa8acbabe37f5cc368c6",
+    "engine_binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215",
+    "recovery_accepted": false
+  },
+  "protocol": "e446567fc55bdd11f6d2ca07f604ec61c02bc3f9bb1ce089b8a467df61efbe28",
+  "lease_seconds": 55.77735830377787,
+  "nvml_queries": 53
+}

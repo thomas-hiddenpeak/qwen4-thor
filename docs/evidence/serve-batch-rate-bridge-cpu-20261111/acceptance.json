@@ -1,0 +1,48 @@
+{
+  "status": "PASS_BATCH_RATE_OWNERSHIP_BRIDGE_CPU",
+  "distinct_tests": 24,
+  "new_tests": 7,
+  "extended_tests": 1,
+  "passed": 24,
+  "skipped": 0,
+  "rounds": [
+    {
+      "name": "rate-bridge-cpu",
+      "argv": [
+        ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-batches-20261110/rate-bridge-required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 0.6145642059855163
+    },
+    {
+      "name": "rate-bridge-cpu-fix1",
+      "argv": [
+        ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-batches-20261110/rate-bridge-retry-required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 0.003692071884870529
+    },
+    {
+      "name": "rate-bridge-cpu-fix2",
+      "argv": [
+        ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-batches-20261110/rate-bridge-retry-required.txt"
+      ],
+      "exit_code": 0,
+      "seconds": 1.3153960960917175
+    }
+  ],
+  "first_failure": "Test fixture used v1 with rate fields; first repair omitted mandatory v2 fair_queue. Both failures preserved. Production sources unchanged across all test rounds.",
+  "builds_zero_warning": true,
+  "source_anchors": 487,
+  "gpu_starts": 0,
+  "engine_sha256": "3ec0c3db1fccdde7542ccdd57e657db9a5d1d890f6f72e394c8ca55976ec2288",
+  "host_sha256": "7b648911c59ee889ecc2a748248598e3cce4bacf4f47dfaf4be0a277b68a0cc6",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Native Batch request budgets, scheduler minute waits before durable start, recovered background rate admission, public HTTP/SDK/CLI and actual business, rollback/default delivery, all master tasks."
+}

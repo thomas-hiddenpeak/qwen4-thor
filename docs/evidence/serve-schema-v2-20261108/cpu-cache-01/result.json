@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "groups": [
+    {
+      "group": "host",
+      "exit": 0,
+      "seconds": 0.007787618786096573
+    },
+    {
+      "group": "target",
+      "exit": 0,
+      "seconds": 0.007465119007974863
+    },
+    {
+      "group": "storage",
+      "exit": 0,
+      "seconds": 0.06360248243436217
+    },
+    {
+      "group": "python",
+      "exit": 0,
+      "seconds": 0.11363307805731893
+    },
+    {
+      "group": "js",
+      "exit": 0,
+      "seconds": 0.11381860496476293
+    }
+  ]
+}

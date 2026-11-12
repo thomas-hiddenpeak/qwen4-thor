@@ -1,0 +1,10 @@
+✔ ambiguous formats, malformed tools and orphan history reject locally (2.763977ms)
+✔ schema and active tools preserve explicit cache identity (1.044739ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.708997

@@ -1,0 +1,13 @@
+{
+  "name": "actual-project-record",
+  "file_ids": [
+    "file_924d78c1d77ad044c3ef0e8ca424b681"
+  ],
+  "chunking_strategy": {
+    "type": "static",
+    "static": {
+      "max_chunk_size_tokens": 4096,
+      "chunk_overlap_tokens": 0
+    }
+  }
+}

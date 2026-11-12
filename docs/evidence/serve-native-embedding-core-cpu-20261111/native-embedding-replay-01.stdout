@@ -1,0 +1,13 @@
+[  0%] Built target q4t_runtime
+[  0%] Built target q4t_trace
+[ 14%] Built target q4t_io
+[ 28%] Built target q4t_ple
+[ 42%] Built target q4t_text
+[ 57%] Built target q4t_quant
+[100%] Built target q4t_model
+[100%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/tools/native_embedding/model_replay.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/embedding_assets.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/grammar_process.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/worker_io_broker.cpp.o
+[100%] Linking CXX executable q4t_embedding_replay
+[100%] Built target q4t_embedding_replay

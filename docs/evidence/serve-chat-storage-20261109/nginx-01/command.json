@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-B",
+  "tools/serve_recovery/test_gateway_nginx.py",
+  "--nginx",
+  ".q4t-work/serve-gateway-20261103/vendor/root/usr/sbin/nginx",
+  "NginxTests.test_application_routes_preserve_methods_queries_and_identity",
+  "-v"
+]

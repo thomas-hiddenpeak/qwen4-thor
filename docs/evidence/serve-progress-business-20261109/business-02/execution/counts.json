@@ -1,0 +1,76 @@
+{
+  "counts": {
+    "starts": 3,
+    "chats": 9,
+    "probes": 1,
+    "controls": 796
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 2,
+      "monotonic_ns": 2371530607097719
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 2,
+      "monotonic_ns": 2371569274119057
+    },
+    {
+      "kind": "chats",
+      "label": "initial-json",
+      "ordinal": 3,
+      "monotonic_ns": 2371570604690207
+    },
+    {
+      "kind": "chats",
+      "label": "initial-sse",
+      "ordinal": 4,
+      "monotonic_ns": 2371570938277330
+    },
+    {
+      "kind": "probes",
+      "label": "controller-1",
+      "ordinal": 1,
+      "monotonic_ns": 2371634632180386
+    },
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 3,
+      "monotonic_ns": 2371639099205254
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 5,
+      "monotonic_ns": 2371675250755018
+    },
+    {
+      "kind": "chats",
+      "label": "recovered-tool",
+      "ordinal": 6,
+      "monotonic_ns": 2371694747880623
+    },
+    {
+      "kind": "chats",
+      "label": "recovered-tool-final",
+      "ordinal": 7,
+      "monotonic_ns": 2371698116419368
+    },
+    {
+      "kind": "chats",
+      "label": "observation-lost-json",
+      "ordinal": 8,
+      "monotonic_ns": 2371699711600920
+    },
+    {
+      "kind": "chats",
+      "label": "observation-lost-sse",
+      "ordinal": 9,
+      "monotonic_ns": 2371700064036572
+    }
+  ]
+}

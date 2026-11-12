@@ -1,0 +1,21 @@
+{
+  "source_base": "5f4b12f65e19dd9369272031fcb37c37e0353376",
+  "current_sources": {
+    "tools/serve_host/native.py": "76398318f061e75dc689298b5d80e6ccfd5ceb58d2d464e3c0da833ce26ff9da",
+    "tools/serve_host/native_exporter.py": "086b1c3ced3471a35cd0450a58e132ca65177fffe141ff4016bc73b6fb1dd482",
+    "tools/serve_host/test_native.py": "7b81f1c05e04368e5041dc549a28596d1f0646ef30710ee79ff0b748d616cd8f",
+    "tools/serve_recovery/bundle.py": "35669687bdee0738d0dd52cc98e5606c0cc99b8c5863ccb5dee12af88446c395",
+    "tools/serve_recovery/service.py": "66e9228cdb64d23d531402798b4c0fae655fdcc30e2d832d56b63aa56c09d681",
+    "tools/serve_recovery/acceptance.py": "8b58c6a37a3e257f86d6f678eee079cd56a1c1315d6ba0008afe8e96f507b4a3",
+    "tools/serve_recovery/test_native_bundle.py": "839e0609339de82cf70465eb0d3d1b49c557c9fd3a078a43d77d8ad506cc10c1"
+  },
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  },
+  "result_01_scope": "10 CPU cases; after review readiness identity/device failure projection strengthened. Three affected cases rerun in result_02. Unchanged branches reused; result_01 is not claimed to use final source bytes.",
+  "result_02_scope": "Final source: auxiliary/identity projection, actual private status IPC, actual STOPPED default and v5 verification.",
+  "pending": "Actual shipped v6 CLI/export invocation and protected retention; default still accepted v5."
+}

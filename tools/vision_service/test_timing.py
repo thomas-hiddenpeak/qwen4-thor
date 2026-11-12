@@ -10,7 +10,7 @@ from tools.vision_service import timing_analysis as a
 def record(**changes):
     row = dict(version="1", id="request", clock="host_wall", completed="1",
                items="1", frames="1", patches="64", total_ms="14", other_ms="1")
-    row.update({name + suffix: "1" for name in a.STAGES
+    row.update({name + suffix: "1" for name in a.STAGES_V1
                 for suffix in ("_ms", "_calls")})
     row.update(changes)
     return a.PREFIX + " ".join(k + "=" + v for k, v in row.items())
@@ -20,6 +20,22 @@ class Timing(unittest.TestCase):
     def test_complete_partition(self):
         row = a.parse_records("unrelated log\n" + record())["request"]
         self.assertEqual(row["total_ms"], 14)
+
+    def test_gif_version_two_and_legacy_zero_are_distinct(self):
+        legacy = a.parse_records(record())["request"]
+        self.assertEqual(legacy["decode_gif_calls"], 0)
+        body = dict(request_id="request", messages=[dict(content=[dict(
+            type="image_url", image_url=dict(url="data:image/gif;base64,abc"))])])
+        row = a.parse_records(record(version="2", decode_gif_calls="1",
+            decode_gif_ms="1", decode_png_calls="0", decode_png_ms="0",
+            decode_jpeg_calls="0", decode_jpeg_ms="0", other_ms="2",
+            cleanup_calls="3"))["request"]
+        self.assertEqual(a.validate_request(row, body)["gif"], 1)
+        for value in (record(decode_gif_ms="0", decode_gif_calls="0"),
+                      record(version="3"),
+                      record(version="2", decode_gif_ms="1")):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                a.parse_records(value)
 
     def test_missing_duplicate_or_changed_fields(self):
         for value in (record().replace(" prepare_ms=1", ""),

@@ -1,0 +1,220 @@
+[
+  {
+    "id": "session_id-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":1024}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "stop-cache",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"end\",\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true
+    }
+  },
+  {
+    "id": "stop-inactive-cache-seed",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"end\",\"prefix_cache_write_tokens\":0}"
+    }
+  },
+  {
+    "id": "session_id-disabled",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "prefix_cache_scope-disabled",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "schema-v2-cache-session_id",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "schema-v2-cache-disabled-session_id",
+    "expected": false,
+    "shape_expected": null,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "schema-v2-cache-prefix_cache_scope",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "schema-v2-cache-disabled-prefix_cache_scope",
+    "expected": false,
+    "shape_expected": null,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "schema-v2-json-legacy-tool",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":\"auto\"}"
+    }
+  }
+]

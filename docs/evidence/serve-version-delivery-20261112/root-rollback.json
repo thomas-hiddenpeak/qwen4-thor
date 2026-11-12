@@ -1,0 +1,26 @@
+{
+  "label": "root-rollback",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle/engine/q4t",
+    "service",
+    "publish-rollback",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+    "--manifest-sha256",
+    "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+    "--generation-sha256",
+    "f07eead5c243d57c1150761e2a860c0da75450fc0c018079af9a82946ade8b2f",
+    "--expected-manifest-sha256",
+    "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+    "--expected-revision",
+    "60",
+    "--request-id",
+    "d348dde6-579d-4ce3-8a31-be3fbb6135b6"
+  ],
+  "returncode": 0,
+  "seconds": 9.49539037887007
+}

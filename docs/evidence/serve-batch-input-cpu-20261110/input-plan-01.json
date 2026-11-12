@@ -1,0 +1,36 @@
+{
+  "cases": [
+    "batch_create_all_endpoints_defaults_and_output_expiry",
+    "batch_create_invalid_fields_are_transactional",
+    "batch_jsonl_fragmentation_preserves_ids_body_and_decimal_text",
+    "batch_jsonl_crlf_offsets_and_unterminated_final_line",
+    "batch_jsonl_rejects_blank_bom_invalid_utf8_and_truncated_json",
+    "batch_jsonl_duplicate_decoded_ids_and_duplicate_keys_rejected",
+    "batch_jsonl_envelope_method_url_and_stream_rejected_before_checker",
+    "batch_jsonl_canonical_model_alias_default_and_mismatch",
+    "batch_jsonl_endpoint_failure_and_stage_unknown_are_sticky",
+    "batch_jsonl_cancellation_before_feed_and_after_validation",
+    "batch_jsonl_exact_configured_file_line_and_row_limits",
+    "batch_jsonl_embedding_total_is_separate_from_request_count",
+    "batch_jsonl_actual_200mb_50000_rows_keep_one_line_buffer",
+    "batch_jsonl_invalid_internal_limits_and_missing_resolver_rejected"
+  ],
+  "source_files": {
+    "include/q4t/server/batch_input.h": "4719a6230734a1c4cb04850e15bb5d5febadb9bb4cf8bc4dbf9ffaa999546086",
+    "src/server/batch_input.cpp": "a064dc01f70e647f0493f00802185d2afbbb7124dcee14ed2961a7436c497859",
+    "tests/server_batch_input_test.cpp": "6af037984db94bb5763c9497b16eb28ceaa4f28da8cf64679348561fe486e833",
+    "cmake/HostTestSources.cmake": "9e03706ab3ecb29b734b7e0a2ce95ed9215ebbd2f63a7b78e43a8b688046c610",
+    "cmake/ChatProtocolIdentity.cmake": "88be3fdf266c77cdc34e912f271edfd9b4c8be35d5be4800b32b6ca1baca2a42",
+    "CMakeLists.txt": "7d5e0dda6161ca60e4a06cbfb1cb2a516bf4d424507b165f8c19aa90c89b7eb2",
+    "tools/serve_audit/check_inventory.py": "0954c72f13a44b7c622e99291e0408d03bb77cbf11f399381ea8033ef4cef12b"
+  },
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/915ffc62999ff0dbbd9eb9d6e16334760120b466894f4c720ff9ffb796d87c87/q4t": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+    "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/915ffc62999ff0dbbd9eb9d6e16334760120b466894f4c720ff9ffb796d87c87/q4t.release.json": "229e023d8b4eb6887d2a6d09a8a748b11c122ff117fe230c1107e7e9f001b431",
+    "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/915ffc62999ff0dbbd9eb9d6e16334760120b466894f4c720ff9ffb796d87c87/service.release.json": "b24bad47595d0a1ee8d0f1382994448a8c8cd980953b24a1feb7706c776fcb08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle/manifest.json": "0dc8948d8847ea11776313477b67da0d93687b3608568c38bd888be0834700ea"
+  },
+  "gpu": 0,
+  "network": 0,
+  "scope": "Envelope/streaming JSONL component only; actual200000000 bytes and50000 rows, private staging callbacks never model execution; real executor/HTTP/recovery still required"
+}

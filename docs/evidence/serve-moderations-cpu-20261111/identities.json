@@ -1,0 +1,30 @@
+{
+  "candidate_binary": {
+    "host": {
+      "path": ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "sha256": "818f31ec73ec09240461353ebfe0e0add736009668334e2bb244ca0afc1e653d"
+    },
+    "engine": {
+      "path": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+      "sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851"
+    },
+    "ingress": {
+      "path": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+      "sha256": "39757f08e8b3b67f4f1f82f44488d784a7ed1dddc2902db751d280ceda3b0660"
+    }
+  },
+  "source_sha256": {
+    "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",
+    "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
+    "src/server/chat_moderations.cpp": "172e20218353d4f9109d23e85967c02163070935706908a61810c0b2a7aec4af",
+    "include/q4t/server/moderations_plan.h": "f33b9685f35057d70b7b969db80d951a894bd687b3d306aa0b74e4637fbe2140",
+    "include/q4t/server/moderations_execution.h": "85014d7bd65cb4710e3cf755f7297e0f4e65bddf595445bb9a16a0600d1f1088",
+    "cmake/ChatProtocolIdentity.cmake": "a66aab54c761a4db217f7dc15cf6f5b6947c71ee3e4b67894e7b7f84557e22a4"
+  },
+  "default": {
+    "build/q4t": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+    "build/q4t.release.json": "226c812bb798bae6d10e370b24aee65540746de733ec652d9ac30731512d95ea",
+    "build/service/manifest.json": "25061a30fdc43be7b8b1ae900f9fc2fd2b7df92bec8b006559d22268594d0ea4",
+    "build/service.release.json": "39965135e4b1049334d0f8012b0e6fa15a821db015b5684af0067f49533ecfb9"
+  }
+}

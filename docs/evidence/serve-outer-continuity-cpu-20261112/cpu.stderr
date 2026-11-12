@@ -1,0 +1,10 @@
+test_completion_keeps_state_package_and_all_consumed_evidence (tools.serve_recovery.test_outer_acceptance.ContinuityTests.test_completion_keeps_state_package_and_all_consumed_evidence) ... ok
+test_exact_seal_requires_previous_generation_and_snapshot (tools.serve_recovery.test_outer_acceptance.ContinuityTests.test_exact_seal_requires_previous_generation_and_snapshot) ... ok
+test_unsealed_crash_requires_real_expired_gate_and_exact_owner (tools.serve_recovery.test_outer_acceptance.ContinuityTests.test_unsealed_crash_requires_real_expired_gate_and_exact_owner) ... ok
+test_state_and_accounting_use_exact_preinitialized_resource_service (tools.serve_recovery.test_outer_acceptance.DriverTests.test_state_and_accounting_use_exact_preinitialized_resource_service) ... ok
+test_original_and_repair_scenarios_have_distinct_fixed_caps (tools.serve_recovery.test_outer_acceptance.RepairTests.test_original_and_repair_scenarios_have_distinct_fixed_caps) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.030s
+
+OK

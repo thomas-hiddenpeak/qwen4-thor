@@ -1,0 +1,60 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/required-cpu-echo.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.007599493954330683
+  },
+  {
+    "name": "driver",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_input_tokens_acceptance",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.3140824460424483
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11394699290394783
+  },
+  {
+    "name": "application",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_responses/build_contract.py",
+      "--types",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/application-types.json",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06378481909632683
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 0.11384390061721206
+  }
+]

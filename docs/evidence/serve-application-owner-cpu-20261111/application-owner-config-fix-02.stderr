@@ -1,0 +1,6 @@
+test_config_accepts_new_diagnostics_and_historical_absence (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_config_accepts_new_diagnostics_and_historical_absence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.015s
+
+OK

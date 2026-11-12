@@ -1,0 +1,9 @@
+{
+  "CMakeLists.txt": "c126187bd90941e9861d9011b96e80711e65e5bd5d46803296ca6ab4d9c36aed",
+  "cmake/HostTestSources.cmake": "7042ac2cafd60e75414262ffe056ac360e8ef872554f4cc70e8a19af931ef6ab",
+  "include/q4t/server/batch_validation.h": "eedcd089176ee16929f9e0d0e992dca130d936900a2ca7d318ab80ebdfd727b2",
+  "src/server/batch_validation.cpp": "164062c146dc52ac468aa3dbbfc42ae5673fd252ad0893d07d7f405de7937b61",
+  "tests/server_batch_preparation_test.cpp": "8943881ab776d1dcd977e6e21166f0fc0e9955d9b039bcddfdd05b3ec6dcd544",
+  "src/server/batch_state.cpp": "2c71487c21eb98ede4bd81785e9746c0c2e5d4c4f660bb416b15f6955927dd84",
+  "src/server/batch_preparation.cpp": "1ace0c651cc9517b4c08e028d86cb66bd115c05680b23790b8af889a13495260"
+}

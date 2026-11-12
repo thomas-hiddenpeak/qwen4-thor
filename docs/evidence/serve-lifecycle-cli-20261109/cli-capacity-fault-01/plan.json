@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_production.ControllerTests.test_changed_bundle_quarantines_before_spending_model_budget",
+    "tools.serve_recovery.test_production.ControllerTests.test_effective_capacity_mismatch_quarantines_without_retry_or_grant"
+  ],
+  "tests_count": 2,
+  "reason": "Permanent capacity mismatch must quarantine instead of escaping as controller failure",
+  "gpu_starts": 0
+}

@@ -1,0 +1,42 @@
+{
+  "status": "FAILED",
+  "commands": [
+    {
+      "name": "reference",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/tools/native_embedding/reference.py",
+        "--assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/plan.json",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/reference"
+      ],
+      "exit_code": 0,
+      "seconds": 8.088994482066482
+    },
+    {
+      "name": "native",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_embedding_replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native"
+      ],
+      "exit_code": 0,
+      "seconds": 2.416492342017591
+    }
+  ],
+  "limits": {
+    "seconds": 900,
+    "cpu_model_starts": 1,
+    "gpu_model_starts": 1,
+    "native_forwards": 14,
+    "reference_forwards": 14,
+    "http_requests": 0
+  },
+  "error": "AssertionError('native numerical or retrieval criteria not met')",
+  "seconds": 10.668297052383423,
+  "default_unchanged": true
+}

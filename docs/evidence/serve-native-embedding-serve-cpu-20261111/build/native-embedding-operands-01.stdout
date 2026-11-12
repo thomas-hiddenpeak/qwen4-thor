@@ -1,0 +1,68 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_runtime
+[  0%] Built target q4t_trace
+[ 28%] Built target q4t_ple
+[ 28%] Built target q4t_io
+[ 42%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 42%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/embedding_model.cu.o
+[ 42%] Linking CXX static library libq4t_model.a
+[ 85%] Built target q4t_model
+[ 85%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/embedding_assets.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/grammar_process.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/src/server/worker_io_broker.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_embedding_replay.dir/tools/native_embedding/model_replay.cpp.o
+[ 85%] Building CUDA object CMakeFiles/q4t_embedding_replay.dir/src/model/embedding_model.cu.o
+[100%] Linking CXX executable q4t_embedding_replay
+[100%] Built target q4t_embedding_replay
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  6%] Built target q4t_ple
+[  6%] Built target q4t_runtime
+[  9%] Built target q4t_regex_build
+[  9%] Built target q4t_trace
+[  9%] Generating service-tools/snapshot.done
+[ 12%] Built target q4t_text
+[ 12%] Built target q4t_quant
+[ 25%] Built target xgrammar
+[ 35%] Built target q4t_model
+[ 38%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/1ee8e0b47c1af0814dcfdbc069b16ddae87468ed193c45cd18864ddd8606036b", "manifest_sha256": "1ee8e0b47c1af0814dcfdbc069b16ddae87468ed193c45cd18864ddd8606036b", "model_actions": false}
+[ 38%] Built target q4t_service_tools
+[ 38%] Built target q4t_service_cli
+[ 38%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input_tokens.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_responses.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_moderations.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embeddings.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embedding_backend.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 45%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 48%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

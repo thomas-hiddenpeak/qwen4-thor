@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "result": {
+    "object": "list",
+    "model": "qwen3-embedding-0.6b",
+    "data": [
+      {
+        "object": "embedding",
+        "index": 0,
+        "embedding": "/OikvJFjvb2DSlO9zjImvoh24T3FRUq932EXvQEVMz42oga+g0rTvGmEk702oga+pag1Pr8ZPL2Tzn2+2YrCPiFdjr3WyXQ8L8uxPh5Hh74sCuQ7FlorPTI28r2rfwo/vFjuPfa8Fj386CS+aYSTPp1moL257S29vxm8urEA0ro="
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2,
+      "total_tokens": 2
+    }
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19067/v1/embeddings",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3-embedding-0.6b\",\"input\":[0,151643],\"dimensions\":32,\"encoding_format\":\"base64\"}"
+    }
+  ]
+}

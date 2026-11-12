@@ -1,0 +1,34 @@
+test_descriptor_and_publication_interruptions_resume_original_migration (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_descriptor_and_publication_interruptions_resume_original_migration) ... ok
+test_explicit_policy_update_preserves_existing_cooldown_deadline (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_explicit_policy_update_preserves_existing_cooldown_deadline) ... ok
+test_prepared_intent_interruption_keeps_old_state_then_migrates_once (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_prepared_intent_interruption_keeps_old_state_then_migrates_once) ... ok
+test_profile_directory_fsync_lost_receipt_replays_without_clock_credit (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_profile_directory_fsync_lost_receipt_replays_without_clock_credit) ... ok
+test_profile_rename_failure_requires_exact_deployment_and_recovers_once (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_profile_rename_failure_requires_exact_deployment_and_recovers_once) ... ok
+test_qualification_tamper_is_rejected_before_preparing_deployment (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_qualification_tamper_is_rejected_before_preparing_deployment) ... ok
+test_unrelated_pending_migration_receipt_cannot_be_adopted (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_unrelated_pending_migration_receipt_cannot_be_adopted) ... ok
+test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state) ... ERROR
+test_sealed_qualification_and_independent_ingress_bind_same_capacity (tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity) ... ok
+test_fresh_initialization_cli_status_and_lost_descriptor_keep_original_journals (tools.serve_recovery.test_profile_integration.IntegrationTests.test_fresh_initialization_cli_status_and_lost_descriptor_keep_original_journals) ... ok
+test_interrupted_enablement_keeps_keys_usage_budget_and_resumes_one_profile_seed (tools.serve_recovery.test_profile_integration.IntegrationTests.test_interrupted_enablement_keeps_keys_usage_budget_and_resumes_one_profile_seed) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity) ... ok
+test_http_profile_seals_normalized_policy_and_preserves_managed_binding (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_owned_locks_nonstopped_state_and_changed_request_refuse_switch (tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch) ... ok
+test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets (tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets) ... ok
+
+======================================================================
+ERROR: test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_deployment.py", line 98, in test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state
+    result = subprocess.run([sys.executable, '-B', '-c',
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '-B', '-c', 'import json,sys; sys.path.insert(0,sys.argv[1]); from tools.serve_recovery import profile_store; assert profile_store.__file__.startswith(sys.argv[1]); print(json.dumps(profile_store.execute(json.loads(sys.argv[2]),{"sequence":1,"op":"load"})))', '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/cpu-01/tmp8zs9860p/old/source', '{"state_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/cpu-01/tmp8zs9860p/state", "service_id": "874c95c6-3cca-49c2-85d5-9a2a8f870e6c", "state_identity": [66305, 7482446]}']' returned non-zero exit status 1.
+
+----------------------------------------------------------------------
+Ran 18 tests in 3.694s
+
+FAILED (errors=1)

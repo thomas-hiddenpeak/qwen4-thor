@@ -1,0 +1,12 @@
+{
+  "encryption-test": {
+    "requests": 7,
+    "input": 1584,
+    "output": 146
+  },
+  "access-standard": {
+    "requests": 1,
+    "input": 28,
+    "output": 3
+  }
+}

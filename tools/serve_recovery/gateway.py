@@ -25,7 +25,7 @@ from tools.serve_service import supervisor
 
 
 def listener(pid, host, port, binary):
-    """Verify an exact IPv4 listener, including an explicitly enabled LAN IP."""
+    """Verify an exact IPv4/IPv6 listener and its owning executable."""
     owner = supervisor.process_identity(pid)
     proc = Path('/proc')/str(pid)
     own, selected = Path('/proc/self/ns/net').stat(), (proc/'ns/net').stat()
@@ -39,9 +39,11 @@ def listener(pid, host, port, binary):
             owned.add(os.readlink(path))
         except FileNotFoundError:
             pass
-    address = socket.inet_aton(host)[::-1].hex().upper()
+    ipv6 = ':' in host
+    packed = socket.inet_pton(socket.AF_INET6 if ipv6 else socket.AF_INET, host)
+    address = b''.join(packed[i:i+4][::-1] for i in range(0, len(packed), 4)).hex().upper()
     matches = []
-    for row in identity.bounded_file('/proc/net/tcp').decode().splitlines()[1:]:
+    for row in identity.bounded_file('/proc/net/tcp6' if ipv6 else '/proc/net/tcp').decode().splitlines()[1:]:
         fields = row.split()
         ledger.require(len(fields) >= 10, 'invalid gateway listener observation')
         if fields[1].upper() == f'{address}:{port:04X}' and fields[3] == '0A':
@@ -74,9 +76,16 @@ class Admission:
         self.cached = None
         self.pidfd = None
         self.retry_at = 0
+        self.policy_channel = None
+        self.verified_clients = ()
+        self.failure_reason = 'gateway_verifying'
+        self.observed_generation = 0
 
     def close(self):
         self.cached = None
+        if self.policy_channel is not None:self.policy_channel.close()
+        self.policy_channel = None
+        self.verified_clients = ()
         if self.pidfd is not None:
             os.close(self.pidfd)
             self.pidfd = None
@@ -109,52 +118,116 @@ class Admission:
 
     def update(self):
         """Independent verification runs before opening a new generation."""
+        stage = 'gateway_control_unavailable'
         try:
             snapshot = self.fresh()
+            stage = 'gateway_observation_invalid'
+            ledger.require(ledger.integer(snapshot['model_generation']),
+                           'invalid observed model generation')
+            self.observed_generation = snapshot['model_generation']
             if self.matches(snapshot):
-                if snapshot['gateway_bound_model'] != snapshot['model_generation']:
+                installed = self.update_policy(snapshot)
+                if installed and snapshot['gateway_bound_model'] != snapshot['model_generation']:
                     self.channel.bound(snapshot['model_generation'])
+                    self.failure_reason = 'gateway_verifying'
+                elif not installed:
+                    self.reject('gateway_client_policy_unavailable')
                 return
             self.close()
-            self.channel.unbound()
-            if (not snapshot['model_ready'] or snapshot['stop_requested'] or
-                    snapshot['binding'] is None or time.monotonic() < self.retry_at):
+            if snapshot['stop_requested']:
+                self.reject('gateway_stopping')
+                return
+            if not snapshot['model_ready']:
+                self.reject('gateway_model_not_ready')
+                return
+            if snapshot['binding'] is None:
+                self.reject('gateway_binding_unavailable')
+                return
+            self.reject(self.failure_reason)
+            if time.monotonic() < self.retry_at:
                 return
             self.retry_at = time.monotonic()+1
+            stage = 'gateway_identity_mismatch'
             key = self.key(snapshot)
             p, value = self.config['policy'], snapshot['binding']
+            profiles = self.config.get('recovery_profiles', {}).get('profiles')
             expected = binding.validate(value, base=self.config['backend_policy'],
                 port=p['upstream_port'], operations_port=p['upstream_operations_port'],
-                binary=self.config['binary_sha256'], protocol=self.config['protocol_sha256'])
+                binary=self.config['binary_sha256'], protocol=self.config['protocol_sha256'],
+                profiles=profiles)
+            capacity = (self.config.get('capacity_profile') if profiles is None else
+                        binding.selected_profile(value, profiles))
             owner = snapshot['model_owner']
             fd = os.pidfd_open(owner['pid'])
             try:
                 ledger.require(supervisor.process_identity(owner['pid']) == owner,
                                'gateway model owner changed')
+                stage = 'gateway_observation_unavailable'
                 observation = supervisor.probe(owner['pid'], value['port'],
                     value['operations_port'], stopped=self.stopped, include_metrics=False)
+                stage = 'gateway_observation_invalid'
                 result = supervisor.classify(observation, value['protocol_sha256'],
-                    value['binary_sha256'], expected, value['operations_port'])
+                    value['binary_sha256'], expected, value['operations_port'],
+                    capacity)
+                stage = 'gateway_backend_not_ready'
                 ledger.require(result == 'READY', 'new backend is not ready')
+                stage = 'gateway_generation_changed'
                 current = self.fresh()
                 ledger.require(current['model_ready'] and not current['stop_requested'] and
                     self.key(current) == key and not select.select([fd], [], [], 0)[0],
                     'generation changed during gateway verification')
                 self.cached, self.pidfd = key, fd
                 fd = None
-                self.channel.bound(snapshot['model_generation'])
+                if self.update_policy(snapshot):
+                    self.channel.bound(snapshot['model_generation'])
+                    self.failure_reason = 'gateway_verifying'
+                else:
+                    self.reject('gateway_client_policy_unavailable')
             finally:
                 if fd is not None:
                     os.close(fd)
-        except (OSError, ValueError, RuntimeError, KeyError):
+        except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
             self.close()
-            self.channel.unbound()
+            if isinstance(error, supervisor.BindingMismatch):
+                stage = error.reason
+            elif isinstance(error, (ValueError, KeyError, TypeError)) and stage == 'gateway_observation_unavailable':
+                stage = 'gateway_observation_invalid'
+            self.reject(stage)
 
-    def request(self, lane):
+    def reject(self, reason):
+        self.failure_reason = reason
+        self.channel.unbound(reason=reason, generation=self.observed_generation)
+
+    def update_policy(self, snapshot):
+        if self.config['version'] != 4:return True
+        try:
+            from tools.serve_recovery import quota_control
+            if self.policy_channel is None:
+                self.policy_channel = quota_control.Channel(quota_control.address(
+                    self.channel.service_id, snapshot['model_generation']))
+            owner = snapshot['model_owner']
+            value = self.policy_channel.step(owner['pid'], owner['start_ticks'])
+            observed = value['observed']
+            if observed is not None and not value['error']:
+                ids = tuple(observed['clients'])
+                prefix = self.verified_clients or tuple(c['id'] for c in self.config['backend_policy']['clients'])
+                ledger.require(observed['configured'] and observed['mutable'] and
+                    len(ids) >= len(prefix) and ids[:len(prefix)] == prefix,
+                    'model client slots changed')
+                self.verified_clients = ids
+        except Exception:
+            pass
+        # Installed slots cannot be removed/reused within this model. A lost
+        # optional observation retains known clients; a new generation resets.
+        return bool(self.verified_clients)
+
+    def request(self, lane, client=None):
         try:
             snapshot = self.fresh()
             if not self.matches(snapshot) or not snapshot['business_ready']:
                 return dict(error=unavailable(snapshot))
+            if self.config['version'] == 4 and client not in self.verified_clients:
+                return dict(error='service_binding_unavailable')
             value = snapshot['binding']
             return dict(port=value['operations_port' if lane == 'control' else 'port'],
                         token=value['gateway_token'])

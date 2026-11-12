@@ -1,0 +1,15 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/application_payload.h",
+    "include/q4t/server/input_snapshot.h",
+    "src/server/application_payload.cpp",
+    "src/server/input_snapshot.cpp",
+    "src/server/object_retention.cpp"
+  ],
+  "semantic_keys_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 463,
+  "review": "Private application strings retain exact bytes in quota-accounted chunks, protected by absolute holds until parent publication. Reuse CAS-pins snapshot root, not just binary chunks; owner/reference/length/digest validation and unknown outcomes preserve safety. Retention extracts only typed private root manifests. Component not yet automatically wired into ObjectStore/application API/HTTP capacities."
+}

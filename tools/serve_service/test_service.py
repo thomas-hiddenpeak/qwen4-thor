@@ -448,37 +448,58 @@ raise SystemExit(g.run_guard([sys.executable, '-B', {str(fixture)!r}],
                 shutil.rmtree(self.root/'runtime')
 
     def test_memory_trip_interrupts_blocked_probe_and_prevents_restart(self):
-        for unknown in (False, True):
-            with self.subTest(unknown=unknown):
-                armed = threading.Event()
-                def reader():
-                    if armed.is_set() and unknown:
-                        raise OSError('observation failed')
-                    return dict(total_bytes=8*1024**3,
-                        available_bytes=0 if armed.is_set() else 4*1024**3)
-                def observe(pid, _port):
-                    armed.set()
-                    # Deliberately block this HTTP-equivalent callback. The
-                    # independent watchdog must terminate the real CPU child.
-                    until = time.monotonic()+1
-                    while time.monotonic() < until:
-                        fields = Path(f'/proc/{pid}/stat').read_text().rsplit(
-                            ')', 1)[1].split()
-                        if fields[0] == 'Z':
-                            return self.observation(pid)
-                        time.sleep(.005)
-                    self.fail('blocked probe prevented protective termination')
-                rc, state = self.run_supervisor(observe, restarts=3,
-                                                read_memory=reader)
-                self.assertEqual((rc, state['attempts'], state['restarts']),
-                                 (1, 1, 0))
-                self.assertEqual(state['error'], 'memory_observation_unavailable'
-                    if unknown else 'critical_memory_pressure')
-                self.assertTrue(state['memory']['signal_sent'])
-                self.assertTrue(state['cleanup_confirmed'])
-                self.assertFalse(sup.processes.group_members(state['backend']['pid']))
-                import shutil
-                shutil.rmtree(self.root/'runtime')
+        armed = threading.Event()
+        def reader():
+            return dict(total_bytes=8*1024**3,
+                available_bytes=0 if armed.is_set() else 4*1024**3)
+        def observe(pid, _port):
+            armed.set()
+            # Confirmed critical pressure still interrupts a blocked probe.
+            until = time.monotonic()+1
+            while time.monotonic() < until:
+                fields = Path(f'/proc/{pid}/stat').read_text().rsplit(
+                    ')', 1)[1].split()
+                if fields[0] == 'Z':
+                    return self.observation(pid)
+                time.sleep(.005)
+            self.fail('blocked probe prevented protective termination')
+        rc, state = self.run_supervisor(observe, restarts=3, read_memory=reader)
+        self.assertEqual((rc, state['attempts'], state['restarts']), (1, 1, 0))
+        self.assertEqual(state['error'], 'critical_memory_pressure')
+        self.assertTrue(state['memory']['signal_sent'])
+        self.assertTrue(state['cleanup_confirmed'])
+        self.assertFalse(sup.processes.group_members(state['backend']['pid']))
+
+    def test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop(self):
+        armed = threading.Event()
+        seen = []
+        def reader():
+            if armed.is_set():
+                raise OSError('auxiliary memory observation failed')
+            return dict(total_bytes=8*1024**3, available_bytes=4*1024**3)
+        def observe(pid, _port):
+            seen.append(pid)
+            if len(seen) == 1:
+                return self.observation(pid)
+            armed.set()
+            # Three times the old observation-loss trip deadline. The process
+            # and actual pidfd identity remain alive throughout this gap.
+            until = time.monotonic()+.12
+            while time.monotonic() < until:
+                fields = Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()
+                self.assertNotIn(fields[0], ['Z','X'])
+                time.sleep(.005)
+            pkg.save(self.root/'runtime/stop.request.json', {})
+            return self.observation(pid)
+        rc, state = self.run_supervisor(observe, restarts=3, read_memory=reader,
+                                        config_overrides=dict(startup_seconds=1))
+        self.assertEqual((rc,state['attempts'],state['restarts']), (0,1,0))
+        self.assertEqual(len(set(seen)),1)
+        self.assertGreater(state['memory']['failures'],0)
+        self.assertEqual(state['memory']['state'],'UNKNOWN')
+        self.assertEqual(state['memory']['reason'],'memory_observation_unavailable')
+        self.assertFalse(state['memory']['signal_sent'])
+        self.assertTrue(state['cleanup_confirmed'])
 
     def test_operator_stop_cannot_hide_memory_trip_during_cleanup(self):
         armed = threading.Event()

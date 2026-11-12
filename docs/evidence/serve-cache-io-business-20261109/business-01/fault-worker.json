@@ -1,0 +1,14 @@
+{
+  "pid": 994845,
+  "state": "S",
+  "ppid": 994840,
+  "pgid": 994835,
+  "start_ticks": 237526154,
+  "argv": [
+    "q4t-cache-worker",
+    "--q4t-cache-worker",
+    "994840",
+    "2147483648"
+  ],
+  "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/candidate/q4t"
+}

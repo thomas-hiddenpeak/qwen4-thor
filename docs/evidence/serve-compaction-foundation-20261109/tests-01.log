@@ -1,0 +1,17 @@
+invalid_request: Unknown item field
+[PASS] responses_crypto_stateless_roundtrip_restores_actual_reasoning
+[PASS] responses_crypto_origin_prefix_full_suffix_and_conflict
+[PASS] compaction_plan_preserves_instructions_and_current_turn
+[PASS] compaction_plan_standalone_preserves_user_and_media_items
+[PASS] compaction_pending_parallel_tool_spans_are_not_summarized
+[PASS] compaction_invalid_tool_history_cannot_be_hidden_in_memory
+[PASS] compaction_real_cipher_replays_full_retained_or_omitted_origin
+[PASS] compaction_cipher_accepts_optional_id_and_semantic_message_forms
+[PASS] compaction_cipher_rejects_tamper_scope_model_id_and_prefix
+[PASS] compaction_noop_never_invents_model_memory_or_usage
+[PASS] compaction_bounds_duplicate_ids_and_output_budget
+[PASS] compaction_cancelled_or_expired_state_never_mutates_output
+  CHECK failed: Ok(run.Prepare(request, Config(), Access(), 42)) (line 353)
+[FAIL] compaction_optional_id_enters_actual_response_generation_plan
+[PASS] compaction_and_encrypted_reasoning_form_one_authenticated_history
+14 tests, 13 passed, 1 failed, 0 skipped

@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/profile-release-01/bundle",
+  "manifest_sha256": "f312f81dea8e25c4a4509290c6d84414b9235547f3ff809da130faeb588c0d92",
+  "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+  "recovery_accepted": false
+}

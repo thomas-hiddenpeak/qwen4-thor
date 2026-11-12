@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/custom_tools.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
@@ -20,6 +21,20 @@ bool ValidId(const io::Json* id) {
 }
 
 Status ValidateCall(const io::Json& call, bool identified) {
+  if (call.GetString("type") == "custom") {
+    auto status = InputFields(call, {"id", "type", "custom"});
+    if (!status) return status;
+    const auto* custom = call.Find("custom");
+    if (!ValidId(call.Find("id")) || !custom)
+      return Status::Fail("custom history requires an ID and custom object");
+    status = InputFields(*custom, {"name", "input"});
+    if (!status) return status;
+    const auto* input = custom->Find("input");
+    if (!SafeToolName(custom->GetString("name")) || !input ||
+        !input->IsString())
+      return Status::Fail("custom history requires a name and input string");
+    return Status();
+  }
   const auto* fn = call.Find("function");
   auto status = fn ? InputFields(call, {"id", "type", "function"})
                    : InputFields(call, {"type", "name", "arguments"});
@@ -39,17 +54,14 @@ Status ValidateCall(const io::Json& call, bool identified) {
   const auto* args = fn->Find("arguments");
   io::Json decoded;
   if (args && args->IsString()) {
-    status = io::ParseJson(args->str, &decoded, true, kRequestJsonLimits);
+    status = io::ParseJson(args->str, &decoded, true, kSchemaJsonLimits);
     if (!status) return Status::Fail("invalid historical arguments JSON");
     args = &decoded;
   }
   if (!args || !args->IsObject())
     return Status::Fail("tool arguments require an object or JSON object text");
-  for (const auto& [key, value] : args->object) {
-    (void)value;
-    if (!ValidInputName(key))
-      return Status::Fail("invalid historical parameter name");
-  }
+  // JSON property names are data. The model renderer encodes unsafe native
+  // XML keys in one JSON object instead of rejecting valid API arguments.
   return Status();
 }
 

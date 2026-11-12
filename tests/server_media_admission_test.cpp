@@ -58,8 +58,8 @@ Q4T_TEST(media_contract_closed_shapes) {
       Contract(R"({"type":"video_frames","video_frames":["x",{"url":"y"}]})"));
   for (const char* part :
        {R"({"image_url":{"url":"x","unknown":1}})",
-        R"({"image_url":{"url":"x","detail":"low"}})",
-        R"({"image_url":{"url":"x","detail":"high"}})",
+        R"({"image_url":{"url":"x","detail":2}})",
+        R"({"image_url":{"url":"x","detail":"unknown"}})",
         R"({"image_url":{"url":2}})", R"({"image_url":null})",
         R"({"image_url":""})", R"({"image_url":"x","text":"x"})",
         R"({"image_url":"x","video_frames":["x","x"]})",
@@ -79,9 +79,9 @@ Q4T_TEST(media_contract_roles_and_locations) {
   Q4T_CHECK(
       !Contract(R"({"video_frames":["x",{"url":false}]})", "user", &param));
   Q4T_CHECK(param == "messages[0].content[0].video_frames[1]");
-  Q4T_CHECK(!Contract(R"({"image_url":{"url":"x","detail":"high"}})", "user",
+  Q4T_CHECK(!Contract(R"({"image_url":{"url":"x","detail":"unknown"}})", "user",
                       &param));
-  Q4T_CHECK(param == "messages[0].content[0].image_url");
+  Q4T_CHECK(param == "messages[0].content[0].image_url.detail");
   return true;
 }
 
@@ -114,7 +114,7 @@ Q4T_TEST(media_transport_base64_and_mime) {
     Q4T_CHECK(!DecodeMediaUrl(input, &bytes, &code));
     Q4T_CHECK(std::string(code) == "media_base64_invalid" && bytes.empty());
   }
-  for (const char* input : {"data:image/gif;base64,AAAA", "http://a/b.png",
+  for (const char* input : {"data:image/tiff;base64,AAAA", "http://a/b.png",
                             "https://a/b.jpg", "data:image/png,AAAA"}) {
     Q4T_CHECK(!DecodeMediaUrl(input, &bytes, &code));
     Q4T_CHECK(std::string(code) == "media_url_unsupported");
@@ -228,6 +228,11 @@ Q4T_TEST(media_policy_discovery) {
   Q4T_CHECK(policy.GetInt("attention_shared_bytes") == 48128);
   Q4T_CHECK(policy.GetInt("decoder_owned_bytes") == 268435456);
   Q4T_CHECK(policy.GetInt("max_items") == 8);
+  Q4T_CHECK(policy.GetArray("image_detail")->array.size() == 4);
+  Q4T_CHECK(policy.Find("detail_policy")->Find("low")->GetInt("longest_edge") ==
+            512);
+  Q4T_CHECK(policy.Find("detail_policy")->Find("high")->GetInt("max_pixels") ==
+            4194304);
   Q4T_CHECK(!policy.GetBool("whole_server_ram_limit", true));
   Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("m", true, false, 48128),
                                &caps, true));
@@ -339,6 +344,9 @@ Q4T_TEST(media_expansion_and_client_budget_are_identical) {
 Q4T_TEST(media_constraints_preserve_input_and_force_output_contract) {
   for (const std::string controls : {
            R"("response_format":{"type":"json_object"})",
+           R"("response_format":{"type":"json_schema","json_schema":)"
+           R"({"name":"scene","strict":true,"schema":{"type":"object",)"
+           R"("properties":{},"required":[],"additionalProperties":false}}})",
            R"("tool_choice":"none")",
            R"("tool_choice":"required","tools":[{"type":"function",)"
            R"("function":{"name":"inspect","strict":true,"parameters":)"
@@ -359,7 +367,33 @@ Q4T_TEST(media_constraints_preserve_input_and_force_output_contract) {
     Q4T_CHECK(PrepareChatPrompt(request, constraints, &prompt, &items, &param,
                                 &code));
     Q4T_CHECK(items.size() == 1 && items[0].kind == VisionItem::kImage);
+    Q4T_CHECK(items[0].message_index == 0 && items[0].part_index == 0);
     Q4T_CHECK(prompt.find("<|image_pad|>") != std::string::npos);
   }
+  return true;
+}
+
+Q4T_TEST(media_prompt_instruction_names_and_refusal_positions) {
+  Json request;
+  const std::string wire =
+      R"({"enable_thinking":false,"messages":[)"
+      R"({"role":"system","content":"policy"},)"
+      R"({"role":"assistant","refusal":"earlier refusal"},)"
+      R"({"role":"developer","content":"inspect"},)"
+      R"({"role":"user","name":"viewer","content":[{"text":"look"},)"
+      R"({"image_url":")" +
+      std::string(kPng) + R"("}]}]})";
+  Q4T_CHECK(q4t::io::ParseJson(wire, &request, true));
+  Q4T_CHECK(ValidateChatContract(request, "m", true));
+  std::string prompt, param, code;
+  std::vector<VisionItem> items;
+  Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &items, &param, &code));
+  Q4T_CHECK(items.size() == 1 && items[0].message_index == 3 &&
+            items[0].part_index == 1);
+  Q4T_CHECK(prompt.find("earlier refusal<|im_end|>\n"
+                        "<|im_start|>system\ninspect<|im_end|>\n"
+                        "<|im_start|>user name=\"viewer\"\nlook"
+                        "<|vision_start|><|image_pad|><|vision_end|>") !=
+            std::string::npos);
   return true;
 }

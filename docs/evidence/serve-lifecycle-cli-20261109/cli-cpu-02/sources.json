@@ -1,0 +1,18 @@
+{
+  "tools/serve_gateway/tls.py": "ee751d5f93c7819dce25dfa0d4aff6f55593b3423314e3f293d657ee76621775",
+  "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
+  "include/q4t/service/service_cli.h": "ca8d0ce29ebac6e46d3081c8d0a03513841af9f888b692735d6776a1cac2f692",
+  "cmake/ServiceCLI.cmake": "7cc5fdf84544b5e809731a827c3f6c200d5ca9786012be3a933e58828e809f49",
+  "src/main.cpp": "5d40ebcb19527695168967887e83dd8928e5a3817d86dede2ea3f68af64814d8",
+  "CMakeLists.txt": "bb0c1600b1488f2ba411a461c5856c240cba4e6e7d9facb5229b4acaf0ced4ab",
+  "tests/host/CMakeLists.txt": "52f82023703ecf4793a6b6df0250786a5cd6b6356c934d9678cce3535b0150eb",
+  "tests/service_cli_fixture.cpp": "6dd5343e74bbb34512a962a8b79be18b8516a28f747f0b6dd114049eef72a771",
+  "tools/serve_recovery/build_tools.py": "b302a305d60db61b6e9196fb914ca6b9ffb8f9a35b5c156b9ad98dbb5be7ad9a",
+  "tools/serve_recovery/lifecycle.py": "efc359419d007c8c0beae31f20decd3fa7a47e488fdfb3a112d4b3731e718e09",
+  "tools/serve_recovery/bundle.py": "847380d6351d82edd35165ba3d5a97ec7cf94d53c99708741f90b281face5971",
+  "tools/serve_recovery/service.py": "4289286060f955feb58d9cc0d8378062aac9d17b2e04c4d9ad65feaf47d2e38d",
+  "tools/serve_recovery/deployment.py": "970ed1a17130aef90c0c7055c050033aa899bdadb5ef77b4ebb660647292a4a4",
+  "tools/serve_service/package.py": "86d59d69b7d7acc9d5c414462986cf38d693ee57c0aaeb884860cdc77070c0c5",
+  "tools/serve_recovery/test_lifecycle.py": "aa26f56d006236d59a6a40b99329e773aea9ac1ba6b662c8d1303700918b4a85",
+  "tools/serve_recovery/test_native_bundle.py": "f9fed4649757b1bc1d93b2395244605cc37dbd09ea4aa1977c6d26a43667abac"
+}

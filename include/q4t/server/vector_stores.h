@@ -1,0 +1,131 @@
+// Durable native retrieval ownership and jobs. No model or network IO here.
+#pragma once
+
+#include "q4t/server/vector_index.h"
+
+namespace q4t::server {
+inline constexpr size_t kVectorStoreFiles = 10000;
+
+struct VectorIngestionClaim {
+  std::string store_id, file_id, member_id, token, owner;
+  int64_t deadline_at = 0;
+};
+
+// Private request-owned snapshot. Search mutations invalidate this view;
+// metadata reads and activity-only touches do not invalidate concurrent work.
+struct VectorSearchCorpus {
+  std::string store_id, scope;
+  int64_t search_revision = 0;
+  size_t dimensions = 0;
+  std::vector<std::string> file_ids;
+  std::vector<VectorSearchChunk> chunks;
+};
+
+class VectorStores {
+ public:
+  explicit VectorStores(ObjectStore& objects) : objects_(objects) {}
+  ObjectReply Create(const BinaryAccess& access, const io::Json& request);
+  ObjectReply Retrieve(const BinaryAccess& access, const std::string& id);
+  ObjectReply Update(const BinaryAccess& access, const std::string& id,
+                     const io::Json& request);
+  ObjectReply Erase(const BinaryAccess& access, const std::string& id);
+  ObjectReply List(const BinaryAccess& access, ObjectRequest page);
+  ObjectReply Attach(const BinaryAccess& access, const std::string& id,
+                     const io::Json& request);
+  ObjectReply RetrieveFile(const BinaryAccess& access, const std::string& id,
+                           const std::string& file_id);
+  ObjectReply UpdateFile(const BinaryAccess& access, const std::string& id,
+                         const std::string& file_id, const io::Json& request);
+  ObjectReply Detach(const BinaryAccess& access, const std::string& id,
+                     const std::string& file_id);
+  // Page is an already decoded query (limit is numeric). No private IDs leak.
+  ObjectReply ListFiles(const BinaryAccess& access, const std::string& id,
+                        const io::Json& page);
+  ObjectReply FileContent(const BinaryAccess& access, const std::string& id,
+                          const std::string& file_id);
+  // Current complete membership, source existence and immutable index bytes.
+  // A concurrent mutation fails instead of returning mixed old/new data.
+  ObjectReply ReadIndex(const BinaryAccess& access, const std::string& id,
+                        const std::string& file_id, VectorIndex* index,
+                        io::Json* attributes);
+  ObjectReply ReadSearchCorpus(const BinaryAccess& access,
+                               const std::string& id, const io::Json& filters,
+                               size_t dimensions, VectorSearchCorpus* corpus);
+  // After actual query/ranking: current scope/source/index revision and one
+  // activity CAS. Conflicts never cause implicit model/query replay.
+  ObjectReply TouchSearch(const BinaryAccess& access,
+                          const VectorSearchCorpus& corpus);
+  // Actual search/tool use advances last_active_at; management reads do not.
+  ObjectReply Touch(const BinaryAccess& access, const std::string& id);
+  ObjectReply CreateBatch(const BinaryAccess& access, const std::string& id,
+                          const io::Json& request);
+  ObjectReply RetrieveBatch(const BinaryAccess& access, const std::string& id,
+                            const std::string& batch_id);
+  ObjectReply CancelBatch(const BinaryAccess& access, const std::string& id,
+                          const std::string& batch_id);
+  ObjectReply ListBatchFiles(const BinaryAccess& access, const std::string& id,
+                             const std::string& batch_id, const io::Json& page);
+
+  // The durable claim survives receipt loss. Expiry never grants permission
+  // to race a live owner. Only queued work can be claimed; recovery must prove
+  // the previous execution drained/exited before calling RequeueAfterExit.
+  ObjectReply Claim(const BinaryAccess& access, const std::string& id,
+                    const std::string& file_id, std::string owner,
+                    int lifetime_seconds, VectorIngestionClaim* claim);
+  ObjectReply LoadClaim(const BinaryAccess& access,
+                        const VectorIngestionClaim& claim);
+  ObjectReply RequeueAfterExit(const BinaryAccess& access,
+                               const VectorIngestionClaim& claim);
+  ObjectReply Finish(const BinaryAccess& access,
+                     const VectorIngestionClaim& claim,
+                     const VectorIndexIdentity& identity,
+                     const InputSnapshotRef& reference);
+  ObjectReply Fail(const BinaryAccess& access,
+                   const VectorIngestionClaim& claim, std::string code,
+                   std::string message);
+  // A trusted executor uses this to cancel after its model/IO cleanup. It is
+  // not an HTTP cancellation acknowledgement while work is still running.
+  ObjectReply Cancel(const BinaryAccess& access,
+                     const VectorIngestionClaim& claim);
+  // Durable intent only; running work remains in_progress until drained.
+  ObjectReply RequestCancel(const BinaryAccess& access, const std::string& id,
+                            const std::string& file_id);
+  // Private membership state, including a deleted source, for terminal
+  // reconciliation. Execution/search must use LoadFile/LoadClaim instead.
+  ObjectReply LoadRecord(const BinaryAccess& access, const std::string& id,
+                         const std::string& file_id);
+  // Includes an exact detached running member retained by its batch only
+  // until cleanup. Never permits search or completed index publication.
+  ObjectReply LoadExecution(const BinaryAccess& access, const std::string& id,
+                            const std::string& file_id,
+                            const std::string& member_id);
+  // Private, scoped, current membership + source-file check for the executor.
+  ObjectReply LoadFile(const BinaryAccess& access, const std::string& id,
+                       const std::string& file_id);
+
+ private:
+  ObjectReply Read(const BinaryAccess& access, const std::string& id,
+                   bool require_live = false);
+  ObjectReply ReadMember(const BinaryAccess& access, const io::Json& store,
+                         const std::string& file_id);
+  ObjectReply CheckSearch(const BinaryAccess& access,
+                          const VectorSearchCorpus& corpus);
+  ObjectReply ReadBatch(const BinaryAccess& access, const io::Json& store,
+                        const std::string& batch_id);
+  ObjectReply ReadExecutionMember(const BinaryAccess& access,
+                                  const io::Json& store,
+                                  const std::string& file_id,
+                                  const std::string& member_id);
+  ObjectReply SyncBatches(const BinaryAccess& access, const io::Json& before,
+                          const io::Json& data,
+                          std::span<const ObjectRequest> children,
+                          std::vector<ObjectRequest>* mutations);
+  ObjectReply Publish(const BinaryAccess& access, const io::Json& before,
+                      io::Json data,
+                      std::span<const ObjectRequest> children = {});
+  ObjectReply ChangeJob(const BinaryAccess& access,
+                        const VectorIngestionClaim& claim,
+                        std::string_view action, const io::Json& completion);
+  ObjectStore& objects_;
+};
+}  // namespace q4t::server

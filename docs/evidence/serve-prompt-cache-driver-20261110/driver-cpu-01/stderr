@@ -1,0 +1,10 @@
+test_actual_cpp_prewarm_requires_no_output_and_real_write_coverage (tools.serve_responses.test_cache_acceptance.CacheAcceptance.test_actual_cpp_prewarm_requires_no_output_and_real_write_coverage) ... ok
+test_frozen_requests_are_valid_and_separate_control_cases (tools.serve_responses.test_cache_acceptance.CacheAcceptance.test_frozen_requests_are_valid_and_separate_control_cases) ... ok
+test_hit_requires_answer_cache_usage_and_appropriate_diagnostic (tools.serve_responses.test_cache_acceptance.CacheAcceptance.test_hit_requires_answer_cache_usage_and_appropriate_diagnostic) ... ok
+test_physical_state_oracles_reject_false_counts_layout_ttl_and_failures (tools.serve_responses.test_cache_acceptance.CacheAcceptance.test_physical_state_oracles_reject_false_counts_layout_ttl_and_failures) ... ok
+test_standard_chat_cache_requires_real_hit_and_current_answer (tools.serve_responses.test_cache_acceptance.CacheAcceptance.test_standard_chat_cache_requires_real_hit_and_current_answer) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.042s
+
+OK

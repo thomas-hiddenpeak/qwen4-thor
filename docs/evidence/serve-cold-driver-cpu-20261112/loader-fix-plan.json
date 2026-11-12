@@ -1,0 +1,18 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_cold_host_acceptance"
+  ],
+  "expected_tests": 4,
+  "readonly_entry": [
+    "python3",
+    "-I",
+    "-B",
+    "tools/serve_recovery/cold_host_acceptance.py",
+    "--check",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-domain-20261112/business-01/plan-v2.json"
+  ],
+  "gpu_starts": 0,
+  "bundle_unchanged": true,
+  "budget_unchanged": true
+}

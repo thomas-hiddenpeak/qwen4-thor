@@ -1,0 +1,46 @@
+test_exact_backport_preserves_unrelated_methods_original_and_inventory (tools.serve_recovery.test_resource_compat.AdapterTests.test_exact_backport_preserves_unrelated_methods_original_and_inventory) ... ok
+test_resigned_unrelated_change_is_rejected_and_adapter_cannot_reapply (tools.serve_recovery.test_resource_compat.AdapterTests.test_resigned_unrelated_change_is_rejected_and_adapter_cannot_reapply) ... ok
+test_changed_hook_cannot_silently_receive_partial_backport (tools.serve_recovery.test_resource_compat.AdapterTests.test_changed_hook_cannot_silently_receive_partial_backport) ... ok
+test_public_cli_selects_resource_adapter_without_runtime_or_model_action (tools.serve_recovery.test_resource_compat.AdapterTests.test_public_cli_selects_resource_adapter_without_runtime_or_model_action) ... ok
+test_actual_worker_executes_verified_bytes_in_fresh_interpreter (tools.serve_recovery.test_resource_compat.WorkerTests.test_actual_worker_executes_verified_bytes_in_fresh_interpreter) ... ok
+test_hash_writeability_and_symlink_fail_before_collector_exec (tools.serve_recovery.test_resource_compat.WorkerTests.test_hash_writeability_and_symlink_fail_before_collector_exec) ... ok
+test_two_payloads_receive_same_original_resource_and_fixed_root_collector (tools.serve_recovery.test_resource_compat.VersionTests.test_two_payloads_receive_same_original_resource_and_fixed_root_collector) ... ERROR
+test_unadapted_payload_never_silently_loses_resource_observation (tools.serve_recovery.test_resource_compat.VersionTests.test_unadapted_payload_never_silently_loses_resource_observation) ... ERROR
+test_live_cpu_collector_is_reaped_before_slot_is_reused (tools.serve_recovery.test_resource_memory.KernelTests.test_live_cpu_collector_is_reaped_before_slot_is_reused) ... ok
+test_controller_configuration_binds_selected_resource_with_and_without_profiles (tools.serve_recovery.test_resource_memory.KernelTests.test_controller_configuration_binds_selected_resource_with_and_without_profiles) ... ok
+test_collector_exception_retains_original_slot_and_only_clears_observation (tools.serve_recovery.test_resource_memory.KernelTests.test_collector_exception_retains_original_slot_and_only_clears_observation) ... ok
+test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram (tools.serve_recovery.test_resource_memory.PressureTests.test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram) ... ok
+test_controller_parks_io_before_launch_and_confirms_only_new_live_generation (tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation) ... ok
+test_qualified_two_commands_share_current_state_and_separate_run_paths (tools.serve_recovery.test_version_runtime.RuntimeTests.test_qualified_two_commands_share_current_state_and_separate_run_paths) ... ok
+test_cli_adaptation_requires_no_live_state_or_model_action (tools.serve_recovery.test_cold_compat.AdapterTests.test_cli_adaptation_requires_no_live_state_or_model_action) ... ok
+
+======================================================================
+ERROR: test_two_payloads_receive_same_original_resource_and_fixed_root_collector (tools.serve_recovery.test_resource_compat.VersionTests.test_two_payloads_receive_same_original_resource_and_fixed_root_collector)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_compat.py", line 145, in test_two_payloads_receive_same_original_resource_and_fixed_root_collector
+    cfg=version_launch.configuration(state,self.register.root,run,resources=self.binding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/version_launch.py", line 15, in configuration
+    selected = version_registration.load(state,root)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/version_registration.py", line 164, in load
+    binding = access_store.binding(state,root['service_id'])
+                                         ~~~~^^^^^^^^^^^^^^
+KeyError: 'service_id'
+
+======================================================================
+ERROR: test_unadapted_payload_never_silently_loses_resource_observation (tools.serve_recovery.test_resource_compat.VersionTests.test_unadapted_payload_never_silently_loses_resource_observation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_resource_compat.py", line 163, in test_unadapted_payload_never_silently_loses_resource_observation
+    version_launch.configuration(self.register.state,self.register.root,run,resources=self.binding)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/version_launch.py", line 30, in configuration
+    bound = access_store.binding(state,root['service_id'])
+                                       ~~~~^^^^^^^^^^^^^^
+KeyError: 'service_id'
+
+----------------------------------------------------------------------
+Ran 15 tests in 7.828s
+
+FAILED (errors=2)

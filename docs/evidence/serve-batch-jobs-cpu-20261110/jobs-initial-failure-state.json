@@ -1,0 +1,35 @@
+[
+  {
+    "path": ".q4t-work/serve-batches-20261110/cpu-01/batch-jobs-FEoLHV/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.batch.batch_ca7ddb503fbc4e2873abfe9a8f5061a6.json",
+    "status": "in_progress",
+    "counts": {
+      "total": 2,
+      "completed": 0,
+      "failed": 0
+    },
+    "running": 1,
+    "next_row": 0
+  },
+  {
+    "path": ".q4t-work/serve-batches-20261110/cpu-01/batch-jobs-ClfwBH/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.batch.batch_4e99f9423d1cbd3174d4f9c9504462cf.json",
+    "status": "finalizing",
+    "counts": {
+      "total": 2,
+      "completed": 2,
+      "failed": 0
+    },
+    "running": 0,
+    "next_row": 2
+  },
+  {
+    "path": ".q4t-work/serve-batches-20261110/cpu-01/batch-jobs-YahmgU/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.batch.batch_beb2da71300e90a905a0f0eaeadd1e1c.json",
+    "status": "in_progress",
+    "counts": {
+      "total": 2,
+      "completed": 0,
+      "failed": 1
+    },
+    "running": 0,
+    "next_row": 1
+  }
+]

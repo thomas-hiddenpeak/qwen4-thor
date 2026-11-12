@@ -1,0 +1,29 @@
+{
+  "status": "PASS_BATCH_IMMUTABLE_INPUT_PREPARATION_CPU",
+  "distinct_tests": 22,
+  "first": {
+    "total": 22,
+    "passed": 19,
+    "failed": 3,
+    "seconds": 10.779032689984888
+  },
+  "repair": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "seconds": 0.11406814074143767
+  },
+  "reused": 19,
+  "gpu_starts": 0,
+  "engine_sha256": "89a41691c7d9588b0736233ef7283bdad7a24b91d56f39ac3c9f26d9de4ad85a",
+  "host_sha256": "991ccf4435c999ad11bf5ec806d4b25c637ffa0b377879ac99c504b2f924fdeb",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "builds_zero_warning": true,
+  "anchors": 475,
+  "fixture_repairs": [
+    "Canonicalize Conversation items before private state API",
+    "Set actual 256-token vocabulary for raw-token fixture",
+    "Known snapshot failure clears its unpublished identity; actual owned snapshot list confirms no publication"
+  ],
+  "remaining": "Native full endpoint execution/fair jobs/independent Batch admission/HTTP SDK/business/compatible rollback reader/default delivery/all master tasks"
+}

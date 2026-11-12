@@ -1,0 +1,59 @@
+{
+  "status": "PASS_TARGETED_BATCH_CANDIDATE",
+  "acceptance": "ACCEPT_TARGETED_BATCH_EXECUTION",
+  "binary_sha256": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+  "engine_source_commit": "1d50d9dc784db0ff42d4e466309852d0b549ae06",
+  "package_source_commit": "a0afbbf5c8916b5c8d093b1cfb2216ae995bde07",
+  "protocol_sha256": "778ad20fa0dcd6973f758f778ad2fca49ccea3da1d95d7a4310217ca48882872",
+  "actual_business": {
+    "status": "ACCEPT_BATCH_BUSINESS_AND_FORMAT_COMPATIBILITY",
+    "candidate_sha256": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+    "compatible_reader_sha256": "312678bc44c85603f540723c771630462afd6cc7676d4a1612ffad94417b2c55",
+    "source_commit": "f337594862891dfa9b67bb0de3947c4a88780412",
+    "rollback_commit": "fc69f823723b40eec19dec9b2e861a2ace20e46f",
+    "model_starts": 2,
+    "generations": 8,
+    "model_steps": 8,
+    "controls": 166,
+    "seconds": 99.29975965013728,
+    "all_queries_ok": true,
+    "nvml_queries": 94,
+    "env_abort": false,
+    "postflight": {
+      "owned_processes_gone": true,
+      "default_unchanged": true,
+      "sources_unchanged": true,
+      "lease_released": true,
+      "ports_released": true
+    },
+    "checks": {
+      "generations": 8,
+      "model_steps": 8,
+      "actual_tools": true,
+      "failed_usage": true,
+      "cancelled_usage": true,
+      "original_background_terminal": true,
+      "cross_version_results": true,
+      "dual_quota_restore": true,
+      "default_unchanged": true,
+      "performance_claim": false
+    },
+    "quota": {
+      "online_tokens": "501",
+      "batch_before": "824",
+      "batch_after": "855",
+      "both_original_windows_preserved": true
+    },
+    "cancelled_actual_input": 151,
+    "cancelled_actual_output": 0,
+    "full_performance": false,
+    "full_quality_matrix": false,
+    "delivery_pending": true,
+    "all_master_tasks_complete": false
+  },
+  "source_review_sha256": "1475c0b7e9a9bb0d11bf73128cb0f8f64e8cb993ea83e264ca4452d688bee7ab",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

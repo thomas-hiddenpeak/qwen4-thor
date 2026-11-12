@@ -1,0 +1,453 @@
+{
+  "status": "PASS",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "response": {
+        "id": "upload_26da5cfd50c294f56acd8ee93fab57c3",
+        "object": "upload",
+        "bytes": 6,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "pending"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/parts",
+      "status": 200,
+      "response": {
+        "id": "part_aa5dccf10b82dd7eb7567905eb87c1ec",
+        "object": "upload.part",
+        "created_at": 1794265741,
+        "upload_id": "upload_26da5cfd50c294f56acd8ee93fab57c3"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/parts",
+      "status": 200,
+      "response": {
+        "id": "part_03fec810c8b56838082f6cc7ef49123a",
+        "object": "upload.part",
+        "created_at": 1794265741,
+        "upload_id": "upload_26da5cfd50c294f56acd8ee93fab57c3"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "first_id": "",
+        "last_id": ""
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/cancel",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/complete",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/complete",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "Completed byte count does not match declared bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "part_ids"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/complete",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "File MD5 does not match",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "md5"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/complete",
+      "status": 200,
+      "response": {
+        "id": "upload_26da5cfd50c294f56acd8ee93fab57c3",
+        "object": "upload",
+        "bytes": 6,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "completed",
+        "file": {
+          "id": "file_edc83f9030326eca5d171f0dda40bdac",
+          "object": "file",
+          "bytes": 6,
+          "created_at": 1794265741,
+          "filename": "真实资料.txt",
+          "purpose": "user_data",
+          "status": "processed",
+          "expires_at": 1794269341
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_edc83f9030326eca5d171f0dda40bdac/content",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/complete",
+      "status": 200,
+      "response": {
+        "id": "upload_26da5cfd50c294f56acd8ee93fab57c3",
+        "object": "upload",
+        "bytes": 6,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "completed",
+        "file": {
+          "id": "file_edc83f9030326eca5d171f0dda40bdac",
+          "object": "file",
+          "bytes": 6,
+          "created_at": 1794265741,
+          "filename": "真实资料.txt",
+          "purpose": "user_data",
+          "status": "processed",
+          "expires_at": 1794269341
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_edc83f9030326eca5d171f0dda40bdac",
+      "status": 200,
+      "response": {
+        "id": "file_edc83f9030326eca5d171f0dda40bdac",
+        "object": "file",
+        "bytes": 6,
+        "created_at": 1794265741,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "processed",
+        "expires_at": 1794269341
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/parts",
+      "status": 409,
+      "response": {
+        "error": {
+          "message": "Upload is completed",
+          "type": "conflict_error",
+          "code": "upload_not_pending",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_26da5cfd50c294f56acd8ee93fab57c3/cancel",
+      "status": 409,
+      "response": {
+        "error": {
+          "message": "Upload is completed",
+          "type": "conflict_error",
+          "code": "upload_already_completed",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "response": {
+        "id": "upload_9e7f6a4b0cb909a8d08d51ab68fc0073",
+        "object": "upload",
+        "bytes": 1,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "pending"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9e7f6a4b0cb909a8d08d51ab68fc0073/parts",
+      "status": 200,
+      "response": {
+        "id": "part_d090a9a5cb63b988a6b673cfd42193ed",
+        "object": "upload.part",
+        "created_at": 1794265741,
+        "upload_id": "upload_9e7f6a4b0cb909a8d08d51ab68fc0073"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9e7f6a4b0cb909a8d08d51ab68fc0073/cancel",
+      "status": 200,
+      "response": {
+        "id": "upload_9e7f6a4b0cb909a8d08d51ab68fc0073",
+        "object": "upload",
+        "bytes": 1,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "cancelled"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9e7f6a4b0cb909a8d08d51ab68fc0073/cancel",
+      "status": 200,
+      "response": {
+        "id": "upload_9e7f6a4b0cb909a8d08d51ab68fc0073",
+        "object": "upload",
+        "bytes": 1,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "cancelled"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9e7f6a4b0cb909a8d08d51ab68fc0073/parts",
+      "status": 409,
+      "response": {
+        "error": {
+          "message": "Upload is cancelled",
+          "type": "conflict_error",
+          "code": "upload_not_pending",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9e7f6a4b0cb909a8d08d51ab68fc0073/complete",
+      "status": 409,
+      "response": {
+        "error": {
+          "message": "Upload is cancelled",
+          "type": "conflict_error",
+          "code": "upload_not_pending",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "response": {
+        "id": "upload_9f94026541954db2a2d347efd168491f",
+        "object": "upload",
+        "bytes": 0,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "evals",
+        "status": "pending"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_9f94026541954db2a2d347efd168491f/complete",
+      "status": 200,
+      "response": {
+        "id": "upload_9f94026541954db2a2d347efd168491f",
+        "object": "upload",
+        "bytes": 0,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "evals",
+        "status": "completed",
+        "file": {
+          "id": "file_ad1bbeb05b8da6fac78eaae60b9cd641",
+          "object": "file",
+          "bytes": 0,
+          "created_at": 1794265741,
+          "filename": "真实资料.txt",
+          "purpose": "evals",
+          "status": "processed"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "response": {
+        "id": "upload_82e1d956cebe2da028e5be3bae462a79",
+        "object": "upload",
+        "bytes": 17825805,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "pending"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_82e1d956cebe2da028e5be3bae462a79/parts",
+      "status": 200,
+      "response": {
+        "id": "part_b14bbb5a3fbe2091bb15bcc1231bb3e4",
+        "object": "upload.part",
+        "created_at": 1794265743,
+        "upload_id": "upload_82e1d956cebe2da028e5be3bae462a79"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_82e1d956cebe2da028e5be3bae462a79/complete",
+      "status": 200,
+      "response": {
+        "id": "upload_82e1d956cebe2da028e5be3bae462a79",
+        "object": "upload",
+        "bytes": 17825805,
+        "created_at": 1794265741,
+        "expires_at": 1794269341,
+        "filename": "真实资料.txt",
+        "purpose": "user_data",
+        "status": "completed",
+        "file": {
+          "id": "file_8ed0815a7fb79bc8738d1b6a16abeea9",
+          "object": "file",
+          "bytes": 17825805,
+          "created_at": 1794265743,
+          "filename": "真实资料.txt",
+          "purpose": "user_data",
+          "status": "processed"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_8ed0815a7fb79bc8738d1b6a16abeea9/content",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_edc83f9030326eca5d171f0dda40bdac",
+      "status": 200,
+      "response": {
+        "id": "file_edc83f9030326eca5d171f0dda40bdac",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_ad1bbeb05b8da6fac78eaae60b9cd641",
+      "status": 200,
+      "response": {
+        "id": "file_ad1bbeb05b8da6fac78eaae60b9cd641",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_8ed0815a7fb79bc8738d1b6a16abeea9",
+      "status": 200,
+      "response": {
+        "id": "file_8ed0815a7fb79bc8738d1b6a16abeea9",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "first_id": "",
+        "last_id": ""
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 401,
+      "response": {
+        "error": {
+          "message": "Fixture transport rejected",
+          "type": "authentication_error",
+          "code": "client_authentication_failed",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 413,
+      "response": {
+        "error": {
+          "message": "Upload exceeds 8 GiB",
+          "type": "invalid_request_error",
+          "code": "upload_too_large",
+          "param": null
+        }
+      }
+    }
+  ],
+  "request_count": 32,
+  "large_bytes": 17825805,
+  "large_sha256": "fb8c14efdad1c400da9a6ac63921c8270dbe36ee408cedf5569e00a28a719193",
+  "max_retries": 0,
+  "actual_network": true,
+  "model_starts": 0
+}

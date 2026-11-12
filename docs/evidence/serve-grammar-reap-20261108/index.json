@@ -1,0 +1,649 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "file": "audit.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/audit.json",
+      "sha256": "110acb37565cb0ba0a4f8bf7966417a1b5254a0b1ca07fdf88ebcf848bad7974",
+      "bytes": 625
+    },
+    {
+      "file": "business-01/01-drain.metrics.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/01-drain.metrics.json",
+      "sha256": "a12d10a204bf9e9cc9d5f4eb8a45efec6a2f08a374e5740ca704361589cc9e7f",
+      "bytes": 16386
+    },
+    {
+      "file": "business-01/01-tool.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/01-tool.http.json",
+      "sha256": "7a6ad6089d4b1e08f6ab001a7ee63a1728e883202b8db53037a359425d13f83f",
+      "bytes": 227
+    },
+    {
+      "file": "business-01/01-tool.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/01-tool.request.json",
+      "sha256": "aa144b34c1ff1273905be2be3d58e8f48d5090e8747246e42104f35945dd3e38",
+      "bytes": 889
+    },
+    {
+      "file": "business-01/01-tool.result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/01-tool.result.json",
+      "sha256": "8287079816827f6304df5d4be91a0fae8f431ca596787aac8dba8d7d590dfb45",
+      "bytes": 559
+    },
+    {
+      "file": "business-01/01-tool.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/01-tool.wire",
+      "sha256": "5de04edf2054b9f93c0b248edaf9f2740d0871466c5248f49cbe68fc87785efd",
+      "bytes": 501
+    },
+    {
+      "file": "business-01/02-drain.metrics.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/02-drain.metrics.json",
+      "sha256": "20771875d99f2910f70911f43053ead7ee12412567f4de366f04a3bf8005b4dc",
+      "bytes": 16386
+    },
+    {
+      "file": "business-01/02-tool-result.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/02-tool-result.http.json",
+      "sha256": "1082c6e7788bd6d002b7311065ca5e54968357a3ddde7912fb8ef14144f1e46c",
+      "bytes": 228
+    },
+    {
+      "file": "business-01/02-tool-result.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/02-tool-result.request.json",
+      "sha256": "d47b40bf6177524367dfc6bd5ea975d6e0a3c7ed054a2d7f4bb0c5fe8ec61b92",
+      "bytes": 2098
+    },
+    {
+      "file": "business-01/02-tool-result.result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/02-tool-result.result.json",
+      "sha256": "05f9a7d98496ab9a3f287e7bb56105a5cd65e3f50ca652cb0f088a219c453575",
+      "bytes": 331
+    },
+    {
+      "file": "business-01/02-tool-result.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/02-tool-result.wire",
+      "sha256": "c9cc52df6874634a5169543103799d2c77c481aaee59a1d55e9346ab3f2fefb7",
+      "bytes": 349
+    },
+    {
+      "file": "business-01/03-fault.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/03-fault.http.json",
+      "sha256": "1ac42b0ab253ca692ae265558c1aee397225f3cc6fb9f4d3ac100dd16a25e376",
+      "bytes": 264
+    },
+    {
+      "file": "business-01/03-fault.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/03-fault.request.json",
+      "sha256": "c64f3aecfe9b786b65dc69337aa434b8d117ea774d485e9722750646cdae5002",
+      "bytes": 853
+    },
+    {
+      "file": "business-01/03-fault.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/03-fault.wire",
+      "sha256": "11602e22fc4ecb52a197c96df2d049596c86f126322ba20d7315d7650caa3813",
+      "bytes": 467
+    },
+    {
+      "file": "business-01/04-drain.metrics.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/04-drain.metrics.json",
+      "sha256": "763b86695fe3a1c2eecf7a64b5a9f09292a8b48475ecc849b6c3cb877fb8541b",
+      "bytes": 16388
+    },
+    {
+      "file": "business-01/04-plain-json-during-fault.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/04-plain-json-during-fault.http.json",
+      "sha256": "dae0834f48bf836553805ceb3d635cf4cf3498726ffef09943f560dff291493e",
+      "bytes": 229
+    },
+    {
+      "file": "business-01/04-plain-json-during-fault.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/04-plain-json-during-fault.request.json",
+      "sha256": "70743e01ad29100cdce5828c6139f7218b91ced4565367f9a87ac33c819d236c",
+      "bytes": 266
+    },
+    {
+      "file": "business-01/04-plain-json-during-fault.result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/04-plain-json-during-fault.result.json",
+      "sha256": "40b63a26e6e084105c6691a6313dcaecae3d2624df61950f6806eb194fc9803d",
+      "bytes": 280
+    },
+    {
+      "file": "business-01/04-plain-json-during-fault.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/04-plain-json-during-fault.wire",
+      "sha256": "b814b100ae32409f01a46da34e1a1995d2f624394a34b7b72900ffac267643c2",
+      "bytes": 310
+    },
+    {
+      "file": "business-01/05-plain-sse-after-fault.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/05-plain-sse-after-fault.http.json",
+      "sha256": "9f3adeac0349d4c229f721a71918aa6deb37f56678593b4b76c26ba0576658be",
+      "bytes": 264
+    },
+    {
+      "file": "business-01/05-plain-sse-after-fault.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/05-plain-sse-after-fault.request.json",
+      "sha256": "29c4ac2bb33e9f37a7177d160797fd35df164acbc219e86a840b7bff6794b488",
+      "bytes": 318
+    },
+    {
+      "file": "business-01/05-plain-sse-after-fault.result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/05-plain-sse-after-fault.result.json",
+      "sha256": "68d13aae91d1bb56a9481446d98004605ce44fd64f9b090668b5aecc4dea92c8",
+      "bytes": 280
+    },
+    {
+      "file": "business-01/05-plain-sse-after-fault.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/05-plain-sse-after-fault.wire",
+      "sha256": "241b68ad172713b259a1644162e424d0ca6337b59f4fd5b57c7059bde69e9721",
+      "bytes": 1249
+    },
+    {
+      "file": "business-01/06-drain.metrics.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/06-drain.metrics.json",
+      "sha256": "f92d4b8c25ba2da40a92588aae781f06025651839cf7eae8aa548412491b8a7f",
+      "bytes": 16394
+    },
+    {
+      "file": "business-01/06-structured-recovered.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/06-structured-recovered.http.json",
+      "sha256": "da6b62a43587ddfacde7636f2f4c433fc4b09fd6126ceac37244ccd4a8df836e",
+      "bytes": 264
+    },
+    {
+      "file": "business-01/06-structured-recovered.request.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/06-structured-recovered.request.json",
+      "sha256": "f7b54954fce8e429c38fe2925c5923f878a2b05984f0df14db0c2fdf1c2f355a",
+      "bytes": 719
+    },
+    {
+      "file": "business-01/06-structured-recovered.result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/06-structured-recovered.result.json",
+      "sha256": "9c19f04e539d97af89fdf986a2bf347037a8bde87aa99379431c423aff869551",
+      "bytes": 299
+    },
+    {
+      "file": "business-01/06-structured-recovered.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/06-structured-recovered.wire",
+      "sha256": "399dd06d22e9abd1fdf238f948e023fbac0ee44b17662e8db98abcd4c1c78e36",
+      "bytes": 1023
+    },
+    {
+      "file": "business-01/capabilities.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/capabilities.json",
+      "sha256": "0ba41188b89ddc4a417ad702350f3dfe35798688c05299b34e79a3ff3aba2ddd",
+      "bytes": 15811
+    },
+    {
+      "file": "business-01/cleanup.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/cleanup.json",
+      "sha256": "12f569c313ec01a7fd55fdcbbcc32b0a02f67a6cfe62ae7a8ccd57273851b290",
+      "bytes": 1335
+    },
+    {
+      "file": "business-01/config.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/config.json",
+      "sha256": "759d359ecd5e11873013b30c03e3021475849b48cba0ac2cdfcee4e590798bcd",
+      "bytes": 7305
+    },
+    {
+      "file": "business-01/counts.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/counts.json",
+      "sha256": "b0f1f10ee6515ed0ebedb8c4f2d73aebb9b69df5c7499cbe262529ad8dee943f",
+      "bytes": 50
+    },
+    {
+      "file": "business-01/fault-identity.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/fault-identity.json",
+      "sha256": "f96b094b01bc24180bca69ff8a46086e6fc50bdef113024c18e6d0010b6d36b0",
+      "bytes": 309
+    },
+    {
+      "file": "business-01/fault-verdict.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/fault-verdict.json",
+      "sha256": "289be22b71c805d11b15b99d8a54bdefcb313018bcc0bdfe6662e82fbd66fe72",
+      "bytes": 88
+    },
+    {
+      "file": "business-01/final-capabilities.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/final-capabilities.http.json",
+      "sha256": "b1aee2d11c0450560517231cb890122c805c0ab2523cc47837a5045e23191982",
+      "bytes": 234
+    },
+    {
+      "file": "business-01/final-capabilities.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/final-capabilities.wire",
+      "sha256": "410e2b7e3171df4a79a3978e4d29780f87f529da94c438ad36c2e35a1ed60a74",
+      "bytes": 12722
+    },
+    {
+      "file": "business-01/initial-capabilities.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/initial-capabilities.http.json",
+      "sha256": "a2318d6b697343680c1e3df91cdd3e64ade7ade37cd6d068b40afbe19154a0aa",
+      "bytes": 233
+    },
+    {
+      "file": "business-01/initial-capabilities.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/initial-capabilities.wire",
+      "sha256": "410e2b7e3171df4a79a3978e4d29780f87f529da94c438ad36c2e35a1ed60a74",
+      "bytes": 12722
+    },
+    {
+      "file": "business-01/initial-config.http.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/initial-config.http.json",
+      "sha256": "a4149b4c124978758eda6adabe2fafbaf297c937692bf2d78e24569099ff821c",
+      "bytes": 233
+    },
+    {
+      "file": "business-01/initial-config.wire",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/initial-config.wire",
+      "sha256": "c038e00ce146d3b521adf8db10b18e4139a7c8fa2089dcb6827d1c2f9d6aff8b",
+      "bytes": 5637
+    },
+    {
+      "file": "business-01/lease/events.jsonl",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/lease/events.jsonl",
+      "sha256": "e40ee9f59d9b20670c54c715e2b3df56fccf843cefd5b4266b7ede19ba3e4258",
+      "bytes": 9784
+    },
+    {
+      "file": "business-01/lease/exit.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/lease/exit.json",
+      "sha256": "812f48625f308fb1a4f0b6cef5484e92fbcb4ed0c6c4acc4f01e6ebb996336fe",
+      "bytes": 671
+    },
+    {
+      "file": "business-01/lease/nvml-queries.jsonl",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/lease/nvml-queries.jsonl",
+      "sha256": "00241035fa58fcacf379de3aa52c995695d136dbf72cb42d2c2ec9d55e94c88a",
+      "bytes": 119933
+    },
+    {
+      "file": "business-01/model-command.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/model-command.json",
+      "sha256": "62aa728bfe1bb8778ff8cd527f5d2249190ed68edcd07b62abd2e0aa297e9977",
+      "bytes": 473
+    },
+    {
+      "file": "business-01/model-identity.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/model-identity.json",
+      "sha256": "976dbc5ebbd7d3bc52c8196a1a27ecd8b7f8228fda7199a08f81645a96fac6ed",
+      "bytes": 739
+    },
+    {
+      "file": "business-01/model.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/model.log",
+      "sha256": "c83e1ff00994d422cc03435b60a3d93d3658019fdb436ca7f9a36634d1cfcfc7",
+      "bytes": 19391
+    },
+    {
+      "file": "business-01/plan.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/plan.json",
+      "sha256": "405481e5f851a6f47254abfe6561fe9a7a56456b1ef4519d246c0e205762ad82",
+      "bytes": 33887
+    },
+    {
+      "file": "business-01/result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/result.json",
+      "sha256": "9db8f43adf7b9d1095210606580f05797a813c0d3afc61d80cd664ef6d9e592b",
+      "bytes": 325
+    },
+    {
+      "file": "business-01/tool-result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/tool-result.json",
+      "sha256": "d8e200b4f1bba4458854cb9de0e344390470195b539f9582fe30ee6dac440e16",
+      "bytes": 491
+    },
+    {
+      "file": "cpu-driver-01.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-driver-01.json",
+      "sha256": "3edf63ba46084502fc633787ddfe93d821a72a12ad25b852f25f23666bf11e8c",
+      "bytes": 150
+    },
+    {
+      "file": "cpu-driver-01.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-driver-01.log",
+      "sha256": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4",
+      "bytes": 101
+    },
+    {
+      "file": "cpu-http-01.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-http-01.json",
+      "sha256": "e97238904107516858fd296f42d6346d4d722836ea229dfe8463ddff38e6d147",
+      "bytes": 484
+    },
+    {
+      "file": "cpu-http-01.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-http-01.log",
+      "sha256": "5852c7a849d9ad05a54021196fb67690009a0c426741979c79a3b8ab53006ec4",
+      "bytes": 3214
+    },
+    {
+      "file": "cpu-off-01.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-off-01.json",
+      "sha256": "646ab6206884eafe516e779065ab6141e54c1ed4cfc10e38bd91e3c2b938421e",
+      "bytes": 469
+    },
+    {
+      "file": "cpu-off-01.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-off-01.log",
+      "sha256": "0a8e2f4fc4e7f26fd60926b20510832e2d67d92fb77e6e73eae18abc698fd0e5",
+      "bytes": 1303
+    },
+    {
+      "file": "cpu-on-01.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-on-01.json",
+      "sha256": "2af0cdca2e17166659b0a5c7ad9c404dce519dec6127b064555e99a704aad234",
+      "bytes": 473
+    },
+    {
+      "file": "cpu-on-01.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-on-01.log",
+      "sha256": "586ffaa2ca4da70960fca5266389967f60810469e94ed1a104d1f0a733e65397",
+      "bytes": 1924
+    },
+    {
+      "file": "cpu-on-repair-02.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-on-repair-02.json",
+      "sha256": "a1b82bb04917ef4bcf18bb78dedd1e2cd9238f4817ce0aad70430295a6ac4dae",
+      "bytes": 480
+    },
+    {
+      "file": "cpu-on-repair-02.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/cpu-on-repair-02.log",
+      "sha256": "7d9e31dbbf162881d2a848d34c901042fb7bf16e185aab2420824c09221ad9bf",
+      "bytes": 114
+    },
+    {
+      "file": "delivery-01/cli-expectation-correction.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-01/cli-expectation-correction.json",
+      "sha256": "5ae50b2a13f4849691d137d4e2a92eb92ad217464562a0f7ed1c36d808535d88",
+      "bytes": 1682
+    },
+    {
+      "file": "delivery-02/installed-entry-checks.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/installed-entry-checks.json",
+      "sha256": "4446ab119dde46b5eca1249b8e4e010f5b096f8c79ca0972b51d6300576b5bb0",
+      "bytes": 667
+    },
+    {
+      "file": "delivery-02/prepared-entry-checks.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/prepared-entry-checks.json",
+      "sha256": "208299e7634b2d8bdadfebbb2d21066113221e435e9728e168c43867f6f41fb5",
+      "bytes": 833
+    },
+    {
+      "file": "delivery-02/result.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/result.json",
+      "sha256": "e9b2376e68c2d9caa667c93a31869c302bb03f1b6a06db82149d1ddc72e7f935",
+      "bytes": 802
+    },
+    {
+      "file": "delivery-02/rollback/receipt.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/rollback/receipt.json",
+      "sha256": "cdb395ba8da7804e6ceada5099414f1d9d1aa0f61b359d8b4c4fd9fa7599826a",
+      "bytes": 915
+    },
+    {
+      "file": "delivery-02/service.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/service.json",
+      "sha256": "f188d15d31a7b0507830a980b2b2615df4fb1ea8d7a7fce43abdfe1f9fe691a5",
+      "bytes": 269
+    },
+    {
+      "file": "delivery-02/service.release.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/service.release.json",
+      "sha256": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119",
+      "bytes": 2902
+    },
+    {
+      "file": "engine-build-0.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build-0.log",
+      "sha256": "43a7b77dc0ba3fb3a62bc6f04c0f8edbe8b9f5d30e8dd46aee4169c725b176a2",
+      "bytes": 1334
+    },
+    {
+      "file": "engine-build-1.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build-1.log",
+      "sha256": "363aaa4eeb2b48d6476fd57b3a17f607ca835b8bf36c0bc76b1ac0f8b9dea6e0",
+      "bytes": 20475
+    },
+    {
+      "file": "engine-build.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build.json",
+      "sha256": "e304f83be397f6f9158e7bd13b3a6663c4ac93aaa0b18860aa6bc685347a9c36",
+      "bytes": 921
+    },
+    {
+      "file": "host-off-build-0.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/host-off-build-0.log",
+      "sha256": "2f7538c10798925dbdf512899781b902271bd9cc34342f713e2360debb90aaac",
+      "bytes": 696
+    },
+    {
+      "file": "host-off-build-1.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/host-off-build-1.log",
+      "sha256": "55713fceb27050123d8e54d30788a2c7392ef1d5e885d29e0817233f04423503",
+      "bytes": 8375
+    },
+    {
+      "file": "host-off-build.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/host-off-build.json",
+      "sha256": "c9580976a97e5050d7a15ec365e26612c95eaab6c6eb0fa691fbdfd5c5b4e9f8",
+      "bytes": 625
+    },
+    {
+      "file": "http-build-02.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/http-build-02.json",
+      "sha256": "e3c3958dbd34c1c78febcbbd70dc680caefbf8425246a2e7b3d9ce87e58e9be2",
+      "bytes": 267
+    },
+    {
+      "file": "http-build-02.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/http-build-02.log",
+      "sha256": "948a0164cf563e0448a74030c4901566c4a33205ea4d711fd8669ae0bb70ae11",
+      "bytes": 1362
+    },
+    {
+      "file": "native-build-01.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/native-build-01.json",
+      "sha256": "4a0c185370e0a5f538cd0e0c228b2de4d9ec49080d98eefb59462856726b785c",
+      "bytes": 269
+    },
+    {
+      "file": "native-build-01.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/native-build-01.log",
+      "sha256": "1bc7573c6ab1c1aec0fbb13fe0612fa2ae2fd26b7c297bd7dd7fb33b964fd82d",
+      "bytes": 1408
+    },
+    {
+      "file": "protocol-1.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/protocol-1.log",
+      "sha256": "e6ecc6dc88058d2e609544c57b3f5a25909479a2bff90671b85f5b5d501bd23c",
+      "bytes": 659
+    },
+    {
+      "file": "protocol-2.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/protocol-2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "protocol-3.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/protocol-3.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "protocol.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/protocol.json",
+      "sha256": "d6c0e62909bb8b6f67c0ae2228b0f06d7a2c9913a45486248d926b2fd6b23e87",
+      "bytes": 421
+    },
+    {
+      "file": "release-01/bundle-receipt.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/bundle-receipt.json",
+      "sha256": "ecde31acceeba388b0bec35255c7f92692c9f1a1ebbb0b48f0eead51f88b747f",
+      "bytes": 321
+    },
+    {
+      "file": "release-01/decision.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/decision.json",
+      "sha256": "a7cdeda9e57c460a88ba0cdd75ae4e86955ff0c8f8868f23bbae98caedd0ad33",
+      "bytes": 1280
+    },
+    {
+      "file": "release-01/engine/CMakeCache.txt",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/CMakeCache.txt",
+      "sha256": "be91f2956cae8ef3185f0b5ed2aa240d786aa97502ac48ab3023952c16dc44a4",
+      "bytes": 38815
+    },
+    {
+      "file": "release-01/engine/chat_protocol_sources.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/chat_protocol_sources.json",
+      "sha256": "356b45044688cca75e1b957aa8cc1450c4e99973c5d4ce3558f83ec4ca0958c7",
+      "bytes": 11430
+    },
+    {
+      "file": "release-01/engine/declarations/capabilities.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/capabilities.json",
+      "sha256": "0ba41188b89ddc4a417ad702350f3dfe35798688c05299b34e79a3ff3aba2ddd",
+      "bytes": 15811
+    },
+    {
+      "file": "release-01/engine/declarations/configuration.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/configuration.json",
+      "sha256": "759d359ecd5e11873013b30c03e3021475849b48cba0ac2cdfcee4e590798bcd",
+      "bytes": 7305
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/config.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/config.json",
+      "sha256": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1",
+      "bytes": 30435
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/message.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "bytes": 1755
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/preflight.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/preflight.json",
+      "sha256": "3fe4ff359532ab677d4c865d00db8979c6ca979c0e4ce8e8731ffa1035303d3d",
+      "bytes": 7553
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/reasoning.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "bytes": 2702
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/response.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "bytes": 4493
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/stop.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "bytes": 1584
+    },
+    {
+      "file": "release-01/engine/declarations/schemas/thinking.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "bytes": 2690
+    },
+    {
+      "file": "release-01/engine/q4t.release.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/q4t.release.json",
+      "sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7",
+      "bytes": 31411
+    },
+    {
+      "file": "release-01/engine/runtime-source.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/runtime-source.json",
+      "sha256": "8c96750929156ced160e3eda73af3c877bae83424f75d3006f2c56a5398b589e",
+      "bytes": 28107
+    },
+    {
+      "file": "release-01/native-build.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/native-build.json",
+      "sha256": "eb3697f98c197adbd51e79d5a01f73963bb4300eb9a056964c391d6b81b6a672",
+      "bytes": 7998
+    },
+    {
+      "file": "release-01/unchanged-control.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/unchanged-control.json",
+      "sha256": "cf0fac4e1c135f9ee7b3eefa45a9af0c637719202aae09872ffc41adc80f9e2f",
+      "bytes": 2407
+    },
+    {
+      "file": "required-http.txt",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-http.txt",
+      "sha256": "b0e57f290164998bdb68293c1f7f63d74fb5a133d88e7c006e2ec48f272560e0",
+      "bytes": 255
+    },
+    {
+      "file": "required-off.txt",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-off.txt",
+      "sha256": "0a836219aaea553cc4d7837affef0c4f29f82b70d0d1fa8940cd019ffbe158f2",
+      "bytes": 1101
+    },
+    {
+      "file": "required-on-repair.txt",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-on-repair.txt",
+      "sha256": "46fca0de2b640909fb01f5f4df1f7c21cd2f1a82960a3c9baeeecb2c9a82090e",
+      "bytes": 68
+    },
+    {
+      "file": "required-on.txt",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-on.txt",
+      "sha256": "705a4155e06d00161c850e98a9355f3d67a431fbef95877adf9940485271eecc",
+      "bytes": 1576
+    },
+    {
+      "file": "runtime-source.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/runtime-source.json",
+      "sha256": "8c96750929156ced160e3eda73af3c877bae83424f75d3006f2c56a5398b589e",
+      "bytes": 28107
+    },
+    {
+      "file": "targeted-build-03.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/targeted-build-03.json",
+      "sha256": "f2d54541073db80ab170b637c8ed231786b47a89b941de44904cb1d3be46a2f4",
+      "bytes": 289
+    },
+    {
+      "file": "targeted-build-03.log",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/targeted-build-03.log",
+      "sha256": "004a0d64a9ac31ba381f683053819554834799def8af960902fbe711f65f6e75",
+      "bytes": 535
+    },
+    {
+      "file": "inventory-before.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/inventory-before.json",
+      "sha256": "a07e16c267a40243599fa4ab02245d268eb897916d95b2f3db0490b93cd31831",
+      "bytes": 537
+    },
+    {
+      "file": "inventory-after.json",
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/inventory-after.json",
+      "sha256": "618fab3258c271568349659925674b415825385571fe5d53c76a21dc9dee9e5d",
+      "bytes": 192
+    }
+  ],
+  "source_commit": "0be7b38eda198d247bbb6cb7c7942925a115959a",
+  "secret_scan_known_values": 3,
+  "excluded": [
+    "private policies",
+    "credentials",
+    "model weights",
+    "executables (retained in local rollback/release directories)"
+  ]
+}

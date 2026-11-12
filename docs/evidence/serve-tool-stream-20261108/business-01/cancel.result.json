@@ -1,0 +1,9 @@
+{
+  "error": {
+    "class": "APIError",
+    "message": "request cancelled",
+    "code": "explicit_cancel",
+    "automatic_retry": false,
+    "tools_executed": 0
+  }
+}

@@ -11,7 +11,9 @@ permissions:
 jobs:
   host-contracts:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Current clean build takes up to ten minutes; the complete host registry
+    # and transport suites have their own finite budgets below.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -22,6 +24,22 @@ jobs:
           packages=()
           command -v g++-14 >/dev/null || packages+=(g++-14)
           command -v cmake >/dev/null || packages+=(cmake)
+          test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
+          test -f /usr/include/archive.h || packages+=(libarchive-dev)
+          test -f /usr/include/webp/decode.h || packages+=(libwebp-dev)
+          test -f /usr/include/zlib.h || packages+=(zlib1g-dev)
+          test -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)
+          test -f /usr/include/LibreOfficeKit/LibreOfficeKit.h || packages+=(libreofficekit-dev)
+          for codec in libreoffice-writer libreoffice-calc libreoffice-impress; do
+            dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \
+              grep -q 'install ok installed' || packages+=("$codec")
+          done
+          command -v pdftoppm >/dev/null || packages+=(poppler-utils)
+          test -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf || packages+=(fonts-dejavu-core)
+          dpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \
+            grep -q 'install ok installed' || packages+=(libidn2-0)
+          command -v openssl >/dev/null || packages+=(openssl)
+          command -v strace >/dev/null || packages+=(strace)
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           if ((${#packages[@]})); then
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update
@@ -31,6 +49,35 @@ jobs:
           g++-14 --version
           cmake --version
           /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
+      - name: Protect runner system document resources
+        run: |
+          # Hosted images can make codec resource directories world-writable.
+          # Restore trusted read-only resources; never weaken the sandbox.
+          for path in /usr/share/fonts /usr/share/fontconfig \
+              /usr/share/libreoffice /etc/libreoffice /usr/share/locale \
+              /usr/share/mime /usr/share/zoneinfo /etc/localtime; do
+            test -e "$path" || continue
+            test "$(stat -Lc '%u' "$path")" = 0
+            stat -Lc 'before %n owner=%u mode=%a' "$path"
+            sudo chmod go-w "$path"
+            stat -Lc 'after %n owner=%u mode=%a' "$path"
+          done
+      - name: Install pinned SDK for native TLS client contracts
+        timeout-minutes: 2
+        run: |
+          node -e 'if (Number(process.versions.node.split(".")[0]) < 22) process.exit(1)'
+          mkdir -p build/public-host/sdk
+          cp tools/serve_protocol/package.json tools/serve_protocol/package-lock.json build/public-host/sdk/
+          npm ci --prefix build/public-host/sdk --ignore-scripts --no-audit --no-fund
+      - name: Describe document sandbox prerequisites
+        timeout-minutes: 1
+        run: |
+          g++-14 -std=c++23 -Wall -Wextra -Werror -Iinclude \
+            tools/verify/host_sandbox_probe.cpp \
+            src/server/file_document_sandbox.cpp src/server/file_pdf_sandbox.cpp \
+            src/server/file_legacy_sandbox.cpp -o build/public-host/sandbox-probe
+          timeout 15s build/public-host/sandbox-probe build/public-host/sandbox-diagnostics |
+            while IFS= read -r line; do echo "::notice title=Document sandbox::$line"; done
       - name: Configure without CUDA or model fixtures
         run: >-
           cmake -S tests/host -B build/public-host
@@ -42,6 +89,30 @@ jobs:
         run: >-
           ctest --test-dir build/public-host --no-tests=error
           --output-on-failure --verbose
+      - name: Diagnose document worker failure
+        if: failure()
+        timeout-minutes: 1
+        run: |
+          test -x build/public-host/q4t_host_tests || exit 0
+          mkdir -p build/public-host/codec-diagnostic
+          export Q4T_TEST_OUTPUT_DIR="$PWD/build/public-host/codec-diagnostic"
+          export TMPDIR="$Q4T_TEST_OUTPUT_DIR"
+          printf '%s\n' file_legacy_actual_doc_unicode_and_confirmed_cleanup \
+            > build/public-host/codec-diagnostic/required.txt
+          # Diagnostic only: the failed contract above remains failed. Trace
+          # system calls, never document contents or credentials.
+          set +e
+          timeout 30s strace -ff -s 128 -e trace=%file,%process,%signal,%memory \
+            -o build/public-host/codec-diagnostic/trace \
+            build/public-host/q4t_host_tests --required-list \
+            build/public-host/codec-diagnostic/required.txt
+          result=$?
+          echo "diagnostic_exit=$result"
+          for trace in build/public-host/codec-diagnostic/trace.*; do
+            test -f "$trace" || continue
+            echo "trace_file=$trace"
+            tail -50 "$trace"
+          done
       - name: Verify strict test-runner failures
         run: >-
           python3 tools/verify/test_gate/run.py --cxx g++-14

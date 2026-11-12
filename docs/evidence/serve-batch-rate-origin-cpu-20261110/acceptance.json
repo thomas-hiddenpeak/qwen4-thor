@@ -1,0 +1,18 @@
+{
+  "status": "PASS_BATCH_RATE_ORIGIN_CPU",
+  "cpp_tests": 18,
+  "new_cpp_tests": 8,
+  "extended_cpp_tests": 2,
+  "direct_cpp_tests": 8,
+  "python_tests": 4,
+  "cpp_seconds": 0.21412606164813042,
+  "python_seconds": 0.26437162002548575,
+  "gpu_starts": 0,
+  "engine_sha256": "4b25397062e13133f6c85f691ccc9299c76df967fb91d03ca982a0d9b5d78068",
+  "host_sha256": "1d9eba228173a3e5b3e440772e68f0eaba889819a8a560264ef3864af2bfd8d6",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "builds_zero_warning": true,
+  "anchors": 481,
+  "quota_contract": "Online and Batch independently enforce the existing current per-client RPM/TPM limits; data/model concurrency remains shared; trusted origin persists in background Responses",
+  "remaining": "Enqueued token reservation, scalable 50000-row metadata/incremental finalization, public HTTP/SDK actual GPU business, compatible v2 quota/Response rollback reader/default and all master tasks"
+}

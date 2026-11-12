@@ -1,0 +1,16 @@
+{
+  "status": "PASS_NATIVE_FINITE_JSON_CAPTURE_CPU",
+  "tests": 18,
+  "seconds": 0.015841277316212654,
+  "gpu_starts": 0,
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "engine_sha256": "114f18e52b624dd490eb5a791fed8a8c2ed13dc0bf0cf28c101cd145de4468a5",
+  "host_sha256": "0b72d3ec5cb58eeeac37bae2b10048fc81240fe3625cd542ddf799df5adbe940",
+  "anchors": 472,
+  "builds_zero_warning": true,
+  "additional_source_closure": {
+    "tools/serve_protocol/build_probe.py": "79c0bda4ce2a0e7d345ebe72a560cb1e86d6e249e7f3cf63d8e64fb47b18dab7",
+    "tools/serve_stage_b1/CMakeLists.txt": "9dbcf5f47e44718bd371e2e2bd49011843d817fa5e1ce7f3801fb82076be9ca7"
+  },
+  "remaining": "actual adapter/client pool/Batch jobs/recovery/HTTP/native SDK/business/default delivery/all master goals"
+}

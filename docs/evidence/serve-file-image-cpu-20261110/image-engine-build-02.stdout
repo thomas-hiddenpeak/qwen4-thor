@@ -1,0 +1,27 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[ 10%] Built target q4t_trace
+[ 10%] Built target q4t_regex_build
+[ 14%] Built target q4t_runtime
+[ 14%] Built target q4t_service_tools
+[ 14%] Built target q4t_text
+[ 28%] Built target xgrammar
+[ 28%] Built target q4t_service_cli
+[ 32%] Built target q4t_quant
+[ 42%] Built target q4t_model
+[ 42%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t

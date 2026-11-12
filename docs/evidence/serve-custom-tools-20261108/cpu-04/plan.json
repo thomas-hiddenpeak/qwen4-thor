@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.serve_custom_tools.test_acceptance"
+  ],
+  "scope": "Repaired mixed-call prompt and exact repair budget/driver checks only; same ef1aeb97 candidate and clients, prior CPU reused"
+}

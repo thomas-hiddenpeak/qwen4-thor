@@ -1,0 +1,1 @@
+{"status": "FAILED_PREPARE_BEFORE_PUBLICATION", "reason": "Metadata read requires regular file; switched both metadata reads to verified immutable predecessor copies.", "default_changed": false, "model_starts": 0, "chats": 0}

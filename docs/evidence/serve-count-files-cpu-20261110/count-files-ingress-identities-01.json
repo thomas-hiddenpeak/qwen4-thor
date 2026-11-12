@@ -1,0 +1,9 @@
+{
+  "identities": {
+    "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress": "133783ed8577c16ab318423e5e2e2a3b5dfe22974ea43cb52fdfa86b48dcbe5b",
+    "tools/serve_recovery/test_gateway_nginx.py": "efad479b111f285b833437fab0f77ae0cec78ce7f2f7bb01706fca79ec14ca62",
+    "tools/serve_responses/test_input_tokens_ingress.py": "76f59949ad39b0735c0ad9776bde1c243924b4d83135f55c3f4d037516ab0c72"
+  },
+  "prebuild_note": "The initial prebuild record used the CMake target name q4t_ingress as the file name. Actual OUTPUT_NAME is q4t-ingress. That empty failed record is retained; these are post-build identities, not a fabricated prebuild binary observation."
+}

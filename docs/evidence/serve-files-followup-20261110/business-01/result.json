@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py\", line 242, in business\n    self.files('storage-unavailable', 'retrieve', file_id=uploaded['id'], expected_status=503)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py\", line 193, in files\n    require(len(value['exchanges']) == 1 and value['exchanges'][0]['status'] == expected_status,\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 61, in require\n    raise RuntimeError(message)\nRuntimeError: Files status/replay differs: storage-unavailable\n",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 51,
+    "files": 8
+  },
+  "seconds": 58.85549435997382,
+  "binary_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988"
+}

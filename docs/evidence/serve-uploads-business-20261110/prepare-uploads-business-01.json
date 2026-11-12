@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/serve_responses/uploads_acceptance.py",
+    "prepare",
+    "--binary",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "--output",
+    ".q4t-work/serve-uploads-20261110/business-01",
+    "--port",
+    "19021"
+  ],
+  "exit_code": 0,
+  "seconds": 1.866125046275556
+}

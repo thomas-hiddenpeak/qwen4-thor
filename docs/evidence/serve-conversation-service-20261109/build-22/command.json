@@ -1,0 +1,9 @@
+[
+  "cmake",
+  "--build",
+  ".q4t-work/serve-custom-tools-20261108/engine-build",
+  "--target",
+  "q4t",
+  "--parallel",
+  "4"
+]

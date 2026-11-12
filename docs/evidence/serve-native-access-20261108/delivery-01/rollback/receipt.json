@@ -1,0 +1,15 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/bundle",
+  "manifest_sha256": "e7652b4cc1a0632c804fd67fbe269dc60ff393016a7c1061e25b3f2c1e428f36",
+  "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "files": {
+    "service.json": "f188d15d31a7b0507830a980b2b2615df4fb1ea8d7a7fce43abdfe1f9fe691a5",
+    "service.release.json": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119"
+  },
+  "engine_unchanged": {
+    "binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "release_sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7"
+  },
+  "procedure": "With exclusive service/GPU lease and durable STOPPED ledger, restore only the two recorded files and repoint build/service to the recorded old package. Preserve actual ledger/recovery budgets; do not initialize or overwrite ledger."
+}

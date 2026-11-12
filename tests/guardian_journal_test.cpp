@@ -27,7 +27,7 @@ int64_t Now() {
 }
 
 struct JournalFixture {
-  JournalFixture() {
+  explicit JournalFixture(bool versions = false) : versions(versions) {
     std::string pattern = output + "/journal-XXXXXX";
     if (mkdtemp(pattern.data()) != nullptr) directory = pattern;
   }
@@ -45,10 +45,20 @@ struct JournalFixture {
   }
   bool Initialize() {
     if (directory.empty()) return false;
-    const std::string code =
+    const std::string core_code =
         "import sys;sys.path.insert(0,sys.argv[3]);"
         "from tools.serve_recovery.store import Store;"
         "s=Store(sys.argv[1],sys.argv[2],initialize=True);s.close()";
+    const std::string version_code =
+        "import sys;sys.path.insert(0,sys.argv[3]);"
+        "from tools.serve_recovery import access_store,store,version_store,"
+        "version_policy;"
+        "from tools.serve_recovery.test_version_policy import PolicyTests;"
+        "f=PolicyTests();f.setUp();"
+        "v=version_policy.initial(f.registry,store.stamp().boot_id);"
+        "version_store.initialize_bound("
+        "access_store.binding(sys.argv[1],sys.argv[2]),v)";
+    const auto& code = versions ? version_code : core_code;
     s::ChildProcess init;
     if (!s::SpawnProcess(
              {python, "-I", "-B", "-c", code, directory, kService, repository},
@@ -79,10 +89,14 @@ struct JournalFixture {
     return false;
   }
   bool Start() {
+    const auto selected_script = versions
+        ? repository + "/tools/serve_recovery/version_journal.py" : script;
     return Initialize() &&
            client
-               .Start(python, script, directory, kService, Now() + offset,
-                      3'000'000'000)
+               .Start(python, selected_script, directory, kService,
+                      Now() + offset, 3'000'000'000,
+                      versions ? s::JournalDomain::kVersion
+                               : s::JournalDomain::kCore)
                .ok() &&
            Wait(s::JournalState::kReady);
   }
@@ -106,6 +120,7 @@ struct JournalFixture {
     return false;
   }
   s::JournalClient client;
+  bool versions;
   std::string directory;
   int64_t offset = 0;
 };
@@ -116,6 +131,21 @@ q4t::io::Json Proof() {
                     {"identity_valid", w::Boolean(true)},
                     {"lease_continuous", w::Boolean(true)},
                     {"device_usable", w::Boolean(true)}});
+}
+
+q4t::io::Json VersionProof(const std::string& boot, bool fallback = false) {
+  return w::Object({
+      {"desired", w::String("RUNNING")}, {"boot_id", w::String(boot)},
+      {"payload_sha256", w::String(std::string(64, fallback ? 'c' : 'a'))},
+      {"generations", w::Object({{"controller", w::Unsigned(fallback ? 3 : 2)},
+                                  {"model", w::Unsigned(fallback ? 6 : 5)},
+                                  {"gateway", w::Unsigned(fallback ? 4 : 3)}})},
+      {"termination_requested", w::Boolean(false)},
+      {"independent_observation", w::Boolean(true)},
+      {"identity_valid", w::Boolean(true)},
+      {"lease_continuous", w::Boolean(true)},
+      {"resources_safe", w::Boolean(true)},
+      {"device_usable", w::Boolean(true)}});
 }
 }  // namespace
 
@@ -261,6 +291,74 @@ Q4T_TEST(guardian_dead_journal_discards_unconsumed_launch_permission) {
   Q4T_CHECK(f.client.State() == s::JournalState::kFrozen);
   Q4T_CHECK(!f.client.TakeReply());
   Q4T_CHECK(f.client.CleanupConfirmed());
+  return true;
+}
+
+Q4T_TEST(guardian_version_worker_real_channel_and_fixture_fault_transaction) {
+  JournalFixture f(true);
+  Q4T_CHECK(f.Start());
+  const auto* state = f.client.Snapshot().Find("state");
+  Q4T_CHECK(state != nullptr);
+  const auto boot = state->GetString("boot_id");
+  const auto resume = f.Send("resume", w::Object({{"boot_id", w::String(boot)}}));
+  Q4T_CHECK(resume && resume->revision == 1);
+  // Fault/proofs are CPU representation fixtures. Actual native classification
+  // and payload authority are tested separately when wired into Guardian.
+  const auto event = w::Object({
+      {"role", w::String("model")}, {"generation", w::Unsigned(5)},
+      {"boot_id", w::String(boot)}, {"payload_sha256", w::String(std::string(64, 'a'))},
+      {"kind", w::String("native_process_signal")},
+      {"fingerprint", w::String(std::string(64, 'e'))}, {"signal", w::Unsigned(11)}});
+  const auto observed = f.Send("observe", w::Object({
+      {"event", event}, {"proof", VersionProof(boot)}}));
+  Q4T_CHECK(observed && observed->revision == 2);
+  const auto* selection = observed->result.Find("selection");
+  Q4T_CHECK(selection && selection->GetBool("fallback_consumed") &&
+            !selection->GetBool("role_launch_authority"));
+  const auto completed = f.Send("finish", w::Object({
+      {"proof", VersionProof(boot, true)},
+      {"binding_sha256", w::String(std::string(64, 'd'))}}));
+  Q4T_CHECK(completed && completed->revision == 3);
+  Q4T_CHECK(completed->result.Find("state")->GetString("selected") ==
+            "fallback");
+  return true;
+}
+
+Q4T_TEST(guardian_version_timeout_does_not_freeze_core_authority_channel) {
+  JournalFixture core, version(true);
+  Q4T_CHECK(core.Start() && version.Start());
+  const auto owner = core.client.Worker();
+  const auto boot = version.client.Snapshot().Find("state")->GetString("boot_id");
+  Q4T_CHECK(version.Pause());
+  uint64_t sequence = 0;
+  Q4T_CHECK(version.client.Submit("resume",
+      w::Object({{"boot_id", w::String(boot)}}), Now(), &sequence).ok());
+  version.offset = 4'000'000'000;
+  Q4T_CHECK(!version.client.Tick(Now() + version.offset).ok());
+  Q4T_CHECK(version.client.State() == s::JournalState::kFrozen);
+  Q4T_CHECK(core.Send("desired", w::Object({{"state", w::String("RUNNING")}})));
+  Q4T_CHECK(core.client.Worker() == owner);
+  Q4T_CHECK(core.Send("desired", w::Object({{"state", w::String("STOPPED")}})));
+  return true;
+}
+
+Q4T_TEST(guardian_version_worker_cannot_execute_core_desired_or_grant_commands) {
+  JournalFixture core, version(true);
+  Q4T_CHECK(core.Start() && version.Start());
+  Q4T_CHECK(!version.Send("desired",
+                          w::Object({{"state", w::String("RUNNING")}})));
+  Q4T_CHECK(version.client.State() == s::JournalState::kFrozen);
+  Q4T_CHECK(core.Send("desired", w::Object({{"state", w::String("STOPPED")}})));
+  return true;
+}
+
+Q4T_TEST(guardian_version_domain_rejects_core_snapshot_as_selection) {
+  JournalFixture f;
+  Q4T_CHECK(f.Initialize());
+  Q4T_CHECK(f.client.Start(python, script, f.directory, kService, Now(),
+                           3'000'000'000, s::JournalDomain::kVersion).ok());
+  Q4T_CHECK(f.Wait(s::JournalState::kFrozen));
+  Q4T_CHECK(!f.client.TakeReply());
   return true;
 }
 

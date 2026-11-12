@@ -1,0 +1,43 @@
+{
+  "status": "ACCEPT_TARGETED_CACHE_IO_AND_NATIVE_PROGRESS",
+  "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "protocol_sha256": "bc61c809ce0360c62ca82244d550e6845b582ac75cfb3e2d26a51d3ad1f29197",
+  "source_commit": "311b66f70b98e5da2cf625ce149bde3fd8a34dae",
+  "frozen_sources": 698,
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 56
+  },
+  "seconds": 98.8716205470264,
+  "lease_status": "COMPLETED",
+  "nvml_samples": 93,
+  "all_nvml_ok": true,
+  "same_model": true,
+  "cache_recovered": true,
+  "shared_cache_unchanged": true,
+  "mtp_cached_sse": true,
+  "raw_progress_frames": 393,
+  "cache_wait_samples": 30,
+  "cache_device_samples": 0,
+  "progress_shutdown_unknown": {
+    "progress_disconnected": 8
+  },
+  "startup_reservations_freed": 1619,
+  "allocation_note": "Intermediate server_destroyed quota still has 6 entries/125239296 bytes; process exits 0 and final NVML has no compute process. Do not claim that intermediate snapshot proves zero live allocations.",
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "reused": [
+    "serve-cache-io-cpu-20261109",
+    "serve-cache-io-driver-20261109",
+    "serve-progress-resource-20261109",
+    "serve-progress-business-20261109"
+  ],
+  "progress_sampling": "250ms can miss short device/resource scopes; direct CPU bindings reused.",
+  "remaining": [
+    "rollback-capable accepted delivery",
+    "all remaining master tasks"
+  ]
+}

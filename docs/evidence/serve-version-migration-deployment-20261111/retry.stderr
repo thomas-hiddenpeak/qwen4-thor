@@ -1,0 +1,6 @@
+test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.453s
+
+OK

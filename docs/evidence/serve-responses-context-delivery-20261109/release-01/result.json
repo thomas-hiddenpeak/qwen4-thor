@@ -1,0 +1,1 @@
+{"status": "FAILED_PREPARE_BEFORE_PUBLICATION", "reason": "Current default aliases are managed symlinks; strict copier requires verified regular resolved sources.", "default_changed": false, "model_starts": 0, "chats": 0}

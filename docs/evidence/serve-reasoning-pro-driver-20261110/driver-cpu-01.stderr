@@ -1,0 +1,9 @@
+test_execution_receipts_reject_skipped_extra_and_replayed_steps (tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_execution_receipts_reject_skipped_extra_and_replayed_steps) ... ok
+test_final_requires_actual_notes_mode_usage_and_current_answer (tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_final_requires_actual_notes_mode_usage_and_current_answer) ... ok
+test_frozen_requests_cover_distinct_real_execution_paths (tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_frozen_requests_cover_distinct_real_execution_paths) ... ok
+test_tiny_cannot_refill_or_fabricate_a_final_answer (tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_tiny_cannot_refill_or_fabricate_a_final_answer) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.048s
+
+OK

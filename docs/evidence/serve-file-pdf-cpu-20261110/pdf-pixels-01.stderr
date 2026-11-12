@@ -1,0 +1,6 @@
+test_actual_pages_have_expected_pixels_and_rotation (tools.serve_responses.test_file_pdf_images.PdfImages.test_actual_pages_have_expected_pixels_and_rotation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.042s
+
+OK

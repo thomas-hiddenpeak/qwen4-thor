@@ -1,0 +1,3 @@
+[PASS] moderations_public_response_requires_complete_real_reports
+[PASS] embeddings_fp32_wire_roundtrip_and_base64_byte_order
+2 tests, 2 passed, 0 failed, 0 skipped

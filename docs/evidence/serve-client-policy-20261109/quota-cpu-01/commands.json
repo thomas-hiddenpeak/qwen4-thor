@@ -1,0 +1,7 @@
+[
+  [
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-access-20261109/quota-build-02/required.txt"
+  ]
+]

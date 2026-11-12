@@ -1,0 +1,15 @@
+{
+  "status": "PASS_NATIVE_BATCH_EXECUTION_ADAPTER_CPU",
+  "tests": 21,
+  "new_tests": 9,
+  "direct_tests": 12,
+  "seconds": 0.6647268701344728,
+  "gpu_starts": 0,
+  "engine_sha256": "b9c3a9677e6cf76835347ef6f876155858a2d1bd72fe12c8eb00ffac46697db7",
+  "host_sha256": "58c869ac4b0012ca3130090c9aafd9e9a39ebda5d6b2e84a12f9a3be2b11caec",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "builds_zero_warning": true,
+  "anchors": 477,
+  "scope": "Actual finite native response/ClientLease/RequestControl/ResponsesJobs and state lifecycle; generated text/tool bodies are explicit CPU fixtures, no model inference",
+  "remaining": "Incremental durable validation/fair Batch jobs/independent rate origin/HTTP SDK/real GPU business/compatible rollback/default delivery/all master tasks"
+}

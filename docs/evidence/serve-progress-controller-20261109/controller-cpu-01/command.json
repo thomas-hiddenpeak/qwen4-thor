@@ -1,0 +1,18 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_progress",
+  "tools.serve_recovery.test_child.ChildTests",
+  "tools.serve_recovery.test_observation_io.ControllerIsolationTests",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_native_tls_paths_are_sealed_but_credentials_are_reloadable",
+  "tools.serve_recovery.test_policy.PolicyTests.test_optional_failures_do_not_require_gpu_visibility",
+  "tools.serve_recovery.test_policy.PolicyTests.test_explicit_device_failure_beats_timeout_and_missing_logs",
+  "tools.serve_recovery.test_policy.PolicyTests.test_each_missing_safety_proof_blocks_replacement",
+  "tools.serve_recovery.test_policy.PolicyTests.test_request_failures_and_suspected_stall_do_not_restart_model"
+]

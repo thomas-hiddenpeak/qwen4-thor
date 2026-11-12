@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    "tools/serve_protocol/check_contract.py"
+  ],
+  "exit_code": 2,
+  "seconds": 0.16410971013829112
+}

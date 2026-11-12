@@ -1,0 +1,16 @@
+{
+  "label": "previous-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+    "service",
+    "check",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+    "--manifest-sha256",
+    "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+  ],
+  "returncode": 0,
+  "seconds": 2.7323640063405037
+}

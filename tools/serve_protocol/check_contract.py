@@ -26,12 +26,12 @@ def strict_json(raw):
         return result
     def number(text):
         value = Decimal(text)
-        if not math.isfinite(float(value)):
-            raise ValueError("nonfinite or unrepresentable JSON number")
+        if not value.is_finite() or len(text) > 16384:
+            raise ValueError("invalid or over-budget exact JSON number")
         return value
     def invalid(_):
         raise ValueError("nonfinite JSON constant")
-    value = json.loads(raw, object_pairs_hook=pairs, parse_float=number, parse_constant=invalid)
+    value = json.loads(raw, object_pairs_hook=pairs, parse_float=number, parse_int=number, parse_constant=invalid)
     def utf8(item):
         if isinstance(item, str):
             item.encode("utf-8")
@@ -76,7 +76,8 @@ def load_validators():
     spec = build_contract.openapi()
     request = lambda route: spec["paths"][route]["post"]["requestBody"]["content"]["application/json"]["schema"]
     return {key: Validator(request(route), registry=registry) for key, route in
-        (("chat", "/v1/chat/completions"), ("cancel", "/v1/requests/cancel"),
+        (("chat", "/v1/chat/completions"), ("completion", "/v1/completions"),
+         ("cancel", "/v1/requests/cancel"),
          ("preflight", "/v1/chat/preflight"))}
 
 
@@ -85,10 +86,19 @@ def main():
     ap.add_argument("--probe", type=Path, required=True)
     ap.add_argument("--output", type=Path, required=True)
     ap.add_argument("--only-failed", type=Path)
+    ap.add_argument("--case-list", type=Path,
+                    help="Exact frozen case IDs for affected-behavior checks")
     args = ap.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     rows = cases.cases()
     prior = None
+    if args.case_list:
+        assert not args.only_failed, "choose one case selection mode"
+        wanted = args.case_list.read_text().splitlines()
+        assert wanted and len(wanted) == len(set(wanted)), "empty/duplicate case IDs"
+        by_id = {row["id"]: row for row in rows}
+        assert len(by_id) == len(rows) and set(wanted) <= set(by_id), "unknown case IDs"
+        rows = [by_id[name] for name in wanted]
     if args.only_failed:
         prior = json.loads(args.only_failed.read_text())
         wanted = {r["id"] for r in prior["failures"]}
@@ -121,8 +131,9 @@ def main():
             shape_accepted=shape, shape_error=error, native=actual, passed=okay)
         records.append(record)
         if not okay: failures.append(record)
-    fields = {row["field"] for row in rows if row["field"]}
-    if not prior:
+    fields = {row["field"] for row in rows if row["field"] and
+              row["fixture"].get("kind", "chat") != "completion"}
+    if not prior and not args.case_list:
         assert fields == set(build_contract.chat_schema()["properties"])
     result = dict(passed=not failures, cases=len(rows), fields=len(fields),
         accepted=sum(row["expected"] for row in rows), rejected=sum(not row["expected"] for row in rows),
@@ -132,6 +143,10 @@ def main():
         result["prior_result"] = dict(path=str(args.only_failed.resolve()),
             sha256=hashlib.sha256(args.only_failed.read_bytes()).hexdigest(),
             unchanged_native_passes_reused=prior["cases"]-len(prior["failures"]))
+    if args.case_list:
+        result["selection"] = dict(path=str(args.case_list.resolve()),
+            sha256=hashlib.sha256(args.case_list.read_bytes()).hexdigest(),
+            complete_request_contract=False)
     (args.output / "comparisons.json").write_text(json.dumps(records, ensure_ascii=False, indent=2)+"\n")
     (args.output / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n")
     print(json.dumps({k:v for k,v in result.items() if k != "failures"}))

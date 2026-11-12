@@ -1,0 +1,20 @@
+{
+  "include/q4t/server/files.h": "d0bf2c21d8fdacb40ccdf1c7c3f9591b758c6ff992c3b45e63e527c71610cd69",
+  "src/server/files.cpp": "5765030ff4056bc593a54fe6a07c501c559cedd4910f3f5bdba291342cc328da",
+  "include/q4t/server/files_http.h": "43fd2dab8a608b3da12a110fc89922847b03fec78c62c5fc5359fbe40c838f3e",
+  "src/server/files_http.cpp": "fb790e173216e6a8f20272c67e2556e1e08479cbc74b766da28df8df0c5cb50d",
+  "include/q4t/server/object_store.h": "cfb404e83c981c57df0aba450192ff1a0952ad77c825921f8b898fd151125d73",
+  "src/server/object_store.cpp": "116f7a3037668c5ee147ce8d490f41dc15253838a63ea3579c3c302e5a998144",
+  "src/server/object_worker.cpp": "677f77ea1ae334286fa1eea447bac9b26f825c081050515fb23141cfa9542c09",
+  "include/q4t/server/http_response.h": "707dab9e9d0f4dd20a1d1a3427c8faa54d3394f9494103edd34c3cac210a589e",
+  "src/server/http_response.cpp": "865cf625d089e8bf0a8e0f276161ac272c68a6bd4b766426ff77d9f74b595d88",
+  "include/q4t/server/application_routes.h": "9998a8e925039f35a3bca7b530e81f55674720862aa272395cec23e193f9d080",
+  "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
+  "src/server/client_request.cpp": "74bb0ee5bdd7713d0ea5e285fb1a93f7df7190db415e9151a3634dd6ea7da292",
+  "src/server/chat_http.cpp": "c86cb51e2fef129c64da3a355bab0e512a0165c914ac35afccbec814e9d1510b",
+  "tests/server_files_test.cpp": "0565cdc65763293979d557cd03eb1cc4e890c5a38bf3a4b021b445b91440fc55",
+  "cmake/HostTestSources.cmake": "8a37de8e87205d4c0d9a6c66f8ea7ed86d4b5cdef3512ca17e581282a019c77e",
+  "cmake/ChatProtocolIdentity.cmake": "cf6579041bea696049c607a5f1e6ea51c808528bed8eedcb18d48876912c22df",
+  "CMakeLists.txt": "ab801a60e498b12129bf7d6e2c7d0b143e992704c15e4e3642bc485a002a9f3b",
+  "tools/serve_audit/check_inventory.py": "6e73b06a50db4292105a24d1bb8385d6284a12b712771a803185c04df8deb262"
+}

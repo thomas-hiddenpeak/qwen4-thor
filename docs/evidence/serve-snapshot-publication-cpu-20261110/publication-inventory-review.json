@@ -1,0 +1,11 @@
+{
+  "reviewed": [
+    "include/q4t/server/input_snapshot.h",
+    "src/server/object_retention.cpp",
+    "src/server/object_worker.cpp"
+  ],
+  "semantic_keys_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 463,
+  "review": "Same exclusive IO worker validates private snapshot existence, owner, immutable root SHA and optional original binding against final batch view before durable decision. Root content/expiry cannot mutate and direct deletion rejects; only already-validated retention planner has private C++ authority to erase, with no wire flag. Prompt/Batch private bindings join retention extraction. Conditioned single Put unwraps the internal atomic receipt. Initial trusted-GC regression and focused repair retained; all 23 targeted tests accounted for."
+}

@@ -1,0 +1,2 @@
+[q4t][http] trace_id=req_tool_run_fixture error=host_memory_exhausted
+[q4t][http] trace_id=req_tool_run_fixture error=internal_error

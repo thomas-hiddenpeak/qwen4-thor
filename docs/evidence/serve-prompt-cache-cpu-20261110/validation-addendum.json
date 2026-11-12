@@ -1,0 +1,9 @@
+{
+  "reason": "Static audit before any tests: uniform-slot MTP must actually support default API caching, optional snapshot allocation isolation",
+  "additional_cpu_tests": [
+    "target_session_ranges_preserve_effective_state_and_slot_offsets",
+    "target_session_layout_is_not_a_shifted_draft_snapshot"
+  ],
+  "cpp_total": 44,
+  "gpu_started": false
+}

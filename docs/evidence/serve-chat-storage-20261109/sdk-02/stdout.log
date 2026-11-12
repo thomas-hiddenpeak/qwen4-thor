@@ -1,0 +1,32 @@
+✖ official filtered auto-pagination and original messages retain tool/media history (84.310791ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5225.434567
+
+✖ failing tests:
+
+test at tools/serve_chat_storage/test_sdk.mjs:65:1
+✖ official filtered auto-pagination and original messages retain tool/media history (84.310791ms)
+  Error: 400 Unsupported query field
+      at APIError.generate (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/core/error.js:45:20)
+      at OpenAI.makeStatusError (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/client.js:449:32)
+      at OpenAI.makeRequest (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/client.js:1017:30)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/test_sdk.mjs:93:19
+      at async peer (file:///home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/test_sdk.mjs:35:12)
+      at async TestContext.<anonymous> (file:///home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/test_sdk.mjs:66:3)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    status: 400,
+    headers: {},
+    requestID: 'req-3c5092bbf01f4050f2fa8f8768b17236',
+    error: { message: 'Unsupported query field', type: 'invalid_request_error', code: 'invalid_request', param: 'metadata' },
+    code: 'invalid_request',
+    param: 'metadata',
+    type: 'invalid_request_error'
+  }

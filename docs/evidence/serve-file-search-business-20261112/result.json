@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/file_search_acceptance.py\", line 307, in business\n    require(health['state'] == 'ready' and health['load_attempts'] == 1 and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: native backend lifecycle differs\n",
+  "counts": {
+    "starts": 1,
+    "chats": 6,
+    "controls": 125
+  },
+  "seconds": 85.15848748898134,
+  "binary_sha256": "f9ed346bd597e2237e1d6e9ab716674c2b3de6f3257e5d23ac68de61a2cb44c2"
+}

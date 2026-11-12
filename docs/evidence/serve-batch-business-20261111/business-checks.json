@@ -1,0 +1,12 @@
+{
+  "generations": 8,
+  "model_steps": 8,
+  "actual_tools": true,
+  "failed_usage": true,
+  "cancelled_usage": true,
+  "original_background_terminal": true,
+  "cross_version_results": true,
+  "dual_quota_restore": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

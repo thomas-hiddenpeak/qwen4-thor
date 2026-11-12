@@ -1,0 +1,12 @@
+{
+  "encryption-test": {
+    "requests": 9,
+    "input": 16705,
+    "output": 1216
+  },
+  "moderation-limited": {
+    "requests": 1,
+    "input": 3844,
+    "output": 85
+  }
+}

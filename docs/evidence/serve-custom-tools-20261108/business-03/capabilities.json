@@ -1,0 +1,583 @@
+{
+  "object": "q4t.capabilities",
+  "schema_version": 1,
+  "implementation_only": true,
+  "release_attestation": false,
+  "model": "qwen3.8-flash-next",
+  "protocol_source_sha256": "33b3d128de9796248bb3267eb620de6f2139b97796ea77548c742e07e416388a",
+  "chat": {
+    "messages": true,
+    "raw_prompt": true,
+    "messages_parse_response_default": true,
+    "parse_response_false": true,
+    "raw_prompt_parsing": false,
+    "content": true,
+    "reasoning_content": true,
+    "reasoning": true,
+    "tool_calls": true,
+    "legacy_function_call": true,
+    "stream": true,
+    "stream_include_usage": true,
+    "stream_usage_null": true,
+    "choice_logprobs_null": false,
+    "stream_heartbeat_ms": 5000,
+    "heartbeat_write_timeout_ms": 1000,
+    "stream_start": "after_template_and_structured_admission",
+    "post_header_failure": "sse_error_then_done",
+    "token_limit_fields": [
+      "max_tokens",
+      "max_completion_tokens"
+    ],
+    "token_limit_conflict": "reject_both_nonnull",
+    "input_contract": "q4t-input-v2",
+    "exact_integer_spelling": true,
+    "null_as_default": [
+      "temperature",
+      "top_p",
+      "n",
+      "frequency_penalty",
+      "presence_penalty",
+      "stream",
+      "stream_options",
+      "user"
+    ],
+    "reasoning_field": "reasoning_content",
+    "stream_tool_arguments": "incremental",
+    "tool_execution_barrier": "successful_terminal_and_eof",
+    "legacy_tools": {
+      "profile": "q4t-legacy-functions-v1",
+      "definitions": "functions",
+      "selection": "function_call",
+      "history_result_role": "function",
+      "parallel": false,
+      "stream": "incremental",
+      "execution": "client"
+    },
+    "stream_terminal_order": [
+      "finish",
+      "usage_if_requested",
+      "DONE"
+    ],
+    "parse_error": {
+      "http_status": 502,
+      "sse_error_then_done": true,
+      "successful_finish": false
+    },
+    "sampling": "target_logits",
+    "sampling_profile": "q4t-sampling-v1",
+    "temperature_default": 1,
+    "temperature_range": [
+      0,
+      2
+    ],
+    "top_p_range": [
+      0,
+      1
+    ],
+    "penalties": [
+      "presence_penalty",
+      "frequency_penalty"
+    ],
+    "penalty_history": "generated_per_choice",
+    "logit_bias": true,
+    "seed": "signed_int64",
+    "choices": 128,
+    "choice_execution": "serial",
+    "choice_prompt_usage": "once",
+    "choice_completion_usage": "sum",
+    "logprobs": true,
+    "top_logprobs_max": 20,
+    "logprob_distribution": "raw",
+    "selected_outside_raw_top20": -9999,
+    "hidden_only_logprobs": false,
+    "boundary_token_logprobs": "original_bytes_once",
+    "mtp_sampling": "plain_greedy_only",
+    "response_max_bytes": 33554432,
+    "prediction": {
+      "profile": "q4t-prediction-v1",
+      "content": [
+        "string",
+        "text_parts"
+      ],
+      "verification": "target_two_rows",
+      "requires_mtp": false,
+      "usage": "generated_plus_rejected_prediction",
+      "incompatible": [
+        "n>1",
+        "logprobs",
+        "positive_penalties",
+        "tools",
+        "max_completion_tokens"
+      ]
+    }
+  },
+  "reasoning": {
+    "profile": "q4t-reasoning-v1",
+    "fields": [
+      "reasoning_content",
+      "reasoning"
+    ],
+    "default_field": "reasoning_content",
+    "field_option": "reasoning_field",
+    "include_option": "include_reasoning",
+    "include_default": true,
+    "options_require_parsed_messages": true,
+    "option_null": "reject",
+    "history_null": "absent",
+    "history_conflict": "reject_unequal",
+    "history_role": "assistant",
+    "hidden_usage": "unchanged",
+    "hidden_content_filter": false,
+    "thinking_token_budget": true,
+    "budget_profile": "q4t-thinking-v1",
+    "budget_range": [
+      0,
+      2147483647
+    ],
+    "budget_null": "disabled",
+    "budget_accounting": "natural_tokens_starting_or_entering_reasoning",
+    "natural_closing_token_charged": true,
+    "forced_tokens_extra": true,
+    "max_forced_closure_tokens": 14,
+    "total_output_limit_priority": true,
+    "forced_boundary": "native_newline_close_blank_line",
+    "budget_exhausted": "close_then_answer_and_mask_reentry",
+    "budget_mtp": "reserve_pending_then_host_tail",
+    "budget_usage_details": true
+  },
+  "preflight": {
+    "profile": "q4t-preflight-v1",
+    "endpoint": "/v1/chat/preflight",
+    "config_endpoint": "/v1/config",
+    "text_only": false,
+    "media_requires_enabled_server": true,
+    "media_plan": "headers_geometry_and_expanded_tokens",
+    "decodes_pixels": false,
+    "prompt_preview": "opt_in",
+    "token_ids": "opt_in",
+    "response_max_bytes": 8388608,
+    "shares_chat_planning": true,
+    "reserves_slot": false,
+    "executes_model": false,
+    "compiles_grammar": false
+  },
+  "client_governance": {
+    "profile": "q4t-client-governance-v1",
+    "policy_versions": [
+      1,
+      2
+    ],
+    "default_enabled": false,
+    "window_seconds": 60,
+    "window": "fixed_monotonic",
+    "scope": "single_process",
+    "restart": "reset",
+    "rates": [
+      "requests_per_minute",
+      "tokens_per_minute"
+    ],
+    "error_status": 429,
+    "error_codes": [
+      "client_rpm_exhausted",
+      "client_tpm_exhausted"
+    ],
+    "preflight_reserves_quota": false,
+    "fair_queue": "client_round_robin_best_fit",
+    "fairness_scope": "prepared_slot_admission",
+    "preemption": false,
+    "latency_guarantee": false
+  },
+  "startup_memory": {
+    "configuration_endpoint": "/v1/config",
+    "source": "linux_global_mem_available",
+    "estimate": "allocation_budget_peak",
+    "checkpoints": [
+      "before_metadata",
+      "before_allocations",
+      "before_ready"
+    ],
+    "failure_policy": "stop_startup",
+    "snapshot_is_reservation": false,
+    "hard_limit": false,
+    "no_budget_bypasses_check": true
+  },
+  "cuda_allocation_quota": {
+    "profile": "q4t-linked-cuda-quota-v1",
+    "configuration_endpoint": "/v1/config",
+    "metrics_endpoint": "/metrics",
+    "scope": "process_requested_cuda_bytes",
+    "configure_once": true,
+    "allocation_apis": [
+      "cudaMalloc",
+      "cudaMallocManaged",
+      "cudaHostAlloc",
+      "cudaMallocHost",
+      "cudaMallocAsync"
+    ],
+    "capacity_error_code": "cuda_allocation_quota_exhausted",
+    "no_budget_bypasses_quota": false,
+    "physical_ram_limit": false,
+    "external_library_calls_covered": false
+  },
+  "device_memory": {
+    "scope": "serve_text_scheduler_and_media_buffers",
+    "capacity_failure": "optional_fallback_or_request_503",
+    "capacity_error_code": "device_memory_exhausted",
+    "other_device_or_release_failure": "stop_service",
+    "fatal_error_code": "gpu_unhealthy",
+    "release_before_success_terminal": true,
+    "hard_limit": false,
+    "all_model_and_media_allocations_covered": false
+  },
+  "model_health": {
+    "profile": "q4t-model-health-v1",
+    "scope": [
+      "ple_reader",
+      "ple_upload"
+    ],
+    "permanent_faults": [
+      "ple_read_failed",
+      "ple_upload_failed"
+    ],
+    "error_code": "model_unhealthy",
+    "readiness_closed": true,
+    "liveness_independent": true,
+    "automatic_recovery": false
+  },
+  "media_failures": {
+    "requested_load_failure": "startup_rejected",
+    "invalid_input_http_status": 400,
+    "device_failure_http_status": 503,
+    "device_failure_code": "device_memory_failure",
+    "workspace_oom": "clear_workspace_keep_weights",
+    "source_decode_hard_budget": false,
+    "decoder_owned_allocation_quota": true
+  },
+  "backend_cleanup": {
+    "profile": "q4t-linked-cuda-cleanup-v1",
+    "scope": "production_q4t_direct_cuda_calls",
+    "unhandled_failure": "immediate_exit_1",
+    "handled_serve_release": "return_to_stop_and_drain_owner",
+    "requested_mtp_load_failure": "stop_startup",
+    "error_response_guaranteed": false,
+    "external_library_calls_covered": false,
+    "standalone_library_binaries_covered": false,
+    "physical_reclaim_proved": false
+  },
+  "memory_admission": {
+    "configuration_endpoint": "/v1/config",
+    "source": "linux_global_mem_available",
+    "hard_limit": false,
+    "failure_policy": "reject_new_work",
+    "active_generation": "continue",
+    "checkpoints": [
+      "headers",
+      "prepare",
+      "execute"
+    ],
+    "error_codes": [
+      "memory_pressure",
+      "memory_observation_unavailable"
+    ],
+    "readiness": true,
+    "liveness_unaffected": true
+  },
+  "text_stop": {
+    "profile": "q4t-text-stop-v1",
+    "available": true,
+    "max_strings": 4,
+    "max_utf8_bytes": 256,
+    "null_or_empty_array": "disabled",
+    "empty_string": "reject",
+    "matching": "normalized_decoded_text_before_parser",
+    "includes_reasoning_and_tool_markup": true,
+    "selection": "earliest_completion_then_list_order",
+    "includes_stop_string": false,
+    "finish_reason": "stop",
+    "completion_usage": "through_matching_token",
+    "mtp": "full_batch_kv_retired_after_logical_stop",
+    "speculative_tail_not_charged": true,
+    "incomplete_tool": "error",
+    "incomplete_reasoning": "allowed_on_text_stop",
+    "constrained_output": false,
+    "state_cache": false
+  },
+  "tools": {
+    "type": "function",
+    "execution": "client",
+    "types": [
+      "function",
+      "custom"
+    ],
+    "custom_profile": "q4t-custom-tools-v1",
+    "custom_formats": [
+      "text",
+      "regex",
+      "lark"
+    ],
+    "custom_input": "raw_text",
+    "custom_execution_barrier": "successful_terminal_and_eof",
+    "tool_choice": [
+      "auto",
+      "none",
+      "required",
+      "named",
+      "allowed_tools"
+    ],
+    "parallel_tool_calls": [
+      true,
+      false
+    ],
+    "strict": true,
+    "constrained_decoding": true,
+    "options_require_parsed_messages": true,
+    "definition_unknown_fields": "reject_all_modes",
+    "strict_null": "false",
+    "full_json_schema_validation": false,
+    "max_calls": 128,
+    "max_id_bytes": 256,
+    "history": {
+      "identified_results": "complete_unique_batch",
+      "unordered_text_results": true,
+      "unordered_media_results": false,
+      "legacy_without_ids": true,
+      "legacy_shape_validation": true,
+      "arguments": "required_object_or_json_object_text",
+      "result_content": "required_string_or_array"
+    }
+  },
+  "structured_output": {
+    "available": true,
+    "cleanup_pending": false,
+    "backend": "xgrammar",
+    "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+    "schema_profile": "q4t-json-schema-v1",
+    "response_format": [
+      "text",
+      "json_object",
+      "json_schema"
+    ],
+    "validation": "complete_response_before_publication",
+    "stream_payload": "buffered_until_validated",
+    "decode": "plain_host_masked_greedy",
+    "mtp": false,
+    "packed_decode": false,
+    "session_cache": false,
+    "prefix_cache": false,
+    "media": true,
+    "length_terminal": "error",
+    "named_tool_max_calls": 1,
+    "max_tools": 16,
+    "max_response_bytes": 1048576,
+    "max_schema_bytes": 16384,
+    "max_schema_depth": 8,
+    "max_schema_nodes": 128,
+    "object_key_order": "schema",
+    "json_with_tools": "requires_tool_choice_none",
+    "resources": {
+      "active_limit": 1,
+      "overload_status": 503,
+      "overload_code": "structured_capacity_exhausted",
+      "lease": "preparation_through_response_cleanup",
+      "terminal_handoff": "wait_for_cleanup_with_request_cancellation",
+      "handoff_waiter_bound": "max_inflight_requests",
+      "compiler_threads": 1,
+      "compiler_cache": false,
+      "decoded_vocab_storage_bytes": 33554432,
+      "compiled_grammar_bytes": 67108864,
+      "compile_peak_rss_limit": false,
+      "isolation": "exec_worker_compile_and_match",
+      "worker_address_space_bytes": 2147483648,
+      "worker_memory_enforcement": "RLIMIT_AS",
+      "whole_server_ram_limit": false,
+      "rss_measurement": "reported_exec_VmHWM",
+      "lifetime_ru_maxrss_includes_pre_exec": true,
+      "compile_timeout_ms": 10000,
+      "match_timeout_ms": 2000,
+      "cleanup_timeout_ms": 100,
+      "unreaped_counts_toward_capacity": true,
+      "deferred_owner": "process",
+      "deferred_request_callbacks": false,
+      "compile_interruptible": true,
+      "shutdown": "bounded_kill_then_owned_reap",
+      "compile_timeout_code": "constraint_compile_timeout",
+      "memory_limit_code": "constraint_resource_exhausted",
+      "worker_failure_code": "constraint_worker_failed"
+    }
+  },
+  "observability": {
+    "version": 5,
+    "full_response": "q4t_response_seconds",
+    "listener_handlers": [
+      "q4t_public_connections",
+      "q4t_operations_connections"
+    ],
+    "operations_rejections": "q4t_operations_connection_rejections_total",
+    "operations_capacity_error": "operations_capacity_exhausted",
+    "connection_rejections": "q4t_connection_rejections_total",
+    "observation_capacity_error": "observation_capacity_exhausted",
+    "business_connections_exclude_observation": true,
+    "http_receive_failures": "q4t_http_receive_failures_total",
+    "http_write_failures": "q4t_http_write_failures_total",
+    "transport_counts": "first_receive_and_write_failure_per_connection",
+    "transport_publication": "after_heartbeat_join",
+    "receive_excludes_business_validation": true,
+    "body_capacity_error": "body_capacity_exhausted",
+    "slot_wait": "q4t_slot_wait_seconds",
+    "admission": "q4t_admission_seconds",
+    "generation_exit": "q4t_generation_complete_seconds",
+    "legacy_queue_e2e": "deprecated_aliases",
+    "cancellation": "fixed_reason_counters"
+  },
+  "template": {
+    "id": "qwen4_exp-openai-v3",
+    "message_profile": "qwen3.8-openai-v3",
+    "roles": [
+      "system",
+      "developer",
+      "user",
+      "assistant",
+      "tool"
+    ],
+    "instruction_slot": "ordered_system_chatml_messages",
+    "developer_mapping": "system",
+    "mixed_instruction_roles": true,
+    "message_name": "json_quoted_participant",
+    "name_max_bytes": 4096,
+    "refusal_history": true,
+    "user_message_required": false,
+    "instruction_media": false,
+    "reference_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "renderer_source_sha256": "d31dc911d01ee19277b72a71781ee9206935ec249ccb4bd8843b794ceb48cf1b",
+    "tool_history_source_sha256": "4c3588a2c007f968f4ca99ebf974f4d6a34fa1f6f5e6f43a229f49f1935b44a7",
+    "fixture_sha256": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+    "options": [
+      "enable_thinking",
+      "preserve_thinking",
+      "reasoning_effort",
+      "add_vision_id"
+    ],
+    "reasoning_effort": [
+      "low",
+      "medium",
+      "xhigh"
+    ]
+  },
+  "runtime": {
+    "media_enabled": false,
+    "mtp_enabled": true
+  },
+  "media": {
+    "profile": "q4t-media-admission-v2",
+    "experimental": true,
+    "roles": [
+      "user"
+    ],
+    "formats": [
+      "png",
+      "jpeg"
+    ],
+    "data_url_mime": [
+      "image/png",
+      "image/jpeg"
+    ],
+    "raw_base64": true,
+    "base64": "canonical_standard_padded",
+    "image_detail": [
+      "auto"
+    ],
+    "remote_urls": false,
+    "video_time_field": "video_timestamps",
+    "video_time_unit": "seconds",
+    "video_time_default": "frame_index/24",
+    "max_timestamp_seconds": 86400,
+    "temporal_group_frames": 2,
+    "timestamp_rounding_decimal_places": 1,
+    "video_prompt": "timestamp_then_one_boundary_per_temporal_group",
+    "mtp": false,
+    "state_cache": false,
+    "chunked_prefill": false,
+    "max_execution_slots": 1,
+    "client_governance": true,
+    "max_items": 8,
+    "max_frames_per_item": 32,
+    "max_encoded_bytes": 16777216,
+    "max_source_edge": 16384,
+    "max_source_pixels": 16777216,
+    "max_decoded_rgb_bytes": 134217728,
+    "max_patches": 65536,
+    "max_workspace_bytes": 2147483648,
+    "decoder_owned_bytes": 268435456,
+    "attention_shared_bytes": null,
+    "unknown_device_limit": "reject",
+    "whole_server_ram_limit": false,
+    "cancellation": "item_frame_and_before_gpu_not_preemptive"
+  },
+  "http": {
+    "request_id_header": "X-Request-Id",
+    "trace_id_independent_of_completion": true,
+    "random_id_bits": 128,
+    "trace_id_max_bytes": 128,
+    "json_content_type_required": true,
+    "charset": "utf-8",
+    "wrong_method_status": 405,
+    "query_parameters": "reject",
+    "connection_reuse": false,
+    "liveness": "/livez",
+    "readiness": "/readyz",
+    "control_reserved_connections": 4,
+    "drain_control_window_ms": 2000,
+    "observation_reserved_connections": 4,
+    "connection_profile": "q4t-http-partitions-v2",
+    "operations_listener": {
+      "enabled_by": "--operations-port",
+      "default_port": 0,
+      "host": "127.0.0.1",
+      "handlers": 8,
+      "control_connections": 4,
+      "observation_connections": 4,
+      "public_capacity_independent": true,
+      "generation": false,
+      "preflight": false,
+      "client_authentication": "unchanged",
+      "unclassified_shares_operations_total": true
+    },
+    "observation_routes": [
+      "GET /metrics",
+      "GET /v1/config",
+      "GET /v1/capabilities",
+      "GET /v1/models"
+    ],
+    "observation_during_drain": true,
+    "reservation_excludes_unclassified_header_flood": true
+  },
+  "cancellation": {
+    "endpoint": "/v1/requests/cancel",
+    "accepted_status": 202,
+    "acceptance_is_drained": false,
+    "unknown_fields": "reject",
+    "malformed_status": 400,
+    "unknown_credentials_status": 404,
+    "request_replay_idempotent": false
+  },
+  "errors": {
+    "envelope": [
+      "message",
+      "type",
+      "code",
+      "param"
+    ],
+    "code_namespace": "q4t",
+    "automatic_retry_safe": false,
+    "sse_error_then_done": true,
+    "host_memory": {
+      "http_status": 503,
+      "code": "host_memory_exhausted",
+      "fixed_buffer_fallback": true,
+      "recovery_guaranteed": false
+    }
+  },
+  "unsupported": [
+    "full_json_schema"
+  ]
+}

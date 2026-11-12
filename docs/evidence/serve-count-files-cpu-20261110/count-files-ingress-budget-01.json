@@ -1,0 +1,13 @@
+{
+  "tests": [
+    "tools.serve_responses.test_input_tokens_ingress"
+  ],
+  "test_count": 4,
+  "new": 2,
+  "affected": 2,
+  "local_http_max": 80,
+  "seconds": 120,
+  "gpu_starts": 0,
+  "external_network": 0,
+  "scope": "Actual native ingress binary and CPU backend/Guardian fixtures; no model."
+}

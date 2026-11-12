@@ -1,0 +1,18 @@
+test_embeddings_sdk_default_base64_float_tls_and_exact_body (__main__.AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body) ... FAIL
+
+======================================================================
+FAIL: test_embeddings_sdk_default_base64_float_tls_and_exact_body (__main__.AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_native_access.py", line 332, in test_embeddings_sdk_default_base64_float_tls_and_exact_body
+    self.assertEqual(actual, reference)
+AssertionError: {'obj[27 chars] 0, 'embedding': [0.6000000238418579, 0.800000011920929, 0, 0]} != {'obj[27 chars] 0, 'embedding': [0.6, 0.8, 0, 0]}
++ {'embedding': [0.6, 0.8, 0, 0], 'index': 0, 'object': 'embedding'}
+- {'embedding': [0.6000000238418579, 0.800000011920929, 0, 0],
+-  'index': 0,
+-  'object': 'embedding'}
+
+----------------------------------------------------------------------
+Ran 1 test in 2.148s
+
+FAILED (failures=1)

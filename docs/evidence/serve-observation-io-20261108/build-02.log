@@ -1,0 +1,48 @@
+Change Dir: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+
+Run Build Command(s): /home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile -j2 q4t_guardian
+/home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -S/home/rm01/models/dev/qwen4-thor/tests/host -B/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/gmake  -f CMakeFiles/Makefile2 q4t_guardian
+gmake[1]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -S/home/rm01/models/dev/qwen4-thor/tests/host -B/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build --check-build-system CMakeFiles/Makefile.cmake 0
+/home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_progress_start /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles 8
+/usr/bin/gmake  -f CMakeFiles/Makefile2 CMakeFiles/q4t_guardian.dir/all
+gmake[2]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian_process.dir/build.make CMakeFiles/q4t_guardian_process.dir/depend
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build && /home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_depends "Unix Makefiles" /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles/q4t_guardian_process.dir/DependInfo.cmake "--color=" q4t_guardian_process
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian_process.dir/build.make CMakeFiles/q4t_guardian_process.dir/build
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+gmake[3]: Nothing to be done for 'CMakeFiles/q4t_guardian_process.dir/build'.
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+[ 25%] Built target q4t_guardian_process
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian_journal.dir/build.make CMakeFiles/q4t_guardian_journal.dir/depend
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build && /home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_depends "Unix Makefiles" /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles/q4t_guardian_journal.dir/DependInfo.cmake "--color=" q4t_guardian_journal
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian_journal.dir/build.make CMakeFiles/q4t_guardian_journal.dir/build
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+gmake[3]: Nothing to be done for 'CMakeFiles/q4t_guardian_journal.dir/build'.
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+[ 75%] Built target q4t_guardian_journal
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian.dir/build.make CMakeFiles/q4t_guardian.dir/depend
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build && /home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_depends "Unix Makefiles" /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/tests/host /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles/q4t_guardian.dir/DependInfo.cmake "--color=" q4t_guardian
+Dependencies file "CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o.d" is newer than depends file "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles/q4t_guardian.dir/compiler_depend.internal".
+Dependencies file "CMakeFiles/q4t_guardian.dir/link.d" is newer than depends file "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles/q4t_guardian.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target q4t_guardian
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/usr/bin/gmake  -f CMakeFiles/q4t_guardian.dir/build.make CMakeFiles/q4t_guardian.dir/build
+gmake[3]: Entering directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+[ 87%] Building CXX object CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o
+/usr/bin/g++-14  -I/home/rm01/models/dev/qwen4-thor/cmake/../include -O3 -DNDEBUG -std=c++23 -Wall -Wextra -Werror -MD -MT CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o -MF CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o.d -o CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o -c /home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp
+[100%] Linking CXX executable q4t-guardian
+/home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_link_script CMakeFiles/q4t_guardian.dir/link.txt --verbose=1
+/usr/bin/g++-14 -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/q4t_guardian.dir/link.d "CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o" -o q4t-guardian  libq4t_guardian_journal.a libq4t_guardian_process.a
+gmake[3]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+[100%] Built target q4t_guardian
+gmake[2]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+/home/rm01/.local/lib/python3.12/site-packages/cmake/data/bin/cmake -E cmake_progress_start /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build/CMakeFiles 0
+gmake[1]: Leaving directory '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/host-build'
+

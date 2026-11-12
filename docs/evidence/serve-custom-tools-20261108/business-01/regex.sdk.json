@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-fe5942d43bf5bbe013ddf52c07626c9a",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-fe5942d43bf5bbe013ddf52c07626c9a_0",
+          "type": "custom",
+          "custom": {
+            "name": "read_project_record_regex",
+            "input": "READ docs/MODEL.md 1 16"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 440,
+      "completion_tokens": 30,
+      "total_tokens": 470
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "493",
+      "content-type": "application/json",
+      "x-request-id": "req-55ad8822574fd81bedba7a41bfa32fb3"
+    }
+  },
+  "planned_tools": [
+    {
+      "call_id": "call_chatcmpl-auto-fe5942d43bf5bbe013ddf52c07626c9a_0",
+      "type": "custom",
+      "name": "read_project_record_regex",
+      "input": "READ docs/MODEL.md 1 16"
+    }
+  ],
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tZmU1OTQyZDQzYmY1YmJlMDEzZGRmNTJjMDc2MjZjOWEiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTIzMzY1LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjpudWxsLCJ0b29sX2NhbGxzIjpbeyJpZCI6ImNhbGxfY2hhdGNtcGwtYXV0by1mZTU5NDJkNDNiZjViYmUwMTNkZGY1MmMwNzYyNmM5YV8wIiwidHlwZSI6ImN1c3RvbSIsImN1c3RvbSI6eyJuYW1lIjoicmVhZF9wcm9qZWN0X3JlY29yZF9yZWdleCIsImlucHV0IjoiUkVBRCBkb2NzL01PREVMLm1kIDEgMTYifX1dfSwiZmluaXNoX3JlYXNvbiI6InRvb2xfY2FsbHMiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjo0NDAsImNvbXBsZXRpb25fdG9rZW5zIjozMCwidG90YWxfdG9rZW5zIjo0NzB9fQ=="
+}

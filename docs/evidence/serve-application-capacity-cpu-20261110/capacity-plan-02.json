@@ -1,0 +1,12 @@
+{
+  "reason": "Existing oversized chunk fixture16MiB+1 is now within96MiB ceiling; change literal to96MiB+1. Production code/binary unchanged.",
+  "cpu_tests": [
+    "http_framing_chunked_capacity_and_unwind"
+  ],
+  "reused_cpp": 19,
+  "reused_python": 5,
+  "source_sha256": {
+    "tests/server_http_framing_test.cpp": "a672d4fe00e9ee7829095cf75f882a09a4446f94d6eaac4a6400ca00f5f3beb5"
+  },
+  "gpu_starts": 0
+}

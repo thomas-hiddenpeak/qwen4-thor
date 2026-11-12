@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "await import(\"file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/clients/tools/examples/js/chat_client.mjs\");await import(\"file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/clients/tools/examples/js/project_profile.mjs\");await import(\"file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/clients/tools/serve_protocol/sdk.mjs\");"
+  ],
+  "exit_code": 0
+}

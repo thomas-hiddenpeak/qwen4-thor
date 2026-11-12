@@ -1,0 +1,28 @@
+PASS_SERVICE_PYTHON
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.4s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[  0%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_request.cpp.o
+[  2%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/files_http.cpp.o
+[  4%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_response.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[  6%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/files_api_fixture.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_client_policy_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_conversation_api_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_files_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_body_stream_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_framing_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_observation_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_request_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_session_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_api_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_uploads_test.cpp.o
+[ 12%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

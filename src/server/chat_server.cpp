@@ -2,6 +2,9 @@
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/file_expansion.h"
+#include "q4t/server/file_input_policy.h"
+#include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
 
 #include <arpa/inet.h>
@@ -10,6 +13,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <iterator>
 #include <limits>
@@ -24,6 +28,7 @@
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
 #include "q4t/server/cuda_quota_policy.h"
+#include "q4t/server/embedding_assets.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -32,15 +37,17 @@
 
 namespace q4t::server {
 
-namespace {
-constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
-
-}
-
 ChatServer::~ChatServer() {
+  RequestStop();
+  // Stop the bounded policy worker before destroying queue/client state.
+  client_policy_admin_.reset();
+  state_key_admin_.reset();
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
+  batches_.RequestStop();
+  vector_jobs_.RequestStop();
+  background_.RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -51,6 +58,9 @@ ChatServer::~ChatServer() {
   // d_sched_logits_ under model_mu_, so it must be joined before those are
   // freed).
   StopScheduler();
+  batches_.Join();
+  vector_jobs_.Join();
+  background_.Join();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
   const auto release = [&](auto*& pointer, const char* site) {
@@ -63,6 +73,8 @@ ChatServer::~ChatServer() {
   release(d_sched_logits_, "shutdown.scheduler_logits");
   release(d_sched_tokens_, "shutdown.scheduler_tokens");
   release(d_prefill_logits_, "shutdown.prefill_logits");
+  release(d_embedding_weights_, "shutdown.native_embedding_weights");
+  embedding_ready_.store(false);
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -116,6 +128,32 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  progress_publisher_ = StartProgressPublisher(
+      progress_, metrics_.requests_success, metrics_.execution_steps_total);
+  auto loading = progress_.Acquire(ProgressNowNs() + 300000000000ULL);
+  ProgressContext loading_context(loading.Handle());
+  ProgressExecution loading_execution(ProgressWork::kLoad);
+  const char* state_directory = std::getenv("XDG_STATE_HOME");
+  const char* home_directory = std::getenv("HOME");
+  const auto object_options =
+      ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
+                                home_directory ? home_directory : "");
+  FileInputPolicy file_policy;
+  if (!opts.file_input_policy_file.empty()) {
+    const auto status =
+        LoadFileInputPolicy(opts.file_input_policy_file, &file_policy);
+    if (!status) return status;
+  }
+  auto file_inputs =
+      std::make_shared<FileExpansionOptions>(std::move(file_policy.options));
+  // A sibling of the strict ObjectStore tree: never put codec scratch files
+  // inside application-state records or use a client-provided pathname.
+  file_inputs->extraction.legacy.work_directory =
+      object_options.directory + "-input-codecs";
+  file_inputs_ = std::move(file_inputs);
+  file_input_policy_sha256_ = std::move(file_policy.sha256);
+  objects_ = std::make_unique<ObjectStore>(object_options);
+  state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);
   if (opts.allow_media) {
     const auto status = vision::CheckVisionConfiguration(opts.model_dir);
     if (!status) return status;
@@ -125,6 +163,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
     auto status = LoadGatewayClientPolicy(opts.client_policy_file, &policy);
     if (status) status = clients_.Configure(std::move(policy));
     if (!status) return status;
+  }
+  if (!opts.access_program_policy_file.empty()) {
+    auto policy = std::make_shared<AccessProgramPolicy>();
+    auto status = LoadAccessProgramPolicy(opts.access_program_policy_file,
+                                          policy.get());
+    if (status)
+      status = BindAccessProgramPolicy(*policy, opts.served_model_name,
+                                        clients_.Snapshot().get());
+    if (!status) return status;
+    access_program_policy_ = std::move(policy);
   }
   // Keep the actual listening descriptors across startup. A probe followed by
   // close would let another process take the port while model loading runs.
@@ -168,17 +216,28 @@ Status ChatServer::Start(const ServerOptions& opts) {
         session_cache_.Open(opts.session_cache_dir, SessionCache::kMinPrefix,
                             SessionCache::kDiskBudget,
                             incremental && std::strcmp(incremental, "1") == 0);
-    if (!cache_status.ok()) return cache_status;
+    if (!cache_status.ok()) {
+      std::fprintf(stderr, "[session-cache] unavailable; generation continues\n");
+    }
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "
                  "ram_budget=%zu staging_bytes=%zu ttl_seconds=1800\n",
                  SessionCache::kDiskBudget, SessionCache::kRamBudget,
                  SessionCache::kStagingBytes);
   }
-  if (!opts.prefix_cache_dir.empty()) {
+  {
+    // Reuse the owned application-state filesystem for anonymous cache files
+    // unless an operator selects another SSD directory. The isolated worker
+    // performs all filesystem work; failure only disables cache reuse.
+    const auto directory = opts.prefix_cache_dir.empty()
+                               ? object_options.directory + "-prompt-cache"
+                               : opts.prefix_cache_dir;
     const Status cache_status =
-        prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
-    if (!cache_status.ok()) return cache_status;
+        prefix_cache_.Open(directory, 1024, size_t{8} << 30, false,
+                            opts.prefix_cache_dir.empty());
+    if (!cache_status.ok()) {
+      std::fprintf(stderr, "[prefix-cache] unavailable; generation continues\n");
+    }
     prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
     std::fprintf(stderr,
                  "[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 "
@@ -253,6 +312,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  quant::MoEResidencyStagingBytes(cfg.hs, cfg.moe_is) +
              quant::MoEResidencyMirrorK() *
                  quant::MoEResidencyMirrorBytes(cfg.hs, cfg.moe_is));
+      }
+      if (!opts.embedding_model_dir.empty()) {
+        model::EmbeddingWorkspaceLayout embedding;
+        const auto planned = model::PlanEmbeddingWorkspace(
+            model::EmbeddingConfig::kInputTokens, &embedding);
+        if (!planned) return planned;
+        // Host staging + device weights + possible file pages all use Thor
+        // DRAM. Keep the optional model's peak visible before capacity choice.
+        breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
+            512ULL * 1024 * 1024 + size_t(opts.max_seq) * embedding.bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -596,7 +665,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_tokens_default_ = opts.max_tokens;
   max_prefill_ = cfg.max_prefill;
   max_len_ = cfg.max_len;
-  model_name_ = kDefaultModelName;
+  model_name_ = opts.served_model_name;
+  s = model_catalog_.Configure(model_name_, opts.model_aliases,
+                                static_cast<int64_t>(std::time(nullptr)));
+  if (!s) return s;
+  embedding_model_dir_ = opts.embedding_model_dir;
+  if (!embedding_model_dir_.empty()) {
+    s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
+                                      static_cast<int64_t>(std::time(nullptr)));
+    if (!s) return s;
+  }
   // Video processor budget comes from video_preprocessor_config.json
   // (4096 / 25165824), NOT the image budget. Same patch/merge/temporal dims.
   video_proc_cfg_ = proc_cfg_;
@@ -700,9 +778,90 @@ Status ChatServer::Start(const ServerOptions& opts) {
   effective_config_ =
       EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
                                mtp_loaded_, conn_cap_, &startup_memory_);
+  client_policy_admin_ = StartClientPolicyAdmin(
+      clients_, admission_limits_.inflight, admission_limits_.queued,
+      [this](GatewayClientPolicy candidate, uint64_t expected) {
+        return PublishClientPolicy(clients_, seq_waiters_, seq_mu_,
+                                   std::move(candidate), expected,
+                                   admission_limits_.inflight,
+                                   admission_limits_.queued);
+      });
+  background_options_.max_input_bytes =
+      static_cast<size_t>(opts.background_max_input_mib) << 20;
+  background_options_.max_jobs =
+      std::clamp<size_t>(admission_limits_.inflight, 1, 256);
+  background_options_.max_client_jobs = background_options_.max_jobs;
+  background_options_.workers = std::min<size_t>(
+      {background_options_.max_jobs, static_cast<size_t>(max_seq_), 8});
+  background_options_.timeout = std::chrono::milliseconds(request_deadline_ms_);
+  batch_options_.workers = opts.batch_workers;
+  batch_options_.max_jobs = opts.batch_max_jobs;
+  batch_options_.max_client_jobs = opts.batch_max_client_jobs;
+  batch_options_.max_result_bytes =
+      static_cast<size_t>(opts.batch_max_result_mib) << 20;
+  batch_options_.turn_timeout = std::chrono::milliseconds(request_deadline_ms_);
   startup_listeners_ = std::move(pending_listeners);
+  ProgressExecution::Completed();
   model_ready_.store(true);
+  RecoverApplicationJobs();
   return Status();
+}
+
+void ChatServer::RecoverApplicationJobs() noexcept {
+  if (stop_requested_.load() || !model_ready_.load() || !objects_) return;
+  if (!embedding_model_dir_.empty()) {
+    vector_jobs_.TryStart([this] {
+      return std::make_unique<VectorJobs>(
+          *objects_, clients_, VectorJobsOptions{},
+          [this](auto text, const auto& control, auto* output) {
+            return EncodeVectorDocument(text, control, output);
+          },
+          [this](const auto& tokens, const auto& client, auto& permit,
+                 const auto& control, auto* result) {
+            return RunVectorEmbedding(tokens, client, permit, control, result);
+          });
+    });
+  }
+  background_.TryStart([this] {
+    return std::make_unique<ResponsesJobs>(
+        *objects_, background_options_,
+        [this](auto& job) { RunBackgroundResponse(job); },
+        [this](auto& job) { return AdmitBackgroundBatch(job); });
+  });
+  batches_.TryStart([this] {
+    return std::make_unique<BatchJobs>(
+        *objects_, clients_, PlanningConfig(), batch_options_,
+        [this](const auto& endpoint, const auto& row, const auto& frozen,
+               const auto& client, auto& permit, const auto& control,
+               auto rate) {
+          return RunBatchRequest(endpoint, row, frozen, client, permit, control,
+                                 std::move(rate));
+        },
+        [this](auto endpoint, const auto& row, const auto& frozen,
+               const auto& config, const auto& access, auto* budget) {
+          return MeasureBatchRequest(endpoint, row, frozen, config, access,
+                                     budget);
+        },
+        [this](auto endpoint, const auto& row, const auto& frozen,
+               const auto& config, const auto& access, auto* rate) {
+          BatchInputBudget input;
+          return MeasureBatchRequest(endpoint, row, frozen, config, access,
+                                     &input, rate);
+        },
+        [this](const auto& link, const auto& access, bool cancel) {
+          if (auto* background = background_.Get())
+            return background->ObserveBatch(link, access, cancel);
+          ObjectReply reply;
+          reply.http_status = 503;
+          reply.code = "batch_response_observer_unavailable";
+          reply.message = "Background observer unavailable";
+          return reply;
+        });
+  });
+  if (auto* background = background_.Get()) {
+    background_scanner_.Try(
+        [&] { background->StartRecovery(clients_, PlanningConfig()); });
+  }
 }
 
 void ChatServer::StopScheduler() {

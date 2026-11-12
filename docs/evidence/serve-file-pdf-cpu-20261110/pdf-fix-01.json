@@ -1,0 +1,14 @@
+{
+  "cause": "owned execveat(4, empty path) EACCES: Landlock kernel ELF open needs READ_FILE plus EXECUTE",
+  "fix": "grant read and exec only for fixed validated executable inode; no general execute directory",
+  "retest": [
+    "file_pdf_actual_text_and_every_page_images",
+    "file_pdf_high_detail_preserves_rotated_geometry",
+    "file_pdf_page_and_text_budgets_never_publish_partial",
+    "file_pdf_image_bytes_and_actual_pixel_budgets",
+    "file_pdf_damaged_input_does_not_poison_native_text",
+    "file_pdf_sandbox_enforces_system_read_only_and_no_network_processes"
+  ],
+  "passed_process_evidence_reused": true,
+  "gpu": 0
+}

@@ -1,0 +1,72 @@
+{
+  "status": "targeted_cpu_accepted",
+  "base_commit": "05e05e11",
+  "kind": "nonperformance business correctness",
+  "distinct_tests": 22,
+  "first": {
+    "pass": 17,
+    "fail": 3,
+    "seconds": 43.16813813801855
+  },
+  "fix": {
+    "pass": 6,
+    "fail": 0,
+    "seconds": 2.7179499571211636
+  },
+  "failure": "Execution quota release incorrectly blocked still-retained original-result Row reads. Only retained result access opened; input/execution remain blocked; real expiry and ordinary completed reclamation checked.",
+  "reused_passes": [
+    "batch_captured_usage_survives_inline_binary_recount_and_restart",
+    "batch_finalization_actual_dead_process_keeps_committed_prefix",
+    "batch_finalization_large_row_lost_checkpoint_resumes_original_bytes",
+    "batch_finalization_maximum_dual_lane_retention_is_bounded_and_complete",
+    "batch_finalization_row_budget_and_checkpoint_restart",
+    "batch_output_chunk_failure_rebuilds_committed_whole_page_prefix",
+    "batch_output_failure_actual_dead_owner_resumes_original_results",
+    "batch_output_failure_checkpoint_cannot_expand_or_fake_a_terminal",
+    "batch_output_failure_lost_checkpoint_and_terminal_receipts_reconcile",
+    "batch_quota_cannot_rewrite_budget_model_pages_or_delete_active_root",
+    "batch_quota_execution_cancel_and_finalization_retain_until_terminal",
+    "batch_quota_expired_restored_input_keeps_charge_until_finalization",
+    "batch_results_actual_unknown_finish_commits_result_and_counts_once",
+    "batch_results_finalization_quota_never_exposes_partial_files",
+    "batch_results_historical_receipt_does_not_pin_expired_output_bytes",
+    "batch_usage_legacy_inline_binary_recount_resume_without_result_rewrite"
+  ],
+  "passed": [
+    "batch_captured_usage_survives_inline_binary_recount_and_restart",
+    "batch_finalization_actual_dead_process_keeps_committed_prefix",
+    "batch_finalization_large_row_lost_checkpoint_resumes_original_bytes",
+    "batch_finalization_maximum_dual_lane_retention_is_bounded_and_complete",
+    "batch_finalization_row_budget_and_checkpoint_restart",
+    "batch_output_byte_failure_publishes_whole_dual_lane_prefix_and_usage",
+    "batch_output_chunk_failure_rebuilds_committed_whole_page_prefix",
+    "batch_output_failure_actual_dead_owner_resumes_original_results",
+    "batch_output_failure_checkpoint_cannot_expand_or_fake_a_terminal",
+    "batch_output_failure_lost_checkpoint_and_terminal_receipts_reconcile",
+    "batch_output_failure_original_results_have_real_finite_retention",
+    "batch_output_failure_releases_real_queue_charge_only_at_terminal",
+    "batch_output_legacy_partial_row_is_removed_before_failed_file_publish",
+    "batch_quota_cannot_rewrite_budget_model_pages_or_delete_active_root",
+    "batch_quota_execution_cancel_and_finalization_retain_until_terminal",
+    "batch_quota_expired_restored_input_keeps_charge_until_finalization",
+    "batch_results_actual_unknown_finish_commits_result_and_counts_once",
+    "batch_results_corrupt_page_blocks_reads_and_start_transactionally",
+    "batch_results_finalization_quota_never_exposes_partial_files",
+    "batch_results_historical_receipt_does_not_pin_expired_output_bytes",
+    "batch_results_mixed_files_restart_and_terminal_private_resource_reclamation",
+    "batch_usage_legacy_inline_binary_recount_resume_without_result_rewrite"
+  ],
+  "gpu_starts": 0,
+  "default_changed": false,
+  "binaries_sha256": {
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "6a49201cf21075ba9712556ce0211ae37bb71a322181628821c0b344a1eac38c",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "ae766508418b37a0c182f34c713801c8a56cbca42773cafadafa24eebedada19",
+    "build/q4t": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+  },
+  "remaining": [
+    "bounded initial auxiliary task-owner construction recovery",
+    "actual model business acceptance",
+    "compatible state/quota/background-binding/failure-result reader rollback and default delivery",
+    "all remaining master tasks"
+  ]
+}

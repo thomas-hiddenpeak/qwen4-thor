@@ -1,0 +1,25 @@
+{
+  "status": "TARGETED_KERNEL_CPU_PASS",
+  "distinct_tests": 7,
+  "first_pass": 6,
+  "followup_tests": 1,
+  "cpu_seconds": 6.470103343948722,
+  "first_failure_preserved": true,
+  "followup_reason": "Original OOM fixture touched only first byte of a large zero allocation and did not guarantee residency. Only failed case now touches all pages; high=max isolates the actual hard cap from high-pressure throttling.",
+  "owned_test_domains_remaining": [],
+  "real_privilege_drop": true,
+  "real_task_limit": true,
+  "real_memcg_oom": true,
+  "real_kernel_subtree_kill": true,
+  "physical_ram_limit": false,
+  "model_starts": 0,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/resource_kernel.py": "242e0eb0907a45407b2e67bcbddd1128b110c9fbec9c2de8deaa158ea2d96c2b",
+    "tools/serve_recovery/test_resource_kernel.py": "0226f3cbd2a674a4a656a36cbaa0ea41d1631967b3c556be683a1f7336c1cd26"
+  },
+  "persistent_domain_installation": false,
+  "runtime_domain_integration": false,
+  "released": false
+}

@@ -1,0 +1,8 @@
+test_javascript_sdk_core_management_and_real_index_content (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_javascript_sdk_core_management_and_real_index_content) ... ok
+test_pinned_sources_and_unified_management_shapes (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_pinned_sources_and_unified_management_shapes) ... ok
+test_python_sdk_native_tls_prefix_and_client_isolation (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_python_sdk_native_tls_prefix_and_client_isolation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 6.653s
+
+OK

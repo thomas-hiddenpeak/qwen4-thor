@@ -1,0 +1,26 @@
+{
+  "status": "PASS_TARGETED_NATIVE_PROGRESS_RECOVERY_BUSINESS",
+  "engine_sha256": "1f3d0de49935ac6b586b67ce1e74673f781480333aba48652836f50eadd0e2be",
+  "service_manifest_sha256": "109b4e7a11d1bbf45bf3590da1ec2f1bb7f11ee44fcfd06c6924387a120a7622",
+  "protocol_sha256": "54df906042c41946ec6ad592e10b4671bb261b7b32480de93176585bd56dc468",
+  "cumulative_model_starts": 3,
+  "cumulative_chats": 9,
+  "recovery_probes": 1,
+  "cumulative_seconds": 220.94063078751788,
+  "nvml_samples": 209,
+  "all_nvml_ok": true,
+  "real_work_unchanged_while_fresh_snapshots_advanced": true,
+  "old_tree_retired_before_replacement": true,
+  "recovered_real_document_tool": true,
+  "observer_lost_same_model_json_sse": true,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "performance_acceptance": false,
+  "previous_failed_attempt": "serve-progress-discovery-20261109",
+  "full_R03_complete": false,
+  "pending": [
+    "cache GPU copy is currently hidden by auxiliary cache wait",
+    "request allocation/reset/cleanup progress coverage audit",
+    "rollback-capable accepted delivery"
+  ]
+}

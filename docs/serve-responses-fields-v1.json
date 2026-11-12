@@ -1,0 +1,415 @@
+{
+  "profile": "q4t-responses-source-v1",
+  "date": "2026-11-08",
+  "sdk_version": "7.47.0",
+  "sdk_source": ".q4t-work/serve-protocol-20261103/sdk/node_modules/openai",
+  "files": {
+    "package.json": "74cc41a9572343007d6fc1450225778ed7ccdae68ba79fbbcc674e450b9d765b",
+    "LICENSE": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+    "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+    "src/lib/responses/ResponseStream.ts": "15f74066ceb99b0386546c991e92e14dea0d8ec08e0de75b1a72cd4f1f160a55",
+    "src/lib/ResponsesParser.ts": "c43f79d5f1abefe80f0cffae90e81bf651debf9c4b29e334254bb49e546240db"
+  },
+  "fields": [
+    {
+      "field": "access_programs",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "background",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A08"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "context_management",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A08",
+        "A10"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "conversation",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A08"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "include",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "input",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "instructions",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "max_output_tokens",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "max_tool_calls",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "builtin_execution_limit_required",
+      "remaining_owners": [
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "metadata",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "model",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "moderation",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A10"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "parallel_tool_calls",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "previous_response_id",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A08"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "prompt",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A09",
+        "A10"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "prompt_cache_key",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "prompt_cache_options",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "prompt_cache_retention",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "reasoning",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "safety_identifier",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "service_tier",
+      "owners": [
+        "A07",
+        "N04"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "store",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A08"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "stream",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A07",
+        "A10",
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "stream_options",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A07",
+        "A10",
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "temperature",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "text",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A05",
+        "A10"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "tool_choice",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "tools",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "core_delivered_required_integration_pending",
+      "remaining_owners": [
+        "A11"
+      ],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "top_logprobs",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "top_p",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "truncation",
+      "owners": [
+        "A07"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    },
+    {
+      "field": "user",
+      "owners": [
+        "A07",
+        "N04"
+      ],
+      "state": "core_implemented_validated_delivered",
+      "remaining_owners": [],
+      "implementation_source": "src/server/responses_plan.cpp",
+      "audit": "serve-responses-execution-audit-v1.json"
+    }
+  ],
+  "policy": "Every field remains required; classification is implementation ownership, not an exclusion or compatibility pass.",
+  "latest_audit": "serve-responses-execution-audit-v1.json",
+  "core_field_evidence": "evidence/serve-request-fields-delivery-20261110/README.md"
+}

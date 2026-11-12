@@ -1,0 +1,26 @@
+{
+  "label": "root-rollback",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary/engine/q4t",
+    "service",
+    "publish-rollback",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+    "--manifest-sha256",
+    "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+    "--generation-sha256",
+    "b3120f1cfb46d5fd04488c352d3fcb1c32f2ef7e254c95b6ed33c62233580f66",
+    "--expected-manifest-sha256",
+    "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+    "--expected-revision",
+    "76",
+    "--request-id",
+    "0353c541-d0aa-47b6-85b4-51b74e832a8f"
+  ],
+  "returncode": 0,
+  "seconds": 8.635455205105245
+}

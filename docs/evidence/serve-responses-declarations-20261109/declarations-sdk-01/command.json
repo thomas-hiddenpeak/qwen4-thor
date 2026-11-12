@@ -1,0 +1,9 @@
+[
+  "env",
+  "Q4T_HOST_TESTS=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+  "Q4T_NODE_SDK_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "Q4T_RESPONSES_BACKGROUND_OUTPUT=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/declarations-sdk-01/work",
+  "node",
+  "--test",
+  "tools/serve_responses/test_background_sdk.mjs"
+]

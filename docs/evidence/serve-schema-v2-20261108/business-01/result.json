@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 274, in run\n    try:self.start();self.business();result['status']='PASS_SCHEMA_V2_TEXT_BUSINESS'\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 244, in business\n    final=self.sdk_request('final',follow)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 209, in sdk_request\n    answer=self.client.complete(body,sink=wire.write)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 121, in complete\n    payload = self.call(\"chat\", request, model=request[\"model\"], sink=sink)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 106, in call\n    raise JsSdkError(payload[\"error\"])\ntools.serve_protocol.js_client.JsSdkError: 503 grammar operation time limit exceeded\n",
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 56
+  },
+  "seconds": 102.84335670387372,
+  "binary_sha256": "cbaa964d7fce506411a1cf87b73583fd3bad7ca9050ef15d419cd44227ff7ce7"
+}

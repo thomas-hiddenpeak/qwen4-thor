@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "schema-v2-media-cabin",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "{\n  \"scene\": \"aircraft_cabin\",\n  \"visible_windows\": 2,\n  \"device_lights_on\": true,\n  \"people_visible\": false\n}"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 692,
+      "completion_tokens": 42,
+      "total_tokens": 734
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "411",
+      "content-type": "application/json",
+      "x-request-id": "req-8e03b55934bfdd34bbc1cf09fffccb86"
+    }
+  },
+  "wire_base64": "eyJpZCI6InNjaGVtYS12Mi1tZWRpYS1jYWJpbiIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsImNyZWF0ZWQiOjE3OTQxNDA4NDEsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjAsIm1lc3NhZ2UiOnsicm9sZSI6ImFzc2lzdGFudCIsImNvbnRlbnQiOiJ7XG4gIFwic2NlbmVcIjogXCJhaXJjcmFmdF9jYWJpblwiLFxuICBcInZpc2libGVfd2luZG93c1wiOiAyLFxuICBcImRldmljZV9saWdodHNfb25cIjogdHJ1ZSxcbiAgXCJwZW9wbGVfdmlzaWJsZVwiOiBmYWxzZVxufSJ9LCJmaW5pc2hfcmVhc29uIjoic3RvcCIsImxvZ3Byb2JzIjpudWxsfV0sInVzYWdlIjp7InByb21wdF90b2tlbnMiOjY5MiwiY29tcGxldGlvbl90b2tlbnMiOjQyLCJ0b3RhbF90b2tlbnMiOjczNH19"
+}

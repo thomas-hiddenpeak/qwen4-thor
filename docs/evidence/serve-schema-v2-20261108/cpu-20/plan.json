@@ -1,0 +1,12 @@
+{
+  "scope": "Previously failing provisional-content assertion and exact native history; prefix target dependency repair only",
+  "tests": [
+    "output_constraints_none_required_and_length_terminals",
+    "chat_tool_history_native_values_keep_exact_decimal_spelling",
+    "chat_tool_history_no_silent_argument_loss",
+    "chat_response_exact_integer_spellings",
+    "chat_response_tools_typed_and_multiple"
+  ],
+  "binary_sha256": "04754128b3bcd036ab0e9d14d943c65aa42583693cb5b0ea7aa709c04ef69f38",
+  "timeout_seconds": 60
+}

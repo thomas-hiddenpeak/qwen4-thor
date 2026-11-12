@@ -1,0 +1,7 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/business-01/execution/state",
+  "service_id": "21c8a3f5-5711-40b7-b0d0-49c0db1110bd",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false
+}

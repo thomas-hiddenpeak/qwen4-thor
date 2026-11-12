@@ -1,0 +1,6 @@
+test_real_size_tokenizer_asset_is_separate_from_package_metadata (tools.serve_responses.test_embeddings_acceptance.EmbeddingsAcceptanceTests.test_real_size_tokenizer_asset_is_separate_from_package_metadata) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.020s
+
+OK

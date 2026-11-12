@@ -1,0 +1,38 @@
+{
+  "stage": "A11 native embedding quota and BF16 row integration",
+  "tests": [
+    "client_rate_durable_internal_input_shares_tpm_without_external_rpm",
+    "client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries",
+    "vector_ingestion_native_quota_charges_chunks_without_extra_external_rpm",
+    "vector_ingestion_native_quota_requires_owned_data_permit_and_shared_tpm",
+    "vector_ingestion_native_exception_keeps_committed_usage_and_refunds_rest",
+    "vector_ingestion_native_unknown_usage_retains_full_token_reservation",
+    "client_rate_atomic_concurrency_and_per_client_isolation",
+    "client_rate_refund_cancel_failure_and_preterminal_idempotence",
+    "client_rate_pending_survives_window_and_settles_in_current_window",
+    "client_rate_internal_step_preserves_one_rpm_and_charges_actual_input",
+    "client_rate_checkpoint_drains_reservations_and_never_reopens",
+    "client_rate_restart_restores_live_window_and_cumulative_usage",
+    "embeddings_execution_one_rpm_actual_usage_and_batch_precharge",
+    "vector_ingestion_cancel_after_committed_model_keeps_usage_without_publication"
+  ],
+  "source_sha256": {
+    "include/q4t/server/client_policy.h": "19d88b8aece205850bc53b2e644570ca7096c7be3a6467dcfad4bfe05c2d35fe",
+    "src/server/client_policy.cpp": "1e87f542adf319f5aea52e10e4467bb24692978f375f6c834df7e96362063830",
+    "include/q4t/server/vector_embedding_execution.h": "ac94fed5ad80a57a201e30f5ec869a813c57a82f9c09e378ff8e6611f809239e",
+    "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
+    "include/q4t/server/vector_ingestion.h": "892299bfcd22b747752b1dd196580638bdf4747fd50719eb80e94e430bca7b34",
+    "src/server/vector_ingestion.cpp": "78faf40161a72cc6d1048be2492abdefb732b9510ea0e584ce4c89374f965f99",
+    "tests/server_vector_ingestion_test.cpp": "793d9827f064b354b5d60f09ad5a7a528d6bf72708053c8371f415209b77212f",
+    "tests/server_client_policy_test.cpp": "e2df16a49d3051cb032bd5a34141cc7d668018ddb5bc0b6d4e259eb56dbe04bb"
+  },
+  "runner": ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "gpu_starts": 0,
+  "full_quality": false,
+  "full_performance": false,
+  "default_changed": false,
+  "real_client_quota": true,
+  "embedding_hidden": "CPU BF16 fixtures; actual GPU callback not yet connected",
+  "http": false,
+  "production_controller": false
+}

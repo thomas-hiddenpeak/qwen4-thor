@@ -1,0 +1,171 @@
+{
+  "status": "PASS_FILES_SDK_NETWORK",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_5fa21977fb5e3967bd59c0e76e45d1d8/content",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7/content",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7/content",
+      "status": 404
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_df61149260223dc0a4bce0af94ec64f3/content",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_cf45f7183685b8c2a5e2f032670453b7",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_2ce04cc5b9a59ac99cd6059c95d2a205",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_c442ba74b98e8159743cca51a66cc522",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_3d59afee59b78e86d4d7490f15369f17",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_cbbf6b55317b2284ca32e7a060ddd23c",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_47e05bc9aaa81edbc7b4bd47f97348af",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_5fa21977fb5e3967bd59c0e76e45d1d8",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_df61149260223dc0a4bce0af94ec64f3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_df61149260223dc0a4bce0af94ec64f3",
+      "status": 404
+    }
+  ],
+  "large_file_bytes": 17825805,
+  "large_file_sha256": "fb8c14efdad1c400da9a6ac63921c8270dbe36ee408cedf5569e00a28a719193",
+  "model_starts": 0,
+  "model_generations": 0,
+  "transport": "http:"
+}

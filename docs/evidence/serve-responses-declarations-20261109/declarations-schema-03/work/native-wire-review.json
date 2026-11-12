@@ -1,0 +1,12 @@
+{
+  "checked": 23,
+  "rejected": [],
+  "sources_sha256": {
+    "docs/evidence/serve-conversations-20261109/sdk-conversations-01/native/durable/requests.jsonl": "6d083c050b3fbba02801058a33f64cb3ff02d315dd277abc7eb50495f250ace3",
+    "docs/evidence/serve-conversations-20261109/sdk-conversations-01/native/errors/requests.jsonl": "7adc9e4b1c17a831faee8a214414d9402d628ce606656e2f05cf12ce643fa19b",
+    "docs/evidence/serve-conversations-20261109/sdk-conversations-01/native/include/requests.jsonl": "6020f3c8955e6db69e18c99e9ea89086fd05432765d350fb9f931baf9cf11ef6",
+    "docs/evidence/serve-conversations-20261109/sdk-conversations-01/native/pagination/requests.jsonl": "9caa993ad3676bbae5c8a3536b4f30a55d085efc8a899a402e631b1784825f6d",
+    "docs/evidence/serve-conversations-20261109/sdk-conversations-01/native/tools/requests.jsonl": "6c194a1a6ae0c1649e884929e7a651e354a0740f54ecdaebf6e247bb130a0071"
+  },
+  "legacy_nonconforming_not_reaccepted": false
+}

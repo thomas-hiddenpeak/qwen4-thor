@@ -53,7 +53,7 @@ def run(package, digest, output):
     pkg.save(output/'controller.json', dict(version=2,
         owner=supervisor.process_identity(os.getpid()), lock_path=str(lock_path),
         observation_context=inspection.current_context(),
-        auxiliary_isolation=manifest.get('version') in (9, 10),
+        auxiliary_isolation=manifest.get('version') in (9, 10, 11),
         package=str(Path(package).resolve()), manifest_sha256=digest,
         created_unix=time.time()))
     command = [manifest['python']['path'], '-I', '-B',
@@ -210,6 +210,7 @@ def main():
     p.add_argument('--binary', type=Path, default=ROOT/'build/q4t')
     p.add_argument('--release', type=Path, default=ROOT/'build/q4t.release.json')
     p.add_argument('--model-dir', type=Path, required=True)
+    p.add_argument('--embedding-model-dir', type=Path)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--operations-port', type=int, default=0)
@@ -218,6 +219,14 @@ def main():
                    help='managed runtime only; preflight remains strict')
     p.add_argument('--critical-memory-mib', type=int, default=1024)
     p.add_argument('--client-policy', type=Path)
+    p.add_argument('--access-program-policy', type=Path)
+    p.add_argument('--file-input-policy', type=Path)
+    p.add_argument('--served-model-name')
+    p.add_argument('--model-alias', action='append', default=[])
+    p.add_argument('--object-store-dir')
+    p.add_argument('--capacity-config', type=Path)
+    for option in pkg.APPLICATION_LIMITS:
+        p.add_argument('--object-'+option.replace('_', '-'), type=int)
     p.add_argument('--host-memory-high-mib', type=int)
     p.add_argument('--host-memory-max-mib', type=int)
     p.add_argument('--host-tasks-max', type=int)
@@ -239,7 +248,20 @@ def main():
         result = pkg.prepare(args.binary, args.release, args.model_dir,
                              args.output, args.port, args.restart_limit,
                              args.critical_memory_mib, args.client_policy, selected,
-                             args.operations_port, args.nvml_policy)
+                             args.operations_port, args.nvml_policy,
+                             dict(name=args.served_model_name if args.served_model_name is not None
+                                       else 'qwen3.8-flash-next',
+                                  aliases=args.model_alias)
+                             if args.served_model_name is not None or args.model_alias else None,
+                             access_program_policy=args.access_program_policy,
+                             file_input_policy=args.file_input_policy,
+                             embedding_model_dir=args.embedding_model_dir,
+                             capacity_config=pkg.read(args.capacity_config)
+                                 if args.capacity_config is not None else None,
+                             application_state=({**({'directory': args.object_store_dir}
+                                 if args.object_store_dir is not None else {}),
+                                 **{k: getattr(args, 'object_'+k) for k in pkg.APPLICATION_LIMITS
+                                    if getattr(args, 'object_'+k) is not None}} or None))
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

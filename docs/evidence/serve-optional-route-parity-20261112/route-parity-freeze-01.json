@@ -1,0 +1,12 @@
+{
+  "scope": "Optional frontend route parity for existing native APIs",
+  "gpu_starts": 0,
+  "tests": [
+    "complete route inventory and missing/extra/duplicate negatives",
+    "native ingress all declared application routes",
+    "actual optional nginx all declared application routes",
+    "reserved static route wrong methods"
+  ],
+  "default_changed": false,
+  "public_api_routes": 66
+}

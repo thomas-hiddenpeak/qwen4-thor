@@ -1,0 +1,325 @@
+{
+  "source": "official-chat-fields.json",
+  "local_source": "local-surface.json",
+  "warning": "Allowlisted does not imply compatible semantics; A01 must resolve nested schema, defaults and responses.",
+  "official_fields": [
+    {
+      "name": "messages",
+      "local_allowlisted": true,
+      "tasks": [
+        "A02"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "model",
+      "local_allowlisted": true,
+      "tasks": [
+        "A06"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "audio",
+      "local_allowlisted": false,
+      "tasks": [
+        "A10"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "frequency_penalty",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "function_call",
+      "local_allowlisted": false,
+      "tasks": [
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "functions",
+      "local_allowlisted": false,
+      "tasks": [
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "logit_bias",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "logprobs",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "max_completion_tokens",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "max_tokens",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "metadata",
+      "local_allowlisted": false,
+      "tasks": [
+        "A08"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "modalities",
+      "local_allowlisted": false,
+      "tasks": [
+        "A10"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "moderation",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "n",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "parallel_tool_calls",
+      "local_allowlisted": true,
+      "tasks": [
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "prediction",
+      "local_allowlisted": false,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "presence_penalty",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "prompt_cache_key",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "prompt_cache_options",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "prompt_cache_retention",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "reasoning_effort",
+      "local_allowlisted": true,
+      "tasks": [
+        "A02"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "response_format",
+      "local_allowlisted": true,
+      "tasks": [
+        "A05"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "safety_identifier",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "seed",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "service_tier",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01",
+        "N04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "stop",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "store",
+      "local_allowlisted": false,
+      "tasks": [
+        "A08"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "stream",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01",
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "stream_options",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01",
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "temperature",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "tool_choice",
+      "local_allowlisted": true,
+      "tasks": [
+        "A04"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "tools",
+      "local_allowlisted": true,
+      "tasks": [
+        "A04",
+        "A05"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "top_logprobs",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "top_p",
+      "local_allowlisted": true,
+      "tasks": [
+        "A03"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "user",
+      "local_allowlisted": true,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "verbosity",
+      "local_allowlisted": false,
+      "tasks": [
+        "A01"
+      ],
+      "semantic_audit": "pending"
+    },
+    {
+      "name": "web_search_options",
+      "local_allowlisted": false,
+      "tasks": [
+        "A11"
+      ],
+      "semantic_audit": "pending"
+    }
+  ],
+  "q4t_extensions": [
+    "add_vision_id",
+    "cancel_token",
+    "chat_template_kwargs",
+    "enable_thinking",
+    "include_reasoning",
+    "parse_response",
+    "prefix_cache_scope",
+    "prefix_cache_write_tokens",
+    "preserve_thinking",
+    "prompt",
+    "reasoning_field",
+    "repetition_penalty",
+    "request_id",
+    "request_timeout_ms",
+    "session_id",
+    "thinking_token_budget"
+  ]
+}

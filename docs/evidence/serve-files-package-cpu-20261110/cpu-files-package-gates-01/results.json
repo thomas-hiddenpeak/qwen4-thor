@@ -1,0 +1,34 @@
+[
+  {
+    "name": "contract",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11385521898046136
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11378530273213983
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06377718271687627
+  }
+]

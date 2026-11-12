@@ -1,0 +1,3 @@
+  CHECK failed: PlanOutputConstraints(input, &plan) (line 127)
+[FAIL] tokenizer_schema_bounded_title_with_tools_real_vocabulary
+1 tests, 0 passed, 1 failed, 0 skipped

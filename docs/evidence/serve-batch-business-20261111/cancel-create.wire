@@ -1,0 +1,1 @@
+{"id":"batch_55e2efaff0e0ff9c670551c679c4868a","object":"batch","status":"validating","endpoint":"/v1/responses","input_file_id":"file_292df52542cd2213fe0976079d928555","completion_window":"24h","created_at":1794384490,"expires_at":1794470890,"metadata":null,"output_file_id":null,"error_file_id":null,"errors":null,"request_counts":{"total":0,"completed":0,"failed":0}}

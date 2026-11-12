@@ -1,0 +1,6 @@
+test_real_fixture_and_followup_use_production_media_preflight (tools.serve_schema_v2.test_media.MediaPreparation.test_real_fixture_and_followup_use_production_media_preflight) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.394s
+
+OK

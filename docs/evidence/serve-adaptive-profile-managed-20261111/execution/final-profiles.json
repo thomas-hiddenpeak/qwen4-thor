@@ -1,0 +1,50 @@
+{
+  "clock": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "logical_ns": 74038654978,
+    "monotonic_ns": 2595243941938071
+  },
+  "completed_generation": 3,
+  "configuration": {
+    "cooldown_seconds": 60,
+    "degrade_below_mib": 24576,
+    "minimum_light_seconds": 60,
+    "pressure_seconds": 2,
+    "recover_above_mib": 28672,
+    "recovery_seconds": 30,
+    "switches_per_day": 4,
+    "switches_per_hour": 2,
+    "version": 1
+  },
+  "format": "q4t-profile-selection-v1",
+  "history": [
+    {
+      "at_logical_ns": 13201208833,
+      "reason": "sustained_memory_pressure",
+      "request_id": "d5b231f6-a5a7-4a92-a75e-d987673e775d",
+      "source": "primary",
+      "source_generation": 1,
+      "target": "light",
+      "target_sha256": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    {
+      "at_logical_ns": 73958045753,
+      "reason": "sustained_memory_recovery",
+      "request_id": "3ba82d22-3a62-480d-815c-787044c7c5df",
+      "source": "light",
+      "source_generation": 2,
+      "target": "primary",
+      "target_sha256": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+    }
+  ],
+  "light_since_ns": null,
+  "not_before_ns": 133958045753,
+  "pending": null,
+  "profiles": {
+    "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+    "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+  },
+  "registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+  "revision": 10,
+  "selected": "primary"
+}

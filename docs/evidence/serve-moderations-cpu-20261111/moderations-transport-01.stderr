@@ -1,0 +1,6 @@
+test_moderations_sdk_tls_auth_cors_and_exact_body (__main__.AccessTests.test_moderations_sdk_tls_auth_cors_and_exact_body) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.139s
+
+OK

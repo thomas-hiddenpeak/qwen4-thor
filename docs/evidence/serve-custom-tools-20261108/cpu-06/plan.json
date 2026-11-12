@@ -1,0 +1,6 @@
+{
+  "host": [
+    "custom_tools_native_mixed_incremental_types_follow_definitions"
+  ],
+  "reason": "Only fixture omitted current additionalProperties=false. Refresh generated semantics source hashes; reuse cpu-05 other 46 host and 5 driver passes."
+}

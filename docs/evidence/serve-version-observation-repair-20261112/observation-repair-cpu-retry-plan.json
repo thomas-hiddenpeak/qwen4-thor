@@ -1,0 +1,10 @@
+{
+  "reason": "Two new observation fixture keyword overrides failed before production call; production unchanged",
+  "cpu_cases": [
+    "tools.serve_recovery.test_version_observation.ObservationTests.test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection",
+    "tools.serve_recovery.test_version_observation.ObservationTests.test_payload_change_without_matching_generation_invalidates_collected_metrics"
+  ],
+  "gpu_starts": 0,
+  "total": 2,
+  "test_sha256": "3ec65a41534ac7d53c3e67aa41717d5a13871e7f3a7e6b19d35918c2c6969854"
+}

@@ -1,0 +1,7 @@
+[PASS] schema_worker_binding_mismatch_cannot_bypass_semantic_checks
+[PASS] schema_worker_dependency_and_resource_errors_recover_per_request
+[PASS] structured_decoder_json_object_and_thinking
+[PASS] structured_decoder_cancel_after_compiler_entry_reaps
+[PASS] structured_decoder_expired_and_memory_failure_are_closed
+[PASS] structured_decoder_forced_token_intersection_is_transactional
+6 tests, 6 passed, 0 failed, 0 skipped

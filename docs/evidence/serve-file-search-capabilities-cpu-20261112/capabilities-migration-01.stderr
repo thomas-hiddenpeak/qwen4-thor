@@ -1,0 +1,11 @@
+test_search_output_extension_requires_explicit_upgrade_and_preserves_original (tools.serve_recovery.test_profile_migration.MigrationTests.test_search_output_extension_requires_explicit_upgrade_and_preserves_original) ... ok
+test_search_output_enum_rejects_unknown_duplicate_type_and_missing_implementation (tools.serve_recovery.test_profile_migration.MigrationTests.test_search_output_enum_rejects_unknown_duplicate_type_and_missing_implementation) ... ok
+test_same_search_capabilities_can_recover_but_other_arrays_stay_exact (tools.serve_recovery.test_profile_migration.MigrationTests.test_same_search_capabilities_can_recover_but_other_arrays_stay_exact) ... ok
+test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic (tools.serve_recovery.test_profile_migration.MigrationTests.test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic) ... ok
+test_extension_keeps_pending_work_budget_and_original_capability_evidence (tools.serve_recovery.test_profile_migration.MigrationTests.test_extension_keeps_pending_work_budget_and_original_capability_evidence) ... ok
+test_new_feature_cannot_hide_existing_media_tools_embeddings_or_type_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_new_feature_cannot_hide_existing_media_tools_embeddings_or_type_loss) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.254s
+
+OK

@@ -1,0 +1,11 @@
+{
+  "name": "native",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_embedding_replay",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/plan.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/numerical-02/native"
+  ],
+  "exit_code": 0,
+  "seconds": 2.416492342017591
+}

@@ -1,0 +1,12 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive",
+  "tools.serve_recovery.test_retention.RetentionTests.test_links_and_replaced_directories_cannot_escape_scope",
+  "tools.serve_recovery.test_retention.RetentionTests.test_retention_provenance_is_advisory_and_old_configs_remain_accepted",
+  "tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it",
+  "tools.serve_recovery.test_production.ControllerTests.test_application_directory_survives_run_controller_and_model_generations"
+]

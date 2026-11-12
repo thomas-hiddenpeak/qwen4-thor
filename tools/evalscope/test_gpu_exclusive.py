@@ -18,6 +18,34 @@ WORK = guard.ROOT / '.q4t-work/gpu-exclusive-tests'
 
 
 class ExclusiveTests(unittest.TestCase):
+    def test_explicit_capability_fds_survive_strict_managed_child_and_are_not_consumed(self):
+        read_fd, write_fd = os.pipe()
+        self.addCleanup(os.close, read_fd)
+        os.write(write_fd, b'one-use'); os.close(write_fd)
+        with self.lock.open('w+') as held:
+            fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            code = 'import os; assert os.read('+str(read_fd)+', 32)==b"one-use"'
+            with patch.object(guard, 'inspect', return_value={'conflicts': []}):
+                rc = guard.run_guard([sys.executable, '-c', code], self.out, self.lock,
+                    interval=.01, grace=1, lease_fd=held.fileno(), inherit_lease=True,
+                    inherited_fds=(read_fd,))
+            self.assertEqual(rc, 0)
+            self.assertEqual(self.outcome()['explicit_inherited_fd_count'], 1)
+            self.assertEqual(os.read(read_fd, 1), b'')
+            with self.lock.open('r+') as probe, self.assertRaises(BlockingIOError):
+                fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_invalid_or_implicit_capability_transfer_never_starts_any_query(self):
+        for fds, managed in [((1,), True), ((5, 5), True), (tuple(range(3, 12)), True),
+                             ((3,), False), ((999999,), True)]:
+            with self.subTest(fds=fds), patch.object(guard, 'inspect') as scan, \
+                 patch.object(guard.subprocess, 'Popen') as child:
+                with self.assertRaises((ValueError, OSError)):
+                    guard.run_guard(['must-not-run'], self.out, self.lock,
+                                    inherit_lease=managed, inherited_fds=fds)
+                scan.assert_not_called(); child.assert_not_called()
+            self.assertFalse(self.out.exists())
+
     def test_missing_pidfd_api_aborts_without_child_or_monitor(self):
         for module, name in [(guard.os, 'pidfd_open'),
                              (guard.signal, 'pidfd_send_signal')]:

@@ -1,0 +1,58 @@
+{
+  "README.md": {
+    "bytes": 909,
+    "sha256": "4a4fe0073294da4d3b4151a4371f3bd7a9d23072350604ff6bf5d7b7a42043b5"
+  },
+  "decision.json": {
+    "bytes": 363,
+    "sha256": "48fa7d2ef3c51f701fe083daca6f87ea6d27fce304ba129e7df6326a45ffaef7"
+  },
+  "identity.json": {
+    "bytes": 273,
+    "sha256": "8b4acfe1500ab1912755797d3fb9d972e8cc6b8eb7be6e744d5d8179784e1846"
+  },
+  "usage-store-cpu-01/binary.json": {
+    "bytes": 241,
+    "sha256": "aa2108680592f9c9ee5eb775e23731512ea17a2c899e280128637dff4109f4ed"
+  },
+  "usage-store-cpu-01/command.json": {
+    "bytes": 771,
+    "sha256": "2e7209ed87f698064e06bfce8bb6048cb00b178247cd53c053f9d54e75032690"
+  },
+  "usage-store-cpu-01/result.json": {
+    "bytes": 65,
+    "sha256": "f2e2be6602b0934574083ad5ee4d62c0bb6314421c874a1ca1acffbc28b887ed"
+  },
+  "usage-store-cpu-01/selection.json": {
+    "bytes": 898,
+    "sha256": "a747676d72b53b3fabcfd926ccfec966ed8280faddb0f00f99145ce72f4f72c6"
+  },
+  "usage-store-cpu-01/sources.json": {
+    "bytes": 660,
+    "sha256": "47d34b4006098c3f3c61ceafb67d809dde27c2a6831c98646a23f4716997720c"
+  },
+  "usage-store-cpu-01/tests.log": {
+    "bytes": 3284,
+    "sha256": "68181d5eb93a1ea46b7571c11ff91be923e478c5081b09975977fa875ebeb55b"
+  },
+  "usage-store-cpu-02/command.json": {
+    "bytes": 185,
+    "sha256": "a04551fbe1ace50b7d8f197d73be4e596eb203d0ab48ca3dfcbec568a03edc99"
+  },
+  "usage-store-cpu-02/result.json": {
+    "bytes": 63,
+    "sha256": "964ea72c8f8e1a2d36e17f5ce52fa83f72c663817a4c54a16252e4eed2d11f10"
+  },
+  "usage-store-cpu-02/review.json": {
+    "bytes": 222,
+    "sha256": "fd64d26c7131e1d3a761f6ae51b4de1866a9b5c35c26e67b44882a795f0d345f"
+  },
+  "usage-store-cpu-02/sources.json": {
+    "bytes": 226,
+    "sha256": "c645c4e71857ab96633922b12f2f9e5956391edc004c0f7d07a69b5212767641"
+  },
+  "usage-store-cpu-02/tests.log": {
+    "bytes": 304,
+    "sha256": "e015d6259c00c6deba0bf5fff4ed912304942a9d68ccba3c6ee0fa66ea35a8e8"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "reason": "Strict actual config schema omitted file_inputs/media v3; repair exact closed shapes and negative controls. SDK explicit pinned package environment was absent; no SDK request executed. Original artifacts retained, 20 C++ accepted/reused.",
+  "required": [
+    "tools.serve_responses.test_batches_transport.BatchTransportTests"
+  ],
+  "count": 3,
+  "gpu_starts": 0,
+  "output": ".q4t-work/serve-batches-20261110/cpu-public-api-retry2"
+}

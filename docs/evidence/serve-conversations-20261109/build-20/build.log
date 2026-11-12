@@ -1,0 +1,25 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  3%] Built target q4t_io
+[  6%] Built target q4t_text
+[ 27%] Built target xgrammar
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/conversation_state.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_conversation_state_test.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/test_main.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/conversation_api.cpp.o
+[ 31%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_conversation_api_test.cpp.o
+[ 34%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

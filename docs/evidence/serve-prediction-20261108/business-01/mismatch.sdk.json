@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-4a21f0c2eaaf8a589c267fd585df58e7",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 6,
+      "total_tokens": 34,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 3
+      }
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "423",
+      "content-type": "application/json",
+      "x-request-id": "req-6c1c257f4feef5d002354758c40786e5"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tNGEyMWYwYzJlYWFmOGE1ODljMjY3ZmQ1ODVkZjU4ZTciLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTAwODQ3LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiNDIifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjoyOCwiY29tcGxldGlvbl90b2tlbnMiOjYsInRvdGFsX3Rva2VucyI6MzQsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6MCwiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjozfX19"
+}

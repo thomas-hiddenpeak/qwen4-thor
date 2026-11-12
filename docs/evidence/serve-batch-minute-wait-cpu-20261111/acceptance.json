@@ -1,0 +1,37 @@
+{
+  "status": "PASS_NATIVE_BATCH_BUDGET_AND_MINUTE_WAIT_CPU",
+  "distinct_tests": 34,
+  "new_tests": 13,
+  "passed": 34,
+  "skipped": 0,
+  "first_round": {
+    "passed": 32,
+    "failed": 2,
+    "argv": [
+      ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      ".q4t-work/serve-batches-20261110/rate-wait-required.txt"
+    ],
+    "exit_code": 1,
+    "seconds": 3.167783760931343
+  },
+  "affected_retry": {
+    "passed": 2,
+    "failed": 0,
+    "argv": [
+      ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      ".q4t-work/serve-batches-20261110/rate-wait-retry-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16404002578929067
+  },
+  "first_failures": "Old exception fixture executor arity failed first host compile. First CPU round used incorrect cancellation result shape and omitted quota recovery initialization. Fixed fixtures only; all production sources unchanged across CPU rounds.",
+  "builds_final_zero_warning": true,
+  "source_anchors": 487,
+  "gpu_starts": 0,
+  "engine_sha256": "e0a6a1613e8e261d3da128b2bcbe1f246da277fba363f98aca16f304d66ae096",
+  "host_sha256": "4bcb7ea1741327d519e74fb3cbbf169b5bd273d582e29add83aabe60fc752234",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Recovered background Batch quota wait/re-admission, native public HTTP/SDK/CLI plus actual model business, compatible rollback/default delivery, all master tasks."
+}

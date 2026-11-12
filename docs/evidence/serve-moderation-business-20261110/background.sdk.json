@@ -1,0 +1,269 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_ca4413d893d0b8647fa634f5ac909f92",
+    "object": "response",
+    "created_at": 1794250150,
+    "completed_at": 1794250158,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "rs_6ea169a360a2e0737be37480433a5927",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "Working notes:\n1. Task: Compute 17 + 25.\n2. Calculation: 17 + 25 = 42.\n3. Constraint: Reply only with the decimal number.\n4. Plan: Output \"42\"."
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:1e737e123ac7f70221f9087908312126:3ec501dd88ffd46c5e21c479:e35f586ffb51be2f659c717bd9d37565:1b834b62a930e77e2e446357c11c68f329386ef2ee2dd738368bbbcabc106bac3a2cffbc3ce88c9c6caf171911849dec46ebc655d4fc68dfd303e3a048b5eeaf945933e6b5542d964f65acfd00cea88ca577bb1fbb5ef9696ed8fb9c78bb55081e3b51909f66fdfa4418117d0cac2afbd7b0c932084605b98b673f0ab3a96cd0af6afd5481db15a3d7aca1d1688ed5c70bf3bc7caf90ff7b005b24cacc68a720a1ddcde7e810211262a403debd84dfc1601edba8ef802126a8525281fcf25f3b1034e976cac21323339a72810cefe8705fb98711542c4c9c746cce346837225d1957cb9938acfb8213f77bface37e20b1ad2e3032e6d23eac17647907fbf9445302b3342cb9e8f69abed357caf4413c4e87616bbf43640cc084ba1cb68e10b36e8a3e5523a7f0badfa081805443f4e53cf35fafc27e01e6ee6e323329d653f68634a68d05cc2c63db2e416d6d515dd18b61a1dc2b2d7929f87bb9e1dd0e9a729aef2fe8d14491acd3c19624048cbff33e8201d3536d9639993bb923f2c7333f30294f1a05487c0cb6cf2bbdb9dd4a3a8597b0903d6dcb27858e90b227385132b88e02d1e695476a20ed0ba5a66b0093d777befde97dab588cc4efba0c21c77004d484291b85a2d4381c6f3a78a3db77d2dc7238c185e55e74ea49771fe3800b5cb9c57775bd560a39bbcef9584be429b741dd2fd2b38cc97cd216f5dd6780952652f64afe6c8f3aa45"
+      },
+      {
+        "id": "msg_215099612496a39000caba0718396475",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"answer\":42}",
+            "annotations": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 354,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 57
+      },
+      "total_tokens": 418
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "sum",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "integer",
+              "const": 42
+            }
+          },
+          "required": [
+            "answer"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "pro",
+      "summary": null
+    },
+    "store": true,
+    "background": true,
+    "max_output_tokens": 384,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "moderation": {
+      "input": {
+        "type": "moderation_result",
+        "model": "qwen3.8-flash-next",
+        "categories": {
+          "harassment": false,
+          "harassment/threatening": false,
+          "hate": false,
+          "hate/threatening": false,
+          "illicit": false,
+          "illicit/violent": false,
+          "self-harm": false,
+          "self-harm/instructions": false,
+          "self-harm/intent": false,
+          "sexual": false,
+          "sexual/minors": false,
+          "violence": false,
+          "violence/graphic": false
+        },
+        "category_scores": {
+          "harassment": 0,
+          "harassment/threatening": 0,
+          "hate": 0,
+          "hate/threatening": 0,
+          "illicit": 0,
+          "illicit/violent": 0,
+          "self-harm": 0,
+          "self-harm/instructions": 0,
+          "self-harm/intent": 0,
+          "sexual": 0,
+          "sexual/minors": 0,
+          "violence": 0,
+          "violence/graphic": 0
+        },
+        "category_applied_input_types": {
+          "harassment": [
+            "text"
+          ],
+          "harassment/threatening": [
+            "text"
+          ],
+          "hate": [
+            "text"
+          ],
+          "hate/threatening": [
+            "text"
+          ],
+          "illicit": [
+            "text"
+          ],
+          "illicit/violent": [
+            "text"
+          ],
+          "self-harm": [
+            "text"
+          ],
+          "self-harm/instructions": [
+            "text"
+          ],
+          "self-harm/intent": [
+            "text"
+          ],
+          "sexual": [
+            "text"
+          ],
+          "sexual/minors": [
+            "text"
+          ],
+          "violence": [
+            "text"
+          ],
+          "violence/graphic": [
+            "text"
+          ]
+        },
+        "flagged": false
+      },
+      "output": {
+        "type": "moderation_result",
+        "model": "qwen3.8-flash-next",
+        "categories": {
+          "harassment": false,
+          "harassment/threatening": false,
+          "hate": false,
+          "hate/threatening": false,
+          "illicit": false,
+          "illicit/violent": false,
+          "self-harm": false,
+          "self-harm/instructions": false,
+          "self-harm/intent": false,
+          "sexual": false,
+          "sexual/minors": false,
+          "violence": false,
+          "violence/graphic": false
+        },
+        "category_scores": {
+          "harassment": 0,
+          "harassment/threatening": 0,
+          "hate": 0,
+          "hate/threatening": 0,
+          "illicit": 0,
+          "illicit/violent": 0,
+          "self-harm": 0,
+          "self-harm/instructions": 0,
+          "self-harm/intent": 0,
+          "sexual": 0,
+          "sexual/minors": 0,
+          "violence": 0,
+          "violence/graphic": 0
+        },
+        "category_applied_input_types": {
+          "harassment": [
+            "text"
+          ],
+          "harassment/threatening": [
+            "text"
+          ],
+          "hate": [
+            "text"
+          ],
+          "hate/threatening": [
+            "text"
+          ],
+          "illicit": [
+            "text"
+          ],
+          "illicit/violent": [
+            "text"
+          ],
+          "self-harm": [
+            "text"
+          ],
+          "self-harm/instructions": [
+            "text"
+          ],
+          "self-harm/intent": [
+            "text"
+          ],
+          "sexual": [
+            "text"
+          ],
+          "sexual/minors": [
+            "text"
+          ],
+          "violence": [
+            "text"
+          ],
+          "violence/graphic": [
+            "text"
+          ]
+        },
+        "flagged": false
+      }
+    },
+    "q4t_moderation_usage": {
+      "input_tokens": 1028,
+      "output_tokens": 73,
+      "total_tokens": 1101,
+      "model_steps": 2
+    },
+    "output_text": "{\"answer\":42}"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18993/v1/responses/resp_ca4413d893d0b8647fa634f5ac909f92?include%5B%5D=reasoning.encrypted_content",
+      "method": "GET"
+    }
+  ]
+}

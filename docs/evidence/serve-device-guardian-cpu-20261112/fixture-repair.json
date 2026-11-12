@@ -1,0 +1,8 @@
+{
+  "original_sha256": "defce0b6b814166605a8129f589dfff825312b8320f44938b3f28fc816d6c972",
+  "final_sha256": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18",
+  "original_failure_retained": true,
+  "production_changed_for_failure": false,
+  "original_workspace": ".q4t-work/serve-adaptive-profiles-20261111/cpu-01/service-4begvxu3",
+  "repair": "CPU fixture publishes actual PID/generation-bound idle/untracked-work frames and completed HTTP request counters, without fake GPU steps."
+}

@@ -1,0 +1,21 @@
+{
+  "cases": [
+    "file_webp_container_validates_actual_formats_and_complete_lengths",
+    "file_webp_actual_owned_decode_matches_pillow_and_codec_identity",
+    "file_webp_budget_cancel_timeout_and_worker_failure_release_ownership",
+    "file_webp_missing_optional_codec_preserves_builtin_pixels_and_text",
+    "file_webp_frozen_snapshot_keeps_original_and_decoded_pixels_without_codec",
+    "file_webp_shared_expansion_charges_both_representations_and_frozen_metadata",
+    "file_image_source_contract_preserves_borrowed_payload_and_detail",
+    "file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor",
+    "file_image_snapshot_restores_deleted_source_and_rechecks_header_and_budgets",
+    "file_image_gif_frozen_files_keep_original_bytes_and_render_mime",
+    "file_expansion_actual_pdf_page_and_chat_profile_are_complete",
+    "file_expansion_unknown_persistence_never_replays_or_erases_owned_state",
+    "file_document_worker_sandbox_denies_external_capabilities"
+  ],
+  "count": 13,
+  "gpu": 0,
+  "network": 0,
+  "scope": "Six native WebP container/actual codec/pixel/ownership/dependency/frozen-state cases and directly affected source/image/document/sandbox paths. Actual owned codec starts remain request-bounded; synthetic timeout/exit fixtures explicitly distinguish failure paths. Full API/model business remains required."
+}

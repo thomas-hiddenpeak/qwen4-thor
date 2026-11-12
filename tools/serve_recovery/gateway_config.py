@@ -12,12 +12,23 @@ ERRORS = {'service_recovering', 'service_quarantined', 'service_stopping',
 
 
 def validate(value):
-    native = value.get('version') == 2
+    native = value.get('version') in (2, 3, 4)
     executable = 'native_ingress' if native else 'nginx'
     ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
-        'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls'))
-    ledger.require(type(value['version']) is int and value['version'] in (1, 2),
+        'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls',
+        *(('access',) if value.get('version') in (3, 4) else ()),
+        *(('capacity_profile',) if 'capacity_profile' in value else ()),
+        *(('recovery_profiles',) if 'recovery_profiles' in value else ())))
+    ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3, 4),
                    'invalid gateway config version')
+    if value['version'] in (3, 4):
+        access = value['access']
+        ledger.keys(access, ('state_directory', 'service_id', 'state_identity'))
+        ledger.require(type(access['state_directory']) is str and
+            Path(access['state_directory']).is_absolute() and ledger.identifier(access['service_id']) and
+            type(access['state_identity']) is list and len(access['state_identity']) == 2 and
+            all(ledger.integer(n, minimum=1) for n in access['state_identity']),
+            'invalid access state binding')
     for key in ('directory', executable):
         ledger.require(type(value[key]) is str and Path(value[key]).is_absolute(),
                        'absolute gateway path required')
@@ -26,23 +37,48 @@ def validate(value):
                        'invalid gateway source identity')
     p = g.policy(value['policy'])
     cp.match_clients(p, value['backend_policy'])
+    if 'capacity_profile' in value:
+        from tools.serve_service import capacity
+        capacity.validate(value['capacity_profile'])
+        capacity.check_clients(value['capacity_profile'],value['backend_policy'])
+    if 'recovery_profiles' in value:
+        from tools.serve_recovery import profile_contract
+        registry = profile_contract.validate(value['recovery_profiles'])
+        ledger.require(native and registry['identity']['binary_sha256'] == value['binary_sha256'] and
+            registry['identity']['protocol_sha256'] == value['protocol_sha256'] and
+            registry['profiles']['primary'] == value.get('capacity_profile'),
+            'gateway qualified capacity differs')
+    ledger.require(value['version'] != 4 or value['backend_policy']['version'] >= 3,
+                   'dynamic ingress requires a versioned model policy')
     ledger.require('upstream_operations_port' in p,
                    'recovery requires a separate operations listener')
     tls = value['tls']
     if native:
-        ledger.require(tls is None and p['listen_host'] == '127.0.0.1' and
-                       p['version'] == 2,
-                       'native ingress requires loopback policy v2; TLS is external')
+        ledger.require(p['version'] in (2, 3, 4, 5), 'native ingress requires explicit CIDRs')
+    else:
+        ledger.require(p['version'] in (1, 2), 'nginx profile requires legacy policy')
     if tls is None:
-        ledger.require(p['listen_host'] == '127.0.0.1',
+        ledger.require(p['listen_host'] in ('127.0.0.1', '::1'),
                        'plaintext ingress is loopback only')
     else:
-        ledger.keys(tls, ('certificate', 'key'))
-        for path in tls.values():
+        ledger.keys(tls, ('certificate', 'key', 'ca', 'require_client_certificate',
+                         *(('crl',) if 'crl' in tls else ()))
+                    if native else ('certificate', 'key'))
+        if native:
+            ledger.require(type(tls['require_client_certificate']) is bool and
+                type(tls['ca']) is str and
+                tls['require_client_certificate'] == bool(tls['ca']),
+                'mTLS requires an explicit client CA')
+            ledger.require(type(tls.get('crl', '')) is str and
+                (not tls.get('crl') or tls['require_client_certificate']),
+                'client CRL requires mTLS and an explicit CA')
+        for name in ('certificate', 'key', *(('ca',) if native and tls['ca'] else ()),
+                     *(('crl',) if native and tls.get('crl') else ())):
+            path = tls[name]
             ledger.require(type(path) is str and Path(path).is_absolute(),
                            'absolute TLS file path required')
             g.quoted(path)
-        ledger.require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
+        ledger.require(p['version'] >= 2 or p['listen_host'] == '127.0.0.1',
                        'LAN requires explicit source CIDRs')
     return value
 
@@ -59,8 +95,7 @@ def render(value, runtime, auth_port, secret):
     q = lambda name: g.quoted(Path(runtime)/name)
     clients = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+
                         c['id']+';' for c in p['clients'])
-    routes = '\n'.join('    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
-                       for path, (method, lane) in g.ROUTES.items())
+    routes = g.route_map()
     source_map, source_check = '', ''
     if p['version'] == 2:
         entries = '\n'.join('    '+net+' 1;' for net in p['allowed_client_cidrs'])

@@ -1,0 +1,15 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp: In function ‘bool q4t_test_fn_batch_budget_validation_restart_reuses_original_metered_prefix()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp:1222:76: error: no match for ‘operator=’ (operand types are ‘{anonymous}::Work’ and ‘{anonymous}::ValidationWork’)
+ 1222 |     work = ValidationInput(objects, {Response("first"), Response("second")});
+      |                                                                            ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp:108:8: note: candidate: ‘constexpr {anonymous}::Work& {anonymous}::Work::operator=(const {anonymous}::Work&)’
+  108 | struct Work {
+      |        ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp:108:8: note:   no known conversion for argument 1 from ‘{anonymous}::ValidationWork’ to ‘const {anonymous}::Work&’
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp:108:8: note: candidate: ‘constexpr {anonymous}::Work& {anonymous}::Work::operator=({anonymous}::Work&&)’
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp:108:8: note:   no known conversion for argument 1 from ‘{anonymous}::ValidationWork’ to ‘{anonymous}::Work&&’
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:947: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

@@ -1,0 +1,49 @@
+{
+  "status": "PASS_TARGETED_COMPLETIONS_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_COMPLETIONS",
+  "binary_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55",
+  "protocol_sha256": "a1089f3d5c714bbb115d9fca32d755cf66804c96d16bdc88d0f39b9d82ed8484",
+  "source_commit": "3e1f72dfbce51ebeb042ecd08e0bfc9e61b75a77",
+  "original_test_commit": "d4cc7fa145d6a4a71cf77299cfca2257ae70d979",
+  "source_files": 649,
+  "runtime_sources": 317,
+  "protocol_sources": 158,
+  "review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-completions-20261108/business-review-01.json",
+  "review_sha256": "291d4a2b50d3e39decbec9b8404422c390ab1c5fd1ea09909f6e3c6c19a529c7",
+  "totals": {
+    "starts": 1,
+    "chats": 7,
+    "seconds": 51.954248203895986,
+    "lease_seconds": 52.50302738184109,
+    "nvml_samples": 50
+  },
+  "cpu": {
+    "distinct_cpp": 50,
+    "schema_native": 51,
+    "official_sdk": 6,
+    "native_ingress": 3,
+    "native_tls_cors": 1,
+    "driver_managed_nginx": 7,
+    "declaration": 3,
+    "accounting_negative": 1
+  },
+  "original_failed_outcome_retained": true,
+  "original_failure": "driver counter expectation only",
+  "runtime_unchanged_after_business": true,
+  "additional_gpu_tests": 0,
+  "native_binary_changed": true,
+  "native_targeted_cpu_accepted": true,
+  "control_runtime_changed": [
+    "tools/serve_gateway/gateway.py",
+    "tools/serve_recovery/bundle.py",
+    "tools/serve_recovery/gateway_config.py",
+    "tools/serve_recovery/service.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/service.py"
+  ],
+  "native_gpu_restart_repeated": false,
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

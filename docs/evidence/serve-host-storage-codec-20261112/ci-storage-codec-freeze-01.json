@@ -1,0 +1,11 @@
+{
+  "source_head": "b2009f53cb81924100d8ea3673d650252c93094f",
+  "non_performance": true,
+  "gpu_starts": 0,
+  "required": [
+    "batch_finalization_large_row_lost_checkpoint_resumes_original_bytes",
+    "batch_results_historical_receipt_does_not_pin_expired_output_bytes",
+    "vector_jobs_partial_start_failure_drains_and_recovers_auxiliary_owner"
+  ],
+  "contract": "Keep actual lost checkpoint and retention assertions, no production timeout or sandbox relaxation; diagnose remaining x86 codec failure on CI."
+}

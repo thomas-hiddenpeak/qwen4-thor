@@ -1,0 +1,14 @@
+{
+  "distinct_cpu_passed": 16,
+  "targeted_review_rerun_passed": 1,
+  "cpp_rebuilt": false,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "managed_business_delivered": false,
+  "next": [
+    "controller/Guardian usage recovery coordination",
+    "TLS bundle and official client business",
+    "rollback-compatible default delivery"
+  ]
+}

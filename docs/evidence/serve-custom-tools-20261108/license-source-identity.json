@@ -1,0 +1,22 @@
+{
+  "third_party/licenses/structured_output/XGrammar-LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "third_party/licenses/structured_output/DLPack-LICENSE": "3e8f6bc39276a586d60c8c5aaece2ff989262181cf2b3d2a128db58f97a9300c",
+  "third_party/licenses/structured_output/XGrammar-NOTICE": "769c6907073c65801bfcfe3ce1c0e80bf0ae4e124e2769d4f026c038ad583c0f",
+  "third_party/licenses/structured_output/regex-syntax-LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+  "third_party/licenses/structured_output/regex-syntax-LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+  "third_party/licenses/structured_output/README.md": "b8b28670d6b8539ab200a613735b263a60d96a497c86193bc405e9d57f7d9f94",
+  "third_party/licenses/structured_output/picojson-LICENSE": "52a7da16781b4b899382c9ddfcf059235cdee73e2f45cfd7402c2ae9a2e9d28d",
+  "third_party/licenses/structured_output/rust-standard-library/COPYRIGHT-library.html": "025c0dd1236493fcd5b6386b68453852e6528722bd5f8dce5949e94d225e7a60",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/GPL-2.0-only.txt": "54b212ba1f97f6948fa5486239ab505dd820b02e50cbfd296b4062c8609a70af",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/GCC-exception-3.1.txt": "a3966c9410ef94a1efbfa9ec04e9c1994026a70623fbf0885ce36737bfba3b54",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/ISC.txt": "0ff61769b238634e042ab759dddfd104a8e69d091e3600ae3410e401a6164381",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/Unicode-3.0.txt": "f5062c9a188d81dfe66b56db4182dcf9e4b17c0d9b0d311a8e20b3a1b075c443",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/GPL-3.0-or-later.txt": "05315fce6c35f79b8a35454828995fa26336f235895ac64557abc028f4ffcea2",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/CC-BY-SA-4.0.txt": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/NCSA.txt": "39cb0234065c92b9e6cee3830cbb52b1aa289aa8fe9ba2e66730fec5cf05c630",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/OFL-1.1.txt": "8eea8287e5876b539670cadb82e99f9a7afddec6f6730811be1daf25d2e9bcfd",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/LLVM-exception.txt": "e34c58338bd89d43e709e226610d8f32b3e3c47f4ad9a99a8dc1d4ac7842488e",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/Apache-2.0.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+  "third_party/licenses/structured_output/rust-standard-library/licenses/BSD-2-Clause.txt": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df"
+}

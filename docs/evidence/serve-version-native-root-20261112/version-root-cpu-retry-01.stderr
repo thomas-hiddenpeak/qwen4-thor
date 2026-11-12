@@ -1,0 +1,23 @@
+test_actual_controller_fault_replaces_whole_tree_then_fallback_fault_protects (tools.serve_recovery.test_version_native.NativeTests.test_actual_controller_fault_replaces_whole_tree_then_fallback_fault_protects) ... ok
+test_pending_version_write_timeout_reaps_worker_before_resuming_one_switch (tools.serve_recovery.test_version_native.NativeTests.test_pending_version_write_timeout_reaps_worker_before_resuming_one_switch) ... ok
+test_stop_during_device_probe_never_starts_fallback_and_reaps_helpers (tools.serve_recovery.test_version_native.NativeTests.test_stop_during_device_probe_never_starts_fallback_and_reaps_helpers) ... ok
+test_unknown_kill_uses_existing_role_budget_without_version_blame (tools.serve_recovery.test_version_native.NativeTests.test_unknown_kill_uses_existing_role_budget_without_version_blame) ... ok
+test_model_parent_wait_result_preserves_original_fault_before_fallback (tools.serve_recovery.test_version_native.NativeTests.test_model_parent_wait_result_preserves_original_fault_before_fallback) ... ok
+test_unqualified_fallback_binding_never_opens_business (tools.serve_recovery.test_version_native.NativeTests.test_unqualified_fallback_binding_never_opens_business) ... ok
+test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal (tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal) ... FAIL
+
+======================================================================
+FAIL: test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal (tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_version_native.py", line 159, in test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal
+    after=service.wait(lambda s:s['business_ready'] and
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 171, in wait
+    raise AssertionError(f'lifecycle deadline expired: {latest}')
+AssertionError: lifecycle deadline expired: {'version': 1, 'service_id': 'b1fe5031-527b-4a69-a0d0-9af9ec6d5567', 'state': 'RECOVERING', 'guardian_pid': 1775992, 'guardian_start_ticks': 260314744, 'controller_pid': None, 'controller_generation': 4, 'controller_start_ticks': 0, 'controller_events': 12, 'controller_health': None, 'version_recovery': {'enabled': True, 'root_manifest_sha256': '7777777777777777777777777777777777777777777777777777777777777777', 'cycle_id': '4c709fb3-250b-48e2-b64b-461d3a395b72', 'selected': 'primary', 'launch_payload': 'primary', 'payload_manifest_sha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'fallback_consumed': False, 'protected': False, 'pending': False, 'payload_prepared': True, 'state_available': True, 'worker_pid': 1775994, 'worker_start_ticks': 260314746, 'probe_pid': None, 'probe_count': 0, 'last_fault': None, 'reason': '', 'role_launch_authority': False}, 'version_exit_observation': {'role': 'controller', 'generation': 4, 'signal': 9, 'owned_termination': True, 'resources_safe': True, 'lease_continuous': True, 'device_failure': False, 'accepted': False}, 'auxiliary_projection_errors': 0, 'controller_health_age_ms': None, 'continuous_model_recovery': True, 'probe_used_for_generation': 0, 'retry_after_ms': 1506, 'journal_pid': 1775993, 'journal_start_ticks': 260314744, 'controller_ready': False, 'model_pid': None, 'model_start_ticks': 0, 'model_generation': 4, 'model_binary_sha256': None, 'model_protocol_sha256': None, 'model_capacity_sha256': None, 'model_ready': False, 'model_admission_open': False, 'business_ready': False, 'gateway_pid': 1775995, 'gateway_start_ticks': 260314765, 'gateway_generation': 1, 'gateway_ready': True, 'gateway_bound_model': 0, 'gateway_recovering': False, 'gateway_binding_reason': None, 'gateway_binding_model_generation': 1, 'gateway_binding_age_ms': None, 'quota_wait_ms': 0, 'daemon_detached': False, 'recovery_frozen': False, 'stop_requested': False, 'stop_durable': False, 'cleanup_confirmed': False, 'reason': ''}
+
+----------------------------------------------------------------------
+Ran 7 tests in 62.476s
+
+FAILED (failures=1)

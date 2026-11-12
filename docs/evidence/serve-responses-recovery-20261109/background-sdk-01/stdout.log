@@ -1,0 +1,12 @@
+✔ official temporary background JSON survives the submitting request (253.616706ms)
+✔ official empty POST cancellation handles queued and running jobs idempotently (258.341073ms)
+✔ official background stream can disconnect and resume original sequence (238.217625ms)
+✔ actual CPU process crash resumes queued work and never replays started work (258.611719ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6043.447655

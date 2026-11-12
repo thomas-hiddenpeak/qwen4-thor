@@ -1,0 +1,27 @@
+{
+  "host_cases": [
+    "image_detail_geometry_preserves_auto_and_enforces_native_bounds",
+    "image_detail_actual_pixels_match_independent_pillow_four_modes",
+    "image_detail_original_small_pixels_and_admission_mismatch",
+    "image_detail_chat_responses_and_source_error_paths_agree",
+    "image_detail_count_admission_and_generation_share_geometry",
+    "media_contract_closed_shapes",
+    "media_contract_roles_and_locations",
+    "media_policy_discovery",
+    "media_expansion_and_client_budget_are_identical",
+    "media_plan_tail_error_and_device_limit",
+    "media_plan_placeholder_order",
+    "file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor",
+    "file_image_source_contract_preserves_borrowed_payload_and_detail",
+    "responses_input_image_detail_and_tool_media_not_dropped"
+  ],
+  "progress_cases": [
+    "progress_actual_image_stages_preserve_pixels",
+    "progress_actual_video_frame_completion_preserves_pixels",
+    "progress_actual_media_failure_and_cancellation_do_not_complete"
+  ],
+  "total": 17,
+  "gpu": 0,
+  "network": 0,
+  "scope": "Five native-detail tests including four complete independent Pillow pixel hashes, nine direct media/source/Responses checks, three existing real pixel/video/progress checks. No model/performance/full-matrix claim."
+}

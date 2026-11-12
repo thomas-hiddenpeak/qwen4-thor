@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "commands": [
+    "production ELF service --help",
+    "production ELF service check actual stopped default",
+    "production ELF service status actual stopped default"
+  ],
+  "gpu_starts": 0,
+  "mutate_state": false
+}

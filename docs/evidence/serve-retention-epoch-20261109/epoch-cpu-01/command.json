@@ -1,0 +1,10 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_retention_epoch",
+  "tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive",
+  "tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it"
+]

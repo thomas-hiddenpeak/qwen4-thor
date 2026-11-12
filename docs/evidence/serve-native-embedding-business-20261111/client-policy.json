@@ -1,0 +1,28 @@
+{
+  "version": 3,
+  "revision": 0,
+  "fair_queue": true,
+  "gateway_token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "clients": [
+    {
+      "id": "encryption-test",
+      "max_inflight": 4,
+      "max_control_inflight": 4,
+      "max_prompt_tokens": 16384,
+      "max_output_tokens": 512,
+      "max_body_bytes": 1048576,
+      "requests_per_minute": 24,
+      "tokens_per_minute": 65536
+    },
+    {
+      "id": "native-embedding-limited",
+      "max_inflight": 4,
+      "max_control_inflight": 4,
+      "max_prompt_tokens": 16384,
+      "max_output_tokens": 512,
+      "max_body_bytes": 1048576,
+      "requests_per_minute": 24,
+      "tokens_per_minute": 16
+    }
+  ]
+}

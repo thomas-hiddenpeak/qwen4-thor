@@ -20,86 +20,448 @@
     "stream_error": "one error then DONE when writable; partial write failure closes without another terminal"
   },
   "oneOf": [
-    {"$ref": "#/$defs/error"},
-    {"$ref": "#/$defs/completion"},
-    {"$ref": "#/$defs/chunk"},
-    {"$ref": "#/$defs/readiness"}
+    {
+      "$ref": "#/$defs/error"
+    },
+    {
+      "$ref": "#/$defs/completion"
+    },
+    {
+      "$ref": "#/$defs/chunk"
+    },
+    {
+      "$ref": "#/$defs/readiness"
+    }
   ],
   "$defs": {
     "usage": {
       "type": "object",
-      "required": ["prompt_tokens", "completion_tokens", "total_tokens"],
+      "required": [
+        "prompt_tokens",
+        "completion_tokens",
+        "total_tokens"
+      ],
       "properties": {
-        "prompt_tokens": {"type": "integer", "minimum": 0},
-        "completion_tokens": {"type": "integer", "minimum": 0},
-        "total_tokens": {"type": "integer", "minimum": 0}
+        "prompt_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion_tokens_details": {
+          "type": "object",
+          "properties": {
+            "reasoning_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "accepted_prediction_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rejected_prediction_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
       }
     },
     "error": {
-      "type": "object", "required": ["error"], "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false,
       "properties": {
         "error": {
-          "type": "object", "required": ["message", "type", "code", "param"],
+          "type": "object",
+          "required": [
+            "message",
+            "type",
+            "code",
+            "param"
+          ],
           "additionalProperties": false,
           "properties": {
-            "message": {"type": "string"},
-            "type": {"enum": ["invalid_request_error", "server_error", "timeout_error", "conflict_error", "service_unavailable_error", "authentication_error", "permission_error", "rate_limit_error"]},
-            "code": {"type": "string", "minLength": 1},
-            "param": {"type": ["string", "null"]}
+            "message": {
+              "type": "string"
+            },
+            "type": {
+              "enum": [
+                "invalid_request_error",
+                "server_error",
+                "timeout_error",
+                "conflict_error",
+                "service_unavailable_error",
+                "authentication_error",
+                "permission_error",
+                "rate_limit_error"
+              ]
+            },
+            "code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "param": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
           }
         }
       }
     },
     "completion": {
-      "type": "object", "required": ["id", "object", "created", "model", "choices", "usage"],
+      "type": "object",
+      "required": [
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices",
+        "usage"
+      ],
       "properties": {
-        "id": {"type": "string", "minLength": 1},
-        "object": {"const": "chat.completion"},
-        "created": {"type": "integer", "minimum": 1},
-        "model": {"type": "string"},
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object": {
+          "const": "chat.completion"
+        },
+        "created": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "model": {
+          "type": "string"
+        },
         "choices": {
-          "type": "array", "minItems": 1, "maxItems": 1,
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
           "items": {
-            "type": "object", "required": ["index", "message", "finish_reason", "logprobs"],
+            "type": "object",
+            "required": [
+              "index",
+              "message",
+              "finish_reason",
+              "logprobs"
+            ],
             "properties": {
-              "index": {"const": 0}, "logprobs": {"type": "null"},
-              "message": {"type": "object", "required": ["role", "content"], "properties": {
-                "role": {"const": "assistant"}, "content": {"type": ["string", "null"]}
-              }},
-              "finish_reason": {"enum": ["stop", "length", "tool_calls"]}
+              "index": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 127
+              },
+              "logprobs": {
+                "$ref": "#/$defs/logprobs"
+              },
+              "message": {
+                "type": "object",
+                "required": [
+                  "role",
+                  "content"
+                ],
+                "properties": {
+                  "role": {
+                    "const": "assistant"
+                  },
+                  "content": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "refusal": {
+                    "type": ["string", "null"]
+                  },
+                  "function_call": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "arguments": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "arguments"
+                    ]
+                  }
+                }
+              },
+              "finish_reason": {
+                "enum": [
+                  "stop",
+                  "length",
+                  "tool_calls",
+                  "function_call"
+                ]
+              }
             }
           }
         },
-        "usage": {"$ref": "#/$defs/usage"}
+        "usage": {
+          "$ref": "#/$defs/usage"
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            }
+          ]
+        }
       }
     },
     "chunk": {
-      "type": "object", "required": ["id", "object", "created", "model", "choices"],
+      "type": "object",
+      "required": [
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices"
+      ],
       "properties": {
-        "id": {"type": "string", "minLength": 1},
-        "object": {"const": "chat.completion.chunk"},
-        "created": {"type": "integer", "minimum": 1}, "model": {"type": "string"},
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object": {
+          "const": "chat.completion.chunk"
+        },
+        "created": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "model": {
+          "type": "string"
+        },
         "choices": {
-          "type": "array", "maxItems": 1,
+          "type": "array",
+          "maxItems": 128,
           "items": {
-            "type": "object", "required": ["index", "delta", "finish_reason", "logprobs"],
+            "type": "object",
+            "required": [
+              "index",
+              "delta",
+              "finish_reason",
+              "logprobs"
+            ],
             "properties": {
-              "index": {"const": 0}, "delta": {"type": "object"},
-              "finish_reason": {"enum": [null, "stop", "length", "tool_calls"]},
-              "logprobs": {"type": "null"}
+              "index": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 127
+              },
+              "delta": {
+                "type": "object",
+                "properties": {
+                  "refusal": {
+                    "type": ["string", "null"]
+                  },
+                  "function_call": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "arguments": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "finish_reason": {
+                "enum": [
+                  null,
+                  "stop",
+                  "length",
+                  "tool_calls",
+                  "function_call"
+                ]
+              },
+              "logprobs": {
+                "$ref": "#/$defs/logprobs"
+              }
             }
           }
         },
-        "usage": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/usage"}]}
+        "usage": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/usage"
+            }
+          ]
+        }
       },
-      "if": {"properties": {"choices": {"maxItems": 0}}},
-      "then": {"required": ["usage"], "properties": {"usage": {"$ref": "#/$defs/usage"}}}
+      "if": {
+        "properties": {
+          "choices": {
+            "maxItems": 0
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "usage"
+        ],
+        "properties": {
+          "usage": {
+            "$ref": "#/$defs/usage"
+          }
+        }
+      }
     },
     "readiness": {
-      "type": "object", "required": ["status", "live", "ready"], "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "status",
+        "live",
+        "ready"
+      ],
+      "additionalProperties": false,
       "properties": {
-        "status": {"enum": ["starting", "ready", "draining", "unhealthy", "memory_pressure", "memory_observation_unavailable"]},
-        "live": {"type": "boolean"}, "ready": {"type": "boolean"}
+        "status": {
+          "enum": [
+            "starting",
+            "ready",
+            "draining",
+            "unhealthy",
+            "memory_pressure",
+            "memory_observation_unavailable"
+          ]
+        },
+        "live": {
+          "type": "boolean"
+        },
+        "ready": {
+          "type": "boolean"
+        }
+      }
+    },
+    "tokenLogprob": {
+      "type": "object",
+      "required": [
+        "token",
+        "logprob",
+        "bytes"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "logprob": {
+          "type": "number",
+          "maximum": 0
+        },
+        "bytes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          }
+        }
+      }
+    },
+    "logprobs": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "content",
+        "refusal"
+      ],
+      "properties": {
+        "content": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/tokenLogprob"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "top_logprobs"
+                ],
+                "properties": {
+                  "top_logprobs": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "items": {
+                      "$ref": "#/$defs/tokenLogprob"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "refusal": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/tokenLogprob"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "top_logprobs"
+                ],
+                "properties": {
+                  "top_logprobs": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "items": {
+                      "$ref": "#/$defs/tokenLogprob"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
       }
     }
   }

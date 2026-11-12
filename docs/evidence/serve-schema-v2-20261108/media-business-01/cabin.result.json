@@ -1,0 +1,15 @@
+{
+  "id": "schema-v2-media-cabin",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "{\n  \"scene\": \"aircraft_cabin\",\n  \"visible_windows\": 2,\n  \"device_lights_on\": true,\n  \"people_visible\": false\n}"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 692,
+    "completion_tokens": 42,
+    "total_tokens": 734
+  },
+  "logprobs": null
+}

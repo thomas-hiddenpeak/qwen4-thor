@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 6,
+    "probes": 0,
+    "controls": 739
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 2,
+      "monotonic_ns": 2413613634829903
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 2,
+      "monotonic_ns": 2413658280817712
+    },
+    {
+      "kind": "chats",
+      "label": "json",
+      "ordinal": 3,
+      "monotonic_ns": 2413660515214128
+    },
+    {
+      "kind": "chats",
+      "label": "sse",
+      "ordinal": 4,
+      "monotonic_ns": 2413660821867214
+    },
+    {
+      "kind": "chats",
+      "label": "tool",
+      "ordinal": 5,
+      "monotonic_ns": 2413661104188599
+    },
+    {
+      "kind": "chats",
+      "label": "tool-final",
+      "ordinal": 6,
+      "monotonic_ns": 2413664476485848
+    }
+  ]
+}

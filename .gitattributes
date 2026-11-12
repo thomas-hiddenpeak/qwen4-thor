@@ -4,3 +4,138 @@ docs/evidence/serve-input-contract-20261102/**/*.bin binary
 docs/evidence/serve-resources-20261102/**/*.bin binary
 docs/evidence/grammar-isolation-20261102/**/*.bin binary
 docs/evidence/serve-lifecycle-20261103/**/*-wire.bin binary
+docs/evidence/serve-grammar-reap-20261108/**/*.wire binary
+docs/evidence/serve-native-access-20261108/**/*.bin binary
+docs/evidence/serve-native-access-20261108/release-build/** -text -whitespace
+docs/evidence/serve-chat-input-20261108/**/*.wire binary
+docs/evidence/serve-chat-input-20261108/build-01/** -text -whitespace
+docs/evidence/serve-sampling-20261108/** -text -whitespace
+docs/evidence/serve-sampling-20261108/**/*.wire binary
+docs/evidence/serve-prediction-20261108/** -text -whitespace
+docs/evidence/serve-prediction-20261108/**/*.wire binary
+docs/evidence/serve-tool-stream-20261108/** -text -whitespace
+docs/evidence/serve-tool-stream-20261108/**/*.wire binary
+
+# Preserve exact legacy-function acceptance bytes, including CRLF SSE.
+docs/evidence/serve-legacy-tools-20261108/** -text -whitespace
+
+# Preserve upstream legal notice bytes, including their original whitespace.
+third_party/licenses/structured_output/rust-standard-library/** -text -whitespace
+
+docs/evidence/serve-custom-tools-20261108/** -text -whitespace
+docs/evidence/serve-schema-v2-20261108/** -text -whitespace
+docs/evidence/serve-schema-v2-20261108/**/*.wire binary
+
+# Keep pinned upstream schema format vectors and their MIT notice byte-exact.
+tests/fixtures/schema_formats/*.json -text -whitespace
+tests/fixtures/schema_formats/LICENSE -text -whitespace
+
+# Preserve A06 captured protocol bytes and their recorded SHA256 values.
+docs/evidence/serve-completions-20261108/** -text -whitespace
+docs/evidence/serve-completions-20261108/**/*.wire binary
+
+# Preserve native Responses CPU wire and failed originals byte for byte.
+docs/evidence/serve-responses-core-20261108/** -text -whitespace
+docs/evidence/serve-responses-core-20261108/**/*.wire binary
+
+# Preserve durable-store CPU results, failed originals and record digests.
+docs/evidence/serve-object-store-20261108/** -text -whitespace
+docs/evidence/serve-object-transactions-20261108/** -text -whitespace
+docs/evidence/serve-responses-state-20261109/** -text -whitespace
+src/server/contracts/openai_item_types_v1.json -text
+tests/fixtures/responses_items/*.json -text
+third_party/licenses/openai-node/LICENSE -text -whitespace
+docs/evidence/serve-item-shape-20261109/** -text -whitespace
+docs/evidence/serve-conversations-20261109/** -text -whitespace
+docs/evidence/serve-conversation-service-20261109/** -text -whitespace
+
+# Preserve moderation wire, failed originals and source patches byte for byte.
+docs/evidence/serve-moderation-cpu-20261110/** -text -whitespace
+docs/evidence/serve-moderation-cpu-20261110/**/*.wire binary
+docs/evidence/serve-moderation-business-20261110/** -text -whitespace
+docs/evidence/serve-moderation-business-20261110/**/*.wire binary
+docs/evidence/serve-moderation-delivery-20261110/** -text -whitespace
+docs/evidence/serve-access-program-cpu-20261110/** -text -whitespace
+docs/evidence/serve-access-program-cpu-20261110/**/*.wire binary
+docs/evidence/serve-access-program-business-20261110/** -text -whitespace
+docs/evidence/serve-access-program-business-20261110/**/*.wire binary
+docs/evidence/serve-access-program-delivery-20261110/** -text -whitespace
+
+# Preserve input token count CPU evidence bytes.
+docs/evidence/serve-input-tokens-cpu-20261110/** -text -diff
+
+# Preserve count nullable follow-up and first actual business.
+docs/evidence/serve-input-tokens-followup-20261110/** -text -diff
+
+# Preserve input token count actual business acceptance.
+docs/evidence/serve-input-tokens-business-20261110/** -text -diff
+
+# Preserve input token count delivery receipts.
+docs/evidence/serve-input-tokens-delivery-20261110/** -text -diff
+
+docs/evidence/serve-request-fields-cpu-20261110/** -text
+
+docs/evidence/serve-request-fields-business-20261110/** -text
+
+docs/evidence/serve-request-fields-delivery-20261110/** -text
+docs/evidence/serve-retention-cpu-20261110/** -text
+docs/evidence/serve-retention-followup-20261110/** -text
+docs/evidence/serve-retention-business-20261110/** -text
+docs/evidence/serve-retention-delivery-20261110/** -text
+docs/evidence/serve-multipart-cpu-20261110/** -text
+
+docs/evidence/serve-binary-cpu-20261110/** -text
+
+docs/evidence/serve-http-body-stream-cpu-20261110/** -text
+
+docs/evidence/serve-files-core-cpu-20261110/** -text
+
+# Captured outer-recovery evidence is immutable, including CRLF SSE and stderr.
+docs/evidence/serve-outer-resource-business-20261112/*.wire binary
+docs/evidence/serve-outer-instance-cpu-20261112/*.stderr -text -whitespace
+
+# Preserve original refusal SSE and failed build receipts byte for byte.
+docs/evidence/serve-refusal-cpu-20261112/** -text -whitespace
+docs/evidence/serve-refusal-cpu-20261112/**/*.wire binary
+docs/evidence/serve-refusal-business-20261112/** -text -whitespace
+docs/evidence/serve-refusal-business-20261112/**/*.wire binary
+
+# Preserve actual primary/light qualification observations and protocol bytes.
+docs/evidence/serve-refusal-profiles-20261112/** -text -whitespace
+docs/evidence/serve-refusal-profiles-20261112/**/*.wire binary
+
+# Preserve managed refusal recovery protocol evidence.
+docs/evidence/serve-refusal-managed-business-20261112/** -text -whitespace
+docs/evidence/serve-refusal-managed-business-20261112/**/*.wire binary
+
+# Preserve original compiler/configuration and targeted test output bytes.
+docs/evidence/serve-vector-search-foundation-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-search-foundation-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-index-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-index-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-stores-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-stores-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-ingestion-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-ingestion-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-quota-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-quota-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-jobs-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-jobs-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-batches-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-batches-cpu-20261112/*.stderr -text -whitespace
+
+docs/evidence/serve-vector-api-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-api-cpu-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-api-cpu-20261112/*.log -text -whitespace
+
+# Preserve real native file-search HTTP/SSE and original failure receipts.
+docs/evidence/serve-file-search-business-20261112/** -text -whitespace
+docs/evidence/serve-file-search-business-20261112/**/*.wire binary
+
+# Preserve actual file-search profile qualification and native wire evidence.
+docs/evidence/serve-file-search-profiles-20261112/** -text -whitespace
+docs/evidence/serve-file-search-profiles-20261112/**/*.wire binary
+
+# Preserve managed retrieval captures and original failed SDK receipt bytes.
+docs/evidence/serve-retrieval-managed-business-20261112/** -text -whitespace
+docs/evidence/serve-retrieval-managed-business-20261112/**/*.wire binary

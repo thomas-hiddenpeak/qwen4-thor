@@ -1,0 +1,17 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/binary_store.h",
+    "include/q4t/server/input_snapshot.h",
+    "include/q4t/server/object_retention.h",
+    "include/q4t/server/object_store.h",
+    "src/server/binary_store.cpp",
+    "src/server/input_snapshot.cpp",
+    "src/server/object_protocol.h",
+    "src/server/object_retention.cpp",
+    "src/server/object_worker.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "anchors": 440
+}

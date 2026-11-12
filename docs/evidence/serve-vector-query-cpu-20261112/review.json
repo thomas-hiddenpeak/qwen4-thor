@@ -1,0 +1,35 @@
+{
+  "state": "ACCEPTED_TARGETED_CPU_ONLY",
+  "distinct_cases": 18,
+  "invocations": 19,
+  "first_pass": 17,
+  "first_fail": 1,
+  "targeted_recheck_pass": 1,
+  "cases_seconds": 0.8655009130015969,
+  "source_sha256": {
+    "include/q4t/server/vector_search_execution.h": "b22034b882d5f1e9a9f2642cadf1a65ba13c5199b13c23380320fe0d397f1ead",
+    "include/q4t/server/vector_stores.h": "8fdae30c9f23e4c88c73be14713511c43031b8481e3b383ca84cfc3cc22d9d31",
+    "src/server/vector_search_corpus.cpp": "1fe58cd00aa8f985c5cba44e7466c239914b5257c242050d0337b2fa03a74157",
+    "src/server/vector_search_execution.cpp": "5ae689a004ed83c22b0efbb041ef9f90edc6212d37c34241ec576d2a61fc3516",
+    "src/server/vector_query_rewrite.cpp": "4bbe453babee944abcc9059a1319f6e1a971ea70902e00c3eca03671fc061731",
+    "src/server/vector_stores.cpp": "3e51f25ba39e585c49f84310320df3d5b9f9ab4736a355fabb0e8b6ae9796bcc",
+    "src/server/vector_store_content.cpp": "daa1d7a68af23b28b12b018b7d4b2ea0b767846427aee5364b00ce59e3da5500",
+    "src/server/vector_stores_internal.cpp": "13cd02c70952dcd417b35469a35deb65449ce31e2ee3bede5e07b30543bc56ef",
+    "src/server/vector_stores_internal.h": "b6f67564d6655b2c9de7ac8101c0fd5e8d68527dc00b250baac5d5459366be24",
+    "tests/server_vector_search_execution_test.cpp": "4bd18fd30b930eddd8f0677870dd488e01eac567d965d9e78fdc4b8416fd434a",
+    "CMakeLists.txt": "1db2d100785b976f28fa7952dbdb4dfc814bdd756e0b497b077983157a019b9e",
+    "cmake/HostTestSources.cmake": "a3632949a522587d417dc761fe6fa8000e025044b186f538011257f4a6254336",
+    "cmake/ChatProtocolIdentity.cmake": "7184977a7e477de338ca3825f2cc3aa4668da4dffa0d1c5afe93555a432d89ca",
+    "tools/serve_audit/inventory.json": "c906a93a1da34c80aa0b270ad125542eaee3717b103aab79c39944c6ca0121cf"
+  },
+  "binary_sha256": {
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "d169e2f328552d18361506fe2a5db5873b3aa921679fd06bc3cfe5c306798452",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "11e11b353d1c0122acee7e784d00785f9c3fcbff9083c992f58f41043e0e53a7"
+  },
+  "warning_count": 0,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "public_search_route": false,
+  "responses_executor": false,
+  "whole_task_complete": false
+}

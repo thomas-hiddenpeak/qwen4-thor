@@ -1,0 +1,23 @@
+{
+  "README.md": "c894ee8ee4917ebbba37238225ec021ef0d8c541be6a0f445d2cce30cfb9971f",
+  "gif-budget-01.json": "fe639acebad54ed76f7f973c31f33a6cdf5e31cda325d9f7dffccc9b0212d918",
+  "gif-cpu-01.json": "630f9955b6d5666cc1ca8a91480d0e81a01f89532ad3bc2e177e642e975f62ff",
+  "gif-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gif-cpu-01.stdout": "3be33bde06e83aac5b22213456b5daee60ee4efa4f2833e45910cdef2f7be7bb",
+  "gif-engine-build-01.json": "15003ee0fcc33c30d007751e8566b0cfbda35db175cbde66f6d69e018eb3a264",
+  "gif-engine-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gif-engine-build-01.stdout": "82b74ab885c2def52f3351cf69314c42c4c9b9092707e72dee9d7ba2e3209deb",
+  "gif-host-build-01.json": "301796a3b14f20f1d448ce6328f414955548fc74840d9cc1fcf212bf0b7f2b5f",
+  "gif-host-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gif-host-build-01.stdout": "d15c9f3a6046067ff95012ae3e03a168e00db5276807eedf1a5d690899a2cf6b",
+  "gif-identities-01.json": "0bbbbb919b73851910941bb282e624d51a41ada640cf1b252073e9df1428d934",
+  "gif-inventory-01.json": "56d99978cfe1b0114611d148068c4aa1e004235a237d4ec5fbe5e3e10c094309",
+  "gif-inventory-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gif-inventory-01.stdout": "ce20662eaa73abc80770b087ebb5f5f7a71a4fb6f50c4824207c618ce6abbfd7",
+  "gif-inventory-review.json": "f9bc032444b2d9f889f61832a20eb271ad6a5ab5cfbbb8bf8def9b7a1419fb13",
+  "gif-required-01.txt": "aff2565ba3fe34c259e17e0ae4637fcbec733cc5c47b059001c614412752251a",
+  "gif-source-review.json": "fe8e5bbc25b403d2a2e5fa44850aa3fbbcec37dae5ae7f1f9bf2b45c58212730",
+  "gif-timing-cpu-01.json": "50e62d20c78253e17c649b2e100889bc057569ba9856ccbcd510f196b535bbac",
+  "gif-timing-cpu-01.stderr": "d817265c1610e37f540dfcc854741935413e81dbdc3586d0808c2fa19449101a",
+  "gif-timing-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

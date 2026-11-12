@@ -1,0 +1,141 @@
+{
+  "status": "PASS_SCHEMA_V2_REVIEW",
+  "source_commit": "1022c3fd9938cab524469863b38fc492178ace41",
+  "source_files": 635,
+  "committed_blobs_verified": true,
+  "default_unchanged": true,
+  "stages": [
+    {
+      "stage": "business-01",
+      "status": "FAILED",
+      "binary_sha256": "cbaa964d7fce506411a1cf87b73583fd3bad7ca9050ef15d419cd44227ff7ce7",
+      "starts": 1,
+      "chats": 5,
+      "seconds": 102.84335670387372,
+      "lease_seconds": 103.48481278587133,
+      "nvml_samples": 97,
+      "files": {
+        "plan.json": "4a9201847553554185acc11d631041ee01e10ca9c887bda4ad7067f32947adf7",
+        "result.json": "9834e6726d93bc1ad931917f4cac5bf929776924a3426da11c301aa18c0b6e79",
+        "cleanup.json": "8b81ee13215402f9adebf5f557b655e76580989e3f9b499acbd9f6d78f68af5d",
+        "model.log": "fd6ea3be9308aab76bb1a9ef4f51911ebd2e8aac6665304fe005503274f08eaa"
+      },
+      "lease_exit_sha256": "4047861ac964de2350e2fae9634555c468312d187a31eac6a78ed9d2e4299497"
+    },
+    {
+      "stage": "business-02",
+      "status": "FAILED",
+      "binary_sha256": "447f1e58003630efdab74f7af42b6c14159f3332f57c6ac3ca5f8713e555aefd",
+      "starts": 1,
+      "chats": 1,
+      "seconds": 60.55912864301354,
+      "lease_seconds": 61.18678833311424,
+      "nvml_samples": 58,
+      "files": {
+        "plan.json": "8cb11459a44a63577ff37998fcf647979aba56ad0d75e41cc9316fdc93c04911",
+        "result.json": "3516420eb22eb2bb8e23db30724f66ba5b4213b29568cbc25d6d15be1ef680d8",
+        "cleanup.json": "efc01b71daf565ea259e257f60573b1861f3bae8d7b47e5dbc39929f531d443d",
+        "model.log": "eb87a70abf69a6f69ecfe857287b77b91891fa6aef12b60e3fea1c09938cb661"
+      },
+      "lease_exit_sha256": "80ffb2527a7e64b9c1e8802095c792db281ae5f8e9f58bd5091e628e1a9b5b8d"
+    },
+    {
+      "stage": "business-03",
+      "status": "PASS_SCHEMA_V2_TEXT_BUSINESS",
+      "binary_sha256": "aedaac590765ea8bf157c501c8e97b818319197df61b6a9b3237b2d6ad2928e3",
+      "starts": 1,
+      "chats": 4,
+      "seconds": 71.44883005926386,
+      "lease_seconds": 72.28054567193612,
+      "nvml_samples": 68,
+      "files": {
+        "plan.json": "c9c2525d42ef84ad8def990c3e3d550157d55dd4dc6c8607a8d0737d27418e9f",
+        "result.json": "518265301af12c93c88a7622a12795053a873e8f349c5dcff2bc459ec8ba75a5",
+        "cleanup.json": "0080d5d3ade8b2f3c09ea630f4ea7a27114498bffc83b39f60d241dff53fd66d",
+        "model.log": "337d811e0b3b91c05023c46d64cd9b0ff6703e58ef6623e0c1aeca1b7c781a7d"
+      },
+      "lease_exit_sha256": "8f199c2f1caa7248e5b91df15ef59b23693bfb67db1d6858335c4cfe415c0e13"
+    },
+    {
+      "stage": "media-business-01",
+      "status": "FAILED",
+      "binary_sha256": "aedaac590765ea8bf157c501c8e97b818319197df61b6a9b3237b2d6ad2928e3",
+      "starts": 1,
+      "chats": 2,
+      "seconds": 70.02223688969389,
+      "lease_seconds": 71.04691547015682,
+      "nvml_samples": 67,
+      "files": {
+        "plan.json": "f352b2188150e2050e8670875be991434bb0aecafc42afabd8e5062b017de155",
+        "result.json": "023306ab5b1ff02d0f3401c1bbc9dab3a8d7683ef11c78b1d620a95a4c6d40f6",
+        "cleanup.json": "65cb65c8eec7a0f1473af7d96c4fd096a2203db7fb530c79d194798f41f4835f",
+        "model.log": "e129c74695fac7fc7f777114f5424d6bacba9c69c2ce7482e8fac4349de54abf"
+      },
+      "lease_exit_sha256": "9530a3d3a50c36046a868186eac604af11bee3885496e019b386ee734b8cb274"
+    },
+    {
+      "stage": "media-business-02",
+      "status": "FAILED",
+      "binary_sha256": "6a679288dc8fb1c70c4e0b7fe25fbf0cdafe58483da60b5733175851b3c50bea",
+      "starts": 1,
+      "chats": 1,
+      "seconds": 36.916726109106094,
+      "lease_seconds": 38.20334465475753,
+      "nvml_samples": 37,
+      "files": {
+        "plan.json": "b783d3303b67518c4455e9068435acb2c6910bf1b5e113acacabc686eb389fb6",
+        "result.json": "a259791f5082cbe142d18034b96c72f962a311c30883de38a8ed0ce9b4b236f1",
+        "cleanup.json": "2d3696b1e84b9a4f1e2459298cc2adb480c674c96d9330f4d14c66579d1ac97f",
+        "model.log": "d86a3606d1ee8cb131c0167f3235723e86309ddbf7905be38f57bd00a6220490"
+      },
+      "lease_exit_sha256": "8ea3faae6402382a3358e1c64529774a2cc1d4269a802d6c13170bd5dffb46c6"
+    },
+    {
+      "stage": "media-business-03",
+      "status": "PASS_SCHEMA_V2_MEDIA_BUSINESS",
+      "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+      "starts": 1,
+      "chats": 3,
+      "seconds": 53.537893620319664,
+      "lease_seconds": 54.59313393989578,
+      "nvml_samples": 52,
+      "files": {
+        "plan.json": "bc203a2d93027f84f4a939f9d9daaf62b57955f5f35e0253370aadc2ce34862c",
+        "result.json": "eef578f23da4b9f3e78293c1cabc8ef4f46a91af5a8283a62209ff28efed0c62",
+        "cleanup.json": "a3385ada7717012b7525ba3f35e954355b93cd811fd1da72311daa70f99d981d",
+        "model.log": "71d229d0f16e9e6ac1d4ca4eda61689d6d704ec8de94cbe5ae26e489db836163"
+      },
+      "lease_exit_sha256": "c01478dc01df07775dc93d6b5f62f8337296d1099f5ac986ebb4e92a7d9f9f46"
+    },
+    {
+      "stage": "prompt-cache-02",
+      "status": "PASS_SCHEMA_V2_PROMPT_CACHE",
+      "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+      "starts": 1,
+      "chats": 3,
+      "seconds": 67.10882282303646,
+      "lease_seconds": 67.70072582736611,
+      "nvml_samples": 64,
+      "files": {
+        "plan.json": "41d0a6365545f6ce8a4e8c2b9c29acc7334efd32dd6f58d451d8274aa3e77393",
+        "result.json": "17fc8aff7b176373d87dd4b33e6f82b43c3fe46b32974182b495d81ab20b6d93",
+        "cleanup.json": "fef6e17ac4d47676f4074c709fff274c38b63a7667e53e7a4bc3bd15f0bc50b9",
+        "model.log": "c0bd4114846eb3f7bcdc684dede367538b23f4fa5524b09772595821397f98da"
+      },
+      "lease_exit_sha256": "5c146bc0c1742011524ba93fd3911607a8bba7ff54353795fad24e1a82671c59"
+    }
+  ],
+  "totals": {
+    "starts": 7,
+    "chats": 19,
+    "seconds": 462.4369948483072,
+    "lease_seconds": 468.49626668309793,
+    "nvml_samples": 443
+  },
+  "release": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/release-01/bundle",
+    "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
+    "engine_binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+    "recovery_accepted": false
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "pid": 848238,
+  "identity": {
+    "state": "S",
+    "ppid": 846775,
+    "pgid": 846764,
+    "start_ticks": 236197224,
+    "argv": [
+      "q4t-object-worker",
+      "--q4t-object-worker",
+      "846775",
+      "2147483648"
+    ],
+    "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+  },
+  "model_pid": 846775,
+  "partial": {
+    "id": "resp_59e30a0d68c303a104f87a339a222c4c",
+    "object": "response",
+    "created_at": 1794171900,
+    "completed_at": null,
+    "status": "in_progress",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_8210f010d76eec4f2b1e7770d5553146",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\n",
+            "annotations": []
+          }
+        ],
+        "role": "assistant",
+        "status": "in_progress"
+      }
+    ],
+    "usage": null,
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "long",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "minItems": 512,
+              "maxItems": 512,
+              "items": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "required": [
+            "values"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 1536,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null
+  },
+  "mutation": "SIGSTOP"
+}

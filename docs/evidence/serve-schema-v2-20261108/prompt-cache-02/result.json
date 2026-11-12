@@ -1,0 +1,10 @@
+{
+  "status": "PASS_SCHEMA_V2_PROMPT_CACHE",
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 42
+  },
+  "seconds": 67.10882282303646,
+  "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e"
+}

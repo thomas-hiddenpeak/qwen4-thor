@@ -38,6 +38,103 @@ uint32_t Be16(const uint8_t* p) noexcept {
   return (uint32_t{p[0]} << 8) | p[1];
 }
 
+uint32_t Le16(const uint8_t* p) noexcept {
+  return p[0] | (uint32_t{p[1]} << 8);
+}
+
+MediaPlanResult GifHeader(std::span<const uint8_t> bytes, MediaHeader* out,
+                          GifFrame* frame = nullptr) noexcept {
+  if (bytes.size() < 13) return Fail(MediaPlanError::kInvalidHeader);
+  const uint32_t width = Le16(bytes.data() + 6),
+                 height = Le16(bytes.data() + 8);
+  if (!width || !height) return Fail(MediaPlanError::kInvalidHeader);
+  size_t position = 13;
+  const auto skip = [&](size_t count) {
+    if (count > bytes.size() - position) return false;
+    position += count;
+    return true;
+  };
+  const auto blocks = [&] {
+    while (position < bytes.size()) {
+      const size_t count = bytes[position++];
+      if (!count) return true;
+      if (!skip(count)) return false;
+    }
+    return false;
+  };
+  const size_t global_colors =
+      (bytes[10] & 0x80) ? size_t{2} << (bytes[10] & 7) : 0;
+  if ((global_colors && bytes[11] >= global_colors) || !skip(global_colors * 3))
+    return Fail(MediaPlanError::kInvalidHeader);
+  size_t images = 0;
+  int transparent = -1;
+  bool control = false;
+  GifFrame next;
+  while (position < bytes.size()) {
+    const auto type = bytes[position++];
+    if (type == 0x3b) {
+      if (images != 1 || position != bytes.size() || control)
+        return Fail(MediaPlanError::kInvalidHeader);
+      *out = {MediaFormat::kGif, width, height};
+      next.header = *out;
+      if (frame) *frame = next;
+      return {};
+    }
+    if (type == 0x2c) {
+      if (++images > 1) return Fail(MediaPlanError::kAnimation);
+      if (bytes.size() - position < 9)
+        return Fail(MediaPlanError::kInvalidHeader);
+      const auto* descriptor = bytes.data() + position;
+      const uint32_t left = Le16(descriptor), top = Le16(descriptor + 2),
+                     w = Le16(descriptor + 4), h = Le16(descriptor + 6);
+      const auto packed = descriptor[8];
+      position += 9;
+      const size_t colors =
+          packed & 0x80 ? size_t{2} << (packed & 7) : global_colors;
+      const size_t palette = packed & 0x80 ? position : 13;
+      if (!w || !h || left + w > width || top + h > height || (packed & 0x18) ||
+          !colors || transparent >= int(colors) ||
+          !skip(packed & 0x80 ? colors * 3 : 0) || position == bytes.size())
+        return Fail(MediaPlanError::kInvalidHeader);
+      next.left = left;
+      next.top = top;
+      next.width = w;
+      next.height = h;
+      std::copy_n(bytes.data() + palette, 3, next.palette_zero.begin());
+      const auto code_size = bytes[position++];
+      if (code_size < 2 || code_size > 8 || !blocks())
+        return Fail(MediaPlanError::kInvalidHeader);
+      transparent = -1;
+      control = false;
+    } else if (type == 0x21) {
+      if (position == bytes.size()) return Fail(MediaPlanError::kInvalidHeader);
+      const auto extension = bytes[position++];
+      if (extension == 0xf9) {
+        if (control || bytes.size() - position < 6 || bytes[position] != 4 ||
+            (bytes[position + 1] & 0xe0) ||
+            ((bytes[position + 1] >> 2) & 7) > 3 || bytes[position + 5])
+          return Fail(MediaPlanError::kInvalidHeader);
+        transparent = bytes[position + 1] & 1 ? bytes[position + 4] : -1;
+        if (transparent >= 0) next.transparency_flags = position + 1;
+        position += 6;
+        control = true;
+      } else if (extension == 0xfe) {
+        if (!blocks()) return Fail(MediaPlanError::kInvalidHeader);
+      } else if (extension == 0xff) {
+        if (position == bytes.size() || bytes[position++] != 11 || !skip(11) ||
+            !blocks())
+          return Fail(MediaPlanError::kInvalidHeader);
+      } else {
+        // Text rendering is not an image; never silently drop a graphic block.
+        return Fail(MediaPlanError::kUnsupportedFormat);
+      }
+    } else {
+      return Fail(MediaPlanError::kInvalidHeader);
+    }
+  }
+  return Fail(MediaPlanError::kInvalidHeader);
+}
+
 uint32_t PngCrc(std::span<const uint8_t> bytes) noexcept {
   uint32_t crc = 0xffffffffu;
   for (uint8_t byte : bytes) {
@@ -85,6 +182,41 @@ bool ResampleIndicesFit(int in_size, int out_size) noexcept {
 
 }  // namespace
 
+MediaPlanResult ReadGifFrame(std::span<const uint8_t> bytes,
+                             GifFrame* out) noexcept {
+  if (!out) return Fail(MediaPlanError::kInvalidConfig);
+  *out = {};
+  if (bytes.size() < 6 || bytes[0] != 'G' || bytes[1] != 'I' ||
+      bytes[2] != 'F' || bytes[3] != '8' ||
+      (bytes[4] != '7' && bytes[4] != '9') || bytes[5] != 'a')
+    return Fail(MediaPlanError::kUnsupportedFormat);
+  MediaHeader header;
+  return GifHeader(bytes, &header, out);
+}
+
+const char* MediaFormatName(MediaFormat format) noexcept {
+  switch (format) {
+    case MediaFormat::kPng:
+      return "png";
+    case MediaFormat::kJpeg:
+      return "jpeg";
+    case MediaFormat::kGif:
+      return "gif";
+  }
+  return "";
+}
+const char* MediaFormatMime(MediaFormat format) noexcept {
+  switch (format) {
+    case MediaFormat::kPng:
+      return "image/png";
+    case MediaFormat::kJpeg:
+      return "image/jpeg";
+    case MediaFormat::kGif:
+      return "image/gif";
+  }
+  return "";
+}
+
 const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
   switch (error) {
     case MediaPlanError::kNone:
@@ -99,6 +231,8 @@ const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
       return "media_encoded_limit";
     case MediaPlanError::kUnsupportedFormat:
       return "media_format_unsupported";
+    case MediaPlanError::kAnimation:
+      return "media_animation_unsupported";
     case MediaPlanError::kInvalidHeader:
       return "media_header_invalid";
     case MediaPlanError::kSourceDimensions:
@@ -109,6 +243,8 @@ const char* MediaPlanErrorCode(MediaPlanError error) noexcept {
       return "media_decoded_limit";
     case MediaPlanError::kGeometry:
       return "media_geometry_invalid";
+    case MediaPlanError::kDetailLimit:
+      return "media_detail_limit";
     case MediaPlanError::kIntegerRange:
       return "media_integer_range";
     case MediaPlanError::kPatchCount:
@@ -133,6 +269,10 @@ MediaPlanResult ReadMediaHeader(std::span<const uint8_t> bytes,
                                 MediaHeader* out) noexcept {
   if (!out) return Fail(MediaPlanError::kInvalidConfig);
   *out = {};
+  if (bytes.size() >= 6 && bytes[0] == 'G' && bytes[1] == 'I' &&
+      bytes[2] == 'F' && bytes[3] == '8' &&
+      (bytes[4] == '7' || bytes[4] == '9') && bytes[5] == 'a')
+    return GifHeader(bytes, out);
   constexpr uint8_t kPng[] = {137, 80, 78, 71, 13, 10, 26, 10};
   if (bytes.size() >= 8 &&
       std::equal(std::begin(kPng), std::end(kPng), bytes.begin())) {
@@ -216,7 +356,8 @@ MediaPlanResult ReadMediaHeader(std::span<const uint8_t> bytes,
 MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
                                   uint32_t height, size_t frames,
                                   const ProcessorConfig& config,
-                                  MediaGeometry* out) noexcept {
+                                  MediaGeometry* out,
+                                  ImageDetail detail) noexcept {
   if (!out) return Fail(MediaPlanError::kInvalidConfig);
   *out = {};
   if (!ValidConfig(config) ||
@@ -224,6 +365,10 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     return Fail(MediaPlanError::kInvalidConfig);
   }
   const bool video = kind == MediaKind::kVideo;
+  if ((detail != ImageDetail::kAuto && detail != ImageDetail::kLow &&
+       detail != ImageDetail::kHigh && detail != ImageDetail::kOriginal) ||
+      (video && detail != ImageDetail::kAuto))
+    return Fail(MediaPlanError::kInvalidConfig);
   if ((!video && frames != 1) || (video && frames < 2) ||
       frames > kMediaPlanFrames) {
     return Fail(MediaPlanError::kFrameCount);
@@ -256,33 +401,62 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     return quotient + (twice_remainder > divisor ||
                         (twice_remainder == divisor && (quotient & 1)));
   };
-  if (!Aligned(round_even(h, factor), factor, &rh) ||
-      !Aligned(round_even(w, factor), factor, &rw)) {
-    return Fail(MediaPlanError::kIntegerRange);
-  }
-  // The reference resizes before padding; its budget rounds to nearest even
-  // temporal groups, while patchification below always pads the last frame.
-  const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
-  uint64_t rounded_pixels = 0, source_pixels = 0;
-  if (!Mul(rh, rw, &rounded_pixels) ||
-      !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
-      !Mul(h, w, &source_pixels) ||
-      !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
-    return Fail(MediaPlanError::kIntegerRange);
-  }
-  if (rounded_pixels > static_cast<uint64_t>(config.max_pixels)) {
-    const double beta =
-        std::sqrt(static_cast<double>(source_pixels) / config.max_pixels);
-    if (!Aligned(std::max(1.0, std::floor(h / beta / factor)), factor, &rh) ||
-        !Aligned(std::max(1.0, std::floor(w / beta / factor)), factor, &rw)) {
+  if (detail == ImageDetail::kOriginal) {
+    if (!Aligned((uint64_t{height} + factor - 1) / factor, factor, &rh) ||
+        !Aligned((uint64_t{width} + factor - 1) / factor, factor, &rw))
+      return Fail(MediaPlanError::kIntegerRange);
+    if (static_cast<uint64_t>(rh) * rw >
+        static_cast<uint64_t>(config.max_pixels))
+      return Fail(MediaPlanError::kDetailLimit);
+  } else {
+    if (!Aligned(round_even(h, factor), factor, &rh) ||
+        !Aligned(round_even(w, factor), factor, &rw)) {
       return Fail(MediaPlanError::kIntegerRange);
     }
-  } else if (rounded_pixels < static_cast<uint64_t>(config.min_pixels)) {
-    const double beta = std::sqrt(static_cast<double>(config.min_pixels) /
-                                  static_cast<double>(source_pixels));
-    if (!Aligned(std::ceil(h * beta / factor), factor, &rh) ||
-        !Aligned(std::ceil(w * beta / factor), factor, &rw)) {
+    // The reference resizes before padding; its budget rounds to nearest even
+    // temporal groups, while patchification below always pads the last frame.
+    const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
+    uint64_t rounded_pixels = 0, source_pixels = 0;
+    if (!Mul(rh, rw, &rounded_pixels) ||
+        !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
+        !Mul(h, w, &source_pixels) ||
+        !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
       return Fail(MediaPlanError::kIntegerRange);
+    }
+    if (rounded_pixels > static_cast<uint64_t>(config.max_pixels)) {
+      const double beta =
+          std::sqrt(static_cast<double>(source_pixels) / config.max_pixels);
+      if (!Aligned(std::max(1.0, std::floor(h / beta / factor)), factor, &rh) ||
+          !Aligned(std::max(1.0, std::floor(w / beta / factor)), factor, &rw)) {
+        return Fail(MediaPlanError::kIntegerRange);
+      }
+    } else if (rounded_pixels < static_cast<uint64_t>(config.min_pixels)) {
+      const double beta = std::sqrt(static_cast<double>(config.min_pixels) /
+                                    static_cast<double>(source_pixels));
+      if (!Aligned(std::ceil(h * beta / factor), factor, &rh) ||
+          !Aligned(std::ceil(w * beta / factor), factor, &rw)) {
+        return Fail(MediaPlanError::kIntegerRange);
+      }
+    }
+    if (detail == ImageDetail::kLow || detail == ImageDetail::kHigh) {
+      const int edge = detail == ImageDetail::kLow ? 512 : 2048;
+      const int pixels = std::min(config.max_pixels, edge * edge);
+      if (factor > edge || static_cast<uint64_t>(factor) * factor >
+                               static_cast<uint64_t>(pixels))
+        return Fail(MediaPlanError::kDetailLimit);
+      // Additional detail policy after the unchanged reference smart-resize.
+      // Floor to patch alignment so rounding cannot exceed either ceiling.
+      const double scale =
+          std::min({1.0, static_cast<double>(edge) / std::max(rh, rw),
+                    std::sqrt(static_cast<double>(pixels) /
+                              (static_cast<uint64_t>(rh) * rw))});
+      if (!Aligned(std::max(1.0, std::floor(rh * scale / factor)), factor,
+                   &rh) ||
+          !Aligned(std::max(1.0, std::floor(rw * scale / factor)), factor, &rw))
+        return Fail(MediaPlanError::kIntegerRange);
+      if (rh > edge || rw > edge ||
+          static_cast<uint64_t>(rh) * rw > static_cast<uint64_t>(pixels))
+        return Fail(MediaPlanError::kDetailLimit);
     }
   }
   if (rh <= 0 || rw <= 0) return Fail(MediaPlanError::kGeometry);
@@ -351,6 +525,7 @@ MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
     }
     MediaItemPlan item;
     item.kind = input.kind;
+    item.detail = input.detail;
     item.frames = input.frames.size();
     for (size_t f = 0; f < input.frames.size(); ++f) {
       const auto bytes = input.frames[f];
@@ -386,7 +561,7 @@ MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
     const auto geometry = PlanMediaGeometry(
         item.kind, item.source_width, item.source_height, item.frames,
         item.kind == MediaKind::kImage ? image_config : video_config,
-        &item.geometry);
+        &item.geometry, item.detail);
     if (!geometry) return Fail(geometry.error, i);
     if (!Add(plan.patches, item.geometry.patches, &plan.patches) ||
         plan.patches > limits.max_patches) {

@@ -1,0 +1,26 @@
+{
+  "status": "ACCEPT_MODERATIONS_WRITE_BUSINESS",
+  "model_steps": 1,
+  "actual_usage": {
+    "input_tokens": 486.0,
+    "output_tokens": 77.0,
+    "total_tokens": 563.0
+  },
+  "terminal_success_count": 1,
+  "protocol_sha256": "135ecc7634e3677bde247f3308841a52cd224fd2301beaf3b152535fe57936ef",
+  "prior_business_reused": true,
+  "failed_writes_cpu": true,
+  "default_unchanged": true,
+  "postflight": {
+    "sources_unchanged": true,
+    "default_unchanged": true,
+    "binary_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true
+  },
+  "nvml_queries": 45,
+  "all_queries_ok": true,
+  "env_abort": false,
+  "candidate_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220"
+}

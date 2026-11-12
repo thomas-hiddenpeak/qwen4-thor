@@ -1,0 +1,9 @@
+test_actual_dynamic_discovery_and_unchanged_legacy_observation (tools.serve_access.test_config.ConfigTests.test_actual_dynamic_discovery_and_unchanged_legacy_observation) ... ok
+test_current_policy_schema_matches_private_observation_contract (tools.serve_access.test_config.ConfigTests.test_current_policy_schema_matches_private_observation_contract) ... ok
+test_dynamic_binding_required_fields_and_no_credentials (tools.serve_access.test_config.ConfigTests.test_dynamic_binding_required_fields_and_no_credentials) ... ok
+test_standalone_openapi_contains_the_same_discovery_contract (tools.serve_access.test_config.ConfigTests.test_standalone_openapi_contains_the_same_discovery_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.141s
+
+OK

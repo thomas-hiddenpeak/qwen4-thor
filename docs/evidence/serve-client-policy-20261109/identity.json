@@ -1,0 +1,18 @@
+{
+  "base_commit": "cbc1da6085efcf94c1b14d65ebcd4dffa164255c",
+  "sources": {
+    "include/q4t/server/client_policy.h": "ae8472e03f8582e0d9bc7f87221abf277439adc83628bf0bdb48f0724120d980",
+    "src/server/client_policy.cpp": "85263881ec2a70970fd1bc18a2380c9047876dad0ee9f507d0a4d41a3e256b18",
+    "tests/server_client_policy_test.cpp": "82de79e80d294042f1f54f6b3b565154d8415f246ce18445729c99ae7a267c05"
+  },
+  "host_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/quota-cpu-01/bin/q4t_host_tests",
+    "sha256": "e04b9cdadffa6956edfa646f87e8a3a222653b42b50857751cf77c507c61f898"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  }
+}

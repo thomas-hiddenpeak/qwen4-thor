@@ -1,0 +1,20 @@
+{
+  "CMakeLists.txt": "3f025ddae47f5975a06502a2e5452f8309525c31e1d9caa33c79adf2e01cd856",
+  "cmake/HostTestSources.cmake": "f2147389f257783283b991441a0ea63d8fd1638155af5ad477b6f1295a176b40",
+  "include/q4t/server/batch_input.h": "7d2c745aabeb863ccbe4343f34a9744b5df46708e970273b270b7c8ffe6b8206",
+  "include/q4t/server/batch_preparation.h": "7ad125e7f12f272d3f879205819d17bc5837b18a12bf35fc297438fba1d9ddbd",
+  "include/q4t/server/batch_state.h": "1559327309576f6c42c1ef27b39480dbe53f2feff00ce6356fbf4fc3487cf40c",
+  "include/q4t/server/chat_file_inputs.h": "9d2c1f3f9b3e4ecc48323d677cb2e03dc79c3bcaba4cd44c1a1e187875cce75b",
+  "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
+  "include/q4t/server/responses_execution.h": "aa11086ae3df121ffe283e85939cbb04f888e7da65fbdb27e42a941d652827b4",
+  "src/server/batch_preparation.cpp": "1ace0c651cc9517b4c08e028d86cb66bd115c05680b23790b8af889a13495260",
+  "src/server/batch_results.cpp": "c544bab91a10b38c5105367f1c5cc10a52059b4580cb964f0dbc673ca737b3d1",
+  "src/server/batch_state.cpp": "eb84374d44172d6ae971e0b52d1ebda52b1cd0613d6c84e52a4e93654350ed0e",
+  "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
+  "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
+  "src/server/object_retention.cpp": "0753089c518d4ff1423b390986eef83aafb0d8bf90afefc46ccf6e83469dfb0a",
+  "src/server/object_worker.cpp": "cb56ec09fe78cced61775d09eea7a2904ad16aaa3bdd1e9bfbc5f458bc909f41",
+  "src/server/responses_execution_inputs.cpp": "19179ceb95965d4ba2cd4133e6994f0e61ad114a29d99a053dec45cd569b58fa",
+  "tests/server_batch_preparation_test.cpp": "fae409dd777a4fa6aa3e96c50c01b2a6e76a870794f1ba029c7b0cd1733aab51",
+  "tests/server_batch_results_test.cpp": "270440104f49a9959097ceea311c314c87582124f17f085b9d5ee977d8cf0506"
+}

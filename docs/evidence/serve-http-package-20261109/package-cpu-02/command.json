@@ -1,0 +1,8 @@
+[
+  "/usr/bin/python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_deployment.DeploymentTests.test_v8_v9_round_trip_preserves_established_client_state"
+]

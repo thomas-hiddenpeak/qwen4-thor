@@ -1,0 +1,62 @@
+[
+  {
+    "argv": [
+      "/usr/bin/libreoffice",
+      "-env:UserInstallation=file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01/word-profile",
+      "--headless",
+      "--nologo",
+      "--nodefault",
+      "--norestore",
+      "--convert-to",
+      "doc:MS Word 97",
+      "--outdir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01",
+      "/home/rm01/models/dev/qwen4-thor/tests/fixtures/file_legacy/word.fodt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.6158347260206938,
+    "name": "word.doc",
+    "bytes": 9216,
+    "sha256": "621678fac50d54b2a5ed4b92b61d0ede6ab437ff5a5a26c59e7a5d365f192cfd"
+  },
+  {
+    "argv": [
+      "/usr/bin/libreoffice",
+      "-env:UserInstallation=file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01/sheet-profile",
+      "--headless",
+      "--nologo",
+      "--nodefault",
+      "--norestore",
+      "--convert-to",
+      "xls:MS Excel 97",
+      "--outdir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01",
+      "/home/rm01/models/dev/qwen4-thor/tests/fixtures/file_legacy/sheet.fods"
+    ],
+    "exit_code": 0,
+    "seconds": 0.466077352873981,
+    "name": "sheet.xls",
+    "bytes": 5632,
+    "sha256": "5fa1c1daa60f84ecf159c1041eebcfbbc082276bacfe8817db8add9eeeafee33"
+  },
+  {
+    "argv": [
+      "/usr/bin/libreoffice",
+      "-env:UserInstallation=file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01/slides-profile",
+      "--headless",
+      "--nologo",
+      "--nodefault",
+      "--norestore",
+      "--convert-to",
+      "ppt:MS PowerPoint 97",
+      "--outdir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/legacy-fixtures-01",
+      "/home/rm01/models/dev/qwen4-thor/tests/fixtures/file_legacy/slides.fodp"
+    ],
+    "exit_code": 0,
+    "seconds": 0.5676289708353579,
+    "name": "slides.ppt",
+    "bytes": 461312,
+    "sha256": "9961379d1df2cb6974a81c86affef955428c22cdc32b54beee582d28b0377695"
+  }
+]

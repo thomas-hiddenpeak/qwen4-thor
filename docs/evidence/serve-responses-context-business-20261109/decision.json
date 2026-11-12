@@ -1,0 +1,25 @@
+{
+  "status": "PASS_RESPONSES_CONTEXT_TARGETED_BUSINESS",
+  "acceptance": "ACCEPT_TARGETED_RESPONSES_CONTEXT",
+  "binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+  "protocol_sha256": "88a8e832ef21f024a13c317931d5ab05b89f16d25ffb16736c3a8838772727bf",
+  "counts": {
+    "starts": 2,
+    "chats": 7,
+    "controls": 97
+  },
+  "seconds": 93.41345523949713,
+  "nvml_queries": 91,
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "previous_failure": "docs/evidence/serve-responses-context-driver-fix-20261109",
+  "reused_json": true,
+  "real_input_tokens": 42,
+  "cpu_cases": 18,
+  "driver_fix_cases": 2,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "media_gpu_retested": false,
+  "default_changed": false,
+  "remaining_master_tasks_open": true
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "exit": 0,
+  "host_sha256": "030bb234e5bd0851cd97fedfd8defb7a5b4245c8cbe4cc672e537fde522901f1",
+  "tests": [
+    "responses_crypto_stateless_roundtrip_restores_actual_reasoning",
+    "responses_crypto_origin_prefix_full_suffix_and_conflict",
+    "responses_crypto_sse_summary_and_persisted_events_share_ciphertext",
+    "responses_crypto_previous_response_survives_store_restart",
+    "responses_crypto_conversation_restores_without_mutating_stored_items",
+    "responses_crypto_background_queued_restore_uses_persistent_keys",
+    "responses_crypto_restored_tool_context_does_not_execute_tools",
+    "responses_crypto_incomplete_reasoning_is_not_promoted_to_complete",
+    "responses_crypto_restored_context_is_measured_and_truncated_normally",
+    "responses_crypto_wrong_owner_model_and_plaintext_are_rejected"
+  ],
+  "gpu": 0
+}

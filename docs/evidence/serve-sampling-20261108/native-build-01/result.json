@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-sampling-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_ingress",
+    "q4t_guardian"
+  ],
+  "exit_code": 0,
+  "seconds": 10.444633992854506
+}

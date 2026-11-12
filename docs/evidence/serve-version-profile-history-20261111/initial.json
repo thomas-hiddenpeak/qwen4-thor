@@ -1,0 +1,44 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_profile_history",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent",
+    "tools.serve_recovery.test_profile_policy",
+    "tools.serve_recovery.test_profile_integration.RuntimeTests.test_new_helper_must_durably_resume_before_switch_eligibility",
+    "tools.serve_recovery.test_profile_integration.RuntimeTests.test_controller_parks_io_before_launch_and_confirms_only_new_live_generation",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state"
+  ],
+  "exit_code": 1,
+  "seconds": 5.338601374998689,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

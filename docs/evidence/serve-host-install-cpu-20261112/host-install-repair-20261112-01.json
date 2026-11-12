@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_install.py",
+    "-v",
+    "tools.serve_recovery.test_host_install.HostTests.test_cli_install_enable_disable_preserves_core_and_uses_protected_source",
+    "tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu",
+    "tools.serve_recovery.test_host_install.HostTests.test_installed_daemon_resume_keeps_original_stopped_and_zero_starts",
+    "tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled",
+    "tools.serve_recovery.test_host_install.HostTests.test_partial_source_copy_resumes_same_installation_without_core_mutation",
+    "tools.serve_recovery.test_host_install.HostTests.test_partial_first_intent_does_not_publish_source_or_reset_core",
+    "tools.serve_recovery.test_host_install.HostTests.test_lost_ready_publication_repairs_copy_without_resetting_history",
+    "tools.serve_recovery.test_host_install.HostTests.test_lost_published_private_authority_cannot_bootstrap",
+    "tools.serve_recovery.test_host_install.HostTests.test_mutable_package_tamper_is_rejected_after_drop_without_changing_snapshot",
+    "tools.serve_recovery.test_host_install.HostTests.test_active_remove_revokes_future_entry_without_signalling_own_payload",
+    "tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume",
+    "tools.serve_recovery.test_host_install.HostTests.test_outer_disable_is_not_implicitly_reversed_by_host_enable",
+    "tools.serve_recovery.test_host_install.HostTests.test_drifted_protected_snapshot_blocks_entry_and_is_not_silently_repaired",
+    "tools.serve_recovery.test_host_install.HostTests.test_private_umask_keeps_source_traversable_and_admin_private"
+  ],
+  "exit_code": 1,
+  "seconds": 16.255891089793295,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-c",
+    "import json\nfrom pathlib import Path\nfrom tools.serve_recovery import bundle\npath=Path('.q4t-work/serve-version-recovery-20261112/release-01/bundle')\ndigest='a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac'\nv=bundle.verify(path,digest)\nassert v['version']==16\nassert 'source/tools/serve_recovery/cold_admission.py' not in v['files']\nprint(json.dumps(dict(manifest_sha256=digest,version=v['version'],old_package_verified=True,model_actions=False,modified=False)))\n"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3814830197952688,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

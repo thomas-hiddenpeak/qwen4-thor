@@ -2,7 +2,7 @@
 import { loadSdk } from './sdk.mjs';
 import { writeSync } from 'node:fs';
 import { ChatClient, parseJson, prepareToolCalls, requireValue } from '../examples/js/chat_client.mjs';
-import { VALIDATORS } from '../examples/js/project_profile.mjs';
+import { VALIDATORS, CUSTOM_VALIDATORS } from '../examples/js/project_profile.mjs';
 
 const buffers = [];
 let bytes = 0;
@@ -10,7 +10,8 @@ for await (const chunk of process.stdin) {
   bytes += chunk.length;
   requireValue(bytes <= 16 * 1024 * 1024, 'bridge input limit'); buffers.push(chunk);
 }
-const input = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(buffers)));
+const input = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(buffers)),
+  { exactNumbers: true });
 const { OpenAI, version } = loadSdk(process.env.Q4T_NODE_SDK_DIR);
 const client = new ChatClient(OpenAI, { baseURL: input.base_url, model: input.model,
   protocolSha256: input.protocol_sha256, timeoutMs: input.timeout_ms ?? 120000,
@@ -37,9 +38,9 @@ try {
   else if (input.action === 'chat') {
     result = await client.chat(input.request, options);
     delete result.raw;
-    if (result.finish_reason === 'tool_calls') {
+    if (['tool_calls', 'function_call'].includes(result.finish_reason)) {
       requireValue(input.tool_profile === 'project-records-v1', 'explicit tool profile required');
-      planned = prepareToolCalls(result, VALIDATORS);
+      planned = prepareToolCalls(result, VALIDATORS, CUSTOM_VALIDATORS);
     }
   } else throw new Error('unknown SDK bridge action');
   process.stdout.write(JSON.stringify({ ok: true, sdk_version: version, result,

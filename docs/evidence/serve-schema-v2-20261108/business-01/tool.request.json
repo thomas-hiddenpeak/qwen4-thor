@@ -1,0 +1,110 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 384,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Read the first 16 lines of docs/MODEL.md with read_project_record. Then return its actual first-line title and exact source citation in JSON; requested_line_count is 16 and note is null."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read actual project documentation lines; use the returned citation verbatim.",
+        "strict": true,
+        "parameters": {
+          "$ref": "#/$defs/read",
+          "$defs": {
+            "path": {
+              "type": "string",
+              "pattern": "^docs/MODEL\\.md$",
+              "minLength": 13,
+              "maxLength": 13
+            },
+            "read": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "$ref": "#/$defs/path"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "minimum": 16,
+                  "maximum": 16,
+                  "multipleOf": 8
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    }
+  ],
+  "tool_choice": "required",
+  "parallel_tool_calls": false,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "record",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "citation": {
+            "type": "string",
+            "pattern": "^\\[docs/MODEL\\.md:L1-L16\\]$"
+          },
+          "requested_line_count": {
+            "type": "integer",
+            "minimum": 16,
+            "maximum": 16,
+            "multipleOf": 8
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "const": "read"
+              }
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "citation",
+          "requested_line_count",
+          "note"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "request_id": "schema-v2-tool",
+  "cancel_token": "7c9bbe5ec9b3fb774e8fa0f54247e93c34ddf8e5d16fe3073420de0ae81a262d"
+}

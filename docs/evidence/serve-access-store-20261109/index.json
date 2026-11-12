@@ -1,0 +1,74 @@
+{
+  "README.md": {
+    "bytes": 1229,
+    "sha256": "41e8d898f899c7879e0c1422cbe15c049343ca36c40db54927fad60e96f1c538"
+  },
+  "archive_store.py": {
+    "bytes": 2815,
+    "sha256": "4ba3847fda352f241b4105f75a8f811b1357fc4d1b8284d40f849e21f8a7e6a8"
+  },
+  "build-03/command.json": {
+    "bytes": 120,
+    "sha256": "d3ade63f93a4cf4e366dbde33c6fe9c83ab628b5b51429149c217a734d55afa9"
+  },
+  "build-03/result.json": {
+    "bytes": 54,
+    "sha256": "779465180f3ef6b415d80efb61723a1d5d6aa7d353866d60ddc89b93e5b124e9"
+  },
+  "build-03/sources.json": {
+    "bytes": 442,
+    "sha256": "67e748fe8ca417fbd55b1a89e65ae0e945ce607760322559bde3331221892606"
+  },
+  "build-03/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-03/stdout.txt": {
+    "bytes": 352,
+    "sha256": "a8badef3e7ae8c97a361efd447ce6ed024dc18ffeaa05bcedbb1cb042fde323a"
+  },
+  "decision.json": {
+    "bytes": 496,
+    "sha256": "7af1fc327e31049872fbf91cfdd360a2ba2bbc4bc6cc9360adf51750da379972"
+  },
+  "identity.json": {
+    "bytes": 924,
+    "sha256": "dce2a550c70b689fc3504b1679be7d52389f96e55fd6d5f60ebf515e05185094"
+  },
+  "store-cpu-01/command.json": {
+    "bytes": 84,
+    "sha256": "f98302bed21b33103f98c0082a659c7a23b739010b5305943ea5a0921eaf45aa"
+  },
+  "store-cpu-01/result.json": {
+    "bytes": 143,
+    "sha256": "2c0cfa539d3ad357309563dabbe159b80f443453b2702d2514017e75b502c696"
+  },
+  "store-cpu-01/stderr.txt": {
+    "bytes": 1602,
+    "sha256": "3abd8778bdf67291bf99d2534b818c2e30f9bca00c3d89ff0a7f67416814a478"
+  },
+  "store-cpu-01/stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "store-cpu-02/command.json": {
+    "bytes": 411,
+    "sha256": "0549bb297744627b40ec76f3a524846352ed3d8a606e46f87dc66e8f5018abe2"
+  },
+  "store-cpu-02/result.json": {
+    "bytes": 55,
+    "sha256": "0728fd0385442b27f503ce21fa052e979501a7d2c2b68bd9d692221afbcb7b27"
+  },
+  "store-cpu-02/sources.json": {
+    "bytes": 339,
+    "sha256": "bc0d9d2dc192a99647ba3dfcabcc7f865c2a26077bbbb3dbdfacf3e0fc3ce6ec"
+  },
+  "store-cpu-02/stderr.txt": {
+    "bytes": 641,
+    "sha256": "489bb5bb9aa4a23342495697e516dc885d6aabda9335a626ca1ea9bae19b6f96"
+  },
+  "store-cpu-02/stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,22 @@
+test_accepted_post_transport_failure_is_not_replayed (__main__.NativeTests.test_accepted_post_transport_failure_is_not_replayed) ... ok
+test_authentication_precedes_body_reads_and_recovery_error (__main__.NativeTests.test_authentication_precedes_body_reads_and_recovery_error) ... ok
+test_backend_quota_response_remains_429 (__main__.NativeTests.test_backend_quota_response_remains_429) ... ok
+test_cidr_checks_actual_peer_not_loopback_listener (__main__.NativeTests.test_cidr_checks_actual_peer_not_loopback_listener) ... ok
+test_control_peer_outage_cannot_reuse_successful_binding (__main__.NativeTests.test_control_peer_outage_cannot_reuse_successful_binding) ... ok
+test_data_inflight_limit_preserves_control_capacity (__main__.NativeTests.test_data_inflight_limit_preserves_control_capacity) ... ok
+test_downstream_disconnect_closes_upstream_without_replay (__main__.NativeTests.test_downstream_disconnect_closes_upstream_without_replay) ... ok
+test_duplicate_bearer_and_ambiguous_framing_never_reach_backend (__main__.NativeTests.test_duplicate_bearer_and_ambiguous_framing_never_reach_backend) ... ok
+test_generation_rebind_rotates_token_and_strips_forged_client_headers (__main__.NativeTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers) ... ok
+test_header_body_limit_rejects_without_consuming_large_body (__main__.NativeTests.test_header_body_limit_rejects_without_consuming_large_body) ... ok
+test_health_distinguishes_entrypoint_liveness_from_business_readiness (__main__.NativeTests.test_health_distinguishes_entrypoint_liveness_from_business_readiness) ... ok
+test_malformed_response_is_rejected_without_replaying_post (__main__.NativeTests.test_malformed_response_is_rejected_without_replaying_post) ... ok
+test_native_child_exit_stops_owned_worker_without_stopping_backend (__main__.NativeTests.test_native_child_exit_stops_owned_worker_without_stopping_backend) ... ok
+test_native_process_runs_with_no_nginx_or_systemd_in_path (__main__.NativeTests.test_native_process_runs_with_no_nginx_or_systemd_in_path) ... ok
+test_recovery_keeps_auth_and_explicit_503_without_model_forward (__main__.NativeTests.test_recovery_keeps_auth_and_explicit_503_without_model_forward) ... ok
+test_truncated_sse_is_not_continued_on_new_generation (__main__.NativeTests.test_truncated_sse_is_not_continued_on_new_generation) ... ok
+test_untrusted_forwarded_headers_do_not_change_identity (__main__.NativeTests.test_untrusted_forwarded_headers_do_not_change_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 22.185s
+
+OK

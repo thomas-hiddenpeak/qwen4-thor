@@ -1,0 +1,7 @@
+test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled) ... ok
+test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume (tools.serve_recovery.test_host_install.HostTests.test_selected_source_symlink_is_not_followed_and_initial_copy_can_resume) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.435s
+
+OK

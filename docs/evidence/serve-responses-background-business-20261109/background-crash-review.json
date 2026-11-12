@@ -1,0 +1,219 @@
+{
+  "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01",
+  "lease": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-lease-01",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/model-1.log": "0eeeed554e3fce5c12e0a16238c1d02d5b37ea91408f844c9d93c49537ca3619",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/initial-1-config.wire": "433c2a823fb6a68ae182c54f87adee7a67c9bf00e3682c450dda2a5a3d05d4ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/model-1-identity.json": "47a3dbf56b7bb537498983550218c33e72488041782b90351e72142c822dd26b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cancelled.metrics.json": "53f02f3e8ded27a0ece61188d71cf33a6ce47a7652fc0708dfe51cafbcd1fd5d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/preserved-cancelled.wire": "99029272c7faae4b6269188662cab48b7cbde69ca49589333ea91eaf36737885",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-running.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/preserved-cancelled.request.json": "f9551b78e61647ab7bfccc4106beaedcbf1918773488c7e619300127296310bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cancelled-replay.wire": "be3f3dca988a52d23e74054d1cc88a00f1488f622aa39dd615f5cdb92e51729e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cancelled-replay.request.json": "59c7fd642411e31b1261cdf0bce7120f2af8aef374e8b999af476ac34f4d7160",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/initial-1-capabilities.wire": "d76ab2be82638358fb8e04b76e02c120db1a21de49fec18a948d59f10e7b57c8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-running.wire": "055d418e550519ad061b5331884fe28ef57c2a9c6c24418e4c8ffc53afbc1b8f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/initial-1-config.http.json": "3756e684d715d1e5341a5fc47fc8932715c842ae5a3fa7cf4b3bb1156c4db029",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-injection.json": "55bd20ccc566dfa43a0265c28e232f5c0da2660fe358b265b605371ddb5d6aa4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/after-crash-cleanup.json": "dd0d9add1a95f579e9b0847aa8594e4857cca900a31a7d3c5dd463437e2f905a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/capabilities-1.json": "e7910946caa1faf0a5778199f85fd1db5f4fe323a331960e205cd6663133cda7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-queued.wire": "7cbf3db277e58874bacda4fe8d4b7744c083633777ef2235886934977a4843a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/initial-1-capabilities.http.json": "37a2cb1ca94051ad21ba4046eabb5334b3eacbcc02c20a34a7f2a850a470bb0e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/result.json": "3cde08fe7530b0d9728d688255ba65d6f6c67f61c3181ef4c12e07ad13867e03",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-partial.poll.json": "c6624fb5fec60e77ece20ec191c2d225018a29795b68057522d518d5fd2c319d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-running.request.json": "37891dea8952826d11d5bd784371a5359e03f1984b3ae22866bf691aa4108810",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-running.sdk.json": "3e93d96cf806a802f97d98e5d1269e17dec2c9bfba69ccdc7155798d8c25fd7f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-queued.sdk.json": "47710b9c29663ffcdf01718262bb9c266a9bebee763266902b520c4cbfce872f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/counts.json": "e4aa1212ab0ed4451a23e14155384b78f3d832584203d99f3d7a940da5886530",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/plan.json": "9510e651cd70dd3396f99b687c18e9ccca05fb9cb265e258dd26c08252151323",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/queued-before-crash.poll.json": "be3f94582451f819265a11ca71e6c677562964d3aa704467dec7e4ee6dd1da49",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/preserved-cancelled.sdk.json": "354a83eb4fb17a748344110b86084ad35dc682fd2e173ebccb1665972679cf8b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/preserved-cancelled.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-queued.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cancelled-replay.sdk.json": "a11778c7b18ffc7d17f8d7bcf0592c7428b477785c9f04fc8fecc3a93921e6f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/config-1.json": "78cb4eac585aad415cf238456f890fa5d0d923527f304ef308d7f6c0c65cc4c6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cancelled-replay.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/model-1-command.json": "3eb711b8e77b0efe0a29e5dc3789e970502e205d5b4770d08781e5f3a098696e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/cleanup.json": "c3abcbd99da77761f88042630a8d2582408b203b3fcec4fe2377482af6fc6fe4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/crash-queued.request.json": "2c93eef2d424bdc955455f8cf0f8ec421f53d7120453e230986e4e7a9dd8fcdf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-lease-01/nvml-queries.jsonl": "fad4f979af7332e38f7aa46f62a82574bea47bef7ff7b3d7cd588a87f6b1ca9f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-lease-01/events.jsonl": "cbf244318308ad6781d88a506227a29b3190fae2462272dc67deb7d66e2f8a9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-lease-01/exit.json": "61ecf979f2c3a9ad5a04aa670e42e3e24222565cbdc7665691b2b23a33b22d07"
+  },
+  "objects": {
+    ".q4t-format": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    ".q4t-lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.fc_f8cfb7055167362e3b4c9c95b96d3d40.json": "6ab71557930e0455b849010c7f260bcb7c8743b373b9dc44f31bb7121d153d3b",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.item_00db465070cbf95de4e71dce0feebd3d.json": "9e370fa9d5d9611e86227a52dc39672bdbb76ab5b4d37a0adfb4950194441027",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.item_25dc864ca06d8ebd8205dc47d6174c62.json": "fa59c770d83b1c9e05ddba63f625f836b85fd7b048ff2563f687f7cd985b26fc",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.item_a3a1adc0e87f56c5a260df689f2caf9b.json": "2c4ebaefe329a571fecdfed2acc60f5f1ab62360aa2d92ee26a022be212dac17",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.msg_48b905e5710abaadb6f22f7064c30829.json": "c4bf8c4c6383b3192523d54ee2d96a9721315c32027d077dd1b973bf5896cb5d",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.item.msg_e2f101345f353c42bab1642ed6f0dcfb.json": "f3aef0a5943056bfdbac75908ddef7d3fe20a22d072e5b5e0ba424db89ffd1f7",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_090442c9518f08cc5b9fec147aaea3df.json": "a9d08c0757bba5588a5e4dba59921f63417c25339d32f59aa9882f4b2e87b8e6",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_42c17e3fe3e49630343cb1d59406becb.json": "d8503a92b8792fd4df8934845a36b8dfaf90dbeef76ba3c83fa5965e3cbe62ab",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_9dfc32ff5cc6de31b6c90d8f87a9f03d.json": "0b9892958de4e6be6b457e34378611de5db11f9775e46f12b65c37b0ee54d44c",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_b2a3181bacd1051d4f8515cba302d882.json": "4667c68c5391611135bc810eea746c5bae530bfa6b0eaebc749d50fd41d60387",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_b6523020b1380c5497377d392dc64bad.json": "7ea74814f90edf8ee8ff213992de913d747cdb2ab430766582c89a117a045b07",
+    "67639046ccca80820e0a4a422561323025c7a82a6a09caded24f3718812641c8.response.resp_dab07c4739f0fd8f250a23188c4772d7.json": "b164e40c77053dc388181b01f12a593a2bddee58c5fd540185c21422c912e23f"
+  },
+  "crash": {
+    "pid": 810604,
+    "identity": {
+      "state": "R",
+      "ppid": 810587,
+      "pgid": 810587,
+      "start_ticks": 235985857,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18164",
+        "--operations-port",
+        "18165",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "1536",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "2",
+        "--object-store-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/background-remainder-01/objects"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    },
+    "partial": {
+      "id": "resp_42c17e3fe3e49630343cb1d59406becb",
+      "object": "response",
+      "created_at": 1794169814,
+      "completed_at": null,
+      "status": "in_progress",
+      "error": null,
+      "incomplete_details": null,
+      "output": [
+        {
+          "id": "msg_0b2bea242739ec1e32dc1b306b788815",
+          "type": "message",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "{",
+              "annotations": []
+            }
+          ],
+          "role": "assistant",
+          "status": "in_progress"
+        }
+      ],
+      "usage": null,
+      "model": "qwen3.8-flash-next",
+      "instructions": null,
+      "metadata": {},
+      "temperature": 0,
+      "top_p": 1,
+      "parallel_tool_calls": true,
+      "tools": [],
+      "tool_choice": "auto",
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "long",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "minItems": 512,
+                "maxItems": 512,
+                "items": {
+                  "type": "boolean",
+                  "const": true
+                }
+              }
+            },
+            "required": [
+              "values"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "verbosity": "medium"
+      },
+      "reasoning": {
+        "effort": "none",
+        "context": "all_turns",
+        "mode": "standard",
+        "summary": null
+      },
+      "store": true,
+      "background": true,
+      "max_output_tokens": 1536,
+      "max_tool_calls": null,
+      "previous_response_id": null,
+      "service_tier": "default",
+      "truncation": "disabled",
+      "top_logprobs": 0,
+      "access_programs": null
+    },
+    "queued": {
+      "id": "resp_dab07c4739f0fd8f250a23188c4772d7",
+      "object": "response",
+      "created_at": 1794169815,
+      "completed_at": null,
+      "status": "queued",
+      "error": null,
+      "incomplete_details": null,
+      "output": [],
+      "usage": null,
+      "model": "qwen3.8-flash-next",
+      "instructions": null,
+      "metadata": {},
+      "temperature": 0,
+      "top_p": 1,
+      "parallel_tool_calls": true,
+      "tools": [],
+      "tool_choice": "auto",
+      "text": {
+        "format": {
+          "type": "text"
+        },
+        "verbosity": "medium"
+      },
+      "reasoning": {
+        "effort": "none",
+        "context": "all_turns",
+        "mode": "standard",
+        "summary": null
+      },
+      "store": true,
+      "background": true,
+      "max_output_tokens": 192,
+      "max_tool_calls": null,
+      "previous_response_id": null,
+      "service_tier": "default",
+      "truncation": "disabled",
+      "top_logprobs": 0,
+      "access_programs": null,
+      "output_text": ""
+    },
+    "replay_allowed": false
+  },
+  "binary_sha256": "0ca69a41d5fe74366842c1626505eaa3850481f214bd9551e8f1d021bf3c3aa7",
+  "original_result": "FAILED_RESTART_PORT_PROBE",
+  "cumulative_limits": {
+    "starts": 3,
+    "chats": 8,
+    "seconds": 394.286
+  }
+}

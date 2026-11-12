@@ -1,0 +1,122 @@
+EEEEEEEEE
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+======================================================================
+ERROR: test_chat_client (unittest.loader._FailedTest.test_chat_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_chat_client
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py", line 14, in <module>
+    import agent_tools_demo as demo
+ModuleNotFoundError: No module named 'agent_tools_demo'
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.000s
+
+FAILED (errors=9)

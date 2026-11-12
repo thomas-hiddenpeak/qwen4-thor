@@ -1,0 +1,20 @@
+{
+  "status": "PASS_COMPLETIONS_DELIVERY_REVIEW",
+  "source_commit": "3e1f72dfbce51ebeb042ecd08e0bfc9e61b75a77",
+  "source_files": 649,
+  "tested_runtime_commit": "d4cc7fa145d6a4a71cf77299cfca2257ae70d979",
+  "totals": {
+    "starts": 1,
+    "chats": 7,
+    "seconds": 51.954248203895986,
+    "lease_seconds": 52.50302738184109,
+    "nvml_samples": 50
+  },
+  "default_unchanged": true,
+  "release": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-completions-20261108/release-01/bundle",
+    "manifest_sha256": "8d1f6b5083319e9f73702f8ee41b3d5beb9c9831b9962f9dbac61f3812bd4a27",
+    "engine_binary_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55",
+    "recovery_accepted": false
+  }
+}

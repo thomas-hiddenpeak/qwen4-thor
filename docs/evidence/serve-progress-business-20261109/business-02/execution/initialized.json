@@ -1,0 +1,7 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-02/execution/state",
+  "service_id": "319b4124-7304-4ea9-96bd-856150858c69",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false
+}

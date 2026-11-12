@@ -1,0 +1,11 @@
+{
+  "command": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-responses-20261108/cpu-controller-errors-01/required.txt"
+  ],
+  "executable_sha256": "6dc65458dce65bece783047859601065ecd3789b46063e6fe9fa6127ee79a490",
+  "exit_code": 0,
+  "seconds": 0.575870571192354,
+  "required_count": 6
+}

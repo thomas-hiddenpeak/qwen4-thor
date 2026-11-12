@@ -1,0 +1,61 @@
+{
+  "identity": {
+    "pid": 984394,
+    "start_ticks": 237163909,
+    "pid_namespace": 4026531836,
+    "controller_generation": 1,
+    "model_generation": 2,
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "service_id": "319b4124-7304-4ea9-96bd-856150858c69"
+  },
+  "before": {
+    "sequence": 241,
+    "observed_ns": 2371699263464120,
+    "complete": true,
+    "identity": {
+      "pid": 984394,
+      "start_ticks": 237163909,
+      "pid_namespace": 4026531836,
+      "controller_generation": 1,
+      "model_generation": 2,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "service_id": "319b4124-7304-4ea9-96bd-856150858c69"
+    },
+    "active": 2,
+    "untracked": 0,
+    "successes": 2,
+    "steps": 66,
+    "rows": [
+      {
+        "ticket": 2,
+        "deadline_ns": 0,
+        "stage": 10,
+        "stage_since_ns": 2371675181462522,
+        "wait": 0,
+        "wait_since_ns": 2371675181462383,
+        "work": 8,
+        "work_id": 989,
+        "work_since_ns": 2371699242748904,
+        "completed": 988,
+        "last_completed_ns": 2371699242748737,
+        "updated_ns": 2371699242748904
+      },
+      {
+        "ticket": 5,
+        "deadline_ns": 2371758143109761,
+        "stage": 6,
+        "stage_since_ns": 2371699223043443,
+        "wait": 0,
+        "wait_since_ns": 2371699222244520,
+        "work": 6,
+        "work_id": 11,
+        "work_since_ns": 2371699222244687,
+        "completed": 36,
+        "last_completed_ns": 2371699223042647,
+        "updated_ns": 2371699223043443
+      }
+    ],
+    "wire_version": 2
+  },
+  "monotonic": 2371699.416195241
+}

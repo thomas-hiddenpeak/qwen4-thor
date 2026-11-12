@@ -1,0 +1,11 @@
+{
+  "commands": 17,
+  "new_gpu_starts": 0,
+  "from_revision": 80,
+  "final_revision": 88,
+  "candidate": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+  "retained": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+  "core_client_outer_unchanged": true,
+  "profile_binding_upgraded_without_budget_reset": true,
+  "host_boot_install": false
+}

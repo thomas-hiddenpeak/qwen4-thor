@@ -16,7 +16,9 @@ inline constexpr size_t kMediaPlanItems = 8;
 inline constexpr size_t kMediaPlanFrames = 32;
 
 enum class MediaKind { kImage, kVideo };
-enum class MediaFormat { kPng, kJpeg };
+enum class MediaFormat { kPng, kJpeg, kGif };
+const char* MediaFormatName(MediaFormat format) noexcept;
+const char* MediaFormatMime(MediaFormat format) noexcept;
 enum class MediaPlanError {
   kNone,
   kInvalidConfig,
@@ -24,11 +26,13 @@ enum class MediaPlanError {
   kFrameCount,
   kEncodedBytes,
   kUnsupportedFormat,
+  kAnimation,
   kInvalidHeader,
   kSourceDimensions,
   kFrameDimensions,
   kDecodedBytes,
   kGeometry,
+  kDetailLimit,
   kIntegerRange,
   kPatchCount,
   kWorkspaceBytes,
@@ -57,8 +61,21 @@ struct MediaHeader {
   uint32_t height = 0;
 };
 
-// Metadata only. PNG includes IHDR CRC/field validation. JPEG walks bounded
-// segments to an 8-bit C0/C1/C2 SOF; entropy/remaining chunks are not decoded.
+struct GifFrame {
+  MediaHeader header;
+  uint32_t left = 0, top = 0, width = 0, height = 0;
+  std::array<uint8_t, 3> palette_zero{};
+  size_t transparency_flags = 0;
+};
+// Exact one-image structure and palette metadata for RGB conversion. Like
+// Pillow's convert("RGB"), transparent palette entries keep their RGB value;
+// an untouched canvas uses palette index zero, not animation compositing.
+MediaPlanResult ReadGifFrame(std::span<const uint8_t> bytes,
+                             GifFrame* out) noexcept;
+
+// Metadata only. PNG checks IHDR; JPEG walks to an 8-bit C0/C1/C2 SOF.
+// GIF walks the complete bounded block structure and permits one image only.
+// Compressed pixels are not decoded by this function.
 MediaPlanResult ReadMediaHeader(std::span<const uint8_t> bytes,
                                 MediaHeader* out) noexcept;
 
@@ -75,17 +92,20 @@ struct MediaGeometry {
   uint64_t attention_shared_bytes = 0;
 };
 
-// Keeps current C++ round (ties away from zero), image repetition and video
-// last-frame padding. Temporal/spatial merge 2 is the implemented contract.
-MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
-                                  uint32_t height, size_t frames,
-                                  const ProcessorConfig& config,
-                                  MediaGeometry* out) noexcept;
+// Auto preserves reference ties-to-even rounding and temporal padding.
+// Low/high additionally bound the longest edge to 512/2048 and area to its
+// square. Original preserves pixels with bottom/right edge padding; it fails
+// when the padded image exceeds the configured pixel budget, never resizes.
+MediaPlanResult PlanMediaGeometry(
+    MediaKind kind, uint32_t width, uint32_t height, size_t frames,
+    const ProcessorConfig& config, MediaGeometry* out,
+    ImageDetail detail = ImageDetail::kAuto) noexcept;
 
 using MediaBytes = std::span<const uint8_t>;
 struct MediaPlanInput {
   MediaKind kind = MediaKind::kImage;
   std::span<const MediaBytes> frames;
+  ImageDetail detail = ImageDetail::kAuto;
 };
 
 struct MediaPlanLimits {
@@ -122,6 +142,7 @@ struct MediaItemPlan {
   uint32_t source_height = 0;
   size_t frames = 0;
   MediaGeometry geometry;
+  ImageDetail detail = ImageDetail::kAuto;
 };
 
 struct MediaPlan {

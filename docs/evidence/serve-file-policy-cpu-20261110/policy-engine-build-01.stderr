@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp: In function ‘std::string q4t::server::EffectiveServeConfigJson(const ServerOptions&, const ChatPlanConfig&, bool, bool, int, const StartupMemoryChecks*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp:408:10: error: ‘OutputJson’ was not declared in this scope
+  408 |          OutputJson(FileInputPolicyDescription(
+      |          ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1493: CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

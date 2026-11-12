@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    ".q4t-work/serve-sampling-20261108/prepare_release.py"
+  ],
+  "exit_code": 0,
+  "seconds": 1.7989554908126593
+}

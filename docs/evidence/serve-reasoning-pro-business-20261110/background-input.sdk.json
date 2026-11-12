@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "result": {
+    "object": "list",
+    "data": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Compute 17 + 25. Reply only with the decimal number."
+          }
+        ],
+        "status": "completed",
+        "id": "item_8de398783d6e8eaa961f91e4ac0a094a"
+      }
+    ],
+    "has_more": false
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18993/v1/responses/resp_c18a456f1f98f91c197f00b3366234e8/input_items",
+      "method": "GET"
+    }
+  ]
+}

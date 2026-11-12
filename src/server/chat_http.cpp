@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/chat_storage.h"
 
 #include <new>
 
@@ -24,6 +25,13 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
+#include "q4t/server/conversation_api.h"
+#include "q4t/server/files_http.h"
+#include "q4t/server/batch_api.h"
+#include "q4t/server/vector_store_api.h"
+#include "q4t/server/prompt_registry.h"
+#include "q4t/server/responses_api.h"
+#include "q4t/server/output_schema.h"
 
 namespace q4t::server {
 using detail::SendError;
@@ -34,6 +42,7 @@ namespace detail {
 // endpoint deliberately does not support half-close-and-wait clients.
 // Do not consume bytes: request parsing remains the sole socket reader.
 bool ClientConnectionFailed(int fd) {
+  if (fd < 0) return false;  // Explicit native background execution.
   pollfd peer{fd, POLLRDHUP, 0};
   return poll(&peer, 1, 0) > 0 &&
          (peer.revents & (POLLRDHUP | POLLERR | POLLHUP)) != 0;
@@ -51,6 +60,7 @@ bool ValidRequestKey(const std::string& key) { return ValidCancelToken(key); }
 }  // namespace detail
 
 void ChatServer::FinishConnection(int fd, bool operations) noexcept {
+  DrainHttpClose(fd);
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
     connections_.erase(fd);
@@ -64,6 +74,10 @@ void ChatServer::FinishConnection(int fd, bool operations) noexcept {
 void ChatServer::RequestStop() {
   static_assert(std::atomic<bool>::is_always_lock_free);
   stop_requested_.store(true);
+  background_.PreventStart();
+  batches_.PreventStart();
+  vector_jobs_.PreventStart();
+  background_scanner_.PreventStart();
 }
 
 void ChatServer::StartConnection(int fd, bool operations) {
@@ -72,6 +86,7 @@ void ChatServer::StartConnection(int fd, bool operations) {
     if (registered) {
       FinishConnection(fd, operations);
     } else {
+      DrainHttpClose(fd);
       ::close(fd);
       if (counted) {
         (operations ? operations_conns_ : public_conns_).fetch_sub(1);
@@ -172,14 +187,23 @@ Status ChatServer::Run() {
     std::fprintf(stderr, "[q4t] operations on port %d (host 127.0.0.1)\n",
                  operations_port_);
   try {
+    auto loop = progress_.Acquire(0);
+    loop.Handle().Stage(ProgressStage::kControl);
+    ProgressContext progress_context(loop.Handle());
     bool draining = false;
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
+      ProgressExecution loop_work(ProgressWork::kServiceLoop);
+      detail::PollRequestWorkers();
+      RecoverApplicationJobs();
       if (stop_requested_.load() && !draining) {
         draining = true;
         drain_until =
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
+        batches_.RequestStop();
+        vector_jobs_.RequestStop();
+        background_.RequestStop();
         {
           const std::lock_guard<std::mutex> lock(seq_mu_);
           seq_stopping_ = true;
@@ -195,7 +219,10 @@ Status ChatServer::Run() {
       std::array<pollfd, 2> listeners{
           {{operations_fd, POLLIN, 0}, {listen_fd, POLLIN, 0}}};
       const int ready = ::poll(listeners.data(), listeners.size(), 25);
-      if (ready == 0 || (ready < 0 && errno == EINTR)) continue;
+      if (ready == 0 || (ready < 0 && errno == EINTR)) {
+        ProgressExecution::Completed();
+        continue;
+      }
       if (ready < 0) {
         serving_failed_.store(true);
         break;
@@ -219,6 +246,7 @@ Status ChatServer::Run() {
         StartConnection(fd, index == 0);
       }
       if (serving_failed_.load()) break;
+      ProgressExecution::Completed();
     }
   } catch (const std::exception& error) {
     std::fprintf(stderr, "[q4t] accept/thread exception: %s\n", error.what());
@@ -230,6 +258,9 @@ Status ChatServer::Run() {
   RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
+  batches_.RequestStop();
+  vector_jobs_.RequestStop();
+  background_.RequestStop();
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
     for (int fd : connections_) ::shutdown(fd, SHUT_RDWR);
@@ -240,6 +271,9 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
+  batches_.Join();
+  vector_jobs_.Join();
+  background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   close_listener.Run();
@@ -248,6 +282,15 @@ Status ChatServer::Run() {
 }
 
 void ChatServer::HandleClient(int fd, bool operations) {
+  HttpRequestState state;
+  for (size_t request = 0; request < 100 && !stop_requested_.load(); ++request) {
+    if (request && !AwaitHttpRequest(fd, &state)) return;
+    if (!HandleRequest(fd, operations, &state, request + 1 < 100)) return;
+  }
+}
+
+bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
+                              bool allow_keep_alive) {
   ClientLease client_lease;  // Outlives response and heartbeat cleanup.
   detail::HttpResponseContext context(fd, &metrics_.http_transport);
   bool dispatch_started = false;
@@ -255,6 +298,9 @@ void ChatServer::HandleClient(int fd, bool operations) {
     std::string method, path, body;
     HttpBodyLease lease(body_budget_);
     HttpRequestHeaders headers;
+    HttpBodyStream body_stream;
+    std::unique_ptr<FileHttpRequest> file_request;
+    ObjectReply file_preparation;
     std::atomic<int>* admission = nullptr;
     ScopeExit release_admission([&] {
       if (admission) admission->fetch_sub(1);
@@ -274,6 +320,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
+      if (IsCancellationRequest(method, path))
+        lease.SelectBudget(cancel_body_budget_);
       if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
         failure_status = 503;
         headers.error_code = "server_draining";
@@ -303,8 +351,19 @@ void ChatServer::HandleClient(int fd, bool operations) {
         return false;
       }
       admission = &counter;
-      if (method == "POST" &&
-          (path == "/v1/chat/completions" || path == "/v1/chat/preflight")) {
+      if ((method == "POST" && !IsCancellationRequest(method, path) &&
+           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+            path == "/v1/completions" || path == "/v1/moderations" ||
+            path == "/v1/embeddings" ||
+            IsResponsesTarget(path) ||
+            IsConversationTarget(path) || IsPromptTarget(path) ||
+            IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+            IsFileTarget(path) ||
+            IsUploadTarget(path))) ||
+          (method == "GET" && IsVectorStoreTarget(path) &&
+           !IsVectorStoreObservation(method, path)) ||
+          (method == "GET" && IsFileTarget(path) &&
+           !IsFileMetadata(method, path))) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -314,10 +373,41 @@ void ChatServer::HandleClient(int fd, bool operations) {
           return false;
         }
       }
+      if (IsFileTarget(path) || IsUploadTarget(path)) {
+        if (!objects_) {
+          failure_status = 503;
+          headers.error_code = "object_scope_unavailable";
+          return false;
+        }
+        const auto scope = identity.Scoped()
+            ? "client:" + std::string(identity.Id()) : "local:anonymous";
+        BinaryAccess access{
+            scope, std::chrono::steady_clock::now() +
+                       std::chrono::milliseconds(request_deadline_ms_),
+            [this, fd, cancellation = IsUploadCancellation(method, path)] {
+              return (!cancellation && stop_requested_.load()) ||
+                     detail::ClientConnectionFailed(fd);
+            }};
+        file_request = std::make_unique<FileHttpRequest>(*objects_, access);
+        const auto ready = file_request->Prepare(method, path,
+                                                  headers.content_type,
+                                                  &body_stream);
+        if (!ready.ok()) {
+          file_preparation = ready;
+          failure_status = ready.http_status;
+          headers.error_code = ready.ClientCode();
+          headers.error_param = ready.value.GetString("param");
+          return false;
+        }
+        headers.body_limit = identity.Scoped()
+            ? std::min<uint64_t>(headers.body_limit, file_request->WireLimit())
+            : file_request->WireLimit();
+      }
       return true;
     };
     if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
-                         &failure_status, &headers, admit)) {
+                         &failure_status, &headers, admit, {}, state, {},
+                         &body_stream)) {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       context.RecordReceiveFailure(headers.failure, failure_status,
                                    headers.system_error);
@@ -327,15 +417,31 @@ void ChatServer::HandleClient(int fd, bool operations) {
                            : failure_status == 403 ? "Forbidden"
                            : failure_status == 404 ? "Not Found"
                            : failure_status == 413 ? "Content Too Large"
+                           : failure_status == 417 ? "Expectation Failed"
                            : failure_status == 429 ? "Too Many Requests"
                                                    : "Bad Request";
-      SendError(fd, failure_status, reason, {}, headers.error_code,
-                headers.error_param);
-      return;
+      const auto* file_error = !file_preparation.ok() ? &file_preparation
+          : file_request ? file_request->UploadFailure() : nullptr;
+      if (file_error)
+        SendError(fd, file_error->http_status, file_error->ClientMessage(), {},
+                    file_error->ClientCode(), file_error->value.GetString("param"),
+                    file_error->value.GetString("allow"));
+      else
+        SendError(fd, failure_status, reason, {}, headers.error_code,
+                    headers.error_param);
+      return false;
     }
-    if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-        path == "/v1/requests/cancel") {
-      if (method == "POST") {
+    if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+        path == "/v1/completions" || path == "/v1/moderations" ||
+            path == "/v1/embeddings" ||
+        IsResponsesTarget(path) ||
+        path == "/v1/requests/cancel" || IsConversationTarget(path) ||
+        IsPromptTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path)) {
+      if (method == "POST" && !((IsResponseCancellation(method, path) ||
+                                 IsResponsesTokenCount(path) ||
+                                 IsBatchCancellation(method, path) ||
+                                 IsVectorStoreCancellation(method, path)) &&
+                                body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
           if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
@@ -353,13 +459,18 @@ void ChatServer::HandleClient(int fd, bool operations) {
           context.RecordReceiveFailure(HttpReceiveFailure::kMedia, 415);
           SendError(fd, 415, "Content-Type must be application/json with UTF-8",
                     {}, "unsupported_media_type", "Content-Type");
-          return;
+          return false;
         }
       }
     }
     const auto t0 = std::chrono::steady_clock::now();
+    context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
+                            !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    Dispatch(fd, method, path, body);
+    if (file_request)
+      file_request->Serve(fd);
+    else
+      Dispatch(fd, method, path, body);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
     if (access_log) {
       const double ms = std::chrono::duration<double, std::milli>(
@@ -368,6 +479,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       std::fprintf(stderr, "[q4t][http] trace_id=%s elapsed_ms=%.1f\n",
                    context.TraceId().c_str(), ms);
     }
+    return context.FinishResponse() && !stop_requested_.load();
   } catch (const std::bad_alloc&) {
     if (!dispatch_started)
       context.RecordReceiveFailure(HttpReceiveFailure::kException, 503);
@@ -378,6 +490,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       context.RecordReceiveFailure(HttpReceiveFailure::kException, 500);
     detail::SendExceptionResponse(fd, *context.State());
   }
+  return false;
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,
@@ -386,6 +499,91 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (IsResponsesTokenCount(path)) {
+    if (method != "POST") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "POST");
+    } else if (path != "/v1/responses/input_tokens") {
+      SendError(fd, 400, "Input count does not accept query parameters", {},
+                "invalid_request", "query");
+    } else {
+      HandleResponsesTokenCount(fd, body);
+    }
+    return;
+  }
+  if (IsResponsesCompaction(path)) {
+    if (method != "POST") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "POST");
+    } else if (path != "/v1/responses/compact") {
+      SendError(fd, 400, "Compact does not accept query parameters", {},
+                "invalid_request", "query");
+    } else {
+      HandleChat(fd, body, GenerationApi::kCompact);
+    }
+    return;
+  }
+  if (ParseVectorStoreRoute(path).kind == VectorStoreRouteKind::kSearch) {
+    HandleVectorSearch(fd, method, path, body);
+    return;
+  }
+  if ((IsStoredChatTarget(path) &&
+       !(method == "POST" &&
+         path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
+      IsConversationTarget(path) || IsPromptTarget(path) ||
+      IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+      (IsResponsesTarget(path) &&
+       path.substr(0, path.find('?')) != "/v1/responses")) {
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    if (!objects_ || !context || !context->Client().Allowed()) {
+      SendError(fd, 503, "Authenticated application state unavailable", {},
+                "object_scope_unavailable");
+      return;
+    }
+    const auto& client = context->Client();
+    const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
+                                       : "local:anonymous";
+    StateAccess access{
+        scope,
+        std::chrono::steady_clock::now() +
+            std::chrono::milliseconds(request_deadline_ms_),
+        [this, fd, cancellation = IsCancellationRequest(method, path)] {
+          return (!cancellation && stop_requested_.load()) ||
+                 detail::ClientConnectionFailed(fd);
+        }};
+    if (IsResponsesTarget(path)) {
+      ServeResponsesState(fd, *objects_, method, path, body, access,
+                          background_.Get());
+      return;
+    }
+    auto reply =
+        IsVectorStoreTarget(path)
+            ? HandleVectorStoreRequest(
+                  *objects_, clients_, !embedding_model_dir_.empty(), method,
+                  path, body, client,
+                  {access.scope, access.deadline, access.cancelled})
+        : IsBatchTarget(path)
+            ? HandleBatchRequest(
+                  *objects_, batches_.Get(), method, path, body, client,
+                  {access.scope, access.deadline, access.cancelled})
+        : IsPromptTarget(path)
+            ? HandlePromptRequest(*objects_, method, path, body,
+                                  PlanningConfig(fd), access)
+        : IsStoredChatTarget(path)
+            ? HandleStoredChatRequest(*objects_, method, path, body, access)
+            : HandleConversationRequest(*objects_, method, path, body, access);
+    if (reply.ok())
+      SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
+                 {access.deadline});
+    else
+      SendError(fd, reply.http_status, reply.ClientMessage(),
+                {access.deadline}, reply.ClientCode(),
+                reply.value.GetString("param"),
+                reply.value.GetString("allow"));
+    return;
+  }
   if (path.find('?') != path.npos) {
     rejected(HttpReceiveFailure::kQuery, 400);
     SendError(fd, 400, "query parameters are not supported", {},
@@ -393,11 +591,28 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   std::string_view expected;
+  if (IsModelDetailPath(path)) {
+    if (method != "GET" && method != "DELETE") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "GET, DELETE");
+    } else if (!body.empty()) {
+      rejected(HttpReceiveFailure::kUnexpectedBody, 400);
+      SendError(fd, 400, "model query/delete body is not supported", {},
+                "unexpected_body", "body");
+    } else {
+      HandleModel(fd, method, path);
+    }
+    return;
+  }
   if (path == "/healthz" || path == "/livez" || path == "/readyz" ||
       path == "/v1/models" || path == "/v1/capabilities" ||
       path == "/v1/config" || path == "/metrics")
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+           path == "/v1/completions" || path == "/v1/responses" ||
+           path == "/v1/moderations" ||
+            path == "/v1/embeddings" ||
            path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -468,6 +683,22 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/chat/completions" && method == "POST") {
     HandleChat(fd, body);
+    return;
+  }
+  if (path == "/v1/completions" && method == "POST") {
+    HandleChat(fd, body, GenerationApi::kCompletion);
+    return;
+  }
+  if (path == "/v1/embeddings" && method == "POST") {
+    HandleEmbeddings(fd, body);
+    return;
+  }
+  if (path == "/v1/moderations" && method == "POST") {
+    HandleModerations(fd, body);
+    return;
+  }
+  if (path == "/v1/responses" && method == "POST") {
+    HandleChat(fd, body, GenerationApi::kResponse);
     return;
   }
   rejected(HttpReceiveFailure::kRoute, 404);

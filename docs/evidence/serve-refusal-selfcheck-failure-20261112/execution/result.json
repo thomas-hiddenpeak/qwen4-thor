@@ -1,0 +1,41 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/feature_acceptance.py\", line 171, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/feature_acceptance.py\", line 117, in exercise\n    first = self.version_ready(1,'primary') if version else self.ready(1,'primary')\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_managed_acceptance.py\", line 214, in ready\n    state = self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 443, in wait\n    last = self.sample()\n           ^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 431, in sample\n    self.engine.require(not value['recovery_frozen'] and value['state'] != 'QUARANTINED',\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/fallback-01/bundle/source/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: service entered protective state\n",
+  "cleanup_failure": null,
+  "seconds": 89.95504508400336,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 1,
+      "probes": 0,
+      "controls": 334
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2649875755594551
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2649929598118142
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1909677,
+      "start_ticks": 264987575
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/fallback-01/bundle",
+    "manifest_sha256": "bb96c5f41720e9332ce048e5fc7215301c0647373728bbea27d49fb0045d63d9"
+  },
+  "scenario": "feature_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

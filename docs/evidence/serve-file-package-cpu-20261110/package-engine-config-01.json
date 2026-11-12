@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    ".",
+    "-B",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "-DQ4T_ARCHIVE_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/office-deps/root/usr/include"
+  ],
+  "exit_code": 0,
+  "seconds": 0.6145517062395811
+}

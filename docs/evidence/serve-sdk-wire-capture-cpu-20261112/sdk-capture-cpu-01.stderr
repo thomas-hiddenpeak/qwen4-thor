@@ -1,0 +1,34 @@
+test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify) ... ERROR
+test_official_high_level_helper_and_split_native_wire_stay_separate (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_official_high_level_helper_and_split_native_wire_stay_separate) ... ERROR
+
+======================================================================
+ERROR: test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_sdk_capture.py", line 60, in test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify
+    capture.validate(value)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/sdk_capture.py", line 47, in validate
+    from tools.serve_responses.test_contract import errors
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 9, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+======================================================================
+ERROR: test_official_high_level_helper_and_split_native_wire_stay_separate (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_official_high_level_helper_and_split_native_wire_stay_separate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_sdk_capture.py", line 51, in test_official_high_level_helper_and_split_native_wire_stay_separate
+    actual = capture.stream_response(config, transport=Replay())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/sdk_capture.py", line 124, in stream_response
+    validate(value)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/sdk_capture.py", line 47, in validate
+    from tools.serve_responses.test_contract import errors
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 9, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.628s
+
+FAILED (errors=2)

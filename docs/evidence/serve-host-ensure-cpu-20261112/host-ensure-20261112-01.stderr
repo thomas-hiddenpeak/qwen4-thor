@@ -1,0 +1,13 @@
+test_stopped_preflight_does_not_spawn_outer_or_modify_intent (tools.serve_recovery.test_host_ensure.EnsureTests.test_stopped_preflight_does_not_spawn_outer_or_modify_intent) ... ok
+test_disabled_host_does_not_read_ambiguous_core_or_start_service (tools.serve_recovery.test_host_ensure.EnsureTests.test_disabled_host_does_not_read_ambiguous_core_or_start_service) ... ok
+test_actual_existing_entry_lock_prevents_restart_despite_unknown_core (tools.serve_recovery.test_host_ensure.EnsureTests.test_actual_existing_entry_lock_prevents_restart_despite_unknown_core) ... ok
+test_absent_running_entry_is_eligible_without_resetting_or_starting (tools.serve_recovery.test_host_ensure.EnsureTests.test_absent_running_entry_is_eligible_without_resetting_or_starting) ... ok
+test_unknown_journal_without_live_entry_cannot_authorize_automatic_start (tools.serve_recovery.test_host_ensure.EnsureTests.test_unknown_journal_without_live_entry_cannot_authorize_automatic_start) ... ok
+test_outer_disabled_preserves_original_running_intent_without_new_entry (tools.serve_recovery.test_host_ensure.EnsureTests.test_outer_disabled_preserves_original_running_intent_without_new_entry) ... ok
+test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu (tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu) ... ok
+test_explicit_stop_remains_available_when_host_entry_disabled (tools.serve_recovery.test_host_install.HostTests.test_explicit_stop_remains_available_when_host_entry_disabled) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 12.793s
+
+OK

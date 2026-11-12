@@ -1,0 +1,7 @@
+[PASS] client_file_revision_upgrade_preserves_inflight_and_rate_recovery
+[PASS] client_file_legacy_migration_preserves_capacity_and_usage
+[PASS] client_file_configuration_emits_actual_schema_value
+[PASS] client_dynamic_update_preserves_snapshots_slots_and_move_ownership
+[PASS] files_schema_emits_actual_records_and_expiration
+[PASS] chat_capabilities_files_separates_capacity_storage_and_consumption
+6 tests, 6 passed, 0 failed, 0 skipped

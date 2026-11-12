@@ -1,0 +1,6 @@
+{
+  "tools/serve_access/prepare.py": "37ec6cd5eb39cb0677ee9ef3ade4e3884fb642bcc0b67c046bc0b00525644d2f",
+  "tools/serve_access/test_acceptance.py": "68d53d1c3d1f40596ed58aa3a4fd5b82cb6c07f525247cab3025ca7d13f7fe13",
+  "tools/serve_access/acceptance.py": "f566b70430adc2725e164d75de13bde0a8f7506c5606a7850491ca8b8222ae7d",
+  "tools/serve_recovery/acceptance.py": "345e067ba2620a3d5fda38280c86de85743fcc86adc4d369450bf5e7e46e4aa4"
+}

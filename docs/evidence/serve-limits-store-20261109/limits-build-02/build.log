@@ -1,0 +1,8 @@
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[ 50%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/src/server/client_policy.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/client_policy_check.cpp.o
+[ 50%] Linking CXX executable q4t_client_policy_check
+[100%] Built target q4t_client_policy_check

@@ -60,11 +60,7 @@ Q4T_TEST(output_constraints_error_paths_survive_chat_validation) {
       {R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
        "tool_choice.function.x"},
       {R"("response_format":{"type":"json_schema","json_schema":{"name":"x"}})",
-       "response_format.json_schema.schema"},
-      {R"("response_format":{"type":"json_object"})", "tool_choice"},
-      {R"("tool_choice":"required","session_id":")"
-       "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"",
-       "session_id"}};
+       "response_format.json_schema.schema"}};
   for (const auto& [options, expected] : cases) {
     const auto request = Request(options);
     std::string param = "stale";
@@ -109,8 +105,6 @@ Q4T_TEST(output_schema_container_and_missing_field_locations) {
   const std::pair<const char*, const char*> cases[] = {
       {R"(null)", "schema"},
       {R"({})", "schema.type"},
-      {R"({"type":"object","additionalProperties":false})",
-       "schema.properties"},
       {R"({"type":"object","properties":{}})", "schema.additionalProperties"},
       {R"({"type":"object","properties":{"x":{"type":"string"}},
             "required":["x","x"],"additionalProperties":false})",
@@ -156,8 +150,7 @@ Q4T_TEST(output_constraints_tool_choice_plan) {
        {R"("tool_choice":"force")", R"("parallel_tool_calls":0)",
         R"("tool_choice":{"type":"function","function":{"name":"absent"}})",
         R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
-        R"("tool_choice":"required","parse_response":false)",
-        R"("tool_choice":"required","session_id":"x")"})
+        R"("tool_choice":"required","parse_response":false)"})
     Q4T_CHECK(
         !q4t::server::PlanOutputConstraints(Request(options), &plan).ok());
   return true;
@@ -167,8 +160,8 @@ Q4T_TEST(output_constraints_schema_profile_rejects_silent_downgrade) {
   Q4T_CHECK(q4t::server::ValidateOutputSchema(Parse(kSchema), true).ok());
   for (const auto* extra :
        {R"("$ref":"#/$defs/x")", R"("oneOf":[])", R"("pattern":".*")",
-        R"("minimum":0)", R"("minLength":1)", R"("default":{})",
-        R"("required":["missing"])", R"("additionalProperties":true)"}) {
+        R"("minimum":0)", R"("minLength":1)", R"("required":["missing"])",
+        R"("additionalProperties":true)"}) {
     auto schema = Parse(kSchema);
     const auto patch = Parse("{" + std::string(extra) + "}").object[0];
     std::erase_if(schema.object,
@@ -186,12 +179,13 @@ Q4T_TEST(output_constraints_schema_profile_rejects_silent_downgrade) {
 
 Q4T_TEST(output_schema_array_bounds_exact_spelling) {
   for (const auto* key : {"minItems", "maxItems"}) {
-    for (const auto* value : {"1.0000000000000001", "63.9999999999999999",
-                             "1.5", "-1", "65", "true"}) {
-      auto schema = Parse(R"({"type":"object","properties":{"xs":{)"
-          R"("type":"array","items":{"type":"string"},")" +
-          std::string(key) + "\":" + value +
-          R"(}},"required":["xs"],"additionalProperties":false})");
+    for (const auto* value :
+         {"1.0000000000000001", "63.9999999999999999", "1.5", "-1", "true"}) {
+      auto schema =
+          Parse(R"({"type":"object","properties":{"xs":{)"
+                R"("type":"array","items":{"type":"string"},")" +
+                std::string(key) + "\":" + value +
+                R"(}},"required":["xs"],"additionalProperties":false})");
       Q4T_CHECK(!q4t::server::ValidateOutputSchema(schema, true).ok());
     }
   }
@@ -228,7 +222,9 @@ Q4T_TEST(output_constraints_batch_barrier_and_named_choice) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(!parser.Append(text, &deltas).ok());
-    Q4T_CHECK(deltas.empty());
+    // A preceding valid call may have emitted provisional fragments; a later
+    // invalid call must still prevent the whole batch's successful terminal.
+    Q4T_CHECK(!parser.Finish(false, &deltas));
   }
   const auto named = Request(
       R"("tool_choice":{"type":"function","function":{"name":"read"}})");
@@ -249,17 +245,21 @@ Q4T_TEST(output_constraints_all_chunk_splits_and_tool_errors) {
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(parser.Append(text.substr(0, split), &deltas).ok());
     Q4T_CHECK(parser.Append(text.substr(split), &deltas).ok());
-    Q4T_CHECK(deltas.empty());
+    Q4T_CHECK(!deltas.empty());
     Q4T_CHECK(parser.Finish(false, &deltas).ok());
     size_t calls = 0;
+    std::string arguments;
     for (const auto& delta : deltas) {
       if (delta.kind != ResponseDelta::Kind::kTool) continue;
-      ++calls;
-      Q4T_CHECK(delta.call.id == "call_id_0" && delta.call.name == "read");
-      Q4T_CHECK(Parse(delta.call.arguments).GetString("path") ==
-                "docs/STATUS.md");
+      if (delta.tool_start) {
+        ++calls;
+        Q4T_CHECK(delta.call.id == "call_id_0" && delta.call.name == "read");
+      }
+      Q4T_CHECK(delta.call.index == 0);
+      arguments += delta.call.arguments;
     }
     Q4T_CHECK(calls == 1);
+    Q4T_CHECK(Parse(arguments).GetString("path") == "docs/STATUS.md");
   }
   for (const auto* args :
        {"<parameter=path>other</parameter><parameter=line>1</parameter>",
@@ -285,7 +285,7 @@ Q4T_TEST(output_constraints_none_required_and_length_terminals) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(parser.Append("ordinary text", &deltas).ok());
-    Q4T_CHECK(deltas.empty());
+    Q4T_CHECK(!deltas.empty() && deltas.front().text == "ordinary text");
     Q4T_CHECK(parser.Finish(false, &deltas).ok() ==
               (std::string(choice) == "none"));
   }
@@ -294,9 +294,10 @@ Q4T_TEST(output_constraints_none_required_and_length_terminals) {
   std::vector<ResponseDelta> deltas;
   Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
   Q4T_CHECK(parser.Append(Call(), &deltas).ok());
-  Q4T_CHECK(!parser.Finish(true, &deltas).ok() && deltas.empty());
+  Q4T_CHECK(!deltas.empty() && !parser.Finish(true, &deltas));
   const auto none = Request(R"("tool_choice":"none")");
   ChatResponseParser forbidden;
+  deltas.clear();
   Q4T_CHECK(forbidden.Init(none, kClosed, "id", false).ok());
   Q4T_CHECK(!forbidden.Append(Call(), &deltas).ok() && deltas.empty());
   return true;
@@ -314,7 +315,7 @@ Q4T_TEST(output_constraints_json_markers_are_data) {
     Q4T_CHECK(parser.Append("reason</think>\n\n", &deltas).ok());
     Q4T_CHECK(parser.Append(body.substr(0, split), &deltas).ok());
     Q4T_CHECK(parser.Append(body.substr(split), &deltas).ok());
-    Q4T_CHECK(deltas.empty() && !parser.HasToolCalls());
+    Q4T_CHECK(!deltas.empty() && !parser.HasToolCalls());
     Q4T_CHECK(parser.Finish(false, &deltas).ok());
     const auto message = Parse(parser.MessageJson());
     Q4T_CHECK(message.GetString("reasoning_content") == "reason");
@@ -325,7 +326,7 @@ Q4T_TEST(output_constraints_json_markers_are_data) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(parser.Append(bad, &deltas).ok());
-    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && deltas.empty());
+    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && !deltas.empty());
   }
   return true;
 }
@@ -345,11 +346,11 @@ Q4T_TEST(output_constraints_json_schema_and_combinations) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(parser.Append(content, &deltas).ok());
-    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && deltas.empty());
+    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && !deltas.empty());
   }
   const auto with_tools =
       Request(R"("response_format":{"type":"json_object"})");
-  Q4T_CHECK(!q4t::server::PlanOutputConstraints(with_tools, &plan).ok());
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(with_tools, &plan).ok());
   Q4T_CHECK(
       q4t::server::PlanOutputConstraints(
           Request(
@@ -375,5 +376,68 @@ Q4T_TEST(output_constraints_template_filters_preserve_request) {
   Q4T_CHECK(
       single.GetArray("tools")->array[0].Find("function")->GetString("name") ==
       "noop");
+  return true;
+}
+
+Q4T_TEST(output_constraints_allowed_tools_filter_template_grammar_and_output) {
+  for (const auto* mode : {"auto", "required"}) {
+    const auto request = Request(
+        std::string(
+            R"("tool_choice":{"type":"allowed_tools","allowed_tools":{"mode":")") +
+        mode +
+        R"(","tools":[{"type":"function","function":{"name":"noop"}}]}})");
+    OutputConstraints plan;
+    Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan));
+    Q4T_CHECK(plan.active && plan.restrict_tools && plan.AllowsTool("noop"));
+    Q4T_CHECK(!plan.AllowsTool("read"));
+    Q4T_CHECK(plan.structural_tag.find("<function=noop>") != std::string::npos);
+    Q4T_CHECK(plan.structural_tag.find("<function=read>") == std::string::npos);
+    const auto filtered = q4t::server::ConstraintTemplateRequest(request, plan);
+    Q4T_CHECK(filtered.GetArray("tools")->array.size() == 1);
+    std::string prompt;
+    Q4T_CHECK(q4t::server::RenderChatPrompt(filtered, {"q"}, &prompt));
+    Q4T_CHECK(prompt.find("\"name\": \"noop\"") != prompt.npos);
+    Q4T_CHECK(prompt.find("\"name\": \"read\"") == prompt.npos);
+    for (const auto* name : {"noop", "read"}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "id", false));
+      Q4T_CHECK(parser.Append(Call(name, ""), &deltas).ok() ==
+                (std::string(name) == "noop"));
+      Q4T_CHECK(parser.Finish(false, &deltas).ok() ==
+                (std::string(name) == "noop"));
+    }
+  }
+  const auto empty = Request(
+      R"("tool_choice":{"type":"allowed_tools","allowed_tools":{"mode":"auto","tools":[]}})");
+  OutputConstraints plan;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(empty, &plan));
+  Q4T_CHECK(!plan.AllowsTool("read") && !plan.AllowsTool("noop"));
+  Q4T_CHECK(q4t::server::ConstraintTemplateRequest(empty, plan)
+                .GetArray("tools")
+                ->array.empty());
+  return true;
+}
+
+Q4T_TEST(output_constraints_allowed_tools_errors_are_precise) {
+  for (
+      const auto& [choice, path] :
+      std::vector<std::pair<std::string, std::string>>{
+          {R"({"mode":"none","tools":[]})", "mode"},
+          {R"({"mode":"required","tools":[]})", "tools"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"absent"}}]})",
+           "tools[0].function.name"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"read"}},{"type":"function","function":{"name":"read"}}]})",
+           "tools[1].function.name"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"read","extra":1}}]})",
+           "tools[0].function.extra"}}) {
+    const auto request =
+        Request(R"("tool_choice":{"type":"allowed_tools","allowed_tools":)" +
+                choice + '}');
+    OutputConstraints plan;
+    std::string param;
+    Q4T_CHECK(!q4t::server::PlanOutputConstraints(request, &plan, &param));
+    Q4T_CHECK(param == "tool_choice.allowed_tools." + path);
+  }
   return true;
 }

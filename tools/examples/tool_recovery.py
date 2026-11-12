@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 import tempfile
 
-from chat_client import (ToolInvocation, _completion, append_final,
+from chat_client import (CustomToolInvocation, _invocation_calls, ToolInvocation, _completion, append_final,
                          append_tool_results, load_json, read_json, read_sse,
                          require, validate_capabilities)
 
@@ -184,9 +184,11 @@ def _inspect(directory):
             return finish("COMPLETED" if completed else "FINAL_RESPONSE_SAVED",
                           "No replay needed. Task success requires its own "
                           "business check, separate from protocol completion.")
-        invocations = [asdict(ToolInvocation(call["id"], call["function"]["name"],
-            load_json(call["function"]["arguments"])))
-            for call in completion.message["tool_calls"]]
+        invocations = [asdict(CustomToolInvocation(call["id"], call["custom"]["name"],
+            call["custom"]["input"]) if call["type"] == "custom" else
+            ToolInvocation(call["id"], call["function"]["name"],
+                load_json(call["function"]["arguments"])))
+            for call in _invocation_calls(completion.message)]
         plan = read(label + "-plan.json")
         require(plan is None or plan == invocations, "tool plan mismatch")
         results, pending, unknown = {}, [], []

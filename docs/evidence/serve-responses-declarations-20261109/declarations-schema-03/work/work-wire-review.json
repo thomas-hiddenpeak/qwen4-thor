@@ -1,0 +1,532 @@
+{
+  "checked": 51,
+  "rejected": [
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 5, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 8} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 5, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 8} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 5, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 8} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'logprobs' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'logprobs' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'logprobs' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/wire.jsonl",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    }
+  ],
+  "sources_sha256": {
+    "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl": "d9521843d4bd67989a01e198b9a71fae1afe8e2acfde143e494aab4673384ebf",
+    "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/crash/wire.jsonl": "442525cdab02411b761fb0e8e2f18f7943d5c171519106627e24ea7cb5233f07",
+    "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/json/wire.jsonl": "3cb42c51fa0d7ca1702f4489e86cc443e80a1af34ccd15337c05502e579e73b9",
+    "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/events.jsonl": "812b27d7c662b4289fec93153978edaf1a74442659452cfc9ce0eed08b1a0cc1",
+    "docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/stream/wire.jsonl": "55650fd728a1c32b1a3da031632b2b17c4403a22df1eb15bdbb99a628d802f19"
+  },
+  "legacy_nonconforming_not_reaccepted": true
+}

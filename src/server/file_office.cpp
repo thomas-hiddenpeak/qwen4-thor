@@ -1,0 +1,266 @@
+#include "file_office_internal.h"
+
+#include "file_rtf.h"
+#include "object_protocol.h"
+#include "q4t/server/http_framing.h"
+
+namespace q4t::server::file_detail {
+namespace {
+ObjectReply CodecRequired(size_t depth) {
+  return object_detail::Error(
+      503,
+      depth ? "file_nested_codec_required" : "file_document_codec_required",
+      "Document requires its isolated format decoder");
+}
+ObjectReply ApplePackage(OfficeContext& context, bool* apple) {
+  *apple = false;
+  if ((context.Part("Index/Document.iwa") || context.Part("Index.zip")) &&
+      context.Part("Metadata/Properties.plist")) {
+    *apple = true;
+    return {};
+  }
+  for (const char* name : {"index.xml.gz", "index.apxl.gz"})
+    if (const auto* part = context.Part(name);
+        part && part->starts_with("\x1f\x8b")) {
+      *apple = true;
+      return {};
+    }
+  for (const char* name : {"index.xml", "index.apxl"}) {
+    if (!context.Part(name)) continue;
+    auto reply = context.Xml(name, [&](const XmlNode& node) -> ObjectReply {
+      if (node.kind == XmlKind::kStart && !node.depth)
+        *apple =
+            (node.name == "document" &&
+             (node.space == "http://developer.apple.com/namespaces/sl" ||
+              node.space == "http://developer.apple.com/namespaces/ls")) ||
+            (node.name == "presentation" &&
+             (node.space == "http://developer.apple.com/namespaces/keynote2" ||
+              node.space == "http://developer.apple.com/schemas/APXL"));
+      return {};
+    });
+    if (!reply.ok() || *apple) return reply;
+  }
+  return {};
+}
+ObjectReply ParseDepth(const FileInputContent& input,
+                       const FileDocumentLimits& limits,
+                       const PackageLimits& package_limits,
+                       const BinaryAccess& access, size_t depth,
+                       FileDocument* output) {
+  *output = {};
+  if (depth > limits.max_nested_documents) return OfficeCapacity();
+  Package package;
+  auto reply = ReadPackage(input.bytes, package_limits, access, &package);
+  if (!reply.ok()) return reply;
+  FileDocument next;
+  OfficeContext context{package, limits, package_limits, access, next};
+  context.nested_documents = depth;
+  if (const auto* mime = context.Part("mimetype");
+      mime &&
+      (mime->starts_with("application/vnd.oasis.opendocument.text") ||
+       mime->starts_with("application/vnd.oasis.opendocument.spreadsheet") ||
+       mime->starts_with("application/vnd.oasis.opendocument.presentation") ||
+       mime->starts_with("application/vnd.oasis.opendocument.graphics"))) {
+    reply = OpenDocument(context);
+  } else {
+    if (!context.Part("[Content_Types].xml")) {
+      bool apple = false;
+      reply = ApplePackage(context, &apple);
+      if (!reply.ok()) return reply;
+      return apple ? CodecRequired(depth) : OfficeInvalid();
+    }
+    bool types = false;
+    std::unordered_map<std::string, std::string> defaults, overrides;
+    reply = context.Xml(
+        "[Content_Types].xml", [&](const XmlNode& node) -> ObjectReply {
+          if (node.kind == XmlKind::kStart && !node.depth) {
+            types =
+                node.name == "Types" && node.space ==
+                                            "http://schemas.openxmlformats.org/"
+                                            "package/2006/content-types";
+            if (!types) return OfficeInvalid();
+          }
+          if (node.kind == XmlKind::kStart && node.depth == 1 &&
+              node.space ==
+                  "http://schemas.openxmlformats.org/package/2006/"
+                  "content-types") {
+            const bool is_default = node.name == "Default";
+            if (!is_default && node.name != "Override") return OfficeInvalid();
+            const auto name =
+                node.Attribute(is_default ? "Extension" : "PartName");
+            const auto type = node.Attribute("ContentType");
+            if (name.empty() || name.size() > 2048 || type.empty() ||
+                type.size() > 255 ||
+                !(is_default ? defaults : overrides).emplace(name, type).second)
+              return OfficeInvalid();
+          }
+          return {};
+        });
+    if (!reply.ok()) return reply;
+    if (!types) return OfficeInvalid();
+    Relationships relations;
+    reply = context.Relations("", &relations);
+    if (!reply.ok()) return reply;
+    const Relationship* main = nullptr;
+    for (const auto& [id, relation] : relations) {
+      if (!RelationType(relation.type, "officeDocument")) continue;
+      if (main) return OfficeInvalid();
+      main = &relation;
+    }
+    if (!main) return OfficeInvalid();
+    std::string part, kind;
+    reply = context.Target("", *main, &part);
+    if (!reply.ok()) return reply;
+    std::string content_type;
+    const auto override = overrides.find("/" + part);
+    if (override != overrides.end())
+      content_type = override->second;
+    else if (const auto dot = part.rfind('.'); dot != part.npos) {
+      const auto value = defaults.find(part.substr(dot + 1));
+      if (value != defaults.end()) content_type = value->second;
+    }
+    if (content_type ==
+        "application/vnd.ms-excel.sheet.binary.macroEnabled.main")
+      return CodecRequired(depth);
+    reply = context.Xml(part, [&](const XmlNode& node) -> ObjectReply {
+      if (node.kind != XmlKind::kStart || node.depth) return {};
+      if (node.name == "document" &&
+          OfficeSpace(node.space, "wordprocessingml"))
+        kind = "word";
+      else if (node.name == "presentation" &&
+               OfficeSpace(node.space, "presentationml"))
+        kind = "slides";
+      else if (node.name == "workbook" &&
+               OfficeSpace(node.space, "spreadsheetml"))
+        kind = "sheets";
+      else
+        return OfficeInvalid();
+      return {};
+    });
+    if (!reply.ok()) return reply;
+    if (kind == "word")
+      reply = Word(context, part);
+    else if (kind == "slides")
+      reply = Slides(context, part);
+    else if (kind == "sheets")
+      reply = Workbook(context, part);
+    else
+      return OfficeInvalid();
+  }
+  if (!reply.ok()) return reply;
+  next.encoding = "utf-8";
+  next.source_sha256 = object_detail::Digest(input.bytes);
+  *output = std::move(next);
+  return {};
+}
+}  // namespace
+
+ObjectReply OfficeContext::Alternate(std::string_view source,
+                                     std::string_view relation_id) {
+  if (nested_documents >= limits.max_nested_documents) return OfficeCapacity();
+  Relationships relations;
+  auto reply = Relations(source, &relations);
+  if (!reply.ok()) return reply;
+  const auto found = relations.find(std::string(relation_id));
+  if (found == relations.end() || !RelationType(found->second.type, "aFChunk"))
+    return OfficeInvalid();
+  std::string part;
+  reply = Target(source, found->second, &part);
+  if (!reply.ok()) return reply;
+  FileInputContent input;
+  input.filename = part;
+  input.bytes = *Part(part);
+  FileDocument child;
+  const auto format = ClassifyFileDocument(input);
+  const auto pending = [&]() -> ObjectReply {
+    if (document.embedded.size() + document.pending.size() >=
+        limits.max_embedded_documents)
+      return OfficeCapacity();
+    uint64_t bytes = input.bytes.size();
+    if (bytes > kFileInputBytes) return OfficeCapacity();
+    for (const auto& item : document.pending) {
+      if (item.source.bytes.size() > kFileInputBytes - bytes)
+        return OfficeCapacity();
+      bytes += item.source.bytes.size();
+    }
+    document.pending.push_back(
+        {document.text.size(), nested_documents + 1, {part}, std::move(input)});
+    return Text("\n");
+  };
+  const auto filename = http::Lower(input.filename);
+  if (format == FileDocumentFormat::kOfficeZip &&
+      !input.bytes.starts_with("PK") &&
+      (filename.ends_with(".pages") || filename.ends_with(".numbers") ||
+       filename.ends_with(".key")))
+    return pending();
+  if (format == FileDocumentFormat::kRtf)
+    reply = ParseRtfDocument(input, limits, access, &child);
+  else if (format == FileDocumentFormat::kOfficeZip)
+    reply = ParseDepth(input, limits, package_limits, access,
+                       nested_documents + 1, &child);
+  else if (format == FileDocumentFormat::kText ||
+           format == FileDocumentFormat::kCsv ||
+           format == FileDocumentFormat::kTsv ||
+           format == FileDocumentFormat::kIif)
+    reply = ParsePlainFileDocument(input, format, limits, access, &child);
+  else
+    return pending();
+  if (reply.code == "file_nested_codec_required") return pending();
+  if (!reply.ok()) return reply;
+  if (child.embedded.size() + child.pending.size() + document.embedded.size() +
+          document.pending.size() + 1 >
+      limits.max_embedded_documents)
+    return OfficeCapacity();
+  uint64_t pending_bytes = 0;
+  for (const auto* items : {&document.pending, &child.pending})
+    for (const auto& item : *items) {
+      if (item.source.bytes.size() > kFileInputBytes - pending_bytes)
+        return OfficeCapacity();
+      pending_bytes += item.source.bytes.size();
+    }
+  document.embedded.push_back({{part}, object_detail::Digest(input.bytes), {}});
+  for (auto& item : child.embedded) {
+    item.path.insert(item.path.begin(), part);
+    document.embedded.push_back(std::move(item));
+  }
+  for (auto& item : child.pending) {
+    item.text_offset += document.text.size();
+    item.path.insert(item.path.begin(), part);
+    document.pending.push_back(std::move(item));
+  }
+  reply = Text(child.text);
+  if (!reply.ok()) return reply;
+  for (const auto& sheet : child.sheets) {
+    reply = Text("\n[Sheet " + sheet.name + "]\n");
+    if (!reply.ok()) return reply;
+    for (const auto& row : sheet.rows) {
+      for (size_t i = 0; i < row.size(); ++i) {
+        if (i) {
+          reply = Text("\t");
+          if (!reply.ok()) return reply;
+        }
+        reply = Text(row[i]);
+        if (!reply.ok()) return reply;
+      }
+      reply = Text("\n");
+      if (!reply.ok()) return reply;
+    }
+  }
+  return Text("\n");
+}
+
+ObjectReply ParseOfficePackage(const FileInputContent& input,
+                               const FileDocumentLimits& limits,
+                               const PackageLimits& package_limits,
+                               const BinaryAccess& access,
+                               FileDocument* output) {
+  if (!output)
+    return object_detail::Error(500, "file_document_state_invalid",
+                                "Missing output");
+  *output = {};
+  if (!ValidFileDocumentLimits(limits) || !ValidPackageLimits(package_limits))
+    return object_detail::Error(500, "file_document_budget_invalid",
+                                "Invalid document budget");
+  return ParseDepth(input, limits, package_limits, access, 0, output);
+}
+}  // namespace q4t::server::file_detail

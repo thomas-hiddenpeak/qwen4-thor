@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "X-Request-Id": "req-2f2c17dbe8cdb1e56a68e9d1475e2915",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.8215986918658018,
+  "value": {
+    "id": "n04-limits-lost",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "{\"answer\":42}"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 134,
+      "completion_tokens": 7,
+      "total_tokens": 141
+    },
+    "logprobs": null
+  }
+}

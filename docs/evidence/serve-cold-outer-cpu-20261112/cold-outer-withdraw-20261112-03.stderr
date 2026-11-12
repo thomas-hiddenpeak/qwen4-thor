@@ -1,0 +1,8 @@
+test_host_removal_withdraws_issuer_and_preserves_original_core (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_host_removal_withdraws_issuer_and_preserves_original_core) ... ok
+test_lost_shutdown_reply_never_claims_live_issuer_exited (tools.serve_recovery.test_cold_issuer.HostIntegrationTests.test_lost_shutdown_reply_never_claims_live_issuer_exited) ... ok
+test_closed_peer_is_transport_loss_without_received_capabilities (tools.serve_recovery.test_cold_issuer.ChannelTests.test_closed_peer_is_transport_loss_without_received_capabilities) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 7.442s
+
+OK

@@ -1,0 +1,5 @@
+{
+  "status": "PREPARATION_ERROR",
+  "error": "Direct package import of gpu_exclusive failed because nvml_process_query is a sibling tool module; use the existing lifecycle import environment.",
+  "model_actions": 0
+}

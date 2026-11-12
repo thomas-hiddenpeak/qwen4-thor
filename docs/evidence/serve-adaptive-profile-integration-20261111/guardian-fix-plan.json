@@ -1,0 +1,19 @@
+{
+  "failure": "guardian-01",
+  "finding": "DriveModel rejected malformed capacity binding and called Recover, then Drive fell through to resubmit controller ready despite its durable phase already ready. Journal refused duplicate authority and froze durable stop.",
+  "fix": "Return immediately when DriveModel entered stopping/recovering; do not relax malformed binding or journal authority checks.",
+  "targeted": [
+    "RuntimeTests.test_malformed_capacity_cannot_open_model_or_create_another_generation",
+    "RuntimeTests.test_controller_failure_keeps_gateway_and_rebinds_new_model"
+  ],
+  "reuse": [
+    "15 Python integration cases",
+    "qualified capacity happy path; change is confined to synchronous recovery entry",
+    "foreground stop path; does not enter DriveModel fallthrough"
+  ],
+  "gpu_starts": 0,
+  "sources": {
+    "src/service/guardian_main.cpp": "d233ab5e0a2ec786f68de049a71db363e33b20487283daf44ca7d7bbace31a33",
+    "tools/serve_recovery/test_runtime.py": "72d1b6899631cdbbe90f660b0a6f822b895a2cbdca8428ca8af555d4763c7be8"
+  }
+}

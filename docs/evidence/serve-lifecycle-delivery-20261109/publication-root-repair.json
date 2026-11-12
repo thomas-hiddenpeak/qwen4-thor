@@ -1,0 +1,13 @@
+{
+  "status": "PLANNED_OWNED_ROOT_PERMISSION_REPAIR",
+  "path": "/home/rm01/models/dev/qwen4-thor/build",
+  "uid": 2002,
+  "inode": 3294044,
+  "previous_mode": "0775",
+  "selected_mode": "0755",
+  "recursive": false,
+  "failure": "owned canonical publication directory required",
+  "first_failure": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/delivery-01/result.json",
+  "model_starts": 0,
+  "chat_requests": 0
+}

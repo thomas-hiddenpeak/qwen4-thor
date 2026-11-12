@@ -1,0 +1,20 @@
+{
+  "official_url": "https://developer.download.nvidia.com/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2",
+  "archive_sha256": "8346f0371649a92c42293b2d4a7bf3d69e4dd1de23009e1463ea910994a81371",
+  "unified_archive_sha256": "5635273fa55a0145cf9b93a20b00fadd71dfbfd606c4fd7eb06432297b829fd4",
+  "reviewed_sources": {
+    "version.mk": "d4ce871ee063004dccfb5f112c1c1fa432862940cc4b76ac4775b5733f700c53",
+    "kernel-open/nvidia/nv.c": "4c766098070e3c999717d23f4d6aa11b724ea6925a0c34592cbf5d932c66b8ac",
+    "kernel-open/nvidia/nv-dmabuf.c": "6c4c0d18e4c8f833d6307e42910536ba75f47516250e317ee7182ed4ad04796c",
+    "kernel-open/nvidia/nv-caps.c": "47d7a6721331a041b794b3b1e38b5fdbf64055a212c83902478a4a144ae514f9",
+    "kernel-open/nvidia/nv-caps-imex.c": "760ef99f2d4c683b38de345523b678910604129803008f3687727b1bea290297",
+    "kernel-open/nvidia/nvlink_linux.c": "512da8863974dbada02318d606714c9e090baf88793ef3c5993e94815bb5e987",
+    "kernel-open/nvidia/linux_nvswitch.c": "8ef91fc44d2a1e383d3c20ddab2f2cbe5b477cc9ff4158e2571273eaed9e56b9",
+    "kernel-open/nvidia-uvm/uvm.c": "5e0f8e0c531ee33f2add193ca7ca9c391e2428b194c6b8e3570ea0a99d7c0812",
+    "kernel-open/nvidia-uvm/uvm_tools.c": "dc303c94fb0b3dd49e2227c265b54cf18a356a7d5676bb0d6df6ad923e0a5b4e",
+    "kernel-open/nvidia-modeset/nvidia-modeset-linux.c": "5ae12335d510c891bd4ffd3615efebe99fa501420534fd24c8d02beda95449f7",
+    "kernel-open/nvidia-drm/nvidia-drm-drv.c": "d6c822010c1fe1f64203a8f4dbeb3a3b3182889f4ab798831d79c131a5f72962"
+  },
+  "boundary": "File/module ownership is not hardware quiescence. nvidia_close has deferred cleanup; Guardian still requires bounded CUDA probe. Full host setup and GPU business not performed.",
+  "copied_vendor_implementation": false
+}

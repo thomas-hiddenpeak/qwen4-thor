@@ -1,0 +1,6 @@
+{
+  "step": "template case selection preparation",
+  "error": "content-parts is not a legacy fixture ID",
+  "model_starts": 0,
+  "gpu_calls": 0
+}

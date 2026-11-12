@@ -1,0 +1,53 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"functions requires 1 to 128 definitions","type":"invalid_request_error","code":"invalid_request","param":"functions"}}}
+{"accepted":false,"response":{"error":{"message":"functions requires 1 to 128 definitions","type":"invalid_request_error","code":"invalid_request","param":"functions"}}}
+{"accepted":false,"response":{"error":{"message":"expected array","type":"invalid_request_error","code":"invalid_request","param":"functions"}}}
+{"accepted":false,"response":{"error":{"message":"invalid function name","type":"invalid_request_error","code":"invalid_request","param":"functions[0].name"}}}
+{"accepted":false,"response":{"error":{"message":"function.parameters must be an object","type":"invalid_request_error","code":"invalid_request","param":"functions[0].parameters"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: extra","type":"invalid_request_error","code":"invalid_request","param":"functions[0].extra"}}}
+{"accepted":false,"response":{"error":{"message":"legacy functions allow one call","type":"invalid_request_error","code":"invalid_request","param":"parallel_tool_calls"}}}
+{"accepted":false,"response":{"error":{"message":"legacy and current tool controls cannot be mixed","type":"invalid_request_error","code":"invalid_request","param":"tools"}}}
+{"accepted":false,"response":{"error":{"message":"legacy and current tool controls cannot be mixed","type":"invalid_request_error","code":"invalid_request","param":"tool_choice"}}}
+{"accepted":false,"response":{"error":{"message":"expected none, auto or a named function","type":"invalid_request_error","code":"invalid_request","param":"function_call"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: extra","type":"invalid_request_error","code":"invalid_request","param":"function_call.extra"}}}
+{"accepted":false,"response":{"error":{"message":"parallel_tool_calls requires parsed messages / bool","type":"invalid_request_error","code":"invalid_request","param":"parallel_tool_calls"}}}
+{"accepted":false,"response":{"error":{"message":"stop is not supported with constrained output","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":false,"response":{"error":{"message":"response_format plus tools requires tool_choice=none","type":"invalid_request_error","code":"invalid_request","param":"tool_choice"}}}
+{"accepted":false,"response":{"error":{"message":"prediction does not support tools","type":"invalid_request_error","code":"invalid_request","param":"tools"}}}
+{"accepted":false,"response":{"error":{"message":"named tool is not declared","type":"invalid_request_error","code":"invalid_request","param":"function_call.name"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"function result does not match call","type":"invalid_request_error","code":"invalid_request","param":"messages[1].name"}}}
+{"accepted":false,"response":{"error":{"message":"orphan function result","type":"invalid_request_error","code":"invalid_request","param":"messages[0]"}}}
+{"accepted":false,"response":{"error":{"message":"function result missing","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"two call dialects in one message","type":"invalid_request_error","code":"invalid_request","param":"messages[0].tool_calls"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tools must be an array or null","type":"invalid_request_error","code":"invalid_request","param":"tools"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"expected array","type":"invalid_request_error","code":"invalid_request","param":"functions"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unexpected","type":"invalid_request_error","code":"invalid_request","param":"function_call.unexpected"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"expected constraint object","type":"invalid_request_error","code":"invalid_request","param":"tool_choice"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported constraint field: unexpected","type":"invalid_request_error","code":"invalid_request","param":"tool_choice.unexpected"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid or duplicate function name","type":"invalid_request_error","code":"invalid_request","param":"tools[1].function.name"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid or duplicate function name","type":"invalid_request_error","code":"invalid_request","param":"tools[0].function.name"}}}

@@ -1,0 +1,9 @@
+[PASS] chat_capabilities_option_contract
+[PASS] serve_agent_slot_capacity_and_admission
+[PASS] serve_media_supported_profile_and_client_policy
+[PASS] output_constraints_error_paths_survive_chat_validation
+[PASS] output_constraints_tool_choice_plan
+[PASS] legacy_tools_plan_template_and_original_immutable
+[PASS] chat_plan_cache_configuration_and_seed_boundary
+[PASS] chat_plan_structured_cache_checks_actual_configuration
+8 tests, 8 passed, 0 failed, 0 skipped

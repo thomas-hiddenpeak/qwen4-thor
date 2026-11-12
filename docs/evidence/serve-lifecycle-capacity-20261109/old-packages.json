@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "read_only": true,
+  "packages": [
+    {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+      "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+      "version": 9,
+      "status": "PASS",
+      "elapsed_seconds": 0.20165851106867194
+    },
+    {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+      "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+      "version": 8,
+      "status": "PASS",
+      "elapsed_seconds": 0.20138770388439298
+    }
+  ],
+  "gpu_starts": 0
+}

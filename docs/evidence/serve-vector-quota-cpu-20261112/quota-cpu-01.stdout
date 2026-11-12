@@ -1,0 +1,19 @@
+[PASS] client_rate_atomic_concurrency_and_per_client_isolation
+[PASS] client_rate_refund_cancel_failure_and_preterminal_idempotence
+[PASS] client_rate_pending_survives_window_and_settles_in_current_window
+[PASS] client_rate_internal_step_preserves_one_rpm_and_charges_actual_input
+[PASS] client_rate_checkpoint_drains_reservations_and_never_reopens
+[PASS] client_rate_restart_restores_live_window_and_cumulative_usage
+[PASS] client_rate_durable_internal_input_shares_tpm_without_external_rpm
+[PASS] client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries
+[PASS] embeddings_execution_one_rpm_actual_usage_and_batch_precharge
+[PASS] vector_ingestion_cancel_after_committed_model_keeps_usage_without_publication
+  CHECK failed: ConfigureVectorClient(&clients) (line 413)
+[FAIL] vector_ingestion_native_quota_charges_chunks_without_extra_external_rpm
+  CHECK failed: ConfigureVectorClient(&clients, 50) (line 442)
+[FAIL] vector_ingestion_native_quota_requires_owned_data_permit_and_shared_tpm
+  CHECK failed: ConfigureVectorClient(&clients) (line 477)
+[FAIL] vector_ingestion_native_exception_keeps_committed_usage_and_refunds_rest
+  CHECK failed: ConfigureVectorClient(&clients) (line 512)
+[FAIL] vector_ingestion_native_unknown_usage_retains_full_token_reservation
+14 tests, 10 passed, 4 failed, 0 skipped

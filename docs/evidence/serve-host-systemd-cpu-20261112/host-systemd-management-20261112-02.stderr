@@ -1,0 +1,19 @@
+test_render_is_optional_and_real_systemd_parser_accepts_owned_units (tools.serve_recovery.test_host_systemd.AdapterTests.test_render_is_optional_and_real_systemd_parser_accepts_owned_units) ... ok
+test_explicit_registration_and_enablement_leave_model_intent_unchanged (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_registration_and_enablement_leave_model_intent_unchanged) ... ok
+test_native_entry_without_optional_registration_never_calls_manager (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_without_optional_registration_never_calls_manager) ... ok
+test_first_private_write_loss_cannot_create_units_and_resumes_original_selection (tools.serve_recovery.test_host_systemd.AdapterTests.test_first_private_write_loss_cannot_create_units_and_resumes_original_selection) ... ok
+test_partial_unit_copy_resumes_without_replacing_first_published_file (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_copy_resumes_without_replacing_first_published_file) ... ok
+test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer (tools.serve_recovery.test_host_systemd.AdapterTests.test_ready_receipt_loss_keeps_permanent_binding_and_never_enables_timer) ... ok
+test_missing_published_history_stays_unknown_even_after_unit_removal (tools.serve_recovery.test_host_systemd.AdapterTests.test_missing_published_history_stays_unknown_even_after_unit_removal) ... ok
+test_foreign_same_name_unit_cannot_be_claimed_or_overwritten (tools.serve_recovery.test_host_systemd.AdapterTests.test_foreign_same_name_unit_cannot_be_claimed_or_overwritten) ... ok
+test_changed_unit_or_loaded_override_cannot_enable_or_be_removed (tools.serve_recovery.test_host_systemd.AdapterTests.test_changed_unit_or_loaded_override_cannot_enable_or_be_removed) ... ok
+test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart (tools.serve_recovery.test_host_systemd.AdapterTests.test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart) ... ok
+test_active_helper_delays_removal_without_stopping_native_core (tools.serve_recovery.test_host_systemd.AdapterTests.test_active_helper_delays_removal_without_stopping_native_core) ... ok
+test_partial_unit_unlink_resumes_with_original_binding (tools.serve_recovery.test_host_systemd.AdapterTests.test_partial_unit_unlink_resumes_with_original_binding) ... ok
+test_explicit_repair_restores_only_missing_exact_owned_unit (tools.serve_recovery.test_host_systemd.AdapterTests.test_explicit_repair_restores_only_missing_exact_owned_unit) ... ok
+test_native_entry_uninstall_requires_trigger_removal_and_preserves_history (tools.serve_recovery.test_host_systemd.AdapterTests.test_native_entry_uninstall_requires_trigger_removal_and_preserves_history) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 14.459s
+
+OK

@@ -1,0 +1,9 @@
+{
+  "count": 4,
+  "tests": [
+    "tools.serve_access.test_acceptance.DriverTests.test_pending_gate_requires_exact_identity_and_keeps_production_verifier",
+    "tools.serve_access.test_acceptance.DriverTests.test_fault_restore_never_overwrites_a_new_or_pending_commit",
+    "tools.serve_access.test_acceptance.DriverTests.test_failed_core_cleanup_does_not_restore_faulted_files_under_live_writers",
+    "tools.serve_access.test_acceptance.DriverTests.test_unknown_ready_deadline_cannot_be_hidden_by_later_management_latency"
+  ]
+}

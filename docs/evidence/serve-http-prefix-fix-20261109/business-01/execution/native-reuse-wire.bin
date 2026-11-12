@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 109
+Connection: keep-alive
+Cache-Control: no-store
+X-Request-Id: req-e44f22692f284349a789d7bcb357074b
+Vary: Origin
+Access-Control-Allow-Origin: https://client.example
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: x-request-id, retry-after
+
+{"object":"list","data":[{"id":"qwen3.8-flash-next","object":"model","created":1794214861,"owned_by":"q4t"}]}

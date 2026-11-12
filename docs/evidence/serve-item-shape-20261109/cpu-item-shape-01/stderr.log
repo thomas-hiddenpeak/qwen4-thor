@@ -1,0 +1,13 @@
+SDK/native mismatch: input_item_2_missing_id accepted=1 native=0 input.content Unknown item field
+SDK/native mismatch: input_item_2_missing_status accepted=1 native=0 input.content Unknown item field
+SDK/native mismatch: input_item_3_missing_type accepted=1 native=0 input.queries Unknown item field
+SDK/native mismatch: input_item_4_missing_type accepted=1 native=0 input.pending_safety_checks Unknown item field
+SDK/native mismatch: input_item_13_missing_type accepted=1 native=0 input.summary Unknown item field
+SDK/native mismatch: input_item_15_missing_type accepted=1 native=0 input.result Expected text
+SDK/native mismatch: input_item_16_missing_type accepted=1 native=0 input.code Unknown item field
+SDK/native mismatch: input_item_18_missing_type accepted=1 native=0 input.arguments Required item field is missing
+SDK/native mismatch: input_item_23_missing_type accepted=1 native=0 input.server_label Unknown item field
+SDK/native mismatch: input_item_24_missing_type accepted=1 native=0 input.server_label Unknown item field
+SDK/native mismatch: input_item_26_missing_type accepted=1 native=0 input.server_label Unknown item field
+SDK/native mismatch: input_item_31_missing_type accepted=1 native=0 input.call_id Unknown item field
+SDK/native mismatch: input_item_32_missing_type accepted=1 native=0 input.call_id Unknown item field

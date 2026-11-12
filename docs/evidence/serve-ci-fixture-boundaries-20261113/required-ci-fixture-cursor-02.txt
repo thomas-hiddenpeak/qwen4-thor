@@ -1,0 +1,1 @@
+batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion

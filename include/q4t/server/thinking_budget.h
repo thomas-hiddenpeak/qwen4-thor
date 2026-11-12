@@ -22,10 +22,11 @@ class ThinkingBudget {
 
   // -1 means absent/null. Prefix and region flags follow ChatResponseParser.
   Status Init(int64_t limit, std::string_view prompt, bool json_output,
-              bool tool_regions);
+              bool tool_regions, bool observe_unbounded = false);
   Status PrepareTokens(const Encode& encode, const Decode& decode, int vocab,
                        std::span<const int32_t> stop_ids);
   bool Enabled() const { return limit_ >= 0; }
+  bool Tracking() const { return Enabled() || observe_unbounded_; }
   bool Thinking() const { return state_.region == Region::kReasoning; }
   int64_t Consumed() const { return consumed_; }
   int64_t ForcedTokens() const { return forced_tokens_; }
@@ -61,6 +62,7 @@ class ThinkingBudget {
   int64_t forced_tokens_ = 0;
   State state_;
   bool initialized_ = false;
+  bool observe_unbounded_ = false;
   bool prepared_ = false;
   std::array<std::vector<int32_t>, 8> close_suffixes_;
   // Minimal valid UTF-8 completions only need these three byte values.

@@ -1,0 +1,11 @@
+{
+  "command": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-responses-20261108/cpu-item-shape-01/required.txt"
+  ],
+  "executable_sha256": "b690c6f1cee4a424bca968b542454a9100a338ff72a6b36424c0e20d6b742028",
+  "exit_code": 1,
+  "seconds": 0.027527949772775173,
+  "sdk_vectors": 647
+}

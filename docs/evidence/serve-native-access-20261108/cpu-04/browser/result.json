@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/serve_recovery/test_native_browser.py",
+    "--ingress",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/host-on/q4t-ingress",
+    "--browser",
+    "/home/rm01/.cache/ms-playwright/chromium-1223/chrome-linux/chrome",
+    "-v"
+  ],
+  "source_plan_sha256": "25028012daaed295beee1d424f8789c8392149a70499343364927458ccc5c409",
+  "binary_sha256": "bd4869656ab473fe6034cda836ec0cfa55d52a7b7a68703a024f9fd465a387d1",
+  "no_tls_binary_sha256": "9f9fa73bfc106e0b09bf178a4e71d5f4b61373e2fb8b10c71984c7951c445d7d",
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "started_unix": 1794092410.4437027,
+  "exit_code": 1,
+  "elapsed_seconds": 3.4690446900203824
+}

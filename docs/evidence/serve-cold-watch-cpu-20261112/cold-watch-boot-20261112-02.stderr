@@ -1,0 +1,9 @@
+test_new_boot_checkpoint_allows_elapsed_cooldown_without_restart_refund (tools.serve_recovery.test_cold_watch.WatchTests.test_new_boot_checkpoint_allows_elapsed_cooldown_without_restart_refund) ... ok
+test_rate_limit_cooldown_and_normal_expiry_without_model_actions (tools.serve_recovery.test_cold_watch.PolicyTests.test_rate_limit_cooldown_and_normal_expiry_without_model_actions) ... ok
+test_new_boot_and_backward_clock_never_refund_history (tools.serve_recovery.test_cold_watch.PolicyTests.test_new_boot_and_backward_clock_never_refund_history) ... ok
+test_failed_budget_commit_cannot_dispatch_or_refund (tools.serve_recovery.test_cold_watch.WatchTests.test_failed_budget_commit_cannot_dispatch_or_refund) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.993s
+
+OK

@@ -1,0 +1,19 @@
+{
+  "generations": 6,
+  "model_starts": 1,
+  "tool_executions": 1,
+  "actual_refusal_tokens": 15,
+  "refusal_events": 23,
+  "responses": [
+    "resp_225dba1ff4a49f071db4b5cfa060f8de",
+    "resp_e306b4d08ee016b497c9ef089064af37",
+    "resp_9be6da028336f8d505d4fab851f22480"
+  ],
+  "chat_ids": [
+    "chatcmpl-auto-43598feb02b862897201ecf02630cf65",
+    "chatcmpl-auto-bd96087caa0fe65b1e30ef37ecf82ac4",
+    "chatcmpl-auto-de66f0f04f3ccabf1762b0863d924704"
+  ],
+  "model_generated_refusal": true,
+  "full_quality_or_performance_claim": false
+}

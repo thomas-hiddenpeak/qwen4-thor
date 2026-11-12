@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "commands": [
+    {
+      "label": "help",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "--help"
+      ]
+    },
+    {
+      "label": "new-package-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check"
+      ]
+    },
+    {
+      "label": "old-selected-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+        "--manifest-sha256",
+        "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ]
+    },
+    {
+      "label": "old-selected-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "status",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+        "--manifest-sha256",
+        "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ]
+    },
+    {
+      "label": "publication-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "publish-status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ]
+    },
+    {
+      "label": "sealed-legacy-entry",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/bin/q4t",
+        "service",
+        "check"
+      ]
+    },
+    {
+      "label": "python-client-import",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "-c",
+        "import sys;sys.path.insert(0,sys.argv[1]);import chat_client,deadline_http,project_records;print(\"PASS_CLIENT_IMPORTS\")",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples"
+      ]
+    },
+    {
+      "label": "node-client-import",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "await import(process.argv[1]); await import(process.argv[2]); console.log(\"PASS_CLIENT_IMPORTS\");",
+        "file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples/js/chat_client.mjs",
+        "file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples/js/project_profile.mjs"
+      ]
+    }
+  ],
+  "model_starts": 0,
+  "chat_requests": 0,
+  "scope": "Actual accepted ELF, legacy entry and unchanged client snapshot imports; readonly live default"
+}

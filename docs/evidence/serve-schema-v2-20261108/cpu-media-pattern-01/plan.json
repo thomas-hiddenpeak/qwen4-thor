@@ -1,0 +1,18 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests"
+  ],
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-media-pattern-01/required.txt"
+  ],
+  "timeout_seconds": 30,
+  "scope": "Reproduce exact failed video pattern impossible prefix on CPU; no runtime change"
+}

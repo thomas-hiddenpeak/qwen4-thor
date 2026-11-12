@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "seconds": 0.2640174860134721,
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=prediction",
+    "tools/examples/js/test_chat_client.mjs"
+  ]
+}

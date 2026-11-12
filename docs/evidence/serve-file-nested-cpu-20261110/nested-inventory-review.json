@@ -1,0 +1,13 @@
+{
+  "reviewed": [
+    "include/q4t/server/file_document.h",
+    "include/q4t/server/file_extract.h",
+    "src/server/file_document.cpp",
+    "src/server/file_document_worker.cpp",
+    "src/server/file_extract.cpp",
+    "src/server/file_office.cpp",
+    "src/server/file_source.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "anchors": 438
+}

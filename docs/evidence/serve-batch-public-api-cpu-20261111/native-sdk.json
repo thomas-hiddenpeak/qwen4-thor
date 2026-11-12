@@ -1,0 +1,453 @@
+{
+  "status": "PASS",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_7f7806c7db8d62bfa96e013bed07a9d8",
+        "object": "file",
+        "bytes": 346,
+        "created_at": 1794332887,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796924887
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_cb8763accd2be314b19b70a0e62c7459",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_7f7806c7db8d62bfa96e013bed07a9d8",
+        "completion_window": "24h",
+        "created_at": 1794332887,
+        "expires_at": 1794419287,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_cb8763accd2be314b19b70a0e62c7459",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_cb8763accd2be314b19b70a0e62c7459/cancel",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/batch-test/v1/files/file_7f7806c7db8d62bfa96e013bed07a9d8",
+      "status": 200,
+      "response": {
+        "id": "file_7f7806c7db8d62bfa96e013bed07a9d8",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_cb8763accd2be314b19b70a0e62c7459",
+      "status": 200,
+      "response": {
+        "id": "batch_cb8763accd2be314b19b70a0e62c7459",
+        "object": "batch",
+        "status": "completed",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_7f7806c7db8d62bfa96e013bed07a9d8",
+        "completion_window": "24h",
+        "created_at": 1794332887,
+        "expires_at": 1794419287,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": "file_d5ec8f40062308cc9ff82720be352af8",
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 2,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794332887,
+        "finalizing_at": 1794332887,
+        "completed_at": 1794332887
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/files/file_d5ec8f40062308cc9ff82720be352af8",
+      "status": 200,
+      "response": {
+        "id": "file_d5ec8f40062308cc9ff82720be352af8",
+        "object": "file",
+        "bytes": 754,
+        "created_at": 1794332887,
+        "expires_at": 1794336487,
+        "filename": "batch_cb8763accd2be314b19b70a0e62c7459_output.jsonl",
+        "purpose": "batch_output",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/files/file_d5ec8f40062308cc9ff82720be352af8/content",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "object": "file",
+        "bytes": 406,
+        "created_at": 1794332888,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796924888
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_0dce6de44604309293224d5681df5e6d",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "completion_window": "24h",
+        "created_at": 1794332888,
+        "expires_at": 1794419288,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_0dce6de44604309293224d5681df5e6d",
+      "status": 200,
+      "response": {
+        "id": "batch_0dce6de44604309293224d5681df5e6d",
+        "object": "batch",
+        "status": "in_progress",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "completion_window": "24h",
+        "created_at": 1794332888,
+        "expires_at": 1794419288,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794332888
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_0dce6de44604309293224d5681df5e6d/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_0dce6de44604309293224d5681df5e6d",
+        "object": "batch",
+        "status": "cancelling",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "completion_window": "24h",
+        "created_at": 1794332888,
+        "expires_at": 1794419288,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794332888,
+        "cancelling_at": 1794332888
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_0dce6de44604309293224d5681df5e6d",
+      "status": 200,
+      "response": {
+        "id": "batch_0dce6de44604309293224d5681df5e6d",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "completion_window": "24h",
+        "created_at": 1794332888,
+        "expires_at": 1794419288,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_d10f9bc37def227307696604ba39af10",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794332888,
+        "cancelling_at": 1794332888,
+        "finalizing_at": 1794332888,
+        "cancelled_at": 1794332888
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_0dce6de44604309293224d5681df5e6d/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_0dce6de44604309293224d5681df5e6d",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+        "completion_window": "24h",
+        "created_at": 1794332888,
+        "expires_at": 1794419288,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_d10f9bc37def227307696604ba39af10",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794332888,
+        "cancelling_at": 1794332888,
+        "finalizing_at": 1794332888,
+        "cancelled_at": 1794332888
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_0dce6de44604309293224d5681df5e6d",
+            "object": "batch",
+            "status": "cancelled",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_2cd3a2ac3d42f0dca2a55c2dbcfea929",
+            "completion_window": "24h",
+            "created_at": 1794332888,
+            "expires_at": 1794419288,
+            "metadata": null,
+            "output_file_id": null,
+            "error_file_id": "file_d10f9bc37def227307696604ba39af10",
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 0,
+              "failed": 2
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794332888,
+            "cancelling_at": 1794332888,
+            "finalizing_at": 1794332888,
+            "cancelled_at": 1794332888
+          }
+        ],
+        "first_id": "batch_0dce6de44604309293224d5681df5e6d",
+        "last_id": "batch_0dce6de44604309293224d5681df5e6d",
+        "has_more": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_cb8763accd2be314b19b70a0e62c7459",
+            "object": "batch",
+            "status": "completed",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_7f7806c7db8d62bfa96e013bed07a9d8",
+            "completion_window": "24h",
+            "created_at": 1794332887,
+            "expires_at": 1794419287,
+            "metadata": {
+              "fixture": "real-api"
+            },
+            "output_file_id": "file_d5ec8f40062308cc9ff82720be352af8",
+            "error_file_id": null,
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 2,
+              "failed": 0
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794332887,
+            "finalizing_at": 1794332887,
+            "completed_at": 1794332887
+          }
+        ],
+        "first_id": "batch_cb8763accd2be314b19b70a0e62c7459",
+        "last_id": "batch_cb8763accd2be314b19b70a0e62c7459",
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [],
+        "first_id": null,
+        "last_id": null,
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "limit requires 1..100",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "limit"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 401,
+      "response": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    }
+  ],
+  "request_count": 19,
+  "actual_network": true,
+  "model_starts": 0,
+  "generation": "explicit_CPU_fixture",
+  "max_retries": 0,
+  "rows": [
+    {
+      "id": "batch_req_tool_run_fae219798f68fda6e4a19f970721171a",
+      "custom_id": "cpu-0",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_1e50b3428f6c904d3cd2276df1d6fa12",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "batch_req_tool_run_c6e0f499a8525c10e11dc32f650484fc",
+      "custom_id": "cpu-1",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_cc29193c0222b9867f9c748263cb950a",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6
+          }
+        }
+      },
+      "error": null
+    }
+  ]
+}

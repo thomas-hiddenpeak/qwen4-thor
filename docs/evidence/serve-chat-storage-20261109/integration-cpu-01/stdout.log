@@ -1,0 +1,10 @@
+[PASS] client_stored_chat_control_scope_is_independent_of_generation
+[PASS] chat_storage_options_nullable_metadata_and_unicode_limits
+[PASS] chat_storage_api_contract_rejects_before_io
+[PASS] chat_storage_generation_contract_accepts_only_real_options
+[PASS] chat_storage_stream_collection_keeps_choices_and_token_probabilities
+[PASS] chat_storage_cancel_before_commit_never_creates_success
+[PASS] http_stored_chat_routes_and_body_budget
+[PASS] sampling_choices_share_prompt_and_aggregate_real_usage
+[PASS] sampling_choices_accounting_and_storage_fail_closed
+9 tests, 9 passed, 0 failed, 0 skipped

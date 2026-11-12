@@ -1,0 +1,13 @@
+..F
+======================================================================
+FAIL: test_missing_live_guardian_never_uses_old_ready_snapshot (__main__.PublicEntryTests.test_missing_live_guardian_never_uses_old_ready_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_production.py", line 386, in test_missing_live_guardian_never_uses_old_ready_snapshot
+    self.assertEqual(result, 1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.048s
+
+FAILED (failures=1)

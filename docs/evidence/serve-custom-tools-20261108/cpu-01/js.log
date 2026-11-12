@@ -1,0 +1,17 @@
+✔ legacy function JSON and incremental SSE SDK roundtrip (58.032096ms)
+✔ legacy function partial cancellation and mismatched terminal never execute (44.742164ms)
+✔ split tool deltas produce one complete validated batch (31.429305ms)
+✔ whole batch validation rejects a later unknown tool before execution (0.615467ms)
+✔ tool stream provisional fragments cannot complete before terminal and EOF (34.330882ms)
+✔ tool stream later error invalidates all earlier complete fragments (903.055698ms)
+✔ custom raw input survives SDK mixed JSON/SSE and explicit validators (88.996788ms)
+✔ custom streaming rejects type mutation and partial terminal (49.253081ms)
+✔ custom project DSL validates without executing arbitrary input (1.436367ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1363.954345

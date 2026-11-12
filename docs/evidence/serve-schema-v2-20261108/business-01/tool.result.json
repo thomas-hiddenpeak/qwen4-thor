@@ -1,0 +1,25 @@
+{
+  "id": "schema-v2-tool",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_schema-v2-tool_0",
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 16}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 452,
+    "completion_tokens": 51,
+    "total_tokens": 503
+  },
+  "logprobs": null
+}

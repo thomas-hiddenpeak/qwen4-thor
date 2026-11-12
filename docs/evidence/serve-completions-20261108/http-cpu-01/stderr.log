@@ -1,0 +1,44 @@
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=observation.fixture status=503 error=body_capacity_exhausted
+[q4t][http-receive] trace_id=observation.fixture reason=body_capacity status=503 system_error=0
+[q4t][http] trace_id=req-e6be47cf9949a1a3491d4973cdd4d7be status=404 error=not_found
+[q4t][http-receive] trace_id=req-e6be47cf9949a1a3491d4973cdd4d7be reason=route status=404 system_error=0
+[q4t][http] trace_id=req-7aaae77743418444c9eaecb21006ca8d status=400 error=unsupported_query
+[q4t][http-receive] trace_id=req-7aaae77743418444c9eaecb21006ca8d reason=query status=400 system_error=0
+[q4t][http] trace_id=req-09200b4950b63215b26d5b0b62a70d1f status=405 error=method_not_allowed
+[q4t][http-receive] trace_id=req-09200b4950b63215b26d5b0b62a70d1f reason=method status=405 system_error=0
+[q4t][http] trace_id=req-87d51cbca9061d0a3ff531e70ad7ff82 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=req-87d51cbca9061d0a3ff531e70ad7ff82 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=req-a011d8c975af1415306942fba3e66485 status=415 error=unsupported_media_type
+[q4t][http-receive] trace_id=req-a011d8c975af1415306942fba3e66485 reason=unsupported_media status=415 system_error=0
+[q4t][http] trace_id=req-b20a1cb5049f9e3749ccc64ccd1826dd error=host_memory_exhausted
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] operations on port 54995 (host 127.0.0.1)
+[q4t][http] trace_id=req-087c24c3ee8e71729eb5b77e472b0cc6 status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-087c24c3ee8e71729eb5b77e472b0cc6 reason=route status=404 system_error=0
+[q4t][http] trace_id=req-ead0df3e52c2b5ee81fe5f0a4ac0443b status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-ead0df3e52c2b5ee81fe5f0a4ac0443b reason=route status=404 system_error=0
+[q4t][http] trace_id=req-28f467cdb598476e1cdd8ae6f6362b1e status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-28f467cdb598476e1cdd8ae6f6362b1e reason=route status=404 system_error=0
+[q4t][http] trace_id=req-efcce580e144e1233d5042b0d999b094 status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-efcce580e144e1233d5042b0d999b094 reason=route status=404 system_error=0
+[q4t][http] trace_id=req-04f9e7241d780533ca7bb50d35d22a9a status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-04f9e7241d780533ca7bb50d35d22a9a reason=route status=404 system_error=0
+[q4t][http] trace_id=req-57add5d8f965dde8fdac63050aa7cf3f status=404 error=route_not_found
+[q4t][http-receive] trace_id=req-57add5d8f965dde8fdac63050aa7cf3f reason=route status=404 system_error=0
+[q4t][http] trace_id=req-183f91dc19d72e74cde1463c5cb5289a status=401 error=client_authentication_failed
+[q4t][http-receive] trace_id=req-183f91dc19d72e74cde1463c5cb5289a reason=admission status=401 system_error=0
+[q4t][http] trace_id=req-2e74013b89e2a1f4f3f7676f05ccc53c status=403 error=client_route_forbidden
+[q4t][http-receive] trace_id=req-2e74013b89e2a1f4f3f7676f05ccc53c reason=admission status=403 system_error=0
+[q4t][http] trace_id=req-81f56d3f7b12191803586f289b6a724b status=404 error=request_not_found
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-3ef99465c1b8c2ad0cf7e887bfd2dfdb status=503 error=body_capacity_exhausted
+[q4t][http-receive] trace_id=req-3ef99465c1b8c2ad0cf7e887bfd2dfdb reason=body_capacity status=503 system_error=0
+[q4t][http] trace_id=req-cbc778b9998210bd20d2c4a68ba713c6 status=405 error=method_not_allowed
+[q4t][http-receive] trace_id=req-cbc778b9998210bd20d2c4a68ba713c6 reason=method status=405 system_error=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)

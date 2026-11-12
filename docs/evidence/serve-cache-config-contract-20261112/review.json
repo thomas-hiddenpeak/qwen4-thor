@@ -1,0 +1,30 @@
+{
+  "status": "SCHEMA_FIXED_CACHE_BUSINESS_PENDING",
+  "engine_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+  "qualified_profiles": true,
+  "cache_attempt": {
+    "starts": 1,
+    "chats": 0,
+    "seconds": 37.95062626898289,
+    "failure": "published configuration schema omitted vector_ingestion and application_startup.vector_ingestion",
+    "cleanup_complete": true
+  },
+  "qualified_reuse": "Exact runtime unchanged; schema-only repair verified on all three original captured configurations",
+  "cpu": {
+    "real_configurations": 3,
+    "negative_checks": 39
+  },
+  "repair_bounds": {
+    "starts": 1,
+    "chats": 8,
+    "seconds": 600
+  },
+  "aggregate_bounds": {
+    "starts": 4,
+    "requests": 16,
+    "seconds": 2100
+  },
+  "original_failures_preserved": true,
+  "default_unchanged": true,
+  "remaining_master_tasks_open": true
+}

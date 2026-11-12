@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reasoning-pro-20261110/release-01/bundle",
+  "manifest_sha256": "0837b2a7e2556fbb62255512d9f93b71eae57855b7fde8e09fb7f6c4bc8f9e16",
+  "engine_binary_sha256": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3",
+  "recovery_accepted": false
+}

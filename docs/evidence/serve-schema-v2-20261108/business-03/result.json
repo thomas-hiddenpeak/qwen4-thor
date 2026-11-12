@@ -1,0 +1,10 @@
+{
+  "status": "PASS_SCHEMA_V2_TEXT_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 44
+  },
+  "seconds": 71.44883005926386,
+  "binary_sha256": "aedaac590765ea8bf157c501c8e97b818319197df61b6a9b3237b2d6ad2928e3"
+}

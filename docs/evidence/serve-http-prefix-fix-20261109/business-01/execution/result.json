@@ -1,0 +1,68 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 832, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_http/acceptance.py\", line 262, in exercise\n    value=self.sdk('official-sdk',answer('official-sdk',stream=True))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_http/acceptance.py\", line 193, in sdk\n    with (self.output/(label+'-wire.bin')).open('xb') as wire:value=client.complete(body,sink=wire.write)\n                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 121, in complete\n    payload = self.call(\"chat\", request, model=request[\"model\"], sink=sink)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 96, in call\n    raise JsSdkError(dict(message=\"Node bridge failed before response\",\ntools.serve_protocol.js_client.JsSdkError: Node bridge failed before response\n",
+  "cleanup_failure": null,
+  "seconds": 48.22298958571628,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 5,
+      "probes": 0,
+      "controls": 165
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 1,
+        "monotonic_ns": 2404905364029421
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 1,
+        "monotonic_ns": 2404944386771993
+      },
+      {
+        "kind": "chats",
+        "label": "core-chunked",
+        "ordinal": 2,
+        "monotonic_ns": 2404946225649328
+      },
+      {
+        "kind": "chats",
+        "label": "native-json",
+        "ordinal": 3,
+        "monotonic_ns": 2404946553528797
+      },
+      {
+        "kind": "chats",
+        "label": "native-sse",
+        "ordinal": 4,
+        "monotonic_ns": 2404946972602910
+      },
+      {
+        "kind": "chats",
+        "label": "official-sdk",
+        "ordinal": 5,
+        "monotonic_ns": 2404947467314989
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1066895,
+      "start_ticks": 240490536
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "a77e387d04e17978c1e6aaacafe2737f26a9e07f",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/business-01/bundle",
+    "manifest_sha256": "39e2acce017f3131a9be95f9279fb1134ec653a2d17aee568e0fcd3214decbe1",
+    "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

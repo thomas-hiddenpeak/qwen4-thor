@@ -1,0 +1,27 @@
+[PASS] input_binding_structural_identity_preserves_exact_numbers_and_large_data
+[PASS] input_binding_paths_identity_conflicts_and_atomic_subsets
+  CHECK failed: Ok(states.Resolve(Envelope(Array({Item()})), Access(), &first)) (line 172)
+[FAIL] input_binding_response_previous_and_item_reference_keep_exact_snapshot
+  CHECK failed: Ok( states.Resolve(Envelope(Array({Item(item_id)})), Access(), &plan)) (line 224)
+[FAIL] input_binding_multiple_references_and_queued_restart_restore_privately
+[PASS] input_binding_first_use_conversation_items_survive_copy_and_delete
+  CHECK failed: Ok(states.Resolve(Envelope(Array({Item()})), Access(), &plan)) (line 310)
+[FAIL] input_binding_changed_original_is_rejected_before_begin
+[PASS] responses_recovery_resumes_queued_identity_and_fails_started_without_replay
+[PASS] conversation_state_crud_restart_and_item_retention
+[PASS] conversation_state_item_identity_ignores_json_object_field_order
+  CHECK failed: Ok(canonical) && canonical.value.array.size() == 1 (line 390)
+[FAIL] conversation_state_resolves_all_declared_input_variants
+[PASS] conversation_state_rejects_bad_input_before_reference_io
+[PASS] conversation_state_response_cannot_duplicate_membership
+[PASS] responses_state_stateless_path_does_not_touch_storage
+[PASS] responses_state_checkpoints_require_scope_and_current_revision
+[PASS] responses_state_terminal_reserve_cannot_publish_success_or_cross_scope
+[PASS] responses_state_item_identity_preserves_exact_numbers_and_array_order
+[PASS] responses_state_previous_history_does_not_inherit_instructions
+[PASS] responses_state_item_reference_requires_client_ownership
+[PASS] responses_state_stateless_conversation_still_appends_atomically
+[PASS] responses_state_conversation_conflict_cannot_publish_completed
+[PASS] responses_tokens_conversation_scoped_read_without_revision_mutation
+[PASS] responses_tokens_previous_history_replaces_instructions_without_write
+22 tests, 18 passed, 4 failed, 0 skipped

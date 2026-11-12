@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "error": {
+    "class": "NotFoundError",
+    "message": "404 Moderation model is not served",
+    "status": 404,
+    "code": "model_not_found",
+    "param": "model"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19061/v1/moderations",
+      "method": "POST",
+      "body": "{\"model\":\"model-that-is-not-served\",\"input\":\"Have a good day. The park has green trees and a quiet walking path.\"}"
+    }
+  ]
+}

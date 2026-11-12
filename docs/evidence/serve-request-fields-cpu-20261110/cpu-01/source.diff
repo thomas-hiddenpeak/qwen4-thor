@@ -1,0 +1,366 @@
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index 6dd86e9d..b40d65b4 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -1,5 +1,7 @@
+ # 当前 Serve 总目标状态（2026-11-10）
+ 
++A07.8 [字段合同审计](SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md)成组修复已完成：create非nullable字段与reasoning.mode、count/compact各自默认、fast/ultrafast入口及模板读取前校验。冻结44个SDK字段向量、13项C++/2schema/2驱动和最多1启动/2生成/2计数/10拒绝/600秒短验。尚未测试；默认70504790保持STOPPED，全部总任务继续。
++
+ A07.8 标准计数已完成[CPU](evidence/serve-input-tokens-cpu-20261110/README.md)、[nullable补齐](evidence/serve-input-tokens-followup-20261110/README.md)、[真实业务](evidence/serve-input-tokens-business-20261110/README.md)与[可回退交付](evidence/serve-input-tokens-delivery-20261110/README.md)。当前引擎70504790、元数据f1001bf8、包5a71516a，revision28、STOPPED；旧639c6b7b/b4c86756完整回退与业务账本保持。
+ 
+ 累计2启动/5生成/19计数/96.469秒、94 NVML全OK；发布8操作、0新增模型/GPU。继续A07.8其余合同与A08等全部总任务，总目标active、未合main。以下历史检查点以本段当前默认为准。
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index cd48430a..a1defc6c 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,9 @@
+ # 2026-11-10 开发日志
+ 
++## A07.8 继续修复字段默认与模板读取顺序
++
++2026-11-10。逐项对照固定SDK发现create把input/user/prompt_cache_options:null及reasoning.mode:null当省略、漏fast/ultrafast，并在模板读取后才校验请求。现统一非null检查、提前校验原始请求，count/compact单独适配合法null；响应只报告实际default档位。44个SDK向量和针对性13 C++/2schema/2驱动已冻结，成组开发完成，尚未测试。下一步独立构建/CPU与1启动2生成2计数10拒绝600秒短验，之后可回退交付，再继续全部总任务。默认70504790保持。
++
+ ## A07.8 标准计数默认交付并继续总计划
+ 
+ 2026-11-10。[8项实际封装/发布操作](../evidence/serve-input-tokens-delivery-20261110/README.md)通过，11.681秒，0模型/Chat/GPU。默认70504790/元数据f1001bf8/原生包5a71516a、revision28、STOPPED，保留旧639c6b7b/b4c86756完整回退；核心、密钥、限额和用量账本逐步哈希保持。
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index 15b7944b..90997cf6 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -13,6 +13,15 @@
+   ],
+   "runtime_preflight": "POST /v1/chat/preflight",
+   "rules": [
++    {
++      "id": "responses-request-fields",
++      "sources": [
++        "src/server/responses_plan.cpp",
++        "src/server/responses_execution.cpp",
++        "src/server/responses_tokens.cpp"
++      ],
++      "contract": "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."
++    },
+     {
+       "id": "responses-input-tokens",
+       "sources": [
+@@ -444,13 +453,13 @@
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+     "src/server/responses_api.cpp": "6480b9f8445a93d2699b674010efba7901a0750deafcc70493afe2c6d9d105e1",
+-    "src/server/responses_execution.cpp": "b2ea25a02bf94292b75c3877eaf38658cc6669e1f2e91693dbcc3595a9be18a6",
++    "src/server/responses_execution.cpp": "dd3246ee21978dc66f224c6f6afbdb729e821d82eba606e4e525af9589f51ccd",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+     "src/server/responses_output.cpp": "a14b41905227ad0885753d464a0a08a41619968a370192442cd29a48465d8080",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
++    "src/server/responses_plan.cpp": "2eaa26bfb35d0ab75d983ecb298d5e79ebfc48f880e52ed0c65919c907f0e353",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+-    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
++    "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
+diff --git a/docs/serve-master-goals-v2.json b/docs/serve-master-goals-v2.json
+index 4dafadaf..6aac7f26 100644
+--- a/docs/serve-master-goals-v2.json
++++ b/docs/serve-master-goals-v2.json
+@@ -804,6 +804,21 @@
+         "publication_revision": 28,
+         "evidence": "evidence/serve-input-tokens-delivery-20261110/README.md",
+         "full_task_complete": false
++      },
++      "request_field_audit": {
++        "state": "coded_pending_validation",
++        "plan": "SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md",
++        "sdk_vectors": 44,
++        "cpu_cpp_cases": 13,
++        "schema_cases": 2,
++        "driver_cases": 2,
++        "business_limits": {
++          "starts": 1,
++          "generations": 2,
++          "input_counts": 2,
++          "rejections": 10,
++          "seconds": 600
++        }
+       }
+     },
+     {
+diff --git a/src/server/responses_execution.cpp b/src/server/responses_execution.cpp
+index 136cd04a..1f200e4a 100644
+--- a/src/server/responses_execution.cpp
++++ b/src/server/responses_execution.cpp
+@@ -80,13 +80,19 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
+     status = NormalizeResponsesCompactRequest(request, config, &compact_request,
+                                               &error);
+     effective = &compact_request;
+-  } else if (Nonnull(request, "prompt")) {
+-    auto expanded = prompts_.Expand(request, config, access_);
+-    if (!expanded.ok()) return expanded;
+-    expanded_request = std::move(expanded.value);
+-    effective = &expanded_request;
++  } else {
++    // Validate the original envelope before any prompt lookup/expansion. The
++    // expanded request is checked again because template defaults can change
++    // the effective generation settings and client resource requirements.
++    status = ParseResponsesEnvelope(request, config, &envelope_, &error);
++    if (status && Nonnull(request, "prompt")) {
++      auto expanded = prompts_.Expand(request, config, access_);
++      if (!expanded.ok()) return expanded;
++      expanded_request = std::move(expanded.value);
++      effective = &expanded_request;
++    }
+   }
+-  if (status)
++  if (status && (standalone_compaction_ || effective != &request))
+     status = ParseResponsesEnvelope(*effective, config, &envelope_, &error);
+   if (!status) {
+     auto reply = Error(error.http_status, error.code, status.message());
+diff --git a/src/server/responses_plan.cpp b/src/server/responses_plan.cpp
+index ae3c3dcf..7c713ac8 100644
+--- a/src/server/responses_plan.cpp
++++ b/src/server/responses_plan.cpp
+@@ -104,8 +104,7 @@ Status Reasoning(const Json& request, ResponsesEnvelope* result,
+         legacy != result->summary)
+       return Invalid(error, "reasoning.summary", "conflicting summary options");
+     if (result->summary.empty()) result->summary = legacy;
+-    if (Nonnull(*object, "mode")) {
+-      const auto* mode = object->Find("mode");
++    if (const auto* mode = object->Find("mode")) {
+       if (!mode->IsString() || !OneOf(mode->str, {"standard", "pro"}))
+         return Invalid(error, "reasoning.mode", "invalid reasoning mode");
+       result->reasoning_mode = mode->str;
+@@ -254,6 +253,12 @@ Status NormalizeResponsesCompactRequest(const io::Json& request,
+   auto result = request;
+   if (request.Find("model")->IsNull())
+     Set(&result, "model", String(config.model));
++  // Compact permits null for fields that create requires to be non-null.
++  // Resolve that endpoint's defaults before using the shared create planner.
++  std::erase_if(result.object, [](const auto& field) {
++    return field.second.IsNull() &&
++           (field.first == "input" || field.first == "prompt_cache_options");
++  });
+   Set(&result, "store", Boolean(false));
+   Set(&result, "reasoning", Object({{"effort", String("none")}}));
+   Set(&result, "temperature", Number(0));
+@@ -307,6 +312,16 @@ Status ParseResponsesEnvelope(const io::Json& request,
+                              "seed"},
+                             &error->param, "");
+   if (!status) return status;
++  // Omission and explicit null have different contracts in Responses create.
++  // Count/compact normalize their own nullable defaults before reaching here.
++  for (const auto* key : {"access_programs", "input", "model",
++                          "prompt_cache_options", "text", "tool_choice",
++                          "tools", "user"})
++    if (const auto* value = request.Find(key); value && value->IsNull())
++      return Invalid(error, key, "field must not be null");
++  if (const auto* input = request.Find("input");
++      input && !input->IsString() && !input->IsArray())
++    return Invalid(error, "input", "input requires text or an item array");
+   ResponsesEnvelope result;
+   result.request = request;
+   result.options = Object({{"instructions", {}},
+@@ -391,7 +406,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
+                         &truncation, "", error);
+   if (status)
+     status = ChoiceOption(request, "service_tier",
+-                          {"auto", "default", "flex", "priority", "scale"},
++                          {"auto", "default", "flex", "priority", "scale",
++                           "fast", "ultrafast"},
+                           &tier, "", error);
+   if (!status) return status;
+   result.truncate = truncation == "auto";
+diff --git a/src/server/responses_tokens.cpp b/src/server/responses_tokens.cpp
+index 17b4d522..168e39a0 100644
+--- a/src/server/responses_tokens.cpp
++++ b/src/server/responses_tokens.cpp
+@@ -57,8 +57,9 @@ ObjectReply PrepareResponsesTokenCount(const io::Json& request,
+   // Resolve only count's nullable defaults; never relax create's contract.
+   std::erase_if(normalized.object, [](const auto& field) {
+     const auto& key = field.first;
+-    return field.second.IsNull() && (key == "model" || key == "text" ||
+-                                     key == "tools" || key == "tool_choice");
++    return field.second.IsNull() &&
++           (key == "input" || key == "model" || key == "text" ||
++            key == "tools" || key == "tool_choice");
+   });
+   Set(&normalized, "store", Boolean(false));
+   status = ParseResponsesEnvelope(normalized, config, envelope, &error);
+diff --git a/tests/server_responses_execution_test.cpp b/tests/server_responses_execution_test.cpp
+index f234a380..0ff38949 100644
+--- a/tests/server_responses_execution_test.cpp
++++ b/tests/server_responses_execution_test.cpp
+@@ -77,6 +77,47 @@ Json ModerationReport(bool flagged) {
+ }
+ }  // namespace
+ 
++Q4T_TEST(responses_invalid_envelope_fails_before_prompt_state_lookup) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  for (const auto& [field, param] :
++       std::vector<std::pair<std::string, std::string>>{
++           {R"("input":null)", "input"},
++           {R"("input":{})", "input"},
++           {R"("user":null)", "user"},
++           {R"("prompt_cache_options":null)", "prompt_cache_options"},
++           {R"("reasoning":{"mode":null})", "reasoning.mode"},
++           {R"("text":null)", "text"},
++           {R"("unknown_option":true)", "unknown_option"}}) {
++    ResponsesExecution run(store);
++    const auto reply = run.Prepare(
++        Parse(R"({"prompt":{"id":"prompt_missing"},"instructions":"Answer",)" +
++              field + '}'),
++        Config(), Access(), 42);
++    Q4T_CHECK(reply.http_status == 400 &&
++              reply.value.GetString("param") == param);
++  }
++  ResponsesExecution valid(store);
++  Q4T_CHECK(valid.Prepare(Parse(R"({"prompt":{"id":"prompt_missing"}})"),
++                           Config(), Access(), 42)
++                .http_status == 404);
++  return true;
++}
++
++Q4T_TEST(responses_service_tiers_report_actual_execution_mode) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  for (const auto* tier :
++       {"auto", "default", "flex", "scale", "priority", "fast", "ultrafast"}) {
++    ResponsesExecution run(store);
++    Q4T_CHECK(Prepare(&run, std::string(R"(,"store":false,"service_tier":")") +
++                               tier + '"'));
++    Q4T_CHECK(run.Envelope().request.GetString("service_tier") == tier);
++    Q4T_CHECK(run.Output().Snapshot().GetString("service_tier") == "default");
++  }
++  return true;
++}
++
+ Q4T_TEST(responses_moderation_hold_hides_sse_checkpoint_and_background_replay) {
+   for (const bool background : {false, true}) {
+     Fixture fixture;
+diff --git a/tests/server_responses_plan_test.cpp b/tests/server_responses_plan_test.cpp
+index 9e10fbe6..e3b012e0 100644
+--- a/tests/server_responses_plan_test.cpp
++++ b/tests/server_responses_plan_test.cpp
+@@ -1,6 +1,9 @@
+ #include "q4t/server/responses_plan.h"
+ 
+ #include <cmath>
++#include <filesystem>
++#include <fstream>
++#include <iterator>
+ 
+ #include "q4t/server/chat_template.h"
+ #include "q4t/server/output_schema.h"
+@@ -33,6 +36,56 @@ bool Envelope(const std::string& text, ResponsesEnvelope* result,
+ }
+ }  // namespace
+ 
++Q4T_TEST(responses_plan_sdk_field_nullability_and_tier_oracle) {
++  const auto path = std::filesystem::path(__FILE__).parent_path() /
++                    "fixtures/responses_fields/sdk_vectors.json";
++  std::ifstream file(path);
++  Q4T_CHECK(file.good());
++  const auto document = Read(std::string(std::istreambuf_iterator<char>(file),
++                                        std::istreambuf_iterator<char>()));
++  Q4T_CHECK(document.GetString("profile") == "q4t-sdk-responses-fields-v1");
++  const auto* vectors = document.GetArray("vectors");
++  Q4T_CHECK(vectors && vectors->array.size() == 44);
++  for (const auto& row : vectors->array) {
++    ResponsesEnvelope envelope;
++    ChatPlanError error;
++    const auto status = ParseResponsesEnvelope(*row.Find("request"), Config(),
++                                               &envelope, &error);
++    if (status.ok() != row.GetBool("accepted"))
++      std::fprintf(stderr, "%s: native=%d expected=%d %s %s\n",
++                   row.GetString("name").c_str(), status.ok(),
++                   row.GetBool("accepted"), error.param.c_str(),
++                   status.message().c_str());
++    Q4T_CHECK(status.ok() == row.GetBool("accepted"));
++    if (!status)
++      Q4T_CHECK(error.http_status == 400 &&
++                error.param == row.GetString("param"));
++  }
++  return true;
++}
++
++Q4T_TEST(responses_plan_input_type_and_nullable_compact_adapter) {
++  ResponsesEnvelope envelope;
++  ChatPlanError error;
++  for (const auto* input : {"null", "42", "true", "{}"}) {
++    Q4T_CHECK(!Envelope(std::string("{\"instructions\":\"Answer\",\"input\":") +
++                            input + '}',
++                        &envelope, &error));
++    Q4T_CHECK(error.param == "input" && error.http_status == 400);
++  }
++  Q4T_CHECK(Envelope(R"({"instructions":"Answer"})", &envelope, &error));
++  q4t::io::Json normalized;
++  Q4T_CHECK(NormalizeResponsesCompactRequest(
++      Read(R"({"model":null,"input":null,"prompt_cache_options":null,
++        "instructions":"Answer","service_tier":"fast"})"),
++      Config(), &normalized, &error));
++  Q4T_CHECK(!normalized.Has("input") &&
++            !normalized.Has("prompt_cache_options"));
++  Q4T_CHECK(ParseResponsesEnvelope(normalized, Config(), &envelope, &error));
++  Q4T_CHECK(envelope.options.GetString("model") == "base");
++  return true;
++}
++
+ Q4T_TEST(responses_summary_plan_uses_actual_reasoning_and_shared_budget) {
+   const auto snapshot = Read(R"({"output":[
+     {"type":"reasoning","content":[{"type":"reasoning_text", "text":"17 + 25 = 42; checked addition."}],"summary":[]},
+diff --git a/tests/server_responses_tokens_test.cpp b/tests/server_responses_tokens_test.cpp
+index 9a816669..121bbc3e 100644
+--- a/tests/server_responses_tokens_test.cpp
++++ b/tests/server_responses_tokens_test.cpp
+@@ -160,7 +160,7 @@ Q4T_TEST(responses_tokens_sdk_nullable_fields_default_only_on_count_endpoint) {
+   Q4T_CHECK(Ok(f.Prepare(all)) && Prompt(f.plan, true) == empty);
+   auto config = f.config;
+   config.count_input_only = false;
+-  for (const auto* name : {"model", "text", "tool_choice", "tools"}) {
++  for (const auto* name : {"input", "model", "text", "tool_choice", "tools"}) {
+     auto request = Read(R"({"input":"hello"})");
+     Set(&request, name, Json());
+     ResponsesExecution run(f.objects);
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index 1025ce8a..271071ea 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -1512,7 +1512,7 @@
+     "src/server/responses_api.cpp": "6480b9f8445a93d2699b674010efba7901a0750deafcc70493afe2c6d9d105e1",
+     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+-    "src/server/responses_execution.cpp": "b2ea25a02bf94292b75c3877eaf38658cc6669e1f2e91693dbcc3595a9be18a6",
++    "src/server/responses_execution.cpp": "dd3246ee21978dc66f224c6f6afbdb729e821d82eba606e4e525af9589f51ccd",
+     "src/server/responses_execution_compaction.cpp": "c02d2fc1038f09532c6e3556bd92ebf9c8015a506f82921157c12724b5521179",
+     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
+     "src/server/responses_input.cpp": "050b01ef2c209cd93b322948ceb24b779b04a30e07a539a62fbfb341f2ad24ff",
+@@ -1521,11 +1521,11 @@
+     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+     "src/server/responses_output.cpp": "a14b41905227ad0885753d464a0a08a41619968a370192442cd29a48465d8080",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
++    "src/server/responses_plan.cpp": "2eaa26bfb35d0ab75d983ecb298d5e79ebfc48f880e52ed0c65919c907f0e353",
+     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
+-    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
++    "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+diff --git a/tools/serve_protocol/build_contract.py b/tools/serve_protocol/build_contract.py
+index 525e0a34..552eee0b 100644
+--- a/tools/serve_protocol/build_contract.py
++++ b/tools/serve_protocol/build_contract.py
+@@ -429,6 +429,9 @@ def semantics():
+     # Standard JSON Schema validators ignore x-q4t annotations. These rules
+     # are mandatory and evaluated by production C++, never inferred as passed.
+     rules = [
++        ("responses-request-fields", ["src/server/responses_plan.cpp",
++            "src/server/responses_execution.cpp", "src/server/responses_tokens.cpp"],
++         "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."),
+         ("responses-input-tokens", ["src/server/responses_tokens.cpp",
+             "src/server/chat_input_tokens.cpp", "src/server/responses_plan.cpp",
+             "src/server/chat_plan.cpp", "src/server/media_admission.cpp"],

@@ -1,0 +1,23 @@
+{
+  "status": "PASS_MANAGED_ACCESS_TARGETED_CPU_PENDING_QUOTA_AND_DELIVERY",
+  "new_tests": 8,
+  "affected_tests": 8,
+  "first_run_tests": 16,
+  "review_rechecks": [
+    1,
+    3
+  ],
+  "native_tls_in_this_build": false,
+  "guardian_and_backend_cpu_fixtures": true,
+  "model_starts": 0,
+  "real_chat_generations": 0,
+  "default_changed": false,
+  "current_default_verified": "v6",
+  "remaining": [
+    "dynamic backend policy and new client coordination",
+    "minute quota usage continuity across policy/recovery",
+    "TLS enabled native bundle and applicable SDK",
+    "actual model business and rollback delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

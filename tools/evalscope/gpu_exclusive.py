@@ -279,12 +279,19 @@ def borrowed_lock(fd, lock_path):
 
 def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
               compute_backend=DEFAULT_COMPUTE_BACKEND, log_max_bytes=None,
-              inherit_lease=False, managed_monitor=None):
+              inherit_lease=False, managed_monitor=None, inherited_fds=()):
     if compute_backend not in ('nvidia-smi', 'nvml'):
         raise ValueError('unknown compute backend')
     if managed_monitor is not None and (
             not inherit_lease or compute_backend != 'nvml'):
         raise ValueError('managed monitoring requires inherited NVML lease')
+    if (type(inherited_fds) not in (tuple, list) or len(inherited_fds) > 8 or
+            any(type(fd) is not int or fd <= 2 for fd in inherited_fds) or
+            len(set(inherited_fds)) != len(inherited_fds) or
+            (inherited_fds and not inherit_lease)):
+        raise ValueError('explicit inherited descriptors require a managed lease')
+    for fd in inherited_fds:
+        os.fstat(fd)  # Reject closed descriptors before any workload/monitor.
     out.mkdir(parents=True, exist_ok=False)
     scan = inspect
     if compute_backend == 'nvml':
@@ -359,9 +366,10 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 # Only explicit managed services inherit the open-file-
                 # description. Their backend keeps it until its own exit, so
                 # controller SIGKILL cannot expose an apparently free lease.
-                child_options = dict(pass_fds=(lock.fileno(),),
+                child_options = dict(pass_fds=tuple(sorted({lock.fileno(), *inherited_fds})),
                     env=dict(os.environ, Q4T_MANAGED_LEASE_FD=str(lock.fileno())))
                 status['lease_inherited_by_child'] = True
+                status['explicit_inherited_fd_count'] = len(inherited_fds)
             child = subprocess.Popen(command, cwd=ROOT, start_new_session=True,
                                      **child_options)
             record('child_started', child_pid=child.pid)
@@ -442,6 +450,8 @@ def main():
                         help='inherited exclusive lease; external owner handles recovery')
     parser.add_argument('--inherit-lease', action='store_true',
                         help='pass the held lease to an owned managed phase')
+    parser.add_argument('--inherit-fd', type=int, action='append', default=[],
+                        help='explicit bounded descriptor handoff to the managed child')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
@@ -452,7 +462,7 @@ def main():
         parser.error('output must be under build/ or .q4t-work/')
     result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd,
                        compute_backend=args.compute_backend,
-                       inherit_lease=args.inherit_lease)
+                       inherit_lease=args.inherit_lease, inherited_fds=args.inherit_fd)
     # A cleanup failure in finally must override an otherwise successful return.
     if json.loads((out / 'exit.json').read_text())['status'] == 'ENV_ABORT':
         result = 75

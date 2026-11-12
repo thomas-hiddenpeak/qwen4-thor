@@ -4,8 +4,12 @@
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/custom_tools.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/refusal_frame.h"
 
 namespace q4t::server {
 namespace {
@@ -58,6 +62,13 @@ std::string SchemaFormat(const io::Json& schema, bool xml) {
          '}';
 }
 
+std::string GuardedFormat(const io::Json& schema, bool strict,
+                          std::string_view scope = {}) {
+  return R"({"type":"q4t_schema","schema":)" + OutputJson(schema) +
+         R"(,"strict":)" + (strict ? "true" : "false") + R"(,"scope":)" +
+         Quote(scope) + '}';
+}
+
 std::string TextFormat() {
   return R"({"type":"any_text","excludes":["<tool_call>",)"
          R"("</tool_call>","<think>","</think>"]})";
@@ -69,8 +80,7 @@ constexpr auto kWhitespace =
 Status ParseDocument(std::string_view input, io::Json* out) {
   if (input.size() > 1024 * 1024)
     return Status::Fail("constrained output exceeds 1 MiB");
-  return io::ParseJson(std::string(input), out, true,
-                       {32, 65536, 1024 * 1024, true});
+  return io::ParseJson(std::string(input), out, true, kSchemaJsonLimits);
 }
 }  // namespace
 
@@ -78,6 +88,14 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
                              std::string* error_param) {
   *out = {};
   if (error_param) error_param->clear();
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(request, &normalized, error_param);
+    if (!status) return status;
+    status = PlanOutputConstraints(normalized.request, out, error_param);
+    if (!status) LegacyToolErrorParam(request, error_param);
+    return status;
+  }
   const auto invalid = [&](std::string_view path, std::string message) {
     if (error_param) *error_param = path;
     return Status::Fail(std::move(message));
@@ -97,22 +115,82 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         out->choice = OutputConstraints::ToolChoice::kRequired;
       else if (choice->str != "auto")
         return invalid("tool_choice", "invalid tool_choice");
-    } else {
-      auto status =
-          Fields(*choice, {"type", "function"}, error_param, "tool_choice");
+    } else if (choice->GetString("type") == "allowed_tools") {
+      auto status = Fields(*choice, {"type", "allowed_tools"}, error_param,
+                           "tool_choice");
       if (!status) return status;
-      const auto* fn = choice->Find("function");
-      if (choice->GetString("type") != "function" || !fn)
-        return invalid(choice->GetString("type") != "function"
+      const auto* allowed = choice->Find("allowed_tools");
+      if (!allowed)
+        return invalid("tool_choice.allowed_tools", "missing allowed tools");
+      status = Fields(*allowed, {"mode", "tools"}, error_param,
+                      "tool_choice.allowed_tools");
+      if (!status) return status;
+      const auto mode = allowed->GetString("mode");
+      if (mode != "auto" && mode != "required")
+        return invalid("tool_choice.allowed_tools.mode", "invalid mode");
+      out->choice = mode == "required"
+                        ? OutputConstraints::ToolChoice::kRequired
+                        : OutputConstraints::ToolChoice::kAuto;
+      const auto* list = allowed->GetArray("tools");
+      if (!list)
+        return invalid("tool_choice.allowed_tools.tools", "expected array");
+      out->restrict_tools = true;
+      std::unordered_set<std::string> seen;
+      for (size_t i = 0; i < list->array.size(); ++i) {
+        const auto& tool = list->array[i];
+        const auto path =
+            "tool_choice.allowed_tools.tools[" + std::to_string(i) + ']';
+        const bool custom = tool.GetString("type") == "custom";
+        const std::string field = custom ? "custom" : "function";
+        status = custom ? Fields(tool, {"type", "custom"}, error_param, path)
+                        : Fields(tool, {"type", "function"}, error_param, path);
+        if (!status) return status;
+        if (!custom && tool.GetString("type") != "function")
+          return invalid(path + ".type", "expected function/custom reference");
+        const auto* function = tool.Find(field);
+        if (!function) return invalid(path + '.' + field, "missing reference");
+        status = Fields(*function, {"name"}, error_param, path + '.' + field);
+        if (!status) return status;
+        const auto name = function->GetString("name");
+        if (!SafeName(name) || !seen.insert(name).second)
+          return invalid(path + '.' + field + ".name",
+                         "invalid or duplicate name");
+        const auto* definitions = request.GetArray("tools");
+        if (!definitions ||
+            std::none_of(definitions->array.begin(), definitions->array.end(),
+                         [&](const io::Json& item) {
+                           const auto* fn = ToolDefinition(item);
+                           return item.GetString("type") ==
+                                      tool.GetString("type") &&
+                                  fn && fn->GetString("name") == name;
+                         }))
+          return invalid(path + '.' + field + ".name", "tool is not declared");
+        out->allowed_tools.push_back(name);
+      }
+      if (mode == "required" && out->allowed_tools.empty())
+        return invalid("tool_choice.allowed_tools.tools",
+                       "required mode needs an allowed tool");
+    } else {
+      const bool custom = choice->GetString("type") == "custom";
+      const std::string field = custom ? "custom" : "function";
+      auto status = custom ? Fields(*choice, {"type", "custom"}, error_param,
+                                    "tool_choice")
+                           : Fields(*choice, {"type", "function"}, error_param,
+                                    "tool_choice");
+      if (!status) return status;
+      const auto* fn = choice->Find(field);
+      if ((!custom && choice->GetString("type") != "function") || !fn)
+        return invalid(!custom && choice->GetString("type") != "function"
                            ? "tool_choice.type"
-                           : "tool_choice.function",
-                       "named tool_choice requires a function");
-      status = Fields(*fn, {"name"}, error_param, "tool_choice.function");
+                           : "tool_choice." + field,
+                       "named tool_choice requires a matching definition");
+      status = Fields(*fn, {"name"}, error_param, "tool_choice." + field);
       if (!status) return status;
       out->named_tool = fn->GetString("name");
       if (!SafeName(out->named_tool))
-        return invalid("tool_choice.function.name", "invalid named tool");
+        return invalid("tool_choice." + field + ".name", "invalid named tool");
       out->choice = OutputConstraints::ToolChoice::kNamed;
+      out->named_type = field;
     }
   }
   if (const auto* parallel = request.Find("parallel_tool_calls")) {
@@ -129,8 +207,10 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
     return invalid("tools",
                    "required/named tool_choice requires nonempty tools");
   bool strict_tools = false;
+  bool custom_tools = false;
   if (tools) {
     for (const auto& tool : tools->array) {
+      custom_tools |= tool.GetString("type") == "custom";
       const auto* fn = tool.Find("function");
       const auto* strict = fn ? fn->Find("strict") : nullptr;
       strict_tools |= strict && strict->IsBool() && strict->boolean;
@@ -182,41 +262,62 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       if (!status) return status;
     }
   }
-  out->active = out->json_output || forced || strict_tools ||
+  out->active = out->json_output || forced || strict_tools || custom_tools ||
+                out->restrict_tools ||
                 out->choice == OutputConstraints::ToolChoice::kNone ||
                 (!out->parallel && has_tools);
   if (!out->active) return Status();
   if (!parsed)
     return invalid(request.Has("messages") ? "parse_response" : "messages",
                    "output constraints require parsed messages");
-  if (request.Has("session_id") || request.Has("prefix_cache_scope"))
-    return invalid(
-        request.Has("session_id") ? "session_id" : "prefix_cache_scope",
-        "output constraints with session/prefix cache are not "
-        "supported in this stage");
-  if (out->json_output && has_tools &&
-      out->choice != OutputConstraints::ToolChoice::kNone)
-    return invalid("tool_choice",
-                   "response_format plus tools requires tool_choice=none");
-
-  std::string payload;
+  std::string payload, json_payload, guard_tools, guard_content;
   if (out->json_output) {
-    payload = schema
-                  ? SchemaFormat(*schema, false)
-                  : R"({"type":"json_schema","json_schema":{"type":"object",)"
-                    R"("additionalProperties":true},)"
-                    R"("any_order":false,"max_whitespace_cnt":16})";
-  } else if (out->choice == OutputConstraints::ToolChoice::kNone ||
-             !has_tools) {
-    payload = TextFormat();
+    const bool guard = schema && NeedsSchemaGuard(*schema);
+    if (guard)
+      guard_content = R"("content":{"schema":)" + OutputJson(*schema) +
+                      R"(,"strict":)" + (strict_schema ? "true}" : "false}");
+    json_payload =
+        schema ? (guard ? GuardedFormat(*schema, strict_schema)
+                        : SchemaFormat(*schema, false))
+               : R"({"type":"json_schema","json_schema":{"type":"object",)"
+                 R"("additionalProperties":true},)"
+                 R"("any_order":false,"max_whitespace_cnt":16})";
+  }
+  if (out->choice == OutputConstraints::ToolChoice::kNone ||
+      (out->restrict_tools && out->allowed_tools.empty()) || !has_tools) {
+    payload = out->json_output ? json_payload : TextFormat();
   } else {
-    if (tools->array.size() > 16)
-      return invalid("tools", "constrained requests allow at most 16 tools");
     std::unordered_set<std::string> names;
     std::string tags;
     for (size_t index = 0; index < tools->array.size(); ++index) {
       const auto& tool = tools->array[index];
       const auto path = "tools[" + std::to_string(index) + "]";
+      if (tool.GetString("type") == "custom") {
+        const auto* custom = tool.Find("custom");
+        CustomToolFormat format;
+        auto status = ParseCustomToolFormat(*custom, &format, error_param,
+                                            path + ".custom");
+        if (!status) return status;
+        const auto name = custom->GetString("name");
+        if (!names.insert(name).second)
+          return invalid(path + ".custom.name", "duplicate constrained name");
+        if (!out->AllowsTool(name) ||
+            (out->choice == OutputConstraints::ToolChoice::kNamed &&
+             out->named_type != "custom"))
+          continue;
+        const auto syntax =
+            format.kind == CustomToolFormat::Kind::kText    ? "text"
+            : format.kind == CustomToolFormat::Kind::kRegex ? "regex"
+                                                            : "lark";
+        if (!tags.empty()) tags += ',';
+        tags +=
+            R"({"type":"tag","begin":)" +
+            Quote("<tool_call>\n<function=" + name + ">\n<parameter=input>\n") +
+            R"(,"content":{"type":"q4t_custom","syntax":)" + Quote(syntax) +
+            R"(,"definition":)" + Quote(format.definition) +
+            R"(},"end":"\n</parameter>\n</function>\n</tool_call>"})";
+        continue;
+      }
       const auto fn_path = path + ".function";
       auto status = Fields(tool, {"type", "function"}, error_param, path);
       if (!status) return status;
@@ -242,20 +343,35 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       status = ValidateOutputSchema(parameters, fn->GetBool("strict"), true,
                                     error_param, fn_path + ".parameters");
       if (!status) return status;
-      if (out->choice == OutputConstraints::ToolChoice::kNamed &&
-          name != out->named_tool)
+      if (!out->AllowsTool(name) ||
+          (out->choice == OutputConstraints::ToolChoice::kNamed &&
+           out->named_type != "function"))
         continue;
       if (!tags.empty()) tags += ',';
-      tags += R"({"type":"tag","begin":)" +
-              Quote("<tool_call>\n<function=" + name + ">\n") +
-              R"(,"content":)" + SchemaFormat(parameters, true) +
-              R"(,"end":"\n</function>\n</tool_call>"})";
+      const bool guard = NeedsJsonToolArguments(*fn);
+      const std::string begin = "<tool_call>\n<function=" + name + ">\n" +
+                                (guard ? "<parameter=arguments>\n" : "");
+      const std::string end = std::string(guard ? "\n</parameter>" : "") +
+                              "\n</function>\n</tool_call>";
+      tags += R"({"type":"tag","begin":)" + Quote(begin) + R"(,"content":)" +
+              (guard ? GuardedFormat(parameters, fn->GetBool("strict"), name)
+                     : SchemaFormat(parameters, true)) +
+              R"(,"end":)" + Quote(end) + '}';
+      if (guard) {
+        if (!guard_tools.empty()) guard_tools += ',';
+        guard_tools += R"({"name":)" + Quote(name) + R"(,"schema":)" +
+                       OutputJson(parameters) + R"(,"strict":)" +
+                       (fn->GetBool("strict") ? "true" : "false") +
+                       R"(,"begin":)" + Quote(begin) + R"(,"end":)" +
+                       Quote(end) + '}';
+      }
     }
     if (tags.empty())
-      return invalid("tool_choice.function.name", "named tool is not declared");
+      return invalid("tool_choice." + out->named_type + ".name",
+                     "named tool is not declared");
     const bool single =
         !out->parallel || out->choice == OutputConstraints::ToolChoice::kNamed;
-    if (forced) {
+    if (forced || out->json_output) {
       payload = R"({"type":"tags_with_separator","tags":[)" + tags +
                 R"(],"separator":"\n","at_least_one":true,)"
                 R"("stop_after_first":)" +
@@ -269,7 +385,19 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
                 R"("stop_after_first":)" +
                 (single ? "true}" : "false}");
     }
+    if (out->json_output && !forced)
+      payload =
+          R"({"type":"or","elements":[)" + json_payload + ',' + payload + "]}";
   }
+  // Explicit refusal is an alternative to the entire ordinary answer, never
+  // a replacement for an unfinished schema/tool value. The semantic guard
+  // resolves the free-text branch's prefix ambiguity and certifies the frame.
+  const std::string refusal =
+      R"({"type":"sequence","elements":[{"type":"tag","begin":)" +
+      Quote(kRefusalOpen) + R"(,"content":{"type":"any_text","excludes":[)" +
+      Quote(kRefusalClose) + R"(]},"end":)" + Quote(kRefusalClose) + "}," +
+      kWhitespace + "]}";
+  payload = R"({"type":"or","elements":[)" + payload + ',' + refusal + "]}";
   bool thinking = request.GetBool("enable_thinking", true);
   if (const auto* options = request.Find("chat_template_kwargs"))
     thinking = options->GetBool("enable_thinking", thinking);
@@ -280,10 +408,25 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
   }
   out->structural_tag = R"({"type":"structural_tag","format":)"
                         R"({"type":"sequence","elements":[)" +
-                        prefix + kWhitespace + ',' + payload + "]}}";
-  if (out->structural_tag.size() > 65536)
-    return invalid(out->json_output ? "response_format" : "tools",
-                   "compiled request description exceeds 64 KiB");
+                        prefix + kWhitespace + ',' + payload + "]}";
+  {
+    out->schema_receipts =
+        !guard_tools.empty() || (!guard_content.empty() && !forced);
+    out->structural_tag += R"(,"q4t_guard":{"refusal":true,"thinking":)" +
+                           std::string(thinking ? "true" : "false");
+    if (out->json_output && !forced)
+      out->structural_tag += R"(,"json_content":true)";
+    if (!guard_content.empty() && !forced)
+      out->structural_tag += ',' + guard_content;
+    if (!guard_tools.empty())
+      out->structural_tag += R"(,"tools":[)" + guard_tools + ']';
+    out->structural_tag += '}';
+  }
+  out->structural_tag += '}';
+  if (out->structural_tag.size() > 2 * 1024 * 1024)
+    return invalid(
+        out->json_output ? "response_format" : "tools",
+        "schema_resource_exhausted: request description exceeds 2 MiB");
   return Status();
 }
 
@@ -294,10 +437,13 @@ io::Json ConstraintTemplateRequest(const io::Json& request,
     if (key != "tools" || !value.IsArray()) continue;
     if (plan.choice == OutputConstraints::ToolChoice::kNone)
       value.array.clear();
-    else if (plan.choice == OutputConstraints::ToolChoice::kNamed)
+    else if (plan.choice == OutputConstraints::ToolChoice::kNamed ||
+             plan.restrict_tools)
       std::erase_if(value.array, [&](const io::Json& tool) {
-        const auto* fn = tool.Find("function");
-        return !fn || fn->GetString("name") != plan.named_tool;
+        const auto* fn = ToolDefinition(tool);
+        return !fn || !plan.AllowsTool(fn->GetString("name")) ||
+               (plan.choice == OutputConstraints::ToolChoice::kNamed &&
+                tool.GetString("type") != plan.named_type);
       });
   }
   return result;

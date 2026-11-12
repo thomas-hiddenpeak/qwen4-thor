@@ -14,22 +14,97 @@
   "runtime_preflight": "POST /v1/chat/preflight",
   "rules": [
     {
+      "id": "chat-file-inputs",
+      "sources": [
+        "src/server/chat_file_inputs.cpp",
+        "src/server/file_expansion.cpp",
+        "src/server/chat_storage.cpp",
+        "src/server/chat_preflight.cpp",
+        "src/server/chat_generation.cpp"
+      ],
+      "contract": "Chat and preflight validate the complete request before acquiring files. Standard user file parts accept PDF file_id or file_data with optional filename. PDF text and all admitted page images enter the actual template; image URL inputs use common bounded PNG/JPEG/static GIF/WebP acquisition and conversion with auto/low/high/original detail. Generation owns cancellation during preparation. Stored Chat retains original content_parts and private immutable snapshot references bound to completion/message identity; an unknown parent publication keeps absolute holds and is never regenerated. Preflight owns prepared bytes only for that call, reports actual rasterized page/source counts and performs no model execution. Combined media, token, decoder and storage budgets remain enforced; this implementation still requires integrated business/release acceptance."
+    },
+    {
+      "id": "responses-request-fields",
+      "sources": [
+        "src/server/responses_plan.cpp",
+        "src/server/responses_execution.cpp",
+        "src/server/responses_tokens.cpp"
+      ],
+      "contract": "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."
+    },
+    {
+      "id": "responses-input-tokens",
+      "sources": [
+        "src/server/responses_tokens.cpp",
+        "src/server/chat_input_tokens.cpp",
+        "src/server/responses_plan.cpp",
+        "src/server/chat_plan.cpp",
+        "src/server/media_admission.cpp"
+      ],
+      "contract": "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain. Text, PDF/image and frozen summaries use shared actual file preparation without final-answer generation. New spreadsheet summaries execute real bounded native model steps under the parent admission/cancellation and one RPM/cumulative actual TPM lease. The standard input_tokens value describes the final initial prompt, excluding preparation model usage; X-Q4T-Preparation-Input-Tokens/Output-Tokens/Model-Steps report that actual auxiliary work even on ordinary error responses. No response is begun or mutated, no tools/final answer are run, and no cache write occurs; private file read leases remain possible. Truncation auto protects the current turn and tool dependencies; count has zero final-answer output budget. Existing immutable summaries are reused exactly; independent fresh inputs remain independent requests. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File counting uses the shared prepared-input path; remaining endpoint executors/business/release remain linked A09/A10/A11 tasks."
+    },
+    {
+      "id": "stored-chat",
+      "sources": [
+        "src/server/chat_storage.cpp",
+        "src/server/chat_storage_options.cpp",
+        "src/server/chat_generation.cpp",
+        "src/server/object_worker.cpp",
+        "include/q4t/server/application_routes.h"
+      ],
+      "contract": "store defaults false; null omits it. Metadata is nullable or16 string pairs with64/512 Unicode scalar limits, never an auth identity. store=true retains actual completed JSON or SSE choices/logprobs/usage and original input messages after a durable receipt, before final success; receipt loss is queried by original completion ID without replay. Model/filter metadata/list/messaging CRUD are client scoped; asc default, after cursor, limit1..100. Updates preserve original absolute retention, normally30days. No store means no object I/O. At most4096 stored input messages and32MiB complete response; object size, namespace/global quota and deadline may reject independently. Management has bounded observation admission, separate from generation. Original media/tool fields are preserved; query is closed and metadata uses nested URL keys."
+    },
+    {
+      "id": "custom-tools",
+      "sources": [
+        "src/server/custom_tools.cpp",
+        "src/server/custom_grammar.cpp",
+        "src/server/custom_regex.cpp",
+        "src/server/regex_syntax/lib.rs",
+        "src/server/chat_response_parser.cpp"
+      ],
+      "contract": "Custom tools retain type=custom and custom.name/input, with raw text payloads. Omitted format is text; grammar format accepts regex/Lark with definition 1..16384 UTF-8 bytes. Named and allowed references match declared type and name; names are unique across function/custom. Each custom request uses the existing bounded grammar worker. Model-only definitions and histories use native function tags with one input parameter containing a JSON string literal; declared names determine the outward custom/function type. Rust regex syntax and Lark lexer expressions are mapped to the JSON-string model payload without weakening Unicode, escapes, anchors or word boundaries. Expansion512KiB, assertion graph4096 nodes; existing worker time/memory limits remain. Incremental UTF-8/escape decoding is independently compared to the final parse. Success terminal and EOF gate client execution; custom validators are registered separately. Identified custom/function history may share one batch with exactly one result per ID."
+    },
+    {
+      "id": "legacy-functions",
+      "sources": [
+        "src/server/legacy_tools.cpp",
+        "src/server/chat_plan.cpp",
+        "src/server/chat_response_parser.cpp"
+      ],
+      "contract": "Non-null functions/function_call choose legacy output: one function_call, matching finish_reason and incremental name/arguments deltas without tool IDs. Normalized controls share production grammar and final validation; no mixing non-null modern controls or parallel=true. Legacy assistant.function_call must have a contiguous role=function result matching its name; null result is empty text. Internal association IDs never escape onto the legacy wire. Errors refer to original legacy input paths. Null controls are omission."
+    },
+    {
+      "id": "prediction",
+      "sources": [
+        "src/server/prediction.cpp",
+        "src/server/chat_plan.cpp",
+        "src/server/chat_generation.cpp"
+      ],
+      "contract": "Static string/text parts become target-verified tokens. Prediction never forces the target distribution. Accepted tokens are consumed once; remaining provided tokens count as rejected completion tokens. Effective output/context and client quota include them. n>1/logprobs/positive penalties/tools/max_completion_tokens are incompatible only with a non-null prediction."
+    },
+    {
       "id": "json-lexical",
       "sources": [
         "src/io/json.cpp",
-        "include/q4t/server/request_json.h"
+        "include/q4t/server/request_json.h",
+        "include/q4t/server/request_limits.h"
       ],
-      "contract": "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."
+      "contract": "UTF-8 JSON; no duplicate keys, NaN/Infinity literals or trailing data; depth64/65536 values. File-bearing Chat/preflight/Responses/Conversations bodies allow96MiB total decoded string bytes; Completions and nested tool-argument/schema JSON parsers retain16MiB. Chat/preflight/schema/history data retain exact decimal lexemes up to16384 characters, including binary64 overflow/underflow. Generation numeric controls separately require finite/range-valid values. Integer fields use exact source lexemes, not rounded binary64 values. Model/config/cancel readers retain their previous limits."
     },
     {
       "id": "transport-body",
       "sources": [
         "src/server/http_request.cpp",
         "src/server/chat_http.cpp",
+        "include/q4t/server/http_request.h",
+        "include/q4t/server/request_limits.h",
+        "include/q4t/server/http_framing.h",
         "include/q4t/server/http_observation.h",
         "include/q4t/server/http_connection.h"
       ],
-      "contract": "16MiB Chat/preflight body, 48MiB aggregate reservation; capacity failure is HTTP503/body_capacity_exhausted/param=body before body read. This is not a RAM measurement. Exact GET metrics/config/capabilities/models share four observation connections, independent of four health/cancel controls and business capacity; observation overflow is HTTP503/observation_capacity_exhausted. Primary unclassified headers share its summed handler limit. Explicit operations-port adds a loopback-only independent eight-handler listener (four observation/four control); it rejects generation, preflight and unknown method/path before body, preserving client authentication and cancel authority. Operations headers share only its own eight slots; no local flood isolation. Operations total overflow is HTTP503/operations_capacity_exhausted. Both listeners close on shutdown or setup failure. Cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing. Fixed first receive-failure counters exclude business validation."
+      "contract": "HTTP/1.1 Content-Length or chunked decoded bodies; CL/TE mixing and ambiguous framing reject before dispatch. Authenticated/admitted 100-continue only; trailers cannot override routing/framing/credentials. Chunk metadata64KiB, line8KiB, trailers128. Sequential keep-alive at most100 requests/5s idle for the core; every request has fresh identity/admission and its own absolute header+body deadline. Finite JSON uses Content-Length; HTTP/1.1 SSE is chunked with a zero terminal only after successful completion. Truncated streams close and never retry or resume onto a new model generation. HTTP/1.0 and explicit close retain close-delimited stream fallback. Native ingress v4 separately configures bounded HTTP limits, path prefix and explicit proxy trust. Files POST is multipart/form-data with incremental parsing, 512MiB file and 512MiB+65536 wire ceilings; private client v4 max_file_body_bytes and native policy v5 file_body_bytes are explicit separate caps. Older policy versions retain their ordinary body limits. Files and Upload parts have fixed working reservations and separately charged persistent storage quotas, not a full-body buffer. Upload JSON create/complete/cancel and streamed64MiB parts use native client-scoped persistence; public expiry3600s, receipt-only grace86400s, final8GiB/8192parts/16384chunks bounds. Completion verifies actual bytes and optional MD5 before atomic File publication; cancellation has independent32MiB working reservation to remain admissible when data reservations fill. Ordinary aggregate is192MiB. GET file content streams original bytes with Content-Length; interrupted download closes without appending JSON/SSE or retrying. 96MiB ordinary application body ceiling with192MiB aggregate reservation; explicit client and ingress caps may be lower, existing configured caps are unchanged; capacity failure is HTTP503/body_capacity_exhausted/param=body before body read. This is not a RAM measurement. Exact GET metrics/config/capabilities/models share four observation connections, independent of four health/cancel controls and business capacity; observation overflow is HTTP503/observation_capacity_exhausted. Primary unclassified headers share its summed handler limit. Explicit operations-port adds a loopback-only independent eight-handler listener (four observation/four control); it rejects generation, preflight and unknown method/path before body, preserving client authentication and cancel authority. Operations headers share only its own eight slots; no local flood isolation. Operations total overflow is HTTP503/operations_capacity_exhausted. Both listeners close on shutdown or setup failure. Cancel body4096. JSON-generation POST uses application/json UTF-8 with no query strings; management GET supports its declared pagination/filter query and no body; methods exact; framing and header limits apply before parsing. Fixed first receive-failure counters exclude business validation."
     },
     {
       "id": "model-and-credentials",
@@ -48,11 +123,12 @@
       "contract": "x-q4t-max-utf8-bytes counts encoded bytes, not codepoints/UTF-16. Historical names/parameter keys forbid C0, DEL and angle brackets; stop valid UTF-8 1..256 bytes, up to4."
     },
     {
-      "id": "real-user-query",
+      "id": "message-profile",
       "sources": [
-        "src/server/chat_template.cpp"
+        "src/server/chat_template.cpp",
+        "src/server/chat_prompt.cpp"
       ],
-      "contract": "At least one user message remains after native Unicode trim and exclusion of whole <tool_response>...</tool_response> user wrappers. Instruction slot only first system OR developer."
+      "contract": "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. Content is required unless assistant has nonempty tool_calls or a refusal string. Other media and content shapes remain role-checked."
     },
     {
       "id": "reasoning-aliases",
@@ -66,7 +142,7 @@
       "sources": [
         "src/server/chat_tool_history.cpp"
       ],
-      "contract": "Arguments are object or JSON text of an object using production parser budgets. Every top-level argument name is valid. No silent parameter dropping."
+      "contract": "Arguments are object or JSON text of an object using production parser budgets. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."
     },
     {
       "id": "historical-batches",
@@ -81,7 +157,7 @@
         "src/server/input_contract.cpp",
         "src/server/output_constraints.cpp"
       ],
-      "contract": "Function names unique. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."
+      "contract": "Function names unique. allowed_tools references declared unique names, filters template and grammar, and is checked again on actual output; required needs a nonempty subset, auto may be empty. Incremental tool fragments are provisional until successful whole-response terminal and EOF. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."
     },
     {
       "id": "constraint-combinations",
@@ -89,14 +165,19 @@
         "src/server/output_constraints.cpp",
         "src/server/text_stop.cpp"
       ],
-      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed text required, state caches and effective stop forbidden; JSON plus tools requires none. Compiled tool branches max16 tools and ASCII safe names. Compiled structural tag <=65536 bytes."
+      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed messages required; text state caches use completed target-only snapshots with layout checking, request-local grammar/sampler and successful-response publication. Cache startup configuration must be enabled; effective stop remains forbidden. JSON response_format and modern/legacy tools choose a JSON-content or tool-only branch; required/named force tools. Tool declarations max128 with safe names in constrained mode. Compiled description <=2MiB; resource rejection is distinct from invalid syntax. Incremental content/tool/reasoning deltas remain provisional until successful terminal and EOF."
     },
     {
-      "id": "finite-schema",
+      "id": "schema-v2",
       "sources": [
-        "src/server/output_schema.cpp"
+        "src/server/output_schema.cpp",
+        "src/server/schema_graph.cpp",
+        "src/server/schema_grammar.cpp",
+        "src/server/schema_token_guard.cpp",
+        "src/server/schema_receipt.cpp",
+        "src/server/schema_string.cpp"
       ],
-      "contract": "Root exact object; serialized schema<=16384 bytes; depth<=8/<=128 nodes; object<=32 properties/additionalProperties=false; required unique declared keys, all required in strict mode. Enum1..32 distinct matching string/bool/null; no numeric enums. minItems<=maxItems; bounds0..64. XML top properties ASCII1..64, no reserved XML delimiters in names/enums, no nullable top-level XML string parameters."
+      "contract": "Messages expose the response schema and annotations as exact delimiter-safe system format data; shared preflight and cache prefix include those tokens. Raw prompt stays caller-owned. Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."
     },
     {
       "id": "response-parser-prefix",
@@ -105,6 +186,29 @@
         "src/server/thinking_budget.cpp"
       ],
       "contract": "Production parser and thinking budget initialization must accept native generation prefix. Real thinking closure token preparation remains execution-time validation."
+    },
+    {
+      "id": "model-refusal",
+      "sources": [
+        "include/q4t/server/refusal_frame.h",
+        "src/server/chat_template.cpp",
+        "src/server/chat_response_parser.cpp",
+        "src/server/schema_token_guard.cpp",
+        "src/server/schema_receipt.cpp",
+        "src/server/token_logprobs.cpp",
+        "src/server/responses_output.cpp"
+      ],
+      "contract": "Parsed messages use the qwen3.8-openai-v4 template and a model-generated explicit refusal frame. Only the initial final-answer prefix recognizes it; ordinary strings, reasoning and tool arguments retain data semantics. Complete nonempty refusal has its own schema-worker receipt domain; missing or wrong receipts cannot bypass schema/tool validation. No keyword inference or moderation substitution. Chat JSON/SSE expose refusal and actual refusal token probabilities; Responses emits refusal parts and delta/done events with stable indices. Truncation/cancellation/error never becomes successful completion. Raw parse_response=false retains its caller-owned protocol."
+    },
+    {
+      "id": "sampling-and-choices",
+      "sources": [
+        "src/server/sampling.cpp",
+        "src/server/chat_generation.cpp",
+        "src/server/token_logprobs.cpp",
+        "src/server/chat_choices.cpp"
+      ],
+      "contract": "Default/null temperature=1; temperature0 is explicit greedy. Per-choice RNG from exact signed64 seed, top_p nucleus, generated-history penalties and token bias are applied to actual target logits after candidate masks. Non-greedy/logprob requests bypass greedy MTP/packed argmax. Token bias IDs must be distinct numerically and in the served vocabulary. Logprobs describe raw finite vocabulary distribution before masks/penalties; selected outside raw top20 is -9999. Hidden-only tokens excluded, boundary-crossing tokens retain actual bytes/probability once. Choices share one request/cancel/admission and prompt charge; output quota/usage sum across choices. JSON response<=32MiB; pending/collected probability storage each<=16MiB."
     },
     {
       "id": "configured-capabilities",
@@ -227,70 +331,341 @@
         "src/server/chat_scheduler.cpp"
       ],
       "contract": "Permanent PLE read and existing upload failures latch on the dependency instance. Healthy CUDA alone cannot keep readiness open. Ready/health endpoints return503 and q4t_ready=0 while liveness remains independent; pure reader faults do not change gpu_healthy. New Chat/preflight, slot handoff and execution check the same state. Model faults use model_unhealthy; an already-started stream uses the existing single error terminal when writable. Successful short-read retries, memory recovery and NVML observations cannot clear a permanent fault. No automatic dependency reload or request replay. Existing fatal CUDA completion/cleanup can exit1 before HTTP reporting; that boundary is unchanged."
+    },
+    {
+      "id": "native-optional-cache-isolation",
+      "sources": [
+        "include/q4t/server/cache_io.h",
+        "include/q4t/server/cache_health.h",
+        "src/server/cache_io.cpp",
+        "src/server/cache_protocol.h",
+        "src/server/cache_worker.cpp",
+        "src/server/grammar_process.cpp",
+        "src/server/session_cache.cpp",
+        "src/server/chat_preflight.cpp",
+        "src/server/chat_server.cpp"
+      ],
+      "contract": "Private and prefix snapshots use independent exec-only filesystem workers, not an external gateway. The model owns tensor copies and byte checksums; workers inherit no model/GPU lease descriptors. Each file IPC operation waits at most two seconds and checks cancellation; normal multiblock transfers still obey the request deadline. A missing receipt invalidates that cache generation; no write, request or model work is replayed. One controller and worker per domain retain capacity through unconfirmed cleanup; replacement requires actual reap and at most three starts per minute. Optional cache unavailability does not close core readiness or restart a healthy model. Session leases remain held, partial restores require model-state reset, and only successful completion publishes snapshots. Disk charges include actual allocated blocks. Config cache_io reports availability, recovery and observed RSS without directory/session data; three bounded 8MiB payload buffers plus at most4096 initialization bytes are unified RAM, not a whole-process cap or CPU offload."
+    },
+    {
+      "id": "native-completions-and-models",
+      "sources": [
+        "include/q4t/server/model_catalog.h",
+        "src/server/model_catalog.cpp",
+        "include/q4t/server/completion_plan.h",
+        "src/server/completion_plan.cpp",
+        "include/q4t/server/completion_response.h",
+        "src/server/completion_response.cpp",
+        "src/server/chat_generation.cpp",
+        "src/server/token_logprobs.cpp",
+        "src/server/sampling.cpp",
+        "include/q4t/text/tokenizer.h",
+        "src/text/tokenizer.cpp",
+        "src/server/chat_http.cpp",
+        "src/server/chat_metrics.cpp",
+        "src/server/client_request.cpp",
+        "src/service/ingress_main.cpp"
+      ],
+      "contract": "Raw Completions execute strings, homogeneous prompt batches, exact token IDs and token batches. Empty/null document uses one actual endoftext seed. Default/null max_tokens16, zero allowed. n/best_of independent candidates share one request/cancel/quota; at most128 batch candidates. best_of>=n and selection cannot stream; rank by full actual mean generated-token logprob including EOS, stable candidate-order ties; all work charged. No Chat template or reasoning/tool stripping. Echo preserves original string with NFC source offsets or repaired decoded IDs; prompt probabilities are teacher-forced from real target logits in bounded16-row readbacks, first unconditional token null. Sampled probability is full raw distribution, independent of Chat's top20 sentinel. Suffix uses actual model FIM tokens, preserving raw prefix IDs. JSON/SSE text_completion carries parallel probability arrays and Unicode character offsets; successful final usage/DONE only after all choices and cleanup. Optional stream obfuscation defaults on. Models register stable process-lifetime created and explicit aliases; no per-query timestamp. GET detail percent-decodes once; unknown404; loaded base model DELETE403 and never modifies read-only assets. Alias lookup shared by Chat/preflight/Completions; served name/aliases configurable, no external gateway required."
+    },
+    {
+      "id": "native-responses-conversations",
+      "sources": [
+        "src/server/responses_plan.cpp",
+        "src/server/responses_execution.cpp",
+        "src/server/responses_api.cpp",
+        "src/server/responses_state.cpp",
+        "src/server/responses_jobs.cpp",
+        "src/server/responses_owner.cpp",
+        "src/server/responses_output.cpp",
+        "src/server/conversation_api.cpp",
+        "src/server/conversation_state.cpp",
+        "src/server/object_store.cpp",
+        "src/server/application_query.cpp",
+        "include/q4t/server/application_routes.h",
+        "src/server/chat_responses.cpp"
+      ],
+      "contract": "Responses share native model execution and preserve item identities, actual token usage/probabilities and original sequenced events; no Chat DONE. Store defaults true, previous instructions do not carry forward, client-scoped history and conversation commits use isolated bounded object I/O and atomic revision-checked transactions. Background owns its admission permit and original deadline independently of subscribers. Serialized retained input is charged once per live job; default512MiB aggregate, configured by --background-max-input-mib from1 to2048MiB, separate from HTTP and persistent storage quotas; this is not a process RSS bound; cancel is idempotent empty POST returning200, with independent bounded cancellation capacity. Temporary background records cover execution then600 seconds. Recovery proves old execution owner death using boot/PID birth/namespace identity: queued may resume original ID, started fails with saved partial output and is never replayed. Storage/monitor failure cannot restart the model or close healthy core readiness. Conversations support CRUD, item append/list/retrieve/delete and include projection. Application queries use closed per-route fields with exact integers, true/false booleans and include arrays; other routes keep prior query rejection. State APIs, shape validation and capability declarations do not complete pending compaction/summary/encryption/file/tool executors."
+    },
+    {
+      "id": "native-application-retention",
+      "sources": [
+        "include/q4t/server/object_retention.h",
+        "src/server/object_retention.cpp",
+        "src/server/object_worker.cpp",
+        "src/server/object_store.cpp",
+        "src/server/state_key_admin.cpp",
+        "src/server/state_retention_cli.cpp"
+      ],
+      "contract": "Expiry collection preserves queued/in_progress tasks until recovery has durably recorded a terminal state, and follows typed same-owner references from retained roots. Expired unrooted cycles can be collected; unknown lifecycle/shape preserves that owner's records and is reported. No references are extracted from user text or tool arguments. Permanent conversations/prompts retain explicit-delete semantics; permanent orphan items require an explicit creation-time cutoff, not an inferred orphan age. Native same-UID state-retention inspect/collect uses the existing bounded isolated store/admin channel. Inspect does not apply proposed cleanup; collect rechecks the exact SHA256 plan and returns409 on state/eligibility change. At most128 selected objects from one owner per atomic journal transaction; inspect again for further batches. Planner bounds100000 nodes,64MiB metadata estimate and2M references; resource failure retains data and does not deny otherwise usable CRUD. Lost mutation receipt is commit_unknown with no replay; reinspection/recovery uses the existing journal. Offline access requires exclusive store ownership. No business payload/key bytes in receipts; maintenance errors cannot restart a model or close healthy core readiness."
+    },
+    {
+      "id": "native-application-startup",
+      "sources": [
+        "include/q4t/server/application_owner.h",
+        "src/server/application_owner.cpp",
+        "include/q4t/server/chat_server.h",
+        "src/server/chat_server.cpp",
+        "src/server/chat_http.cpp",
+        "src/server/chat_preflight.cpp",
+        "src/server/responses_jobs.cpp",
+        "src/server/batch_jobs.cpp"
+      ],
+      "contract": "Initial Responses and Batch owner construction and the initial Responses recovery scanner retry independently: at least250ms after a failure and at most3failed attempts per rolling60s window. Only initial failures retry; a published owner is never replaced, including failed/stuck owners holding tasks. Acquire/release publication keeps borrowed owners valid until requests and tasks drain. Partial thread construction is stopped/joined before retry. Stop intent prevents future attempts and stops an in-flight newly created owner at publication; signal handling remains lock-free atomic only. Native config reports startup state, attempts/failures/recoveries, retry delay and bounded failure classification. Startup failure never changes healthy model readiness or restarts inference. Existing original queued/started task recovery semantics remain unchanged; actual business/release evidence is separate from this declaration."
+    },
+    {
+      "id": "native-batches",
+      "sources": [
+        "include/q4t/server/batch_api.h",
+        "src/server/batch_api.cpp",
+        "src/server/batch_input.cpp",
+        "src/server/batch_state.cpp",
+        "src/server/batch_results.cpp",
+        "src/server/batch_jobs.cpp",
+        "src/server/batch_finalization.cpp",
+        "include/q4t/server/batch_finalization.h",
+        "src/server/batch_usage.cpp",
+        "include/q4t/server/batch_usage.h",
+        "include/q4t/server/actual_usage.h",
+        "src/server/chat_generation.cpp",
+        "src/server/chat_model_step.cpp",
+        "src/server/responses_output.cpp",
+        "src/server/responses_execution.cpp",
+        "src/server/http_response.cpp",
+        "src/server/batch_response_link.cpp",
+        "include/q4t/server/batch_response_link.h",
+        "src/server/responses_execution_inputs.cpp",
+        "src/server/responses_state.cpp",
+        "src/server/object_retention.cpp",
+        "src/server/batch_budget.cpp",
+        "src/server/batch_preparation.cpp",
+        "src/server/batch_validation.cpp",
+        "src/server/batch_execution.cpp",
+        "src/server/responses_jobs.cpp",
+        "src/server/client_policy.cpp",
+        "src/server/client_rate_state.cpp",
+        "src/server/chat_http.cpp",
+        "src/server/chat_server.cpp",
+        "src/server/object_store_options.cpp",
+        "src/server/server_options.cpp",
+        "include/q4t/server/server_options.h",
+        "include/q4t/server/application_routes.h",
+        "src/service/ingress_main.cpp"
+      ],
+      "contract": "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Actual finite result usage commits atomically with its row and count; cached/reasoning details remain actual. Missing, malformed or overflowed usage is unknown and never a fabricated zero. Original legacy results are recounted before any new row/finalization, with no model replay. Batch Chat observes unbounded reasoning without forcing tokens. Background rows atomically reserve the original Response binding with their start ticket and wait fairly for its terminal plus executor cleanup; cancellation reaches that owner, and process recovery never resubmits the row. Active parent references protect the Response from TTL collection and explicit deletion until the result is copied. Native drained failures/cancellation capture committed input before sequence reset and accepted output including reasoning/cache details, merge internal preparation and preserve choice/step counting; reservations are never usage. Responses failure/cancel resources and SSE terminal carry known observations; private Batch row capture commits with original result/count and supports restart recount without changing standard HTTP error bodies. Live checkpoints never claim complete usage; unsaved work after actual process death remains unknown. Actual model business/release acceptance remains required. Started work or unknown starts never replay. Deterministic output byte/chunk exhaustion records a private bounded aggregation failure and rebuilds only complete-row result prefixes without model replay; partial Files and failed terminal commit atomically. Queue admission releases at terminal, while original result pages remain referenced only through output expiry. Temporary storage quota or unknown receipts retain their existing reconciliation semantics. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."
+    },
+    {
+      "id": "native-standalone-moderations",
+      "sources": [
+        "include/q4t/server/moderations_plan.h",
+        "src/server/moderations_plan.cpp",
+        "include/q4t/server/moderations_execution.h",
+        "src/server/moderations_execution.cpp",
+        "src/server/moderation.cpp",
+        "src/server/chat_moderations.cpp",
+        "src/server/chat_model_step.cpp",
+        "src/server/model_preparation.cpp",
+        "src/server/batch_preparation.cpp",
+        "src/server/batch_budget.cpp",
+        "src/server/chat_http.cpp",
+        "src/server/chat_responses.cpp"
+      ],
+      "contract": "Native moderation runs actual structured classification with the served model or configured alias; omitted model selects the served checkpoint, returned model is canonical. One string or a flat text/image content group yields one result; string arrays yield ordered individual results. Bounds32text inputs/256content parts/1MiB aggregate text; each classifier has512output tokens and real13category scores, local threshold0.5 without cloud calibration. One external admission/cancel owner and RPM span all steps, cumulative input/output use the same client quota; Batch precharges its independent pool with exact native templates and all classifier output before starting its original row. Missing, invalid, incomplete or cancelled scores return a finite error and no partial success/zero-filled safe result. Device/grammar resources drain before the terminal, actual work survives errors and private Batch capture; standard public response contains only id/model/results. Other model families remain required work; schema validity or capabilities do not claim business acceptance."
+    },
+    {
+      "id": "native-final-hidden-embeddings",
+      "sources": [
+        "include/q4t/server/embeddings_plan.h",
+        "src/server/embeddings_plan.cpp",
+        "include/q4t/server/embeddings_execution.h",
+        "src/server/embeddings_execution.cpp",
+        "include/q4t/server/embedding_metadata.h",
+        "src/server/embedding_metadata.cpp",
+        "include/q4t/model/model_head.h",
+        "src/model/model_head.cu",
+        "include/q4t/io/json.h",
+        "src/io/json.cpp",
+        "src/server/chat_embeddings.cpp",
+        "src/server/finite_response.cpp",
+        "src/server/batch_budget.cpp",
+        "src/server/batch_preparation.cpp",
+        "src/server/batch_validation.cpp",
+        "src/server/batch_input.cpp",
+        "src/server/batch_results.cpp",
+        "src/server/batch_usage.cpp",
+        "src/server/batch_execution.cpp",
+        "src/server/chat_responses.cpp",
+        "src/server/chat_http.cpp"
+      ],
+      "contract": "Native LAST final-mixer hidden states, default2560 dimensions and L2 normalization. Requested dimensions select a prefix then normalize, without a retrieval-training or Matryoshka quality claim. Required served model and raw input support string/string-array/token-array/token-matrix, no ChatML or truncation; limits2048 inputs,8192/model-context tokens per input,300000 cumulative plus client input policy. Float JSON round-trips FP32; base64 is little-endian IEEE754 FP32, supporting the SDK default decoder. One RPM and committed input work, no generated output; cancellation/error drain the real slot/device owners and preserve partial actual usage. Dedicated400000-node input budget and validated metadata projections handle finite large vectors without a giant output DOM or changing ordinary Chat limits. Native Batch original-request binding, input count, precharge, result/usage/recovery use the same endpoint contract. No partial success, zero placeholders, synthesized model floats or silent invalid norm. Actual CPU/model/SDK acceptance and delivery remain separate evidence."
     }
   ],
   "sources_sha256": {
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+    "include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
+    "include/q4t/model/model_head.h": "5c6f7a3202d8cbeb2918aa22263d8a24b8e56d92266251701dd804adcc10bd27",
     "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
     "include/q4t/runtime/allocation_quota.h": "f3707f500c3dc5492bcd56e434c52e98b64cdfb83113139d32161ee3ddbb381c",
     "include/q4t/runtime/cleanup_policy.h": "41acdb66d9bf371534a0b110efc5ab73d233be2c5930dafdec130485a17f3ee7",
     "include/q4t/runtime/cuda_allocation_quota.h": "2d0fcac32d91fb4629036d3b4bb3d39b902ef2e687eba63d7e658596cdaffb47",
     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
+    "include/q4t/server/actual_usage.h": "8eb8a2ca44a418184b1d6248e9859cd9962b127a23305fa19544771d1be6a61b",
+    "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
+    "include/q4t/server/application_routes.h": "ec2f8f6d6f0ef42f39bcadf430afd03797ed2c3a727704d5abfc24f8c37ccd76",
+    "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
+    "include/q4t/server/batch_finalization.h": "b06c2f9bd96a165d7506bcd4ce283eed88c9f94d381e2c93460abbd0e827bfa8",
+    "include/q4t/server/batch_response_link.h": "99e71ab67560a90f8b2d75e414cc4aec9f066720b97364c110a66be84bf58ec6",
+    "include/q4t/server/batch_usage.h": "b19a03b8f2a5fe597983c954348992214668d26e2bc4aa052859958ff9dc9fe4",
+    "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+    "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
+    "include/q4t/server/chat_server.h": "bca38d00df8ecf4d84b3cecf44aa50aab7e95e611f5b69f06eda9d1353213e22",
+    "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
+    "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
-    "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
-    "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
+    "include/q4t/server/embedding_metadata.h": "e7038bd0374ff7fad77438b318cad440666a3d929172309b31bafe29fb28f9c7",
+    "include/q4t/server/embeddings_execution.h": "0d7ed7709aacde156f590a913d2b0cc7245c09318c9af4705ec6f88cfc7a49e3",
+    "include/q4t/server/embeddings_plan.h": "c29801b6005ec838b3f39fd52d6701e285f7a1923f791f4d4479a71334961ebe",
+    "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
+    "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
+    "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
+    "include/q4t/server/http_request.h": "2c84737705289d75954f55d41ff1ed810e914fd6087ce3c41b77975f02cd7563",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
+    "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
+    "include/q4t/server/moderations_execution.h": "85014d7bd65cb4710e3cf755f7297e0f4e65bddf595445bb9a16a0600d1f1088",
+    "include/q4t/server/moderations_plan.h": "f33b9685f35057d70b7b969db80d951a894bd687b3d306aa0b74e4637fbe2140",
+    "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
-    "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
-    "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
+    "include/q4t/server/request_json.h": "db921e7c75126b370d7dcde14ee6ed8108f5eb89618289b2564e4062783e3e3b",
+    "include/q4t/server/request_limits.h": "551e05c38dc097450da55766fa39ceda75879e7e141385b829aa916e28f9a30a",
+    "include/q4t/server/sequence_admission.h": "ed25a8d14d1b09c9bc2d1f4a50b1ed31796c6024c0442e5777db7b2e44337d91",
+    "include/q4t/server/server_options.h": "3a6e251fe481eee340177fc1080d764fb3a47abfc210d8345d2558ad90be5b06",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
+    "include/q4t/text/tokenizer.h": "1216d3d610c7b236ab6f7ba170a721ec1dc4010882aa0500a9e6ce430d9bc1f3",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
-    "include/q4t/vision/media_plan.h": "cb4cbd733f01fa2096da09e0d4f581126dc5e8dbe0c732b1ff966158b6d10f07",
-    "include/q4t/vision/processor.h": "9632f9c2a96086497db7193c658df20cf2a5346d8336946f97d180f425cef98e",
-    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "include/q4t/vision/media_plan.h": "f808faab7c44f85656ab6ace27499ad9658764d3bd37f8e8529869fb47dc129c",
+    "include/q4t/vision/processor.h": "20ee75b003b97522dfb437b3a6508258be100fbdb43a58eb74b0951780936842",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
+    "src/model/model_head.cu": "d480e1c6c898aa65a016ee454abe4447246a58c3c3e70c6db1559e27347fde45",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
-    "src/ple/page_reader.cpp": "c214bacacadc3c2df47a0d9cb6161ce30e83b00e7dbd6f1dda86b00228021094",
-    "src/ple/ple_embedding.cpp": "62ea382c9d5fe9d6c9e0ef789b497d3457f8fae1da149b45c21ca10db452c88b",
+    "src/ple/page_reader.cpp": "73745f84d482fb5ddbc341a570fa5148eb2ea1a037db79ea1e1d11eaef582f4d",
+    "src/ple/ple_embedding.cpp": "5f2a8584698642f55d0b2931aa6f44fdf0571d49e0f9b8cf22a345ac6fd5f400",
     "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
     "src/runtime/cuda_quota_backend.h": "ed5a378f24a18d4fbd91ee6a4473e5c14a93f10a9a221bf4a1e2c581ccf7e9ca",
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
+    "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
+    "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+    "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
+    "src/server/batch_budget.cpp": "c7da301cd80ce4b2762e493641edf59f50cf6b98c3eee51c24ad7f460e6bebda",
+    "src/server/batch_execution.cpp": "e405aa5a78586cb5d9f7f95bd330f45b610a105c3004a74dd79cbb046914d093",
+    "src/server/batch_finalization.cpp": "979212557f90a6be6dcacd54ca55ceba9de08ac593e3703d5523cfe41b8619e0",
+    "src/server/batch_input.cpp": "1872bc3eee3dec576fbfab76e4889e0312134b735efa9cddda5b7f86ae111189",
+    "src/server/batch_jobs.cpp": "d09d4b1645a21a44f29ddf435bc3b226ec38e1ac4edc3a7a84d77ab07b6e2753",
+    "src/server/batch_preparation.cpp": "4c3017669c86f8868a6f2d6b8397ef9c3648757f14f90d70b11cfea75885752f",
+    "src/server/batch_response_link.cpp": "c2d65ad35c20f7ed2ee20eaf35b431d2c6c7899f4ac9bc819cf52981d99d50e2",
+    "src/server/batch_results.cpp": "1d287f3210dd8fa8d02044a4cfddefb6d5c66a4e4f832eb57d33650d34c10b1b",
+    "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
+    "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
+    "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
+    "src/server/cache_io.cpp": "679d821d52da169a81c1bdc6ad68cead9f967e029a3861f418bd3adec31a9c3c",
+    "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+    "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_contract.cpp": "67649329b9c1f1006d6f27dfa96d41d39f4d5fa30a143da33a1248de8a9dcf40",
+    "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
+    "src/server/chat_contract.cpp": "f93b1524f4cdb71b3f6d2937cda5b6341478072e071a9e4fc03858490cc6c529",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "cc91f8a4ef7c176fe9106db03599565a36475f3871b3c529655fe3ccfec388ac",
+    "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
+    "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
+    "src/server/chat_generation.cpp": "3c5005c92b78fc0fbd68189c1cd62a49b7a63164eb1296239489cbc751594d51",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "80f118f2c33271b67c72839eb3ddefe46ea820418769ccc945ed9d1a3a847992",
-    "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
+    "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
+    "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
+    "src/server/chat_input_tokens.cpp": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "98b0f7ebfb79868285f31e03c55d481e813cab1044c4a31e24356dc353260fab",
-    "src/server/chat_plan.cpp": "b7aa0e9d84cbe9097c1d95100e783b68a4a2b01c80a1e6aaf68c756c61e17f95",
-    "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
-    "src/server/chat_prompt.cpp": "913d5768c332f90935713dff717b71ff0280e86ebf1b48fab0af342d0326f43a",
-    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
-    "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
-    "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
-    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
-    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/chat_metrics.cpp": "60594faf70dad63a5a317e67bdda140227a0fc9d66f3ce2f53104b89a26f7416",
+    "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
+    "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
+    "src/server/chat_plan.cpp": "15a3ee41d3b5ab6af0dcdd930f83a46005873c4e71c605d19bc1081ce68e8654",
+    "src/server/chat_preflight.cpp": "601e393c5122bbfa218778e7c0405aa79945c3d2675af88a939698ca1ec42947",
+    "src/server/chat_prompt.cpp": "44ee8504faec4d904d4cd320581218253d3e1e62c8f12476e4b509f78c3f1db8",
+    "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
+    "src/server/chat_responses.cpp": "74fa1e051643821b26d491ef7ab10bb53151b9177d68215d0d12fa9b8a8cd336",
+    "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
+    "src/server/chat_server.cpp": "8c62d260d9522ee1100c276dc0df6a1edabeb293e1c252978cb6d6a00c8621d3",
+    "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
+    "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+    "src/server/chat_template.cpp": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
+    "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+    "src/server/client_policy.cpp": "1e87f542adf319f5aea52e10e4467bb24692978f375f6c834df7e96362063830",
+    "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
+    "src/server/client_request.cpp": "9c2eb3b26ffb92412fc4a685d7265d1f88413fcdcbeff6586a8f29a6069fb961",
+    "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
+    "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
+    "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
+    "src/server/conversation_state.cpp": "9a566f5d2cf8207911d4209ba5c34a6015bcefbbcaa1f3610ea1d8d89fb5d783",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/http_request.cpp": "b700d8b4a0e22bf4511a2f5729cb8d07b7ba4ca41bcf4b89cdcb5e156294ae29",
-    "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
-    "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
+    "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
+    "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
+    "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
+    "src/server/embedding_metadata.cpp": "ace571f57dcd0b2cc2389ae37f1582eda93835d5dac30881453b9a00932f0490",
+    "src/server/embeddings_execution.cpp": "2f79fcedf3c4486fff96837ba528a55cd575ee8a898e011f214dd36c800a9fd6",
+    "src/server/embeddings_plan.cpp": "04d1723b63377850f176c878842b93f2e268eefc36ecb9abcb23280c8deff4cd",
+    "src/server/file_expansion.cpp": "3f024279ebaa3bd67fda4e381c4cde59fdb9a0190942e7e663388d8a19d17236",
+    "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
+    "src/server/grammar_process.cpp": "ec67a35100a312ac6654e52255803989a7ab88260eb6819f4c2b4544ae870727",
+    "src/server/http_request.cpp": "a963e1099af8505277ca04dd75f18da090bcab5fd8c058eb826ff10e3a25a8b1",
+    "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
+    "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
+    "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
+    "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
-    "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
+    "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+    "src/server/model_preparation.cpp": "3076bb74055173b514a6de758238cd2c25b8240cd6f51026e673e3c103cd6e96",
+    "src/server/moderation.cpp": "15d6f5ef709f6b1e9cde6ec2f2f155cdc3bd69a58d6e605e7ee2c635d8b3dc41",
+    "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
+    "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",
+    "src/server/object_retention.cpp": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
+    "src/server/object_store.cpp": "5a807755d05d81a78230c531ebbe1629e99c465a1a69aa2475cf2fe5f3936b99",
+    "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
+    "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
+    "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
+    "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
+    "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
-    "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
+    "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+    "src/server/responses_api.cpp": "327ba0d075422fb7238a489f6962ed9a3d1dc1b17ace44ed74f03f7aff112da7",
+    "src/server/responses_execution.cpp": "41d5cf701f421f0ab771fb98e276ba19bf047b68b1bdf14260c13664c08b0fd0",
+    "src/server/responses_execution_inputs.cpp": "962aff416457706b16ae30a87a7bca709a2ed1c636e8220d3a0db2adf98de3ba",
+    "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
+    "src/server/responses_output.cpp": "e7786d2fbb27594e1c303d9c8d3eef22ca97c1397030c18f6cae2473b22be8f5",
+    "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
+    "src/server/responses_plan.cpp": "dfe6656629a7d0c7578488095054910a29be7ecc31849dc31b3f4c930dbe6ecc",
+    "src/server/responses_state.cpp": "56e458e60072eb238546d117ddca9f1853fa2c6cbd47c1be05c20d80c02288c1",
+    "src/server/responses_tokens.cpp": "1d37c35acd2d4a8d231e57a9f54e1678697b6af5ca5fd4c5f32f47e9cd6c70e8",
+    "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+    "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+    "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
+    "src/server/schema_receipt.cpp": "14d9eaffc89238dcc7f46b7a237ceb342b65d9d98a74403d940f8c6694d521d8",
+    "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
+    "src/server/schema_token_guard.cpp": "17d60f1b88ea8ad8ee59a37aaeec3e9d7317fb0b8dcbf7b2debb0be90861a74c",
+    "src/server/server_options.cpp": "a41231b29ec11016c6a70caceb95d28ef62d3f639a084ddff15038d64907eca8",
+    "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
+    "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
+    "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
-    "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
-    "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
-    "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
+    "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
+    "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
+    "src/service/ingress_main.cpp": "1d3dfc296e4c3869eb5015dcea32c0109495b2302c8af8cfe0d976af6f873901",
+    "src/text/tokenizer.cpp": "d468106d6e49e471bf14835443ba3333a5b9242f9d737376c8fef17191acfbd7",
+    "src/vision/media_plan.cpp": "d46531462936f89c2563b58de098e0aa0174340c6da8cecbc04441ed7df590a7",
+    "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414"
   }
 }

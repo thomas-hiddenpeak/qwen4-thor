@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-04/plan.json", "prior_counts": {"starts": 2, "chats": 10, "probes": 1, "controls": 603}, "remaining_seconds": 1016.4422656781971, "resume_generation": 2, "passed_work_replayed": false}

@@ -1,0 +1,1 @@
+{"id":"n05-optional-proxy","object":"chat.completion","created":1794215520,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"42"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":27,"completion_tokens":3,"total_tokens":30}}

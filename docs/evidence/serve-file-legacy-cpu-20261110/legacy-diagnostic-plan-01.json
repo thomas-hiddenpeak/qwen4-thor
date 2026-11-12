@@ -1,0 +1,7 @@
+{
+  "reason": "First frozen group: 8 pass, actual Word/XLS/PPT fail503, corrupt input timeout, converted output limit unreachable",
+  "action": "One owned actual Word worker under strace, max45s",
+  "source_identity": "legacy-identities-01.json",
+  "repeat_passed_tests": false,
+  "gpu": 0
+}

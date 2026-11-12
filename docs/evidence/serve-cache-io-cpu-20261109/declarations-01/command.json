@@ -1,0 +1,7 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "tools.serve_protocol.build_contract",
+  "--check"
+]

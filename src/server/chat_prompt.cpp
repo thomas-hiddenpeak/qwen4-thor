@@ -7,6 +7,7 @@
 
 #include "q4t/server/chat_template.h"
 #include "q4t/server/media_admission.h"
+#include "q4t/server/legacy_tools.h"
 
 namespace q4t::server {
 namespace {
@@ -16,11 +17,15 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                           std::string* err, bool add_vision_id,
                           int* image_count, int* video_count,
                           size_t message_index, std::string* error_param,
-                          std::string* error_code) {
+                          std::string* error_code,
+                          std::vector<size_t>* part_ends) {
   std::string out;
   const io::Json* content = m.Find("content");
   if (content == nullptr || content->IsNull()) return out;
-  if (content->IsString()) return content->str;
+  if (content->IsString()) {
+    if (part_ends) part_ends->push_back(content->str.size());
+    return content->str;
+  }
   if (!content->IsArray()) {
     *err = "Unexpected content type.";
     return out;
@@ -46,6 +51,19 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       item.kind = VisionItem::kImage;
       item.message_index = message_index;
       item.part_index = part_index;
+      const auto* detail_field = iu->Find("detail");
+      const auto detail = iu->GetString("detail", "auto");
+      if (detail_field && (!detail_field->IsString() ||
+                           (detail != "auto" && detail != "low" &&
+                            detail != "high" && detail != "original"))) {
+        *error_param += ".image_url.detail";
+        *error_code = "media_detail_invalid";
+        *err = *error_code;
+        return {};
+      }
+      if (detail == "low") item.detail = vision::ImageDetail::kLow;
+      if (detail == "high") item.detail = vision::ImageDetail::kHigh;
+      if (detail == "original") item.detail = vision::ImageDetail::kOriginal;
       *error_param = MediaInputParam(item);
       if (items->size() >= vision::kMediaPlanItems) {
         *error_code = "media_item_limit";
@@ -66,6 +84,7 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       if (add_vision_id)
         out += "Picture " + std::to_string(*image_count) + ": ";
       out += "<|vision_start|><|image_pad|><|vision_end|>";
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     const io::Json* vf = part.Find("video_frames");
@@ -136,11 +155,20 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
         out += std::format("<{:.1f} seconds>", (times[frame] + last) / 2);
         out += "<|vision_start|><|video_pad|><|vision_end|>";
       }
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     const io::Json* text = part.Find("text");
     if (text && text->IsString()) {
       out += text->str;
+      if (part_ends) part_ends->push_back(out.size());
+      continue;
+    }
+    const auto* refusal = part.Find("refusal");
+    if (m.GetString("role") == "assistant" &&
+        part.GetString("type") == "refusal" && refusal && refusal->IsString()) {
+      out += refusal->str;
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     *err = "Unexpected item type in content.";
@@ -155,7 +183,19 @@ Status PrepareChatPrompt(const io::Json& request,
                          const OutputConstraints& constraints,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
-                         std::string* error_param, std::string* error_code) {
+                         std::string* error_param, std::string* error_code,
+                         ChatPromptLayout* layout, bool allow_empty) {
+  if (layout) *layout = {};
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(request, &normalized, error_param);
+    if (!status) return status;
+    status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
+                               items_out, error_param, error_code, layout,
+                               allow_empty);
+    if (!status) LegacyToolErrorParam(request, error_param);
+    return status;
+  }
   prompt_out->clear();
   items_out->clear();
   error_param->clear();
@@ -174,23 +214,28 @@ Status PrepareChatPrompt(const io::Json& request,
   std::string& prompt = *prompt_out;
   std::vector<VisionItem>& items = *items_out;
   if (const auto* messages = req.Find("messages")) {
-    const auto profile = ValidateChatMessageProfile(*messages, error_param);
+    const auto profile =
+        ValidateChatMessageProfile(*messages, error_param, allow_empty);
     if (!profile) return profile;
     const auto* options = req.Find("chat_template_kwargs");
     const auto* vision_id = options ? options->Find("add_vision_id") : nullptr;
     if (!vision_id) vision_id = req.Find("add_vision_id");
     int image_count = 0, video_count = 0;
     std::vector<std::string> contents;
+    if (layout) layout->part_ends.resize(messages->array.size());
     for (size_t index = 0; index < messages->array.size(); ++index) {
       const auto& message = messages->array[index];
       std::string error;
       contents.push_back(RenderContent(
           message, &items, &error, vision_id && vision_id->boolean,
-          &image_count, &video_count, index, error_param, error_code));
+          &image_count, &video_count, index, error_param, error_code,
+          layout ? &layout->part_ends[index] : nullptr));
       if (!error.empty()) return fail(error);
       error_param->clear();
     }
-    const auto rendered = RenderChatPrompt(req, contents, &prompt);
+    const auto rendered = RenderChatPrompt(req, contents, &prompt,
+                                           layout ? &layout->messages : nullptr,
+                                           allow_empty);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

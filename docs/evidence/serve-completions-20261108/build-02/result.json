@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "exit": 2,
+  "seconds": 74.19674893375486,
+  "diagnostics": [
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_reliability/http_lifecycle_test.cpp:1363:5: error: \u2018HttpBodyLease\u2019 was not declared in this scope; did you mean \u2018q4t::server::HttpBodyLease\u2019?",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_reliability/http_lifecycle_test.cpp:1364:15: error: \u2018held\u2019 was not declared in this scope",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_reliability/http_lifecycle_test.cpp:1364:28: error: \u2018kAggregateChatBodyBytes\u2019 was not declared in this scope; did you mean \u2018q4t::server::kAggregateChatBodyBytes\u2019?"
+  ]
+}

@@ -1,0 +1,33 @@
+test_batches_transport (unittest.loader._FailedTest.test_batches_transport) ... ERROR
+test_batches_transport (unittest.loader._FailedTest.test_batches_transport) ... ERROR
+
+======================================================================
+ERROR: test_batches_transport (unittest.loader._FailedTest.test_batches_transport)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_batches_transport
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 8, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+======================================================================
+ERROR: test_batches_transport (unittest.loader._FailedTest.test_batches_transport)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_batches_transport
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 8, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+FAILED (errors=2)

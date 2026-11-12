@@ -1,0 +1,4 @@
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host

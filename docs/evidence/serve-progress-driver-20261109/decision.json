@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_PROGRESS_DRIVER_CPU",
+  "different_tests": 5,
+  "first_run_preserved": "FAILED_assertion_exception_type",
+  "retested_cases": 1,
+  "source_sha256": {
+    "tools/serve_progress/acceptance.py": "a5c4ce174cf6b57d0d86dc8116f247b4036c01f0d2cf9cc3197d80320fc62cd6",
+    "tools/serve_progress/pause.py": "0146f0320cf2ff24708b6b2c3bcdd0fe85ee55d59860cdd8a53a24cdece1dae5",
+    "tools/serve_progress/prepare.py": "8de33a1dc3dc1bc9168b17dac1be50d1d16b36bfd9a4c74cd4a5731ac1c96b4a",
+    "tools/serve_progress/test_acceptance.py": "347cacabcb7c1eca32868c034a2a4eff5a07cf5aedf6e25892334c6300ef899e",
+    "tools/serve_progress/test_pause.py": "7069dec3968508e7c78f191bf33da6b0dbc5c1877cd33f4f8f9de225d8992be3"
+  },
+  "gpu_starts": 0,
+  "default_changed": false,
+  "whole_R03_complete": false,
+  "limits": {
+    "starts": 2,
+    "chats": 8,
+    "probes": 1,
+    "seconds": 900
+  }
+}

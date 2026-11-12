@@ -242,124 +242,489 @@
           "const": false
         },
         "media_limits": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "profile": {
-              "const": "q4t-media-admission-v1"
-            },
-            "experimental": {
-              "const": true
-            },
-            "roles": {
-              "const": [
-                "user"
-              ]
-            },
-            "formats": {
-              "const": [
-                "png",
-                "jpeg"
-              ]
-            },
-            "data_url_mime": {
-              "const": [
-                "image/png",
-                "image/jpeg"
-              ]
-            },
-            "raw_base64": {
-              "const": true
-            },
-            "base64": {
-              "const": "canonical_standard_padded"
-            },
-            "image_detail": {
-              "const": [
-                "auto"
-              ]
-            },
-            "remote_urls": {
-              "const": false
-            },
-            "max_items": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_frames_per_item": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_encoded_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_source_edge": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_source_pixels": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_decoded_rgb_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_patches": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_workspace_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "decoder_owned_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "attention_shared_bytes": {
-              "type": [
-                "integer",
-                "null"
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v1"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation"
               ],
-              "minimum": 1
+              "description": "Optional for historical v1 records; emitted by the media admission implementation. Logical source/decoder/workspace limits do not reserve physical RAM."
             },
-            "unknown_device_limit": {
-              "const": "reject"
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v2"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                },
+                "video_time_field": {
+                  "const": "video_timestamps"
+                },
+                "video_time_unit": {
+                  "const": "seconds"
+                },
+                "video_time_default": {
+                  "const": "frame_index/24"
+                },
+                "max_timestamp_seconds": {
+                  "const": 86400
+                },
+                "temporal_group_frames": {
+                  "const": 2
+                },
+                "timestamp_rounding_decimal_places": {
+                  "const": 1
+                },
+                "video_prompt": {
+                  "const": "timestamp_then_one_boundary_per_temporal_group"
+                },
+                "mtp": {
+                  "const": false
+                },
+                "state_cache": {
+                  "const": false
+                },
+                "chunked_prefill": {
+                  "const": false
+                },
+                "max_execution_slots": {
+                  "const": 1
+                },
+                "client_governance": {
+                  "const": true
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation",
+                "video_time_field",
+                "video_time_unit",
+                "video_time_default",
+                "max_timestamp_seconds",
+                "temporal_group_frames",
+                "timestamp_rounding_decimal_places",
+                "video_prompt",
+                "mtp",
+                "state_cache",
+                "chunked_prefill",
+                "max_execution_slots",
+                "client_governance"
+              ],
+              "description": "Native media v2 includes temporal grouping and actual execution constraints."
             },
-            "whole_server_ram_limit": {
-              "const": false
-            },
-            "cancellation": {
-              "const": "item_frame_and_before_gpu_not_preemptive"
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v3"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg",
+                    "gif"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg",
+                    "image/gif"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto",
+                    "low",
+                    "high",
+                    "original"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                },
+                "video_time_field": {
+                  "const": "video_timestamps"
+                },
+                "video_time_unit": {
+                  "const": "seconds"
+                },
+                "video_time_default": {
+                  "const": "frame_index/24"
+                },
+                "max_timestamp_seconds": {
+                  "const": 86400
+                },
+                "temporal_group_frames": {
+                  "const": 2
+                },
+                "timestamp_rounding_decimal_places": {
+                  "const": 1
+                },
+                "video_prompt": {
+                  "const": "timestamp_then_one_boundary_per_temporal_group"
+                },
+                "mtp": {
+                  "const": false
+                },
+                "state_cache": {
+                  "const": false
+                },
+                "chunked_prefill": {
+                  "const": false
+                },
+                "max_execution_slots": {
+                  "const": 1
+                },
+                "client_governance": {
+                  "const": true
+                },
+                "animated_images": {
+                  "const": false
+                },
+                "detail_policy": {
+                  "const": {
+                    "auto": "qwen_reference_smart_resize",
+                    "low": {
+                      "longest_edge": 512,
+                      "max_pixels": 262144
+                    },
+                    "high": {
+                      "longest_edge": 2048,
+                      "max_pixels": 4194304
+                    },
+                    "original": "preserve_pixels_pad_right_bottom_edge",
+                    "configured_pixel_limit_applies": true
+                  }
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation",
+                "video_time_field",
+                "video_time_unit",
+                "video_time_default",
+                "max_timestamp_seconds",
+                "temporal_group_frames",
+                "timestamp_rounding_decimal_places",
+                "video_prompt",
+                "mtp",
+                "state_cache",
+                "chunked_prefill",
+                "max_execution_slots",
+                "client_governance",
+                "animated_images",
+                "detail_policy"
+              ],
+              "description": "Native media v3: static GIF and per-image detail/resize policy; historical versions retain their exact schemas."
             }
-          },
-          "required": [
-            "profile",
-            "experimental",
-            "roles",
-            "formats",
-            "data_url_mime",
-            "raw_base64",
-            "base64",
-            "image_detail",
-            "remote_urls",
-            "max_items",
-            "max_frames_per_item",
-            "max_encoded_bytes",
-            "max_source_edge",
-            "max_source_pixels",
-            "max_decoded_rgb_bytes",
-            "max_patches",
-            "max_workspace_bytes",
-            "decoder_owned_bytes",
-            "attention_shared_bytes",
-            "unknown_device_limit",
-            "whole_server_ram_limit",
-            "cancellation"
-          ],
-          "description": "Optional for historical v1 records; emitted by the media admission implementation. Logical source/decoder/workspace limits do not reserve physical RAM."
+          ]
         }
       },
       "required": [
@@ -404,10 +769,16 @@
           "type": "boolean"
         },
         "body_bytes": {
-          "const": 16777216
+          "enum": [
+            16777216,
+            100663296
+          ]
         },
         "aggregate_body_bytes": {
-          "const": 50331648
+          "enum": [
+            50331648,
+            201326592
+          ]
         },
         "tokenizer_input_bytes": {
           "type": "integer",
@@ -445,6 +816,41 @@
             0,
             8
           ]
+        },
+        "background_input_bytes": {
+          "type": "integer",
+          "minimum": 1048576,
+          "maximum": 2147483648
+        },
+        "batch_workers": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "batch_max_jobs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "batch_max_client_jobs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "batch_result_bytes": {
+          "type": "integer",
+          "minimum": 100663296,
+          "maximum": 1073741824
+        },
+        "batch_model_queue_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "batch_client_model_queue_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
         }
       },
       "required": [
@@ -464,6 +870,28 @@
         "queue_policy",
         "queue_order",
         "queue_excludes_preparation"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "body_bytes": {
+              "const": 16777216
+            },
+            "aggregate_body_bytes": {
+              "const": 50331648
+            }
+          }
+        },
+        {
+          "properties": {
+            "body_bytes": {
+              "const": 100663296
+            },
+            "aggregate_body_bytes": {
+              "const": 201326592
+            }
+          }
+        }
       ]
     },
     "configuration_mutable": {
@@ -1013,10 +1441,22 @@
           "const": true
         },
         "mutable": {
-          "const": false
+          "type": "boolean"
         },
         "per_client_ram_limit": {
           "const": false
+        },
+        "snapshot": {
+          "const": "startup"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       },
       "required": [
@@ -1028,6 +1468,57 @@
         "credential_values_redacted",
         "mutable",
         "per_client_ram_limit"
+      ],
+      "description": "Immutable startup binding. The v3 snapshot is not the currently applied policy; see current_client_policy.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mutable": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "snapshot",
+              "revision",
+              "content_sha256"
+            ],
+            "properties": {
+              "enabled": {
+                "const": true
+              },
+              "clients": {
+                "minimum": 1
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "snapshot"
+                  ]
+                },
+                {
+                  "required": [
+                    "revision"
+                  ]
+                },
+                {
+                  "required": [
+                    "content_sha256"
+                  ]
+                }
+              ]
+            }
+          }
+        }
       ]
     },
     "observability_version": {
@@ -1105,7 +1596,9 @@
         "policy_version": {
           "enum": [
             1,
-            2
+            2,
+            3,
+            4
           ]
         },
         "fair_queue": {
@@ -1165,6 +1658,1597 @@
         "preemption",
         "latency_guarantee"
       ]
+    },
+    "model_aliases": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "completions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-completions-v1"
+        },
+        "default_output_tokens": {
+          "const": 16
+        },
+        "max_batch_candidates": {
+          "const": 128
+        }
+      },
+      "required": [
+        "profile",
+        "default_output_tokens",
+        "max_batch_candidates"
+      ]
+    },
+    "application_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-objects-v1"
+        },
+        "directory_source": {
+          "enum": [
+            "environment",
+            "explicit"
+          ]
+        },
+        "directory_redacted": {
+          "const": true
+        },
+        "isolated_io": {
+          "const": true
+        },
+        "max_object_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "max_client_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_total_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_client_objects": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "max_total_objects": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "io_timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30000
+        },
+        "core_readiness_dependency": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "directory_source",
+        "directory_redacted",
+        "isolated_io",
+        "max_object_mib",
+        "max_client_mib",
+        "max_total_mib",
+        "max_client_objects",
+        "max_total_objects",
+        "io_timeout_ms",
+        "core_readiness_dependency"
+      ],
+      "description": "Present when the native application object store is implemented; absent in historical config-v1 records."
+    },
+    "application_state_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workers_started": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workers_reaped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controller_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controller_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controller_recoveries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "key_admin_ready": {
+          "type": "boolean"
+        },
+        "key_admin_readiness_dependency": {
+          "const": false
+        },
+        "auxiliary_cleanup_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "pending",
+        "workers_started",
+        "workers_reaped"
+      ],
+      "dependentRequired": {
+        "key_admin_ready": [
+          "key_admin_readiness_dependency"
+        ],
+        "key_admin_readiness_dependency": [
+          "key_admin_ready"
+        ]
+      }
+    },
+    "responses_background": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queued": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "running": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uncertain": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "interrupted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_configured": {
+          "type": "boolean"
+        },
+        "recovery_scanned": {
+          "type": "boolean"
+        },
+        "rate_waiting": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_deferrals": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "owned",
+        "queued",
+        "running",
+        "uncertain",
+        "input_bytes",
+        "recovery_pending",
+        "recovered",
+        "interrupted",
+        "recovery_errors",
+        "recovery_configured",
+        "recovery_scanned"
+      ],
+      "additionalProperties": false,
+      "description": "Present when native background Responses is implemented; current runtime recovery state, independent of model readiness."
+    },
+    "responses_reconciliation": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reconciled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "owned",
+        "active",
+        "pending",
+        "reconciled",
+        "errors"
+      ],
+      "additionalProperties": false
+    },
+    "cache_io": {
+      "type": "object",
+      "description": "Native optional cache worker observations. Omitted in historical config-v1 records; all buffers and worker memory use unified RAM. Buffer cap excludes process/library metadata overhead. Observed RSS is the last reported maximum, zero is unknown when worker_rss_known is false.",
+      "additionalProperties": false,
+      "properties": {
+        "session": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "configured": {
+              "type": "boolean"
+            },
+            "available": {
+              "type": "boolean"
+            },
+            "state": {
+              "enum": [
+                "disabled",
+                "starting",
+                "ready",
+                "unavailable",
+                "cleanup_pending",
+                "backoff",
+                "controller_backoff",
+                "stopped",
+                "invalid_configuration",
+                "controller_owned"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_started": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_reaped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "controller_failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "worker_rss_observed_bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_active": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "worker_rss_known": {
+              "type": "boolean"
+            },
+            "io_timeout_ms": {
+              "const": 2000
+            },
+            "restart_limit": {
+              "const": 3
+            },
+            "restart_window_ms": {
+              "const": 60000
+            },
+            "block_bytes": {
+              "const": 8388608
+            },
+            "buffer_payload_limit_bytes": {
+              "const": 25169920
+            },
+            "buffer_limit_excludes_process_overhead": {
+              "const": true
+            }
+          },
+          "required": [
+            "configured",
+            "available",
+            "state",
+            "readiness_dependency",
+            "generation",
+            "workers_started",
+            "workers_reaped",
+            "controller_failures",
+            "worker_rss_observed_bytes",
+            "workers_active",
+            "worker_rss_known",
+            "io_timeout_ms",
+            "restart_limit",
+            "restart_window_ms",
+            "block_bytes",
+            "buffer_payload_limit_bytes",
+            "buffer_limit_excludes_process_overhead"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "available": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "configured": {
+                    "const": true
+                  },
+                  "state": {
+                    "const": "ready"
+                  },
+                  "generation": {
+                    "minimum": 1
+                  },
+                  "workers_active": {
+                    "const": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "worker_rss_known": {
+                    "const": false
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "worker_rss_observed_bytes": {
+                    "const": 0
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "prefix": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "configured": {
+              "type": "boolean"
+            },
+            "available": {
+              "type": "boolean"
+            },
+            "state": {
+              "enum": [
+                "disabled",
+                "starting",
+                "ready",
+                "unavailable",
+                "cleanup_pending",
+                "backoff",
+                "controller_backoff",
+                "stopped",
+                "invalid_configuration",
+                "controller_owned"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_started": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_reaped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "controller_failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "worker_rss_observed_bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "workers_active": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "worker_rss_known": {
+              "type": "boolean"
+            },
+            "io_timeout_ms": {
+              "const": 2000
+            },
+            "restart_limit": {
+              "const": 3
+            },
+            "restart_window_ms": {
+              "const": 60000
+            },
+            "block_bytes": {
+              "const": 8388608
+            },
+            "buffer_payload_limit_bytes": {
+              "const": 25169920
+            },
+            "buffer_limit_excludes_process_overhead": {
+              "const": true
+            }
+          },
+          "required": [
+            "configured",
+            "available",
+            "state",
+            "readiness_dependency",
+            "generation",
+            "workers_started",
+            "workers_reaped",
+            "controller_failures",
+            "worker_rss_observed_bytes",
+            "workers_active",
+            "worker_rss_known",
+            "io_timeout_ms",
+            "restart_limit",
+            "restart_window_ms",
+            "block_bytes",
+            "buffer_payload_limit_bytes",
+            "buffer_limit_excludes_process_overhead"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "available": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "configured": {
+                    "const": true
+                  },
+                  "state": {
+                    "const": "ready"
+                  },
+                  "generation": {
+                    "minimum": 1
+                  },
+                  "workers_active": {
+                    "const": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "worker_rss_known": {
+                    "const": false
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "worker_rss_observed_bytes": {
+                    "const": 0
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "session",
+        "prefix"
+      ]
+    },
+    "current_client_policy": {
+      "description": "Current atomic model policy, distinct from the startup binding; publisher loss does not erase an installed policy. No credential values are exposed.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-native-client-policy-v1"
+        },
+        "configured": {
+          "type": "boolean"
+        },
+        "mutable": {
+          "type": "boolean"
+        },
+        "publisher_alive": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "content_sha256": {
+          "type": "string"
+        },
+        "global_inflight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "global_queued": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "credential_values_redacted": {
+          "const": true
+        },
+        "clients": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,31}$"
+          }
+        }
+      },
+      "required": [
+        "profile",
+        "configured",
+        "mutable",
+        "publisher_alive",
+        "revision",
+        "sha256",
+        "content_sha256",
+        "global_inflight",
+        "global_queued",
+        "credential_values_redacted",
+        "clients"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "configured": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "clients": {
+                "minItems": 1
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "content_sha256": {
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "clients": {
+                "maxItems": 0
+              },
+              "sha256": {
+                "const": ""
+              },
+              "content_sha256": {
+                "const": ""
+              },
+              "mutable": {
+                "const": false
+              },
+              "revision": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "batches": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "recovery_scanned": {
+          "type": "boolean"
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reserved_result_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_waiting": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_deferrals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "interrupted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_pending": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "recovery_scanned",
+        "owned",
+        "active",
+        "reserved_result_bytes",
+        "rate_waiting",
+        "rate_deferrals",
+        "turns",
+        "errors",
+        "recovered",
+        "interrupted",
+        "recovery_errors",
+        "recovery_pending"
+      ],
+      "additionalProperties": false
+    },
+    "file_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_source_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000000
+        },
+        "max_files": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "max_rendered_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 536870912
+        },
+        "max_retained_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "hold_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "summary_output_tokens": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 65536
+        },
+        "total_summary_output_tokens": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 65536
+        },
+        "extraction_timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120000
+        },
+        "document": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_text_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16777216
+            },
+            "max_cell_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4194304
+            },
+            "max_columns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "max_cells": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "max_sheets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 256
+            },
+            "max_nested_documents": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "max_embedded_documents": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1024
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120000
+            }
+          },
+          "required": [
+            "max_text_bytes",
+            "max_cell_bytes",
+            "max_columns",
+            "max_cells",
+            "max_sheets",
+            "max_nested_documents",
+            "max_embedded_documents",
+            "timeout_ms"
+          ]
+        },
+        "package": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 536870912
+            },
+            "max_entry_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 67108864
+            },
+            "max_entries": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65536
+            },
+            "max_xml_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000000
+            },
+            "max_xml_depth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "max_bytes",
+            "max_entry_bytes",
+            "max_entries",
+            "max_xml_nodes",
+            "max_xml_depth"
+          ]
+        },
+        "pdf": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_pages": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 256
+            },
+            "max_pixels": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 268435456
+            },
+            "max_image_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 268435456
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120000
+            }
+          },
+          "required": [
+            "max_pages",
+            "max_pixels",
+            "max_image_bytes",
+            "timeout_ms"
+          ]
+        },
+        "legacy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_converted_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50000000
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120000
+            }
+          },
+          "required": [
+            "max_converted_bytes",
+            "timeout_ms"
+          ]
+        },
+        "legacy_io": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1073741824
+            },
+            "file_creations": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65536
+            },
+            "thread_creations": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "notifications": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000000
+            }
+          },
+          "required": [
+            "write_bytes",
+            "file_creations",
+            "thread_creations",
+            "notifications"
+          ]
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50000000
+            },
+            "max_pixels": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 268435456
+            },
+            "max_edge": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65536
+            },
+            "max_conversion_bytes": {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 268435456
+            },
+            "codec_timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30000
+            }
+          },
+          "required": [
+            "max_bytes",
+            "max_pixels",
+            "max_edge",
+            "max_conversion_bytes",
+            "codec_timeout_ms"
+          ]
+        },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 536870912
+            },
+            "max_metadata_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "max_parts": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1024
+            }
+          },
+          "required": [
+            "max_bytes",
+            "max_metadata_bytes",
+            "max_parts"
+          ]
+        },
+        "fetch": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "public_networks": {
+              "type": "boolean"
+            },
+            "allow_http": {
+              "type": "boolean"
+            },
+            "allowed_networks_count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 128
+            },
+            "allowed_hosts_count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 128
+            },
+            "ports": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 128,
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              }
+            },
+            "custom_ca": {
+              "type": "boolean"
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30000
+            },
+            "max_redirects": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            }
+          },
+          "required": [
+            "public_networks",
+            "allow_http",
+            "allowed_networks_count",
+            "allowed_hosts_count",
+            "ports",
+            "custom_ca",
+            "timeout_ms",
+            "max_redirects"
+          ]
+        },
+        "profile": {
+          "const": "q4t-file-input-policy-v1"
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configured": {
+          "type": "boolean"
+        },
+        "request_override": {
+          "const": false
+        },
+        "model_media_items": {
+          "const": 8
+        },
+        "spreadsheet_rows": {
+          "const": 1000
+        },
+        "retained_budget_is_rss_limit": {
+          "const": false
+        },
+        "body_storage_context_admission_separate": {
+          "const": true
+        }
+      },
+      "required": [
+        "max_source_bytes",
+        "max_files",
+        "max_rendered_bytes",
+        "max_retained_bytes",
+        "hold_seconds",
+        "summary_output_tokens",
+        "total_summary_output_tokens",
+        "extraction_timeout_ms",
+        "document",
+        "package",
+        "pdf",
+        "legacy",
+        "legacy_io",
+        "image",
+        "storage",
+        "fetch",
+        "profile",
+        "sha256",
+        "configured",
+        "request_override",
+        "model_media_items",
+        "spreadsheet_rows",
+        "retained_budget_is_rss_limit",
+        "body_storage_context_admission_separate"
+      ]
+    },
+    "application_startup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responses": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
+        },
+        "batches": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
+        },
+        "response_scanner": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
+        },
+        "vector_ingestion": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
+        }
+      },
+      "required": [
+        "responses",
+        "batches",
+        "response_scanner"
+      ],
+      "description": "Present in native application initialization recovery builds; omitted by historical config-v1 producers."
+    },
+    "native_embedding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-native-embedding-v1"
+        },
+        "available": {
+          "const": true
+        },
+        "model": {
+          "const": "qwen3-embedding-0.6b"
+        },
+        "revision": {
+          "const": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+        },
+        "weight_sha256": {
+          "const": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+        },
+        "weight_file_bytes": {
+          "const": 1191586416
+        },
+        "executor": {
+          "const": "native_qwen3_dense_bf16"
+        },
+        "dimensions": {
+          "const": 1024
+        },
+        "dimension_min": {
+          "const": 32
+        },
+        "dimension_selection": {
+          "const": "prefix_then_l2"
+        },
+        "input_tokens_max": {
+          "const": 8192
+        },
+        "token_vocab": {
+          "const": 151669
+        },
+        "text_postprocessor": {
+          "const": "append_eos_151643"
+        },
+        "raw_tokens_append_eos": {
+          "const": false
+        },
+        "query_instruction": {
+          "const": "caller_supplied"
+        },
+        "lazy_assets": {
+          "const": true
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model_restart_on_failure": {
+          "const": false
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "profile",
+        "available",
+        "model",
+        "revision",
+        "weight_sha256",
+        "weight_file_bytes",
+        "executor",
+        "dimensions",
+        "dimension_min",
+        "dimension_selection",
+        "input_tokens_max",
+        "token_vocab",
+        "text_postprocessor",
+        "raw_tokens_append_eos",
+        "query_instruction",
+        "lazy_assets",
+        "core_readiness_dependency",
+        "model_restart_on_failure",
+        "enabled"
+      ],
+      "description": "Optional fixed native model declaration; historical config-v1 producers omit this property. Enabled describes configuration, not current backend health."
+    },
+    "native_embedding_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "disabled",
+            "configured",
+            "loading",
+            "metadata_ready",
+            "ready",
+            "degraded"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "none",
+            "embedding_assets_invalid",
+            "embedding_assets_timeout",
+            "embedding_worker_unavailable",
+            "embedding_resource_exhausted",
+            "gpu_unhealthy",
+            "embedding_compute_failed"
+          ]
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model": {
+          "const": "qwen3-embedding-0.6b"
+        },
+        "device_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery": {
+          "const": "request_driven"
+        },
+        "retry_delay_ms": {
+          "const": 5000
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "core_readiness_dependency",
+        "model",
+        "device_bytes",
+        "load_attempts",
+        "load_failures",
+        "recovery",
+        "retry_delay_ms"
+      ],
+      "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+    },
+    "vector_ingestion": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "recovery_scanned": {
+          "type": "boolean"
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_waiting": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rate_deferrals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_pending": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "recovery_scanned",
+        "owned",
+        "active",
+        "rate_waiting",
+        "rate_deferrals",
+        "turns",
+        "errors",
+        "recovered",
+        "recovery_errors",
+        "recovery_pending"
+      ],
+      "additionalProperties": false,
+      "description": "Native vector ingestion job health; auxiliary failure does not affect core readiness. Historical config-v1 producers omit this property."
     }
   },
   "required": [
@@ -1186,7 +3270,9 @@
     "max_queued_requests",
     "memory_admission",
     "startup_memory",
-    "cuda_allocation_quota"
+    "cuda_allocation_quota",
+    "model_aliases",
+    "completions"
   ],
   "allOf": [
     {
@@ -1213,6 +3299,50 @@
           "limits": {
             "properties": {
               "unclassified_shares_total": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "client_governance"
+        ],
+        "properties": {
+          "client_governance": {
+            "required": [
+              "policy_version"
+            ],
+            "properties": {
+              "policy_version": {
+                "const": 3
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "client_policy",
+          "current_client_policy"
+        ],
+        "properties": {
+          "client_policy": {
+            "properties": {
+              "mutable": {
+                "const": true
+              }
+            }
+          },
+          "current_client_policy": {
+            "properties": {
+              "mutable": {
+                "const": true
+              },
+              "configured": {
                 "const": true
               }
             }

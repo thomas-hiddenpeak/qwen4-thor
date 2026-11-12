@@ -1,0 +1,12 @@
+{
+  "status": "PASS_EXPLICIT_RETIRED_GENERATION_ARCHIVE",
+  "active_before": 31,
+  "active_after": 29,
+  "archived": 2,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/maintenance-01/archive",
+  "default_unchanged": true,
+  "publication_revision": 72,
+  "new_gpu_starts": 0,
+  "deleted_files": 0,
+  "first_preparation_failures": "parent directories mode 0775 refused; new owned 0700 parent used; no policy relaxation"
+}

@@ -1,0 +1,18 @@
+[PASS] chat_files_pdf_reaches_template_and_preflight_without_public_rewrite
+  CHECK failed: Ok(files.Prepare(request, fixture.config, Access(), &plan)) (line 159)
+[FAIL] chat_files_webp_preserves_detail_and_legacy_function_controls
+[PASS] chat_files_validate_whole_envelope_before_any_state_or_decoder_io
+[PASS] chat_files_media_role_and_pdf_contract_do_not_silently_drop_content
+[PASS] chat_files_cancellation_deadline_and_ordinary_text_are_isolated
+[PASS] chat_files_stored_originals_replay_after_restart_and_decoder_outage
+[PASS] chat_files_bindings_reject_modified_original_before_chat_publication
+[PASS] chat_files_unknown_parent_publication_retains_absolute_holds
+[PASS] file_expansion_actual_pdf_page_and_chat_profile_are_complete
+[PASS] chat_storage_crud_restart_and_metadata_retention
+[PASS] chat_storage_original_messages_preserve_parts_and_tool_history
+[PASS] chat_storage_lost_final_receipt_is_retrievable_without_replay
+[PASS] chat_contract_no_silent_message_semantics
+[PASS] chat_contract_media_rejected_before_decoding
+[PASS] chat_plan_native_template_and_constraint_adapter
+[PASS] chat_preflight_envelope_and_opt_in_preview
+16 tests, 15 passed, 1 failed, 0 skipped

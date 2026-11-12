@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_progress.test_pause",
+  "tools.serve_progress.test_acceptance"
+]

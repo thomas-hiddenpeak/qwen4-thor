@@ -1,0 +1,20 @@
+[
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-access-20261109/host",
+    "--target",
+    "q4t_service_tools",
+    "--parallel",
+    "2"
+  ],
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--target",
+    "q4t_service_tools",
+    "--parallel",
+    "2"
+  ]
+]

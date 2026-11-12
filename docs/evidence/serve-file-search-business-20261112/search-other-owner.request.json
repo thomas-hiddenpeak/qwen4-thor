@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "path": "/v1/vector_stores/vs_e5c99af25ff7bfc3d9e6fc59b7597487/search",
+  "body": "{\"query\": \"Thor MoE expert capacity SSD CPU DRAM\", \"max_num_results\": 2}",
+  "owner": "file-search-other"
+}

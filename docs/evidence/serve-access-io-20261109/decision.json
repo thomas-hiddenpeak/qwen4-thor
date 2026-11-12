@@ -1,0 +1,9 @@
+{
+  "status": "PASS_ISOLATED_CREDENTIAL_IO_CPU",
+  "tests": 7,
+  "model_starts": 0,
+  "real_chat_generations": 0,
+  "default_changed": false,
+  "managed_gateway_wiring_pending": true,
+  "remaining_master_tasks_open": true
+}

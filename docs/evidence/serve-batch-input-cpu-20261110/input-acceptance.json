@@ -1,0 +1,22 @@
+{
+  "status": "ACCEPT_BATCH_INPUT_COMPONENT_CPU",
+  "cases": 14,
+  "actual_bytes": 200000000,
+  "actual_rows": 50000,
+  "seconds": 1.5656131939031184,
+  "host_sha256": "323a5d70bd9235b7356acba9da0dd13d980b785d8a917215546a4a1e2369f623",
+  "candidate_sha256": "bd406172e9a1fd984536c416cb50ea6d3e1697c162f12b3c206d40cd4968cb38",
+  "sources": {
+    "include/q4t/server/batch_input.h": "4719a6230734a1c4cb04850e15bb5d5febadb9bb4cf8bc4dbf9ffaa999546086",
+    "src/server/batch_input.cpp": "a064dc01f70e647f0493f00802185d2afbbb7124dcee14ed2961a7436c497859",
+    "tests/server_batch_input_test.cpp": "b2f1abcefd83f81f962fe6691041e97e832a0a21f7022dc63198b4d46e5fede8",
+    "cmake/HostTestSources.cmake": "9e03706ab3ecb29b734b7e0a2ce95ed9215ebbd2f63a7b78e43a8b688046c610",
+    "cmake/ChatProtocolIdentity.cmake": "88be3fdf266c77cdc34e912f271edfd9b4c8be35d5be4800b32b6ca1baca2a42",
+    "CMakeLists.txt": "7d5e0dda6161ca60e4a06cbfb1cb2a516bf4d424507b165f8c19aa90c89b7eb2",
+    "tools/serve_audit/check_inventory.py": "0954c72f13a44b7c622e99291e0408d03bb77cbf11f399381ea8033ef4cef12b"
+  },
+  "warnings": 0,
+  "gpu": 0,
+  "default_unchanged": true,
+  "remaining": "Durable task/page/result state, actual endpoint validators and executor, cancellation/restart, HTTP/native SDK, business and release, all other master work"
+}

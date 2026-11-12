@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_grammar_reap/test_acceptance.py"
+  ],
+  "exit_code": 0,
+  "seconds": 0.11401125974953175
+}

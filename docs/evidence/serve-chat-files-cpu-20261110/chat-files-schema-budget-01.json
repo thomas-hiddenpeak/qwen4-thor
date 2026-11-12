@@ -1,0 +1,9 @@
+{
+  "tests": [
+    "tools.serve_protocol.test_file_inputs",
+    "tools.vision_service.test_input.Inputs.test_schema_roles_controls_and_timestamps"
+  ],
+  "test_count": 3,
+  "gpu_starts": 0,
+  "network": 0
+}

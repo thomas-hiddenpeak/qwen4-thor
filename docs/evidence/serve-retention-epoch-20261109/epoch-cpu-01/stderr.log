@@ -1,0 +1,24 @@
+test_file_operations_never_hold_core_ownership_locks (tools.serve_recovery.test_retention_epoch.EpochTests.test_file_operations_never_hold_core_ownership_locks) ... ok
+test_interrupted_legacy_retirement_rebinds_after_old_boot_proof (tools.serve_recovery.test_retention_epoch.EpochTests.test_interrupted_legacy_retirement_rebinds_after_old_boot_proof) ... ok
+test_legacy_run_migrates_then_archives_and_retires (tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires) ... ok
+test_live_lease_or_nonstopped_intent_refuses_migration (tools.serve_recovery.test_retention_epoch.EpochTests.test_live_lease_or_nonstopped_intent_refuses_migration) ... ok
+test_revision_race_and_changed_source_do_not_receive_eligibility (tools.serve_recovery.test_retention_epoch.EpochTests.test_revision_race_and_changed_source_do_not_receive_eligibility) ... FAIL
+test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive) ... ok
+test_live_process_reference_is_protected_without_signalling_it (tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it) ... ok
+
+======================================================================
+FAIL: test_revision_race_and_changed_source_do_not_receive_eligibility (tools.serve_recovery.test_retention_epoch.EpochTests.test_revision_race_and_changed_source_do_not_receive_eligibility)
+----------------------------------------------------------------------
+tools.serve_recovery.ledger.LedgerError: missing transaction receipt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention_epoch.py", line 101, in test_revision_race_and_changed_source_do_not_receive_eligibility
+    with self.assertRaisesRegex(ValueError, 'changed'):epoch.migrate(self.state, run_id)
+AssertionError: "changed" does not match "missing transaction receipt"
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.717s
+
+FAILED (failures=1)

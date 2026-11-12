@@ -1,0 +1,16 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_service.test_declarations.Declarations.test_application_state_is_declared_bound_and_kept_outside_generations",
+  "tools.serve_service.test_declarations.Declarations.test_application_state_override_requires_engine_and_valid_bounded_settings",
+  "tools.serve_service.test_declarations.Declarations.test_notices_are_copied_verified_and_do_not_need_repository_at_runtime",
+  "tools.serve_service.test_declarations.Declarations.test_managed_cli_carries_application_options",
+  "tools.serve_service.test_declarations.Declarations.test_completion_schemas_travel_with_optional_registry_and_verify_offline",
+  "tools.serve_recovery.test_production.ControllerTests.test_application_directory_survives_run_controller_and_model_generations",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_cli_carries_application_state_limits_to_sealed_package",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_launcher_never_hands_guardian_a_regular_file_for_diagnostics"
+]

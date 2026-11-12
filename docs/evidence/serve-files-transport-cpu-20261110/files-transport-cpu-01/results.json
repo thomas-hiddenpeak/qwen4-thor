@@ -1,0 +1,75 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/required-files-transport.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.015909872017800808
+  },
+  {
+    "name": "policy",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_responses.test_file_capacity.FileCapacityTests",
+      "tools.serve_recovery.test_quota_store.QuotaStoreTests.test_native_python_digest_ignores_runtime_token_and_json_layout"
+    ],
+    "exit_code": 0,
+    "seconds": 0.2643402167595923
+  },
+  {
+    "name": "network",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_responses.test_files_transport.FilesTransportTests"
+    ],
+    "exit_code": 1,
+    "seconds": 4.72443697694689
+  },
+  {
+    "name": "native-regression",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_recovery/test_native_ingress.py",
+      "--ingress",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t-ingress",
+      "NativeTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers",
+      "NativeTests.test_completions_preserve_body_and_enforce_native_auth",
+      "NativeTests.test_completions_data_limit_preserves_model_control_route"
+    ],
+    "exit_code": 0,
+    "seconds": 4.969574837945402
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11403664387762547
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.033697017934173346
+  }
+]

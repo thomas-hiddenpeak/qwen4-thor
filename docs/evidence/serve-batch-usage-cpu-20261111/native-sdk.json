@@ -1,0 +1,487 @@
+{
+  "status": "PASS",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+        "object": "file",
+        "bytes": 346,
+        "created_at": 1794333885,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796925885
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_643ed8e51efd83e3fa66668c31f4dec0",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_643ed8e51efd83e3fa66668c31f4dec0",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_643ed8e51efd83e3fa66668c31f4dec0/cancel",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/batch-test/v1/files/file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+      "status": 200,
+      "response": {
+        "id": "file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_643ed8e51efd83e3fa66668c31f4dec0",
+      "status": 200,
+      "response": {
+        "id": "batch_643ed8e51efd83e3fa66668c31f4dec0",
+        "object": "batch",
+        "status": "completed",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": {
+          "fixture": "real-api"
+        },
+        "output_file_id": "file_fbd54d1e1aedd9ecb13ede80e6e0da4c",
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 2,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333885,
+        "usage": {
+          "input_tokens": 8,
+          "output_tokens": 4,
+          "total_tokens": 12,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "finalizing_at": 1794333885,
+        "completed_at": 1794333885
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/files/file_fbd54d1e1aedd9ecb13ede80e6e0da4c",
+      "status": 200,
+      "response": {
+        "id": "file_fbd54d1e1aedd9ecb13ede80e6e0da4c",
+        "object": "file",
+        "bytes": 934,
+        "created_at": 1794333885,
+        "expires_at": 1794337485,
+        "filename": "batch_643ed8e51efd83e3fa66668c31f4dec0_output.jsonl",
+        "purpose": "batch_output",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/files/file_fbd54d1e1aedd9ecb13ede80e6e0da4c/content",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "object": "file",
+        "bytes": 406,
+        "created_at": 1794333885,
+        "filename": "requests.jsonl",
+        "purpose": "batch",
+        "status": "processed",
+        "expires_at": 1796925885
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "object": "batch",
+        "status": "validating",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 0,
+          "completed": 0,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_3b5227618c9fe0249fb45be43e2c8fd4",
+      "status": 200,
+      "response": {
+        "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "object": "batch",
+        "status": "in_progress",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333885
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_3b5227618c9fe0249fb45be43e2c8fd4/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "object": "batch",
+        "status": "cancelling",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": null,
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 0
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333885,
+        "cancelling_at": 1794333885
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches/batch_3b5227618c9fe0249fb45be43e2c8fd4",
+      "status": 200,
+      "response": {
+        "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_65e7f62019a7f23a1660c05f47322530",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333885,
+        "cancelling_at": 1794333885,
+        "finalizing_at": 1794333885,
+        "cancelled_at": 1794333885
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/batch-test/v1/batches/batch_3b5227618c9fe0249fb45be43e2c8fd4/cancel",
+      "status": 200,
+      "response": {
+        "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "object": "batch",
+        "status": "cancelled",
+        "endpoint": "/v1/responses",
+        "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+        "completion_window": "24h",
+        "created_at": 1794333885,
+        "expires_at": 1794420285,
+        "metadata": null,
+        "output_file_id": null,
+        "error_file_id": "file_65e7f62019a7f23a1660c05f47322530",
+        "errors": null,
+        "request_counts": {
+          "total": 2,
+          "completed": 0,
+          "failed": 2
+        },
+        "model": "batch-cpu",
+        "in_progress_at": 1794333885,
+        "cancelling_at": 1794333885,
+        "finalizing_at": 1794333885,
+        "cancelled_at": 1794333885
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_643ed8e51efd83e3fa66668c31f4dec0",
+            "object": "batch",
+            "status": "completed",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_75c2fea21ec21e0ca4769dcd0eb9c94a",
+            "completion_window": "24h",
+            "created_at": 1794333885,
+            "expires_at": 1794420285,
+            "metadata": {
+              "fixture": "real-api"
+            },
+            "output_file_id": "file_fbd54d1e1aedd9ecb13ede80e6e0da4c",
+            "error_file_id": null,
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 2,
+              "failed": 0
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794333885,
+            "usage": {
+              "input_tokens": 8,
+              "output_tokens": 4,
+              "total_tokens": 12,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "finalizing_at": 1794333885,
+            "completed_at": 1794333885
+          }
+        ],
+        "first_id": "batch_643ed8e51efd83e3fa66668c31f4dec0",
+        "last_id": "batch_643ed8e51efd83e3fa66668c31f4dec0",
+        "has_more": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+            "object": "batch",
+            "status": "cancelled",
+            "endpoint": "/v1/responses",
+            "input_file_id": "file_b4b95b8581c9100e8a208a5f56f0eab5",
+            "completion_window": "24h",
+            "created_at": 1794333885,
+            "expires_at": 1794420285,
+            "metadata": null,
+            "output_file_id": null,
+            "error_file_id": "file_65e7f62019a7f23a1660c05f47322530",
+            "errors": null,
+            "request_counts": {
+              "total": 2,
+              "completed": 0,
+              "failed": 2
+            },
+            "model": "batch-cpu",
+            "in_progress_at": 1794333885,
+            "cancelling_at": 1794333885,
+            "finalizing_at": 1794333885,
+            "cancelled_at": 1794333885
+          }
+        ],
+        "first_id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "last_id": "batch_3b5227618c9fe0249fb45be43e2c8fd4",
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [],
+        "first_id": null,
+        "last_id": null,
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "limit requires 1..100",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "limit"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/batch-test/v1/batches",
+      "status": 401,
+      "response": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    }
+  ],
+  "request_count": 19,
+  "actual_network": true,
+  "model_starts": 0,
+  "generation": "explicit_CPU_fixture",
+  "max_retries": 0,
+  "rows": [
+    {
+      "id": "batch_req_tool_run_bc65a8cfcffe6956b3fab08216df0974",
+      "custom_id": "cpu-0",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_9fba6a0503f111c3854ae793c2818733",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "batch_req_tool_run_d076754f377c6468901d35feca95be6c",
+      "custom_id": "cpu-1",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_c9135fc9987bccb318fcc2a124522731",
+        "body": {
+          "object": "response",
+          "output": [
+            {
+              "type": "function_call",
+              "call_id": "call_cpu",
+              "name": "lookup",
+              "arguments": "{\"key\":42}"
+            }
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "output_tokens": 2,
+            "total_tokens": 6,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        }
+      },
+      "error": null
+    }
+  ]
+}

@@ -33,6 +33,88 @@ struct SocketPair {
 };
 }  // namespace
 
+Q4T_TEST(server_preparation_usage_headers_preserve_body_and_parent_ownership) {
+  using namespace q4t::server::detail;
+  for (bool failure : {false, true}) {
+    SocketPair sockets;
+    HttpResponseContext parent(sockets.fd[0]);
+    Q4T_CHECK(parent.SetTraceId("preparation-999-parent"));
+    parent.SetPreparationUsage({157, 23, 2});
+    {
+      HttpResponseContext child(HttpResponseContext::Detached{sockets.fd[0]});
+      Q4T_CHECK(child.InputPreparationUsage().model_steps == 0);
+      child.SetPreparationUsage({999, 999, 999});
+    }
+    if (failure)
+      SendError(sockets.fd[0], 408, "preparation deadline", {},
+                "request_deadline_exceeded");
+    else
+      Q4T_CHECK(
+          SendSimple(sockets.fd[0], 200, "OK",
+                     R"({"object":"response.input_tokens","input_tokens":41})",
+                     "application/json"));
+    char bytes[4096];
+    const auto size = recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT);
+    Q4T_CHECK(size > 0);
+    const std::string_view wire(bytes, size);
+    Q4T_CHECK(
+        wire.find("X-Q4T-Preparation-Input-Tokens: 157\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Output-Tokens: 23\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Model-Steps: 2\r\n") != wire.npos &&
+        wire.find("X-Request-Id: preparation-999-parent\r\n") != wire.npos &&
+        wire.find("X-Q4T-Preparation-Input-Tokens: 999\r\n") == wire.npos &&
+        wire.find("X-Q4T-Preparation-Output-Tokens: 999\r\n") == wire.npos &&
+        wire.find("X-Q4T-Preparation-Model-Steps: 999\r\n") == wire.npos);
+    q4t::io::Json body;
+    Q4T_CHECK(q4t::io::ParseJson(
+        std::string(wire.substr(wire.find("\r\n\r\n") + 4)), &body, true));
+    Q4T_CHECK(failure ? body.Has("error")
+                      : body.GetInt("input_tokens") == 41 &&
+                            body.object.size() == 2);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    server_detached_child_borrows_disconnect_fd_without_response_or_handoff) {
+  using namespace q4t::server;
+  using namespace q4t::server::detail;
+  SocketPair sockets;
+  HttpResponseContext parent(sockets.fd[0]);
+  bool handed_off = false;
+  parent.SetBeforeTerminal(
+      [](void* value) noexcept { *static_cast<bool*>(value) = true; },
+      &handed_off);
+  auto control = std::make_shared<RequestControl>(
+      "preparation", "", std::chrono::steady_clock::time_point::max());
+  int error = 0;
+  {
+    HttpResponseContext child(HttpResponseContext::Detached{sockets.fd[0]});
+    child.SetErrorObserver(
+        [](void* value, int status, std::string_view,
+           std::string_view) noexcept { *static_cast<int*>(value) = status; },
+        &error);
+    Q4T_CHECK(HttpResponseContext::Current(sockets.fd[0]) == &child);
+    SendError(sockets.fd[0], 502, "private model failure");
+    Q4T_CHECK(error == 502 && !handed_off &&
+              *parent.State() == ResponseState::kUnsent);
+    char bytes[128];
+    Q4T_CHECK(recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT) == -1 &&
+              (errno == EAGAIN || errno == EWOULDBLOCK));
+    Q4T_CHECK(WriteAll(sockets.fd[0], "private", {.control = control.get()}));
+    Q4T_CHECK(control->Cancel());  // A child did not finish the parent control.
+    Q4T_CHECK(!WriteAll(sockets.fd[0], "private", {.control = control.get()}));
+  }
+  Q4T_CHECK(HttpResponseContext::Current(sockets.fd[0]) == &parent);
+  Q4T_CHECK(SendSimple(sockets.fd[0], 200, "OK", "{}", "application/json"));
+  Q4T_CHECK(handed_off);
+  char bytes[4096];
+  const auto size = recv(sockets.fd[1], bytes, sizeof(bytes), MSG_DONTWAIT);
+  Q4T_CHECK(size > 0 &&
+            std::string_view(bytes, size).find("private") == std::string::npos);
+  return true;
+}
+
 Q4T_TEST(server_terminal_handoff_precedes_wire_and_preserves_cleanup) {
   using namespace q4t::server;
   using namespace q4t::server::detail;
@@ -267,40 +349,49 @@ Q4T_TEST(server_utf8_malformed_subparts) {
 
 Q4T_TEST(server_http_parse_error_terminal) {
   using namespace q4t::server::detail;
-  for (bool stream : {false, true}) {
-    SocketPair sockets;
-    ResponseState state = stream ? ResponseState::kStreaming :
-                                   ResponseState::kUnsent;
-    SendResponseParseError(sockets.fd[0], stream, &state, "invalid \"参数\"");
-    Q4T_CHECK(state == ResponseState::kTerminal);
-    SendResponseParseError(sockets.fd[0], stream, &state, "duplicate");
-    SendExceptionResponse(sockets.fd[0], state);  // Must not append another end.
-    shutdown(sockets.fd[0], SHUT_WR);
-    std::string output;
-    std::array<char, 2048> bytes{};
-    for (;;) {
-      const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
-      Q4T_CHECK(n >= 0);
-      if (!n) break;
-      output.append(bytes.data(), static_cast<size_t>(n));
+  for (int http_status : {502, 503}) {
+    const auto code = http_status == 503 ? "constraint_dependency_unavailable"
+                                         : "response_parse_failed";
+    for (bool stream : {false, true}) {
+      SocketPair sockets;
+      ResponseState state =
+          stream ? ResponseState::kStreaming : ResponseState::kUnsent;
+      SendResponseParseError(sockets.fd[0], stream, &state, "invalid \"参数\"",
+                             {}, code, http_status);
+      Q4T_CHECK(state == ResponseState::kTerminal);
+      SendResponseParseError(sockets.fd[0], stream, &state, "duplicate");
+      SendExceptionResponse(sockets.fd[0],
+                            state);  // Must not append another end.
+      shutdown(sockets.fd[0], SHUT_WR);
+      std::string output;
+      std::array<char, 2048> bytes{};
+      for (;;) {
+        const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
+        Q4T_CHECK(n >= 0);
+        if (!n) break;
+        output.append(bytes.data(), static_cast<size_t>(n));
+      }
+      Q4T_CHECK(output.find("finish_reason") == output.npos);
+      Q4T_CHECK(output.find("\"usage\"") == output.npos);
+      std::string body;
+      if (stream) {
+        Q4T_CHECK(output.starts_with("data: "));
+        Q4T_CHECK(output.ends_with("data: [DONE]\r\n\r\n"));
+        const auto done = output.find("[DONE]");
+        Q4T_CHECK(output.find("[DONE]", done + 1) == output.npos);
+        body = output.substr(6, output.find("\r\n\r\n") - 6);
+      } else {
+        Q4T_CHECK(output.starts_with(
+            http_status == 503 ? "HTTP/1.1 503 Service Unavailable\r\n"
+                               : "HTTP/1.1 502 Bad Gateway\r\n"));
+        body = output.substr(output.find("\r\n\r\n") + 4);
+      }
+      q4t::io::Json value;
+      Q4T_CHECK(q4t::io::ParseJson(body, &value).ok());
+      Q4T_CHECK(value.Find("error")->GetString("code") == code);
+      Q4T_CHECK(value.Find("error")->GetString("message") ==
+                "invalid \"参数\"");
     }
-    Q4T_CHECK(output.find("finish_reason") == output.npos);
-    Q4T_CHECK(output.find("\"usage\"") == output.npos);
-    std::string body;
-    if (stream) {
-      Q4T_CHECK(output.starts_with("data: "));
-      Q4T_CHECK(output.ends_with("data: [DONE]\r\n\r\n"));
-      const auto done = output.find("[DONE]");
-      Q4T_CHECK(output.find("[DONE]", done + 1) == output.npos);
-      body = output.substr(6, output.find("\r\n\r\n") - 6);
-    } else {
-      Q4T_CHECK(output.starts_with("HTTP/1.1 502 Bad Gateway\r\n"));
-      body = output.substr(output.find("\r\n\r\n") + 4);
-    }
-    q4t::io::Json value;
-    Q4T_CHECK(q4t::io::ParseJson(body, &value).ok());
-    Q4T_CHECK(value.Find("error")->GetString("code") == "response_parse_failed");
-    Q4T_CHECK(value.Find("error")->GetString("message") == "invalid \"参数\"");
   }
   return true;
 }

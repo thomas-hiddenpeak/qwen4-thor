@@ -1,9 +1,29 @@
+include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 # Shared by the Thor release gate and the standalone public host build.
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_admin.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_cli.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_retention_cli.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_key_admin_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_crypto.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_compaction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_compaction_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prompt_registry_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prompt_cache_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy_admin.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_rate_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_client_policy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/guardian_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/runtime_cleanup_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/system_memory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/memory_admission.cpp
@@ -13,6 +33,141 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_device_memory_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cuda_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/worker_io_broker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_worker_io_budget_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/cache_io.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/cache_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cache_io_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/session_cache.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_session_isolation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_retention.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/multipart.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/binary_store.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_snapshot.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_payload.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_application_payload_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_snapshot_bindings.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_input_snapshot_bindings_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_input_snapshot_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/uploads.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_uploads_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_checkpoint.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_budget.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_quota.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_results.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_finalization.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_usage.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_response_link.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_preparation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_validation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_jobs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_owner.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_state_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_results_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_preparation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_execution_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_application_owner_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_jobs_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_quota_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_image_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package_runtime.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_common.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_xml.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_text.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_sheet.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_odf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf_encoding.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_workspace.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_legacy_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_extract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_snapshot.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_expansion.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_input_policy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_file_inputs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_file_inputs_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_preparation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_model_step.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_expansion_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_snapshot_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_source.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_extract_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_nested_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_source_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_legacy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_office_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_rtf_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_package_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf_sandbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_pdf_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_document_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_document_worker_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_fetch_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/files.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/files_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_files_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/files_api_fixture.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_binary_store_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_multipart_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_files.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_inputs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_compaction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_jobs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_owner.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/progress_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/guardian_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_query.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_api_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_execution_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_files_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_background_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_jobs_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_template.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_cache_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_cache_diagnostics.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage_options.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_storage_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_conversation_api_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_conversation_state_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_item_shape.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_item_shape_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_state_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_store_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_retention_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp
@@ -30,8 +185,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_scheduler_submission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_diagnostics_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_progress_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_progress_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/server_options.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store_options.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/io_json_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/model_sequence_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/model_vision_positions_test.cpp
@@ -39,9 +197,14 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_forward_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_framing_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_body_stream_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_session_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_observation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_response_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_finite_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/finite_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_message_profile_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_tool_history.cpp
@@ -55,20 +218,109 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_thinking_budget_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_text_stop_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_schema.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_decimal.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_graph.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_prefix.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_receipt.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_token_guard.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_number_grammar.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_grammar.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_string.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_string_grammar.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_idna.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_graph_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_prefix_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_string_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_constraints.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/structured_decoder.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_output_constraints_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_contract.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sampling.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prediction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/custom_tools.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/custom_grammar.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/custom_regex.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/legacy_tools.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/token_logprobs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/completion_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/completion_response.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_output.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_input.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_tokens.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_summary.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_reasoning.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/access_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderations_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderations_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embeddings_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_rank.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_corpus.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_query_rewrite.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search_output.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search_view.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_citations.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_api.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_index.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_stores_internal.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_stores.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_files.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_api.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_content.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_file_page.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_store_batches.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_ingestion_state.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_ingestion.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_embedding_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_jobs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embeddings_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/embedding_metadata.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_tokens_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_access_program_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderations_api_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_embeddings_api_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_file_search_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_execution_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_index_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_stores_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_ingestion_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_jobs_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_custom_tools_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_sampling_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_prompt.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/media_admission.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/vision/media_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/vision/processor.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_image_detail_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_plan_test.cpp)
 list(APPEND Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_media_admission_test.cpp)
 if(Q4T_ENABLE_XGRAMMAR)
   list(APPEND Q4T_HOST_TEST_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_language_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_grammar_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_string_grammar_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_token_guard_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_decoder_test.cpp)
 endif()

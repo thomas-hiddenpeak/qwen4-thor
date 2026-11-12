@@ -1,0 +1,10 @@
+{
+  "first_exit": "lease/exit.json",
+  "failure": "guard invocation omitted --inherit-lease; constructor rejected before any model start or request",
+  "counts": {
+    "starts": 0,
+    "chats": 0
+  },
+  "correction": "retain original; identical plan/binary with --inherit-lease",
+  "next_lease": "lease-inherited"
+}

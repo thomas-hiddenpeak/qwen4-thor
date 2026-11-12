@@ -1,0 +1,150 @@
+event: response.created
+data: {"response":{"id":"resp_aeaeab6579094bce61c3761cb8952040","object":"response","created_at":1794233763,"completed_at":null,"status":"queued","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":true,"background":true,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.queued
+data: {"response":{"id":"resp_aeaeab6579094bce61c3761cb8952040","object":"response","created_at":1794233763,"completed_at":null,"status":"queued","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":true,"background":true,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.queued","sequence_number":1}
+
+event: response.in_progress
+data: {"response":{"id":"resp_aeaeab6579094bce61c3761cb8952040","object":"response","created_at":1794233763,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":true,"background":true,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.in_progress","sequence_number":2}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"id":"rs_81b50c5f140298ce7a39b5127a67e110","type":"reasoning","content":[],"summary":[],"status":"in_progress"},"type":"response.output_item.added","sequence_number":3}
+
+event: response.content_part.added
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":""},"type":"response.content_part.added","sequence_number":4}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"The","type":"response.reasoning_text.delta","sequence_number":5}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" user","type":"response.reasoning_text.delta","sequence_number":6}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" wants","type":"response.reasoning_text.delta","sequence_number":7}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" me","type":"response.reasoning_text.delta","sequence_number":8}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" to","type":"response.reasoning_text.delta","sequence_number":9}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" compute","type":"response.reasoning_text.delta","sequence_number":10}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":11}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"1","type":"response.reasoning_text.delta","sequence_number":12}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"7","type":"response.reasoning_text.delta","sequence_number":13}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" +","type":"response.reasoning_text.delta","sequence_number":14}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":15}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":16}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"5","type":"response.reasoning_text.delta","sequence_number":17}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" and","type":"response.reasoning_text.delta","sequence_number":18}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" reply","type":"response.reasoning_text.delta","sequence_number":19}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" only","type":"response.reasoning_text.delta","sequence_number":20}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" with","type":"response.reasoning_text.delta","sequence_number":21}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":22}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" decimal","type":"response.reasoning_text.delta","sequence_number":23}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" number","type":"response.reasoning_text.delta","sequence_number":24}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":".","type":"response.reasoning_text.delta","sequence_number":25}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"\n\n","type":"response.reasoning_text.delta","sequence_number":26}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"1","type":"response.reasoning_text.delta","sequence_number":27}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"7","type":"response.reasoning_text.delta","sequence_number":28}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" +","type":"response.reasoning_text.delta","sequence_number":29}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":30}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":31}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"5","type":"response.reasoning_text.delta","sequence_number":32}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" =","type":"response.reasoning_text.delta","sequence_number":33}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":34}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"4","type":"response.reasoning_text.delta","sequence_number":35}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":36}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"delta":"\n","type":"response.reasoning_text.delta","sequence_number":37}
+
+event: response.output_item.added
+data: {"output_index":1,"item":{"id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":38}
+
+event: response.content_part.added
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"part":{"type":"output_text","text":"","annotations":[]},"type":"response.content_part.added","sequence_number":39}
+
+event: response.output_text.delta
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"delta":"\n\n","logprobs":[],"type":"response.output_text.delta","sequence_number":40}
+
+event: response.output_text.delta
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"delta":"4","logprobs":[],"type":"response.output_text.delta","sequence_number":41}
+
+event: response.output_text.delta
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":42}
+
+event: response.reasoning_text.done
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"text":"The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n","type":"response.reasoning_text.done","sequence_number":43}
+
+event: response.content_part.done
+data: {"item_id":"rs_81b50c5f140298ce7a39b5127a67e110","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":"The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"},"type":"response.content_part.done","sequence_number":44}
+
+event: response.output_item.done
+data: {"output_index":0,"item":{"id":"rs_81b50c5f140298ce7a39b5127a67e110","type":"reasoning","content":[{"type":"reasoning_text","text":"The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:981656596fb6daeb6ab41ecf5a0fddc2:7510bc7f7440325c0a157a1f:9f684f39b47edf85180cb619bbf8d9b3:cc232c23fa4dae19f34f5eecbf0893b2754d9321f237e562dc85a73799d6405c0394ea22b1d329754241610e610dd60b1b32a86c6fed7018324e087091ae2b7ae157904625dc9dec3fd6b251db3632cd53439e532e6a4be86e042b42d72b483f0b0984898b19a209c5f162b6f5e26f7beea4cb0cd0263bc1ee51d53cdc635fb3548fbdec796dbff36046418ec220a2c8995d69892599a541ea50b624437dc2c6dd5b7a4c604f5398febd9a4a3abbf18f2824e8c7ba3c7af9abcd271681128df4d931a2ba6a4672f4c14974c7d9fed533bea9513be653513e65d7f47423330daf089d26fd943e3b4cb426685c4dd7722d7987e999fdbda957883844272d6950a67366220630cc729f816a9df7157f9998cfbe8a2db3c4009b2efbf7b06a1fc7190e4a5451625da08b70a8871fdf8e90d71b633aec177e0a85e313abb034917eb10654aa9c28ecafcb7326bbdefe87193838b2babb5a83f0bf27da8a322d4014762d5a74243c3356b2b1d716487e9d8ef214bd549f42a909a8a24bf89d28f92b6e061d421188150082f8515a42c92bfab46597272aba7267ecae35421cb4769aab6e0fa3074cfa42ac32050c05821d6f3282164d39d19c8618fd087bb8aa32da80fa4895515ed32968b2603ba1885ba6f7b555"},"type":"response.output_item.done","sequence_number":45}
+
+event: response.output_text.done
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"text":"\n\n42","logprobs":[],"type":"response.output_text.done","sequence_number":46}
+
+event: response.content_part.done
+data: {"item_id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","output_index":1,"content_index":0,"part":{"type":"output_text","text":"\n\n42","annotations":[]},"type":"response.content_part.done","sequence_number":47}
+
+event: response.output_item.done
+data: {"output_index":1,"item":{"id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[]}],"role":"assistant","status":"completed"},"type":"response.output_item.done","sequence_number":48}
+
+event: response.completed
+data: {"response":{"id":"resp_aeaeab6579094bce61c3761cb8952040","object":"response","created_at":1794233763,"completed_at":1794233765,"status":"completed","error":null,"incomplete_details":null,"output":[{"id":"rs_81b50c5f140298ce7a39b5127a67e110","type":"reasoning","content":[{"type":"reasoning_text","text":"The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:981656596fb6daeb6ab41ecf5a0fddc2:7510bc7f7440325c0a157a1f:9f684f39b47edf85180cb619bbf8d9b3:cc232c23fa4dae19f34f5eecbf0893b2754d9321f237e562dc85a73799d6405c0394ea22b1d329754241610e610dd60b1b32a86c6fed7018324e087091ae2b7ae157904625dc9dec3fd6b251db3632cd53439e532e6a4be86e042b42d72b483f0b0984898b19a209c5f162b6f5e26f7beea4cb0cd0263bc1ee51d53cdc635fb3548fbdec796dbff36046418ec220a2c8995d69892599a541ea50b624437dc2c6dd5b7a4c604f5398febd9a4a3abbf18f2824e8c7ba3c7af9abcd271681128df4d931a2ba6a4672f4c14974c7d9fed533bea9513be653513e65d7f47423330daf089d26fd943e3b4cb426685c4dd7722d7987e999fdbda957883844272d6950a67366220630cc729f816a9df7157f9998cfbe8a2db3c4009b2efbf7b06a1fc7190e4a5451625da08b70a8871fdf8e90d71b633aec177e0a85e313abb034917eb10654aa9c28ecafcb7326bbdefe87193838b2babb5a83f0bf27da8a322d4014762d5a74243c3356b2b1d716487e9d8ef214bd549f42a909a8a24bf89d28f92b6e061d421188150082f8515a42c92bfab46597272aba7267ecae35421cb4769aab6e0fa3074cfa42ac32050c05821d6f3282164d39d19c8618fd087bb8aa32da80fa4895515ed32968b2603ba1885ba6f7b555"},{"id":"msg_4aab69469f9e686cf69ed3ced7aa6b89","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[]}],"role":"assistant","status":"completed"}],"usage":{"input_tokens":56,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0},"output_tokens":38,"output_tokens_details":{"reasoning_tokens":34},"total_tokens":94},"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":true,"background":true,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.completed","sequence_number":49}
+

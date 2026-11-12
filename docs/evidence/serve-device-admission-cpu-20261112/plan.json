@@ -1,0 +1,19 @@
+{
+  "format": "q4t-targeted-validation-v1",
+  "test_names": [
+    "device_admission_once_across_processes_and_inherited_filter",
+    "device_admission_bad_binding_and_expiry_do_not_spend",
+    "device_admission_wrong_group_and_privilege_do_not_spend",
+    "device_admission_copied_receipt_or_unprivileged_token_is_not_authority",
+    "device_admission_requires_actual_continuous_lease",
+    "device_admission_rejects_replaced_kernel_policy",
+    "device_admission_rejects_invalid_issuance_without_outputs",
+    "device_filter_pin_survives_real_creator_exit_and_reopens",
+    "device_filter_adoption_verifies_code_and_retained_identity",
+    "device_filter_unprivileged_client_cannot_join_allowed_group"
+  ],
+  "new": 7,
+  "direct_regressions": 3,
+  "gpu_starts": 0,
+  "scope": "Own CPU cgroups and zero/null only; no host-wide policy or GPU access; default rev64 unchanged."
+}

@@ -1,0 +1,19 @@
+test_ready_daemon_survives_launcher_exit_in_its_own_session (tools.serve_recovery.test_outer_daemon.DaemonTests.test_ready_daemon_survives_launcher_exit_in_its_own_session) ... ok
+test_lost_startup_reply_times_out_without_stopping_healthy_core (tools.serve_recovery.test_outer_daemon.DaemonTests.test_lost_startup_reply_times_out_without_stopping_healthy_core) ... ok
+test_launcher_death_before_receipt_does_not_stop_independent_daemon (tools.serve_recovery.test_outer_daemon.DaemonTests.test_launcher_death_before_receipt_does_not_stop_independent_daemon) ... ok
+test_second_daemon_cannot_replace_live_outer_or_charge_another_attempt (tools.serve_recovery.test_outer_daemon.DaemonTests.test_second_daemon_cannot_replace_live_outer_or_charge_another_attempt) ... ok
+test_daemon_resume_keeps_stopped_intent_and_creates_no_roles (tools.serve_recovery.test_outer_daemon.DaemonTests.test_daemon_resume_keeps_stopped_intent_and_creates_no_roles) ... ok
+test_unified_cli_respects_enable_and_never_downgrades_incomplete_policy (tools.serve_recovery.test_outer_daemon.DaemonTests.test_unified_cli_respects_enable_and_never_downgrades_incomplete_policy) ... ok
+test_inherited_capabilities_validate_all_original_fds_before_duplication (tools.serve_recovery.test_outer_daemon.DaemonTests.test_inherited_capabilities_validate_all_original_fds_before_duplication) ... ok
+test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_stopped_resume_and_disabled_activation_never_create_roles_or_take_gpu) ... ok
+test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_real_dispatch_and_explicit_stop_preserve_outer_charge_and_release_instance) ... ok
+test_outer_loop_exception_leaves_healthy_guardian_running_without_stop_intent (tools.serve_recovery.test_outer_runtime.RuntimeTests.test_outer_loop_exception_leaves_healthy_guardian_running_without_stop_intent) ... ok
+test_committed_daemon_survives_short_lived_launcher (tools.serve_recovery.test_runtime.RuntimeTests.test_committed_daemon_survives_short_lived_launcher) ... ok
+test_abandoned_daemon_start_stops_and_does_not_execute_model (tools.serve_recovery.test_runtime.RuntimeTests.test_abandoned_daemon_start_stops_and_does_not_execute_model) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v18_contains_complete_outer_and_resume_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_contains_complete_outer_and_resume_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 13.456s
+
+OK

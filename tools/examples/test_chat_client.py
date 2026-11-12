@@ -81,6 +81,38 @@ class Response(io.BytesIO):
 
 
 class ClientContracts(unittest.TestCase):
+    def test_refusal_json_stream_history_and_incomplete_are_preserved(self):
+        message = dict(role='assistant', content=None, refusal='不能提供✅')
+        left = completion(message, 'stop')
+        right = client.read_sse(io.BytesIO(stream(
+            [{'refusal': '不能'}, {'refusal': '提供✅'}], finish='stop')))
+        self.assertEqual(left.message, right.message)
+        self.assertEqual(client.append_final([], right), [message])
+        with self.assertRaises(client.ProtocolError):
+            client.prepare_tool_calls(right, {})
+        partial = client.read_sse(io.BytesIO(stream(
+            [{'refusal': '不能'}], finish='length')))
+        self.assertEqual(partial.message['refusal'], '不能')
+        with self.assertRaises(client.ProtocolError):
+            client.append_final([], partial)
+        with self.assertRaises(client.ProtocolError):
+            completion(dict(MESSAGE, refusal='no'), 'tool_calls')
+        with self.assertRaises(client.ProtocolError):
+            completion(dict(message, refusal=False), 'stop')
+
+    def test_refusal_probabilities_reassemble_without_content_alias(self):
+        row = dict(token='no', logprob=-0.5, bytes=[110, 111], top_logprobs=[])
+        parts = [chunk(dict(role='assistant', content='')),
+                 chunk(dict(refusal='no')), chunk({}, 'stop')]
+        parts[1]['choices'][0]['logprobs'] = dict(content=None, refusal=[row])
+        parts[2]['choices'][0]['logprobs'] = dict(content=None, refusal=[])
+        parts.append(dict(id='request-1', model='qwen3.8-flash-next',
+            object='chat.completion.chunk', choices=[], usage=deepcopy(USAGE)))
+        wire = b''.join(frame(v) for v in parts) + b'data: [DONE]\r\n\r\n'
+        result = client.read_sse(io.BytesIO(wire))
+        self.assertEqual(result.logprobs, dict(content=None, refusal=[row]))
+        self.assertEqual(result.message, dict(role='assistant', content=None, refusal='no'))
+
     def test_preflight_roundtrip_is_read_only_and_exact(self):
         request = dict(model="m", prompt="q", stream=True)
         expected = dict(object="q4t.chat.preflight", profile="q4t-preflight-v1",
@@ -316,7 +348,7 @@ class ClientContracts(unittest.TestCase):
 
     def test_tool_and_usage_validation(self):
         for args in ('[]', '{"key":1,"key":2}', '{"x":NaN}',
-                     '{"x":Infinity}', '{"x":1e999}', '{"key":'):
+                     '{"x":Infinity}', '{"key":'):
             value = deepcopy(MESSAGE)
             value["tool_calls"][0]["function"]["arguments"] = args
             with self.subTest(args=args), self.assertRaises(client.ProtocolError):
@@ -387,6 +419,17 @@ class ClientContracts(unittest.TestCase):
         message["tool_calls"][0]["function"]["arguments"] = '{"n":9007199254740993}'
         plans = client.prepare_tool_calls(completion(message), {"lookup": lambda a: None})
         self.assertEqual(plans[0].arguments["n"], 9007199254740993)
+
+    def test_exact_tool_data_remains_bound_to_completed_response(self):
+        from decimal import Decimal
+        message = deepcopy(MESSAGE)
+        arguments = '{"n":1e999,"tiny":1e-400,"fraction":0.30000000000000001}'
+        message["tool_calls"][0]["function"]["arguments"] = arguments
+        result = completion(message)
+        plans = client.prepare_tool_calls(result, {"lookup": lambda a: None})
+        self.assertEqual(result.message["tool_calls"][0]["function"]["arguments"], arguments)
+        self.assertEqual(plans[0].arguments, dict(n=Decimal('1e999'),
+            tiny=Decimal('1e-400'), fraction=Decimal('0.30000000000000001')))
 
     def test_fresh_request_credentials_and_stable_session(self):
         history = [{"role": "user", "content": "你好"}]

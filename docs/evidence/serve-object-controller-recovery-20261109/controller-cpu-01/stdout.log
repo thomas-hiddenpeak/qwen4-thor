@@ -1,0 +1,13 @@
+[PASS] object_store_durable_crud_and_exact_data
+[PASS] object_store_directory_lock_is_not_stolen
+[PASS] object_store_io_failure_recovers_without_replaying_write
+[PASS] object_store_timeout_queue_cancellation_and_recovery_budget
+[PASS] object_store_stuck_spawn_retains_one_controller
+[PASS] object_store_lost_receipt_preserves_commit_uncertainty
+[PASS] object_store_transaction_recovers_durable_decision_before_apply
+[PASS] object_store_transaction_recovers_partial_file_installation
+[PASS] object_store_error_reporting_allocation_failure_is_isolated
+[PASS] object_controller_repeated_faults_backoff_and_keep_one_owner
+[PASS] object_controller_failed_thread_start_recovers_on_demand
+[PASS] object_controller_stop_during_backoff_releases_only_own_slot
+12 tests, 12 passed, 0 failed, 0 skipped

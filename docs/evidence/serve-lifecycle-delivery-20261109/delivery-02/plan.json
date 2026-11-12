@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "source_commit": "b8b8dc97b1d565322d5db01dea6c6225b0ad67c5",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+  "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+  "previous": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+    "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+    "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+    "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+    "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/previous/service.release.json",
+    "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba"
+  },
+  "request_ids": {
+    "publish": "e2d2f8d3-1917-4a75-97e0-aac1d90fb977",
+    "rollback": "e9043672-5474-4d41-b6c3-c8aa10845800",
+    "forward": "0cb79a92-6438-4d86-a159-791804c9d576"
+  },
+  "operations": [
+    "publish revision 0",
+    "new default check/status/publication",
+    "retained N05 rollback revision 2",
+    "old selected check/status",
+    "forward publish revision 4",
+    "new default check/status/publication"
+  ],
+  "expected_final_revision": 6,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "automatic_start": false,
+  "business_state_before": {
+    "client-access.json": "ae36f4b9304051f3f86fca468b955623d235ecf1cc12fba4a14e170fe57652c6",
+    "client-limits.json": "feee221ec5cd518bc4d0bd3dd5637909038d34b7bec6cbb0fcb8b065c07339e5",
+    "ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "client-usage.json": "c7ac671d95111232efe8a0d17372e3e3ee613ea236a4c3e90f2dd401656286ce",
+    "client-usage/writer.lock": "a3437fffb54dca8cb3b0f8cff0b75aeab81c7f44f0868d066def399750353d07",
+    "client-usage/policy.json": "8b0a55798498f572abb9ba3e63b944e37940e454785aba23b4c43afedf91051c",
+    "client-limits/writer.lock": "2aecf0e566ff46df26b55e087a0dcfb345d34c4a2b294f52bf66ebb26ff51a82",
+    "client-limits/policy.json": "e0a4b18061e8edf32b73f87dd68acb73c834abb9762e602db73bb3e00fa90343",
+    "client-access/writer.lock": "cde313fe79bad1d3a733e51e5b54384fdf4816e3b23490b0aa6f8cf25131dc79",
+    "client-access/policy.json": "778cbf21aa1672c5812b4981cec6c4f159413692d88332358e030f199d2a2e5d"
+  }
+}

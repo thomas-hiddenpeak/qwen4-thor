@@ -1,0 +1,43 @@
+{
+  "new": [
+    "batch_inline_input_exact_byte_boundary_and_durable_fallback",
+    "batch_inline_input_scope_deadline_binding_and_immutable_page",
+    "batch_inline_input_actual_lost_page_receipt_survives_restart",
+    "batch_inline_result_page_immutability_and_exact_number_retention",
+    "batch_finalization_row_budget_and_checkpoint_restart",
+    "batch_finalization_large_row_lost_checkpoint_resumes_original_bytes",
+    "batch_finalization_actual_dead_process_keeps_committed_prefix",
+    "batch_finalization_maximum_dual_lane_retention_is_bounded_and_complete",
+    "batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs"
+  ],
+  "direct": [
+    "batch_preparation_completion_alias_and_raw_tokens_use_native_contract",
+    "batch_preparation_atomic_page_rejects_changed_snapshot_identity",
+    "batch_preparation_unknown_snapshot_receipt_keeps_private_identity",
+    "batch_results_one_durable_start_ticket_and_atomic_full_endpoint_output",
+    "batch_results_mixed_files_restart_and_terminal_private_resource_reclamation",
+    "batch_results_final_files_coalesce_large_rows_and_page_boundaries",
+    "batch_results_storage_quota_rejects_result_without_releasing_started_owner",
+    "batch_results_corrupt_page_blocks_reads_and_start_transactionally",
+    "batch_preparation_deleted_files_and_previous_restore_after_restart",
+    "batch_preparation_large_history_uses_private_chunks_not_metadata_limit",
+    "batch_validation_driver_yields_one_row_and_admits_only_after_whole_file",
+    "batch_validation_driver_model_change_cannot_reinterpret_frozen_prefix",
+    "batch_validation_driver_unknown_source_pin_is_sticky_and_resumable",
+    "batch_results_cancellation_keeps_finished_and_records_unstarted_without_execution",
+    "batch_results_actual_unknown_finalization_publishes_both_files_and_terminal_atomically",
+    "batch_results_actual_unknown_finish_commits_result_and_counts_once",
+    "batch_results_finalization_quota_never_exposes_partial_files",
+    "batch_results_expired_immutable_deadline_produces_errors_without_start",
+    "batch_jobs_actual_native_finite_rows_and_output_file",
+    "batch_jobs_actual_unknown_result_reconciles_without_replay",
+    "batch_jobs_cancel_waits_for_drain_and_publishes_partial_files",
+    "batch_results_concurrent_start_has_exactly_one_execution_owner",
+    "batch_validation_rows_partial_page_survives_restart_and_129_boundary",
+    "batch_preparation_snapshot_dependencies_checked_before_atomic_publish"
+  ],
+  "total": 33,
+  "gpu_starts": 0,
+  "max_seconds": 1200,
+  "contract": "Small private inputs/results inline with immutable scoped pages; persistent 128-row/4MiB finalization; real 50000 prepared rows with explicit CPU receipts; byte/record quotas, legacy/dependency retention, unknown receipts and actual owner death"
+}

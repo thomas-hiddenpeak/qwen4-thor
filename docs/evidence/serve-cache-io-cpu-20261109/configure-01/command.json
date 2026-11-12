@@ -1,0 +1,7 @@
+[
+  "cmake",
+  "-S",
+  ".",
+  "-B",
+  ".q4t-work/serve-custom-tools-20261108/engine-build"
+]

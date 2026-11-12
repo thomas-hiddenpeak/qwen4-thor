@@ -1,0 +1,11 @@
+{
+  "status": "EARLY_STOP_KNOWN_IMPLEMENTATION_FAILURE",
+  "reason": "Model ready/self-check passed, native gateway capacity verification still calls supervisor.classify without selected profile",
+  "driver_pid": 1089014,
+  "driver_start_ticks": 241302892,
+  "monotonic": 2413171.58462378,
+  "model_starts": 1,
+  "charged_chats": 1,
+  "changes_to_production": false,
+  "identity_selection": "Interpreter script position, run mode, exact plan, PID birth; initial broad argv scan also matched outer guard and sent no signal"
+}

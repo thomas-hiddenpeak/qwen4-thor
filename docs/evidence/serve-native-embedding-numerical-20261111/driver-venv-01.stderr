@@ -1,0 +1,6 @@
+test_reference_venv_entry_keeps_torch_environment (tools.native_embedding.test_acceptance.Decision.test_reference_venv_entry_keeps_torch_environment) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.453s
+
+OK

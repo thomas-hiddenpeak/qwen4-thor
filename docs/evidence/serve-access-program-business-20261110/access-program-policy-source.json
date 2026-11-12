@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "authority": "q4t-local",
+  "model": "qwen3.8-flash-next",
+  "cyber_tier": "blue",
+  "minimum_grant": "red",
+  "default_selection": "model_tier",
+  "standard_allowed": true,
+  "program_instructions": "Use this local authorized defensive review profile. The local review policy label is local_review_57. When asked for that label, return its exact value. For project questions use actual tool evidence and exact citations. Do not claim cloud authorization or any unperformed operation.",
+  "clients": [
+    {
+      "id": "encryption-test",
+      "grant": "red"
+    },
+    {
+      "id": "access-standard",
+      "grant": "blue"
+    }
+  ]
+}

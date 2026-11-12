@@ -1,0 +1,32 @@
+{
+  "status": "ACCEPT_COMPONENT_CPU",
+  "cpu_unique": 17,
+  "new_cpu": 12,
+  "affected_existing_cpu": 5,
+  "seconds": 3.5683419150300324,
+  "gpu_starts": 0,
+  "gpu_requests": 0,
+  "network_requests": 0,
+  "engine_binary_sha256": "601951479d4319a76074a217334f6f109bb030b7acd57a0ac0f63940a7af5f3b",
+  "host_binary_sha256": "ed4d225fd255767036b79b08088e278e831cdb764c6398c4f825c4addde47e26",
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  },
+  "protected_unchanged": true,
+  "production_records_written": false,
+  "default_replaced": false,
+  "main_merged": false,
+  "source_anchors": 463,
+  "reviewed_anchors": 7,
+  "first_build_failure": "CPU test fixture helper Field conflicted with existing responses JSON helper; renamed fixture helper; no production change.",
+  "remaining_required": [
+    "Automatic application ObjectStore read/write/batch and list integration",
+    "Public projections never expose private placeholders or manifests",
+    "HTTP/JSON/client/native ingress capacity and prompt variables",
+    "Bound operation deadlines to absolute hold lifetime; isolate successful snapshot read from auxiliary pin-close failure",
+    "Actual combined model business and format-capable rollback/release"
+  ]
+}

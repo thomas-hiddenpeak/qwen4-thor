@@ -1,0 +1,16 @@
+{
+  "status": 401,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "125",
+    "connection": "close",
+    "cache-control": "no-store",
+    "x-request-id": "req-6c7fea4f0b193b43daf9fd2107277ed1",
+    "www-authenticate": "Bearer realm=\"q4t\"",
+    "vary": "Origin",
+    "access-control-allow-origin": "https://client.example",
+    "access-control-allow-credentials": "true",
+    "access-control-expose-headers": "x-request-id, retry-after"
+  },
+  "bytes": 125
+}

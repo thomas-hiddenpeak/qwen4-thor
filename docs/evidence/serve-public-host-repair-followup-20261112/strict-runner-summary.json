@@ -1,0 +1,66 @@
+[
+  {
+    "case": "ok",
+    "exit": 0
+  },
+  {
+    "case": "fail",
+    "exit": 1
+  },
+  {
+    "case": "skip",
+    "exit": 1
+  },
+  {
+    "case": "dev-skip",
+    "exit": 0
+  },
+  {
+    "case": "zero-match",
+    "exit": 2
+  },
+  {
+    "case": "exception",
+    "exit": 1
+  },
+  {
+    "case": "many-failures",
+    "exit": 1
+  },
+  {
+    "case": "bad-flag",
+    "exit": 2
+  },
+  {
+    "case": "missing-file",
+    "exit": 2
+  },
+  {
+    "case": "required-valid",
+    "exit": 0
+  },
+  {
+    "case": "required-missing",
+    "exit": 2
+  },
+  {
+    "case": "required-duplicate",
+    "exit": 2
+  },
+  {
+    "case": "required-skip",
+    "exit": 1
+  },
+  {
+    "case": "required-empty",
+    "exit": 2
+  },
+  {
+    "case": "required-no-skip-override",
+    "exit": 2
+  },
+  {
+    "case": "empty-registry",
+    "exit": 2
+  }
+]

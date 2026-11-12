@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "name": "numerical-17",
+      "ids": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        151643
+      ],
+      "trace_layers": true,
+      "trace_primitives": true
+    }
+  ],
+  "original_case": 2,
+  "original_plan_sha256": "3e10c1412823e639963d0c0f4854550ec12701d04a43f2277d819b6cb4099da8",
+  "limits": {
+    "seconds": 180,
+    "cpu_model_starts": 1,
+    "gpu_model_starts": 1,
+    "cpu_forwards": 1,
+    "gpu_forwards": 1,
+    "http_requests": 0
+  },
+  "sources": {
+    "tools/native_embedding/reference.py": "a55fff967feb02cd06f85bee0d700c72eb69ec36c9c8935c17aa76bc47b9a741",
+    "tools/native_embedding/model_replay.cpp": "42456f9423bcd0359adb66663419f725dd07ece5a99cc304fd53e70bbc53b2d8",
+    "src/model/embedding_model.cu": "2548c3050aef2974386a36a2883837e717b260a595e7045c19976cf364d59ab5",
+    "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
+    "src/server/embedding_assets.cpp": "c4b1507889c3c4c9bb747387e6f108395206db586627d0b604ce97b423ddba81"
+  },
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_embedding_replay",
+  "binary_sha256": "b2db8418d978888d43b35e3471b9aad3169697e12025b073cb3e36abf250d808"
+}

@@ -1,0 +1,8 @@
+test_completions_preserve_body_and_enforce_native_auth (__main__.NativeTests.test_completions_preserve_body_and_enforce_native_auth) ... ok
+test_model_detail_routes_preserve_encoding_and_permissions (__main__.NativeTests.test_model_detail_routes_preserve_encoding_and_permissions) ... ok
+test_completions_data_limit_preserves_model_control_route (__main__.NativeTests.test_completions_data_limit_preserves_model_control_route) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.212s
+
+OK

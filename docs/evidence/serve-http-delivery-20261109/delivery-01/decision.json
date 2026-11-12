@@ -1,0 +1,17 @@
+{
+  "status": "PASS_N05_DEFAULT_DELIVERY_PREREQUISITES",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_HTTP_TRANSPORT",
+  "package_manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+  "business": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-http-business-20261109/decision.json",
+    "sha256": "cc8b406ad8bdfb924b5172e958b72e4c84706a0a2b29a4ae4ce3e2274b6c6e3c"
+  },
+  "packaged": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/packaged-01/result.json",
+    "sha256": "33ed0288de48411b8a88ab3167c7d7d2c4a2d7d364b81c6b9e78be0e66c1e149"
+  },
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "model_starts": 0,
+  "remaining_master_tasks_open": true
+}

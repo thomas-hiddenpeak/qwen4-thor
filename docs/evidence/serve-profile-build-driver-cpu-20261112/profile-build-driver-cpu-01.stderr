@@ -1,0 +1,10 @@
+test_commands_preserve_actual_selected_capacity_and_private_state (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_commands_preserve_actual_selected_capacity_and_private_state) ... ok
+test_compiled_candidate_qualification_preserves_retained_settings_and_is_not_release (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_compiled_candidate_qualification_preserves_retained_settings_and_is_not_release) ... ok
+test_compiled_candidate_rejects_source_drift_and_wrong_executable (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_compiled_candidate_rejects_source_drift_and_wrong_executable) ... ok
+test_failed_or_missing_environment_cannot_certify_business (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_failed_or_missing_environment_cannot_certify_business) ... ok
+test_new_candidate_identity_cannot_relabel_or_modify_retained_settings (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_new_candidate_identity_cannot_relabel_or_modify_retained_settings) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.004s
+
+OK

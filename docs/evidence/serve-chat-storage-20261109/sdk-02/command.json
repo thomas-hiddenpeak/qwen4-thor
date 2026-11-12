@@ -1,0 +1,7 @@
+[
+  "node",
+  "--test",
+  "--test-name-pattern",
+  "filtered auto-pagination",
+  "tools/serve_chat_storage/test_sdk.mjs"
+]

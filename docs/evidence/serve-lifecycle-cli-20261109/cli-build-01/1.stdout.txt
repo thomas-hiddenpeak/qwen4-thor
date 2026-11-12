@@ -1,0 +1,11 @@
+[ 25%] Generating service-tools/snapshot.done
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/service-tools/f534e96326b496e215d46896a1b72f9e7367019c70fc9e8208176b16495f1f26", "manifest_sha256": "f534e96326b496e215d46896a1b72f9e7367019c70fc9e8208176b16495f1f26", "model_actions": false}
+[ 25%] Built target q4t_service_tools
+[ 50%] Building CXX object CMakeFiles/q4t_service_cli.dir/home/rm01/models/dev/qwen4-thor/src/service/service_cli.cpp.o
+[ 50%] Linking CXX static library libq4t_service_cli.a
+[ 50%] Built target q4t_service_cli
+[ 75%] Building CXX object CMakeFiles/q4t_service_cli_fixture.dir/home/rm01/models/dev/qwen4-thor/tests/service_cli_fixture.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_service_cli_fixture.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_service_cli_fixture.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t_service_cli_fixture
+[100%] Built target q4t_service_cli_fixture

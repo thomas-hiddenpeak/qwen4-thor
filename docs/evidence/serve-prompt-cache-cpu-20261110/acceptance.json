@@ -1,0 +1,18 @@
+{
+  "status": "PASS_TARGETED_CPU_PENDING_REAL_MODEL_BUSINESS",
+  "cpp_passed": 44,
+  "cpp_failed": 0,
+  "python_passed": 3,
+  "python_failed": 0,
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "failed_preparation": "obsolete type graph without compacted_response; pinned SDK graph regenerated",
+  "failed_check": "initial protocol generation drift from updated reviewed source inventory; regenerated declarations only",
+  "reuse": "42 host/2 CPU state layout/3 schema tests retained without rerun; final source inventory and generated checks passed",
+  "binaries": {
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "bd45853b414205f0433d25aee8ff8d3c93b8a16c826336b7446734d101e5feb4",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "5f8a8c9799934a9c849c407d977a87f7459eb03f6987a1d7eefa1984de8e0e44",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_session_target_contract": "16e4ee143fe1d07aaea274214ef63f151befcb77010d1473c3abd2150d212b9a"
+  },
+  "default_changed": false
+}

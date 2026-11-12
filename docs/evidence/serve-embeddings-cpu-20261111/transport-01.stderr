@@ -1,0 +1,6 @@
+test_embeddings_sdk_default_base64_float_tls_and_exact_body (__main__.AccessTests.test_embeddings_sdk_default_base64_float_tls_and_exact_body) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.280s
+
+OK

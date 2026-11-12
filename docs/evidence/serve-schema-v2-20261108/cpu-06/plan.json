@@ -1,0 +1,19 @@
+{
+  "scope": "compositional schema compiler helper and affected graph checking; no production format adapter or HTTP claim",
+  "tests": [
+    "schema_grammar_recursive_anyof_and_nullable_alias",
+    "schema_grammar_conjunction_ref_bounds_and_multiple_lcm",
+    "schema_grammar_optional_object_and_closed_intersections",
+    "schema_grammar_enum_exact_values_and_delimiter_strings",
+    "schema_grammar_array_bounds_and_nonproductive_alias_branch",
+    "schema_grammar_official_property_scale_5000",
+    "schema_graph_recursive_ref_anyof_and_required",
+    "schema_graph_local_pointer_escaping_and_exact_enum",
+    "schema_graph_numeric_intersections_are_exact",
+    "schema_graph_const_equality_and_annotations_do_not_fill_values",
+    "schema_graph_lengths_count_unicode_and_require_string_checker",
+    "schema_graph_official_size_limits_and_reference_depth"
+  ],
+  "binary_sha256": "ac6cb720c948d91773a83bec351a447925cbcc04efb28c8e60aa252ba692243f",
+  "timeout_seconds": 180
+}

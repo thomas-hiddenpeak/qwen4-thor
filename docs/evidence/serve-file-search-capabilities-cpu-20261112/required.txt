@@ -1,0 +1,2 @@
+chat_capabilities_vector_management_and_execution_configuration
+chat_capabilities_native_file_search_conditions_and_output_types

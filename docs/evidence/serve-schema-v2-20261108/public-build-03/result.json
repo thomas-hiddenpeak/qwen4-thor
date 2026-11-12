@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/public-host",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests"
+  ],
+  "exit": 0,
+  "seconds": 34.02676646178588
+}

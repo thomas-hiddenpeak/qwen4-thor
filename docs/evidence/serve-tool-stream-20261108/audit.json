@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_TOOL_STREAM_SOURCE_RELEASE_AUDIT",
+  "source_commit": "9d2324b9d215737142e31e53c489cc5e2d07e441",
+  "source_files": 581,
+  "protocol": "35a9d29d29c4c4e8a26d14a667a090cb406f95e3cf98acdab4d8ef7cb74beb1d",
+  "binary_sha256": "945a05ea29dde7726f8d2e244ee710a7297a0dd705b888056e8b7b29a99998b7",
+  "ports_free": [
+    18161,
+    18162,
+    18163,
+    18164,
+    18165
+  ],
+  "gpu_lock_acquirable": true,
+  "owned_pids_exited": true,
+  "ledger_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "tool_stream_targeted_accepted": true,
+  "receipt_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/delivery-01/result.json",
+  "receipt_sha256": "28ff8a471b66066661278e297d56700e854a7e92e1ae62e816c1f99b557c3a02",
+  "cpu_dependency_reuse": "31 C++,28 schema/native,9 Python,4 JS and3 driver passed; unchanged prediction/sampling/native/recovery evidence reused. First driver output path, old capability fixture and Python import failures preserved."
+}

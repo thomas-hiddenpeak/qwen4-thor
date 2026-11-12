@@ -1,0 +1,20 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "cmake/NativeDocuments.cmake",
+    "include/q4t/server/file_image.h",
+    "include/q4t/server/file_webp.h",
+    "src/main.cpp",
+    "src/server/file_expansion.cpp",
+    "src/server/file_image.cpp",
+    "src/server/file_input.cpp",
+    "src/server/file_webp.cpp",
+    "src/server/file_webp_protocol.h",
+    "src/server/file_webp_worker.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 452,
+  "review": "Native static WebP complete container admission, owned sandboxed codec worker with normal-exit requirement; original bytes and converted pixels preserved and charged, strict frozen v2 provenance and no replay decoder dependency. No new core DT_NEEDED or service dependency."
+}

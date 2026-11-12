@@ -1,0 +1,2 @@
+[q4t][http] trace_id=preparation-999-parent status=408 error=request_deadline_exceeded
+[q4t][http] trace_id=req-a88e0595fd0893a6731b1b3e9869dff1 status=502 error=upstream_error

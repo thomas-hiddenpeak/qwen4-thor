@@ -1,0 +1,22 @@
+{
+  "required": [
+    "compaction_output_lifecycle_has_one_done_and_no_tool_events",
+    "responses_output_obfuscation_and_malformed_probabilities"
+  ],
+  "reason": "diagnostic found existing padding was incorrectly added to all lifecycle events; pinned SDK documented delta padding is missing in most type interfaces",
+  "contract": "pad delta only, string-only delta schema adaptation; reject padding on lifecycle/compacting",
+  "python": [
+    "test_current_native_wire_is_strict",
+    "test_obfuscation_is_closed_to_documented_delta_events"
+  ],
+  "sdk": [
+    "official stream helper"
+  ],
+  "sources": {
+    "src/server/responses_output.cpp": "1d4a24ebeadbd6db0a5aad76e25af71d20d1ab4466e4050f7b74a1018e46cd63",
+    "tests/server_responses_output_test.cpp": "c68c7017b5e130b215b1a155176a97d354b8228b912cea96924e6661375aa474",
+    "tools/serve_responses/build_contract.py": "8e441f03f539f3208b1ce44db93461c6fba0816c7c69d92a5b6b4b141a7d2719",
+    "tools/serve_responses/test_contract.py": "643d1054f2ed2811da628470995915897d22d5d5f8127ae20dfe6fbfeb5eaa76"
+  },
+  "reuse": "window boundary two-item fix already passed; standalone compact method/wire unchanged"
+}

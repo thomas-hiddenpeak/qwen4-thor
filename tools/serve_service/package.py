@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -26,8 +27,18 @@ V8_SOURCES = (*V7_SOURCES, 'tools/serve_service/nvml_policy.py',
               'tools/serve_service/monitor_control.py')
 V9_SOURCES = (*V8_SOURCES, 'tools/serve_service/auxiliary.py')
 V10_SOURCES = V9_SOURCES  # Same inventory; new resource-control contract.
+V11_SOURCES = (*V10_SOURCES, 'tools/serve_service/capacity.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
+APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
+    max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
+NOTICE_ROOT = next((p for p in (ROOT/'third_party/licenses',
+    ROOT.parent/'engine/licenses', ROOT.parent/'licenses') if p.is_dir()),
+    ROOT/'third_party/licenses')
+NOTICE_FILES = tuple(sorted(str(p.relative_to(NOTICE_ROOT))
+    for p in NOTICE_ROOT.rglob('*') if p.is_file()))
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
+COMPLETION_DECLARATION_PROFILE = 'q4t-release-declarations-v2'
+APPLICATION_DECLARATION_PROFILE = 'q4t-release-declarations-v3'
 DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
                        'response', 'stop', 'thinking')
 DECLARATION_FILES = ('capabilities.json', 'configuration.json',
@@ -49,6 +60,14 @@ PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
+
+
+def check_python_runtime():
+    require(sys.version_info >= (3, 11), 'service Python requires version 3.11 or later')
+    names = ('memfd_create', 'MFD_CLOEXEC', 'MFD_ALLOW_SEALING',
+             'pidfd_open', 'waitid', 'P_PIDFD')
+    missing = [name for name in names if not hasattr(os, name)]
+    require(not missing, 'service Python lacks Linux APIs: '+','.join(missing))
 
 
 def sha(path):
@@ -106,8 +125,48 @@ def private_directory(path, repository=ROOT):
     return path
 
 
+def application_settings(value):
+    require(type(value) is dict and value.keys() ==
+        {'profile', 'directory', *APPLICATION_LIMITS}, 'invalid application state settings')
+    require(value['profile'] == 'q4t-objects-v1', 'unknown application state profile')
+    directory = value['directory']
+    require(type(directory) is str and (not directory or
+        directory.startswith('/') and len(directory.encode()) <= 4096 and
+        '\0' not in directory and any(directory.split('/')) and
+        not {'.', '..'}.intersection(directory.split('/'))),
+        'application directory must be absolute without dot components')
+    require(all(type(value[k]) is int for k in APPLICATION_LIMITS),
+            'application state limits must be integers')
+    require(1 <= value['max_object_mib'] <= 32 and
+        value['max_object_mib'] <= value['max_client_mib'] <=
+            value['max_total_mib'] <= 1048576 and
+        1 <= value['max_client_objects'] <= value['max_total_objects'] <= 100000 and
+        1 <= value['io_timeout_ms'] <= 30000, 'invalid application state limits')
+    return dict(value)
+
+
+NATIVE_EMBEDDING = dict(profile='q4t-native-embedding-v1', model='qwen3-embedding-0.6b',
+    revision='97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3',
+    weight_sha256='0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd')
+
+
+def embedding_settings(value):
+    require(type(value) is dict and value.keys() == {*NATIVE_EMBEDDING, 'directory'}
+            and all(value[k] == v for k, v in NATIVE_EMBEDDING.items()),
+            'invalid native embedding identity')
+    path = value['directory']
+    require(type(path) is str and 1 < len(path.encode('utf-8')) <= 4096 and
+            path.startswith('/') and '\0' not in path and
+            not {'', '.', '..'}.intersection(path.split('/')[1:]),
+            'invalid native embedding directory')
+    # Asset presence is checked by the isolated endpoint loader. Verification
+    # of this optional configuration must not make Chat depend on its files.
+    return dict(value)
+
+
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
-             nvml_policy='strict'):
+             nvml_policy='strict', model_names=None, application_state=None,
+             capacity_profile=None, native_embedding=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -130,6 +189,29 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         result['operations_port'] = operations_port
     if nvml_policy == 'degrade':
         result['nvml_policy'] = nvml_policy
+    if model_names is not None:
+        require(type(model_names) is dict and
+                model_names.keys() == {'name', 'aliases'}, 'invalid model registry')
+        aliases = model_names['aliases']
+        require(type(aliases) is list and len(aliases) <= 32,
+                'model aliases must be a list of at most 32 identifiers')
+        names = [model_names['name'], *aliases]
+        require(all(type(name) is str and 1 <= len(name.encode('utf-8')) <= 256 and
+                    all(ord(c) > 32 and ord(c) != 127 for c in name) for name in names),
+                'invalid model identifier')
+        require(len(set(names)) == len(names), 'duplicate model identifier')
+        result['model_names'] = dict(name=names[0], aliases=list(aliases))
+    if capacity_profile is not None:
+        from tools.serve_service import capacity
+        result['profile'] = capacity.validate(capacity_profile)
+    if application_state is not None:
+        result['application_state'] = application_settings(application_state)
+    if native_embedding is not None:
+        selected = embedding_settings(native_embedding)
+        names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
+        require(selected['model'] not in [names['name'], *names['aliases']],
+                'native embedding model conflicts with Chat registry')
+        result['native_embedding'] = selected
     return result
 
 
@@ -150,6 +232,20 @@ def same_json(left, right):
         right, sort_keys=True, allow_nan=False)
 
 
+def declaration_schemas(profile):
+    require(profile in (DECLARATION_PROFILE, COMPLETION_DECLARATION_PROFILE,
+                        APPLICATION_DECLARATION_PROFILE),
+            'unknown release declaration profile')
+    return DECLARATION_SCHEMAS + (('completion_request', 'completion_response')
+        if profile != DECLARATION_PROFILE else ()) + (('application', 'openapi')
+        if profile == APPLICATION_DECLARATION_PROFILE else ())
+
+
+def declaration_files(profile):
+    return ('capabilities.json', 'configuration.json',
+            *('schemas/'+name+'.json' for name in declaration_schemas(profile)))
+
+
 def verify_declarations(metadata, directory=None, *, required=False):
     """Check frozen observations, not mutable docs or a live server.
 
@@ -165,8 +261,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
     require(type(declaration) is dict and set(declaration) == {
         'profile', 'directory', 'binary_sha256', 'protocol_sha256', 'files'},
         'invalid release declaration fields')
-    require(declaration['profile'] == DECLARATION_PROFILE,
-            'unknown release declaration profile')
+    schemas = declaration_schemas(declaration['profile'])
     require(type(declaration['directory']) is str,
             'invalid declaration directory')
     original = Path(declaration['directory'])
@@ -175,7 +270,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
     root = Path(directory) if directory is not None else original
     require(root == root.resolve(strict=True), 'symlink declaration directory')
     files = declaration['files']
-    require(type(files) is dict and set(files) == set(DECLARATION_FILES),
+    require(type(files) is dict and set(files) == set(declaration_files(declaration['profile'])),
             'declaration inventory differs')
     for name, digest in files.items():
         path = root/name
@@ -187,6 +282,17 @@ def verify_declarations(metadata, directory=None, *, required=False):
             declaration['protocol_sha256'] == protocol['protocol_sha256'],
             'declaration release identity differs')
     caps, config = (read(root/name) for name in DECLARATION_FILES[:2])
+    if caps.get('completions', {}).get('profile') == 'q4t-completions-v1':
+        require(declaration['profile'] in (COMPLETION_DECLARATION_PROFILE,
+                                          APPLICATION_DECLARATION_PROFILE),
+                'completion declarations required')
+    if caps.get('responses', {}).get('profile') == 'q4t-responses-v1' or \
+            caps.get('conversations', {}).get('profile') == 'q4t-conversations-v1':
+        require(declaration['profile'] == APPLICATION_DECLARATION_PROFILE,
+                'application declarations required')
+        require(all(section in protocol and section in caps for section in
+                    ('responses', 'conversations', 'application_state')),
+                'application capability sections incomplete')
     require(type(caps) is dict and type(config) is dict and
             caps.get('protocol_source_sha256') ==
             config.get('protocol_source_sha256') == protocol['protocol_sha256']
@@ -203,7 +309,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
             'declaration observation versions differ')
     require(same_json(metadata.get('observed_configuration'), config),
             'declaration configuration differs')
-    for name in DECLARATION_SCHEMAS:
+    for name in schemas:
         relative = 'schemas/'+name+'.json'
         require(protocol.get(name+'_schema') == str(original/relative) and
                 protocol.get(name+'_schema_sha256') == files[relative],
@@ -213,18 +319,110 @@ def verify_declarations(metadata, directory=None, *, required=False):
     return root
 
 
+def access_program_binding(raw, clients, model):
+    """Validate the native policy without importing model/CUDA code."""
+    import json
+    from tools.serve_gateway import client_policy as cp
+    require(type(raw) is bytes and 0 < len(raw) <= cp.MAX_BYTES,
+            'invalid access program file size')
+    try:
+        value = json.loads(raw.decode('utf-8'), object_pairs_hook=cp.unique,
+                           parse_constant=lambda _: cp.require(False))
+    except (ValueError, UnicodeError, RecursionError):
+        raise ValueError('invalid native access program policy') from None
+    require(type(value) is dict and set(value) == {
+        'version', 'authority', 'model', 'cyber_tier', 'minimum_grant',
+        'default_selection', 'standard_allowed', 'program_instructions', 'clients'},
+        'invalid access program fields')
+    require(type(value['version']) is int and value['version'] == 1 and
+            value['authority'] == 'q4t-local' and value['model'] == model,
+            'invalid access program authority or model')
+    tier, grant = value['cyber_tier'], value['minimum_grant']
+    require(tier in ('blue', 'red') and grant in ('blue', 'red') and
+            (tier != 'red' or grant == 'red'), 'invalid native model tier')
+    require(value['default_selection'] in ('standard', 'model_tier') and
+            type(value['standard_allowed']) is bool and
+            (value['default_selection'] != 'standard' or value['standard_allowed']),
+            'invalid native program default')
+    instructions = value['program_instructions']
+    require(type(instructions) is str and instructions.strip(' \t\n\r\v\f') and
+            len(instructions.encode('utf-8')) <= 16384 and '\0' not in instructions,
+            'invalid native program instructions')
+    cp.validate(clients)
+    grants = value['clients']
+    require(type(grants) is list and len(grants) <= cp.MAX_BYTES // 1024,
+            'invalid native program grants')
+    known, seen = {v['id'] for v in clients['clients']}, set()
+    for entry in grants:
+        require(type(entry) is dict and set(entry) == {'id', 'grant'} and
+                type(entry['id']) is str and entry['id'] in known and
+                entry['id'] not in seen and entry['grant'] in ('blue', 'red'),
+                'invalid native client grant')
+        seen.add(entry['id'])
+    return dict(profile='q4t-access-program-policy-v1', authority='q4t-local',
+                model=model, sha256=hashlib.sha256(raw).hexdigest())
+
+
+def file_input_policy_binding(binary, path, raw):
+    """The hash-verified engine owns policy parsing; this never loads a model."""
+    from tools.serve_gateway import client_policy as cp
+    require(type(raw) is bytes and 0 < len(raw) <= cp.MAX_BYTES,
+            'invalid file input policy size')
+    environment = {k: v for k, v in os.environ.items()
+                   if k not in ('LD_PRELOAD', 'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME')}
+    try:
+        result = subprocess.run([str(binary), 'file-input-policy-check', str(path)],
+            capture_output=True, timeout=10, check=False, env=environment)
+        require(result.returncode == 0 and len(result.stdout) <= 16384,
+                'native file input policy validation failed')
+        value = json.loads(result.stdout.decode('utf-8'), object_pairs_hook=cp.unique,
+                           parse_constant=lambda _: cp.require(False))
+    except (OSError, subprocess.TimeoutExpired, ValueError, UnicodeError) as error:
+        raise RuntimeError('native file input policy validation failed') from error
+    require(type(value) is dict and value.get('profile') == 'q4t-file-input-policy-v1'
+            and value.get('configured') is True
+            and value.get('sha256') == hashlib.sha256(raw).hexdigest()
+            and value.get('request_override') is False,
+            'native file input policy identity differs')
+    return value
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
-            operations_port=0, nvml_policy='strict'):
+            operations_port=0, nvml_policy='strict', model_names=None,
+            application_state=None, capacity_config=None, repository=None,
+            access_program_policy=None, file_input_policy=None,
+            embedding_model_dir=None):
+    check_python_runtime()
+    repository = ROOT if repository is None else Path(repository).resolve(strict=True)
+    profile = None
+    if capacity_config is not None:
+        from tools.serve_service import capacity
+        profile = capacity.normalize(capacity_config)
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
-                      nvml_policy)
+                      nvml_policy, model_names, capacity_profile=profile,
+                      native_embedding=(dict(NATIVE_EMBEDDING,
+                          directory=str(embedding_model_dir))
+                          if embedding_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
         resources.validate(host_resources)
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
-        policy_raw, _ = cp.read(client_policy)
+        policy_raw, clients = cp.read(client_policy)
+        if profile is not None:
+            capacity.check_clients(profile, clients)
+    access_raw, access_binding = None, None
+    if access_program_policy is not None:
+        require(policy_raw is not None, 'access programs require client policy')
+        access_raw = cp.read_private(access_program_policy)
+        access_binding = access_program_binding(access_raw, clients,
+            config.get('model_names', {}).get('name', 'qwen3.8-flash-next'))
+    file_raw, file_binding = None, None
+    if file_input_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        file_raw = cp.read_private(file_input_policy)
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -242,17 +440,45 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    if 'native_embedding' in config:
+        check_embedding_declaration(metadata)
+    if access_raw is not None:
+        require(read(declarations/'capabilities.json').get('responses', {})
+                .get('access_programs', {}).get('enabled') is True,
+                'accepted engine lacks native access programs')
+    if file_raw is not None:
+        require(read(declarations/'capabilities.json').get('file_inputs', {})
+                .get('policy_profile') == 'q4t-file-input-policy-v1',
+                'accepted engine lacks native file input policy')
+        file_binding = file_input_policy_binding(binary, file_input_policy, file_raw)
+    observed_state = metadata.get('observed_configuration', {}).get('application_state')
+    if observed_state is not None:
+        require(type(observed_state) is dict and
+            observed_state.get('profile') == 'q4t-objects-v1',
+            'unknown observed application state profile')
+        require(application_state is None or type(application_state) is dict and
+            set(application_state) <= {'directory', *APPLICATION_LIMITS},
+            'unknown application state option')
+        config['application_state'] = application_settings(dict(
+            profile='q4t-objects-v1', directory='',
+            **{k: observed_state.get(k) for k in APPLICATION_LIMITS},
+        ) | (application_state or {}))
+    else:
+        require(application_state is None,
+                'accepted engine does not declare native application state')
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
             model_files.keys(), 'model metadata incomplete')
-    target = private_directory(output)
+    target = private_directory(output, repository)
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
     sources = V5_SOURCES if host_resources is not None or operations_port else (V4_SOURCES if policy_raw is not None else SOURCES)
     if nvml_policy == 'degrade':
         sources = V10_SOURCES if host_resources is not None else V9_SOURCES
+    if profile is not None:
+        sources = V11_SOURCES
     for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
@@ -260,7 +486,14 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         shutil.copyfile(source, dest)
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in sources)]
-    for name in DECLARATION_FILES:
+    for name in NOTICE_FILES:
+        source, dest = NOTICE_ROOT/name, target/'licenses'/name
+        regular(source)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, dest)
+        dest.chmod(0o400)
+        names.append('licenses/'+name)
+    for name in declaration_files(metadata['release_declarations']['profile']):
         dest = target/'declarations'/name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(declarations/name, dest)
@@ -271,13 +504,28 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             stream.write(policy_raw)
         (target/'client-policy.json').chmod(0o400)
         names.append('client-policy.json')
+    if access_raw is not None:
+        with (target/'access-program-policy.json').open('xb') as stream:
+            stream.write(access_raw)
+        (target/'access-program-policy.json').chmod(0o400)
+        names.append('access-program-policy.json')
+    if file_raw is not None:
+        with (target/'file-input-policy.json').open('xb') as stream:
+            stream.write(file_raw)
+        (target/'file-input-policy.json').chmod(0o400)
+        names.append('file-input-policy.json')
     python = Path(sys.executable).resolve()
-    manifest = dict(version=3, repository=str(ROOT), model_dir=str(model),
+    manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
-    manifest['release_declarations'] = DECLARATION_PROFILE
+    if access_binding is not None:
+        manifest['access_program_policy'] = access_binding
+    if file_binding is not None:
+        manifest['file_input_policy'] = file_binding
+    manifest['release_declarations'] = metadata['release_declarations']['profile']
+    manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
@@ -289,6 +537,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['version'] = 6
     if nvml_policy == 'degrade':
         manifest['version'] = 10 if host_resources is not None else 9
+    if profile is not None:
+        manifest['version'] = 11
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -299,13 +549,16 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
                       config.get('critical_memory_mib', 1024),
-                      config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10) else 0,
-                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10) else 'strict')
+                      config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10, 11) else 0,
+                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10, 11) else 'strict',
+                      config.get('model_names'), config.get('application_state'),
+                      config['profile'] if manifest['version'] == 11 else None,
+                      config.get('native_embedding'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -316,31 +569,57 @@ def verify(package, digest):
         for key in ('critical_memory_mib', 'memory_poll_seconds',
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del wanted[key]
-    require(config == wanted, 'unknown managed configuration')
+    require(same_json(config, wanted), 'unknown managed configuration')
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
                4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES,
                7: V7_SOURCES, 8: V8_SOURCES, 9: V9_SOURCES,
-               10: V10_SOURCES}[manifest['version']]
+               10: V10_SOURCES, 11: V11_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
+    if 'third_party_notices' in manifest:
+        notices = manifest['third_party_notices']
+        require(type(notices) is dict and notices.keys() == {'profile', 'files'} and
+            notices['profile'] == 'q4t-notices-v1' and type(notices['files']) is list and
+            len(notices['files']) <= 256 and
+            all(type(n) is str and n and '\0' not in n and not n.startswith('/') and
+                not {'', '.', '..'}.intersection(n.split('/')) for n in notices['files']) and
+            len(set(notices['files'])) == len(notices['files']),
+            'invalid third-party notice inventory')
+        require({'openai-node/LICENSE', 'openai-node/README.md',
+                 'structured_output/XGrammar-LICENSE',
+                 'structured_output/regex-syntax-LICENSE-APACHE'} <= set(notices['files']),
+                'required third-party notices absent')
+        expected.update('licenses/'+n for n in notices['files'])
     if 'release_declarations' in manifest:
-        require(manifest['release_declarations'] == DECLARATION_PROFILE,
-                'unknown package declaration profile')
-        expected.update('declarations/'+n for n in DECLARATION_FILES)
-    if manifest['version'] == 4 or manifest['version'] in (5, 6, 7, 8, 9, 10) and 'client_policy' in manifest:
+        expected.update('declarations/'+n for n in
+                        declaration_files(manifest['release_declarations']))
+    if manifest['version'] == 4 or manifest['version'] in (5, 6, 7, 8, 9, 10, 11) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
-        raw, _ = cp.read(package/'client-policy.json')
+        raw, clients = cp.read(package/'client-policy.json')
+        if manifest['version'] == 11:
+            from tools.serve_service import capacity
+            capacity.check_clients(config['profile'], clients)
         require(manifest.get('client_policy') == cp.binding(raw),
                 'client policy binding differs')
     else:
         require('client_policy' not in manifest, 'legacy package cannot scope clients')
-    if manifest['version'] == 5 or manifest['version'] in (6, 7, 8, 9, 10) and 'host_resources' in manifest:
+    if manifest['version'] == 5 or manifest['version'] in (6, 7, 8, 9, 10, 11) and 'host_resources' in manifest:
         from tools.serve_service import resources
         resources.validate(manifest['host_resources'])
         resources.verify_dependencies(manifest['resource_dependencies'])
     else:
         require('host_resources' not in manifest and 'resource_dependencies' not in manifest,
                 'legacy package cannot declare host resource protection')
+    if 'access_program_policy' in manifest:
+        require('client_policy' in manifest,
+                'access programs require sealed client policy')
+        expected.add('access-program-policy.json')
+        access_raw = cp.read_private(package/'access-program-policy.json')
+        require(manifest['access_program_policy'] == access_program_binding(
+            access_raw, clients, config.get('model_names', {}).get(
+                'name', 'qwen3.8-flash-next')), 'access program binding differs')
+    if 'file_input_policy' in manifest:
+        expected.add('file-input-policy.json')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -353,8 +632,29 @@ def verify(package, digest):
     require(('release_declarations' in metadata) ==
             ('release_declarations' in manifest),
             'package declaration profile differs')
+    if 'release_declarations' in manifest:
+        require(manifest['release_declarations'] == metadata['release_declarations']['profile'],
+                'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
+    if 'access_program_policy' in manifest:
+        require(read(package/'declarations/capabilities.json').get('responses', {})
+                .get('access_programs', {}).get('enabled') is True,
+                'engine access program declaration absent')
+    if 'file_input_policy' in manifest:
+        from tools.serve_gateway import client_policy as cp
+        require(read(package/'declarations/capabilities.json').get('file_inputs', {})
+                .get('policy_profile') == 'q4t-file-input-policy-v1',
+                'engine file input policy declaration absent')
+        file_path = package/'file-input-policy.json'
+        require(manifest['file_input_policy'] == file_input_policy_binding(
+            package/'q4t', file_path, cp.read_private(file_path)),
+            'file input policy binding differs')
+    if 'application_state' in config:
+        require(metadata.get('observed_configuration', {}).get('application_state', {})
+            .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
+    if 'native_embedding' in config:
+        check_embedding_declaration(metadata)
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -373,15 +673,47 @@ def verify(package, digest):
     return manifest
 
 
-def command(package, manifest):
+def check_embedding_declaration(metadata):
+    capability = metadata.get('chat_protocol', {}).get('embeddings', {}).get('native_backend', {})
+    observed = metadata.get('observed_configuration', {}).get('native_embedding', {})
+    require(capability.get('available') is True and observed.get('enabled') is True and
+            all(capability.get(k) == v and observed.get(k) == v
+                for k, v in NATIVE_EMBEDDING.items()),
+            'accepted engine does not declare configured native embedding backend')
+
+
+def command(package, manifest, *, state_directory=None):
     cfg = manifest['settings']
     args = [str(Path(package)/'q4t'), 'serve', '--model-dir', manifest['model_dir'],
-            '--host', '127.0.0.1', '--port', str(cfg['port']), '--mtp']
-    for key, value in PROFILE.items():
-        if key not in ('name', 'host'):
+            '--host', '127.0.0.1', '--port', str(cfg['port']),
+            '--mtp' if cfg['profile'].get('mtp_enabled', True) else '--no-mtp']
+    for key, value in cfg['profile'].items():
+        if key not in ('name', 'host', 'mtp_enabled'):
             args += ['--'+key.replace('_', '-'), str(value)]
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
+    if 'access_program_policy' in manifest:
+        args += ['--access-program-policy-file',
+                 str(Path(package)/'access-program-policy.json')]
+    if 'file_input_policy' in manifest:
+        args += ['--file-input-policy-file', str(Path(package)/'file-input-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
+    if 'model_names' in cfg:
+        args += ['--served-model-name', cfg['model_names']['name']]
+        for alias in cfg['model_names']['aliases']:
+            args += ['--model-alias', alias]
+    if 'native_embedding' in cfg:
+        selected = embedding_settings(cfg['native_embedding'])
+        args += ['--embedding-model-dir', selected['directory']]
+    if 'application_state' in cfg:
+        objects = application_settings(cfg['application_state'])
+        directory = objects['directory']
+        if not directory:
+            require(state_directory is not None, 'application state needs a deployment directory')
+            directory = str(Path(state_directory)/'application-objects')
+        application_settings(dict(objects, directory=directory))
+        args += ['--object-store-dir', directory]
+        for key in APPLICATION_LIMITS:
+            args += ['--object-'+key.replace('_', '-'), str(objects[key])]
     return args

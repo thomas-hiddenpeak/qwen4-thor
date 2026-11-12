@@ -1,0 +1,32 @@
+{
+  "status": "CAPTURED_NOT_ACCEPTANCE",
+  "commands": [
+    {
+      "name": "reference",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/tools/native_embedding/reference.py",
+        "--assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/diagnostic-01/plan.json",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/diagnostic-01/reference"
+      ],
+      "returncode": 0,
+      "seconds": 5.630297780036926
+    },
+    {
+      "name": "native",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_embedding_replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/diagnostic-01/plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/diagnostic-01/native"
+      ],
+      "returncode": 0,
+      "seconds": 2.116230698302388
+    }
+  ],
+  "seconds": 7.746851244941354
+}

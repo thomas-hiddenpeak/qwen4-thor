@@ -1,0 +1,53 @@
+{
+  "status": "ACCEPT_NATIVE_OBSERVATION_PROTECTED_RETENTION",
+  "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+  "source_commit": "240cd50412d028e82b8d0a405d06f1fc2bcf14a2",
+  "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+  "engine_unchanged": true,
+  "evidence": {
+    "serve-native-observation-20261109": {
+      "index_sha256": "f911e1333743ce67d75c04c11abcb11084016e7dcbb9d8784336416dbcb2b5eb",
+      "files": 12
+    },
+    "serve-run-retention-20261109": {
+      "index_sha256": "90d1c4ae9ec5277c50475875428faa02e6ee74a1eacac01477b7ada9f3d2b4b1",
+      "files": 20
+    },
+    "serve-retention-epoch-20261109": {
+      "index_sha256": "fa2d54b50676085bd7d291777278a9d47d893471abd4301efecb9d4d75bb46ff",
+      "files": 12
+    },
+    "serve-retention-lineage-20261109": {
+      "index_sha256": "342c5b006aa79fd3d0d745820cd56149763472c75ece7c2a4d7105a605a9c7d5",
+      "files": 29
+    },
+    "serve-cache-progress-delivery-20261109": {
+      "index_sha256": "f588c40f73662a03ed21779dbf0ad07bdd73dcc4ba81bfbca94255dd6fda3eb4",
+      "files": 36
+    },
+    "serve-cache-io-business-20261109": {
+      "index_sha256": "596c9d7206cb96847160335614381d3340aef467c397dc633a4ae247426b43bf",
+      "files": 81
+    },
+    "serve-progress-business-20261109": {
+      "index_sha256": "a591fcdd908d00f4a3f112812be56f5cae0ca5d2bd5f61ebee0dbdf968f8d44e",
+      "files": 67
+    }
+  },
+  "packaged": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged-03/result.json",
+    "sha256": "286785cd2dda83431bcd6449e73b14cb1af41ef17c79b67d798fc933940f9f03"
+  },
+  "bundle_cpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/bundle-cpu-01/result.json",
+    "sha256": "0f74e5a7d05f9977ac1892d6208456a997d2b120a9ea3bed57dce71f29e57fc5"
+  },
+  "controller_advisory_change_only": true,
+  "previous_business_reused": true,
+  "production_runs_removed": 0,
+  "additional_gpu_tests": 0,
+  "full_model_quality_run": false,
+  "performance_acceptance": false,
+  "remaining_master_tasks_open": true
+}

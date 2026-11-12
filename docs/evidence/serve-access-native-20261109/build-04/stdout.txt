@@ -1,0 +1,25 @@
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[ 10%] Built target q4t_guardian_process
+[ 30%] Built target q4t_guardian_journal
+[ 30%] Building CXX object CMakeFiles/q4t_ingress_access.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_access.cpp.o
+[ 40%] Linking CXX static library libq4t_ingress_access.a
+[ 50%] Built target q4t_ingress_access
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_cors.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_access_admin.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[ 16%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 83%] Built target q4t_ingress_access
+[ 83%] Building CXX object CMakeFiles/q4t_ingress_access_tests.dir/home/rm01/models/dev/qwen4-thor/tests/ingress_access_test.cpp.o
+[100%] Linking CXX executable q4t_ingress_access_tests
+[100%] Built target q4t_ingress_access_tests

@@ -70,19 +70,33 @@ class HttpListeners {
                           " (errno " + std::to_string(error) + ": " +
                           std::strerror(error) + ")");
     };
-    sockaddr_in address{};
-    address.sin_family = AF_INET;
-    if (port < 0 || port > 65535 ||
-        ::inet_pton(AF_INET, host, &address.sin_addr) != 1)
+    if (port < 0 || port > 65535) return fail("address", EINVAL);
+    sockaddr_storage storage{};
+    auto* address = reinterpret_cast<sockaddr*>(&storage);
+    auto* v4 = reinterpret_cast<sockaddr_in*>(&storage);
+    auto* v6 = reinterpret_cast<sockaddr_in6*>(&storage);
+    socklen_t size = 0;
+    if (::inet_pton(AF_INET, host, &v4->sin_addr) == 1) {
+      v4->sin_family = AF_INET;
+      v4->sin_port = htons(static_cast<uint16_t>(port));
+      size = sizeof(*v4);
+    } else if (::inet_pton(AF_INET6, host, &v6->sin6_addr) == 1) {
+      v6->sin6_family = AF_INET6;
+      v6->sin6_port = htons(static_cast<uint16_t>(port));
+      size = sizeof(*v6);
+    } else {
       return fail("address", EINVAL);
-    address.sin_port = htons(static_cast<uint16_t>(port));
-    *fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+    }
+    *fd = ::socket(address->sa_family,
+                   SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
     if (*fd < 0) return fail("socket", errno);
     const int one = 1;
     if (::setsockopt(*fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) < 0)
       return fail("setsockopt", errno);
-    if (::bind(*fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) < 0)
-      return fail("bind", errno);
+    if (address->sa_family == AF_INET6 &&
+        ::setsockopt(*fd, IPPROTO_IPV6, IPV6_V6ONLY, &one, sizeof(one)) < 0)
+      return fail("v6only", errno);
+    if (::bind(*fd, address, size) < 0) return fail("bind", errno);
     if (::listen(*fd, 128) < 0) return fail("listen", errno);
     return Status();
   }

@@ -1,0 +1,60 @@
+[  1%] Building CXX object CMakeFiles/q4t_guardian_process.dir/src/service/guardian_process.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_io.dir/src/io/json.cpp.o
+[  1%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/compiled_grammar.cc.o
+[  3%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash_derive.cpp.o
+[  3%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/page_reader.cpp.o
+[  3%] Building CXX object CMakeFiles/q4t_io.dir/src/io/safetensors.cpp.o
+[  3%] Building CUDA object CMakeFiles/q4t_ple.dir/src/ple/fp8_convert.cu.o
+[  3%] Linking CXX static library libq4t_guardian_process.a
+[  3%] Built target q4t_guardian_process
+[  3%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_trace.cpp.o
+[  3%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/config.cc.o
+[  3%] Building CXX object CMakeFiles/q4t_io.dir/src/io/model_config.cpp.o
+[  4%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ple_embedding.cpp.o
+[  6%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[  6%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/cohere.cc.o
+[  7%] Building CXX object CMakeFiles/q4t_io.dir/src/io/weight_loader.cpp.o
+[  7%] Linking CXX static library libq4t_ple.a
+[  7%] Built target q4t_ple
+[  7%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/memory_budget.cpp.o
+[  9%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/deepseek.cc.o
+[  9%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[  9%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/gemma.cc.o
+[ 10%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/system_memory.cpp.o
+[ 10%] Linking CXX static library libq4t_runtime.a
+[ 10%] Built target q4t_runtime
+[ 10%] Generating q4t-regex/libregex_syntax.rlib
+[ 10%] Linking CXX static library libq4t_trace.a
+[ 10%] Built target q4t_trace
+[ 10%] Generating service-tools/snapshot.done
+[ 10%] Linking CXX static library libq4t_io.a
+[ 10%] Built target q4t_io
+[ 10%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/glm.cc.o
+[ 10%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/kimi_k3.cc.o
+[ 12%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/minimax.cc.o
+[ 12%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/minimax_m3.cc.o
+[ 12%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/qwen.cc.o
+[ 13%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/earley_parser.cc.o
+[ 13%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/fsm.cc.o
+[ 13%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/fsm_builder.cc.o
+[ 13%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar.cc.o
+[ 15%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_builder.cc.o
+[ 15%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_compiler.cc.o
+[ 15%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_functor.cc.o
+[ 15%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_matcher.cc.o
+[ 15%] Generating q4t-regex/libq4t_regex.a
+[ 16%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_parser.cc.o
+[ 16%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_printer.cc.o
+[ 16%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/json_schema_converter.cc.o
+[ 16%] Built target q4t_regex_build
+[ 16%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/lark_converter.cc.o
+[ 18%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/regex_converter.cc.o
+[ 18%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/structural_tag.cc.o
+[ 18%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/suffix_automata.cc.o
+[ 18%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/support/logging.cc.o
+[ 20%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/support/recursion_guard.cc.o
+[ 20%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/testing.cc.o
+[ 20%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/tokenizer_info.cc.o
+[ 21%] Linking CXX static library libxgrammar.a
+[ 21%] Built target xgrammar

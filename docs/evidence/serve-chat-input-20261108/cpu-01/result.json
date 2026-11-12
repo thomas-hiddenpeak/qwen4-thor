@@ -1,0 +1,64 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/host-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.007549288682639599
+  },
+  {
+    "name": "shapes",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/check_contract.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/engine-build/q4t_contract_probe",
+      "--case-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/contract-required.txt",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes"
+    ],
+    "exit_code": 1,
+    "seconds": 0.5141854952089489
+  },
+  {
+    "name": "template",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_chat_input/template_check.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/engine-build/q4t_preflight_probe",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template"
+    ],
+    "exit_code": 0,
+    "seconds": 2.366426667198539
+  },
+  {
+    "name": "js",
+    "argv": [
+      "node",
+      "--test",
+      "--test-name-pattern=capability validation binds protocol and template identities",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.31454462883993983
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 1,
+    "seconds": 0.11394128389656544
+  }
+]

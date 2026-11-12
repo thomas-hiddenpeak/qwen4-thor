@@ -1,0 +1,4 @@
+[q4t][http] trace_id=req_tool_run_23c53e37a32f6dd8471536a42efcd7b5 status=499 error=cancelled
+[q4t][http] trace_id=req_tool_run_dba5916093bf5799bf2dc518e772258a status=503 error=server_stopping
+[q4t][http] trace_id=req_tool_run_adaf8bd311382792729f7a9e09598018 status=400 error=fixture_rejected
+[q4t][http] trace_id=req_tool_run_b5c65aacdb2cb789d996aba39828d569 status=504 error=object_commit_unknown

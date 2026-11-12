@@ -9,11 +9,12 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import controller, core_http as http, jobs, ledger, monitor, ownership, policy, service
+from tools.serve_recovery import controller, core_http as http, jobs, ledger, monitor, ownership, policy, service, store
 
 
 class Clock:
@@ -203,12 +204,52 @@ class JobTests(unittest.TestCase):
 
 
 class ControllerTests(unittest.TestCase):
+    def test_application_directory_survives_run_controller_and_model_generations(self):
+        engine = controller.engine
+        base = dict(settings=engine.settings(8080, 0, application_state=dict(
+            profile='q4t-objects-v1', directory='', **engine.APPLICATION_LIMITS)),
+            model_dir='/model', client_policy={})
+        state = ROOT/'.q4t-work/cpu-state-not-created'
+        for run_id, controller_id, model_id in [('run1', 1, 1), ('run1', 2, 2),
+                                               ('run2', 1, 3)]:
+            run = state/'runs'/run_id
+            config = service.controller_configuration('/package', 'a'*64, state, run)
+            policy_path = run/f'controller-{controller_id}'/f'model-{model_id}'/'client-policy.json'
+            args = controller.model_command('/package', base, config, policy_path)
+            self.assertEqual(args[args.index('--object-store-dir')+1],
+                             str(state/'application-objects'))
+            self.assertEqual(args[args.index('--client-policy-file')+1], str(policy_path))
+        del config['state_directory']
+        with self.assertRaisesRegex(RuntimeError, 'deployment directory'):
+            controller.model_command('/package', base, config, policy_path)
+        del base['settings']['application_state']
+        self.assertNotIn('--object-store-dir',
+                         controller.model_command('/package', base, config, policy_path))
+
     def test_changed_bundle_quarantines_before_spending_model_budget(self):
         actor = object.__new__(controller.Controller)
         actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)
         actor.quarantine, actor.transaction = mock.Mock(), mock.Mock()
-        with mock.patch.object(controller.bundle, 'verify', side_effect=ValueError('changed')):
-            self.assertFalse(actor.load({}))
+        for category in (ValueError, RuntimeError, TypeError, KeyError):
+            actor.quarantine.reset_mock()
+            with mock.patch.object(controller.bundle, 'verify', side_effect=category('changed')):
+                self.assertFalse(actor.load({}))
+            actor.quarantine.assert_called_once_with('identity_invalid')
+            actor.transaction.assert_not_called()
+
+    def test_effective_capacity_mismatch_quarantines_without_retry_or_grant(self):
+        from tools.serve_service import capacity, supervisor
+        from tools.serve_recovery.test_gateway import config
+        actor=object.__new__(controller.Controller)
+        actor.settings=controller.engine.settings(8080,0,
+            capacity_profile=capacity.normalize(dict(version=1,max_len=4096)))
+        actor.settings['operations_port']=0
+        actor.base=dict(protocol_sha256='p',files={'q4t':'b'})
+        actor.quarantine,actor.transaction=mock.Mock(),mock.Mock()
+        observed=dict(process=dict(executable_sha256='b',listener_scope='loopback'),
+            protocol='p',configuration=supervisor.expected_configuration())
+        raw=controller.ledger.canonical(config(ROOT/'build/cpu-profile')['backend_policy'])
+        self.assertIsNone(actor.classify_loaded(observed,raw))
         actor.quarantine.assert_called_once_with('identity_invalid')
         actor.transaction.assert_not_called()
 
@@ -269,6 +310,39 @@ class ControllerTests(unittest.TestCase):
                         http.self_check(18080, dict(client='alpha', token='a'*64))
                 self.assertEqual(request.call_count, 1)
 
+    def test_self_check_explicit_public_data_and_valid_refusal_do_not_retry(self):
+        reply=dict(id='cpu-refusal',usage=dict(completion_tokens=12),choices=[dict(
+            finish_reason='stop',message=dict(role='assistant',content=None,
+                refusal='I cannot provide that response.'))])
+        with mock.patch.object(http,'request',return_value=dict(http_status=200,
+                body=json.dumps(reply))) as request:
+            result=http.self_check(18080,dict(client='alpha',token='a'*64))
+            self.assertEqual(result,dict(id='cpu-refusal',usage=dict(completion_tokens=12),
+                strict_json=False,native_refusal=True))
+            request.assert_called_once()
+            body=request.call_args.kwargs['body']
+            self.assertIn('{"ok":true}',body['messages'][0]['content'])
+            self.assertEqual(body['max_tokens'],64)
+            self.assertTrue(body['response_format']['json_schema']['strict'])
+
+    def test_malformed_or_mixed_refusal_is_typed_failure_not_controller_type_error(self):
+        good=dict(id='cpu',usage={},choices=[dict(finish_reason='stop',
+            message=dict(role='assistant',content=None,refusal='No.'))])
+        import copy
+        cases=[[],dict(good,choices=[None]),dict(good,choices=[dict(finish_reason='stop')])]
+        for update in [dict(content=None,refusal=None),dict(content='{"ok":true}'),
+            dict(refusal=''),dict(refusal=12),dict(refusal='  '),
+            dict(refusal='<q4t_refusal>no</q4t_refusal>'),
+            dict(tool_calls=[dict(id='call')]),dict(function_call=dict(name='f'))]:
+            bad=copy.deepcopy(good);bad['choices'][0]['message'].update(update);cases.append(bad)
+        bad=copy.deepcopy(good);bad['choices'][0]['finish_reason']='length';cases.append(bad)
+        for reply in cases:
+            with self.subTest(reply=reply),mock.patch.object(http,'request',return_value=dict(
+                    http_status=200,body=json.dumps(reply))) as request:
+                with self.assertRaises(ValueError):
+                    http.self_check(18080,dict(client='alpha',token='a'*64))
+                request.assert_called_once()
+
 
 class PublicEntryTests(unittest.TestCase):
     def setUp(self):
@@ -282,7 +356,8 @@ class PublicEntryTests(unittest.TestCase):
         self.temp.cleanup()
 
     def initialize(self):
-        with mock.patch.object(service.bundle, 'verify', return_value=dict(repository=str(ROOT))), \
+        with mock.patch.object(service.bundle, 'verify', return_value=dict(
+                version=1, repository=str(ROOT))), \
              mock.patch.object(service.subprocess, 'Popen') as spawn:
             result = service.initialize(self.package, 'a'*64, self.state)
             spawn.assert_not_called()
@@ -292,7 +367,8 @@ class PublicEntryTests(unittest.TestCase):
         result = self.initialize()
         self.assertEqual(result['desired'], 'STOPPED')
         self.assertFalse(result['automatic_start'])
-        with mock.patch.object(service.bundle, 'verify', return_value=dict(repository=str(ROOT))):
+        with mock.patch.object(service.bundle, 'verify', return_value=dict(
+                version=1, repository=str(ROOT))):
             with self.assertRaises(FileExistsError):
                 service.initialize(self.package, 'a'*64, self.state)
 
@@ -302,16 +378,24 @@ class PublicEntryTests(unittest.TestCase):
             service.descriptor(self.state, self.package, 'b'*64)
 
     def test_missing_live_guardian_never_uses_old_ready_snapshot(self):
-        self.initialize()
+        initialized = self.initialize()
         (self.state/'status.json').write_text('{"state":"READY","business_ready":true}')
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            result = service.main(['status', '--state', str(self.state)],
-                                  package=self.package, digest='a'*64)
-        self.assertEqual(result, 1)
-        value = json.loads(output.getvalue())
-        self.assertEqual(value['state'], 'UNKNOWN')
-        self.assertFalse(value['business_ready'])
+        for running in (False, True):
+            with self.subTest(running=running):
+                if running:
+                    with store.Store(self.state, initialized['service_id']) as current:
+                        current.transact(dict(id=str(uuid.uuid4()),
+                            expected_revision=current.state['revision'],
+                            operation='desired', args=dict(state='RUNNING')))
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    result = service.main(['status', '--state', str(self.state)],
+                                          package=self.package, digest='a'*64)
+                self.assertEqual(result, int(running))
+                value = json.loads(output.getvalue())
+                self.assertEqual(value['state'], 'UNKNOWN' if running else 'STOPPED')
+                self.assertFalse(value['business_ready'])
+                self.assertFalse(value['live_control'])
 
 
 if __name__ == '__main__':

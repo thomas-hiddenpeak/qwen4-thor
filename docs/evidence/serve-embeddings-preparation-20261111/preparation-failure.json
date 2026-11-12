@@ -1,0 +1,8 @@
+{
+  "phase": "prepare-before-GPU",
+  "exception": "RuntimeError: metadata size limit",
+  "call": "package.read(model/tokenizer.json)",
+  "model_starts": 0,
+  "requests": 0,
+  "fix": "bounded tokenizer asset reader; service metadata reader unchanged"
+}

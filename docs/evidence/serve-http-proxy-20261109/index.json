@@ -1,0 +1,70 @@
+{
+  "README.md": {
+    "bytes": 535,
+    "sha256": "010b495eb211b0977e9ea8b902d746360d2d784dd749e9d40dc45b1dacad0f6e"
+  },
+  "decision.json": {
+    "bytes": 450,
+    "sha256": "0b2ac05b5d9a93cac80d6a0f78a02195846e327b623f403888944de885513ee5"
+  },
+  "proxy-build-01/commands.json": {
+    "bytes": 553,
+    "sha256": "85e44a6795d611e77a0c135a5d0a4941013f155210e26e95bab48a97d5b3035a"
+  },
+  "proxy-build-01/result.json": {
+    "bytes": 76,
+    "sha256": "678068bd3fde5eb3e6a6313a88e3255cddde208219a0c32caafc350456a05714"
+  },
+  "proxy-build-01/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "proxy-build-01/stdout.txt": {
+    "bytes": 1911,
+    "sha256": "4c81f48cd5c5e225c0c1f3456793cf828a29605e32988b619c6c61c4f153f5c0"
+  },
+  "proxy-cpu-01/command.json": {
+    "bytes": 581,
+    "sha256": "fee2e8e550c8051a4e1390d843de8c5afcc5aa72a3954491ff1c377b2053938a"
+  },
+  "proxy-cpu-01/result.json": {
+    "bytes": 180,
+    "sha256": "5bfd187300f7e1f77956fa2d966e3664fbaf1eeec9a11eeab71761a729019ad5"
+  },
+  "proxy-cpu-01/sources.json": {
+    "bytes": 40226,
+    "sha256": "fdaf63f7e9b4b4cddf3ec96f61787f47400a3442d6a47281437186d140e5f682"
+  },
+  "proxy-cpu-01/tests.log": {
+    "bytes": 521,
+    "sha256": "9d6bb4c3c24d7a7cbd6cee8963ea1ad39be47ec0f937a2dc847c1718d044cc37"
+  },
+  "proxy-native-cpu-01/command.json": {
+    "bytes": 213,
+    "sha256": "e0fa8fcbddbef378dbfa6dbb849f0eacf6e8485afa32d730ad26bbb726c58c0a"
+  },
+  "proxy-native-cpu-01/result.json": {
+    "bytes": 179,
+    "sha256": "23732af687a6b3b8c90e3d950721d1f0f5ff56217ce710899ace304b658e21ba"
+  },
+  "proxy-native-cpu-01/sources.json": {
+    "bytes": 40226,
+    "sha256": "fdaf63f7e9b4b4cddf3ec96f61787f47400a3442d6a47281437186d140e5f682"
+  },
+  "proxy-native-cpu-01/tests.log": {
+    "bytes": 3109,
+    "sha256": "368e53589d591f8490c6ff90c3bb4fbbed7324720993d15f76aff877eb73e6ac"
+  },
+  "proxy-plan.json": {
+    "bytes": 2713,
+    "sha256": "27681ce081867a93fa07e4bd9b35ce664a83d90eac9123e2d8bfdd736f1360ee"
+  },
+  "run_proxy_child.py": {
+    "bytes": 651,
+    "sha256": "f2d80f48b43c4fcffeda03dcd2eb2ed0991b16da1a351f915e38861c6eb50f52"
+  },
+  "run_proxy_cpu.py": {
+    "bytes": 1881,
+    "sha256": "07a5f8a2bec01be0dcbc4db38de7698fb3e2a3b673c578b6fe0348e58e3b2654"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "include/q4t/server/output_constraints.h": "f8f4e130e9993348acf250060d425b0b74492d29048832b1ea4dfe494e5917ba",
+  "include/q4t/server/chat_response_parser.h": "9264a91271197b42551241ce0be2137e4cb7d4c4755afa26eed21f2cc80e38ce",
+  "src/server/output_constraints.cpp": "f0d34bf11876d142e28adb02fe5c9d881595a052607aba986d717e563d287843",
+  "src/server/chat_response_parser.cpp": "d89f111443a6d114fef779cf610b3b80a891645105bb79c4596c16b540c2f4a2",
+  "src/server/chat_capabilities.cpp": "5f08a4fcfc9b108d08ba5643d66ab8debb32f2c942d5673383ba081976c7a5cf",
+  "tools/examples/chat_client.py": "e7e2457b34dc490a619a39f188bd4b77027a534f6dce90482821917ff597f2e4",
+  "tools/examples/js/chat_client.mjs": "734a3134e146dc467c924175572115f8e496d73b3bd2025f1a7fa0c120d5e259",
+  "tools/examples/js/test_chat_client.mjs": "8d90ffaf398ec588e7007bcbc8be40fbf6e0d47db175b112cd236da9e840ebe2",
+  "tools/serve_protocol/build_contract.py": "4dfd348abc964c8107b1ffdbe77ddfddacea9f26c7096a8009c52dd0fca47e38",
+  "tools/serve_protocol/cases.py": "f65a360439627e70a213538997d6bb3e1f96c81a5b4ba5817007d0742422b1ff",
+  "tests/server_chat_response_parser_test.cpp": "09d559d5a56f2c8477c857cb8abc4bd2330e2bfa0061d09826f14220551cac0b",
+  "tests/server_output_constraints_test.cpp": "121a5fe3bfd68b7d46c7dabdacaf34bc0b976be4716a81d918674405d05f0721",
+  "tests/server_structured_decoder_test.cpp": "9ecf0b1e4624abf18055759647115ae4d643f3dd6c57d373cf2c4d1de6405acd"
+}

@@ -1,0 +1,17 @@
+{
+  "reviewed": [
+    "include/q4t/vision/media_plan.h",
+    "include/q4t/vision/processor.h",
+    "include/q4t/vision/timing.h",
+    "src/server/file_expansion.cpp",
+    "src/server/file_image.cpp",
+    "src/server/file_input.cpp",
+    "src/server/media_admission.cpp",
+    "src/vision/media_plan.cpp",
+    "src/vision/processor.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 448,
+  "review": "Full one-image GIF block validation, no silent animated first-frame acceptance; existing stb with private transparency flags copy and palette-zero canvas produces exact Pillow RGB pixels. MIME and snapshots reflect source bytes. GIF timing is versioned, offline parser retains strict legacy support. No new runtime library."
+}

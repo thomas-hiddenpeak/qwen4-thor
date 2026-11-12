@@ -1,0 +1,14 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_completion_tokens": 128,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "developer",
+      "name": "calculator",
+      "content": "Compute 17 + 25 and reply with only the number."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+test_actual_wire_oracle_rejects_wrong_source_index_and_projection (tools.serve_responses.test_file_search_acceptance.FileSearchAcceptanceTests.test_actual_wire_oracle_rejects_wrong_source_index_and_projection) ... ok
+test_business_requests_conform_to_pinned_application_contract (tools.serve_responses.test_file_search_acceptance.FileSearchAcceptanceTests.test_business_requests_conform_to_pinned_application_contract) ... ok
+test_meter_rejects_duplicate_rpm_lost_query_usage_and_retained_reservation (tools.serve_responses.test_file_search_acceptance.FileSearchAcceptanceTests.test_meter_rejects_duplicate_rpm_lost_query_usage_and_retained_reservation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.028s
+
+OK

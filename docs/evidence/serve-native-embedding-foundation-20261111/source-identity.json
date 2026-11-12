@@ -1,0 +1,9 @@
+{
+  "CMakeLists.txt": "c2bda995961e87c3539eda691aaa2a5c1609140145f5b531a392e8baaa4431bb",
+  "include/q4t/text/tokenizer.h": "1216d3d610c7b236ab6f7ba170a721ec1dc4010882aa0500a9e6ce430d9bc1f3",
+  "src/text/tokenizer.cpp": "d468106d6e49e471bf14835443ba3333a5b9242f9d737376c8fef17191acfbd7",
+  "include/q4t/model/embedding_config.h": "398a68d15c9abf83635089d29e8a79d84070046bb17be12f6ebead8cfadc2a4f",
+  "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
+  "tests/embedding_contract_test.cpp": "b2d88e45b1d1a50f9c64893bda0bd2f5c9ad9cd3b2bee656254e1216931bfcc4",
+  "tests/fixtures/embedding/tokenizer-golden.json": "5344269136167ee6efff09a3de365a7385419ddaa360797e7338f9525de451e7"
+}

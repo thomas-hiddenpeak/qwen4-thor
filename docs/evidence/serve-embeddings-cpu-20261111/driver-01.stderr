@@ -1,0 +1,8 @@
+test_embedding_meter_requires_one_rpm_zero_output_and_exact_actual_input (tools.serve_responses.test_embeddings_acceptance.EmbeddingsAcceptanceTests.test_embedding_meter_requires_one_rpm_zero_output_and_exact_actual_input) ... ok
+test_fixed_requests_include_raw_inputs_and_bounded_work (tools.serve_responses.test_embeddings_acceptance.EmbeddingsAcceptanceTests.test_fixed_requests_include_raw_inputs_and_bounded_work) ... ok
+test_vector_oracle_rejects_nonfinite_unnormalized_and_misordered_output (tools.serve_responses.test_embeddings_acceptance.EmbeddingsAcceptanceTests.test_vector_oracle_rejects_nonfinite_unnormalized_and_misordered_output) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.072s
+
+OK

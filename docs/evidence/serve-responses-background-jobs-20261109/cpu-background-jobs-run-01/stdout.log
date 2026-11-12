@@ -1,0 +1,14 @@
+[PASS] client_quota_independent_clients_control_and_unwind
+[PASS] client_handoff_keeps_quota_until_cleanup_then_admits_successor
+[PASS] responses_background_cancel_preserves_partial_without_tool_done
+[FAIL] responses_jobs_permit_transfer_keeps_charge_and_rejects_failed_lease: jobs policy
+[PASS] responses_jobs_detached_context_observes_errors_without_transport
+[FAIL] responses_jobs_acceptance_outlives_request_and_releases_after_completion: jobs policy
+[FAIL] responses_jobs_queued_cancel_skips_executor_and_remains_client_scoped: jobs policy
+[FAIL] responses_jobs_cancel_wins_against_late_success_commit: jobs policy
+[FAIL] responses_jobs_count_client_and_input_limits_are_real_admission: jobs policy
+[FAIL] responses_jobs_executor_exception_does_not_stop_following_work: jobs policy
+[FAIL] responses_jobs_unknown_start_is_reconciled_without_execution: jobs policy
+[FAIL] responses_jobs_waiting_clients_get_round_robin_turns: jobs policy
+[FAIL] responses_jobs_shutdown_cancels_owned_work_and_rejects_submission: jobs policy
+13 tests, 4 passed, 9 failed, 0 skipped

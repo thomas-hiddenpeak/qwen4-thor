@@ -1,0 +1,75 @@
+{
+  "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 120.5504292040132,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 362
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 2673906101217048
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2673943640809019
+      },
+      {
+        "kind": "chats",
+        "label": "native-search",
+        "ordinal": 2,
+        "monotonic_ns": 2673950701540549
+      },
+      {
+        "kind": "probes",
+        "label": "root-version-device-proof",
+        "ordinal": 1,
+        "monotonic_ns": 2673965773098187
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 2,
+        "monotonic_ns": 2673973074730620
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 3,
+        "monotonic_ns": 2674007934510544
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-history",
+        "ordinal": 4,
+        "monotonic_ns": 2674010821100116
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1990371,
+      "start_ticks": 267390610
+    },
+    "2": {
+      "pid": 1991324,
+      "start_ticks": 267397307
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+    "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853"
+  },
+  "scenario": "retrieval_version",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

@@ -1,0 +1,6 @@
+[PASS] batch_results_actual_unknown_start_never_grants_duplicate_execution
+[PASS] batch_results_actual_unknown_finish_commits_result_and_counts_once
+[PASS] batch_results_actual_unknown_finalization_publishes_both_files_and_terminal_atomically
+[PASS] batch_results_actual_dead_owner_started_row_is_interrupted_then_pending_can_continue
+[PASS] batch_finalization_large_row_lost_checkpoint_resumes_original_bytes
+5 tests, 5 passed, 0 failed, 0 skipped

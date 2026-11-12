@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/package-01/bundle",
+  "manifest_sha256": "6736867af759947e481089e93d429312ca4ee0bfc39e0df268be2deb60cb96ec",
+  "engine_binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "recovery_accepted": false
+}

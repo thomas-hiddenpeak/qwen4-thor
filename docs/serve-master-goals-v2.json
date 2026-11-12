@@ -1,0 +1,2406 @@
+{
+  "version": 2,
+  "updated": "2026-11-12",
+  "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
+  "goal_state": "active_master_goal",
+  "app_migration": {
+    "attempted": true,
+    "result": "active_master_goal_created_after_R01_delivery",
+    "error": "cannot create a new goal because this thread has an unfinished goal; complete the existing goal first",
+    "old_goal": "R1",
+    "policy": "Master goal remains active across stages until all required tasks are implemented, validated and delivered.",
+    "initial_result": "rejected_unfinished_goal",
+    "receipt": "evidence/serve-goal-reaudit-20261108/goal-migration.json"
+  },
+  "completion_rules": [
+    "All required tasks have actual implementation and affected-behavior validation, applicable real business evidence and usable delivery.",
+    "No unsupported response, capability=false, documentation, NO_GO or intermediate milestone counts as implementation completion.",
+    "No stage completion ends the master task. Scope reductions require an explicit user decision.",
+    "Non-performance work uses targeted validation, not full performance/model correctness suites.",
+    "User runs long stability; this task supplies runnable handoff and does not claim long-run acceptance."
+  ],
+  "tasks": [
+    {
+      "id": "G00",
+      "required": true,
+      "state": "scope_clarification_pending",
+      "implementation": "确认推理与应用服务之外的组织/账单/训练管理等平台API范围",
+      "acceptance": "记录用户决定和端点分类；不阻塞已确定任务，不自行删项",
+      "depends_on": [],
+      "evidence": []
+    },
+    {
+      "id": "A01",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "逐字段/路由标准合同、默认/null/别名/metadata与错误语义；每个缺口链接实现任务",
+      "acceptance": "官方参考→本地schema→解析→响应逐项可追踪；合法请求实际执行，拒绝不计功能通过",
+      "depends_on": [],
+      "evidence": [
+        "SERVE_CHAT_INPUT_2026-11-08.md",
+        "evidence/serve-chat-input-20261108/README.md"
+      ],
+      "release": null,
+      "accepted_subsets": [
+        {
+          "name": "ordered instructions, participant names, refusal history and required content",
+          "profile": "qwen3.8-openai-v3",
+          "engine_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+          "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+          "full_task_complete": false
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "system/developer/name、assistant/refusal、工具历史及多模态消息的模板语义",
+      "acceptance": "逐字节模板/历史回填与模型token映射；不丢角色、参数或结果；一个真实多轮工具场景",
+      "depends_on": [
+        "A01"
+      ],
+      "evidence": [
+        "SERVE_CHAT_INPUT_2026-11-08.md",
+        "evidence/serve-chat-input-20261108/README.md"
+      ],
+      "release": null,
+      "accepted_subsets": [
+        {
+          "name": "ordered instructions, participant names, refusal history and required content",
+          "profile": "qwen3.8-openai-v3",
+          "engine_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+          "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+          "full_task_complete": false
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "required": true,
+      "state": "implemented_validated_delivered",
+      "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs；prediction预测内容实际验证/消费与usage",
+      "acceptance": "固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法",
+      "depends_on": [
+        "A01",
+        "A02"
+      ],
+      "evidence": [
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "docs/evidence/serve-sampling-20261108/index.json",
+        "docs/SERVE_PREDICTION_2026-11-08.md",
+        "docs/evidence/serve-prediction-20261108/index.json"
+      ],
+      "release": {
+        "binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+        "manifest_sha256": "ee95045b59d0f69d36092ce25666365cb7041d933636927cefb1989d087b7f85",
+        "record": "docs/evidence/serve-prediction-20261108/delivery-01/result.json"
+      },
+      "remaining_required_after_sampling_subset": [],
+      "prediction_progress": "Targeted CPU and actual 1-start/7-Chat business accepted and delivered; initial warnings/JS fixture failures preserved; remaining broader A01/A04/A05 tasks stay open"
+    },
+    {
+      "id": "A04",
+      "required": true,
+      "state": "implemented_validated_delivered",
+      "implementation": "工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义",
+      "acceptance": "标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流",
+      "depends_on": [
+        "A01",
+        "A02"
+      ],
+      "evidence": [
+        "docs/SERVE_TOOL_STREAM_2026-11-08.md",
+        "docs/evidence/serve-tool-stream-20261108/index.json",
+        "docs/SERVE_LEGACY_TOOLS_2026-11-08.md",
+        "docs/evidence/serve-legacy-tools-20261108/index.json",
+        "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
+        "docs/evidence/serve-custom-tools-20261108/index.json"
+      ],
+      "release": {
+        "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+        "manifest_sha256": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40",
+        "record": "docs/evidence/serve-custom-tools-20261108/delivery-01/result.json"
+      },
+      "accepted_subsets": [
+        {
+          "name": "allowed_tools and real incremental function argument streaming",
+          "profile": "q4t-tool-stream-v1",
+          "full_task_complete": false
+        },
+        {
+          "name": "legacy functions/function_call, history/results and modern migration",
+          "profile": "q4t-legacy-functions-v1",
+          "full_task_complete": false
+        },
+        {
+          "name": "custom text/regex/Lark, native model adapter, history and actual mixed execution",
+          "profile": "q4t-custom-tools-v1",
+          "full_task_complete": true
+        }
+      ],
+      "remaining_required": [],
+      "active_subset": null
+    },
+    {
+      "id": "A05",
+      "required": true,
+      "state": "subset_delivered_integration_pending",
+      "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
+      "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
+      "depends_on": [
+        "R02",
+        "A01"
+      ],
+      "evidence": [
+        "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+        "docs/evidence/serve-schema-v2-20261108/index.json"
+      ],
+      "release": {
+        "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+        "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
+        "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
+      },
+      "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
+      "remaining_required": [
+        "A10媒体状态缓存及schema/工具组合：实际图像/视频身份、MRoPE与状态恢复、终态发布和客户端隔离"
+      ]
+    },
+    {
+      "id": "A06",
+      "required": true,
+      "state": "delivered",
+      "implementation": "Completions生成接口、Models详情/标识/别名与标准查询行为",
+      "acceptance": "标准SDK调用真实生成；不只转发而丢失prompt/echo/选择/usage语义；模型读写权限按操作合同",
+      "depends_on": [
+        "A01",
+        "A03"
+      ],
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "docs/evidence/serve-completions-20261108/README.md"
+      ],
+      "release": {
+        "engine_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55",
+        "engine_release_sha256": "0dc4ad2ece468d191f55761f17f1cdbc9bd826fcb3fb4612921337323b8f2197",
+        "service_manifest_sha256": "8d1f6b5083319e9f73702f8ee41b3d5beb9c9831b9962f9dbac61f3812bd4a27",
+        "service_release_sha256": "1575d87732f6100b7dc7376492052c913334298cd81c07adf00c1dfbeb77a194",
+        "protocol_sha256": "a1089f3d5c714bbb115d9fca32d755cf66804c96d16bdc88d0f39b9d82ed8484"
+      },
+      "development_status": "Native Completions/Models, full prompt/echo/logprobs/best_of/usage and raw SDK JSON/SSE targeted acceptance delivered with rollback. Original final driver counter failure retained and reconciled from unchanged runtime evidence."
+    },
+    {
+      "id": "A07",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "Responses无状态请求、文本/图片/工具items、reasoning和完整SSE事件生命周期",
+      "acceptance": "原生请求执行；function_call_output回填、sequence/终态/错误一致；SDK可直接消费",
+      "depends_on": [
+        "A01",
+        "A02",
+        "A04"
+      ],
+      "evidence": [
+        "SERVE_RESPONSES_2026-11-08.md",
+        "evidence/serve-responses-core-20261108/README.md",
+        "evidence/serve-responses-context-cpu-20261109/README.md",
+        "evidence/serve-responses-context-business-20261109/README.md",
+        "evidence/serve-responses-context-delivery-20261109/README.md",
+        "evidence/serve-responses-summary-cpu-20261109/README.md",
+        "evidence/serve-responses-summary-replay-fix-20261109/README.md",
+        "evidence/serve-responses-summary-business-20261109/README.md",
+        "evidence/serve-responses-summary-delivery-20261109/README.md",
+        "evidence/serve-responses-encryption-crypto-20261109/README.md",
+        "evidence/serve-responses-encryption-protocol-20261109/README.md",
+        "evidence/serve-responses-encryption-admin-20261109/README.md",
+        "evidence/serve-responses-encryption-business-20261109/README.md",
+        "evidence/serve-responses-encryption-delivery-20261109/README.md",
+        "evidence/serve-compaction-foundation-20261109/README.md",
+        "evidence/serve-compaction-execution-20261109/README.md",
+        "evidence/serve-compaction-driver-20261109/README.md",
+        "evidence/serve-compaction-business-20261109/README.md",
+        "evidence/serve-compaction-ingress-20261109/README.md",
+        "evidence/serve-compaction-delivery-20261109/README.md",
+        "evidence/serve-prompt-cache-cpu-20261110/README.md",
+        "evidence/serve-prompt-cache-driver-20261110/README.md",
+        "evidence/serve-prompt-cache-business-20261110/README.md",
+        "evidence/serve-prompt-cache-delivery-20261110/README.md",
+        "evidence/serve-input-tokens-cpu-20261110/README.md",
+        "evidence/serve-input-tokens-followup-20261110/README.md",
+        "evidence/serve-input-tokens-business-20261110/README.md",
+        "evidence/serve-input-tokens-delivery-20261110/README.md"
+      ],
+      "release": {
+        "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+        "engine_release_sha256": "675ef10407a3b59ee4ffcf872d919a767acdd641907e3f4b67a5ebab8d6118bc",
+        "generation_sha256": "120215b4b3eb2d5365fb7984b8b5a65c4103a551ae1736f2a5ab381ae8f8ea1e",
+        "manifest_sha256": "b39ad17e425e71cef0798c7d1f130c0dc6cebbb2d0332678af52acc23c6a1d0d",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-request-fields-20261110/release-01/bundle",
+        "service_acceptance_sha256": "fe24aecd28f6258da1bf8251bf50b4cd32d036c39a024761fd0164463c71b024",
+        "service_release_sha256": "9edaea12f6df8fbe533e14815e061030abcb1463c673e7aa2173d2f3e234d668"
+      },
+      "development_status": "Core/state/reasoning/summary/encryption/compaction/input_tokens/defaults and model-native refusal delivered; A09/A10/A11 dependent tools/media/items and advanced execution remain required",
+      "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
+      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
+      "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
+      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md",
+      "background_core_evidence": "evidence/serve-responses-background-core-20261109/README.md",
+      "background_jobs_evidence": "evidence/serve-responses-background-jobs-20261109/README.md",
+      "background_http_evidence": "evidence/serve-responses-background-http-20261109/README.md",
+      "background_recovery_evidence": "evidence/serve-responses-recovery-20261109/README.md",
+      "declaration_evidence": "evidence/serve-responses-declarations-20261109/README.md",
+      "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
+      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
+      "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
+      "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+      "remaining_required": [
+        "Complete A09/A10/A11 media/files/builtin tools and all required input/output/include/SSE producers and SDK integration",
+        "Enforce max_tool_calls in actual builtin executor; advanced async/caller/namespace/output_schema and typed output remain required",
+        "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered"
+      ],
+      "automatic_truncation": {
+        "state": "delivered",
+        "cpu_tests": 18,
+        "engine_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+        "default_delivered": true,
+        "business": {
+          "status": "PASS_RESPONSES_CONTEXT_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_CONTEXT",
+          "binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+          "protocol_sha256": "88a8e832ef21f024a13c317931d5ab05b89f16d25ffb16736c3a8838772727bf",
+          "counts": {
+            "starts": 2,
+            "chats": 7,
+            "controls": 97
+          },
+          "seconds": 93.41345523949713,
+          "nvml_queries": 91,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "previous_failure": "docs/evidence/serve-responses-context-driver-fix-20261109",
+          "reused_json": true,
+          "real_input_tokens": 42,
+          "cpu_cases": 18,
+          "driver_fix_cases": 2,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "media_gpu_retested": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+          "engine_release_sha256": "f2a292f49529cac78f9754e9e52584bdb390d24ce87fd6771516ece5ba0626e5",
+          "generation_sha256": "cd27f38267f02e661935e47f78d537d111c3436a986817b8ff80e41311ad6d53",
+          "manifest_sha256": "c360746edc5a717eeef03b6de0261b0b72630cba6e0d1f5d5b5b5c9c8ad94f79",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle",
+          "service_acceptance_sha256": "fddbc45ab358832ee81af40feed415b55c64b644b67c818afe8fd2dc6c542fd1",
+          "service_release_sha256": "9b7c7be37eba1c0ff12ba9993f9cae5ceacd0b7f4bdf5aa44144a97a1c1953c5"
+        },
+        "publication_revision": 10
+      },
+      "current_work": "Native model-produced refusal signal plus constraints, parser, Chat/Responses JSON/SSE, storage and SDK lifecycle; implementation must precede acceptance. Continue remaining items/tools/media and full master plan.",
+      "reasoning_summary": {
+        "state": "delivered",
+        "cpu_checks": 31,
+        "business_evidence": "evidence/serve-responses-summary-business-20261109/README.md",
+        "delivery_evidence": "evidence/serve-responses-summary-delivery-20261109/README.md",
+        "release": {
+          "engine_binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
+          "engine_release_sha256": "96e004efa6bb1fcf167a4819929e10a42a71660b4d912cfa54e786b8ce6aa940",
+          "generation_sha256": "236d7dcd751eca4ee0b357cf19535110ae8ad76d8732a0fe435d3d145a5d34d0",
+          "manifest_sha256": "bbb4c13bc4b149fec303215b90819dc0d9c3db473f8553402c4838886715cc09",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/release-02/bundle",
+          "service_acceptance_sha256": "80d56cedd9f05e84996a8e25310f7a53f0758526096a26c18611899e5c63f760",
+          "service_release_sha256": "3cef6c508573e5f71014de863d8968ce6fdaa5e757dbc90e5ad052754c61df9a"
+        },
+        "publication_revision": 12
+      },
+      "encrypted_reasoning": {
+        "state": "delivered",
+        "crypto_key_cpu_tests": 16,
+        "crypto_evidence": "evidence/serve-responses-encryption-crypto-20261109/README.md",
+        "protocol_roundtrip_implemented": true,
+        "default_delivered": true,
+        "protocol_cpu_tests": 18,
+        "schema_values": 22,
+        "protocol_evidence": "evidence/serve-responses-encryption-protocol-20261109/README.md",
+        "candidate_engine_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+        "business_validated": true,
+        "admin_cpu_checks": 14,
+        "admin_evidence": "evidence/serve-responses-encryption-admin-20261109/README.md",
+        "current_work": "complete; continue A07.4 and all master tasks",
+        "driver_cpu_checks": 4,
+        "driver_evidence": "evidence/serve-responses-encryption-driver-20261109/README.md",
+        "business_limits": {
+          "starts": 2,
+          "requests": 8,
+          "model_steps": 8,
+          "seconds": 900
+        },
+        "business_evidence": "evidence/serve-responses-encryption-business-20261109/README.md",
+        "delivery_evidence": "evidence/serve-responses-encryption-delivery-20261109/README.md",
+        "default": {
+          "engine_binary_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+          "engine_release_sha256": "2081e08a1625591a10853cb933de365a64f9d5db380eb39202972ae41c378061",
+          "generation_sha256": "0ce4b2e7013cc31fa3b1a3860e23220818d3a4dbbd7374f4e6522ffcf9d216dd",
+          "manifest_sha256": "dca3b450388b8439b7bf0af9ea55ff3b2ad9b846eb5b80303f8d91b0e160a850",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/release-01/bundle",
+          "service_acceptance_sha256": "91f0262e5dd77219b5c98466ff4002f189858383f4d02960f9cfec873c39143a",
+          "service_release_sha256": "a0f8cf230c98c5a385a715ce4b99d06f4d34b5481fedd5c9d8d0b99945a87765"
+        },
+        "publication_revision": 14
+      },
+      "compaction": {
+        "state": "delivered",
+        "foundation_coded": true,
+        "foundation_cpu_checks_written": 13,
+        "tests_executed": true,
+        "business_validated": true,
+        "default_delivered": true,
+        "current_work": "complete; continue A07.5 and all master tasks",
+        "input_integration_coded": true,
+        "foundation_cpu_tests": 15,
+        "foundation_test_executions": 16,
+        "foundation_evidence": "evidence/serve-compaction-foundation-20261109/README.md",
+        "execution_coded": true,
+        "execution_cpu_distinct": 30,
+        "execution_cpp_tests": 23,
+        "execution_schema_tests": 5,
+        "execution_sdk_tests": 2,
+        "execution_evidence": "evidence/serve-compaction-execution-20261109/README.md",
+        "candidate_engine_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+        "business_evidence": "evidence/serve-compaction-business-20261109/README.md",
+        "business_limits": {
+          "starts": 2,
+          "requests": 8,
+          "model_steps": 9,
+          "seconds": 900
+        },
+        "native_ingress_cpu_checks": 2,
+        "native_ingress_evidence": "evidence/serve-compaction-ingress-20261109/README.md",
+        "release": {
+          "engine_binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+          "engine_release_sha256": "11eeb4dfb61eb49ba2ca4e20370dd1860af63c7597a5c12d26295a1a031026fa",
+          "generation_sha256": "f1663bf0f34c939b67eca03c0ddcf72250d9e15da80acf7d3c4f378387a6ad0d",
+          "manifest_sha256": "c59afb3d81c9919265737de164292f49a2f004ac9b5328b73a447f0763ab0635",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-compaction-20261109/release-01/bundle",
+          "service_acceptance_sha256": "36e5f9385f5abe2e17dbbd83049ffd1e074f7ce2aaa6d8d49d7d5d5024b5f193",
+          "service_release_sha256": "04c2f6c6386360d85c08faf342b8f705857ca462f7f695e1a69b6befad2ce514"
+        },
+        "publication_revision": 16,
+        "delivery_evidence": "evidence/serve-compaction-delivery-20261109/README.md"
+      },
+      "prompt_registry": {
+        "state": "delivered_targeted",
+        "cpu_checks": 27,
+        "source_inventory_checked": true,
+        "business_validated": true,
+        "default_delivered": true,
+        "evidence": "evidence/serve-prompts-cpu-20261109/README.md",
+        "business_limits": {
+          "starts": 2,
+          "requests": 8,
+          "model_steps": 7,
+          "seconds": 900
+        },
+        "business_evidence": "docs/evidence/serve-prompts-business-20261110/README.md",
+        "output_fix_evidence": "docs/evidence/serve-prompt-output-fix-20261110/README.md",
+        "delivery_evidence": "docs/evidence/serve-prompts-delivery-20261110/README.md",
+        "release": {
+          "engine_binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+          "engine_release_sha256": "349eecf3937225c1c01db6243fcd9ed319d9a4b612eed0431f41ea85ba42ae82",
+          "generation_sha256": "6be1619289eff0e82b1d9f310a42c9bb76072b57f0e0274a9ef35d7ebd075645",
+          "manifest_sha256": "945e6f73b94a6b7062de690a6a5619fc7eb06ba6341531396deec0f0a56ccb4a",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompts-20261109/release-01/bundle",
+          "service_acceptance_sha256": "1f90c17eb3c4e6bcd94adc14723666051dabf037bf19bf2683a750cf3e920743",
+          "service_release_sha256": "a31e04ba377c9619f2d2d6fcf13861d5b5f225682c5808cd4a1d75ee4b08c0e7"
+        }
+      },
+      "prompt_output_fix_cpu_2026_11_10": {
+        "status": "passed",
+        "evidence": "docs/evidence/serve-prompt-output-fix-20261110/README.md",
+        "cpp": 4,
+        "python": 4,
+        "first_oracle_failure_preserved": true,
+        "real_business_pending": false
+      },
+      "prompt_actual_business_2026_11_10": {
+        "status": "accepted_delivered",
+        "evidence": "docs/evidence/serve-prompts-business-20261110/README.md",
+        "starts": 2,
+        "requests": 8,
+        "model_steps": 7,
+        "seconds": 86.75399710191414,
+        "candidate": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05"
+      },
+      "prompt_cache": {
+        "state": "delivered_targeted",
+        "cpp_tests": 44,
+        "schema_tests": 3,
+        "driver_tests": 5,
+        "business": {
+          "status": "PASS_RESPONSES_CACHE_TARGETED_BUSINESS",
+          "binary_sha256": "bd45853b414205f0433d25aee8ff8d3c93b8a16c826336b7446734d101e5feb4",
+          "protocol_sha256": "84086896f14ea478a4daf425e1b2f1726508c40f9ef0a1b705ce1f0de0c41dbe",
+          "source_commit": "350f6ff19f8fb79f00352977f3b754356653d18d",
+          "counts": {
+            "starts": 1,
+            "chats": 10,
+            "controls": 50
+          },
+          "seconds": 67.36931859701872,
+          "all_nvml_ok": true,
+          "nvml_samples": 65,
+          "cleanup_confirmed": true,
+          "default_unchanged": true,
+          "usage": {
+            "prewarm": {
+              "usage": {
+                "input_tokens": 2209,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 2181
+                },
+                "output_tokens": 0,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2209
+              },
+              "diagnostics": null
+            },
+            "hit": {
+              "usage": {
+                "input_tokens": 2209,
+                "input_tokens_details": {
+                  "cached_tokens": 2181,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 3,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2212
+              },
+              "diagnostics": {
+                "type": "cache_hit"
+              }
+            },
+            "isolated": {
+              "usage": {
+                "input_tokens": 2209,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 2181
+                },
+                "output_tokens": 3,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2212
+              },
+              "diagnostics": {
+                "type": "cache_miss",
+                "reason": "prompt_cache_key_changed",
+                "comparison_reusable_tokens": 2181,
+                "cache_missed_tokens": 2181
+              }
+            },
+            "disabled": {
+              "usage": {
+                "input_tokens": 2209,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 3,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2212
+              },
+              "diagnostics": {
+                "type": "unavailable"
+              }
+            },
+            "target": {
+              "usage": {
+                "input_tokens": 2315,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 2291
+                },
+                "output_tokens": 7,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2322
+              },
+              "diagnostics": null
+            },
+            "target-hit": {
+              "usage": {
+                "input_tokens": 2315,
+                "input_tokens_details": {
+                  "cached_tokens": 2291,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 7,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 2322
+              },
+              "diagnostics": {
+                "type": "cache_hit"
+              }
+            },
+            "tool": {
+              "usage": {
+                "input_tokens": 379,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 50,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 429
+              },
+              "diagnostics": null
+            },
+            "follow": {
+              "usage": {
+                "input_tokens": 459,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 42,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 501
+              },
+              "diagnostics": null
+            },
+            "chat-write": {
+              "usage": {
+                "prompt_tokens": 2209,
+                "completion_tokens": 3,
+                "total_tokens": 2212,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0
+                }
+              }
+            },
+            "chat-hit": {
+              "usage": {
+                "prompt_tokens": 2209,
+                "completion_tokens": 3,
+                "total_tokens": 2212,
+                "prompt_tokens_details": {
+                  "cached_tokens": 2202
+                }
+              }
+            }
+          },
+          "checks": {
+            "external_requests": 10,
+            "prefill_only_requests": 1,
+            "actual_tool_executions": 1,
+            "successful_shared_layouts": [
+              "mtp",
+              "target"
+            ],
+            "explicit_breakpoints": 2,
+            "exact_cache_usage": true,
+            "exact_client_usage": true,
+            "key_isolation": true,
+            "explicit_no_marker_no_cache": true,
+            "original_background_replay": true,
+            "default_uniform_slots": true,
+            "performance_claim": false,
+            "cross_restart_cache_claim": false
+          },
+          "ttl_expiry_cpu_only": true,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "remaining_master_tasks_open": true,
+          "initial_launch_error": "Missing --inherit-lease; 0 model/Chat; original guard failure retained"
+        },
+        "release": {
+          "engine_binary_sha256": "bd45853b414205f0433d25aee8ff8d3c93b8a16c826336b7446734d101e5feb4",
+          "engine_release_sha256": "4040451cf59671c2dbcaee69519690ffb69fdd47e41ab087a4e6b435b87e8dbe",
+          "generation_sha256": "c065e57257394b3540483b156b33ba5eed8a09c3f8bfc08c49c2a1c526784fad",
+          "manifest_sha256": "485e774f6497eadd1f37512c4db8090b85e825bbe0b388d2d90a07d0f52cba0d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompt-cache-20261110/release-01/bundle",
+          "service_acceptance_sha256": "94213658ab685e462cf2dfafb00fbabba38e707b7f6021ca71ba9f6832a9d1b7",
+          "service_release_sha256": "277393bf61ebb0184543eb2b17f074eec498882546110f3a5d57aed0e591243a"
+        },
+        "publication_revision": 20,
+        "delivery_evidence": "evidence/serve-prompt-cache-delivery-20261110/README.md",
+        "media_cache_remaining_in_A10": true,
+        "full_task_complete": false
+      },
+      "reasoning_pro": {
+        "state": "implemented_validated_delivered",
+        "evidence": [
+          "docs/evidence/serve-reasoning-pro-cpu-20261110/README.md",
+          "docs/evidence/serve-reasoning-pro-driver-20261110/README.md",
+          "docs/evidence/serve-reasoning-pro-driver-fix-20261110/README.md",
+          "docs/evidence/serve-reasoning-pro-business-20261110/README.md",
+          "docs/evidence/serve-reasoning-pro-delivery-20261110/README.md"
+        ],
+        "implementation": "Native actual bounded deliberation then original final answer/tool/schema contract; independent effort and shared budget/usage/cancellation, compaction/summary/encryption/background combinations",
+        "remaining": [],
+        "full_A07_complete": false,
+        "release": {
+          "engine_binary_sha256": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3",
+          "engine_release_sha256": "b138e4d2af8b74e9f58bdafce2f696bd3fec7ab14c44785b5d0590984167577f",
+          "generation_sha256": "21ff038ff0315d9799e153781f56299303f3520d9eacba9f1e2395943101f60f",
+          "manifest_sha256": "0837b2a7e2556fbb62255512d9f93b71eae57855b7fde8e09fb7f6c4bc8f9e16",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reasoning-pro-20261110/release-01/bundle",
+          "service_acceptance_sha256": "f03ec154e3453a8a4974276e5d5c799bb560ce0d9fc96ff606c36d59600dbfd9",
+          "service_release_sha256": "7c43c7aa54c15575bd041955b3ca0b094194249de5ac2cf11ca9a1e331b5e643"
+        },
+        "publication_revision": 22,
+        "actual_business": {
+          "starts": 2,
+          "requests": 9,
+          "model_steps": 17,
+          "seconds": 129.20126201352105,
+          "nvml_queries": 124,
+          "all_nvml_ok": true
+        },
+        "preserved_initial_failures": [
+          "empty tools forced optional grammar",
+          "driver duplicate startup"
+        ]
+      },
+      "moderation": {
+        "state": "delivered",
+        "scope": "Responses embedded input/output moderation only; standalone API remains mandatory A10",
+        "cpu_checks": 29,
+        "schema_checks": 2,
+        "driver_checks": 6,
+        "business": {
+          "status": "PASS_RESPONSES_MODERATION_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_MODERATION",
+          "binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
+          "protocol_sha256": "483a42be4826921bc82ed658ef0cf1cbf816bcd8398d6a957bfc5c33e3ba41c7",
+          "counts": {
+            "starts": 1,
+            "chats": 10,
+            "controls": 161
+          },
+          "seconds": 129.58680572500452,
+          "actual_model_steps": 28,
+          "actual_tool_executions": 1,
+          "nvml_queries": 122,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "model_exit": 0,
+          "cpu_cases": 29,
+          "schema_cases": 2,
+          "driver_cases": 6,
+          "actual_json_sse": true,
+          "input_and_output_blocked_before_publication": true,
+          "background_private_until_approved": true,
+          "actual_compaction_pro_summary_combination": true,
+          "actual_encrypted_background": true,
+          "actual_tool_closure": true,
+          "score_failure_same_model_continuation": true,
+          "prewarm_only_input_review": true,
+          "actual_auxiliary_usage_and_client_tpm": true,
+          "full_model_quality": false,
+          "calibrated_moderation_quality": false,
+          "performance_acceptance": false,
+          "long_stability_accepted": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
+          "engine_release_sha256": "0d98d70fe6a43b6e55627de86659a32acc415bccf5430bfaa33d70566ef395dd",
+          "generation_sha256": "27c9de3e076368034d94f319219350aa0f0e5d79783cffa8944fdc2d0b19a3fb",
+          "manifest_sha256": "4f71ce5c76c4905554cf4722c0a76a53c7de0550ba87f96f3c57a665f831b32a",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/release-01/bundle",
+          "service_acceptance_sha256": "92fa6ee452c94ec1498ac26c7c1820a3a25c405782b00f0a008155b0cb91cea5",
+          "service_release_sha256": "081d960a0e29b975b30480f7823cc1e90e235def69444f76c8dbb88a3f75ad51"
+        },
+        "publication_revision": 24
+      },
+      "access_programs": {
+        "state": "delivered",
+        "native_authority": "q4t-local",
+        "cpu": 18,
+        "schema": 2,
+        "package": 4,
+        "driver": 4,
+        "planned": {
+          "starts": 1,
+          "generations": 8,
+          "negative_creates": 5,
+          "model_steps": 8,
+          "seconds": 900
+        },
+        "business": {
+          "status": "PASS_RESPONSES_ACCESS_PROGRAM_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_ACCESS_PROGRAM",
+          "binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+          "protocol_sha256": "c29b9b1b180a26eb3941a5c81bb33162fbc94087676e9a78dfc119f08b3e4a93",
+          "counts": {
+            "starts": 1,
+            "chats": 13,
+            "controls": 52
+          },
+          "seconds": 55.17177492612973,
+          "actual_generations": 8,
+          "negative_creates": 5,
+          "actual_model_steps": 8,
+          "actual_tool_executions": 1,
+          "nvml_queries": 53,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "model_exit": 0,
+          "cpu_cases": 18,
+          "schema_cases": 2,
+          "package_cases": 4,
+          "driver_cases": 4,
+          "actual_json_sse": true,
+          "model_and_client_authorization": true,
+          "local_policy_actual_context": true,
+          "background_original_replay": true,
+          "denied_requests_zero_model_steps_and_rpm_tpm": true,
+          "removed_runtime_policy_file_no_model_stop": true,
+          "same_pid_ordinary_chat": true,
+          "actual_client_and_global_token_accounting": true,
+          "cloud_authorization_claim": false,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "long_stability_accepted": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+          "engine_release_sha256": "11036e4c877c2cd82998ddb2ca5bf878eeae022b191a3ff1a5cb2705375996b7",
+          "generation_sha256": "9efded02cbe6152c51e00148fd502cb1953f9b527aae1b91a2bd0446f354e257",
+          "manifest_sha256": "b4c8675608718ea2c11ea4a493c0129df38f1d5f3d27264c1c3b11525236831e",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/release-01/bundle",
+          "service_acceptance_sha256": "c32dceb8f51903573e8ef2a42fe09ec5c06eb7eb54eb892311f1af7067c05183",
+          "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b"
+        },
+        "publication_revision": 26
+      },
+      "input_tokens": {
+        "state": "delivered",
+        "endpoint": "/v1/responses/input_tokens",
+        "engine_sha256": "70504790ad38e5f245ce55280f6e5578eef549fa723332601e32d7f397662954",
+        "package_sha256": "5a71516a7a2121d26f837039dc20f24c890af2c85227af3a330ab3a2a67b1c5c",
+        "publication_revision": 28,
+        "evidence": "evidence/serve-input-tokens-delivery-20261110/README.md",
+        "full_task_complete": false
+      },
+      "request_field_audit": {
+        "state": "delivered",
+        "plan": "SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md",
+        "sdk_vectors": 44,
+        "cpu_cpp_cases": 13,
+        "schema_cases": 2,
+        "driver_cases": 2,
+        "business_limits": {
+          "starts": 1,
+          "generations": 2,
+          "input_counts": 2,
+          "rejections": 10,
+          "seconds": 600
+        },
+        "cpu_evidence": "evidence/serve-request-fields-cpu-20261110/README.md",
+        "candidate": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+        "business_evidence": "evidence/serve-request-fields-business-20261110/README.md",
+        "business": {
+          "status": "PASS_RESPONSES_REQUEST_FIELDS_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_REQUEST_FIELDS",
+          "binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+          "protocol_sha256": "0e4dc01d838128fbb67c93b0247e3ff037b8f7b585f4af86093132fc2c7641d7",
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "starts": 1,
+          "generations": 2,
+          "input_counts": 2,
+          "invalid_requests": 10,
+          "model_steps": 2,
+          "seconds": 40.240780336316675,
+          "nvml_samples": 40,
+          "performance_acceptance": false,
+          "full_model_quality": false,
+          "long_stability_accepted": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+          "engine_release_sha256": "675ef10407a3b59ee4ffcf872d919a767acdd641907e3f4b67a5ebab8d6118bc",
+          "generation_sha256": "120215b4b3eb2d5365fb7984b8b5a65c4103a551ae1736f2a5ab381ae8f8ea1e",
+          "manifest_sha256": "b39ad17e425e71cef0798c7d1f130c0dc6cebbb2d0332678af52acc23c6a1d0d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-request-fields-20261110/release-01/bundle",
+          "service_acceptance_sha256": "fe24aecd28f6258da1bf8251bf50b4cd32d036c39a024761fd0164463c71b024",
+          "service_release_sha256": "9edaea12f6df8fbe533e14815e061030abcb1463c673e7aa2173d2f3e234d668"
+        },
+        "publication_revision": 30,
+        "delivery_evidence": "evidence/serve-request-fields-delivery-20261110/README.md"
+      },
+      "execution_audit": "serve-responses-execution-audit-v1.json",
+      "refusal_output": {
+        "state": "delivered",
+        "plan": "SERVE_REFUSAL_OUTPUT_2026-11-12.md",
+        "required": true,
+        "model_special_token_available": false,
+        "model_signal_adapter_required": true,
+        "moderation_must_remain_distinct": true,
+        "transport_only_not_complete": true,
+        "initial_business_cap": {
+          "starts": 1,
+          "requests": 6,
+          "seconds": 900
+        },
+        "business_budget_used": true,
+        "cpu_frozen_cases": 80,
+        "signal": "model_generated_q4t_refusal_frame_v1",
+        "model_and_transport_not_yet_accepted": false,
+        "cpu_native_cases": 80,
+        "cpu_adapter_cases": 19,
+        "evidence": "docs/evidence/serve-refusal-cpu-20261112/README.md",
+        "business_evidence": "docs/evidence/serve-refusal-business-20261112/README.md",
+        "delivery_pending": false,
+        "qualified_package": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md",
+        "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
+        "publication_revision": 80,
+        "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+      }
+    },
+    {
+      "id": "A08",
+      "required": true,
+      "state": "delivered",
+      "implementation": "Chat/Responses持久对象、store/metadata、previous_response_id、Conversations及background/cancel",
+      "acceptance": "客户端隔离、增删查/分页、重启恢复、过期治理；不重放已执行工具；后台状态与取消真实有效",
+      "depends_on": [
+        "A07",
+        "N04"
+      ],
+      "evidence": [
+        "evidence/serve-retention-cpu-20261110/README.md",
+        "evidence/serve-retention-followup-20261110/README.md",
+        "evidence/serve-retention-business-20261110/README.md",
+        "evidence/serve-retention-delivery-20261110/README.md"
+      ],
+      "release": {
+        "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
+        "engine_release_sha256": "d6d9c001fd93d40ab3ea78816c6d9fad6408f84a39cc4f38505df31f47d72178",
+        "generation_sha256": "90cc3dde4dd77deada6800dfe6f9bad1b7008c00e844e2c025a276adde867100",
+        "manifest_sha256": "e8e754701d48fb1e4eee22f955b944eb07b62dac11ea25e6732469b32603bee0",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-retention-20261110/release-01/bundle",
+        "service_acceptance_sha256": "0d0b14d862188c3e48ae31cd67bb16524e356513c80ef4932d585e7842a74b4f",
+        "service_release_sha256": "795087e00c9a423113286cb94af557866bd415e3c1d6ff2646299b8146daf390",
+        "state": "STOPPED",
+        "publication_revision": 32,
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "development_status": "Chat/Responses persistent objects, scoped CRUD/history/conversations, background/cancel/recovery and dependency-aware retention with native exact-plan collect implemented, targeted-validated and delivered.",
+      "development_evidence": "evidence/serve-object-store-20261108/README.md",
+      "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
+      "state_evidence": "evidence/serve-responses-state-20261109/README.md",
+      "conversation_evidence": "evidence/serve-conversations-20261109/README.md",
+      "service_binding_evidence": "evidence/serve-conversation-service-20261109/README.md",
+      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
+      "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
+      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md",
+      "background_core_evidence": "evidence/serve-responses-background-core-20261109/README.md",
+      "background_jobs_evidence": "evidence/serve-responses-background-jobs-20261109/README.md",
+      "background_http_evidence": "evidence/serve-responses-background-http-20261109/README.md",
+      "background_recovery_evidence": "evidence/serve-responses-recovery-20261109/README.md",
+      "declaration_evidence": "evidence/serve-responses-declarations-20261109/README.md",
+      "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
+      "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
+      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
+      "delivery_evidence": "evidence/serve-retention-delivery-20261110/README.md",
+      "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
+      "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
+      "remaining_required": [],
+      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
+      "next": "Continue A09 and all remaining master tasks; A08 completion is not the master endpoint.",
+      "retention_cpu": {
+        "cpp": 28,
+        "driver_distinct": 4
+      },
+      "retention_business": {
+        "starts": 3,
+        "generations": 4,
+        "seconds": 118.33398287231103
+      }
+    },
+    {
+      "id": "A09",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "Files/Uploads及Batch原生任务入口",
+      "acceptance": "文件类型/限额/归属、分块完成/取消、批任务逐项结果、取消与重启后续跑；不能仅提供离线脚本冒充API",
+      "depends_on": [
+        "A08",
+        "N05"
+      ],
+      "evidence": [
+        "evidence/serve-files-business-20261110/README.md",
+        "evidence/serve-files-delivery-20261110/README.md",
+        "evidence/serve-uploads-business-20261110/README.md",
+        "evidence/serve-uploads-delivery-20261110/README.md",
+        "evidence/serve-batch-business-20261111/README.md",
+        "evidence/serve-batch-delivery-20261111/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+      "remaining_required": [
+        "A09.7 all eight endpoint backends with A10",
+        "A09.8 ongoing SDK/native release and rollback for remaining APIs"
+      ],
+      "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
+      "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
+      "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
+      "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
+      "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
+      "files_transport_component_evidence": "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+      "files_release": {
+        "engine_binary_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+        "engine_release_sha256": "42e42e6c469bd1e65fc7002b12be832145c126a231209a9a1da7800382fb3857",
+        "generation_sha256": "44a274130a9b68438a9b0911a2be9bc0202e6a899a6f37e3d23e99b1a0b8626b",
+        "manifest_sha256": "cde078faafcf71f89442d9ecad18a0f0cf43f8d560799e51fc058ad8b27f7797",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/release-01/bundle",
+        "service_acceptance_sha256": "bbcd1440be363675e9b31071e9e625f58c9e84388843119611923e5ea4fb8fb0",
+        "service_release_sha256": "6f70e1889444583b386a4bf1218f2d857693bcf50530cc4931484cd793e964ca",
+        "publication_revision": 34,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "accepted_subtasks": [
+        "A09.1 incremental multipart and Files contracts",
+        "A09.2 isolated binary persistence",
+        "A09.3 Files and bounded native transport",
+        "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release",
+        "A09.5 native file consumption, immutable history/originals, real PDF/table business and compatible rollback release",
+        "A09.6 native text Batch execution/recovery/actual usage/cancel, compatible rollback and default delivery",
+        "A09.7 component: native standalone Moderations/Batch text and image classification, targeted cancellation/quota, feature-capable fallback and default delivery"
+      ],
+      "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
+      "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
+      "uploads_business_evidence": "evidence/serve-uploads-business-20261110/README.md",
+      "uploads_release": {
+        "engine_binary_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+        "engine_release_sha256": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+        "generation_sha256": "afefdd7d47a38696b09fecb8451ed1ec55e724b357922fa23a9ace7150ff43da",
+        "manifest_sha256": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/release-01/bundle",
+        "service_acceptance_sha256": "8ba40cd5d038c2f13903ad4d06b958436db389534d945262adda8100c36fc2cb",
+        "service_release_sha256": "1aa4e6e35db8cf49cbb3d4b54b1d43b620bcb0f1b709b078bd5d52bfc4dd44c5",
+        "publication_revision": 36,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "file_input_plan": "SERVE_FILE_INPUTS_2026-11-10.md",
+      "file_input_component_evidence": {
+        "sources": "evidence/serve-file-source-cpu-20261110/README.md",
+        "native_fetch": "evidence/serve-file-fetch-cpu-20261110/README.md",
+        "native_plain_documents": "evidence/serve-file-text-cpu-20261110/README.md",
+        "native_document_worker": "evidence/serve-file-parser-worker-cpu-20261110/README.md",
+        "pdf": "evidence/serve-file-pdf-cpu-20261110/README.md",
+        "package_xml": "evidence/serve-file-package-cpu-20261110/README.md",
+        "office_rtf": "evidence/serve-file-office-cpu-20261110/README.md",
+        "codec_io_budget": "evidence/serve-file-codec-budget-cpu-20261110/README.md",
+        "legacy": "evidence/serve-file-legacy-cpu-20261110/README.md",
+        "source_format_adapters": "evidence/serve-file-adapters-cpu-20261110/README.md",
+        "nested_documents": "evidence/serve-file-nested-cpu-20261110/README.md",
+        "immutable_snapshot": "evidence/serve-input-snapshot-cpu-20261110/README.md",
+        "document_snapshot": "evidence/serve-file-snapshot-cpu-20261110/README.md",
+        "state_bindings": "evidence/serve-input-binding-cpu-20261110/README.md",
+        "shared_expansion": "evidence/serve-file-expansion-cpu-20261110/README.md",
+        "image_sources": "evidence/serve-file-image-cpu-20261110/README.md",
+        "native_image_detail": "evidence/serve-image-detail-cpu-20261110/README.md",
+        "static_gif": "evidence/serve-static-gif-cpu-20261110/README.md",
+        "static_webp": "evidence/serve-webp-cpu-20261110/README.md",
+        "responses_preparation_lifecycle": "evidence/serve-responses-files-cpu-20261110/README.md",
+        "native_model_preparation": "evidence/serve-model-preparation-cpu-20261110/README.md",
+        "native_model_preparation_business": "evidence/serve-model-preparation-business-20261110/README.md",
+        "chat_preflight_storage": "evidence/serve-chat-files-cpu-20261110/README.md",
+        "file_input_counting": "evidence/serve-count-files-cpu-20261110/README.md",
+        "deployment_policy_and_retained_budget": "evidence/serve-file-policy-cpu-20261110/README.md",
+        "private_application_payload": "evidence/serve-application-payload-cpu-20261110/README.md",
+        "automatic_application_storage": "evidence/serve-object-application-cpu-20261110/README.md",
+        "atomic_snapshot_publication": "evidence/serve-snapshot-publication-cpu-20261110/README.md",
+        "application_input_capacity": "evidence/serve-application-capacity-cpu-20261110/README.md",
+        "integrated_file_business_and_format_rollback": "evidence/serve-file-integration-business-20261110/README.md",
+        "release": "evidence/serve-file-inputs-delivery-20261110/README.md"
+      },
+      "file_input_release": {
+        "engine_binary_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+        "engine_release_sha256": "229e023d8b4eb6887d2a6d09a8a748b11c122ff117fe230c1107e7e9f001b431",
+        "generation_sha256": "915ffc62999ff0dbbd9eb9d6e16334760120b466894f4c720ff9ffb796d87c87",
+        "manifest_sha256": "0dc8948d8847ea11776313477b67da0d93687b3608568c38bd888be0834700ea",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle",
+        "service_acceptance_sha256": "f7ea2f5b06fca1fff1f7d137d99f3eda5ddb46667e2517c2347febb01f31aa12",
+        "service_release_sha256": "b24bad47595d0a1ee8d0f1382994448a8c8cd980953b24a1feb7706c776fcb08",
+        "publication_revision": 40,
+        "state": "STOPPED",
+        "main_merged": false,
+        "compatible_rollback": {
+          "engine_binary_sha256": "2657eb168192aa6c9cf3e1dd77c52d1f9dea053d237777dc4b56e18d30134a96",
+          "engine_release_sha256": "1a0cbd0382ce133f12a7e3304e1ed505e9e7620a49bdf7fd7670f3d09df9fc5f",
+          "generation_sha256": "56c914c74b2203678314b873f0a14cc5dcb6eaa7af5379acd45bfef868d4c856",
+          "manifest_sha256": "32af8803269b121539aaa2d32f692299d9e10420e8ed8d47cb35a9916759f34c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/rollback-reader/bundle",
+          "service_acceptance_sha256": "18b6287c4f7f85d665d76b3956d40483353a4cc06261c394a550aeb3ae9d569c",
+          "service_release_sha256": "1eff86d147c4de2ba5514e224b56640add93a6c3e8edc593e9cedaa9689e7829"
+        }
+      },
+      "batch_input_component_evidence": "evidence/serve-batch-input-cpu-20261110/README.md",
+      "batch_component_evidence": [
+        "evidence/serve-batch-input-cpu-20261110/README.md",
+        "evidence/serve-batch-state-cpu-20261110/README.md",
+        "evidence/serve-batch-results-cpu-20261110/README.md",
+        "evidence/serve-batch-finite-response-cpu-20261110/README.md",
+        "evidence/serve-batch-recovery-scan-cpu-20261110/README.md",
+        "evidence/serve-batch-preparation-cpu-20261110/README.md",
+        "evidence/serve-batch-native-execution-cpu-20261110/README.md",
+        "evidence/serve-batch-validation-rows-cpu-20261110/README.md",
+        "evidence/serve-batch-validation-driver-cpu-20261110/README.md",
+        "evidence/serve-batch-jobs-cpu-20261110/README.md",
+        "evidence/serve-batch-rate-origin-cpu-20261110/README.md",
+        "evidence/serve-batch-capacity-cpu-20261110/README.md",
+        "evidence/serve-batch-input-meter-cpu-20261110/README.md",
+        "evidence/serve-batch-queue-quota-cpu-20261110/README.md",
+        "evidence/serve-batch-recount-cpu-20261111/README.md",
+        "evidence/serve-batch-precharge-cpu-20261111/README.md"
+      ],
+      "batch_delivery_pending": false,
+      "batch_rate_bridge_status": "24 distinct targeted CPU checks accepted; production sources unchanged across fixture repairs. Native execution/background handoff implemented; minute-wait scheduler/native planning/recovered background admission and real public business/release remain required.",
+      "batch_rate_bridge_component_evidence": "evidence/serve-batch-rate-bridge-cpu-20261111/README.md",
+      "batch_minute_wait_status": "34 targeted CPU checks accepted after 2 fixture repairs, production unchanged across CPU rounds. Native initial/execution budgets and fair minute quota gate before original row ticket implemented. Recovery background admission/public actual business/CLI/rollback/default remain required.",
+      "batch_minute_wait_component_evidence": "evidence/serve-batch-minute-wait-cpu-20261111/README.md",
+      "batch_background_rate_status": "26/26 targeted CPU first-round accepted; original queued owner/deadline/cancel, native current-policy budget, fair minute wait/data reacquisition, actual child exit and lost Start receipt validated. Public actual business/delivery remain pending.",
+      "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
+      "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
+      "batch_pre_delivery_remaining": [],
+      "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md",
+      "batch_usage_status": "26 targeted CPU plus2actual SDK chains accepted;2additional numeric boundary checks pass after reviewed >INT64 zero-conversion fix. Atomic real result usage and original-result legacy recount/dead-owner recovery, Batch-only unbounded reasoning observation. Background terminal and available failed/cancelled usage now have separate targeted CPU acceptance; actual model business/release still required.",
+      "batch_usage_component_evidence": "evidence/serve-batch-usage-cpu-20261111/README.md",
+      "batch_background_followthrough_plan": "SERVE_BATCH_CONTINUATION_2026-11-11.md",
+      "batch_background_followthrough_status": "26 distinct targeted CPU accepted: trusted parent/ResponseID with original Start transaction, actual terminal plus cleanup/data/rate drain, fair waiting, actual child death and lost Start/Begin/Finish receipts, cancel/expiry/next-generation revocation, actual TTL pin/unpin and finite absent-observer submission failure. No GPU/default change. Actual failed/cancelled usage has separate 26-check CPU acceptance; business/rollback/delivery remain required.",
+      "batch_background_followthrough_component_evidence": "evidence/serve-batch-continuation-cpu-20261111/README.md",
+      "batch_actual_usage_status": "26 distinct targeted CPU accepted (9 new/4 extended/13 direct); first25pass/1fixturefailure, only failed case retested after respecting context refund. Native committed-input/output capture, internal preparation merge, failed/cancelled Responses JSON/SSE/reserved terminal and private atomic Batch row/restart recount validated. No GPU/default change; model business still required.",
+      "batch_actual_usage_component_evidence": "evidence/serve-actual-usage-cpu-20261111/README.md",
+      "batch_finalization_plan": "SERVE_BATCH_FINALIZATION_2026-11-11.md",
+      "batch_finalization_status": "22 distinct targeted CPU accepted: first17pass/3fail,6affected followups pass after retained-result read guard fix. Deterministic capacity finite failed terminal/whole-row partial Files, original usage and finite retention, actual lost receipts/dead process and queue release validated. No GPU/default change; actual business and compatible failure-reader rollback/delivery remain required.",
+      "batch_finalization_component_evidence": "evidence/serve-batch-finalization-cpu-20261111/README.md",
+      "application_owner_recovery_plan": "SERVE_APPLICATION_OWNER_RECOVERY_2026-11-11.md",
+      "application_owner_recovery_status": "16 targeted C++ and2config checks accepted. Actual partial worker construction cleanup and retry, stable single publication, stop race, existing scanner recovery with original queued/started semantics and independent diagnostics. Historical config-v1 capacity schema fixed to observed16/48 and96/192MiB pairs; failures retained. No GPU/default change; actual business/compatible delivery remain required.",
+      "application_owner_recovery_component_evidence": "evidence/serve-application-owner-cpu-20261111/README.md",
+      "batch_business_plan": "SERVE_BATCH_BUSINESS_2026-11-11.md",
+      "batch_business_preparation_evidence": "evidence/serve-batch-business-preparation-20261111/README.md",
+      "batch_business_status": "Actual2starts/8generations/8modelsteps first-round accepted in99.300s under strict lease; native tool SSE, failed/cancelled actual usage, original cross-version receipts and both unexpired minute windows preserved. Compatible package/default delivery still required.",
+      "batch_business_evidence": "evidence/serve-batch-business-20261111/README.md",
+      "batch_delivery_evidence": "evidence/serve-batch-delivery-20261111/README.md",
+      "batch_release": {
+        "engine_binary_sha256": "f23be45c796136db6be1eecc8dbc7585529552af68567f3b9e8c7748d6762c18",
+        "engine_release_sha256": "226c812bb798bae6d10e370b24aee65540746de733ec652d9ac30731512d95ea",
+        "generation_sha256": "223a915cd8f013d9aa68c60848338dafa1ea3a6175ea1a1dc8266f2847a7d1e5",
+        "manifest_sha256": "25061a30fdc43be7b8b1ae900f9fc2fd2b7df92bec8b006559d22268594d0ea4",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/candidate/bundle",
+        "service_acceptance_sha256": "200babf00df0bdbf8b2182772a481f38b2ef4e68f100bbee8eb79592e6b2d7e4",
+        "service_release_sha256": "39965135e4b1049334d0f8012b0e6fa15a821db015b5684af0067f49533ecfb9",
+        "publication_revision": 44,
+        "state": "STOPPED",
+        "compatible_rollback": {
+          "engine_binary_sha256": "312678bc44c85603f540723c771630462afd6cc7676d4a1612ffad94417b2c55",
+          "engine_release_sha256": "2f6810f199c3ed09a9fdf25a39a5319861020e659ab7f448c14acdea5a88da20",
+          "generation_sha256": "773b6eb1b6b0345fa812876465c1686d7a9eb7443d23bbf3748d21be4b6f5eff",
+          "manifest_sha256": "0146e62cc16a4cb6fca5b9d42e05438bc1eae0d3dba8c5c1066b41fd20c09766",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle",
+          "service_acceptance_sha256": "36d101f8b4c9e45496189840c1e80dff577af92e8758c928a5b840063d992184",
+          "service_release_sha256": "e2c19d223091490dd169eb9b5c64d18ceba319dfa02b2d647a2c8440a0f742fd"
+        },
+        "main_merged": false
+      },
+      "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
+      "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
+      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md",
+      "moderations_release": {
+        "engine_binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+        "engine_release_sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd",
+        "generation_sha256": "9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd",
+        "manifest_sha256": "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "83d816a1b18e534531d7afcb07484a7cb3804a7b5b89657b86555e9302f93d6e",
+        "service_release_sha256": "374f690ef8ba4e43c7bad97d63d73e0a3fbbafaf42f8f32b55cdceb35e9be213",
+        "publication_revision": 48,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
+      "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
+      "embeddings_state": "interface_delivered_retrieval_representation_implementation_open",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md",
+      "embeddings_release": {
+        "engine_binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+        "engine_release_sha256": "0f19aeba0b2b6810d1274ab1f9f06711ef10eda6ad6dc055ccdcf3a74580e454",
+        "generation_sha256": "950db8d57b0244d8734ebb2aa90d39893db4bcef9dd58610a5f5ade5c28161bf",
+        "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "6d0b19dd55a66f797e725360ad773a5451e37758bd75f3292d4479b1aebe72e5",
+        "service_release_sha256": "4986a7dca067856232022b87f434abedcac7202441d35e506f8bd586c190e60a",
+        "publication_revision": 50,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md"
+    },
+    {
+      "id": "A10",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "标准多模态与模型能力接入；文本/图像现有后端补组合，embedding/audio/realtime等登记所需后端及实现",
+      "acceptance": "每个接口区分前端实现与实际模型支持，提供真实任务证据；缺后端继续记未解决，不能用空向量/假转录/固定拒绝结案",
+      "depends_on": [
+        "A01",
+        "A07"
+      ],
+      "evidence": [
+        "evidence/serve-native-embedding-foundation-20261111/README.md",
+        "evidence/serve-native-embedding-core-cpu-20261111/README.md",
+        "evidence/serve-native-embedding-numerical-20261111/README.md"
+      ],
+      "release": null,
+      "findings": [
+        {
+          "source": "src/server/server_options.cpp / session_state.cpp",
+          "issue": "Media state caching still needs actual image/video identity and multimodal RoPE state/resume; target-only text snapshots do not implement this. Keep as required multimodal combination work, never close by rejection or documentation.",
+          "state": "open"
+        },
+        {
+          "source": "src/server/responses_plan.cpp / responses_execution.cpp",
+          "issue": "prompt_cache_key and prompt_cache_retention are retained in envelope but not connected to native cache execution; actual key/retention/usage wiring remains required, not completed by request acceptance.",
+          "state": "text_path_resolved_media_path_open",
+          "resolution": "A07.6 delivered actual text key/retention/state/usage. A10 still requires actual media fingerprint and state resume; no media completion claim.",
+          "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
+        },
+        {
+          "source": "evidence/serve-embeddings-business-20261111/retrieval-observation.json",
+          "issue": "Actual generation-model LAST vectors obtained0/2 top1 on two project-record queries. Native vector protocol/numerical/Batch business passes, but useful retrieval representation remains unimplemented. Implement a suitable native embedding backend or validated retrieval representation; do not close with quality disclaimers.",
+          "state": "resolved_by_delivered_native_dedicated_backend",
+          "acceptance": "Real project/query/document retrieval cases with relevant ranking, suitable trained representation or substantiated native method; CPU or protocol success is insufficient.",
+          "resolution": "Original generic observation0/2 retained. Fixed native Qwen3-Embedding0.6B implemented/delivered with actual original two plus three additional project queries5/5, same-PID asset recovery and Batch/restart.",
+          "evidence": "evidence/serve-native-embedding-delivery-20261111/README.md"
+        }
+      ],
+      "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
+      "next": "Native dedicated retrieval delivered. Continue remaining media/backend/tool/recovery and master tasks.",
+      "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
+      "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
+      "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
+      "moderations_write_evidence": "evidence/serve-moderations-write-business-20261111/README.md",
+      "moderations_release": {
+        "engine_binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+        "engine_release_sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd",
+        "generation_sha256": "9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd",
+        "manifest_sha256": "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "83d816a1b18e534531d7afcb07484a7cb3804a7b5b89657b86555e9302f93d6e",
+        "service_release_sha256": "374f690ef8ba4e43c7bad97d63d73e0a3fbbafaf42f8f32b55cdceb35e9be213",
+        "publication_revision": 48,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "moderations_delivery_evidence": "evidence/serve-moderations-delivery-20261111/README.md",
+      "embeddings_plan": "SERVE_EMBEDDINGS_2026-11-11.md",
+      "embeddings_state": "interface_delivered_retrieval_representation_implementation_open",
+      "embeddings_cpu": "evidence/serve-embeddings-cpu-20261111/README.md",
+      "embeddings_business": "evidence/serve-embeddings-business-20261111/README.md",
+      "embeddings_release": {
+        "engine_binary_sha256": "3cd4361cc5afefbfd3907a9dd645b464620ee38462cd2ed18efef794b338803e",
+        "engine_release_sha256": "0f19aeba0b2b6810d1274ab1f9f06711ef10eda6ad6dc055ccdcf3a74580e454",
+        "generation_sha256": "950db8d57b0244d8734ebb2aa90d39893db4bcef9dd58610a5f5ade5c28161bf",
+        "manifest_sha256": "441be95849e6113a03330e68411026d6e6d44dbf49738a395cb3742b28bfe1c3",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-embeddings-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "6d0b19dd55a66f797e725360ad773a5451e37758bd75f3292d4479b1aebe72e5",
+        "service_release_sha256": "4986a7dca067856232022b87f434abedcac7202441d35e506f8bd586c190e60a",
+        "publication_revision": 50,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
+      "native_embedding_plan": "SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md",
+      "native_embedding_state": "delivered_native_retrieval_asset_isolation_batch_and_restart_accepted",
+      "native_embedding_serve_cpu": "evidence/serve-native-embedding-serve-cpu-20261111/README.md",
+      "native_embedding_rounding_review": "evidence/serve-native-embedding-rounding-review-20261111/README.md",
+      "native_embedding_business": "evidence/serve-native-embedding-business-20261111/README.md",
+      "native_embedding_delivery": "evidence/serve-native-embedding-delivery-20261111/README.md",
+      "native_embedding_release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "generation_sha256": "ce8b882927d6d9c9f1e68b2149721fee9bb16fbbdfcb7103220a29ac1f1332db",
+        "manifest_sha256": "9e55e265502feba574ae13e314c06aac3e18dc251edf2e4f267866779eed3be9",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/release-01/candidate/bundle",
+        "service_acceptance_sha256": "fe6a69ecdfb2443f13b7b2b175946dd6f1a07fac5617fd2d8375a513dc9f5bcc",
+        "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
+      }
+    },
+    {
+      "id": "A11",
+      "required": true,
+      "state": "implementation_in_progress",
+      "implementation": "Responses内建工具/MCP及资料检索等工具执行适配",
+      "acceptance": "自有资料查询优先，权限/超时/取消/输出上限/事件完整；外部服务可选，执行边界明确；禁止假造工具结果",
+      "depends_on": [
+        "A07",
+        "A08",
+        "A09"
+      ],
+      "evidence": [
+        "evidence/serve-vector-search-foundation-20261112/README.md",
+        "evidence/serve-vector-index-cpu-20261112/README.md",
+        "evidence/serve-vector-stores-cpu-20261112/README.md",
+        "evidence/serve-vector-ingestion-cpu-20261112/README.md",
+        "evidence/serve-vector-quota-cpu-20261112/README.md",
+        "evidence/serve-vector-jobs-cpu-20261112/README.md",
+        "evidence/serve-vector-batches-cpu-20261112/README.md",
+        "evidence/serve-vector-api-cpu-20261112/README.md",
+        "evidence/serve-vector-query-cpu-20261112/README.md",
+        "evidence/serve-vector-search-api-cpu-20261112/README.md",
+        "evidence/serve-file-search-contract-cpu-20261112/README.md",
+        "evidence/serve-vector-multi-store-cpu-20261112/README.md",
+        "evidence/serve-responses-file-search-cpu-20261112/README.md",
+        "evidence/serve-file-search-combinations-cpu-20261112/README.md",
+        "evidence/serve-file-search-business-20261112/README.md",
+        "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
+        "evidence/serve-file-search-profiles-20261112/README.md",
+        "evidence/serve-retrieval-managed-business-20261112/README.md",
+        "evidence/serve-retrieval-delivery-20261112/README.md"
+      ],
+      "release": null,
+      "security_requirements": [
+        "Untrusted code execution must isolate the service OS UID, private object/key directory and same-UID state-key admin socket; do not run arbitrary client code under the serving UID without isolation."
+      ],
+      "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
+      "native_file_search": {
+        "state": "delivered",
+        "foundation_cpu_cases": 16,
+        "persistent_index": true,
+        "production_routes": true,
+        "responses_executor": true,
+        "default_changed": true,
+        "whole_task_complete": false,
+        "foundation_evidence": "evidence/serve-vector-search-foundation-20261112/README.md",
+        "index_snapshot": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-index-cpu-20261112/README.md",
+          "cases": 11,
+          "actual_tokenizer": true,
+          "actual_storage_worker": true,
+          "gpu_starts": 0,
+          "file_ingestion_adapter": true,
+          "durable_store_parent": true,
+          "production_routes": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md",
+          "default_changed": true
+        },
+        "durable_store": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-stores-cpu-20261112/README.md",
+          "cpu_cases": 19,
+          "actual_worker": true,
+          "actual_files": true,
+          "actual_lost_commit_receipt": true,
+          "private_recovery_scan": true,
+          "recovery_controller": true,
+          "ingestion_adapter": true,
+          "http": true,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "ingestion": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-ingestion-cpu-20261112/README.md",
+          "cpu_cases": 11,
+          "real_files": true,
+          "real_document_worker": true,
+          "actual_tokenizer": true,
+          "gpu_embedding": true,
+          "native_quota_owner": true,
+          "production_controller": true,
+          "production_http": true,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "quota_bridge": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-quota-cpu-20261112/README.md",
+          "cpu_cases": 14,
+          "real_admission": true,
+          "gpu_starts": 0,
+          "production_callback": true,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "controller": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-jobs-cpu-20261112/README.md",
+          "cpu_cases": 18,
+          "native_engine_built": true,
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "file_batches": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-vector-batches-cpu-20261112/README.md",
+          "cpu_cases": 17,
+          "durable_cancellation": true,
+          "detached_execution_cleanup": true,
+          "batch_request_limit": 2000,
+          "http": true,
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "search_route": true,
+        "management_api": {
+          "state": "integrated_validated_delivered",
+          "operations": 15,
+          "cpp_cases": 12,
+          "sdk_protocol_cases": 3,
+          "evidence": "evidence/serve-vector-api-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "query_execution": {
+          "state": "integrated_validated_delivered",
+          "cases": 18,
+          "evidence": "evidence/serve-vector-query-cpu-20261112/README.md",
+          "scope_snapshot": true,
+          "exact_query_budget": true,
+          "native_engine_built": true,
+          "gpu_starts": 0,
+          "http": true,
+          "actual_model_business": true,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "search_api": {
+          "state": "integrated_validated_delivered",
+          "cpp_cases": 11,
+          "sdk_schema_cases": 3,
+          "evidence": "evidence/serve-vector-search-api-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "responses_contract": {
+          "state": "integrated_validated_delivered",
+          "cpu_cases": 13,
+          "evidence": "evidence/serve-file-search-contract-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "multi_store_execution": {
+          "state": "integrated_validated_delivered",
+          "cpu_cases": 16,
+          "evidence": "evidence/serve-vector-multi-store-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "responses_execution": {
+          "state": "integrated_validated_delivered",
+          "cpu_cases": 34,
+          "sdk_schema_cases": 3,
+          "evidence": "evidence/serve-responses-file-search-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "combinations": {
+          "state": "integrated_validated_delivered",
+          "cpu_cases": 18,
+          "evidence": "evidence/serve-file-search-combinations-cpu-20261112/README.md",
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "actual_model_business": true,
+        "business": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-file-search-business-20261112/README.md",
+          "model_starts": 1,
+          "model_http_requests": 6,
+          "driver_seconds": 85.15848748898134,
+          "original_failure_preserved": true,
+          "repeated_model_requests": 0,
+          "engine_sha256": "f9ed346bd597e2237e1d6e9ab716674c2b3de6f3257e5d23ac68de61a2cb44c2",
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "discovery_upgrade": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
+          "cpu_cases": 8,
+          "gpu_starts": 0,
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "profiles": {
+          "state": "integrated_validated_delivered",
+          "evidence": "evidence/serve-file-search-profiles-20261112/README.md",
+          "model_starts": 2,
+          "model_http_requests": 8,
+          "driver_seconds": 90.3791492562741,
+          "engine_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "candidate_manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+        },
+        "managed_acceptance": {
+          "state": "accepted_delivered",
+          "retained_manifest": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "primary_manifest": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "tls_manifest": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
+          "sdk_driver_cpu_cases": 2,
+          "sdk_driver_evidence": "evidence/serve-sdk-wire-capture-cpu-20261112/README.md",
+          "tls_supplement_budget": {
+            "starts": 1,
+            "requests_including_selfcheck": 2,
+            "probes": 0,
+            "seconds": 300
+          },
+          "default_changed": true,
+          "evidence": "evidence/serve-retrieval-managed-business-20261112/README.md",
+          "model_starts_including_failure": 5,
+          "model_http_including_selfchecks": 10,
+          "probes": 1,
+          "driver_seconds": 314.13303343299776,
+          "original_failure_preserved": true
+        },
+        "release": {
+          "publication_revision": 92,
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+        },
+        "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+      }
+    },
+    {
+      "id": "A12",
+      "required": true,
+      "state": "planned",
+      "implementation": "官方Python/JS SDK、现有客户端与持久任务迁移",
+      "acceptance": "对新能力做真实调用及错误/流式短验；升级合同与回退路径明确，逐项解除需固定旧包的限制",
+      "depends_on": [
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "N01",
+        "N03"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N01",
+      "required": true,
+      "state": "delivered",
+      "implementation": "原生IPv4/IPv6监听、受控LAN、HTTPS终止、独立API Key/CIDR",
+      "acceptance": "不安装/不启动nginx也能从客户端用TLS完整调用；绑定、证书名及来源限制真实生效",
+      "depends_on": [],
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
+    },
+    {
+      "id": "N02",
+      "required": true,
+      "state": "delivered",
+      "implementation": "证书/私钥/CA管理、可选mTLS、原生证书更新",
+      "acceptance": "合法换证保持服务；坏证书保留上一有效配置并报告；到期/撤销策略明确；不要求模型重启",
+      "depends_on": [
+        "N01"
+      ],
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
+    },
+    {
+      "id": "N03",
+      "required": true,
+      "state": "delivered",
+      "implementation": "原生CORS/OPTIONS与浏览器JSON/SSE",
+      "acceptance": "允许/拒绝来源、凭据、预检和错误响应一致；浏览器可用，未配置默认关闭不等于未实现",
+      "depends_on": [
+        "N01"
+      ],
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
+    },
+    {
+      "id": "N04",
+      "required": true,
+      "state": "delivered",
+      "implementation": "原生密钥轮换/撤销、策略更新、客户端配额与隔离",
+      "acceptance": "新旧Key切换、取消/缓存/会话身份不串用，重启不绕过配额；不依赖外部网关私有头建立用户身份",
+      "depends_on": [
+        "A01"
+      ],
+      "evidence": [
+        "evidence/serve-access-primitive-20261109/decision.json",
+        "evidence/serve-access-store-20261109/decision.json",
+        "evidence/serve-access-native-20261109/decision.json",
+        "evidence/serve-access-io-20261109/decision.json",
+        "evidence/serve-access-managed-20261109/decision.json",
+        "evidence/serve-client-policy-20261109/decision.json",
+        "evidence/serve-limits-store-20261109/decision.json",
+        "evidence/serve-policy-admin-20261109/decision.json",
+        "evidence/serve-policy-runtime-20261109/decision.json",
+        "evidence/serve-policy-coordination-20261109/decision.json",
+        "evidence/serve-usage-primitive-20261109/README.md",
+        "evidence/serve-usage-store-20261109/decision.json",
+        "evidence/serve-usage-runtime-20261109/decision.json",
+        "evidence/serve-usage-management-20261109/decision.json",
+        "evidence/serve-deployment-20261109/decision.json",
+        "evidence/serve-initialization-20261109/decision.json",
+        "evidence/serve-access-driver-20261109/decision.json",
+        "evidence/serve-access-config-fix-20261109/decision.json",
+        "evidence/serve-access-checkpoint-20261109/decision.json",
+        "evidence/serve-access-business-20261109/decision.json",
+        "evidence/serve-access-delivery-20261109/decision.json"
+      ],
+      "release": {
+        "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+        "release_sha256": "816114b3e0cd590ae81d6d66dbf21a4c1d50c321fec13ed085dfdb0be0579b55",
+        "engine_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+        "engine_release_sha256": "4c5d11a117fa9b20dc7321878a7833330f6dc492a39109df8cc41fe8c88fe1dd",
+        "rollback_sha256": "ed673b326bb9e40c81b93478fd6c7d0b06a80af94d9381f1e403087fa07975ff",
+        "state": "STOPPED",
+        "merged_main": false
+      },
+      "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
+      "remaining": [],
+      "development_status": "已完成实际TLS/SDK/工具/辅助失能/密钥与配额/交接及兼容回退，20条接受CLI和停止状态交付检查通过。继续全部总计划。"
+    },
+    {
+      "id": "N05",
+      "required": true,
+      "state": "delivered_pending_mainline",
+      "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
+      "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
+      "depends_on": [
+        "A01",
+        "N01"
+      ],
+      "evidence": [
+        "evidence/serve-http-framing-20261109/decision.json",
+        "evidence/serve-http-session-20261109/decision.json",
+        "evidence/serve-http-proxy-20261109/decision.json",
+        "evidence/serve-http-package-20261109/decision.json",
+        "evidence/serve-http-driver-20261109/decision.json",
+        "evidence/serve-http-prefix-fix-20261109/decision.json",
+        "evidence/serve-http-business-20261109/decision.json",
+        "evidence/serve-http-delivery-20261109/decision.json",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
+      ],
+      "release": {
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a",
+        "engine_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "rollback_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": false
+      },
+      "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
+      "remaining": [
+        "Complete actual PR23 mainline integration after remaining public host failures are repaired"
+      ],
+      "development_status": "Native transport and current optional frontend route parity delivered in rev94; mainline pending.",
+      "optional_route_parity": {
+        "state": "implemented_verified_delivered",
+        "added_operations": 29,
+        "total_public_api_operations": 66,
+        "evidence": "evidence/serve-optional-route-parity-20261112/README.md",
+        "default_changed": true,
+        "delivery_revision": 94
+      }
+    },
+    {
+      "id": "N06",
+      "required": true,
+      "state": "delivered",
+      "implementation": "原生运维/指标/诊断与R04 exporter互通",
+      "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
+      "depends_on": [
+        "R01",
+        "R04"
+      ],
+      "evidence": [
+        "evidence/serve-native-observation-20261109/decision.json",
+        "evidence/serve-run-retention-20261109/decision.json",
+        "evidence/serve-retention-epoch-20261109/decision.json",
+        "evidence/serve-retention-lineage-20261109/decision.json",
+        "evidence/serve-native-observation-delivery-20261109/decision.json",
+        "evidence/serve-gateway-diagnostics-20261109/README.md",
+        "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
+      ],
+      "release": {
+        "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+        "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+        "generation_sha256": "35b4cef68116d9460922439e70ad27d45ed83abcf9654de41c0b75df954ec747",
+        "manifest_sha256": "1b1acb1777337fa6184261d7da08da45dcabd8e756cf65ccffab31a3d0102115",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle",
+        "service_acceptance_sha256": "b2b424d369e378360c419dff3fd1c0d1b0833585fda633c22f2420ce4f2de02f",
+        "service_release_sha256": "8014bc222ece8c8d80cad14ea69e36b4e0d7e035ff6a790b1c16cb82c83cf9b0",
+        "guardian_sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571",
+        "state": "STOPPED",
+        "publication_revision": 8,
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
+      "remaining": [],
+      "findings": [
+        {
+          "source": "tools/serve_recovery/gateway.py Admission.update exception projection",
+          "issue": "Independent gateway binding rejection closes admission but root status exposes no typed cause; report bounded identity/capacity/observation reasons without restarting a healthy model",
+          "state": "fixed_validated_delivered",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/business-01/execution/status.jsonl",
+          "fix_evidence": "evidence/serve-gateway-diagnostics-20261109/README.md",
+          "delivery_evidence": "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
+        }
+      ]
+    },
+    {
+      "id": "N07",
+      "required": true,
+      "state": "delivered",
+      "implementation": "原生配置/发行/CLI生命周期整合",
+      "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
+      "depends_on": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06"
+      ],
+      "evidence": [
+        "evidence/serve-lifecycle-capacity-20261109/README.md",
+        "evidence/serve-lifecycle-cli-20261109/README.md",
+        "evidence/serve-lifecycle-publication-20261109/README.md",
+        "evidence/serve-lifecycle-driver-20261109/README.md",
+        "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
+        "evidence/serve-lifecycle-business-20261109/README.md",
+        "evidence/serve-lifecycle-delivery-20261109/README.md"
+      ],
+      "release": {
+        "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+        "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+        "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+        "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+        "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+        "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2",
+        "state": "STOPPED",
+        "publication_revision": 6,
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "findings": [
+        {
+          "source": "tools/serve_recovery/service.py launch before try",
+          "issue": "daemon socketpair setup after lease acquisition can leak the duplicated lease FD on setup failure; make setup cleanup exception-safe",
+          "state": "fixed_validated_delivered",
+          "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json",
+          "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
+        },
+        {
+          "source": "tools/serve_recovery/gateway.py Admission.update",
+          "issue": "Independent gateway classifier used fixed default capacity while model controller used selected capacity, preventing native admission",
+          "state": "fixed_validated_delivered",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
+          "delivery_evidence": "evidence/serve-lifecycle-delivery-20261109/README.md"
+        }
+      ],
+      "remaining": [],
+      "plan": "SERVE_NATIVE_LIFECYCLE_2026-11-09.md",
+      "implemented_cpu_validated": [
+        "Configurable exact capacity binding and fairness checks; 27 targeted CPU cases",
+        "Native ELF service dispatch/prepare/check/reload/deploy/rollback; 26 distinct CPU cases plus actual readonly default checks",
+        "Coordinated default generation publication/resume/rollback and short-write recovery; 25 distinct CPU cases"
+      ],
+      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue."
+    },
+    {
+      "id": "R01",
+      "required": true,
+      "state": "delivered_pending_mainline",
+      "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
+      "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
+      "depends_on": [],
+      "evidence": [
+        "SERVE_OBSERVATION_IO_2026-11-08.md",
+        "evidence/serve-observation-io-20261108/closeout/result.json",
+        "evidence/serve-observation-io-20261108/delivery-01/result.json",
+        "SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
+        "evidence/serve-cache-io-cpu-20261109/decision.json",
+        "evidence/serve-cache-io-business-20261109/decision.json",
+        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json",
+        "evidence/serve-memory-isolation-delivery-20261111/README.md",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
+      ],
+      "release": {
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a",
+        "engine_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "rollback_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": false
+      },
+      "gpu_completion_budget": {
+        "total_starts": 2,
+        "total_chats": 4,
+        "total_seconds": 600,
+        "consumed_starts": 1,
+        "consumed_chats": 1,
+        "reason": "CPU reproduced namespace source-loading fixture error; unchanged production candidate, one targeted completion"
+      },
+      "findings": [
+        {
+          "source": "src/server/session_cache.cpp Transfer/Save/Restore and chat_generation.cpp model_mu_",
+          "issue": "Optional cache synchronous pread/pwrite/open/fstat run under cache and model locks; cancellation is checked between calls and cannot bound a blocked call. Isolate filesystem work so unavailable cache does not prevent healthy plain generation.",
+          "state": "implemented_verified_delivered",
+          "prior_delivered_log_and_observation_isolation_preserved": true
+        },
+        {
+          "source": "tools/serve_service/memory.py Watchdog",
+          "issue": "Runtime missing RAM observations previously escalated to model termination. UNKNOWN now clears unconfirmed pressure without signalling healthy core; startup unknown and confirmed critical pressure remain protected.",
+          "state": "implemented_verified_delivered"
+        },
+        {
+          "source": "src/server/session_cache.cpp Save failure cleanup and CacheIo::Close",
+          "issue": "Cancellation before cache I/O also left new, restored and replaced entry cleanup waiting on a stopped worker for 2s. Independent reproductions; propagate cancellation through Close/Erase and all pending-entry exits, retiring only that generation.",
+          "state": "implemented_targeted_cpu_business_verified_delivered",
+          "evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
+          "delivery_evidence": "evidence/serve-cache-route-delivery-20261112/README.md"
+        }
+      ],
+      "cache_io_candidate": {
+        "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+        "distinct_cpp_cases": 16,
+        "storage_programs": 3,
+        "gpu_starts": 1,
+        "default_replaced": true,
+        "chat_requests": 7,
+        "real_business_accepted": true
+      },
+      "remaining": [
+        "Complete actual PR23 mainline integration after remaining public host failures are repaired"
+      ],
+      "cancel_cleanup_business_bounds": {
+        "model_starts": 4,
+        "requests": 16,
+        "seconds": 2100,
+        "actual_starts": 4,
+        "actual_requests": 15
+      }
+    },
+    {
+      "id": "R02",
+      "required": true,
+      "state": "delivered",
+      "implementation": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
+      "acceptance": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
+      "depends_on": [],
+      "evidence": [
+        "SERVE_GRAMMAR_REAP_2026-11-08.md",
+        "evidence/serve-grammar-reap-20261108/audit.json",
+        "evidence/serve-grammar-reap-20261108/business-01/result.json",
+        "evidence/serve-grammar-reap-20261108/delivery-02/result.json"
+      ],
+      "release": {
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "engine_release_sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7",
+        "manifest_sha256": "e7652b4cc1a0632c804fd67fbe269dc60ff393016a7c1061e25b3f2c1e428f36",
+        "release_sha256": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119",
+        "state": "STOPPED",
+        "merged_main": false
+      }
+    },
+    {
+      "id": "R03",
+      "required": true,
+      "state": "delivered",
+      "implementation": "实际完成进度、忙/等待/卡死分类及有证据的恢复",
+      "acceptance": "实际完成进度、忙/等待/卡死分类及有证据的恢复",
+      "depends_on": [
+        "R01",
+        "R02"
+      ],
+      "evidence": [
+        "SERVE_PROGRESS_2026-11-09.md",
+        "evidence/serve-progress-core-20261109/decision.json",
+        "evidence/serve-progress-native-20261109/decision.json",
+        "evidence/serve-progress-controller-20261109/decision.json",
+        "evidence/serve-progress-stages-20261109/decision.json",
+        "evidence/serve-progress-driver-20261109/decision.json",
+        "evidence/serve-progress-discovery-20261109/decision.json",
+        "evidence/serve-progress-business-20261109/decision.json",
+        "evidence/serve-progress-resource-20261109/decision.json",
+        "evidence/serve-cache-io-business-20261109/decision.json",
+        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "fac58f347f8ba65857d9c8c7b2a1abf07668f80bd59b6d4dfa1b422358d2c10f",
+        "release_sha256": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+        "state": "STOPPED",
+        "merged_main": false,
+        "rollback_sha256": "8ccbd366fc6f43cd84aea13c9082e4fb4a291831059d9dd6c2af6447e2efaa2c"
+      },
+      "plan": "SERVE_PROGRESS_2026-11-09.md",
+      "findings": [
+        {
+          "source": "tools/serve_recovery/controller.py supervise stable transaction",
+          "issue": "600 seconds alone marks successful_request without observing actual successful completion; require fresh same-generation completed business evidence",
+          "state": "implemented_verified_delivered"
+        }
+      ],
+      "remaining": []
+    },
+    {
+      "id": "R04",
+      "required": true,
+      "state": "delivered",
+      "implementation": "当前包exporter接入、unknown/stale投影及受保护留存清理",
+      "acceptance": "当前包exporter接入、unknown/stale投影及受保护留存清理",
+      "depends_on": [
+        "R01"
+      ],
+      "evidence": [
+        "evidence/serve-native-observation-20261109/decision.json",
+        "evidence/serve-run-retention-20261109/decision.json",
+        "evidence/serve-retention-epoch-20261109/decision.json",
+        "evidence/serve-retention-lineage-20261109/decision.json",
+        "evidence/serve-native-observation-delivery-20261109/decision.json"
+      ],
+      "release": {
+        "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+        "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+        "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+        "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
+      "remaining": []
+    },
+    {
+      "id": "R05",
+      "required": true,
+      "state": "delivered",
+      "implementation": "已验证轻量profile及自动降级/恢复；能力与准入一致",
+      "acceptance": "已验证轻量profile及自动降级/恢复；能力与准入一致",
+      "depends_on": [
+        "R02",
+        "R03"
+      ],
+      "evidence": [
+        "evidence/serve-adaptive-profile-qualification-20261111/acceptance.json",
+        "evidence/serve-adaptive-profile-managed-20261111/acceptance-final.json",
+        "evidence/serve-adaptive-profile-delivery-20261111/result.json"
+      ],
+      "release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "manifest_sha256": "f312f81dea8e25c4a4509290c6d84414b9235547f3ff809da130faeb588c0d92",
+        "service_release_sha256": "0d49cdb7e06f1f5de995d7fbf9f10a632e0b1da578002e2fce6531130949df4f",
+        "generation_sha256": "9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "plan": "SERVE_ADAPTIVE_PROFILES_2026-11-11.md",
+      "development_status": "Qualified primary/light and real automatic managed switching delivered in rev56. R06 migration/older-version rollback and all remaining master tasks continue.",
+      "foundation_evidence": "evidence/serve-adaptive-profile-foundation-20261111/README.md",
+      "memory_isolation_delivery": "evidence/serve-memory-isolation-delivery-20261111/README.md",
+      "state_evidence": "evidence/serve-adaptive-profile-state-20261111/README.md",
+      "integration_evidence": "evidence/serve-adaptive-profile-integration-20261111/README.md",
+      "qualification_evidence": "evidence/serve-adaptive-profile-qualification-20261111/README.md",
+      "managed_business_evidence": "evidence/serve-adaptive-profile-managed-20261111/README.md",
+      "remaining": [],
+      "capability_upgrade": {
+        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
+        "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
+        "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
+        "existing_default_rev72_preserved": true,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+      }
+    },
+    {
+      "id": "R06",
+      "required": true,
+      "state": "delivered",
+      "implementation": "已验证旧版本有界自动回退、持久预算与防振荡",
+      "acceptance": "已验证旧版本有界自动回退、持久预算与防振荡",
+      "depends_on": [
+        "R03",
+        "R05"
+      ],
+      "evidence": [
+        "evidence/serve-version-migration-contract-20261111/README.md",
+        "evidence/serve-version-migration-deployment-20261111/README.md",
+        "evidence/serve-version-profile-history-20261111/README.md",
+        "evidence/serve-version-state-20261111/README.md",
+        "evidence/serve-version-channel-20261111/README.md",
+        "evidence/serve-version-registration-20261111/README.md",
+        "evidence/serve-version-native-root-20261112/README.md",
+        "evidence/serve-version-observation-repair-20261112/README.md",
+        "evidence/serve-version-business-20261112/README.md",
+        "evidence/serve-version-business-driver-20261112/README.md",
+        "evidence/serve-version-legacy-root-repair-20261112/README.md",
+        "evidence/serve-version-delivery-20261112/README.md"
+      ],
+      "release": {
+        "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "engine_release_sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc",
+        "generation_sha256": "409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29",
+        "manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+        "service_acceptance_sha256": "19526082572d7e0aa8f4accb544e65667b51d540c3238737e561375ada00a5f7",
+        "service_release_sha256": "1ccf4554047f77b529930abcbd59da085cbae2be9d59efbdd57a12fe5748ef45",
+        "publication_revision": 64,
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
+      "plan": "SERVE_VERSION_RECOVERY_2026-11-11.md",
+      "development_status": "Qualified older-service payload recovery delivered at rev64 after 16 commands / 48.926 seconds and actual STOPPED old-root rollback/forward. Runtime acceptance reused: 2 model starts, 10 POST, 1 probe; final STOPPED repair helper separately CPU verified. Same accepted model engine; no claim of different-model-binary GPU validation. Original client/core/profile state and unused recovery cycle preserved. Continue R07 and all remaining master tasks.",
+      "subtasks": [
+        {
+          "id": "R06.1",
+          "state": "delivered",
+          "title": "资格与迁移合同"
+        },
+        {
+          "id": "R06.2",
+          "state": "delivered",
+          "title": "容量变更与格式演进"
+        },
+        {
+          "id": "R06.3",
+          "state": "delivered",
+          "title": "持久版本状态机"
+        },
+        {
+          "id": "R06.4",
+          "state": "delivered",
+          "title": "原生控制根与接线"
+        },
+        {
+          "id": "R06.5",
+          "state": "delivered",
+          "title": "针对性CPU及实际业务验收"
+        },
+        {
+          "id": "R06.6",
+          "state": "delivered",
+          "title": "可用交付与继续总目标"
+        }
+      ],
+      "remaining": [],
+      "capability_upgrade": {
+        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
+        "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
+        "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
+        "existing_default_rev72_preserved": true,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+      }
+    },
+    {
+      "id": "R07",
+      "required": true,
+      "state": "implementing",
+      "implementation": "NVML失能时的冷启动独占条件、独立证据及有界探测",
+      "acceptance": "NVML失能时的冷启动独占条件、独立证据及有界探测",
+      "depends_on": [
+        "R03"
+      ],
+      "evidence": [
+        "evidence/serve-device-filter-cpu-20261112/README.md",
+        "evidence/serve-device-custody-cpu-20261112/README.md",
+        "evidence/serve-device-inventory-cpu-20261112/README.md",
+        "evidence/serve-device-admission-cpu-20261112/README.md",
+        "evidence/serve-device-management-cpu-20261112/README.md",
+        "evidence/serve-device-guardian-cpu-20261112/README.md",
+        "evidence/serve-device-package-cpu-20261112/README.md",
+        "evidence/serve-device-domain-cpu-20261112/README.md",
+        "evidence/serve-cold-compat-cpu-20261112/README.md",
+        "evidence/serve-cold-driver-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md"
+      ],
+      "release": null,
+      "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
+      "plan": "SERVE_COLD_START_2026-11-12.md",
+      "subtasks": [
+        {
+          "id": "R07.1",
+          "state": "cpu_verified",
+          "title": "原生设备过滤与内核CPU验证"
+        },
+        {
+          "id": "R07.2",
+          "state": "implementing",
+          "title": "独占部署与独立凭据"
+        },
+        {
+          "id": "R07.3",
+          "state": "implementing",
+          "title": "Guardian冷启动预算与探测接线"
+        },
+        {
+          "id": "R07.4",
+          "state": "implementing",
+          "title": "针对性CPU与真实冷启动业务"
+        },
+        {
+          "id": "R07.5",
+          "state": "planned",
+          "title": "可回退交付及总任务接续"
+        }
+      ],
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "frozen_plan_status": "Old v1 plan is not executable: runtime-group and root-owner validation defects plus protected-default identity changed; refresh fixed source/package/driver before actual cold business, preserving previous evidence and maintenance boundary."
+    },
+    {
+      "id": "R08",
+      "required": true,
+      "state": "implementing",
+      "implementation": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
+      "acceptance": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
+      "depends_on": [
+        "R05",
+        "R07"
+      ],
+      "evidence": [
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md",
+        "evidence/serve-resource-renew-cpu-20261112/README.md",
+        "evidence/serve-resource-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-daemon-cpu-20261112/README.md",
+        "evidence/serve-resource-delegation-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md",
+        "evidence/serve-resource-memory-cpu-20261112/README.md",
+        "evidence/serve-resource-version-cpu-20261112/README.md",
+        "evidence/serve-outer-resource-business-20261112/README.md",
+        "evidence/serve-outer-resource-delivery-20261112/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
+      "development_status": "Native resource domains are integrated with the outer runtime without systemd creation. CPU accepted: real kernel limits/self-entry/cleanup (7 cases, 6.470s), durable installation/resume/removal (12 distinct, 2.078s), and source-bound entry/pre-fork resource binding/new-instance cleanup (29 distinct, 14.466s), including actual native Guardian plus CPU controller/gateway/model roles. Original stop, device faults and budgets are preserved. Owned domains removed; no GPU, default or host device-policy changes. Required remaining: R07 composition, unified-DRAM pressure integration, applicable model business and reversible delivery. No hard physical-RAM cap claim. Persistent resource epoch recreation/entry/uninstall accepted by 13 targeted CPU cases/4.722s using historical boot fixtures and actual owned domains, not a host reboot; preserves original installation identity and never recreates same-boot losses. Resource-bound cross-boot unknown-birth and repeated-boot checkpoint reconciliation accepted by 31 targeted CPU cases/6.995s, with actual renewed CPU domains and historical boot data. Current-boot owners, wrong installation and ordinary launch bypass rejected. No host reboot or GPU. Host entry and remaining master work continue. Unified foreground/daemon routing and independent outer daemon accepted by 17 CPU cases/20.357s, including actual native Guardian and CPU roles, parent loss/reply isolation, duplicate rejection and resource FD custody. Complete Runtime old-writer ordering corrected and directly accepted. Host installation/enable/uninstall still required. Review found root-open migration FD overprivilege in unpublished candidate. Reworked to kernel-confined runtime-UID opening and format v2; 20 targeted CPU checks passed first attempt in 11.477s: actual inherited FD rejected owned outside same-UID/root test processes, service escape/controller writes rejected, full recovery and native foreground/daemon CPU roles passed. Own domains cleaned, no GPU/default/host configuration changes; all remaining tasks retained.",
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "memory_composition": "Native direct and version-recovery v6 resource observation implemented. Original 17 targeted resource CPU tests accepted; new 18 distinct version/worker/adapter CPU tests accepted across 20 invocations. Real accepted v12 source 10155da3 remains unchanged; exact independent adapter 59934942 verified. Initial fixture errors and wrong v16 source-check assertion retained and corrected only for affected cases. No GPU or business qualification of adapted payload yet. Actual resource/outer/model business, cold device composition and reversible delivery remain required.",
+      "actual_business": "Accepted real normal-NVML outer/resource/version business with preserved service state and native conservative quota gate; cumulative 6 starts/8 Chat/1 probe/283.572s includes two retained failures. Package 5468f36a, Guardian383bcc63, actual fallback59934942. All owned trees/domains/ports/lease cleaned. Reversible delivery, cold composition and remaining task-specific requirements still open; no physical RAM hard-cap claim.",
+      "delivered_subset": {
+        "name": "normal-NVML native outer/resource/version recovery",
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+        "publication_revision": 72,
+        "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
+        "whole_task_complete": false
+      }
+    },
+    {
+      "id": "R09",
+      "required": true,
+      "state": "partial_delivery_remaining_composition",
+      "implementation": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
+      "acceptance": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
+      "depends_on": [
+        "R03",
+        "R06"
+      ],
+      "evidence": [
+        "evidence/serve-outer-policy-cpu-20261112/README.md",
+        "evidence/serve-outer-tree-cpu-20261112/README.md",
+        "evidence/serve-outer-instance-cpu-20261112/README.md",
+        "evidence/serve-outer-reconcile-cpu-20261112/README.md",
+        "evidence/serve-outer-parent-cpu-20261112/README.md",
+        "evidence/serve-outer-resume-cpu-20261112/README.md",
+        "evidence/serve-outer-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-observe-cpu-20261112/README.md",
+        "evidence/serve-outer-manager-cpu-20261112/README.md",
+        "evidence/serve-outer-runtime-cpu-20261112/README.md",
+        "evidence/serve-resource-kernel-cpu-20261112/README.md",
+        "evidence/serve-resource-install-cpu-20261112/README.md",
+        "evidence/serve-resource-launch-cpu-20261112/README.md",
+        "evidence/serve-resource-renew-cpu-20261112/README.md",
+        "evidence/serve-resource-reboot-cpu-20261112/README.md",
+        "evidence/serve-outer-daemon-cpu-20261112/README.md",
+        "evidence/serve-resource-delegation-cpu-20261112/README.md",
+        "evidence/serve-host-install-cpu-20261112/README.md",
+        "evidence/serve-host-ensure-cpu-20261112/README.md",
+        "evidence/serve-host-systemd-cpu-20261112/README.md",
+        "evidence/serve-host-handoff-cpu-20261112/README.md",
+        "evidence/serve-device-detach-cpu-20261112/README.md",
+        "docs/evidence/serve-device-resource-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
+        "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
+        "evidence/serve-cold-entry-cpu-20261112/README.md",
+        "evidence/serve-cold-watch-cpu-20261112/README.md",
+        "evidence/serve-outer-resource-business-20261112/README.md",
+        "evidence/serve-outer-resource-delivery-20261112/README.md"
+      ],
+      "release": null,
+      "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
+      "development_status": "Native outer policies, continuous and new-owner reconciliation, historical-boot renewal, healthy-root adoption, own resource domains, protected host installation, optional systemd trigger and upgrade handoff are CPU-verified. Cold per-generation channel, managed lease/public explicit start and independent native auxiliary restart supervision are CPU-verified. No mandatory nginx/systemd; auxiliary failure cannot signal healthy core. Original stop, core/device/outer budgets and replay fence preserved. Actual combined model business and reversible release remain required; CPU packages are not released.",
+      "subtasks": [
+        {
+          "id": "R09.1",
+          "state": "cpu_verified",
+          "title": "持久外层预算及停止合同"
+        },
+        {
+          "id": "R09.2",
+          "state": "cpu_verified",
+          "title": "旧slot/整树与boot核验"
+        },
+        {
+          "id": "R09.3",
+          "state": "cpu_verified",
+          "title": "resume及显式外层入口"
+        },
+        {
+          "id": "R09.4",
+          "state": "cpu_verified",
+          "title": "可选宿主适配及安装卸载"
+        },
+        {
+          "id": "R09.5",
+          "state": "normal_nvml_business_delivered_cold_composition_pending",
+          "title": "针对性进程/业务验证与可回退交付"
+        }
+      ],
+      "development_workspace": {
+        "branch": "codex/serve-resilience-cd",
+        "path": "/home/rm01/models/dev/qwen4-thor",
+        "retained_evidence_workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+        "retained_branch": "codex/serve-outer-recovery",
+        "retained_tip": "38b0d29f",
+        "reason": "Actual normal-NVML business and reversible release accepted; old cold plan invalidated by confirmed defects and default identity change. Consolidate future work; retain original package/evidence paths."
+      },
+      "composition_plan": "SERVE_COLD_OUTER_2026-11-12.md",
+      "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
+      "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
+      "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
+      "actual_business": "Accepted real normal-NVML outer/resource/version business with preserved service state and native conservative quota gate; cumulative 6 starts/8 Chat/1 probe/283.572s includes two retained failures. Package 5468f36a, Guardian383bcc63, actual fallback59934942. All owned trees/domains/ports/lease cleaned. Reversible delivery, cold composition and remaining task-specific requirements still open; no physical RAM hard-cap claim.",
+      "delivered_subset": {
+        "name": "normal-NVML native outer/resource/version recovery",
+        "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+        "generation_sha256": "a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2",
+        "publication_revision": 72,
+        "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
+        "whole_task_complete": false
+      }
+    },
+    {
+      "id": "R10",
+      "required": true,
+      "state": "planned",
+      "implementation": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
+      "acceptance": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
+      "depends_on": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "A05",
+        "A10"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "Q01",
+      "required": true,
+      "state": "project_retrieval_business_accepted_remaining_compositions",
+      "implementation": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
+      "acceptance": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
+      "depends_on": [
+        "A07",
+        "A11",
+        "A12",
+        "N07",
+        "R10"
+      ],
+      "evidence": [
+        "evidence/serve-retrieval-managed-business-20261112/README.md"
+      ],
+      "release": null
+    },
+    {
+      "id": "Q02",
+      "required": true,
+      "state": "staged_releases_delivered_main_integration_pending",
+      "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
+      "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
+      "depends_on": [
+        "Q01"
+      ],
+      "evidence": [
+        "evidence/serve-retrieval-delivery-20261112/README.md",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
+      ],
+      "release": null,
+      "capability_upgrade": {
+        "state": "delivered_subset",
+        "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
+        "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
+        "existing_default_rev72_preserved": false,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+        "fallback_manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md",
+        "previous_default_rev72_backed_up": true,
+        "publication_revision": 80,
+        "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
+        "whole_task_complete": false
+      },
+      "latest_release": {
+        "publication_revision": 94,
+        "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "generation_sha256": "bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38",
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+        "service_acceptance_sha256": "969f02e4d4b46ea20b35e4a6c9745942697d8298a954145fb43e76cc468422a6",
+        "service_release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a"
+      },
+      "merged_foundation": {
+        "pr": 22,
+        "head": "34b06bc1cd5997af8d03db322674b694d27d818b",
+        "merge": "ea0ad39accefd43f2c6819ce7e275a7275c3d5e7",
+        "evidence": "evidence/serve-main-integration-20261112/README.md",
+        "later_master_work_merged": false
+      },
+      "main_integration": {
+        "pr": 23,
+        "state": "ci_failures_being_repaired",
+        "evidence": "evidence/serve-public-host-repair-20261112/README.md",
+        "targeted_cpu_passed": 18,
+        "github_document_sandbox_pending": true,
+        "merged": false,
+        "followup_evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
+        "followup_targeted_runtime_cpu_passed": 24,
+        "remaining_failures": [
+          "Legacy document sandbox prerequisites on hosted runner",
+          "Batch fault-injection fixture short I/O timeout also applied to unrelated setup/verification"
+        ],
+        "host_prerequisites_batch_evidence": "evidence/serve-host-prerequisites-batch-20261112/README.md"
+      }
+    },
+    {
+      "id": "Q03",
+      "required": true,
+      "state": "planned",
+      "implementation": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
+      "acceptance": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
+      "depends_on": [
+        "Q02"
+      ],
+      "evidence": [],
+      "release": null
+    }
+  ],
+  "next_task": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop.",
+  "next": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop."
+}

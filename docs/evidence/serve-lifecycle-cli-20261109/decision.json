@@ -1,0 +1,44 @@
+{
+  "status": "PASS_TARGETED_NATIVE_LIFECYCLE_CPU",
+  "distinct_tests": 26,
+  "attempts": [
+    {
+      "path": "cli-cpu-01",
+      "tests": 21,
+      "status": "FAIL",
+      "failures": 3
+    },
+    {
+      "path": "cli-cpu-02",
+      "tests": 5,
+      "status": "FAIL",
+      "failures": 2
+    },
+    {
+      "path": "cli-cpu-03",
+      "tests": 8,
+      "status": "PASS",
+      "failures": 0
+    },
+    {
+      "path": "cli-cpu-04",
+      "tests": 2,
+      "status": "PASS",
+      "failures": 0
+    },
+    {
+      "path": "cli-capacity-fault-01",
+      "tests": 2,
+      "status": "PASS",
+      "failures": 0
+    }
+  ],
+  "production_elf_readonly_commands": 3,
+  "host_entry_real_default_commands": 2,
+  "warning_count": 0,
+  "gpu_starts": 0,
+  "model_actions": false,
+  "default_replaced": false,
+  "task_complete": false,
+  "next": "N07 persistent publication and combined real business"
+}

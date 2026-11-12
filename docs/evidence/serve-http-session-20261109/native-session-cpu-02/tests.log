@@ -1,0 +1,13 @@
+test_sequential_reauth_trace_and_upstream_error (tools.serve_http.test_keepalive.KeepAliveTests.test_sequential_reauth_trace_and_upstream_error) ... ok
+test_chunked_upload_then_length_request (tools.serve_http.test_keepalive.KeepAliveTests.test_chunked_upload_then_length_request) ... ok
+test_sse_complete_then_json_reuses_transport (tools.serve_http.test_keepalive.KeepAliveTests.test_sse_complete_then_json_reuses_transport) ... ok
+test_truncated_sse_has_no_fabricated_end_or_replay (tools.serve_http.test_keepalive.KeepAliveTests.test_truncated_sse_has_no_fabricated_end_or_replay) ... ok
+test_ambiguous_upstream_frame_closes_without_replay (tools.serve_http.test_keepalive.KeepAliveTests.test_ambiguous_upstream_frame_closes_without_replay) ... ok
+test_request_count_is_bounded (tools.serve_http.test_keepalive.KeepAliveTests.test_request_count_is_bounded) ... ok
+test_idle_releases_data_capacity_then_closes (tools.serve_http.test_keepalive.KeepAliveTests.test_idle_releases_data_capacity_then_closes) ... ok
+test_tls_preflight_reuses_and_does_not_cache_origin (tools.serve_http.test_keepalive.TlsKeepAliveTests.test_tls_preflight_reuses_and_does_not_cache_origin) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 19.830s
+
+OK

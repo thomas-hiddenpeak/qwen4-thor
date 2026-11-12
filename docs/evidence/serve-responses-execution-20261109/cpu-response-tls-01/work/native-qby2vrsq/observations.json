@@ -1,0 +1,36 @@
+{
+  "events": [
+    {
+      "event": "heartbeat",
+      "generation": 1,
+      "sequence": 1,
+      "service_id": "a7ec1f33-416d-4578-829e-db1ff360bb75",
+      "version": 1
+    },
+    {
+      "event": "ready",
+      "generation": 1,
+      "sequence": 2,
+      "service_id": "a7ec1f33-416d-4578-829e-db1ff360bb75",
+      "version": 1
+    },
+    {
+      "event": "unbound",
+      "generation": 1,
+      "sequence": 3,
+      "service_id": "a7ec1f33-416d-4578-829e-db1ff360bb75",
+      "version": 1
+    },
+    {
+      "event": "bound",
+      "generation": 1,
+      "model_generation": 1,
+      "sequence": 4,
+      "service_id": "a7ec1f33-416d-4578-829e-db1ff360bb75",
+      "version": 1
+    }
+  ],
+  "requests": [],
+  "forwarded_count": 0,
+  "cpu_fixture": true
+}

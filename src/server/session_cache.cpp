@@ -1,13 +1,6 @@
 #include "q4t/server/session_cache.h"
 
-#include <fcntl.h>
-#include <linux/magic.h>
-#include <sys/stat.h>
-#include <sys/vfs.h>
-#include <unistd.h>
-
 #include <algorithm>
-#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
@@ -15,103 +8,123 @@
 namespace q4t::server {
 namespace {
 constexpr size_t kAlignment = 4096;
-size_t Aligned(size_t n) { return (n + kAlignment - 1) / kAlignment * kAlignment; }
-Status IoError(const char* action) {
-  return Status::Fail(std::string("session cache ") + action + ": " +
-                       std::strerror(errno));
+size_t Aligned(size_t n) {
+  return (n + kAlignment - 1) / kAlignment * kAlignment;
 }
-
 }  // namespace
 
-SessionCache::Entry::~Entry() { if (fd >= 0) close(fd); }
+void SessionCache::Entry::Close(const Cancel& cancel) noexcept {
+  if (io) io->Close(file, cancel);
+  file = {};
+}
+SessionCache::Entry::~Entry() { Close(); }
 SessionCache::~SessionCache() {
   entries_.clear();
-  if (directory_fd_ >= 0) close(directory_fd_);
+  io_.reset();
   std::free(staging_);
 }
 
 Status SessionCache::Open(const std::string& directory, int min_prefix,
-                           size_t disk_budget, bool incremental) {
+                          size_t disk_budget, bool incremental,
+                          bool create_directory) {
   if (Enabled()) return Status::Fail("session cache already open");
   if (min_prefix < 1 || min_prefix > kMaxPrefix || !disk_budget ||
       disk_budget > kDiskBudget)
     return Status::Fail("session cache limits");
-  int fd = open(directory.c_str(), O_DIRECTORY | O_RDONLY | O_CLOEXEC |
-                                    O_NOFOLLOW);
-  if (fd < 0) return IoError("directory");
-  struct stat st{};
-  struct statfs fs{};
-  if (fstat(fd, &st) || fstatfs(fd, &fs) || st.st_uid != geteuid() ||
-      (st.st_mode & 077) || fs.f_type == TMPFS_MAGIC) {
-    close(fd);
-    return Status::Fail("session cache requires owned private disk directory");
-  }
-  const int probe = openat(fd, ".", O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC,
-                            0600);
-  if (probe < 0) {
-    const Status s = IoError("O_TMPFILE/O_DIRECT");
-    close(fd);
-    return s;
-  }
   void* buffer = nullptr;
   if (posix_memalign(&buffer, kAlignment, kStagingBytes)) {
-    close(probe);
-    close(fd);
     return Status::Fail("session cache staging allocation");
   }
-  std::memset(buffer, 0, kAlignment);
-  const bool ok = pwrite(probe, buffer, kAlignment, 0) == kAlignment &&
-                  pread(probe, buffer, kAlignment, 0) == kAlignment;
-  close(probe);
-  if (!ok) {
-    const Status s = IoError("direct IO preflight");
-    std::free(buffer);
-    close(fd);
-    return s;
-  }
   staging_ = buffer;
-  directory_fd_ = fd;
+  io_ = std::make_unique<CacheIo>(CacheIoOptions{.directory = directory,
+                                               .domain = domain_,
+                                               .create_directory = create_directory});
   min_prefix_ = min_prefix;
   disk_budget_ = disk_budget;
   incremental_ = incremental;
-  return Status();
+  const auto status = io_->Initialize();
+  generation_ = io_->Health().generation;
+  return status;
+}
+
+void SessionCache::Refresh() {
+  if (!io_) return;
+  const auto health = io_->Health();
+  if (!health.available || health.generation != generation_) {
+    // Metadata and anonymous files never survive an unconfirmed operation.
+    // Active lease keys remain held until the original request releases them.
+    entries_.clear();
+    bytes_ = 0;
+    generation_ = health.generation;
+  }
+}
+
+bool SessionCache::Expired(const Entry& entry,
+                           std::chrono::steady_clock::time_point now) {
+  return now >= entry.expires;
+}
+
+void SessionCache::Touch(Entry* entry,
+                         std::chrono::steady_clock::time_point now) {
+  entry->used = now;
+  entry->expires = std::min(
+      entry->retention_end,
+      std::max(entry->expires,
+               now + std::chrono::seconds(entry->lifetime.read_refresh_seconds)));
 }
 
 bool SessionCache::Acquire(const std::string& key) {
   const std::lock_guard lock(mutex_);
   return Enabled() && busy_.size() < 32 && busy_.insert(key).second;
 }
-bool SessionCache::AcquireNew(const std::string& key) {
+bool SessionCache::AcquireNew(const std::string& key,
+                              int minimum_write_seconds) {
   const std::lock_guard lock(mutex_);
-  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key)) return false;
+  Refresh();
+  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key) ||
+      minimum_write_seconds < 0 || minimum_write_seconds > 86400)
+    return false;
   const auto old = entries_.find(key);
   if (old != entries_.end()) {
-    if (std::chrono::steady_clock::now() - old->second->used <=
-        std::chrono::minutes(30)) return false;
-    Erase(old);
+    if (Expired(*old->second, std::chrono::steady_clock::now()))
+      Erase(old);
+    else if (minimum_write_seconds <= old->second->lifetime.write_seconds)
+      return false;
+    // A requested longer lifetime needs a real replacement write. Hold the
+    // old entry until Save owns the replacement; a failed save becomes a miss.
   }
   return busy_.insert(key).second;
 }
 
 int SessionCache::MatchShared(const std::string& scope,
-                               std::span<const int32_t> prompt,
-                               std::string* key) {
+                              std::span<const int32_t> prompt, std::string* key,
+                              SessionLayout layout,
+                              std::span<const int> allowed_boundaries) {
   const std::lock_guard lock(mutex_);
   key->clear();
-  if (!Enabled() || busy_.size() >= 32) return 0;
+  Refresh();
+  if (!Enabled() || busy_.size() >= 32 ||
+      !std::is_sorted(allowed_boundaries.begin(), allowed_boundaries.end()))
+    return 0;
   auto best = entries_.end();
   const auto now = std::chrono::steady_clock::now();
   const std::string group = scope + ':';
   for (auto it = entries_.begin(); it != entries_.end();) {
-    if (busy_.contains(it->first)) { ++it; continue; }
+    if (busy_.contains(it->first)) {
+      ++it;
+      continue;
+    }
     const auto& e = *it->second;
-    if (now - e.used > std::chrono::minutes(30)) {
+    if (Expired(e, now)) {
       auto expired = it++;
       Erase(expired);
       continue;
     }
-    if (it->first.starts_with(group) && e.published &&
+    if (it->first.starts_with(group) && e.published && e.layout == layout &&
         e.prefix.size() <= prompt.size() &&
+        (allowed_boundaries.empty() ||
+         std::binary_search(allowed_boundaries.begin(), allowed_boundaries.end(),
+                             static_cast<int>(e.prefix.size()) - 1)) &&
         (best == entries_.end() ||
          e.prefix.size() > best->second->prefix.size()) &&
         std::equal(e.prefix.begin(), e.prefix.end() - 1, prompt.begin()))
@@ -124,16 +137,20 @@ int SessionCache::MatchShared(const std::string& scope,
   busy_.insert(*key);
   return static_cast<int>(best->second->prefix.size()) - 1;
 }
-void SessionCache::Erase(Entries::iterator it) {
+void SessionCache::Erase(Entries::iterator it, const Cancel& cancel) {
   bytes_ -= std::max(it->second->bytes, it->second->disk_charge);
+  it->second->Close(cancel);
   entries_.erase(it);
 }
 void SessionCache::Release(const std::string& key, bool success) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (it != entries_.end() && !it->second->published) {
-    if (success) it->second->published = true;
-    else Erase(it);
+    if (success)
+      it->second->published = true;
+    else
+      Erase(it);
   }
   // Reuse requires a complete Restore in this lease, never a previous one.
   it = entries_.find(key);
@@ -142,23 +159,25 @@ void SessionCache::Release(const std::string& key, bool success) {
 }
 size_t SessionCache::Bytes() const {
   const std::lock_guard lock(mutex_);
-  return bytes_;
+  return io_ && io_->Health().available ? bytes_ : 0;
 }
-int SessionCache::Match(const std::string& key,
-                        std::span<const int32_t> prompt) {
+int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
+                        SessionLayout layout) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end()) return 0;
   auto& entry = *it->second;
-  if (std::chrono::steady_clock::now() - entry.used >
-      std::chrono::minutes(30)) {
+  const auto now = std::chrono::steady_clock::now();
+  if (Expired(entry, now)) {
     Erase(it);
     return 0;
   }
-  if (!entry.published || entry.prefix.size() > prompt.size() ||
+  if (!entry.published || entry.layout != layout ||
+      entry.prefix.size() > prompt.size() ||
       !std::equal(entry.prefix.begin(), entry.prefix.end() - 1, prompt.begin()))
     return 0;
-  entry.used = std::chrono::steady_clock::now();
+  entry.used = now;
   return static_cast<int>(entry.prefix.size()) - 1;
 }
 
@@ -179,12 +198,10 @@ Status SessionCache::Transfer(Entry* entry,
           return Status::Fail("session cache offset count");
         const size_t disk_offset =
             entry->offsets.empty() ? offset : entry->offsets[block];
-        ssize_t got;
-        do {
-          got = pread(entry->fd, staging_, disk_size, disk_offset);
-        } while (got < 0 && errno == EINTR);
-        if (got != static_cast<ssize_t>(disk_size))
-          return IoError("read/short read");
+        const auto read = io_->Read(
+            entry->file, disk_offset,
+            {static_cast<uint8_t*>(staging_), disk_size}, cancel);
+        if (!read) return read;
         if (block >= entry->digests.size() ||
             trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}) !=
                 entry->digests[block])
@@ -208,15 +225,12 @@ Status SessionCache::Transfer(Entry* entry,
           entry->digests.push_back(
               trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}));
         }
-        ssize_t wrote;
         {
           SessionSaveTiming::Scope span(timing, SessionSaveTiming::kWrite);
-          do {
-            wrote = pwrite(entry->fd, staging_, disk_size, offset);
-          } while (wrote < 0 && errno == EINTR);
+          s = io_->Write(entry->file, offset,
+                         {static_cast<uint8_t*>(staging_), disk_size}, cancel);
         }
-        if (wrote != static_cast<ssize_t>(disk_size))
-          return IoError("write/short write");
+        if (!s) return s;
         if (timing) {
           timing->data_bytes += size;
           timing->disk_bytes += disk_size;
@@ -237,9 +251,10 @@ Status SessionCache::Transfer(Entry* entry,
 // lease plus the cache/model locks excludes observers during in-place updates.
 // Any failure destroys the detached file, so no partially updated entry can
 // become visible. A file owns all blocks: no ancestor chains or shared fds.
-Status SessionCache::SaveIncremental(
-    Entry* entry, std::span<const SessionRange> ranges, const Copy& copy,
-    const Cancel& cancel, SessionSaveTiming* timing) {
+Status SessionCache::SaveIncremental(Entry* entry,
+                                     std::span<const SessionRange> ranges,
+                                     const Copy& copy, const Cancel& cancel,
+                                     SessionSaveTiming* timing) {
   std::vector<size_t> offsets;
   std::vector<trace::Digest> digests;
   offsets.reserve(8192);
@@ -258,14 +273,14 @@ Status SessionCache::SaveIncremental(
       Status status;
       {
         SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCopy);
-        status = copy(staging_, static_cast<uint8_t*>(range.data) + start,
-                        size, false);
+        status = copy(staging_, static_cast<uint8_t*>(range.data) + start, size,
+                      false);
       }
       if (!status.ok()) return status;
       {
         SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPadding);
         std::memset(static_cast<uint8_t*>(staging_) + size, 0,
-                      disk_size - size);
+                    disk_size - size);
       }
       trace::Digest digest;
       {
@@ -274,15 +289,15 @@ Status SessionCache::SaveIncremental(
       }
       const bool existing = part < old_count;
       const size_t index = old_block + part;
-      if (existing && (index >= entry->offsets.size() ||
-                       index >= entry->digests.size()))
+      if (existing &&
+          (index >= entry->offsets.size() || index >= entry->digests.size()))
         return Status::Fail("session cache incremental manifest");
-      const size_t offset = existing ? entry->offsets[index]
-                                     : entry->next_offset;
+      const size_t offset =
+          existing ? entry->offsets[index] : entry->next_offset;
       if (!existing) entry->next_offset += kStagingBytes;
       const bool same = existing &&
-          size == std::min(kStagingBytes, old_size - start) &&
-          digest == entry->digests[index];
+                        size == std::min(kStagingBytes, old_size - start) &&
+                        digest == entry->digests[index];
       if (same) {
         if (timing) {
           timing->reused_bytes += disk_size;
@@ -290,15 +305,13 @@ Status SessionCache::SaveIncremental(
         }
       } else {
         if (cancel()) return Status::Fail("session cache cancelled");
-        ssize_t wrote;
         {
           SessionSaveTiming::Scope span(timing, SessionSaveTiming::kWrite);
-          do {
-            wrote = pwrite(entry->fd, staging_, disk_size, offset);
-          } while (wrote < 0 && errno == EINTR);
+          status = io_->Write(entry->file, offset,
+                              {static_cast<uint8_t*>(staging_), disk_size},
+                              cancel);
         }
-        if (wrote != static_cast<ssize_t>(disk_size))
-          return IoError("incremental write/short write");
+        if (!status) return status;
         if (timing) {
           timing->data_bytes += size;
           timing->disk_bytes += disk_size;
@@ -311,9 +324,10 @@ Status SessionCache::SaveIncremental(
     old_block += old_count;
   }
   if (cancel()) return Status::Fail("session cache cancelled");
-  struct stat st{};
-  if (fstat(entry->fd, &st)) return IoError("incremental stat");
-  const size_t allocated = static_cast<size_t>(st.st_blocks) * 512;
+  CacheFileStat st;
+  const auto status = io_->Stat(entry->file, &st, cancel);
+  if (!status) return status;
+  const size_t allocated = st.allocated_bytes;
   if (allocated > entry->bytes + (size_t{64} << 20))
     return Status::Fail("session cache filesystem allocation limit");
   entry->disk_charge = std::max(entry->bytes, allocated);
@@ -322,7 +336,7 @@ Status SessionCache::SaveIncremental(
   entry->sizes.clear();
   for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
   if (timing) {
-    timing->file_span = st.st_size;
+    timing->file_span = st.span_bytes;
     timing->allocated_bytes = allocated;
   }
   return Status();
@@ -331,12 +345,20 @@ Status SessionCache::SaveIncremental(
 Status SessionCache::Restore(const std::string& key,
                              std::span<const SessionRange> ranges,
                              const Copy& copy, const Cancel& cancel,
-                             int32_t* d0, int32_t* pending) {
+                             int32_t* d0, int32_t* pending,
+                             SessionLayout layout) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end() || !it->second->published)
     return Status::Fail("session cache missing lease/entry");
   auto& entry = *it->second;
+  if (Expired(entry, std::chrono::steady_clock::now())) {
+    Erase(it, cancel);
+    return Status::Fail("session cache expired before restore");
+  }
+  if (entry.layout != layout)
+    return Status::Fail("session cache execution layout mismatch");
   if (ranges.size() != entry.sizes.size())
     return Status::Fail("session cache range count");
   for (size_t i = 0; i < ranges.size(); ++i)
@@ -345,8 +367,11 @@ Status SessionCache::Restore(const std::string& key,
   const Status s = Transfer(&entry, ranges, copy, cancel, true);
   if (s.ok() && d0) *d0 = entry.d0;
   if (s.ok() && pending) *pending = entry.prefix.back();
-  if (s.ok()) entry.restored = true;
-  if (!s.ok()) Erase(it);
+  if (s.ok()) {
+    entry.restored = true;
+    Touch(&entry, std::chrono::steady_clock::now());
+  }
+  if (!s.ok()) Erase(it, cancel);
   return s;
 }
 
@@ -354,14 +379,30 @@ Status SessionCache::Save(const std::string& key,
                           std::span<const int32_t> prefix,
                           std::span<const SessionRange> ranges,
                           const Copy& copy, const Cancel& cancel, int32_t d0,
-                          SessionSaveTiming* timing) {
+                          SessionSaveTiming* timing, SessionLayout layout,
+                          SessionCacheLifetime lifetime) {
+  if (lifetime.write_seconds <= 0 || lifetime.write_seconds > 86400 ||
+      lifetime.read_refresh_seconds < 0 ||
+      lifetime.read_refresh_seconds > 86400 || lifetime.max_age_seconds < 0 ||
+      lifetime.max_age_seconds > 86400 ||
+      (lifetime.max_age_seconds &&
+       lifetime.write_seconds > lifetime.max_age_seconds))
+    return Status::Fail("session cache lifetime limits");
   std::unique_lock<std::mutex> lock;
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCacheLock);
     lock = std::unique_lock<std::mutex>(mutex_);
   }
+  Refresh();
   size_t bytes = 0;
   std::unique_ptr<Entry> entry;
+  struct PendingCleanup {
+    std::unique_ptr<Entry>& entry;
+    const Cancel& cancel;
+    ~PendingCleanup() {
+      if (entry) entry->Close(cancel);
+    }
+  } cleanup{entry, cancel};
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
     if (!busy_.contains(key) || prefix.size() <= size_t(min_prefix_) ||
@@ -383,10 +424,11 @@ Status SessionCache::Save(const std::string& key,
     if (incremental_ && old != entries_.end()) {
       const auto& prior = *old->second;
       bool eligible = prior.published && prior.restored &&
-          !prior.offsets.empty() && prior.sizes.size() == ranges.size() &&
-          prior.prefix.size() <= prefix.size() &&
-          std::equal(prior.prefix.begin(), prior.prefix.end() - 1,
-                       prefix.begin());
+                      prior.layout == layout && !prior.offsets.empty() &&
+                      prior.sizes.size() == ranges.size() &&
+                      prior.prefix.size() <= prefix.size() &&
+                      std::equal(prior.prefix.begin(), prior.prefix.end() - 1,
+                                 prefix.begin());
       for (size_t i = 0; eligible && i < ranges.size(); ++i)
         eligible = ranges[i].bytes >= prior.sizes[i];
       if (eligible) {
@@ -400,7 +442,8 @@ Status SessionCache::Save(const std::string& key,
     // The old prefix is no longer needed by this request after restoration.
     // Losing a cache entry on a failed replacement is a miss, never stale
     // reuse.
-    if (auto old = entries_.find(key); old != entries_.end()) Erase(old);
+    if (auto old = entries_.find(key); old != entries_.end())
+      Erase(old, cancel);
     // Reserve bounded filesystem allocation overhead before writing. The
     // final charge uses fstat, including unwritten extents, never sparse EOF.
     const size_t reserve = incremental_ ? (size_t{64} << 20) : 0;
@@ -415,34 +458,59 @@ Status SessionCache::Save(const std::string& key,
           victim = it;
       }
       if (victim == entries_.end()) return Status::Fail("session cache full");
-      Erase(victim);
+      Erase(victim, cancel);
     }
   }
   if (!entry) entry = std::make_unique<Entry>();
-  if (entry->fd < 0) {
+  if (!entry->file.id) {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kOpen);
-    entry->fd = openat(directory_fd_, ".",
-                       O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC, 0600);
+    const auto status = io_->Create(&entry->file, cancel);
+    if (!status) return status;
+    entry->io = io_.get();
+    generation_ = entry->file.generation;
   }
-  if (entry->fd < 0) return IoError("snapshot file");
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
     entry->bytes = bytes;
     entry->d0 = d0;
+    entry->layout = layout;
     entry->prefix.assign(prefix.begin(), prefix.end());
     entry->used = std::chrono::steady_clock::now();
     if (!incremental_)
       for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
   }
-  const Status s = incremental_
-      ? SaveIncremental(entry.get(), ranges, copy, cancel, timing)
-      : Transfer(entry.get(), ranges, copy, cancel, false, timing);
+  Status s =
+      incremental_ ? SaveIncremental(entry.get(), ranges, copy, cancel, timing)
+                   : Transfer(entry.get(), ranges, copy, cancel, false, timing);
+  if (s && !incremental_) {
+    CacheFileStat stat;
+    s = io_->Stat(entry->file, &stat, cancel);
+    if (s) {
+      entry->disk_charge = std::max(bytes, size_t(stat.allocated_bytes));
+      if (entry->disk_charge > disk_budget_ - bytes_)
+        s = Status::Fail("session cache actual disk allocation limit");
+      if (timing) {
+        timing->file_span = stat.span_bytes;
+        timing->allocated_bytes = stat.allocated_bytes;
+      }
+    }
+  }
   if (!s.ok()) {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCleanup);
+    // A cancellation can precede Write dispatch (for example while hashing).
+    // Do not turn its cleanup into an uncancellable close on a stalled worker.
+    entry->Close(cancel);
     entry.reset();
     return s;
   }
   SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPublish);
+  entry->lifetime = lifetime;
+  entry->used = std::chrono::steady_clock::now();
+  entry->expires = entry->used + std::chrono::seconds(lifetime.write_seconds);
+  entry->retention_end = lifetime.max_age_seconds
+                            ? entry->used +
+                                  std::chrono::seconds(lifetime.max_age_seconds)
+                            : std::chrono::steady_clock::time_point::max();
   bytes_ += std::max(bytes, entry->disk_charge);
   entries_.emplace(key, std::move(entry));
   return Status();

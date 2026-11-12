@@ -1,0 +1,14 @@
+{
+  "pid": 2019268,
+  "state": "S",
+  "ppid": 2019262,
+  "pgid": 2019256,
+  "start_ticks": 268123820,
+  "argv": [
+    "q4t-cache-worker",
+    "--q4t-cache-worker",
+    "2019262",
+    "2147483648"
+  ],
+  "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+}

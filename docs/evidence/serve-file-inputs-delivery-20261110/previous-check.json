@@ -1,0 +1,16 @@
+{
+  "label": "previous-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle/engine/q4t",
+    "service",
+    "check",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/release-01/bundle",
+    "--manifest-sha256",
+    "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871"
+  ],
+  "returncode": 0,
+  "seconds": 1.051784181036055
+}

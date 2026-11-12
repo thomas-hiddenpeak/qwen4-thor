@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "headers": {
+    "Server": "BaseHTTP/0.6 Python/3.12.3",
+    "Date": "Mon, 09 Nov 2026 09:12:01 GMT",
+    "Content-Type": "application/json",
+    "Content-Length": "282"
+  },
+  "bytes": 282
+}

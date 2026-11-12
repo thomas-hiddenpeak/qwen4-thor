@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "object": "response.input_tokens",
+    "input_tokens": 37
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/responses/input_tokens",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"input\":[{\"role\":\"user\",\"content\":\"Compute 17 + 25. Reply only with the decimal number.\"},{\"role\":\"user\",\"content\":\"Continue this calculation.\"}],\"reasoning\":{\"effort\":\"none\"}}"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "action": "delete",
+  "request": null,
+  "id": "resp_3fe6aa1b7aff2b486153d9a26ef3eab3",
+  "query": null,
+  "stream_mode": null,
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

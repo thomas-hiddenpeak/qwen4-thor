@@ -1,0 +1,47 @@
+[
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11393733229488134
+  },
+  {
+    "name": "application",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_responses/build_contract.py",
+      "--types",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompt-cache-20261110/application-types.json",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06381063489243388
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1138760638423264
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06387756112962961
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      ".",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/engine-build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+      "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+      "-DQ4T_CUDA_ARCHITECTURES=110a",
+      "-DQ4T_ENABLE_XGRAMMAR=ON",
+      "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar",
+      "-DQ4T_OPENSSL_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include",
+      "-DQ4T_OPENSSL_ARCH_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include/aarch64-linux-gnu"
+    ],
+    "exit_code": 0,
+    "seconds": 0.34338746406137943
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/engine-build",
+      "--parallel",
+      "4",
+      "--target",
+      "q4t",
+      "q4t_preflight_probe",
+      "q4t_host_tests",
+      "q4t_contract_probe"
+    ],
+    "exit_code": 0,
+    "seconds": 19.937921029981226
+  }
+]

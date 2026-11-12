@@ -1,0 +1,29 @@
+[  0%] Built target q4t_regex_build
+[  1%] Built target q4t_client_policy_check
+[  3%] Built target q4t_client_policy_fixture
+[  4%] Built target q4t_guardian_process
+[  9%] Built target q4t_service_tools
+[ 12%] Built target xgrammar
+[ 13%] Built target q4t_router_trace_check
+[ 13%] Built target q4t_gpu_cache_schedule
+[ 14%] Built target q4t_offload_sort
+[ 14%] Built target q4t_device_filter
+[ 15%] Built target q4t_guardian_journal
+[ 15%] Built target q4t_guardian_process_tests
+[ 15%] Built target q4t_service_cli
+[ 15%] Built target q4t_device_admission
+[ 15%] Built target q4t_guardian_journal_tests
+[ 16%] Built target q4t_ingress_access
+[ 17%] Built target q4t_service_cli_fixture
+[ 18%] Built target q4t_device_control
+[ 19%] Built target q4t_guardian
+[ 20%] Built target q4t_device_filter_tests
+[ 21%] Built target q4t_ingress_proxy_tests
+[ 23%] Built target q4t_ingress
+[ 23%] Built target q4t_ingress_access_tests
+[ 25%] Built target q4t_ingress_no_tls
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_quota_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_response_test.cpp.o
+[ 26%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

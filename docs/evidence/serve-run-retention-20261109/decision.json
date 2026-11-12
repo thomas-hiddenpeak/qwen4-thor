@@ -1,0 +1,20 @@
+{
+  "status": "PASS_CURRENT_EPOCH_RETENTION_CPU_PENDING_MIGRATION_AND_DELIVERY",
+  "distinct_cpp_cases": 0,
+  "distinct_python_cases": 10,
+  "first_failed": 7,
+  "second_passed": 5,
+  "second_failed": 2,
+  "third_targeted_passed": 5,
+  "fourth_targeted_passed": 2,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "production_runs_removed": 0,
+  "default_changed": false,
+  "pending": [
+    "legacy and cross-boot owner epoch migration",
+    "actual packaged CLI/export/retention integration",
+    "rollback-capable v6 delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

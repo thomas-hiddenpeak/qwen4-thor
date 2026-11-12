@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-ca503dcfadf7f78748de3a0bc8a6bc25",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "**Title:** `# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0`\n\n**Citation:** `[docs/MODEL.md:L1-L16]`"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 568,
+      "completion_tokens": 46,
+      "total_tokens": 614
+    },
+    "headers": {
+      "cache-control": "no-cache",
+      "connection": "close",
+      "content-type": "text/event-stream",
+      "x-accel-buffering": "no",
+      "x-request-id": "req-4ef230c3b318c765e5a5e4c58157c6eb"
+    }
+  },
+  "wire_base64": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tY2E1MDNkY2ZhZGY3Zjc4NzQ4ZGUzYTBiYzhhNmJjMjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTAxOTE0LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tY2E1MDNkY2ZhZGY3Zjc4NzQ4ZGUzYTBiYzhhNmJjMjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTAxOTE0LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiKipUaXRsZToqKiBgIyBNT0RFTC5tZCDigJQgUXdlbjMuOC1GbGFzaC1OZXh0IChxd2VuNF9leHApIOaetuaehOeslOiusGBcblxuKipDaXRhdGlvbjoqKiBgW2RvY3MvTU9ERUwubWQ6TDEtTDE2XWAifSwiZmluaXNoX3JlYXNvbiI6bnVsbCwibG9ncHJvYnMiOm51bGx9XSwidXNhZ2UiOm51bGx9DQoNCmRhdGE6IHsiaWQiOiJjaGF0Y21wbC1hdXRvLWNhNTAzZGNmYWRmN2Y3ODc0OGRlM2EwYmM4YTZiYzI1Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc5NDEwMTkxNCwibW9kZWwiOiJxd2VuMy44LWZsYXNoLW5leHQiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnt9LCJmaW5pc2hfcmVhc29uIjoic3RvcCIsImxvZ3Byb2JzIjpudWxsfV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by1jYTUwM2RjZmFkZjdmNzg3NDhkZTNhMGJjOGE2YmMyNSIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQxMDE5MTQsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W10sInVzYWdlIjp7InByb21wdF90b2tlbnMiOjU2OCwiY29tcGxldGlvbl90b2tlbnMiOjQ2LCJ0b3RhbF90b2tlbnMiOjYxNH19DQoNCmRhdGE6IFtET05FXQ0KDQo="
+}

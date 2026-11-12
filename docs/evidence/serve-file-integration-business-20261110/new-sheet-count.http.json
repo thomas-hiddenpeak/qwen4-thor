@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "53",
+    "X-Request-Id": "req-4a8d816ea9f825a3c624b5b084723984",
+    "X-Q4T-Preparation-Input-Tokens": "379",
+    "X-Q4T-Preparation-Output-Tokens": "169",
+    "X-Q4T-Preparation-Model-Steps": "1",
+    "Connection": "keep-alive"
+  },
+  "seconds": 12.999355664011091,
+  "body_bytes": 53,
+  "body_sha256": "126b60e2676b5889feea9d510cab867236c4b54de347db0c7762473d33b5e622"
+}

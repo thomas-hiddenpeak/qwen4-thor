@@ -1,0 +1,3766 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f4346180..66f021c2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -347,6 +347,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+     src/server/responses_plan.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
++    src/server/moderation.cpp
++    src/server/responses_execution_moderation.cpp
+   src/server/chat_choices.cpp
+   src/server/chat_tool_history.cpp
+                              src/server/chat_template.cpp)
+@@ -564,6 +566,8 @@ if(Q4T_BUILD_TESTS)
+     src/server/responses_plan.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
++    src/server/moderation.cpp
++    src/server/responses_execution_moderation.cpp
+     src/server/chat_choices.cpp
+     src/server/model_catalog.cpp
+     tests/server_sampling_test.cpp
+@@ -572,6 +576,7 @@ if(Q4T_BUILD_TESTS)
+     tests/server_responses_input_test.cpp
+     tests/server_responses_plan_test.cpp
+     tests/server_responses_reasoning_test.cpp
++    tests/server_moderation_test.cpp
+     tests/server_responses_context_test.cpp
+     tests/server_prediction_test.cpp
+     tests/server_legacy_tools_test.cpp
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index f2d12d77..4437d8f0 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -26,9 +26,12 @@ set(protocol_inputs
+   src/server/prompt_api.cpp
+   include/q4t/server/responses_plan.h
+   include/q4t/server/responses_reasoning.h
++  include/q4t/server/moderation.h
+   src/server/responses_plan.cpp
+   src/server/responses_summary.cpp
+   src/server/responses_reasoning.cpp
++  src/server/moderation.cpp
++  src/server/responses_execution_moderation.cpp
+   cmake/NativeCrypto.cmake
+   include/q4t/server/native_crypto.h
+   src/server/native_crypto.cpp
+diff --git a/cmake/HostTestSources.cmake b/cmake/HostTestSources.cmake
+index 159ad6b6..9b2b10bf 100644
+--- a/cmake/HostTestSources.cmake
++++ b/cmake/HostTestSources.cmake
+@@ -147,6 +147,8 @@ set(Q4T_HOST_TEST_SOURCES
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_summary.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_reasoning.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderation.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
+@@ -154,6 +156,7 @@ set(Q4T_HOST_TEST_SOURCES
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
+diff --git a/docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md b/docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md
+index 1a0f4414..f4cb5594 100644
+--- a/docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md
++++ b/docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md
+@@ -37,3 +37,15 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果
+ [实际pro业务已接受](evidence/serve-reasoning-pro-business-20261110/README.md)：累计2启动/9请求/17步骤/129.201秒，所有组合、真实工具、精确账本及清理通过；继续可回退交付和全部任务。
+ 
+ [A07.7a默认交付完成](evidence/serve-reasoning-pro-delivery-20261110/README.md)：8条实际命令通过，包0837b2a7/引擎943f8e01/元数据b138e4d2，revision22、STOPPED；A07.6完整回退与业务账本保留，0新增模型/Chat。继续b/c及全部总目标。
++
++## A07.7b 当前开发合同（尚未验收）
++
++直接使用已加载Qwen检查点执行原生分类提示和受约束13类风险分数，结果保留实际model身份；不将本地模型别名冒充omni权重或OpenAI校准质量。实际模型估计与类别阈值分开，缺失、非数值、越界或被截断的分类必须是错误，不能填0安全结果。当前已实现策略解析、真实消息/工具参数与结果收集、分类请求规划和输出校验，正在接执行与可见性控制；没有声明本项完成。
++
++- 默认score：正常生成，终态附真实input/output分类或明确error，部分SSE不伪造评分。block：输入未过不进入业务生成，输出未过不得通过实时SSE、持久GET、后台订阅或工具执行泄漏。
++- 输出block需要私有暂存与一次提交；取消、分类失能、存储失败、超限及中途退出只能发布安全的终态和真实错误。不能先公开后撤回。已执行模型和工具不自动重放。
++- 分类有单独有界内部预算，不挤占调用者的max_output_tokens。标准usage描述业务生成，原生审核用量单独披露，实际模型总消耗全部进入TPM/累计用量，仍只收一次RPM。需有独立的实际计数验证，不能漏掉内部token。
++- 审核失能按score/block处理，只影响要求审核的请求；真正CUDA/模型设备错误仍保留已有保护。预热没有生成输出，不触发不存在的输出分类。媒体实际内容与适用类别必须一致，A10其它媒体适配继续必做。
++- 先成组完成共享分类执行、计量和输出暂存，再冻结直接CPU及对应真实业务短验；不做完整性能/全模型正确性测试。原默认pro包0837b2a7继续保持。
++
++成组执行已接入，固定独立审核输出上限每步512、最多2步；不增加业务max_output_tokens。共享生成链最多6模型步及1终结步。冻结29项C++与2项schema（阶段目录required-cpu.txt），先必要独立构建再统一验证；尚未接受/交付，默认pro保持。
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index d5ecf800..0c191997 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -4,7 +4,7 @@ A07.7a 原生pro已完成[19 C++/2schema](evidence/serve-reasoning-pro-cpu-20261
+ 
+ 实际累计2启动/9请求/17步骤/129.201秒，124次NVML全OK，模型退出0且独立清理确认。JSON/SSE、推敲/回答/摘要共享预算、加密后台原回放与原输入、真实文档工具、1-token不完整、pro预热零输出及自动压缩组合通过；精确RPM/TPM/用量核对通过。首CPU空工具额外依赖和首驱动重复start均已修复、原件保留。安装8操作通过、0新增模型/Chat。
+ 
+-A07.1—A07.6及A07.7a已交付；[A07.7b/c](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)继续实际moderation与授权程序，随后A07.8和所有A/R/Q/G余项。总目标active、未合main；不声称云端pro私有算法或模型质量等效，不以子阶段为终点。非性能任务仅针对验证，长稳实跑由用户负责。
++A07.1—A07.6及A07.7a已交付；[A07.7b/c](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)继续实际moderation与授权程序：已成组接入真实分类步骤、输入阻断、私有输出批准发布、失败隔离、独立审核用量与累计TPM，冻结29项C++及2项schema直接用例，两套构建零警告，首CPU 28/29通过；修正前台误用后台取消的夹具后仅重验1项并继续2项schema，随后A07.8和所有A/R/Q/G余项。总目标active、未合main；不声称云端pro私有算法或模型质量等效，不以子阶段为终点。非性能任务仅针对验证，长稳实跑由用户负责。
+ 
+ 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
+ 
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index ffcb3bce..aec1e2b2 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,35 @@
+ # 2026-11-10 开发日志
+ 
++## A07.7b 28/29 CPU通过，修正后台取消夹具
++
++- 做了什么：host/引擎零警告，首29项CPU中28项通过；新取消夹具错误对前台响应调用后台取消接口，命中已有合同拒绝。改为真实background Prepare/Begin/StartRunning后再取消；生产实现未因此更改，首失败完整保留。
++- 为什么：不能放松取消合同让夹具通过，必须使用实际被保护生命周期验证私有输出清理。
++- 下一步：只重跑该1项，复用28项；检查已生成JSON/SSE的2项schema及来源一致性，随后真实业务短验及连续目标。默认保持，0GPU。
++
++## A07.7b 首构建缺失声明修复
++
++- 做了什么：首host与引擎必要构建定位两个缺失声明，分类JSON限制补request_json头，输出隔离错误构建器复用object_protocol。首失败日志保留，未执行任何测试或GPU任务。
++- 为什么：独立源文件必须自包含声明，不能依赖其他翻译单元；构建失败不是验收通过。
++- 下一步：仅继续必要构建，原29 C++/2schema冻结清单保持；通过后统一CPU，再真实短验及全部目标。
++
++## A07.7b 审核真实执行与发布隔离成组完成，冻结针对验证
++
++- 做了什么：共享生成链按输入审核/压缩/pro/主回答/摘要/输出审核调度，最多6模型步；分类有独立512×2输出上限、单RPM及累计实际TPM，不挤占业务输出预算。score分类器失败记录错误继续，block在批准前隔离SSE、GET、后台回放；取消/未知存储回执不泄露私有前缀，真实设备保护保持。统一schema登记审核用量扩展，能力发现报告实际依赖。
++- 为什么：必须实现真实行为、失败策略和用量，不能用参数解析或固定拒绝充当完成，也不能在增加内部步骤时破坏已有压缩、推敲、摘要与预热。
++- 下一步：29项直接C++及2项schema冻结于阶段目录，先独立构建再统一CPU；通过后冻结真实业务短验并交付，继续授权程序与全部总计划。尚未测试，默认943f8e01及包0837b2a7保持STOPPED。
++
++## A07.7b 补齐私有输出隔离和独立审核用量结构
++
++- 做了什么：追加未审输出hold/批准发布/丢弃生命周期，普通checkpoint不持久化私有输出，取消/错误/异常收尾丢弃私有事件，未批准不能Finish。加入审核结果和q4t_moderation_usage原生扩展，标准生成预算保持，RPM预留接口增加硬上限1024的审核输出预算并计入TPM。
++- 为什么：输出阻断必须同时覆盖SSE和持久观察；内部分类不能挤占max_output_tokens或漏计GPU消耗，不能因辅助失败停止整个服务。
++- 下一步：完成具体模型步骤调度、输入阻断和输出分类的接入及直接用例后统一验证；当前尚未测试/交付，默认943f8e01不变，总目标继续。
++
++## A07.7b 原生审核开始实际模型分类开发
++
++- 做了什么：核对官方moderation指南与固定SDK，接入严格score/block策略、实际模型身份、消息及工具参数/结果收集、13类受约束真实风险分数规划与结果校验；缺失/非法分数不转安全。尚未构建或测试，执行和输出暂存继续开发。
++- 为什么：审核不能只回显/拒绝字段，也不能通过关键词或固定零分伪造模型结果；阻断必须覆盖SSE与持久回放，不可先公开再撤回。
++- 下一步：完成执行、独立审核预算/真实用量和暂存生命周期后成组针对验收；默认pro保持STOPPED，持续全部总任务。
++
+ ## A07.7a 默认交付完成，继续审核与授权执行
+ 
+ - 做了什么：8条实际随包命令通过，默认引擎943f8e01/元数据b138e4d2/包0837b2a7，publication revision22，STOPPED；A07.6完整回退和业务账本保持，安装0新增模型/Chat。证据docs/evidence/serve-reasoning-pro-delivery-20261110。
+diff --git a/docs/serve-application-v1.schema.json b/docs/serve-application-v1.schema.json
+index fc5cd29b..69ad682c 100644
+--- a/docs/serve-application-v1.schema.json
++++ b/docs/serve-application-v1.schema.json
+@@ -10528,6 +10528,36 @@
+         },
+         "store": {
+           "type": "boolean"
++        },
++        "q4t_moderation_usage": {
++          "type": "object",
++          "properties": {
++            "input_tokens": {
++              "type": "integer",
++              "minimum": 0
++            },
++            "output_tokens": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 1024
++            },
++            "total_tokens": {
++              "type": "integer",
++              "minimum": 0
++            },
++            "model_steps": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 2
++            }
++          },
++          "required": [
++            "input_tokens",
++            "output_tokens",
++            "total_tokens",
++            "model_steps"
++          ],
++          "additionalProperties": false
+         }
+       },
+       "required": [
+@@ -17729,6 +17759,7 @@
+       "SDK-added output_text is optional on wire",
+       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+       "native store echo and native response error codes",
++      "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
+       "SDK-documented include_obfuscation adds optional string padding to delta events only",
+       "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+       "exact integer and bounded native options",
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index e9788de0..3970594c 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -391,7 +391,7 @@
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
++    "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+@@ -432,11 +432,11 @@
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+-    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
++    "src/server/responses_execution.cpp": "765962612e5b753d14c152314bb74ab4f6c6edd85faab06d2c18e3d79098acca",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+-    "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
++    "src/server/responses_output.cpp": "33f24f6713760f94e55e7bbd3449ae090e06d274fbe58e65e5eeb1706e5b2922",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
++    "src/server/responses_plan.cpp": "c79f7a79f1bf310ef0d30d38639b28c65d1d793f27c311ecba2f37f6293d4c01",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+diff --git a/docs/serve-openapi-bundle-v1.json b/docs/serve-openapi-bundle-v1.json
+index c37865d5..653c169c 100644
+--- a/docs/serve-openapi-bundle-v1.json
++++ b/docs/serve-openapi-bundle-v1.json
+@@ -20867,6 +20867,36 @@
+               },
+               "store": {
+                 "type": "boolean"
++              },
++              "q4t_moderation_usage": {
++                "type": "object",
++                "properties": {
++                  "input_tokens": {
++                    "type": "integer",
++                    "minimum": 0
++                  },
++                  "output_tokens": {
++                    "type": "integer",
++                    "minimum": 0,
++                    "maximum": 1024
++                  },
++                  "total_tokens": {
++                    "type": "integer",
++                    "minimum": 0
++                  },
++                  "model_steps": {
++                    "type": "integer",
++                    "minimum": 0,
++                    "maximum": 2
++                  }
++                },
++                "required": [
++                  "input_tokens",
++                  "output_tokens",
++                  "total_tokens",
++                  "model_steps"
++                ],
++                "additionalProperties": false
+               }
+             },
+             "required": [
+@@ -28068,6 +28098,7 @@
+             "SDK-added output_text is optional on wire",
+             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+             "native store echo and native response error codes",
++            "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
+             "SDK-documented include_obfuscation adds optional string padding to delta events only",
+             "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+             "exact integer and bounded native options",
+diff --git a/include/q4t/server/client_policy.h b/include/q4t/server/client_policy.h
+index b5e56fd3..51ca6d09 100644
+--- a/include/q4t/server/client_policy.h
++++ b/include/q4t/server/client_policy.h
+@@ -20,6 +20,9 @@ namespace q4t::server {
+ 
+ inline constexpr size_t kClientPolicyBytes = 64 * 1024;
+ inline constexpr size_t kMaxClients = 64;
++// Optional request-owned classifiers have a separate, fixed internal ceiling;
++// they never increase the public generation budget or escape TPM accounting.
++inline constexpr uint64_t kMaxAuxiliaryOutputTokens = 1024;
+ inline constexpr uint64_t kMaxClientRevision = (uint64_t{1} << 53) - 1;
+ inline constexpr auto kClientHandoffWait = std::chrono::milliseconds(100);
+ 
+@@ -216,7 +219,8 @@ class ClientRateLease {
+   ClientRateResult Reserve(ClientAdmission& admission,
+                            const ClientIdentity& identity, uint64_t prompt,
+                            uint64_t output,
+-                           ClientClock::time_point now = ClientClock::now());
++                           ClientClock::time_point now = ClientClock::now(),
++                           uint64_t auxiliary_output = 0);
+   // Reserve actual additional input for a subsequent internal model step.
+   // Keeps the original RPM admission and shared output reservation; cumulative
+   // input must still fit the client's prompt limit. StartPrompt charges only
+diff --git a/include/q4t/server/responses_execution.h b/include/q4t/server/responses_execution.h
+index b0e07465..1818dc1d 100644
+--- a/include/q4t/server/responses_execution.h
++++ b/include/q4t/server/responses_execution.h
+@@ -1,6 +1,7 @@
+ #pragma once
+ 
+ #include <array>
++#include <optional>
+ 
+ #include "q4t/server/responses_output.h"
+ #include "q4t/server/responses_compaction.h"
+@@ -49,6 +50,13 @@ class ResponsesExecution {
+   ObjectReply StartRunning(std::string* wire);
+   ObjectReply Cancel();
+   ObjectReply Checkpoint();
++  // Block policy keeps all generated items/events private until the actual
++  // classifier approves them. GET/replay continue to see the safe checkpoint.
++  ObjectReply HoldUnreviewedOutput();
++  ObjectReply PublishReviewedOutput(const io::Json& moderation,
++                                    std::string* wire);
++  void DiscardUnreviewedOutput() noexcept;
++  bool OutputHeld() const { return moderation_safe_.has_value(); }
+   void BindCancellation(std::chrono::steady_clock::time_point deadline,
+                         std::function<bool()> cancelled) {
+     access_.deadline = deadline;
+@@ -75,7 +83,9 @@ class ResponsesExecution {
+   std::string ResultJson() const;
+   ObjectReply Finish(bool incomplete, size_t completed_calls,
+                      const ResponsesUsage& usage, int64_t completed_at,
+-                     std::string* wire);
++                     std::string* wire, bool content_filtered = false);
++  Status SetModerationResults(const io::Json& results,
++                              const ModerationUsage& usage);
+   // After model/grammar cleanup, close ordinary error/exception paths without
+   // inheriting a disconnected client's cancellation or already-expired timer.
+   // A lost mutation receipt is never retried or overwritten speculatively.
+@@ -141,6 +151,10 @@ class ResponsesExecution {
+   // Valid generated events withheld by a failed checkpoint. Error rendering
+   // sends this original prefix before its terminal; no sequence is invented.
+   std::string failure_prefix_;
++  std::optional<ResponsesOutput> moderation_safe_;
++  size_t moderation_safe_events_ = 0;
++  size_t moderation_safe_bytes_ = 0;
++  std::string moderation_wire_;
+   std::shared_ptr<RequestControl> background_control_;
+   int failure_status_ = 0;
+   std::array<char, 128> failure_code_{};
+diff --git a/include/q4t/server/responses_output.h b/include/q4t/server/responses_output.h
+index 9b7c7261..eefe2992 100644
+--- a/include/q4t/server/responses_output.h
++++ b/include/q4t/server/responses_output.h
+@@ -11,6 +11,7 @@
+ 
+ #include "q4t/io/json.h"
+ #include "q4t/server/chat_response_parser.h"
++#include "q4t/server/moderation.h"
+ #include "q4t/status.h"
+ 
+ namespace q4t::server {
+@@ -49,7 +50,8 @@ class ResponsesOutput {
+   // Only calls with a validated closing delimiter may receive arguments.done.
+   Status Finish(bool incomplete, size_t completed_calls,
+                 const ResponsesUsage& usage, int64_t completed_at,
+-                std::string* wire, const ResponsesReasoningSeal& seal = {});
++                std::string* wire, const ResponsesReasoningSeal& seal = {},
++                bool content_filtered = false);
+   Status Fail(std::string_view code, std::string_view message,
+               std::string* wire);
+   static std::string RenderStreamError(void* owner, int status,
+@@ -62,6 +64,7 @@ class ResponsesOutput {
+   bool Terminal() const { return terminal_; }
+   bool HasSummary() const { return summary_item_ < kMaxItems; }
+   void CacheDiagnostics(io::Json value) noexcept;
++  Status Moderation(const io::Json& results, const ModerationUsage& usage);
+ 
+  private:
+   Status Charge(size_t bytes);
+diff --git a/include/q4t/server/responses_plan.h b/include/q4t/server/responses_plan.h
+index b274ad73..4f6e0fbc 100644
+--- a/include/q4t/server/responses_plan.h
++++ b/include/q4t/server/responses_plan.h
+@@ -6,6 +6,7 @@
+ 
+ #include "q4t/io/json.h"
+ #include "q4t/server/chat_plan.h"
++#include "q4t/server/moderation.h"
+ #include "q4t/server/responses_input.h"
+ #include "q4t/status.h"
+ 
+@@ -17,6 +18,7 @@ struct ResponsesEnvelope {
+   io::Json request;
+   io::Json options;
+   PromptCacheOptions cache;
++  ModerationOptions moderation;
+   bool stream = false;
+   bool store = true;
+   bool background = false;
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index eb500913..7fc83a44 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -115,8 +115,20 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
+          R"("diagnostic_entries":128,"diagnostic_client_entries":16,)"
+          R"("diagnostic_ttl_seconds":3600,"durable_cache":false,)"
+          R"("media_fingerprint_pending":true,"core_readiness_dependency":false},)"
++         R"("moderation":{"enabled":true,"executor":"native_served_model",)"
++         R"("requires_structured_backend":true,"classifier_available":)" +
++         (constrained && !cleanup_pending ? "true" : "false") +
++         R"(,)"
++         R"("model_selection":"served_model_or_alias",)"
++         R"("policies":["score","block"],"threshold":0.5,)"
++         R"("input_before_generation":true,"block_output_before_publication":true,)"
++         R"("tool_content":"actual_arguments_and_results",)"
++         R"("scores":"local_estimates_not_cloud_calibration",)"
++         R"("auxiliary_output_tokens_per_step":512,"max_steps":2,)"
++         R"("usage":"q4t_moderation_usage","same_client_tpm":true,)"
++         R"("single_request_admission":true,"model_restart_on_error":false},)"
+          R"("pending_execution":[)"
+-         R"("access_programs","moderation",)"
++         R"("access_programs",)"
+          R"("file_resolution","builtin_tools"]})"
+          R"(,"conversations":{"profile":"q4t-conversations-v1",)"
+          R"("endpoint":"/v1/conversations","create":true,"retrieve":true,)"
+diff --git a/src/server/chat_generation.cpp b/src/server/chat_generation.cpp
+index 0dcf3bcd..231d930e 100644
+--- a/src/server/chat_generation.cpp
++++ b/src/server/chat_generation.cpp
+@@ -1,5 +1,6 @@
+ // Existing ChatServer responsibilities; shared state stays in ChatServer.
+ #include "chat_server_internal.h"
++#include "responses_json.h"
+ 
+ #include <new>
+ #include <optional>
+@@ -634,7 +635,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     return status;
+   };
+   const auto prepare_step = [&](const ChatRequestPlan& step,
+-                                const io::Json& original) {
++                                const io::Json& original,
++                                bool auxiliary = false) {
++    auto step_config = planning_config;
++    if (auxiliary) {
++      step_config.client_limits = nullptr;
++      step_config.prewarm_only = false;
++    }
+     const auto& step_request = step.Request(original);
+     items.clear();
+     media_plan = {};
+@@ -647,7 +654,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       if (!lock.owns_lock())
+         return Status::Fail("Internal step cancelled waiting for tokenizer");
+       status = EncodeChatPrompt(
+-          step_request, planning_config, prompt,
++          step_request, step_config, prompt,
+           [&](std::string_view text, std::vector<uint32_t>* out) {
+             return tok_->Encode(text, out, {.cancelled = cancelled});
+           },
+@@ -655,10 +662,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     }
+     if (status && !items.empty()) {
+       const auto& model = model_.Get().cfg;
+-      status = ExpandChatMedia(
+-          step_request, items, model.image_token_id, model.video_token_id,
+-          proc_cfg_, video_proc_cfg_, vision_device_budget_, planning_config,
+-          &prompt_u32, &media_plan, &prompt_budget, &planning_error);
++      status = ExpandChatMedia(step_request, items, model.image_token_id,
++                               model.video_token_id, proc_cfg_, video_proc_cfg_,
++                               vision_device_budget_, step_config, &prompt_u32,
++                               &media_plan, &prompt_budget, &planning_error);
+     }
+     prompt_encoded = status.ok();
+     return status;
+@@ -682,7 +689,55 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                             responses->Envelope().reasoning_mode == "pro";
+   ResponsesSummaryPlan pro_plan;
+   std::string pro_notes;
+-  if (compact_step_needed) {
++  const auto moderation_options =
++      responses ? responses->Envelope().moderation : ModerationOptions{};
++  const bool moderate_output = moderation_options.enabled && !cache_prewarm;
++  ModerationPlan input_moderation, output_moderation;
++  ModerationUsage moderation_usage;
++  auto moderation_results = responses_detail::Object(
++      {{"input", ModerationError("moderation_not_executed",
++                                 "Input classification has not executed")},
++       {"output", ModerationError("moderation_not_executed",
++                                  "Output classification has not executed")}});
++  bool input_review = false;
++  if (moderation_options.enabled) {
++    ModerationContent content;
++    s = CollectModerationInput(*req.GetArray("messages"), &content,
++                               &planning_error);
++    if (s)
++      s = PlanModeration(moderation_options, content, planning_config,
++                         kMaxModerationStepTokens, &input_moderation,
++                         &planning_error);
++    if (s)
++      s = prepare_step(input_moderation.chat, input_moderation.request, true);
++    if (!s) {
++      if (cancelled()) {
++        count_abort();
++        send_cancel_error("Input moderation preparation cancelled");
++        return;
++      }
++      responses_detail::Set(&moderation_results, "input",
++                            ModerationError("moderation_preparation_failed",
++                                            s.message().substr(0, 1024)));
++      if (moderation_options.input == ModerationMode::kBlock) {
++        SendError(fd, 503, "Required input classification unavailable", {},
++                  "moderation_unavailable", "moderation");
++        return;
++      }
++      // The rejected auxiliary preparation may have changed prompt buffers.
++      // Restore the actual primary before admission; never execute its prompt
++      // under the classifier plan or charge the wrong input.
++      s = prepare_step(request_plan, original_request);
++      if (!s) {
++        SendError(fd, planning_error.http_status, s.message(), {},
++                  planning_error.code, planning_error.param);
++        return;
++      }
++    } else {
++      input_review = true;
++    }
++  }
++  if (compact_step_needed && !input_review) {
+     s = prepare_step(responses->Compaction().chat,
+                      responses->Compaction().request);
+     if (!s) {
+@@ -695,11 +750,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       }
+       return;
+     }
+-  } else if (pro_selected) {
++  } else if (pro_selected && !compact_step_needed) {
+     s = PlanResponsesDeliberation(responses->Generation(), request_output_limit,
+                                   0, planning_config, &pro_plan,
+                                   &planning_error);
+-    if (s) s = prepare_step(pro_plan.chat, pro_plan.request);
++    if (s && !input_review) s = prepare_step(pro_plan.chat, pro_plan.request);
+     if (!s) {
+       if (cancelled()) {
+         count_abort();
+@@ -712,6 +767,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     }
+   }
+   if (planning_config.client_limits) {
++    if (prompt_u32.size() > planning_config.client_limits->max_prompt_tokens) {
++      SendError(fd, 400, "Initial step exceeds client input limit", {},
++                "client_prompt_limit_exceeded", "moderation");
++      return;
++    }
+     const auto result = rate_lease.Reserve(
+         clients_, http->Client(),
+         completion                                   ? completion_prompt_tokens
+@@ -721,7 +781,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         : standalone_compact && !compact_step_needed ? 0
+         : cache_prewarm                              ? 0
+         : responses                                  ? request_output_limit
+-                    : prompt_budget.total_output);
++                    : prompt_budget.total_output,
++        ClientClock::now(),
++        (input_review + moderate_output) * kMaxModerationStepTokens);
+     if (result != ClientRateResult::kAllowed) {
+       const char* code =
+           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
+@@ -747,7 +809,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+   std::optional<PromptCacheDiagnostics::Observation> cache_observation;
+   size_t responses_completed_calls = 0;
+   const auto completed_tokens = [&] {
+-    if (responses) return static_cast<uint64_t>(responses_usage.output_tokens);
++    if (responses)
++      return static_cast<uint64_t>(responses_usage.output_tokens +
++                                   moderation_usage.output_tokens);
+     return completion ? completion_choices.CompletionTokens()
+                       : choices.CompletionTokens();
+   };
+@@ -774,74 +838,213 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     return false;
+   };
+ 
+-  if (compact_selected && !compact_step_needed) {
+-    std::string wire, part;
++  enum class ResponseStep {
++    kInputReview,
++    kCompaction,
++    kPro,
++    kPrimary,
++    kSummary,
++    kOutputReview,
++    kFinish
++  };
++  const auto first_business_step = compact_step_needed
++                                       ? ResponseStep::kCompaction
++                                   : pro_selected ? ResponseStep::kPro
++                                                  : ResponseStep::kPrimary;
++  auto response_step =
++      input_review ? ResponseStep::kInputReview : first_business_step;
++  bool response_incomplete = false, response_filtered = false;
++  bool output_hold_started = false;
++  bool compact_noop_pending = compact_selected && !compact_step_needed;
++  const auto begin_response = [&](std::string* wire) {
+     ObjectReply result;
+-    if (!responses->Begun()) result = responses->Begin(&wire);
+-    if (result.ok()) result = responses->StartCompaction(&part);
+-    wire += part;
+-    part.clear();
+-    if (result.ok())
+-      result = responses->CompleteCompaction("", 0, planning_config,
+-                                             measure_context, &part);
+-    wire += part;
+-    if (result.ok() && standalone_compact) {
+-      rate_lease.StartPrompt(0);
+-      result = responses->Finish(false, 0, {}, std::time(nullptr), &part);
++    wire->clear();
++    if (!responses->Begun()) result = responses->Begin(wire);
++    if (result.ok() && moderate_output &&
++        moderation_options.output == ModerationMode::kBlock &&
++        !output_hold_started) {
++      result = responses->HoldUnreviewedOutput();
++      if (result.ok()) output_hold_started = true;
++    }
++    return result;
++  };
++  const auto finish_response = [&] {
++    std::string wire, terminal;
++    auto result = begin_response(&wire);
++    if (result.ok() && moderation_options.enabled) {
++      s = responses->SetModerationResults(moderation_results, moderation_usage);
++      if (!s) {
++        SendError(fd, 503, s.message(), {}, "moderation_metadata_failed");
++        return false;
++      }
++    }
++    if (result.ok()) {
++      diagnostic.Stage("storage");
++      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
++      result = responses->Finish(response_incomplete, responses_completed_calls,
++                                 responses_usage, std::time(nullptr), &terminal,
++                                 response_filtered);
+     }
+     if (!result.ok()) {
++      err_guard.ok = false;
+       SendError(fd, result.http_status, result.ClientMessage(), {},
+-                result.ClientCode(), result.value.GetString("param"));
+-      return;
++                result.ClientCode());
++      return false;
+     }
+-    if (standalone_compact) {
+-      if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
+-                      "application/json", {.control = control.get()})) {
+-        control->Cancel(RequestControl::State::kDisconnect);
+-        count_abort();
+-        return;
++    if (cache_observation && !response_filtered)
++      prompt_cache_diagnostics_.Remember(client, responses->Id(),
++                                         std::move(*cache_observation));
++    if (stream) {
++      if (!headers_started) {
++        if (!detail::BeginStreamingResponse(fd, response_state,
++                                            {.control = control.get()})) {
++          count_abort();
++          return false;
++        }
++        headers_started = true;
+       }
+-      err_guard.ok = true;
+-      control->Finish();
+-      diagnostic.Outcome("success", "compaction_noop");
+-      metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+-      return;
++      if (!wire.empty() && !write_stream(wire)) return false;
++      if (http) http->BeforeTerminal();
++      *response_state = detail::ResponseState::kTerminal;
++      if (!write_stream(terminal)) return false;
++    } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
++                           "application/json", {.control = control.get()})) {
++      control->Cancel(RequestControl::State::kDisconnect);
++      count_abort();
++      return false;
+     }
+-    if (stream) {
+-      if (!detail::BeginStreamingResponse(fd, response_state,
+-                                          {.control = control.get()}) ||
+-          !write_stream(wire))
+-        return;
+-      headers_started = true;
+-      if (http) http->StartHeartbeats(control);
++    *response_state = detail::ResponseState::kComplete;
++    if (control->Cancelled() || !control->Finish()) {
++      count_abort();
++      return false;
+     }
+-  }
++    err_guard.ok = true;
++    const auto elapsed = std::chrono::duration<double>(
++                             std::chrono::steady_clock::now() - t_arrive)
++                             .count();
++    metrics_.response_seconds.Observe(elapsed);
++    metrics_.e2e_seconds.Observe(elapsed);
++    request_session.success = !response_filtered;
++    for (auto& lease : shared_writes) lease->success = !response_filtered;
++    diagnostic.Outcome("success",
++                       response_filtered ? "content_filter" : "completed");
++    metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
++    return true;
++  };
++  const auto finish_review = [&](bool input, io::Json report) {
++    const auto mode =
++        input ? moderation_options.input : moderation_options.output;
++    const auto decision = DecideModeration(mode, report);
++    responses_detail::Set(&moderation_results, input ? "input" : "output",
++                          std::move(report));
++    if (responses->Begun()) {
++      s = responses->SetModerationResults(moderation_results, moderation_usage);
++      if (!s) {
++        SendError(fd, 503, s.message(), {}, "moderation_metadata_failed");
++        return false;
++      }
++    }
++    if (decision == ModerationDecision::kUnavailable) {
++      responses->DiscardUnreviewedOutput();
++      SendError(fd, 503, "Required classification unavailable", {},
++                "moderation_unavailable", "moderation");
++      return false;
++    }
++    if (decision == ModerationDecision::kBlocked) {
++      responses->DiscardUnreviewedOutput();
++      response_incomplete = response_filtered = true;
++      response_step = ResponseStep::kFinish;
++      return true;
++    }
++    if (!input && responses->OutputHeld()) {
++      std::string wire;
++      const auto published = responses->PublishReviewedOutput(
++          *moderation_results.Find("output"), &wire);
++      if (!published.ok()) {
++        SendError(fd, published.http_status, published.ClientMessage(), {},
++                  published.ClientCode());
++        return false;
++      }
++      if (stream && !write_stream(wire)) return false;
++    }
++    response_step = input ? first_business_step : ResponseStep::kFinish;
++    return true;
++  };
+   ResponsesGenerationPlan continuation_generation;
+-  const int pro_index = compact_step_needed ? 1 : 0;
+-  const int primary_index = pro_index + (pro_selected ? 1 : 0);
+-  for (int choice_index = 0;
+-       choice_index <
+-       (standalone_compact ? 1 : sampling.choices + primary_index) +
+-           (summary_plan.needed ? 1 : 0);
++  // At most six model steps and one non-model terminal. No automatic retries
++  // of a generated answer, classification, compaction, or tool call.
++  for (int choice_index = 0; choice_index < (responses ? 7 : sampling.choices);
+        ++choice_index) {
+-    const bool compaction_step = compact_step_needed && choice_index == 0;
+-    const bool pro_step = pro_selected && choice_index == pro_index;
++    if (responses && response_step == ResponseStep::kFinish) {
++      finish_response();
++      return;
++    }
++    if (compact_noop_pending && response_step != ResponseStep::kInputReview) {
++      std::string wire, part;
++      auto result = begin_response(&wire);
++      if (result.ok()) result = responses->StartCompaction(&part);
++      wire += part;
++      part.clear();
++      if (result.ok())
++        result = responses->CompleteCompaction("", 0, planning_config,
++                                               measure_context, &part);
++      wire += part;
++      if (!result.ok()) {
++        SendError(fd, result.http_status, result.ClientMessage(), {},
++                  result.ClientCode(), result.value.GetString("param"));
++        return;
++      }
++      compact_noop_pending = false;
++      if (standalone_compact) {
++        rate_lease.StartPrompt(0);
++        finish_response();
++        return;
++      }
++      if (stream) {
++        if ((!headers_started &&
++             !detail::BeginStreamingResponse(fd, response_state,
++                                             {.control = control.get()})) ||
++            !write_stream(wire))
++          return;
++        headers_started = true;
++        if (http) http->StartHeartbeats(control);
++      }
++    }
++    const bool compaction_step =
++        responses && response_step == ResponseStep::kCompaction;
++    const bool pro_step = responses && response_step == ResponseStep::kPro;
+     const bool summary_step =
+-        responses && summary_plan.needed && choice_index == primary_index + 1;
+-    const bool internal_step = compaction_step || pro_step || summary_step;
++        responses && response_step == ResponseStep::kSummary;
++    const bool input_moderation_step =
++        responses && response_step == ResponseStep::kInputReview;
++    const bool moderation_step =
++        input_moderation_step ||
++        (responses && response_step == ResponseStep::kOutputReview);
++    const auto review_failed = [&](const char* code,
++                                   const std::string& message) {
++      return finish_review(input_moderation_step,
++                           ModerationError(code, message.substr(0, 1024)));
++    };
++    const auto& moderation_plan =
++        input_moderation_step ? input_moderation : output_moderation;
++    const bool internal_step =
++        compaction_step || pro_step || summary_step || moderation_step;
+     const bool compacted_primary = compact_step_needed && !internal_step;
+-    const bool continued_primary = primary_index > 0 && !internal_step;
+-    const auto& step_plan = compaction_step      ? responses->Compaction().chat
+-                            : pro_step           ? pro_plan.chat
+-                            : summary_step       ? summary_plan.chat
+-                            : continued_primary  ? continuation_generation.chat
+-                                                 : request_plan;
++    const bool continued_primary =
++        (compact_step_needed || pro_selected) && !internal_step;
++    const auto& step_plan = moderation_step     ? moderation_plan.chat
++                            : compaction_step   ? responses->Compaction().chat
++                            : pro_step          ? pro_plan.chat
++                            : summary_step      ? summary_plan.chat
++                            : continued_primary ? continuation_generation.chat
++                                                : request_plan;
+     const auto& req = step_plan.Request(
+-        compaction_step      ? responses->Compaction().request
+-        : pro_step           ? pro_plan.request
+-        : summary_step       ? summary_plan.request
+-        : continued_primary  ? continuation_generation.generation_request
+-                             : original_request);
++        moderation_step     ? moderation_plan.request
++        : compaction_step   ? responses->Compaction().request
++        : pro_step          ? pro_plan.request
++        : summary_step      ? summary_plan.request
++        : continued_primary ? continuation_generation.generation_request
++                            : original_request);
+     const auto& constraints = step_plan.constraints;
+     const auto& sampling = step_plan.sampling;
+     const bool plain_greedy = sampling.PlainGreedy();
+@@ -850,23 +1053,31 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         (!completion || completion_plan.logprobs >= 0);
+     const bool prediction_enabled = step_plan.prediction.enabled;
+     const bool prewarm = cache_prewarm && !internal_step;
+-    const int max_tokens = prewarm ? 0
+-                          : responses ? ChatOutputLimit(req, planning_config)
+-                                     : request_output_limit;
++    const int max_tokens = prewarm           ? 0
++                           : moderation_step ? kMaxModerationStepTokens
++                           : responses ? ChatOutputLimit(req, planning_config)
++                                       : request_output_limit;
+     std::string prefix_scope = internal_step ? "" : request_prefix_scope;
+     SessionLease summary_session;
+     auto& session = internal_step ? summary_session : request_session;
+     if (responses && choice_index > 0) {
+       err_guard.ok = false;
+       diagnostic.Stage("encode");
+-      const char* param = summary_step  ? "reasoning.summary"
+-                          : pro_selected ? "reasoning.mode"
+-                                         : "context_management";
+-      s = prepare_step(step_plan, req);
++      const char* param = moderation_step ? "moderation"
++                          : summary_step  ? "reasoning.summary"
++                          : pro_selected  ? "reasoning.mode"
++                                          : "context_management";
++      s = prepare_step(step_plan, req, moderation_step);
+       if (!s) {
+         if (cancelled()) {
+           count_abort();
+           send_cancel_error("Internal step preparation cancelled");
++        } else if (moderation_step) {
++          if (!finish_review(input_moderation_step,
++                             ModerationError("moderation_preparation_failed",
++                                             s.message().substr(0, 1024))))
++            return;
++          continue;
+         } else {
+           SendError(fd, planning_error.http_status, s.message(), {},
+                     planning_error.code, param);
+@@ -874,9 +1085,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         return;
+       }
+       if (planning_config.client_limits) {
+-        const uint64_t total_prompt =
+-            responses_usage.input_tokens + prompt_u32.size();
++        const uint64_t total_prompt = responses_usage.input_tokens +
++                                      moderation_usage.input_tokens +
++                                      prompt_u32.size();
+         if (total_prompt > planning_config.client_limits->max_prompt_tokens) {
++          if (moderation_step) {
++            if (!review_failed("client_prompt_limit_exceeded",
++                               "Classification cumulative input limit"))
++              return;
++            continue;
++          }
+           SendError(fd, 400,
+                     "Internal step exceeds cumulative client input limit", {},
+                     "client_prompt_limit_exceeded", param);
+@@ -886,6 +1104,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                                                       prompt_u32.size());
+         if (extended != ClientRateResult::kAllowed) {
+           const bool tpm = extended == ClientRateResult::kTpm;
++          if (moderation_step) {
++            if (!review_failed(
++                    tpm ? "client_tpm_exhausted" : "step_admission_unavailable",
++                    "Classification input reservation unavailable"))
++              return;
++            continue;
++          }
+           SendError(fd, tpm ? 429 : 503,
+                     "Internal step input reservation unavailable", {},
+                     tpm ? "client_tpm_exhausted" : "step_admission_unavailable",
+@@ -925,7 +1150,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         sampling.choices == 1
+             ? request_id
+             : request_id + "_choice_" + std::to_string(choice_index),
+-        (collect_chat && !responses) || compaction_step,
++        (collect_chat && !responses) || compaction_step || moderation_step,
+         step_plan.legacy_output);
+     if (!s.ok()) {
+       SendError(fd, 400, s.message());
+@@ -1014,8 +1239,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     uint64_t prediction_pair_matches = 0;
+     const auto start_stream = [&] {
+       std::string response_start;
+-      if (responses && !responses->Begun()) {
+-        const auto started = responses->Begin(&response_start);
++      if (responses) {
++        const auto started = begin_response(&response_start);
+         if (!started.ok()) {
+           SendError(fd, started.http_status, started.ClientMessage(), {},
+                     started.ClientCode());
+@@ -1081,12 +1306,24 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       }
+       if (admission == StructuredRequestLease::Result::kBusy) {
+         metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
++        if (moderation_step) {
++          if (!review_failed("structured_capacity_exhausted",
++                             "Classification grammar capacity exhausted"))
++            return;
++          continue;
++        }
+         SendError(fd, 503, "structured request capacity exhausted", {},
+                   "structured_capacity_exhausted");
+         return;
+       }
+       if (detail::GrammarCleanupPending()) {
+         metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
++        if (moderation_step) {
++          if (!review_failed("structured_capacity_exhausted",
++                             "Classification grammar cleanup pending"))
++            return;
++          continue;
++        }
+         SendError(fd, 503,
+                   "grammar worker cleanup still owns structured capacity", {},
+                   "structured_capacity_exhausted");
+@@ -1109,6 +1346,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       const auto vocab_size = tok_->VocabSize();
+       if (vocab_size <= 0 || vocab_size > 300000) {
+         metrics_.structured_prepare_failed.fetch_add(1);
++        if (moderation_step) {
++          if (!review_failed("constraint_compile_failed",
++                             "Invalid classification vocabulary"))
++            return;
++          continue;
++        }
+         SendError(fd, 400, "invalid structured vocabulary size", {},
+                   "constraint_compile_failed");
+         return;
+@@ -1117,6 +1360,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       VocabularyStorageBudget storage;
+       if (!storage.Charge(vocabulary.capacity() * sizeof(std::string))) {
+         metrics_.structured_prepare_failed.fetch_add(1);
++        if (moderation_step) {
++          if (!review_failed("constraint_compile_failed",
++                             "Classification vocabulary capacity exhausted"))
++            return;
++          continue;
++        }
+         SendError(fd, 400, "structured vocabulary storage budget exceeded", {},
+                   "constraint_compile_failed");
+         return;
+@@ -1174,6 +1423,25 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       if (!s) {
+         metrics_.structured_prepare_failed.fetch_add(1,
+                                                      std::memory_order_relaxed);
++        if (moderation_step) {
++          const auto* code = compile_failure == GrammarFailure::kTimeout
++                                 ? "constraint_compile_timeout"
++                             : compile_failure == GrammarFailure::kResource
++                                 ? "constraint_resource_exhausted"
++                             : compile_failure == GrammarFailure::kDependency
++                                 ? "constraint_dependency_unavailable"
++                             : compile_failure == GrammarFailure::kWorker
++                                 ? "constraint_worker_failed"
++                             : compile_failure == GrammarFailure::kUnavailable
++                                 ? "structured_capacity_exhausted"
++                                 : "constraint_compile_failed";
++          if (compile_failure == GrammarFailure::kTimeout)
++            metrics_.structured_compile_timeouts.fetch_add(1);
++          if (compile_failure == GrammarFailure::kResource)
++            metrics_.structured_resource_exhausted.fetch_add(1);
++          if (!review_failed(code, s.message())) return;
++          continue;
++        }
+         if (compile_failure == GrammarFailure::kTimeout) {
+           metrics_.structured_compile_timeouts.fetch_add(1);
+           SendError(fd, 503, s.message(), {}, "constraint_compile_timeout");
+@@ -1326,7 +1594,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         admitted_completion_prompt_tokens += prompt_u32.size();
+       rate_lease.StartPrompt(admitted_completion_prompt_tokens);
+     } else if (responses) {
+-      rate_lease.StartPrompt(responses_usage.input_tokens + prompt_u32.size());
++      rate_lease.StartPrompt(responses_usage.input_tokens +
++                             moderation_usage.input_tokens + prompt_u32.size());
+     } else {
+       rate_lease.Start();
+     }
+@@ -2271,11 +2540,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         }
+         std::string response_chunk;
+         if (responses) {
+-          if (compaction_step) {
++          if (compaction_step || moderation_step) {
+             response_status =
+                 delta.kind == ResponseDelta::Kind::kContent
+                     ? Status()
+-                    : Status::Fail("Compaction emitted non-text output");
++                    : Status::Fail("Private executor emitted non-text output");
+           } else if (pro_step) {
+             if (delta.kind == ResponseDelta::Kind::kTool ||
+                 delta.text.size() > 1024 * 1024 - pro_notes.size()) {
+@@ -2299,7 +2568,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+           }
+           if (!response_status) return false;
+         }
+-        if (!stream || compaction_step) continue;
++        if (!stream || compaction_step || moderation_step ||
++            (responses && responses->OutputHeld()))
++          continue;
+         detail::ServeFaultPoint("handler.before_content");
+         const auto chunk =
+             responses ? response_chunk
+@@ -3275,6 +3546,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                                              std::memory_order_relaxed);
+     metrics_.generation_tokens_total.fetch_add(generated.size(),
+                                                std::memory_order_relaxed);
++    if (moderation_step) {
++      moderation_usage.input_tokens += T;
++      moderation_usage.output_tokens += generated.size();
++      ++moderation_usage.model_steps;
++    }
+ 
+ #ifdef Q4T_SERVE_FAULT_INJECTION
+     // Preserve the actual constrained path before validation or a blocked
+@@ -3309,6 +3585,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         cleanup();
+         return;
+       }
++      if (moderation_step) {
++        cleanup();
++        if (RejectUnhealthy(fd, terminal)) return;
++        if (!review_failed("moderation_generation_failed",
++                           "Classification generation failed"))
++          return;
++        continue;
++      }
+       if (stream) {
+         detail::SendStreamError(fd, response_state, 500, "generation failed",
+                                 terminal, "generation_failed");
+@@ -3404,6 +3688,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                          structured->Failure() == GrammarFailure::kTimeout)
+               ? 503
+               : 502;
++      if (moderation_step) {
++        cleanup();
++        if (RejectUnhealthy(fd)) return;
++        if (!review_failed(code, response_status.message())) return;
++        continue;
++      }
+       diagnostic.Outcome("error", code);
+       const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
+                                           std::chrono::milliseconds(250)};
+@@ -3429,8 +3719,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     }
+     // A choice is complete, but the external request retains admission,
+     // cancellation and quota ownership until all choices finish.
+-    std::string response_terminal;
+     if (responses) {
++      if (moderation_step) {
++        io::Json report;
++        s = finish_reason == "length"
++                ? Status::Fail("Classification exhausted its output budget")
++                : ParseModerationResult(response_parser.Content(),
++                                        moderation_plan, 0.5, &report);
++        if (!s)
++          report = ModerationError("moderation_scores_invalid", s.message());
++        trace_outcome = s ? trace::RequestOutcome::kSuccess
++                          : trace::RequestOutcome::kFailed;
++        cleanup();
++        if (!finish_review(input_moderation_step, std::move(report))) return;
++        continue;
++      }
+       const ResponsesUsage step_usage{
+           T, restored_prefix, static_cast<int64_t>(generated.size()),
+           internal_step ? static_cast<int64_t>(generated.size())
+@@ -3482,6 +3785,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+               return;
+             }
+           }
++          response_step =
++              pro_selected ? ResponseStep::kPro : ResponseStep::kPrimary;
+           trace_outcome = trace::RequestOutcome::kSuccess;
+           cleanup();
+           continue;
+@@ -3505,6 +3810,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+             return;
+           }
+           continuation_generation = std::move(answer);
++          response_step = ResponseStep::kPrimary;
+           trace_outcome = trace::RequestOutcome::kSuccess;
+           cleanup();
+           continue;
+@@ -3524,6 +3830,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         }
+         if (summary_plan.needed) {
+           responses_completed_calls = response_parser.CompletedToolCalls();
++          response_step = ResponseStep::kSummary;
+           trace_outcome = trace::RequestOutcome::kSuccess;
+           cleanup();
+           continue;
+@@ -3536,22 +3843,36 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                   "response_summary_empty", "reasoning.summary");
+         return;
+       }
+-      diagnostic.Stage("storage");
+-      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
+-      const auto finished = responses->Finish(
+-          finish_reason == "length" || summary_plan.budget_exhausted,
+-          summary_step ? responses_completed_calls
+-                       : response_parser.CompletedToolCalls(),
+-          responses_usage, std::time(nullptr), &response_terminal);
+-      if (!finished.ok()) {
+-        err_guard.ok = false;
+-        SendError(fd, finished.http_status, finished.ClientMessage(), {},
+-                  finished.ClientCode());
+-        return;
++      response_incomplete =
++          finish_reason == "length" || summary_plan.budget_exhausted;
++      if (!summary_step)
++        responses_completed_calls = response_parser.CompletedToolCalls();
++      if (moderate_output) {
++        ModerationContent content;
++        s = CollectModerationOutput(
++            *responses->Output().Snapshot().GetArray("output"), &content,
++            &planning_error);
++        if (s)
++          s = PlanModeration(moderation_options, content, planning_config,
++                             kMaxModerationStepTokens, &output_moderation,
++                             &planning_error);
++        trace_outcome = trace::RequestOutcome::kSuccess;
++        cleanup();
++        if (!s) {
++          if (!finish_review(false,
++                             ModerationError("moderation_preparation_failed",
++                                             s.message().substr(0, 1024))))
++            return;
++        } else {
++          response_step = ResponseStep::kOutputReview;
++        }
++        continue;
+       }
+-      if (cache_observation)
+-        prompt_cache_diagnostics_.Remember(client, responses->Id(),
+-                                            std::move(*cache_observation));
++      const bool success = finish_response();
++      trace_outcome = success ? trace::RequestOutcome::kSuccess
++                              : trace::RequestOutcome::kFailed;
++      cleanup();
++      return;
+     } else if (completion) {
+       CompletionCandidate candidate;
+       candidate.text = (completion_plan.echo ? completion_prompt->echo_text : "") +
+@@ -3604,18 +3925,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       }
+       stored_chat_response = OutputJson(stored.value);
+     }
+-    if (responses) {
+-      if (stream) {
+-        if (http) http->BeforeTerminal();
+-        *response_state = detail::ResponseState::kTerminal;
+-        write_stream(response_terminal);
+-      } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
+-                             "application/json", {.control = control.get()})) {
+-        client_disconnected = true;
+-        control->Cancel(RequestControl::State::kDisconnect);
+-        count_abort();
+-      }
+-    } else if (stream) {
++    if (stream) {
+       const auto finish_chunk = completion
+           ? CompletionChunk(id, model_field, created, choice_index, "",
+                               finish_reason,
+@@ -3695,8 +4005,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       diagnostic.Outcome("success", "completed");
+       metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+     }
+-    if (responses) break;  // A budget-exhausted internal step may finish early.
+   }  // Each choice releases its model/grammar buffers before the next one.
++  if (responses)
++    SendError(fd, 500, "Internal response step bound exceeded", {},
++              "response_step_limit");
+ }
+ 
+ }  // namespace q4t::server
+diff --git a/src/server/client_policy.cpp b/src/server/client_policy.cpp
+index fcd1d08e..e1e79e32 100644
+--- a/src/server/client_policy.cpp
++++ b/src/server/client_policy.cpp
+@@ -412,9 +412,14 @@ Status ClientAdmission::FreezeRates(ClientRateState* state,
+ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
+                                           const ClientIdentity& identity,
+                                           uint64_t prompt, uint64_t output,
+-                                          ClientClock::time_point now) {
++                                          ClientClock::time_point now,
++                                          uint64_t auxiliary_output) {
+   if (attempted_) return ClientRateResult::kInvalid;
+   attempted_ = true;
++  if (auxiliary_output > kMaxAuxiliaryOutputTokens ||
++      output > UINT64_MAX - auxiliary_output ||
++      prompt > UINT64_MAX - output - auxiliary_output)
++    return ClientRateResult::kInvalid;
+   if (identity.owner_ != &admission || !identity.Allowed())
+     return ClientRateResult::kInvalid;
+   if (!identity.Scoped()) {
+@@ -448,7 +453,7 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
+     rate.rpm_rejected = Add(rate.rpm_rejected, 1);
+     return ClientRateResult::kRpm;
+   }
+-  const uint64_t amount = prompt + output;
++  const uint64_t amount = prompt + output + auxiliary_output;
+   if (limits->tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
+                                        amount) > limits->tokens_per_minute) {
+     rate.tpm_rejected = Add(rate.tpm_rejected, 1);
+diff --git a/src/server/responses_execution.cpp b/src/server/responses_execution.cpp
+index ea43051c..0e7dec93 100644
+--- a/src/server/responses_execution.cpp
++++ b/src/server/responses_execution.cpp
+@@ -107,7 +107,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
+   std::string required;
+   if (envelope_.background && !background_executor)
+     required = "background";
+-  for (const char* key : {"access_programs", "moderation"})
++  for (const char* key : {"access_programs"})
+     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
+   if (!required.empty()) {
+     auto reply =
+@@ -334,6 +334,7 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
+ ObjectReply ResponsesExecution::Checkpoint() {
+   if (!begun_ || plan_.finished || commit_unknown_)
+     return Error(500, "response_state_invalid", "Invalid response checkpoint");
++  if (moderation_safe_) return {};  // Private draft is not a public checkpoint.
+   auto reply = BindMutationResult(
+       state_.Checkpoint(output_.Snapshot(), events_, access_, &plan_));
+   if (reply.ok()) {
+@@ -369,6 +370,7 @@ ObjectReply ResponsesExecution::Cancel() {
+   if (plan_.finished) return {};
+   if (!begun_ || commit_unknown_)
+     return Error(409, "response_state_invalid", "Response cannot be cancelled");
++  DiscardUnreviewedOutput();
+   auto candidate = output_;
+   auto status = candidate.Cancel();
+   if (!status) return OutputError(status);
+@@ -406,13 +408,26 @@ Status ResponsesExecution::AppendSummary(std::string_view text,
+ }
+ 
+ Status ResponsesExecution::RecordOutput(Status status, std::string* wire) {
+-  if (!status) return status;
++  if (!status) {
++    if (moderation_safe_) wire->clear();
++    return status;
++  }
+   status = Capture(*wire, &events_, &event_bytes_);
+   if (!status) {
+-    failure_prefix_ = std::move(*wire);
++    if (!moderation_safe_) failure_prefix_ = std::move(*wire);
+     wire->clear();
+     return status;
+   }
++  if (moderation_safe_) {
++    if (wire->size() >
++        ResponsesOutput::kStorageLimit - moderation_wire_.size()) {
++      wire->clear();
++      return Status::Fail("Moderation output hold capacity exhausted");
++    }
++    moderation_wire_ += *wire;
++    wire->clear();
++    return {};
++  }
+   if (status && plan_.store &&
+       (event_bytes_ - checkpoint_bytes_ >= 64 * 1024 ||
+        std::chrono::steady_clock::now() - checkpoint_time_ >=
+@@ -430,11 +445,14 @@ Status ResponsesExecution::RecordOutput(Status status, std::string* wire) {
+ 
+ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
+                                        const ResponsesUsage& usage,
+-                                       int64_t completed_at,
+-                                       std::string* wire) {
++                                       int64_t completed_at, std::string* wire,
++                                       bool content_filtered) {
+   wire->clear();
+   if (!begun_ || plan_.finished || commit_unknown_)
+     return Error(500, "response_state_invalid", "Invalid response finish");
++  if (moderation_safe_)
++    return Error(409, "moderation_review_pending",
++                 "Unreviewed output cannot finish");
+   // Work on a candidate: a failed transaction must not consume a success
+   // sequence number or make the live renderer think it already completed.
+   auto candidate = output_;
+@@ -451,8 +469,9 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
+                                  index, cipher_config_, access_, opaque);
+       return encryption.ok() ? Status() : Status::Fail(encryption.message);
+     };
+-  auto status = candidate.Finish(incomplete, completed_calls, usage,
+-                                 completed_at, &terminal, seal);
++  auto status =
++      candidate.Finish(incomplete, completed_calls, usage, completed_at,
++                       &terminal, seal, content_filtered);
+   if (!encryption.ok()) return encryption;
+   if (status) status = Capture(terminal, &events, &bytes);
+   if (!status) return OutputError(status);
+@@ -492,6 +511,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
+                                                   std::string_view param) {
+   auto& run = *static_cast<ResponsesExecution*>(owner);
+   ObserveError(owner, status, message, code);
++  run.DiscardUnreviewedOutput();
+   std::string prefix = std::move(run.failure_prefix_);
+   run.failure_prefix_.clear();
+   if (run.commit_unknown_) {
+@@ -516,6 +536,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
+ }
+ 
+ ObjectReply ResponsesExecution::CloseUnfinished() {
++  DiscardUnreviewedOutput();
+   ScopeExit release_cleanup([&] {
+     if (cleanup_ticket_) {
+       cleanup_->Close(cleanup_ticket_,
+diff --git a/src/server/responses_output.cpp b/src/server/responses_output.cpp
+index 8549e0f4..312d992b 100644
+--- a/src/server/responses_output.cpp
++++ b/src/server/responses_output.cpp
+@@ -481,12 +481,37 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
+         Object({{"output_index", Number(index)}, {"item", item}}), wire);
+ }
+ 
++Status ResponsesOutput::Moderation(const io::Json& results,
++                                   const ModerationUsage& usage) {
++  const auto* input = results.Find("input");
++  const auto* output = results.Find("output");
++  if (!initialized_ || terminal_ || !results.IsObject() ||
++      results.object.size() != 2 || !input || !output ||
++      !ValidModerationReport(*input) || !ValidModerationReport(*output) ||
++      usage.input_tokens < 0 || usage.output_tokens < 0 ||
++      usage.output_tokens > 2 * kMaxModerationStepTokens ||
++      usage.input_tokens > INT64_MAX - usage.output_tokens ||
++      usage.model_steps < 0 || usage.model_steps > 2)
++    return Status::Fail("Invalid moderation metadata or actual usage");
++  auto status = Charge(OutputJson(results).size() + 256);
++  if (!status) return status;
++  Set(&response_, "moderation", results);
++  Set(&response_, "q4t_moderation_usage",
++      Object(
++          {{"input_tokens", Number(usage.input_tokens)},
++           {"output_tokens", Number(usage.output_tokens)},
++           {"total_tokens", Number(usage.input_tokens + usage.output_tokens)},
++           {"model_steps", Number(usage.model_steps)}}));
++  return {};
++}
++
+ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
+                                const ResponsesUsage& usage,
+                                int64_t completed_at, std::string* wire,
+-                               const ResponsesReasoningSeal& seal) {
++                               const ResponsesReasoningSeal& seal,
++                               bool content_filtered) {
+   wire->clear();
+-  if (!started_ || terminal_ ||
++  if (!started_ || terminal_ || (content_filtered && !incomplete) ||
+       (compaction_item_ != kMaxItems && !compaction_done_) ||
+       response_.GetString("status") != "in_progress" ||
+       usage.input_tokens < 0 || usage.output_tokens < 0 ||
+@@ -530,7 +555,8 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
+   Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
+   if (incomplete)
+     Set(&response_, "incomplete_details",
+-        Object({{"reason", String("max_output_tokens")}}));
++        Object({{"reason", String(content_filtered ? "content_filter"
++                                                   : "max_output_tokens")}}));
+   else
+     Set(&response_, "completed_at", Number(completed_at));
+   Set(&response_, "usage",
+diff --git a/src/server/responses_plan.cpp b/src/server/responses_plan.cpp
+index 14fc0c1b..b738c771 100644
+--- a/src/server/responses_plan.cpp
++++ b/src/server/responses_plan.cpp
+@@ -367,6 +367,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
+   if (status)
+     status = ParsePromptCacheOptions(request, &result.cache, &error->param);
+   if (status) status = Reasoning(request, &result, error);
++  if (status)
++    status = ParseModerationOptions(request, config, &result.moderation, error);
+   if (status) status = TextOptions(request, &result, error);
+   if (!status) return status;
+   if (config.client_limits && result.options.GetInt("max_output_tokens") >
+diff --git a/tests/server_chat_capabilities_test.cpp b/tests/server_chat_capabilities_test.cpp
+index 1ab311dd..cb3473cc 100644
+--- a/tests/server_chat_capabilities_test.cpp
++++ b/tests/server_chat_capabilities_test.cpp
+@@ -275,6 +275,14 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
+   Q4T_CHECK(responses->GetBool("previous_response_id") &&
+             responses->GetBool("conversation"));
+   const auto* summary = responses->Find("summary");
++  const auto* moderation = responses->Find("moderation");
++  Q4T_CHECK(moderation && moderation->GetBool("enabled") &&
++            moderation->GetString("executor") == "native_served_model" &&
++            moderation->GetBool("block_output_before_publication") &&
++            moderation->GetBool("same_client_tpm") &&
++            moderation->GetInt("max_steps") == 2 &&
++            moderation->GetInt("auxiliary_output_tokens_per_step") == 512 &&
++            !moderation->GetBool("model_restart_on_error", true));
+   const auto* execution = responses->Find("reasoning_execution");
+   Q4T_CHECK(execution && execution->GetString("pro") ==
+                             "native_deliberation_then_answer" &&
+diff --git a/tests/server_client_policy_test.cpp b/tests/server_client_policy_test.cpp
+index 066b0d3c..25178c45 100644
+--- a/tests/server_client_policy_test.cpp
++++ b/tests/server_client_policy_test.cpp
+@@ -1091,6 +1091,49 @@ Q4T_TEST(client_rate_completion_batch_charges_only_admitted_prompts_once) {
+   return true;
+ }
+ 
++Q4T_TEST(client_rate_auxiliary_output_is_bounded_charged_and_shares_one_rpm) {
++  ClientAdmission admission;
++  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 120)));
++  const auto client = admission.Authenticate("alpha", kSecret);
++  const auto now = ClientClock::now();
++  ClientRateLease rate;
++  Q4T_CHECK(rate.Reserve(admission, client, 20, 16, now, 64) ==
++            ClientRateResult::kAllowed);
++  Q4T_CHECK(admission.RateUsage(0, now).reserved == 100 &&
++            admission.RateUsage(0, now).requests == 1);
++  rate.Start();
++  rate.Completion(12);  // Actual classification output.
++  Q4T_CHECK(rate.ExtendPrompt(admission, client, 10, now) ==
++            ClientRateResult::kAllowed);
++  rate.StartPrompt(30);
++  rate.Completion(12 + 6);  // Classification plus business generation.
++  rate.Settle(now);
++  const auto usage = admission.RateUsage(0, now);
++  Q4T_CHECK(usage.requests == 1 && usage.admitted == 1 && usage.reserved == 0 &&
++            usage.tokens == 48 && usage.settled_tokens == 48);
++  return true;
++}
++
++Q4T_TEST(client_rate_auxiliary_cannot_bypass_tpm_or_public_output_limit) {
++  ClientAdmission admission;
++  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 60)));
++  const auto client = admission.Authenticate("alpha", kSecret);
++  const auto now = ClientClock::now();
++  ClientRateLease quota, capacity, public_limit, overflow;
++  Q4T_CHECK(quota.Reserve(admission, client, 20, 16, now, 64) ==
++            ClientRateResult::kTpm);
++  Q4T_CHECK(capacity.Reserve(admission, client, 1, 1, now,
++                             kMaxAuxiliaryOutputTokens + 1) ==
++            ClientRateResult::kInvalid);
++  Q4T_CHECK(public_limit.Reserve(admission, client, 1, 17, now, 1) ==
++            ClientRateResult::kInvalid);
++  Q4T_CHECK(overflow.Reserve(admission, client, UINT64_MAX, 1, now, 1) ==
++            ClientRateResult::kInvalid);
++  const auto usage = admission.RateUsage(0, now);
++  Q4T_CHECK(usage.requests == 0 && usage.admitted == 0 && usage.reserved == 0);
++  return true;
++}
++
+ Q4T_TEST(client_rate_internal_step_preserves_one_rpm_and_charges_actual_input) {
+   for (const bool admitted : {false, true}) {
+     ClientAdmission admission;
+diff --git a/tests/server_responses_execution_test.cpp b/tests/server_responses_execution_test.cpp
+index 3c2b1a3c..f234a380 100644
+--- a/tests/server_responses_execution_test.cpp
++++ b/tests/server_responses_execution_test.cpp
+@@ -63,8 +63,187 @@ ResponseDelta Text(std::string text) {
+   delta.text = std::move(text);
+   return delta;
+ }
++Json ModerationReport(bool flagged) {
++  ModerationPlan plan;
++  plan.model = "cpu";
++  plan.text = true;
++  Json result;
++  const auto status = ParseModerationResult(
++      flagged ? R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0.9,0]})"
++              : R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0.1,0]})",
++      plan, 0.5, &result);
++  if (!status) throw std::runtime_error(status.message());
++  return result;
++}
+ }  // namespace
+ 
++Q4T_TEST(responses_moderation_hold_hides_sse_checkpoint_and_background_replay) {
++  for (const bool background : {false, true}) {
++    Fixture fixture;
++    ObjectStore store(fixture.options);
++    ResponsesExecution run(store);
++    const auto request = Parse(
++        std::string(R"({"input":"question","background":)") +
++        (background ? "true" : "false") +
++        R"(,"stream":true,"stream_options":{"include_obfuscation":false}})");
++    Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42, background)));
++    std::string wire;
++    Q4T_CHECK(Ok(run.Begin(&wire)));
++    if (background) Q4T_CHECK(Ok(run.StartRunning(&wire)));
++    Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
++    Q4T_CHECK(run.Append(Text("PRIVATE_UNREVIEWED_OUTPUT"), "null", &wire));
++    Q4T_CHECK(wire.empty() && Ok(run.Checkpoint()));
++    auto stored = ResponsesState(store).Retrieve(run.Id(), Access());
++    Q4T_CHECK(Ok(stored) && stored.value.GetArray("output")->array.empty());
++    ResponsesReadPlan read;
++    read.id = run.Id();
++    read.stream = true;
++    read.obfuscation = false;
++    ResponsesReplay replay;
++    Q4T_CHECK(Ok(ReadResponsesState(store, read, Access(), &replay)));
++    Q4T_CHECK(!replay.terminal &&
++              replay.wire.find("PRIVATE_UNREVIEWED_OUTPUT") ==
++                  replay.wire.npos);
++    Q4T_CHECK(run.Finish(false, 0, {20, 0, 4, 0}, 43, &wire).code ==
++              "moderation_review_pending");
++    Q4T_CHECK(run.PublishReviewedOutput(ModerationReport(true), &wire).code ==
++              "moderation_not_approved");
++    Q4T_CHECK(wire.empty() && run.OutputHeld());
++    Q4T_CHECK(Ok(run.PublishReviewedOutput(ModerationReport(false), &wire)));
++    Q4T_CHECK(wire.find("PRIVATE_UNREVIEWED_OUTPUT") != wire.npos &&
++              !run.OutputHeld());
++    Q4T_CHECK(Ok(run.Finish(false, 0, {20, 0, 4, 0}, 43, &wire)));
++    stored = ResponsesState(store).Retrieve(run.Id(), Access());
++    Q4T_CHECK(Ok(stored) && stored.value.GetString("status") == "completed" &&
++              OutputJson(stored.value).find("PRIVATE_UNREVIEWED_OUTPUT") !=
++                  std::string::npos);
++  }
++  return true;
++}
++
++Q4T_TEST(responses_moderation_cancel_and_errors_discard_all_private_prefixes) {
++  for (const bool cancel : {false, true}) {
++    Fixture fixture;
++    ObjectStore store(fixture.options);
++    ResponsesExecution run(store);
++    if (cancel)
++      Q4T_CHECK(Ok(run.Prepare(
++          Parse(R"({"input":"question","background":true})"), Config(),
++          Access(), 42, true)));
++    else
++      Q4T_CHECK(Prepare(&run));
++    std::string wire;
++    Q4T_CHECK(Ok(run.Begin(&wire)));
++    if (cancel) Q4T_CHECK(Ok(run.StartRunning(&wire)));
++    Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
++    const std::string private_text = "PRIVATE_PREFIX" + std::string(65536, 'x');
++    Q4T_CHECK(run.Append(Text(private_text), "null", &wire) && wire.empty());
++    if (cancel) {
++      Q4T_CHECK(Ok(run.Cancel()));
++    } else {
++      wire = ResponsesExecution::RenderStreamError(
++          &run, 503, "Classifier unavailable", "moderation_failed",
++          "moderation");
++      Q4T_CHECK(wire.find("PRIVATE_PREFIX") == wire.npos &&
++                wire.find("response.output_text.delta") == wire.npos);
++      Q4T_CHECK(Ok(run.CloseUnfinished()));
++    }
++    const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
++    Q4T_CHECK(Ok(record) &&
++              OutputJson(record.value).find("PRIVATE_PREFIX") ==
++                  std::string::npos &&
++              record.value.Find("response")->GetString("status") ==
++                  (cancel ? "cancelled" : "failed"));
++    Q4T_CHECK(!run.OutputHeld());
++  }
++  return true;
++}
++
++Q4T_TEST(responses_moderation_rejects_fake_approval_and_late_hold) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  ResponsesExecution held(store), late(store);
++  Q4T_CHECK(Prepare(&held) && Prepare(&late));
++  std::string wire;
++  Q4T_CHECK(Ok(held.Begin(&wire)) && Ok(held.HoldUnreviewedOutput()));
++  Q4T_CHECK(held.Append(Text("private text"), "null", &wire));
++  Q4T_CHECK(
++      held.PublishReviewedOutput(
++              Parse(R"({"type":"moderation_result","flagged":false})"), &wire)
++          .code == "moderation_not_approved");
++  Q4T_CHECK(held.OutputHeld() && wire.empty() && Ok(held.CloseUnfinished()));
++  Q4T_CHECK(Ok(late.Begin(&wire)) &&
++            late.Append(Text("public"), "null", &wire));
++  Q4T_CHECK(late.HoldUnreviewedOutput().code == "moderation_hold_invalid");
++  Q4T_CHECK(Ok(late.CloseUnfinished()));
++  return true;
++}
++
++Q4T_TEST(responses_moderation_lost_approval_receipt_cannot_leak_or_replay) {
++  struct Reset {
++    ~Reset() { ObjectWorkerEntryForTesting({}); }
++  } reset;
++  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
++  Fixture fixture;
++  fixture.options.io_timeout_ms = 100;
++  ObjectStore store(fixture.options);
++  ResponsesExecution run(store);
++  Q4T_CHECK(Prepare(&run));
++  std::string wire;
++  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.HoldUnreviewedOutput()));
++  Q4T_CHECK(run.Append(Text("PRIVATE_UNKNOWN_RECEIPT"), "null", &wire));
++  Q4T_CHECK(!run.PublishReviewedOutput(ModerationReport(false), &wire).ok());
++  Q4T_CHECK(run.CommitUnknown() && run.OutputHeld() && wire.empty());
++  wire = ResponsesExecution::RenderStreamError(
++      &run, 503, "Review checkpoint receipt unavailable",
++      "object_transport_error", "");
++  Q4T_CHECK(wire.find("PRIVATE_UNKNOWN_RECEIPT") == wire.npos &&
++            wire.find("object_commit_unknown") != wire.npos &&
++            wire.find("response.completed") == wire.npos &&
++            wire.find("response.failed") == wire.npos);
++  Q4T_CHECK(Ok(run.CloseUnfinished()));
++  return true;
++}
++
++Q4T_TEST(responses_moderation_filtered_terminal_retains_usage_without_content) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  ResponsesExecution run(store);
++  Q4T_CHECK(Prepare(
++      &run,
++      R"(,"stream":true,"stream_options":{"include_obfuscation":false})"));
++  std::string wire, all;
++  Q4T_CHECK(Ok(run.Begin(&wire)));
++  all += wire;
++  Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
++  Q4T_CHECK(run.Append(Text("PRIVATE_BLOCKED"), "null", &wire) && wire.empty());
++  auto results = Parse(R"({"input":null,"output":null})");
++  results.object[0].second = ModerationReport(false);
++  results.object[1].second = ModerationReport(true);
++  Q4T_CHECK(run.SetModerationResults(results, {100, 40, 2}));
++  run.DiscardUnreviewedOutput();
++  Q4T_CHECK(Ok(run.Finish(true, 0, {80, 0, 13, 0}, 43, &wire, true)));
++  all += wire;
++  const auto& output = run.Output().Snapshot();
++  Q4T_CHECK(output.GetArray("output")->array.empty() &&
++            output.Find("incomplete_details")->GetString("reason") ==
++                "content_filter" &&
++            output.Find("moderation")->Find("output")->GetBool("flagged"));
++  Q4T_CHECK(output.Find("usage")->GetInt("total_tokens") == 93 &&
++            output.Find("q4t_moderation_usage")->GetInt("total_tokens") ==
++                140 &&
++            all.find("PRIVATE_BLOCKED") == all.npos);
++  if (const char* directory = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
++    std::ofstream(std::filesystem::path(directory) /
++                  "moderation-block.json.wire")
++        << run.Output().Json();
++    std::ofstream(std::filesystem::path(directory) /
++                  "moderation-block.sse.wire")
++        << all;
++  }
++  return true;
++}
++
+ Q4T_TEST(responses_pro_persists_reasoning_mode_usage_and_original_input) {
+   Fixture fixture;
+   ObjectStore store(fixture.options);
+diff --git a/tests/server_responses_plan_test.cpp b/tests/server_responses_plan_test.cpp
+index 9ae08244..9e10fbe6 100644
+--- a/tests/server_responses_plan_test.cpp
++++ b/tests/server_responses_plan_test.cpp
+@@ -216,7 +216,7 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
+       "prompt_cache_key":"bucket","prompt_cache_retention":"24h",
+       "prompt_cache_options":{"mode":"explicit","prewarm":true},
+       "context_management":[{"type":"compaction","compact_threshold":4096}],
+-      "moderation":{"model":"actual-backend"},"service_tier":"priority"})",
++      "moderation":{"model":"base"},"service_tier":"priority"})",
+                      &envelope, &error));
+   Q4T_CHECK(envelope.background && envelope.conversation_id == "conv_a");
+   Q4T_CHECK(envelope.options.Find("prompt")->GetString("version") == "2");
+@@ -224,6 +224,7 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
+   Q4T_CHECK(envelope.cache.prewarm &&
+             !envelope.options.Find("prompt_cache_options")->Has("prewarm"));
+   Q4T_CHECK(envelope.options.GetString("service_tier") == "priority");
++  Q4T_CHECK(envelope.moderation.enabled && envelope.moderation.model == "base");
+   // Parsing retains execution requirements; this is not a moderation/cache/
+   // background acceptance. Their owners must execute before any success.
+   Q4T_CHECK(
+diff --git a/tools/serve_audit/check_inventory.py b/tools/serve_audit/check_inventory.py
+index 0e52c7d6..894fe6d1 100644
+--- a/tools/serve_audit/check_inventory.py
++++ b/tools/serve_audit/check_inventory.py
+@@ -108,7 +108,8 @@ def current_surface(root):
+                  "input_contract.cpp", "chat_tool_history.cpp",
+                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
+                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
+-                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp"):
++                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
++                 "moderation.cpp"):
+         source = (root / "src/server" / file).read_text()
+         for index, item in enumerate(re.finditer(
+                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index d6d1322e..3b86837e 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -3,863 +3,94 @@
+   "audit_base_commit": "7606435f3f3191570fca376379cdf010b066ac15",
+   "audit_report": "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+   "meaning": "Surface inventory only; every row retains explicit limitations. Source drift requires renewed review, not blind hash refresh.",
+-  "fields": {
+-    "model": {
+-      "semantics": "必须等于固定服务名；省略可用",
+-      "boundary": "无别名和详情；名称由常量设定",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "prompt": {
+-      "semantics": "非空原始 prompt，输出 raw",
+-      "boundary": "与 messages 互斥；不解析工具/推理",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "messages": {
+-      "semantics": "qwen3.8-openai-v3：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
+-      "boundary": "Explicit media profile: user-only PNG/JPEG, video_frames with optional increasing video_timestamps; pair timestamps/boundaries and strict positions. Media requires no-MTP/single slot; expanded tokens govern preflight/quota. JPEG stb decode not Pillow bit-equivalent. Physical RAM and universal quality not guaranteed; current visual acceptance separate. New instruction/name/refusal serialization is an explicit model-template adapter, not original Jinja equivalence. Standard legacy/custom histories delivered under A04; audio/file content remains A10 work. This is not complete OpenAI compatibility.",
+-      "evidence": [
+-        "tests/server_chat_tool_history_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "tests/server_chat_message_profile_test.cpp",
+-        "docs/SERVE_STAGE_B1_2026-11-03.md",
+-        "docs/serve-message-profile-v2.schema.json",
+-        "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md",
+-        "docs/SERVE_STAGE_B2_2026-11-03.md",
+-        "docs/SERVE_MEDIA_INTEGRATION_2026-11-03.md",
+-        "tests/server_media_admission_test.cpp",
+-        "docs/VISION_PRODUCTION_PLAN_2026-11-06.md",
+-        "docs/serve-vision-request-v1.schema.json",
+-        "docs/SERVE_CHAT_INPUT_2026-11-08.md",
+-        "docs/serve-message-profile-v3.schema.json"
+-      ]
+-    },
+-    "max_tokens": {
+-      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+-      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "max_completion_tokens": {
+-      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+-      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "stream": {
+-      "semantics": "bool 或 null；null=false，JSON 或 SSE",
+-      "boundary": "Development: structured JSON/reasoning/tool fragments are provisional, with final semantic validation before successful terminal; first role and idle heartbeat remain. Default is the prior accepted release until A05 business delivery.",
+-      "evidence": [
+-        "tests/server_http_response_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "tools/serve_stage_a/verify.py",
+-        "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+-        "tests/server_schema_token_guard_test.cpp"
+-      ]
+-    },
+-    "stream_options": {
+-      "semantics": "对象或 null；null 不请求 usage",
+-      "boundary": "仅 include_usage bool；尚无其他流控选项",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "request_id": {
+-      "semantics": "ASCII 字母数字/下划线/短横线，1..128；需合法 cancel_token",
+-      "boundary": "JSON ID绑定取消凭据；与HTTP追踪头独立；自动ID为128随机位，不提供幂等重放 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+-      ]
+-    },
+-    "cancel_token": {
+-      "semantics": "显式 request_id 配套 64 位小写 hex；注册前检查",
+-      "boundary": "取消 handler 共用凭据形状；不是网关鉴权 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+-      ]
+-    },
+-    "request_timeout_ms": {
+-      "semantics": "原文精确整数 [1,10800000]；注册前拒绝错误值",
+-      "boundary": "不含读取 body；编译内不可抢占，前后协作取消；shutdown等待in-flight编译，非硬时间保证",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "tools": {
+-      "semantics": "函数与custom定义共用生产合同；custom text/regex/Lark约束、标准input及专用客户端校验已针对性CPU与真实业务验收；strict:null=false",
+-      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+-      "evidence": [
+-        "tests/server_chat_response_parser_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md",
+-        "tests/server_custom_tools_test.cpp",
+-        "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
+-        "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+-        "tests/server_schema_token_guard_test.cpp"
+-      ]
+-    },
+-    "chat_template_kwargs": {
+-      "semantics": "原生模板四个选项；嵌套值覆盖顶层",
+-      "boundary": "仅 messages；非通用 Jinja 注入接口",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "enable_thinking": {
+-      "semantics": "控制模板的初始思考前缀",
+-      "boundary": "不是响应隐藏开关；嵌套参数优先",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "preserve_thinking": {
+-      "semantics": "保留历史reasoning/reasoning_content的单一原生推理槽",
+-      "boundary": "模板选项，不是持久会话；别名非null冲突拒绝，assistant缺省/null为空",
+-      "evidence": [
+-        "tests/server_chat_tool_history_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_message_profile_test.cpp"
+-      ]
+-    },
+-    "reasoning_effort": {
+-      "semantics": "low/medium/xhigh 提示词选择",
+-      "boundary": "无独立计算预算；与现代 reasoning 字段不等同 G2",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "add_vision_id": {
+-      "semantics": "实验媒体占位的编号选项",
+-      "boundary": "纯文本无效果；媒体默认禁用",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "temperature": {
+-      "semantics": "A03采样子组针对性验收通过：0—2，默认/null=1；0使用greedy，正温度真实采样",
+-      "boundary": "非greedy不进入MTP/packed argmax；浮点端点原文和underflow校验",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "top_p": {
+-      "semantics": "A03采样子组针对性验收通过：0—1 nucleus，默认/null=1；0至少保留最高项",
+-      "boundary": "在temperature缩放后截断并重新归一；temperature0仍argmax",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "n": {
+-      "semantics": "A03采样子组针对性验收通过：1—128独立choice，默认/null=1；串行执行、单一请求准入/取消",
+-      "boundary": "输入计一次，所有输出汇总；总输出配额与响应存储预算有界",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "frequency_penalty": {
+-      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；按本choice已生成token次数调整",
+-      "boundary": "不混用prompt或其他choice历史；在温度前应用",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "presence_penalty": {
+-      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；本choice已出现token仅扣一次",
+-      "boundary": "在温度前应用；grammar/mask不能被penalty绕过",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "repetition_penalty": {
+-      "semantics": "仅数学精确的 1",
+-      "boundary": "扩展选项 null 仍拒绝；其他值不支持",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "seed": {
+-      "semantics": "A03采样子组针对性验收通过：原文精确signed int64或null；每choice独立派生RNG",
+-      "boundary": "同实现/输入条件best effort；JS普通number仅精确表示safe integer",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "stop": {
+-      "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
+-      "boundary": "strict输出和state cache组合拒绝；包含推理/工具标记，部分工具错误；MTP已算后缀不计completion，不宣称没有额外计算",
+-      "evidence": [
+-        "tests/server_text_stop_test.cpp",
+-        "docs/SERVE_TEXT_STOP_2026-11-03.md",
+-        "docs/serve-stop-v1.schema.json",
+-        "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "logprobs": {
+-      "semantics": "A03采样子组针对性验收通过：boolean/null，真实原始模型分布的content token概率",
+-      "boundary": "raw top20之外的所选token=-9999；隐藏-only token排除，跨界token原bytes保留一次",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "top_logprobs": {
+-      "semantics": "A03采样子组针对性验收通过：0—20整数/null；非null必须logprobs=true",
+-      "boundary": "每个所选content token的原分布候选，不是mask/nucleus后的条件概率",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "logit_bias": {
+-      "semantics": "A03采样子组针对性验收通过：词表内token ID映射-100—100；null为空",
+-      "boundary": "数值别名ID不能重复，真实调整选择分布；仍服从grammar/停止边界",
+-      "evidence": [
+-        "docs/SERVE_SAMPLING_2026-11-08.md",
+-        "tests/server_sampling_test.cpp",
+-        "tests/server_chat_sampling_response_test.cpp"
+-      ]
+-    },
+-    "response_format": {
+-      "semantics": "Development schema v2: local refs/anyOf/exact decimals/pattern/formats; JSON content or tool-only alternative with worker semantic receipt terminal barrier.",
+-      "boundary": "CPU request/worker/parser integrated, not delivered. Cache combination still blocked pending implementation; media combination and real GPU acceptance remain required. 10 schema levels/5000 properties/1000 enums/120000 constrained characters; bounded exec worker/resources; no whole-server RAM guarantee.",
+-      "evidence": [
+-        "tests/server_output_constraints_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "tests/server_structured_admission_test.cpp",
+-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+-        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md",
+-        "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+-        "tests/server_schema_token_guard_test.cpp"
+-      ]
+-    },
+-    "user": {
+-      "semantics": "字符串或 null，可选元数据",
+-      "boundary": "不用于鉴权、隔离、路由或日志标签",
+-      "evidence": [
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "session_id": {
+-      "semantics": "同进程独占 SSD KV cache 能力 key",
+-      "boundary": "显式启用；不是持久对话或恢复 API；结构化文本组合已按A05实际验收 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md",
+-        "tests/server_session_isolation_test.cpp",
+-        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
+-      ]
+-    },
+-    "prefix_cache_scope": {
+-      "semantics": "同进程共享前缀 cache 能力 key",
+-      "boundary": "显式启用；不是租户隔离或 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md",
+-        "tests/server_session_isolation_test.cpp",
+-        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
+-      ]
+-    },
+-    "prefix_cache_write_tokens": {
+-      "semantics": "原文精确整数 0 或 [1024,131072]",
+-      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持 Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+-      "evidence": [
+-        "tests/server_state_contract_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+-        "tests/server_session_isolation_test.cpp",
+-        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
+-      ]
+-    },
+-    "parse_response": {
+-      "semantics": "messages 默认 true；false 返回 raw",
+-      "boundary": "false 不可与工具控制或约束保证组合",
+-      "evidence": [
+-        "tests/server_chat_response_parser_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+-      ]
+-    },
+-    "tool_choice": {
+-      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行；custom named/allowed引用按类型及名称匹配（已验收）",
+-      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+-      "evidence": [
+-        "tests/server_output_constraints_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_structured_admission_test.cpp",
+-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+-        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md",
+-        "docs/SERVE_TOOL_STREAM_2026-11-08.md",
+-        "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md"
+-      ]
+-    },
+-    "parallel_tool_calls": {
+-      "semantics": "false 最多一次；true 允许多调用",
+-      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+-      "evidence": [
+-        "tests/server_output_constraints_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "tests/server_structured_admission_test.cpp",
+-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+-        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+-      ]
+-    },
+-    "include_reasoning": {
+-      "semantics": "默认true；false不收集/发布已解析的推理正文；解析与错误终态保留",
+-      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a限定CPU/HTTP/工具闭环已验",
+-      "evidence": [
+-        "tests/server_chat_response_parser_test.cpp",
+-        "tests/server_chat_message_profile_test.cpp",
+-        "docs/SERVE_STAGE_B2_2026-11-03.md",
+-        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "reasoning_field": {
+-      "semantics": "选择reasoning或reasoning_content，默认后者；JSON/SSE同一响应只使用一个字段",
+-      "boundary": "仅parsed messages，非法值/null拒绝；非Responses API，不代表推理预算",
+-      "evidence": [
+-        "tests/server_chat_response_parser_test.cpp",
+-        "tools/examples/test_chat_client.py",
+-        "docs/serve-reasoning-v1.schema.json",
+-        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "thinking_token_budget": {
+-      "semantics": "缺省/null关闭；parsed messages精确整数0..2147483647；自然token计量/有限强制闭合并继续答案",
+-      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留，修正后19用例限定通过；完整head/seq1",
+-      "evidence": [
+-        "tests/server_thinking_budget_test.cpp",
+-        "tests/server_structured_decoder_test.cpp",
+-        "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
+-        "docs/serve-thinking-v1.schema.json",
+-        "tools/serve_thinking_budget/verify.py",
+-        "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "prediction": {
+-      "semantics": "A03针对性验收交付：字符串/text parts目标验证/部分回滚，accepted/rejected usage；拒绝token计入预算/配额，实际JSON/SSE/strict/bias/取消后MTP通过",
+-      "boundary": "官方组合条件；实际token预算和目标状态仍须针对性验收",
+-      "evidence": [
+-        "docs/SERVE_PREDICTION_2026-11-08.md",
+-        "tests/server_prediction_test.cpp"
+-      ]
+-    },
+-    "functions": {
+-      "semantics": "Standard legacy function definitions/selection normalize into the shared tool plan; legacy JSON/SSE retain function_call and role=function results.",
+-      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools delivered under modern dialect; wider schema combinations remain A05 implementation work.",
+-      "evidence": [
+-        "tests/server_legacy_tools_test.cpp",
+-        "docs/SERVE_LEGACY_TOOLS_2026-11-08.md"
+-      ]
+-    },
+-    "function_call": {
+-      "semantics": "Standard legacy function definitions/selection normalize into the shared tool plan; legacy JSON/SSE retain function_call and role=function results.",
+-      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools delivered under modern dialect; wider schema combinations remain A05 implementation work.",
+-      "evidence": [
+-        "tests/server_legacy_tools_test.cpp",
+-        "docs/SERVE_LEGACY_TOOLS_2026-11-08.md"
+-      ]
+-    },
+-    "metadata": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "store": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "prompt_cache_key": {
+-      "semantics": "标准缓存分组键：最多512个Unicode字符；按已认证客户端和键摘要隔离，实际 token 前缀与布局仍须相等。",
+-      "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
+-      "evidence": [
+-        "tests/server_prompt_cache_test.cpp",
+-        "tests/server_session_isolation_test.cpp",
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
+-      ]
+-    },
+-    "prompt_cache_retention": {
+-      "semantics": "标准 in_memory/24h 控制原生条目总保留上限；现代 Responses TTL 优先。",
+-      "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
+-      "evidence": [
+-        "tests/server_prompt_cache_test.cpp",
+-        "tests/server_session_isolation_test.cpp",
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
+-      ]
+-    }
+-  },
+-  "routes": {
+-    "DELETE /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "DELETE /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "DELETE /v1/models/{model}": {
+-      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "DELETE /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "DELETE /v1/responses/{response_id}": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "GET /healthz": {
+-      "semantics": "服务/GPU及PLE永久依赖健康；纯PLE读取故障返回503但gpu_healthy保持真实值",
+-      "boundary": "P0源码与CPU合同；旧封存包保持旧语义；不以模型故障冒充GPU失效",
+-      "evidence": [
+-        "docs/SERVE_RELIABILITY_2026-10-30.md",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_HEALTH_P0_2026-11-07.md",
+-        "tests/server_service_health_test.cpp"
+-      ]
+-    },
+-    "GET /livez": {
+-      "semantics": "服务循环存活；GPU/PLE永久故障与内存准入关闭不自动等于进程死亡",
+-      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+-      "evidence": [
+-        "tools/serve_reliability/http_lifecycle_test.cpp",
+-        "tools/serve_stage_a/verify.py",
+-        "docs/PHASES.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+-        "docs/SERVE_HEALTH_P0_2026-11-07.md",
+-        "tests/server_service_health_test.cpp"
+-      ]
+-    },
+-    "GET /metrics": {
+-      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数；SRV-01b已验每连接首次接收/写失败固定原因/来源，心跳join后发布，与chat结果分开；新增固定4内存状态、3检查点×2拒绝原因及有效读数/阈值，不计为物理峰值",
+-      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+-      "evidence": [
+-        "src/server/chat_metrics.cpp",
+-        "tools/serve_resources/verify.py",
+-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+-        "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+-        "include/q4t/server/http_connection.h",
+-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+-        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
+-      ]
+-    },
+-    "GET /readyz": {
+-      "semantics": "模型加载且服务/GPU/PLE依赖健康、未排空、内存准入开放；普通忙不改变ready",
+-      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+-      "evidence": [
+-        "tools/serve_reliability/http_lifecycle_test.cpp",
+-        "tools/serve_stage_a/verify.py",
+-        "docs/PHASES.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+-        "docs/SERVE_HEALTH_P0_2026-11-07.md",
+-        "tests/server_service_health_test.cpp"
+-      ]
+-    },
+-    "GET /v1/capabilities": {
+-      "semantics": "实现/模板源码身份与能力边界",
+-      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+-      "evidence": [
+-        "tests/server_chat_capabilities_test.cpp",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+-        "include/q4t/server/http_connection.h",
+-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+-        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions/{completion_id}/messages": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/config": {
+-      "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略；新增独立于启动预算的内存门限/恢复余量/样本时效配置，0可显式禁用，不是整机硬限额",
+-      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+-      "evidence": [
+-        "docs/SERVE_PREFLIGHT_2026-11-03.md",
+-        "docs/serve-config-v1.schema.json",
+-        "tests/server_chat_plan_test.cpp",
+-        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+-        "include/q4t/server/http_connection.h",
+-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}/items": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/models": {
+-      "semantics": "固定单模型列表",
+-      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+-      "evidence": [
+-        "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+-        "include/q4t/server/http_connection.h",
+-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "GET /v1/models/{model}": {
+-      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "GET /v1/prompts": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/prompts/{prompt_id}/versions/{version}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/responses/{response_id}": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "GET /v1/responses/{response_id}/input_items": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "POST /v1/chat/completions": {
+-      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
+-      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
+-      "evidence": [
+-        "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
+-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "POST /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "POST /v1/chat/preflight": {
+-      "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID；同一内存准入门，body前及准备前检查，不能用预检绕过",
+-      "boundary": "Read-only planning; optional media header/geometry and expanded tokens share generation planner. No pixel decode, GPU, grammar compilation, slot/rate reservation or execution guarantee. Preview retains one placeholder per temporal group; token_ids expanded.",
+-      "evidence": [
+-        "docs/SERVE_PREFLIGHT_2026-11-03.md",
+-        "docs/serve-preflight-v1.schema.json",
+-        "tests/server_chat_plan_test.cpp",
+-        "tools/serve_preflight/template_diff.py",
+-        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
+-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+-        "tests/server_memory_admission_test.cpp",
+-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+-      ]
+-    },
+-    "POST /v1/completions": {
+-      "semantics": "A06 native completions/model registry: POST /v1/completions",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "POST /v1/conversations": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/conversations/{conversation_id}/items": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/prompts": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/prompts/{prompt_id}/versions": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/requests/cancel": {
+-      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
+-      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
+-      "evidence": [
+-        "tools/serve_reliability/http_lifecycle_test.cpp",
+-        "tests/server_chat_contract_test.cpp",
+-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+-      ]
+-    },
+-    "POST /v1/responses": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "POST /v1/responses/compact": {
+-      "semantics": "原生实际记忆模型步骤、认证压缩窗口，返回可直接回填的 CompactedResponse；共享准入、截止与真实用量。",
+-      "boundary": "源码已接入；本组直接 CPU、官方 SDK/真实模型与交付尚待验证，不作为完成证据。",
+-      "evidence": [
+-        "src/server/responses_execution_compaction.cpp",
+-        "tests/server_responses_compaction_test.cpp",
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
+-      ]
+-    },
+-    "POST /v1/responses/{response_id}/cancel": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    }
+-  },
++  "fields": [
++    "add_vision_id",
++    "cancel_token",
++    "chat_template_kwargs",
++    "enable_thinking",
++    "frequency_penalty",
++    "function_call",
++    "functions",
++    "include_reasoning",
++    "logit_bias",
++    "logprobs",
++    "max_completion_tokens",
++    "max_tokens",
++    "messages",
++    "metadata",
++    "model",
++    "n",
++    "parallel_tool_calls",
++    "parse_response",
++    "prediction",
++    "prefix_cache_scope",
++    "prefix_cache_write_tokens",
++    "presence_penalty",
++    "preserve_thinking",
++    "prompt",
++    "prompt_cache_key",
++    "prompt_cache_retention",
++    "reasoning_effort",
++    "reasoning_field",
++    "repetition_penalty",
++    "request_id",
++    "request_timeout_ms",
++    "response_format",
++    "seed",
++    "session_id",
++    "stop",
++    "store",
++    "stream",
++    "stream_options",
++    "temperature",
++    "thinking_token_budget",
++    "tool_choice",
++    "tools",
++    "top_logprobs",
++    "top_p",
++    "user"
++  ],
++  "routes": [
++    "DELETE /v1/chat/completions/{completion_id}",
++    "DELETE /v1/conversations/{conversation_id}",
++    "DELETE /v1/conversations/{conversation_id}/items/{item_id}",
++    "DELETE /v1/models/{model}",
++    "DELETE /v1/prompts/{prompt_id}",
++    "DELETE /v1/responses/{response_id}",
++    "GET /healthz",
++    "GET /livez",
++    "GET /metrics",
++    "GET /readyz",
++    "GET /v1/capabilities",
++    "GET /v1/chat/completions",
++    "GET /v1/chat/completions/{completion_id}",
++    "GET /v1/chat/completions/{completion_id}/messages",
++    "GET /v1/config",
++    "GET /v1/conversations/{conversation_id}",
++    "GET /v1/conversations/{conversation_id}/items",
++    "GET /v1/conversations/{conversation_id}/items/{item_id}",
++    "GET /v1/models",
++    "GET /v1/models/{model}",
++    "GET /v1/prompts",
++    "GET /v1/prompts/{prompt_id}",
++    "GET /v1/prompts/{prompt_id}/versions/{version}",
++    "GET /v1/responses/{response_id}",
++    "GET /v1/responses/{response_id}/input_items",
++    "POST /v1/chat/completions",
++    "POST /v1/chat/completions/{completion_id}",
++    "POST /v1/chat/preflight",
++    "POST /v1/completions",
++    "POST /v1/conversations",
++    "POST /v1/conversations/{conversation_id}",
++    "POST /v1/conversations/{conversation_id}/items",
++    "POST /v1/prompts",
++    "POST /v1/prompts/{prompt_id}",
++    "POST /v1/prompts/{prompt_id}/versions",
++    "POST /v1/requests/cancel",
++    "POST /v1/responses",
++    "POST /v1/responses/compact",
++    "POST /v1/responses/{response_id}/cancel"
++  ],
+   "whitelists": {
+     "chat_contract.cpp:0:options": [
+       "enable_thinking",
+@@ -1232,11 +463,22 @@
+       "prompt_cache_options",
+       "moderation",
+       "access_programs"
++    ],
++    "moderation.cpp:0:*moderation": [
++      "model",
++      "policy"
++    ],
++    "moderation.cpp:1:*policy": [
++      "input",
++      "output"
++    ],
++    "moderation.cpp:2:*rule": [
++      "mode"
+     ]
+   },
+   "sources_sha256": {
+-    "CMakeLists.txt": "3ce705fdeacde5feb6bdc4d92831e45b96f6bc5c138adcc70bfd160f8c49518d",
+-    "cmake/ChatProtocolIdentity.cmake": "9792a207da7d1c483570f606b75be2542f21bfcc390acb2985a0f332f18abf36",
++    "CMakeLists.txt": "07740671b129453c5f8238abc8d7c0cf2bdf26aa4e6907872c470c8a78340709",
++    "cmake/ChatProtocolIdentity.cmake": "3181d8bc8941f373e3b4388d10ccc95b1c831dd077f82de5553369a8f56909ec",
+     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+@@ -1270,7 +512,7 @@
+     "include/q4t/server/chat_template.h": "9b6723142b8bb1116ea56df7742f3f56364122dc5a975977b15132ff56ce3e7e",
+     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
+-    "include/q4t/server/client_policy.h": "e70e50548ff3cbff748a3545a69169499ca95821a49617a9967e4bc459df0bad",
++    "include/q4t/server/client_policy.h": "bd2aefbb0ec6697fd042108905876cd195324ac83485194c526eaf3024dc9de5",
+     "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
+     "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
+     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
+@@ -1296,6 +538,7 @@
+     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
+     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
+     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
++    "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
+     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+     "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
+     "include/q4t/server/object_store.h": "06d1fb342b952e7f302d19a0a196083d4225a7ecbad235c9cb34db44cd8994b2",
+@@ -1318,13 +561,13 @@
+     "include/q4t/server/responses_api.h": "2a636939c4c2fbb1806fb7146c0a82aad2ecec1a149609647fde9fd295b6195b",
+     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
+     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
+-    "include/q4t/server/responses_execution.h": "94b758407895fe58611d4be2ba004a14059c35c4d6cf66d13312e4d99859e710",
++    "include/q4t/server/responses_execution.h": "89ec70ac8b7719bca46ea2c63b56e458b53a7ffbcfc2e4f2bee704d5eebbd97d",
+     "include/q4t/server/responses_input.h": "c27a660a9ea2ba19fc7dfd98c9cb5171f4534c229354c80428b16959b7f5c4ea",
+     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
+     "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
+-    "include/q4t/server/responses_output.h": "c9332f6f97f51549ca11485d700b39f52d92e4d4d9355126a6489328eb6f8f1d",
++    "include/q4t/server/responses_output.h": "514e42ce23c1d1d2c0fd529fa95b08ae25071e15a3795de913ad05f976bac57d",
+     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
+-    "include/q4t/server/responses_plan.h": "49d1f0e222c20788c78b7dd4a983aee5462a852b2cf557979b300ce73ea0de1b",
++    "include/q4t/server/responses_plan.h": "e0860925add29fe7f06db794fa0bc69e9424d28c34eae662f4d8082c6e3f2639",
+     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
+     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
+     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
+@@ -1388,11 +631,11 @@
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+-    "src/server/chat_capabilities.cpp": "70ee9b08042a1177c1470636227ce9d162a9725b1a403b9f4ee1752a563c8b52",
++    "src/server/chat_capabilities.cpp": "4edf26746263652707d38897ad6b2f9efac9dbbce270dececb2ad64122c3b4b9",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
++    "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+@@ -1410,7 +653,7 @@
+     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+     "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
+     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+-    "src/server/client_policy.cpp": "8fbec179e13ad98234d0f064645166f2e3d7004da101ab4ba95f0f664bac2fe4",
++    "src/server/client_policy.cpp": "bd039b9b6f28adc26f785709bd9f159579ce29aab3620d83a899958befc53582",
+     "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+     "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
+     "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
+@@ -1434,6 +677,7 @@
+     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
+     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
++    "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
+     "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
+     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
+     "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
+@@ -1455,15 +699,16 @@
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+-    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
++    "src/server/responses_execution.cpp": "765962612e5b753d14c152314bb74ab4f6c6edd85faab06d2c18e3d79098acca",
+     "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
++    "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
+     "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
+     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+-    "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
++    "src/server/responses_output.cpp": "33f24f6713760f94e55e7bbd3449ae090e06d274fbe58e65e5eeb1706e5b2922",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
++    "src/server/responses_plan.cpp": "c79f7a79f1bf310ef0d30d38639b28c65d1d793f27c311ecba2f37f6293d4c01",
+     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
+@@ -1911,632 +1156,70 @@
+       "tools/vision_service/report.py"
+     ]
+   },
+-  "native_routes": {
+-    "DELETE /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "DELETE /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "DELETE /v1/models/{model}": {
+-      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "DELETE /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "DELETE /v1/responses/{response_id}": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "GET /healthz": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "GET /livez": {
+-      "semantics": "原生服务入口本身存活，需Bearer鉴权",
+-      "boundary": "Actual-peer IPv4/IPv6 CIDR, optional native TLS and CORS; bounded close-delimited HTTP. Live does not imply model ready; no replay. Native TLS/CORS targeted business accepted; no full-model or long-stability claim.",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "GET /readyz": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "GET /v1/capabilities": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/chat/completions/{completion_id}/messages": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}/items": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "GET /v1/models": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "GET /v1/models/{model}": {
+-      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "GET /v1/prompts": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/prompts/{prompt_id}/versions/{version}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "GET /v1/responses/{response_id}": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "GET /v1/responses/{response_id}/input_items": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "OPTIONS /healthz": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /livez": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /readyz": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/capabilities": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/chat/completions": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "OPTIONS /v1/chat/completions/{completion_id}/messages": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "OPTIONS /v1/chat/preflight": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/completions": {
+-      "semantics": "A06 native completions/model registry: OPTIONS /v1/completions",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "OPTIONS /v1/conversations": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "OPTIONS /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "OPTIONS /v1/conversations/{conversation_id}/items": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "OPTIONS /v1/conversations/{conversation_id}/items/{item_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items/{item_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "OPTIONS /v1/models": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/models/{model}": {
+-      "semantics": "A06 native completions/model registry: OPTIONS /v1/models/{model}",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "OPTIONS /v1/prompts": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "OPTIONS /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "OPTIONS /v1/prompts/{prompt_id}/versions": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "OPTIONS /v1/prompts/{prompt_id}/versions/{version}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "OPTIONS /v1/requests/cancel": {
+-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+-      "evidence": [
+-        "src/service/ingress_cors.cpp",
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_access.py",
+-        "tools/serve_recovery/test_native_browser.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "OPTIONS /v1/responses": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "OPTIONS /v1/responses/compact": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "OPTIONS /v1/responses/{response_id}": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "OPTIONS /v1/responses/{response_id}/cancel": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "OPTIONS /v1/responses/{response_id}/input_items": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "POST /v1/chat/completions": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "POST /v1/chat/completions/{completion_id}": {
+-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+-      "evidence": [
+-        "tests/server_chat_storage_test.cpp",
+-        "tools/serve_chat_storage/test_sdk.mjs",
+-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+-      ]
+-    },
+-    "POST /v1/chat/preflight": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "POST /v1/completions": {
+-      "semantics": "A06 native completions/model registry: POST /v1/completions",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "POST /v1/conversations": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/conversations/{conversation_id}": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/conversations/{conversation_id}/items": {
+-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+-      "evidence": [
+-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+-        "include/q4t/server/application_routes.h",
+-        "tests/server_conversation_api_test.cpp",
+-        "tools/serve_recovery/test_native_access.py"
+-      ]
+-    },
+-    "POST /v1/prompts": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/prompts/{prompt_id}": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/prompts/{prompt_id}/versions": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/requests/cancel": {
+-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+-      "evidence": [
+-        "src/service/ingress_main.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "tools/serve_recovery/test_native_admission.py",
+-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+-        "tools/serve_recovery/test_native_access.py",
+-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+-      ]
+-    },
+-    "POST /v1/responses": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    },
+-    "POST /v1/responses/compact": {
+-      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+-      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+-        "tests/server_prompt_registry_test.cpp"
+-      ]
+-    },
+-    "POST /v1/responses/{response_id}/cancel": {
+-      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+-      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
+-      "evidence": [
+-        "docs/SERVE_RESPONSES_2026-11-08.md",
+-        "docs/evidence/serve-responses-background-http-20261109/README.md",
+-        "tests/server_responses_jobs_test.cpp",
+-        "tests/server_responses_api_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py",
+-        "docs/evidence/serve-responses-recovery-20261109/README.md"
+-      ]
+-    }
+-  },
++  "native_routes": [
++    "DELETE /v1/chat/completions/{completion_id}",
++    "DELETE /v1/conversations/{conversation_id}",
++    "DELETE /v1/conversations/{conversation_id}/items/{item_id}",
++    "DELETE /v1/models/{model}",
++    "DELETE /v1/prompts/{prompt_id}",
++    "DELETE /v1/responses/{response_id}",
++    "GET /healthz",
++    "GET /livez",
++    "GET /readyz",
++    "GET /v1/capabilities",
++    "GET /v1/chat/completions",
++    "GET /v1/chat/completions/{completion_id}",
++    "GET /v1/chat/completions/{completion_id}/messages",
++    "GET /v1/conversations/{conversation_id}",
++    "GET /v1/conversations/{conversation_id}/items",
++    "GET /v1/conversations/{conversation_id}/items/{item_id}",
++    "GET /v1/models",
++    "GET /v1/models/{model}",
++    "GET /v1/prompts",
++    "GET /v1/prompts/{prompt_id}",
++    "GET /v1/prompts/{prompt_id}/versions/{version}",
++    "GET /v1/responses/{response_id}",
++    "GET /v1/responses/{response_id}/input_items",
++    "OPTIONS /healthz",
++    "OPTIONS /livez",
++    "OPTIONS /readyz",
++    "OPTIONS /v1/capabilities",
++    "OPTIONS /v1/chat/completions",
++    "OPTIONS /v1/chat/completions/{completion_id}",
++    "OPTIONS /v1/chat/completions/{completion_id}/messages",
++    "OPTIONS /v1/chat/preflight",
++    "OPTIONS /v1/completions",
++    "OPTIONS /v1/conversations",
++    "OPTIONS /v1/conversations/{conversation_id}",
++    "OPTIONS /v1/conversations/{conversation_id}/items",
++    "OPTIONS /v1/conversations/{conversation_id}/items/{item_id}",
++    "OPTIONS /v1/models",
++    "OPTIONS /v1/models/{model}",
++    "OPTIONS /v1/prompts",
++    "OPTIONS /v1/prompts/{prompt_id}",
++    "OPTIONS /v1/prompts/{prompt_id}/versions",
++    "OPTIONS /v1/prompts/{prompt_id}/versions/{version}",
++    "OPTIONS /v1/requests/cancel",
++    "OPTIONS /v1/responses",
++    "OPTIONS /v1/responses/compact",
++    "OPTIONS /v1/responses/{response_id}",
++    "OPTIONS /v1/responses/{response_id}/cancel",
++    "OPTIONS /v1/responses/{response_id}/input_items",
++    "POST /v1/chat/completions",
++    "POST /v1/chat/completions/{completion_id}",
++    "POST /v1/chat/preflight",
++    "POST /v1/completions",
++    "POST /v1/conversations",
++    "POST /v1/conversations/{conversation_id}",
++    "POST /v1/conversations/{conversation_id}/items",
++    "POST /v1/prompts",
++    "POST /v1/prompts/{prompt_id}",
++    "POST /v1/prompts/{prompt_id}/versions",
++    "POST /v1/requests/cancel",
++    "POST /v1/responses",
++    "POST /v1/responses/compact",
++    "POST /v1/responses/{response_id}/cancel"
++  ],
+   "observation_io_review_20261108": {
+     "scope": "bounded ordinary writes, diagnostic RAM, optional malformed health projection isolation; no model/math/HTTP route changes",
+     "report": "docs/SERVE_OBSERVATION_IO_2026-11-08.md",
+@@ -2691,197 +1374,29 @@
+       "A05/A10 media state caching and corresponding schema/tool/identity combinations"
+     ]
+   },
+-  "completion_fields": {
+-    "best_of": {
+-      "semantics": "A06 native completions/model registry: best_of",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "cancel_token": {
+-      "semantics": "A06 native completions/model registry: cancel_token",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "echo": {
+-      "semantics": "A06 native completions/model registry: echo",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "frequency_penalty": {
+-      "semantics": "A06 native completions/model registry: frequency_penalty",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "logit_bias": {
+-      "semantics": "A06 native completions/model registry: logit_bias",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "logprobs": {
+-      "semantics": "A06 native completions/model registry: logprobs",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "max_tokens": {
+-      "semantics": "A06 native completions/model registry: max_tokens",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "model": {
+-      "semantics": "A06 native completions/model registry: model",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "n": {
+-      "semantics": "A06 native completions/model registry: n",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "presence_penalty": {
+-      "semantics": "A06 native completions/model registry: presence_penalty",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "prompt": {
+-      "semantics": "A06 native completions/model registry: prompt",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "request_id": {
+-      "semantics": "A06 native completions/model registry: request_id",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "request_timeout_ms": {
+-      "semantics": "A06 native completions/model registry: request_timeout_ms",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "seed": {
+-      "semantics": "A06 native completions/model registry: seed",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "stop": {
+-      "semantics": "A06 native completions/model registry: stop",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "stream": {
+-      "semantics": "A06 native completions/model registry: stream",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "stream_options": {
+-      "semantics": "A06 native completions/model registry: stream_options",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "suffix": {
+-      "semantics": "A06 native completions/model registry: suffix",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "temperature": {
+-      "semantics": "A06 native completions/model registry: temperature",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "top_p": {
+-      "semantics": "A06 native completions/model registry: top_p",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    },
+-    "user": {
+-      "semantics": "A06 native completions/model registry: user",
+-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+-      "evidence": [
+-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+-        "tests/server_completion_test.cpp",
+-        "tools/serve_recovery/test_native_ingress.py"
+-      ]
+-    }
+-  },
++  "completion_fields": [
++    "best_of",
++    "cancel_token",
++    "echo",
++    "frequency_penalty",
++    "logit_bias",
++    "logprobs",
++    "max_tokens",
++    "model",
++    "n",
++    "presence_penalty",
++    "prompt",
++    "request_id",
++    "request_timeout_ms",
++    "seed",
++    "stop",
++    "stream",
++    "stream_options",
++    "suffix",
++    "temperature",
++    "top_p",
++    "user"
++  ],
+   "responses_conversation_development_20261109": {
+     "state": "cpu_checked_unreleased",
+     "documents": [
+@@ -2959,7 +1474,7 @@
+     ]
+   },
+   "reasoning_pro_development_20261110": {
+-    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
++    "status": "DELIVERED",
+     "sources": [
+       "CMakeLists.txt",
+       "cmake/ChatProtocolIdentity.cmake",
+@@ -2975,6 +1490,30 @@
+     "frozen_checks": {
+       "cpp": 19,
+       "schema": 2
+-    }
++    },
++    "acceptance_evidence": [
++      "docs/evidence/serve-reasoning-pro-cpu-20261110/README.md",
++      "docs/evidence/serve-reasoning-pro-business-20261110/README.md",
++      "docs/evidence/serve-reasoning-pro-delivery-20261110/README.md"
++    ]
++  },
++  "moderation_development_20261110": {
++    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
++    "plan": "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md",
++    "review": "Reviewed actual served-model classification and strict 13 scores, real message/tool data, input-before-business, shared cancellation, private output across SSE/state/replay, approval-before-publication, score error continuation and block fail-closed, bounded independent auxiliary output and cumulative client TPM, explicit response step sequencing without model/tool replay. Source inventory is not runtime certification.",
++    "frozen_checks": {
++      "cpp": 29,
++      "schema": 2
++    },
++    "sources": [
++      "include/q4t/server/moderation.h",
++      "src/server/moderation.cpp",
++      "src/server/chat_generation.cpp",
++      "src/server/responses_execution_moderation.cpp",
++      "src/server/responses_execution.cpp",
++      "src/server/responses_output.cpp",
++      "src/server/client_policy.cpp",
++      "tools/serve_responses/build_contract.py"
++    ]
+   }
+ }
+diff --git a/tools/serve_responses/build_contract.py b/tools/serve_responses/build_contract.py
+index 36e25d26..22bf510d 100644
+--- a/tools/serve_responses/build_contract.py
++++ b/tools/serve_responses/build_contract.py
+@@ -88,6 +88,14 @@ def schema(graph):
+     response = root('response')
+     response['required'].remove('output_text')
+     response['properties']['store'] = dict(type='boolean')
++    # Native auxiliary classification is separately disclosed and charged to
++    # the same client TPM lease; ordinary usage remains business generation.
++    response['properties']['q4t_moderation_usage'] = obj(dict(
++        input_tokens=dict(type='integer', minimum=0),
++        output_tokens=dict(type='integer', minimum=0, maximum=1024),
++        total_tokens=dict(type='integer', minimum=0),
++        model_steps=dict(type='integer', minimum=0, maximum=2)),
++        ['input_tokens', 'output_tokens', 'total_tokens', 'model_steps'])
+     # The pinned TypeScript interface omits null, but official HTTP examples
+     # explicitly return usage:null before completion and after cancellation.
+     response['properties']['usage'] = nullable(response['properties']['usage'])
+@@ -163,6 +171,7 @@ def schema(graph):
+             adaptations=['SDK-added output_text is optional on wire',
+                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
+                 'native store echo and native response error codes',
++                'optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage',
+                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
+                 'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
+                 'exact integer and bounded native options',

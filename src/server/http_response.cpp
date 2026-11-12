@@ -19,9 +19,20 @@ thread_local HttpResponseContext* current_response = nullptr;
 
 std::string RequestIdHeader(int fd) {
   const auto* context = HttpResponseContext::Current(fd);
-  return context ? "X-Request-Id: " + context->TraceId() + "\r\n" : "";
+  if (!context) return {};
+  auto headers = "X-Request-Id: " + context->TraceId() + "\r\n";
+  const auto& usage = context->InputPreparationUsage();
+  if (usage.model_steps) {
+    headers += "X-Q4T-Preparation-Input-Tokens: " +
+               std::to_string(usage.input_tokens) +
+               "\r\nX-Q4T-Preparation-Output-Tokens: " +
+               std::to_string(usage.output_tokens) +
+               "\r\nX-Q4T-Preparation-Model-Steps: " +
+               std::to_string(usage.model_steps) + "\r\n";
+  }
+  return headers;
 }
-}
+}  // namespace
 
 void SendExceptionResponse(int fd, ResponseState state,
                            ExceptionKind kind) noexcept {
@@ -33,6 +44,7 @@ void SendExceptionResponse(int fd, ResponseState state,
     const char* code = memory ? "host_memory_exhausted" : "internal_error";
     const char* type = memory ? "service_unavailable_error" : "server_error";
     if (context) {
+      context->ObserveError(memory ? 503 : 500, "request failed", code);
       context->StopHeartbeats();
       state = *context->State();
       std::fprintf(stderr, "[q4t][http] trace_id=%s error=%s\n",
@@ -49,20 +61,41 @@ void SendExceptionResponse(int fd, ResponseState state,
         type, code);
     if (body_size <= 0 || static_cast<size_t>(body_size) >= sizeof(body))
       return;
+    if (context && context->CapturesJson()) {
+      context->BeforeTerminal();
+      *context->State() = ResponseState::kTerminal;
+      if (context->CaptureJson(memory ? 503 : 500, "application/json",
+                               std::string_view(body, body_size)))
+        *context->State() = ResponseState::kComplete;
+      return;
+    }
     char response[1024];
-    const int size =
-        state == ResponseState::kStreaming
-            ? std::snprintf(response, sizeof(response),
-                            "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
-            : std::snprintf(response, sizeof(response),
-                            "HTTP/1.1 %s\r\n%s%s%s"
-                            "Content-Type: application/json\r\n"
-                            "Connection: close\r\n\r\n%s",
-                            memory ? "503 Service Unavailable"
-                                   : "500 Internal Server Error",
-                            context ? "X-Request-Id: " : "",
-                            context ? context->TraceId().c_str() : "",
-                            context ? "\r\n" : "", body);
+    int size = 0;
+    if (state == ResponseState::kStreaming && context &&
+        context->ResponsesSequence()) {
+      // This path must not call the allocation-using snapshot renderer.
+      auto& sequence = *context->ResponsesSequence();
+      size = std::snprintf(
+          response, sizeof(response),
+          "event: error\r\ndata: {\"type\":\"error\",\"code\":\"%s\","
+          "\"message\":\"request failed\",\"param\":null,"
+          "\"sequence_number\":%lld}\r\n\r\n",
+          code, static_cast<long long>(sequence));
+      if (sequence < INT64_MAX) ++sequence;
+    } else {
+      size = state == ResponseState::kStreaming
+                 ? std::snprintf(response, sizeof(response),
+                                 "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
+                 : std::snprintf(response, sizeof(response),
+                                 "HTTP/1.1 %s\r\n%s%s%s"
+                                 "Content-Type: application/json\r\n"
+                                 "Connection: close\r\n\r\n%s",
+                                 memory ? "503 Service Unavailable"
+                                        : "500 Internal Server Error",
+                                 context ? "X-Request-Id: " : "",
+                                 context ? context->TraceId().c_str() : "",
+                                 context ? "\r\n" : "", body);
+    }
     if (size <= 0 || static_cast<size_t>(size) >= sizeof(response)) return;
     const WriteOptions terminal{std::chrono::steady_clock::now() +
                                 std::chrono::milliseconds(250)};
@@ -76,24 +109,37 @@ void SendExceptionResponse(int fd, ResponseState state,
   }
 }
 
-std::string Utf8Stream::Append(std::string_view bytes) {
+std::string Utf8Stream::Append(std::string_view bytes,
+                               std::vector<Utf8Span>* spans) {
+  const size_t base = input_bytes_ - pending_.size();
+  input_bytes_ += bytes.size();
   std::string input = std::move(pending_);
   pending_.clear();
   input.append(bytes);
   std::string out;
   out.reserve(input.size());
+  const auto record = [&](size_t begin, size_t end, size_t output_begin) {
+    if (spans)
+      spans->push_back({base + begin, base + end, output_bytes_ + output_begin,
+                        output_bytes_ + out.size()});
+  };
   size_t i = 0;
   while (i < input.size()) {
+    const auto output_begin = out.size();
     const auto lead = static_cast<unsigned char>(input[i]);
     if (lead < 0x80) {
-      out += input[i++];
+      out += input[i];
+      record(i, i + 1, output_begin);
+      ++i;
       continue;
     }
-    const size_t width = lead >= 0xc2 && lead <= 0xdf ? 2 :
-                         lead >= 0xe0 && lead <= 0xef ? 3 :
-                         lead >= 0xf0 && lead <= 0xf4 ? 4 : 0;
+    const size_t width = lead >= 0xc2 && lead <= 0xdf   ? 2
+                         : lead >= 0xe0 && lead <= 0xef ? 3
+                         : lead >= 0xf0 && lead <= 0xf4 ? 4
+                                                        : 0;
     if (!width) {
       out += kReplacement;
+      record(i, i + 1, output_begin);
       ++i;
       continue;
     }
@@ -101,10 +147,10 @@ std::string Utf8Stream::Append(std::string_view bytes) {
     for (; n < width && i + n < input.size(); ++n) {
       const auto c = static_cast<unsigned char>(input[i + n]);
       if (c < 0x80 || c > 0xbf ||
-          (n == 1 && ((lead == 0xe0 && c < 0xa0) ||
-                      (lead == 0xed && c > 0x9f) ||
-                      (lead == 0xf0 && c < 0x90) ||
-                      (lead == 0xf4 && c > 0x8f)))) break;
+          (n == 1 &&
+           ((lead == 0xe0 && c < 0xa0) || (lead == 0xed && c > 0x9f) ||
+            (lead == 0xf0 && c < 0x90) || (lead == 0xf4 && c > 0x8f))))
+        break;
     }
     if (n == width) {
       out.append(input, i, width);
@@ -114,14 +160,20 @@ std::string Utf8Stream::Append(std::string_view bytes) {
     } else {
       out += kReplacement;
     }
+    record(i, i + n, output_begin);
     i += n;
   }
+  output_bytes_ += out.size();
   return out;
 }
 
-std::string Utf8Stream::Finish() {
+std::string Utf8Stream::Finish(std::vector<Utf8Span>* spans) {
   if (pending_.empty()) return {};
+  if (spans)
+    spans->push_back({input_bytes_ - pending_.size(), input_bytes_,
+                      output_bytes_, output_bytes_ + kReplacement.size()});
   pending_.clear();
+  output_bytes_ += kReplacement.size();
   return std::string(kReplacement);
 }
 
@@ -138,13 +190,27 @@ std::string JsonEscape(const std::string& s) {
   out.reserve(s.size() + 8);
   for (unsigned char c : s) {
     switch (c) {
-      case '"': out += "\\\""; break;
-      case '\\': out += "\\\\"; break;
-      case '\n': out += "\\n"; break;
-      case '\r': out += "\\r"; break;
-      case '\t': out += "\\t"; break;
-      case '\b': out += "\\b"; break;
-      case '\f': out += "\\f"; break;
+      case '"':
+        out += "\\\"";
+        break;
+      case '\\':
+        out += "\\\\";
+        break;
+      case '\n':
+        out += "\\n";
+        break;
+      case '\r':
+        out += "\\r";
+        break;
+      case '\t':
+        out += "\\t";
+        break;
+      case '\b':
+        out += "\\b";
+        break;
+      case '\f':
+        out += "\\f";
+        break;
       default:
         if (c < 0x20) {
           char buf[8];
@@ -182,9 +248,9 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
     return false;
   };
   using Clock = std::chrono::steady_clock;
-  const auto deadline = options.control
-      ? std::min(options.deadline, options.control->deadline())
-      : options.deadline;
+  const auto deadline =
+      options.control ? std::min(options.deadline, options.control->deadline())
+                      : options.deadline;
   const auto timeout_reason =
       options.control && options.control->deadline() <= options.deadline
           ? HttpWriteFailure::kRequestDeadline
@@ -203,14 +269,16 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
         std::strcmp(fault, "handler.partial_header") == 0)
       remaining_bytes = std::min(remaining_bytes, size_t{8});
 #endif
-    const ssize_t n = ::send(fd, data + off, remaining_bytes,
-                             MSG_NOSIGNAL | MSG_DONTWAIT);
+    const ssize_t n =
+        ::send(fd, data + off, remaining_bytes, MSG_NOSIGNAL | MSG_DONTWAIT);
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
       if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
         ServeFaultPoint("write.backpressure");
-        const auto remaining = std::chrono::duration_cast<
-            std::chrono::milliseconds>(deadline - Clock::now()).count();
+        const auto remaining =
+            std::chrono::duration_cast<std::chrono::milliseconds>(deadline -
+                                                                  Clock::now())
+                .count();
         if (remaining < 0) return fail(timeout_reason);
         pollfd peer{fd, POLLOUT, 0};
         const int ready = ::poll(
@@ -271,6 +339,7 @@ HttpResponseContext::HttpResponseContext(int fd, HttpTransportMetrics* metrics)
 
 HttpResponseContext::~HttpResponseContext() {
   StopHeartbeats();
+  if (batch_rate_) batch_rate_->Settle();
   // Both reasons are finalized after join and before the socket is closed.
   // A read rejection may also fail to write; these are separate observations.
   if (metrics_ && receive_failure_ != HttpReceiveFailure::kNone) {
@@ -294,6 +363,12 @@ HttpResponseContext::~HttpResponseContext() {
                  write_failure_.system_error, write_failure_.poll_events);
   }
   current_response = previous_;
+}
+
+HttpResponseContext::HttpResponseContext(Detached detached)
+    : HttpResponseContext(detached.borrowed_fd) {
+  detached_ = true;
+  captured_ = detached.output;
 }
 
 void HttpResponseContext::RecordReceiveFailure(HttpReceiveFailure reason,
@@ -330,14 +405,67 @@ bool HttpResponseContext::SetTraceId(std::string_view id) {
   return true;
 }
 
+bool HttpResponseContext::WritePayload(
+    const char* data, size_t size, const WriteOptions& options,
+    ResponseState* header_state, HttpWriteObservation* observation) {
+  if (!chunked_ || header_state)
+    return WriteAllImpl(fd_, data, size, options, header_state, observation);
+  if (!size) return true;  // Only FinishResponse may write the zero chunk.
+  char prefix[32];
+  const int count = std::snprintf(prefix, sizeof(prefix), "%zx\r\n", size);
+  if (count <= 0 || static_cast<size_t>(count) >= sizeof(prefix)) return false;
+  size_t transferred = 0;
+  const auto part = [&](const char* bytes, size_t length) {
+    HttpWriteObservation current;
+    const bool ok = WriteAllImpl(fd_, bytes, length, options, nullptr, &current);
+    transferred += current.transferred;
+    *observation = current;
+    observation->transferred = transferred;
+    return ok;
+  };
+  return part(prefix, count) && part(data, size) && part("\r\n", 2);
+}
+
+bool HttpResponseContext::FinishResponse() {
+  StopHeartbeats();
+  const std::lock_guard<std::mutex> lock(write_mu_);
+  if (!keep_alive_ || framing_finished_ ||
+      write_failure_.reason != HttpWriteFailure::kNone ||
+      (state_ != ResponseState::kComplete &&
+       !(state_ == ResponseState::kTerminal && terminal_written_)))
+    return false;
+  if (!chunked_ && !length_response_) return false;
+  if (chunked_) {
+    HttpWriteObservation observation;
+    if (!WriteAllImpl(fd_, "0\r\n\r\n", 5,
+                      {std::chrono::steady_clock::now() +
+                       std::chrono::seconds(1)}, nullptr, &observation)) {
+      RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
+      return false;
+    }
+  }
+  framing_finished_ = true;
+  return true;
+}
+
 bool HttpResponseContext::Write(const char* data, size_t size,
                                 const WriteOptions& options,
                                 ResponseState* header_state) {
   const std::lock_guard<std::mutex> lock(write_mu_);
+  if (detached_) {
+    // Captured executions must use a typed finite response. Raw/SSE/binary
+    // writes cannot silently succeed and manufacture an incomplete result.
+    if (captured_) {
+      captured_->Reject();
+      return false;
+    }
+    if (header_state) *header_state = ResponseState::kHeadersStarted;
+    return !options.control || !options.control->Cancelled();
+  }
   if (write_failure_.reason != HttpWriteFailure::kNone) return false;
   HttpWriteObservation observation;
   try {
-    if (!WriteAllImpl(fd_, data, size, options, header_state, &observation)) {
+    if (!WritePayload(data, size, options, header_state, &observation)) {
       RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
       return false;
     }
@@ -346,6 +474,7 @@ bool HttpResponseContext::Write(const char* data, size_t size,
     RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
     throw;
   }
+  if (state_ == ResponseState::kTerminal) terminal_written_ = true;
   last_write_ = std::chrono::steady_clock::now();
   wake_.notify_all();
   return true;
@@ -354,6 +483,7 @@ bool HttpResponseContext::Write(const char* data, size_t size,
 void HttpResponseContext::StartHeartbeats(
     std::shared_ptr<RequestControl> control,
     std::chrono::milliseconds interval) {
+  if (detached_) return;
   if (state_ != ResponseState::kStreaming || heartbeat_.joinable() ||
       interval.count() <= 0)
     throw std::logic_error("invalid heartbeat state");
@@ -397,7 +527,7 @@ void HttpResponseContext::HeartbeatLoop() {
         control_.get()};
     HttpWriteObservation observation;
     try {
-      if (!WriteAllImpl(fd_, comment, sizeof(comment) - 1, options, nullptr,
+      if (!WritePayload(comment, sizeof(comment) - 1, options, nullptr,
                         &observation)) {
         RecordWriteFailure(observation, HttpWriteOrigin::kHeartbeat);
         control_->Cancel(RequestControl::State::kDisconnect);
@@ -421,17 +551,26 @@ bool WriteAll(int fd, const char* data, size_t len,
 
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options) {
+  auto* context = HttpResponseContext::Current(fd);
+  if (context && context->CapturesJson()) {
+    context->RejectCapturedJson();
+    return false;
+  }
+  if (context && !context->Http11()) context->SetKeepAlive(false, false);
+  const bool persistent = context && context->KeepAlive();
   const std::string header =
       "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
       "Cache-Control: no-cache\r\nX-Accel-Buffering: no\r\n" +
-      RequestIdHeader(fd) + "Connection: close\r\n\r\n";
+      RequestIdHeader(fd) +
+      (persistent ? "Connection: keep-alive\r\nTransfer-Encoding: chunked\r\n\r\n"
+                  : "Connection: close\r\n\r\n");
   ServeFaultPoint("handler.before_header");
-  auto* context = HttpResponseContext::Current(fd);
   const bool written =
       context ? context->Write(header.data(), header.size(), options, state)
               : WriteAllImpl(fd, header.data(), header.size(), options, state);
   if (!written) return false;
   *state = ResponseState::kStreaming;
+  if (context) context->StartChunkedBody();
   ServeFaultPoint("handler.after_header");
   return true;
 }
@@ -443,21 +582,80 @@ bool WriteAll(int fd, const std::string& s, const WriteOptions& options) {
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
                 std::string_view allow) {
+  auto* context = HttpResponseContext::Current(fd);
+  if (context && context->CapturesJson()) {
+    context->LengthResponse();
+    context->BeforeTerminal();
+    *context->State() = ResponseState::kTerminal;
+    if (std::chrono::steady_clock::now() >= options.deadline ||
+        (options.control && options.control->Cancelled())) {
+      context->RejectCapturedJson();
+      return false;
+    }
+    const bool received = context->CaptureJson(code, content_type, body);
+    if (received) *context->State() = ResponseState::kComplete;
+    return received;
+  }
+  const bool persistent = context && context->KeepAlive();
   std::string resp =
       "HTTP/1.1 " + std::to_string(code) + " " + status +
       "\r\nContent-Type: " + content_type +
       "\r\nContent-Length: " + std::to_string(body.size()) + "\r\n" +
       RequestIdHeader(fd) +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
-      "Connection: close\r\n\r\n" + body;
-  auto* context = HttpResponseContext::Current(fd);
+      (persistent ? "Connection: keep-alive\r\n\r\n"
+                  : "Connection: close\r\n\r\n") + body;
   if (context) {
+    context->LengthResponse();
     context->BeforeTerminal();
     *context->State() = ResponseState::kTerminal;
   }
   const bool written = WriteAll(fd, resp, options);
   if (context && written) *context->State() = ResponseState::kComplete;
   return written;
+}
+
+bool SendBinaryResponse(int fd, uint64_t length,
+                         const std::function<bool(std::string*)>& next,
+                         const WriteOptions& options,
+                         std::string_view content_type) {
+  if (auto* context = HttpResponseContext::Current(fd);
+      context && context->CapturesJson()) {
+    context->RejectCapturedJson();
+    return false;
+  }
+  if (content_type != "application/octet-stream" &&
+      content_type != "application/json") return false;
+  auto* context = HttpResponseContext::Current(fd);
+  if (context && *context->State() != ResponseState::kUnsent) return false;
+  const bool persistent = context && context->KeepAlive();
+  const std::string header =
+      "HTTP/1.1 200 OK\r\nContent-Type: " + std::string(content_type) +
+      "\r\nContent-Length: " + std::to_string(length) + "\r\n" +
+      RequestIdHeader(fd) +
+      (persistent ? "Connection: keep-alive\r\n\r\n"
+                  : "Connection: close\r\n\r\n");
+  if (context) {
+    context->LengthResponse();
+    // Until all declared bytes succeed, exception handling must close without
+    // adding a second response or text/event-stream error to binary content.
+    *context->State() = ResponseState::kHeadersStarted;
+  }
+  if (!WriteAll(fd, header, options)) return false;
+  std::string chunk;
+  while (length) {
+    chunk.clear();
+    if (!next(&chunk) || chunk.empty() ||
+        chunk.size() > (1ULL << 20) || chunk.size() > length)
+      return false;
+    if (!WriteAll(fd, chunk, options)) return false;
+    length -= chunk.size();
+  }
+  if (context) {
+    context->BeforeTerminal();
+    *context->State() = ResponseState::kComplete;
+  }
+  return true;
 }
 
 namespace {
@@ -469,26 +667,37 @@ struct ErrorInfo {
 
 ErrorInfo ErrorForStatus(int status) {
   switch (status) {
-    case 400: return {"Bad Request", "invalid_request_error", "invalid_request"};
-    case 401: return {"Unauthorized", "authentication_error", "unauthorized"};
-    case 403: return {"Forbidden", "permission_error", "forbidden"};
-    case 404: return {"Not Found", "invalid_request_error", "not_found"};
+    case 400:
+      return {"Bad Request", "invalid_request_error", "invalid_request"};
+    case 401:
+      return {"Unauthorized", "authentication_error", "unauthorized"};
+    case 403:
+      return {"Forbidden", "permission_error", "forbidden"};
+    case 404:
+      return {"Not Found", "invalid_request_error", "not_found"};
     case 405:
       return {"Method Not Allowed", "invalid_request_error",
               "method_not_allowed"};
     case 415:
       return {"Unsupported Media Type", "invalid_request_error",
               "unsupported_media_type"};
-    case 408: return {"Request Timeout", "timeout_error", "request_timeout"};
-    case 409: return {"Conflict", "conflict_error", "request_conflict"};
+    case 417:
+      return {"Expectation Failed", "invalid_request_error", "expectation_failed"};
+    case 408:
+      return {"Request Timeout", "timeout_error", "request_timeout"};
+    case 409:
+      return {"Conflict", "conflict_error", "request_conflict"};
     case 413:
       return {"Content Too Large", "invalid_request_error", "body_too_large"};
     case 429:
       return {"Too Many Requests", "rate_limit_error", "capacity_exhausted"};
-    case 502: return {"Bad Gateway", "server_error", "upstream_error"};
-    case 503: return {"Service Unavailable", "service_unavailable_error",
-                      "service_unavailable"};
-    default: return {"Internal Server Error", "server_error", "internal_error"};
+    case 502:
+      return {"Bad Gateway", "server_error", "upstream_error"};
+    case 503:
+      return {"Service Unavailable", "service_unavailable_error",
+              "service_unavailable"};
+    default:
+      return {"Internal Server Error", "server_error", "internal_error"};
   }
 }
 }  // namespace
@@ -496,12 +705,24 @@ ErrorInfo ErrorForStatus(int status) {
 std::string ErrorJson(int status, const std::string& message,
                       std::string_view error_code, std::string_view param) {
   const auto info = ErrorForStatus(status);
-  return
-      "{\"error\":{\"message\":\"" + JsonEscape(message) +
-      "\",\"type\":\"" + info.type + "\",\"code\":\"" +
-      JsonEscape(std::string(error_code.empty() ? info.code : error_code)) +
-      "\",\"param\":" + (param.empty() ? "null" :
-          "\"" + JsonEscape(std::string(param)) + "\"") + "}}";
+  return "{\"error\":{\"message\":\"" + JsonEscape(message) + "\",\"type\":\"" +
+         info.type + "\",\"code\":\"" +
+         JsonEscape(std::string(error_code.empty() ? info.code : error_code)) +
+         "\",\"param\":" +
+         (param.empty() ? "null"
+                        : "\"" + JsonEscape(std::string(param)) + "\"") +
+         "}}";
+}
+
+std::string HttpResponseContext::StreamError(int status,
+                                             const std::string& message,
+                                             std::string_view code,
+                                             std::string_view param) {
+  if (stream_error_renderer_)
+    return stream_error_renderer_(stream_error_owner_, status, message, code,
+                                  param);
+  return "data: " + ErrorJson(status, message, code, param) +
+         "\r\n\r\ndata: [DONE]\r\n\r\n";
 }
 
 void SendError(int fd, int code, const std::string& message,
@@ -509,14 +730,14 @@ void SendError(int fd, int code, const std::string& message,
                std::string_view param, std::string_view allow) {
   if (error_code.empty()) error_code = ErrorForStatus(code).code;
   if (auto* context = HttpResponseContext::Current(fd)) {
+    context->ObserveError(code, message, error_code);
     context->StopHeartbeats();
     std::fprintf(stderr, "[q4t][http] trace_id=%s status=%d error=%.*s\n",
                  context->TraceId().c_str(), code,
                  static_cast<int>(error_code.size()), error_code.data());
     if (*context->State() == ResponseState::kStreaming) {
       const std::string tail =
-          "data: " + ErrorJson(code, message, error_code, param) +
-          "\r\n\r\ndata: [DONE]\r\n\r\n";
+          context->StreamError(code, message, error_code, param);
       context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
       WriteAll(fd, tail, options);
@@ -530,13 +751,18 @@ void SendError(int fd, int code, const std::string& message,
 }
 
 void SendStreamError(int fd, ResponseState* state, int status,
-                      const std::string& message, const WriteOptions& options,
-                      std::string_view error_code) {
-  if (auto* context = HttpResponseContext::Current(fd))
+                     const std::string& message, const WriteOptions& options,
+                     std::string_view error_code) {
+  if (auto* context = HttpResponseContext::Current(fd)) {
+    context->ObserveError(status, message, error_code);
     context->StopHeartbeats();
+  }
   if (*state != ResponseState::kStreaming) return;
-  const std::string tail = "data: " + ErrorJson(status, message, error_code) +
-                           "\r\n\r\ndata: [DONE]\r\n\r\n";
+  auto* context = HttpResponseContext::Current(fd);
+  const std::string tail =
+      context ? context->StreamError(status, message, error_code)
+              : "data: " + ErrorJson(status, message, error_code) +
+                    "\r\n\r\ndata: [DONE]\r\n\r\n";
   if (auto* context = HttpResponseContext::Current(fd))
     context->BeforeTerminal();
   *state = ResponseState::kTerminal;
@@ -545,14 +771,14 @@ void SendStreamError(int fd, ResponseState* state, int status,
 
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
-                            const WriteOptions& options,
-                            std::string_view code) {
+                            const WriteOptions& options, std::string_view code,
+                            int http_status) {
   if (*state != (stream ? ResponseState::kStreaming : ResponseState::kUnsent))
     return;
   if (stream) {
-    SendStreamError(fd, state, 502, message, options, code);
+    SendStreamError(fd, state, http_status, message, options, code);
   } else {
-    SendError(fd, 502, message, options, code);
+    SendError(fd, http_status, message, options, code);
     *state = ResponseState::kTerminal;
   }
 }
@@ -574,15 +800,16 @@ std::string SseChunk(const std::string& id, const std::string& model,
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
-                          int64_t created, bool include_usage) {
-  std::string choice = "{\"index\":" + std::to_string(index) +
-                       ",\"delta\":" + delta_json;
+                          int64_t created, bool include_usage,
+                          std::string_view logprobs_json) {
+  std::string choice =
+      "{\"index\":" + std::to_string(index) + ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
     choice += ",\"finish_reason\":\"" + finish_reason + "\"";
   } else {
     choice += ",\"finish_reason\":null";
   }
-  choice += ",\"logprobs\":null}";
+  choice += ",\"logprobs\":" + std::string(logprobs_json) + '}';
   std::string obj = "{\"id\":\"" + JsonEscape(id) +
                     "\",\"object\":\"chat.completion.chunk\","
                     "\"created\":" +

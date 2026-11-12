@@ -1,0 +1,25 @@
+[PASS] batch_state_actual_dead_process_claim_preserves_original_deadline
+[PASS] batch_validation_rows_actual_dead_owner_resumes_original_partial_page
+[PASS] batch_recovery_invalid_boot_id_is_unknown_and_never_claimed
+[PASS] batch_results_actual_unknown_start_never_grants_duplicate_execution
+[PASS] batch_results_actual_unknown_finish_commits_result_and_counts_once
+[PASS] batch_validation_driver_yields_one_row_and_admits_only_after_whole_file
+[PASS] batch_validation_driver_restart_rechecks_source_and_reuses_deleted_file
+[PASS] batch_validation_driver_duplicate_after_recovery_never_prepares_next_row
+[PASS] batch_jobs_actual_native_finite_rows_and_output_file
+[PASS] batch_jobs_invalid_later_line_never_invokes_and_keeps_error
+[PASS] batch_jobs_reserves_capacity_before_create_and_binds_admission_owner
+[PASS] batch_jobs_fair_client_turns_and_queued_jobs_hold_no_data_permit
+[PASS] batch_jobs_cancel_waits_for_drain_and_publishes_partial_files
+[PASS] batch_jobs_actual_unknown_create_keeps_reserved_owner
+  CHECK failed: Ok(final) && final.value.GetString("status") == "completed" && final.value.Find("request_counts")->GetInt("total") == 2 && final.value.Find("request_counts")->GetInt("failed") == failed && calls == expected_calls && jobs.Health().reserved_result_bytes == 0 (line 176)
+[FAIL] batch_jobs_actual_unknown_start_never_invokes
+  CHECK failed: Ok(final) && final.value.GetString("status") == "completed" && final.value.Find("request_counts")->GetInt("total") == 2 && final.value.Find("request_counts")->GetInt("failed") == failed && calls == expected_calls && jobs.Health().reserved_result_bytes == 0 (line 176)
+[FAIL] batch_jobs_actual_unknown_result_reconciles_without_replay
+[PASS] batch_jobs_throw_or_invalid_endpoint_output_closes_without_replay
+[PASS] batch_jobs_actual_dead_owner_recovery_skips_started_row
+[PASS] batch_jobs_live_or_unknown_owner_never_grants_recovery
+[PASS] batch_jobs_stop_cancels_owned_execution_and_keeps_pending_rows
+[PASS] batch_jobs_scanner_advances_pages_and_recovers_controller_failure
+[PASS] batch_jobs_anonymous_local_mode_uses_actual_owner_and_executes
+22 tests, 20 passed, 2 failed, 0 skipped

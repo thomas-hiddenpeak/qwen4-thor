@@ -1,0 +1,55 @@
+test_publish_replay_and_actual_old_generation_rollback_preserve_business_state (tools.serve_recovery.test_publication.PublicationTests.test_publish_replay_and_actual_old_generation_rollback_preserve_business_state) ... ok
+test_default_switch_fault_resumes_and_fences_new_launch (tools.serve_recovery.test_publication.PublicationTests.test_default_switch_fault_resumes_and_fences_new_launch) ... ok
+test_process_exit_during_selection_releases_ownership_and_resumes (tools.serve_recovery.test_publication.PublicationTests.test_process_exit_during_selection_releases_ownership_and_resumes) ... ok
+test_pointer_rename_before_directory_sync_resumes_same_generation (tools.serve_recovery.test_publication.PublicationTests.test_pointer_rename_before_directory_sync_resumes_same_generation) ... ok
+test_initial_publication_writer_short_write_retries_without_reset (tools.serve_recovery.test_publication.PublicationTests.test_initial_publication_writer_short_write_retries_without_reset) ... ok
+test_initial_publication_policy_short_write_retries_without_reset (tools.serve_recovery.test_publication.PublicationTests.test_initial_publication_policy_short_write_retries_without_reset) ... ok
+test_initial_binding_short_write_retries_without_reset (tools.serve_recovery.test_publication.PublicationTests.test_initial_binding_short_write_retries_without_reset) ... ok
+test_publication_prepare_short_write_reconstructs_only_same_intent (tools.serve_recovery.test_publication.PublicationTests.test_publication_prepare_short_write_reconstructs_only_same_intent) ... ok
+test_publication_finish_short_write_requires_selected_default (tools.serve_recovery.test_publication.PublicationTests.test_publication_finish_short_write_requires_selected_default) ... ok
+test_deployment_prepare_short_write_reconstructs_only_same_intent (tools.serve_recovery.test_publication.PublicationTests.test_deployment_prepare_short_write_reconstructs_only_same_intent) ... ok
+test_deployment_finish_short_write_requires_selected_default (tools.serve_recovery.test_publication.PublicationTests.test_deployment_finish_short_write_requires_selected_default) ... ok
+test_finish_cannot_be_recovered_when_default_selection_is_unknown (tools.serve_recovery.test_publication.PublicationTests.test_finish_cannot_be_recovered_when_default_selection_is_unknown) ... ok
+test_unrelated_partial_bytes_never_repaired_or_removed (tools.serve_recovery.test_publication.PublicationTests.test_unrelated_partial_bytes_never_repaired_or_removed) ... ok
+test_immutable_intent_short_write_can_only_resume_same_original_request (tools.serve_recovery.test_publication.PublicationTests.test_immutable_intent_short_write_can_only_resume_same_original_request) ... ok
+test_generation_copy_after_chmod_before_rename_is_resumable (tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable) ... ERROR
+test_identity_acceptance_and_predecessor_rejection_leave_defaults_unchanged (tools.serve_recovery.test_publication.PublicationTests.test_identity_acceptance_and_predecessor_rejection_leave_defaults_unchanged) ... ok
+test_locks_active_grants_and_uncoordinated_deploy_are_refused (tools.serve_recovery.test_publication.PublicationTests.test_locks_active_grants_and_uncoordinated_deploy_are_refused) ... ok
+test_lost_published_journal_never_rebootstraps_old_initial_intent (tools.serve_recovery.test_publication.PublicationTests.test_lost_published_journal_never_rebootstraps_old_initial_intent) ... ok
+test_fresh_default_resumes_after_initial_same_generation_selection (tools.serve_recovery.test_publication.PublicationTests.test_fresh_default_resumes_after_initial_same_generation_selection) ... ok
+test_real_native_cli_publishes_checks_rolls_back_and_preserves_state (tools.serve_recovery.test_publication.NativePublicationTests.test_real_native_cli_publishes_checks_rolls_back_and_preserves_state) ... ok
+test_check_preserves_all_journals_and_never_launches (tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches) ... ok
+test_pending_policy_or_bad_envelope_stays_unknown_without_repair (tools.serve_recovery.test_lifecycle.LifecycleTests.test_pending_policy_or_bad_envelope_stays_unknown_without_repair) ... ok
+test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets (tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+
+======================================================================
+ERROR: test_generation_copy_after_chmod_before_rename_is_resumable (tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_publication.py", line 213, in test_generation_copy_after_chmod_before_rename_is_resumable
+    self.assertTrue(fired);self.publish();self.check_complete()
+                           ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_publication.py", line 67, in publish
+    return p.execute(self.state,request_id=self.request,root=self.root,package=self.target,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication.py", line 263, in execute
+    intent = prepare_intent(state,desc,package,digest,release,root,expected,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication.py", line 114, in prepare_intent
+    current = files.snapshot(root, state, desc, desc['package'], desc['manifest_sha256'],
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_files.py", line 174, in snapshot
+    copy_file(source, target/name, value['files'][name], executable=name == 'q4t')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_files.py", line 132, in copy_file
+    store.check_file(check)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/store.py", line 57, in check_file
+    ledger.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: private regular file required
+
+----------------------------------------------------------------------
+Ran 24 tests in 9.389s
+
+FAILED (errors=1)

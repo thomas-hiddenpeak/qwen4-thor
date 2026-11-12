@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_file_input_policy.FileInputPolicyPackage"
+  ],
+  "exit_code": 0,
+  "seconds": 0.6646712962538004
+}

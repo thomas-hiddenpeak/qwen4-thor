@@ -1,0 +1,4 @@
+[q4t][http] trace_id=req_tool_run_1b9ead2bcb4ebabcc823b178697b0305 status=499 error=cancelled
+fixture_job_timeout: Batch did not reach terminal
+fixture_job_timeout: Batch did not reach terminal
+[q4t][http] trace_id=req_tool_run_458b17253ca1f066659e06d16ea489e2 status=503 error=server_stopping

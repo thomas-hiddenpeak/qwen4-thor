@@ -1,0 +1,12 @@
+legacy worker status=134 reaped=1
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(input, &output).ok() (line 143)
+[FAIL] file_legacy_actual_doc_unicode_and_confirmed_cleanup
+legacy sheet name=Actual data source_rows=1048576 columns=2 retained=1000
+fixture cell: Item 中文
+fixture cell: Count
+fixture cell: Original
+fixture cell: 42 [cached formula result; formula: of:=SUM(20;22)]
+  CHECK failed: sheet.name == "Actual data" && sheet.source_rows == 2 && sheet.columns == 2 && sheet.rows.size() == 2 && sheet.rows[0][0] == "Item 中文" && sheet.rows[0][1] == "Count" && sheet.rows[1][0] == "Original" && sheet.rows[1][1].starts_with("42") && Once(sheet.rows[1][1], "SUM(20;22)") && fixture.Clean() (line 163)
+[FAIL] file_legacy_actual_xls_sheet_coordinates_values_and_formula
+2 tests, 0 passed, 2 failed, 0 skipped

@@ -1,0 +1,55 @@
+{
+  "old_source_commit": "9a3a186c",
+  "negative_control": "reproduced source-origin mismatch without GPU",
+  "modules": [
+    {
+      "module": "tools.serve_recovery.bundle",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/bundle.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/bundle.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_recovery.child",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/child.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/child.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_recovery.control",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/control.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/control.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_recovery.journal",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/journal.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/journal.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_recovery.service",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/service.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/service.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_service.package",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_service/package.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_service/package.py",
+      "loaded_from_sealed": true,
+      "byte_identical": true
+    },
+    {
+      "module": "tools.serve_recovery.observation_io",
+      "actual_path": "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/observation_io.py",
+      "sealed_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle/source/tools/serve_recovery/observation_io.py",
+      "loaded_from_sealed": false,
+      "byte_identical": true
+    }
+  ]
+}

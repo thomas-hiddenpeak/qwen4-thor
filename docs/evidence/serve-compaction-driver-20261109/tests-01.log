@@ -1,0 +1,9 @@
+test_compact_oracle_rejects_missing_fake_or_mismatched_state (tools.serve_responses.test_compaction_acceptance.CompactionAcceptance.test_compact_oracle_rejects_missing_fake_or_mismatched_state) ... ok
+test_frozen_requests_have_actual_routes_and_bounded_steps (tools.serve_responses.test_compaction_acceptance.CompactionAcceptance.test_frozen_requests_have_actual_routes_and_bounded_steps) ... ok
+test_noop_admission_and_failure_cannot_hide_usage_or_extra_calls (tools.serve_responses.test_compaction_acceptance.CompactionAcceptance.test_noop_admission_and_failure_cannot_hide_usage_or_extra_calls) ... ok
+test_reduction_requires_real_count_and_preserved_fact (tools.serve_responses.test_compaction_acceptance.CompactionAcceptance.test_reduction_requires_real_count_and_preserved_fact) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.007s
+
+OK

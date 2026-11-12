@@ -1,0 +1,10 @@
+{
+  "status": "PASS_NATIVE_MODERATIONS_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 191
+  },
+  "seconds": 105.97595616197214,
+  "binary_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851"
+}

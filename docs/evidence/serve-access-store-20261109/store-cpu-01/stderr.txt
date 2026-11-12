@@ -1,0 +1,13 @@
+test_changed_head_and_wrong_pending_predecessor_fail_before_overwrite (tools.serve_recovery.test_access_store.AccessStoreTests.test_changed_head_and_wrong_pending_predecessor_fail_before_overwrite) ... ok
+test_complete_pending_before_rename_recovers_once (tools.serve_recovery.test_access_store.AccessStoreTests.test_complete_pending_before_rename_recovers_once) ... ok
+test_corruption_or_missing_policy_never_rebootstrap_package_keys (tools.serve_recovery.test_access_store.AccessStoreTests.test_corruption_or_missing_policy_never_rebootstrap_package_keys) ... ok
+test_cpp_python_contracts_and_large_history_match (tools.serve_recovery.test_access_store.AccessStoreTests.test_cpp_python_contracts_and_large_history_match) ... ok
+test_durable_idempotent_update_never_claims_live_application (tools.serve_recovery.test_access_store.AccessStoreTests.test_durable_idempotent_update_never_claims_live_application) ... ok
+test_foreign_identity_links_and_competing_writer_are_refused (tools.serve_recovery.test_access_store.AccessStoreTests.test_foreign_identity_links_and_competing_writer_are_refused) ... ok
+test_postrename_fsync_unknown_commit_is_queryable_without_replay (tools.serve_recovery.test_access_store.AccessStoreTests.test_postrename_fsync_unknown_commit_is_queryable_without_replay) ... ok
+test_receipt_window_is_bounded_and_old_requests_cannot_reset_revision (tools.serve_recovery.test_access_store.AccessStoreTests.test_receipt_window_is_bounded_and_old_requests_cannot_reset_revision) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.255s
+
+OK

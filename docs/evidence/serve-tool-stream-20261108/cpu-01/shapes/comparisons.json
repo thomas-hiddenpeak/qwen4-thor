@@ -1,0 +1,430 @@
+[
+  {
+    "id": "allowed-tools-auto",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-required",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-empty-auto",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-empty-required",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': {'mode': 'required', 'tools': []}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "required mode needs an allowed tool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-mode",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': {'mode': 'none', 'tools': [{'type': 'function', 'function': {'name': 'read'}}]}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.mode"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-missing",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools'}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "missing allowed tools",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-scalar",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': 1}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected constraint object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-missing-list",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': {'mode': 'auto'}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-ref-type",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': {'mode': 'auto', 'tools': [{'type': 'other', 'function': {'name': 'read'}}]}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected function reference",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools[0].type"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-bad-ref-fields",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': 'read', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}], 'tool_choice': {'type': 'allowed_tools', 'allowed_tools': {'mode': 'auto', 'tools': [{'type': 'function', 'function': {'name': 'read', 'extra': 1}}]}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: extra",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools[0].function.extra"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-unknown",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool is not declared",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools[0].function.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "allowed-tools-duplicate",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.allowed_tools.tools[1].function.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-valid",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-null",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-wrong-shape",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tools must be an array or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-omitted",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-valid",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-null",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-wrong-shape",
+    "field": "response_format",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'response_format': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "response_format.unexpected"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-omitted",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-valid",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-null",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tool_choice': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected constraint object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-wrong-shape",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tool_choice': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.unexpected"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-omitted",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-valid",
+    "field": "parallel_tool_calls",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-null",
+    "field": "parallel_tool_calls",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'parallel_tool_calls': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parallel_tool_calls requires parsed messages / bool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parallel_tool_calls"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-wrong-shape",
+    "field": "parallel_tool_calls",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'parallel_tool_calls': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parallel_tool_calls requires parsed messages / bool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parallel_tool_calls"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-omitted",
+    "field": "parallel_tool_calls",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  }
+]

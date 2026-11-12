@@ -1,0 +1,19 @@
+{
+  "status": "PASS_TARGETED_DEVICE_FILTER_CPU",
+  "tests": 6,
+  "seconds": 0.1317963069304824,
+  "kernel": "6.8.12-1021-tegra",
+  "gpu_starts": 0,
+  "host_gpu_policy_changes": false,
+  "default_unchanged": true,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/src/service/device_filter.cpp": "bdd477a2b8fa13373b83b928b94857f5f2277181d90096bb3f69c285fb855d2c",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/service/device_filter.h": "e6ea1aab6dcea25938a0088743cdfefe1c21e489854b14f1f0e69c912a29a3f3",
+    "/home/rm01/models/dev/qwen4-thor/tests/device_filter_test.cpp": "1be6179e94dd305862b2c6f594c6fe4014f093ff9e3eadbd85a40f670cf5a806",
+    "/home/rm01/models/dev/qwen4-thor/cmake/GuardianProcess.cmake": "8f8088aa7f616e6a263af331994113bae857e47234363a8c252dd32793043fa8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_device_filter_tests": "21b970f091b7e57e0e10a80e5a11edc92c2cd4c99db24e169910679e2483b181"
+  },
+  "actual_scope": "owned test cgroups, /dev/zero and /dev/null",
+  "initial_exclusivity_certified": false,
+  "cold_start_delivered": false
+}

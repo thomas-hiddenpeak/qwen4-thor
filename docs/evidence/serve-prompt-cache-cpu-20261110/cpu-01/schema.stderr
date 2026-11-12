@@ -1,0 +1,8 @@
+test_actual_cpp_terminal_values (tools.serve_responses.test_cache_contract.CacheContract.test_actual_cpp_terminal_values) ... ok
+test_chat_controls_and_native_conflicts (tools.serve_responses.test_cache_contract.CacheContract.test_chat_controls_and_native_conflicts) ... ok
+test_modern_ttl_and_block_controls (tools.serve_responses.test_cache_contract.CacheContract.test_modern_ttl_and_block_controls) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.009s
+
+OK

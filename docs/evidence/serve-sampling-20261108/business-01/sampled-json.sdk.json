@@ -1,0 +1,186 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-90fa01db57baaed438e0c24decc6a705",
+    "model": "qwen3.8-flash-next",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": {
+          "content": [
+            {
+              "token": "4",
+              "logprob": -0.001464988933479422,
+              "bytes": [
+                52
+              ],
+              "top_logprobs": [
+                {
+                  "token": "4",
+                  "logprob": -0.001464988933479422,
+                  "bytes": [
+                    52
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -7.7514649889334795,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "3",
+                  "logprob": -8.50146498893348,
+                  "bytes": [
+                    51
+                  ]
+                }
+              ]
+            },
+            {
+              "token": "2",
+              "logprob": -0.0004645061469971787,
+              "bytes": [
+                50
+              ],
+              "top_logprobs": [
+                {
+                  "token": "2",
+                  "logprob": -0.0004645061469971787,
+                  "bytes": [
+                    50
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -8.625464506146997,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "<|im_end|>",
+                  "logprob": -9.562964506146997,
+                  "bytes": [
+                    60,
+                    124,
+                    105,
+                    109,
+                    95,
+                    101,
+                    110,
+                    100,
+                    124,
+                    62
+                  ]
+                }
+              ]
+            }
+          ],
+          "refusal": null
+        }
+      },
+      {
+        "index": 1,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": {
+          "content": [
+            {
+              "token": "4",
+              "logprob": -0.001464988933479422,
+              "bytes": [
+                52
+              ],
+              "top_logprobs": [
+                {
+                  "token": "4",
+                  "logprob": -0.001464988933479422,
+                  "bytes": [
+                    52
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -7.7514649889334795,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "3",
+                  "logprob": -8.50146498893348,
+                  "bytes": [
+                    51
+                  ]
+                }
+              ]
+            },
+            {
+              "token": "2",
+              "logprob": -0.0004645061469971787,
+              "bytes": [
+                50
+              ],
+              "top_logprobs": [
+                {
+                  "token": "2",
+                  "logprob": -0.0004645061469971787,
+                  "bytes": [
+                    50
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -8.625464506146997,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "<|im_end|>",
+                  "logprob": -9.562964506146997,
+                  "bytes": [
+                    60,
+                    124,
+                    105,
+                    109,
+                    95,
+                    101,
+                    110,
+                    100,
+                    124,
+                    62
+                  ]
+                }
+              ]
+            }
+          ],
+          "refusal": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 6,
+      "total_tokens": 34
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "1541",
+      "content-type": "application/json",
+      "x-request-id": "req-e97903b50e584037860a2d8420606e87"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tOTBmYTAxZGI1N2JhYWVkNDM4ZTBjMjRkZWNjNmE3MDUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MDk4NzMwLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiNDIifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6eyJjb250ZW50IjpbeyJ0b2tlbiI6IjQiLCJsb2dwcm9iIjotMC4wMDE0NjQ5ODg5MzM0Nzk0MjIsImJ5dGVzIjpbNTJdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiNCIsImxvZ3Byb2IiOi0wLjAwMTQ2NDk4ODkzMzQ3OTQyMiwiYnl0ZXMiOls1Ml19LHsidG9rZW4iOiIxIiwibG9ncHJvYiI6LTcuNzUxNDY0OTg4OTMzNDc5NSwiYnl0ZXMiOls0OV19LHsidG9rZW4iOiIzIiwibG9ncHJvYiI6LTguNTAxNDY0OTg4OTMzNDc5NSwiYnl0ZXMiOls1MV19XX0seyJ0b2tlbiI6IjIiLCJsb2dwcm9iIjotMC4wMDA0NjQ1MDYxNDY5OTcxNzg3LCJieXRlcyI6WzUwXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IjIiLCJsb2dwcm9iIjotMC4wMDA0NjQ1MDYxNDY5OTcxNzg3LCJieXRlcyI6WzUwXX0seyJ0b2tlbiI6IjEiLCJsb2dwcm9iIjotOC42MjU0NjQ1MDYxNDY5OTcyLCJieXRlcyI6WzQ5XX0seyJ0b2tlbiI6Ijx8aW1fZW5kfD4iLCJsb2dwcm9iIjotOS41NjI5NjQ1MDYxNDY5OTcyLCJieXRlcyI6WzYwLDEyNCwxMDUsMTA5LDk1LDEwMSwxMTAsMTAwLDEyNCw2Ml19XX1dLCJyZWZ1c2FsIjpudWxsfX0seyJpbmRleCI6MSwibWVzc2FnZSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IjQyIn0sImZpbmlzaF9yZWFzb24iOiJzdG9wIiwibG9ncHJvYnMiOnsiY29udGVudCI6W3sidG9rZW4iOiI0IiwibG9ncHJvYiI6LTAuMDAxNDY0OTg4OTMzNDc5NDIyLCJieXRlcyI6WzUyXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IjQiLCJsb2dwcm9iIjotMC4wMDE0NjQ5ODg5MzM0Nzk0MjIsImJ5dGVzIjpbNTJdfSx7InRva2VuIjoiMSIsImxvZ3Byb2IiOi03Ljc1MTQ2NDk4ODkzMzQ3OTUsImJ5dGVzIjpbNDldfSx7InRva2VuIjoiMyIsImxvZ3Byb2IiOi04LjUwMTQ2NDk4ODkzMzQ3OTUsImJ5dGVzIjpbNTFdfV19LHsidG9rZW4iOiIyIiwibG9ncHJvYiI6LTAuMDAwNDY0NTA2MTQ2OTk3MTc4NywiYnl0ZXMiOls1MF0sInRvcF9sb2dwcm9icyI6W3sidG9rZW4iOiIyIiwibG9ncHJvYiI6LTAuMDAwNDY0NTA2MTQ2OTk3MTc4NywiYnl0ZXMiOls1MF19LHsidG9rZW4iOiIxIiwibG9ncHJvYiI6LTguNjI1NDY0NTA2MTQ2OTk3MiwiYnl0ZXMiOls0OV19LHsidG9rZW4iOiI8fGltX2VuZHw+IiwibG9ncHJvYiI6LTkuNTYyOTY0NTA2MTQ2OTk3MiwiYnl0ZXMiOls2MCwxMjQsMTA1LDEwOSw5NSwxMDEsMTEwLDEwMCwxMjQsNjJdfV19XSwicmVmdXNhbCI6bnVsbH19XSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MjgsImNvbXBsZXRpb25fdG9rZW5zIjo2LCJ0b3RhbF90b2tlbnMiOjM0fX0="
+}

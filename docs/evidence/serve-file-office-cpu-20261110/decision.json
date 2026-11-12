@@ -1,0 +1,21 @@
+{
+  "status": "PASS_TARGETED_OFFICE_RTF_WORKER_CPU",
+  "first_cpu_cases": 26,
+  "first_seconds": 0.5645874487236142,
+  "dependency_isolation_followup_cases": 3,
+  "followup_seconds": 0.0319159310311079,
+  "reused_unchanged_cases": 23,
+  "build_warnings": 0,
+  "host_sha256": "edf04c12ff5748745ea72f23af4744277e5e4a9dbf6a3683dd3e5451851e00fc",
+  "candidate_engine_sha256": "a8c719c0fe36ef3ff9c470e17e5643360683299e9c6a7f9e5904b1ea534094c2",
+  "first_binary_sha256": null,
+  "first_identity_note": "First binary hash was not captured before the bounded followup rebuild; unchanged content/parser/ownership source dependencies are reused, not claimed as re-executed on final binary. Final binary identities are recorded.",
+  "default_changed": false,
+  "default_engine": "cdb5ced9",
+  "default_state": "STOPPED",
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "file_api_consumption_pending": true,
+  "legacy_apple_google_pending": true,
+  "all_master_tasks_continue": true
+}

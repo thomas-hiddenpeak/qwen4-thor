@@ -1,0 +1,9 @@
+{
+  "status": "FAILED_BEFORE_MUTATION",
+  "command": [
+    "python3",
+    ".q4t-work/serve-sampling-20261108/prepare_release.py"
+  ],
+  "error": "ModuleNotFoundError: No module named 'nvml_process_query'",
+  "fix": "Add existing evalscope module directory to artifact driver sys.path. No model or default mutation."
+}

@@ -1,0 +1,21 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_ACCESS",
+  "accepted": true,
+  "audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/audit.json",
+  "audit_sha256": "fc733fa970e7256bef127f7e3fd41f2eb861c29514cf6d2db8d79e7f4cbb65ab",
+  "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/business-01/execution/result.json",
+  "business_sha256": "c3e4580eb4cabc1e44c8b562456ac07aa6c9b4597d5472b771fad2aad60d5e50",
+  "cpu": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/cpu-summary.json",
+  "cpu_sha256": "8a6fa80ed40670ece9372ac662bfc48946f32b96c99548aae4e7f54479e4ef70",
+  "runtime_configuration_proof": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/release-01/configuration-proof.json",
+  "runtime_configuration_proof_sha256": "ce1e5da1f0357aa274e3a5cc017b1b077ee9e47bb5a2dc25c18c32c94228b4d2",
+  "default_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/release-01/bundle",
+    "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+    "engine_binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "recovery_accepted": false
+  },
+  "engine_unchanged": true,
+  "full_matrix_required": false,
+  "long_stability_accepted": false
+}

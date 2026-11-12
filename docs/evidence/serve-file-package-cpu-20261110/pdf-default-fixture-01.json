@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "env",
+    "-u",
+    "Q4T_TEST_OUTPUT_DIR",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "file_pdf_actual_text_and_every_page_images"
+  ],
+  "exit_code": 0,
+  "seconds": 0.11407320713624358
+}

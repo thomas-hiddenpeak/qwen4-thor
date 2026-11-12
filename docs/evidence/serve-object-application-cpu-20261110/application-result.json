@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_TARGETED_APPLICATION_CPU",
+  "cpu_unique": 30,
+  "new_cpu": 13,
+  "affected_existing_cpu": 17,
+  "seconds": 22.492623027879745,
+  "gpu_starts": 0,
+  "gpu_requests": 0,
+  "network_requests": 0,
+  "engine_binary_sha256": "32bdd3cf981fe0a8b7cdf6295112e447b8473449677ebff60abe7bbe7c525bf5",
+  "host_binary_sha256": "755ca72bda4b5ae616752dae3081ad7f7830830f4c3271990cc3cd2ce7a011d2",
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  },
+  "protected_unchanged": true,
+  "production_records_written": false,
+  "default_replaced": false,
+  "main_merged": false,
+  "source_anchors": 463,
+  "reviewed_anchors": 8,
+  "remaining_required": [
+    "All controlled ingress/body/JSON/prompt/background capacities",
+    "Atomic private snapshot parent-publication existence/identity validation",
+    "Integrated actual SDK/model business including fresh preparation SSE and PDF vision",
+    "Format-capable rollback and validated release",
+    "All remaining master tasks"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state"
+  ],
+  "expected_cpu_cases": 1,
+  "new_gpu_starts": 0,
+  "scope": "Qualified same-capacity STOPPED deployment migration and exact interruption replay; old v12 reader, historical package inventory and unchanged key/quota/core journals. No automatic version fallback claim.",
+  "sources": {
+    "tools/serve_recovery/profile_manager.py": "f61593cad63943dda5a207d636d935cd23a2dfa7fb069cea7a430c2a4883e17d",
+    "tools/serve_recovery/profile_migration.py": "a750ab19de30a48bdfda988463f6c48e054da7db883851a129a0c5419c1874db",
+    "tools/serve_recovery/deployment.py": "50fcf44aed90a0df4fb5d5e639df39a346934deba1bae266c41af401e89a5309",
+    "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
+    "tools/serve_recovery/bundle.py": "b997b8bb4a127d40188872c4922c9e852198df2680049cf3568d1369d8b6adf3",
+    "tools/serve_recovery/profile_policy.py": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571",
+    "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/test_profile_deployment.py": "64cda87114ab6fa3b1f70287181d23e04d5fc1265f9cdc3b415b7fdb647a1406",
+    "tools/serve_recovery/test_profile_integration.py": "ea4ac3798a49c8b39c94c89a5e43e4b8031e6e242b92f7b0cb727d77085117a0",
+    "tools/serve_recovery/test_native_bundle.py": "979f9a8d377f409da1c8ec68af362ab16029881ccde1341892fffb82e3ec962b",
+    "tools/serve_recovery/test_deployment.py": "17e30f67d502686a2ebec6cc5d1ab4e13b99b6138e1ab3ce8deed323f0f666b1"
+  },
+  "reason": "Independent Python -c inherited repository CWD; its regular tools.serve_recovery package overrides sealed namespace package. Use the old package as working directory and preserve child stderr in assertions; production unchanged."
+}

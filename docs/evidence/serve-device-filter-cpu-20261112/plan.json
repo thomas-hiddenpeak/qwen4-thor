@@ -1,0 +1,22 @@
+{
+  "scope": "R07.1 native device access enforcement primitive",
+  "tests": 6,
+  "gpu_starts": 0,
+  "host_gpu_policy_changes": false,
+  "kernel_scope": "Only newly created /sys/fs/cgroup/q4t-device-test-PID-SERIAL subtrees; /dev/zero and /dev/null only",
+  "source_sha256": {
+    "include/q4t/service/device_filter.h": "e6ea1aab6dcea25938a0088743cdfefe1c21e489854b14f1f0e69c912a29a3f3",
+    "src/service/device_filter.cpp": "bdd477a2b8fa13373b83b928b94857f5f2277181d90096bb3f69c285fb855d2c",
+    "tests/device_filter_test.cpp": "1be6179e94dd305862b2c6f594c6fe4014f093ff9e3eadbd85a40f670cf5a806",
+    "cmake/GuardianProcess.cmake": "8f8088aa7f616e6a263af331994113bae857e47234363a8c252dd32793043fa8"
+  },
+  "checks": [
+    "invalid scope/list rejected before attachment",
+    "actual allowed/sibling/parent/nested device opens",
+    "link custody survives creator close",
+    "existing FD non-revocation explicit negative boundary",
+    "detach identity and independent policy preservation",
+    "unprivileged migration denial"
+  ],
+  "next": "Independent deployment custody/initial exclusivity evidence, Guardian bounded cold probe and real business; do not complete R07 after primitive tests"
+}

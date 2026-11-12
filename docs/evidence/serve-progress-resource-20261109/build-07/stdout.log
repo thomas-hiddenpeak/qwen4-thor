@@ -1,0 +1,40 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  3%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  7%] Built target q4t_trace
+[ 10%] Built target q4t_io
+[ 14%] Built target q4t_ple
+[ 14%] Built target q4t_text
+[ 17%] Built target q4t_quant
+[ 35%] Built target xgrammar
+[ 53%] Built target q4t_model
+[ 57%] Built target q4t_startup_plan
+[ 57%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 57%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  0%] Built target q4t_regex_build
+[  3%] Built target q4t_io
+[ 21%] Built target xgrammar
+[ 21%] Built target q4t_text
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_progress_context_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_request_diagnostics_test.cpp.o
+[ 25%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

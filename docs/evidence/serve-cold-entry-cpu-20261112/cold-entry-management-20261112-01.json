@@ -1,0 +1,48 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "env",
+    "Q4T_DEVICE_CONTROL_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/device-detach-build/q4t-device-control",
+    "Q4T_GUARDIAN_BINARY=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/guardian-build/q4t-guardian",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_cold_entry.py",
+    "-v",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_resource_bound_public_entry_uses_protected_host_and_original_lease",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_public_host_start_activates_only_explicitly_and_stop_keeps_zero_roles",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_resource_bound_daemon_resume_keeps_stopped_and_forwarded_lease",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_wrong_manifest_arbitrary_command_and_lease_path_never_exec",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_host_entry_rejects_bad_fd_and_wrong_owner_without_weak_fallback",
+    "tools.serve_recovery.test_cold_entry.EntryTests.test_explicit_descriptor_adapter_keeps_sealed_receipt_and_unconsumed_token",
+    "tools.serve_recovery.test_device_domain.DomainTests.test_entry_persists_charge_before_issuer_and_never_refunds_failed_issue",
+    "tools.serve_recovery.test_host_install.HostTests.test_installed_root_entry_permanently_drops_uid_and_keeps_stopped_zero_gpu",
+    "tools.serve_recovery.test_host_ensure.EnsureTests.test_stopped_preflight_does_not_spawn_outer_or_modify_intent"
+  ],
+  "exit_code": 0,
+  "seconds": 15.404541903175414,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

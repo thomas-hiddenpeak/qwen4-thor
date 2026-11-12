@@ -1,0 +1,8 @@
+test_native_embedding_binding_survives_missing_optional_assets (tools.serve_service.test_declarations.Declarations.test_native_embedding_binding_survives_missing_optional_assets) ... ok
+test_native_embedding_requires_accepted_backend_configuration (tools.serve_service.test_declarations.Declarations.test_native_embedding_requires_accepted_backend_configuration) ... ok
+test_native_embedding_settings_validate_path_identity_and_model_collision (tools.serve_service.test_declarations.Declarations.test_native_embedding_settings_validate_path_identity_and_model_collision) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.086s
+
+OK

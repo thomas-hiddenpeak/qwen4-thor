@@ -1,0 +1,20 @@
+-- Found Python3: /home/rm01/.local/bin/python3.13 (found version "3.13.14") found components: Interpreter
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[ 16%] Building CXX object CMakeFiles/q4t_guardian_process.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_process.cpp.o
+[ 16%] Linking CXX static library libq4t_guardian_process.a
+[ 16%] Built target q4t_guardian_process
+[ 16%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_journal.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_wire.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 50%] Linking CXX static library libq4t_guardian_journal.a
+[ 50%] Built target q4t_guardian_journal
+[ 66%] Building CXX object CMakeFiles/q4t_ingress_access.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_access.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_ingress_access.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 83%] Linking CXX static library libq4t_ingress_access.a
+[ 83%] Built target q4t_ingress_access
+[100%] Building CXX object CMakeFiles/q4t_ingress_access_tests.dir/home/rm01/models/dev/qwen4-thor/tests/ingress_access_test.cpp.o
+[100%] Linking CXX executable q4t_ingress_access_tests
+[100%] Built target q4t_ingress_access_tests

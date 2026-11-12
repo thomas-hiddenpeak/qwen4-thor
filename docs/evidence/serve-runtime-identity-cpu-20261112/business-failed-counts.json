@@ -1,0 +1,22 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 0,
+    "probes": 0,
+    "controls": 86
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 1,
+      "monotonic_ns": 2641581394652209
+    },
+    {
+      "kind": "starts",
+      "label": "primary-model",
+      "ordinal": 2,
+      "monotonic_ns": 2641590266807065
+    }
+  ]
+}

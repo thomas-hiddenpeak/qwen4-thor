@@ -1,0 +1,18 @@
+{
+  "include/q4t/server/http_request.h": {
+    "before": "407385927ca20b08fd10f7383d319f30edd9ac62a216b2d7f44932a27860dc53",
+    "after": "3135504e774692aeecac96077e92495f59c1e293ae4f8b0afd46d2386880dbb0"
+  },
+  "src/server/chat_http.cpp": {
+    "before": "cb9956a65a1ca86d2266d92881273a90ba59c3dd7e2863733e83b4cac4e12e71",
+    "after": "be3ef121ed71457ae356bd332c40af9b18a785ed0546f470e8d6d8995dc89c05"
+  },
+  "src/server/http_request.cpp": {
+    "before": "6a9633c3989b3160d09ef3da134df9c1659051bff97c43db1d82275bd9e038ac",
+    "after": "f912f425bf876e2d5621926c1077101b65b80ad8059d2ae9d7b462e41f1f3caf"
+  },
+  "src/service/ingress_transport.cpp": {
+    "before": "aead02740d23e335bdcea7ab376c38578c55eb979bd62ac69c7dc47a7a48c4d2",
+    "after": "363dbe389f4820c1a05423deb637e7dac4cb1555515397d9ecb7b137a5e1a651"
+  }
+}

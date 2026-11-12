@@ -1,0 +1,12 @@
+{
+  "candidate_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "host_sha256": "3b114682274e9fe06286c0b36fb1a02286b712600df06e49d41d764064408456",
+  "ingress_sha256": "a49aa3a85fe729adc4582c77baa623d0cfdd348a30b9c88dba176b2b071f023b",
+  "zero_warnings": true,
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  }
+}

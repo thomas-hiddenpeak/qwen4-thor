@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_gateway.test_application_capacity"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06422791117802262
+}

@@ -1,0 +1,16 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/release-01/candidate/bundle",
+  "manifest_sha256": "9e55e265502feba574ae13e314c06aac3e18dc251edf2e4f267866779eed3be9",
+  "original_accepted_binary": {
+    "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "source_commit": "2db08192321b65ee810144a20a64f339c4613e82",
+    "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/business-01",
+    "acceptance_sha256": "bef95bb4f771c4f1f9829400892f1d936d7fe9603f3a83c890e55c11c0bf1ce7",
+    "kind": "exact_first_accepted_native_retrieval_binary"
+  },
+  "kind": "same_version_capable_republication_anchor",
+  "older_capable_version_available": false,
+  "previous_default_compatible_with_dedicated_model": false,
+  "command": "q4t service publish --state STATE --default-root ROOT --package ANCHOR --manifest-sha256 ANCHOR_SHA --service-release ANCHOR_SERVICE_RELEASE --expected-manifest-sha256 CURRENT_MANIFEST --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+  "preservation": "Retain original tasks/results/deadlines/quotas and fixed optional model identity. Assets may relocate; never silently drop model."
+}

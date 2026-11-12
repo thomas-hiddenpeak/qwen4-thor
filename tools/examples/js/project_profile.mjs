@@ -17,3 +17,14 @@ export function validateSearch(args) {
     !args.query.includes('\n'), 'search expects a literal 1..128 query');
 }
 export const VALIDATORS = Object.freeze({ read_project_record: validateRead, search_project_docs: validateSearch });
+
+export function parseCustomRead(value) {
+  requireValue(typeof value === 'string' && value.length <= 1024, 'custom read input must be bounded text');
+  const match = /^READ (docs\/[A-Za-z0-9_./-]+\.(?:md|json)) ([1-9][0-9]{0,5}) ([1-9][0-9]?)$/.exec(value);
+  requireValue(match !== null && match[0] === value, 'expected READ path start_line line_count');
+  const args = { path: match[1], start_line: Number(match[2]), line_count: Number(match[3]) };
+  validateRead(args); return args;
+}
+export const CUSTOM_VALIDATORS = Object.freeze(Object.fromEntries(
+  ['text', 'regex', 'lark'].map(syntax => ['read_project_record_' + syntax,
+    value => { parseCustomRead(value); }])));

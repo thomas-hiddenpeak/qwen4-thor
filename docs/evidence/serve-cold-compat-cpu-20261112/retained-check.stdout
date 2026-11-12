@@ -1,0 +1,15 @@
+{
+  "format": "q4t-cold-controller-compatibility-v1",
+  "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/release-01/bundle",
+  "original_manifest_sha256": "a3bb4ec872a784d2af3ecf46496b16851b57f5f1f8b42f9e3f48fdd4485bb5ac",
+  "payload": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-domain-20261112/compat-01/retained-cold-fallback",
+  "payload_manifest_sha256": "b5e14f73ef58f2fb6bd4ef54e6a1a17f0449dd54f7733f8c6d8b41c3c9dd2cc1",
+  "controller_sha256": "727ce2d77fa9e5dbe02549cf3c52a8dc3cf084ef831e72e35566e8a5216a533f",
+  "engine_manifest_sha256": "567c455c5716512c3125ea61b3e8eb6a67837cec7af5a639f388df647c71ab14",
+  "model_actions": false,
+  "business_acceptance": false,
+  "accepted_origin_verified": true,
+  "origin_unchanged": true,
+  "seconds": 2.3827980142086744,
+  "controller_matches_current": true
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "real decoded vocabulary and 1024-byte prefix through isolated schema worker; CPU capacity/contract check, no model or GPU",
+  "tests": [
+    "tokenizer_schema_worker_real_vocabulary_completion_boundaries"
+  ],
+  "binary_sha256": "7286bb56c51758d7fdec9ff4ada447790ce79d18ba02a722e7ce00a3f4a48fd8",
+  "tokenizer_path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "timeout_seconds": 180
+}

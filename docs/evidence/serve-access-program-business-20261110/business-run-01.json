@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/evalscope/gpu_exclusive.py",
+    "--compute-backend",
+    "nvml",
+    "--inherit-lease",
+    "--output",
+    ".q4t-work/serve-access-programs-20261110/business-01/lease",
+    "--",
+    "python3",
+    "-B",
+    "tools/serve_responses/access_program_acceptance.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-access-programs-20261110/business-01/plan.json"
+  ],
+  "exit_code": 0,
+  "seconds": 55.778300154954195
+}

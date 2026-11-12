@@ -1,0 +1,16 @@
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_device_filter
+[ 50%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_device_admission.dir/src/service/device_admission.cpp.o
+[100%] Linking CXX static library libq4t_device_admission.a
+[100%] Built target q4t_device_admission
+[100%] Building CXX object CMakeFiles/q4t_device_control.dir/src/service/device_control_main.cpp.o
+[100%] Linking CXX executable q4t-device-control
+[100%] Built target q4t_device_control
+[  0%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 50%] Built target q4t_device_filter
+[100%] Built target q4t_device_admission
+[100%] Building CXX object CMakeFiles/q4t_device_filter_tests.dir/tests/device_filter_test.cpp.o
+[100%] Linking CXX executable q4t_device_filter_tests
+[100%] Built target q4t_device_filter_tests

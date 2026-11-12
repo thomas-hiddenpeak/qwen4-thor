@@ -1,0 +1,55 @@
+[q4t][http] trace_id=req-654069d6405397a0cc4d7572e8c90478 status=429 error=client_rpm_exhausted
+[q4t][http-receive] trace_id=req-55b6d4c59e3f6f1e8208443b228ae8dd reason=malformed status=400 system_error=0
+[q4t][http-write] trace_id=req-55b6d4c59e3f6f1e8208443b228ae8dd reason=write_deadline origin=handler transferred=2240 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-a38bfa8f6cf88fcaecccf91c02f8c0c1 reason=explicit_cancel origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-6f23fd837f8c6644fbc80cf53038824e reason=peer_closed origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-4e7996ce05d129632476324dfcb770ff reason=server_shutdown origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-b4d6b50d9138b52e8cda29c714cd1e95 reason=request_failure origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-df42804f78b16e548680ef813dc58b74 reason=request_deadline origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-37229f31987baa5d935f2338e41fe1d8 reason=peer_closed origin=heartbeat transferred=0 system_error=32 poll_events=0
+[q4t][http] trace_id=req-139415c83a712bfed5c05dd45356dda3 status=503 error=service_unavailable
+[q4t][http] trace_id=req-c9d79840d3bd1c1b9338fc68b7220681 status=503 error=service_unavailable
+[q4t][http] trace_id=req-ab21703e1167b8bd7b5f86081dde7631 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=req-fcd2c0b52614be2b22539f1d4dcc3343 error=host_memory_exhausted
+[q4t][http] trace_id=req-9c79d5c5990cb46438c694f5f48fcf43 error=host_memory_exhausted
+[q4t][http] trace_id=req-636a71833d3e132938bf9ca0fc11bc31 error=host_memory_exhausted
+[PASS] http_framing_pipeline_keeps_exact_unconsumed_bytes
+[PASS] http_framing_version_and_connection_lifetime
+[PASS] http_session_json_error_reuse_has_new_context
+[PASS] http_session_sse_chunks_serialize_heartbeat_and_terminal
+[PASS] http_session_partial_or_failed_stream_cannot_finish
+[PASS] http_session_http10_stream_closes_but_length_can_reuse
+[PASS] http_session_stream_error_finishes_once
+[PASS] http_session_idle_deadline_and_pending_input
+[PASS] http_observation_first_write_deadline_and_receive_once
+[PASS] http_observation_write_cancellation_and_deadline_priority
+[PASS] http_observation_peer_and_invalid_socket_distinct
+[PASS] http_observation_heartbeat_first_failure_after_join
+[PASS] server_terminal_handoff_precedes_wire_and_preserves_cleanup
+[PASS] server_http_context_identity_and_single_terminal
+[PASS] server_sse_heartbeat_serialization_and_nullable_fields
+[PASS] server_context_backpressure_has_absolute_deadline
+[PASS] server_http_parse_error_terminal
+[PASS] server_http_response_send_status
+[PASS] server_http_error_classification
+[PASS] server_http_stream_error_is_single_terminal
+[PASS] server_http_stream_creation_identity
+[PASS] server_http_exception_terminal_states
+[PASS] server_http_host_memory_identity_and_terminal
+[PASS] server_http_host_memory_does_not_append_after_partial_or_terminal
+[PASS] server_http_header_completion
+[PASS] server_http_exception_cannot_append_after_terminal
+[PASS] server_http_response_partial_writes
+[PASS] server_http_write_deadline_despite_progress_and_interrupts
+[PASS] server_http_write_cancel_and_request_deadline
+29 tests, 29 passed, 0 failed, 0 skipped

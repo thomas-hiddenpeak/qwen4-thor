@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-on.txt"
+  ],
+  "exit_code": 1,
+  "seconds": 0.46438403986394405,
+  "binary_sha256": "3360d854b63e0239b1ff1ce1c19e0faa791d34a34af0bf7462a27d1c6d4a036c",
+  "required_sha256": "705a4155e06d00161c850e98a9355f3d67a431fbef95877adf9940485271eecc"
+}

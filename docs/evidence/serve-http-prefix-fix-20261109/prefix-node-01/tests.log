@@ -1,0 +1,10 @@
+✔ prefixed official SDK preserves the actual target and authorization (27.999758ms)
+✔ prefix rejects URL normalization, encoded separators and foreign authority (0.618587ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 163.515302

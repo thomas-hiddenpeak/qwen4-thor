@@ -16,22 +16,190 @@ def current_surface(root):
     if not match:
         raise ValueError("cannot extract Chat allowlist; review extractor")
     fields = re.findall(r'"([a-z_]+)"', match[1])
+    completion = (root / "src/server/completion_plan.cpp").read_text()
+    match = re.search(r'InputFields\(\s*req,\s*\{([^}]+)\}', completion)
+    if not match:
+        raise ValueError("cannot extract Completions allowlist; review extractor")
+    completion_fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
+    if 'if (IsModelDetailPath(path))' not in dispatch or \
+            'method != "GET" && method != "DELETE"' not in dispatch or \
+            'HandleModel(fd, method, path)' not in dispatch:
+        raise ValueError("review dynamic model backend route extractor")
+    routes.extend(("/v1/models/{model}", method) for method in ("GET", "DELETE"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
     if len(native_routes) < 5:
         raise ValueError("cannot extract native ingress routes; review extractor")
+    if 'server::IsModelDetailPath(path)' not in native or \
+            'method == "GET" || method == "DELETE"' not in native:
+        raise ValueError("review dynamic model native route extractor")
+    native_routes.extend((method, "/v1/models/{model}", "true")
+                         for method in ("GET", "DELETE"))
+    application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    if 'IsConversationTarget(path)' not in dispatch or \
+            'HandleConversationRequest(*objects_' not in dispatch or \
+            'server::ConversationMethodAllowed(method, path)' not in native or \
+            'inline bool ConversationMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic Conversations transport extractor")
+    conversations = [
+        ("POST", "/v1/conversations"),
+        *((method, "/v1/conversations/{conversation_id}")
+          for method in ("GET", "POST", "DELETE")),
+        *((method, "/v1/conversations/{conversation_id}/items")
+          for method in ("GET", "POST")),
+        *((method, "/v1/conversations/{conversation_id}/items/{item_id}")
+          for method in ("GET", "DELETE"))]
+    routes.extend((path, method) for method, path in conversations)
+    native_routes.extend((method, path, "false") for method, path in conversations)
+    if 'ServeResponsesState(fd, *objects_' not in dispatch or \
+            'server::ResponsesMethodAllowed(method, path)' not in native or \
+            'inline bool ResponsesMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic Responses transport extractor")
+    responses = [("GET", "/v1/responses/{response_id}"),
+                 ("DELETE", "/v1/responses/{response_id}"),
+                 ("POST", "/v1/responses/{response_id}/cancel"),
+                 ("GET", "/v1/responses/{response_id}/input_items")]
+    routes.extend((path, method) for method, path in responses)
+    if 'server::IsResponsesObservation(method, path)' not in native or \
+            'server::IsCancellationRequest(method, path)' not in native or \
+            'path.substr(end) == "/cancel"' not in application_routes:
+        raise ValueError("review Responses cancellation/control route extractor")
+    native_routes.append(("POST", "/v1/responses", "false"))
+    if 'if (IsResponsesCompaction(path))' not in dispatch or \
+            'if (IsResponsesCompaction(path)) return method == "POST"' not in application_routes:
+        raise ValueError("review native compact transport extractor")
+    routes.append(("/v1/responses/compact", "POST"))
+    native_routes.append(("POST", "/v1/responses/compact", "false"))
+    if 'if (IsResponsesTokenCount(path))' not in dispatch or \
+            'if (IsResponsesTokenCount(path)) return method == "POST"' not in application_routes:
+        raise ValueError("review native input token count transport extractor")
+    routes.append(("/v1/responses/input_tokens", "POST"))
+    native_routes.append(("POST", "/v1/responses/input_tokens", "false"))
+    native_routes.extend((method, path, "true") for method, path in responses)
+    if 'HandleStoredChatRequest(*objects_' not in dispatch or \
+            'server::StoredChatMethodAllowed(method, path)' not in native or \
+            'server::IsStoredChatManagement(method, path)' not in native or \
+            'inline bool StoredChatMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic stored Chat transport extractor")
+    chats = [("GET", "/v1/chat/completions"),
+             *((method, "/v1/chat/completions/{completion_id}")
+               for method in ("GET", "POST", "DELETE")),
+             ("GET", "/v1/chat/completions/{completion_id}/messages")]
+    routes.extend((path, method) for method, path in chats)
+    native_routes.extend((method, path, "true") for method, path in chats)
+    if 'HandlePromptRequest(*objects_' not in dispatch or \
+            'server::PromptMethodAllowed(method, path)' not in native or \
+            'inline bool PromptMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic native Prompt registry extractor")
+    prompts = [*((method, "/v1/prompts") for method in ("GET", "POST")),
+               *((method, "/v1/prompts/{prompt_id}") for method in ("GET", "POST", "DELETE")),
+               ("POST", "/v1/prompts/{prompt_id}/versions"),
+               ("GET", "/v1/prompts/{prompt_id}/versions/{version}")]
+    routes.extend((path, method) for method, path in prompts)
+    native_routes.extend((method, path, "true" if method != "POST" else "false")
+                         for method, path in prompts)
+    if 'IsFileTarget(path)' not in dispatch or \
+            'file_request->Serve(fd)' not in dispatch or \
+            'inline bool FileMethodAllowed' not in application_routes:
+        raise ValueError("review native Files transport extractor")
+    files = [("POST", "/v1/files"), ("GET", "/v1/files"),
+             ("GET", "/v1/files/{file_id}"),
+             ("DELETE", "/v1/files/{file_id}"),
+             ("GET", "/v1/files/{file_id}/content")]
+    routes.extend((path, method) for method, path in files)
+    # The core is being integrated first. Only record an ingress route after
+    # its actual dispatcher exists; common parsing alone is not API support.
+    if 'server::FileMethodAllowed(method, path)' in native:
+        native_routes.extend((method, path, "false") for method, path in files)
+    if 'IsUploadTarget(path)' in dispatch:
+        http = (root / 'src/server/files_http.cpp').read_text()
+        if 'PrepareUpload(method, target' not in http or \
+                'uploads.Complete(access_, id_, body)' not in http or \
+                'uploads.Cancel(access_, id_)' not in http or \
+                'part_->Finish()' not in http:
+            raise ValueError('review actual Uploads handlers before cataloguing')
+        uploads = [('POST', '/v1/uploads'),
+                   *(('POST', '/v1/uploads/{upload_id}/' + action)
+                     for action in ('parts', 'complete', 'cancel'))]
+        routes.extend((path, method) for method, path in uploads)
+        if 'server::UploadMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'true' if path.endswith('/cancel')
+                                  else 'false') for method, path in uploads)
+    if 'IsBatchTarget(path)' in dispatch:
+        batch = (root / 'src/server/batch_api.cpp').read_text()
+        if not re.search(r'HandleBatchRequest\(\s*\*objects_', dispatch) or \
+                'jobs->Submit(access, options, client)' not in batch or \
+                'jobs->Cancel(access, id)' not in batch or \
+                'inline bool BatchMethodAllowed' not in application_routes:
+            raise ValueError('review actual Batch owner and handlers before cataloguing')
+        batches = [('POST', '/v1/batches'), ('GET', '/v1/batches'),
+                   ('GET', '/v1/batches/{batch_id}'),
+                   ('POST', '/v1/batches/{batch_id}/cancel')]
+        routes.extend((path, method) for method, path in batches)
+        if 'server::BatchMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'false' if path == '/v1/batches'
+                                  else 'true') for method, path in batches)
+    if 'IsVectorStoreTarget(path)' in dispatch:
+        vector_api = (root / 'src/server/vector_store_api.cpp').read_text()
+        if not re.search(r'HandleVectorStoreRequest\(\s*\*objects_', dispatch) or \
+                'stores.CreateBatch(access, id, request)' not in vector_api or \
+                'stores.FileContent(access, id, child)' not in vector_api or \
+                'stores.CancelBatch(access, id, child)' not in vector_api or \
+                'inline VectorStoreRoute ParseVectorStoreRoute' not in application_routes:
+            raise ValueError('review actual vector store handlers before cataloguing')
+        vector_root = '/v1/vector_stores'
+        store = vector_root + '/{vector_store_id}'
+        vectors = [*((method, vector_root) for method in ('GET', 'POST')),
+                   *((method, store) for method in ('GET', 'POST', 'DELETE')),
+                   *((method, store + '/files') for method in ('GET', 'POST')),
+                   *((method, store + '/files/{file_id}')
+                     for method in ('GET', 'POST', 'DELETE')),
+                   ('GET', store + '/files/{file_id}/content'),
+                   ('POST', store + '/file_batches'),
+                   ('GET', store + '/file_batches/{batch_id}'),
+                   ('GET', store + '/file_batches/{batch_id}/files'),
+                   ('POST', store + '/file_batches/{batch_id}/cancel')]
+        if 'HandleVectorSearch(fd, method, path, body)' in dispatch:
+            search = (root / 'src/server/chat_vector_search.cpp').read_text()
+            api = (root / 'src/server/vector_search_api.cpp').read_text()
+            if 'HandleVectorSearchRequest(' not in search or \
+                    'RunNativeEmbeddingInput(' not in search or \
+                    'RunInternalModelStep(' not in search or \
+                    'ExecuteVectorSearchRequest(' not in api or \
+                    'Kind::kSearch' not in application_routes:
+                raise ValueError('review actual native search executor before cataloguing')
+            vectors.append(('POST', store + '/search'))
+        routes.extend((path, method) for method, path in vectors)
+        if 'server::VectorStoreMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'true' if
+                path.endswith('/cancel') or
+                (method in ('GET', 'DELETE') and
+                 path.endswith(('/{vector_store_id}', '/{file_id}', '/{batch_id}')))
+                else 'false') for method, path in vectors)
+    if 'if (method == "OPTIONS")' in native:
+        if 'config.cors.Preflight(' not in native:
+            raise ValueError("review native OPTIONS handler before cataloguing")
+        native_routes.extend(("OPTIONS", path, "true")
+                             for path in sorted({row[1] for row in native_routes}))
     if not fields or not routes:
         raise ValueError("empty protocol inventory")
     nested = {}
     for file in ("chat_contract.cpp", "output_constraints.cpp",
                  "input_contract.cpp", "chat_tool_history.cpp",
-                 "chat_template.cpp"):
+                 "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
+                 "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
+                 "responses_tokens.cpp",
+                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
+                 "moderation.cpp", "moderations_plan.cpp", "embeddings_plan.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
+                 "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp",
+                 "vector_store_api.cpp", "vector_stores_internal.cpp",
+                 "vector_store_batches.cpp", "vector_file_page.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
-                r'Fields\(([^,]+),\s*\{([^}]+)\}', source)):
+                r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
             nested[f"{file}:{index}:{item[1]}"] = re.findall(
                 r'"([a-z_]+)"', item[2])
     # These anchors intentionally cover more than the wire protocol identity:
@@ -41,8 +209,13 @@ def current_surface(root):
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    {p for p in root.glob("tools/serve_recovery/*.py")
+                    if not p.name.startswith("test_")} |
+                   {p for p in root.glob("tools/serve_service/*.py")
                     if not p.name.startswith("test_")} | {
-                       root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
+                       root / "src/io/json.cpp", root / "include/q4t/io/json.h",
+                       root / "src/model/model_head.cu",
+                       root / "include/q4t/model/model_head.h",
+                       root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
                        root / "src/runtime/cuda_allocation_quota.cpp",
@@ -52,6 +225,7 @@ def current_surface(root):
                        root / "include/q4t/runtime/cleanup_policy.h",
                        root / "include/q4t/runtime/device_memory.h",
                        root / "include/q4t/runtime/model_health.h",
+                       root / "include/q4t/runtime/execution_progress.h",
                        root / "include/q4t/ple/page_reader.h",
                        root / "include/q4t/ple/ple_embedding.h",
                        root / "src/ple/page_reader.cpp",
@@ -67,18 +241,31 @@ def current_surface(root):
                        root / "src/vision/vision.cu",
                        root / "src/vision/processor.cpp",
                        root / "include/q4t/model/vision_positions.h",
+                       root / "include/q4t/model/embedding_config.h",
+                       root / "src/model/embedding_config.cpp",
+                       root / "include/q4t/model/embedding_layout.h",
+                       root / "src/model/embedding_layout.cpp",
+                       root / "include/q4t/model/embedding_model.h",
+                       root / "src/model/embedding_model.cu",
                        root / "src/model/model_owner.cpp",
                        root / "src/model/model.cu", root / "src/mtp/mtp.cu",
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
+                       root / "tools/serve_gateway/gateway.py",
+                       root / "tools/serve_gateway/client_policy.py",
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",
+                       root / "cmake/NativeCrypto.cmake",
+                       root / "cmake/NativeDocuments.cmake",
                        root / "cmake/RecoveryProbe.cmake",
                        root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
-                       root / "cmake/ChatProtocolIdentity.cmake"})
-    return {"fields": sorted(fields),
+                       root / "cmake/ChatProtocolIdentity.cmake",
+                       root / "cmake/RustRegex.cmake",
+                       root / "cmake/regex-syntax-0.8.8.sha256",
+                       root / "src/server/regex_syntax/lib.rs"})
+    return {"fields": sorted(fields), "completion_fields": sorted(completion_fields),
             "routes": sorted(f"{method} {path}" for path, method in routes),
             "native_routes": sorted(f"{method} {path}" for method, path, _ in native_routes),
             "whitelists": nested,
@@ -89,7 +276,7 @@ def current_surface(root):
 
 def check(inventory, actual, root=ROOT):
     errors = []
-    for group in ("fields", "routes", "native_routes"):
+    for group in ("fields", "completion_fields", "routes", "native_routes"):
         recorded = inventory.get(group, {})
         missing = set(actual[group]) - recorded.keys()
         stale = recorded.keys() - set(actual[group])
@@ -115,6 +302,7 @@ def check(inventory, actual, root=ROOT):
 def mutation_checks(inventory, actual):
     # Independent failure modes of the anti-omission gate, not serving tests.
     cases = [dict(actual, fields=actual["fields"] + ["uncatalogued_option"]),
+             dict(actual, completion_fields=actual["completion_fields"] + ["uncatalogued_option"]),
              dict(actual, routes=actual["routes"] + ["GET /uncatalogued"]),
              dict(actual, native_routes=actual["native_routes"] + ["GET /uncatalogued"]),
              dict(actual, sources_sha256=dict(actual["sources_sha256"],
@@ -136,6 +324,7 @@ def main():
     print(json.dumps({"inventory_current": not errors,
                       "semantics_certified": False,
                       "fields": len(actual["fields"]),
+                      "completion_fields": len(actual["completion_fields"]),
                       "routes": len(actual["routes"]),
                       "native_routes": len(actual["native_routes"]),
                       "reviewed_source_anchors": len(actual["sources_sha256"]),

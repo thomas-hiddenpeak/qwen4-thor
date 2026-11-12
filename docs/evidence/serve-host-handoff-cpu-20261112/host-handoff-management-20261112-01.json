@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "env",
+    "--chdir=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree",
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/test_host_handoff.py",
+    "-v",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_native_transfer_replay_and_reverse_preserve_original_core_and_budgets",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_optional_trigger_moves_without_core_mutation_and_old_trigger_cannot_resume",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_initial_private_partial_write_resumes_without_any_published_gate",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_partial_first_marker_blocks_entry_and_resumes_same_transaction",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_source_disable_receipt_loss_keeps_both_entries_gated_until_resume",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_target_enable_before_final_receipt_cannot_resume_business",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_lost_published_history_or_marker_never_bootstraps_or_reenables_old_entry",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_disabled_native_admission_is_preserved",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_manager_failure_keeps_original_transaction_and_healthy_core_untouched",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_existing_trigger_cannot_be_silently_dropped_by_native_transfer",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_changed_runtime_or_resource_binding_is_rejected_before_any_gate",
+    "tools.serve_recovery.test_host_handoff.HandoffTests.test_real_cpu_package_deployment_and_rollback_preserve_both_source_generations",
+    "tools.serve_recovery.test_host_install.HostTests.test_cli_install_enable_disable_preserves_core_and_uses_protected_source",
+    "tools.serve_recovery.test_host_systemd.AdapterTests.test_disable_is_durable_when_manager_fails_and_old_trigger_cannot_restart",
+    "tools.serve_recovery.test_host_ensure.NativeEnsureTests.test_ensure_adopts_live_native_core_after_outer_death_without_model_restart"
+  ],
+  "exit_code": 0,
+  "seconds": 39.231429538689554,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/409f63a6182113112a4b4699050ae41aa046416a4979607db2214ecc3ed5fd29/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

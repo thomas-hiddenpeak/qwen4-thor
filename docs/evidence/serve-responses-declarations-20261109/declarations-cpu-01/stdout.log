@@ -1,0 +1,9 @@
+[FAIL] responses_execution_echoes_public_tool_choice: basic_string::_M_create
+[PASS] responses_execution_commits_actual_ordered_events_and_usage
+[PASS] chat_capabilities_transport_observation_contract
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_native_completions_and_models
+[PASS] chat_capabilities_native_responses_state_and_recovery
+[PASS] responses_output_text_reasoning_full_lifecycle
+[PASS] responses_output_usage_limits_and_no_double_terminal
+8 tests, 7 passed, 1 failed, 0 skipped

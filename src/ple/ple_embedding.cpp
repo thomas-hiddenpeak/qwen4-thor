@@ -9,6 +9,7 @@
 #include "q4t/ple/fp8_convert.h"
 #include "q4t/diagnostic/execution_observer.h"
 #include "q4t/ple/page_reader.h"
+#include "q4t/runtime/execution_progress.h"
 
 namespace q4t {
 namespace ple {
@@ -171,12 +172,17 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   // reader. Wait before overwriting the pinned source. Completion includes
   // conversion so the shared FP8 scratch is also safe across streams.
   if (impl_->upload_pending) {
+    runtime::ExecutionActivity progress(
+        runtime::ExecutionActivityKind::kPleUploadWait);
     diagnostic::Scope wait("ple.previous_upload_wait");
     if (cudaEventSynchronize(impl_->upload_complete) != cudaSuccess) {
       impl_->health.Fail(runtime::ModelFault::kPleUpload);
       return Status::Fail("PLE previous upload completion failed");
     }
     impl_->upload_pending = false;
+    // The upload may belong to an earlier request. Its completion is not
+    // progress of the current request, though this wait has genuinely ended.
+    progress.End();
   }
   // The reader scatters rows into the pinned staging buffer (token-major).
   ReadStats stats;

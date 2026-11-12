@@ -13,7 +13,7 @@ import time
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import controller, jobs, monitor
+from tools.serve_recovery import controller, jobs, monitor, progress, journal
 from tools.serve_recovery.test_gateway import config
 from tools.serve_recovery.test_gateway_nginx import native_config
 from tools.serve_service import package as engine
@@ -22,6 +22,8 @@ from tools.serve_service import package as engine
 def cpu_backend(args):
     value = config(args.directory, ports=(1, args.port, args.operations_port))
     value['backend_policy'] = json.loads(args.client_policy_file.read_text())
+    observation = dict(active=0, successes=0)
+    observation_lock = threading.Lock()
     class Handler(BaseHTTPRequestHandler):
         protocol_version = 'HTTP/1.1'
         def log_message(self, *_args):
@@ -45,19 +47,52 @@ def cpu_backend(args):
             else:
                 self.reply(404, dict(error='absent'))
         def do_POST(self):
-            body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            if self.headers.get('X-Q4T-Gateway-Token') != value['backend_policy']['gateway_token']:
-                self.reply(403, dict(error='bad internal credential'))
-                return
-            self.reply(200, dict(id='cpu-self-check', usage=dict(prompt_tokens=20, completion_tokens=5),
-                choices=[dict(finish_reason='stop', message=dict(role='assistant', content='{"ok":true}'))]))
+            with observation_lock: observation['active'] += 1
+            try:
+                json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                if self.headers.get('X-Q4T-Gateway-Token') != value['backend_policy']['gateway_token']:
+                    self.reply(403, dict(error='bad internal credential'))
+                    return
+                self.reply(200, dict(id='cpu-self-check', usage=dict(prompt_tokens=20, completion_tokens=5),
+                    choices=[dict(finish_reason='stop', message=dict(role='assistant', content='{"ok":true}'))]))
+                with observation_lock: observation['successes'] += 1
+            finally:
+                with observation_lock: observation['active'] -= 1
     servers = [ThreadingHTTPServer(('127.0.0.1', port), Handler) for port in (args.port, args.operations_port)]
     for server in servers:
         server.daemon_threads = True
         threading.Thread(target=server.serve_forever, daemon=True).start()
     (args.client_policy_file.parent/'cpu-started.json').write_text(json.dumps(dict(pid=os.getpid())))
+    publisher = None
+    if 'Q4T_PROGRESS_FD' in os.environ:
+        publisher = socket.socket(fileno=int(os.environ['Q4T_PROGRESS_FD']))
+        publisher.setblocking(False)
+    pid = os.getpid()
+    start = journal.process_start(pid)
+    namespace = Path('/proc/self/ns/pid').stat().st_ino
+    boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip().encode()
+    service = os.environ['Q4T_SERVICE_ID'].encode()
+    sequence, next_at = 0, 0
     while True:
-        time.sleep(1)
+        now = time.monotonic_ns()
+        if publisher is not None and now >= next_at:
+            # Actual CPU process identity and completed requests. This fixture
+            # has no GPU work; concurrent HTTP work is conservatively untracked.
+            with observation_lock:
+                active, successes = observation['active'], observation['successes']
+            sequence += 1
+            packet = progress.HEADER.pack(b'Q4TPR002', sequence, now, int(active == 0),
+                pid, start, namespace, int(os.environ['Q4T_CONTROLLER_GENERATION']),
+                int(os.environ['Q4T_MODEL_GENERATION']), active, active, 0,
+                successes, 0, boot, service)
+            try: publisher.send(packet, socket.MSG_DONTWAIT | socket.MSG_NOSIGNAL)
+            except OSError: pass
+            next_at = now+250000000
+        if (args.directory/'log.flood').exists() and not (args.directory/'log.drained').exists():
+            for _ in range(512):
+                os.write(1, b'CPU ordinary log\n'.ljust(4096, b'x'))
+            (args.directory/'log.drained').touch()
+        time.sleep(0.05)
 
 
 def free_port():
@@ -86,10 +121,10 @@ def run_controller(directory):
         model_dir=str(directory), protocol_sha256='c'*64,
         files=dict(q4t=hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()),
         client_policy=dict(enabled=True))
-    controller.bundle.verify = lambda *_args: dict(engine_manifest_sha256='a'*64, model_assets={})
+    controller.bundle.verify = lambda *_args: dict(version=1, engine_manifest_sha256='a'*64, model_assets={})
     controller.bundle.check_assets = lambda *_args, **_kwargs: None
     controller.engine.verify = lambda *_args: base
-    controller.engine.command = lambda *_args: [sys.executable, '-I', '-B', str(Path(__file__).resolve()),
+    controller.engine.command = lambda *_args, **_kwargs: [sys.executable, '-I', '-B', str(Path(__file__).resolve()),
         '--backend', '--directory', str(directory), '--port', str(ports[1]),
         '--operations-port', str(ports[2]), '--client-policy-file', str(path)]
     controller.ownership.observe = lambda *_args: dict(conflicts=[], unconfirmed_compute=[])

@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/server/cache_io.h"
 #include "q4t/server/session_save_timing.h"
 #include "q4t/trace/sha256.h"
 
@@ -21,7 +22,18 @@ struct SessionRange {
   size_t bytes;
 };
 
-// Same-process, capability-keyed prefix snapshots. Device copies are supplied
+// One private lease covers both layouts; switching layouts is a cache miss.
+enum class SessionLayout { kMtp, kTarget };
+
+struct SessionCacheLifetime {
+  int write_seconds = 1800;
+  int read_refresh_seconds = 1800;
+  // Zero retains the legacy sliding lifetime. API-managed entries apply a
+  // finite total retention cap independently of the recent-access timestamp.
+  int max_age_seconds = 0;
+};
+
+// Capability-keyed prefix snapshots with isolated filesystem I/O. Device copies
 // by the caller, which must own the model scratch/slot until Transfer returns.
 // CPU contracts use the same storage path with a checked host-copy callback.
 class SessionCache {
@@ -36,34 +48,46 @@ class SessionCache {
                                     bool restore)>;
   using Cancel = std::function<bool()>;
 
-  SessionCache() = default;
+  explicit SessionCache(IsolatedWorkerDomain domain =
+                            IsolatedWorkerDomain::kSessionCache)
+      : domain_(domain) {}
   ~SessionCache();
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
-              size_t disk_budget = kDiskBudget, bool incremental = false);
-  bool Enabled() const { return directory_fd_ >= 0; }
+              size_t disk_budget = kDiskBudget, bool incremental = false,
+              bool create_directory = false);
+  // Configuration is distinct from availability: a failed optional worker
+  // must not reject ordinary generation, including requests with session IDs.
+  bool Enabled() const { return staging_ && io_; }
+  CacheIoHealth Health() const { return io_ ? io_->Health() : CacheIoHealth{}; }
   bool Acquire(const std::string& key);
   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
   // entry is leased until Release, including the interval before Restore.
-  bool AcquireNew(const std::string& key);
+  bool AcquireNew(const std::string& key, int minimum_write_seconds = 0);
   int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
-                  std::string* key);
+                  std::string* key, SessionLayout layout = SessionLayout::kMtp,
+                  std::span<const int> allowed_boundaries = {});
   void Release(const std::string& key, bool success);
-  int Match(const std::string& key, std::span<const int32_t> prompt);
+  int Match(const std::string& key, std::span<const int32_t> prompt,
+            SessionLayout layout = SessionLayout::kMtp);
   Status Restore(const std::string& key, std::span<const SessionRange> ranges,
-                  const Copy& copy, const Cancel& cancel, int32_t* d0,
-                  int32_t* pending = nullptr);
+                 const Copy& copy, const Cancel& cancel, int32_t* d0,
+                 int32_t* pending = nullptr,
+                 SessionLayout layout = SessionLayout::kMtp);
   Status Save(const std::string& key, std::span<const int32_t> prefix,
-               std::span<const SessionRange> ranges, const Copy& copy,
-               const Cancel& cancel, int32_t d0,
-               SessionSaveTiming* timing = nullptr);
+              std::span<const SessionRange> ranges, const Copy& copy,
+              const Cancel& cancel, int32_t d0,
+              SessionSaveTiming* timing = nullptr,
+              SessionLayout layout = SessionLayout::kMtp,
+              SessionCacheLifetime lifetime = {});
   size_t Bytes() const;
 
  private:
   friend struct SessionCacheTestPeer;
   struct Entry {
-    int fd = -1;
+    CacheFile file;
+    CacheIo* io = nullptr;
     size_t bytes = 0;
     size_t disk_charge = 0;
     bool published = false;
@@ -73,22 +97,36 @@ class SessionCache {
     size_t next_offset = 0;
     std::vector<size_t> offsets;
     int32_t d0 = -1;
-    std::vector<int32_t> prefix;  // Includes shifted draft's pending token.
+    SessionLayout layout = SessionLayout::kMtp;
+    // Last element is not in target state. MTP stores its shifted pending
+    // token; target-only snapshots store -1. Match leaves one input row to
+    // recompute logits under the new request's sampler and constraints.
+    std::vector<int32_t> prefix;
     std::vector<size_t> sizes;
     std::vector<trace::Digest> digests;
     std::chrono::steady_clock::time_point used;
+    SessionCacheLifetime lifetime;
+    std::chrono::steady_clock::time_point expires;
+    std::chrono::steady_clock::time_point retention_end;
+    void Close(const Cancel& cancel = {}) noexcept;
     ~Entry();
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
-  void Erase(Entries::iterator it);
+  void Refresh();
+  static bool Expired(const Entry& entry,
+                      std::chrono::steady_clock::time_point now);
+  static void Touch(Entry* entry, std::chrono::steady_clock::time_point now);
+  void Erase(Entries::iterator it, const Cancel& cancel = {});
   Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
                          const Copy& copy, const Cancel& cancel,
                          SessionSaveTiming* timing);
   Status Transfer(Entry* entry, std::span<const SessionRange> ranges,
-                   const Copy& copy, const Cancel& cancel, bool restore,
-                   SessionSaveTiming* timing = nullptr);
+                  const Copy& copy, const Cancel& cancel, bool restore,
+                  SessionSaveTiming* timing = nullptr);
   mutable std::mutex mutex_;
-  int directory_fd_ = -1;
+  IsolatedWorkerDomain domain_;
+  std::unique_ptr<CacheIo> io_;
+  uint64_t generation_ = 0;
   void* staging_ = nullptr;
   size_t bytes_ = 0;
   int min_prefix_ = kMinPrefix;
@@ -104,7 +142,9 @@ struct SessionLease {
   SessionCache* cache = nullptr;
   std::string key;
   bool success = false;
-  ~SessionLease() { if (cache) cache->Release(key, success); }
+  ~SessionLease() {
+    if (cache) cache->Release(key, success);
+  }
 };
 
 }  // namespace q4t::server

@@ -1,0 +1,61 @@
+{
+  "status": "PREPARED_NEW_PAYLOAD_MANAGED_BUSINESS_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/retained-fallback",
+    "manifest_sha256": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b"
+  },
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/candidate-03/unqualified-bundle",
+    "manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/fallback-01/bundle",
+    "manifest_sha256": "bb96c5f41720e9332ce048e5fc7215301c0647373728bbea27d49fb0045d63d9"
+  },
+  "engine_binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+  "controller_source_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+  "native_programs_unchanged": true,
+  "all_controller_sources_unchanged": true,
+  "profile_policy_unchanged": true,
+  "original_engine_replaced_with_qualified_candidate": true,
+  "automatic_compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+    "to_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+    "to_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+    "capabilities_sha256": "e19d3caf6ea213a15effe61c0a474b7b7e471bd0b61647c6e5c799dd63dc06f5",
+    "automatic": true
+  },
+  "exact_managed_acceptance_pending": true,
+  "previous_acceptance_reused_as_new_payload_acceptance": false,
+  "scope": "Retained older control implementation; same newly qualified inference engine. No claim of an independent older implementation of model refusal.",
+  "default_unchanged": true,
+  "gpu_starts": 0
+}

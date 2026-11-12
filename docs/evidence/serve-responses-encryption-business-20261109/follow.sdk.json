@@ -1,0 +1,142 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_60de102bcc7ce1cc5e118b5537902408",
+    "object": "response",
+    "created_at": 1794233751,
+    "completed_at": 1794233763,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "rs_a785f6bac9f5fd99cf81d154b00f98e2",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The tool result shows the first 3 lines of docs/MODEL.md. The first line is the title: \"# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\". The citation is \"[docs/MODEL.md:L1-L3]\". I need to return the title (without the markdown heading marker \"# \") and the exact citation.\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:981656596fb6daeb6ab41ecf5a0fddc2:e50813245012d44852fb3f2e:37600564df737cd141f13eed0a8cd64e:589680cd131968a7d43c37d316e5cb129defaff5693a530e0910872bd6d4b9b5f896cae74a68868a1be690adbad80a58358da4ad4bf8ed3d50a5a4963fa3e4e6519ecba96d8be832f4b494a8c5e99a47513c0fe63c8a6b3887b6f47e15f41a38e5c6bfed2f97a68c239104e56eb6694a6a9d7215ebe516c5b17f4f960dcbdcd589d6aed0e073ae2d847bc790e1a68d945f2ab7b851a7df1460a5fbc8e4f8a816f24bc21c6287f8c2eae234d3802f5a8a98a9f9450053f3dfeaab9884e5fcb41a6ff9bda87e02b78c4f805f1943b966a911fe092d15723b0bd68f10489d744d2dd90e5340f4240b9d02d37f355aadd004c68fd8c32464c97a453fbb4393768c1edccff4c256da23014fc0ce80053296f13467e894e0a5af936a0578d176a7504cea6e54b7bce7a90d0f83640d30a741635b2612b53740f2a0b4b73c2dedfb4a230260b5afa578e512a2630344106a08699898f52a71748b71c2590da6c0f93fb1b93556da437bc77f87fbedec7a885b43a0b49534875ef6ba38c36cd2e7a1ce50fb8cbd33642929637579c2e72f64b5fd2195230386e8d669fed3967fa68039e7b2e4741d2eaae0244e672790a177845afc057b18d966d2448d49a85f6826ea6293cae8a33222240b3a8932b3b42ed1db6cd5c13eedac049ee935b17ad22040dee6f2266b9ea270e646d5ba4523744ec3acf5e1422b834a4621ea187246c82cca236ab77bcd2e0201e8848b4116effd940f1cb62681bbd812d5c90dc7550395859d0a9840135dcde7d796de70a3351f07657115b6e463b4fe3bac3373562e09d68e52aa3f7fe32b946b60fd90411e82a0c7dbca193b52552ab238ee17cd0c09980fe9e43f5b55797012b8cef8228103d4a5b79c541f5928776fafd2242c50af053ab0933c3867f5cd60ca7a0136c34a5d1281dab87b5bd17c64401a4b93b7178988ab1d9d30d6c5b6559d28635756d6f7ebdc33ac297fe3b6301a40282db11772526923adf21eec66891e019d0801edc214a6efac7991ba6b70bb4b90fe796221d2279aad40f2455214e6947885f4f8ea819cc3d15af101817dc4ca371a21a4d5dde1a5938fe3773843694b3146952c642701cd8269bbfe9d553215f4f5579489afe4f9a4e7f018d0670dbcf5f1e3f63db642d98916c22252b31d7294acf12ac0f8f90aeb9ad51585634d751c352e5a6255cb30b5ee7a2f59caccf36346ea396d013ea4618bbf16c0127518c4293f06f840a2253278709b5ea488a240cbd4e3621e4dac77ad182c491ff86f7386696fd2784673391fe4da8ca4e9f20efdaa0262828c1713d54587f483377caeef7debf2ece1b132c473e222c134faceb4a69d997d1c8e099e258db2d11d5f07bf35e58c1d2388f3861d4f03fb87e9c18046b695e992a8bb8daf484cdbbaac0307cd7c6393cb2b4dee4b899f51c28029f62ba07b392728094faba3e9143c353cc5b965224c9578ad70263d9d39e59e3f54314d7e9617fcddab63fe8822f40aa86afea29f2e78f5ff2afb8c1684ecd1e4642009c85a992d16682291bf7a2fed30d77da76df288a528aaad82e503261d2bb1f0e025d7a05d0d3fad392c3a3a13b5c517e81694b1a56ccc11365d049fea7df7026930bcbf7422ebe6dc7c477dd1705b9e5eebaa1ca203130bc70d2d8481a44bfb5d3d690d1d2e17a485922b2053792d6ea0a258aecd52124e5def63e4956529b02f8f87a942154bf5b3d8cb186637d8f4870fc8278a798ae70ce75f64c1bbb2c5cbd41fb4470cb002850ac0729b4fa9abfb794e97e5d4e6826644fa595aaeae4e60141d023f1615289e2553a4f5e8c83275a46cdd2305518d76fa6bfeecb7078cbb62ca6fc08d20e3adf27abf0dca153f21e296eeb7addfb0b3b8669746b5dd08f7c87c003704919ce7c9e88d79c91133c224e9520b4856ec2df73a6f809b187d897d446a929a52c7e2c06b99eee8a437c0413dcc49628cb5b7387063e93ac0e316e5d1041085c026fb8da0153dddf5af8f013390e20a8e05e6441c9434221d469555492c28046663e8be7957ea7d3bff795cbf3d6fc48d8ef743f947ce8fe5f0245f01f417f3ff35a6fb52d6a8abc0ed6a65da5b678898d06283ed917dd63837067006587cf5e25945ec869f59c11c7d1235bcd17d2d7df2d3499f8105e66f2f1e71091207657fea202dfcabb52e84ac27b2a64b25da767d678bea5c966e6021cf76a11f2925aafb1436acb88a971c890f7bf8de85a4f0d6676a605c679655d816efe6d0dc7cd9504765c2535cc6053da579cff46bacbc498e11dc6a7c800c1a9f5a6726d652b6fb9bf785027e8ebcfcba7b16a0f845d9e7e9521d542946af43d28b8f489b018ea2ad681c79ca263ec33f54b43c07a50cc2e71c32046dc56d6444fab803e4ae9f8f88032aa8243e0bbaab4cec2b67e7da485bbac32a3b3a8aa504f7e4e9c46ed011bd7d7004be81e4923e197be3e8ece2a61741ff03c13e841cb512b3d1eaefcd2cea45085380659d085514493e24417a7109a07409656543ae2fec884a1fdbdd6b2e4de8953d7804fcffd37d2335c48009dc2b4f3e19133c1495ad5c3265a6b7da68fbebd4d6c1eedcfc8b722c81e2a164b539d1aa6513d32e2b5af9135e32eef56c2dbf34a6d54c7fa98726f0a3c4652f75d730cfa73c15da2203c23fac719daa33871088ad3f0820c88654886714ef3a0a540d7a6830984776e213a465aacf47af6a90974d655078d8ded153f6f933c5cac75c9fc89620ad61a5dca59e5196be2088bb4c53779ee15ddc662c90e179a4dc0865bf41cdc9142f1d723690a4e9f82b762aec38ee9b169d02da6b62f697c1453c28bd217c274870b00edeb668fab57189167c2872fa32e4d250c6a7512919605a1d08f42e33955282161516d5f243b67d44964296c49db408070b38dedb709ee26920fc6b8f1eb4932b"
+      },
+      {
+        "id": "msg_1f95fa4d34a8de080e67868c5140c35a",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n{\"title\":\"MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\",\"citation\":\"[docs/MODEL.md:L1-L3]\"}",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 540,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 123,
+      "output_tokens_details": {
+        "reasoning_tokens": 82
+      },
+      "total_tokens": 663
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": "Return the actual first-line document title and its exact source citation from the tool result as JSON. Do not call another tool.",
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [
+      {
+        "type": "function",
+        "name": "read_project_record",
+        "description": "Read bounded real project document lines and citation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/MODEL.md"
+            },
+            "start_line": {
+              "type": "integer",
+              "const": 1
+            },
+            "line_count": {
+              "type": "integer",
+              "const": 3
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "none",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "document",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "citation": {
+              "type": "string",
+              "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+            }
+          },
+          "required": [
+            "title",
+            "citation"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "low",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": false,
+    "background": false,
+    "max_output_tokens": 384,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "\n\n{\"title\":\"MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\",\"citation\":\"[docs/MODEL.md:L1-L3]\"}"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18985/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"max_output_tokens\":384,\"reasoning\":{\"effort\":\"low\"},\"input\":[{\"id\":\"rs_10d833589449b0a4d51e096be4bfeb85\",\"type\":\"reasoning\",\"summary\":[],\"status\":\"completed\",\"encrypted_content\":\"q4t1:4a58c96daea10f5c8acef5113774c236:ff57d0a71cf2549caf83c607:7c240a63df7d1c5ff918d7867c21e688:a0480098af05af116a0e6b087865b765a0c5acccd1ad6d67f5ee238bfb63bd772fa4e1cff94d9543c45bc0ed87e079bd1b61e81954a630420d5c761b3620a21740f266837da01df58e57cd5e08db1891c3027124f6e1cc6af1309e72032cd20cb17c66a3853dc2356fe58714e2867c31941f1f0bb6571a6aeca329673b72028709914c7d09858212d75c7d793f7240d9f023d8bda01da7cad61dea0ae56d792adb1b7be874a9dc4da8f02f8bb4fef0aad048b8dbc0949ffa401667f35e4b0ac35467911e4e195b8b674817a2be18b8f59556ef02a333777ccc7f5531b01bd186f924586411ab234f0995fc807da3f060aea081af202e9ec453abec84e4f03011bd7eaa01a1b987ec05af66f7f9b68ba54564aaaee99bf3c954cd9e2c4ee776f6048c5f1e0ee0803850e6b2903047b196bc22dd5721db16ea71fc24b0b8a41f84917ef34ba2a25494fc4c02c66572d6675ebbefe66e0ed89ef358b4e4c503f1eade1f36a5f57c42ff20b15a15024e38dd65953c1854406e6edf86e7862a4f19f0f9d917930d25a3683b133a9947ad91fdbd11ab22fd209b42ae1effa6c65216d2c5e7a48b90d6fd6e77faa46125381dd3f0ed13f59a11548c34fe841f60b23cfcac43b31c09c399537a9fb45a70a61958c4e8f333a882fccd0882e43cb7a7a86eae77120e629fd4b9dd26cd5907b5353e8d2281ebdc89a0ada43bef0a693a3f44d93f6194f95c58d815da7135553c77802815385e7e6c4a3f02dd117915d82d80abe013c70226a2d5826e869886b7da0289f1b9e56daf30df480c4d08b5e95bcfed9f9b06388c7719eed977867ef928dd6a245578dfdb1c6efab3deec0feca2c85d6fb63afcf938dceac1bf906b2e1293\"},{\"id\":\"msg_986943d43bb2d8006abc9d4c7159eca5\",\"type\":\"message\",\"content\":[{\"type\":\"output_text\",\"text\":\"\\n\\n\",\"annotations\":[],\"logprobs\":[]}],\"role\":\"assistant\",\"status\":\"completed\"},{\"id\":\"fc_5aa878aeeeae2b37acbbf675d87d864f\",\"type\":\"function_call\",\"call_id\":\"call_resp_d7c2e17371f53a9a94f49eb30cbd0e0e_0\",\"name\":\"read_project_record\",\"arguments\":\"{\\\"path\\\": \\\"docs/MODEL.md\\\", \\\"start_line\\\": 1, \\\"line_count\\\": 3}\",\"status\":\"completed\"},{\"type\":\"function_call_output\",\"call_id\":\"call_resp_d7c2e17371f53a9a94f49eb30cbd0e0e_0\",\"output\":\"{\\\"ok\\\": true, \\\"source\\\": {\\\"path\\\": \\\"docs/MODEL.md\\\", \\\"sha256\\\": \\\"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\\\", \\\"start_line\\\": 1, \\\"end_line\\\": 3, \\\"citation\\\": \\\"[docs/MODEL.md:L1-L3]\\\", \\\"text\\\": \\\"1: # MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\\\\n2: \\\\n3: > \u5bf9\u76ee\u6807\u6a21\u578b\u7684\u7406\u89e3\u7b14\u8bb0, \u968f\u7814\u8bfb\u6df1\u5165\u6301\u7eed\u66f4\u65b0\u3002\\\", \\\"truncated\\\": false}, \\\"total_lines\\\": 311}\"}],\"instructions\":\"Return the actual first-line document title and its exact source citation from the tool result as JSON. Do not call another tool.\",\"tools\":[{\"type\":\"function\",\"name\":\"read_project_record\",\"description\":\"Read bounded real project document lines and citation.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"path\":{\"type\":\"string\",\"const\":\"docs/MODEL.md\"},\"start_line\":{\"type\":\"integer\",\"const\":1},\"line_count\":{\"type\":\"integer\",\"const\":3}},\"required\":[\"path\",\"start_line\",\"line_count\"],\"additionalProperties\":false},\"strict\":true}],\"tool_choice\":\"none\",\"text\":{\"format\":{\"type\":\"json_schema\",\"name\":\"document\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":256},\"citation\":{\"type\":\"string\",\"pattern\":\"^\\\\[docs/MODEL\\\\.md:L1-L3\\\\]$\"}},\"required\":[\"title\",\"citation\"],\"additionalProperties\":false}}},\"store\":false,\"include\":[\"reasoning.encrypted_content\"]}"
+    }
+  ]
+}

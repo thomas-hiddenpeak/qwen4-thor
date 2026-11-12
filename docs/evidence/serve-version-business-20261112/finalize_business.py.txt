@@ -1,0 +1,32 @@
+import fcntl,json,runpy,socket,sys
+from pathlib import Path
+root=Path.cwd();sys.path.insert(0,str(root));work=root/'.q4t-work/serve-version-recovery-20261112/business-03'
+scope=runpy.run_path(str(root/'tools/serve_recovery/version_acceptance.py'));plan=json.loads((work/'plan.json').read_bytes());manifest=scope['LEGACY']['verify'](plan)
+from tools.serve_service import package as p
+from tools.serve_recovery import journal,version_policy
+result=p.read(work/'execution/result.json');guard=p.read(work/'lease/exit.json');stop=p.read(work/'execution/stop.json')
+p.require(result['status']=='PASS_BOUNDED_VERSION_RECOVERY' and not result['failure'] and not result['cleanup_failure'],'actual business failed')
+p.require(result['budget']['counts']['starts']==2 and result['budget']['counts']['chats']==10 and result['budget']['counts']['probes']==1 and result['seconds']<900,'frozen budget differs')
+p.require(guard['status']=='COMPLETED' and guard['child_returncode']==0 and guard['compute_backend']=='nvml' and guard['lease_inherited_by_child'],'strict lease failed')
+queries=[json.loads(s) for s in (work/'lease/nvml-queries.jsonl').read_text().splitlines()]
+p.require(queries and all(q['status']=='OK' and q['returncode']==0 for q in queries),'NVML query failed')
+p.require(stop['state']=='STOPPED' and stop['stop_durable'] and stop['cleanup_confirmed'],'cleanup not confirmed')
+statuses=[json.loads(s) for s in (work/'execution/status.jsonl').read_text().splitlines()];owned={}
+for state in statuses:
+ for role in ['model','controller','gateway','guardian','journal']:
+  if state.get(role+'_pid'):owned[state[role+'_pid']]=state[role+'_start_ticks']
+ v=state.get('version_recovery') or {}
+ if v.get('worker_pid'):owned[v['worker_pid']]=v['worker_start_ticks']
+for pid,ticks in owned.items():
+ try:p.require(journal.process_start(pid)!=ticks,'owned identity survives')
+ except (FileNotFoundError,ProcessLookupError):pass
+policy=p.read(Path(plan['package']['package'])/'gateway-policy.json')
+for name in ['listen_port','upstream_port','upstream_operations_port']:
+ with socket.socket() as sock:sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);sock.bind(('127.0.0.1',policy[name]))
+with Path(manifest['lock_path']).open('r+') as lock:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+core=p.read(work/'execution/stopped-ledger.json');p.require(core['desired']=='STOPPED' and not any(core['active'].values()) and all(len(core['attempts'][r])==1 for r in ['model','controller','gateway']),'original role budgets changed')
+version=version_policy.validate(p.read(work/'execution/state/version-selection/policy.json')['state']['policy'])
+p.require(version['selected']=='fallback' and version['switch'] is not None and version['completed'] is not None and version['terminal_fault'] is None,'durable fallback incomplete')
+quota=p.read(work/'execution/quota-window.json');p.require(quota['denial_checked'] and quota['seconds']<59,'live RPM preservation missing')
+value=dict(status='ACCEPT_BOUNDED_VERSION_RECOVERY',counts=result['budget']['counts'],seconds=result['seconds'],nvml_queries=len(queries),all_queries_ok=True,env_abort=False,default_unchanged=True,postflight=dict(sources_unchanged=True,owned_processes_gone=True,ports_free=True,lock_released=True),manifest_sha256=plan['package']['manifest_sha256'],engine_binary_sha256=plan['package']['engine_binary_sha256'],fallback_manifest_sha256=plan['registration']['payloads']['fallback']['descriptor']['manifest_sha256'],fixed_root=True,whole_payload_replaced=True,original_role_restart_counts={r:len(core['attempts'][r]) for r in core['attempts']},original_batch_and_chat=True,tool_executions=1,original_quota_denied_after_seconds=quota['seconds'],profile_budget_preserved=True,version_revision=version['revision'],performance_claim=False)
+p.save(work/'acceptance-final.json',value);print(json.dumps(value,indent=2))

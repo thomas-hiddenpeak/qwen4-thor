@@ -1,0 +1,39 @@
+{
+  "status": "PASS_N07_NATIVE_LIFECYCLE_DELIVERED",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_LIFECYCLE",
+  "current": {
+    "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+    "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+    "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+    "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+    "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+    "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2"
+  },
+  "previous": {
+    "generation_sha256": "e77f1dba92ea91e901b5836558debc5e1761ef7e058282023c7a50bdb4a7f7a1",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+    "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+    "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+    "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+    "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba",
+    "service_acceptance_sha256": "a4ddac981a52f53660f1f60262e956e9a04264809425d4eaa208cd629411c85a"
+  },
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "publication_revision": 6,
+  "actual_old_generation_rollback": true,
+  "state": "STOPPED",
+  "core_and_client_journals_byte_preserved": true,
+  "packaged_cpu_commands": 8,
+  "delivery_commands_passed": 12,
+  "delivery_commands_failed_preserved": 1,
+  "first_refusal": "Owned build directory was 0775; no publication intent created. Nonrecursive chmod to 0755; all application bytes unchanged.",
+  "model_starts_for_delivery": 0,
+  "chat_requests_for_delivery": 0,
+  "actual_business_evidence": "../serve-lifecycle-business-20261109/decision.json",
+  "full_performance": false,
+  "full_model_quality": false,
+  "long_stability_accepted": false,
+  "merged_main": false,
+  "remaining_master_tasks_open": true
+}

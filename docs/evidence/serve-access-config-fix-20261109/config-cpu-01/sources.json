@@ -1,0 +1,5 @@
+{
+  "docs/serve-config-v1.schema.json": "2fd642ca67ff080fbbacb6541aa6b35238510ebf2727b62547d29b061d366942",
+  "docs/serve-openapi-bundle-v1.json": "5040f286cf83bc1beb7eb2843790b55bee309bed14cba7e3dcc12099ddc5e0d8",
+  "tools/serve_access/test_config.py": "6027deec9e0afca4c6085791deb95f7ee03ba378ac6ba13ed310d680471c9e6f"
+}

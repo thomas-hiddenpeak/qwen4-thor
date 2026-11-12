@@ -1,0 +1,23 @@
+test_javascript_sdk_core_management_and_real_index_content (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_javascript_sdk_core_management_and_real_index_content) ... ok
+test_pinned_sources_and_unified_management_shapes (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_pinned_sources_and_unified_management_shapes) ... ok
+test_python_sdk_native_tls_prefix_and_client_isolation (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_python_sdk_native_tls_prefix_and_client_isolation) ... FAIL
+
+======================================================================
+FAIL: test_python_sdk_native_tls_prefix_and_client_isolation (tools.serve_responses.test_vector_stores_transport.VectorTransportTests.test_python_sdk_native_tls_prefix_and_client_isolation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_vector_stores_transport.py", line 57, in test_python_sdk_native_tls_prefix_and_client_isolation
+    def test_python_sdk_native_tls_prefix_and_client_isolation(self):self.sdk(True)
+                                                                     ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_vector_stores_transport.py", line 36, in sdk
+    self.assertEqual(result.returncode, 0, result.stderr.decode())
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/vector_stores_sdk.py", line 9, in <module>
+    import httpx
+ModuleNotFoundError: No module named 'httpx'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.622s
+
+FAILED (failures=1)

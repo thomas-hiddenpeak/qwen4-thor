@@ -1,4 +1,8 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/sampling.h"
+#include "q4t/server/prediction.h"
+#include "q4t/server/prompt_cache_policy.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/vision/media_plan.h"
 
 #include <cmath>
@@ -6,6 +10,8 @@
 #include <string_view>
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/chat_storage.h"
+#include "q4t/server/file_input.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/media_admission.h"
@@ -68,7 +74,19 @@ Status TemplateOptions(const io::Json& options) {
 }  // namespace
 
 Status ValidateChatContract(const io::Json& req, const std::string& model_name,
-                            bool allow_media, std::string* error_param) {
+                            bool allow_media, std::string* error_param,
+                            bool allow_empty_messages,
+                            bool preparing_file_inputs) {
+  if (HasLegacyTools(req)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(req, &normalized, error_param);
+    if (!status) return status;
+    status = ValidateChatContract(normalized.request, model_name, allow_media,
+                                  error_param, allow_empty_messages,
+                                  preparing_file_inputs);
+    if (!status) LegacyToolErrorParam(req, error_param);
+    return status;
+  }
   std::string local_param;
   if (!error_param) error_param = &local_param;
   error_param->clear();
@@ -78,6 +96,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   };
   auto status = Fields(req,
                        {"model",
+                        "functions",
+                        "function_call",
                         "prompt",
                         "messages",
                         "max_tokens",
@@ -107,16 +127,30 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "logprobs",
                         "top_logprobs",
                         "logit_bias",
+                        "prediction",
+                        "store",
+                        "metadata",
                         "response_format",
                         "user",
                         "session_id",
                         "prefix_cache_scope",
                         "prefix_cache_write_tokens",
+                        "prompt_cache_key",
+                        "prompt_cache_retention",
                         "parse_response",
                         "tool_choice",
                         "parallel_tool_calls"},
                        error_param);
   if (!status) return status;
+  ChatStorageOptions storage;
+  status = ParseChatStorageOptions(req, &storage, error_param);
+  if (!status) return status;
+  PromptCacheOptions cache;
+  status = ParsePromptCacheOptions(req, &cache, error_param);
+  if (!status) return status;
+  if (cache.requested && !req.GetString("prefix_cache_scope").empty())
+    return invalid("prefix_cache_scope",
+                   "Choose standard cache controls or a native prefix scope");
   status = ValidateRequestCredentials(req);
   if (!status) {
     const auto* id = req.Find("request_id");
@@ -125,9 +159,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                        : "cancel_token";
     return status;
   }
-  if (const auto* value = req.Find("request_timeout_ms"); value &&
-      (!IsInputInteger(*value) || value->number < 1 ||
-       value->number > 10800000))
+  if (const auto* value = req.Find("request_timeout_ms");
+      value && (!IsInputInteger(*value) || value->number < 1 ||
+                value->number > 10800000))
     return invalid("request_timeout_ms",
                    "request_timeout_ms must be an integer in [1,10800000]");
   for (const auto* field : {"session_id", "prefix_cache_scope"}) {
@@ -142,8 +176,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   }
   if (const auto* value = req.Find("prefix_cache_write_tokens")) {
     const double n = value->AsDouble(-1);
-    if (!IsInputInteger(*value) ||
-        (n != 0 && (n < 1024 || n > 131072)))
+    if (!IsInputInteger(*value) || (n != 0 && (n < 1024 || n > 131072)))
       return invalid(
           "prefix_cache_write_tokens",
           "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]");
@@ -172,8 +205,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   const auto* messages = req.Find("messages");
   if ((prompt != nullptr) == (messages != nullptr))
     return invalid("messages", "provide exactly one of prompt or messages");
-  if (const auto* parsed = req.Find("parse_response"); parsed &&
-      (!parsed->IsBool() || (parsed->boolean && !messages)))
+  if (const auto* parsed = req.Find("parse_response");
+      parsed && (!parsed->IsBool() || (parsed->boolean && !messages)))
     return invalid("parse_response", "parse_response=true requires messages");
   OutputConstraints constraints;
   ReasoningOptions reasoning;
@@ -192,31 +225,16 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (const auto* user = req.Find("user");
       user && !user->IsNull() && !user->IsString())
     return invalid("user", "user must be a string or null (metadata only)");
-  for (const auto& [key, neutral] : {
-           std::pair{"temperature", 0.0}, {"top_p", 1.0}, {"n", 1.0},
-           {"frequency_penalty", 0.0}, {"presence_penalty", 0.0},
-           {"repetition_penalty", 1.0}}) {
-    if (const auto* value = req.Find(key); value &&
-        !(value->IsNull() && std::string_view(key) != "repetition_penalty") &&
-        !Number(*value, neutral))
-      return invalid(key,
-                     std::string(key) + " unsupported value in greedy mode");
-  }
-  if (const auto* seed = req.Find("seed"); seed && !seed->IsNull()) {
-    if (!IsInputInteger(*seed) ||
-        std::abs(seed->number) > 9007199254740991.0)
-      return invalid("seed", "seed must be an exact binary64 integer or null");
-  }
-  for (const char* key : {"logprobs", "top_logprobs", "logit_bias"}) {
-    const auto* value = req.Find(key);
-    if (!value || value->IsNull()) continue;
-    const std::string_view name(key);
-    const bool neutral =
-        (name == "logprobs" && value->IsBool() && !value->boolean) ||
-        (name == "top_logprobs" && Number(*value, 0)) ||
-        (name == "logit_bias" && value->IsObject() && value->object.empty());
-    if (!neutral) return invalid(key, std::string(key) + " is not supported");
-  }
+  SamplingOptions sampling;
+  status = ParseSamplingOptions(req, &sampling, error_param);
+  if (!status) return status;
+  PredictionOptions prediction;
+  status = ParsePredictionOptions(req, sampling, &prediction, error_param);
+  if (!status) return status;
+  if (const auto* penalty = req.Find("repetition_penalty");
+      penalty && !Number(*penalty, 1))
+    return invalid("repetition_penalty",
+                   "use standard presence_penalty/frequency_penalty");
   if (const auto* options = req.Find("stream_options");
       options && !options->IsNull()) {
     status = Fields(*options, {"include_usage"});
@@ -246,21 +264,23 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       return invalid("tools", "tools requires messages and an array or null");
   }
   if (!messages) return Status();
-  if (!messages->IsArray() || messages->array.empty())
+  if (!messages->IsArray() ||
+      (!allow_empty_messages && messages->array.empty()))
     return invalid("messages", "messages must be a nonempty array");
-  status = ValidateChatMessageProfile(*messages, error_param);
+  status = ValidateChatMessageProfile(*messages, error_param,
+                                      allow_empty_messages);
   if (!status) return status;
   size_t media_items = 0;
   for (size_t index = 0; index < messages->array.size(); ++index) {
     const auto& message = messages->array[index];
     *error_param = "messages[" + std::to_string(index) + "]";
     if (!message.IsObject()) return Status::Fail("message must be an object");
-    status = Fields(message, {"role", "content", "reasoning_content", "reasoning",
-                              "tool_calls", "tool_call_id", "name", "refusal",
-                              "audio", "annotations", "function_call"});
+    status =
+        Fields(message, {"role", "content", "reasoning_content", "reasoning",
+                         "tool_calls", "tool_call_id", "name", "refusal",
+                         "audio", "annotations", "function_call"});
     if (!status) return status;
-    for (const char* key : {"refusal", "audio", "annotations",
-                            "function_call"}) {
+    for (const char* key : {"audio", "annotations", "function_call"}) {
       const auto* value = message.Find(key);
       if (value && !value->IsNull())
         return Status::Fail(std::string("message field not supported: ") + key);
@@ -279,6 +299,25 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       if (!part.IsObject())
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
+      if (preparing_file_inputs && type == "file") {
+        status = Fields(part, {"type", "file"});
+        if (!status) return status;
+        if (!allow_media)
+          return Status::Fail("PDF input requires media processing enabled");
+        if (message.GetString("role") != "user")
+          return Status::Fail("file input requires user role");
+        FileInputSource source;
+        const auto parsed = ParseFileInputSource(part, FileInputProfile::kChat,
+                                                 part_param, &source);
+        if (!parsed.ok())
+          return invalid(parsed.value.GetString("param"), parsed.message);
+        continue;
+      }
+      if (type == "refusal") {
+        // Role, single-part shape and payload were checked by the shared
+        // message profile, including direct/preflight renderer callers.
+        continue;
+      }
       if (part.Has("text") && !part.Has("image_url") &&
           !part.Has("video_frames")) {
         status = Fields(part, {"type", "text"});
@@ -287,6 +326,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         if ((kind && (!kind->IsString() || kind->str != "text")) ||
             !part.Find("text")->IsString())
           return Status::Fail("text content part requires type=text and text");
+        continue;
       }
       if (part.Has("image_url") || part.Has("video_frames") ||
           type == "image_url" || type == "video_frames" ||
@@ -300,9 +340,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         const bool video = part.Has("video_frames");
         if (image == video || type == "video_url")
           return Status::Fail("exactly one supported media part is required");
-        status = image ? Fields(part, {"type", "image_url"})
-                       : Fields(part, {"type", "video_frames",
-                                        "video_timestamps"});
+        status =
+            image ? Fields(part, {"type", "image_url"})
+                  : Fields(part, {"type", "video_frames", "video_timestamps"});
         if (!status) return status;
         if (const auto* kind = part.Find("type");
             kind && (!kind->IsString() ||
@@ -319,15 +359,27 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
           const auto* link = value.Find("url");
           if (!link || !link->IsString() || link->str.empty())
             return Status::Fail("media URL must be a nonempty string");
-          if (const auto* detail = value.Find("detail");
-              detail && (!detail->IsString() || detail->str != "auto"))
-            return Status::Fail("only detail=auto is implemented");
+          if (const auto* detail = value.Find("detail"); detail) {
+            if (!detail->IsString() ||
+                !Known(detail->str, {"auto", "low", "high", "original"}) ||
+                (!image && detail->str != "auto")) {
+              *error_param += ".detail";
+              return Status::Fail("invalid image detail or video frame detail");
+            }
+          }
           return Status();
         };
         if (image) {
           *error_param = part_param + ".image_url";
           status = url(*part.Find("image_url"));
           if (!status) return status;
+          if (preparing_file_inputs) {
+            FileInputSource source;
+            const auto parsed = ParseImageInputSource(
+                part, FileInputProfile::kChat, part_param, &source);
+            if (!parsed.ok())
+              return invalid(parsed.value.GetString("param"), parsed.message);
+          }
         } else {
           *error_param = part_param + ".video_frames";
           const auto* frames = part.Find("video_frames");
@@ -335,8 +387,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
               frames->array.size() > vision::kMediaPlanFrames)
             return Status::Fail("video requires 2..32 frames");
           std::string time_field;
-          status = VideoFrameTimes(part, frames->array.size(), nullptr,
-                                   &time_field);
+          status =
+              VideoFrameTimes(part, frames->array.size(), nullptr, &time_field);
           if (!status) {
             *error_param = part_param + "." + time_field;
             return status;
@@ -348,6 +400,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
             if (!status) return status;
           }
         }
+      } else {
+        return Status::Fail("unrecognized message content part");
       }
     }
   }

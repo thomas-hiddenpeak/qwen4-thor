@@ -1,0 +1,9 @@
+test_generation_change_while_reading_body_never_forwards_to_successor (__main__.AdmissionTests.test_generation_change_while_reading_body_never_forwards_to_successor) ... ok
+test_quota_wait_after_headers_still_blocks_dispatch (__main__.AdmissionTests.test_quota_wait_after_headers_still_blocks_dispatch) ... ok
+test_same_uid_unowned_process_cannot_read_internal_credentials (__main__.AdmissionTests.test_same_uid_unowned_process_cannot_read_internal_credentials) ... ok
+test_stop_wakes_incomplete_body_without_waiting_for_read_deadline (__main__.AdmissionTests.test_stop_wakes_incomplete_body_without_waiting_for_read_deadline) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.008s
+
+OK

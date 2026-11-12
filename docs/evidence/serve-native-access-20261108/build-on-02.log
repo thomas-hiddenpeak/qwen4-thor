@@ -1,0 +1,13 @@
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/host-on
+[ 14%] Built target q4t_guardian_process
+[ 42%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 71%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 85%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

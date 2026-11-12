@@ -1,0 +1,129 @@
+event: response.created
+data: {"response":{"id":"resp_14a69aeaf694539d48203101fd9dc8e3","object":"response","created_at":1794257119,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.in_progress
+data: {"response":{"id":"resp_14a69aeaf694539d48203101fd9dc8e3","object":"response","created_at":1794257119,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.in_progress","sequence_number":1}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","type":"reasoning","content":[],"summary":[],"status":"in_progress"},"type":"response.output_item.added","sequence_number":2}
+
+event: response.content_part.added
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":""},"type":"response.content_part.added","sequence_number":3}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"The","type":"response.reasoning_text.delta","sequence_number":4}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" user","type":"response.reasoning_text.delta","sequence_number":5}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" is","type":"response.reasoning_text.delta","sequence_number":6}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" asking","type":"response.reasoning_text.delta","sequence_number":7}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" about","type":"response.reasoning_text.delta","sequence_number":8}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":9}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" result","type":"response.reasoning_text.delta","sequence_number":10}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" of","type":"response.reasoning_text.delta","sequence_number":11}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" the","type":"response.reasoning_text.delta","sequence_number":12}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" preceding","type":"response.reasoning_text.delta","sequence_number":13}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" calculation","type":"response.reasoning_text.delta","sequence_number":14}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":",","type":"response.reasoning_text.delta","sequence_number":15}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" which","type":"response.reasoning_text.delta","sequence_number":16}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" was","type":"response.reasoning_text.delta","sequence_number":17}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":18}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"1","type":"response.reasoning_text.delta","sequence_number":19}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"7","type":"response.reasoning_text.delta","sequence_number":20}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" +","type":"response.reasoning_text.delta","sequence_number":21}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":22}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":23}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"5","type":"response.reasoning_text.delta","sequence_number":24}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" =","type":"response.reasoning_text.delta","sequence_number":25}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":" ","type":"response.reasoning_text.delta","sequence_number":26}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"4","type":"response.reasoning_text.delta","sequence_number":27}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"2","type":"response.reasoning_text.delta","sequence_number":28}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":".","type":"response.reasoning_text.delta","sequence_number":29}
+
+event: response.reasoning_text.delta
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"delta":"\n","type":"response.reasoning_text.delta","sequence_number":30}
+
+event: response.output_item.added
+data: {"output_index":1,"item":{"id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":31}
+
+event: response.content_part.added
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"part":{"type":"output_text","text":"","annotations":[],"logprobs":[]},"type":"response.content_part.added","sequence_number":32}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"delta":"\n\n","logprobs":[],"type":"response.output_text.delta","sequence_number":33}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"delta":"4","logprobs":[],"type":"response.output_text.delta","sequence_number":34}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":35}
+
+event: response.reasoning_text.done
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42.\n","type":"response.reasoning_text.done","sequence_number":36}
+
+event: response.content_part.done
+data: {"item_id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","output_index":0,"content_index":0,"part":{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42.\n"},"type":"response.content_part.done","sequence_number":37}
+
+event: response.output_item.done
+data: {"output_index":0,"item":{"id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","type":"reasoning","content":[{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42.\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:054c16202494511e6abf8ae172cc51c9:afa1dc1042bfc5959367f8ef:354b427c7cf289cb21393f3977ae17df:38b214b028207f06c484ebebe6a5dff3002ed6f86668b9d6291173ffec6424784bee1025758d0e04883a37d290914774cc8926850ce2a392ca0fdde194d61a36e53efd2ec73f015375729966a9778767e9a8f2d92a3352c8939f7de32be029d813485ebc3d9e392ce1bd7691b1b9e69745b7b6f2603030bc670200da7310d83695428bc6f9c17c4c1f1c341c32eb43419e0fe2a40b4ad43111d56bf27cf47f2f183a9806db59bd823010147e20739c1e7e1f4c210db29fe0c06e9601e1ca6ef0b23045b62430d9202427d120d98946bc36a3d50df515a08d2cdf17267783106221892490525e31120f5a6854eb3e007ecb84802f2dd43dcee754f451564e50a963202cc9701bcd99dfe3886eabc908e95e4c826e42319f4463275276e61cfd16310d170f8098bf0590a2d90d26dda08f5fc0a8b3a8066522c9a7c9bf71f3df33721f13808e73531baf101c63901162b860605e6351fdad1682b89c58b6c5a5704451eb795f42522b5e92d562ac828b0e5cef286608febef5c167d115323c93e6603fdf4ca1dde6a9b75887525c2ab17329e991267ee327e34bd23393c7693252a5ef09bd742918ef1ecc68dce70c781d57c1febc42b4df4b743cc9ce5fbbbf1c89883575116a1ec3607cbd1e27c2ac15b52439f1c9eb23f044d0bc2f908b2d8ac93eb8f74c8d537441429118c7de6ac3d9920d0db76b858d832d84e2a10a262884798fcea86c59fe7cde2fe50132ec5d23a1c3280921c7dd03978f5a8bbda526faa0a0ac21187b288dce783ce370bfdedae2958499693400bae00e0dec4356d953a1f0de4237a481d346626c16c1533bb5f87a5e08e533c5f8bea02bcad545d82d2833e779490a05dfe1106244588a691cf5c24ad6c76f400c7f5a4dd054bb7bcc65339262dfc58ec8f5311e230e060e766edd4a6c2f2698a20d4408f3a902392e9dc170d9387198baaca1080ec0d0d4181a0ea9385810c79489c68052a56dde3fb5b0d7601d3d87946440c7b4d1358668ab07fe16e19f13026bdfcbe1ecd1dfa7be188551f0ba2163413f84753dfc5e15c195cbf35aa1d036b8daec01191c82aa286f9963281d8dc09e04a442d25880cc31fc4f4ee7e5b0eb828e13642bcfa305b0f80deb1370c4636209271efcb92dab4a303ce59278a8caf822f26a5a8b0295b2c1b7367a5c6eca8083f63352a93de99e501748339aa97686f8cfa4a80bf29b3e14e11de3bef71ea8227492d18ac9286e1dc42700d2ae94ff56e1cb5761f7e25eaea6edde81fea85ccd8d6b854bb5f3e5e042f3ba6db1ed67badb5397f6a3eed310baf874819b66ff0d5535c760263a257fd5b80cefe498bc2df93cfeb4b9627e0b7a0735b37ced7abc4fb7bc6c73c92235d5d8b48ca8cc5f98487e7a16cfc58695010c7da27ad63e40f80d5248ebe5cfea44b755527e37abace4fd43f7367c0a87a7fb72eebf0f424eb19e252dc00913ef7c1f434a854396d78dc83ef12a1389bf09b63b9c87faec8b6463c41d676042697fe61bae72a4793b578e88eaa542808fadf5726a2eba33f798940e"},"type":"response.output_item.done","sequence_number":38}
+
+event: response.output_text.done
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"text":"\n\n42","logprobs":[],"type":"response.output_text.done","sequence_number":39}
+
+event: response.content_part.done
+data: {"item_id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","output_index":1,"content_index":0,"part":{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]},"type":"response.content_part.done","sequence_number":40}
+
+event: response.output_item.done
+data: {"output_index":1,"item":{"id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"},"type":"response.output_item.done","sequence_number":41}
+
+event: response.completed
+data: {"response":{"id":"resp_14a69aeaf694539d48203101fd9dc8e3","object":"response","created_at":1794257119,"completed_at":1794257120,"status":"completed","error":null,"incomplete_details":null,"output":[{"id":"rs_66b9b3951dd1f2b4fd52ab6a53287322","type":"reasoning","content":[{"type":"reasoning_text","text":"The user is asking about the result of the preceding calculation, which was 17 + 25 = 42.\n"}],"summary":[],"status":"completed","encrypted_content":"q4t1:054c16202494511e6abf8ae172cc51c9:afa1dc1042bfc5959367f8ef:354b427c7cf289cb21393f3977ae17df:38b214b028207f06c484ebebe6a5dff3002ed6f86668b9d6291173ffec6424784bee1025758d0e04883a37d290914774cc8926850ce2a392ca0fdde194d61a36e53efd2ec73f015375729966a9778767e9a8f2d92a3352c8939f7de32be029d813485ebc3d9e392ce1bd7691b1b9e69745b7b6f2603030bc670200da7310d83695428bc6f9c17c4c1f1c341c32eb43419e0fe2a40b4ad43111d56bf27cf47f2f183a9806db59bd823010147e20739c1e7e1f4c210db29fe0c06e9601e1ca6ef0b23045b62430d9202427d120d98946bc36a3d50df515a08d2cdf17267783106221892490525e31120f5a6854eb3e007ecb84802f2dd43dcee754f451564e50a963202cc9701bcd99dfe3886eabc908e95e4c826e42319f4463275276e61cfd16310d170f8098bf0590a2d90d26dda08f5fc0a8b3a8066522c9a7c9bf71f3df33721f13808e73531baf101c63901162b860605e6351fdad1682b89c58b6c5a5704451eb795f42522b5e92d562ac828b0e5cef286608febef5c167d115323c93e6603fdf4ca1dde6a9b75887525c2ab17329e991267ee327e34bd23393c7693252a5ef09bd742918ef1ecc68dce70c781d57c1febc42b4df4b743cc9ce5fbbbf1c89883575116a1ec3607cbd1e27c2ac15b52439f1c9eb23f044d0bc2f908b2d8ac93eb8f74c8d537441429118c7de6ac3d9920d0db76b858d832d84e2a10a262884798fcea86c59fe7cde2fe50132ec5d23a1c3280921c7dd03978f5a8bbda526faa0a0ac21187b288dce783ce370bfdedae2958499693400bae00e0dec4356d953a1f0de4237a481d346626c16c1533bb5f87a5e08e533c5f8bea02bcad545d82d2833e779490a05dfe1106244588a691cf5c24ad6c76f400c7f5a4dd054bb7bcc65339262dfc58ec8f5311e230e060e766edd4a6c2f2698a20d4408f3a902392e9dc170d9387198baaca1080ec0d0d4181a0ea9385810c79489c68052a56dde3fb5b0d7601d3d87946440c7b4d1358668ab07fe16e19f13026bdfcbe1ecd1dfa7be188551f0ba2163413f84753dfc5e15c195cbf35aa1d036b8daec01191c82aa286f9963281d8dc09e04a442d25880cc31fc4f4ee7e5b0eb828e13642bcfa305b0f80deb1370c4636209271efcb92dab4a303ce59278a8caf822f26a5a8b0295b2c1b7367a5c6eca8083f63352a93de99e501748339aa97686f8cfa4a80bf29b3e14e11de3bef71ea8227492d18ac9286e1dc42700d2ae94ff56e1cb5761f7e25eaea6edde81fea85ccd8d6b854bb5f3e5e042f3ba6db1ed67badb5397f6a3eed310baf874819b66ff0d5535c760263a257fd5b80cefe498bc2df93cfeb4b9627e0b7a0735b37ced7abc4fb7bc6c73c92235d5d8b48ca8cc5f98487e7a16cfc58695010c7da27ad63e40f80d5248ebe5cfea44b755527e37abace4fd43f7367c0a87a7fb72eebf0f424eb19e252dc00913ef7c1f434a854396d78dc83ef12a1389bf09b63b9c87faec8b6463c41d676042697fe61bae72a4793b578e88eaa542808fadf5726a2eba33f798940e"},{"id":"msg_dab5a6a08ea9bcc90cb09d7e2f2ab238","type":"message","content":[{"type":"output_text","text":"\n\n42","annotations":[],"logprobs":[]}],"role":"assistant","status":"completed"}],"usage":{"input_tokens":130,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0},"output_tokens":32,"output_tokens_details":{"reasoning_tokens":28},"total_tokens":162},"model":"qwen3.8-flash-next","instructions":null,"metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":true,"tools":[],"tool_choice":"auto","text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"low","context":"all_turns","mode":"standard","summary":null},"store":false,"background":false,"max_output_tokens":384,"max_tool_calls":null,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.completed","sequence_number":42}
+

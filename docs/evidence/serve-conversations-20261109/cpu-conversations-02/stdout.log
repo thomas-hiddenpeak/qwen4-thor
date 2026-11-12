@@ -1,0 +1,20 @@
+  CHECK failed: status (line 357)
+[FAIL] conversation_state_resolves_all_declared_input_variants
+  CHECK failed: Ok(call) && !call.value.array[0].GetString("id").empty() (line 387)
+[FAIL] conversation_state_optional_reference_discriminator_and_scope
+[PASS] conversation_state_rejects_bad_input_before_reference_io
+[PASS] conversation_state_response_cannot_duplicate_membership
+[PASS] responses_state_stateless_path_does_not_touch_storage
+[PASS] responses_state_previous_history_does_not_inherit_instructions
+[PASS] responses_state_running_terminal_and_delete_lifecycle
+[PASS] responses_state_item_reference_requires_client_ownership
+[PASS] responses_state_stateless_conversation_still_appends_atomically
+[PASS] responses_state_conversation_conflict_cannot_publish_completed
+[PASS] responses_state_tool_result_resolves_original_call_identity
+[PASS] responses_state_prepared_plan_cannot_change_client
+[PASS] responses_state_rejects_malformed_generated_items_before_commit
+[PASS] object_store_transaction_conflict_or_quota_changes_nothing
+[PASS] object_store_transaction_handles_large_response_item_sets
+[PASS] object_store_transaction_recovers_durable_decision_before_apply
+[PASS] object_store_transaction_recovers_partial_file_installation
+17 tests, 15 passed, 2 failed, 0 skipped

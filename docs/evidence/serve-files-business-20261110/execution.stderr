@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 384, in <module>
+    if __name__ == '__main__':main()
+                              ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 379, in main
+    with base.lifecycle.child_subreaper():Stage(read(args.plan)).run()
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py", line 294, in run
+    try:self.start();self.business();result['status']=self.success_status
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 268, in business
+    return self.resume_business()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 343, in resume_business
+    self.finish_files(uploaded, blob, document)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 334, in finish_files
+    require(not self.files('empty-list', 'list')['data'], 'deleted Files still listed')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 261, in files
+    require(not errors(value['result'], name), 'Files actual wire schema')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: Files actual wire schema

@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 184, in <module>
+    python_sdk(*sys.argv[2:])
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_search_transport.py", line 43, in python_sdk
+    with sdk.responses.stream(**request,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/resources/responses/responses.py", line 405, in stream
+    return stream(
+           ^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/lib/_response_resources.py", line 404, in stream
+    raise ValueError("model must be provided when creating a new response")
+ValueError: model must be provided when creating a new response

@@ -1,0 +1,13 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/release-01/bundle",
+  "manifest_sha256": "ee95045b59d0f69d36092ce25666365cb7041d933636927cefb1989d087b7f85",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "files": {
+    "q4t": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+    "q4t.release.json": "b96c0f351491db15b6ce82f8653b9dd5b468d27db8b3b1a37663b13da82d630b",
+    "service.release.json": "9e17f6c0556516225b164e4f581a5057784f42bd5099752f4d13238cffcb34bf",
+    "service.json": "fd7eb54dcb05af6862fa5f68ebf2886c5ce996a5d66f34ba199412cf4b6fea5f"
+  },
+  "procedure": "Acquire GPU, Guardian and writer locks with durable STOPPED state. Restore the four files to their original paths and repoint build/service. Preserve the actual ledger and recovery budgets; never initialize/reset ledger."
+}

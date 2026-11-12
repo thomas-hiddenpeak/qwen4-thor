@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/vector_stores_sdk.py", line 9, in <module>
+    import httpx
+ModuleNotFoundError: No module named 'httpx'

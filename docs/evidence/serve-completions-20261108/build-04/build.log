@@ -1,0 +1,8 @@
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[ 28%] Built target xgrammar
+[ 28%] Built target q4t_text
+[ 28%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_sampling_response_test.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_client_policy_test.cpp.o
+[ 32%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

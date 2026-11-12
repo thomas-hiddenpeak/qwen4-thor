@@ -1,0 +1,7 @@
+test_answer_oracle_rejects_wrong_answer_and_incomplete (tools.serve_responses.test_file_preparation_acceptance.FilePreparationAcceptance.test_answer_oracle_rejects_wrong_answer_and_incomplete) ... ok
+test_budget_and_actual_standard_file_requests (tools.serve_responses.test_file_preparation_acceptance.FilePreparationAcceptance.test_budget_and_actual_standard_file_requests) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.016s
+
+OK

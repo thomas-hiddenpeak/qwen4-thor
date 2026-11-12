@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_moderations_contract.ModerationsContract.test_official_sdk_identity_and_openapi_route"
+  ],
+  "exit_code": 0,
+  "seconds": 0.16408668598160148
+}

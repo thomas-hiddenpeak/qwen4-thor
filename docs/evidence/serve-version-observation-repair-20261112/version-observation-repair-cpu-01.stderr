@@ -1,0 +1,53 @@
+test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection (tools.serve_recovery.test_version_observation.ObservationTests.test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection) ... ERROR
+test_live_version_writer_lock_and_unknown_commit_do_not_block_healthy_projection (tools.serve_recovery.test_version_observation.ObservationTests.test_live_version_writer_lock_and_unknown_commit_do_not_block_healthy_projection) ... ok
+test_unknown_payload_and_wrong_actual_model_identity_are_not_trusted (tools.serve_recovery.test_version_observation.ObservationTests.test_unknown_payload_and_wrong_actual_model_identity_are_not_trusted) ... ok
+test_payload_change_without_matching_generation_invalidates_collected_metrics (tools.serve_recovery.test_version_observation.ObservationTests.test_payload_change_without_matching_generation_invalidates_collected_metrics) ... ERROR
+test_stopped_version_and_profile_status_read_fallback_without_reconciling_or_resetting (tools.serve_recovery.test_version_observation.ObservationTests.test_stopped_version_and_profile_status_read_fallback_without_reconciling_or_resetting) ... ok
+test_stopped_observer_does_not_reconcile_pending_version_transaction (tools.serve_recovery.test_version_observation.ObservationTests.test_stopped_observer_does_not_reconcile_pending_version_transaction) ... ok
+test_live_cli_checks_control_root_birth_before_accepting_retained_payload (tools.serve_recovery.test_version_observation.ObservationTests.test_live_cli_checks_control_root_birth_before_accepting_retained_payload) ... ok
+test_terminal_fallback_repairs_current_state_then_explicitly_registers_new_cycle (tools.serve_recovery.test_version_repair.RepairTests.test_terminal_fallback_repairs_current_state_then_explicitly_registers_new_cycle) ... ok
+test_unstarted_fallback_intent_repairs_primary_without_start_or_extra_migration (tools.serve_recovery.test_version_repair.RepairTests.test_unstarted_fallback_intent_repairs_primary_without_start_or_extra_migration) ... ok
+test_pending_automatic_profile_migration_resumes_only_original_switch_then_repairs (tools.serve_recovery.test_version_repair.RepairTests.test_pending_automatic_profile_migration_resumes_only_original_switch_then_repairs) ... ok
+test_interrupted_repair_profile_commit_resumes_exact_deployment_once (tools.serve_recovery.test_version_repair.RepairTests.test_interrupted_repair_profile_commit_resumes_exact_deployment_once) ... ok
+test_descriptor_advanced_before_failure_replays_using_retained_control_root (tools.serve_recovery.test_version_repair.RepairTests.test_descriptor_advanced_before_failure_replays_using_retained_control_root) ... ok
+test_resigned_foreign_automatic_receipt_cannot_authorize_repair (tools.serve_recovery.test_version_repair.RepairTests.test_resigned_foreign_automatic_receipt_cannot_authorize_repair) ... ok
+test_explicit_capacity_repair_preserves_fallback_pending_original_qualification (tools.serve_recovery.test_version_repair.RepairTests.test_explicit_capacity_repair_preserves_fallback_pending_original_qualification) ... ok
+test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state) ... ok
+test_profile_rename_failure_requires_exact_deployment_and_recovers_once (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_profile_rename_failure_requires_exact_deployment_and_recovers_once) ... ok
+test_descriptor_and_publication_interruptions_resume_original_migration (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_descriptor_and_publication_interruptions_resume_original_migration) ... ok
+test_unrelated_pending_migration_receipt_cannot_be_adopted (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_unrelated_pending_migration_receipt_cannot_be_adopted) ... ok
+test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent (tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent) ... ok
+test_auxiliary_unknown_and_missing_resources_do_not_override_ready (tools.serve_host.test_native.NativeTests.test_auxiliary_unknown_and_missing_resources_do_not_override_ready) ... ok
+test_birth_namespace_and_descriptor_replacement_are_not_trusted (tools.serve_host.test_native.NativeTests.test_birth_namespace_and_descriptor_replacement_are_not_trusted) ... ok
+test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle (tools.serve_recovery.test_version_registration.RegistrationTests.test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle) ... ok
+test_actual_profile_migration_keeps_pending_history_clock_and_retry (tools.serve_recovery.test_version_runtime.RuntimeTests.test_actual_profile_migration_keeps_pending_history_clock_and_retry) ... ok
+test_cli_register_exact_file_and_status_keep_original_state (tools.serve_recovery.test_version_runtime.RuntimeTests.test_cli_register_exact_file_and_status_keep_original_state) ... ok
+
+======================================================================
+ERROR: test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection (tools.serve_recovery.test_version_observation.ObservationTests.test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_version_observation.py", line 62, in test_actual_fallback_inode_and_metrics_contract_are_checked_before_and_after_collection
+    result=self.collect(check_process=lambda pid,_start,exe,_ctx,**_k:checked.append((pid,exe)),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_version_observation.py", line 48, in collect
+    return native.collect(self.binding,**dict(
+                                         ^^^^^
+TypeError: dict() got multiple values for keyword argument 'check_process'
+
+======================================================================
+ERROR: test_payload_change_without_matching_generation_invalidates_collected_metrics (tools.serve_recovery.test_version_observation.ObservationTests.test_payload_change_without_matching_generation_invalidates_collected_metrics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_version_observation.py", line 101, in test_payload_change_without_matching_generation_invalidates_collected_metrics
+    result=self.collect(request=lambda *_a,**_k:next(values))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_version_observation.py", line 48, in collect
+    return native.collect(self.binding,**dict(
+                                         ^^^^^
+TypeError: dict() got multiple values for keyword argument 'request'
+
+----------------------------------------------------------------------
+Ran 24 tests in 15.929s
+
+FAILED (errors=2)

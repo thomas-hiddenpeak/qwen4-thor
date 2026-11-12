@@ -1,0 +1,90 @@
+{
+  "README.md": {
+    "bytes": 1225,
+    "sha256": "11f785314966f5ccb50e92a4b2f3dbc713b2fcb892897d05cfc39d0ada863d61"
+  },
+  "archive_integration.py": {
+    "bytes": 3067,
+    "sha256": "23e22e4b611652aa38c1443075fdf0cdc0eeb36e5b190b4f48a44c74ac8a064b"
+  },
+  "build-03/command.json": {
+    "bytes": 149,
+    "sha256": "7ce4a77f45269bbddb2e0f7c94fc86510081a530150079b550a6b839522a0e02"
+  },
+  "build-03/result.json": {
+    "bytes": 62,
+    "sha256": "7e53de722bf844a029653406c939b80ecaed5842d2c072987f6607498af13dbf"
+  },
+  "build-03/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-03/stdout.log": {
+    "bytes": 9144,
+    "sha256": "f203d016d1bf377b1a9bf77ef8c1f18895927a18006fbd4766ac38ad35b6d74a"
+  },
+  "build-04/command.json": {
+    "bytes": 149,
+    "sha256": "7ce4a77f45269bbddb2e0f7c94fc86510081a530150079b550a6b839522a0e02"
+  },
+  "build-04/result.json": {
+    "bytes": 62,
+    "sha256": "08aa15b0ebb822dc13287dc31fe1ebe59a86731e74cb6abf150c5878176bb70d"
+  },
+  "build-04/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-04/stdout.log": {
+    "bytes": 1706,
+    "sha256": "ed5c4a51cd643906157acf92afb89819dbada6302c799e7eaa03e9af15fc1151"
+  },
+  "decision.json": {
+    "bytes": 23581,
+    "sha256": "1a9851c0ffa184689f10a541302f3197c9b61b8e5d4de3480648b466916116a1"
+  },
+  "integration-cpu-01/command.json": {
+    "bytes": 159,
+    "sha256": "a8bb5eeb6db91f993c99737889a6461d0ae0edbcb78d76bf4e1322a8f8e284b9"
+  },
+  "integration-cpu-01/result.json": {
+    "bytes": 155,
+    "sha256": "86a225c72f4658aec206ec92dcd0501b4783057bbf7f1b47e91b5dc8234f9079"
+  },
+  "integration-cpu-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "integration-cpu-01/stdout.log": {
+    "bytes": 567,
+    "sha256": "8c8d1e5e44ccdb3f12de5b19ab08afce43a7ccb15e5d3f8cb816e31a7fb18e29"
+  },
+  "integration-cpu-01/work/native-progress.bin": {
+    "bytes": 280,
+    "sha256": "95a20953a44214658288bf10bda59a8f93d995001b628d5300917dac27ad4fc1"
+  },
+  "integration-plan.json": {
+    "bytes": 773,
+    "sha256": "aa2c83dad4954f66d2bb60ff6d21ae638ced3a26d90f86eb9723e1049503e061"
+  },
+  "integration-required.txt": {
+    "bytes": 456,
+    "sha256": "26717e48ba492a8f44010b0c0c13aedd7394692d20bd412e56707d46181e5991"
+  },
+  "inventory-01/command.json": {
+    "bytes": 89,
+    "sha256": "20d8d2b873145e73577f10a6c69432127db4d807a9f99b0e6fce8f0678029ac7"
+  },
+  "inventory-01/result.json": {
+    "bytes": 63,
+    "sha256": "d6e4b22583d5bc58f135a1c634727da853a42c9daa59a67b078d8fdf760245d3"
+  },
+  "inventory-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "inventory-01/stdout.log": {
+    "bytes": 220,
+    "sha256": "f826b6b38bd03a3ad38c2a233dd2917e7313e7181aba24c707503a0d23b93b81"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "max_output_tokens": 384,
+    "reasoning": {
+      "effort": "low"
+    },
+    "input": [
+      {
+        "id": "rs_7370f9ba12061e65fec2e24aba490eda",
+        "type": "reasoning",
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:054c16202494511e6abf8ae172cc51c9:4098cabc15d97e8cbe9839b0:21c3e7533f7799615504c2234496c51a:492d3de50da6f940cc13fd16ae1d2824e8762a0c5d1c993ff592b81080d9d444ac0936b5eb46cb7049ab0ae525fbf3f0cebd6c9489596d33e50cf6848a5200d6f4180ed5edc9157aaad6245ea23b377faa6ffa15a6db331aca161d65f80c5d59efc1f459eb23d8273ab1e960dc33bd371ac578aaf2c466fe56feb593b634f79125e3d4cbd56dc52da7e80a3a4e4ac817e1644b1114341a9477d1a797cd8dfcb23b4b9f93df4f0a5fae251bd2cf63ede57f634d4193de69230b6ecb27fc46b292496f0b827af7022312dba388e21b68dc42d81f7012d191204df145e453cdcc668ca2f3ef21182bd8ebef126b80040aeb3392c19006269ba8ef527e68fbd3747ef6bd7f44d7143feb3c2fe5fe8ca672debbd665f7e56925a12994fdf7c8484f4f51622352dcba4f5d01b97c5a3aa35bd92fdd75e3951309ee4ab268b06dec4da1d88c95a17804b3a722e77c9acd216d41503e25768439803c282adcd0bdd4d8295fc464383a45c2c13e42900485fc57b21b6f8997aefd7a5954a1fe4de824cddc0ab2ac759511ba7a6d6861bd76f3be89e4c448db173221d646736c5c712639b0013af921a10b7505a7edc7f96b6974a4eec0657b4ba69d4e628d11d83cc3953cca55ee97d9169e831fc0ee7e564b7e9c8cfd"
+      },
+      {
+        "id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "role": "user",
+        "content": "What was the result of the preceding calculation? Reply only with the decimal number."
+      }
+    ],
+    "store": false,
+    "include": [
+      "reasoning.encrypted_content"
+    ],
+    "stream": true,
+    "stream_options": {
+      "include_obfuscation": false
+    }
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19003/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

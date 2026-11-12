@@ -1,0 +1,2 @@
+[q4t][http] trace_id=req-84fb21972c7a869aa91d0657c2dd42da status=429 error=client_rpm_exhausted
+[q4t][http] trace_id=req-16e09566fca93c09bee6c620cd3676fa status=409 error=upload_cancelled

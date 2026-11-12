@@ -1,0 +1,11 @@
+[PASS] cache_io_private_disk_directory_contract
+[PASS] cache_io_stopped_worker_deadline_and_cancellation_are_bounded
+[PASS] session_cache_unavailable_directory_preserves_session_contract
+[PASS] session_cache_partial_restore_loss_evicts_generation_and_rebuilds
+[PASS] session_cache_cancelled_write_is_unpublished_and_not_replayed
+[CACHE_HEALTH]{"configured":false,"available":false,"state":"disabled","readiness_dependency":false,"generation":0,"workers_started":0,"workers_reaped":0,"workers_active":0,"controller_failures":0,"worker_rss_known":false,"worker_rss_observed_bytes":0,"io_timeout_ms":2000,"restart_limit":3,"restart_window_ms":60000,"block_bytes":8388608,"buffer_payload_limit_bytes":25169920,"buffer_limit_excludes_process_overhead":true}
+[CACHE_HEALTH]{"configured":true,"available":true,"state":"ready","readiness_dependency":false,"generation":15,"workers_started":1,"workers_reaped":0,"workers_active":1,"controller_failures":0,"worker_rss_known":true,"worker_rss_observed_bytes":9023488,"io_timeout_ms":2000,"restart_limit":3,"restart_window_ms":60000,"block_bytes":8388608,"buffer_payload_limit_bytes":25169920,"buffer_limit_excludes_process_overhead":true}
+[PASS] session_cache_health_is_optional_and_contains_no_private_content
+[PASS] grammar_process_unconfirmed_reap_retains_capacity_without_callbacks
+[PASS] grammar_process_object_domain_keeps_grammar_capacity
+8 tests, 8 passed, 0 failed, 0 skipped

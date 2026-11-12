@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/serve_recovery/test_native_access.py",
+    "--ingress",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/host-on/q4t-ingress",
+    "--no-tls-ingress",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/host-on/q4t-ingress-no-tls",
+    "-v"
+  ],
+  "source_plan_sha256": "9a9c601553a7e7a2303551be47952bb0f244eda81139c9cb618b31e21fbfbde0",
+  "binary_sha256": "bd4869656ab473fe6034cda836ec0cfa55d52a7b7a68703a024f9fd465a387d1",
+  "no_tls_binary_sha256": "9f9fa73bfc106e0b09bf178a4e71d5f4b61373e2fb8b10c71984c7951c445d7d",
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "started_unix": 1794092143.6472976,
+  "exit_code": 0,
+  "elapsed_seconds": 34.61185636697337
+}

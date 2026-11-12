@@ -1,0 +1,23 @@
+{
+  "sources": {
+    "CMakeLists.txt": "9a6ff7df16d263511362bc7fe876ff2f562d557d5ec7b25271a228e6b5f62091",
+    "cmake/ChatProtocolIdentity.cmake": "e91b31f7becdb0546532bd5bdb5714d6ae10a571567d2e572e0f8cc85b5f2e7b",
+    "cmake/HostTestSources.cmake": "21836b7820c9a3167a3956f1a7a9232f02efae94123a1699c3b6e9dadf446e03",
+    "include/q4t/server/chat_contract.h": "b85a04f979e8ceecd1c88494192513e7a93ad53f20ed3dfb18f0efd012b047cd",
+    "include/q4t/server/chat_file_inputs.h": "43ed99eb981abb7b989d5b4a88ed77c5ba2ec1aeb54fe9825e0b892abb372d2d",
+    "include/q4t/server/chat_plan.h": "9a59f0e717596d6a2a2ca37d1843170c8eebbc9a2f42655218e304c348373463",
+    "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
+    "src/server/chat_contract.cpp": "f93b1524f4cdb71b3f6d2937cda5b6341478072e071a9e4fc03858490cc6c529",
+    "src/server/chat_file_inputs.cpp": "532ec182597f2a108e847a5486f3d185f7d2c586648e0d97f65aa678b24020e2",
+    "src/server/chat_generation.cpp": "ca254c63b3c4cf5619834de7b35a3d534a67093da19a4e38c82bf9d0a7d2ba6a",
+    "src/server/chat_plan.cpp": "2d707f6481e45d859ec78e183a7a4c6f097df5d76cb272e6b1f3f620b545d955",
+    "src/server/chat_preflight.cpp": "14d7fec869022d128734250275dfd977ad57c9670f9e60d6c75b8704a689d0e0",
+    "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
+    "src/server/file_input.cpp": "1d25c239b05c8e15297a8ce210b7e993c2ae35127198e8d87ca3300d6fc6b987",
+    "tests/server_chat_file_inputs_test.cpp": "ed27a39fb180809092a967a2044f193552bbf7d4db019d6694331ab431a8ddc6"
+  },
+  "binaries": {
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "b8d438b3b9370e0ade7d53f4f3d1d118773acd8b982ce0f70f360f858a9d7d71",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "835963a2f5736bd9eb6475e1592295e9b8dcf02841cc56b72cf99051e5bf4de6"
+  }
+}

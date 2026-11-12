@@ -1,5 +1,54 @@
 # docs/ — 开发记录文档体系
 
+- [Legacy文档x86系统调用修复](evidence/serve-codec-syscall-20261112/README.md)
+
+- [CI存储夹具及编解码退出定位](evidence/serve-host-storage-codec-20261112/README.md)
+
+[CI可信localtime资源与Guardian exec握手续修](evidence/serve-host-localtime-exec-20261112/README.md)
+
+[A07模型拒绝信号、约束与JSON/SSE完整生命周期](SERVE_REFUSAL_OUTPUT_2026-11-12.md)（实现准备）
+
+[当前实际状态与全部任务入口](STATUS.md) · [2026-11-12完整历史状态快照](HISTORY_STATUS_2026-11-12.md)
+
+[A07.7原生推敲、审核与访问执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)
+
+[N04原生密钥、动态客户端限额与用量连续性交付及操作](SERVE_ACCESS_CONTROL_2026-11-09.md)
+
+[R01缓存文件I/O原生隔离与R03组合验收](SERVE_CACHE_IO_ISOLATION_2026-11-09.md)
+
+[Chat持久对象、官方SDK及原生/可选入口](SERVE_CHAT_STORAGE_2026-11-09.md)
+
+[Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)
+（已验子集随原生应用包交付，A07/A09继续开发）。
+
+[A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
+（已验子集进入默认；[发行原件](evidence/serve-application-delivery-20261109/README.md)，其余能力继续实施）。
+
+[A09 Files/Uploads/Batch连续实现](SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)
+
+[A08原生对象存储及后台任务](SERVE_OBJECT_STORE_2026-11-08.md)
+（开发中，存储故障与核心生成隔离）。
+
+[原生Completions/Models及可回退交付](SERVE_COMPLETIONS_2026-11-08.md)。
+
+- [A04 custom工具交付](SERVE_CUSTOM_TOOLS_2026-11-08.md)：text/regex/Lark、原生模型适配、真实混合调用与可回退默认。
+
+- [A04工具选择与增量流](SERVE_TOOL_STREAM_2026-11-08.md)：allowed_tools与逐片参数已验交付。
+- [Legacy functions/function_call已验交付](SERVE_LEGACY_TOOLS_2026-11-08.md)
+- [Custom工具实施与验收](SERVE_CUSTOM_TOOLS_2026-11-08.md)
+- [A03 prediction](SERVE_PREDICTION_2026-11-08.md)：目标验证、状态回滚、预算与usage；已完成针对性业务和可回退交付。
+- [A03生成参数](SERVE_SAMPLING_2026-11-08.md)：实际采样、多choice、logprobs及验收进展；prediction与剩余总计划继续。
+- [A01/A02消息输入交付](SERVE_CHAT_INPUT_2026-11-08.md)：多指令、name、refusal、schema与实际SDK工具闭环；剩余总计划继续。
+
+- [N01/N02/N03原生TLS、内网、证书与CORS实施](SERVE_NATIVE_ACCESS_2026-11-08.md)
+- [R02结构化工作进程有界回收：实施合同与针对性验证](SERVE_GRAMMAR_REAP_2026-11-08.md)
+- [R01普通观察写入阻塞隔离：实现与针对性验证](SERVE_OBSERVATION_IO_2026-11-08.md)
+
+- [Serve总目标重审：OpenAI兼容、原生接入、自恢复，全部任务完成后收口](SERVE_MASTER_PLAN_2026-11-08.md)
+- [R06资格迁移与有界版本回退](SERVE_VERSION_RECOVERY_2026-11-11.md)
+- [全部任务状态与完成条件](serve-master-goals-v2.json)、[源码/官方协议/旧任务映射证据](evidence/serve-goal-reaudit-20261108/README.md)
+- [Serve剩余可靠性R1—R10：完成条件、依赖与针对性验证预算](SERVE_RESILIENCE_EXECUTION_PLAN_2026-11-08.md)
+
 - [原生入口解耦实际交付：无nginx默认包、151 CPU及3启动18Chat](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)
 - [原生服务入口、可选nginx前置与有界解耦计划](SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md)
 - [自动恢复 A/B 真实业务接受、显式服务入口与回退](SERVE_SELF_RECOVERY_RESULT_2026-11-08.md)
@@ -480,3 +529,6 @@
 
 - [Serve工业化持续目标与验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)
 - [Serve B2推理协议与控制](SERVE_STAGE_B2_2026-11-03.md)
+
+- [当前原生服务观测与保护留存](SERVE_NATIVE_OBSERVATION_2026-11-09.md)
+- [原生密钥、客户端策略与配额连续性](SERVE_ACCESS_CONTROL_2026-11-09.md)

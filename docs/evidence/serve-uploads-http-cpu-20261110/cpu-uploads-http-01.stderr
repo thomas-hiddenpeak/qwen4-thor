@@ -1,0 +1,13 @@
+[q4t][http] trace_id=req-f8fe50de419de35775cd9efbec419b50 status=405 error=method_not_allowed
+[q4t][http] trace_id=req-f8e95cfcbf761bff19030ad0feec4b80 status=404 error=route_not_found
+[q4t][http] trace_id=req-8de55550c95217e0215c2ec1357ebdf3 status=400 error=invalid_request
+[q4t][http] trace_id=req-bbe6dac9c7133282bceb184c5ce95f9d status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-aad52c9f1d505fc43625ad7a31ec70f7 status=400 error=invalid_request
+[q4t][http] trace_id=req-8ed39fc9014fb88ef19591047c0ad4d0 status=400 error=invalid_request
+[q4t][http] trace_id=req-5754c413d11ad8d383f78650d142245a status=400 error=invalid_request
+[q4t][http] trace_id=req-b6d0b216803072cef2ee30cefb6217cc status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-1605b25d5a2c981274994d2595c2808b status=400 error=invalid_request
+[q4t][http] trace_id=req-3cd8d2fb54157610e79ae5015bd93192 status=503 error=body_capacity_exhausted
+[q4t][http] trace_id=req-15b84e037c15934f90d4d792099da5c1 error=internal_error
+[q4t][http] trace_id=req-0da517de9002a3957877203fbd3b297c error=internal_error
+[q4t][http] trace_id=req-54d6dcaba1134803e6155dc524f4c8ee error=internal_error

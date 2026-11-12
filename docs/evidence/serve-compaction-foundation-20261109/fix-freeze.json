@@ -1,0 +1,12 @@
+{
+  "reason": "Canonical stored user/system messages have IDs forbidden in SDK input shape; add actual public compact window projection, preserve content/role and internal originals.",
+  "tests": [
+    "compaction_optional_id_enters_actual_response_generation_plan",
+    "compaction_returned_window_is_replayable_without_losing_message_data"
+  ],
+  "sources": {
+    "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
+    "src/server/responses_compaction.cpp": "c199ea3904c06ae68c87d3c64c62318b284c0c4d72ccb826a711b53ef0bb3331",
+    "tests/server_responses_compaction_test.cpp": "03ea4990b4bd3e83f862fbda413e8c9343652744e692c0e28ab501fb90c386ce"
+  }
+}

@@ -1,0 +1,71 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  3%] Built target q4t_regex_build
+[  7%] Built target q4t_io
+[  7%] Built target q4t_text
+[ 30%] Built target xgrammar
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_template.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_message_profile_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_media_admission_test.cpp.o
+[ 30%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  3%] Built target q4t_io
+[  7%] Built target q4t_trace
+[ 10%] Built target q4t_ple
+[ 14%] Built target q4t_regex_build
+[ 35%] Built target xgrammar
+[ 39%] Built target q4t_runtime
+[ 39%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[ 64%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 67%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_template.cpp.o
+[ 67%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  7%] Built target q4t_trace
+[ 10%] Built target q4t_ple
+[  7%] Built target q4t_io
+[ 14%] Built target q4t_regex_build
+[ 35%] Built target xgrammar
+[ 39%] Built target q4t_runtime
+[ 39%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t_preflight_probe
+[100%] Built target q4t_preflight_probe
+[  0%] Built target q4t_guardian_process
+[  0%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_journal.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_wire.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/io/json.cpp.o
+[100%] Linking CXX static library libq4t_guardian_journal.a
+[100%] Built target q4t_guardian_journal
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/service/guardian_main.cpp.o
+[100%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_cors.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_admin.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_credentials.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_transport.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

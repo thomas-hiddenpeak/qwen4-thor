@@ -1,0 +1,14 @@
+{
+  "test": "tools.serve_recovery.test_native_access.AccessTests.test_moderations_sdk_tls_auth_cors_and_exact_body",
+  "checks": [
+    "actual SDK create through native TLS",
+    "unauthenticated CORS preflight",
+    "401 before backend",
+    "8192-byte text preserved",
+    "actual client identity and gateway token",
+    "429 no retry"
+  ],
+  "cpu": true,
+  "gpu": false,
+  "model_quality_claim": false
+}

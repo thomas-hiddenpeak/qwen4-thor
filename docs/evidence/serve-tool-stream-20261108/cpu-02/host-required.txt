@@ -1,0 +1,1 @@
+chat_capabilities_option_contract

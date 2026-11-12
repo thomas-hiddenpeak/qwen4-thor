@@ -1,0 +1,51 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Return JSON with answer equal to 42."
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": true,
+  "max_tokens": 128,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 60000,
+  "request_id": "n04-limits-lost",
+  "cancel_token": "c034b4e9efc2f7cf4c50fabf262ee445d9cfb348f76f20e786c335358d9d275a",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  },
+  "stream_options": {
+    "include_usage": true
+  },
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "n04",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "integer",
+            "enum": [
+              42
+            ]
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

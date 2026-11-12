@@ -1,0 +1,21 @@
+{
+  "status": "PASS_RESPONSES_COMPACTION_TARGETED_BUSINESS",
+  "binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+  "protocol_sha256": "b4e479abedcaefdc6094bde042f890c8baa9ce2e3236a9983a96a9ad02c6c5cd",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 83
+  },
+  "seconds": 102.49896823614836,
+  "model_steps": 9,
+  "nvml_samples": 97,
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "scope": "Actual automatic/standalone compaction, summary/crypto, measured token reduction, document tool, durable original background replay, exact usage, noop and rejection isolation; no performance/full-model claim",
+  "actual_reduction": {
+    "original_prompt_tokens": 1160,
+    "restored_with_new_turn_tokens": 130,
+    "saved_tokens": 1030
+  }
+}

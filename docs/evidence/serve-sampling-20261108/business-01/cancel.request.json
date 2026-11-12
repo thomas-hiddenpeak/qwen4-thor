@@ -1,0 +1,20 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_completion_tokens": 1024,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a long essay of at least 1000 words about the history of mathematics."
+    }
+  ],
+  "n": 2,
+  "seed": 23,
+  "logprobs": true,
+  "request_id": "sampling-cancel",
+  "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "stream_options": {
+    "include_usage": true
+  }
+}

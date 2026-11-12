@@ -1,0 +1,19 @@
+{
+  "status": "PASS_N07_CAPACITY_FIX_PACKAGE_CHECK",
+  "version": 10,
+  "sources": 464,
+  "charged": {
+    "starts": 1,
+    "chats": 1,
+    "probes": 0,
+    "controls": 549
+  },
+  "limits": {
+    "starts": 2,
+    "chats": 6,
+    "probes": 0,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "gpu_queries": false
+}

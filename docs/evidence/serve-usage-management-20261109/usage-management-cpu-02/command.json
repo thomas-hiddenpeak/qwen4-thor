@@ -1,0 +1,8 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_new_identity_requires_durable_limits_then_actual_model_installation"
+]

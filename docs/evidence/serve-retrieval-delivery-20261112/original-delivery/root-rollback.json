@@ -1,0 +1,26 @@
+{
+  "label": "root-rollback",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+    "service",
+    "publish-rollback",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+    "--manifest-sha256",
+    "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+    "--generation-sha256",
+    "d3ca9e539811e176e7ae772474e399f3b1c5c9c6c9b7ea9c02efa981aa94fa8e",
+    "--expected-manifest-sha256",
+    "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+    "--expected-revision",
+    "84",
+    "--request-id",
+    "ecc231b2-975c-448c-bc63-c2283115ef21"
+  ],
+  "returncode": 0,
+  "seconds": 8.862989795394242
+}

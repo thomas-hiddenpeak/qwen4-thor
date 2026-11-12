@@ -1,0 +1,19 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests"
+  ],
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-title-07/required.txt"
+  ],
+  "timeout_seconds": 45,
+  "diagnostic_seconds_if_failed": 20,
+  "scope": "actual complete document title, correcting insufficient CPU case length; no GPU"
+}

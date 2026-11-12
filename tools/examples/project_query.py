@@ -13,7 +13,7 @@ import re
 from agent_tools_demo import new_file
 from chat_client import (ChatClient, append_final, append_tool_results,
                          make_request, prepare_tool_calls, require)
-from project_records import ProjectRecords, TOOLS, VALIDATORS
+from project_records import ProjectRecords, TOOLS, VALIDATORS, CUSTOM_VALIDATORS
 from tool_recovery import journal_lock, save_receipt as save
 
 
@@ -88,7 +88,7 @@ def _run(directory, client, base_url, question, stream, rounds, tool_limit, mode
                 save(directory / "completed.json", dict(requests=turn + 1,
                     tool_calls=calls, messages=history))
                 return answer
-            planned = prepare_tool_calls(completion, VALIDATORS)
+            planned = prepare_tool_calls(completion, VALIDATORS, custom_validators=CUSTOM_VALIDATORS)
             require(turn + 1 < rounds, "no request budget for tool results")
             require(calls + len(planned) <= tool_limit, "tool budget exceeded")
             save(directory / (label + "-plan.json"), [asdict(p) for p in planned])

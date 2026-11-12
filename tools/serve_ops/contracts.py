@@ -234,6 +234,23 @@ def configuration(value, *, version=3):
             if type(value_bool) is not bool:
                 raise InvalidObservation('invalid_runtime_contract')
             result[name] = value_bool
+        # Historical observations omitted these fields. New capacity profiles
+        # require them explicitly when checking their effective configuration.
+        if 'default_output_tokens' in value:
+            result['default_output_tokens'] = integer(
+                value['default_output_tokens']['effective'], 1, 2**31-1)
+        if 'mtp_k' in value['runtime']:
+            depth = value['runtime']['mtp_k']
+            if result['mtp_enabled']:
+                result['mtp_k'] = integer(depth, 1, 16)
+            elif depth is None:
+                result['mtp_k'] = None
+            else:
+                raise InvalidObservation('invalid_disabled_mtp_depth')
+        if 'startup_memory' in value:
+            result['startup_memory_headroom_mib'] = integer(
+                value['startup_memory']['headroom_mib']['effective'],
+                maximum=1048576)
         if version in (4, 5):
             limits = value['limits']
             for name in ('business_connections', 'observation_connections',

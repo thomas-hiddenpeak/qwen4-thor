@@ -1,0 +1,14 @@
+✔ builder exposes schema semantics and supports either explicit output budget (2.767274ms)
+✔ parts and actual final tool history are copied without rewriting results (0.550142ms)
+✔ ambiguous formats, active tools, cache and missing user reject locally (1.713945ms)
+✔ lossy or unsafe JSON cannot silently change a schema (1.052441ms)
+✔ UTF8 byte limit and names fail before a request (21.743956ms)
+✔ budgets are bounded, defaults stable, conflicting aliases rejected (0.50716ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107.971765

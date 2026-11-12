@@ -1,0 +1,24 @@
+{
+  "cases": [
+    "file_expansion_all_source_validation_precedes_external_io",
+    "file_expansion_real_text_preserves_original_tool_paths_and_cache_boundary",
+    "file_expansion_combined_source_text_and_rendered_budgets_are_atomic",
+    "file_expansion_actual_pdf_page_and_chat_profile_are_complete",
+    "file_expansion_frozen_history_survives_delete_restart_and_codec_outage",
+    "file_expansion_spreadsheet_step_requires_complete_exact_model_callback",
+    "file_expansion_pending_and_augmented_snapshots_are_separate_immutable_versions",
+    "file_expansion_combined_pdf_pages_and_history_budgets_are_enforced",
+    "file_expansion_unknown_persistence_never_replays_or_erases_owned_state",
+    "file_expansion_plain_requests_cancelled_and_missing_store_remain_isolated",
+    "file_snapshot_real_nested_pages_conversion_and_restart_without_codecs",
+    "file_snapshot_real_sheets_and_private_indirect_source_are_exact",
+    "file_snapshot_stored_file_delete_cannot_change_prepared_input",
+    "file_snapshot_typed_receipt_rejects_wrong_parts_sources_and_pages",
+    "file_snapshot_active_budgets_apply_to_history_without_partial_output",
+    "file_snapshot_never_persists_incomplete_or_mismatched_extraction"
+  ],
+  "count": 16,
+  "gpu": 0,
+  "network": 0,
+  "scope": "10 actual shared acquisition/expansion/state/strict spreadsheet callback contracts plus six directly affected v1 snapshot checks. CPU callbacks are synthetic; no model augmentation or complete API acceptance claimed. Actual production parsers/storage used."
+}

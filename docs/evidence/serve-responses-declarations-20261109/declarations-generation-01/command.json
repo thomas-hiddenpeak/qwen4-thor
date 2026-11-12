@@ -1,0 +1,7 @@
+[
+  "node",
+  "tools/serve_responses/generate_item_types.mjs",
+  ".q4t-work/serve-protocol-20261103/sdk",
+  ".q4t-work/serve-responses-20261108/schema-tool",
+  ".q4t-work/serve-responses-20261108/item-types-declarations.json"
+]

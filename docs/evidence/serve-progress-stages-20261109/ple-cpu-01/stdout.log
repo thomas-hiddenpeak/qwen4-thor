@@ -1,0 +1,5 @@
+[PASS] ple_health_recovered_short_read_does_not_poison_model
+[PASS] ple_health_embedding_propagates_reader_failure_before_upload
+[PASS] ple_progress_reaped_wave_counts_but_failure_does_not
+[PASS] ple_progress_prior_request_upload_does_not_count_for_new_owner
+4 tests, 4 passed, 0 failed, 0 skipped

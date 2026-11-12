@@ -1,0 +1,8 @@
+{
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-completions-20261108/cpu-03/required.txt"
+  ],
+  "scope": "only two failed fixtures; other 26 CPU checks reused"
+}

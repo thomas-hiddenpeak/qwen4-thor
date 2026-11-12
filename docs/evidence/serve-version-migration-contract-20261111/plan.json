@@ -1,0 +1,17 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_migration"
+  ],
+  "expected_cpu_cases": 6,
+  "new_gpu_starts": 0,
+  "scope": "Qualified same-capacity version migration; preserve pending/history/hold across boot, refuse ordinary runtime migration, real rename/fsync failure replay; no deployment integration or automatic fallback claim",
+  "sources": {
+    "tools/serve_recovery/profile_migration.py": "a750ab19de30a48bdfda988463f6c48e054da7db883851a129a0c5419c1874db",
+    "tools/serve_recovery/test_profile_migration.py": "df55051ceb1bd299942509e6e4bdf1b25535b816d86c14a7ccea5ea3f561c93b",
+    "tools/serve_recovery/profile_policy.py": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571",
+    "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
+    "tools/serve_recovery/profile_evidence.py": "79b26a30527f38cccea1d3db2a019872646484b638b94bffb4c33d2bf7da7cc8",
+    "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753"
+  }
+}

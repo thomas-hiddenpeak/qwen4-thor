@@ -1,0 +1,11 @@
+{
+  "scope": "public no-XGrammar/no-CUDA host build: opt-in exact JSON and default control numeric behavior, reference and prefix boundaries",
+  "tests": [
+    "json_exact_decimal_opt_in_does_not_relax_control_numbers",
+    "json_strict_numbers_and_safe_integer_conversion",
+    "schema_graph_long_reference_chains_are_bounded_before_worker",
+    "schema_prefix_exact_number_and_array_limits_at_completion"
+  ],
+  "binary_sha256": "1a184a1a17342163407b59695acc9496f7866332770edf317f03852fee8570a6",
+  "timeout_seconds": 60
+}

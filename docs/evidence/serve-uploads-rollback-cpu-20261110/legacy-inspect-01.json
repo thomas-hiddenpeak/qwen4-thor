@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "state-retention",
+    "inspect",
+    "--offline",
+    "--object-store-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/rollback-state-01/uploads-rpVi8Q/objects"
+  ],
+  "exit_code": 0,
+  "seconds": 0.1138903172686696,
+  "engine_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+  "before": {
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.tool_run.tool_run_05aa598f5eb27fc796bf195bd6f8af94.json": "4731ce55102f6daa11590c4f71cf57d320d58f47009aa0ad05cc1f0758db0c37",
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.file.file_e6bbff41e1382faa87991ebb073c4a73.json": "7c083da9a5eb89e9659946afa0dee4c1e71181d97ae4fa36383bf63cbb032fed",
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.tool_run.tool_run_bd982fb569d55d1f9555d1cc085d82d6.json": "25b34eee1821753000b59fec7f519487c4129271647e1b845c85d6160b504280"
+  },
+  "after": {
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.tool_run.tool_run_05aa598f5eb27fc796bf195bd6f8af94.json": "4731ce55102f6daa11590c4f71cf57d320d58f47009aa0ad05cc1f0758db0c37",
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.file.file_e6bbff41e1382faa87991ebb073c4a73.json": "7c083da9a5eb89e9659946afa0dee4c1e71181d97ae4fa36383bf63cbb032fed",
+    "2ec0316f349f6b2b92c391a4cc38898c4288089c4436e32689409e1b60254f2d.tool_run.tool_run_bd982fb569d55d1f9555d1cc085d82d6.json": "25b34eee1821753000b59fec7f519487c4129271647e1b845c85d6160b504280"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "label": "rollback-reader-native-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle/engine/q4t",
+    "service",
+    "check"
+  ],
+  "returncode": 0,
+  "seconds": 0.7286950810812414
+}

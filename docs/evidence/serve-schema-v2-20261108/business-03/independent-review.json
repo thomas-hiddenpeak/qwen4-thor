@@ -1,0 +1,57 @@
+{
+  "status": "PASS_BOUNDED_TEXT_ACCEPTANCE_WITH_REUSED_FOUR_REQUESTS",
+  "source_commit": "66bb30b9eab667d3c49ba9cac67e06769ab9a50b",
+  "source_files": 631,
+  "historical_sources_all_match": true,
+  "post_run_driver_only_changes": [
+    "tools/serve_schema_v2/acceptance.py"
+  ],
+  "default_unchanged": true,
+  "stages": [
+    {
+      "stage": "business-01",
+      "status": "FAILED",
+      "starts": 1,
+      "chats": 5,
+      "seconds": 102.84335670387372,
+      "lease_seconds": 103.48443657811731,
+      "nvml_samples": 97,
+      "all_nvml_ok": true
+    },
+    {
+      "stage": "business-02",
+      "status": "FAILED",
+      "starts": 1,
+      "chats": 1,
+      "seconds": 60.55912864301354,
+      "lease_seconds": 61.18640353018418,
+      "nvml_samples": 58,
+      "all_nvml_ok": true
+    },
+    {
+      "stage": "business-03",
+      "status": "PASS_SCHEMA_V2_TEXT_BUSINESS",
+      "starts": 1,
+      "chats": 4,
+      "seconds": 71.44883005926386,
+      "lease_seconds": 72.28027576580644,
+      "nvml_samples": 68,
+      "all_nvml_ok": true
+    }
+  ],
+  "totals": {
+    "starts": 3,
+    "chats": 10,
+    "seconds": 234.85131540615112,
+    "lease_seconds": 236.95111587410793,
+    "nvml_samples": 223
+  },
+  "workers_reaped": 3,
+  "metadata": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "09ffec04d3b9cc438976f5502e7948f3b64ef44103d9cc54a765db329f33d697",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "24d1b0dd9795b58aad056ccf195160af6b03d0a01089032703385509fbc7288c",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40"
+  },
+  "remaining_media": true
+}

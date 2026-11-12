@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_moderation_acceptance",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.37966037821024656
+}

@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tools/serve_responses/test_sdk.mjs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.27436596993356943
+}

@@ -1,0 +1,19 @@
+{
+  "status": "CAPTURED",
+  "diagnostic_only": true,
+  "commands": [
+    {
+      "name": "native",
+      "returncode": 0,
+      "seconds": 2.2183416788466275
+    },
+    {
+      "name": "analysis",
+      "returncode": 0,
+      "seconds": 2.567039778921753
+    }
+  ],
+  "instrumentation_bit_identical": true,
+  "seconds": 4.792590053286403,
+  "default_unchanged": true
+}

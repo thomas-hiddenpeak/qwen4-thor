@@ -1,0 +1,18 @@
+{
+  "status": "TARGETED_CPU_PASS",
+  "distinct_tests": 21,
+  "cpu_seconds": 1.2834056322462857,
+  "model_starts": 0,
+  "host_reboots": 0,
+  "historical_boot_fixture": true,
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/outer_policy.py": "1e56de8d68a2b7aebd7318b6fce6267fdba89720280f862919374a1cdacc318b",
+    "tools/serve_recovery/outer_reconcile.py": "137441c96cb990011ec1ce2d1cd6b94cdb2f8125076ca36eefcaf970898fc64e",
+    "tools/serve_recovery/test_outer_reboot.py": "9c3c38a6d9e90c88adfc1a7843a9bf861a5ff85bdb4c49accc6fd5a5f05f8b9f"
+  },
+  "automatic_outer_loop_integrated": false,
+  "resource_domain_proof_complete": false,
+  "released": false,
+  "r07_candidate_unchanged": true
+}

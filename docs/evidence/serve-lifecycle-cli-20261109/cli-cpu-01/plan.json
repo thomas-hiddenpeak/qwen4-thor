@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "task": "N07 unified lifecycle",
+  "tests": [
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_pending_policy_or_bad_envelope_stays_unknown_without_repair",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_writer_and_guardian_ownership_prevent_false_stopped",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_status_and_repeated_stop_confirm_durable_stopped",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_missing_core_lock_or_active_grant_cannot_confirm_stop",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_reload_routes_tls_without_model_actions_and_validates_arguments",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_reload_limits_reports_durable_commit_separate_from_live_application",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_bound_entry_can_select_a_different_explicit_deployment_target",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_source_tampering_refuses_before_import_and_ignores_pythonpath",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_interpreter_identity_change_refuses_native_dispatch",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_no_tools_is_explicit_error_without_model_or_fallback_command",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_default_engine_and_service_identity_cannot_diverge",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_cli_carries_capacity_input_to_sealed_package",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys",
+    "tools.serve_service.test_capacity.CapacityTests.test_custom_package_executes_its_own_verifier_without_checkout_modules",
+    "tools.serve_service.test_capacity.CapacityTests.test_old_package_needs_no_new_module_and_rejects_boolean_config_alias"
+  ],
+  "tests_count": 21,
+  "real_default_readonly": [
+    "check",
+    "status"
+  ],
+  "gpu_starts": 0
+}

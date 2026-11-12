@@ -1,0 +1,79 @@
+{
+  "status": "PASS_TARGETED_CUSTOM_TOOLS_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_CUSTOM_TOOLS",
+  "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+  "protocol_sha256": "33b3d128de9796248bb3267eb620de6f2139b97796ea77548c742e07e416388a",
+  "source_commit": "bf4191a1ac943c6e916018c1ea7089070f5d390a",
+  "source_files": 619,
+  "runtime_sources": 290,
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/source",
+  "model_starts": 3,
+  "chat_requests": 14,
+  "driver_seconds": 168.6335258842446,
+  "lease_seconds": 172.00391584867612,
+  "nvml_queries": 163,
+  "nvml_all_ok": true,
+  "recorded_processes_exited": true,
+  "ports_free": true,
+  "native_byte_identical": true,
+  "cuda_probe_reused": "ef1af4758829d36c9300b411dda05479b5d8640f78ef8e44277fee5ef970847a",
+  "cpu": {
+    "cpp": 47,
+    "schema_native": 72,
+    "python_clients": 17,
+    "js": 9,
+    "driver": 5
+  },
+  "performance_run": false,
+  "full_model_quality_run": false,
+  "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/business-03/result.json",
+  "business_sha256": "5b2ea8a5623e496c46bf405547bd3e6f9aec7480ddb4f6fc233816887b826e2e",
+  "lease_sha256": "2f26cc54627683b72ee63949883fdcbaced8d791186f5fbd896852409751ae9f",
+  "inherited_engine": "33c52e4ae83d4702af4e15df18475f2434508d6feebc61dfb62eda7dd2227e28",
+  "inherited_service_manifest": "13f077b634bfdcecddc2eba7a1a83216a531ed6505ed4ffeb9a0fb5be8ca3e93",
+  "model_kernels_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "custom_tools_targeted_accepted": true,
+  "previous_failed_attempts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/business-01",
+      "files": {
+        "plan.json": "6e8662ac266d3fd08f1d12d725981a4e2e0d1ceecf9be58fb1524f2ba0265fdf",
+        "result.json": "895aea77a53eea14093527fa7c9f8cba309b060c4a8b313cba5798e6a8099dbc",
+        "cleanup.json": "afad712b7a8fbdd9b9847c0025076d60f73fa8fac46cc85e9077928b3eb599e5",
+        "lease/exit.json": "550efb8208c7adc55b18392f3d038008fc00a227e17ee1f83b93a82d25a33252"
+      },
+      "counts": {
+        "starts": 1,
+        "chats": 5,
+        "controls": 51
+      },
+      "seconds": 60.072555527091026,
+      "binary_sha256": "ef1aeb974fc78c8eadd034157768b6e30b9c2d893f5ab3b7a3130df43c66ce2a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/business-02",
+      "files": {
+        "plan.json": "ba0ed9aee8ed9783be0f8c2a7e0b9a81759a5b56760162e01c2f0e654f0f9d0e",
+        "result.json": "e73df462ab39a9cc01cc2424e96e9af22dc1bef18dc0e4e371e08faf493d1e13",
+        "cleanup.json": "918d8c758109c81c871f188fe306479bf35b116c9a771e55195c6c14a2b4121d",
+        "lease/exit.json": "304dd7c532ee053b1954e4554c9220d8e74f9877dc19eace333fcf61315a51ef"
+      },
+      "counts": {
+        "starts": 1,
+        "chats": 1,
+        "controls": 37
+      },
+      "seconds": 44.830930166877806,
+      "binary_sha256": "ef1aeb974fc78c8eadd034157768b6e30b9c2d893f5ab3b7a3130df43c66ce2a"
+    }
+  ],
+  "reused_business_requests": [],
+  "same_binary_reused": false,
+  "cumulative_limits": {
+    "starts": 3,
+    "chats": 14,
+    "seconds": 900
+  },
+  "repair": "Native function/input model adapter; original mixed user task passes with both tool types; both old failed attempts retained"
+}

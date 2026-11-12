@@ -1,0 +1,5 @@
+{
+  "change": "Validate seal snapshots and clock before idempotent replay; reject Python bool/int equality aliases",
+  "rerun": "one directly affected stored-seal case; other passed identities reused",
+  "gpu_starts": 0
+}

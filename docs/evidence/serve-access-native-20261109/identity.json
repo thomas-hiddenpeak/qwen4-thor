@@ -1,0 +1,24 @@
+{
+  "base_commit": "cba8ffbeda332892ac8967533337b78e32d7f51a",
+  "sources": {
+    "cmake/NativeIngress.cmake": "96ca30d996381ae0a115a3a3290b2467de0092d17dbe8d57a8fd6a7f8116981e",
+    "tests/ingress_access_test.cpp": "d28366a5c8a966e2b572153585d47f6c3722eae8d5e7a37052c331525170af38",
+    "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
+    "tools/serve_recovery/test_access_ingress.py": "17bcff5f599a87258c679880e414b59edd75486949b9bc55c70aa29b4777a462",
+    "tools/serve_recovery/bundle.py": "e637ad54007527d5a6979ab26a5feb830023ac7fb13599ff943f8141de4e8224",
+    "include/q4t/service/ingress_access.h": "4c7b4c36183c9d6dee67c82b06c1390c8480599d96f8823fc07f1a1dfd2e8c71",
+    "include/q4t/service/ingress_access_admin.h": "3f72f8ec723aa5755942847c2583693483c24424ebcc69da0baa282993272d1d",
+    "include/q4t/service/ingress_admin.h": "2e33e97ef00fd363bf08f4ed4cc9235defb84bd070b1e477e465de3a108e7717",
+    "src/service/ingress_access.cpp": "6f138b82aa354c1e7ab62b94dd28aa1a13c9bdbee4fd3e76ec457c3a53593a8e",
+    "src/service/ingress_access_admin.cpp": "80c00ad12e223ab427b4e0b4c6b8c1e912ebd08ca7206201c0b5c5bf08e06917",
+    "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
+    "src/service/ingress_main.cpp": "ffef05e6e93cff82550801a536ec56e333cfdaa99f2a3f0e4da21c6bcbc56827"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  },
+  "native_build_receipt_inventory_extended_after_tests": true
+}

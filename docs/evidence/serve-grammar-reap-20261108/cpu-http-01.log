@@ -1,0 +1,45 @@
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-62ae18e8cf4ef440c8fbe0a48a746710 error=host_memory_exhausted
+[q4t][http] trace_id=req-8a1b81c97808ff899acf8da46db34d5b status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-8a1b81c97808ff899acf8da46db34d5b reason=body_eof status=400 system_error=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_observation_draining_and_exception_release
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_stop_before_and_during_listener_publication
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=exception-1 error=host_memory_exhausted
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_exception_keeps_server_and_releases_connections
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-a84a3b9ce4bc8e7a289055f47a108e2d status=503 error=capacity_exhausted
+[q4t][http-receive] trace_id=req-a84a3b9ce4bc8e7a289055f47a108e2d reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-9ea344606d251dc7829d92a64c22ebfd status=503 error=server_draining
+[q4t][http-receive] trace_id=req-9ea344606d251dc7829d92a64c22ebfd reason=server_draining status=503 system_error=0
+[q4t][http] trace_id=req-2fdcf2a3ebf67e587777fc6dbcd6201f status=400 error=invalid_request
+[q4t][http] trace_id=req-b1764fca279be7900306b9c6b3edf798 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-2fdcf2a3ebf67e587777fc6dbcd6201f reason=body_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-b1764fca279be7900306b9c6b3edf798 reason=body_eof status=400 system_error=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_control_reserve_and_draining_readiness
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] operations on port 40443 (host 127.0.0.1)
+[q4t] shutting down: draining in-flight requests...
+[q4t][http] trace_id=req-fac3785ff842ee17a60913e491ff452b status=400 error=invalid_request
+[q4t][http] trace_id=req-773c15b751ef3df7e420799a0a9ed13b status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-fac3785ff842ee17a60913e491ff452b reason=header_eof status=400 system_error=0
+[q4t][http-write] trace_id=req-fac3785ff842ee17a60913e491ff452b reason=peer_closed origin=handler transferred=0 system_error=32 poll_events=0
+[q4t][http-receive] trace_id=req-773c15b751ef3df7e420799a0a9ed13b reason=header_eof status=400 system_error=0
+[q4t][http-write] trace_id=req-773c15b751ef3df7e420799a0a9ed13b reason=peer_closed origin=handler transferred=0 system_error=32 poll_events=0
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] operations on port 35951 (host 127.0.0.1)
+[q4t] accept/thread exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_operations_early_fault_and_shutdown_release_both_planes
+5 tests, 5 passed, 0 failed, 0 skipped

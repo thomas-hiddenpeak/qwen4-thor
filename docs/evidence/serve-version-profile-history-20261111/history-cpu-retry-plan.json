@@ -1,0 +1,25 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_history",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_capacity_upgrade_then_retained_adapted_rollback_preserves_old_intent"
+  ],
+  "expected_cpu_cases": 10,
+  "new_gpu_starts": 0,
+  "scope": "Versioned original qualification history, explicitly migrated pending execution, narrow sealed old reader/writer adapter, retained-origin rollback and directly affected v1 runtime/package paths. Synthetic CPU qualification, no actual version recovery claim.",
+  "sources": {
+    "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
+    "tools/serve_recovery/profile_migration.py": "3f13080b731c73ce4f41dfa3e2d0d635716f5c01a233cd2fba3e0ff268ac1362",
+    "tools/serve_recovery/profile_manager.py": "8573d39cd937578c58bc5e58ea13e98f0e3b5b9d2cee47739178d1a4e0ddcabb",
+    "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
+    "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/deployment.py": "22b2fa3e61194dda69fb9df2a6dea7704787d32175f1180855d25ddd2a61ba07",
+    "tools/serve_recovery/bundle.py": "ab0188aefcd89e8f5a980b24a99088f16c0c1b8f496f1146debb90639b11fed7",
+    "tools/serve_recovery/test_profile_history.py": "680786287a1ec0e45e40da3c63517d1059bf1a446a37292902fd5163905c068b",
+    "tools/serve_recovery/test_profile_deployment.py": "90b7836b030b57372a28ac159dfede845b371ab484c24fb77c6f6d1a491225f9",
+    "tools/serve_recovery/test_profile_policy.py": "2ccd9c5b437d9f9784bf1ca3c61c391b957c87871e86a379092887226bd92af9",
+    "tools/serve_recovery/test_profile_integration.py": "2857d295cb9f3e573e9a289b3c5ebddac15c96fde2569696e2089358d1b83290",
+    "tools/serve_recovery/test_native_bundle.py": "3c7afa81e1bb44465dcf4f3ea81f8932338d336aae5a37bc1493508635e0dae7",
+    "tests/fixtures/recovery/profile_policy_v1.py.txt": "2e46ba5a52b4fdbb46222a1a87d850e7280f1348e11860b1e0afee1d24c13571"
+  },
+  "reason": "All ten new cases were rejected before migration because synthetic configuration retained default_output_tokens=384 while requested capacity was 512. Fix fixture observation to exact requested 512; qualification and production guards unchanged. Reuse fifteen passed directly affected checks."
+}

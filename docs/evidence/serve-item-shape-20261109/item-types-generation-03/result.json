@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "tools/serve_responses/generate_item_types.mjs",
+    ".q4t-work/serve-protocol-20261103/sdk",
+    ".q4t-work/serve-responses-20261108/schema-tool",
+    ".q4t-work/serve-responses-20261108/item-types-01.json"
+  ],
+  "exit_code": 0,
+  "seconds": 0.9865071740932763,
+  "source_sha256": "36ffd069b4f4706111275828460b6e61c8a46a99adcd1de8cbdfe07a780085de"
+}

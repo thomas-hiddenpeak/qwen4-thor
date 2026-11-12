@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/driver-fix-cpu-01/closed-environment.py",
+    "/home/rm01/models/dev/qwen4-thor",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/driver-fix-cpu-01"
+  ],
+  "env": {
+    "Q4T_CONTROLLER_GENERATION": "1"
+  }
+}

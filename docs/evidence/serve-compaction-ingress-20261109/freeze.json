@@ -1,0 +1,14 @@
+{
+  "required": [
+    "CompactIngress.test_compact_auth_preserves_body_and_client_scope",
+    "CompactIngress.test_compact_uses_data_capacity_and_keeps_observation_available"
+  ],
+  "sources": {
+    "include/q4t/server/application_routes.h": "6d0de72d19c97d3fdd8b92e855f261d6fafc84559835ba9bbdf4f1291064b686",
+    "tools/serve_responses/test_compact_ingress.py": "391e731da1841763e2547ad1cdc5ccf1a4ffabc38a490f11621b4692b1a9a47c",
+    "tools/serve_recovery/test_gateway_nginx.py": "3448cdaf44782014546f22ee271d480248735cc7545622d108415cc204ffc331",
+    "tools/serve_recovery/test_native_ingress.py": "cf982705aaec748d098c04fb0fad53fcf0a4c3d78b8d84bb73a0571202c89597"
+  },
+  "gpu": false,
+  "scope": "actual native ingress compact data route/authentication/scope and capacity; GPU business evidence reused"
+}

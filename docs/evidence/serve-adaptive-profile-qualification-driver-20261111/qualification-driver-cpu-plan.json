@@ -1,0 +1,12 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_profile_acceptance"
+  ],
+  "expected_cpu_cases": 2,
+  "new_gpu_starts": 0,
+  "scope": "Actual selected command/private state isolation and strict environment/cleanup acceptance negative controls",
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "5be5df589cf83e06707e7389ca4f585f072dafbcfc01fdc4c37eb6ea85b875db",
+    "tools/serve_recovery/test_profile_acceptance.py": "09ddc34892a09bd2a97193491d901391c1b47bb64208f0f26452747180c40546"
+  }
+}

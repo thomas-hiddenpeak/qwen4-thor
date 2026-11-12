@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_COMPACTION_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 83
+  },
+  "seconds": 102.49896823614836,
+  "binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64"
+}

@@ -1,0 +1,12 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/file_expansion.h",
+    "include/q4t/server/file_snapshot.h",
+    "src/server/file_expansion.cpp",
+    "src/server/file_snapshot.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "anchors": 446
+}

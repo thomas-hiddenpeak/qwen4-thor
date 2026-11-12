@@ -1,0 +1,50 @@
+{
+  "README.md": {
+    "bytes": 1124,
+    "sha256": "4cd8c63602232dd742b74ed97398961ae74fb759c0fc3f3672a2088ce6c87813"
+  },
+  "archive_cpu.py": {
+    "bytes": 3814,
+    "sha256": "5d9699886dd3768b94dd2e1d0b76f103e69e79d02d119bc8658e1897d6cec2db"
+  },
+  "decision.json": {
+    "bytes": 660,
+    "sha256": "f1091b893fa18e58448236caf28f8d92c8e9e8f3f246d60bf9eb07616f65ebbd"
+  },
+  "identity.json": {
+    "bytes": 1882,
+    "sha256": "9ad81af0effc1162f856b8b0f9a6384a183ba51f4e5fedc72b8dc70e29fe30ce"
+  },
+  "native-cpu-01/command.json": {
+    "bytes": 446,
+    "sha256": "19f0db361cff09640177dc58e7fd6362fa44244292ab351f301835a3f599ebe6"
+  },
+  "native-cpu-01/result.json": {
+    "bytes": 62,
+    "sha256": "0c20f802264e79f23a25ea4deae41e909483ffe3a6884dbe63e36dcdc8cdbceb"
+  },
+  "native-cpu-01/stderr.log": {
+    "bytes": 1879,
+    "sha256": "012858d4c9da42755866469ed1924beaf8e44af34129d80d4dbeb60caf8f470e"
+  },
+  "native-cpu-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native-cpu-02/command.json": {
+    "bytes": 386,
+    "sha256": "fafed084ca24ca993348a0b17051eddae23d33565d1b2ff718765a8bb182be4f"
+  },
+  "native-cpu-02/result.json": {
+    "bytes": 62,
+    "sha256": "1549f9992c7745169cf76eca4d9d74f3dc155878a605d151274462d9da7f7193"
+  },
+  "native-cpu-02/stderr.log": {
+    "bytes": 636,
+    "sha256": "7fe65c01bdeddb0454e998b3492903c898e149209bfa266844dbd1eaf7715299"
+  },
+  "native-cpu-02/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "label": "candidate-native-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/release-01/candidate/bundle/engine/q4t",
+    "service",
+    "check"
+  ],
+  "returncode": 0,
+  "seconds": 0.7176858810707927
+}

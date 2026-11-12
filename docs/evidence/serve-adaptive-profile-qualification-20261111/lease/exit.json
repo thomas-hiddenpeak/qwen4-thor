@@ -1,0 +1,26 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "python3",
+    "-B",
+    "tools/serve_recovery/profile_acceptance.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-adaptive-profiles-20261111/qualification-01/plan.json"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "finished": {
+    "utc": "2026-11-11T13:39:43.843569+00:00",
+    "monotonic": 2594466.360462668,
+    "pid": 1725676
+  }
+}

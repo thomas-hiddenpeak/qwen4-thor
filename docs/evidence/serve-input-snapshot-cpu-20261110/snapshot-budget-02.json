@@ -1,0 +1,13 @@
+{
+  "cases": [
+    "input_snapshot_unknown_publish_recovers_original_root_and_hold",
+    "input_snapshot_retention_uses_only_private_typed_bindings",
+    "input_snapshot_live_application_roots_retain_and_last_delete_reclaims",
+    "object_retention_unknown_state_preserves_owner_without_blocking_reads",
+    "object_retention_unknown_owner_protection_and_plan_identity"
+  ],
+  "count": 5,
+  "gpu": 0,
+  "network": 0,
+  "reason": "two failures: retention uncertainty overwritten by ordinary shape check; test-only lost-ack selector also matched read CAS. Fix only both and recheck directly affected conservative retention."
+}

@@ -1,0 +1,30 @@
+{
+  "engine_binary_sha256": "601951479d4319a76074a217334f6f109bb030b7acd57a0ac0f63940a7af5f3b",
+  "host_binary_sha256": "ed4d225fd255767036b79b08088e278e831cdb764c6398c4f825c4addde47e26",
+  "engine_build": {
+    "argv": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-custom-tools-20261108/engine-build",
+      "--target",
+      "q4t",
+      "--parallel",
+      "4"
+    ],
+    "exit_code": 0,
+    "seconds": 50.80814022710547
+  },
+  "host_build": {
+    "argv": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-access-20261109/host",
+      "--target",
+      "q4t_host_tests",
+      "--parallel",
+      "4"
+    ],
+    "exit_code": 0,
+    "seconds": 3.3820273992605507
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "generation": 2,
+  "owner": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "pid": 1729436,
+    "start_ticks": 259511175
+  },
+  "phase": "active",
+  "revision": 3,
+  "snapshot": {
+    "captured_ns": "2595109757544302",
+    "clients": [
+      {
+        "admitted": "2",
+        "batch": {
+          "admitted": "1",
+          "requests": "1",
+          "rpm_rejected": "0",
+          "settled_tokens": "2",
+          "tokens": "2",
+          "tpm_rejected": "0",
+          "window_ns": "2595101526800733",
+          "window_started": true
+        },
+        "id": "alpha",
+        "requests": "2",
+        "rpm_rejected": "0",
+        "settled_tokens": "566",
+        "tokens": "566",
+        "tpm_rejected": "0",
+        "window_ns": "2595097125002320",
+        "window_started": true
+      },
+      {
+        "admitted": "1",
+        "batch": {
+          "admitted": "0",
+          "requests": "0",
+          "rpm_rejected": "0",
+          "settled_tokens": "0",
+          "tokens": "0",
+          "tpm_rejected": "0",
+          "window_ns": "0",
+          "window_started": false
+        },
+        "id": "beta",
+        "requests": "1",
+        "rpm_rejected": "1",
+        "settled_tokens": "140",
+        "tokens": "140",
+        "tpm_rejected": "0",
+        "window_ns": "2595103460923706",
+        "window_started": true
+      }
+    ],
+    "policy_revision": "0",
+    "policy_sha256": "42c72c47bee82d808fa2807e53a8e903b9c2153d06bf3a054222fe636e3ed348",
+    "version": 2
+  },
+  "source": {
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "generation": 1
+  },
+  "started_ns": "2595144931713150",
+  "version": 1
+}

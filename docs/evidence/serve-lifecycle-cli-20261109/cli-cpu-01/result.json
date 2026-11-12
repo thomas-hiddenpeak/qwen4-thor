@@ -1,0 +1,21 @@
+{
+  "status": "FAIL",
+  "tests_run": 21,
+  "failures": [
+    {
+      "test": "test_fresh_build_entry_really_prepares_and_checks_a_package (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 172, in test_fresh_build_entry_really_prepares_and_checks_a_package\n    receipt, _ = self.prepare(self.root/'package')\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 169, in prepare\n    return json.loads(self.invoke(cli, *args, '--output', output, *extra).stdout), args\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 144, in invoke\n    self.assertEqual(result.returncode, ok, result.stderr + result.stdout)\nAssertionError: 1 != 0 : {\"status\": \"FAILED\", \"category\": \"AttributeError\", \"code\": \"service_entry_identity_invalid\"}\n\n"
+    },
+    {
+      "test": "test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 181, in test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset\n    first,args = self.prepare(self.root/'first')\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 169, in prepare\n    return json.loads(self.invoke(cli, *args, '--output', output, *extra).stdout), args\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 144, in invoke\n    self.assertEqual(result.returncode, ok, result.stderr + result.stdout)\nAssertionError: 1 != 0 : {\"status\": \"FAILED\", \"category\": \"AttributeError\", \"code\": \"service_entry_identity_invalid\"}\n\n"
+    },
+    {
+      "test": "test_default_engine_and_service_identity_cannot_diverge (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_default_engine_and_service_identity_cannot_diverge)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 231, in test_default_engine_and_service_identity_cannot_diverge\n    receipt,_=self.prepare(self.root/'package')\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 169, in prepare\n    return json.loads(self.invoke(cli, *args, '--output', output, *extra).stdout), args\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 144, in invoke\n    self.assertEqual(result.returncode, ok, result.stderr + result.stdout)\nAssertionError: 1 != 0 : {\"status\": \"FAILED\", \"category\": \"AttributeError\", \"code\": \"service_entry_identity_invalid\"}\n\n"
+    }
+  ],
+  "errors": [],
+  "elapsed_seconds": 1.6247730399481952,
+  "gpu_starts": 0
+}

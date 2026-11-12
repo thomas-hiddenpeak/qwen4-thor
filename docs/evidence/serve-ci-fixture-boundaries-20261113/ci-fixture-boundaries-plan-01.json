@@ -1,0 +1,28 @@
+{
+  "scope": "CI fixture corrections only; all production deadlines unchanged",
+  "cpp": [
+    "batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion",
+    "batch_state_cancel_prevents_late_validation_and_waits_for_owner",
+    "batch_background_actual_ttl_retains_until_result_copy_then_collects",
+    "batch_background_original_parent_expiry_cancels_queued_execution",
+    "batch_background_absent_observer_closes_only_proven_missing_submission",
+    "responses_foreground_unknown_success_preserves_committed_result",
+    "responses_foreground_unknown_begin_is_closed_without_model_execution",
+    "responses_foreground_unknown_checkpoint_preserves_partial_output",
+    "vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files",
+    "vector_batches_lost_cancel_receipt_recovers_without_model"
+  ],
+  "python": [
+    "IsolationTests.test_isolated_supervisor_preserves_core_http_deadline",
+    "IsolationTests.test_isolated_supervisor_stops_unhealthy_without_metrics_or_restart"
+  ],
+  "gpu_starts": 0,
+  "model_requests": 0,
+  "sources": {
+    "tests/server_batch_state_test.cpp": "21fca15318645a8a4e2f8a6dd9aa64bd38d9f0e5f1221982b9d8e61ef70691a2",
+    "tests/server_batch_jobs_test.cpp": "bb2b88658ca110d5a141da735873263cd9cae141359f9032f41add00dab890a4",
+    "tests/server_responses_jobs_test.cpp": "222325286ce7b059f57f5ff05697961b41536f7f15899e357d85bbef8562c1ed",
+    "tests/server_vector_jobs_test.cpp": "3e722a12aeac7bc953ef09535270ada12c24a8497f9ca541b39789e047d0b55f",
+    "tools/serve_service/test_auxiliary.py": "887c6bf53dbf02f6dc6a9075e2c56481233b48b7457c3f034dae451d93622e57"
+  }
+}

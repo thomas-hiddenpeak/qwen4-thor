@@ -1,0 +1,15 @@
+{
+  "status": "PASS_PROMPT_TARGETED_CPU",
+  "cpp_distinct": 19,
+  "python_distinct": 6,
+  "native_ingress_distinct": 2,
+  "inventory": true,
+  "protocol_values": 17,
+  "engine_sha256": "7b24d8c48544c13f6f5f490b66c916153d18951abf20152745a92a55c5924f9d",
+  "ingress_sha256": "5d49abe92dfb97465b342f8f2709637253d1e1d2e8d22f65ac4b4ea0eda40c57",
+  "host_sha256": "69bf41554b380dae663f5e0d933ce51f16fa246d47a8faaea715a3f14f529248",
+  "model_starts": 0,
+  "gpu": false,
+  "first_pass": true,
+  "scope": "Registry/immutable versions/scoped storage/typed expansion/background snapshot/limits; actual native ingress; strict native wire; delta-only replay padding."
+}

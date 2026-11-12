@@ -1,0 +1,23 @@
+{
+  "state": "TARGETED_CPU_ACCEPTED_RESPONSES_INTEGRATION_PENDING",
+  "cases": 16,
+  "first_pass": true,
+  "seconds": 1.6846613469533622,
+  "sources_sha256": {
+    "include/q4t/server/responses_file_search.h": "83caca130ec2103195465e5aa0eca2dcf8fccdf79013f25be3f9ee57b98ea09f",
+    "include/q4t/server/vector_search.h": "6c3b3df38024376b5d5a99e82c6644441d2341cf4eb4b6af090c69131ee2b546",
+    "include/q4t/server/vector_search_execution.h": "f3c063d84e14130f72e3eb71c349ac33ba28defb98bb7b23f04802dc827da74e",
+    "src/server/vector_search_execution.cpp": "a381b9414081803fd81b9d0f15933fed307d15fb20488154bf1aab011c6b75ae",
+    "tests/server_vector_search_execution_test.cpp": "5d92f15c61b38d747f252fb3ea4f9882c021795f64cb219d49e9869b45a480f2",
+    "tools/serve_audit/inventory.json": "96a88c80c84023dcd57f3d0dbd8bbfeed90976b76105044f1436bfeba05354a7"
+  },
+  "binaries_sha256": {
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "8b51021ed65dd78190462158229dd188be49c830748ac635c1909eb6eec80c09",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "4f99b2ff372c4eca1055f923a134f2fa40a19aefb8339df658229bdf593b4ab4"
+  },
+  "warning_count": 0,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "actual_model_business": false,
+  "whole_task_complete": false
+}

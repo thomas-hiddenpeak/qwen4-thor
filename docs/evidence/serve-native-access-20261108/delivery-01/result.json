@@ -1,0 +1,15 @@
+{
+  "status": "DELIVERED_N01_N02_N03_STOPPED",
+  "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+  "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+  "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+  "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "engine_release_sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "state_ledger_preserved": true,
+  "default_local_policy_preserved": true,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "7872c2eb9ddd95a7c0cc233519c3c02f30506c2a0e9bd6fae922797620cdbf7d"
+}

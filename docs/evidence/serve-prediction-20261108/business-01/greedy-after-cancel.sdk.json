@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-58376cc6bacec517b3d1770bd8add4bf",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 3,
+      "total_tokens": 31
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "310",
+      "content-type": "application/json",
+      "x-request-id": "req-d3399617e1e20d36df9ec57a2ea786ed"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tNTgzNzZjYzZiYWNlYzUxN2IzZDE3NzBiZDhhZGQ0YmYiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTAwODQ5LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiNDIifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjoyOCwiY29tcGxldGlvbl90b2tlbnMiOjMsInRvdGFsX3Rva2VucyI6MzF9fQ=="
+}

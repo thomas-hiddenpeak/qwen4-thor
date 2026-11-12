@@ -1,0 +1,13 @@
+{
+  "label": "python-client-import",
+  "argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-c",
+    "import sys;sys.path.insert(0,sys.argv[1]);import chat_client,deadline_http,project_records;print(\"PASS_CLIENT_IMPORTS\")",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples"
+  ],
+  "exit_code": 0,
+  "seconds": 0.0712502608075738
+}

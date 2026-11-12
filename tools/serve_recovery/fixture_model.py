@@ -121,11 +121,44 @@ def controller(channel, args):
                 raise RuntimeError('CPU model did not pass exec barrier')
             idle(channel, 0.05)
         if args.bind_model:
-            transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'],
-                binding=dict(port=18000, operations_port=18001,
+            value = dict(port=18000, operations_port=18001,
                     gateway_token=hashlib.sha256(grant['ticket'].encode()).hexdigest(),
-                    client_policy_sha256='b'*64, binary_sha256='c'*64,
-                    protocol_sha256='d'*64)))
+                    client_policy_sha256='b'*64, binary_sha256=args.binary_fingerprint,
+                    protocol_sha256=args.protocol_fingerprint)
+            if args.capacity_fingerprint is not None:
+                value['capacity_sha256'] = args.capacity_fingerprint
+                # The native root can retire a controller immediately after
+                # rejecting a private protocol violation. Record the attempted
+                # identity before sending; delivery of its reply is not a fence.
+                (args.model_fixture/f"capacity-attempt-{grant['generation']}.json").write_text(
+                    json.dumps(dict(capacity_sha256=args.capacity_fingerprint,
+                        controller_generation=channel.generation, owner=owner)))
+                reply = channel.transact('bind', dict(role='model', ticket=grant['ticket'], binding=value))
+                (args.model_fixture/'capacity-binding.json').write_text(json.dumps(reply))
+                if not reply['ok']: idle(channel)
+            else:
+                transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'], binding=value))
+        if args.stop_handoff:
+            def planned_stop(_signal, _frame):
+                # Synthetic controller work measures actual signal ordering;
+                # it does not pretend to save a real model quota snapshot.
+                before = process.poll() is None
+                time.sleep(.15)
+                after = process.poll() is None
+                (args.model_fixture/'handoff-order.json').write_text(json.dumps(
+                    dict(before_alive=before, after_alive=after, cpu_fixture=True)))
+                cleanup_children()
+                raise SystemExit(0)
+            signal.signal(signal.SIGTERM, planned_stop)
+        if args.quota_restore and grant['generation'] > 1:
+            generation = grant['generation']
+            event = dict(model_generation=generation, source_generation=generation-1,
+                         boot_id=owner['boot_id'], receipt_sha256='a'*64)
+            if args.quota_restore == 'stale':event['model_generation'] -= 1
+            if args.quota_restore == 'boot':event['boot_id'] = '00000000-0000-0000-0000-000000000000'
+            if args.quota_restore == 'digest':event['receipt_sha256'] = 'invalid'
+            channel._send('quota_restored', quota_restored=event)
+            if args.quota_restore == 'valid':quota_deadline = 0
         ready = dict(role='model', ticket=grant['ticket'], verified=True)
         if time.monotonic_ns() < quota_deadline:
             early = channel.transact('ready', ready)
@@ -135,13 +168,44 @@ def controller(channel, args):
             (args.model_fixture/'quota-blocked.json').write_text(json.dumps(early))
             idle(channel, (quota_deadline-time.monotonic_ns())/1e9)
         transaction(channel, 'ready', ready)
+        if os.environ.get('Q4T_VERSION_RECOVERY') == '1':
+            def version_hook():
+                fatal=args.model_fixture/'cpu-fatal-close-first'
+                if fatal.exists():
+                    # This CPU case isolates EOF-before-wait, not the host's
+                    # apport/core-dump pipeline. Disable dumps only in this
+                    # about-to-exit fixture, after its identities were checked.
+                    if libc.prctl(4,0,0,0,0):
+                        raise RuntimeError('CPU fixture dump isolation failed')
+                    trace=args.model_fixture/'cpu-fatal-close-timing.jsonl'
+                    with trace.open('a') as output:
+                        output.write(json.dumps(dict(stage='before_close',pid=os.getpid(),
+                            dumpable=False,at_ns=time.monotonic_ns()))+'\n')
+                    channel.sock.close()
+                    time.sleep(.05)
+                    with trace.open('a') as output:
+                        output.write(json.dumps(dict(stage='before_signal',pid=os.getpid(),
+                                                     at_ns=time.monotonic_ns()))+'\n')
+                    os.kill(os.getpid(),signal.SIGABRT)
+                marker=args.model_fixture/'model-exit-report.json'
+                if marker.exists():
+                    channel._send('model_exit',model_exit=json.loads(marker.read_text()))
+                    marker.unlink()
+            channel.fixture_tick=version_hook
         if args.aux_health:
             def hook():
-                channel.health('READY', 'UNKNOWN', 'query_timeout')
+                invalid_auxiliary = args.model_fixture/'auxiliary-invalid.json'
+                if invalid_auxiliary.exists():
+                    channel.health('READY', 'AVAILABLE', 'serving',
+                        auxiliary_io=json.loads(invalid_auxiliary.read_text()))
+                else:
+                    channel.health('READY', 'UNKNOWN', 'query_timeout')
                 channel.admission(grant['generation'], not (args.model_fixture/'admission.closed').exists())
             channel.fixture_tick = hook
         while process.poll() is None:
             idle(channel, 0.05)
+        if os.environ.get('Q4T_VERSION_RECOVERY') == '1' and process.returncode in (-4,-6,-11):
+            channel.model_exit(grant['generation'],owner,process.returncode)
         fault = dict(generation=grant['generation'],
             fingerprint=hashlib.sha256(b'cpu-fixture-signal-exit').hexdigest(),
             unknown=True)

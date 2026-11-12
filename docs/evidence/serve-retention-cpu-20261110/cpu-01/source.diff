@@ -1,0 +1,953 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4f426bae..ba95f266 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -265,6 +265,7 @@ include(cmake/ChatProtocolIdentity.cmake)
+ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/object_store.cpp
+   src/server/object_worker.cpp
++  src/server/object_retention.cpp
+   src/server/responses_state.cpp
+   src/server/responses_execution.cpp
+   src/server/responses_execution_compaction.cpp
+@@ -362,7 +363,8 @@ include(cmake/NativeCrypto.cmake)
+ target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
+   src/server/state_cipher.cpp src/server/responses_crypto.cpp
+   src/server/responses_compaction.cpp
+-  src/server/state_key_admin.cpp src/server/state_key_cli.cpp)
++  src/server/state_key_admin.cpp src/server/state_key_cli.cpp
++  src/server/state_retention_cli.cpp)
+ q4t_link_native_crypto(q4t_server)
+ option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
+ if(Q4T_SERVE_FAULT_INJECTION)
+diff --git a/README.md b/README.md
+index 1f9e5f97..c541b308 100644
+--- a/README.md
++++ b/README.md
+@@ -172,6 +172,14 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
+ 旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
+ 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
+ 
++应用状态的原生留存管理使用 `q4t state-retention inspect
++--object-store-dir ABS_DIR`。自动过期清理保护未结束任务及仍被引用的
++状态；永久孤立条目默认保留，可明确用 `--item-created-before UNIX_SECONDS`
++选择创建时间更早的条目。确认计划后，以相同条件运行 `collect
++--expected-plan SHA256`；每批最多128个同客户端对象，变化返回冲突，
++丢回执时重新inspect，不盲目重试。无需重启模型；`--offline`只用于
++可独占的停服目录。详见[留存治理](docs/SERVE_APPLICATION_RETENTION_2026-11-10.md)。
++
+ 标准`POST /v1/responses/input_tokens`与SDK
+ `responses.inputTokens.count()`已通过计数与真实生成usage业务短验。
+ 它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index 2b679d29..237db78a 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -44,6 +44,7 @@ set(protocol_inputs
+   include/q4t/server/state_key_admin.h
+   src/server/state_key_admin.cpp
+   src/server/state_key_cli.cpp
++  src/server/state_retention_cli.cpp
+   include/q4t/server/responses_crypto.h
+   src/server/responses_crypto.cpp
+   include/q4t/server/responses_compaction.h
+@@ -114,6 +115,8 @@ set(protocol_inputs
+   include/q4t/server/object_store.h
+   src/server/object_store.cpp
+   src/server/object_worker.cpp
++  include/q4t/server/object_retention.h
++  src/server/object_retention.cpp
+   src/server/object_protocol.h
+   include/q4t/server/responses_state.h
+   src/server/responses_state.cpp
+diff --git a/cmake/HostTestSources.cmake b/cmake/HostTestSources.cmake
+index 40f9c82e..7dcd18d2 100644
+--- a/cmake/HostTestSources.cmake
++++ b/cmake/HostTestSources.cmake
+@@ -6,6 +6,7 @@ set(Q4T_HOST_TEST_SOURCES
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_admin.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_cli.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_retention_cli.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_key_admin_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_crypto.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
+@@ -38,6 +39,7 @@ set(Q4T_HOST_TEST_SOURCES
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_session_isolation_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_retention.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_compaction.cpp
+@@ -67,6 +69,7 @@ set(Q4T_HOST_TEST_SOURCES
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_item_shape_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_state_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_store_test.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_retention_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp
+diff --git a/docs/SERVE_APPLICATION_RETENTION_2026-11-10.md b/docs/SERVE_APPLICATION_RETENTION_2026-11-10.md
+index 6280404c..fe33086e 100644
+--- a/docs/SERVE_APPLICATION_RETENTION_2026-11-10.md
++++ b/docs/SERVE_APPLICATION_RETENTION_2026-11-10.md
+@@ -55,3 +55,46 @@
+ 
+ 首次CPU清单在成组实现完成后冻结，不为每个小改动重复运行。
+ 已经验证且未变的数值/工具/原生接入证据直接复用。
++
++## A08.1/A08.2 首次针对性验证冻结
++
++2026-11-10成组实现完成，尚未测试。冻结28项C++（下列），3项驱动
++CPU与清单/协议来源一致性；host和实际引擎独立构建，零警告。
++不运行全性能或全正确性矩阵。后续实际业务仍为最多2启动、4生成、
++4模型步骤、900秒，同一严格租约，已有数值/工具证据复用。
++
++```text
++object_retention_extracts_typed_dependencies_not_user_strings
++object_retention_active_roots_preserve_chain_with_owner_isolation
++object_retention_unrooted_cycles_and_explicit_permanent_cutoff
++object_retention_unknown_owner_protection_and_plan_identity
++object_retention_reference_capacity_preserves_incomplete_owner
++object_retention_expired_active_survives_restart_and_recovery_scan
++object_retention_automatic_expiry_preserves_live_same_owner_reference
++object_retention_inspect_is_readonly_and_stale_plan_cannot_collect
++object_retention_batch_limits_and_multiple_owners_require_new_plan
++object_retention_unknown_state_preserves_owner_without_blocking_reads
++object_retention_partial_atomic_collection_recovers_without_replay
++state_retention_admin_actual_live_cli_large_plan_and_exact_collection
++state_retention_admin_actual_offline_ownership_and_no_implicit_cleanup
++state_retention_admin_invalid_options_and_envelopes_do_not_start_worker
++state_retention_admin_lost_collection_receipt_is_not_replayed
++object_store_expiration_reclaims_persistent_quota
++object_store_transaction_conflict_or_quota_changes_nothing
++object_store_corruption_is_not_missing_or_success
++object_store_directory_lock_is_not_stolen
++object_store_invalid_journal_is_preserved_and_isolated
++state_key_admin_online_rotation_retirement_and_state_continuity
++state_key_admin_dependency_recovery_does_not_restart_core_or_channel
++state_key_admin_shutdown_cancels_waiting_io_without_worker_growth
++responses_recovery_revoked_expired_and_spoofed_scope_never_execute
++responses_recovery_resumes_queued_identity_and_fails_started_without_replay
++responses_state_previous_history_does_not_inherit_instructions
++conversation_state_crud_restart_and_item_retention
++chat_capabilities_native_responses_state_and_recovery
++```
++
++驱动：`tools/serve_responses/test_retention_acceptance.py`三项，验证
++固定请求与预算、清理回执/泄漏拒绝判定、真实已验密文响应判定。
++业务：真实SDK会话/历史、原生计划冲突与精确孤立item清理、
++后台原SSE/密文、停服独占inspect及重启后继续，账本按每进程核对。
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index bb47ba8d..587a411f 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -1,5 +1,7 @@
+ # 当前 Serve 总目标状态（2026-11-10）
+ 
++A08 留存治理成组开发完成：活动任务/引用保护、原生inspect/collect、计划冲突与事务恢复，发现合同同步。冻结28项直接C++、3项驱动CPU，开始独立必要构建；尚未测试。业务预算最多2启动/4生成/900秒；默认5935be0a保持STOPPED，之后交付并继续全部总任务。
++
+ A07.8 [31 input/28 output/59 SSE逐项执行链核对](serve-responses-execution-audit-v1.json)已登记全部余项：内建工具与max_tool_calls、媒体/file、refusal信号和真实annotation仍须实现，不能按schema通过结案。开始其依赖[A08留存治理](SERVE_APPLICATION_RETENTION_2026-11-10.md)：活动任务/引用保护、原生inspect/collect与有身份的清理；默认5935be0a保持STOPPED。
+ 
+ A07.8 字段合同完成[CPU](evidence/serve-request-fields-cpu-20261110/README.md)、[实际业务](evidence/serve-request-fields-business-20261110/README.md)及[可回退交付](evidence/serve-request-fields-delivery-20261110/README.md)。当前引擎5935be0a、元数据675ef104、包b39ad17e，revision30、STOPPED；旧70504790/5a71516a与业务账本保持。8发布操作、0新增模型/GPU。继续A07.8依赖项与A08留存治理等全部总任务，未合main。以下历史以此当前默认为准。
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index 422cb015..b2aaa819 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,9 @@
+ # 2026-11-10 开发日志
+ 
++## A08 留存治理成组开发与定向清单冻结
++
++2026-11-10。修复活动响应过期早于恢复扫描、缺少引用保护及永久孤立item无法治理的问题。原生同UID管理入口复用隔离对象worker，inspect不执行提案，collect核对计划、每批单owner最多128条并复用原子journal；未知形状保留，资源规划失败不阻断正常CRUD。补充实际CLI、大回执、范围隔离、过期活动恢复、丢回执和部分清理恢复用例，发现合同/README同步。冻结28 C++、3驱动CPU及最多2启动/4生成/900秒业务。下一步必要构建与有界验证，再可回退交付、继续A09及全部计划；当前尚未测试，默认5935be0a保持。
++
+ ## A07.8 执行链全表登记，继续A08依赖
+ 
+ 2026-11-10。固定SDK31input/28output/59SSE与实际producer逐项对照。发现max_tool_calls仅解析回显，需A11实际执行器实施；refusal/annotation、媒体及内建工具仍保留必要任务。已登记逐tag源和负责人任务，不以标准shape/投影替代执行。下一步推进A08活动任务/依赖保护和原生留存管理，再按依赖A09及剩余全部目标；默认5935be0a保持，无新增测试。
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index 90997cf6..ecff1de4 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -360,6 +360,18 @@
+         "src/server/chat_responses.cpp"
+       ],
+       "contract": "Responses share native model execution and preserve item identities, actual token usage/probabilities and original sequenced events; no Chat DONE. Store defaults true, previous instructions do not carry forward, client-scoped history and conversation commits use isolated bounded object I/O and atomic revision-checked transactions. Background owns its admission permit and original deadline independently of subscribers; cancel is idempotent empty POST returning200, with independent bounded cancellation capacity. Temporary background records cover execution then600 seconds. Recovery proves old execution owner death using boot/PID birth/namespace identity: queued may resume original ID, started fails with saved partial output and is never replayed. Storage/monitor failure cannot restart the model or close healthy core readiness. Conversations support CRUD, item append/list/retrieve/delete and include projection. Application queries use closed per-route fields with exact integers, true/false booleans and include arrays; other routes keep prior query rejection. State APIs, shape validation and capability declarations do not complete pending compaction/summary/encryption/file/tool executors."
++    },
++    {
++      "id": "native-application-retention",
++      "sources": [
++        "include/q4t/server/object_retention.h",
++        "src/server/object_retention.cpp",
++        "src/server/object_worker.cpp",
++        "src/server/object_store.cpp",
++        "src/server/state_key_admin.cpp",
++        "src/server/state_retention_cli.cpp"
++      ],
++      "contract": "Expiry collection preserves queued/in_progress tasks until recovery has durably recorded a terminal state, and follows typed same-owner references from retained roots. Expired unrooted cycles can be collected; unknown lifecycle/shape preserves that owner's records and is reported. No references are extracted from user text or tool arguments. Permanent conversations/prompts retain explicit-delete semantics; permanent orphan items require an explicit creation-time cutoff, not an inferred orphan age. Native same-UID state-retention inspect/collect uses the existing bounded isolated store/admin channel. Inspect does not apply proposed cleanup; collect rechecks the exact SHA256 plan and returns409 on state/eligibility change. At most128 selected objects from one owner per atomic journal transaction; inspect again for further batches. Planner bounds100000 nodes,64MiB metadata estimate and2M references; resource failure retains data and does not deny otherwise usable CRUD. Lost mutation receipt is commit_unknown with no replay; reinspection/recovery uses the existing journal. Offline access requires exclusive store ownership. No business payload/key bytes in receipts; maintenance errors cannot restart a model or close healthy core readiness."
+     }
+   ],
+   "sources_sha256": {
+@@ -383,6 +395,7 @@
+     "include/q4t/server/http_request.h": "cc5ff737d9847c994310f1c264e8b18b0d9b359d73a852b5f217a254b00a9027",
+     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
+     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
++    "include/q4t/server/object_retention.h": "96b17568ac8d3b0c00d773a421a0989e827797b6e9b768198f329b5c57488bb2",
+     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
+     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
+@@ -445,8 +458,9 @@
+     "src/server/media_admission.cpp": "aca67cb60d88c586dcdc58ea9161dca05edc0be9ac1507bb9e91af313822fbf3",
+     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+-    "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
+-    "src/server/object_worker.cpp": "c0ab9faceb0688a887167f0e47009b8dd5aafb500a1b54c0ad70330ef5502932",
++    "src/server/object_retention.cpp": "32d96463d782aa464b4e7063e1dc5cff74d169e00f83716c9880f4f50c912906",
++    "src/server/object_store.cpp": "231f9e6c55a213d609e27581fdcc8b8041e4b8c04a7714c1192df5ed1a14516f",
++    "src/server/object_worker.cpp": "05de5aa4497a7301e53cf8c3dea07a5cef99327b9cb842e8d3409a1de8d15641",
+     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
+     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
+     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+@@ -468,6 +482,8 @@
+     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
+     "src/server/server_options.cpp": "3388076d3ced924b51cba97ce60dcff1fa15302750a606bb2a7152556913cb9e",
+     "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
++    "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
++    "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
+     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
+     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
+diff --git a/docs/serve-master-goals-v2.json b/docs/serve-master-goals-v2.json
+index fc5f3010..70a330d7 100644
+--- a/docs/serve-master-goals-v2.json
++++ b/docs/serve-master-goals-v2.json
+@@ -904,7 +904,8 @@
+         "A08.3 actual history/conversation/background/encrypted-state and retention business acceptance",
+         "A08.4 reversible delivered package and complete A08 source/evidence audit"
+       ],
+-      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md"
++      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
++      "next": "Retention graph/native same-UID inspect+collect implemented; validate frozen 28 C++/3 driver CPU, bounded 2 starts/4 generations/900s, deliver then continue remaining master tasks."
+     },
+     {
+       "id": "A09",
+diff --git a/include/q4t/server/object_store.h b/include/q4t/server/object_store.h
+index dbf2b066..1e152e07 100644
+--- a/include/q4t/server/object_store.h
++++ b/include/q4t/server/object_store.h
+@@ -127,6 +127,12 @@ class ObjectStore {
+   ObjectReply ScanResponses(std::string after,
+                             std::chrono::steady_clock::time_point deadline,
+                             const std::function<bool()>& cancelled = {});
++  // Trusted same-UID operator control only. Empty expected_plan inspects;
++  // collection requires the exact prior plan digest and rechecks dependencies.
++  ObjectReply Retention(int64_t item_created_before, size_t limit,
++                        std::string expected_plan,
++                        std::chrono::steady_clock::time_point deadline,
++                        const std::function<bool()>& cancelled = {});
+ 
+  private:
+   ObjectReply Dispatch(std::string wire, bool mutation,
+diff --git a/include/q4t/server/state_key_admin.h b/include/q4t/server/state_key_admin.h
+index 1b7a0d54..a25d5e91 100644
+--- a/include/q4t/server/state_key_admin.h
++++ b/include/q4t/server/state_key_admin.h
+@@ -49,4 +49,7 @@ class StateKeyAdmin {
+ // Live operation never starts or restarts a model. Explicit --offline uses the
+ // same exclusive durable worker and fails if a running service owns the store.
+ int MaybeRunStateKeyCommand(int argc, char** argv);
++// Retention shares the authenticated local transport, not key material or
++// application credentials. No model work is performed by either command.
++int MaybeRunStateRetentionCommand(int argc, char** argv);
+ }  // namespace q4t::server
+diff --git a/src/main.cpp b/src/main.cpp
+index d5476c0b..59dc1d34 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -63,6 +63,8 @@ void PrintUsage(const char* prog) {
+       "            (q4t service --help)\n"
+       "  state-keys  Inspect/rotate native encrypted-state keys\n"
+       "              (q4t state-keys --help)\n"
++      "  state-retention  Inspect/collect protected application state\n"
++      "              (q4t state-retention --help)\n"
+       "  serve     OpenAI-compatible HTTP API server\n"
+       "            (q4t serve [--host IPv4] [--port N] "
+       "[--operations-port N] [--model-dir DIR] "
+@@ -899,6 +901,8 @@ int main(int argc, char** argv) {
+   if (object_worker >= 0) return object_worker;
+   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
+   if (state_keys >= 0) return state_keys;
++  const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
++  if (retention >= 0) return retention;
+   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
+   if (worker >= 0) return worker;
+   if (argc < 2) {
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index 04aaac43..f1ce6951 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -153,6 +153,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
+          R"("core_readiness_dependency":false,"runtime_limits":"/v1/config",)"
+          R"("controller_recovery":"single_owned_thread_bounded_backoff",)"
+          R"("foreground_reconciliation":"reserved_metadata_after_executor_cleanup",)"
++         R"("retention":{"active_tasks_protected":true,"references_protected":true,)"
++         R"("admin":"q4t state-retention","same_uid":true,"max_batch":128,)"
++         R"("collect_requires_plan_sha256":true,"permanent_items_default":"retain"},)"
+          R"("unknown_commit":"retrieve_by_existing_identity_without_replay"})"
+          R"(,"stored_chat":{"profile":"q4t-stored-chat-v1",)"
+          R"("store_default":false,"json":true,"stream":true,"n":true,)"
+diff --git a/src/server/object_store.cpp b/src/server/object_store.cpp
+index 7ba06eca..842ce3e5 100644
+--- a/src/server/object_store.cpp
++++ b/src/server/object_store.cpp
+@@ -386,6 +386,27 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
+                   false, deadline, cancelled);
+ }
+ 
++ObjectReply ObjectStore::Retention(int64_t item_created_before, size_t limit,
++                                   std::string expected_plan,
++                                   Clock::time_point deadline,
++                                   const std::function<bool()>& cancelled) {
++  if (item_created_before < 0 || limit == 0 || limit > 128 ||
++      (!expected_plan.empty() &&
++       (expected_plan.size() != 64 ||
++        !std::all_of(expected_plan.begin(), expected_plan.end(), [](char c) {
++          return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
++        }))))
++    return Error(400, "invalid_retention_command",
++                 "Invalid retention cutoff, limit or plan digest");
++  const bool mutation = !expected_plan.empty();
++  return Dispatch(
++      OutputJson(Object({{"operation", String("retention")},
++                         {"item_created_before", Number(item_created_before)},
++                         {"limit", Number(limit)},
++                         {"expected_plan", String(std::move(expected_plan))}})),
++      mutation, deadline, cancelled);
++}
++
+ ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
+                                       Clock::time_point deadline,
+                                       const std::function<bool()>& cancelled) {
+diff --git a/src/server/object_worker.cpp b/src/server/object_worker.cpp
+index 136952e5..ec8a8d67 100644
+--- a/src/server/object_worker.cpp
++++ b/src/server/object_worker.cpp
+@@ -17,6 +17,7 @@
+ 
+ #include "object_protocol.h"
+ #include "q4t/server/grammar_process.h"
++#include "q4t/server/object_retention.h"
+ 
+ namespace q4t::server {
+ namespace {
+@@ -128,6 +129,7 @@ struct Metadata {
+   std::string owner, kind, id, digest;
+   int64_t revision = 0, created = 0, expires = 0;
+   uint64_t bytes = 0;
++  ObjectRetentionInfo retention;
+ };
+ struct Usage {
+   uint64_t bytes = 0, count = 0;
+@@ -227,12 +229,15 @@ class DiskStore {
+     closedir(directory);
+     if (!valid) return IoError();
+     initialized_ = true;
+-    return Prune();
++    // Retention inspect must see expired records before proposing collection.
++    // Ordinary operations still invoke bounded automatic pruning below.
++    return {};
+   }
+ 
+   ObjectReply Run(const Json& request) {
+     if (!initialized_) return IoError();
+     const auto operation = request.GetString("operation");
++    if (operation == "retention") return Retention(request);
+     if (operation == "scan_responses") {
+       auto pruned = Prune();
+       return pruned.ok() ? ScanResponses(request) : pruned;
+@@ -595,10 +600,16 @@ class DiskStore {
+       return false;
+     const auto digest = Digest(OutputJson(*content));
+     if (wrapper.GetString("sha256") != digest) return false;
+-    *metadata = {content->GetString("owner"),   content->GetString("kind"),
+-                 content->GetString("id"),      digest,
+-                 content->GetInt("revision"),   content->GetInt("created_at"),
+-                 content->GetInt("expires_at"), text.size()};
++    *metadata = {content->GetString("owner"),
++                 content->GetString("kind"),
++                 content->GetString("id"),
++                 digest,
++                 content->GetInt("revision"),
++                 content->GetInt("created_at"),
++                 content->GetInt("expires_at"),
++                 text.size(),
++                 InspectObjectRetention(content->GetString("kind"),
++                                        *content->Find("data"))};
+     *record = *content;
+     return true;
+   }
+@@ -609,6 +620,11 @@ class DiskStore {
+            actual.bytes == expected.bytes;
+   }
+   void Add(const std::string& name, Metadata metadata) {
++    if (metadata.retention.Bytes() > 64 * 1024 * 1024 - retention_bytes_) {
++      metadata.retention.uncertain = true;
++      std::vector<std::string>().swap(metadata.retention.references);
++    }
++    retention_bytes_ += metadata.retention.Bytes();
+     auto& client = clients_[metadata.owner];
+     client.bytes += metadata.bytes;
+     ++client.count;
+@@ -618,6 +634,7 @@ class DiskStore {
+   }
+   using Iterator = std::map<std::string, Metadata>::iterator;
+   void Remove(Iterator found) {
++    retention_bytes_ -= found->second.retention.Bytes();
+     auto client = clients_.find(found->second.owner);
+     client->second.bytes -= found->second.bytes;
+     if (--client->second.count == 0) clients_.erase(client);
+@@ -625,25 +642,107 @@ class DiskStore {
+     --total_.count;
+     records_.erase(found);
+   }
+-  ObjectReply Prune() {
+-    const auto now = Now();
+-    bool removed = false;
+-    for (auto it = records_.begin(); it != records_.end();) {
+-      if (it->second.expires == 0 || it->second.expires > now) {
+-        ++it;
+-        continue;
++  ObjectReply PlanRetention(int64_t cutoff, size_t limit,
++                            ObjectRetentionPlan* plan,
++                            std::vector<std::string>* selected) {
++    std::vector<ObjectRetentionNode> nodes;
++    nodes.reserve(records_.size());
++    for (const auto& [name, m] : records_) {
++      (void)name;
++      nodes.push_back({m.owner, m.kind, m.id, m.digest, m.created, m.expires,
++                       m.bytes, &m.retention});
++    }
++    auto status = PlanObjectRetention(nodes, Now(), cutoff, limit, plan);
++    if (!status)
++      return Error(503, "retention_plan_unavailable", status.message());
++    size_t index = 0, selection = 0;
++    for (const auto& [name, m] : records_) {
++      (void)m;
++      if (selection == plan->selected.size()) break;
++      if (plan->selected[selection] == index) {
++        selected->push_back(name);
++        ++selection;
+       }
+-      Json record;
+-      if (!ReadKnown(it->first, it->second, &record) ||
+-          unlinkat(root_.Get(), it->first.c_str(), 0))
+-        return IoError();
+-      auto expired = it++;
+-      Remove(expired);
+-      removed = true;
++      ++index;
+     }
+-    if (removed && fsync(root_.Get())) return IoError();
+     return {};
+   }
++  ObjectReply CollectRetention(const std::vector<std::string>& selected) {
++    if (selected.empty()) return {};
++    auto mutations = Array();
++    for (const auto& name : selected) {
++      const auto& m = records_.at(name);
++      mutations.array.push_back(Object({{"operation", String("erase")},
++                                        {"owner", String(m.owner)},
++                                        {"kind", String(m.kind)},
++                                        {"id", String(m.id)},
++                                        {"revision", Number(m.revision)}}));
++    }
++    return Batch(Object({{"mutations", std::move(mutations)}}));
++  }
++  ObjectReply Retention(const Json& request) {
++    const auto cutoff = request.GetInt("item_created_before", -1);
++    const auto limit = request.GetInt("limit", 0);
++    const auto expected = request.GetString("expected_plan");
++    if (cutoff < 0 || cutoff > Now() || limit < 1 || limit > 128 ||
++        (!expected.empty() && !Hex(expected, 64)))
++      return Error(400, "invalid_retention_command",
++                   "Invalid retention cutoff, limit or plan digest");
++    ObjectRetentionPlan plan;
++    std::vector<std::string> selected;
++    auto planned = PlanRetention(cutoff, limit, &plan, &selected);
++    if (!planned.ok()) return planned;
++    if (!expected.empty() && expected != plan.sha256)
++      return Error(
++          409, "retention_plan_changed",
++          "Stored objects or retention eligibility changed; inspect again");
++    auto candidates = Array();
++    for (const auto& name : selected) {
++      const auto& m = records_.at(name);
++      candidates.array.push_back(Object({{"owner_sha256", String(m.owner)},
++                                         {"kind", String(m.kind)},
++                                         {"id", String(m.id)},
++                                         {"revision", Number(m.revision)},
++                                         {"created_at", Number(m.created)},
++                                         {"expires_at", Number(m.expires)},
++                                         {"bytes", Number(m.bytes)}}));
++    }
++    if (!expected.empty()) {
++      auto collected = CollectRetention(selected);
++      if (!collected.ok()) return collected;
++    }
++    ObjectReply reply;
++    reply.value = Object(
++        {{"object", String("q4t.state_retention")},
++         {"plan_sha256", String(plan.sha256)},
++         {"applied", Boolean(!expected.empty())},
++         {"item_created_before", Number(cutoff)},
++         {"limit", Number(limit)},
++         {"eligible_objects", Number(plan.eligible)},
++         {"selected_bytes", Number(plan.bytes)},
++         {"protected_active", Number(plan.active)},
++         {"protected_references", Number(plan.referenced)},
++         {"protected_uncertain", Number(plan.uncertain)},
++         {"deleted_objects", Number(expected.empty() ? 0 : selected.size())},
++         {"has_more", Boolean(plan.eligible > selected.size())},
++         {"candidates", std::move(candidates)}});
++    return reply;
++  }
++  ObjectReply Prune() {
++    const auto now = Now();
++    if (std::none_of(records_.begin(), records_.end(), [&](const auto& row) {
++          return row.second.expires > 0 && row.second.expires <= now;
++        }))
++      return {};
++    ObjectRetentionPlan plan;
++    std::vector<std::string> selected;
++    auto planned = PlanRetention(0, 128, &plan, &selected);
++    // A bounded maintenance planner cannot deny an otherwise usable read or
++    // write. Its failure is visible through explicit operator inspection;
++    // retained bytes still count toward quotas, with no false reclamation.
++    if (!planned.ok()) return {};
++    return CollectRetention(selected);
++  }
+   ObjectReply Put(const std::string& name, const Json& request) {
+     const auto revision = request.GetInt("revision", -1);
+     const auto ttl = request.GetInt("ttl");
+@@ -710,7 +809,8 @@ class DiskStore {
+     }
+     if (exists) Remove(found);
+     Add(name, {owner, request.GetString("kind"), request.GetString("id"),
+-               digest, revision + 1, created, expires, text.size()});
++               digest, revision + 1, created, expires, text.size(),
++               InspectObjectRetention(request.GetString("kind"), *data)});
+     if (fsync(root_.Get())) return IoError(true);
+     ObjectReply result;
+     result.value = Public(record);
+@@ -827,6 +927,7 @@ class DiskStore {
+   std::map<std::string, Metadata> records_;
+   std::map<std::string, Usage> clients_;
+   Usage total_;
++  size_t retention_bytes_ = 0;
+   int pause_after_ = 0;
+ };
+ }  // namespace
+diff --git a/src/server/state_key_admin.cpp b/src/server/state_key_admin.cpp
+index 591ec948..28e31f1d 100644
+--- a/src/server/state_key_admin.cpp
++++ b/src/server/state_key_admin.cpp
+@@ -19,7 +19,7 @@ using namespace object_detail;
+ using Clock = std::chrono::steady_clock;
+ using namespace std::chrono_literals;
+ constexpr size_t kRequestBytes = 4096;
+-constexpr size_t kReplyBytes = 16384;
++constexpr size_t kReplyBytes = 128 * 1024;
+ socklen_t Address(const std::string& directory, sockaddr_un* address) {
+   const auto name = StateKeyAdminAddress(directory);
+   if (name.empty() || name.size() + 1 > sizeof(address->sun_path)) return 0;
+@@ -61,7 +61,7 @@ ObjectReply Transport(bool submitted) {
+ bool Decode(std::string_view text, Json* value) {
+   io::JsonParseLimits limits;
+   limits.max_depth = 8;
+-  limits.max_values = 256;
++  limits.max_values = 4096;
+   limits.max_string_bytes = kReplyBytes;
+   limits.reject_duplicate_keys = true;
+   return io::ParseJson(std::string(text), value, true, limits).ok();
+@@ -84,12 +84,34 @@ std::string StateKeyAdminAddress(const std::string& directory) {
+ ObjectReply HandleStateKeyCommand(ObjectStore& objects, const Json& request,
+                                   const StateAccess& access) {
+   std::string bad;
++  const auto action = request.GetString("action");
++  if (action == "retention_inspect" || action == "retention_collect") {
++    const auto* version = request.Find("version");
++    const auto* cutoff = request.Find("item_created_before");
++    const auto* limit = request.Find("limit");
++    const auto* expected = request.Find("expected_plan");
++    const bool collect = action == "retention_collect";
++    if (!InputFields(request,
++                     {"version", "action", "item_created_before", "limit",
++                      "expected_plan"},
++                     &bad, "command") ||
++        !version || !IsInputInteger(*version) || version->AsInt() != 1 ||
++        !cutoff || !IsInputInteger(*cutoff) || cutoff->number < 0 ||
++        cutoff->number > (1LL << 53) - 1 || !limit || !IsInputInteger(*limit) ||
++        limit->number < 1 || limit->number > 128 ||
++        (collect ? (!expected || !expected->IsString() || expected->str.empty())
++                 : expected != nullptr))
++      return Error(400, "invalid_retention_command",
++                   "Invalid local retention command");
++    return objects.Retention(cutoff->AsInt(), limit->AsInt(),
++                             collect ? expected->str : "", access.deadline,
++                             access.cancelled);
++  }
+   if (!InputFields(request,
+                    {"version", "action", "expected_revision", "retire"}, &bad,
+                    "command") ||
+       request.GetInt("version") != 1)
+     return InvalidCommand();
+-  const auto action = request.GetString("action");
+   if (action == "inspect" || action == "initialize") {
+     if (request.Has("expected_revision") || request.Has("retire"))
+       return InvalidCommand();
+diff --git a/tests/server_chat_capabilities_test.cpp b/tests/server_chat_capabilities_test.cpp
+index cb3473cc..7f301c82 100644
+--- a/tests/server_chat_capabilities_test.cpp
++++ b/tests/server_chat_capabilities_test.cpp
+@@ -337,6 +337,12 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
+   const auto* objects = caps.Find("application_state");
+   Q4T_CHECK(objects && objects->GetBool("isolated_io") &&
+             !objects->GetBool("core_readiness_dependency", true));
++  const auto* retention = objects->Find("retention");
++  Q4T_CHECK(retention && retention->GetBool("active_tasks_protected") &&
++            retention->GetBool("references_protected") &&
++            retention->GetBool("collect_requires_plan_sha256") &&
++            retention->GetInt("max_batch") == 128 &&
++            retention->GetString("permanent_items_default") == "retain");
+   Q4T_CHECK(objects->GetString("controller_recovery") ==
+                 "single_owned_thread_bounded_backoff" &&
+             objects->GetString("foreground_reconciliation") ==
+diff --git a/tests/server_object_store_test.cpp b/tests/server_object_store_test.cpp
+index 05b1cd53..253fcb66 100644
+--- a/tests/server_object_store_test.cpp
++++ b/tests/server_object_store_test.cpp
+@@ -229,6 +229,7 @@ Q4T_TEST(object_store_expiration_reclaims_persistent_quota) {
+   f.options.max_client_objects = 1;
+   ObjectStore store(f.options);
+   auto expiring = Request();
++  expiring.data = Parse(R"({"response":{"status":"completed","output":[]}})");
+   expiring.ttl_seconds = 1;
+   const auto written = Run(store, expiring);
+   Q4T_CHECK(Ok(written));
+diff --git a/tests/server_state_key_admin_test.cpp b/tests/server_state_key_admin_test.cpp
+index 31b1e978..ec17452d 100644
+--- a/tests/server_state_key_admin_test.cpp
++++ b/tests/server_state_key_admin_test.cpp
+@@ -11,6 +11,7 @@
+ 
+ #include <atomic>
+ #include <cstdlib>
++#include <ctime>
+ #include <cstring>
+ #include <filesystem>
+ #include <future>
+@@ -87,8 +88,8 @@ struct Command {
+   int exit = -1;
+   std::string text;
+ };
+-Command Cli(std::vector<std::string> args) {
+-  args.insert(args.begin(), {"/proc/self/exe", "state-keys"});
++Command Cli(std::vector<std::string> args, std::string entry = "state-keys") {
++  args.insert(args.begin(), {"/proc/self/exe", std::move(entry)});
+   std::vector<char*> argv;
+   for (auto& arg : args) argv.push_back(arg.data());
+   argv.push_back(nullptr);
+@@ -392,3 +393,168 @@ Q4T_TEST(state_key_admin_shutdown_cancels_waiting_io_without_worker_growth) {
+   return true;
+ }
+ #endif
++
++namespace {
++Json Retention(int64_t cutoff = 0, int limit = 32, std::string plan = {}) {
++  return Parse(R"({"version":1,"action":"retention_)" +
++               std::string(plan.empty() ? "inspect" : "collect") +
++               R"(","item_created_before":)" + std::to_string(cutoff) +
++               R"(,"limit":)" + std::to_string(limit) +
++               (plan.empty() ? "" : R"(,"expected_plan":")" + plan + '"') +
++               '}');
++}
++bool SeedRetention(ObjectStore& objects, size_t count = 1) {
++  std::vector<ObjectRequest> requests;
++  for (size_t i = 0; i < count; ++i) {
++    ObjectRequest request;
++    request.operation = ObjectOperation::kPut;
++    request.kind = ObjectKind::kConversationItem;
++    request.id = "item_" + std::to_string(i);
++    request.scope = "client:cpu";
++    request.ttl_seconds = 0;
++    request.created_at = std::time(nullptr) - 10;
++    request.data = Parse(R"({"item":{"type":"message","role":"user",
++      "content":"DO_NOT_EXPOSE_PRIVATE_PAYLOAD"}})");
++    requests.push_back(std::move(request));
++  }
++  return Ok(objects.ExecuteBatch(requests, Clock::now() + 5s));
++}
++}  // namespace
++
++Q4T_TEST(
++    state_retention_admin_actual_live_cli_large_plan_and_exact_collection) {
++  Fixture f;
++  ObjectStore objects(f.options);
++  Q4T_CHECK(SeedRetention(objects, 129));
++  auto admin = StateKeyAdmin::Start(objects, f.options.directory);
++  Q4T_CHECK(admin);
++  const auto cutoff = std::to_string(std::time(nullptr));
++  const auto inspect =
++      Cli({"inspect", "--object-store-dir", f.options.directory,
++           "--item-created-before", cutoff, "--limit", "128"},
++          "state-retention");
++  Q4T_CHECK(inspect.exit == 0 && inspect.text.size() > 16384 &&
++            inspect.text.find("DO_NOT_EXPOSE_PRIVATE_PAYLOAD") ==
++                std::string::npos);
++  const auto reply = Parse(inspect.text);
++  const auto* plan = reply.Find("value");
++  Q4T_CHECK(plan && plan->GetInt("eligible_objects") == 129 &&
++            plan->GetArray("candidates")->array.size() == 128 &&
++            !plan->GetBool("applied") && plan->GetBool("has_more"));
++  const auto collected =
++      Cli({"collect", "--object-store-dir", f.options.directory,
++           "--item-created-before", cutoff, "--limit", "128", "--expected-plan",
++           plan->GetString("plan_sha256")},
++          "state-retention");
++  Q4T_CHECK(collected.exit == 0 &&
++            Parse(collected.text).Find("value")->GetInt("deleted_objects") ==
++                128);
++  const auto remaining = f.Call(Retention(std::time(nullptr)));
++  Q4T_CHECK(Ok(remaining) && remaining.value.GetInt("eligible_objects") == 1 &&
++            admin->Alive() && objects.Health().workers_started == 1);
++  Q4T_CHECK(Ok(f.Call(f.Request("initialize"))) && Ok(f.Call(f.Request())));
++  return true;
++}
++
++Q4T_TEST(
++    state_retention_admin_actual_offline_ownership_and_no_implicit_cleanup) {
++  Fixture f;
++  const auto cutoff = std::time(nullptr);
++  {
++    ObjectStore objects(f.options);
++    Q4T_CHECK(SeedRetention(objects));
++    const auto blocked =
++        Cli({"inspect", "--object-store-dir", f.options.directory, "--offline"},
++            "state-retention");
++    Q4T_CHECK(blocked.exit == 1);
++    Q4T_CHECK(objects.Retention(cutoff, 32, {}, Clock::now() + 3s)
++                  .value.GetInt("eligible_objects") == 1);
++  }
++  const auto offline =
++      Cli({"inspect", "--object-store-dir", f.options.directory, "--offline",
++           "--item-created-before", std::to_string(cutoff)},
++          "state-retention");
++  Q4T_CHECK(offline.exit == 0);
++  const auto reply = Parse(offline.text);
++  Q4T_CHECK(reply.Find("value")->GetInt("eligible_objects") == 1 &&
++            !reply.Find("value")->GetBool("applied"));
++  const auto collect =
++      Cli({"collect", "--object-store-dir", f.options.directory, "--offline",
++           "--item-created-before", std::to_string(cutoff), "--expected-plan",
++           reply.Find("value")->GetString("plan_sha256")},
++          "state-retention");
++  Q4T_CHECK(collect.exit == 0 &&
++            Parse(collect.text).Find("value")->GetInt("deleted_objects") == 1);
++  return true;
++}
++
++Q4T_TEST(
++    state_retention_admin_invalid_options_and_envelopes_do_not_start_worker) {
++  Fixture f;
++  ObjectStore objects(f.options);
++  auto admin = StateKeyAdmin::Start(objects, f.options.directory);
++  Q4T_CHECK(admin);
++  for (const auto& extra : std::vector<std::vector<std::string>>{
++           {"--limit", "129"},
++           {"--limit", "1", "--limit", "2"},
++           {"--item-created-before", "-1"},
++           {"--expected-plan", std::string(64, 'a')},
++           {"--offline", "--offline"},
++           {"--unknown"}}) {
++    std::vector<std::string> args{"inspect", "--object-store-dir",
++                                  f.options.directory};
++    args.insert(args.end(), extra.begin(), extra.end());
++    Q4T_CHECK(Cli(args, "state-retention").exit == 2);
++  }
++  Q4T_CHECK(Cli({"collect", "--object-store-dir", f.options.directory},
++                "state-retention")
++                .exit == 2);
++  for (
++      const auto* raw :
++      {R"({"version":1.5,"action":"retention_inspect","item_created_before":0,"limit":32})",
++       R"({"version":1,"action":"retention_collect","item_created_before":0,"limit":32})",
++       R"({"version":1,"action":"retention_inspect","item_created_before":0,"limit":32,"expected_plan":null})",
++       R"({"version":1,"action":"retention_inspect","item_created_before":0,"limit":1.5})"})
++    Q4T_CHECK(f.Call(Parse(raw)).http_status == 400);
++  Q4T_CHECK(objects.Health().workers_started == 0 && admin->Alive());
++  return true;
++}
++
++Q4T_TEST(state_retention_admin_lost_collection_receipt_is_not_replayed) {
++  Fixture f;
++  ObjectStore objects(f.options);
++  Q4T_CHECK(SeedRetention(objects));
++  const auto cutoff = std::time(nullptr);
++  const auto plan = objects.Retention(cutoff, 32, {}, Clock::now() + 3s);
++  Q4T_CHECK(Ok(plan));
++  sockaddr_un address{};
++  const auto size = Address(f, &address);
++  OwnedFd listener(socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0));
++  Q4T_CHECK(listener.Get() >= 0 &&
++            bind(listener.Get(), reinterpret_cast<sockaddr*>(&address), size) ==
++                0 &&
++            listen(listener.Get(), 1) == 0);
++  auto worker = std::async(std::launch::async, [&] {
++    pollfd ready{listener.Get(), POLLIN, 0};
++    if (poll(&ready, 1, 2000) <= 0) return false;
++    OwnedFd peer(accept4(listener.Get(), nullptr, nullptr, SOCK_CLOEXEC));
++    if (peer.Get() < 0) return false;
++    ready = {peer.Get(), POLLIN, 0};
++    if (poll(&ready, 1, 2000) <= 0) return false;
++    char bytes[4096];
++    const auto received = recv(peer.Get(), bytes, sizeof(bytes), MSG_DONTWAIT);
++    if (received <= 0) return false;
++    const auto applied = HandleStateKeyCommand(
++        objects, Parse(std::string(bytes, received)), Access());
++    return applied.ok() && applied.value.GetInt("deleted_objects") == 1;
++    // Close after actual commit without delivering the receipt.
++  });
++  const auto lost =
++      f.Call(Retention(cutoff, 32, plan.value.GetString("plan_sha256")));
++  Q4T_CHECK(worker.get() && !lost.ok() && lost.commit_unknown);
++  Q4T_CHECK(objects.Retention(cutoff, 32, {}, Clock::now() + 3s)
++                .value.GetInt("eligible_objects") == 0);
++  pollfd ready{listener.Get(), POLLIN, 0};
++  Q4T_CHECK(poll(&ready, 1, 0) == 0);
++  return true;
++}
+diff --git a/tests/test_main.cpp b/tests/test_main.cpp
+index 58783a4b..9c1c8b81 100644
+--- a/tests/test_main.cpp
++++ b/tests/test_main.cpp
+@@ -38,6 +38,8 @@ int main(int argc, char** argv) {
+   if (object_worker >= 0) return object_worker;
+   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
+   if (state_keys >= 0) return state_keys;
++  const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
++  if (retention >= 0) return retention;
+   const int fixture = GrammarProcessFixture(argc, argv);
+   if (fixture >= 0) return fixture;
+   const int conversation = ConversationApiFixture(argc, argv);
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index 271071ea..d6fea289 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -1286,8 +1286,8 @@
+     ]
+   },
+   "sources_sha256": {
+-    "CMakeLists.txt": "96f2e1d8aa191b4328f99c825face9a714e5a2a8bffd2fa8d40fa1a22149fbc7",
+-    "cmake/ChatProtocolIdentity.cmake": "eea8ce9ae7d17c209f2655c9130aab9a5542cbf39f61ac426494e8cb7857e99c",
++    "CMakeLists.txt": "14f4654c11ef4f9828391b1415c0a5b7aead959707c6cb8c846e096b4b1c2e3b",
++    "cmake/ChatProtocolIdentity.cmake": "ba780290b345acdc2e59b62228454a98faa2ab6d95b26651408fbc3111f01457",
+     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+@@ -1351,7 +1351,8 @@
+     "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
+     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+     "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
+-    "include/q4t/server/object_store.h": "06d1fb342b952e7f302d19a0a196083d4225a7ecbad235c9cb34db44cd8994b2",
++    "include/q4t/server/object_retention.h": "96b17568ac8d3b0c00d773a421a0989e827797b6e9b768198f329b5c57488bb2",
++    "include/q4t/server/object_store.h": "0fffcef7381c0197669e908c91428ec6b2c8be9a09b39d9447a96b62933c04f4",
+     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
+     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
+     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
+@@ -1396,7 +1397,7 @@
+     "include/q4t/server/session_state.h": "45ee23a8433b6dfce3d72f942ba4ad3bd0019cb25c5e20c7f219fb329af8d3e9",
+     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
+     "include/q4t/server/state_cipher.h": "d883cb8c11ccce3a39c7fadf5c9448b42086ec482258df8ca975d6782d2ec8f3",
+-    "include/q4t/server/state_key_admin.h": "0c91321a24065a605a1c0870fcc04ddf4a7526e965c2de47df74b472bd84ebe1",
++    "include/q4t/server/state_key_admin.h": "29821475b37d3e3022d42eed0e0373d12de6a585dc0a7f874516276b6a3ed1cb",
+     "include/q4t/server/structured_admission.h": "d092c28d78e214396c26d2f7eb96e56e94f5148f9355a6d0cb84926b20fca007",
+     "include/q4t/server/structured_decoder.h": "90bce7f10c21f8a4f40d9580e825ed963d1c2637a2335586aa10fa91a56d6561",
+     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
+@@ -1426,7 +1427,7 @@
+     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
+     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
+     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
+-    "src/main.cpp": "d96c6faed890bbfe72d02ed51db72edc5abe38a9790d543adfc93ac7bf005430",
++    "src/main.cpp": "06d70ef5e279bf1231e03359a8673f6b2b32aff5e6a8f6203481796e0b963ba2",
+     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
+     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
+     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
+@@ -1443,7 +1444,7 @@
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+-    "src/server/chat_capabilities.cpp": "387ba962bfa9c049e8af550b60385f1670bc2f442618f2c0e41f132843d6ca7a",
++    "src/server/chat_capabilities.cpp": "b43b6c12dedf113092c1bd23d83a3766cfac07df7c46992163a1ef739f7af851",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+     "src/server/chat_contract.cpp": "87885c6f285b8a2891f6d337418c161c55dcae46cf5a4dbc1bd75beb6e2b8cac",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+@@ -1493,9 +1494,10 @@
+     "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
+     "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
+     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
+-    "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
++    "src/server/object_retention.cpp": "32d96463d782aa464b4e7063e1dc5cff74d169e00f83716c9880f4f50c912906",
++    "src/server/object_store.cpp": "231f9e6c55a213d609e27581fdcc8b8041e4b8c04a7714c1192df5ed1a14516f",
+     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
+-    "src/server/object_worker.cpp": "c0ab9faceb0688a887167f0e47009b8dd5aafb500a1b54c0ad70330ef5502932",
++    "src/server/object_worker.cpp": "05de5aa4497a7301e53cf8c3dea07a5cef99327b9cb842e8d3409a1de8d15641",
+     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
+     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
+     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+@@ -1547,8 +1549,9 @@
+     "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
+     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
+     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
+-    "src/server/state_key_admin.cpp": "45a7e68b206d1e9af6ca528e0989c9321384c86d71f208de804d6eee00260a76",
++    "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
+     "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
++    "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
+     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
+     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
+diff --git a/tools/serve_protocol/build_contract.py b/tools/serve_protocol/build_contract.py
+index 552eee0b..9d8e6cae 100644
+--- a/tools/serve_protocol/build_contract.py
++++ b/tools/serve_protocol/build_contract.py
+@@ -554,6 +554,11 @@ def semantics():
+         "src/server/application_query.cpp", "include/q4t/server/application_routes.h",
+         "src/server/chat_responses.cpp"],
+         "Responses share native model execution and preserve item identities, actual token usage/probabilities and original sequenced events; no Chat DONE. Store defaults true, previous instructions do not carry forward, client-scoped history and conversation commits use isolated bounded object I/O and atomic revision-checked transactions. Background owns its admission permit and original deadline independently of subscribers; cancel is idempotent empty POST returning200, with independent bounded cancellation capacity. Temporary background records cover execution then600 seconds. Recovery proves old execution owner death using boot/PID birth/namespace identity: queued may resume original ID, started fails with saved partial output and is never replayed. Storage/monitor failure cannot restart the model or close healthy core readiness. Conversations support CRUD, item append/list/retrieve/delete and include projection. Application queries use closed per-route fields with exact integers, true/false booleans and include arrays; other routes keep prior query rejection. State APIs, shape validation and capability declarations do not complete pending compaction/summary/encryption/file/tool executors."))
++    rules.append(("native-application-retention", [
++        "include/q4t/server/object_retention.h", "src/server/object_retention.cpp",
++        "src/server/object_worker.cpp", "src/server/object_store.cpp",
++        "src/server/state_key_admin.cpp", "src/server/state_retention_cli.cpp"],
++        "Expiry collection preserves queued/in_progress tasks until recovery has durably recorded a terminal state, and follows typed same-owner references from retained roots. Expired unrooted cycles can be collected; unknown lifecycle/shape preserves that owner's records and is reported. No references are extracted from user text or tool arguments. Permanent conversations/prompts retain explicit-delete semantics; permanent orphan items require an explicit creation-time cutoff, not an inferred orphan age. Native same-UID state-retention inspect/collect uses the existing bounded isolated store/admin channel. Inspect does not apply proposed cleanup; collect rechecks the exact SHA256 plan and returns409 on state/eligibility change. At most128 selected objects from one owner per atomic journal transaction; inspect again for further batches. Planner bounds100000 nodes,64MiB metadata estimate and2M references; resource failure retains data and does not deny otherwise usable CRUD. Lost mutation receipt is commit_unknown with no replay; reinspection/recovery uses the existing journal. Offline access requires exclusive store ownership. No business payload/key bytes in receipts; maintenance errors cannot restart a model or close healthy core readiness."))
+     paths = sorted({p for _, sources, _ in rules for p in sources})
+     return dict(profile="q4t-input-semantics-v1", required=True,
+         structural_schema="serve-chat-request-v1.schema.json",
+diff --git a/tools/serve_responses/sdk.mjs b/tools/serve_responses/sdk.mjs
+index ec176ed5..da384c00 100644
+--- a/tools/serve_responses/sdk.mjs
++++ b/tools/serve_responses/sdk.mjs
+@@ -83,6 +83,15 @@ export async function execute(input) {
+     } else if (input.action === 'input_items') {
+       const page = await client.responses.inputItems.list(input.id, input.query ?? {}, options);
+       result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
++    } else if (input.action === 'conversation_create') {
++      result = await client.conversations.create(input.request ?? {}, options);
++    } else if (input.action === 'conversation_retrieve') {
++      result = await client.conversations.retrieve(input.id, options);
++    } else if (input.action === 'conversation_delete') {
++      result = await client.conversations.delete(input.id, options);
++    } else if (input.action === 'conversation_items') {
++      const page = await client.conversations.items.list(input.id, input.query ?? {}, options);
++      result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
+     } else throw new Error('unknown action');
+   } catch (problem) {
+     error = { class: problem.constructor.name, message: problem.message,

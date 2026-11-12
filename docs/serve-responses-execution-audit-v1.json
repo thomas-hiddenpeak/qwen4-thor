@@ -1,0 +1,1832 @@
+{
+  "profile": "q4t-responses-required-execution-audit-v1",
+  "date": "2026-11-10",
+  "sdk_version": "7.47.0",
+  "type_graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75",
+  "source_commit": "23f5e899",
+  "scope": "Shape validity is separate from executable generation, model quality, storage and delivery. Every pending row remains required; no compatibility percentage.",
+  "groups": {
+    "input_item": [
+      {
+        "tag": "additional_tools",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "apply_patch_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "apply_patch_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "code_interpreter_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "compaction",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "compaction_trigger",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "computer_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "computer_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "configuration_update",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "custom_tool_call",
+        "state": "direct_calls_delivered_advanced_callers_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "async/caller/namespace and structured tool outputs remain required A11 work."
+        ]
+      },
+      {
+        "tag": "custom_tool_call_output",
+        "state": "direct_calls_delivered_advanced_callers_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "async/caller/namespace and structured tool outputs remain required A11 work."
+        ]
+      },
+      {
+        "tag": "file_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "function_call",
+        "state": "direct_calls_delivered_advanced_callers_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "async/caller/namespace and structured tool outputs remain required A11 work."
+        ]
+      },
+      {
+        "tag": "function_call_output",
+        "state": "direct_calls_delivered_advanced_callers_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "async/caller/namespace and structured tool outputs remain required A11 work."
+        ]
+      },
+      {
+        "tag": "image_generation_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "item_reference",
+        "state": "text_item_resolution_delivered_media_tool_integration_required",
+        "owners": [
+          "A07",
+          "A08",
+          "A09",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "Resolve actual media/built-in tool results after A09/A10/A11 implementation."
+        ]
+      },
+      {
+        "tag": "local_shell_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "local_shell_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_approval_request",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_approval_response",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_list_tools",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "message",
+        "state": "text_core_delivered_media_refusal_annotation_required",
+        "owners": [
+          "A07",
+          "A09",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "A09/A10 file/remote image/media execution and A07/A11 generated refusal/annotations remain required."
+        ]
+      },
+      {
+        "tag": "program",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "program_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "reasoning",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "shell_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "shell_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "tool_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "tool_search_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "web_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      }
+    ],
+    "output_item": [
+      {
+        "tag": "additional_tools",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "apply_patch_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "apply_patch_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "code_interpreter_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "compaction",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "computer_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "computer_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "custom_tool_call",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "custom_tool_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "file_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "function_call",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "function_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "image_generation_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "local_shell_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "local_shell_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_approval_request",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_approval_response",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "mcp_list_tools",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "message",
+        "state": "text_core_delivered_media_refusal_annotation_required",
+        "owners": [
+          "A07",
+          "A09",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": [
+          "A09/A10 file/remote image/media execution and A07/A11 generated refusal/annotations remain required."
+        ]
+      },
+      {
+        "tag": "program",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "program_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "reasoning",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "shell_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "shell_call_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "tool_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "tool_search_output",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "web_search_call",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      }
+    ],
+    "response_event": [
+      {
+        "tag": "error",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.audio.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.audio.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.audio.transcript.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.audio.transcript.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.code_interpreter_call.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.code_interpreter_call.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.code_interpreter_call.interpreting",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.code_interpreter_call_code.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.code_interpreter_call_code.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.compaction.compacting",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.completed",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.content_part.added",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.content_part.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.created",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.custom_tool_call_input.delta",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.custom_tool_call_input.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.failed",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.file_search_call.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.file_search_call.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.file_search_call.searching",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.function_call_arguments.delta",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.function_call_arguments.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.image_generation_call.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.image_generation_call.generating",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.image_generation_call.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.image_generation_call.partial_image",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A10",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.in_progress",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.incomplete",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.mcp_call.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_call.failed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_call.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_call_arguments.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_call_arguments.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_list_tools.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_list_tools.failed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.mcp_list_tools.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.output_item.added",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.output_item.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.output_text.annotation.added",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Produce real source annotations from A11 retrieval and annotation.added events with valid text offsets."
+        ]
+      },
+      {
+        "tag": "response.output_text.delta",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.output_text.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.queued",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_summary_part.added",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_summary_part.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_summary_text.delta",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_summary_text.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_text.delta",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.reasoning_text.done",
+        "state": "core_path_delivered",
+        "owners": [
+          "A07"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_execution.cpp",
+          "src/server/responses_output.cpp",
+          "src/server/responses_state.cpp"
+        ],
+        "remaining_required": []
+      },
+      {
+        "tag": "response.refusal.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A02"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Provide an explicit model-owned refusal signal and output part/delta/done path; do not relabel moderation content_filter or guess from ordinary text."
+        ]
+      },
+      {
+        "tag": "response.refusal.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A02"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Provide an explicit model-owned refusal signal and output part/delta/done path; do not relabel moderation content_filter or guess from ordinary text."
+        ]
+      },
+      {
+        "tag": "response.shell_call_command.added",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.shell_call_command.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.shell_call_command.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.shell_call_output_content.delta",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.shell_call_output_content.done",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.web_search_call.completed",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.web_search_call.in_progress",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      },
+      {
+        "tag": "response.web_search_call.searching",
+        "state": "implementation_required",
+        "owners": [
+          "A07",
+          "A11"
+        ],
+        "sources": [
+          "src/server/responses_input.cpp",
+          "src/server/responses_output.cpp"
+        ],
+        "remaining_required": [
+          "Implement actual authorized executor/history mapping and complete SDK lifecycle events; shape validation and external client execution are insufficient."
+        ]
+      }
+    ]
+  },
+  "include": {
+    "source": "src/server/conversation_state.cpp:ProjectStoredItem",
+    "projection": "All eight fixed SDK selections have native stored-item projection. Projection never fabricates absent producer output.",
+    "actual_producers": [
+      "reasoning.encrypted_content",
+      "message.output_text.logprobs"
+    ],
+    "remaining_required": [
+      "file_search_call.results",
+      "web_search_call.results",
+      "web_search_call.action.sources",
+      "message.input_image.image_url",
+      "computer_call_output.output.image_url",
+      "code_interpreter_call.outputs"
+    ],
+    "owners": [
+      "A07",
+      "A09",
+      "A10",
+      "A11"
+    ]
+  },
+  "additional_required": [
+    {
+      "field": "max_tool_calls",
+      "owner": "A11",
+      "status": "parsed_and_echoed_only_until_builtin_executor",
+      "requirement": "Enforce shared actual built-in tool execution budget across one response, including failures/cancellation; do not confuse caller-owned function executions with server built-ins."
+    },
+    {
+      "field": "tools",
+      "owner": "A11",
+      "status": "direct_function_custom_delivered_other_tools_required",
+      "requirement": "Built-in tools, MCP, search/discovery, namespace, async, programmatic callers and output_schema require real executors and typed history."
+    },
+    {
+      "field": "stream",
+      "owner": "A07",
+      "status": "core_lifecycle_delivered_full_event_matrix_pending",
+      "requirement": "All missing producer/event paths remain open dependencies, not removed from required scope."
+    }
+  ]
+}

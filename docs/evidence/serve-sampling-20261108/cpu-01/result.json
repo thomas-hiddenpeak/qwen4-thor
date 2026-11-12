@@ -1,0 +1,63 @@
+{
+  "host": {
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/cpu-01/host-required.txt"
+    ],
+    "exit_code": 1,
+    "seconds": 0.16477543488144875
+  },
+  "shapes": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/check_contract.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/engine-build/q4t_contract_probe",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/cpu-01/shapes",
+      "--case-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/cpu-01/contract-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.4650303879752755
+  },
+  "python": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_sampling.test_clients",
+      "tools.examples.test_chat_client"
+    ],
+    "exit_code": 1,
+    "seconds": 0.16431994596496224
+  },
+  "js": {
+    "argv": [
+      "node",
+      "--test",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.6152805048041046
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06540405983105302
+  },
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06410069111734629
+  }
+}

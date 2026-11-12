@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+  "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "94929066b0b9153e90b02d7b26828345482dfba165f2931ec6f39b63adc45b2a",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

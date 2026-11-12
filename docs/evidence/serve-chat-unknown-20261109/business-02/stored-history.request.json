@@ -1,0 +1,11 @@
+{
+  "action": "messages",
+  "request": null,
+  "id": "chatcmpl-auto-428e786f61a3ab66008331f767545270",
+  "query": {
+    "limit": 100
+  },
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

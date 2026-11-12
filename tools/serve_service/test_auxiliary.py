@@ -214,9 +214,14 @@ class IsolationTests(unittest.TestCase):
             if len(seen) == 1:
                 return self.observation(pid)
             raise sup.contracts.InvalidObservation('http_deadline')
-        rc, state = self.run_supervisor(observe, isolated=True)
+        # Only the post-readiness HTTP deadline is under test. Real child
+        # startup/fsync has its own budget; the observation limit stays .1s.
+        rc, state = self.run_supervisor(observe, isolated=True,
+            config_overrides=dict(startup_seconds=5))
         self.assertEqual((rc, state['attempts'], state['restarts']), (1, 1, 0))
+        self.assertGreaterEqual(len(seen), 2)
         self.assertEqual(state['error'], 'observation deadline exceeded')
+        self.assertTrue(state['cleanup_confirmed'])
 
     def test_isolated_supervisor_stops_unhealthy_without_metrics_or_restart(self):
         seen = []

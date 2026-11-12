@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/title-diagnostic-01/required.txt"
+  ],
+  "sha256": "59c470f1bb60e6f03de0c04e24ba0b97ff052cb0605072b041e73e351016f589",
+  "timeout_seconds": 20,
+  "env": {
+    "Q4T_TITLE_MASK_DIAGNOSTIC": "1"
+  },
+  "scope": "separate lexical/semantic mask time of CPU-reproduced business failure, no GPU"
+}

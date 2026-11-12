@@ -1,0 +1,35 @@
+test_count_auth_preserves_body_and_client_scope (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_auth_preserves_body_and_client_scope) ... ERROR
+test_count_uses_data_capacity_and_keeps_observation_available (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_uses_data_capacity_and_keeps_observation_available) ... ERROR
+
+======================================================================
+ERROR: test_count_auth_preserves_body_and_client_scope (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_auth_preserves_body_and_client_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_input_tokens_ingress.py", line 20, in setUp
+    self.ingress = Path(os.environ['Q4T_INGRESS']).resolve(strict=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1242, in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 432, in realpath
+  File "<frozen posixpath>", line 476, in _joinrealpath
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_ingress'
+
+======================================================================
+ERROR: test_count_uses_data_capacity_and_keeps_observation_available (tools.serve_responses.test_input_tokens_ingress.InputTokensIngress.test_count_uses_data_capacity_and_keeps_observation_available)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_input_tokens_ingress.py", line 20, in setUp
+    self.ingress = Path(os.environ['Q4T_INGRESS']).resolve(strict=True)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1242, in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 432, in realpath
+  File "<frozen posixpath>", line 476, in _joinrealpath
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_ingress'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+FAILED (errors=2)

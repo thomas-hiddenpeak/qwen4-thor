@@ -1,8 +1,12 @@
 #include "q4t/server/chat_plan.h"
 
 #include <limits>
+#include <cstdlib>
+#include <fstream>
 
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/test.h"
 
@@ -20,6 +24,29 @@ ChatPlanConfig Config() {
   return config;
 }
 }  // namespace
+
+Q4T_TEST(chat_plan_schema_resource_errors_keep_status_and_parameter) {
+  for (const auto* bound : {"1e400", "-1"}) {
+    const std::string raw =
+        R"({"messages":[{"role":"user","content":"q"}],)"
+        R"("response_format":{"type":"json_schema","json_schema":{)"
+        R"("name":"x","schema":{"type":"object","properties":{)"
+        R"("x":{"type":"array","items":{"type":"string"},"maxItems":)" +
+        std::string(bound) + R"(}},"additionalProperties":false}}}})";
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(raw, &request, true, kSchemaJsonLimits));
+    ChatRequestPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(!PlanChatRequest(request, Config(), &plan, &error));
+    Q4T_CHECK(error.param ==
+              "response_format.json_schema.schema.properties.x.maxItems");
+    const bool resource = std::string_view(bound) == "1e400";
+    Q4T_CHECK(error.http_status == (resource ? 503 : 400));
+    Q4T_CHECK(error.code ==
+              (resource ? "constraint_resource_exhausted" : "invalid_request"));
+  }
+  return true;
+}
 
 Q4T_TEST(chat_plan_uniform_output_and_null_defaults) {
   for (const auto* extra :
@@ -134,8 +161,8 @@ Q4T_TEST(chat_plan_native_template_and_constraint_adapter) {
   std::vector<VisionItem> items;
   Q4T_CHECK(
       PrepareChatPrompt(req, plan.constraints, &prompt, &items, &error.param));
-  Q4T_CHECK(prompt ==
-            "<|im_start|>system\nRULE<|im_end|>\n"
+  Q4T_CHECK(prompt == "<|im_start|>system\n" +
+            std::string(kRefusalInstruction) + "\n\nRULE<|im_end|>\n"
             "<|im_start|>user\nq<|im_end|>\n"
             "<|im_start|>assistant\n<think>\n\n</think>\n\n");
   Q4T_CHECK(items.empty());
@@ -242,14 +269,30 @@ Q4T_TEST(chat_preflight_envelope_and_opt_in_preview) {
 Q4T_TEST(chat_config_effective_sources_and_redaction) {
   auto config = Config();
   ServerOptions opts;
+  config.model_aliases = {"org/alias", "中文"};
   opts.model_dir = "/private-model";
   opts.session_cache_dir = "/private-session";
+  opts.object_store_dir = "/private-objects";
   opts.max_len = 200000;
   opts.max_tokens = 31;
+  opts.background_max_input_mib = 768;
   opts.supplied_options = {"--max-len"};
   Json response;
   Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, false, 128),
                   &response));
+  Q4T_CHECK(response.GetArray("model_aliases")->array.size() == 2);
+  const auto* limits = response.Find("limits");
+  Q4T_CHECK(limits->GetInt("body_bytes") == 96LL << 20);
+  Q4T_CHECK(limits->GetInt("aggregate_body_bytes") == 192LL << 20);
+  Q4T_CHECK(limits->GetInt("background_input_bytes") == 768LL << 20);
+  Q4T_CHECK(response.Find("completions")->GetInt("default_output_tokens") == 16);
+  const auto* objects = response.Find("application_state");
+  Q4T_CHECK(objects && objects->GetString("directory_source") == "explicit");
+  Q4T_CHECK(objects->GetBool("directory_redacted") &&
+            objects->GetBool("isolated_io") &&
+            !objects->GetBool("core_readiness_dependency", true));
+  Q4T_CHECK(objects->GetInt("max_client_mib") == 64 &&
+            objects->GetInt("max_total_objects") == 10000);
   const auto* context = response.Find("max_context_tokens");
   Q4T_CHECK(context->GetInt("requested") == 200000);
   Q4T_CHECK(context->GetInt("effective") == 8192);
@@ -273,10 +316,17 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
   Q4T_CHECK(opts.supplied_options == original);
   Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, false, false, 128),
                   &response));
+  Q4T_CHECK(response.Find("application_state")->GetString("directory_source") ==
+            "environment");
   Q4T_CHECK(response.Find("default_output_tokens")->GetString("source") ==
             "cli");
   Q4T_CHECK(response.Find("max_context_tokens")->GetString("resolution") ==
             "model_config_default");
+  if (const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    std::ofstream wire(std::string(output) + "/config-response.bin");
+    wire << EffectiveServeConfigJson(opts, config, false, false, 128);
+    Q4T_CHECK(wire.good());
+  }
   return true;
 }
 
@@ -331,5 +381,43 @@ Q4T_TEST(chat_config_operations_listener_reports_independent_capacity) {
   Q4T_CHECK(limits->GetInt("public_connection_handlers") == 136);
   Q4T_CHECK(limits->GetInt("operations_connection_handlers") == 8);
   Q4T_CHECK(!limits->GetBool("unclassified_shares_total"));
+  return true;
+}
+
+Q4T_TEST(chat_plan_structured_cache_checks_actual_configuration) {
+  for (const auto* field : {"session_id", "prefix_cache_scope"}) {
+    Json request;
+    Q4T_CHECK(Parse(R"({"messages":[{"role":"user","content":"q"}],)"
+                    R"("response_format":{"type":"json_object"},")" +
+                        std::string(field) + R"(":")" + std::string(64, 'a') +
+                        R"("})",
+                    &request));
+    auto config = Config();
+    config.structured = true;
+    ChatRequestPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(error.param == field && error.code == "invalid_request");
+    config.session_cache = config.prefix_cache = true;
+    Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(plan.constraints.active && plan.constraints.json_output);
+  }
+  return true;
+}
+
+Q4T_TEST(chat_plan_alias_registry_rejects_unknown_models) {
+  auto config = Config();
+  config.model_aliases = {"org/alias"};
+  Json request;
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(Parse(R"({"model":"org/alias","messages":[{"role":"user",
+    "content":"q"}]})", &request));
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(Parse(R"({"model":"missing","messages":[{"role":"user",
+    "content":"q"}]})", &request));
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.http_status == 404 && error.code == "model_not_found" &&
+            error.param == "model");
   return true;
 }

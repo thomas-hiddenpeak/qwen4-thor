@@ -1,0 +1,21 @@
+[
+  [
+    "cmake",
+    "-S",
+    "tests/host",
+    "-B",
+    ".q4t-work/serve-access-20261109/host",
+    "-DCMAKE_CXX_COMPILER=g++-14",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DQ4T_ENABLE_XGRAMMAR=OFF"
+  ],
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-access-20261109/host",
+    "--target",
+    "q4t_ingress_access_tests",
+    "--parallel",
+    "4"
+  ]
+]

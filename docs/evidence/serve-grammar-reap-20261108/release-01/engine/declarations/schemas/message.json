@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve:message-profile:v2",
+  "title": "qwen3.8-native-v2 message profile projection",
+  "description": "Only role, instruction placement, name and instruction text shape. Other request fields, real-user query, tool batch association, budgets and rendering require runtime validation. Not a complete Chat request schema.",
+  "type": "object",
+  "required": ["messages"],
+  "properties": {
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "prefixItems": [{"$ref": "#/$defs/message"}],
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/message"},
+          {"properties": {"role": {"enum": ["user", "assistant", "tool"]}}}
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "textPart": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "type": {"const": "text"},
+        "text": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "message": {
+      "type": "object",
+      "required": ["role"],
+      "properties": {
+        "role": {"enum": ["system", "developer", "user", "assistant", "tool"]},
+        "name": {"type": "null"}
+      },
+      "if": {"properties": {"role": {"enum": ["system", "developer"]}}},
+      "then": {
+        "properties": {
+          "content": {
+            "anyOf": [
+              {"type": ["string", "null"]},
+              {"type": "array", "items": {"$ref": "#/$defs/textPart"}}
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-q4t": {
+    "profile": "qwen3.8-native-v2",
+    "developer_mapping": "single leading system alternative",
+    "full_request_validation": false,
+    "instruction_hierarchy_preserved": "one model-native slot only"
+  }
+}

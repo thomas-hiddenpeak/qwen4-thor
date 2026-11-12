@@ -1,0 +1,1 @@
+schema_language_single_pattern_rejects_impossible_prefixes

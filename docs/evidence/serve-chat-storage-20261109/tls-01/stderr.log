@@ -1,0 +1,6 @@
+test_stored_chat_uses_native_tls_cors_and_identity (__main__.AccessTests.test_stored_chat_uses_native_tls_cors_and_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.467s
+
+OK

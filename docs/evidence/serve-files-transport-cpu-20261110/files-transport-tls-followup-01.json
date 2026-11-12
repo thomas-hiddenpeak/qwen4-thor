@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/files-transport-tls-followup-01",
+    "Q4T_NODE_SDK_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_files_transport.FilesTransportTests.test_changed_generation_before_frame_completion_aborts_publication",
+    "tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload",
+    "tools.serve_responses.test_files_transport.FilesTransportTests.test_malformed_chunk_trailer_never_publishes_complete_multipart",
+    "tools.serve_responses.test_files_transport.FilesTransportTests.test_official_sdk_native_tls_prefix_files_and_large_bytes"
+  ],
+  "exit_code": 1,
+  "seconds": 5.221191091928631
+}

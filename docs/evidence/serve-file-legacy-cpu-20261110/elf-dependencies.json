@@ -1,0 +1,21 @@
+{
+  "host": [
+    "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]"
+  ],
+  "engine": [
+    "0x0000000000000001 (NEEDED)             Shared library: [libcudart.so.13]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libicui18n.so.74]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libicuuc.so.74]",
+    "0x0000000000000001 (NEEDED)             Shared library: [liburing.so.2]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libcublasLt.so.13]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "status": "FROZEN_NOT_RUN",
+  "cases": [
+    "tools.serve_service.test_memory",
+    "tools.serve_service.test_memory_acceptance",
+    "tools.serve_service.test_service.Case.test_memory_gate_refuses_launch_on_low_or_unknown_sample",
+    "tools.serve_service.test_service.Case.test_memory_trip_interrupts_blocked_probe_and_prevents_restart",
+    "tools.serve_service.test_service.Case.test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop",
+    "tools.serve_service.test_service.Case.test_operator_stop_cannot_hide_memory_trip_during_cleanup"
+  ],
+  "expected_cases": 14,
+  "scope": "memory observer fault isolation; startup safety and confirmed critical memory trip retained; real owned CPU child, no model/GPU",
+  "sources": {
+    "tools/serve_service/memory.py": "24c5d82e19553890f280f9f77242c768a73ffbf161dea3e99e3ef4ec688a8e3f",
+    "tools/serve_service/test_memory.py": "094b0a9b6abca1ba70ecaebc089c08aadef2a550360e4d1caacbaf8e98357ddc",
+    "tools/serve_service/test_service.py": "ab43c98026633dde240a78194cbbff0e024ca7f7111586f36119ec2dd56ad390",
+    "tools/serve_service/test_memory_acceptance.py": "266a997ac7c058d60a8f141d800c1cdb8f01b52f9ac64f0082427acc870a1e50"
+  }
+}

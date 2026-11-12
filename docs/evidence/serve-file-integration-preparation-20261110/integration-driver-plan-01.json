@@ -1,0 +1,21 @@
+{
+  "classification": "nonperformance",
+  "cpu_tests": [
+    "test_requests_profiles_and_original_pdf_identity",
+    "test_pdf_oracle_requires_real_number_color_and_complete_answer",
+    "test_count_usage_headers_are_complete_strict_and_absent_for_frozen",
+    "test_public_stored_message_projection_restores_only_original_input"
+  ],
+  "source_sha256": {
+    "tools/serve_responses/file_integration_acceptance.py": "725d4a41a164b539dee006a736ed544418f2fa23b8ee835b459b07ed5e2434e0",
+    "tools/serve_responses/test_file_integration_acceptance.py": "76e4e952432b0995b1259409bc5c045304cfd4cd40b2789eaf58edda8fff08af"
+  },
+  "gpu_starts": 0,
+  "planned_next_business": {
+    "starts": 3,
+    "generations": 7,
+    "model_steps": 9,
+    "seconds": 1200
+  },
+  "remaining": "Driver checks and independent compatible rollback build precede actual GPU plan freeze/strict lease. All master tasks remain active."
+}

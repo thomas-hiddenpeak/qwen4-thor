@@ -1,0 +1,10 @@
+{
+  "status": "PASS_CHAT_INPUT_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 6,
+    "controls": 50
+  },
+  "seconds": 47.48301109485328,
+  "binary_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978"
+}

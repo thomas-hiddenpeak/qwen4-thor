@@ -1,0 +1,24 @@
+{
+  "reason": "clang-format wrapped the longest Q4T_TEST macro; selection generator preserved indentation; strict registry rejected before any C++ test executed",
+  "production_changed": false,
+  "original_tests_executed": 0,
+  "corrected_names": [
+    "file_fetch_url_and_relative_redirect_contracts",
+    "file_fetch_address_policy_blocks_private_and_mapped_bypasses",
+    "file_fetch_deployment_policy_is_strict_and_roundtrips",
+    "file_fetch_http_content_length_chunked_and_close_exact_bytes",
+    "file_fetch_http_rejects_ambiguous_truncated_or_partial_file",
+    "file_fetch_redirects_revalidate_target_and_never_forward_credentials",
+    "file_fetch_size_errors_empty_files_and_failed_remote_status",
+    "file_fetch_redirect_loops_and_limits_do_not_publish_content",
+    "file_fetch_deadline_reaps_stalled_network_without_partial_output",
+    "file_fetch_cancellation_interrupts_actual_network_wait",
+    "file_fetch_unreaped_domain_keeps_its_slot_without_blocking_other_domains",
+    "file_fetch_unowned_invalid_and_denied_inputs_start_no_process",
+    "grammar_process_memory_limit_and_descriptor_isolation",
+    "grammar_process_deadline_reaps_blocked_worker",
+    "grammar_process_object_domain_keeps_grammar_capacity",
+    "file_input_stored_owner_and_size_gate_precede_pin_and_content"
+  ],
+  "tls_pass_reused": true
+}

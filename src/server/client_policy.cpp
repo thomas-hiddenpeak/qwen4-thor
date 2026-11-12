@@ -8,15 +8,25 @@
 #include <cerrno>
 #include <charconv>
 #include <initializer_list>
+#include <limits>
 #include <set>
 #include <stdexcept>
 #include <utility>
 
 #include "q4t/io/json.h"
+#include "q4t/server/client_rate_state.h"
+#include "q4t/server/file_limits.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
 namespace {
+
+uint64_t Add(uint64_t left, uint64_t right) {
+  return left > std::numeric_limits<uint64_t>::max() - right
+             ? std::numeric_limits<uint64_t>::max()
+             : left + right;
+}
 
 bool Fields(const io::Json& value,
             std::initializer_list<std::string_view> fields) {
@@ -58,13 +68,15 @@ bool ValidLimits(const ClientLimits& value) {
          value.max_control_inflight <= 64 && value.max_prompt_tokens >= 1 &&
          value.max_prompt_tokens <= 1048576 && value.max_output_tokens >= 1 &&
          value.max_output_tokens <= 1048576 && value.max_body_bytes >= 1024 &&
-         value.max_body_bytes <= 16 * 1024 * 1024 &&
+         value.max_body_bytes <= kChatBodyBytes &&
          value.requests_per_minute <= 1000000 &&
          value.tokens_per_minute <= 1000000000;
 }
 
 bool ValidPolicy(const GatewayClientPolicy& policy) {
-  if ((policy.version != 1 && policy.version != 2) ||
+  if ((policy.version < 1 || policy.version > 4) ||
+      policy.revision > kMaxClientRevision ||
+      (policy.version < 3 && policy.revision != 0) ||
       (policy.version == 1 && policy.fair_queue) ||
       !Hex64(policy.gateway_token) || !Hex64(policy.sha256) ||
       policy.clients.empty() || policy.clients.size() > kMaxClients)
@@ -72,10 +84,22 @@ bool ValidPolicy(const GatewayClientPolicy& policy) {
   std::set<std::string> ids;
   for (const auto& limits : policy.clients)
     if (!ValidLimits(limits) || !ids.insert(limits.id).second ||
+        (policy.version < 4
+             ? limits.max_file_body_bytes != 0
+             : limits.max_file_body_bytes < 1024 ||
+                   limits.max_file_body_bytes > kFileWireBytes) ||
         (policy.version == 1 &&
          (limits.requests_per_minute || limits.tokens_per_minute)))
       return false;
   return true;
+}
+
+bool FairCapacity(const GatewayClientPolicy& policy, int inflight, int queued) {
+  if (!policy.fair_queue) return true;
+  uint64_t total = 0;
+  for (const auto& client : policy.clients) total += client.max_inflight;
+  return inflight > 0 && queued >= static_cast<int>(policy.clients.size()) &&
+         total <= static_cast<uint64_t>(inflight);
 }
 
 bool SameFile(const struct stat& before, const struct stat& after) {
@@ -103,14 +127,30 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                                    .reject_duplicate_keys = true};
   if (!io::ParseJson(std::string(raw), &root, true, limits)) return Invalid();
   uint32_t version = 0;
-  if (!Integer(root.Find("version"), 2, &version) ||
-      !(version == 1 ? Fields(root, {"version", "gateway_token", "clients"})
-                     : Fields(root, {"version", "gateway_token", "clients",
-                                     "fair_queue"})))
+  if (!Integer(root.Find("version"), 4, &version) ||
+      !(version == 1   ? Fields(root, {"version", "gateway_token", "clients"})
+        : version == 2 ? Fields(root, {"version", "gateway_token", "clients",
+                                       "fair_queue"})
+                       : Fields(root, {"version", "gateway_token", "clients",
+                                       "fair_queue", "revision"})))
     return Invalid();
   GatewayClientPolicy policy;
   policy.version = version;
-  if (version == 2) {
+  if (version >= 3) {
+    const auto* revision = root.Find("revision");
+    if (!revision || !revision->IsNumber() || revision->str.empty())
+      return Invalid();
+    for (char c : revision->str)
+      if (c < '0' || c > '9') return Invalid();
+    const auto result = std::from_chars(
+        revision->str.data(), revision->str.data() + revision->str.size(),
+        policy.revision);
+    if (result.ec != std::errc() ||
+        result.ptr != revision->str.data() + revision->str.size() ||
+        policy.revision > kMaxClientRevision)
+      return Invalid();
+  }
+  if (version >= 2) {
     const auto* fair = root.Find("fair_queue");
     if (!fair || !fair->IsBool()) return Invalid();
     policy.fair_queue = root.GetBool("fair_queue");
@@ -125,12 +165,20 @@ Status ParseGatewayClientPolicy(std::string_view raw,
               ? Fields(entry, {"id", "max_inflight", "max_control_inflight",
                                "max_prompt_tokens", "max_output_tokens",
                                "max_body_bytes"})
+          : version < 4
+              ? Fields(entry, {"id", "max_inflight", "max_control_inflight",
+                               "max_prompt_tokens", "max_output_tokens",
+                               "max_body_bytes", "requests_per_minute",
+                               "tokens_per_minute"})
               : Fields(entry, {"id", "max_inflight", "max_control_inflight",
                                "max_prompt_tokens", "max_output_tokens",
                                "max_body_bytes", "requests_per_minute",
-                               "tokens_per_minute"})))
+                               "tokens_per_minute", "max_file_body_bytes"})))
       return Invalid();
-    if (version == 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
+    if (version >= 4 && !Integer(entry.Find("max_file_body_bytes"),
+                                 kFileWireBytes, &value.max_file_body_bytes))
+      return Invalid();
+    if (version >= 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
                                   &value.requests_per_minute, true) ||
                          !Integer(entry.Find("tokens_per_minute"), 1000000000,
                                   &value.tokens_per_minute, true)))
@@ -143,7 +191,7 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                  &value.max_prompt_tokens) ||
         !Integer(entry.Find("max_output_tokens"), 1048576,
                  &value.max_output_tokens) ||
-        !Integer(entry.Find("max_body_bytes"), 16 * 1024 * 1024,
+        !Integer(entry.Find("max_body_bytes"), kChatBodyBytes,
                  &value.max_body_bytes))
       return Invalid();
     policy.clients.push_back(std::move(value));
@@ -188,19 +236,69 @@ Status LoadGatewayClientPolicy(const std::string& path,
   return ParseGatewayClientPolicy(raw, output);
 }
 
+std::string ClientPolicyDigest(const GatewayClientPolicy& policy) {
+  if (!ValidPolicy(policy)) return {};
+  std::string raw = "q4t-client-policy-v1\n" + std::to_string(policy.version) +
+                    '\n' + std::to_string(policy.revision) + '\n' +
+                    (policy.fair_queue ? "1\n" : "0\n");
+  for (const auto& client : policy.clients) {
+    raw += client.id;
+    for (const auto value : {client.max_inflight, client.max_control_inflight,
+                             client.max_prompt_tokens, client.max_output_tokens,
+                             client.max_body_bytes, client.requests_per_minute,
+                             client.tokens_per_minute})
+      raw += ':' + std::to_string(value);
+    if (policy.version >= 4)
+      raw += ':' + std::to_string(client.max_file_body_bytes);
+    raw += '\n';
+  }
+  return trace::HexDigest(trace::Sha256(
+      {reinterpret_cast<const uint8_t*>(raw.data()), raw.size()}));
+}
+
 Status ClientAdmission::Configure(GatewayClientPolicy policy) {
+  const std::lock_guard lock(policy_mutex_);
   if (Enabled()) return Status::Fail("client policy already configured");
   if (!ValidPolicy(policy)) return Invalid();
-  policy_ = std::move(policy);
+  policy_.store(std::make_shared<const GatewayClientPolicy>(std::move(policy)),
+                std::memory_order_release);
+  return Status();
+}
+
+Status ClientAdmission::Publish(GatewayClientPolicy policy,
+                                uint64_t expected_revision,
+                                uint32_t global_inflight,
+                                uint32_t global_queued) {
+  const std::lock_guard lock(policy_mutex_);
+  const auto previous = Snapshot();
+  if (!previous || previous->version < 3 || policy.version < 3 || rates_frozen_ ||
+      !ValidPolicy(policy) || expected_revision != previous->revision ||
+      policy.revision <= previous->revision ||
+      policy.gateway_token != previous->gateway_token ||
+      policy.fair_queue != previous->fair_queue ||
+      policy.clients.size() < previous->clients.size() ||
+      global_inflight > INT32_MAX || global_queued > INT32_MAX ||
+      !q4t::server::FairCapacity(policy, global_inflight, global_queued))
+    return Status::Fail("invalid client policy update");
+  for (size_t i = 0; i < previous->clients.size(); ++i) {
+    if (policy.clients[i].id != previous->clients[i].id)
+      return Status::Fail("client slots cannot be reassigned");
+    // Explicit v4 -> v3 compatibility migration may remove the new field
+    // only after file capacity has been aligned with the legacy body cap.
+    // No hidden change of an effective limit and no counter replacement.
+    if (policy.version < previous->version &&
+        previous->clients[i].max_file_body_bytes !=
+            policy.clients[i].max_body_bytes)
+      return Status::Fail("file capacity must match legacy body limit");
+  }
+  policy_.store(std::make_shared<const GatewayClientPolicy>(std::move(policy)),
+                std::memory_order_release);
   return Status();
 }
 
 bool ClientAdmission::FairCapacity(int inflight, int queued) const {
-  if (!FairQueue()) return true;
-  uint64_t total = 0;
-  for (const auto& client : policy_.clients) total += client.max_inflight;
-  return inflight > 0 && queued >= static_cast<int>(Size()) &&
-         total <= static_cast<uint64_t>(inflight);
+  const auto policy = Snapshot();
+  return !policy || q4t::server::FairCapacity(*policy, inflight, queued);
 }
 
 void ClientAdmission::Counters::Advance(ClientClock::time_point now) {
@@ -212,9 +310,14 @@ void ClientAdmission::Counters::Advance(ClientClock::time_point now) {
 }
 
 ClientRateUsage ClientAdmission::RateUsage(size_t index,
-                                           ClientClock::time_point now) const {
+                                           ClientClock::time_point now,
+                                           ClientRateDomain domain) const {
   if (index >= Size()) throw std::out_of_range("client rate index");
-  const auto& counter = counters_[index];
+  if (domain != ClientRateDomain::kOnline && domain != ClientRateDomain::kBatch)
+    throw std::invalid_argument("client rate domain");
+  const auto& counter = domain == ClientRateDomain::kBatch
+                            ? batch_counters_[index]
+                            : counters_[index];
   const std::lock_guard lock(counter.mutex);
   auto value = counter.rate;
   if (!counter.window_started ||
@@ -229,65 +332,352 @@ ClientRateUsage ClientAdmission::RateUsage(size_t index,
   return value;
 }
 
+Status ClientAdmission::EnableRateRecovery() {
+  const std::lock_guard lock(policy_mutex_);
+  if (Version() < 3 || rate_recovery_enabled_ || rates_frozen_)
+    return Status::Fail("rate recovery unavailable");
+  rate_recovery_enabled_ = true;
+  return Status();
+}
+
+std::string ClientAdmission::RateRestoreReceipt() const {
+  const std::lock_guard lock(policy_mutex_);
+  return rate_restore_receipt_;
+}
+
+Status ClientAdmission::RestoreRates(const ClientRateState* state,
+                                     std::string_view receipt,
+                                     ClientClock::time_point now) {
+  if (!Hex64(receipt)) return Status::Fail("invalid rate restore receipt");
+  std::string accepted_receipt(receipt);
+  std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);
+  if (!policy_lock.owns_lock()) return Status::Fail("rate recovery busy");
+  if (!rate_recovery_enabled_) return Status::Fail("rate recovery unavailable");
+  if (rates_recovered_)
+    return receipt == rate_restore_receipt_
+               ? Status()
+               : Status::Fail("rate recovery already consumed");
+  if (rates_frozen_) return Status::Fail("rate recovery already frozen");
+  const auto policy = Snapshot();
+  const auto now_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          now.time_since_epoch())
+                          .count();
+  if (state) {
+    if (!ValidClientRateState(*state) || state->captured_ns > now_ns ||
+        state->policy_revision > policy->revision ||
+        state->clients.size() > policy->clients.size() ||
+        (state->policy_revision == policy->revision &&
+         state->policy_sha256 != ClientPolicyDigest(*policy)))
+      return Status::Fail("rate restore policy mismatch");
+    for (size_t i = 0; i < state->clients.size(); ++i)
+      if (state->clients[i].id != policy->clients[i].id)
+        return Status::Fail("rate restore identity mismatch");
+  }
+  std::array<std::unique_lock<std::mutex>, kMaxClients * 2> locks;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    auto& counter = counters_[i];
+    locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
+    auto& batch = batch_counters_[i];
+    locks[i + kMaxClients] = std::unique_lock(batch.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || !locks[i + kMaxClients].owns_lock() ||
+        counter.rate_active || batch.rate_active || counter.data.load())
+      return Status::Fail("rate recovery busy");
+  }
+  // No request can hold a rate lease or acquire one across this replacement.
+  // The private owner performs it only before its public generation binding.
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    for (bool batch : {false, true}) {
+      auto& counter = batch ? batch_counters_[i] : counters_[i];
+      counter.rate = {};
+      counter.window_started = false;
+      if (state && i < state->clients.size()) {
+        const auto& record = state->clients[i];
+        counter.rate = batch ? record.batch_usage : record.usage;
+        counter.window_started =
+            batch ? record.batch_window_started : record.window_started;
+        counter.window = ClientClock::time_point(std::chrono::nanoseconds(
+            batch ? record.batch_window_ns : record.window_ns));
+        if (counter.window_started) counter.Advance(now);
+      }
+    }
+  }
+  rate_restore_receipt_ = std::move(accepted_receipt);
+  rates_recovered_.store(true);
+  return Status();
+}
+
+Status ClientAdmission::FreezeRates(ClientRateState* state,
+                                    ClientClock::time_point now) {
+  if (!state || Version() < 3 || !rates_recovered_)
+    return Status::Fail("rate recovery incomplete");
+  rates_frozen_.store(true);
+  std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);
+  if (!policy_lock.owns_lock()) return Status::Fail("rate checkpoint busy");
+  const auto policy = Snapshot();
+  std::array<std::unique_lock<std::mutex>, kMaxClients * 2> locks;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    auto& counter = counters_[i];
+    locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
+    auto& batch = batch_counters_[i];
+    locks[i + kMaxClients] = std::unique_lock(batch.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || !locks[i + kMaxClients].owns_lock() ||
+        counter.rate_active || batch.rate_active)
+      return Status::Fail("rate checkpoint busy");
+  }
+  ClientRateState result;
+  result.captured_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                           now.time_since_epoch())
+                           .count();
+  result.policy_revision = policy->revision;
+  result.policy_sha256 = ClientPolicyDigest(*policy);
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    const auto& counter = counters_[i];
+    result.clients.push_back(
+        {policy->clients[i].id, counter.window_started,
+         counter.window_started
+             ? std::chrono::duration_cast<std::chrono::nanoseconds>(
+                   counter.window.time_since_epoch())
+                   .count()
+             : 0,
+         counter.rate});
+    auto& record = result.clients.back();
+    const auto& batch = batch_counters_[i];
+    record.batch_window_started = batch.window_started;
+    record.batch_window_ns =
+        batch.window_started
+            ? std::chrono::duration_cast<std::chrono::nanoseconds>(
+                  batch.window.time_since_epoch())
+                  .count()
+            : 0;
+    record.batch_usage = batch.rate;
+  }
+  if (!ValidClientRateState(result)) return Status::Fail("invalid rate state");
+  *state = std::move(result);
+  return Status();
+}
+
 ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           const ClientIdentity& identity,
                                           uint64_t prompt, uint64_t output,
-                                          ClientClock::time_point now) {
+                                          ClientClock::time_point now,
+                                          uint64_t auxiliary_output,
+                                          uint64_t preparation_output) {
+  if (precharged_) {
+    if (precharge_claimed_) return ClientRateResult::kInvalid;
+    precharge_claimed_ = true;
+    return ClaimPrecharge(admission, identity, prompt, output, auxiliary_output,
+                          preparation_output);
+  }
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
-  if (identity.owner_ != &admission) return ClientRateResult::kInvalid;
-  if (!identity.Scoped())
-    return admission.Enabled() ? ClientRateResult::kInvalid
-                               : ClientRateResult::kAllowed;
-  const auto* limits = identity.limits_;
-  if (identity.index_ >= admission.Size() ||
-      limits != &admission.policy_.clients[identity.index_] ||
-      prompt > limits->max_prompt_tokens || output > limits->max_output_tokens)
+  if (domain_ != ClientRateDomain::kOnline &&
+      domain_ != ClientRateDomain::kBatch)
     return ClientRateResult::kInvalid;
-  if (!limits->requests_per_minute && !limits->tokens_per_minute)
+  if (auxiliary_output > kMaxAuxiliaryOutputTokens ||
+      preparation_output > kMaxPreparationOutputTokens ||
+      output > UINT64_MAX - auxiliary_output ||
+      output + auxiliary_output > UINT64_MAX - preparation_output ||
+      prompt > UINT64_MAX - output - auxiliary_output - preparation_output)
+    return ClientRateResult::kInvalid;
+  if (identity.owner_ != &admission || !identity.Allowed())
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped()) {
+    if (admission.Enabled()) return ClientRateResult::kInvalid;
+    admission_ = &admission;
     return ClientRateResult::kAllowed;
-  auto& counter = admission.counters_[identity.index_];
+  }
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
+    return ClientRateResult::kInvalid;
+  const auto* limits = &policy->clients[identity.index_];
+  if (prompt > limits->max_prompt_tokens || output > limits->max_output_tokens)
+    return ClientRateResult::kInvalid;
+  // v3 records usage even while enforcement is disabled. Re-enabling a quota
+  // cannot erase requests, tokens or outstanding reservations in the window.
+  if (policy->version < 3 && !limits->requests_per_minute &&
+      !limits->tokens_per_minute) {
+    admission_ = &admission;
+    client_ = identity.index_;
+    prompt_ = prompt;
+    return ClientRateResult::kAllowed;
+  }
+  auto& counter = domain_ == ClientRateDomain::kBatch
+                      ? admission.batch_counters_[identity.index_]
+                      : admission.counters_[identity.index_];
   const std::lock_guard lock(counter.mutex);
+  if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counter.Advance(now);
   auto& rate = counter.rate;
-  if (limits->requests_per_minute &&
+  if (!internal_input_ && limits->requests_per_minute &&
       rate.requests >= limits->requests_per_minute) {
-    ++rate.rpm_rejected;
+    rate.rpm_rejected = Add(rate.rpm_rejected, 1);
     return ClientRateResult::kRpm;
   }
-  const uint64_t amount = prompt + output;
-  if (limits->tokens_per_minute &&
-      rate.tokens + rate.reserved + amount > limits->tokens_per_minute) {
-    ++rate.tpm_rejected;
+  const uint64_t amount =
+      prompt + output + auxiliary_output + preparation_output;
+  if (limits->tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
+                                       amount) > limits->tokens_per_minute) {
+    rate.tpm_rejected = Add(rate.tpm_rejected, 1);
     return ClientRateResult::kTpm;
   }
-  ++rate.requests;
-  ++rate.admitted;
+  if (!internal_input_) rate.requests = Add(rate.requests, 1);
+  rate.admitted = Add(rate.admitted, 1);
   rate.reserved += amount;
+  ++counter.rate_active;
   counters_ = &counter;
+  admission_ = &admission;
+  client_ = identity.index_;
   prompt_ = prompt;
   reserved_ = amount;
   return ClientRateResult::kAllowed;
 }
 
+ClientRateResult ClientRateLease::ReserveInternalInput(
+    ClientAdmission& admission, const ClientIdentity& identity,
+    uint64_t prompt, ClientClock::time_point now) {
+  if (attempted_ || domain_ != ClientRateDomain::kOnline)
+    return ClientRateResult::kInvalid;
+  internal_input_ = true;
+  return Reserve(admission, identity, prompt, 0, now);
+}
+
+ClientRateResult ClientRateLease::PrechargeBatch(
+    ClientAdmission& admission, const ClientIdentity& identity,
+    uint64_t prompt_capacity, uint64_t output, ClientClock::time_point now,
+    uint64_t auxiliary_output, uint64_t preparation_output) {
+  if (domain_ != ClientRateDomain::kBatch || attempted_)
+    return ClientRateResult::kInvalid;
+  const auto result = Reserve(admission, identity, prompt_capacity, output, now,
+                              auxiliary_output, preparation_output);
+  if (result != ClientRateResult::kAllowed) return result;
+  precharged_ = true;
+  precharged_identity_ = identity;
+  prompt_capacity_ = prompt_capacity;
+  output_capacity_ = output;
+  auxiliary_capacity_ = auxiliary_output;
+  preparation_capacity_ = preparation_output;
+  // No native model input has been admitted. Unused capacity is refunded on
+  // cancellation or failed publication; observed work alone is settled.
+  prompt_ = 0;
+  return result;
+}
+
+bool ClientRateLease::PrechargedFor(const ClientIdentity& identity) const {
+  return precharged_ && admission_ && domain_ == ClientRateDomain::kBatch &&
+         identity.owner_ == admission_ && identity.Allowed() &&
+         identity.index_ == precharged_identity_.index_ &&
+         identity.Id() == precharged_identity_.Id();
+}
+
+ClientRateResult ClientRateLease::ClaimPrecharge(
+    ClientAdmission& admission, const ClientIdentity& identity, uint64_t prompt,
+    uint64_t output, uint64_t auxiliary_output, uint64_t preparation_output) {
+  if (admission_ != &admission || !PrechargedFor(identity) ||
+      prompt > prompt_capacity_ || output > output_capacity_ ||
+      auxiliary_output > auxiliary_capacity_ ||
+      preparation_output > preparation_capacity_)
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped()) {
+    if (admission.Enabled()) return ClientRateResult::kInvalid;
+    prompt_ = prompt;
+    return ClientRateResult::kAllowed;
+  }
+  const auto policy = admission.Snapshot();
+  if (!policy || client_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[client_].id)
+    return ClientRateResult::kInvalid;
+  const auto& limits = policy->clients[client_];
+  if (prompt > limits.max_prompt_tokens || output > limits.max_output_tokens)
+    return ClientRateResult::kInvalid;
+  if (!counters_) {
+    if (policy->version >= 3 || limits.requests_per_minute ||
+        limits.tokens_per_minute)
+      return ClientRateResult::kInvalid;
+  } else {
+    if (counters_ != &admission.batch_counters_[client_])
+      return ClientRateResult::kInvalid;
+    const std::lock_guard lock(counters_->mutex);
+    if (admission.rates_frozen_) return ClientRateResult::kFrozen;
+  }
+  prompt_ = prompt;
+  return ClientRateResult::kAllowed;
+}
+
+ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
+                                               const ClientIdentity& identity,
+                                               uint64_t additional,
+                                               ClientClock::time_point now) {
+  if (!started_ || admission_ != &admission || identity.owner_ != &admission ||
+      identity.index_ != client_ || !identity.Allowed())
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped())
+    return admission.Enabled() ? ClientRateResult::kInvalid
+                               : ClientRateResult::kAllowed;
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
+    return ClientRateResult::kInvalid;
+  const auto& limits = policy->clients[identity.index_];
+  if (additional > limits.max_prompt_tokens ||
+      prompt_ > limits.max_prompt_tokens - additional)
+    return ClientRateResult::kInvalid;
+  if (!counters_) {
+    if (policy->version >= 3 || limits.requests_per_minute ||
+        limits.tokens_per_minute)
+      return ClientRateResult::kInvalid;
+    prompt_ += additional;
+    return ClientRateResult::kAllowed;
+  }
+  auto* expected = domain_ == ClientRateDomain::kBatch
+                       ? &admission.batch_counters_[identity.index_]
+                       : &admission.counters_[identity.index_];
+  if (counters_ != expected) return ClientRateResult::kInvalid;
+  const std::lock_guard lock(counters_->mutex);
+  if (admission.rates_frozen_) return ClientRateResult::kFrozen;
+  counters_->Advance(now);
+  auto& rate = counters_->rate;
+  // Consume already reserved input capacity first. Additional work beyond it
+  // still goes through the same atomic minute limit.
+  const auto unused = precharged_ && prompt_capacity_ > prompt_
+                          ? prompt_capacity_ - prompt_
+                          : 0;
+  const auto extra = additional > unused ? additional - unused : 0;
+  if ((extra || !precharged_) && limits.tokens_per_minute &&
+      Add(Add(rate.tokens, rate.reserved), extra) > limits.tokens_per_minute) {
+    rate.tpm_rejected = Add(rate.tpm_rejected, 1);
+    return ClientRateResult::kTpm;
+  }
+  if (extra > UINT64_MAX - rate.reserved || extra > UINT64_MAX - reserved_)
+    return ClientRateResult::kInvalid;
+  rate.reserved += extra;
+  reserved_ += extra;
+  prompt_ += additional;
+  if (precharged_) prompt_capacity_ = std::max(prompt_capacity_, prompt_);
+  return ClientRateResult::kAllowed;
+}
+
 void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
+  admission_ = nullptr;
   if (!counters_) return;
   const std::lock_guard lock(counters_->mutex);
   counters_->Advance(now);
   // Charge observed logical usage even if a handler ever exceeds its budget.
   // Such a bug must not silently turn into unaccounted tokens.
-  const uint64_t actual = started_ ? prompt_ + completion_ : 0;
+  const uint64_t actual = started_ ? Add(admitted_prompt_, completion_) : 0;
   auto& rate = counters_->rate;
   rate.reserved -= reserved_;
-  rate.tokens += actual;
-  rate.settled_tokens += actual;
+  rate.tokens = Add(rate.tokens, actual);
+  rate.settled_tokens = Add(rate.settled_tokens, actual);
+  --counters_->rate_active;
   counters_ = nullptr;
 }
 
 ClientIdentity ClientAdmission::Authenticate(
     std::string_view id, std::string_view gateway_token) const {
   ClientIdentity result;
-  if (!Enabled()) {
+  const auto policy = Snapshot();
+  if (!policy) {
     if (id.empty() && gateway_token.empty()) result.owner_ = this;
     return result;
   }
@@ -295,27 +685,45 @@ ClientIdentity ClientAdmission::Authenticate(
   unsigned char difference = 0;
   for (size_t i = 0; i < 64; ++i)
     difference |= static_cast<unsigned char>(gateway_token[i]) ^
-                  static_cast<unsigned char>(policy_.gateway_token[i]);
+                  static_cast<unsigned char>(policy->gateway_token[i]);
   if (difference) return result;
-  for (size_t i = 0; i < Size(); ++i) {
-    if (policy_.clients[i].id != id) continue;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    if (policy->clients[i].id != id) continue;
     result.owner_ = this;
-    result.limits_ = &policy_.clients[i];
+    result.policy_ = policy;
     result.index_ = i;
     return result;
   }
   return result;
 }
 
-const ClientLimits& ClientAdmission::Limits(size_t index) const {
-  return policy_.clients.at(index);
+ClientLimits ClientAdmission::Limits(size_t index) const {
+  const auto policy = Snapshot();
+  if (!policy) throw std::out_of_range("client policy index");
+  return policy->clients.at(index);
+}
+
+ClientIdentity ClientAdmission::RecoveryIdentity(size_t index) const {
+  ClientIdentity result;
+  const auto policy = Snapshot();
+  if (!policy || index >= policy->clients.size()) {
+    // Enumeration uses slot zero; an authenticated anonymous identity carries
+    // kMaxClients. Both name the same unscoped owner, never a configured slot.
+    if (!policy && (index == 0 || index == kMaxClients)) result.owner_ = this;
+    return result;
+  }
+  result.owner_ = this;
+  result.policy_ = policy;
+  result.index_ = index;
+  return result;
 }
 
 ClientUsage ClientAdmission::Usage(size_t index) const {
   if (index >= Size()) throw std::out_of_range("client counter index");
   const auto& counters = counters_[index];
-  return {counters.data.load(), counters.control.load(),
-          counters.data_rejected.load(), counters.control_rejected.load()};
+  return {counters.data.load(),          counters.control.load(),
+          counters.data_rejected.load(), counters.control_rejected.load(),
+          counters.cancel.load(),        counters.cancel_rejected.load()};
 }
 
 ClientLease::~ClientLease() {
@@ -326,6 +734,25 @@ ClientLease::~ClientLease() {
     active_->fetch_sub(1, std::memory_order_release);
   }
   counters_->changed.notify_all();
+}
+
+bool ClientLease::TransferTo(ClientLease& destination) noexcept {
+  if (&destination == this || !admitted_ || destination.attempted_)
+    return false;
+  destination.active_ = active_;
+  destination.counters_ = counters_;
+  destination.finishing_ = finishing_;
+  destination.handing_off_ = handing_off_;
+  destination.attempted_ = true;
+  destination.admitted_ = true;
+  destination.identity_ = identity_;
+  destination.lane_ = lane_;
+  active_ = nullptr;
+  counters_ = nullptr;
+  finishing_ = nullptr;
+  handing_off_ = false;
+  admitted_ = false;
+  return true;
 }
 
 void ClientLease::BeginHandoff() noexcept {
@@ -339,21 +766,38 @@ bool ClientLease::Acquire(ClientAdmission& admission,
                           const ClientIdentity& identity, ClientLane lane) {
   if (attempted_) return false;
   attempted_ = true;
-  if (identity.owner_ != &admission ||
-      (lane != ClientLane::kData && lane != ClientLane::kControl))
+  if (identity.owner_ != &admission || !identity.Allowed() ||
+      (lane != ClientLane::kData && lane != ClientLane::kControl &&
+       lane != ClientLane::kCancel))
     return false;
-  if (!identity.Scoped()) return !admission.Enabled();
-  if (identity.index_ >= admission.Size() ||
-      identity.limits_ != &admission.policy_.clients[identity.index_])
+  if (!identity.Scoped()) {
+    admitted_ = !admission.Enabled();
+    if (admitted_) {
+      identity_ = identity;
+      lane_ = lane;
+    }
+    return admitted_;
+  }
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
     return false;
   auto& counters = admission.counters_[identity.index_];
   const bool control = lane == ClientLane::kControl;
-  auto& active = control ? counters.control : counters.data;
-  auto& rejected = control ? counters.control_rejected : counters.data_rejected;
-  const uint32_t limit = control ? identity.limits_->max_control_inflight
-                                 : identity.limits_->max_inflight;
-  auto& finishing =
-      control ? counters.control_finishing : counters.data_finishing;
+  const bool cancel = lane == ClientLane::kCancel;
+  auto& active = cancel    ? counters.cancel
+                 : control ? counters.control
+                           : counters.data;
+  auto& rejected = cancel    ? counters.cancel_rejected
+                   : control ? counters.control_rejected
+                             : counters.data_rejected;
+  const uint32_t limit =
+      cancel    ? 1
+      : control ? policy->clients[identity.index_].max_control_inflight
+                : policy->clients[identity.index_].max_inflight;
+  auto& finishing = cancel    ? counters.cancel_finishing
+                    : control ? counters.control_finishing
+                              : counters.data_finishing;
   std::unique_lock lock(counters.mutex);
   if (active.load(std::memory_order_relaxed) >= limit && finishing) {
     counters.changed.wait_for(lock, kClientHandoffWait, [&] {
@@ -365,6 +809,9 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     counters_ = &counters;
     active_ = &active;
     finishing_ = &finishing;
+    admitted_ = true;
+    identity_ = identity;
+    lane_ = lane;
     return true;
   }
   rejected.fetch_add(1, std::memory_order_relaxed);
@@ -378,7 +825,7 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
     out += std::string("# HELP ") + name + ' ' + help + "\n# TYPE " + name +
            ' ' + type + '\n';
   };
-  header("q4t_client_policy_enabled", "Immutable gateway policy enabled.",
+  header("q4t_client_policy_enabled", "Gateway client policy enabled.",
          "gauge");
   out +=
       "q4t_client_policy_enabled " + std::to_string(admission.Enabled()) + '\n';
@@ -397,17 +844,28 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
   header("q4t_client_rate_window_remaining_ms",
          "Fixed window remaining milliseconds.", "gauge");
   header("q4t_client_rate_admitted_total",
-         "Chats accepted by enabled rate policy.", "counter");
+         "Chats tracked by logical rate accounting.", "counter");
   header("q4t_client_rate_settled_tokens_total",
          "Logical tokens settled since startup.", "counter");
   header("q4t_client_rate_rejected_total", "Minute quota refusals by reason.",
          "counter");
   header("q4t_client_rate_limit", "Configured minute quota; zero disables.",
          "gauge");
-  for (size_t i = 0; i < admission.Size(); ++i) {
-    const auto& limits = admission.Limits(i);
+  for (const auto* name : {"requests", "tokens", "reserved_tokens",
+                           "window_remaining_ms", "limit"})
+    header(("q4t_client_batch_rate_" + std::string(name)).c_str(),
+           "Independent Batch minute quota accounting.", "gauge");
+  for (const auto* name :
+       {"admitted_total", "settled_tokens_total", "rejected_total"})
+    header(("q4t_client_batch_rate_" + std::string(name)).c_str(),
+           "Independent Batch minute quota accounting.", "counter");
+  const auto policy = admission.Snapshot();
+  for (size_t i = 0; policy && i < policy->clients.size(); ++i) {
+    const auto& limits = policy->clients[i];
     const auto usage = admission.Usage(i);
     const auto rate = admission.RateUsage(i);
+    const auto batch =
+        admission.RateUsage(i, ClientClock::now(), ClientRateDomain::kBatch);
     const auto client_label = "{client=\"" + limits.id + "\"} ";
     const auto gauge = [&](const char* name, uint64_t value) {
       out += std::string(name) + client_label + std::to_string(value) + '\n';
@@ -418,6 +876,13 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
     gauge("q4t_client_rate_window_remaining_ms", rate.window_remaining_ms);
     gauge("q4t_client_rate_admitted_total", rate.admitted);
     gauge("q4t_client_rate_settled_tokens_total", rate.settled_tokens);
+    gauge("q4t_client_batch_rate_requests", batch.requests);
+    gauge("q4t_client_batch_rate_tokens", batch.tokens);
+    gauge("q4t_client_batch_rate_reserved_tokens", batch.reserved);
+    gauge("q4t_client_batch_rate_window_remaining_ms",
+          batch.window_remaining_ms);
+    gauge("q4t_client_batch_rate_admitted_total", batch.admitted);
+    gauge("q4t_client_batch_rate_settled_tokens_total", batch.settled_tokens);
     for (bool tpm : {false, true}) {
       const auto labels = "{client=\"" + limits.id + "\",kind=\"" +
                           (tpm ? "tpm" : "rpm") + "\"} ";
@@ -427,21 +892,37 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
              std::to_string(tpm ? limits.tokens_per_minute
                                 : limits.requests_per_minute) +
              '\n';
+      out += "q4t_client_batch_rate_rejected_total" + labels +
+             std::to_string(tpm ? batch.tpm_rejected : batch.rpm_rejected) +
+             '\n';
+      out += "q4t_client_batch_rate_limit" + labels +
+             std::to_string(tpm ? limits.tokens_per_minute
+                                : limits.requests_per_minute) +
+             '\n';
     }
-    for (const bool control : {false, true}) {
+    for (const auto lane :
+         {ClientLane::kData, ClientLane::kControl, ClientLane::kCancel}) {
+      const bool control = lane == ClientLane::kControl;
+      const bool cancel = lane == ClientLane::kCancel;
       const auto labels = "{client=\"" + limits.id + "\",lane=\"" +
-                          (control ? "control" : "data") + "\"} ";
-      out +=
-          "q4t_client_requests_active" + labels +
-          std::to_string(control ? usage.control_active : usage.data_active) +
-          '\n';
+                          (cancel    ? "cancel"
+                           : control ? "control"
+                                     : "data") +
+                          "\"} ";
+      out += "q4t_client_requests_active" + labels +
+             std::to_string(cancel    ? usage.cancel_active
+                            : control ? usage.control_active
+                                      : usage.data_active) +
+             '\n';
       out += "q4t_client_requests_limit" + labels +
-             std::to_string(control ? limits.max_control_inflight
-                                    : limits.max_inflight) +
+             std::to_string(cancel    ? 1
+                            : control ? limits.max_control_inflight
+                                      : limits.max_inflight) +
              '\n';
       out += "q4t_client_capacity_rejected_total" + labels +
-             std::to_string(control ? usage.control_rejected
-                                    : usage.data_rejected) +
+             std::to_string(cancel    ? usage.cancel_rejected
+                            : control ? usage.control_rejected
+                                      : usage.data_rejected) +
              '\n';
     }
   }

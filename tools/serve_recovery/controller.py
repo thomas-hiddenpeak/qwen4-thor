@@ -17,8 +17,9 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import client_policy as cp, gateway as ingress
 from tools.serve_ops import transport
 from tools.serve_recovery import binding, bundle, child, control, core_http, jobs
-from tools.serve_recovery import journal, ledger, monitor, ownership, policy
-from tools.serve_service import auxiliary, memory, package as engine, supervisor
+from tools.serve_recovery import journal, ledger, monitor, observation_io, ownership, policy
+from tools.serve_recovery import progress
+from tools.serve_service import memory, package as engine, supervisor
 
 
 def health_fault(value, status):
@@ -33,11 +34,33 @@ def health_fault(value, status):
     return policy.FaultKind.PLE_UNAVAILABLE if value['gpu_healthy'] else policy.FaultKind.CUDA_CONTEXT
 
 
+def model_command(package, base, config, policy_path):
+    command = engine.command(Path(package)/'engine', base,
+                              state_directory=config.get('state_directory'))
+    command[command.index('--client-policy-file')+1] = str(policy_path)
+    return command
+
+
+def validate_configuration(config):
+    version = config.get('version')
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6),
+                   'unsupported controller config')
+    ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
+        (('state_directory',) if version >= 2 else ()) +
+        (('retention_context',) if version >= 3 else ()) +
+        (('limits',) if version >= 4 else ()) +
+        (('profiles',) if version >= 5 else ()) +
+        (('resources', 'resource_worker') if version >= 6 else ()))
+    if version >= 6:
+        from tools.serve_recovery import resource_client
+        resource_client.validate_binding(config['resources'])
+        resource_client.validate_worker(config['resource_worker'])
+    # Retention-only provenance never participates in model/recovery decisions.
+
+
 class Controller:
     def __init__(self, config, channel):
-        ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory'))
-        ledger.require(type(config['version']) is int and config['version'] == 1,
-                       'unsupported controller config')
+        validate_configuration(config)
         self.config, self.channel = config, channel
         self.package = Path(config['package'])
         self.root_pid = int(os.environ['Q4T_GUARDIAN_PID'])
@@ -45,18 +68,20 @@ class Controller:
         self.lease_fd = int(os.environ['Q4T_LEASE_FD'])
         self.lease_path = os.environ['Q4T_LEASE_PATH']
         self.continuous = os.environ['Q4T_CONTINUOUS_MODEL_RECOVERY'] == '1'
+        self.cold_device_recovery = os.environ.get('Q4T_COLD_DEVICE_RECOVERY') == '1'
         child.verify_lease(self.lease_fd, self.lease_path)
         self.stopping = False
         self.phase, self.reason = 'STARTING', 'initializing'
         self.heartbeat_at = 0
         self.monitor = monitor.Monitor(self.lease_fd)
-        self.observations = auxiliary.Observations()
+        self.observations = observation_io.Observations()
         self.model, self.grant, self.probe_job = None, None, None
         self.ready = False
         self.frozen = False
         self.quarantined = False
         self.watchdog = None
         self.logger = None
+        self.capture = None
         self.need_cuda_probe = False
         self.probe_passed = False
         self.last_fault = policy.FaultKind.MODEL_EXIT
@@ -66,21 +91,57 @@ class Controller:
         self.ownership_unknown = False
         self.stable_at = None
         self.stable_reported = False
+        self.progress = None
+        self.progress_detector = progress.Detector()
+        self.progress_fault = None
         self.directory = Path(config['directory'])/f'controller-{channel.generation}'
         self.directory.mkdir(mode=0o700)
         self.manifest = bundle.verify(self.package, config['manifest_sha256'])
         self.base = engine.verify(self.package/'engine', self.manifest['engine_manifest_sha256'])
         self.settings = self.base['settings']
+        # Validate state binding before authorizing any model launch. The
+        # directory is deployment-scoped, never controller/model-generation-scoped.
+        engine.command(self.package/'engine', self.base,
+                       state_directory=config.get('state_directory'))
         _, self.base_policy = cp.read(self.package/'engine/client-policy.json')
+        self.policies = None
+        self.usage = None
+        self.profiles = None
+        self.resource_memory = None
+        if config['version'] >= 6:
+            from tools.serve_recovery import resource_client as resource_memory
+            ledger.require(config['resources']['publication']['service_id'] == channel.service_id,
+                           'resource memory service binding changed')
+            self.resource_memory = resource_memory.Observer(config['resources'], self.lease_fd,
+                worker=config['resource_worker'])
+        if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
+            from tools.serve_recovery import quota_policy, quota_runtime, usage_runtime
+            ledger.require(config['version'] >= 4 and
+                config['limits']['service_id'] == channel.service_id and
+                config['limits']['state_directory'] == config['state_directory'],
+                'limits service binding changed')
+            self.base_policy = quota_policy.from_base(self.base_policy)
+            self.policies = quota_runtime.Policies(config['limits'])
+            self.usage = usage_runtime.Recovery(config['limits'])
+        if self.manifest.get('recovery_profiles') is not None:
+            from tools.serve_recovery import profile_controller
+            ledger.require(config['version'] >= 5 and config['profiles'] == config['limits'],
+                           'profile state service binding changed')
+            self.profiles = profile_controller.Profiles(self,
+                self.manifest['recovery_profiles'], config['profiles'])
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
 
     def observation(self):
         if self.monitor.fatal:
             return 'DEVICE_FAILURE'
-        if (self.monitor.visibility != 'AVAILABLE' or
-                any(row['state'] == 'UNAVAILABLE' for row in self.observations.snapshot().values()) or
-                self.ownership_unknown):
+        resources = getattr(self, 'resource_memory', None)
+        if (resources is not None and resources.snapshot() is None or
+                self.monitor.visibility != 'AVAILABLE' or
+                self.observations.unavailable or
+                self.ownership_unknown or
+                (self.ready and (self.progress is None or
+                                 self.progress.snapshot() is None))):
             return 'UNKNOWN'
         return 'AVAILABLE'
 
@@ -88,11 +149,51 @@ class Controller:
         # No detached heartbeat thread. Every receipt, HTTP wait and cleanup
         # progresses this same loop; jobs never block it on NVML or fsync.
         self.monitor.tick(allow_query=allow_query and not self.stopping and not self.frozen)
+        resources = getattr(self, 'resource_memory', None)
+        if resources is not None:
+            try: resources.tick(allow_query=allow_query and not self.stopping and not self.frozen)
+            except Exception: resources.unknown('resource_collector_failed')
+        if self.logger is not None:
+            self.logger.tick()
+        if getattr(self, 'policies', None) is not None:
+            try:
+                self.policies.step(allow_start=allow_query and self.model is not None and
+                                   not self.stopping and not self.frozen)
+            except Exception:
+                self.policies.error = 'client_policy_auxiliary_unavailable'
+        if getattr(self, 'usage', None) is not None:
+            try:
+                self.usage.step(allow_start=allow_query and self.model is not None and
+                                not self.stopping and not self.frozen)
+            except Exception:
+                self.usage.error = 'client_usage_auxiliary_unavailable'
+        if getattr(self, 'profiles', None) is not None:
+            self.profiles.step(allow_start=allow_query and not self.stopping and not self.frozen)
+        try:
+            value = self.progress.poll() if self.progress is not None else None
+            self.progress_fault = self.progress_detector.assess(value)
+        except Exception:
+            # Collector/decoder failures are auxiliary, including unexpected
+            # Python errors. Never let an observer restart a healthy model.
+            value, self.progress_fault = None, None
+            self.progress_detector.pending.clear()
+            self.progress_detector.confirmed = None
+            if self.progress is not None:
+                self.progress.unknown('progress_collector_failed')
         now = time.monotonic()
         if now >= self.heartbeat_at:
             reason = (self.monitor.category.lower() if self.phase == 'READY' and
                       self.monitor.visibility != 'AVAILABLE' else self.reason)
-            self.channel.health(self.phase, self.observation(), reason)
+            if (self.phase == 'READY' and self.observations.unavailable and
+                    not self.monitor.fatal):
+                reason = 'auxiliary_io_unavailable'
+            elif self.phase == 'READY' and value is None and not self.monitor.fatal:
+                reason = 'progress_observation_unavailable'
+            if (self.phase == 'READY' and resources is not None and
+                    resources.snapshot() is None and not self.monitor.fatal):
+                reason = 'resource_observation_unavailable'
+            self.channel.health(self.phase, self.observation(), reason,
+                                auxiliary_io=self.observations.snapshot(self.logger))
             self.channel.event('heartbeat')
             self.heartbeat_at = now+0.25
         return self.stopping or self.monitor.fatal
@@ -146,12 +247,16 @@ class Controller:
         if self.ownership_unknown:
             self.reason = 'compute_exit_unconfirmed'
             return None
-        if self.monitor.job is not None:
+        resources = getattr(self, 'resource_memory', None)
+        if self.monitor.job is not None or resources is not None and resources.job is not None:
             self.reason = 'query_pending'
             return None
         try:
-            if memory.read()['available_bytes'] < 4096*1024**2:
+            observed_memory = memory.read()
+            if observed_memory['available_bytes'] < 4096*1024**2:
                 self.reason = 'memory_headroom'
+                return None
+            if self.profiles is not None and not self.profiles.prepare_launch(self, observed_memory):
                 return None
             bundle.check_assets(Path(self.base['model_dir']), self.manifest['model_assets'], read_edges=True)
             supervisor.preflight_ports(self.settings)
@@ -168,7 +273,7 @@ class Controller:
         if not usable and self.probe_passed:
             usable = True
         if not usable:
-            if not self.continuous:
+            if not (self.continuous or self.cold_device_recovery):
                 self.reason = 'cold_nvml_unavailable'
                 return None
             proof = dict(cleanup_complete=True, resources_safe=True,
@@ -215,6 +320,17 @@ class Controller:
         del proof['dependency_ready']
         return proof
 
+    def classify_loaded(self, value, raw):
+        try:
+            return supervisor.classify(value, self.base['protocol_sha256'],
+                self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'],
+                self.settings['profile'])
+        except (ValueError, KeyError, TypeError, RuntimeError):
+            # A configuration mismatch is a permanent deployment fault, not
+            # missing telemetry and not a reason to cycle the controller.
+            self.quarantine('identity_invalid')
+            return None
+
     def load(self, proof):
         # Verify immutable deployment inputs again before requesting authority.
         try:
@@ -222,7 +338,7 @@ class Controller:
         except OSError:
             self.phase, self.reason = 'WAIT_DEPENDENCY', 'bundle_unavailable'
             return False
-        except (ValueError, KeyError):
+        except (ValueError, KeyError, TypeError, RuntimeError):
             self.quarantine('identity_invalid')
             return False
         reply = self.transaction('authorize', dict(role='model', proof=proof))
@@ -246,29 +362,54 @@ class Controller:
         raw = binding.policy_bytes(self.base_policy, token)
         policy_path = target/'client-policy.json'
         ingress.save(policy_path, raw)
-        command = engine.command(self.package/'engine', self.base)
-        command[command.index('--client-policy-file')+1] = str(policy_path)
+        command = model_command(self.package, self.base, self.config, policy_path)
         self.credentials = dict(client=self.check_client, token=token)
         self.current_binding = dict(port=self.settings['port'],
             operations_port=self.settings['operations_port'], gateway_token=token,
             client_policy_sha256=hashlib.sha256(raw).hexdigest(),
             binary_sha256=self.base['files']['q4t'], protocol_sha256=self.base['protocol_sha256'])
+        if self.profiles is not None:
+            self.current_binding['capacity_sha256'] = ledger.digest(self.settings['profile'])
         parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        observed, publisher = None, None
         try:
+            try:
+                observed, publisher = socket.socketpair(socket.AF_UNIX,
+                                                       socket.SOCK_SEQPACKET)
+            except OSError:
+                # Auxiliary allocation failure cannot prevent a model launch.
+                pass
+            progress_args = ([] if publisher is None else
+                ['--progress-fd', str(publisher.fileno())])
+            progress_fds = () if publisher is None else (publisher.fileno(),)
             self.model = subprocess.Popen([sys.executable, '-I', '-B',
                 str(ROOT/'tools/serve_recovery/child.py'), '--fd', str(endpoint.fileno()),
                 '--parent-pid', str(os.getpid()), '--parent-start', str(journal.process_start(os.getpid())),
                 '--lease-fd', str(self.lease_fd), '--lease-path', self.lease_path,
-                '--controller-generation', str(self.channel.generation), '--', *command],
+                '--controller-generation', str(self.channel.generation),
+                '--service-id', self.channel.service_id,
+                *progress_args, '--', *command],
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                pass_fds=(endpoint.fileno(), self.lease_fd), start_new_session=True)
+                pass_fds=(endpoint.fileno(), self.lease_fd, *progress_fds),
+                start_new_session=True)
             endpoint.close()
-            self.logger = supervisor.RotatingLog(target/'model.log', 4*1024**2,
-                                                 observations=self.observations)
-            self.logger.start(self.model.stdout)
+            if publisher is not None:
+                publisher.close()
+            self.logger = observation_io.Writer(target, self.lease_fd, self.observations)
+            self.capture = observation_io.Capture(self.logger, self.model.stdout)
             parent.settimeout(2)
             self.owner = journal.receive(parent)
             ledger.require(self.owner.pop('version') == 1, 'invalid child identity receipt')
+            if observed is not None:
+                try:
+                    identity = progress.Identity.owned(self.owner,
+                        self.channel.service_id, self.channel.generation,
+                        self.grant['generation'])
+                    self.progress = progress.Reader(observed, identity)
+                    observed = None  # Reader now owns this generation's FD.
+                except (OSError, ValueError, KeyError):
+                    # Missing namespace/observer state is not a core fault.
+                    pass
             reply = self.transaction('spawned', dict(role='model', ticket=self.grant['ticket'], owner=self.owner))
             if not reply['ok']:
                 self.frozen = True
@@ -278,6 +419,10 @@ class Controller:
         finally:
             endpoint.close()
             parent.close()
+            if observed is not None:
+                observed.close()
+            if publisher is not None:
+                publisher.close()
         self.watchdog = memory.Watchdog(self.settings,
             lambda owner: supervisor.signal_owner(owner, signal.SIGTERM))
         self.watchdog.attach(self.owner)
@@ -293,11 +438,8 @@ class Controller:
                 if reply['http_status'] == 200:
                     value = supervisor.probe(self.model.pid, self.settings['port'],
                         self.settings['operations_port'], stopped=self.tick, include_metrics=False)
-                    try:
-                        state = supervisor.classify(value, self.base['protocol_sha256'],
-                            self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'])
-                    except (ValueError, KeyError):
-                        self.quarantine('identity_invalid')
+                    state = self.classify_loaded(value, raw)
+                    if state is None:
                         return False
                     if state == 'READY':
                         break
@@ -310,52 +452,163 @@ class Controller:
         self.phase, self.reason = 'STARTING', 'generation_self_check'
         self.completed_self_checks += 1
         check = core_http.self_check(self.settings['port'], self.credentials, stopped=self.tick)
-        self.observations.save(target/'self-check.json', check, 'events')
-        # Load can overlap the quota window; readiness cannot bypass it.
+        self.logger.save_self_check(check)
+        if self.policies is not None:
+            # The bootstrap self-check runs before new user limits apply. A
+            # stored but unapplied policy may hold admission closed; it must
+            # never turn auxiliary unavailability into model restart churn.
+            attached, attach_at, health_at = False, 0, 0
+            while not self.stopping and (not attached or not self.policies.installed):
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'client_policy_wait'
+                if not attached and time.monotonic() >= attach_at:
+                    attach_at = time.monotonic()+1
+                    try:
+                        self.policies.attach(self.owner, self.grant['generation'], token)
+                        attached = True
+                    except Exception:
+                        self.policies.error = 'client_policy_auxiliary_unavailable'
+                self.tick()
+                if (self.model.poll() is not None or self.watchdog.tripped.is_set() or
+                        self.protect() or self.progress_fault is not None):
+                    return False
+                if time.monotonic() >= health_at:
+                    health_at = time.monotonic() + 2
+                    try:
+                        health = core_http.request(self.settings['operations_port'], 'GET',
+                                                  '/healthz', stopped=self.tick)
+                        if health_fault(json.loads(health['body']), health['http_status']) is not None:
+                            return False
+                    except (OSError, ValueError, RuntimeError, KeyError):
+                        pass  # Missing observation alone is not a core fault.
+                time.sleep(.025)
         deadline = result['quota_not_before_monotonic_ns']
+        if self.usage is not None and not self.restore_usage(deadline):
+            return False
+        exact_usage = self.usage is not None and self.usage.mode == 'exact' and self.usage.restored
+        # Only a durable consumed handoff and actual native restore can replace
+        # this wait. Missing/uncertain storage keeps the full safe window.
         self.reason = 'quota_window'
-        while time.monotonic_ns() < deadline and not self.stopping:
+        while not exact_usage and time.monotonic_ns() < deadline and not self.stopping:
             self.tick()
             if self.model.poll() is not None or self.protect():
                 return False
             time.sleep(0.025)
         if self.stopping:
             return False
-        for operation, extra in (('bind', dict(binding=self.current_binding)), ('ready', dict(verified=True))):
-            reply = self.transaction(operation, dict(role='model', ticket=self.grant['ticket'], **extra))
-            if not reply['ok']:
-                self.frozen = True
-                return False
+        reply = self.transaction('bind', dict(role='model', ticket=self.grant['ticket'],
+                                              binding=self.current_binding))
+        if not reply['ok']:
+            self.frozen = True
+            return False
+        if exact_usage:
+            self.channel.quota_restored(self.grant['generation'], self.owner['boot_id'], self.usage.receipt)
+        reply = self.transaction('ready', dict(role='model', ticket=self.grant['ticket'], verified=True))
+        if not reply['ok']:
+            self.frozen = True
+            return False
         self.ready = True
+        if self.profiles is not None:
+            self.profiles.started(self.grant['generation'])
         self.phase, self.reason = 'READY', 'serving'
         self.stable_at, self.stable_reported = time.monotonic(), False
+        if self.progress is not None:
+            self.progress.mark_ready(time.monotonic_ns())
         return True
 
-    def close_model(self):
+    def restore_usage(self, deadline):
+        attached, attach_at, health_at = False, 0, 0
+        while not self.stopping and (not attached or not self.usage.restored):
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'client_usage_wait'
+            if not attached and time.monotonic() >= attach_at:
+                attach_at = time.monotonic()+1
+                try:
+                    self.usage.attach(self.owner, self.grant['generation'], deadline)
+                    attached = True
+                except Exception:
+                    self.usage.error = 'client_usage_auxiliary_unavailable'
+            self.tick()
+            if (self.model.poll() is not None or self.watchdog.tripped.is_set() or
+                    self.protect() or self.progress_fault is not None):
+                return False
+            if time.monotonic() >= health_at:
+                health_at = time.monotonic()+2
+                try:
+                    health = core_http.request(self.settings['operations_port'], 'GET',
+                                              '/healthz', stopped=self.tick)
+                    if health_fault(json.loads(health['body']), health['http_status']) is not None:
+                        return False
+                except (OSError, ValueError, RuntimeError, KeyError):
+                    pass
+            time.sleep(.025)
+        return not self.stopping
+
+    def close_model(self, *, planned=False):
         if self.grant is not None:
             self.channel.admission(self.grant['generation'], False)
+        usage = getattr(self, 'usage', None)
+        if (usage is not None and (self.stopping or planned) and self.ready and not self.monitor.fatal and
+                self.model is not None and self.model.poll() is None and
+                not self.quarantined and not self.frozen and self.progress_fault is None and
+                (self.watchdog is None or not self.watchdog.tripped.is_set())):
+            try:
+                if usage.freeze():
+                    end = time.monotonic()+(30 if planned else 4)
+                    while not usage.sealed and time.monotonic()<end:
+                        self.tick(allow_query=False)
+                        if (self.monitor.fatal or self.model.poll() is not None or
+                                (self.watchdog is not None and self.watchdog.tripped.is_set())):
+                            break
+                        time.sleep(.025)
+            except Exception:
+                usage.error = 'client_usage_handoff_unknown'
+        if usage is not None:
+            try:usage.detach()
+            except Exception:pass
+        if self.policies is not None:
+            try:self.policies.detach()
+            except Exception:pass  # Owned tree cleanup still runs below.
         self.ready = False
+        if getattr(self, 'profiles', None) is not None:
+            self.profiles.retired()
+        if self.progress is not None:
+            self.progress.close()
+            self.progress = None
+        self.progress_detector = progress.Detector()
+        self.progress_fault = None
         if self.watchdog is not None:
             self.watchdog.close()
             self.watchdog = None
-        excluded = (() if self.monitor.job is None else (self.monitor.job.process.pid,))
+        if self.logger is not None:
+            self.logger.stop()
+        resources = getattr(self, 'resource_memory', None)
+        if resources is not None: resources.cancel()
+        observers = [self.monitor, *(() if resources is None else (resources,))]
+        excluded = tuple(o.job.process.pid for o in observers if o.job is not None)
         if not ownership.cleanup(lambda: self.tick(allow_query=False), exclude=excluded):
             self.quarantine('cleanup_failed')
             return False
         if self.model is not None:
             self.model.poll()
             self.model = None
-        if self.logger is not None and self.logger.thread is not None:
-            self.logger.thread.join(timeout=0.2)
+        if ((self.capture is not None and not self.capture.stop()) or
+                (self.logger is not None and not self.logger.reaped)):
+            self.quarantine('cleanup_failed')
+            return False
+        self.capture = None
         self.logger = None
         end = time.monotonic()+7
-        while self.monitor.job is not None and time.monotonic() < end:
+        while any(o.job is not None for o in observers) and time.monotonic() < end:
             self.tick(allow_query=False)
             time.sleep(0.025)
-        if self.monitor.job is not None:
+        if any(o.job is not None for o in observers):
             self.quarantine('cleanup_failed')
             return False
         if self.grant is not None:
+            if self.stopping:
+                # Guardian owns stop retirement and no longer processes model
+                # transactions. Do not spend another receipt timeout here.
+                self.grant = None
+                return True
             reply = self.transaction('retired', dict(role='model', ticket=self.grant['ticket'], verified=True))
             if not reply['ok']:
                 self.frozen = True
@@ -366,10 +619,20 @@ class Controller:
 
     def record_fault(self, kind):
         self.last_fault = kind
-        self.need_cuda_probe = kind == policy.FaultKind.CUDA_CONTEXT
+        if self.profiles is not None:
+            self.profiles.fault(self, kind)
+        self.need_cuda_probe = kind in (policy.FaultKind.CUDA_CONTEXT,
+                                        policy.FaultKind.EXECUTION_DEADLINE)
         self.phase, self.reason = 'RECOVERING', kind.value.lower()
         if self.grant is None:
             return
+        if (os.environ.get('Q4T_VERSION_RECOVERY') == '1' and
+                kind == policy.FaultKind.UNKNOWN_MODEL_EXIT and not self.stopping and
+                self.model is not None and not self.monitor.fatal and
+                (self.watchdog is None or not self.watchdog.tripped.is_set())):
+            returncode = self.model.poll()  # Popen retains its own waitpid result.
+            if returncode in (-4,-6,-11):
+                self.channel.model_exit(self.grant['generation'],self.owner,returncode)
         fingerprint = ledger.digest(dict(binary=self.base['files']['q4t'],
             assets=self.manifest['model_assets'], configuration=self.settings, cause=kind.value))
         reply = self.transaction('fault', dict(generation=self.grant['generation'],
@@ -388,6 +651,10 @@ class Controller:
             return policy.FaultKind.RESOURCE_EXHAUSTED
         if self.model.poll() is not None:
             return policy.FaultKind.UNKNOWN_MODEL_EXIT
+        if self.progress_fault is not None:
+            # Only per-request, fresh native facts can reach this branch.
+            # Retirement, cleanup and a device probe still precede a new grant.
+            return policy.FaultKind.EXECUTION_DEADLINE
         now = time.monotonic()
         if now-self.last_core_check < 2:
             return None
@@ -404,7 +671,8 @@ class Controller:
         except (OSError, ValueError, RuntimeError, KeyError):
             self.channel.admission(self.grant['generation'], False)
             self.phase, self.reason = 'WAIT_DEPENDENCY', 'core_observation_unavailable'
-        if not self.stable_reported and now-self.stable_at >= 600:
+        if (not self.stable_reported and self.phase == 'READY' and
+                self.progress is not None and self.progress.stable()):
             reply = self.transaction('stable', dict(role='model', ticket=self.grant['ticket'], successful_request=True))
             self.stable_reported = reply['ok']
         return None
@@ -419,6 +687,11 @@ class Controller:
             if self.ready:
                 kind = self.supervise()
                 if kind is None:
+                    if self.profiles is not None and self.profiles.switch_ready(self):
+                        self.phase, self.reason = 'RECOVERING', 'qualified_profile_switch'
+                        if self.close_model(planned=True):
+                            self.last_fault = policy.FaultKind.MODEL_EXIT
+                        continue
                     self.idle(0.05)
                     continue
                 if not self.quarantined:
@@ -441,7 +714,15 @@ class Controller:
                 self.close_model()
             self.idle(0.1)
         self.monitor.cancel()
+        if self.policies is not None:
+            try:self.policies.close()
+            except Exception:pass
         self.close_model()
+        if self.usage is not None:
+            try:self.usage.close()
+            except Exception:pass
+        if self.profiles is not None:
+            self.profiles.close()
 
 
 def main():

@@ -2,6 +2,7 @@
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -9,7 +10,8 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-from tools.serve_recovery.acceptance import Budget,LIMITS,COMPLETION_LIMITS,await_drain
+from tools.serve_recovery.acceptance import (Budget, LIMITS, COMPLETION_LIMITS,
+    OBSERVATION_LIMITS, OBSERVATION_COMPLETION_LIMITS, await_drain, limits_for)
 
 
 class BudgetTests(unittest.TestCase):
@@ -70,6 +72,102 @@ class BudgetTests(unittest.TestCase):
         for _ in range(6): budget.reserve('chats','completion request')
         for kind in ('starts','chats','probes'):
             with self.assertRaises(RuntimeError): budget.reserve(kind,'exhausted')
+
+    def test_observation_scenario_cannot_restart_model_or_use_probe(self):
+        path = self.directory/'observation'
+        path.mkdir()
+        budget = Budget(path, initialize=True, limits=limits_for('observation_isolation'))
+        budget.reserve('starts', 'only model')
+        for _ in range(4):
+            budget.reserve('chats', 'self-check or client')
+        for kind in ('starts', 'chats', 'probes'):
+            with self.assertRaises(RuntimeError):
+                budget.reserve(kind, 'beyond affected-behavior scope')
+        self.assertEqual(OBSERVATION_LIMITS['seconds'], 600)
+        with self.assertRaises(KeyError):
+            limits_for('unreviewed_scenario')
+
+    def test_observation_completion_keeps_failed_start_and_self_check_charged(self):
+        path = self.directory/'observation-completion'
+        path.mkdir()
+        budget = Budget(path, initialize=True, limits=OBSERVATION_COMPLETION_LIMITS,
+            baseline=dict(starts=1, chats=1, probes=0, controls=157))
+        budget.reserve('starts', 'single completion')
+        for _ in range(3):
+            budget.reserve('chats', 'self-check and JSON/SSE')
+        for kind in ('starts', 'chats', 'probes'):
+            with self.assertRaises(RuntimeError):
+                budget.reserve(kind, 'no reset')
+
+    def test_native_access_bounds_include_self_check_and_forbid_cuda_probes(self):
+        path = self.directory/'native-access'
+        path.mkdir()
+        limits = limits_for('native_access')
+        self.assertEqual(limits, dict(starts=2, chats=8, probes=0, controls=2000, seconds=900))
+        budget = Budget(path, initialize=True, limits=limits)
+        for _ in range(2):
+            budget.reserve('starts', 'count before dispatch')
+        for _ in range(8):
+            budget.reserve('chats', 'self-check or TLS client')
+        for kind in ('starts', 'chats', 'probes'):
+            with self.assertRaises(RuntimeError):
+                Budget(path, limits=limits).reserve(kind, 'no new allowance')
+
+
+class PackagedImportTests(unittest.TestCase):
+    def setUp(self):
+        from tools.serve_recovery.bundle import SOURCES
+        output = Path(os.environ.get('Q4T_TEST_OUTPUT_DIR', ROOT/'build/recovery-import-tests'))
+        output.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=output)
+        self.addCleanup(self.temp.cleanup)
+        self.package = Path(self.temp.name)
+        for name in SOURCES:
+            target = self.package/'source'/name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT/name, target)
+
+    def invoke(self, prefix=''):
+        code = ('import sys,runpy; from pathlib import Path; '
+            'root=Path(sys.argv[1]); sys.path.insert(0,str(root)); '+prefix+
+            'driver=runpy.run_path(str(root/"tools/serve_recovery/acceptance.py")); '
+            'package=Path(sys.argv[2]); '
+            'mods=driver["load_modules"]({"package":{"package":str(package)}}); '
+            'from tools.serve_recovery import controller,observation_io; '
+            'from tools.serve_host import native; '
+            'assert all(Path(m.__file__).is_relative_to(package) '
+            'for m in (*mods,controller,observation_io,native)); '
+            'assert observation_io.ROOT==package/"source"; print("SEALED")')
+        return subprocess.run([sys.executable, '-I', '-B', '-c', code,
+            str(ROOT), str(self.package)], capture_output=True, text=True, timeout=5)
+
+    def test_workspace_regular_package_cannot_shadow_sealed_namespace(self):
+        self.assertFalse((self.package/'source/tools/serve_recovery/__init__.py').exists())
+        result = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), 'SEALED')
+
+    def test_missing_sealed_dependency_cannot_fall_back_to_checkout(self):
+        (self.package/'source/tools/serve_recovery/control.py').unlink()
+        result = self.invoke()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('ImportError', result.stderr)
+
+    def test_preloaded_checkout_module_fails_before_any_service_start(self):
+        result = self.invoke('from tools.serve_recovery import control; ')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('already loaded outside sealed source', result.stderr)
+
+    def test_preloaded_host_projection_cannot_mix_with_sealed_lifecycle(self):
+        result = self.invoke('from tools.serve_host import native; ')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('already loaded outside sealed source', result.stderr)
+
+    def test_missing_sealed_host_projection_cannot_fall_back_to_checkout(self):
+        (self.package/'source/tools/serve_host/native.py').unlink()
+        result = self.invoke()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('ImportError', result.stderr)
 
 
 class DrainTests(unittest.TestCase):

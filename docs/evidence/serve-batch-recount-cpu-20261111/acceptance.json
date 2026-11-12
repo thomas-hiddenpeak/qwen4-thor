@@ -1,0 +1,16 @@
+{
+  "status": "PASS_BATCH_LEGACY_RECOUNT_TARGETED_CPU",
+  "distinct_tests": 25,
+  "new_tests": 9,
+  "passed": 25,
+  "failed": 0,
+  "skipped": 0,
+  "seconds": 6.974931070115417,
+  "gpu_starts": 0,
+  "builds_final_zero_warning": true,
+  "source_anchors": 487,
+  "engine_sha256": "70ac2c127fdc3b3f608abe1df808b6f01fdbce3d30eee5fa159fbcfcceca40bb",
+  "host_sha256": "b0451393094040d1d89ec0204ac721263c21fb059d899f6bd54379a750bb0738",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Minute quota waiting, public HTTP/SDK actual model business, CLI quota exposure and compatible rollback/default delivery; all A09 and master tasks continue."
+}

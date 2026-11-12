@@ -1,0 +1,127 @@
+{
+  "status": "VALIDATION_FAILED",
+  "foreign_services_modified": false,
+  "device_rules_installed": false,
+  "resource": {
+    "format": "q4t-resource-installation-v2",
+    "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+    "runtime_uid": 2002,
+    "runtime_gid": 2002,
+    "revision": 1,
+    "phase": "ready",
+    "record": {
+      "format": "q4t-resource-kernel-v2",
+      "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+      "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+      "runtime_uid": 2002,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "root": "/sys/fs/cgroup/q4t-resource-c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+      "root_identity": [
+        29,
+        244779
+      ],
+      "children": {
+        "outer": [
+          29,
+          244858
+        ],
+        "service": [
+          29,
+          244893
+        ]
+      },
+      "namespaces": {
+        "user": [
+          4,
+          4026531837
+        ],
+        "cgroup": [
+          4,
+          4026531835
+        ]
+      },
+      "policy": {
+        "oom_group": true,
+        "outer": {
+          "memory_high_bytes": 402653184,
+          "memory_max_bytes": 536870912,
+          "pids_max": 64
+        },
+        "physical_ram_limit": false,
+        "service": {
+          "memory_high_bytes": 120259084288,
+          "memory_max_bytes": 128849018880,
+          "pids_max": 4096
+        },
+        "swap_max_bytes": 0
+      }
+    },
+    "admission_enabled": true,
+    "model_actions": false,
+    "device_authorized": false
+  },
+  "child_exit": 1,
+  "resource_cleanup": {
+    "format": "q4t-resource-installation-v2",
+    "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+    "runtime_uid": 2002,
+    "runtime_gid": 2002,
+    "revision": 4,
+    "phase": "removed",
+    "record": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "children": {
+        "outer": [
+          29,
+          244858
+        ],
+        "service": [
+          29,
+          244893
+        ]
+      },
+      "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+      "format": "q4t-resource-kernel-v2",
+      "namespaces": {
+        "cgroup": [
+          4,
+          4026531835
+        ],
+        "user": [
+          4,
+          4026531837
+        ]
+      },
+      "policy": {
+        "oom_group": true,
+        "outer": {
+          "memory_high_bytes": 402653184,
+          "memory_max_bytes": 536870912,
+          "pids_max": 64
+        },
+        "physical_ram_limit": false,
+        "service": {
+          "memory_high_bytes": 120259084288,
+          "memory_max_bytes": 128849018880,
+          "pids_max": 4096
+        },
+        "swap_max_bytes": 0
+      },
+      "root": "/sys/fs/cgroup/q4t-resource-c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+      "root_identity": [
+        29,
+        244779
+      ],
+      "runtime_uid": 2002,
+      "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df"
+    },
+    "admission_enabled": false,
+    "model_actions": false,
+    "device_authorized": false,
+    "removed": true,
+    "history_retained": true
+  },
+  "lease_held_through_cleanup": true
+}

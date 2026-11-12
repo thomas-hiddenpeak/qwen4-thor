@@ -1,0 +1,15 @@
+{
+  "state": "TARGETED_DRIVER_CPU_ACCEPTED_GPU_PENDING",
+  "cases": 3,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "sources_sha256": {
+    "tools/serve_responses/file_search_acceptance.py": "fcaea7a35f2bc4ada56d918b6a6a9df9c622597d04827c465f964acf62ea33c7",
+    "tools/serve_responses/test_file_search_acceptance.py": "2a6f0b00a6c221e3f0c07b7bf00f7c8a92b33a3634f307588791d2ff8a9955d3"
+  },
+  "raw_sha256": {
+    "responses-business-oracles-01.json": "f0f4ddaad522e10404fa05fab0e5c5079cf1cf3ed3bc8d34487d33e85752f26c",
+    "responses-business-oracles-01.stderr": "34f02d0afa2b2ada859a0a01e3fdbc4e1abb9f40bed7309f92823114993ced22",
+    "responses-business-oracles-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

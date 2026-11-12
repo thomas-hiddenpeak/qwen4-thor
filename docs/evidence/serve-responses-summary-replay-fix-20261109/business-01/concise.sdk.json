@@ -1,0 +1,101 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_e4576214966979109db6c1beb873287e",
+    "object": "response",
+    "created_at": 1794229083,
+    "completed_at": 1794229085,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "rs_8ad2a7bb72cf4cd53cd04bede37b5bb0",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed"
+      },
+      {
+        "id": "msg_7c4b9ed27012884725ac3efa848b564b",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "id": "rs_cd5e6cdc78ff64c7c4b1653c9c5c64e2",
+        "type": "reasoning",
+        "status": "completed",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The reasoning identifies the task as computing the sum of 17 and 25. It performs the addition to determine the result is 42."
+          }
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 169,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 70,
+      "output_tokens_details": {
+        "reasoning_tokens": 66
+      },
+      "total_tokens": 239
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "low",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": "concise"
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 384,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "\n\n42"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18983/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"max_output_tokens\":384,\"reasoning\":{\"effort\":\"low\",\"summary\":\"concise\"},\"input\":\"Compute 17 + 25. Reply only with the decimal number.\",\"store\":true}"
+    }
+  ]
+}

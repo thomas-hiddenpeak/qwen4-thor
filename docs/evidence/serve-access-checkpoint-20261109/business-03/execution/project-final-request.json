@@ -1,0 +1,83 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Read the first 3 lines of docs/MODEL.md with read_project_record. Then reply only with the exact citation returned by the tool."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_n04-project-tool_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_n04-project-tool_0",
+      "content": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 3, \"citation\": \"[docs/MODEL.md:L1-L3]\", \"text\": \"1: # MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记\\n2: \\n3: > 对目标模型的理解笔记, 随研读深入持续更新。\", \"truncated\": false}, \"total_lines\": 311}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/MODEL.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer",
+              "enum": [
+                1
+              ]
+            },
+            "line_count": {
+              "type": "integer",
+              "enum": [
+                3
+              ]
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    }
+  ],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 256,
+  "tool_choice": "none",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 60000,
+  "request_id": "n04-project-final",
+  "cancel_token": "c9c31a56d1aad39abe51fc3f0279698c716a89f4081f6c110789111d7ca15119",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}

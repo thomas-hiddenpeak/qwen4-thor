@@ -1,0 +1,16 @@
+test_auxiliary_unknown_resource_device_and_owned_signals_cannot_select_version (tools.serve_recovery.test_version_policy.PolicyTests.test_auxiliary_unknown_resource_device_and_owned_signals_cannot_select_version) ... ok
+test_completion_requires_entire_new_tree_and_exact_independent_binding (tools.serve_recovery.test_version_policy.PolicyTests.test_completion_requires_entire_new_tree_and_exact_independent_binding) ... ok
+test_execution_contract_fault_and_boolean_aliases_have_exact_types (tools.serve_recovery.test_version_policy.PolicyTests.test_execution_contract_fault_and_boolean_aliases_have_exact_types) ... ok
+test_fallback_failure_before_or_after_readiness_latches_protection (tools.serve_recovery.test_version_policy.PolicyTests.test_fallback_failure_before_or_after_readiness_latches_protection) ... ok
+test_first_independent_code_failure_persists_one_intent_without_launch_authority (tools.serve_recovery.test_version_policy.PolicyTests.test_first_independent_code_failure_persists_one_intent_without_launch_authority) ... ok
+test_runtime_cannot_clear_budget_replace_registration_or_retarget_intent (tools.serve_recovery.test_version_policy.PolicyTests.test_runtime_cannot_clear_budget_replace_registration_or_retarget_intent) ... ok
+test_stale_payload_boot_and_role_generations_are_not_fault_evidence (tools.serve_recovery.test_version_policy.PolicyTests.test_stale_payload_boot_and_role_generations_are_not_fault_evidence) ... ok
+test_stop_intent_dominates_pending_and_resume_never_replenishes_cycle (tools.serve_recovery.test_version_policy.PolicyTests.test_stop_intent_dominates_pending_and_resume_never_replenishes_cycle) ... ok
+test_missing_state_and_writer_conflict_never_bootstrap_a_free_fallback (tools.serve_recovery.test_version_store.StoreTests.test_missing_state_and_writer_conflict_never_bootstrap_a_free_fallback) ... ok
+test_postrename_fsync_unknown_and_cross_boot_do_not_create_new_cycle (tools.serve_recovery.test_version_store.StoreTests.test_postrename_fsync_unknown_and_cross_boot_do_not_create_new_cycle) ... ok
+test_rename_failure_recovers_same_consumed_fallback_and_receipt (tools.serve_recovery.test_version_store.StoreTests.test_rename_failure_recovers_same_consumed_fallback_and_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.029s
+
+OK

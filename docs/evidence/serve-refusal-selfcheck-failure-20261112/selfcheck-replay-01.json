@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-c",
+    "import json; from pathlib import Path; from unittest import mock; from tools.serve_recovery import core_http; raw=json.loads(Path(\"docs/evidence/serve-refusal-selfcheck-failure-20261112/execution/self-check-1.json\").read_bytes()); m=mock.patch.object(core_http,\"request\",return_value=raw); m.start(); result=core_http.self_check(18162,dict(client=\"alpha\",token=\"a\"*64)); assert result[\"native_refusal\"] is True and result[\"strict_json\"] is False; core_http.request.assert_called_once(); m.stop(); print(json.dumps(dict(status=\"PASS_REPLAY_OF_REAL_REFUSAL_CPU\",receipt=result,new_gpu_requests=0)))"
+  ],
+  "exit_code": 0,
+  "seconds": 0.13264120882377028,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

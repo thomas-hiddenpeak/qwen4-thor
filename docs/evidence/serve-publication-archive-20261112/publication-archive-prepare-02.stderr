@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_archive.py", line 219, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_archive.py", line 214, in main
+    value=prepare(args.state,args.output,args.generation) if args.mode=='prepare' else \
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_archive.py", line 118, in prepare
+    parent=files.directory(output.parent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_files.py", line 27, in directory
+    ledger.require(path.resolve() == path and stat.S_ISDIR(info.st_mode) and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: owned canonical publication directory required

@@ -1,0 +1,26 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Compute 17 + 25. Reply with the number only."
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 128,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 60000,
+  "request_id": "n04-new-client-sdk",
+  "cancel_token": "3a0ec595d46624443c09c8a3215575aca135138e97244587a2e998fb8c030b0e",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "scope": "actual isolated grammar worker semantic masks, receipts, IDNA/exact numbers, framing, dependency status and bounded vocabulary; CPU only",
+  "tests": [
+    "schema_guard_filters_completed_format_tokens_and_receipts",
+    "schema_guard_thinking_tools_and_payload_marker_boundaries",
+    "schema_guard_anyof_large_exact_numbers_and_scope_identity",
+    "schema_guard_dependency_error_is_not_an_invalid_candidate",
+    "schema_guard_large_vocabulary_skips_uncompleted_string_checks",
+    "schema_worker_masks_native_semantics_and_returns_value_receipt",
+    "schema_worker_idna_and_exact_number_constraints_use_same_path"
+  ],
+  "binary_sha256": "c77326eafa8f361b8f8eaf11c7b66b4bccfd2cc6042821fe21408eb691f67be5",
+  "timeout_seconds": 180
+}

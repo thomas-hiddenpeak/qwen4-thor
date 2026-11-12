@@ -1,0 +1,347 @@
+{
+  "type": "object",
+  "properties": {
+    "temperature": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "top_p": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9223372036854775808,
+          "maximum": 9223372036854775807
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "logit_bias": {
+      "anyOf": [
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[0-9]+$"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "presence_penalty": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -2,
+          "maximum": 2,
+          "default": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "frequency_penalty": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -2,
+          "maximum": 2,
+          "default": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stop": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "x-q4t-max-utf8-bytes": 256
+            },
+            {
+              "type": "array",
+              "maxItems": 4,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "x-q4t-max-utf8-bytes": 256
+              }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "user": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "not": {
+        "pattern": "^(chatcmpl|cmpl)-auto-"
+      }
+    },
+    "cancel_token": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "request_timeout_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10800000
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\x00-\\x20\\x7f]+$",
+      "x-q4t-max-utf8-bytes": 256,
+      "x-q4t-registered-model-or-alias": true
+    },
+    "prompt": {
+      "anyOf": [
+        {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "x-q4t-vocabulary-check": true
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "x-q4t-vocabulary-check": true
+          }
+        }
+      ]
+    },
+    "n": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "best_of": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "echo": {
+      "anyOf": [
+        {
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stream": {
+      "anyOf": [
+        {
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "logprobs": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "max_tokens": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647,
+          "default": 16
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "suffix": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stream_options": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "include_usage": {
+              "type": "boolean"
+            },
+            "include_obfuscation": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "model"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve:completion-request:v1",
+  "title": "Native OpenAI Completions request",
+  "dependentRequired": {
+    "request_id": [
+      "cancel_token"
+    ],
+    "cancel_token": [
+      "request_id"
+    ]
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "stream_options"
+        ],
+        "properties": {
+          "stream_options": {
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "stream"
+        ],
+        "properties": {
+          "stream": {
+            "const": true
+          }
+        }
+      }
+    }
+  ],
+  "x-q4t": {
+    "profile": "q4t-completions-v1",
+    "endpoint": "/v1/completions",
+    "required_semantic_validation": true,
+    "max_batch_candidates": 128,
+    "best_of_default": "n",
+    "best_of_selection_streaming": false,
+    "max_tokens_default": 16,
+    "prompt_omitted_or_null": "empty document",
+    "empty_document_seed": "<|endoftext|>; counted as one actual input token",
+    "prompt_array_empty": "one empty token prompt",
+    "model_lookup": "registry including explicit aliases; unknown is 404",
+    "token_input": "execute exact IDs without decode/re-encode",
+    "echo": "original string or UTF-8 repaired decoded IDs",
+    "suffix": "native FIM prefix/suffix/middle tokens; no Chat template",
+    "limits": "all prompts checked before execution; total candidate output and input quota",
+    "semantic_contract": "serve-input-semantics-v1.json"
+  }
+}

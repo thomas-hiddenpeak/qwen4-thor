@@ -1,0 +1,1 @@
+{"accepted":false,"response":{"error":{"message":"media disabled; experimental --allow-media required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}

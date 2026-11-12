@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
     if (!body) return 2;
     ChatPlanConfig config;
     config.model = "qwen3.8-flash-next";
+    config.token_vocab = static_cast<int>(tokenizer->VocabSize());
     config.structured = kStructuredDecodingAvailable;
     config.max_len = static_cast<int>(fixture.GetInt("max_len", 8192));
     config.max_prefill = static_cast<int>(fixture.GetInt("max_prefill", 2048));
@@ -44,8 +45,9 @@ int main(int argc, char** argv) {
     std::vector<uint32_t> tokens;
     status = ValidatePreflightEnvelope(*body, &error);
     if (status) {
-      const auto& req = *body->Find("request");
-      status = PlanChatRequest(req, config, &plan, &error);
+      const auto& original = *body->Find("request");
+      status = PlanChatRequest(original, config, &plan, &error);
+      const auto& req = plan.Request(original);
       if (status)
         status = PrepareChatPrompt(req, plan.constraints, &prompt, &items,
                                    &error.param);

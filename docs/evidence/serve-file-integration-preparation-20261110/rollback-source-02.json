@@ -1,0 +1,16 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source",
+  "revision": "eee091b4634d95f855e8c5937bb0a4a3c500bcda",
+  "command": [
+    "git",
+    "-C",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110/rollback-source",
+    "read-tree",
+    "-mu",
+    "HEAD"
+  ],
+  "first_attempt": "New --no-checkout worktree index was empty; initial cleanliness assertion failed before build. Logs preserved; populated only its empty pinned index.",
+  "detached": true,
+  "sparse": true,
+  "clean": true
+}

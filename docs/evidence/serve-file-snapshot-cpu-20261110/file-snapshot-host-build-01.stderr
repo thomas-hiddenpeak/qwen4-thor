@@ -1,0 +1,154 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::Ok(const q4t::server::ObjectReply&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:60:45: error: a function-definition is not allowed here before ‘{’ token
+   60 |                    InputSnapshotHold* hold) {
+      |                                             ^
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:66:47: error: a function-definition is not allowed here before ‘{’ token
+   66 |                    FileInputSnapshot* output) {
+      |                                               ^
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:70:46: error: a function-definition is not allowed here before ‘{’ token
+   70 |   bool Empty(const FileInputSnapshot& input) {
+      |                                              ^
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:75:69: error: a function-definition is not allowed here before ‘{’ token
+   75 |   std::string Upload(ObjectStore & objects, std::string_view bytes) {
+      |                                                                     ^
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_real_nested_pages_conversion_and_restart_without_codecs()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:93:3: error: ‘Fixture’ was not declared in this scope
+   93 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:94:16: error: ‘fixture’ was not declared in this scope
+   94 |   auto input = fixture.Extract("file_nested", "mixed.docx");
+      |                ^~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:11:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:101:18: error: ‘Save’ was not declared in this scope
+  101 |     Q4T_CHECK(Ok(Save(snapshots, fixture, input, &reference, &hold)));
+      |                  ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:113:16: error: ‘Read’ was not declared in this scope; did you mean ‘read’?
+  113 |   Q4T_CHECK(Ok(Read(snapshots, fixture, reference, &restored)) &&
+      |                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_real_sheets_and_private_indirect_source_are_exact()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:139:3: error: ‘Fixture’ was not declared in this scope
+  139 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:140:23: error: ‘fixture’ was not declared in this scope
+  140 |   ObjectStore objects(fixture.options);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:163:18: error: ‘Save’ was not declared in this scope
+  163 |     Q4T_CHECK(Ok(Save(snapshots, fixture, input, &reference, &hold)));
+      |                  ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:165:18: error: ‘Read’ was not declared in this scope; did you mean ‘read’?
+  165 |     Q4T_CHECK(Ok(Read(snapshots, fixture, reference, &restored)) &&
+      |                  ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_stored_file_delete_cannot_change_prepared_input()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:190:3: error: ‘Fixture’ was not declared in this scope
+  190 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:191:23: error: ‘fixture’ was not declared in this scope
+  191 |   ObjectStore objects(fixture.options);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:194:19: error: ‘Upload’ was not declared in this scope
+  194 |   const auto id = Upload(objects, text);
+      |                   ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:195:21: error: could not convert ‘{{"type", q4t::server::responses_detail::String(std::string)()}, {"file_id", <expression error>}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+  195 |   auto part = Object({{"type", String("input_file")}, {"file_id", String(id)}});
+      |               ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                     |
+      |                     <brace-enclosed initializer list>
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:208:16: error: ‘Save’ was not declared in this scope
+  208 |   Q4T_CHECK(Ok(Save(snapshots, fixture, input, &reference, &hold)) &&
+      |                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:212:16: error: ‘Read’ was not declared in this scope; did you mean ‘read’?
+  212 |   Q4T_CHECK(Ok(Read(snapshots, fixture, reference, &restored)) &&
+      |                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_typed_receipt_rejects_wrong_parts_sources_and_pages()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:221:3: error: ‘Fixture’ was not declared in this scope
+  221 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:222:23: error: ‘fixture’ was not declared in this scope
+  222 |   ObjectStore objects(fixture.options);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:227:16: error: ‘Save’ was not declared in this scope
+  227 |   Q4T_CHECK(Ok(Save(snapshots, fixture, input, &original, &original_hold)));
+      |                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:253:15: error: ‘Read’ was not declared in this scope; did you mean ‘read’?
+  253 |     Q4T_CHECK(Read(snapshots, fixture, reference, &restored).code ==
+      |               ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:255:15: error: ‘Empty’ was not declared in this scope
+  255 |               Empty(restored));
+      |               ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_active_budgets_apply_to_history_without_partial_output()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:263:3: error: ‘Fixture’ was not declared in this scope
+  263 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:264:23: error: ‘fixture’ was not declared in this scope
+  264 |   ObjectStore objects(fixture.options);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:269:16: error: ‘Save’ was not declared in this scope
+  269 |   Q4T_CHECK(Ok(Save(snapshots, fixture, input, &reference, &hold)));
+      |                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:280:15: error: ‘Empty’ was not declared in this scope
+  280 |               Empty(restored));
+      |               ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:288:13: error: ‘Empty’ was not declared in this scope
+  288 |             Empty(restored));
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_file_snapshot_never_persists_incomplete_or_mismatched_extraction()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:294:3: error: ‘Fixture’ was not declared in this scope
+  294 |   Fixture fixture;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:295:23: error: ‘fixture’ was not declared in this scope
+  295 |   ObjectStore objects(fixture.options);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:306:15: error: ‘Save’ was not declared in this scope
+  306 |     Q4T_CHECK(Save(snapshots, fixture, input, &reference, &hold).code ==
+      |               ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp: At global scope:
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:311:2: error: expected ‘}’ at end of input
+  311 | }
+      |  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp:13:11: note: to match this ‘{’
+   13 | namespace {
+      |           ^
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1045: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

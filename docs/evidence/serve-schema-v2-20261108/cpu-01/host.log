@@ -1,0 +1,11 @@
+[PASS] schema_decimal_exact_equality_order_and_integer
+[PASS] schema_decimal_multiples_have_no_float_tolerance
+[PASS] schema_decimal_invalid_and_capacity_are_distinct
+[PASS] schema_graph_recursive_ref_anyof_and_required
+  CHECK failed: error == "schema.properties.v.$ref" (line 134)
+[FAIL] schema_graph_local_pointer_escaping_and_exact_enum
+[PASS] schema_graph_numeric_intersections_are_exact
+[PASS] schema_graph_const_equality_and_annotations_do_not_fill_values
+[PASS] schema_graph_lengths_count_unicode_and_require_string_checker
+[PASS] schema_graph_official_size_limits_and_reference_depth
+9 tests, 8 passed, 1 failed, 0 skipped

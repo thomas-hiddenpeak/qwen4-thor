@@ -1,0 +1,10 @@
+{
+  "first_exit": "lease/exit.json",
+  "failure": "Invocation omitted --inherit-lease, so Stage constructor rejected absent Q4T_MANAGED_LEASE_FD before any model start or Chat",
+  "counts": {
+    "starts": 0,
+    "chats": 0
+  },
+  "correction": "Same frozen plan and binary; pass guard --inherit-lease; retain first lease record",
+  "next_lease": "lease-inherited"
+}

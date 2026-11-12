@@ -105,6 +105,14 @@ int Fixture(int argc, char** argv) {
     s::ChildProcess child;
     if (!s::SpawnProcess({executable, "--sleep"}, {}, {}, &child).ok())
       return 2;
+    // Spawn pins the process but intentionally does not wait for exec. The
+    // SIGTERM assertion below is for an exec descendant: report only after
+    // the close-on-exec error pipe confirms installed parent-death handling.
+    pollfd ready{child.exec_status.Get(), POLLIN | POLLHUP, 0};
+    int error = 0;
+    if (poll(&ready, 1, 3000) <= 0 ||
+        read(ready.fd, &error, sizeof(error)) != 0)
+      return 4;
     const pid_t pid = child.identity.pid;
     if (write(std::atoi(argv[2]), &pid, sizeof(pid)) !=
         static_cast<ssize_t>(sizeof(pid)))

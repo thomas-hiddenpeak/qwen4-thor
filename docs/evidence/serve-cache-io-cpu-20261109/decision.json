@@ -1,0 +1,122 @@
+{
+  "status": "PASS_TARGETED_CACHE_IO_CPU_PENDING_REAL_BUSINESS",
+  "distinct_cpp_cases": 16,
+  "storage_programs": {
+    "private_checks": 49,
+    "shared_checks": 39,
+    "incremental_base_checks": 55,
+    "incremental_checks": 137
+  },
+  "health_schema": {
+    "actual_cpp_fragments": 2,
+    "negative_cases": 9
+  },
+  "source_anchors": 301,
+  "inventory_mutations": 5,
+  "gpu_starts": 0,
+  "chats": 0,
+  "default_replaced": false,
+  "full_R01_R03_complete": false,
+  "builds_and_checks": {
+    "build-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 12.737587658688426
+    },
+    "configure-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.41418549278751016
+    },
+    "build-02": {
+      "exit_code": 2,
+      "elapsed_seconds": 62.69924160465598
+    },
+    "build-03": {
+      "exit_code": 0,
+      "elapsed_seconds": 24.97291569970548
+    },
+    "build-04": {
+      "exit_code": 0,
+      "elapsed_seconds": 21.15831912495196
+    },
+    "build-05": {
+      "exit_code": 0,
+      "elapsed_seconds": 23.768802822567523
+    },
+    "primitive-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.1650243364274502,
+      "executable_sha256": "dd2e7a0768895b5927c96e57cb694e37460c55a5c0e80b3e8cfe11adc0564b36"
+    },
+    "integration-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 4.170329857617617,
+      "executable_sha256": "a97eb51fd0ce19a0a055c0211fa9a5b76b0fb92d6aff068f783fbc8520afbff9"
+    },
+    "session-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.6145159238949418,
+      "executable_sha256": "eb97735251b7b50e808d4354509a4a6e5d05aeda6748368c6ce6320975aef2cc"
+    },
+    "prefix-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.6144584249705076,
+      "executable_sha256": "cc412b1cdec7b250dfb887ea2c38db0018c0aafed654858d1cadcd8addca3791"
+    },
+    "incremental-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.0662897946313024,
+      "executable_sha256": "4f2f531faa975efa0b4d6f0e4c550ae62801729ced90abf5932dd04a42ca847c"
+    },
+    "target-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.015595375094562769,
+      "executable_sha256": "bba0f64ba0d2186538915638d205c5b77358300419afa73e2f9e8f90449931ba"
+    },
+    "session-02": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.6143590277060866,
+      "executable_sha256": "00e7d1de6015d8c7c1a2b876873d8408e2e53c89f5fd0838527d51904d501f87"
+    },
+    "prefix-02": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.6144326208159328,
+      "executable_sha256": "f3b2e943b213eb7fc6e9de4c0234c9e410ac8cd709ce9ab0f3d6c6d50baa7bfd"
+    },
+    "target-02": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.007648581638932228,
+      "executable_sha256": "8ef6d0c74da9ffb287dd062c1014caf3a2400a3588c30acb583e0eddcf9e2427"
+    },
+    "health-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.21395895397290587
+    },
+    "inventory-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.11397360032424331
+    },
+    "inventory-02": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.11381874699145555
+    },
+    "declarations-01": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.11390822101384401
+    },
+    "declarations-02": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.11390180001035333
+    }
+  },
+  "preserved_failures": {
+    "recorder_setup": "NOT_RUN before command launch; missing output parent",
+    "build-02": "incremental fixture retained two old parent-only fault references; actual production engine and other targets built, fixture compile failed"
+  },
+  "evidence_reuse": [
+    "primitive-01 original8; changed relative directory and old-generation close branches retested in integration-01",
+    "integration-01:4 new cache cases,2 affected primitive cases,2 grammar domains; target-01:2 target layout cases",
+    "flat allocation accounting added after integration-01: session-02, prefix-02, affected target-02 passed; unchanged incremental path reused incremental-01",
+    "build-05 only wrapped two long source lines after build-04; no runtime test repeated for formatting",
+    "original R03 recovery/observer-loss business preserved; cache/resource real business remains pending"
+  ]
+}

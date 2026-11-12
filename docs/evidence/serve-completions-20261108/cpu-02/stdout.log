@@ -1,0 +1,31 @@
+[PASS] client_rate_refund_cancel_failure_and_preterminal_idempotence
+[PASS] client_rate_pending_survives_window_and_settles_in_current_window
+  CHECK failed: batch.Reserve(admission, alpha, 50, 60, now) == ClientRateResult::kAllowed (line 746)
+[FAIL] client_rate_completion_batch_charges_only_admitted_prompts_once
+[PASS] chat_capabilities_transport_observation_contract
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_native_completions_and_models
+[PASS] http_connection_classification_exact_route_and_method
+[PASS] sampling_response_utf8_token_bytes_survive_delayed_scalars
+[PASS] sampling_response_repaired_bytes_keep_original_probabilities
+[PASS] sampling_response_hidden_reasoning_and_stop_are_not_content
+[PASS] sampling_response_boundary_crossing_token_is_never_retokenized
+  CHECK failed: pipe.visible.empty() (line 138)
+[FAIL] sampling_response_constrained_deferred_content_keeps_provenance
+[PASS] sampling_choices_share_prompt_and_aggregate_real_usage
+[PASS] sampling_choices_accounting_and_storage_fail_closed
+[PASS] sampling_plan_token_bias_and_choice_quota_are_not_shape_only
+[PASS] chat_plan_schema_resource_errors_keep_status_and_parameter
+[PASS] chat_plan_uniform_output_and_null_defaults
+[PASS] chat_plan_explicit_slot_boundaries
+[PASS] chat_plan_output_spelling_and_capacity_cap
+[PASS] chat_plan_cache_configuration_and_seed_boundary
+[PASS] chat_plan_native_template_and_constraint_adapter
+[PASS] chat_plan_encoder_failure_and_raw_identity
+[PASS] chat_preflight_envelope_and_opt_in_preview
+[PASS] chat_config_effective_sources_and_redaction
+[PASS] chat_config_admission_snapshot_and_queue_policy
+[PASS] chat_config_operations_listener_reports_independent_capacity
+[PASS] chat_plan_structured_cache_checks_actual_configuration
+[PASS] chat_plan_alias_registry_rejects_unknown_models
+28 tests, 26 passed, 2 failed, 0 skipped

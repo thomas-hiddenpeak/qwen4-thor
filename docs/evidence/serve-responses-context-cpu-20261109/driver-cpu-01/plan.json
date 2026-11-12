@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "tools.serve_responses.test_context_acceptance.ContextAcceptance.test_work_is_bounded_and_expected_failures_cannot_be_accepted",
+    "tools.serve_responses.test_context_acceptance.ContextAcceptance.test_history_oracle_rejects_dropped_edited_or_reordered_items"
+  ],
+  "sources": {
+    "tools/serve_responses/context_acceptance.py": "b2ada4d1ee01e2d6b2459b389f50548caf019fe45b113ace8d8ef7d4b3fb7a7f",
+    "tools/serve_responses/test_context_acceptance.py": "a83deaee1bf8919c4fb10d45c7acec6deb7136cb88b12786e8044bd498c19ae1"
+  },
+  "gpu": 0,
+  "scope": "Driver failure oracle and immutable history verification only"
+}

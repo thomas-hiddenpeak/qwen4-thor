@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 294, in <module>
+    if __name__ == '__main__':main()
+                              ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 289, in main
+    with base.lifecycle.child_subreaper():Stage(read(args.plan)).run()
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py", line 294, in run
+    try:self.start();self.business();result['status']=self.success_status
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 242, in business
+    self.files('storage-unavailable', 'retrieve', file_id=uploaded['id'], expected_status=503)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 193, in files
+    require(len(value['exchanges']) == 1 and value['exchanges'][0]['status'] == expected_status,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: Files status/replay differs: storage-unavailable

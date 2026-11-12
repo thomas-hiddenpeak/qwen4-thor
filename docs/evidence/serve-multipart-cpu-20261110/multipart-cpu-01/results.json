@@ -1,0 +1,12 @@
+[
+  {
+    "name": "sdk",
+    "argv": [
+      "node",
+      "tools/serve_responses/multipart_sdk_fixture.mjs",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/multipart-cpu-01/sdk"
+    ],
+    "exit_code": 1,
+    "seconds": 0.031810872722417116
+  }
+]

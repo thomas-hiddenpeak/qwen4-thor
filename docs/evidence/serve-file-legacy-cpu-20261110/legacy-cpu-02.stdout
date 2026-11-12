@@ -1,0 +1,17 @@
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(input, &output).ok() (line 138)
+[FAIL] file_legacy_actual_doc_unicode_and_confirmed_cleanup
+  CHECK failed: sheet.name == "Actual data" && sheet.source_rows == 2 && sheet.columns == 2 && sheet.rows.size() == 2 && sheet.rows[0][0] == "Item 中文" && sheet.rows[0][1] == "Count" && sheet.rows[1][0] == "Original" && sheet.rows[1][1].starts_with("42") && Once(sheet.rows[1][1], "SUM(20;22)") && fixture.Clean() (line 151)
+[FAIL] file_legacy_actual_xls_sheet_coordinates_values_and_formula
+[PASS] file_legacy_actual_ppt_slide_order
+legacy word.doc: 400 invalid_file_document
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(Input("word.doc"), &output).ok() && fixture.Clean() (line 179)
+[FAIL] file_legacy_corrupt_input_is_local_and_next_document_works
+legacy word.doc: 413 file_document_capacity
+legacy word.doc: 413 file_document_capacity
+legacy word.doc: 503 file_document_worker_failed
+  CHECK failed: fixture.Read(Input("word.doc"), &output, limits).http_status == 413 && output.text.empty() && fixture.Clean() (line 195)
+[FAIL] file_legacy_resource_rejection_cleans_and_publishes_nothing
+[PASS] file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance
+6 tests, 2 passed, 4 failed, 0 skipped

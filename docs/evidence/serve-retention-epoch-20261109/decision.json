@@ -1,0 +1,20 @@
+{
+  "status": "PASS_RETENTION_EPOCH_TARGETED_CPU_PENDING_PACKAGED_DELIVERY",
+  "new_cases": 5,
+  "reused_affected_cases": 2,
+  "first_passed": 6,
+  "first_failed": 1,
+  "targeted_rerun_passed": 1,
+  "first_failure": "Fixture incremented revision without mandatory transaction receipt; production correctly rejected malformed ledger. Fixture now uses real ledger.transition.",
+  "core_file_io_during_locks": false,
+  "actual_cpu_flock": true,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "production_runs_removed": 0,
+  "default_changed": false,
+  "pending": [
+    "actual packaged CLI/export/retention integration",
+    "rollback-capable v6 delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

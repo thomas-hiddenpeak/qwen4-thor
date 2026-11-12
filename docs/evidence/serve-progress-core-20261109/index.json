@@ -1,0 +1,82 @@
+{
+  "README.md": {
+    "bytes": 753,
+    "sha256": "0bcb852f7b9d0b1a23ef9c47e80681946b4ef785b4e405751d94e056e5f8cd54"
+  },
+  "build-01/command.json": {
+    "bytes": 140,
+    "sha256": "fc4c09f2abf01f514795db9981ddf97a205b632f38de6861174bc2c07d529afc"
+  },
+  "build-01/result.json": {
+    "bytes": 62,
+    "sha256": "84b6b2164e0833e17470c3c8f28a32c57ee0e4768990be66c7255cc1b193f36b"
+  },
+  "build-01/stderr.log": {
+    "bytes": 944,
+    "sha256": "0cf57fac8f9d1b9a03ff4fed5caeda13362977eb07d192b41f9db4b81b341833"
+  },
+  "build-01/stdout.log": {
+    "bytes": 707,
+    "sha256": "ad16364e35117adba38c05ec18f9f7271ba5120b857add7aabdf8c4ac949baaa"
+  },
+  "build-02/command.json": {
+    "bytes": 140,
+    "sha256": "fc4c09f2abf01f514795db9981ddf97a205b632f38de6861174bc2c07d529afc"
+  },
+  "build-02/result.json": {
+    "bytes": 61,
+    "sha256": "fa3b4c46bb4bfee3ede950028e18d7cf9ea0ab34e6e2d94b52cccf918fcce30b"
+  },
+  "build-02/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-02/stdout.log": {
+    "bytes": 299,
+    "sha256": "da5e8d7e7ac8054fe2050bf6c18af3aac49b424762e601cf66ad32f58b362597"
+  },
+  "core-cpu-01/command.json": {
+    "bytes": 152,
+    "sha256": "1b36fe4e69d158f83d6311739de4d27db9f2967f9d23c2ec4d4f5744bcff4555"
+  },
+  "core-cpu-01/result.json": {
+    "bytes": 155,
+    "sha256": "0d9ca155c3e5a772f326f02ef1c257583a73264c1f8b0ec723d4834332593667"
+  },
+  "core-cpu-01/stderr.log": {
+    "bytes": 82,
+    "sha256": "1cb836a19319931abe6c070407ad4e696bd23e671fb1a033ba3e9ce2f3aa61d6"
+  },
+  "core-cpu-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "core-cpu-02/command.json": {
+    "bytes": 152,
+    "sha256": "1b36fe4e69d158f83d6311739de4d27db9f2967f9d23c2ec4d4f5744bcff4555"
+  },
+  "core-cpu-02/result.json": {
+    "bytes": 155,
+    "sha256": "48e558557db52611fcacf25c0303240b1006aeab440c4b728326d955a6b94323"
+  },
+  "core-cpu-02/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "core-cpu-02/stdout.log": {
+    "bytes": 521,
+    "sha256": "6f432bd92d97d906f1605aac844eb68cf49a39a3690d84f3e4282521ff3b736b"
+  },
+  "core-plan.json": {
+    "bytes": 668,
+    "sha256": "79246e9a509f6244bb6762b4380d60d94e793af818acd959b41af64b263887e3"
+  },
+  "core-required.txt": {
+    "bytes": 426,
+    "sha256": "57fb2b8e8070539bfad8cf1f491f3c9281d9d529fb84b75440e0396d5c0b939e"
+  },
+  "decision.json": {
+    "bytes": 736,
+    "sha256": "7c1b80b780e6fef5612a609f5e29b425dd8eafc87c266a3096949e21fba20f42"
+  }
+}

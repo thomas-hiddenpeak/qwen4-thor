@@ -1,0 +1,26 @@
+{
+  "status": "ACCEPT_NATIVE_MODERATIONS_BUSINESS",
+  "model_steps": 8,
+  "text_mtp": true,
+  "image_native": true,
+  "standard_sdk": true,
+  "batch_actual_usage": true,
+  "running_cancel": true,
+  "original_state_preserved": true,
+  "default_unchanged": true,
+  "cloud_calibration_claim": false,
+  "performance_claim": false,
+  "postflight": {
+    "sources_unchanged": true,
+    "default_unchanged": true,
+    "binary_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true
+  },
+  "nvml_queries": 100,
+  "all_queries_ok": true,
+  "env_abort": false,
+  "candidate_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+  "scope": "Targeted local classification; cancelled during grammar preparation with known zero model-token usage; no full quality, calibration or performance claim."
+}

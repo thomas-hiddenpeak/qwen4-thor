@@ -1,0 +1,7 @@
+test_actual_cpp_filtered_json_and_original_sse_are_safe_and_accounted (tools.serve_responses.test_moderation_contract.ModerationContract.test_actual_cpp_filtered_json_and_original_sse_are_safe_and_accounted) ... ok
+test_standard_moderation_model_and_independent_policies (tools.serve_responses.test_moderation_contract.ModerationContract.test_standard_moderation_model_and_independent_policies) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.013s
+
+OK

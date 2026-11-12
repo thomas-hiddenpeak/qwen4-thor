@@ -1,0 +1,7 @@
+test_prompt_auth_preserves_all_routes_and_client_scope (tools.serve_responses.test_prompt_ingress.PromptIngress.test_prompt_auth_preserves_all_routes_and_client_scope) ... ok
+test_prompt_mutations_use_data_and_reads_keep_reserved_capacity (tools.serve_responses.test_prompt_ingress.PromptIngress.test_prompt_mutations_use_data_and_reads_keep_reserved_capacity) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.999s
+
+OK

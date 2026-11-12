@@ -1,0 +1,12 @@
+[PASS] progress_context_nested_scope_does_not_fake_completion
+[PASS] progress_context_batch_counts_only_selected_owners
+[PASS] progress_activity_nested_completion_preserves_outer_work
+[PASS] progress_activity_failure_and_unrelated_thread_do_not_complete
+[PASS] progress_activity_depth_exhaustion_is_unknown_without_waiting
+[PASS] progress_activity_captured_owner_cannot_complete_another_context
+[PASS] progress_service_loop_counts_own_cycle_not_publisher_heartbeats
+[PASS] progress_diagnostic_nested_wait_restores_real_phase
+[PASS] progress_scheduler_handoff_keeps_one_writer
+[PASS] progress_packet_identity_and_exact_wire
+[PASS] progress_packet_bounds_and_unknown_rows
+11 tests, 11 passed, 0 failed, 0 skipped

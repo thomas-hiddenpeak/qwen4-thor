@@ -1,0 +1,22 @@
+{
+  "scope": "Background real-business driver targeted CPU preflight",
+  "python": [
+    "Driver.test_requests_fit_bound_and_keep_real_tool_history_dynamic",
+    "Driver.test_final_response_rejects_missing_wire_fields_and_false_usage",
+    "Driver.test_unexpected_terminal_cannot_pass_queued_or_partial_checkpoint",
+    "Driver.test_phase_alarm_reserves_cleanup_and_disarms_on_failure"
+  ],
+  "sdk": [
+    "prefix negative oracle",
+    "single-consumer bridge against actual native background CPU HTTP fixture"
+  ],
+  "cpu_processes": 1,
+  "gpu": false,
+  "next_gpu_limits": {
+    "starts": 2,
+    "chats": 8,
+    "seconds": 900
+  },
+  "no_automatic_request_replay": true,
+  "watchdog": "SIGALRM at860 seconds; reserve40 seconds for own-tree cleanup within900-second phase"
+}

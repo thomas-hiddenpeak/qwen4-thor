@@ -1,0 +1,39 @@
+{
+  "stage": "A11.2 immutable index construction and persistence",
+  "tests": [
+    "vector_index_token_chunks_preserve_utf8_and_bound_overlap",
+    "vector_index_chunking_rejects_bad_maps_and_bounded_cancellation",
+    "vector_index_build_preserves_usage_and_no_partial_on_failure",
+    "vector_index_backend_and_file_identity_change_binding",
+    "vector_index_real_tokenizer_raw_boundaries_and_eos_are_preserved",
+    "vector_index_snapshot_bytes_and_scope_survive_worker_restart",
+    "vector_index_snapshot_unknown_commit_keeps_original_identity",
+    "vector_index_invalid_or_cancelled_write_publishes_nothing",
+    "vector_index_search_projection_keeps_source_and_mutable_attributes",
+    "embedding_assets_metadata_only_uses_real_tokenizer_without_weights",
+    "embedding_assets_metadata_mode_preserves_output_on_bad_hash_and_cancel"
+  ],
+  "source_sha256": {
+    "include/q4t/server/vector_index.h": "658d7a756b9d8f6cd5b5648de10fcb33c9f10dbce7feefce10cc0dce24508680",
+    "src/server/vector_index.cpp": "1ca12b875e6fdb5c95b9b06a4479290beb4b8977cb6898a8a7bac314d5efca55",
+    "tests/server_vector_index_test.cpp": "450205a0c75abd24568eaf6941d0c508c9e3c2d9def466b49e4385e79f3ea0f5",
+    "include/q4t/server/embedding_assets.h": "32a4862084288bf600e6e22239779e56bcba325a61ed4ade682a4dc5fdab2dd1",
+    "src/server/embedding_assets.cpp": "264c99a931c7fc7efca9efd6bfe2846b9c1daf182117c183282132b21ddcf524"
+  },
+  "gpu_starts": 0,
+  "default_changed": false,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "production_routes": false,
+  "following_required": [
+    "durable vector store parent and task management",
+    "HTTP/SDK",
+    "Responses tool executor",
+    "real model acceptance",
+    "qualified delivery",
+    "all remaining master tasks"
+  ],
+  "build_repair": "add explicit model/embedding_config.h include; no test/threshold changes",
+  "runner": ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+  "runner_reason": "Real tokenizer/asset checks require existing ICU-enabled native host target; standalone public host intentionally has no ICU"
+}

@@ -1,0 +1,191 @@
+{
+  "binding": {
+    "directory": "/var/lib/q4t-resource-validation-fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "publication": {
+      "admission_enabled": true,
+      "device_authorized": false,
+      "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+      "format": "q4t-resource-installation-v2",
+      "model_actions": false,
+      "phase": "ready",
+      "record": {
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "children": {
+          "outer": [
+            29,
+            244858
+          ],
+          "service": [
+            29,
+            244893
+          ]
+        },
+        "domain_id": "c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+        "format": "q4t-resource-kernel-v2",
+        "namespaces": {
+          "cgroup": [
+            4,
+            4026531835
+          ],
+          "user": [
+            4,
+            4026531837
+          ]
+        },
+        "policy": {
+          "oom_group": true,
+          "outer": {
+            "memory_high_bytes": 402653184,
+            "memory_max_bytes": 536870912,
+            "pids_max": 64
+          },
+          "physical_ram_limit": false,
+          "service": {
+            "memory_high_bytes": 120259084288,
+            "memory_max_bytes": 128849018880,
+            "pids_max": 4096
+          },
+          "swap_max_bytes": 0
+        },
+        "root": "/sys/fs/cgroup/q4t-resource-c14308ca-ff12-45b7-a6e9-31b10bfe3b52",
+        "root_identity": [
+          29,
+          244779
+        ],
+        "runtime_uid": 2002,
+        "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df"
+      },
+      "revision": 1,
+      "runtime_gid": 2002,
+      "runtime_uid": 2002,
+      "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df"
+    }
+  },
+  "roles": {
+    "version": 1,
+    "service_id": "fa4fc0bc-0950-444f-9fd5-25239bb970df",
+    "state": "READY",
+    "guardian_pid": 1882195,
+    "guardian_start_ticks": 264264025,
+    "outer_supervised": true,
+    "outer_owner_lost": false,
+    "outer_owner_pid": 1882158,
+    "outer_owner_start_ticks": 264263573,
+    "outer_origin_pid": 1882158,
+    "outer_origin_start_ticks": 264263573,
+    "outer_heartbeat_age_ms": 376,
+    "controller_pid": 1882269,
+    "controller_generation": 1,
+    "controller_start_ticks": 264264469,
+    "controller_events": 298,
+    "controller_health": {
+      "auxiliary_io": {
+        "acknowledged_operations": 32,
+        "dropped_bytes": 0,
+        "failed_operations": 0,
+        "pending_records": 0,
+        "queued_bytes": 0,
+        "queued_records": 0,
+        "worker_pid": 1882279,
+        "worker_state": "AVAILABLE",
+        "worker_unreaped": false
+      },
+      "observation": "AVAILABLE",
+      "phase": "READY",
+      "reason": "profile_commit_wait"
+    },
+    "version_recovery": {
+      "enabled": true,
+      "root_manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+      "cycle_id": "aa8bca36-9d55-4458-981b-53672326976a",
+      "selected": "primary",
+      "launch_payload": "primary",
+      "payload_manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+      "fallback_consumed": false,
+      "protected": false,
+      "pending": false,
+      "payload_prepared": true,
+      "state_available": true,
+      "worker_pid": 1882197,
+      "worker_start_ticks": 264264041,
+      "probe_pid": null,
+      "probe_count": 0,
+      "last_fault": null,
+      "reason": "",
+      "role_launch_authority": false
+    },
+    "version_exit_observation": null,
+    "auxiliary_projection_errors": 0,
+    "controller_health_age_ms": 184,
+    "continuous_model_recovery": true,
+    "cold_device_recovery": false,
+    "cold_probe_used": false,
+    "probe_used_for_generation": 0,
+    "retry_after_ms": 0,
+    "journal_pid": 1882196,
+    "journal_start_ticks": 264264038,
+    "controller_ready": true,
+    "model_pid": 1882278,
+    "model_start_ticks": 264264637,
+    "model_generation": 1,
+    "model_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "model_protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96",
+    "model_capacity_sha256": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+    "model_ready": true,
+    "model_admission_open": true,
+    "business_ready": true,
+    "gateway_pid": 1882266,
+    "gateway_start_ticks": 264264408,
+    "gateway_generation": 1,
+    "gateway_ready": true,
+    "gateway_bound_model": 1,
+    "gateway_recovering": false,
+    "gateway_binding_reason": "none",
+    "gateway_binding_model_generation": 1,
+    "gateway_binding_age_ms": 200,
+    "quota_wait_ms": 0,
+    "daemon_detached": false,
+    "recovery_frozen": false,
+    "stop_requested": false,
+    "stop_durable": false,
+    "cleanup_confirmed": false,
+    "reason": ""
+  },
+  "counters": {
+    "memory.current": "1291882496",
+    "memory.peak": "16045101056",
+    "memory.swap.current": "0",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+    "pids.current": "28"
+  },
+  "collector": {
+    "binding_sha256": "d64c91c7b7a4e3617bda458b091d632f8f8e9e77cc90a3a507b17513b142f27a",
+    "format": "q4t-native-resource-memory-v1",
+    "high_bytes": 120259084288,
+    "max_bytes": 128849018880,
+    "memcg": {
+      "memory.current": 125870080,
+      "memory.peak": 152260608,
+      "memory.swap.current": 0,
+      "pids.current": 9
+    },
+    "memory_events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0
+    },
+    "physical": {
+      "available_bytes": 124223279104,
+      "total_bytes": 131920637952
+    },
+    "physical_ram_limit": false,
+    "pids_events": {
+      "max": 0
+    },
+    "sampled_monotonic_ns": 2642645685698061
+  },
+  "physical_ram_limit": false
+}

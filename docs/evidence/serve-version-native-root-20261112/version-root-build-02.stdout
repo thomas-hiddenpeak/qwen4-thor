@@ -1,0 +1,6 @@
+[  0%] Built target q4t_guardian_process
+[100%] Built target q4t_guardian_journal
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/service/guardian_main.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/service/guardian_version.cpp.o
+[100%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian

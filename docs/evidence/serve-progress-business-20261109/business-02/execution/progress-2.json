@@ -1,0 +1,8 @@
+{
+  "phase": "READY",
+  "reason": "serving",
+  "monotonic": 2371700.513831017,
+  "progress_reason": "progress_closed",
+  "snapshot": null,
+  "fault": null
+}

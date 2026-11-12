@@ -1,0 +1,8 @@
+test_official_sdk_bridges_send_synthetic_client_headers_once (tools.serve_responses.test_summary_acceptance.SummaryAcceptance.test_official_sdk_bridges_send_synthetic_client_headers_once) ... ok
+test_request_and_model_step_budget_is_explicit (tools.serve_responses.test_summary_acceptance.SummaryAcceptance.test_request_and_model_step_budget_is_explicit) ... ok
+test_summary_oracle_rejects_raw_copy_missing_reasoning_and_wrong_usage (tools.serve_responses.test_summary_acceptance.SummaryAcceptance.test_summary_oracle_rejects_raw_copy_missing_reasoning_and_wrong_usage) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.777s
+
+OK

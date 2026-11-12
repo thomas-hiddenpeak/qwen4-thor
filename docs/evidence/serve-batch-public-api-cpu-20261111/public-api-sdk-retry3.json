@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/cpu-public-api-retry3",
+    "Q4T_NODE_SDK_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle"
+  ],
+  "exit_code": 0,
+  "seconds": 2.6673194407485425
+}

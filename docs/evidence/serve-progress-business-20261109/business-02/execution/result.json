@@ -1,0 +1,104 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 175.28792779473588,
+  "budget": {
+    "counts": {
+      "starts": 3,
+      "chats": 9,
+      "probes": 1,
+      "controls": 796
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 2,
+        "monotonic_ns": 2371530607097719
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 2,
+        "monotonic_ns": 2371569274119057
+      },
+      {
+        "kind": "chats",
+        "label": "initial-json",
+        "ordinal": 3,
+        "monotonic_ns": 2371570604690207
+      },
+      {
+        "kind": "chats",
+        "label": "initial-sse",
+        "ordinal": 4,
+        "monotonic_ns": 2371570938277330
+      },
+      {
+        "kind": "probes",
+        "label": "controller-1",
+        "ordinal": 1,
+        "monotonic_ns": 2371634632180386
+      },
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 3,
+        "monotonic_ns": 2371639099205254
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 5,
+        "monotonic_ns": 2371675250755018
+      },
+      {
+        "kind": "chats",
+        "label": "recovered-tool",
+        "ordinal": 6,
+        "monotonic_ns": 2371694747880623
+      },
+      {
+        "kind": "chats",
+        "label": "recovered-tool-final",
+        "ordinal": 7,
+        "monotonic_ns": 2371698116419368
+      },
+      {
+        "kind": "chats",
+        "label": "observation-lost-json",
+        "ordinal": 8,
+        "monotonic_ns": 2371699711600920
+      },
+      {
+        "kind": "chats",
+        "label": "observation-lost-sse",
+        "ordinal": 9,
+        "monotonic_ns": 2371700064036572
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 983321,
+      "start_ticks": 237153060
+    },
+    "2": {
+      "pid": 984394,
+      "start_ticks": 237163909
+    }
+  },
+  "quota_deadlines": {
+    "2": 2371694.252611003
+  },
+  "source_commit": "56da1c930d33dbe65db5c615f22e4cefe5c1209e",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/bundle",
+    "manifest_sha256": "109b4e7a11d1bbf45bf3590da1ec2f1bb7f11ee44fcfd06c6924387a120a7622",
+    "engine_binary_sha256": "1f3d0de49935ac6b586b67ce1e74673f781480333aba48652836f50eadd0e2be",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

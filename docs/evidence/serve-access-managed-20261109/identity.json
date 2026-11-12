@@ -1,0 +1,26 @@
+{
+  "base_commit": "a27780f2d29c82e6ac6aa4a8917d2ace3df7ae6a",
+  "sources": {
+    "tools/serve_recovery/access_policy.py": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0",
+    "tools/serve_recovery/access_store.py": "1141627bb6f9d92e4d7a76c2a342d7161d788eb758cae87d57592e8a32f47e8d",
+    "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
+    "tools/serve_recovery/access_io.py": "f69c61631b8cfea1fe4e55564a08b2c2112fa0e51e6c8b3284c4ef9628ff6114",
+    "tools/serve_recovery/access_manager.py": "b30ee77761ea70b9216ba03faed3e853a4ee263809b2d0c57b93a5a9950a5e3b",
+    "tools/serve_recovery/native_ingress.py": "cae4263cbe79408b96dc52596fd4a1d8adeceaa6483d06bf0c6de4c8db1c6e87",
+    "tools/serve_recovery/gateway_config.py": "df3a83c9de20eed0192bd78fd1455e986b1512137db3cff177b1dccdb4ecc918",
+    "tools/serve_recovery/bundle.py": "0e11e13bebb773dfc8c0d8d1f5c421dda297eac172c67cf2336035dfc503c8d5",
+    "tools/serve_recovery/service.py": "64d797a8b5e9e3f97f4c3d88b8ad4ade2758e7eab4f363f93ef5f4fc8958e744",
+    "tools/serve_recovery/acceptance.py": "644cf697d54614bd0669a0467387281aa8ac2b897284fadda6ce1a007b3527e5",
+    "tools/serve_recovery/test_access_management.py": "97eb229c542912423f36472cc6687cd73fc5743930de45044523a7934c518cef",
+    "tools/serve_recovery/test_access_io.py": "90fd4015e441b033639c08a87f43cbe6e6203aacde71cb024a623664f9627da2",
+    "tools/serve_recovery/test_native_bundle.py": "225ddc7066adbb7cb207e0b076fce09b7815c2c5392ca9fa3e599ee28127bdfc",
+    "tools/serve_recovery/test_gateway_nginx.py": "d95f5b4f2cddbcf4ce66bb49d1c97142a577e1daea32b3dad815808b29b9a4bc",
+    "tools/serve_recovery/test_native_ingress.py": "fb54086fe37392474ec3f11485271f8ab58bab6e0c9188531001303935b5c0bc"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  }
+}

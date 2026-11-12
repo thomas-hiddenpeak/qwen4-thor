@@ -1,0 +1,9 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle",
+  "manifest_sha256": "41cb22eaf6166ed316b4999c13e4f355a3c357d19debccc54073a660dd030909",
+  "metadata_sha256": "f1b3ea15aff06b91d5649b06d6843efd912fb61f9a640be6ff23a17558cff85a",
+  "descriptor_sha256": "b4e57c74634fa32f6446583ba37bb068f2f043edaf8948479b66951f4de29eeb",
+  "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "procedure": "Under exclusive lease and STOPPED ledger, restore descriptor/metadata from this directory and atomically repoint build/service to package; never replace/reset ledger."
+}

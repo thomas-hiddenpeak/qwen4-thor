@@ -1,0 +1,18 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 0.3140632729046047,
+  "binary_sha256": "6d0c3bcd7e6b12b68b4f2f5c59ced91e66e3cade698fffdb0682c14a0f2a1466",
+  "tests": [
+    "responses_execution_stateless_does_not_depend_on_storage",
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_execution_conflict_cannot_publish_completed_or_consume_sequence",
+    "responses_execution_truncated_tool_is_stored_incomplete_without_done_arguments",
+    "responses_execution_http_errors_close_after_cancelled_caller_cleanup",
+    "responses_execution_lost_commit_receipt_never_overwrites_or_replays",
+    "thinking_usage_tracks_unbounded_tokens_without_forcing_output",
+    "server_http_exception_terminal_states",
+    "server_http_host_memory_identity_and_terminal",
+    "thinking_budget_zero_and_forced_accounting",
+    "thinking_budget_matches_parser_across_all_chunks"
+  ]
+}

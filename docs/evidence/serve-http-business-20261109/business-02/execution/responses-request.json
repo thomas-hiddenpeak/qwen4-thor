@@ -1,0 +1,10 @@
+{
+  "model": "qwen3.8-flash-next",
+  "input": "Compute 17 + 25. Reply with the number only.",
+  "temperature": 0,
+  "max_output_tokens": 128,
+  "reasoning": {
+    "effort": "none"
+  },
+  "store": false
+}

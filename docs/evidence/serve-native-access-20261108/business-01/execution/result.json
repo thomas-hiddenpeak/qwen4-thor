@@ -1,0 +1,74 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 52.81019647885114,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 6,
+      "probes": 0,
+      "controls": 171
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 1,
+        "monotonic_ns": 2283627127400081
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 1,
+        "monotonic_ns": 2283666117675756
+      },
+      {
+        "kind": "chats",
+        "label": "tls-json",
+        "ordinal": 2,
+        "monotonic_ns": 2283667317743743
+      },
+      {
+        "kind": "chats",
+        "label": "tls-sse",
+        "ordinal": 3,
+        "monotonic_ns": 2283667821133901
+      },
+      {
+        "kind": "chats",
+        "label": "tls-tool-call",
+        "ordinal": 4,
+        "monotonic_ns": 2283668625632234
+      },
+      {
+        "kind": "chats",
+        "label": "tls-tool-final",
+        "ordinal": 5,
+        "monotonic_ns": 2283672268812095
+      },
+      {
+        "kind": "chats",
+        "label": "tls-structured-sse",
+        "ordinal": 6,
+        "monotonic_ns": 2283673767288248
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 401647,
+      "start_ticks": 228362712
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "fcb5a7d47a776eafab4e1b8a468e077f3a32f75a",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/package-01/bundle",
+    "manifest_sha256": "6736867af759947e481089e93d429312ca4ee0bfc39e0df268be2deb60cb96ec",
+    "engine_binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

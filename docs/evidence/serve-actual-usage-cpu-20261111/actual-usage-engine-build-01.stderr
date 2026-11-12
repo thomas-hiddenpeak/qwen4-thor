@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp:1811:75: error: ‘T’ was not declared in this scope
+ 1811 |             static_cast<uint64_t>(std::clamp(usage_sequence->position, 0, T)));
+      |                                                                           ^
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1801: CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

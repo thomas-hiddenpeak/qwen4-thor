@@ -1,0 +1,6 @@
+[
+  "python3",
+  "-B",
+  "-c",
+  "from pathlib import Path; from tools.serve_recovery import bundle; p=Path(\".q4t-work/serve-chat-storage-20261109/release-01/bundle\").resolve(); v=bundle.verify(p,\"ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e\"); print({\"version\":v[\"version\"],\"profile\":v[\"profile\"],\"manifest_sha256\":bundle.engine.sha(p/\"manifest.json\"),\"live_model_starts\":0})"
+]

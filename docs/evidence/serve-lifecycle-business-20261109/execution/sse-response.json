@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "Connection": "keep-alive",
+    "Transfer-Encoding": "chunked",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-3b8cf46208704ef8f6c6f4e298c35376"
+  },
+  "seconds": 0.28165106661617756,
+  "value": {
+    "id": "n07-sse",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    },
+    "logprobs": null
+  }
+}

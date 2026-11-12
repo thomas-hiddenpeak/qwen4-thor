@@ -1,0 +1,13 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "prompt": "<|im_start|>user\nWrite a long detailed essay of at least 2000 words about the history of mathematics.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "n": 2,
+  "max_tokens": 1024,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "request_id": "completion-cancel",
+  "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

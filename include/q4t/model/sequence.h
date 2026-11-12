@@ -58,6 +58,18 @@ struct ModelSequence {
   // Failure is visible immediately, but ownership lasts until completion.
   void Fail() { stage = Stage::kFailed; }
 
+  // The owner has verified speculative rows and restored device state to
+  // this prefix, while still owning the model scratch. Keep ownership until
+  // checked stream completion commits the retained rows. Never publish the
+  // rejected suffix in history, even briefly.
+  Status RetainSubmittedPrefix(size_t tokens) {
+    if (!pending_ || stage == Stage::kFailed || !tokens ||
+        tokens > submitted_.size())
+      return Status::Fail("sequence retain: invalid pending prefix");
+    submitted_.erase(submitted_.begin() + tokens, submitted_.end());
+    return Status();
+  }
+
   // Exception-only cleanup after the owner has proved device completion.
   // No commit, allocation or status formatting while unwinding.
   void FailAfterDrain() noexcept {

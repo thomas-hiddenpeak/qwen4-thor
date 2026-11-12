@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-1b403e1da4032786ebce3e1c17343c65",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 3,
+      "total_tokens": 31
+    },
+    "headers": {
+      "cache-control": "no-cache",
+      "connection": "close",
+      "content-type": "text/event-stream",
+      "x-accel-buffering": "no",
+      "x-request-id": "req-81ca3f584dcf7fe16e8c1df74ad39cd1"
+    }
+  },
+  "wire_base64": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tMWI0MDNlMWRhNDAzMjc4NmViY2UzZTFjMTczNDNjNjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTIwMDc4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tMWI0MDNlMWRhNDAzMjc4NmViY2UzZTFjMTczNDNjNjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTIwMDc4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiNCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tMWI0MDNlMWRhNDAzMjc4NmViY2UzZTFjMTczNDNjNjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTIwMDc4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiMiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tMWI0MDNlMWRhNDAzMjc4NmViY2UzZTFjMTczNDNjNjUiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTIwMDc4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6e30sImZpbmlzaF9yZWFzb24iOiJzdG9wIiwibG9ncHJvYnMiOm51bGx9XSwidXNhZ2UiOm51bGx9DQoNCmRhdGE6IHsiaWQiOiJjaGF0Y21wbC1hdXRvLTFiNDAzZTFkYTQwMzI3ODZlYmNlM2UxYzE3MzQzYzY1Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc5NDEyMDA3OCwibW9kZWwiOiJxd2VuMy44LWZsYXNoLW5leHQiLCJjaG9pY2VzIjpbXSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MjgsImNvbXBsZXRpb25fdG9rZW5zIjozLCJ0b3RhbF90b2tlbnMiOjMxfX0NCg0KZGF0YTogW0RPTkVdDQoNCg=="
+}

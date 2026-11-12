@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/bundle",
+  "manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874"
+}

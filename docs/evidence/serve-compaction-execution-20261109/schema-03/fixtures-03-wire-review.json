@@ -1,0 +1,9 @@
+{
+  "checked": 13,
+  "rejected": [],
+  "sources_sha256": {
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures-03/compaction-wire/automatic-events.wire": "0a37f2499913cb8c7b3d7008e6ab6a03a167cba8d840f0b2dea767a84b990406",
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures-03/compaction-wire/automatic-result.wire": "509ab0d59b8569cb6e18aff1a182fe2cb10e7703be465cdfb43f8b4b5e4f6ff1"
+  },
+  "legacy_nonconforming_not_reaccepted": false
+}

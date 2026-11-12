@@ -1,0 +1,21 @@
+/home/rm01/models/dev/qwen4-thor/src/server/batch_jobs.cpp: In member function ‘q4t::server::ObjectReply q4t::server::BatchJobs::FollowResponse(const std::shared_ptr<Job>&, const q4t::io::Json&, const q4t::io::Json&, const q4t::server::BinaryAccess&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/batch_jobs.cpp:546:39: error: no match for call to ‘(q4t::server::BatchJobs::Continuation {aka std::function<q4t::server::ObjectReply(const q4t::server::BatchResponseLink&, const q4t::server::StateAccess&, bool)>}) (q4t::server::BatchResponseLink&, <brace-enclosed initializer list>, const bool&)’
+  546 |   auto observed = state_->continuation(
+      |                   ~~~~~~~~~~~~~~~~~~~~^
+  547 |       link, {access.scope, access.deadline, access.cancelled}, cancel);
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/14/functional:59,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_execution.h:3,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_jobs.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/batch_jobs.cpp:1:
+/usr/include/c++/14/bits/std_function.h:587:7: note: candidate: ‘_Res std::function<_Res(_ArgTypes ...)>::operator()(_ArgTypes ...) const [with _Res = q4t::server::ObjectReply; _ArgTypes = {const q4t::server::BatchResponseLink&, const q4t::server::StateAccess&, bool}]’
+  587 |       operator()(_ArgTypes... __args) const
+      |       ^~~~~~~~
+/usr/include/c++/14/bits/std_function.h:587:27: note:   no known conversion for argument 2 from ‘<brace-enclosed initializer list>’ to ‘const q4t::server::StateAccess&’
+  587 |       operator()(_ArgTypes... __args) const
+      |                  ~~~~~~~~~^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:933: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_jobs.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/release-01/bundle",
+  "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
+  "engine_binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+  "recovery_accepted": false
+}

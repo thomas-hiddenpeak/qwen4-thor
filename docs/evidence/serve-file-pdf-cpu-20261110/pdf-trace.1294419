@@ -1,0 +1,110 @@
+execve(".q4t-work/serve-access-20261109/host/q4t_host_tests", [".q4t-work/serve-access-20261109/host/q4t_host_tests", "file_pdf_actual_text_and_every_page_images"], 0xffffcadf20c0 /* 57 vars */) = 0
+brk(NULL)                               = 0xaaaaeb8f9000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa1a3d000
+faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/cuda-13.3/lib64/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/usr/local/cuda-13.3/lib64/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=137947, ...}) = 0
+mmap(NULL, 137947, PROT_READ, MAP_PRIVATE, 3, 0) = 0xffffa19e2000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\10&(\0\0\0\0\0\0\0\0\0@\08\0\10\0@\0 \0\37\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0D\306&\0\0\0\0\0D\306&\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\270R'\0\0\0\0\0\270R'\0\0\0\0\0\270R'\0\0\0\0\0\0\321\0\0\0\0\0\0\320\31\1\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\240\352'\0\0\0\0\0\240\352'\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=2633224, ...}) = 0
+mmap(NULL, 2714760, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_DENYWRITE, -1, 0) = 0xffffa174b000
+mmap(0xffffa1750000, 2649224, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xffffa1750000
+munmap(0xffffa174b000, 20480)           = 0
+munmap(0xffffa19d7000, 44168)           = 0
+mprotect(0xffffa19bd000, 32768, PROT_NONE) = 0
+mmap(0xffffa19c5000, 57344, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x275000) = 0xffffa19c5000
+mmap(0xffffa19d3000, 15496, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffffa19d3000
+close(3)                                = 0
+openat(AT_FDCWD, "/usr/local/cuda-13.3/lib64/libm.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\08\1\t\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\210J\10\0\0\0\0\0\210J\10\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\0\375\10\0\0\0\0\0\0\375\t\0\0\0\0\0\0\375\t\0\0\0\0\0\f\3\0\0\0\0\0\0\30\3\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\20\375\10\0\0\0\0\0\20\375\t\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=591800, ...}) = 0
+mmap(NULL, 720920, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_DENYWRITE, -1, 0) = 0xffffa169f000
+mmap(0xffffa16a0000, 655384, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xffffa16a0000
+munmap(0xffffa169f000, 4096)            = 0
+munmap(0xffffa1741000, 57368)           = 0
+mprotect(0xffffa1725000, 106496, PROT_NONE) = 0
+mmap(0xffffa173f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8f000) = 0xffffa173f000
+close(3)                                = 0
+openat(AT_FDCWD, "/usr/local/cuda-13.3/lib64/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\3\2\0\0\0\0\0\0\0\0\0@\08\0\10\0@\0\34\0\33\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\210\352\1\0\0\0\0\0\210\352\1\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0x\375\1\0\0\0\0\0x\375\2\0\0\0\0\0x\375\2\0\0\0\0\0\210\4\0\0\0\0\0\0H\6\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\250\375\1\0\0\0\0\0\250\375\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=133696, ...}) = 0
+mmap(NULL, 263104, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_DENYWRITE, -1, 0) = 0xffffa165f000
+mmap(0xffffa1660000, 197568, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xffffa1660000
+munmap(0xffffa165f000, 4096)            = 0
+munmap(0xffffa1691000, 58304)           = 0
+mprotect(0xffffa167f000, 65536, PROT_NONE) = 0
+mmap(0xffffa168f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1f000) = 0xffffa168f000
+close(3)                                = 0
+openat(AT_FDCWD, "/usr/local/cuda-13.3/lib64/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\360\206\2\0\0\0\0\0@\0\0\0\0\0\0\0\350:\32\0\0\0\0\0\0\0\0\0@\08\0\n\0@\0=\0<\0\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0000\2\0\0\0\0\0\0000\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\3\0\0\0\4\0\0\0000a\26\0\0\0\0\0000a\26\0\0\0\0\0000a\26\0\0\0\0\0\33\0\0\0\0\0\0\0\33\0\0\0\0\0\0\0\10\0\0\0\0\0\0\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1722920, ...}) = 0
+mmap(NULL, 1892240, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_DENYWRITE, -1, 0) = 0xffffa1492000
+mmap(0xffffa14a0000, 1826704, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xffffa14a0000
+munmap(0xffffa1492000, 57344)           = 0
+munmap(0xffffa165e000, 8080)            = 0
+mprotect(0xffffa163a000, 77824, PROT_NONE) = 0
+mmap(0xffffa164d000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x19d000) = 0xffffa164d000
+mmap(0xffffa1652000, 49040, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffffa1652000
+close(3)                                = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa1a3b000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa1a39000
+set_tid_address(0xffffa1a390f0)         = 1294419
+set_robust_list(0xffffa1a39100, 24)     = 0
+rseq(0xffffa1a39740, 0x20, 0, 0xd428bc00) = 0
+mprotect(0xffffa164d000, 12288, PROT_READ) = 0
+mprotect(0xffffa168f000, 4096, PROT_READ) = 0
+mprotect(0xffffa173f000, 4096, PROT_READ) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa1a37000
+mprotect(0xffffa19c5000, 45056, PROT_READ) = 0
+mprotect(0xaaaad0748000, 32768, PROT_READ) = 0
+mprotect(0xffffa1a42000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+munmap(0xffffa19e2000, 137947)          = 0
+futex(0xffffa19d37ec, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+getrandom("\xee\x42\x90\x4b\x59\x42\x86\x4e", 8, GRND_NONBLOCK) = 8
+brk(NULL)                               = 0xaaaaeb8f9000
+brk(0xaaaaeb91a000)                     = 0xaaaaeb91a000
+brk(0xaaaaeb93d000)                     = 0xaaaaeb93d000
+brk(0xaaaaeb95e000)                     = 0xaaaaeb95e000
+rt_sigaction(SIGCHLD, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+socketpair(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC, 0, [3, 4]) = 0
+fcntl(4, F_DUPFD_CLOEXEC, 4)            = 5
+close(4)                                = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=65535, rlim_max=65535}) = 0
+getpid()                                = 1294419
+mmap(NULL, 36864, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xffffa1a2e000
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_VFORK|CLONE_CLEAR_SIGHAND, exit_signal=SIGCHLD, stack=0xffffa1a2e000, stack_size=0x9000}, 88) = 1294420
+munmap(0xffffa1a2e000, 36864)           = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+close(5)                                = 0
+pidfd_open(1294420, 0)                  = 4
+ppoll([{fd=3, events=POLLOUT}], 1, {tv_sec=0, tv_nsec=10000000}, NULL, 0) = 1 ([{fd=3, revents=POLLOUT}], left {tv_sec=0, tv_nsec=9998527})
+sendto(3, "10FDPT4Q\1\0\0\0\0\0\0\0\253\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 40, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 40
+ppoll([{fd=3, events=POLLOUT}], 1, {tv_sec=0, tv_nsec=10000000}, NULL, 0) = 1 ([{fd=3, revents=POLLOUT}], left {tv_sec=0, tv_nsec=9999555})
+sendto(3, "%PDF-1.7\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [4 0 R 6 0 R ] /Count 2 >>\nendobj\n3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n4 0 obj\n"..., 939, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 939
+ppoll([{fd=3, events=POLLIN}], 1, {tv_sec=0, tv_nsec=10000000}, NULL, 0) = 1 ([{fd=3, revents=POLLIN}], left {tv_sec=0, tv_nsec=6180804})
+recvfrom(3, "\1\0\0\0\0\0\0\0", 8, MSG_DONTWAIT, NULL, NULL) = 8
+ppoll([{fd=3, events=POLLIN}], 1, {tv_sec=0, tv_nsec=10000000}, NULL, 0) = 1 ([{fd=3, revents=POLLIN|POLLHUP}], left {tv_sec=0, tv_nsec=9648818})
+recvfrom(3, "", 65536, MSG_DONTWAIT, NULL, NULL) = 0
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1294420, si_uid=2002, si_status=127, si_utime=0, si_stime=0} ---
+wait4(1294420, [{WIFEXITED(s) && WEXITSTATUS(s) == 127}], WNOHANG, {ru_utime={tv_sec=0, tv_usec=2488}, ru_stime={tv_sec=0, tv_usec=0}, ...}) = 1294420
+close(4)                                = 0
+close(3)                                = 0
+write(2, "PDF error file_pdf_dependency_unavailable\n", 42) = 42
+fstat(1, {st_mode=S_IFREG|0664, st_size=0, ...}) = 0
+write(1, "  CHECK failed: reply.ok() && document.pages.size() == 2 && document.text.find(\"Q4T actual PDF page 1\") != std::string::npos && document.text.find(\"Q4T actual PDF page 2\") != std::string::npos && docu"..., 395) = 395
+exit_group(1)                           = ?
++++ exited with 1 +++

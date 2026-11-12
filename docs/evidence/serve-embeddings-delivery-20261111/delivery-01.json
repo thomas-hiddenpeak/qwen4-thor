@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    ".q4t-work/serve-embeddings-20261111/deliver.py"
+  ],
+  "exit_code": 0,
+  "seconds": 12.027488864026964
+}

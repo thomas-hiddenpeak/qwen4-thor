@@ -1,0 +1,13 @@
+HTTP/1.1 401 Response
+Content-Type: application/json
+Content-Length: 125
+Connection: close
+Cache-Control: no-store
+X-Request-Id: req-6c7fea4f0b193b43daf9fd2107277ed1
+WWW-Authenticate: Bearer realm="q4t"
+Vary: Origin
+Access-Control-Allow-Origin: https://client.example
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: x-request-id, retry-after
+
+{"error":{"message":"Service entrypoint rejected request","type":"gateway_error","param":null,"code":"gateway_unauthorized"}}

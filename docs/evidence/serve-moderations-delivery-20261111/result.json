@@ -1,0 +1,252 @@
+{
+  "status": "PASS_MODERATIONS_DELIVERED",
+  "current": {
+    "engine_binary_sha256": "ee550cabf337d42281eb37395fbfd85f71ea2dc746944d758e42f5a20bd26220",
+    "engine_release_sha256": "532a04edb91dd4b8f494d47325a135867564d8ba46fe656e6098d8c98c2499cd",
+    "generation_sha256": "9fb5ff43fcf72b8d4606ad3d1aab21d196a3dba04c3d70bef7f73a7feef778fd",
+    "manifest_sha256": "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+    "service_acceptance_sha256": "83d816a1b18e534531d7afcb07484a7cb3804a7b5b89657b86555e9302f93d6e",
+    "service_release_sha256": "374f690ef8ba4e43c7bad97d63d73e0a3fbbafaf42f8f32b55cdceb35e9be213"
+  },
+  "compatible_rollback": {
+    "reader": {
+      "engine_binary_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+      "engine_release_sha256": "3b1b85c887cd6fc7d7da4f9b92c36ef03dab17eadd3d9ba5e28d916ae0197a89",
+      "generation_sha256": "a09eac43e67c7fa765ffc30dfebaa7a692755ba070a37d21ddaf8c622ba7903f",
+      "manifest_sha256": "2298ea9afa0d9cfeee0b918fd9d89c7b843ee78399d7c9dc586005d8244dd8e2",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/accepted-fallback/bundle",
+      "service_acceptance_sha256": "b75107d740d93bdc6bedbb7609caebe2b450255ccf8e8ee31f2be5e2ccf8bfa5",
+      "service_release_sha256": "faa48a63b24cb4606c67da6731334f0e86ad8156dcc647bf314d8bf062895172"
+    },
+    "revision": 46,
+    "original_accepted_binary": {
+      "source_commit": "c2eea34b83201ec055def17e70898e71d8355ad5",
+      "binary_sha256": "616498476bb96f97c325471dbbc04aeb2a3154533789d620e37e2f591f905851",
+      "accepted_original": ".q4t-work/serve-moderations-20261111/business-01",
+      "build_copy": true,
+      "independent_build": false
+    },
+    "all_moderations_backends_present": true,
+    "persistent_and_quota_sources_identical": true,
+    "independent_build": false,
+    "difference": "Only terminal socket-write failure counting; no state/model/protocol result differences.",
+    "command": "q4t service publish-rollback --state STATE --default-root ROOT --generation-sha256 READER_GENERATION --expected-manifest-sha256 CURRENT_MANIFEST --expected-revision CURRENT_REVISION --request-id NEW_UUID",
+    "preservation": "Retain original task IDs, deadlines, results and quota; never delete state or reset budgets."
+  },
+  "publication_revision": 48,
+  "commands": [
+    {
+      "label": "previous-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/engine/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/candidate/bundle",
+        "--manifest-sha256",
+        "25061a30fdc43be7b8b1ae900f9fc2fd2b7df92bec8b006559d22268594d0ea4"
+      ],
+      "returncode": 0,
+      "seconds": 1.072569988667965
+    },
+    {
+      "label": "accepted-fallback-native-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/accepted-fallback/bundle/engine/q4t",
+        "service",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.7270202348008752
+    },
+    {
+      "label": "accepted-fallback-legacy-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/accepted-fallback/bundle/bin/q4t",
+        "service",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.4426905969157815
+    },
+    {
+      "label": "candidate-native-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/engine/q4t",
+        "service",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.7541876030154526
+    },
+    {
+      "label": "candidate-legacy-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/bin/q4t",
+        "service",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.45417615910992026
+    },
+    {
+      "label": "accepted-fallback-publish",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/engine/q4t",
+        "service",
+        "publish",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--default-root",
+        "/home/rm01/models/dev/qwen4-thor/build",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/accepted-fallback/bundle",
+        "--manifest-sha256",
+        "2298ea9afa0d9cfeee0b918fd9d89c7b843ee78399d7c9dc586005d8244dd8e2",
+        "--service-release",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/accepted-fallback/service.release.json",
+        "--expected-manifest-sha256",
+        "25061a30fdc43be7b8b1ae900f9fc2fd2b7df92bec8b006559d22268594d0ea4",
+        "--expected-revision",
+        "44",
+        "--request-id",
+        "cf9ad6a2-e13a-4b39-b99a-a739f479bce4"
+      ],
+      "returncode": 0,
+      "seconds": 4.649776008911431
+    },
+    {
+      "label": "accepted-fallback-default-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 1.0724483006633818
+    },
+    {
+      "label": "accepted-fallback-default-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.762024147901684
+    },
+    {
+      "label": "accepted-fallback-default-observe",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "observe",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.7163247130811214
+    },
+    {
+      "label": "accepted-fallback-publication",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "publish-status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.7641551019623876
+    },
+    {
+      "label": "candidate-publish",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/engine/q4t",
+        "service",
+        "publish",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--default-root",
+        "/home/rm01/models/dev/qwen4-thor/build",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle",
+        "--manifest-sha256",
+        "9f3c44f0ca846be9b1542dee290778b5622b3d33d14fe62bba1afe1d77f7f164",
+        "--service-release",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/service.release.json",
+        "--expected-manifest-sha256",
+        "2298ea9afa0d9cfeee0b918fd9d89c7b843ee78399d7c9dc586005d8244dd8e2",
+        "--expected-revision",
+        "46",
+        "--request-id",
+        "67b171bc-b4a2-4b6e-8238-dacc9fb6d30e"
+      ],
+      "returncode": 0,
+      "seconds": 4.644612463191152
+    },
+    {
+      "label": "candidate-default-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 1.0705884699709713
+    },
+    {
+      "label": "candidate-default-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.7854819200001657
+    },
+    {
+      "label": "candidate-default-observe",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "observe",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.7313938550651073
+    },
+    {
+      "label": "candidate-publication",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "service",
+        "publish-status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "returncode": 0,
+      "seconds": 0.7653329963795841
+    }
+  ],
+  "state": "STOPPED",
+  "business_state_preserved": true,
+  "model_starts": 0,
+  "chats": 0,
+  "gpu_queries": 0,
+  "default_changed": true,
+  "main_merged": false,
+  "remaining_master_tasks_open": true
+}

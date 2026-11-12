@@ -1,0 +1,17 @@
+{
+  "status": "PASS_ACTUAL_V6_PACKAGED_CLI_EXPORT_RETENTION",
+  "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+  "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "actual_packaged_child_source": true,
+  "read_only_export": true,
+  "synthetic_legacy_run_retired": 1,
+  "production_runs_removed": 0,
+  "ledger_preserved": true,
+  "default_preserved": true,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "gpu_probes": 0,
+  "ownership_lock_proof": "nonblocking shared lease and own fixture Guardian/writer; no device operation",
+  "remaining_master_tasks_open": true,
+  "seconds": 2.845142133999616
+}

@@ -1,0 +1,27 @@
+{
+  "status": "CPU_ACCEPTED_SERVER_INTEGRATION_REQUIRED",
+  "cases": 11,
+  "passed": [
+    "file_extract_corrupt_package_never_falls_back_to_converter",
+    "file_extract_native_path_does_not_require_converter",
+    "vector_index_token_chunks_preserve_utf8_and_bound_overlap",
+    "vector_ingestion_actual_utf16_csv_and_signature_extraction",
+    "vector_ingestion_cancel_after_committed_model_keeps_usage_without_publication",
+    "vector_ingestion_real_tokenizer_preserves_source_identity_and_exact_eos_cost",
+    "vector_ingestion_rejects_incomplete_rows_and_empty_content_before_encoding",
+    "vector_ingestion_reserves_full_cost_before_any_model_and_preserves_partial_usage",
+    "vector_ingestion_scope_source_and_cancel_checks_precede_embedding",
+    "vector_ingestion_unknown_parent_commit_retains_original_hold_and_published_index",
+    "vector_ingestion_unknown_snapshot_commit_is_reconciled_without_model_replay"
+  ],
+  "cpu_seconds": 1.1838669958524406,
+  "runner_sha256": "1309132c32fdee4dff9d732df31a2349d7d9debfd07276e6e3f405204fc1eac3",
+  "actual_files": true,
+  "actual_document_worker": true,
+  "actual_tokenizer": true,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "production_routes": false,
+  "real_embedding": false,
+  "whole_A11_complete": false
+}

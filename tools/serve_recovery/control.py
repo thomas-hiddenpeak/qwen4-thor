@@ -6,6 +6,15 @@ import time
 
 from tools.serve_recovery import journal, ledger
 
+GATEWAY_REASONS = (
+    'none', 'gateway_verifying', 'gateway_model_not_ready', 'gateway_stopping',
+    'gateway_binding_unavailable', 'gateway_control_unavailable',
+    'gateway_identity_mismatch', 'gateway_capacity_mismatch',
+    'gateway_client_policy_mismatch', 'gateway_observation_unavailable',
+    'gateway_observation_invalid', 'gateway_backend_not_ready',
+    'gateway_generation_changed', 'gateway_client_policy_unavailable',
+    'gateway_recovering')
+
 
 def address(service_id):
     ledger.require(ledger.identifier(service_id), 'invalid service identity')
@@ -15,6 +24,11 @@ def address(service_id):
 def request(service_id, operation, *, timeout=3):
     ledger.require(operation in ('status', 'stop'), 'invalid control operation')
     return _request(service_id, operation, timeout=timeout)
+
+
+def outer_observation(service_id, *, adopt=False, timeout=.5):
+    ledger.require(type(adopt) is bool, 'explicit outer observation operation required')
+    return _request(service_id, 'outer-adopt' if adopt else 'outer-heartbeat', timeout=timeout)
 
 
 def binding(service_id, *, timeout=0.5):
@@ -58,15 +72,29 @@ class ControllerChannel:
         ledger.require(name in ('ready', 'heartbeat'), 'invalid control event')
         return self._send(name)
 
-    def health(self, phase, observation, reason):
+    def health(self, phase, observation, reason, *, auxiliary_io=None):
         return self._send('health', health=dict(phase=phase,
-            observation=observation, reason=reason))
+            observation=observation, reason=reason,
+            **({} if auxiliary_io is None else dict(auxiliary_io=auxiliary_io))))
 
     def admission(self, generation, opened):
         ledger.require(ledger.integer(generation, minimum=1) and
                        type(opened) is bool, 'invalid model admission')
         return self._send('admission', admission=dict(
             model_generation=generation, opened=opened))
+
+    def model_exit(self, generation, owner, returncode):
+        """Report an actual direct-child wait result, never an inferred health error."""
+        ledger.require(ledger.integer(generation,minimum=1) and type(returncode) is int and
+            returncode in (-4,-6,-11), 'unclassified model exit')
+        return self._send('model_exit',model_exit=dict(model_generation=generation,
+            pid=owner['pid'],start_ticks=owner['start_ticks'],signal=-returncode))
+
+    def quota_restored(self, generation, boot_id, receipt):
+        ledger.require(ledger.integer(generation, minimum=2) and ledger.identifier(boot_id) and
+            type(receipt) is str and ledger.HASH.fullmatch(receipt), 'invalid quota recovery receipt')
+        return self._send('quota_restored', quota_restored=dict(model_generation=generation,
+            source_generation=generation-1, boot_id=boot_id, receipt_sha256=receipt))
 
     def _send(self, name, **extra):
         ledger.require(self.sequence < ledger.MAX_INTEGER,
@@ -135,8 +163,14 @@ class GatewayChannel(ControllerChannel):
                        'invalid model generation')
         self._send('bound', model_generation=generation)
 
-    def unbound(self):
-        self._send('unbound')
+    def unbound(self, reason=None, generation=0):
+        if reason is None:
+            self._send('unbound')  # Historical actor messages remain valid.
+            return
+        ledger.require(reason in GATEWAY_REASONS and reason != 'none' and
+                       ledger.integer(generation), 'invalid binding diagnostic')
+        self._send('unbound', binding_failure=dict(
+            reason=reason, model_generation=generation))
 
     def begin(self, operation, args):
         raise ledger.LedgerError('gateway has no recovery transaction authority')

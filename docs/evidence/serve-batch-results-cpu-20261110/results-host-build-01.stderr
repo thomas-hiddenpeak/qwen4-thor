@@ -1,0 +1,518 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::Ok(const q4t::server::ObjectReply&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:52:40: error: a function-definition is not allowed here before ‘{’ token
+   52 |   Json Parsed(const std::string& text) {
+      |                                        ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:58:63: error: a function-definition is not allowed here before ‘{’ token
+   58 |                         ObjectKind kind = ObjectKind::kBatch) {
+      |                                                               ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:67:71: error: a function-definition is not allowed here before ‘{’ token
+   67 |                    const std::function<void(ObjectRequest&)>& change) {
+      |                                                                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:79:55: error: a function-definition is not allowed here before ‘{’ token
+   79 |   std::string Input(size_t count, size_t padding = 0) {
+      |                                                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:97:77: error: a function-definition is not allowed here before ‘{’ token
+   97 |   ReadyBatch Ready(ObjectStore & objects, size_t count, size_t padding = 0) {
+      |                                                                             ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:148:62: error: a function-definition is not allowed here before ‘{’ token
+  148 |                        std::string body = "{\"answer\":42}") {
+      |                                                              ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:153:69: error: a function-definition is not allowed here before ‘{’ token
+  153 |   std::string Content(ObjectStore & objects, const std::string& id) {
+      |                                                                     ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:169:52: error: a function-definition is not allowed here before ‘{’ token
+  169 |   std::vector<Json> Lines(const std::string& text) {
+      |                                                    ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:181:46: error: a function-definition is not allowed here before ‘{’ token
+  181 |   ObjectReply Collect(ObjectStore & objects) {
+      |                                              ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:188:37: error: a function-definition is not allowed here before ‘{’ token
+  188 |   void Drain(ObjectStore & objects) {
+      |                                     ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_read_original_rows_across_actual_chunks_after_file_delete()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:198:3: error: ‘ReadyBatch’ was not declared in this scope
+  198 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:201:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  201 |     ready = Ready(objects, 3, 2 * kBinaryChunkBytes + 17);
+      |     ^~~~~
+      |     std::future_status::ready
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:13:
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:201:13: error: ‘Ready’ was not declared in this scope
+  201 |     ready = Ready(objects, 3, 2 * kBinaryChunkBytes + 17);
+      |             ^~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:18:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:203:18: error: ‘Collect’ was not declared in this scope
+  203 |               Ok(Collect(objects)));
+      |                  ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:207:26: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  207 |   for (size_t i = 0; i < ready.rows.size(); ++i) {
+      |                          ^~~~~
+      |                          std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:219:52: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  219 |       batches.ReadInputRow(Access("client:other"), ready.id, 0, &unchanged)
+      |                                                    ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:222:35: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  222 |   Q4T_CHECK(batches.Row(Access(), ready.id, 3).http_status == 409);
+      |                                   ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:225:46: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  225 |   Q4T_CHECK(!batches.ReadInputRow(cancelled, ready.id, 0, &unchanged).ok() &&
+      |                                              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_one_durable_start_ticket_and_atomic_full_endpoint_output()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:235:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  235 |   const auto ready = Ready(objects, 2);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:241:7: error: ‘Start’ was not declared in this scope
+  241 |       Start(batches, ready, 0, 200,
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:263:7: error: ‘Request’ was not declared in this scope
+  263 |       Request(row.value.GetString("result_id"), ObjectKind::kToolRun),
+      |       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:275:13: error: ‘Content’ was not declared in this scope
+  275 |       Lines(Content(objects, completed.value.GetString("output_file_id")));
+      |             ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:275:7: error: ‘Lines’ was not declared in this scope; did you mean ‘lines’?
+  275 |       Lines(Content(objects, completed.value.GetString("output_file_id")));
+      |       ^~~~~
+      |       lines
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:281:28: error: ‘Parsed’ was not declared in this scope
+  281 |                 OutputJson(Parsed(result.response_body)) &&
+      |                            ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:290:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  290 |   const auto ready = Ready(objects, 1);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:296:22: error: no matching function for call to ‘async(std::launch, const {anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()::<lambda()>&)’
+  296 |   auto a = std::async(std::launch::async, start),
+      |            ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/future:1801:5: note: candidate: ‘template<class _Fn, class ... _Args> std::future<typename std::__invoke_result<typename std::decay<_Tp>::type, typename std::decay<_Args>::type ...>::type> std::async(launch, _Fn&&, _Args&& ...)’
+ 1801 |     async(launch __policy, _Fn&& __fn, _Args&&... __args)
+      |     ^~~~~
+/usr/include/c++/14/future:1801:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/14/future: In substitution of ‘template<class _Fn, class ... _Args> std::future<typename std::__invoke_result<typename std::decay<_Tp>::type, typename std::decay<_Args>::type ...>::type> std::async(launch, _Fn&&, _Args&& ...) [with _Fn = const {anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()::<lambda()>&; _Args = {}]’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:296:22:   required from here
+  296 |   auto a = std::async(std::launch::async, start),
+      |            ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/future:1801:5: error: no type named ‘type’ in ‘struct std::__invoke_result<{anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()::<lambda()> >’
+ 1801 |     async(launch __policy, _Fn&& __fn, _Args&&... __args)
+      |     ^~~~~
+/usr/include/c++/14/future:1835:5: note: candidate: ‘template<class _Fn, class ... _Args> std::future<typename std::__invoke_result<typename std::decay<_Tp>::type, typename std::decay<_Args>::type ...>::type> std::async(_Fn&&, _Args&& ...)’
+ 1835 |     async(_Fn&& __fn, _Args&&... __args)
+      |     ^~~~~
+/usr/include/c++/14/future:1835:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/14/future: In substitution of ‘template<class _Fn, class ... _Args> std::future<typename std::__invoke_result<typename std::decay<_Tp>::type, typename std::decay<_Args>::type ...>::type> std::async(_Fn&&, _Args&& ...) [with _Fn = std::launch; _Args = {const {anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()::<lambda()>&}]’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:296:22:   required from here
+  296 |   auto a = std::async(std::launch::async, start),
+      |            ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/14/future:1835:5: error: no type named ‘type’ in ‘struct std::__invoke_result<std::launch, {anonymous}::q4t_test_fn_batch_results_concurrent_start_has_exactly_one_execution_owner()::<lambda()> >’
+ 1835 |     async(_Fn&& __fn, _Args&&... __args)
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:299:24: error: ‘rb’ was not declared in this scope
+  299 |   Q4T_CHECK(ra.ok() != rb.ok());
+      |                        ^~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:300:24: error: ‘rb’ was not declared in this scope
+  300 |   Q4T_CHECK((ra.ok() ? rb : ra).http_status == 409);
+      |                        ^~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:303:44: error: ‘rb’ was not declared in this scope
+  303 |                            (ra.ok() ? ra : rb).value.GetString("request_id"));
+      |                                            ^~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_mixed_files_restart_and_terminal_private_resource_reclamation()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:314:24: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  314 |     const auto ready = Ready(objects, 3);
+      |                        ^~~~~
+      |                        ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:324:21: error: ‘Start’ was not declared in this scope
+  324 |       auto result = Start(batches, ready, i, i == 1 ? 400 : 200,
+      |                     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:355:18: error: ‘Collect’ was not declared in this scope
+  355 |               Ok(Collect(objects)));
+      |                  ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:358:30: error: ‘Request’ was not declared in this scope
+  358 |                     .Execute(Request(private_id, ObjectKind::kToolRun),
+      |                              ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:366:24: error: ‘Content’ was not declared in this scope
+  366 |   auto success = Lines(Content(objects, output)),
+      |                        ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:366:18: error: ‘Lines’ was not declared in this scope
+  366 |   auto success = Lines(Content(objects, output)),
+      |                  ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:368:36: error: ‘failures’ was not declared in this scope
+  368 |   Q4T_CHECK(success.size() == 1 && failures.size() == 2 &&
+      |                                    ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_final_files_coalesce_large_rows_and_page_boundaries()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:381:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  381 |   const auto ready = Ready(objects, kBatchPageRows + 1);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:385:19: error: ‘Start’ was not declared in this scope
+  385 |     auto result = Start(batches, ready, i, 200, body);
+      |                   ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:393:7: error: ‘Request’ was not declared in this scope
+  393 |       Request(final.value.GetString("output_file_id"), ObjectKind::kFile),
+      |       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:404:13: error: ‘Content’ was not declared in this scope
+  404 |       Lines(Content(objects, final.value.GetString("output_file_id")));
+      |             ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:404:7: error: ‘Lines’ was not declared in this scope; did you mean ‘lines’?
+  404 |       Lines(Content(objects, final.value.GetString("output_file_id")));
+      |       ^~~~~
+      |       lines
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_cancellation_keeps_finished_and_records_unstarted_without_execution()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:418:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  418 |   const auto ready = Ready(objects, 3);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:419:17: error: ‘Start’ was not declared in this scope
+  419 |   auto result = Start(batches, ready, 0);
+      |                 ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:447:13: error: ‘Content’ was not declared in this scope
+  447 |       Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+      |             ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:447:7: error: ‘Lines’ was not declared in this scope
+  447 |       Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:450:14: error: ‘Content’ was not declared in this scope
+  450 |        Lines(Content(objects, final.value.GetString("error_file_id"))))
+      |              ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:450:8: error: ‘Lines’ was not declared in this scope
+  450 |        Lines(Content(objects, final.value.GetString("error_file_id"))))
+      |        ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_invalid_endpoint_json_and_ticket_do_not_complete_or_publish()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:461:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  461 |   const auto ready = Ready(objects, 1);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:462:17: error: ‘Start’ was not declared in this scope
+  462 |   auto result = Start(batches, ready, 0);
+      |                 ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_actual_unknown_start_never_grants_duplicate_execution()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:490:3: error: ‘ReadyBatch’ was not declared in this scope
+  490 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:493:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  493 |     ready = Ready(objects, 1);
+      |     ^~~~~
+      |     std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:493:13: error: ‘Ready’ was not declared in this scope
+  493 |     ready = Ready(objects, 1);
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:498:45: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  498 |   auto started = batches.StartRow(Access(), ready.id, 0);
+      |                                             ^~~~~
+      |                                             std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:501:3: error: ‘Drain’ was not declared in this scope
+  501 |   Drain(objects);
+      |   ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_actual_unknown_finish_commits_result_and_counts_once()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:513:3: error: ‘ReadyBatch’ was not declared in this scope
+  513 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:518:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  518 |     ready = Ready(objects, 1);
+      |     ^~~~~
+      |     std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:518:13: error: ‘Ready’ was not declared in this scope
+  518 |     ready = Ready(objects, 1);
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:519:14: error: ‘Start’ was not declared in this scope
+  519 |     result = Start(batches, ready, 0);
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:525:49: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  525 |     auto finished = batches.FinishRow(Access(), ready.id, 0,
+      |                                                 ^~~~~
+      |                                                 std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:529:5: error: ‘Drain’ was not declared in this scope
+  529 |     Drain(objects);
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:547:52: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  547 |   Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
+      |                                                    ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:548:43: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  548 |   auto final = batches.Finalize(Access(), ready.id);
+      |                                           ^~~~~
+      |                                           std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:551:13: error: ‘Content’ was not declared in this scope
+  551 |       Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+      |             ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:551:7: error: ‘Lines’ was not declared in this scope
+  551 |       Lines(Content(objects, final.value.GetString("output_file_id"))).size() ==
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_actual_unknown_finalization_publishes_both_files_and_terminal_atomically()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:560:3: error: ‘ReadyBatch’ was not declared in this scope
+  560 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:564:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  564 |     ready = Ready(objects, 2);
+      |     ^~~~~
+      |     std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:564:13: error: ‘Ready’ was not declared in this scope
+  564 |     ready = Ready(objects, 2);
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:566:21: error: ‘Start’ was not declared in this scope
+  566 |       auto result = Start(batches, ready, i, i ? 400 : 200);
+      |                     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:575:43: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  575 |   auto final = batches.Finalize(Access(), ready.id);
+      |                                           ^~~~~
+      |                                           std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:578:3: error: ‘Drain’ was not declared in this scope
+  578 |   Drain(objects);
+      |   ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:584:21: error: ‘Content’ was not declared in this scope
+  584 |               Lines(Content(objects, retrieved.value.GetString(key))).size() ==
+      |                     ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:584:15: error: ‘Lines’ was not declared in this scope
+  584 |               Lines(Content(objects, retrieved.value.GetString(key))).size() ==
+      |               ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_actual_dead_owner_started_row_is_interrupted_then_pending_can_continue()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:604:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  604 |         auto ready = Ready(objects, 2);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:606:9: error: ‘Start’ was not declared in this scope
+  606 |         Start(batches, ready, 0);
+      |         ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:654:13: error: ‘Content’ was not declared in this scope
+  654 |       Lines(Content(objects, final.value.GetString("error_file_id")));
+      |             ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:654:7: error: ‘Lines’ was not declared in this scope
+  654 |       Lines(Content(objects, final.value.GetString("error_file_id")));
+      |       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_expired_immutable_deadline_produces_errors_without_start()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:665:16: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  665 |   auto ready = Ready(objects, 2);
+      |                ^~~~~
+      |                ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:673:15: error: ‘Request’ was not declared in this scope
+  673 |   auto root = Request(NewObjectId(ObjectKind::kBatch));
+      |               ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:690:33: error: could not convert ‘{<expression error>}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<q4t::io::Json>’
+  690 |   Set(&root.data, "pages", Array({String(page.id)}));
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 <brace-enclosed initializer list>
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:709:14: error: ‘Content’ was not declared in this scope
+  709 |        Lines(Content(objects, final.value.GetString("error_file_id"))))
+      |              ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:709:8: error: ‘Lines’ was not declared in this scope
+  709 |        Lines(Content(objects, final.value.GetString("error_file_id"))))
+      |        ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_storage_quota_rejects_result_without_releasing_started_owner()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:718:3: error: ‘ReadyBatch’ was not declared in this scope
+  718 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:724:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  724 |     ready = Ready(objects, 1);
+      |     ^~~~~
+      |     std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:724:13: error: ‘Ready’ was not declared in this scope
+  724 |     ready = Ready(objects, 1);
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:725:14: error: ‘Start’ was not declared in this scope
+  725 |     result = Start(batches, ready, 0);
+      |              ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:726:19: error: ‘Request’ was not declared in this scope
+  726 |     auto health = Request("");
+      |                   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:735:47: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  735 |     auto failed = batches.FinishRow(Access(), ready.id, 0,
+      |                                               ^~~~~
+      |                                               std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:740:29: error: ‘loaded’ was not declared in this scope
+  740 |     Q4T_CHECK(Ok(row) && Ok(loaded) &&
+      |                             ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:750:44: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  750 |   Q4T_CHECK(Ok(batches.FinishRow(Access(), ready.id, 0, ready.rows[0].custom_id,
+      |                                            ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_finalization_quota_never_exposes_partial_files()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:757:3: error: ‘ReadyBatch’ was not declared in this scope
+  757 |   ReadyBatch ready;
+      |   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:762:5: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  762 |     ready = Ready(objects, 2);
+      |     ^~~~~
+      |     std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:762:13: error: ‘Ready’ was not declared in this scope
+  762 |     ready = Ready(objects, 2);
+      |             ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:764:21: error: ‘Start’ was not declared in this scope
+  764 |       auto result = Start(batches, ready, i, i ? 400 : 200);
+      |                     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:769:19: error: ‘Request’ was not declared in this scope
+  769 |     auto health = Request("");
+      |                   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:778:46: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  778 |     auto failed = batches.Finalize(Access(), ready.id);
+      |                                              ^~~~~
+      |                                              std::future_status::ready
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:789:43: error: ‘ready’ was not declared in this scope; did you mean ‘std::future_status::ready’?
+  789 |   Q4T_CHECK(Ok(batches.Finalize(Access(), ready.id)));
+      |                                           ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/usr/include/c++/14/future:195:5: note: ‘std::future_status::ready’ declared here
+  195 |     ready,
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_historical_receipt_does_not_pin_expired_output_bytes()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:797:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  797 |   const auto ready = Ready(objects, 1);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:798:23: error: ‘Start’ was not declared in this scope
+  798 |   const auto result = Start(batches, ready, 0);
+      |                       ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:806:23: error: ‘Request’ was not declared in this scope
+  806 |       objects.Execute(Request(output, ObjectKind::kFile), Access().deadline);
+      |                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:815:10: error: ‘Edit’ was not declared in this scope
+  815 |       Ok(Edit(objects, output, ObjectKind::kFile, [&](ObjectRequest& request) {
+      |          ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:827:16: error: ‘Collect’ was not declared in this scope
+  827 |             Ok(Collect(objects)));
+      |                ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_batch_results_corrupt_page_blocks_reads_and_start_transactionally()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:840:22: error: ‘Ready’ was not declared in this scope; did you mean ‘ready’?
+  840 |   const auto ready = Ready(objects, 1);
+      |                      ^~~~~
+      |                      ready
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:845:10: error: ‘Edit’ was not declared in this scope
+  845 |       Ok(Edit(objects, page, ObjectKind::kToolRun, [](ObjectRequest& request) {
+      |          ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp: At global scope:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:858:2: error: expected ‘}’ at end of input
+  858 | }
+      |  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp:20:11: note: to match this ‘{’
+   20 | namespace {
+      |           ^
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:849: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

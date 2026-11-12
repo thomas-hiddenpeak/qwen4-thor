@@ -1,0 +1,222 @@
+{
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/ingress.json": {
+    "sha256": "9616f6d4fde0caae9132476295f2342ed61c93dbadad81c1e36dbe927a7cb8af",
+    "bytes": 1186
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/ready.json": {
+    "sha256": "908389c848147fb475414dca508a5fc119f6b175ae1e36997f3a8c098efd9508",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/policy.json": {
+    "sha256": "737381facfc945f2b174d15f01e2d42e1858720f5d9601a237b76c7506d0a258",
+    "bytes": 592
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/backend.log": {
+    "sha256": "882584fd3642b7c05ca2aef74da18630244067a9e6d97607565f0252713edc91",
+    "bytes": 90
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/ingress.json": {
+    "sha256": "845aadcd832805858495204a6b9030b8e00e770eb8e5b36426279579319c6007",
+    "bytes": 1186
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/ready.json": {
+    "sha256": "62496eae0807f495f9c749ed478b77c73ab978557708caec912692696ef15528",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/backend.log": {
+    "sha256": "3ef7b0f59b1db23cd4638bf9e1626578d9c701834afcd2ba6a4d67298b87f180",
+    "bytes": 91
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/ingress.json": {
+    "sha256": "0b2c3ee0fd0f8d4b607c517d8ecac7c9995176b72e938829de91fec1157be6f3",
+    "bytes": 1186
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/ready.json": {
+    "sha256": "f4702ef33019a79b29a76bf367428be2dd3b53eefc56868f0199c59dfda8e259",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/backend.log": {
+    "sha256": "3ba5c16e53c1e3bcd0a525d9121ef0ccfbd50a3c144c57185f5c37ea7138d587",
+    "bytes": 91
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/crlnumber": {
+    "sha256": "8d2510d85c94c519a91dbab464e232a824442bc7f6ef8901d8b5534825373878",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/index.txt": {
+    "sha256": "1d2c779cd5d3002785dc00a066fd8bdbc7aae779edef5c00e822a3be3d8a47b0",
+    "bytes": 60
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/ca.cnf": {
+    "sha256": "25f44cab2abb120bda4d42ccbe6b60a3c620bf7d03d27ffddfe37e850fe53b3b",
+    "bytes": 235
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/other-client.pem": {
+    "sha256": "d86fe280819c3a021017521dbcda56c24533cd1ea095f7aad408f7232c1a8b83",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/clean.crl": {
+    "sha256": "36d30b6f1d963879e210b508bedb3394b91b85e58cb0d5fa5138d21fb431aa70",
+    "bytes": 560
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/client.key": {
+    "sha256": "0a1770d8fa09e5eee025d1a366084df8b68a277ab35010abfafbc9efe70317cf",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/client.pem": {
+    "sha256": "04cb8ce403679f0863ae19efbe2e6870ada53c8ce28cc7be1103a8639cd4fa2f",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/server.csr": {
+    "sha256": "53abd2181a6f23513e940294da6829fa08b8e710ec372c96e649dea7c3547ada",
+    "bytes": 891
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/next.pem": {
+    "sha256": "87444252a424cf6634e7c154a1d93d82ed8d0d90639a300ebd8d0b9825d0a121",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/ca.pem": {
+    "sha256": "eee04a6d20f0ba6281a1d03a0673aff057077c45ff6ac2f2c2b24f72d29b6700",
+    "bytes": 1139
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/server.ext": {
+    "sha256": "a0f7804dba0a812a4f68572e526e10843f5cb799b88a01fcdc34c1b155274008",
+    "bytes": 163
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/crlnumber.old": {
+    "sha256": "d6a1a767319c3bf2a337b16e3a14916f63e432872e0f8df1cb73b32a8b338ae4",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/expired.pem": {
+    "sha256": "b9f5fbfb1fe86dab192ad163ea811130dd01f5eca7d905fd79f778561acf86e2",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/index.txt.old": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/index.txt.attr": {
+    "sha256": "f185cb1322492dbcb4c2e4dd179bd3c09958fd39287dad4308e2fbd3c569f669",
+    "bytes": 21
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/serial": {
+    "sha256": "83c02ac2d48c863dab2ccf6870455aadfc2cec073b8db269b517c879d76aa6d9",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/ca.key": {
+    "sha256": "c5482907f2b5fecae0ab7b3ca49253a927ad9c40266785abf2fa9e1dc176707e",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/server.pem": {
+    "sha256": "fd6233cbdc90b2594031d1453e48c10ff17b83dc096f29ec601a1ac1db8e91be",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/openssl.log": {
+    "sha256": "8a2864ca5956cdac1617e02c763454957d5c0fc329ae247601ff3214bd6ab474",
+    "bytes": 4376
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/client.csr": {
+    "sha256": "c1b39dc1d6d5f4f061c31b1228039156dcb1fd85272fdf28e2810a3edfff7c35",
+    "bytes": 899
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/server.key": {
+    "sha256": "d35feebaf0ee12613fd386a02503108f41bd514d74855f663e4cd418a06787df",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/client.ext": {
+    "sha256": "60b347f311da6da0142a7d96b47a107a812c9e22532995856e2f21f2180a008d",
+    "bytes": 98
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/certs/revoked.crl": {
+    "sha256": "4db0510890d4d85217e4ad5cc93f4e25cb97509339555f35afcd968d19d3d119",
+    "bytes": 593
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/ingress.json": {
+    "sha256": "222ee8d63d361cee0394dca098f68c7be8a5343d630fbd3c34c5df28fd1e9cde",
+    "bytes": 1190
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/ready.json": {
+    "sha256": "e11781ebaf7c6d5e7e70f0d53062249b38798fbb0d833396ad6a36ab834d3caa",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/backend.log": {
+    "sha256": "336ec2dacf1082b9c5f95b977349f68d29512f145a2b092f4269f58054918632",
+    "bytes": 550
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/sdk.json": {
+    "sha256": "1eb8816250cb57865cfc3c9de9860a6f5fb5b9fb60bae0045b0b4cbd08ae0417",
+    "bytes": 3743
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/sdk.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/sdk.stdout": {
+    "sha256": "8df3ef64193c81f59acb761b249b92e638a0d0b827052866fdb5126820b7f856",
+    "bytes": 101
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_early_core_error_interrupts_paused_tls_upload/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_changed_generation_before_frame_completion_aborts_publication/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.tool_run.tool_run_a94cb654375dc7275c52a7cbe55487dd.json": {
+    "sha256": "0775d90c83fd63aeb0c5311e42dbd97a5b95c6c1576afca55d04ad1132922d5a",
+    "bytes": 448
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_malformed_chunk_trailer_never_publishes_complete_multipart/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-tls-followup-01/test_official_sdk_native_tls_prefix_files_and_large_bytes/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

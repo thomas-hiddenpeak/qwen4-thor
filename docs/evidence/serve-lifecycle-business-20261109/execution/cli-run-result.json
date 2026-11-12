@@ -1,0 +1,5 @@
+{
+  "returncode": 0,
+  "entry": "sealed service.main(run)",
+  "cpp_dispatch_evidence": "serve-lifecycle-cli-20261109"
+}

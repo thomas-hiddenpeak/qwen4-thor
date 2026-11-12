@@ -1,0 +1,19 @@
+{
+  "status": "PASS_TARGETED_HTTP_PACKAGE_CPU",
+  "distinct_tests": 17,
+  "initial_passed": 16,
+  "initial_fixture_failures": 1,
+  "affected_retry_passed": 1,
+  "runtime_changed_for_retry": false,
+  "real_v8_packages_verified": 2,
+  "gpu_operations": 0,
+  "default_changed": false,
+  "n05_delivered": false,
+  "engine_candidate_sha256": "406a88d5c7c62a15ce7d2045f403c1a704963470be0c737227ffc7f1af7018b2",
+  "ingress_candidate_sha256": "da2d65b49c935b83cba2a3e1c7db05eb04f40d95c6f148e5f00e9c7f3d3001b5",
+  "remaining": [
+    "actual model/SDK business",
+    "rollback and default delivery",
+    "all remaining master tasks"
+  ]
+}

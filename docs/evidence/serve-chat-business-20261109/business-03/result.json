@@ -1,0 +1,10 @@
+{
+  "status": "PASS_STORED_CHAT_CORRECTED_FAULT_AND_RECOVERY",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 46
+  },
+  "seconds": 44.74854543386027,
+  "binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31"
+}

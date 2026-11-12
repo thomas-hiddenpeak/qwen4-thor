@@ -1,0 +1,16 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+  "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+  "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+  "release": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f/service.release.json",
+    "sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+  },
+  "decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/primary-decision.json",
+    "sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba"
+  },
+  "fallback_known_limit": "rev92 predates cache cancellation cleanup repair and optional frontend route synchronization; retained for explicit rollback with its original evidence.",
+  "manual_root_rollback_requires_stopped": true,
+  "manual_root_handoff_requires_explicit_version_registration": true
+}

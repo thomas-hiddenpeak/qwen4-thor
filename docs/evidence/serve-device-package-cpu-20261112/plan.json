@@ -1,0 +1,17 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_optional_native_device_control_is_source_bound_and_hash_checked",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_device_control_receipt_and_custody_source_cannot_be_omitted",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v17_source_imports_every_cold_management_module",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_cli_defaults_native_and_nginx_is_not_a_required_argument",
+    "tools.serve_recovery.test_profile_integration.IntegrationTests.test_sealed_qualification_and_independent_ingress_bind_same_capacity"
+  ],
+  "new": 3,
+  "direct": 5,
+  "retained_v16_read": 1,
+  "gpu_starts": 0,
+  "default_changes": false
+}

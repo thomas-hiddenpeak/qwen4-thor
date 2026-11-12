@@ -1,0 +1,10 @@
+{
+  "status": "PASS_SAMPLING_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 9,
+    "controls": 56
+  },
+  "seconds": 55.48003520304337,
+  "binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215"
+}

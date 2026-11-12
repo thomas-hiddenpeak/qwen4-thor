@@ -73,11 +73,11 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 
 | API / 能力 | 当前状态 | 限制与证据 / 行动 |
 |---|---|---|
-| POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
+| POST /v1/chat/completions | 已验，子集 | 单模型；n=1..128独立choice，串行执行、同一请求生命周期 |
 | GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
 | GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
-| messages | profile限定已验 | 默认解析；system/developer/user/assistant/tool；system或developer仅第0条且不能混用 |
-| message.name | 明确拒绝非null | 模板不表达名称；省略/null允许，含空串的其他值400；tool_call_id负责工具关联 |
+| messages | v3消息子集已验 | 多条/中途system与developer按序映射system ChatML；user/assistant/tool与ID关联保持；无需user；refusal文本/内容块可回填。见[实际SDK交付](SERVE_CHAT_INPUT_2026-11-08.md)，剩余legacy/custom/多模态合同继续实现 |
+| message.name | 已实现并短验 | JSON转义的参与者信息，4096 UTF-8字节上限；按名称取回用户信息已通过真实SDK；不作鉴权身份，tool_call_id负责工具关联 |
 | prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
 | JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
 | content / reasoning_content / reasoning | 05a限定已验 | 默认reasoning_content，可用reasoning_field选择；JSON/SSE固定单字段；历史别名相等合并/冲突拒绝 |
@@ -86,15 +86,17 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
 | tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
 | parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |
+| allowed_tools / 工具参数SSE | A04子组已验 | auto/required允许子集贯穿模板、grammar与最终校验；严格/多调用逐片参数，成功终态＋EOF前不得执行。见[实际资料短验](SERVE_TOOL_STREAM_2026-11-08.md)；legacy/custom继续实施 |
 | strict / JSON Schema 输出约束 | 有限 profile 已验 | q4t-json-schema-v1，逐 token 掩码＋最终验证；未知关键字拒绝，应用仍须验证业务 |
 | max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
 | max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
-| temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
-| penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
+| temperature / top_p / n | A03子组已验 | 0..2 / 0..1 / 1..128；默认1/1/1，实际采样；显式温度0且无额外约束保留greedy MTP |
+| penalties / seed | A03子组已验 | presence/frequency -2..2，按本choice生成历史；精确signed int64 seed，逐choice独立RNG |
 | stop | 已验，有限profile | 字符串或最多4串，每串256 UTF-8字节；null/[]禁用；匹配包含推理/工具标记，截断工具错误；严格输出/cache组合拒绝 |
-| logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值，未实现 |
+| logprobs / logit_bias | A03子组已验 | 原始模型分布，top_logprobs 0..20；词表内ID的-100..100 bias实际执行；边界token保留真实bytes |
+| prediction | A03已验 | 字符串/text parts目标验证、部分回滚与accepted/rejected usage；拒绝token计入预算/配额。真实JSON/SSE/strict/bias/取消后MTP通过，见[prediction交付](SERVE_PREDICTION_2026-11-08.md) |
 | response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
-| stream_options.include_usage | 已验 | choices块usage:null，最后独立usage；choices的logprobs:null；中断不保证收到尾帧 |
+| stream_options.include_usage | 已验 | 各choice块usage:null，全部finish后一次汇总usage；请求logprobs时携带真实概率；中断不保证收到尾帧 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
 | 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；01c补齐工具/控制/递归schema路径，转义键不混淆层级；无法归属输入字段的运行错误仍可null |
@@ -142,31 +144,24 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 
 ## 当前剩余项与顺序
 
-执行队列以[PHASES](PHASES.md#队列与依赖)为准，具体审查位置见
-[本轮复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+按用户纠正，当前剩余能力进入[Serve总计划](SERVE_MASTER_PLAN_2026-11-08.md)，
+不能再将采样、多choice、Responses、原生TLS/CORS等写作“按新场景
+另立项”后结束任务。外部组件可选，项目所需能力须原生实现。
 
-1. **基础等待已补齐：** [03c](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
-   已验thinking准备/encode/preflight等待期取消与回收；GPU在途计算
-   仍属于协作取消的边界，不把全部锁或内核称为可抢占。
-2. **客户端及版本交接已补齐：** [08b](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)
-   已验全程网络截止和JS Key/CA/IP；当前托管/任务有独立结果。更多
-   SDK与组合按实际选用入口验收，不从固定版本外推。
-3. **资源与多人SLO：** RPM/TPM及准备后的客户端公平准入已交付；
-   GPU时间/吞吐/时延公平和Thor整机物理RAM硬保护尚未证明。不能
-   把轮转准入当作延迟SLO，也不能用已有memcg/CUDA额度代替物理容量保护。
-4. **用户验证/可选部署：** 当前ELF小时与天级长稳交用户；正式LAN、
-   证书/来源/通知/留存策略仅在选择时验收。三份day计划仍未执行。
-5. **范围扩展：** 任意schema、工具参数逐token增量、更多模型/模板、
-   采样、多choice、Responses、音频及分布式按具体业务立项。
-6. **持续服务的难故障：** 自恢复设计A/B及原生入口解耦已接受；C的
-   普通日志阻塞隔离、grammar有界回收、执行无进度监督未闭合；D的
-   自动轻量profile/发布回退仍后置。已有监控降级不能替代这些能力。
+1. R01/R02先完成日志观察阻塞隔离、grammar有界回收。
+2. N01—N03与A01/A02补原生TLS/LAN/证书/CORS及标准输入/模板合同。
+3. A03—A07补真实采样/多choice/logprobs、工具增量流、官方schema
+   支持范围、Completions与Responses；声明拒绝只是当前状态。
+4. A08/A09及N04—N07补标准持久对象/Files/Batch、客户端治理、
+   HTTP与原生运维；R03/R04补真实进度与观察留存。
+5. R05—R10补自动profile/版本回退、冷启动和资源保护/视觉恢复；
+   A10—A12补模型能力接入、工具适配及标准SDK，解除旧包固定限制。
+6. Q01—Q03完成真实资料查询、可回退发行和全部任务核对；长期
+   稳定性驱动交用户实跑。没有现场域名不妨碍原生能力的开发/本机验证。
 
-与成熟参考系统相比，当前主要差距在可组合范围、更多客户端、长期
-负载及运营证明。已交付的工具响应、developer适配、推理/stop、预检、
-客户端配额与任务恢复不再作为“尚未实现”排期；也不以功能表覆盖率
-给出工业化成熟度百分比。[vLLM固定版本对照](VLLM_SERVICE_GAPS_2026-11-02.md)
-用于检查职责范围，不将当时的官方网页或本地快照称作最新线上实现。
+上表继续只反映实际已支持能力，不提前改为“已实现”。既有SDK、
+配额、工具和恢复证据按身份复用；新组合需对应证据。不能以功能表
+覆盖率给出工业化成熟度百分比，也不能仅列限制就认定解决了缺口。
 
 ## 冻结阶段
 
@@ -184,8 +179,10 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 ## 官方协议依据
 
 最初官方协议核对日期为2026-11-02，来源与当时结论保留在
-[历史依据](APPLICATION_SERVICE_HISTORY_2026-11-04.md#官方协议依据)。本轮只
-核对本地实现与已存证据，没有刷新外部版本或新增外部兼容承诺。
+[历史依据](APPLICATION_SERVICE_HISTORY_2026-11-04.md#官方协议依据)。2026-11-08已重新
+核对官方Chat、Responses迁移、工具/结构化/Batch与vLLM接入文档，
+来源和获取局限见[重审证据](evidence/serve-goal-reaudit-20261108/README.md)。
+重新审计不表示新兼容能力已经验收。
 
 ## 首批交付历史
 

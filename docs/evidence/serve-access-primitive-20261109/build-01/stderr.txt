@@ -1,0 +1,7 @@
+CMake Error at /home/rm01/models/dev/qwen4-thor/cmake/NativeIngress.cmake:25 (find_path):
+  Could not find Q4T_OPENSSL_INCLUDE_DIR using the following files:
+  openssl/ssl.h
+Call Stack (most recent call first):
+  CMakeLists.txt:21 (include)
+
+

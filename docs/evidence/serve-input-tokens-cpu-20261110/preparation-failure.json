@@ -1,0 +1,7 @@
+{
+  "stage": "contract regeneration before inventory registration",
+  "observed": "tools/serve_protocol/build_contract.py AssertionError at route equality guard; new input_tokens route had not yet been registered in annotated inventory",
+  "model_starts": 0,
+  "tests": 0,
+  "fix": "review and register three backend/native/CORS inventory rows then regenerate"
+}

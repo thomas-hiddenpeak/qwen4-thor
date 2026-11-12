@@ -1,0 +1,7 @@
+{
+  "status": "FAILED_BEFORE_GPU",
+  "cause": "Preparation loaded checkout package before in-process sealed verification; pinned module guard rejected tools.serve_service.package",
+  "models": 0,
+  "chats": 0,
+  "output_created": false
+}

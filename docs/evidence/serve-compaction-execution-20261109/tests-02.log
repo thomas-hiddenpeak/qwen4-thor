@@ -1,0 +1,3 @@
+[PASS] compaction_output_lifecycle_has_one_done_and_no_tool_events
+[PASS] compaction_window_capacity_never_returns_an_unreplayable_result
+2 tests, 2 passed, 0 failed, 0 skipped

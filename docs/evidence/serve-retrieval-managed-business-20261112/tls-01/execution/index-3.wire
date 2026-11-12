@@ -1,0 +1,1 @@
+{"id":"file_924d78c1d77ad044c3ef0e8ca424b681","object":"vector_store.file","created_at":1794484021,"vector_store_id":"vs_247a2154e6b15e7958f937bee8eed260","status":"completed","usage_bytes":5726,"last_error":null,"attributes":{},"chunking_strategy":{"type":"static","static":{"max_chunk_size_tokens":4096,"chunk_overlap_tokens":0}}}

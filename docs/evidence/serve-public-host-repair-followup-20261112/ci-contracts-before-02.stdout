@@ -1,0 +1,23 @@
+  CHECK failed: info.uncertain && info.references.empty() && info.Bytes() == 0 (line 243)
+[FAIL] object_retention_reference_capacity_preserves_incomplete_owner
+  CHECK failed: templ->GetString("message_profile") == "qwen3.8-openai-v3" (line 204)
+[FAIL] chat_capabilities_identity
+  CHECK failed: !result.accepted && result.status == (fixture.second == HttpReceiveFailure::kBodyTooLarge ? 413 : 400) (line 75)
+[FAIL] http_observation_receive_shape_and_size_reasons
+  CHECK failed: param == expected (line 35)
+[FAIL] chat_contract_error_param_is_explicit
+  CHECK failed: !Accept(bad) (line 149)
+[FAIL] chat_contract_rejects_wrong_types_and_ambiguous_input
+  CHECK failed: deltas.empty() (line 282)
+[FAIL] thinking_budget_bad_closure_and_total_limit_fail_closed
+  CHECK failed: delta.kind != ResponseDelta::Kind::kTool (line 206)
+[FAIL] text_stop_incomplete_tool_never_succeeds
+  CHECK failed: error == "schema.properties.v.enum" (line 170)
+[FAIL] schema_graph_const_equality_and_annotations_do_not_fill_values
+  CHECK failed: Prompt(f.plan, true) == "<|im_start|>assistant\n<think>\n\n</think>\n\n" (line 325)
+[FAIL] responses_tokens_empty_null_and_empty_array_use_real_template
+  CHECK failed: FitResponsesContext( f.envelope, f.config, [&](const auto& candidate, auto* failure) { ChatPromptBudget budget; return PlanChatBudget(candidate.generation_request, f.config, Prompt(candidate, true).size(), &budget, failure); }, &f.plan, &error) (line 548)
+[FAIL] responses_tokens_auto_truncation_uses_count_budget_and_keeps_last_turn
+  CHECK failed: prompt == "<|im_start|>system\nRULE<|im_end|>\n" "<|im_start|>user\nq<|im_end|>\n" "<|im_start|>assistant\n<think>\n\n</think>\n\n" (line 163)
+[FAIL] chat_plan_native_template_and_constraint_adapter
+11 tests, 0 passed, 11 failed, 0 skipped

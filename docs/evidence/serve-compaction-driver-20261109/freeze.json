@@ -1,0 +1,19 @@
+{
+  "required": [
+    "CompactionAcceptance.test_frozen_requests_have_actual_routes_and_bounded_steps",
+    "CompactionAcceptance.test_compact_oracle_rejects_missing_fake_or_mismatched_state",
+    "CompactionAcceptance.test_reduction_requires_real_count_and_preserved_fact",
+    "CompactionAcceptance.test_noop_admission_and_failure_cannot_hide_usage_or_extra_calls"
+  ],
+  "sources": {
+    "tools/serve_responses/compaction_acceptance.py": "78a7e2891d4088fa65c83db24a8779aa09bbd3fff5dfd7a195c6e96447c40a88",
+    "tools/serve_responses/test_compaction_acceptance.py": "b7efc55c14d013e933dcf2a30931891db6e1c09db80eeccab1f8dc531a0be29f"
+  },
+  "gpu": false,
+  "business_limit": {
+    "starts": 2,
+    "requests": 8,
+    "model_steps": 9,
+    "seconds": 900
+  }
+}

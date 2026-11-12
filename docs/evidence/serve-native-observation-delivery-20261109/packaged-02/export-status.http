@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 448
+Connection: close
+Cache-Control: no-store
+X-Content-Type-Options: nosniff
+
+{"auxiliary":null,"business_ready":false,"generations":null,"ledger":{"active":false,"desired":"STOPPED","quarantined":false,"revision":0},"observation":null,"process":null,"reason":"none","recovery_frozen":null,"runtime":null,"sampled":{"boot_id":"67aedfc7-025a-4a36-afe3-58ec3fc670d8","boottime":2379945.338897462,"unix":1794189862.8220236},"sources":{"guardian":false,"ledger":true,"process":false,"runtime":false},"state":"STOPPED","version":1}

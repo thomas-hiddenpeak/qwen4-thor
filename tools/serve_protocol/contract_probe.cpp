@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/completion_plan.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/http_request.h"
@@ -28,13 +29,27 @@ int main() {
       status = q4t::Status::Fail("request body exceeds byte limit");
       error = {"request_too_large", "body"};
     } else {
-      status = q4t::io::ParseJson(raw->str, &input, true, kRequestJsonLimits);
+      status = q4t::io::ParseJson(raw->str, &input, true,
+                                  fixture.GetString("kind") == "completion"
+                                      ? kCompletionJsonLimits
+                                  : fixture.GetString("kind", "chat") == "cancel"
+                                      ? kRequestJsonLimits
+                                      : kSchemaJsonLimits);
       if (!status) error = {"invalid_json", ""};
     }
     const auto kind = fixture.GetString("kind", "chat");
     if (kind == "cancel") {
       if (status) status = ValidateCancelContract(input);
       if (!status) error = {"invalid_cancellation", ""};
+    } else if (kind == "completion") {
+      ChatPlanConfig config;
+      config.model = fixture.GetString("model", "qwen3.8-flash-next");
+      config.token_vocab = static_cast<int>(fixture.GetInt("token_vocab", 300000));
+      if (const auto* aliases = fixture.GetArray("model_aliases"))
+        for (const auto& alias : aliases->array)
+          config.model_aliases.push_back(alias.str);
+      CompletionRequestPlan plan;
+      if (status) status = PlanCompletionRequest(input, config, &plan, &error);
     } else if (kind == "chat" || kind == "preflight") {
       const q4t::io::Json* request = &input;
       if (status && kind == "preflight") {
@@ -43,21 +58,27 @@ int main() {
       }
       ChatPlanConfig config;
       config.model = fixture.GetString("model", "qwen3.8-flash-next");
+      if (const auto* aliases = fixture.GetArray("model_aliases"))
+        for (const auto& alias : aliases->array)
+          config.model_aliases.push_back(alias.str);
       // These are declared configuration inputs, not backend availability
       // observations. No grammar compilation or cache access occurs here.
       config.structured = fixture.GetBool("structured", true);
+      config.token_vocab = static_cast<int>(fixture.GetInt("token_vocab", 0));
       config.session_cache = fixture.GetBool("session_cache", false);
       config.prefix_cache = fixture.GetBool("prefix_cache", false);
       ChatRequestPlan plan;
       std::string prompt;
       std::vector<VisionItem> items;
       if (status) status = PlanChatRequest(*request, config, &plan, &error);
+      if (status) request = &plan.Request(*request);
       if (status)
         status = PrepareChatPrompt(*request, plan.constraints, &prompt, &items,
                                    &error.param);
       if (status) {
         ChatResponseParser parser;
-        status = parser.Init(*request, prompt, "contract-probe", true);
+        status = parser.Init(*request, prompt, "contract-probe", true,
+                              plan.legacy_output);
       }
       if (status) {
         ReasoningOptions reasoning;
@@ -76,8 +97,8 @@ int main() {
     std::cout << "{\"accepted\":" << (status ? "true" : "false");
     if (!status)
       std::cout << ",\"response\":"
-                << detail::ErrorJson(400, status.message(), error.code,
-                                     error.param);
+                << detail::ErrorJson(error.http_status, status.message(),
+                                     error.code, error.param);
     std::cout << "}\n";
   }
 }

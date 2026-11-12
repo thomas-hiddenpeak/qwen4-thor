@@ -1,0 +1,19 @@
+{
+  "reason": "capabilities fixture still expected four choices; Python test module needs tools/examples import path",
+  "python": [
+    "tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+    "tools.examples.test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion",
+    "tools.examples.test_chat_client.ClientContracts.test_error_after_complete_call_is_failure",
+    "tools.examples.test_chat_client.ClientContracts.test_must_read_through_eof",
+    "tools.examples.test_chat_client.ClientContracts.test_stream_identity_order_and_types",
+    "tools.examples.test_chat_client.ClientContracts.test_tool_and_usage_validation",
+    "tools.examples.test_chat_client.ClientContracts.test_length_is_observable_but_never_executable_or_final",
+    "tools.examples.test_chat_client.ClientContracts.test_unknown_tools_and_arguments_rejected_before_dispatch",
+    "tools.examples.test_chat_client.DemoContracts.test_partial_stream_never_reaches_tool_plan"
+  ],
+  "host": [
+    "chat_capabilities_option_contract"
+  ],
+  "reuse": "30 C++,28 shapes,4 JS,schema and sources from cpu-01; no production source change",
+  "source_sha256": "a04ae882de117808b7289cece28b8f8d059a2955b042d39c0e43b7ff6f74af7a"
+}

@@ -1,0 +1,14 @@
+{
+  "include/q4t/server/responses_execution.h": "a43606700b2b95e5856514543fa1c15971255c5772eb4fe5787b8b9514f4f147",
+  "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
+  "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
+  "src/server/responses_execution.cpp": "95c521f358b2ccb939752842d2d370583a1edf09be62194eec13f13a9c1eefa1",
+  "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+  "src/server/chat_generation.cpp": "f0553b533721b8669b591b287b34a04d6ed36e2593e4217bc5eb71c8277bf4be",
+  "src/server/chat_preflight.cpp": "1f3caede284a62b2613dc8cba4e5bfa391a690a042617173e39ddf7bd4b76ae8",
+  "src/server/chat_capabilities.cpp": "948470da79a4a5a11d78ede79813f04d22a40145519ec24e53b1185f8a0ca5a6",
+  "tests/server_responses_jobs_test.cpp": "ea2f3d008a97332309dbaa9ad9d5aca8863cf04d08d577d1126eae5040d806fd",
+  "tests/server_chat_capabilities_test.cpp": "590ea62523ce14cf8dca223c06cbc369852b88b085498239c8c35b21b767b9fc",
+  "docs/serve-config-v1.schema.json": "31a61cd87a557254aa941ff94c7343b9147021b5007d043e86b7731db763c788",
+  "engine_sha256": "4a3ba0e0cdbc2261629155a297d4538ee6188687e00b85a3ee08486ec8d8731e"
+}

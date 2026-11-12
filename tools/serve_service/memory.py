@@ -31,7 +31,7 @@ def read():
 
 
 class Watchdog:
-    """Latch a terminal cause and notify only the current owned backend.
+    """Latch confirmed critical pressure, not a runtime observation gap.
 
     The independent thread can send SIGTERM even while the HTTP probe blocks.
     Supervision subsequently drains/reaps the whole owned group. Reader and
@@ -46,7 +46,6 @@ class Watchdog:
         self.owner = None
         self.signalled_owner = None
         self.low_since = self.unknown_since = None
-        self.unsafe_since = None
         self.state = dict(state='UNKNOWN', samples=0, failures=0,
             floor_bytes=settings['critical_memory_mib']*1024**2,
             reason=None, signal_sent=False)
@@ -87,17 +86,23 @@ class Watchdog:
                     raise ValueError('invalid memory sample')
             except Exception:
                 self.state.update(state='UNKNOWN', total_bytes=None,
-                    available_bytes=None, failures=self.state['failures']+1)
+                    available_bytes=None, failures=self.state['failures']+1,
+                    reason='memory_observation_unavailable')
                 self.low_since = None
                 if self.unknown_since is None:
                     self.unknown_since = now
-                reason = ('memory_observation_unavailable' if startup or
-                    now-self.unknown_since >= self.cfg['memory_unknown_seconds']
-                    else None)
+                # New allocation requires a reliable startup sample. During
+                # service an unavailable auxiliary reader cannot kill the
+                # healthy model. Native admission independently checks RAM for
+                # new work; automatic profile selection must wait for evidence.
+                if not startup:
+                    return
+                reason = 'memory_observation_unavailable'
             else:
                 self.unknown_since = None
                 low = available < self.state['floor_bytes']
-                self.state.update(state='LOW' if low else 'OPEN', **value)
+                self.state.update(state='LOW' if low else 'OPEN', reason=None,
+                                  **value)
                 if not low:
                     self.low_since = None
                 elif self.low_since is None:
@@ -105,15 +110,6 @@ class Watchdog:
                 reason = ('critical_memory_pressure' if low and (startup or
                     now-self.low_since >= self.cfg['memory_low_seconds'])
                     else None)
-            if self.state['state'] == 'OPEN':
-                self.unsafe_since = None
-            elif self.unsafe_since is None:
-                self.unsafe_since = now
-            # Alternating invalid/low observations cannot reset both timers
-            # forever. Only a valid above-floor sample clears this deadline.
-            if (reason is None and self.unsafe_since is not None and
-                    now-self.unsafe_since >= self.cfg['memory_unknown_seconds']):
-                reason = 'memory_safety_unconfirmed'
             if reason:
                 self.state.update(state='TRIPPED', reason=reason,
                                   tripped_monotonic=now)

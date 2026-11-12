@@ -1,0 +1,25 @@
+{
+  "action": "create",
+  "request": {
+    "prompt": {
+      "id": "prompt_e03158be5f593d560f4dea8e6a44990d",
+      "variables": {
+        "context": {
+          "type": "input_text",
+          "text": "Keep this record available for the question."
+        }
+      }
+    },
+    "input": "What is the authoritative project code?",
+    "store": true
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18989/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

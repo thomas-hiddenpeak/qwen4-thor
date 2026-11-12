@@ -1,0 +1,9 @@
+{
+  "scope": "Previously failing provisional-content assertion and exact native history; prefix target dependency repair only",
+  "tests": [
+    "prefix_seed_transport_contract",
+    "prefix_seed_tokenized_boundary_contract"
+  ],
+  "binary_sha256": "885dd635ebeb15fd28fe052f0838e808cf1c631691c47069637ef260c28f31e4",
+  "timeout_seconds": 60
+}

@@ -1,0 +1,15 @@
+test_explicit_capability_fds_survive_strict_managed_child_and_are_not_consumed (test_gpu_exclusive.ExclusiveTests.test_explicit_capability_fds_survive_strict_managed_child_and_are_not_consumed) ... ok
+test_invalid_or_implicit_capability_transfer_never_starts_any_query (test_gpu_exclusive.ExclusiveTests.test_invalid_or_implicit_capability_transfer_never_starts_any_query) ... ok
+test_backported_real_preflight_preserves_fact_and_requires_root_then_probe (tools.serve_recovery.test_cold_compat.AdapterTests.test_backported_real_preflight_preserves_fact_and_requires_root_then_probe) ... ok
+test_cli_adaptation_requires_no_live_state_or_model_action (tools.serve_recovery.test_cold_compat.AdapterTests.test_cli_adaptation_requires_no_live_state_or_model_action) ... ok
+test_extra_legacy_hint_use_and_nonreviewed_shape_require_review (tools.serve_recovery.test_cold_compat.AdapterTests.test_extra_legacy_hint_use_and_nonreviewed_shape_require_review) ... ok
+test_sealed_adapter_changes_only_controller_and_existing_profile_shim (tools.serve_recovery.test_cold_compat.AdapterTests.test_sealed_adapter_changes_only_controller_and_existing_profile_shim) ... ok
+test_cold_hint_still_requires_root_permission_before_any_probe (tools.serve_recovery.test_cold_admission.ControllerTests.test_cold_hint_still_requires_root_permission_before_any_probe) ... ok
+test_true_device_failure_is_quarantined_after_authorized_probe (tools.serve_recovery.test_cold_admission.ControllerTests.test_true_device_failure_is_quarantined_after_authorized_probe) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_relocated_v17_source_imports_every_cold_management_module (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v17_source_imports_every_cold_management_module) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.707s
+
+OK

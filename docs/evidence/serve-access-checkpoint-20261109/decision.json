@@ -1,0 +1,34 @@
+{
+  "status": "PARTIAL_BUSINESS_PASSED_CHECKPOINT_DRIVER_FIXED",
+  "targeted_cpu": 4,
+  "new_model_starts": 1,
+  "new_chats": 9,
+  "aggregate_starts": 2,
+  "aggregate_chats": 10,
+  "aggregate_probes": 1,
+  "seconds": 67.78058162890375,
+  "passed": [
+    "TLS rotation and revocation",
+    "actual project document tool closure",
+    "new client official SDK",
+    "RPM/TPM off/on usage preserved",
+    "limits storage loss same-model JSON schema SSE and key revocation",
+    "stored Chat isolation",
+    "sealed normal stop",
+    "durable package selection"
+  ],
+  "failed": "acceptance driver compared valid selected copy with primary path before second Guardian start",
+  "cleanup_failure_preserved": true,
+  "independent_cleanup_check_required": true,
+  "default_changed": false,
+  "production_runtime_changed": false,
+  "remaining_starts": 2,
+  "remaining_chats_budget": 7,
+  "aggregate_limits": {
+    "starts": 4,
+    "chats": 17,
+    "probes": 1,
+    "controls": 6000,
+    "seconds": 1200
+  }
+}

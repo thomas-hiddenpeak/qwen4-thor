@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/rollback-bundle/bin/q4t",
+    "service",
+    "observe",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/packaged-01/legacy-state"
+  ],
+  "exit_code": 0,
+  "seconds": 0.4266892150044441
+}

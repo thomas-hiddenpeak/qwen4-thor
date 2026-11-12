@@ -1,0 +1,38 @@
+{
+  "status": "PASS_BATCH_BACKGROUND_CONTINUATION_CPU",
+  "classification": "non-performance",
+  "base_commit": "2b71668ed27b4b84f6f009dfa8f9dc4b6f5f2793",
+  "distinct_cpp_tests": 26,
+  "initial": {
+    "total": 22,
+    "passed": 21,
+    "failed": 1,
+    "skipped": 0,
+    "seconds": 4.869494581595063
+  },
+  "fixture_only_retry": {
+    "passed": 1,
+    "scope": "Existing policy hot update intentionally preserves slots. Use actual next-generation client removal for revocation recovery."
+  },
+  "lifetime_additional_passed": 2,
+  "observer_fallback_additional_passed": 2,
+  "new_checks": 13,
+  "direct_checks": 13,
+  "source_anchors": 493,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "production_engine_builds_zero_warning": true,
+  "host_final_build_zero_warning": true,
+  "engine_sha256": "29b945f4016656988d53944daa90ce74bee9398327ce5d20f08bd53bf8635d80",
+  "host_sha256": "706c5f4ebe53e7357553e7ec788539a71313304a97c7adf50a44fd29adceb15f",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "ingress_sha256": "1b3ea6309fbf142804be7ec5832f4bd234124eecf4f63abd33db08b2da8bb484",
+  "reuse": "Original 24 checks retained with pre-fallback source/binary identity. Final production change only adds unavailable-observer fallback and is covered by two specific cases. No generic model/performance matrix repeated.",
+  "remaining": [
+    "actual available usage capture for normal errors/cancellation",
+    "finite permanent finalization capacity failure",
+    "bounded auxiliary task-owner startup recovery",
+    "actual model business and compatible state/quota/binding rollback/default",
+    "all remaining master tasks; no main merge"
+  ]
+}

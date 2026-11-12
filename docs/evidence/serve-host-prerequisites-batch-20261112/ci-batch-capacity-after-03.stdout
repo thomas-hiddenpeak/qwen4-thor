@@ -1,0 +1,3 @@
+  actual 50000 rows, 391 finalization turns, 792 objects
+[PASS] batch_capacity_actual_fifty_thousand_frozen_rows_and_outputs
+1 tests, 1 passed, 0 failed, 0 skipped

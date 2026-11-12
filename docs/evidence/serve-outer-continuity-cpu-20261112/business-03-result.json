@@ -1,0 +1,68 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/acceptance.py\", line 832, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py\", line 308, in exercise\n    second = self.resource_ready(2,'primary')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py\", line 270, in resource_ready\n    state = self.version_ready(generation,payload)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/version_acceptance.py\", line 229, in version_ready\n    state=self.ready(generation,'primary')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/profile_managed_acceptance.py\", line 220, in ready\n    (generation == 1 or usage['source']['generation'] == generation-1),\n                        ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nTypeError: 'NoneType' object is not subscriptable\n",
+  "cleanup_failure": null,
+  "seconds": 128.9861932117492,
+  "budget": {
+    "counts": {
+      "starts": 4,
+      "chats": 3,
+      "probes": 0,
+      "controls": 563
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 3,
+        "monotonic_ns": 2642646372340362
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2642686835321620
+      },
+      {
+        "kind": "chats",
+        "label": "first-schema",
+        "ordinal": 2,
+        "monotonic_ns": 2642688501759484
+      },
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 4,
+        "monotonic_ns": 2642700947591722
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 3,
+        "monotonic_ns": 2642739714637236
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1882278,
+      "start_ticks": 264264637
+    },
+    "2": {
+      "pid": 1883752,
+      "start_ticks": 264270094
+    }
+  },
+  "quota_deadlines": {
+    "2": 2642760.9448231724
+  },
+  "source_commit": "7fbc7b30c66eaf067218f10c2d28384e9b0ee8a9",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-03/bundle",
+    "manifest_sha256": "5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8",
+    "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

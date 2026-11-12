@@ -1,0 +1,1 @@
+{"input":"Find PLE storage details","stream":true,"reasoning":{"effort":"none"},"max_output_tokens":128,"max_tool_calls":1,"tools":[{"type":"file_search","vector_store_ids":["vs_ec8b24142ea1e58a35596a259e01a741"]}],"tool_choice":{"type":"file_search"},"stream_options":{"include_obfuscation":false}}

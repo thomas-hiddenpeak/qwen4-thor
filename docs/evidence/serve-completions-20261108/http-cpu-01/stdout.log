@@ -1,0 +1,4 @@
+[PASS] http_receive_observation_body_routes_and_business_boundary
+[PASS] http_operations_route_before_body_authentication_and_cancel_scope
+[PASS] http_completion_body_capacity_and_model_route_dispatch
+3 tests, 3 passed, 0 failed, 0 skipped

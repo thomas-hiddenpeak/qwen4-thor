@@ -1,0 +1,7 @@
+test_kernel_source_id_preserves_actual_width_instead_of_padding (tools.serve_recovery.test_device_inventory.InventoryTests.test_kernel_source_id_preserves_actual_width_instead_of_padding) ... ok
+test_unloading_bad_counts_or_mismatched_builds_never_appear_quiet (tools.serve_recovery.test_device_inventory.InventoryTests.test_unloading_bad_counts_or_mismatched_builds_never_appear_quiet) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.010s
+
+OK

@@ -1,0 +1,29 @@
+{
+  "status": "PASS_STAGED_RAW_BYTES",
+  "files": 180,
+  "first_check": "Failed: global build-*/ ignore omitted build evidence; SSE CRLF was reported as whitespace. Initial documentation commit retained; missing raw files forced into next commit with scoped byte-preserving attributes.",
+  "initial_missing": [
+    "build-01/0.log",
+    "build-01/1.log",
+    "build-01/result.json",
+    "build-01/run.py",
+    "build-02/0.log",
+    "build-02/1.log",
+    "build-02/result.json",
+    "build-02/run.py",
+    "build-03/0.log",
+    "build-03/1.log",
+    "build-03/result.json",
+    "build-03/run.py",
+    "build-04/0.log",
+    "build-04/1.log",
+    "build-04/result.json",
+    "build-04/run.py",
+    "build-05/0.log",
+    "build-05/1.log",
+    "build-05/result.json",
+    "build-05/run.py"
+  ],
+  "source_bytes_modified": false,
+  "gpu_retests": 0
+}

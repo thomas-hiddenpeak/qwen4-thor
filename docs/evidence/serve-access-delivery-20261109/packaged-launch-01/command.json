@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-access-20261109/packaged_check.py"
+  ],
+  "script_sha256": "471b1a050b898a5824e4bea92d8a4fae4b73aceec0d71f8b8c6aee23ceaed999"
+}

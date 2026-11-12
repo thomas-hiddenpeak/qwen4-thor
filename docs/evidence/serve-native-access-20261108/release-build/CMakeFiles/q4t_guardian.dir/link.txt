@@ -1,0 +1,1 @@
+/usr/bin/g++-14 -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/q4t_guardian.dir/link.d "CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o" -o q4t-guardian  libq4t_guardian_journal.a libq4t_guardian_process.a

@@ -4,6 +4,7 @@
 #include <cctype>
 #include <charconv>
 #include <cmath>
+#include <limits>
 #include <unordered_set>
 #include <cstdlib>
 #include <cstring>
@@ -23,6 +24,10 @@ struct Parser {
   size_t depth = 0;
   size_t values = 0;
   size_t string_bytes = 0;
+  const JsonProjection* projection = nullptr;
+  std::vector<std::string_view> path;
+  size_t retained_values = 0;
+  size_t max_retained_values = 0;
 
   explicit Parser(const std::string& text, bool preserve_numbers,
                   const JsonParseLimits& parse_limits)
@@ -61,6 +66,9 @@ struct Parser {
   bool ParseValue(Json* out) {
     if (values >= limits.max_values) return Fail("JSON value limit");
     ++values;
+    if (out && projection && !(*projection)(path)) out = nullptr;
+    if (out && projection && ++retained_values > max_retained_values)
+      return Fail("JSON retained value limit");
     SkipWs();
     if (p >= end) {
       Fail("unexpected end of input");
@@ -74,6 +82,8 @@ struct Parser {
       --depth;
       return ok;
     }
+    Json discarded;
+    if (!out) out = &discarded;
     if (c == '"') return ParseString(&out->str, out);
     if (c == 't' || c == 'f') return ParseBool(out);
     if (c == 'n') return ParseNull(out);
@@ -81,7 +91,7 @@ struct Parser {
   }
 
   bool ParseObject(Json* out) {
-    out->type = Json::Type::kObject;
+    if (out) out->type = Json::Type::kObject;
     if (!Consume('{')) return Fail("expected '{'");
     SkipWs();
     if (Consume('}')) return true;
@@ -94,18 +104,25 @@ struct Parser {
       }
       if (values >= limits.max_values) return Fail("JSON value limit");
       ++values;
+      if (out && projection && ++retained_values > max_retained_values)
+        return Fail("JSON retained value limit");
       Json key;
       if (!ParseString(&key.str, &key)) return false;
       if (limits.reject_duplicate_keys && !keys.insert(key.str).second)
         return Fail("duplicate object key");
+      if (projection && keys.size() > max_retained_values)
+        return Fail("JSON object member limit");
       SkipWs();
       if (!Consume(':')) {
         Fail("expected ':' after key");
         return false;
       }
       Json val;
-      if (!ParseValue(&val)) return false;
-      out->object.emplace_back(std::move(key.str), std::move(val));
+      if (projection && out) path.push_back(key.str);
+      const bool valid = ParseValue(out ? &val : nullptr);
+      if (projection && out) path.pop_back();
+      if (!valid) return false;
+      if (out) out->object.emplace_back(std::move(key.str), std::move(val));
       SkipWs();
       if (Consume(',')) continue;
       if (Consume('}')) return true;
@@ -115,14 +132,17 @@ struct Parser {
   }
 
   bool ParseArray(Json* out) {
-    out->type = Json::Type::kArray;
+    if (out) out->type = Json::Type::kArray;
     if (!Consume('[')) return Fail("expected '['");
     SkipWs();
     if (Consume(']')) return true;
     while (true) {
       Json val;
-      if (!ParseValue(&val)) return false;
-      out->array.push_back(std::move(val));
+      if (projection && out) path.push_back("*");
+      const bool valid = ParseValue(out ? &val : nullptr);
+      if (projection && out) path.pop_back();
+      if (!valid) return false;
+      if (out) out->array.push_back(std::move(val));
       SkipWs();
       if (Consume(',')) continue;
       if (Consume(']')) return true;
@@ -301,9 +321,15 @@ struct Parser {
       while (digit()) ++p;
     }
     double number = 0;
+    if (limits.allow_exact_number_text && p - start > 16384)
+      return Fail("exact number spelling exceeds 16384 bytes");
     const auto result = std::from_chars(start, p, number);
-    if (result.ec != std::errc{} || result.ptr != p || !std::isfinite(number))
-      return Fail("number outside supported finite range");
+    if (result.ec != std::errc{} || result.ptr != p || !std::isfinite(number)) {
+      if (!limits.allow_exact_number_text || !preserve_number_text ||
+          result.ec != std::errc::result_out_of_range || result.ptr != p)
+        return Fail("number outside supported finite range");
+      number = std::numeric_limits<double>::quiet_NaN();
+    }
     out->type = Json::Type::kNumber;
     out->number = number;
     out->str = preserve_number_text ? std::string(start, p) : std::string();
@@ -371,6 +397,29 @@ Status ParseJson(const std::string& text, Json* out,
                         std::to_string(parser.p - parser.begin));
   }
   return Status();
+}
+
+Status ParseJsonProjection(const std::string& text, Json* out,
+                           const JsonProjection& retain,
+                           const JsonParseLimits& limits,
+                           size_t max_retained_values) {
+  if (!out || !retain || !max_retained_values)
+    return Status::Fail("Invalid JSON projection");
+  *out = {};
+  Parser parser(text, true, limits);
+  parser.projection = &retain;
+  parser.max_retained_values = max_retained_values;
+  if (!parser.ParseValue(out)) {
+    *out = {};
+    return Status::Fail("JSON parse error: " + parser.err);
+  }
+  parser.SkipWs();
+  if (parser.p != parser.end) {
+    *out = {};
+    return Status::Fail("JSON parse error: trailing characters at offset " +
+                        std::to_string(parser.p - parser.begin));
+  }
+  return {};
 }
 
 }  // namespace io

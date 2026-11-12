@@ -1,0 +1,6 @@
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_option_contract
+[PASS] server_http_parse_error_terminal
+[PASS] chat_plan_schema_resource_errors_keep_status_and_parameter
+[PASS] schema_request_accepts_128_declared_tools_and_bounds_the_next
+5 tests, 5 passed, 0 failed, 0 skipped

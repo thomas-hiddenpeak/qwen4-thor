@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/prepare_candidate.py", line 150, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/prepare_candidate.py", line 87, in main
+    p.save(declarations/'capabilities.json', caps)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 100, in save
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/candidate-01/engine/declarations/capabilities.json.new'

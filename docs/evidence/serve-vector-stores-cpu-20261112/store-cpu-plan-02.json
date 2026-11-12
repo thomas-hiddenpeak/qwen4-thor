@@ -1,0 +1,57 @@
+{
+  "stage": "A11.2 native vector-store durable parents and bounded ingestion ownership",
+  "tests": [
+    "vector_stores_create_contract_scope_and_atomic_source_validation",
+    "vector_stores_quota_rejection_never_publishes_partial_members",
+    "vector_stores_concurrent_attach_preserves_counts_and_independent_jobs",
+    "vector_stores_file_pagination_attributes_and_terminal_counts",
+    "vector_stores_verified_index_is_retained_across_restart_and_collected_after_delete",
+    "vector_stores_detach_and_reattach_rejects_stale_executor",
+    "vector_stores_deleted_source_cannot_be_loaded_or_published",
+    "vector_stores_recovery_requires_explicit_owner_exit_and_bounds_retries",
+    "vector_stores_lost_create_and_claim_receipts_recover_original_identity",
+    "vector_stores_expiry_releases_dependencies_without_resurrection",
+    "vector_stores_foreign_or_wrong_index_never_marks_file_ready",
+    "vector_stores_cancellation_and_corruption_remain_local",
+    "object_store_namespace_and_kind_isolation",
+    "object_store_transaction_conflict_or_quota_changes_nothing",
+    "input_snapshot_parent_publication_requires_owned_exact_live_root",
+    "object_retention_active_roots_preserve_chain_with_owner_isolation",
+    "object_retention_unknown_owner_protection_and_plan_identity",
+    "vector_index_snapshot_bytes_and_scope_survive_worker_restart"
+  ],
+  "source_sha256": {
+    "include/q4t/server/vector_stores.h": "e4d7d9cf314b19fe98d77d25dc4a30abc9dab0aa0d01ed869226a5c80c0e173d",
+    "src/server/vector_stores_internal.h": "d93c77d922b067c7d6b27ce68adecac008c8d23db268b817c1aab0b03ec87a17",
+    "src/server/vector_stores_internal.cpp": "e67a93b8992fa7950c176c5a86f5e65bc0547c173277557c38d14a9c01ba5504",
+    "src/server/vector_stores.cpp": "fe6ff7ef96b8844582225bf6c6fa6a0af791b8643b4bec251dedaa02d8a06e5a",
+    "src/server/vector_store_files.cpp": "304bcea2f439020c734295e05ff8d1632bf53d1008d07f70228972c0c32a23f2",
+    "src/server/vector_ingestion_state.cpp": "88385ccdc49c53922c9ea8cf97fe5017b00da994d46745161cacca8c18fc03a7",
+    "include/q4t/server/vector_index.h": "fbe64c78dc4514a01660ce49d0238a80ec178fd3c150503cc5dad5ee5c606eaa",
+    "src/server/vector_index.cpp": "7d4c4a481bd26dc9558aee7d34167740255a6cbb5d936c0d5cc635939357432b",
+    "include/q4t/server/object_store.h": "c5af7b8bddf35262811b20a0bb7d6510737ea376d12c64c35b54b8aea404390c",
+    "src/server/object_protocol.h": "f14cf68846b986d75147e82598c617321e2fc4c098d42a849a90eb444e85d6e4",
+    "src/server/object_store.cpp": "a1517a6812afbae891fdd5197779730ffadf70f471c7184de0b2ce8bcf9ef17d",
+    "src/server/object_worker.cpp": "93891d4cdfbf57572d4eacdbfab64f2e0f01901d6ba0e474d060fde17fb86bac",
+    "src/server/object_retention.cpp": "7c8ff1fc573c3027e6d068d1966cacd19e588a29f38ee351b54000bb25e4332d",
+    "tests/server_vector_stores_test.cpp": "9065f863c9959e140d50ef419f0ac3a87fe2084b59ad3e591c8540ac869f2559"
+  },
+  "gpu_starts": 0,
+  "full_quality": false,
+  "full_performance": false,
+  "default_change": false,
+  "actual_routes": false,
+  "runner": ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "remaining": [
+    "actual ingestion tokenizer/embedding adapter",
+    "HTTP files/file_batches/search and official SDK",
+    "Responses executor/citations/history/SSE",
+    "real bounded business and delivery",
+    "all remaining master tasks"
+  ],
+  "repair": "Fault injection was for single put only; use existing application transaction lost-ack and share actual kind predicate, host-test-only change",
+  "reuse_passed": 17,
+  "rerun_tests": [
+    "vector_stores_lost_create_and_claim_receipts_recover_original_identity"
+  ]
+}

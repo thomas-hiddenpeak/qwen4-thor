@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "json": {
+    "generation": 1,
+    "cpu_fixture": true
+  },
+  "request_id": null,
+  "error_status": 401,
+  "error_request_id": "req-86f99cc15c4b7c120e165315721dc871",
+  "error": {
+    "error": {
+      "message": "Service entrypoint rejected request",
+      "type": "gateway_error",
+      "param": null,
+      "code": "gateway_unauthorized"
+    }
+  },
+  "stream_status": 200,
+  "sse": "data: {\"generation\":1}\n\n",
+  "forbidden_header": "TypeError",
+  "denied_origin": "TypeError"
+}

@@ -1,0 +1,12 @@
+{
+  "sdk_version": "7.47.0",
+  "content_type": "multipart/form-data; boundary=----formdata-undici-088644462230",
+  "fields": [
+    {
+      "name": "data",
+      "filename": "part.bin",
+      "bytes_file": "binary.bin"
+    }
+  ],
+  "request_bytes": 440
+}

@@ -1,0 +1,4 @@
+[q4t][http] trace_id=req-85c4692488a08096cb8fb34c2a046d29 error=internal_error
+[q4t][http] trace_id=req-8c686afdb82639a460cdb1add22b4d7c error=internal_error
+[q4t][http] trace_id=req-2892a6d557681b7dde7da70fea116fe0 error=internal_error
+[q4t][http] trace_id=req-41e1e7421033b72217c46d5fe6b6e868 status=429 error=client_rpm_exhausted

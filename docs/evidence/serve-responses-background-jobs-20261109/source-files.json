@@ -1,0 +1,49 @@
+{
+  "base_commit": "a112faf6a571ec58982ba84ef9b19051ca19fda2",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "b5db4be59caf6f8ae1600ebcca69eea34f596bcbd45076ae0b34f8dbdf0a6a75"
+    },
+    {
+      "path": "cmake/HostTestSources.cmake",
+      "sha256": "daa00c0e6d629abadf5f81f8f68c3a6bf4ff5acff0656b79443c14258a1bc54a"
+    },
+    {
+      "path": "include/q4t/server/client_policy.h",
+      "sha256": "49188a5129376c92832bfa46ba97f13c033e6561dfa08978d508af309ceb4274"
+    },
+    {
+      "path": "include/q4t/server/http_response.h",
+      "sha256": "17b52efd468e017f9f1648e84572d14f1413fda0117f46944a81c068a256afbc"
+    },
+    {
+      "path": "include/q4t/server/responses_execution.h",
+      "sha256": "5bb02c4759210494864c4ef90fe3a6fb33f0f77f179cad27ef996428588f65a9"
+    },
+    {
+      "path": "src/server/client_policy.cpp",
+      "sha256": "ddc151290facaf3c8db42498dd37482cb157a498ec39fa5786d3e849dd7c504c"
+    },
+    {
+      "path": "src/server/http_response.cpp",
+      "sha256": "73572b76e2fab0783a3d5be4b17ec95aa09c31e9d2956da070445dc0b9dcba84"
+    },
+    {
+      "path": "src/server/responses_execution.cpp",
+      "sha256": "fabd4046b8907e1ac0acda487ba1e784011f7542831e1b760e13b9789726f2d7"
+    },
+    {
+      "path": "include/q4t/server/responses_jobs.h",
+      "sha256": "2835bdc57d72a1e979b2918c55337c3fbb6d62815a7065fb166c0746d2df687b"
+    },
+    {
+      "path": "src/server/responses_jobs.cpp",
+      "sha256": "9f2e2e69e1b09f2277a9e1eec668fed100336e81acf14a5152ad8c8960dea991"
+    },
+    {
+      "path": "tests/server_responses_jobs_test.cpp",
+      "sha256": "82e5d3c39335cc7ed15232730158e479ccd012734d577d927fdad6b2a698b2fe"
+    }
+  ]
+}

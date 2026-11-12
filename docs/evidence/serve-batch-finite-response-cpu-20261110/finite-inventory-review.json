@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/finite_response.h",
+    "include/q4t/server/http_response.h",
+    "src/server/finite_response.cpp",
+    "src/server/http_response.cpp"
+  ],
+  "anchors": 472,
+  "public_routes_changed": false
+}

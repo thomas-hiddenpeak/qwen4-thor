@@ -1,0 +1,122 @@
+{
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/ingress.json": {
+    "sha256": "6f89e43f6f23e16be4aaba873a9d01865e6c9f20ce8df7834498e358978221dd",
+    "bytes": 1190
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/ready.json": {
+    "sha256": "61bfbc258ddf133fda4ebbf9781bf26a07686660a32d84f04353c810558b228e",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/policy.json": {
+    "sha256": "737381facfc945f2b174d15f01e2d42e1858720f5d9601a237b76c7506d0a258",
+    "bytes": 592
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/backend.log": {
+    "sha256": "e579688515e1d0d40d1643c17d5904293c438fd0b310faecba9cfbd5137cc3fb",
+    "bytes": 90
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/crlnumber": {
+    "sha256": "8d2510d85c94c519a91dbab464e232a824442bc7f6ef8901d8b5534825373878",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/index.txt": {
+    "sha256": "141eeb7809ad57e635ba7c0c8242bd6d02a4642ff5fd876e79d760e9065a047a",
+    "bytes": 60
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/ca.cnf": {
+    "sha256": "25f44cab2abb120bda4d42ccbe6b60a3c620bf7d03d27ffddfe37e850fe53b3b",
+    "bytes": 235
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/other-client.pem": {
+    "sha256": "f8f23543873b38870096eba12c61294bf47d0179856c603de2782c30fba32e65",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/clean.crl": {
+    "sha256": "a210d8e72509023dcab7e69e7d8113a0257c30f7303c499adf0c156861200b2b",
+    "bytes": 560
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/client.key": {
+    "sha256": "7ddcb5d150e2a44adbe6d6ce4778f87babd40ed45ade6d9b8259bca7780ee7d7",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/client.pem": {
+    "sha256": "284fd54c8252fed9e6a52c037f05f5c3a400915533c6be484c9c465a8dad7b7c",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/server.csr": {
+    "sha256": "cea5a62204d6553f83f8917206934834a54d9f53745f2704d5a6fcc569fc0a04",
+    "bytes": 891
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/next.pem": {
+    "sha256": "699ffb605dec9fca4d1840d277fd34cfd87f7030d6fc288686cdc8f9bd476212",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/ca.pem": {
+    "sha256": "23949d70cf3526b6577f5b1d32dba6e60985dd2613d58db8d50ff993c0d15aae",
+    "bytes": 1139
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/server.ext": {
+    "sha256": "a0f7804dba0a812a4f68572e526e10843f5cb799b88a01fcdc34c1b155274008",
+    "bytes": 163
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/crlnumber.old": {
+    "sha256": "d6a1a767319c3bf2a337b16e3a14916f63e432872e0f8df1cb73b32a8b338ae4",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/expired.pem": {
+    "sha256": "87c1f9929f6fb2d60fd9ad6706c9b675286511f2ec6beda00d543b9779effaf3",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/index.txt.old": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/index.txt.attr": {
+    "sha256": "f185cb1322492dbcb4c2e4dd179bd3c09958fd39287dad4308e2fbd3c569f669",
+    "bytes": 21
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/serial": {
+    "sha256": "83c02ac2d48c863dab2ccf6870455aadfc2cec073b8db269b517c879d76aa6d9",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/ca.key": {
+    "sha256": "c2f0be9633cae9d98233d1bf36f5c4c7e982bdbdf4278908d22f324ca8fe3860",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/server.pem": {
+    "sha256": "647e2ef63bf651074db24b6f215ba41a306c2f6bda41a8fee9a1788a06d79335",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/openssl.log": {
+    "sha256": "2a40c6ba534bf83c895b15bbf207b8cee37c75a09f398a3f7434f32e6e82c2bd",
+    "bytes": 4572
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/client.csr": {
+    "sha256": "1aec55c08576e741faee5085605048cdeb194291ec462adb7f3404386a08a4bd",
+    "bytes": 899
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/server.key": {
+    "sha256": "8c779f7640f477d1f12a6cadb06d035ac6ef52529e8890e78efeda12bf60d8da",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/client.ext": {
+    "sha256": "60b347f311da6da0142a7d96b47a107a812c9e22532995856e2f21f2180a008d",
+    "bytes": 98
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/certs/revoked.crl": {
+    "sha256": "02737b7d059c966a063c2bfab546f15e6278a0921d82af211df288ccf0476346",
+    "bytes": 593
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-early-followup-01/test_early_core_error_interrupts_paused_tls_upload/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

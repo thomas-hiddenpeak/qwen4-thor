@@ -1,0 +1,5 @@
+[PASS] device_filter_rejects_invalid_scope_before_attachment
+[PASS] device_filter_enforces_exact_cgroup_in_real_kernel
+[PASS] device_filter_adoption_verifies_code_and_retained_identity
+[PASS] device_filter_covers_whole_character_major_without_alias_gaps
+4 tests, 4 passed, 0 failed, 0 skipped

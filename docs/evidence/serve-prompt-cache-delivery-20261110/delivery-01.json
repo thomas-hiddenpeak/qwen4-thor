@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-prompt-cache-20261110/deliver.py"
+  ],
+  "returncode": 0,
+  "seconds": 11.528786399867386
+}

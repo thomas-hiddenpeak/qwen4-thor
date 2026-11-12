@@ -1,0 +1,10 @@
+{
+  "status": "PREPARATION_FAILED",
+  "source": "captured exec response; original partial package retained",
+  "phase": "version_contract.compatible",
+  "reason": "recovery would change native access authority",
+  "difference": "repository only; engine application settings identical",
+  "model_starts": 0,
+  "resource_domain_installed": false,
+  "original_directory": ".q4t-work/serve-outer-business-20261112/business-01"
+}

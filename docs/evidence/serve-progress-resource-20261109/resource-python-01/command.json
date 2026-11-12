@@ -1,0 +1,10 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_progress.ProgressTests.test_cache_device_and_cleanup_overrun_uses_actual_execution_budget",
+  "tools.serve_recovery.test_progress.ProgressTests.test_cache_filesystem_wait_and_return_to_wait_cancel_device_candidate",
+  "tools.serve_recovery.test_progress.ProgressTests.test_idle_waiting_and_non_execution_are_not_stalls"
+]

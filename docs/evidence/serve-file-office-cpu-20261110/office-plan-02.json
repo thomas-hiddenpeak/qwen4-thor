@@ -1,0 +1,10 @@
+{
+  "reason": "code review: unused RTF codepage availability must not reject Office or Unicode-only documents",
+  "tests": [
+    "file_office_word_actual_stories_tables_and_rtf_import",
+    "file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache",
+    "file_rtf_capacity_and_missing_codepage_leave_next_document_healthy"
+  ],
+  "reuse": "other 23 tests of office-cpu-01; package decoder, content extraction and ownership unchanged",
+  "gpu": 0
+}

@@ -1,0 +1,21 @@
+test_active_tools_root_ref_and_no_user_are_valid_inputs (test_schema_client.SchemaClient.test_active_tools_root_ref_and_no_user_are_valid_inputs) ... ok
+test_exact_numbers_survive_schema_prompt_and_actual_request_encoding (test_schema_client.SchemaClient.test_exact_numbers_survive_schema_prompt_and_actual_request_encoding) ... ok
+test_final_tool_turn_preserves_actual_tool_messages (test_schema_client.SchemaClient.test_final_tool_turn_preserves_actual_tool_messages) ... ok
+test_invalid_combinations_and_history_fail_before_network (test_schema_client.SchemaClient.test_invalid_combinations_and_history_fail_before_network) ... ok
+test_lossy_json_and_nonfinite_values_rejected (test_schema_client.SchemaClient.test_lossy_json_and_nonfinite_values_rejected) ... ok
+test_media_and_caller_ownership (test_schema_client.SchemaClient.test_media_and_caller_ownership) ... ok
+test_output_budget_bounds_and_existing_defaults (test_schema_client.SchemaClient.test_output_budget_bounds_and_existing_defaults) ... ok
+test_text_builder_includes_semantics_and_same_constraint (test_schema_client.SchemaClient.test_text_builder_includes_semantics_and_same_constraint) ... ok
+test_utf8_byte_budget_and_schema_name (test_schema_client.SchemaClient.test_utf8_byte_budget_and_schema_name) ... ok
+test_exact_tool_data_remains_bound_to_completed_response (test_chat_client.ClientContracts.test_exact_tool_data_remains_bound_to_completed_response) ... ok
+test_tool_and_usage_validation (test_chat_client.ClientContracts.test_tool_and_usage_validation) ... ok
+test_stream_and_json_preserve_message_and_usage (test_chat_client.ClientContracts.test_stream_and_json_preserve_message_and_usage) ... ok
+test_fragmented_interleaved_tools_and_unicode (test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode) ... ok
+test_terminal_failures_never_return_a_completion (test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion) ... ok
+test_error_after_complete_call_is_failure (test_chat_client.ClientContracts.test_error_after_complete_call_is_failure) ... ok
+test_unknown_tools_and_arguments_rejected_before_dispatch (test_chat_client.ClientContracts.test_unknown_tools_and_arguments_rejected_before_dispatch) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.047s
+
+OK

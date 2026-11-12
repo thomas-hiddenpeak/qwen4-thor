@@ -1,0 +1,28 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "probes": 0,
+    "controls": 154
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 2674067067664855
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 2674101289351415
+    },
+    {
+      "kind": "chats",
+      "label": "native-tls-sdk-search",
+      "ordinal": 2,
+      "monotonic_ns": 2674108508733504
+    }
+  ]
+}

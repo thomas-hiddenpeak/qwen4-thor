@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/build_contract.py", line 777, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/build_contract.py", line 767, in main
+    publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/build_contract.py", line 437, in publish
+    assert path.read_text() == text, "generated contract drift: " + str(path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: generated contract drift: /home/rm01/models/dev/qwen4-thor/docs/serve-input-semantics-v1.json

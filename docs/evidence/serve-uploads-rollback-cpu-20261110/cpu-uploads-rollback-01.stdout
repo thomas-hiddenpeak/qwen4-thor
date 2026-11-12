@@ -1,0 +1,8 @@
+[PASS] uploads_ordered_parts_md5_atomic_file_and_receipt_reconciliation
+[PASS] uploads_subset_repeated_parts_preserve_exact_order_and_binary_bytes
+[PASS] uploads_lost_complete_receipt_recovers_original_file_atomically
+[PASS] uploads_repeated_part_checksum_failure_reclaims_only_private_copies
+[PASS] uploads_repeated_part_quota_failure_does_not_publish_or_drop_original
+[PASS] uploads_legacy_manifest_emits_private_store_for_old_bundle_check
+[PASS] binary_manifest_rejects_inconsistent_or_unbounded_content
+7 tests, 7 passed, 0 failed, 0 skipped

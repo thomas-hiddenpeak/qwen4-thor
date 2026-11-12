@@ -1,0 +1,25 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_without_optional_proxy_normalizes_safe_defaults",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_policy_cannot_claim_an_old_transport_profile",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_refuses_nginx_mode_before_creating_package",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_transport_build_receipt_requires_framing_and_proxy_sources",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_changed_native_binary_blocks_before_lease_acquisition",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_native_tls_paths_are_sealed_but_credentials_are_reloadable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_cli_defaults_native_and_nginx_is_not_a_required_argument",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_v8_v9_round_trip_preserves_established_client_state",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_before_and_after_descriptor_rename_resume_same_transaction",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets",
+    "tools.serve_recovery.test_initialization.InitializationTests.test_new_service_can_upgrade_and_rollback_without_reinitializing_original_package"
+  ],
+  "count": 17,
+  "old_package_checks": 2,
+  "gpu_operations": 0,
+  "full_performance": false
+}

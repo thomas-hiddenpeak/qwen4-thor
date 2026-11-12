@@ -1,0 +1,61 @@
+{
+  "status": "PASS_TARGETED_CPU_MODEL_BUSINESS_PENDING",
+  "native_distinct_cases": 80,
+  "native_initial": {
+    "passed": 77,
+    "failed": 3
+  },
+  "native_repair_02": {
+    "passed": 8,
+    "failed": 1
+  },
+  "native_repair_03": {
+    "passed": 1,
+    "failed": 0
+  },
+  "schema_cases": 2,
+  "sdk_cases": 4,
+  "python_client_cases": 6,
+  "node_client_cases": 5,
+  "business_contract_cases": 2,
+  "audit_passed": true,
+  "declarations_passed": true,
+  "gpu_starts": 0,
+  "engine_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+  "sources_sha256": {
+    "cmake/ChatProtocolIdentity.cmake": "0c3d7ff37e74a9829eb6b273dbadc23054d22f9cea728c42d191eb72d7118780",
+    "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
+    "include/q4t/server/chat_template.h": "5631a55354862668597bd86325b003fb2c1030dff9554a927255221d2b57df10",
+    "include/q4t/server/schema_receipt.h": "7cb1f22575987c5e47e16a9c6b3cf9cb90a598a92c2c190d57cd6f077dc19626",
+    "include/q4t/server/token_logprobs.h": "ebcc79af8cd4ec1a6d49ab875efededde7c2c32b4ac8362a3337b727866990e3",
+    "src/server/chat_capabilities.cpp": "bec54f51bc7135709b0592c43231a2ca06751785b33dbf8c9f55813c88ac0498",
+    "src/server/chat_generation.cpp": "e26c18e99ad209c22d82636bc20dc4fc57c081f1c6ca0bc0ba7496e30dc64517",
+    "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
+    "src/server/chat_template.cpp": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
+    "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
+    "src/server/responses_output.cpp": "458310a5147f40228f07b822a0b9502b3b8a2eb1cae335d42d1e7a8f9a308c26",
+    "src/server/schema_receipt.cpp": "14d9eaffc89238dcc7f46b7a237ceb342b65d9d98a74403d940f8c6694d521d8",
+    "src/server/schema_token_guard.cpp": "17d60f1b88ea8ad8ee59a37aaeec3e9d7317fb0b8dcbf7b2debb0be90861a74c",
+    "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
+    "tests/server_chat_message_profile_test.cpp": "84c6d1fdfff5df1abdde77e0bbc911e2affd4e3ea22a7e0a59b160f74dddb0cb",
+    "tests/server_chat_response_parser_test.cpp": "3e729589d30862061e8ab957864571ce3fda979c67de4e673c85608a980b54fa",
+    "tests/server_chat_sampling_response_test.cpp": "4082278450a99077d630b3039302f44092919c4f57d102fb32e3425c80a7c58a",
+    "tests/server_chat_tool_history_test.cpp": "29d90c392a126a3cb642b682c796dd8d212e2d5c60dee55f3f023036e724e377",
+    "tests/server_responses_output_test.cpp": "2c41948dfdeb3f92f6c567db0f4c38b516027312ecfcee06ad8b68812fe469b3",
+    "tests/server_responses_state_test.cpp": "267ad7a48ac78c5f62ed254aeecf503b95d4423095a1350cd6e505a1c85ed5e8",
+    "tests/server_schema_token_guard_test.cpp": "4533b68f137de50642a95b65f42da90b4144e30631fb4bd3d900ce91b5b54850",
+    "tools/examples/chat_client.py": "76429d85d45770e417fb251acb61813ea9f328fe8e7cd00b084d4fb4237ef20b",
+    "tools/examples/js/chat_client.mjs": "3cecdd18623b299cdf389e7a45716a0155fd36516b4cbb13a125337f087d86fc",
+    "tools/examples/js/test_chat_client.mjs": "b63aa4197ffb2f90a3924e209e488ea797bc0be6008e5721fbd5ddd2dc9e4725",
+    "tools/examples/test_chat_client.py": "5d26231caf304334de1a7eb22a89f17f0d054336a93c411aa6e8404989a9f5e5",
+    "tools/serve_audit/inventory.json": "9ad33b73064491fa74b67220b56ec23c17c32f75ab0d225f28025ea512c247ed",
+    "tools/serve_protocol/build_contract.py": "3eacf654e67fe99a92fffee1fdecf5e4c81791fb8ccfa339235f23747e18fdca",
+    "tools/serve_responses/test_sdk.mjs": "d72791b69321ce978a928a90cf43d68fc056f0e799627bab87404b698a7040f7",
+    "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
+    "tools/serve_responses/test_refusal_contract.py": "b0abf87dbe4ea8193112e27e654121154cff33d0f6eb9b1daf2d21f87dd0540e",
+    "tools/serve_responses/refusal_acceptance.py": "4710ca8f8167a1ed2b398a1462072e1c1886d8976856415daee1c9daf33eb1d4"
+  },
+  "remaining": "real model refusal, protected actual business and delivery; other master tasks remain active",
+  "source_reuse": "Final clang-format changed whitespace only; no need to repeat identity-unchanged CPU behavior. chat_generation SSE probability terminal needs the bounded model business.",
+  "declarations_initial_failure": "generated semantic source hashes changed after final C++ formatting; regenerated declarations, check-02 passed"
+}

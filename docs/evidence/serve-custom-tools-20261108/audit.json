@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_CUSTOM_TOOLS_SOURCE_RELEASE_AUDIT",
+  "source_commit": "bf4191a1ac943c6e916018c1ea7089070f5d390a",
+  "source_files": 619,
+  "protocol": "33b3d128de9796248bb3267eb620de6f2139b97796ea77548c742e07e416388a",
+  "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+  "ports_free": [
+    18161,
+    18162,
+    18163,
+    18164,
+    18165
+  ],
+  "gpu_lock_acquirable": true,
+  "owned_pids_exited": true,
+  "ledger_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "custom_tools_targeted_accepted": true,
+  "receipt_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/delivery-01/result.json",
+  "receipt_sha256": "74708da67f3830c48bbce3e05e825b86b8af805a30105862bc90fdb04d9a2457",
+  "cpu_dependency_reuse": "47 C++,72 schema/native,17 Python clients,9 JS and5 driver passed. cpu-05 host/schema preparation failures repaired by cpu-06; unrelated valid evidence reused. Two real mixed-call failures retained; native framing repair passed all8 Chat tasks. Not full performance/model quality."
+}

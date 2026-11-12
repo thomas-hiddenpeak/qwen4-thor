@@ -1,0 +1,7 @@
+{
+  "state": "NOT_EXECUTED",
+  "reason": "Prior linker failure had removed host binary; launch attempt failed with FileNotFoundError before running any case",
+  "tests_run": 0,
+  "default_changed": false,
+  "corrective_action": "Guard actual tokenizer test with existing Q4T_EMBEDDING_ASSET_WORKER_ENTRY and run frozen list on existing native host target with ICU/asset worker support"
+}

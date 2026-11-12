@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "actual_cpp_fragments": 2,
+  "negative_cases": 9,
+  "schema_sha256": "5440ab0e955caf32473be0eef68847a155654169088129893504cf70bffe26d6",
+  "stdout_sha256": "f251fa499e07541704d935073e6c2f766fd6e893c1e272d72a9b77ea5ad21503",
+  "scope": "actual C++ cache health and strict published schema; no HTTP/model"
+}

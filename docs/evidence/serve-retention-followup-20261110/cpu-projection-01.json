@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_stored_projection_uses_actual_failed_comparison",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3142133499495685
+}

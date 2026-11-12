@@ -1,0 +1,69 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "custom",
+      "custom": {
+        "name": "read_project_record_regex",
+        "description": "Read actual project lines. Input must be exactly READ docs/MODEL.md 1 16, raw text (not JSON). Use returned citation verbatim.",
+        "format": {
+          "type": "grammar",
+          "grammar": {
+            "syntax": "regex",
+            "definition": "^READ docs/MODEL\\.md 1 16$"
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/ARCHITECTURE.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    }
+  ],
+  "tool_choice": "required",
+  "parallel_tool_calls": true,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "For this request emit BOTH sibling tool_call blocks in ONE assistant turn, then stop. The custom input is a JSON-escaped string in the model format. The function arguments use parameter tags. Use these exact two calls, without stopping between them:\n<tool_call>\n<custom=read_project_record_regex>\n\"READ docs/MODEL.md 1 16\"\n</custom>\n</tool_call>\n<tool_call>\n<function=read_project_record>\n<parameter=path>docs/ARCHITECTURE.md</parameter>\n<parameter=start_line>1</parameter>\n<parameter=line_count>8</parameter>\n</function>\n</tool_call>"
+    },
+    {
+      "role": "user",
+      "content": "Make exactly two tool calls in this assistant turn. First call the custom tool read_project_record_regex with raw input READ docs/MODEL.md 1 16. Also call the function read_project_record with path docs/ARCHITECTURE.md, start_line 1 and line_count 8. Both are required before answering."
+    }
+  ]
+}

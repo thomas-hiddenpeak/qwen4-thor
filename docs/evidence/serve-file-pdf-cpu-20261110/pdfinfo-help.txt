@@ -1,0 +1,25 @@
+pdfinfo version 24.02.0
+Copyright 2005-2024 The Poppler Developers - http://poppler.freedesktop.org
+Copyright 1996-2011, 2022 Glyph & Cog, LLC
+Usage: pdfinfo [options] <PDF-file>
+  -f <int>             : first page to convert
+  -l <int>             : last page to convert
+  -box                 : print the page bounding boxes
+  -meta                : print the document metadata (XML)
+  -custom              : print both custom and standard metadata
+  -js                  : print all JavaScript in the PDF
+  -struct              : print the logical document structure (for tagged files)
+  -struct-text         : print text contents along with document structure (for tagged files)
+  -isodates            : print the dates in ISO-8601 format
+  -rawdates            : print the undecoded date strings directly from the PDF file
+  -dests               : print all named destinations in the PDF
+  -url                 : print all URLs inside PDF objects (does not scan text content)
+  -enc <string>        : output text encoding name
+  -listenc             : list available encodings
+  -opw <string>        : owner password (for encrypted files)
+  -upw <string>        : user password (for encrypted files)
+  -v                   : print copyright and version info
+  -h                   : print usage information
+  -help                : print usage information
+  --help               : print usage information
+  -?                   : print usage information

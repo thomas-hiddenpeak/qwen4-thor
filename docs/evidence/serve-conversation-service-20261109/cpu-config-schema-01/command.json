@@ -1,0 +1,13 @@
+[
+  [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/cpu-config-schema-01/required.txt"
+  ],
+  [
+    "python3",
+    "-B",
+    "tools/serve_preflight/check_schema.py",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/cpu-config-schema-01"
+  ]
+]

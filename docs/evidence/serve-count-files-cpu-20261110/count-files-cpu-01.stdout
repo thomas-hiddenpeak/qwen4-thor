@@ -1,0 +1,19 @@
+[PASS] server_preparation_usage_headers_preserve_body_and_parent_ownership
+[PASS] server_detached_child_borrows_disconnect_fd_without_response_or_handoff
+[PASS] server_terminal_handoff_precedes_wire_and_preserves_cleanup
+[PASS] responses_tokens_pdf_and_webp_keep_actual_media_and_generation_parity
+[PASS] responses_tokens_file_text_matches_actual_generation_template
+[PASS] responses_tokens_sheet_requires_completed_receipt_not_placeholder
+  CHECK failed: PrepareResponsesTokenCount(request, f.config, f.objects, f.access, &f.envelope, &f.plan, executor) .http_status == 400 && !ran && f.objects.Health().workers_started == 0 (line 254)
+[FAIL] responses_tokens_file_validation_and_cancellation_prevent_false_count
+[PASS] responses_tokens_previous_sheet_reuses_snapshot_without_model_work
+[PASS] responses_tokens_empty_null_and_empty_array_use_real_template
+[PASS] responses_tokens_closed_contract_and_model_selection
+[PASS] responses_tokens_sdk_nullable_fields_default_only_on_count_endpoint
+[PASS] responses_tokens_generation_template_parity_and_real_personality
+[PASS] responses_tokens_zero_output_no_slot_reservation_keeps_client_limits
+[PASS] responses_tokens_conversation_scoped_read_without_revision_mutation
+[PASS] responses_tokens_encrypted_state_restored_only_for_original_client
+[PASS] responses_tokens_deadline_cancellation_before_state_or_rendering
+[PASS] responses_tokens_auto_truncation_uses_count_budget_and_keeps_last_turn
+17 tests, 16 passed, 1 failed, 0 skipped

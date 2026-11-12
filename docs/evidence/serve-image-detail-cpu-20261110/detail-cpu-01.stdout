@@ -1,0 +1,15 @@
+[PASS] file_image_source_contract_preserves_borrowed_payload_and_detail
+[PASS] file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor
+[PASS] responses_input_image_detail_and_tool_media_not_dropped
+[PASS] image_detail_geometry_preserves_auto_and_enforces_native_bounds
+[PASS] image_detail_actual_pixels_match_independent_pillow_four_modes
+[PASS] image_detail_original_small_pixels_and_admission_mismatch
+[PASS] image_detail_chat_responses_and_source_error_paths_agree
+[PASS] image_detail_count_admission_and_generation_share_geometry
+[PASS] media_contract_closed_shapes
+[PASS] media_contract_roles_and_locations
+[PASS] media_plan_placeholder_order
+[PASS] media_plan_tail_error_and_device_limit
+[PASS] media_policy_discovery
+[PASS] media_expansion_and_client_budget_are_identical
+14 tests, 14 passed, 0 failed, 0 skipped

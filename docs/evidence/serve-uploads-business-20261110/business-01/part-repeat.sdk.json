@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_322fc94d3c923c9c76e9e7d91aa878b0/parts",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "147",
+        "content-type": "application/json",
+        "x-request-id": "req-504c7216a2df99e5f1367f533e847103"
+      },
+      "wire_base64": "eyJpZCI6InBhcnRfMWJmMjQ1MWI4MDJlOWFlMDllZDYyODlkN2U3NmEwZmUiLCJvYmplY3QiOiJ1cGxvYWQucGFydCIsImNyZWF0ZWRfYXQiOjE3OTQyNjcwNzEsInVwbG9hZF9pZCI6InVwbG9hZF8zMjJmYzk0ZDNjOTIzYzljNzZlOWU3ZDkxYWE4NzhiMCJ9"
+    }
+  ],
+  "result": {
+    "id": "part_1bf2451b802e9ae09ed6289d7e76a0fe",
+    "object": "upload.part",
+    "created_at": 1794267071,
+    "upload_id": "upload_322fc94d3c923c9c76e9e7d91aa878b0"
+  },
+  "attempts": 1
+}

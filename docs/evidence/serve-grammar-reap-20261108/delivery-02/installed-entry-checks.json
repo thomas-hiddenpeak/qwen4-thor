@@ -1,0 +1,23 @@
+[
+  {
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "version"
+    ],
+    "exit_code": 0,
+    "stdout": "q4t (Qwen4-Thor) v0.1.0\n  target: Jetson AGX Thor, SM110a\n  model:  Qwen3.8-Flash-Next (qwen4_exp)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+      "service",
+      "status",
+      "--state",
+      "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"service_id\": \"dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d\", \"state\": \"UNKNOWN\", \"business_ready\": false, \"live_control\": false}\n",
+    "stderr": ""
+  }
+]

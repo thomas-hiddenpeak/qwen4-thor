@@ -1,0 +1,10 @@
+{
+  "generations": 1,
+  "model_steps": 1,
+  "input_counts": 4,
+  "count_matches_actual_usage": true,
+  "nullable_defaults_equal_omission": true,
+  "generation_rpm_tpm_unchanged": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

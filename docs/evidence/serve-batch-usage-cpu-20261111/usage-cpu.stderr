@@ -1,0 +1,2 @@
+[q4t][http] trace_id=req_tool_run_21a1f07d65911ea05cbfc2d9a9ef71a6 status=499 error=cancelled
+[q4t][http] trace_id=req_tool_run_9fd5dc7f58460957231d0011cf2e670e status=503 error=server_stopping

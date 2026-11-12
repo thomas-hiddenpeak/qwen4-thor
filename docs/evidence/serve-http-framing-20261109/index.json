@@ -1,0 +1,50 @@
+{
+  "README.md": {
+    "bytes": 538,
+    "sha256": "76eb31cf834c9206c5ffc5243d5e41712e779e15cc2d3471d5ae920e00659088"
+  },
+  "decision.json": {
+    "bytes": 419,
+    "sha256": "bab8a9b835dcc9210f5b53b542b78d02089148720beaa6e71e8529044eeb499a"
+  },
+  "framing-build-01/command.json": {
+    "bytes": 143,
+    "sha256": "0ed100cb958e8e825d24f5d35a84190821e68fba729059a1290e09037dc1ef47"
+  },
+  "framing-build-01/result.json": {
+    "bytes": 77,
+    "sha256": "e336b3c3342b0565d6154fb00ca609db52035b7ef685ea017f3c8f8031ec78aa"
+  },
+  "framing-build-01/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "framing-build-01/stdout.txt": {
+    "bytes": 2331,
+    "sha256": "90da6a819bf0d4b0eb99278b10fd142ea8d58a1336047734ed655b982b27fd7e"
+  },
+  "framing-cpu-01/command.json": {
+    "bytes": 137,
+    "sha256": "4cdfc88c99769ab44c7d2104ec7e2f11e510ae80e5e69fabebf5a991dc11a24d"
+  },
+  "framing-cpu-01/result.json": {
+    "bytes": 178,
+    "sha256": "51c5af22d10172acdd2269668d253c23d335557561b901e3b6585cbda76176f1"
+  },
+  "framing-cpu-01/sources.json": {
+    "bytes": 1255,
+    "sha256": "12d705612fa209cbab863dc276d948655ced817e0d5e32191139f2badeba094f"
+  },
+  "framing-cpu-01/tests.log": {
+    "bytes": 1514,
+    "sha256": "129c895c1e6f980c4615b776596753c6fe4de8711737f5e441d2ebca2bb0806a"
+  },
+  "framing-plan.json": {
+    "bytes": 1648,
+    "sha256": "cd448772531fb1fb5f4a327ab083779c4e2c91ef79f8c5a310003208a76f56e9"
+  },
+  "framing-required.txt": {
+    "bytes": 1277,
+    "sha256": "3ffb6b7d469a04ba5dc96bad4a23cacea2ccaea79e99bbade9155f1451be14f4"
+  }
+}

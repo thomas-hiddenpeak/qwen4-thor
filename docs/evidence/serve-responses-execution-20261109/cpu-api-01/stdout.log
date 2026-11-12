@@ -1,0 +1,12 @@
+[PASS] responses_api_query_contract_and_routes_before_storage
+[PASS] responses_api_body_capacity_is_charged_before_reading
+[PASS] responses_api_history_pagination_and_scope_survive_worker_restart
+[PASS] responses_api_replay_uses_original_sequence_and_obfuscation_choice
+  CHECK failed: Ok(run.Finish(false, 0, {5, 0, 1, 0}, 43, &wire)) (line 267)
+[FAIL] responses_api_include_projects_without_changing_retained_probabilities
+[PASS] responses_api_subscriber_timeout_never_cancels_generation_or_fakes_terminal
+[PASS] responses_api_missing_or_corrupt_event_journal_is_not_reconstructed
+[PASS] conversation_api_rejects_invalid_wire_contract_before_storage
+[PASS] http_conversation_routes_are_scoped_business_operations
+[PASS] http_conversation_body_uses_shared_budget_before_reading
+10 tests, 9 passed, 1 failed, 0 skipped

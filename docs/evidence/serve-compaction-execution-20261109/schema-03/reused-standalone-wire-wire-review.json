@@ -1,0 +1,8 @@
+{
+  "checked": 1,
+  "rejected": [],
+  "sources_sha256": {
+    ".q4t-work/serve-responses-compaction-20261109/execution-cpu-01/reused-standalone-wire/standalone-result.wire": "c5c73de11c539dfd432d63e779a1174fc5e19e74c4a54bbbaadfa581600ffec8"
+  },
+  "legacy_nonconforming_not_reaccepted": false
+}

@@ -1,0 +1,62 @@
+{
+  "README.md": {
+    "bytes": 1533,
+    "sha256": "1a872490057288e87165e0b77284b47d1bda02294612d9d60b93b2a78cd5f534"
+  },
+  "archive_controller.py": {
+    "bytes": 3455,
+    "sha256": "f13af919930c9f0d4fd8ca916f7e81513d8cc0371f663f3ed3fbba49b27b9e30"
+  },
+  "controller-cpu-01/command.json": {
+    "bytes": 1118,
+    "sha256": "ff934cd44d753951037cbc2e2992a324474170c65a82a1aaf93ffff039831295"
+  },
+  "controller-cpu-01/result.json": {
+    "bytes": 62,
+    "sha256": "f24533690728003a2afda4a708ee7ea2d818bfd87a378910fe079ffc95597e05"
+  },
+  "controller-cpu-01/stderr.log": {
+    "bytes": 5441,
+    "sha256": "36af066a3dea6adfad7013565b8f97a251d1aa32e5d2c3e6eabfae50924d441e"
+  },
+  "controller-cpu-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "decision.json": {
+    "bytes": 1628,
+    "sha256": "089653879a4fdeb09b94a6ce9d32c350f5c4dc9326b780ed475d9c39faad5f48"
+  },
+  "inventory-02/command.json": {
+    "bytes": 89,
+    "sha256": "20d8d2b873145e73577f10a6c69432127db4d807a9f99b0e6fce8f0678029ac7"
+  },
+  "inventory-02/result.json": {
+    "bytes": 63,
+    "sha256": "93ab627e2718b63981aa2ac7eec04ea5e26f59fda22fe8316aac034c3336e692"
+  },
+  "inventory-02/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "inventory-02/stdout.log": {
+    "bytes": 220,
+    "sha256": "a3e956b0dacd1152c09132c0816794136cc9a43bc431195f246d12413b0d5105"
+  },
+  "rollback-verify-01/command.json": {
+    "bytes": 418,
+    "sha256": "14310d1113272b40aace588ab8a428f32d2a6b99a6c907728c8a4d21202b9016"
+  },
+  "rollback-verify-01/result.json": {
+    "bytes": 62,
+    "sha256": "b71b1cf35b1c507a7a094564871f469361dc265708bd5aa351b9e93837c8cdae"
+  },
+  "rollback-verify-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "rollback-verify-01/stdout.log": {
+    "bytes": 164,
+    "sha256": "afc592ec499d06a11b89bb123b5c87a460c29cfe77b77d17c23eb9f2675f2af4"
+  }
+}

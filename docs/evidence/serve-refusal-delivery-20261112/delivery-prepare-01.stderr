@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/deliver.py", line 232, in <module>
+    {'prepare':prepare,'run':run}[sys.argv[1]]()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/deliver.py", line 66, in prepare
+    p.require(old_version['revision']==0 and old_version['switch'] is None and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: default version cycle has unexpected consumption

@@ -1,0 +1,42 @@
+test_archived_background_and_conversations (tools.serve_responses.test_contract.ApplicationContract.test_archived_background_and_conversations) ... FAIL
+test_archived_real_business_wire (tools.serve_responses.test_contract.ApplicationContract.test_archived_real_business_wire) ... FAIL
+test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict) ... FAIL
+test_sdk_graph_and_closed_native_requests (tools.serve_responses.test_contract.ApplicationContract.test_sdk_graph_and_closed_native_requests) ... ok
+test_openapi_routes_queries_and_no_external_reference_bundle (tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle) ... ok
+
+======================================================================
+FAIL: test_archived_background_and_conversations (tools.serve_responses.test_contract.ApplicationContract.test_archived_background_and_conversations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 146, in test_archived_background_and_conversations
+    self.audit(ROOT/'docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work', legacy=True)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 117, in audit
+    self.assertTrue(missing_choice or missing_cache, str(rejected[-1]))
+AssertionError: False is not true : {'file': 'docs/evidence/serve-responses-recovery-20261109/background-sdk-01/work/cancel/wire.jsonl', 'kind': 'response', 'errors': [{'path': ['usage'], 'validator': 'anyOf', 'message': "{'input_tokens': 5, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 8} is not valid under any of the given schemas"}, {'path': [], 'validator': 'required', 'message': "'tool_choice' is a required property"}]}
+
+======================================================================
+FAIL: test_archived_real_business_wire (tools.serve_responses.test_contract.ApplicationContract.test_archived_real_business_wire)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 141, in test_archived_real_business_wire
+    checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 117, in audit
+    self.assertTrue(missing_choice or missing_cache, str(rejected[-1]))
+AssertionError: False is not true : {'file': 'docs/evidence/serve-responses-business-20261109/business-01/follow.wire', 'kind': 'response', 'errors': [{'path': ['usage'], 'validator': 'anyOf', 'message': "{'input_tokens': 459, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 42, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 501} is not valid under any of the given schemas"}, {'path': [], 'validator': 'required', 'message': "'tool_choice' is a required property"}]}
+
+======================================================================
+FAIL: test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 152, in test_current_native_wire_is_strict
+    checked, rejected = self.audit(root)
+                        ^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 109, in audit
+    self.fail(str(rejected[-1]))
+AssertionError: {'file': '.q4t-work/serve-responses-20261108/declarations-sdk-01/work/stream/events.jsonl', 'kind': 'response_event', 'errors': [{'path': [], 'validator': 'required', 'message': "'logprobs' is a required property"}]}
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.805s
+
+FAILED (failures=3)

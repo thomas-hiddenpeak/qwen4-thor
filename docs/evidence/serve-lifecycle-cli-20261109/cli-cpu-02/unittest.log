@@ -1,0 +1,34 @@
+test_fresh_build_entry_really_prepares_and_checks_a_package (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package) ... ok
+test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset) ... FAIL
+test_default_engine_and_service_identity_cannot_diverge (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_default_engine_and_service_identity_cannot_diverge) ... ok
+test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals) ... FAIL
+test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately (tools.serve_recovery.test_native_bundle.BundleTests.test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately) ... ok
+
+======================================================================
+FAIL: test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py", line 200, in test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset
+    else:self.assertEqual(path.read_bytes(),raw)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"f[54 chars]256":"b1dad7e9729f29d25cfb4b6f937831a36933d8f5[2189 chars]96]}' != b'{"f[54 chars]256":null,"service_id":"d55d2c3b-8970-41c8-af9[582 chars]96]}'
+
+======================================================================
+FAIL: test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py", line 254, in test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals
+    self.assertEqual(result.returncode,0,result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+    fd=service.diagnostic_buffer()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/service-tools/d41d0d6a46731d703e2f080f3e1aff69ddf36c51ca2b74a7b0dc1aa928b96fe8/source/tools/serve_recovery/service.py", line 41, in diagnostic_buffer
+    fd = os.memfd_create('q4t-service-diagnostics', os.MFD_CLOEXEC | os.MFD_ALLOW_SEALING)
+         ^^^^^^^^^^^^^^^
+AttributeError: module 'os' has no attribute 'memfd_create'. Did you mean: 'timerfd_create'?
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.510s
+
+FAILED (failures=2)

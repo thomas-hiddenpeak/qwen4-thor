@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "index": 0,
+      "exit": 0,
+      "seconds": 3.5224669841118157
+    },
+    {
+      "index": 1,
+      "exit": 0,
+      "seconds": 3.4179346607998013
+    },
+    {
+      "index": 2,
+      "exit": 0,
+      "seconds": 0.7648618849925697
+    }
+  ],
+  "binaries": {
+    "q4t-guardian": "b18a9a9e5d5468cf8be11e2186f013db09757038c517b492eaf55e9b35cbdfcc",
+    "q4t-ingress": "b4e2ec2c6a1f0342b1dbed94cb85a9c6768eaaa905c34248857ec2453ec656fb"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "scope": "Offline public Node schema request CLI exact-number encoding and fatal UTF-8 input only; no network/model",
+  "source_sha256": "8403e085dec527c9634638ffbd0802c407f2577e51a200241467b50fbea18c41",
+  "cases": [
+    "exact-number",
+    "invalid-utf8"
+  ],
+  "timeout_seconds": 10
+}

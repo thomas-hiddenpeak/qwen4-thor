@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/batch_quota.cpp: In function ‘bool q4t::server::{anonymous}::Integer(const q4t::io::Json&, const std::string&, uint64_t, uint64_t)’:
+/home/rm01/models/dev/qwen4-thor/src/server/batch_quota.cpp:15:19: error: ‘IsInputInteger’ was not declared in this scope
+   15 |   return value && IsInputInteger(*value) && value->AsInt() >= 0 &&
+      |                   ^~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:303: CMakeFiles/q4t_server.dir/src/server/batch_quota.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

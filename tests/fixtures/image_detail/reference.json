@@ -1,0 +1,36 @@
+{
+  "producer": {
+    "pillow": "12.3.0",
+    "numpy": "1.26.4"
+  },
+  "source": "generate.py",
+  "source_width": 2305,
+  "source_height": 1153,
+  "source_sha256": "4866418146c85c7662ddb60eae9d37562ce33cfa963a279d864b9ef0f18bdcd5",
+  "modes": {
+    "auto": {
+      "width": 2304,
+      "height": 1152,
+      "elements": 15925248,
+      "sha256": "4aeb5374a9b5e08690aea0b71af613f865d2001f4f949318abf89807b3722bff"
+    },
+    "low": {
+      "width": 512,
+      "height": 256,
+      "elements": 786432,
+      "sha256": "bc667fcb8acd3d8a5b77161dd47b7acf5f91241a77919f71db3eba4c4ae9dec4"
+    },
+    "high": {
+      "width": 2048,
+      "height": 1024,
+      "elements": 12582912,
+      "sha256": "71d082bbd69cb25e3ad3fdcdd871b8ffb9a0f21af996170e4963aa3c4aa99684"
+    },
+    "original": {
+      "width": 2336,
+      "height": 1184,
+      "elements": 16594944,
+      "sha256": "7c13abda981880599ea761c18f7778b95a65634ca348676c8395a24a91df8318"
+    }
+  }
+}

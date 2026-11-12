@@ -1,0 +1,9 @@
+{
+  "command": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "responses_output_"
+  ],
+  "executable_sha256": "013acf015912175c7197912de81aaddca16f48f89d4e22100c8822c20867cf78",
+  "exit_code": 1,
+  "seconds": 0.015906136017292738
+}

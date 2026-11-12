@@ -1,0 +1,1 @@
+{"object":"list","data":[{"role":"user","content":[{"type":"input_text","text":"Compute 17 + 25. Reply only with the decimal number."}],"type":"message","status":"completed","id":"item_dbf6871ac020ddce97ef49f6816c1a69"}],"first_id":"item_dbf6871ac020ddce97ef49f6816c1a69","last_id":"item_dbf6871ac020ddce97ef49f6816c1a69","has_more":false}

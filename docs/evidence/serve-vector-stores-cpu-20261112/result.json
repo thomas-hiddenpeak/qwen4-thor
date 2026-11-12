@@ -1,0 +1,127 @@
+{
+  "status": "CPU_ACCEPTED_INTEGRATION_REQUIRED",
+  "unique_cases": 19,
+  "passed": [
+    "input_snapshot_parent_publication_requires_owned_exact_live_root",
+    "object_retention_active_roots_preserve_chain_with_owner_isolation",
+    "object_retention_unknown_owner_protection_and_plan_identity",
+    "object_store_namespace_and_kind_isolation",
+    "object_store_transaction_conflict_or_quota_changes_nothing",
+    "vector_index_snapshot_bytes_and_scope_survive_worker_restart",
+    "vector_stores_cancellation_and_corruption_remain_local",
+    "vector_stores_concurrent_attach_preserves_counts_and_independent_jobs",
+    "vector_stores_create_contract_scope_and_atomic_source_validation",
+    "vector_stores_deleted_source_cannot_be_loaded_or_published",
+    "vector_stores_detach_and_reattach_rejects_stale_executor",
+    "vector_stores_expired_queued_job_finishes_without_model_execution",
+    "vector_stores_expiry_releases_dependencies_without_resurrection",
+    "vector_stores_file_pagination_attributes_and_terminal_counts",
+    "vector_stores_foreign_or_wrong_index_never_marks_file_ready",
+    "vector_stores_lost_create_and_claim_receipts_recover_original_identity",
+    "vector_stores_quota_rejection_never_publishes_partial_members",
+    "vector_stores_recovery_requires_explicit_owner_exit_and_bounds_retries",
+    "vector_stores_verified_index_is_retained_across_restart_and_collected_after_delete"
+  ],
+  "executions": [
+    {
+      "name": "store-cpu-01",
+      "argv": [
+        ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-file-search-20261112/store-cpu-required-01.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 1.334010067395866,
+      "protected_before": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "protected_after": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "default_unchanged": true
+    },
+    {
+      "name": "store-cpu-02",
+      "argv": [
+        ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-file-search-20261112/store-cpu-repair-01.txt"
+      ],
+      "exit_code": 0,
+      "seconds": 0.5827878941781819,
+      "protected_before": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "protected_after": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "default_unchanged": true
+    },
+    {
+      "name": "store-cpu-03",
+      "argv": [
+        ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-file-search-20261112/store-cpu-repair-02.txt"
+      ],
+      "exit_code": 0,
+      "seconds": 1.8346738000400364,
+      "protected_before": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "protected_after": {
+        "build/q4t": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t",
+          "sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8"
+        },
+        "build/q4t.release.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2/q4t.release.json",
+          "sha256": "12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee"
+        }
+      },
+      "default_unchanged": true
+    }
+  ],
+  "cpu_seconds": 3.7514717616140842,
+  "runner_sha256": "e4b1c740b7202c44fc7957e48b55bb44ec23b432d36a9eb3560525f5c00076cd",
+  "gpu_starts": 0,
+  "default_changed": false,
+  "production_routes": false,
+  "real_embedding": false,
+  "whole_A11_complete": false
+}

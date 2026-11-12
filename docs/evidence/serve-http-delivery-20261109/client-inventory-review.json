@@ -1,0 +1,6 @@
+{
+  "first_package": "release-01",
+  "selected": false,
+  "issue": "Client artifact inventory omitted project_records.py and project_profile.mjs imported by the SDK bridge",
+  "resolution": "Seal release-02 with complete client dependency snapshot; production runtime unchanged; qualify imports before delivery"
+}

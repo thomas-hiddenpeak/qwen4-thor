@@ -1,0 +1,22 @@
+{
+  "status": "TARGETED_RESOURCE_RENEW_CPU_PASS",
+  "distinct_tests": 13,
+  "all_first_pass": true,
+  "cpu_seconds": 4.722065308131278,
+  "historical_boot_fixtures": true,
+  "host_reboot_tested": false,
+  "real_owned_kernel_recreation": true,
+  "same_boot_loss_and_foreign_path_rejected": true,
+  "original_installation_identity_preserved": true,
+  "core_model_state_not_modified": true,
+  "model_gpu_starts": 0,
+  "host_device_policy_changed": false,
+  "default_unchanged": true,
+  "owned_test_domains_remaining": [],
+  "source_sha256": {
+    "tools/serve_recovery/resource_install.py": "a99b18c260aa0c19faae774f19ebc9f294d068f8d660e8e1f6e6815df658c53f",
+    "tools/serve_recovery/resource_launch.py": "e0b66553eeadd3594b47916b95f719381b5c90773141e3df317ff5aaf55ad9ff",
+    "tools/serve_recovery/test_resource_renew.py": "fab76d227096f867e1652703190dcfb5213403e3b431582db8aa8f47c9c9f7df"
+  },
+  "released": false
+}

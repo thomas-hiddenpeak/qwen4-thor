@@ -1,0 +1,21 @@
+{
+  "production": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/tls/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/tls-02/execution/state/runs/28798cce-607c-43c9-9cb3-40dc8e282ead/controller.json"
+  ],
+  "validation": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retrieval_acceptance.py",
+    "controller",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/tls-02/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/tls-02/execution/state/runs/28798cce-607c-43c9-9cb3-40dc8e282ead/controller.json"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "required": [
+    "compaction_plan_preserves_instructions_and_current_turn",
+    "compaction_plan_standalone_preserves_user_and_media_items",
+    "compaction_pending_parallel_tool_spans_are_not_summarized",
+    "compaction_invalid_tool_history_cannot_be_hidden_in_memory",
+    "compaction_real_cipher_replays_full_retained_or_omitted_origin",
+    "compaction_cipher_accepts_optional_id_and_semantic_message_forms",
+    "compaction_cipher_rejects_tamper_scope_model_id_and_prefix",
+    "compaction_noop_never_invents_model_memory_or_usage",
+    "compaction_bounds_duplicate_ids_and_output_budget",
+    "compaction_cancelled_or_expired_state_never_mutates_output",
+    "compaction_optional_id_enters_actual_response_generation_plan",
+    "compaction_and_encrypted_reasoning_form_one_authenticated_history",
+    "responses_crypto_stateless_roundtrip_restores_actual_reasoning",
+    "responses_crypto_origin_prefix_full_suffix_and_conflict"
+  ],
+  "distinct_tests": 14,
+  "sources": {
+    "include/q4t/server/responses_compaction.h": "1d660a43c0346120f2d7bfe0f7b3e8de320380d4757da6023e8ada2b49ded07e",
+    "src/server/responses_compaction.cpp": "d869533d1ae12589bd3423c7c5beead9cccee3ca0c87e4c668c77bc259a3a803",
+    "tests/server_responses_compaction_test.cpp": "337a2cde6b5b2425540e628af4621cddfa8a0868238c68d2d380352bb6a26ff2",
+    "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+    "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+    "src/server/responses_execution.cpp": "028241c481256f725accf958741cb2251f8e805781029c8a4cbf4920375f1db4",
+    "CMakeLists.txt": "96b6455242a03bc74a7fbe31613096317562989df3a0652f11761f9127cdf478",
+    "cmake/ChatProtocolIdentity.cmake": "cc154ddc17c0918255832810d6b49fd548ce988b5542d83a2dbadea93df28b86",
+    "cmake/HostTestSources.cmake": "a8c2a41a2b577e8518b8bb4042c836cc28418720b2e5e4d7f2c6a5f68984ba99"
+  },
+  "gpu": false,
+  "scope": "compaction foundation/authenticated input only; no compaction API or execution acceptance"
+}

@@ -1,0 +1,52 @@
+{
+  "task": "A09.5 atomic snapshot reference publication and immutable roots",
+  "classification": "nonperformance",
+  "cpu_tests": [
+    "input_snapshot_parent_publication_requires_owned_exact_live_root",
+    "input_snapshot_failed_reference_update_leaves_atomic_group_unchanged",
+    "input_snapshot_parent_and_new_root_publish_in_either_batch_order",
+    "input_snapshot_direct_mutation_or_delete_cannot_break_live_parent",
+    "input_snapshot_expired_preparation_cannot_publish_dangling_parent",
+    "input_snapshot_prompt_private_bindings_participate_in_retention",
+    "input_snapshot_conditioned_parent_write_keeps_single_object_receipt",
+    "input_snapshot_scope_binding_root_digest_and_pinned_metadata",
+    "input_snapshot_live_application_roots_retain_and_last_delete_reclaims",
+    "input_snapshot_long_parent_deadline_preserves_absolute_hold",
+    "input_snapshot_unknown_publish_recovers_original_root_and_hold",
+    "application_payload_reuse_pins_root_across_old_parent_deletion",
+    "object_application_batch_deduplicates_and_conflicts_remain_atomic",
+    "object_application_update_reuses_content_and_preserves_real_nulls",
+    "object_application_unknown_parent_preserves_actual_single_and_batch",
+    "input_binding_response_previous_and_item_reference_keep_exact_snapshot",
+    "input_binding_first_use_conversation_items_survive_copy_and_delete",
+    "input_binding_explicit_tool_output_preserves_immutable_file",
+    "responses_files_queue_freezes_raw_sheet_and_checkpoints_completed_step",
+    "responses_files_conversation_retains_snapshots_with_store_false",
+    "chat_files_stored_originals_replay_after_restart_and_decoder_outage",
+    "object_store_transaction_recovers_partial_file_installation",
+    "object_store_transaction_handles_large_response_item_sets"
+  ],
+  "new_cpu": 7,
+  "affected_existing_cpu": 16,
+  "gpu_starts": 0,
+  "gpu_requests": 0,
+  "network_requests": 0,
+  "base": "6cb49fac64f02dac411f29e4eec92dcfe85d687a",
+  "source_sha256": {
+    "docs/STATUS.md": "050baffd97ed38922c0b5eac768fbae22b06f82685bb2c694d0f695d66be234b",
+    "docs/log/2026-11-10.md": "dfbdc75609ff5f708c1ac70fcad8418bf72f8b9e68503a7a93ab876edbb922c2",
+    "include/q4t/server/input_snapshot.h": "20b1f75ce18037e01d05d021622dbc0f61bbadeaeb3ac49c8560364ea99016be",
+    "src/server/object_retention.cpp": "3fa8df4afba94194bb2d37fe2ec282efc6d5d2340e624bbf0a7095ff3e4e4de3",
+    "src/server/object_worker.cpp": "871f1f169b76cf66ffdce4ac886432296283eeeb2e4a4a5d335ad1f9aca746b5",
+    "tests/server_input_snapshot_test.cpp": "2e5c4e78789fad40e9d991de6833743b6db5152fed7771458211689b8e9263f6"
+  },
+  "candidate_before_sha256": "32bdd3cf981fe0a8b7cdf6295112e447b8473449677ebff60abe7bbe7c525bf5",
+  "host_before_sha256": "755ca72bda4b5ae616752dae3081ad7f7830830f4c3271990cc3cd2ce7a011d2",
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  },
+  "remaining": "Controlled HTTP/JSON/prompt/background capacities, integrated actual business, compatible rollback/release and all master tasks."
+}

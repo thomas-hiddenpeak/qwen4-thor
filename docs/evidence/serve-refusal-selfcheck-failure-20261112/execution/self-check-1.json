@@ -1,0 +1,5 @@
+{
+  "http_status": 200,
+  "content_type": "application/json",
+  "body": "{\"id\":\"chatcmpl-auto-c585383407e32c6e806bf4e07199f143\",\"object\":\"chat.completion\",\"created\":1794459847,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":\"\\nI cannot provide a JSON response as the request lacks sufficient context to determine the appropriate content for the schema.\\n\"},\"finish_reason\":\"stop\",\"logprobs\":null}],\"usage\":{\"prompt_tokens\":262,\"completion_tokens\":38,\"total_tokens\":300}}"
+}

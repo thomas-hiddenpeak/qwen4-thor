@@ -1,0 +1,3 @@
+  CHECK failed: rejected.code == (quota ? "object_quota_exceeded" : "object_too_large") (line 332)
+[FAIL] responses_execution_size_and_quota_rejection_retain_failure
+1 tests, 0 passed, 1 failed, 0 skipped

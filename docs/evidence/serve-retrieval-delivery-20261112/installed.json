@@ -1,0 +1,10 @@
+{
+  "publication_revision": 92,
+  "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+  "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+  "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+  "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+  "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+  "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+}

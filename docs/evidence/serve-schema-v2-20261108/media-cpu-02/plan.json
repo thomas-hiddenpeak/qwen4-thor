@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_schema_v2.test_media"
+  ],
+  "timeout_seconds": 90,
+  "probe_sha256": "cbee40f289b4f484d01a6a1d346419db65e01309aa3e1088f25f001684cbc3fa",
+  "correction": "embedded media archive 3.38MB uses separate 4MiB fixture bound; service metadata limit unchanged"
+}

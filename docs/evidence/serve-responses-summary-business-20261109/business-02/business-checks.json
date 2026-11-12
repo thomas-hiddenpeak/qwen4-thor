@@ -1,0 +1,12 @@
+{
+  "internal_model_steps": 13,
+  "external_requests": 8,
+  "current_run_requests": 5,
+  "current_run_input_tokens": 1438,
+  "current_run_output_tokens": 343,
+  "real_tool_executions": 1,
+  "shared_budget": true,
+  "actual_summary": true,
+  "single_rpm": true,
+  "cumulative_tpm": true
+}

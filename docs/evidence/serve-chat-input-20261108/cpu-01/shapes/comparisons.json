@@ -1,0 +1,1159 @@
+[
+  {
+    "id": "messages-valid",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-null",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': None, 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "messages must be a nonempty array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-wrong-shape",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': {'unexpected': True}, 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "messages must be a nonempty array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-omitted",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "provide exactly one of prompt or messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "system-first",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "system-late",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "developer-first",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "developer-late",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "mixed-instructions",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "no-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool-wrapper-not-query",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-None",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-name",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-17",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q', 'name': 17}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name must be a string up to 4096 bytes or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-4096",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-4097",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q', 'name': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name must be a string up to 4096 bytes or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-unicode",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-unicode-overflow",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q', 'name': '名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name must be a string up to 4096 bytes or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-text",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-null-content",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-part",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'refusal': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-wrong-role",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q', 'refusal': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "refusal requires assistant and a string or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].refusal"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-wrong-part-role",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': [{'type': 'refusal', 'refusal': 'no'}]}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "refusal must be one assistant refusal content part",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-mixed-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': [{'type': 'refusal', 'refusal': 'no'}, {'type': 'text', 'text': 'q'}]}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "refusal must be one assistant refusal content part",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-bad-part-type",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': [{'type': 'refusal', 'refusal': 7}]}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "refusal must be one assistant refusal content part",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-refusal-unknown-part-field",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': [{'type': 'refusal', 'refusal': 'no', 'ignored': True}]}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "refusal must be one assistant refusal content part",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-system-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'system', 'content': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-system-empty-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'system', 'content': []}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "content parts must not be empty",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-system-number",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'system', 'content': 4}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content must be text or content parts",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-system-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'system'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-developer-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'developer', 'content': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-developer-empty-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'developer', 'content': []}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "content parts must not be empty",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-developer-number",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'developer', 'content': 4}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content must be text or content parts",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-developer-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'developer'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-user-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-user-empty-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': []}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "content parts must not be empty",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-user-number",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 4}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content must be text or content parts",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-user-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-assistant-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-assistant-empty-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': []}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "content parts must not be empty",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-assistant-number",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': 4}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content must be text or content parts",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-assistant-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-tool-null",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'tool', 'content': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-tool-empty-parts",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'tool', 'content': []}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "content parts must not be empty",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-tool-number",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'tool', 'content': 4}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content must be text or content parts",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-content-tool-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'tool'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "text-parts",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "media-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "media disabled; experimental --allow-media required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": false
+  },
+  {
+    "id": "reason-alias-252",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-alias-253",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-alias-254",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "conflicting reasoning history aliases",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-on-user",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q', 'reasoning': None}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning history requires an assistant message",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-reordered",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-missing-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "all tool results are required before continuing",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-duplicate-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "duplicate result for tool_call_id",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-foreign-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool_call_id does not match the preceding batch",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-duplicate-call",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "duplicate tool call id within assistant batch",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-mixed-ids",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool calls require function type and valid batch IDs",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-id-missing-type",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool calls require function type and valid batch IDs",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-null-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}, {'role': 'assistant', 'content': None, 'tool_calls': [{'id': 'a', 'type': 'function', 'function': {'name': 'read', 'arguments': '{}'}}, {'id': 'b', 'type': 'function', 'function': {'name': 'read', 'arguments': {}}}]}, {'role': 'tool', 'tool_call_id': 'b', 'content': None}, {'role': 'tool', 'tool_call_id': 'a', 'content': 'first'}], 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message content is required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[2].content"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-id-reused-next-batch",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-265",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-266",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-267",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool arguments require an object or JSON object text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-268",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid historical arguments JSON",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-269",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid historical parameter name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-270",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}, {'role': 'assistant', 'content': None, 'tool_calls': [{'id': 'a', 'type': 'function', 'function': {'name': 'read', 'arguments': None}}, {'id': 'b', 'type': 'function', 'function': {'name': 'read', 'arguments': {}}}]}, {'role': 'tool', 'tool_call_id': 'b', 'content': 'second'}, {'role': 'tool', 'tool_call_id': 'a', 'content': 'first'}], 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool arguments require an object or JSON object text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-flat-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "orphan-tool-id",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "orphan tool_call_id result",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  }
+]

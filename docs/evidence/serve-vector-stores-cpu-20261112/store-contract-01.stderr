@@ -1,0 +1,2 @@
+usage: build_contract.py [-h] --types TYPES [--check]
+build_contract.py: error: the following arguments are required: --types

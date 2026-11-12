@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "tools/serve_responses/generate_item_types.mjs",
+    ".q4t-work/serve-protocol-20261103/sdk",
+    ".q4t-work/serve-responses-20261108/schema-tool",
+    "src/server/contracts/openai_item_types_v1.json"
+  ],
+  "exit_code": 0,
+  "seconds": 0.9787135990336537
+}

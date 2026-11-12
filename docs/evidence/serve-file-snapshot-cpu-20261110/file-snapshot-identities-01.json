@@ -1,0 +1,10 @@
+{
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "961e78872341bc34832165b256c52db45e5422e49f36cee403307f2a878980b0",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "55d705f40121d4189b7c4840a2db666a83f724f40d001ac4b79b6be5a7358167",
+  "CMakeLists.txt": "c3878205fb54b77335d0ce85b8abbd51c3407a666dd32dd6e7d4b865b7f96996",
+  "cmake/ChatProtocolIdentity.cmake": "06dca5a0807dd3ba825e8ba8fac5ff0ee5f6f448e6e7e53153cbc612e35d0490",
+  "cmake/HostTestSources.cmake": "faaa5cdc534fc8a51ad08b8b3662d4fe7d93fb31517370911d4880854f3a9c09",
+  "include/q4t/server/file_snapshot.h": "ce54e491691ead8234d7057dcdac56bdef16bfaa0df4b9c7290e1af0ae85549f",
+  "src/server/file_snapshot.cpp": "5cfa1fccbefa437b1bdc6c1c881ea3b93e0bd8442ec4bd9e69d3bd51b614ed6c",
+  "tests/server_file_snapshot_test.cpp": "7e9e85089f517d32afa17f48750fdf4d6e678fcd94fd468f46ea8119dbd2eebd"
+}

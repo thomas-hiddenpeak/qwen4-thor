@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/cpu-02/host-required.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 0.0034004999324679375
+}

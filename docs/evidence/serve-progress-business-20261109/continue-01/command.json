@@ -1,0 +1,5 @@
+[
+  "python3",
+  "-B",
+  "tools/serve_progress/continue.py"
+]

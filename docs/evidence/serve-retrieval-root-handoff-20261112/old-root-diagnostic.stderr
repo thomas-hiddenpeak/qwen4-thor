@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/lifecycle.py", line 93, in check
+    value['adaptive_profiles'] = profile_manager.status(state, desc, manifest)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/profile_manager.py", line 193, in status
+    version = version_launch.observed(state,descriptor)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/version_launch.py", line 101, in observed
+    selected = version_registration.for_state(state,root,head)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/version_registration.py", line 181, in for_state
+    registration = for_cycle(state, root, selected['registry']['cycle_id'])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/version_registration.py", line 201, in for_cycle
+    ledger.require(registration['registry']['cycle_id'] == cycle and
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained/source/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: selected root needs explicit version registration

@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/files-test/v1/uploads/upload_322fc94d3c923c9c76e9e7d91aa878b0/complete",
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "358",
+        "content-type": "application/json",
+        "x-request-id": "req-e60496865a06689b6f201f7ba2f87f29"
+      },
+      "wire_base64": "eyJpZCI6InVwbG9hZF8zMjJmYzk0ZDNjOTIzYzljNzZlOWU3ZDkxYWE4NzhiMCIsIm9iamVjdCI6InVwbG9hZCIsImJ5dGVzIjo1MTIsImNyZWF0ZWRfYXQiOjE3OTQyNjcwNzEsImV4cGlyZXNfYXQiOjE3OTQyNzA2NzEsImZpbGVuYW1lIjoicmVwZWF0LmJpbiIsInB1cnBvc2UiOiJldmFscyIsInN0YXR1cyI6ImNvbXBsZXRlZCIsImZpbGUiOnsiaWQiOiJmaWxlXzEwYjg3OTYxNmI2MGQ2YzY1NTZlNGIwZTE2MjhlMmJmIiwib2JqZWN0IjoiZmlsZSIsImJ5dGVzIjo1MTIsImNyZWF0ZWRfYXQiOjE3OTQyNjcwNzIsImZpbGVuYW1lIjoicmVwZWF0LmJpbiIsInB1cnBvc2UiOiJldmFscyIsInN0YXR1cyI6InByb2Nlc3NlZCJ9fQ=="
+    }
+  ],
+  "result": {
+    "id": "upload_322fc94d3c923c9c76e9e7d91aa878b0",
+    "object": "upload",
+    "bytes": 512,
+    "created_at": 1794267071,
+    "expires_at": 1794270671,
+    "filename": "repeat.bin",
+    "purpose": "evals",
+    "status": "completed",
+    "file": {
+      "id": "file_10b879616b60d6c6556e4b0e1628e2bf",
+      "object": "file",
+      "bytes": 512,
+      "created_at": 1794267072,
+      "filename": "repeat.bin",
+      "purpose": "evals",
+      "status": "processed"
+    }
+  },
+  "attempts": 1
+}

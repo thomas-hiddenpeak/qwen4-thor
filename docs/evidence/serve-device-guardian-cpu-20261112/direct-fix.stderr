@@ -1,0 +1,6 @@
+test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe (tools.serve_recovery.test_runtime.RuntimeTests.test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 11.661s
+
+OK

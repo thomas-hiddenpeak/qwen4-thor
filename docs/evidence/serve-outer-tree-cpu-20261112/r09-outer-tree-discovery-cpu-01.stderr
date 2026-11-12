@@ -1,0 +1,6 @@
+test_disappearing_foreign_records_never_produce_signal_candidates (tools.serve_recovery.test_outer_tree.TreeTests.test_disappearing_foreign_records_never_produce_signal_candidates) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

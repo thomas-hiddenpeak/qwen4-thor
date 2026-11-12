@@ -1,0 +1,21 @@
+{
+  "production": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/execution/state/runs/adfbaf41-17e0-4a9c-a213-e10aa9f7d424/controller.json"
+  ],
+  "validation": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/feature_acceptance.py",
+    "controller",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/execution/state/runs/adfbaf41-17e0-4a9c-a213-e10aa9f7d424/controller.json"
+  ]
+}

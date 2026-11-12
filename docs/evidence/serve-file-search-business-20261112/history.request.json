@@ -1,0 +1,23 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "store": true,
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 128,
+    "input": "Using the previous retrieved source, repeat the permitted capacity offload target and memory type. Include SSD and DRAM.",
+    "previous_response_id": "resp_9f1b04e0f8e3ed29c41cb03948d1155c"
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19091/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

@@ -1,0 +1,15 @@
+{
+  "producer": "Pillow 12.3.0",
+  "source": "generate.py",
+  "sha256": {
+    "animated.gif": "3f43ce98e84f468d085c95572ed0fd784688c090131479dab051814cdb343b8a",
+    "local.gif": "5ac301a7226150671e494c243ecbca5025b1d25e47b89c304dfd31a1e28e3f92",
+    "local.png": "b886cc7aaa792ed82ae19c9259571decae49f0de99080f6bc005ca4b78794b24",
+    "offset.gif": "d71cc4d2e0c31a836dac958d4049be86a3b78f3734b6d84ba1f3b3548d2e49b7",
+    "offset.png": "bdb7bea15d3428b1aeb2e2bddfe6e732533709f1c4c9b5cc7832c80774f2edab",
+    "opaque.gif": "d1dafac3bcd764c3db62429fcb8f1df9d7e73b7b146a8f5846151c18f88bbf7b",
+    "opaque.png": "d2082e14ab03c50dfa7c0f4b7529ac2f804152471821247899b126bd1a31f374",
+    "transparent.gif": "823546ec125096070e2f78c7a838c612dbb50f1dabed709fd238721265376897",
+    "transparent.png": "3dba4e25f12ed3403d4dcc234f20e8d1802e51e898a4cd278ec3cb882bf06f34"
+  }
+}

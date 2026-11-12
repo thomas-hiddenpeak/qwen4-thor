@@ -1,0 +1,6 @@
+[PASS] input_snapshot_live_application_roots_retain_and_last_delete_reclaims
+[PASS] input_snapshot_unknown_publish_recovers_original_root_and_hold
+[PASS] input_snapshot_retention_uses_only_private_typed_bindings
+[PASS] object_retention_unknown_owner_protection_and_plan_identity
+[PASS] object_retention_unknown_state_preserves_owner_without_blocking_reads
+5 tests, 5 passed, 0 failed, 0 skipped

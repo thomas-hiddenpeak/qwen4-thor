@@ -1,0 +1,47 @@
+{
+  "status": "PASS_BOUNDED_RETRIEVAL_SERVICE",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 64.81851811800152,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 169
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2673729739557550
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2673767037296569
+      },
+      {
+        "kind": "chats",
+        "label": "native-search",
+        "ordinal": 2,
+        "monotonic_ns": 2673774173006515
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1989317,
+      "start_ticks": 267372973
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+    "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434"
+  },
+  "scenario": "retrieval_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "object": "response.input_tokens",
+    "input_tokens": 91
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/responses/input_tokens",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"reasoning\":{\"effort\":\"none\"},\"input\":\"Repeat the previous answer.\",\"previous_response_id\":\"resp_b9644dcfdfc759bc989c67ae8de457b0\"}"
+    }
+  ]
+}

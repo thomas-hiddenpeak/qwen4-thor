@@ -1,0 +1,17 @@
+{
+  "status": "PASS_STORED_CHAT_DEFAULT_INSTALL",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-storage-20261109/release-01/bundle",
+  "manifest_sha256": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e",
+  "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+  "engine_release_sha256": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
+  "service_release_sha256": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "ledger_preserved": true,
+  "desired": "STOPPED",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-storage-20261109/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "478c7785bfffcae2290041e546c4c8a480eae17584061626ee0ff9369eb74f0f",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "policy_keys_quota_unchanged": true
+}

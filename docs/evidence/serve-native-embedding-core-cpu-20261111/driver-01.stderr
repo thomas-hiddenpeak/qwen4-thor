@@ -1,0 +1,8 @@
+test_exact_synthetic_reference_and_retrieval_pass (tools.native_embedding.test_acceptance.Decision.test_exact_synthetic_reference_and_retrieval_pass) ... ok
+test_normalization_cannot_hide_wrong_hidden_magnitude (tools.native_embedding.test_acceptance.Decision.test_normalization_cannot_hide_wrong_hidden_magnitude) ... ok
+test_numerically_valid_but_wrong_retrieval_is_not_complete (tools.native_embedding.test_acceptance.Decision.test_numerically_valid_but_wrong_retrieval_is_not_complete) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.018s
+
+OK

@@ -8,9 +8,13 @@
 
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/grammar_process.h"
+#include "q4t/server/schema_receipt.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
+
+class TokenSampler;
+struct SampledToken;
 
 #ifdef Q4T_ENABLE_XGRAMMAR
 inline constexpr bool kStructuredDecodingAvailable = true;
@@ -34,13 +38,20 @@ class StructuredDecoder {
                        std::unique_ptr<StructuredDecoder>* out,
                        const GrammarControl& control = {},
                        GrammarFailure* failure = nullptr);
-  // Masks *before* greedy selection and accepts the selected token exactly
-  // once. No fallback to an unmasked token on failure.
+  // Masks before greedy or explicit sampler selection, then accepts the
+  // selected token exactly once. No unmasked fallback on failure. A sampler
+  // requires sample; caller commits its history after successful acceptance.
   // forced_token >= 0 must itself be grammar-allowed and finite. A rejected
   // forced token leaves the matcher unchanged; it is never substituted later.
   Status Select(std::span<const uint16_t> logits, int32_t* token,
-                int32_t forced_token = -1);
+                int32_t forced_token = -1, TokenSampler* sampler = nullptr,
+                SampledToken* sample = nullptr,
+                std::span<const uint8_t> additional_mask = {});
   bool Terminated() const;
+  GrammarFailure Failure() const;
+  // Read after Select/termination on the request's owning thread. Receipt
+  // production never loads optional validation libraries in the parent.
+  const std::vector<SchemaReceipt>& Receipts() const;
 
  private:
   struct Impl;

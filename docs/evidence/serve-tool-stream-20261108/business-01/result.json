@@ -1,0 +1,10 @@
+{
+  "status": "PASS_TOOL_STREAM_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 49
+  },
+  "seconds": 61.92896123928949,
+  "binary_sha256": "945a05ea29dde7726f8d2e244ee710a7297a0dd705b888056e8b7b29a99998b7"
+}

@@ -1,0 +1,5 @@
+{
+  "result": "BUILD_TOOL_RECONFIGURATION_RETRY",
+  "first": "build-on-04.log",
+  "reason": "GNU make loaded its initial target list before CMake regenerated the new no-TLS target; q4t_ingress built successfully, the newly added target is present in the regenerated Makefile. Rerun only the remaining no-TLS/host build targets, no source changes or tests repeated."
+}

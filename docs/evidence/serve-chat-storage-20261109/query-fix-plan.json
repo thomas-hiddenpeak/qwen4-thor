@@ -1,0 +1,12 @@
+{
+  "failure": "SDK nullable metadata encoded as metadata=",
+  "cpu_required": [
+    "chat_storage_query_utf8_and_nullable_metadata",
+    "chat_storage_api_contract_rejects_before_io",
+    "chat_storage_api_query_filters_update_and_delete",
+    "conversation_api_rejects_invalid_wire_contract_before_storage"
+  ],
+  "sdk_remaining": "filtered auto-pagination and original messages only",
+  "reuse": "other three SDK scenarios and native/TLS/nginx: routes, body, authority unchanged",
+  "gpu_starts": 0
+}

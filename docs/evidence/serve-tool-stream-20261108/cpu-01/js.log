@@ -1,0 +1,12 @@
+✔ split tool deltas produce one complete validated batch (54.74658ms)
+✔ whole batch validation rejects a later unknown tool before execution (0.760457ms)
+✔ tool stream provisional fragments cannot complete before terminal and EOF (34.886765ms)
+✔ tool stream later error invalidates all earlier complete fragments (932.886682ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1177.482602

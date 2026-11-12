@@ -1,0 +1,30 @@
+{
+  "status": "PASS_BATCH_RECOVERY_SCAN_AND_ACTIVE_EXPIRY_RECONCILIATION_CPU",
+  "distinct_tests": 23,
+  "first": {
+    "total": 16,
+    "passed": 14,
+    "failed": 2,
+    "seconds": 1.3153673512861133
+  },
+  "repair": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "seconds": 6.372407199814916
+  },
+  "reused": 14,
+  "gpu_starts": 0,
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "engine_sha256": "a5fbf81faf3364a591f51e2e62fd3b8e16a06c06267accd1f1f4dbadcc9b59f8",
+  "host_sha256": "9a73547883a33e03a5261a5b81828c1998bf6f1b3fa1a206a962efe8e8bd7f9b",
+  "anchors": 472,
+  "builds_zero_warning": true,
+  "fixes": [
+    "malformed boot UUID is unknown, never proof of death",
+    "bounded 4-field identity projection for Batch and Responses scans",
+    "only retained-active CAS may preserve original expired retention while reconciling; new/nonactive expired mutations remain denied",
+    "test-only capacity race waits for actual worker entry and complete scan with same assertions"
+  ],
+  "remaining": "actual adapter/client pool/Batch jobs/pending input snapshots/HTTP/native SDK/business/default delivery/all master goals"
+}

@@ -1,0 +1,24 @@
+{
+  "sdk_version": "7.47.0",
+  "content_type": "multipart/form-data; boundary=----formdata-undici-005084217112",
+  "fields": [
+    {
+      "name": "file",
+      "filename": "资料.bin",
+      "bytes_file": "binary.bin"
+    },
+    {
+      "name": "purpose",
+      "value": "user_data"
+    },
+    {
+      "name": "expires_after[anchor]",
+      "value": "created_at"
+    },
+    {
+      "name": "expires_after[seconds]",
+      "value": "3600"
+    }
+  ],
+  "request_bytes": 758
+}

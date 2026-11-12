@@ -1,0 +1,20 @@
+{
+  "id": "chatcmpl-auto-69588aaf008c401846a20461f7fd1723",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "Alpha beta gamma delta."
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 28,
+    "completion_tokens": 6,
+    "total_tokens": 34,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "accepted_prediction_tokens": 5,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "logprobs": null
+}

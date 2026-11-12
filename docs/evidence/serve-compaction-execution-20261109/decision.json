@@ -1,0 +1,19 @@
+{
+  "decision": "PASS_TARGETED_COMPACTION_EXECUTION_CPU",
+  "cpp_distinct": 23,
+  "cpp_executions": 27,
+  "cpp_initial_failures": 2,
+  "python_distinct": 5,
+  "python_executions": 7,
+  "python_initial_failures": 2,
+  "sdk_distinct": 2,
+  "sdk_executions": 4,
+  "schema_values": 57,
+  "gpu": false,
+  "business_validated": false,
+  "default_delivered": false,
+  "engine_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+  "host_sha256": "e0d0435b29bf8e2b7548ee054eceadc4cc3c2886042b240f2b1d1bfe11821e57",
+  "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119",
+  "reuse": "Prior foundation remains accepted except changed item boundary is directly retested; passed unchanged contracts not rerun. Source test memory/counts are CPU fixtures, not a real model or tokenizer acceptance."
+}

@@ -1,0 +1,6 @@
+test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain (tools.serve_recovery.test_resource_launch.LaunchTests.test_actual_native_guardian_and_cpu_roles_enter_bound_service_domain) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.020s
+
+OK

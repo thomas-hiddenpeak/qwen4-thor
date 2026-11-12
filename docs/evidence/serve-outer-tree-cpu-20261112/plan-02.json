@@ -1,0 +1,16 @@
+{
+  "expected_tests": 3,
+  "reason": "Thor lacks /proc/PID/task/TID/children; candidate discovery changed, ECHILD completion unchanged",
+  "tests": [
+    "tools.serve_recovery.test_outer_tree.TreeTests.test_cannot_close_custody_or_claim_foreign_root_while_live",
+    "tools.serve_recovery.test_outer_tree.TreeTests.test_setsid_orphan_is_adopted_reaped_and_not_confused_with_sibling",
+    "tools.serve_recovery.test_outer_tree.TreeTests.test_timeout_retains_custody_until_later_actual_cleanup"
+  ],
+  "first_failure_preserved": true,
+  "fixture_pids_absent": [
+    1812232,
+    1812242,
+    1812245
+  ],
+  "model_starts": 0
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve-thinking-v1",
+  "title": "Q4T thinking budget projection; lexical integer exactness and cross-field arithmetic require native/client checks",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "thinking_token_budget": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "thinking_token_budget"
+            ],
+            "properties": {
+              "thinking_token_budget": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "messages"
+            ],
+            "properties": {
+              "messages": {
+                "type": "array",
+                "minItems": 1
+              },
+              "parse_response": {
+                "const": true
+              }
+            },
+            "not": {
+              "required": [
+                "prompt"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "completion_tokens",
+        "completion_tokens_details",
+        "q4t_thinking_budget"
+      ],
+      "properties": {
+        "completion_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "completion_tokens_details": {
+          "type": "object",
+          "required": [
+            "reasoning_tokens"
+          ],
+          "properties": {
+            "reasoning_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          }
+        },
+        "q4t_thinking_budget": {
+          "type": "object",
+          "required": [
+            "limit",
+            "consumed",
+            "forced_closure_tokens"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "consumed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "forced_closure_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 14
+            }
+          }
+        }
+      }
+    }
+  }
+}

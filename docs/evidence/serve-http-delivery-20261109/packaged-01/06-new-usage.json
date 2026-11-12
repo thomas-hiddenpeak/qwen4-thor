@@ -1,0 +1,11 @@
+{
+  "label": "06-new-usage",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle/bin/q4t",
+    "service",
+    "usage-status",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/packaged-01/state"
+  ],
+  "exit_code": 0
+}

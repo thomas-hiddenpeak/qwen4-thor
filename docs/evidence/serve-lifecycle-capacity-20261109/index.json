@@ -1,0 +1,34 @@
+{
+  "README.md": {
+    "bytes": 450,
+    "sha256": "20fe4a7d41e00e288aae806e4c40dcf315cd3adcbac34c46a24639207f3d1187"
+  },
+  "decision.json": {
+    "bytes": 238,
+    "sha256": "3a958c990851fa93b3343733483b7d374e31f3c535b6f2e1db29cb375f39a93b"
+  },
+  "old-packages.json": {
+    "bytes": 677,
+    "sha256": "d2c6fc7ffc405a0b32e266511ee60a0461aa37c42aeb15159fb91b3925e5053d"
+  },
+  "plan.json": {
+    "bytes": 3406,
+    "sha256": "74e3304ab272f432351f1629d59cb100331044d52783c1a4ca7032e4a70aec86"
+  },
+  "result.json": {
+    "bytes": 135,
+    "sha256": "d100be19844773007743403fce824894aa02e575aaec9e926a847bde36a31fdd"
+  },
+  "run.py": {
+    "bytes": 1429,
+    "sha256": "74b6bf90eb04e791a8120e5dd82dde0416fa5e6df42372cb65a3881bb2a4940f"
+  },
+  "sources.json": {
+    "bytes": 1298,
+    "sha256": "82fd5e5d12ec22c445fc2f90ff78d953fdba18b751ffaca9b35c9732dfd67222"
+  },
+  "unittest.log": {
+    "bytes": 5005,
+    "sha256": "9b2aa7a378e79a2e76489824eb5ef5e94820f6b2cd55e928c35c006b50f8c1d1"
+  }
+}

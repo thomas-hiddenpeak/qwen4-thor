@@ -1,0 +1,18 @@
+{
+  "cmake/HostTestSources.cmake": "36a6b32eab79121cc446c051e06383e68574526eaa31be44115945a710c241de",
+  "include/q4t/service/guardian_quota.h": "eb409d5a22d14fa432da89a9090501a49aa78cd10f57de24b3b8de3405139d93",
+  "src/service/guardian_main.cpp": "87e38886672c0ea05c723dc8b8ce81a25a9a3ffd09ce0ad2a073f7951bc0f764",
+  "tools/serve_recovery/bundle.py": "1711b1dcef61707a2b962fd1534a1de46efb6cb2d99dc54610ce6c2c5621a896",
+  "tools/serve_recovery/control.py": "f19552b9f83e206130ed285b5d7e5fe9776127dc632e6e403622c17a94e736a1",
+  "tools/serve_recovery/controller.py": "c276226dfc700b7a33bfacf51ef04edb2c0f11bd29fb63f707f45482659867f6",
+  "tools/serve_recovery/fixture_controller.py": "1065259d978032034008f5af5028442900e81279e78c7645a14e7c16d4f81a03",
+  "tools/serve_recovery/fixture_model.py": "b7527fac2f8c3909680aaed91460eeab30b43314059174cba30b12a5dde7e06d",
+  "tools/serve_recovery/fixture_production.py": "defce0b6b814166605a8129f589dfff825312b8320f44938b3f28fc816d6c972",
+  "tools/serve_recovery/service.py": "48ccd1febca6d4e5e4b0a35ce33b4790c4ee7325e019c69f35e0ce10b61a7c24",
+  "tools/serve_recovery/test_native_bundle.py": "4e653b54b733d37e5e8408d43b6fd7fb79eb5551de5ed3e0e048e2f5a0b9dc15",
+  "tools/serve_recovery/test_runtime.py": "41e09ee489716da88e7812214b177766b6304cd6b887249009bd2fe23d901363",
+  "tests/guardian_quota_test.cpp": "779a082fc6e82fbcd4f8c01b2bb7ed43a99c5b2693ec57785fbb6cb0e3c4dbc9",
+  "tools/serve_recovery/test_usage_runtime.py": "a30309f433f8245e7e71e5d7458d877080c208d80ee1d75a77d287a1045ff830",
+  "tools/serve_recovery/usage_control.py": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc",
+  "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0"
+}

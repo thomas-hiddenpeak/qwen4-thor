@@ -1,0 +1,36 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "enable_thinking": false,
+  "max_completion_tokens": 256,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Compute 17+25 as JSON."
+    }
+  ],
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "arithmetic",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "integer",
+            "const": 42
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "store": true,
+  "metadata": {
+    "purpose": "qualified-profile-continuity"
+  }
+}

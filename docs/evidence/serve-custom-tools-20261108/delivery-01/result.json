@@ -1,0 +1,17 @@
+{
+  "status": "PASS_CUSTOM_TOOLS_DEFAULT_INSTALL",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/release-01/bundle",
+  "manifest_sha256": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40",
+  "engine_binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+  "engine_release_sha256": "09ffec04d3b9cc438976f5502e7948f3b64ef44103d9cc54a765db329f33d697",
+  "service_release_sha256": "24d1b0dd9795b58aad056ccf195160af6b03d0a01089032703385509fbc7288c",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "ledger_preserved": true,
+  "desired": "STOPPED",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "cb0e5f8479bc136430a07bfd2ab5275a26be458094789412fd5198aea5226061",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "policy_keys_quota_unchanged": true
+}

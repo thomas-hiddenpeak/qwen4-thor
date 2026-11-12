@@ -1,6 +1,7 @@
 """CPU admission contracts: failure isolation, binding, policy and input bounds."""
 import copy
 import hashlib
+import json
 import os
 from pathlib import Path
 import socket
@@ -13,7 +14,35 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import binding, gateway, gateway_config, journal
+from tools.serve_gateway import gateway as frontend
 from tools.serve_service import supervisor
+
+
+class RouteInventoryTests(unittest.TestCase):
+    def test_all_current_public_endpoints_are_declared(self):
+        self.assertEqual(frontend.validate_routes(),
+                         frontend.sha(frontend.API_CONTRACT))
+
+    def test_missing_or_duplicate_application_operation_is_rejected(self):
+        original = frontend.APPLICATION_ROUTES
+        for changed in (original[1:], original+[original[0]]):
+            with self.subTest(duplicate=len(changed) > len(original)):
+                with mock.patch.object(frontend, 'APPLICATION_ROUTES', changed):
+                    with self.assertRaisesRegex(ValueError, 'route inventory'):
+                        frontend.validate_routes()
+
+    def test_new_public_operation_cannot_silently_miss_frontend(self):
+        output = Path(os.environ.get('Q4T_TEST_OUTPUT_DIR', ROOT/'build/route-tests'))
+        output.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=output) as directory:
+            contract = json.loads(frontend.API_CONTRACT.read_text())
+            contract['paths']['/v1/new_public_api'] = {'post': {
+                'operationId': 'cpu_missing_frontend'}}
+            path = Path(directory)/'contract.json'
+            path.write_text(json.dumps(contract))
+            with mock.patch.object(frontend, 'API_CONTRACT', path):
+                with self.assertRaisesRegex(ValueError, 'route inventory'):
+                    frontend.validate_routes()
 
 
 def config(directory, ports=(18181, 18182, 18183), nginx='/usr/sbin/nginx'):

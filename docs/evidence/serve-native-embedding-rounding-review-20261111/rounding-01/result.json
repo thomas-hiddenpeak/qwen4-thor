@@ -1,0 +1,155 @@
+{
+  "status": "CAPTURED",
+  "diagnostic_only": true,
+  "original_gate_accepted": false,
+  "source_sha256": "cbb7f2dc274c2f5592746c0dc6985ca50353efa07376f92cc922b77680a74f69",
+  "rows": [
+    {
+      "case": 1,
+      "layer": 28,
+      "reference": {
+        "min_cosine": 0.9999999999999999,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999999999353694,
+        "max_normalized_absolute_error": 1.136929407020374e-05,
+        "max_relative_l2_error": 1.1369332757940494e-05,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 6,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999999941383255,
+        "max_normalized_absolute_error": 0.00010825232904776091,
+        "max_relative_l2_error": 0.00010829662497369887,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 7,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.999999506593447,
+        "max_normalized_absolute_error": 0.00023888859381586414,
+        "max_relative_l2_error": 0.0009935360095713647,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 8,
+      "reference": {
+        "min_cosine": 0.9999999999999997,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999996805497172,
+        "max_normalized_absolute_error": 0.0004551114922017596,
+        "max_relative_l2_error": 0.0008016059497692637,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 9,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999966605321469,
+        "max_normalized_absolute_error": 0.0016209977713664836,
+        "max_relative_l2_error": 0.0027047243952909136,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 24,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999999349560192,
+        "max_normalized_absolute_error": 8.38135582513222e-05,
+        "max_relative_l2_error": 0.00036070998551354877,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 2,
+      "layer": 28,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9999997297981151,
+        "max_normalized_absolute_error": 0.00036324890421071676,
+        "max_relative_l2_error": 0.000736934809845747,
+        "bit_identical": false
+      },
+      "local_accepted": true
+    },
+    {
+      "case": 3,
+      "layer": 28,
+      "reference": {
+        "min_cosine": 0.9999999999999998,
+        "max_normalized_absolute_error": 0.0,
+        "max_relative_l2_error": 0.0,
+        "bit_identical": true
+      },
+      "native": {
+        "min_cosine": 0.9997446786125853,
+        "max_normalized_absolute_error": 0.021909798111345025,
+        "max_relative_l2_error": 0.023253665592183337,
+        "bit_identical": false
+      },
+      "local_accepted": false
+    }
+  ],
+  "torch": "2.14.0+cpu",
+  "limits": {
+    "seconds": 120,
+    "cpu_layer_forwards": 16,
+    "full_model_starts": 0,
+    "gpu_model_starts": 0,
+    "http_requests": 0
+  },
+  "all_local_layers_accepted": false,
+  "seconds": 0.12437275424599648,
+  "default_unchanged": true
+}

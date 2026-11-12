@@ -20,15 +20,25 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import gateway as files
-from tools.serve_recovery import control, gateway_config, journal, ledger
+from tools.serve_recovery import control, gateway_config, journal, ledger, tls_control
+from tools.serve_recovery import access_control, access_io
 from tools.serve_recovery.gateway import Admission, listener
+
+
+def propagate_native_exit(process, stopped):
+    """Preserve only an actual fatal native wait result for the owned wrapper."""
+    if (os.environ.get('Q4T_VERSION_RECOVERY') == '1' and not stopped and
+            process is not None and process.poll() in (-4,-6,-11)):
+        signal.signal(-process.returncode,signal.SIG_DFL)
+        os.kill(os.getpid(),-process.returncode)
 
 
 class AdmissionSocket:
     """One bounded packet per connection, only from the pinned native child."""
-    def __init__(self, address, clients, decide, child_pid):
+    def __init__(self, address, clients, decide, child_pid, *, include_client=False):
         self.clients, self.decide = frozenset(clients), decide
         self.child_pid = child_pid
+        self.include_client = include_client
         self.selector = selectors.DefaultSelector()
         self.listener = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         try:
@@ -84,7 +94,8 @@ class AdmissionSocket:
                 ledger.require(type(value['version']) is int and value['version'] == 1
                     and type(value['client']) is str and value['client'] in self.clients
                     and value['lane'] in ('data', 'control'), 'invalid native admission')
-                result = self.decide(value['lane'])
+                result = (self.decide(value['lane'], value['client']) if self.include_client
+                          else self.decide(value['lane']))
                 raw = ledger.canonical(result)
                 ledger.require(len(raw) <= 4096, 'oversized native admission reply')
                 sock.send(raw)
@@ -100,7 +111,11 @@ class AdmissionSocket:
 
 def run(config, channel):
     gateway_config.validate(config)
-    ledger.require(config['version'] == 2, 'native ingress configuration required')
+    ledger.require(config['version'] in (2, 3, 4), 'native ingress configuration required')
+    managed_access = config['version'] >= 3
+    if managed_access:
+        ledger.require(config['access']['service_id'] == channel.service_id,
+                       'credential service identity differs from Guardian')
     directory = Path(config['directory'])
     info = directory.lstat()
     ledger.require(stat.S_ISDIR(info.st_mode) and info.st_uid == os.geteuid() and
@@ -125,13 +140,25 @@ def run(config, channel):
         return False
     admission = Admission(config, channel, stopped=tick)
     address = f'q4t-ingress-{os.geteuid()}-{channel.service_id}-{channel.generation}'
+    tls_observation = tls_control.Observation(address) if config['tls'] else None
+    tls_ready = True
+    access_ready = not managed_access
+    reader = publisher = None
     server = AdmissionSocket(address, (c['id'] for c in config['policy']['clients']),
         admission.request, lambda: process.pid if process is not None and
-                                  process.poll() is None else None)
+                                  process.poll() is None else None,
+        include_client=config['version'] == 4)
     try:
-        settings = dict(version=1, parent_pid=os.getpid(),
+        settings = dict(version=2, parent_pid=os.getpid(),
             parent_start_ticks=journal.process_start(os.getpid()), address=address,
-            policy=files.policy(config['policy']))
+            policy=files.policy(config['policy']), tls=config['tls'],
+            tls_lease=f'q4t-tls-{os.geteuid()}-{channel.service_id}')
+        if managed_access:
+            settings.update(version=3, access_deferred=True)
+            value = config['access']
+            reader = access_io.Reader(value['state_directory'], value['service_id'],
+                                      value['state_identity'])
+            publisher = access_control.Publisher(address)
         files.save(runtime/'ingress.json', ledger.canonical(settings)+b'\n')
         process = subprocess.Popen([sys.executable, '-I', '-B',
             str(ROOT/'tools/serve_recovery/cpu_exec.py'), '--parent-pid', str(os.getpid()),
@@ -142,7 +169,8 @@ def run(config, channel):
         end = time.monotonic()+10
         while not tick():
             try:
-                listener(process.pid, '127.0.0.1', config['policy']['listen_port'], digest)
+                listener(process.pid, config['policy']['listen_host'],
+                         config['policy']['listen_port'], digest)
                 break
             except (OSError, ValueError, RuntimeError):
                 ledger.require(time.monotonic() < end, 'native listener startup deadline')
@@ -151,12 +179,39 @@ def run(config, channel):
         channel.event('ready')
         next_update = 0
         while not tick():
+            if reader is not None:
+                reader.step()
+                if reader.available:
+                    publisher.desired(reader.value)
+                observed = publisher.step(process.pid)
+                if observed['live_applied']:
+                    access_ready = True
+                # Missing files or IPC do not invalidate an already installed
+                # native snapshot, signal the model, or replenish quotas.
+            if tls_observation is not None:
+                observed = tls_observation.step(process.pid)
+                if observed is not None:
+                    if tls_ready and not observed:
+                        admission.close()
+                        channel.unbound()
+                    tls_ready = observed
             if time.monotonic() >= next_update:
-                admission.update()
+                if tls_ready and access_ready:
+                    admission.update()
+                    if config['version'] == 4:
+                        server.clients = frozenset(admission.verified_clients)
                 next_update = time.monotonic()+0.25
             server.step()
     finally:
+        if publisher is not None:publisher.close()
+        if reader is not None:
+            end = time.monotonic() + 1
+            while not reader.close() and time.monotonic() < end:time.sleep(.01)
+            # A non-reaped worker retains its inherited claim. A successor
+            # gateway cannot multiply storage workers while it remains stuck.
         server.close()
+        if tls_observation is not None:
+            tls_observation.close()
         admission.close()
         if process is not None and process.poll() is None:
             process.terminate()
@@ -168,6 +223,10 @@ def run(config, channel):
                     process.wait(timeout=1)
                 except subprocess.TimeoutExpired:
                     pass  # Guardian keeps ownership until actual reap.
+        # Preserve a verified native child's fatal signal for the pinned
+        # Guardian-owned wrapper. Intentional shutdown/unknown exits do not
+        # become a version attribution, and all reader/child cleanup precedes it.
+        propagate_native_exit(process,stopped)
         channel.close()
 
 

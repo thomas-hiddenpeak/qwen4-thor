@@ -1,0 +1,15 @@
+{
+  "CMakeLists.txt": "71326992690997e3d5bd72010859e6ff64fc43062eaef8e8b06b3522fa61554b",
+  "cmake/HostTestSources.cmake": "84c62bac2370c4d51d37b786f9f5dfdcd3a18db74d416d4eefbe99e7d0b0cc64",
+  "cmake/ChatProtocolIdentity.cmake": "947d65bba8bf521ebd7b6f5ca5431ba9e26e4ee3888076f993c82b5ae60fe178",
+  "include/q4t/server/file_document.h": "906b7bcfc90bb1fde18464c79075aff6fc1187b053580279b3f867c7e714952f",
+  "src/server/file_document.cpp": "4f3217d596bdcf15206f106da5c0e831124b52fae0c841723293773ce295c6aa",
+  "include/q4t/server/file_document_worker.h": "0786d9a5f18281f563a188211157bc8e8ac6f2b687fe4324cb856db9a16aa85a",
+  "src/server/file_document_worker.cpp": "ebf8a7ea88ee43f31230d40be430512f2419d55831f1fd9fc362fb138594a4e3",
+  "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
+  "include/q4t/server/grammar_process.h": "d48dcfcf97594d86fd917573a592002916c5eb5e1ab60e260e09550a95b76eca",
+  "src/server/grammar_process.cpp": "4b36f06743a3a4285091d76b7bd883a7b51dc847957af4ba897ca2385ce324ce",
+  "src/main.cpp": "90a6c91e704f0f2cddaffe048ddf31a3d987f6ea306f8fdd416f11d7c0f28d47",
+  "tests/server_file_document_worker_test.cpp": "9716d701b790dfe16735d0198b91ed94af6cd946bdce0e6f483e45332c3de90c",
+  "tests/test_main.cpp": "f6c4e05e695b09110239b48b052aabdbd13cef1d89deee70b704bafe12c303c5"
+}

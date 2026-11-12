@@ -1,0 +1,38 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_tokens": 256,
+  "temperature": 0,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u8fd4\u56de\u5305\u542bok\u4e3atrue\u7684JSON\u3002"
+    }
+  ],
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "ready",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "stream_options": {
+    "include_usage": true
+  }
+}

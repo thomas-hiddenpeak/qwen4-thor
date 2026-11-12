@@ -1,0 +1,7 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-retention-20261110/release-01/bundle",
+  "manifest_sha256": "e8e754701d48fb1e4eee22f955b944eb07b62dac11ea25e6732469b32603bee0",
+  "version": 10,
+  "verified": true,
+  "model_actions": false
+}

@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_failed_startup_socket_closes_lease_copy_without_unlocking_owner",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_launcher_never_hands_guardian_a_regular_file_for_diagnostics"
+]

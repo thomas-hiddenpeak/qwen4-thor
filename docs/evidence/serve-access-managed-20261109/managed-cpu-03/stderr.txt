@@ -1,0 +1,8 @@
+test_binding_marker_interruption_and_state_swap_fail_closed (tools.serve_recovery.test_access_management.ManagementTests.test_binding_marker_interruption_and_state_swap_fail_closed) ... ok
+test_cli_propose_apply_query_replay_and_stale_revision (tools.serve_recovery.test_access_management.ManagementTests.test_cli_propose_apply_query_replay_and_stale_revision) ... ok
+test_managed_rotation_live_receipt_and_restart_preserve_revocation (tools.serve_recovery.test_access_management.ManagedIngressTests.test_managed_rotation_live_receipt_and_restart_preserve_revocation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.810s
+
+OK

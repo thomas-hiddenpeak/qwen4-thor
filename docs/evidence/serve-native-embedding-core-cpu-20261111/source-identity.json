@@ -1,0 +1,22 @@
+{
+  "CMakeLists.txt": "4cf345fb43febdc29558b484fdd425084f161f4ccccc5eb1897b83fdaa052cc6",
+  "cmake/ChatProtocolIdentity.cmake": "8d0dab7b46626e111a2e9282776ab0279e96117879e1384ddc45c634a5241e40",
+  "include/q4t/model/embedding_config.h": "398a68d15c9abf83635089d29e8a79d84070046bb17be12f6ebead8cfadc2a4f",
+  "include/q4t/model/embedding_layout.h": "d4c6c8d1d5c86417217b31de116fa68edadcc3136587834f971fbff0df405e35",
+  "include/q4t/model/embedding_model.h": "36a6cc2f5be5ad0c0b471ed0eb6863cda828c9ecacb4f9354b8a9a3f23f502f9",
+  "include/q4t/server/embedding_assets.h": "47c3fd626f0b4ee4b6355461e2c88044c18096e1ac28b0ba03afbda1a2745016",
+  "include/q4t/server/grammar_process.h": "b70b8426c52e5ec94394b9ce39a3fdcd8a1c2037d2d0b9b9128711c973b5a83c",
+  "src/main.cpp": "6d4812cee3841ea9e5486c5701e05544607c21f61c0e4ec8d08c1e0a559d8405",
+  "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
+  "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
+  "src/model/embedding_model.cu": "2548c3050aef2974386a36a2883837e717b260a595e7045c19976cf364d59ab5",
+  "src/server/embedding_assets.cpp": "c4b1507889c3c4c9bb747387e6f108395206db586627d0b604ce97b423ddba81",
+  "src/server/grammar_process.cpp": "ec67a35100a312ac6654e52255803989a7ab88260eb6819f4c2b4544ae870727",
+  "tests/server_embedding_assets_test.cpp": "61b425179e7773d554b2c2db922f95c3e0663beefe8767f146543a7df82267df",
+  "tests/embedding_contract_test.cpp": "11ca88df33a47d93bf97b9c7a9aada205807125aec69d8429f27812471464a7b",
+  "tests/test_main.cpp": "f7c8b7300fb9a63640ca705346911843f2d3ca5cde1b10232f3d4057c0038d53",
+  "tools/native_embedding/model_replay.cpp": "30c668f5c200831803978fbbc8f56b38d0af3aca1c9517bc3fb666e37dd00776",
+  "tools/native_embedding/reference.py": "168bda14cdb09f91db0e5afc6c763c6fb9f8c3436cd756e7465ede2b875cc71a",
+  "tools/native_embedding/acceptance.py": "141302983cfd59237c27f6ce770b5ca3234437620444b680a02981116215a06c",
+  "tools/native_embedding/test_acceptance.py": "b9d77da1b23528015c9501d85d4be2282fbf02bcfb0d70501b4d875684e0e4ba"
+}

@@ -1,0 +1,79 @@
+{
+  "status": "PASS_TARGETED_HOST_FIXTURES_PENDING_REMOTE_CI",
+  "targeted_cpp": 9,
+  "actual_capacity": {
+    "rows": 50000,
+    "turns": 391,
+    "objects": 792
+  },
+  "fault_timeouts_ms": [
+    250,
+    500
+  ],
+  "ordinary_fixture_io_timeout_ms": 2000,
+  "capacity_only_io_timeout_ms": 10000,
+  "production_io_timeout_unchanged": true,
+  "local_sandboxes": {
+    "native": true,
+    "pdf": true,
+    "legacy": true
+  },
+  "remote_sandbox_unresolved": true,
+  "raw_remote_logs": [
+    {
+      "name": "ci-a3f88ec5-full.log",
+      "bytes": 940204,
+      "sha256": "44ba4ed9b75450a0bdcadb5094c97d4ed32d580fca5ccc06ce0c20953bbadc90"
+    },
+    {
+      "name": "ci-a3f88ec5-push-full.log",
+      "bytes": 936091,
+      "sha256": "ff20ed129ebcb5b5f0ff7d9f35a214c4dd7400da0100de105efbbb0b3e421367"
+    }
+  ],
+  "records": [
+    {
+      "name": "ci-batch-remaining-before-01",
+      "seconds": 4.5384492529556155,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-batch-build-02",
+      "seconds": 15.21139812702313,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-batch-remaining-after-02",
+      "seconds": 5.9905078168958426,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-batch-capacity-build-03",
+      "seconds": 15.15928530599922,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-batch-capacity-after-03",
+      "seconds": 60.011282415129244,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-remaining-legacy-probe-build-03",
+      "seconds": 3.7411221298389137,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-remaining-legacy-probe-run-03",
+      "seconds": 0.022486360277980566,
+      "default_unchanged": true
+    },
+    {
+      "name": "ci-remaining-inventory-03",
+      "seconds": 0.18373949639499187,
+      "default_unchanged": true
+    }
+  ],
+  "new_gpu_starts": 0,
+  "default_release": 94,
+  "mainline_merged": false
+}

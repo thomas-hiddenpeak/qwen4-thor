@@ -1,0 +1,10 @@
+data: {"id":"agent-8ba12575c96169f34b685e4d201f3393","object":"chat.completion.chunk","created":1794093591,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-8ba12575c96169f34b685e4d201f3393","object":"chat.completion.chunk","created":1794093591,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"{\n  \"ok\": true\n}"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-8ba12575c96169f34b685e4d201f3393","object":"chat.completion.chunk","created":1794093591,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"agent-8ba12575c96169f34b685e4d201f3393","object":"chat.completion.chunk","created":1794093591,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":18,"completion_tokens":10,"total_tokens":28}}
+
+data: [DONE]
+

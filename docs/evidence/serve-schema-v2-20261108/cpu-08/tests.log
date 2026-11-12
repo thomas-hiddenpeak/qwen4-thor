@@ -1,0 +1,9 @@
+email: 65 external string cases, 0 failures
+hostname: 60 external string cases, 0 failures
+[PASS] schema_string_format_email_corpus
+[PASS] schema_string_format_hostname_corpus
+[PASS] schema_string_idna_missing_and_resource_are_not_invalid_data
+[PASS] schema_string_format_nullable_graph_and_local_checks
+[PASS] schema_string_pattern_and_format_both_apply
+[PASS] schema_grammar_dependency_error_is_not_unsatisfiable_schema
+6 tests, 6 passed, 0 failed, 0 skipped

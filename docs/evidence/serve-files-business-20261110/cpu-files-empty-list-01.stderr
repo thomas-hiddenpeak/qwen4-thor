@@ -1,0 +1,6 @@
+test_actual_empty_file_page_and_all_business_file_outputs (tools.serve_responses.test_files_contract.FilesContractTests.test_actual_empty_file_page_and_all_business_file_outputs) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK

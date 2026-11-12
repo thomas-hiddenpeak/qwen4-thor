@@ -1,0 +1,753 @@
+{
+  "source": "docs/PHASES.md at cc6e9d5b",
+  "count": 63,
+  "tasks": [
+    {
+      "legacy_id": "SRV-08b",
+      "title": "客户端总截止/可选Key、CA、IP",
+      "historical_result": "[限定接受](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)",
+      "tasks": [
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-20",
+      "title": "当前合同与证据入口复核",
+      "historical_result": "静态核对完成",
+      "tasks": [
+        "G00"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-03c",
+      "title": "准备阶段等待可取消",
+      "historical_result": "已限定交付8e9b4ce7",
+      "tasks": [
+        "N05",
+        "R02"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-01",
+      "title": "A：统一请求身份与错误定位",
+      "historical_result": "已交付（限定范围）",
+      "tasks": [
+        "A01",
+        "N06"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-01c",
+      "title": "工具与结构化输入错误位置",
+      "historical_result": "[已限定交付49cc78cd](SERVE_ERROR_PARAMS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A01",
+        "N06"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-01b",
+      "title": "接收拒绝与首次输出失败观测",
+      "historical_result": "已限定交付；ed672a65",
+      "tasks": [
+        "A01",
+        "N06"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02",
+      "title": "A：就绪 / 排空与控制入口保障",
+      "historical_result": "已交付（限定范围）",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-03",
+      "title": "A：HTTP / SSE 合同、心跳与慢读边界",
+      "historical_result": "已交付（限定范围）",
+      "tasks": [
+        "N05",
+        "R02"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-03b",
+      "title": "A回补：严格长payload实际背压",
+      "historical_result": "原轮失败；独立复制候选限定通过",
+      "tasks": [
+        "N05",
+        "R02"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02b",
+      "title": "请求准入与容量适配排队",
+      "historical_result": "已限定交付；c16caf05",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02c",
+      "title": "全局内存观测与提前准入",
+      "historical_result": "已限定交付；84d16983",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02d",
+      "title": "同模型压力恢复与持续混合业务",
+      "historical_result": "已限定接受；[结果](SERVE_PRESSURE_RESULT_2026-11-03.md)",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-04",
+      "title": "B：消息角色与模板兼容",
+      "historical_result": "B1已交付（单一指令槽profile）",
+      "tasks": [
+        "A02"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-05",
+      "title": "B：推理字段、输出隐藏与推理预算",
+      "historical_result": "05a/05b均已限定交付；31ffc41e",
+      "tasks": [
+        "A02",
+        "A07"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-06",
+      "title": "B：文本停止条件",
+      "historical_result": "已限定交付；a3fd64a3",
+      "tasks": [
+        "A01",
+        "A05"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-07",
+      "title": "B：token / 模板预检与有效配置发现",
+      "historical_result": "限定交付，见SRV-07结果",
+      "tasks": [
+        "A01",
+        "A06"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-08",
+      "title": "贯穿 A/B：机器协议与客户端矩阵",
+      "historical_result": "完整输入/JS SDK限定交付，见SRV-08结果",
+      "tasks": [
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-09",
+      "title": "C：结构化输出范围与组合扩展",
+      "historical_result": "条件待办",
+      "tasks": [
+        "Q03"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10",
+      "title": "C：网关与多人资源策略",
+      "historical_result": "[10a本机TLS/双客户端短验限定通过](SERVE_GATEWAY_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10b",
+      "title": "网关托管、依赖身份与有界日志",
+      "historical_result": "[短验限定通过](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10c",
+      "title": "客户端状态隔离与请求预算",
+      "historical_result": "[已限定交付7619966e](SERVE_CLIENT_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10d",
+      "title": "客户端策略托管闭环与长验交接",
+      "historical_result": "[本机短验限定接受](SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10e",
+      "title": "TLS材料与证书有效期生命周期",
+      "historical_result": "[限定接受](SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10f",
+      "title": "TLS状态采集、到期告警与通知接线",
+      "historical_result": "[限定接受](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-10g",
+      "title": "显式客户端来源网段",
+      "historical_result": "[限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11",
+      "title": "C：应用任务恢复与幂等边界",
+      "historical_result": "[真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11g",
+      "title": "持久任务CA交接与连接材料绑定",
+      "historical_result": "[限定接受](SERVE_TASK_TRUST_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11h",
+      "title": "已审核协议升级与任务交接",
+      "historical_result": "[限定接受](SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11i",
+      "title": "当前运维协议版本任务交接",
+      "historical_result": "[限定接受](SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11j",
+      "title": "持久任务全程网络截止时间",
+      "historical_result": "[限定交付](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11k",
+      "title": "当前启动协议持久任务交接",
+      "historical_result": "[限定接受](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11b",
+      "title": "项目任务输出预算与逐轮预检",
+      "historical_result": "[本机限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11c",
+      "title": "任务源码升级与同客户端Key轮换",
+      "historical_result": "[本机限定接受](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11d",
+      "title": "终态归档、永久保键与任务容量",
+      "historical_result": "[本机短验限定接受](SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11e",
+      "title": "一致性备份与单活恢复交接",
+      "historical_result": "[本机短验限定接受](SERVE_TASK_BACKUP_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-11f",
+      "title": "管理命令错误分类与输入合同",
+      "historical_result": "[限定接受](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A08",
+        "A09",
+        "A11",
+        "A12"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12",
+      "title": "本地运营告警与排障运行手册",
+      "historical_result": "[已限定接受](SERVE_OPERATIONS_RESULT_2026-11-03.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12b",
+      "title": "观测端点在连接饱和时的可用性",
+      "historical_result": "[已限定交付](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)；3cd3994d",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12c",
+      "title": "标准告警接收与恢复通知",
+      "historical_result": "[本机短验限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12d",
+      "title": "独立接收端心跳缺失检测",
+      "historical_result": "[本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12e",
+      "title": "跨运行目录准入与私有留存",
+      "historical_result": "[本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12f",
+      "title": "host资源观测与告警接入",
+      "historical_result": "[限定接受](SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12g",
+      "title": "独立本机运维入口与慢头隔离",
+      "historical_result": "[限定交付](SERVE_OPERATIONS_LISTENER_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12h",
+      "title": "独立运维托管生命周期",
+      "historical_result": "[限定接受](SERVE_OPERATIONS_MANAGED_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12i",
+      "title": "声明/运维/host域组合",
+      "historical_result": "[限定接受](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12l",
+      "title": "托管观测绝对期限与停止优先",
+      "historical_result": "[限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12k",
+      "title": "原生启动双监听所有权",
+      "historical_result": "[限定交付](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-12j",
+      "title": "托管双端口启动前检查",
+      "historical_result": "[限定交付](SERVE_PORT_PREFLIGHT_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N06",
+        "R01",
+        "R04"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-13",
+      "title": "较长持续运行与重启/发布回退",
+      "historical_result": "[限定接受并修复交付](SERVE_LIFECYCLE_RESULT_2026-11-03.md)；c597adc3",
+      "tasks": [
+        "R03",
+        "R06",
+        "Q03"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02e",
+      "title": "启动可用内存保护与Thor计量边界",
+      "historical_result": "[已限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)；f69982d5",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02f",
+      "title": "serve设备分配/释放失败传播",
+      "historical_result": "[已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)；40cf6376",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02g",
+      "title": "默认文本启动降级与内部资源错误传播",
+      "historical_result": "[已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；3fd31a21",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02h",
+      "title": "媒体与host异常/错误响应完整性",
+      "historical_result": "[组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02i",
+      "title": "媒体解压与几何资源边界",
+      "historical_result": "[组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02j1",
+      "title": "CUDA申请额度核心",
+      "historical_result": "[核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02j2",
+      "title": "生产CUDA申请额度接线",
+      "historical_result": "[限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-02k",
+      "title": "托管host记账域与进程树保护",
+      "historical_result": "[限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)",
+      "tasks": [
+        "N04",
+        "R08",
+        "R10"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-14",
+      "title": "当前发布的受控服务托管",
+      "historical_result": "[实际限定通过](SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md)",
+      "tasks": [
+        "R05",
+        "N07"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-15",
+      "title": "托管低内存保护退场",
+      "historical_result": "[实际限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)",
+      "tasks": [
+        "R05",
+        "R08"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-16",
+      "title": "独立前台控制器死亡",
+      "historical_result": "[实际限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)",
+      "tasks": [
+        "R09"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-17",
+      "title": "失联后只读运维核验",
+      "historical_result": "[实际限定通过](SERVE_INSPECTION_RESULT_2026-11-03.md)",
+      "tasks": [
+        "N06",
+        "R09"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-18",
+      "title": "当前托管版本短验/长稳交接",
+      "historical_result": "[短验限定通过](SERVE_SOAK_RESULT_2026-11-03.md)",
+      "tasks": [
+        "Q03"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    },
+    {
+      "legacy_id": "SRV-19",
+      "title": "发布声明与冻结合同一致性",
+      "historical_result": "[限定交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)",
+      "tasks": [
+        "A01",
+        "Q02"
+      ],
+      "state": "reconcile_actual_implementation_and_existing_evidence",
+      "note": "Mapping preserves old acceptance; not a new acceptance or blanket reopening."
+    }
+  ]
+}

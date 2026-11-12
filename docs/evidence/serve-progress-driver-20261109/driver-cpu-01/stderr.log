@@ -1,0 +1,22 @@
+test_exception_always_detaches_owned_main (tools.serve_progress.test_pause.PauseTests.test_exception_always_detaches_owned_main) ... ok
+test_only_owned_main_thread_pauses_while_other_thread_runs (tools.serve_progress.test_pause.PauseTests.test_only_owned_main_thread_pauses_while_other_thread_runs) ... ok
+test_stale_birth_and_non_descendant_are_rejected_before_ptrace (tools.serve_progress.test_pause.PauseTests.test_stale_birth_and_non_descendant_are_rejected_before_ptrace) ... ok
+test_validation_identity_is_exact_and_production_rejects_it (tools.serve_progress.test_acceptance.DriverTests.test_validation_identity_is_exact_and_production_rejects_it) ... ERROR
+test_work_is_reserved_before_dispatch_and_never_refunded (tools.serve_progress.test_acceptance.DriverTests.test_work_is_reserved_before_dispatch_and_never_refunded) ... ok
+
+======================================================================
+ERROR: test_validation_identity_is_exact_and_production_rejects_it (tools.serve_progress.test_acceptance.DriverTests.test_validation_identity_is_exact_and_production_rejects_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_progress/test_acceptance.py", line 22, in test_validation_identity_is_exact_and_production_rejects_it
+    package.accepted_release(metadata, decision)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 180, in accepted_release
+    require(type(acceptance) is str and acceptance.startswith('ACCEPT_') and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 57, in require
+    raise RuntimeError(message)
+RuntimeError: explicit accepted release required
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.137s
+
+FAILED (errors=1)

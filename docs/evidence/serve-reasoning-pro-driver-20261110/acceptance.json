@@ -1,0 +1,13 @@
+{
+  "status": "PASS_DRIVER_CPU",
+  "checks": 4,
+  "gpu_starts": 0,
+  "limits": {
+    "starts": 1,
+    "chats": 9,
+    "controls": 2000,
+    "seconds": 900
+  },
+  "maximum_model_steps": 17,
+  "default_changed": false
+}

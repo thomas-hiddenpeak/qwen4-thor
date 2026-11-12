@@ -1,0 +1,23 @@
+test_actual_native_startup_health_and_negative_contract (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_actual_native_startup_health_and_negative_contract) ... ok
+test_config_accepts_new_diagnostics_and_historical_absence (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_config_accepts_new_diagnostics_and_historical_absence) ... ERROR
+
+======================================================================
+ERROR: test_config_accepts_new_diagnostics_and_historical_absence (tools.serve_responses.test_application_startup_contract.ApplicationStartupContract.test_config_accepts_new_diagnostics_and_historical_absence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_application_startup_contract.py", line 42, in test_config_accepts_new_diagnostics_and_historical_absence
+    validator.validate(value)
+  File "/home/rm01/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: 100663296 was expected
+
+Failed validating 'const' in schema['properties']['limits']['properties']['body_bytes']:
+    {'const': 100663296}
+
+On instance['limits']['body_bytes']:
+    16777216
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+FAILED (errors=1)

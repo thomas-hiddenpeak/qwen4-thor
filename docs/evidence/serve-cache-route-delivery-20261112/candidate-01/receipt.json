@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+  "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+  "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+  "recovery_accepted": false
+}

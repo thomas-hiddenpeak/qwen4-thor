@@ -1,0 +1,11 @@
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[  1%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/guardian_quota_test.cpp.o
+[  1%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[ 25%] Built target q4t_guardian_process
+[ 75%] Built target q4t_guardian_journal
+[ 75%] Building CXX object CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o
+[100%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian

@@ -1,0 +1,6 @@
+test_actual_backend_separates_metadata_load_from_weight_upload (tools.serve_responses.test_file_search_acceptance.FileSearchAcceptanceTests.test_actual_backend_separates_metadata_load_from_weight_upload) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+OK

@@ -1,0 +1,6 @@
+test_python_native_file_search_json_and_sse (tools.serve_responses.test_file_search_transport.FileSearchTransportTests.test_python_native_file_search_json_and_sse) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.192s
+
+OK

@@ -1,0 +1,22 @@
+{
+  "js": {
+    "argv": [
+      "node",
+      "--test",
+      "--test-name-pattern=legacy function JSON",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.26408505300059915
+  },
+  "bridge": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_legacy_tools.test_clients.LegacyClients.test_bridge_compares_actual_legacy_tool_plan"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11410875897854567
+  }
+}

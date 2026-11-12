@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "tools.serve_recovery.test_native_access",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "--no-tls-ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "-v",
+    "AccessTests.test_moderations_sdk_tls_auth_cors_and_exact_body"
+  ],
+  "exit_code": 0,
+  "seconds": 2.318475495092571
+}

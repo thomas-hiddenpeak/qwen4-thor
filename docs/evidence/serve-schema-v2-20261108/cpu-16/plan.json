@@ -1,0 +1,13 @@
+{
+  "scope": "worker protocol: binding mismatch, independent dependency/resource failures and per-request restoration, prior compile cancellation/memory/forced-token contracts",
+  "tests": [
+    "schema_worker_binding_mismatch_cannot_bypass_semantic_checks",
+    "schema_worker_dependency_and_resource_errors_recover_per_request",
+    "structured_decoder_json_object_and_thinking",
+    "structured_decoder_cancel_after_compiler_entry_reaps",
+    "structured_decoder_expired_and_memory_failure_are_closed",
+    "structured_decoder_forced_token_intersection_is_transactional"
+  ],
+  "binary_sha256": "ab523b949d34cb7d9a2869ca38e4c278c8755a6350624c83450e772a4a44e579",
+  "timeout_seconds": 90
+}

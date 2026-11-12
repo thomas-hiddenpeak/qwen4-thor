@@ -1,0 +1,22 @@
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:28:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp: In function ‘bool {anonymous}::RecoverBackground(const std::string&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:1632:37: error: invalid initialization of reference of type ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’} from expression of type ‘std::string_view’ {aka ‘std::basic_string_view<char>’}
+ 1632 |   Q4T_CHECK(q4t::io::ParseJson(std::string_view(bytes, length), &value, true) &&
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:137:11: note: in definition of macro ‘Q4T_CHECK’
+  137 |     if (!(cond)) {                                                         \
+      |           ^~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/object_store.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_input.h:9,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_state.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_execution.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/batch_jobs.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:1:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/io/json.h:73:37: note: in passing argument 1 of ‘q4t::Status q4t::io::ParseJson(const std::string&, Json*, bool, const JsonParseLimits&)’
+   73 | Status ParseJson(const std::string& text, Json* out,
+      |                  ~~~~~~~~~~~~~~~~~~~^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1031: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

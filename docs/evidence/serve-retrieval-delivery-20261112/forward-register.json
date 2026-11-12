@@ -1,0 +1,16 @@
+{
+  "label": "forward-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-completion-01/forward-registration.json",
+    "--expected-cycle",
+    "cc18ca32-92eb-49a0-a3fc-348914e57aa5"
+  ],
+  "returncode": 0,
+  "seconds": 3.534989679697901
+}

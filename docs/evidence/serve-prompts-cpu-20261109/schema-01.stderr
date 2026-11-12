@@ -1,0 +1,11 @@
+test_actual_native_resources_response_and_events (tools.serve_responses.test_prompt_contract.PromptContract.test_actual_native_resources_response_and_events) ... ok
+test_closed_mutations_and_revision_bounds (tools.serve_responses.test_prompt_contract.PromptContract.test_closed_mutations_and_revision_bounds) ... ok
+test_official_prompt_reference_typed_variables (tools.serve_responses.test_prompt_contract.PromptContract.test_official_prompt_reference_typed_variables) ... ok
+test_sdk_graph_and_closed_native_requests (tools.serve_responses.test_contract.ApplicationContract.test_sdk_graph_and_closed_native_requests) ... ok
+test_obfuscation_is_closed_to_documented_delta_events (tools.serve_responses.test_contract.ApplicationContract.test_obfuscation_is_closed_to_documented_delta_events) ... ok
+test_openapi_routes_queries_and_no_external_reference_bundle (tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.858s
+
+OK

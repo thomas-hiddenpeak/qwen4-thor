@@ -1,0 +1,7 @@
+{
+  "tests": [
+    "chat_files_webp_preserves_detail_and_legacy_function_controls"
+  ],
+  "reason": "Only the new legacy tool fixture lacked a closed object schema; production binary unchanged; reuse other 15 passes.",
+  "gpu_starts": 0
+}

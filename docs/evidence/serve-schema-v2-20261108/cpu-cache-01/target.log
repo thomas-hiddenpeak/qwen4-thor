@@ -1,0 +1,5 @@
+[PASS] target_session_ranges_preserve_effective_state_and_slot_offsets
+[PASS] target_session_layout_is_not_a_shifted_draft_snapshot
+[PASS] target_session_storage_checks_layout_before_copy_and_publication
+[PASS] target_session_shared_selection_and_incremental_layout_switch
+4 tests, 4 passed, 0 failed, 0 skipped

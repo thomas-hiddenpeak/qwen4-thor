@@ -1,0 +1,171 @@
+{
+  "production": {
+    "fallback": {
+      "controller": [
+        "/usr/bin/python3.12",
+        "-I",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback/source/tools/serve_recovery/controller.py",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/fallback/controller.json"
+      ],
+      "gateway": [
+        "/usr/bin/python3.12",
+        "-I",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/retained-fallback/source/tools/serve_recovery/native_ingress.py",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/fallback/gateway.json"
+      ],
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "controller_sha256": "e7d200550a8f9d19ca67f06959e03025ae374c8dfe1ac29b307b1e839613ddd2",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51",
+        "operations_port": 18163,
+        "port": 18162,
+        "profile_capacities": {
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96"
+      }
+    },
+    "primary": {
+      "controller": [
+        "/usr/bin/python3.12",
+        "-I",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/bundle/source/tools/serve_recovery/controller.py",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/primary/controller.json"
+      ],
+      "gateway": [
+        "/usr/bin/python3.12",
+        "-I",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/bundle/source/tools/serve_recovery/native_ingress.py",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/primary/gateway.json"
+      ],
+      "binding": {
+        "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+        "controller_sha256": "15b518085923ae039afa198907e77baa863ae800ee23d9032d688f3ef2e40725",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51",
+        "operations_port": 18163,
+        "port": 18162,
+        "profile_capacities": {
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+        },
+        "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+        "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96"
+      }
+    }
+  },
+  "validation": {
+    "registry": {
+      "compatibility_sha256": "f2577bb31666889d1bb6727dd80b620d5d0f41e03325342cf78da49cb31fc517",
+      "cycle_id": "e0b33351-936a-471e-82e4-fe4100a56bac",
+      "format": "q4t-version-registry-v1",
+      "payloads": {
+        "fallback": {
+          "binding_sha256": "e73453c8029e08b845ef3bdd522ad857fd3d6d6a02e5fbd6ad873fd1bde23601",
+          "manifest_sha256": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0"
+        },
+        "primary": {
+          "binding_sha256": "60f23b2d8b5c21a3f64e80330d46aaf305b6f245c2d9c4011d787d8eaf959272",
+          "manifest_sha256": "e4bf8dcb0366f7dfe56c910ed77431be025352ef1fa9de1155dbc495c6a01726"
+        }
+      },
+      "qualification_sha256": "1d8b393c191c2c2800cf9f23bc62f22733e7fb9cf16ce9d1925180bc5df3d3a0",
+      "root_manifest_sha256": "e4bf8dcb0366f7dfe56c910ed77431be025352ef1fa9de1155dbc495c6a01726"
+    },
+    "payloads": {
+      "fallback": {
+        "controller": [
+          "/usr/bin/python3",
+          "-I",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py",
+          "controller",
+          "--plan",
+          ".q4t-work/serve-version-recovery-20261112/business-03/plan.json",
+          "--payload",
+          "fallback",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/fallback/controller.json"
+        ],
+        "gateway": [
+          "/usr/bin/python3",
+          "-I",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py",
+          "gateway",
+          "--plan",
+          ".q4t-work/serve-version-recovery-20261112/business-03/plan.json",
+          "--payload",
+          "fallback",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/fallback/gateway.json"
+        ],
+        "binding": {
+          "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+          "controller_sha256": "e7d200550a8f9d19ca67f06959e03025ae374c8dfe1ac29b307b1e839613ddd2",
+          "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51",
+          "operations_port": 18163,
+          "port": 18162,
+          "profile_capacities": {
+            "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+            "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+          },
+          "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+          "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96"
+        }
+      },
+      "primary": {
+        "controller": [
+          "/usr/bin/python3",
+          "-I",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py",
+          "controller",
+          "--plan",
+          ".q4t-work/serve-version-recovery-20261112/business-03/plan.json",
+          "--payload",
+          "primary",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/primary/controller.json"
+        ],
+        "gateway": [
+          "/usr/bin/python3",
+          "-I",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py",
+          "gateway",
+          "--plan",
+          ".q4t-work/serve-version-recovery-20261112/business-03/plan.json",
+          "--payload",
+          "primary",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/execution/state/runs/e05bbd35-a584-4d45-b3a9-bb3453f301fc/primary/gateway.json"
+        ],
+        "binding": {
+          "binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+          "controller_sha256": "15b518085923ae039afa198907e77baa863ae800ee23d9032d688f3ef2e40725",
+          "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51",
+          "operations_port": 18163,
+          "port": 18162,
+          "profile_capacities": {
+            "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1",
+            "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e"
+          },
+          "profile_registry_sha256": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+          "protocol_sha256": "80038d83a82197c60da87455a387e16337a112bc7701064d58b92d59c47def96"
+        }
+      }
+    },
+    "journal": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/bundle/source/tools/serve_recovery/version_journal.py",
+    "cuda_probe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-version-recovery-20261112/business-03/counted-cuda-probe"
+  }
+}

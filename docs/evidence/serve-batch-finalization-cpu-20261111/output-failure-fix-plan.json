@@ -1,0 +1,8 @@
+{
+  "required": 6,
+  "failure": 3,
+  "extended": 2,
+  "direct": 1,
+  "reason": "Read-only original-result access in failed retention window; execution/input access stays blocked and actual expiry denies Row before collection. Reuse other 16 first-round passes whose behavior is unchanged.",
+  "gpu": 0
+}

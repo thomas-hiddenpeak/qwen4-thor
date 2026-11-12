@@ -1,0 +1,11 @@
+test_absent_cold_credential_preserves_wait_without_probe_or_grant (tools.serve_recovery.test_cold_admission.ControllerTests.test_absent_cold_credential_preserves_wait_without_probe_or_grant) ... ok
+test_cold_hint_still_requires_root_permission_before_any_probe (tools.serve_recovery.test_cold_admission.ControllerTests.test_cold_hint_still_requires_root_permission_before_any_probe) ... ok
+test_launcher_absence_and_invalid_descriptor_input_never_manufacture_authority (tools.serve_recovery.test_cold_admission.ControllerTests.test_launcher_absence_and_invalid_descriptor_input_never_manufacture_authority) ... ok
+test_root_permission_runs_actual_cpu_probe_but_not_model_authorization (tools.serve_recovery.test_cold_admission.ControllerTests.test_root_permission_runs_actual_cpu_probe_but_not_model_authorization) ... ok
+test_true_device_failure_is_quarantined_after_authorized_probe (tools.serve_recovery.test_cold_admission.ControllerTests.test_true_device_failure_is_quarantined_after_authorized_probe) ... ok
+test_unreaped_probe_retains_slot_and_does_not_prepare_model (tools.serve_recovery.test_cold_admission.ControllerTests.test_unreaped_probe_retains_slot_and_does_not_prepare_model) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.159s
+
+OK

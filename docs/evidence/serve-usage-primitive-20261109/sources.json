@@ -1,0 +1,16 @@
+{
+  "CMakeLists.txt": "9efd5b1c1d0b1ab735d6fcbf673d46c7268f4ffdc7597c29879d0a96aee31840",
+  "cmake/ChatProtocolIdentity.cmake": "89bd3a6460b85ca168f86df628933ec450c8f892a7e53fec06d4bd14b18fd458",
+  "cmake/HostTestSources.cmake": "56237eba1fe6b875a9b0b88355c8e96d0bbeab764849e2b9e49f42721463b093",
+  "include/q4t/server/client_policy.h": "2ae1c0fcb0e655dc3ea28e29a5c71d211c3fb22b153c0e8c887001b3b90087c9",
+  "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
+  "src/server/chat_generation.cpp": "5b033179f8637d0fe4646980dfb024912bfea121220e1a178ba99bfa000261f1",
+  "src/server/client_policy.cpp": "78e09d73105934adbc213fa24bc3b293237570cd0e6089798658394e6610f99e",
+  "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+  "tests/host/CMakeLists.txt": "033d30ab9b1e650a0b63f476de0e0956318908c93beb6d7bf6edb375fcc1d758",
+  "tests/server_client_policy_test.cpp": "a96a5816ea03737549f8413a7d67fb88b72d279eb0708e6555e707bba2f114a9",
+  "tools/serve_protocol/build_probe.py": "5ca2f5f7c7c6a95d6a443abb0015133b0e99699e082a900b2d8fc937cbcf1794",
+  "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
+  "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
+  "tools/serve_recovery/test_quota_usage_admin.py": "3d3ca41995eafb6e3a7fdeabcebcbfa0adf9059cddd70e8f7024b972d5a9bc90"
+}

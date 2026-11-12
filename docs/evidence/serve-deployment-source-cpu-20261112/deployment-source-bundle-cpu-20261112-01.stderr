@@ -1,0 +1,8 @@
+test_explicit_deployment_repository_keeps_actual_builder_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_explicit_deployment_repository_keeps_actual_builder_sources) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.361s
+
+OK

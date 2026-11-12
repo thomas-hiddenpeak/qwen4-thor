@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/managed-packages-01/retained",
+  "manifest_sha256": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "536f9cae66d843cf3656ae75684811d15b98b2853fa879076fbbbac3ce8d57d8",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

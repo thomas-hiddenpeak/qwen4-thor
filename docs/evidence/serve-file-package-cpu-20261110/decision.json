@@ -1,0 +1,19 @@
+{
+  "status": "PASS_TARGETED_ISOLATED_PACKAGE_XML_CPU",
+  "new_cases": 8,
+  "affected_cases": 2,
+  "tests": 10,
+  "seconds": 0.06388202216476202,
+  "pdf_fixture_default_path_cases": 1,
+  "pdf_core_evidence_reused": true,
+  "build_warnings": 0,
+  "host_sha256": "b7cc5f63189de9096b40ae26f2a82e3d31d4987b484d583a9760e7c6bc923bdb",
+  "candidate_engine_sha256": "f0de5c114608e09f92f6394ae540af91128f3bbc8a7a6879942d9ed767e5e89c",
+  "default_changed": false,
+  "default_engine": "cdb5ced9",
+  "default_state": "STOPPED",
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "office_semantics_pending": true,
+  "all_master_tasks_continue": true
+}

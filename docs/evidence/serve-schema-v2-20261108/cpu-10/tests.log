@@ -1,0 +1,5 @@
+[PASS] schema_graph_official_size_limits_and_reference_depth
+[PASS] schema_graph_long_reference_chains_are_bounded_before_worker
+[PASS] schema_prefix_recursive_ref_const_and_unicode_length
+[PASS] schema_prefix_dependency_and_budget_keep_failure_category
+4 tests, 4 passed, 0 failed, 0 skipped

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_TARGETED_APPLICATION_RETENTION_CPU",
+  "cpp_tests": 28,
+  "driver_tests": 3,
+  "full_correctness": false,
+  "performance_acceptance": false,
+  "binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
+  "protocol_sha256": "6a139e9d7170f4915de61131b811ebb477a6ee8b03c54ce565f79c35f1742004",
+  "initial_failure": "Driver oracle fixture had no encrypted_content; replaced only fixture with accepted real encrypted background response; production unchanged.",
+  "rerun": "Only the failed oracle; 28 C++ and other 2 driver checks reused.",
+  "next": "Bounded actual business <=2 starts/4 generations/900s, then reversible delivery and all remaining master tasks."
+}

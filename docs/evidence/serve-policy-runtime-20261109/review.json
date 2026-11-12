@@ -1,0 +1,8 @@
+{
+  "changes_after_build_snapshot_before_cpu": [
+    "tools/serve_gateway/client_policy.py",
+    "tools/serve_recovery/test_quota_runtime.py"
+  ],
+  "reason": "Python startup-binding projection review rejects bool/float revision rather than accepting equality with integer zero; added direct negative cases before any CPU execution. No compiled source changed.",
+  "compiled_sources_unchanged": true
+}

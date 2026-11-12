@@ -1,0 +1,7 @@
+/usr/bin/ld: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_image_test.cpp.o: in function `q4t_test_fn_file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor()':
+server_file_image_test.cpp:(.text+0x6930): undefined reference to `q4t::vision::ProcessImage(unsigned char const*, unsigned long, q4t::vision::ProcessorConfig const&, q4t::vision::ProcessedImage*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, q4t::vision::ProcessorOptions const&)'
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3845: q4t_host_tests] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

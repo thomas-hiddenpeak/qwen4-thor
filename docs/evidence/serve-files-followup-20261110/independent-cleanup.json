@@ -1,0 +1,12 @@
+{
+  "status": "PASS_INDEPENDENT_CLEANUP",
+  "models_started": 1,
+  "generations": 2,
+  "files_operations": 8,
+  "seconds": 58.85549435997382,
+  "nvml_samples": 57,
+  "all_nvml_ok": true,
+  "processes_gone": true,
+  "ports_released": true,
+  "lock_released": true
+}

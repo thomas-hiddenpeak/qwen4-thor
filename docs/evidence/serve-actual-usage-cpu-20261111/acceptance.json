@@ -1,0 +1,39 @@
+{
+  "decision": "TARGETED_CPU_ACCEPTED",
+  "scope": "drained actual usage propagation and atomic recovery; not model or release acceptance",
+  "base_commit": "da67b9a7",
+  "tests": 26,
+  "new": 9,
+  "extended": 4,
+  "direct": 13,
+  "first": {
+    "passed": 25,
+    "failed": 1,
+    "seconds": 3.6688869749195874
+  },
+  "retry": {
+    "passed": 1,
+    "failed": 0,
+    "seconds": 0.00362576125189662
+  },
+  "failures_retained": [
+    "engine compile used T before declaration; use already tokenized ids size",
+    "CPU fixture expected reservation still present after correct context refund; check 160 before,0 after"
+  ],
+  "production_unchanged_across_cpu": true,
+  "binaries": {
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "842452aaa1c31b0639a29925ca88a3c74d41dcb0c36c579e63cd6fdc7805f1e6",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "ef85970d4895381fe3bfbbd2726b2062a62ce9c9cb77b292252769b5fef54c86",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress": "1b3ea6309fbf142804be7ec5832f4bd234124eecf4f63abd33db08b2da8bb484",
+    "build/q4t": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082"
+  },
+  "source_anchors": 494,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "model_business_pending": true,
+  "next": [
+    "finite permanent finalization capacity failure",
+    "bounded initial auxiliary owner recovery",
+    "actual model business, compatible rollback/default, all master tasks"
+  ]
+}

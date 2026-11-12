@@ -9,6 +9,7 @@ import re
 import stat
 import subprocess
 import sys
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
@@ -17,9 +18,68 @@ VERSION = '1.30.6'
 ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/capabilities': ('GET', 'control'),
           '/v1/chat/completions': ('POST', 'data'),
+          '/v1/completions': ('POST', 'data'),
+          '/v1/moderations': ('POST', 'data'),
+          '/v1/embeddings': ('POST', 'data'),
           '/v1/chat/preflight': ('POST', 'data'),
           '/v1/requests/cancel': ('POST', 'control')}
+DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
+# Application identities are bounded ASCII tokens; backend owns query parsing.
+# These route declarations are shared by standalone and supervised nginx modes.
+APPLICATION_ROUTES = [
+    *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/prompts/{prompt_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('POST', '/v1/prompts/{prompt_id}/versions', 'data'),
+    ('GET', '/v1/prompts/{prompt_id}/versions/{version}', 'control'),
+    *((method, '/v1/batches', 'data') for method in ('GET', 'POST')),
+    ('GET', '/v1/batches/{batch_id}', 'control'),
+    ('POST', '/v1/batches/{batch_id}/cancel', 'control'),
+    *((method, '/v1/vector_stores', 'data') for method in ('GET', 'POST')),
+    *((method, '/v1/vector_stores/{vector_store_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('POST', '/v1/vector_stores/{vector_store_id}/search', 'data'),
+    *((method, '/v1/vector_stores/{vector_store_id}/files', 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/vector_stores/{vector_store_id}/files/{file_id}',
+       'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('GET', '/v1/vector_stores/{vector_store_id}/files/{file_id}/content', 'data'),
+    ('POST', '/v1/vector_stores/{vector_store_id}/file_batches', 'data'),
+    ('GET', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}', 'control'),
+    ('GET', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files', 'data'),
+    ('POST', '/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel', 'control'),
+    ('POST', '/v1/uploads', 'data'),
+    ('POST', '/v1/uploads/{upload_id}/parts', 'data'),
+    ('POST', '/v1/uploads/{upload_id}/complete', 'data'),
+    ('POST', '/v1/uploads/{upload_id}/cancel', 'control'),
+    ('POST', '/v1/files', 'data'),
+    ('GET', '/v1/files', 'data'),
+    *((method, '/v1/files/{file_id}', 'control') for method in ('GET', 'DELETE')),
+    ('GET', '/v1/files/{file_id}/content', 'data'),
+    ('POST', '/v1/responses', 'data'),
+    ('POST', '/v1/responses/compact', 'data'),
+    ('POST', '/v1/responses/input_tokens', 'data'),
+    *((method, '/v1/responses/{response_id}', 'control')
+      for method in ('GET', 'DELETE')),
+    ('POST', '/v1/responses/{response_id}/cancel', 'control'),
+    ('GET', '/v1/responses/{response_id}/input_items', 'control'),
+    ('POST', '/v1/conversations', 'data'),
+    *((method, '/v1/conversations/{conversation_id}', 'data')
+      for method in ('GET', 'POST', 'DELETE')),
+    *((method, '/v1/conversations/{conversation_id}/items', 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/conversations/{conversation_id}/items/{item_id}', 'data')
+      for method in ('GET', 'DELETE')),
+    ('GET', '/v1/chat/completions', 'control'),
+    *((method, '/v1/chat/completions/{completion_id}', 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('GET', '/v1/chat/completions/{completion_id}/messages', 'control')]
 API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
+API_CONTRACT_BYTES = 2*1024**2
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
                 upstream_idle_seconds=1300)
@@ -65,10 +125,11 @@ def parse(raw):
 
 def validate_routes():
     """Check the selected public surface against the runner's API contract."""
-    paths = parse(read_file(API_CONTRACT))['paths']
+    paths = parse(read_file(API_CONTRACT, maximum=API_CONTRACT_BYTES))['paths']
     expected = {'v1_models': 'control', 'v1_capabilities': 'control',
                 'v1_chat_completions': 'data', 'v1_chat_preflight': 'data',
-                'v1_requests_cancel': 'control'}
+                'v1_requests_cancel': 'control', 'v1_completions': 'data',
+                'v1_moderations': 'data', 'v1_embeddings': 'data'}
     seen = {}
     for path, (method, lane) in ROUTES.items():
         operation = paths.get(path, {}).get(method.lower(), {}).get('operationId')
@@ -76,59 +137,195 @@ def validate_routes():
                 operation not in seen, 'route differs from formal API contract')
         seen[operation] = path
     require(seen.keys() == expected.keys(), 'missing public API route')
+    for path, methods in DYNAMIC_ROUTES.items():
+        for method in methods:
+            require(paths.get(path, {}).get(method.lower(), {}).get('operationId')
+                    == 'v1_models_' + method.lower(),
+                    'model detail route differs from formal API contract')
+    for method, path, _ in APPLICATION_ROUTES:
+        require(method.lower() in paths.get(path, {}),
+                'application route differs from formal API contract')
+    declared = [(method, path) for path, (method, _) in ROUTES.items()]
+    declared += [(method, path) for path, methods in DYNAMIC_ROUTES.items()
+                 for method in methods]
+    declared += [(method, path) for method, path, _ in APPLICATION_ROUTES]
+    # Configuration is operations-only. All other published /v1 operations
+    # must also be reachable through the optional external frontend.
+    public = {(method.upper(), path) for path, methods in paths.items()
+              if path.startswith('/v1/') and path != '/v1/config'
+              for method in methods if method in ('get', 'post', 'delete',
+                                                   'put', 'patch')}
+    require(len(declared) == len(set(declared)) and set(declared) == public,
+            'public API route inventory differs from optional frontend')
     return sha(API_CONTRACT)
 
 
-def client_sources(values):
-    """Explicit canonical IPv4 CIDRs, with no implicit local/trusted proxies."""
+def route_map():
+    """Raw URI routes, without decoding or rewriting IDs and query values."""
+    rows = ['    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
+            for path, (method, lane) in ROUTES.items()]
+    rows.extend('    "~^'+method+':/v1/models/[^?#]+$" control;'
+                for method in DYNAMIC_ROUTES['/v1/models/{model}'])
+    # Static POST operations are reserved names, not retrievable Response IDs.
+    rows.append('    "~^(GET|DELETE):/v1/responses/(compact|input_tokens)'
+                '(?:[?][^#]*)?$" "";')
+    for method, path, lane in APPLICATION_ROUTES:
+        pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
+                           else re.escape(part) for part in path.split('/'))
+        rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
+    return '\n'.join(rows)
+
+
+def client_sources(values, *, dual_stack=False):
+    """Canonical CIDRs, with no implicit local/trusted proxies.
+
+    Legacy v1/v2 keep their controlled IPv4 contract. Native v3 also accepts
+    explicit IPv6 and globally routed CIDRs; non-loopback always requires TLS.
+    """
     require(isinstance(values, list) and 1 <= len(values) <= 32,
             'one to 32 allowed_client_cidrs required')
     networks = []
     for value in values:
         require(isinstance(value, str), 'canonical IPv4 source CIDR required')
         try:
-            network = ipaddress.IPv4Network(value, strict=True)
+            network = (ipaddress.ip_network(value, strict=True) if dual_stack else
+                       ipaddress.IPv4Network(value, strict=True))
         except (ValueError, TypeError):
             raise ValueError('canonical IPv4 source CIDR required') from None
         require(str(network) == value, 'canonical IPv4 source CIDR required')
-        require(any(network.subnet_of(parent) for parent in CLIENT_NETWORKS),
+        require(dual_stack or any(network.subnet_of(parent) for parent in CLIENT_NETWORKS),
                 'source CIDRs must be within RFC1918 or IPv4 loopback')
-        require(not any(network.overlaps(prior) for prior in networks),
+        require(not any(network.version == prior.version and network.overlaps(prior)
+                        for prior in networks),
                 'duplicate or overlapping source CIDRs')
         networks.append(network)
     return list(values)
 
 
+def cors_policy(value):
+    if value is None:
+        return None
+    require(type(value) is dict and value.keys() == {'allowed_origins',
+        'allowed_methods', 'allowed_headers', 'exposed_headers',
+        'allow_credentials', 'max_age'}, 'invalid CORS fields')
+    require(type(value['allow_credentials']) is bool and
+            type(value['max_age']) is int and 0 <= value['max_age'] <= 86400,
+            'invalid CORS credentials or cache age')
+    for name in ('allowed_origins', 'allowed_methods', 'allowed_headers', 'exposed_headers'):
+        items = value[name]
+        require(type(items) is list and (1 if name in ('allowed_origins',
+            'allowed_methods') else 0) <= len(items) <= 32 and
+            all(type(item) is str and 1 <= len(item) <= 2048 for item in items) and
+            len(set(items)) == len(items), 'invalid CORS list')
+    for origin in value['allowed_origins']:
+        if origin == '*':
+            require(len(value['allowed_origins']) == 1 and
+                    not value['allow_credentials'], 'wildcard credentialed CORS forbidden')
+        elif origin != 'null':
+            try:
+                uri = urlsplit(origin)
+                port = uri.port
+                valid = (uri.scheme in ('http', 'https') and uri.hostname and
+                    not uri.username and not uri.password and not uri.path and
+                    not uri.query and not uri.fragment and
+                    re.fullmatch(r'https?://[A-Za-z0-9.\-\[\]:]+', origin) and
+                    (port is None or 1 <= port <= 65535))
+            except ValueError:
+                valid = False
+            require(valid, 'exact HTTP(S) origin required')
+    require(set(value['allowed_methods']) <= {'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'},
+            'invalid CORS methods')
+    for name in ('allowed_headers', 'exposed_headers'):
+        for header in value[name]:
+            require(re.fullmatch(r'[a-z0-9-]{1,128}', header) and
+                    not header.startswith('x-q4t-') and
+                    header not in ({'host', 'content-length', 'transfer-encoding',
+                        'connection', 'cookie'} if name == 'allowed_headers' else {'set-cookie'}),
+                    'invalid CORS header')
+    return value
+
+
+def http_policy(value):
+    defaults = dict(keep_alive_requests=100, keep_alive_idle_seconds=5,
+                    request_timeout_seconds=10, path_prefix='', proxy=None)
+    require(type(value) is dict and value.keys() <= defaults.keys(),
+            'invalid native HTTP policy fields')
+    result = dict(defaults, **value)
+    for field, maximum in [('keep_alive_requests', 1000),
+                            ('keep_alive_idle_seconds', 60),
+                            ('request_timeout_seconds', 120)]:
+        require(type(result[field]) is int and 1 <= result[field] <= maximum,
+                'invalid HTTP limit: '+field)
+    prefix = result['path_prefix']
+    require(type(prefix) is str and len(prefix) <= 512 and (not prefix or
+        (re.fullmatch(r'(?:/[a-zA-Z0-9._~-]+)+', prefix) and
+         all(part not in ('.', '..') for part in prefix[1:].split('/')))),
+        'invalid native path prefix')
+    proxy = result['proxy']
+    if proxy is not None:
+        require(type(proxy) is dict and proxy.keys() ==
+                {'trusted_cidrs', 'header', 'allow_stripped_prefix'},
+                'invalid trusted proxy fields')
+        require(proxy['header'] in ('forwarded', 'x-forwarded') and
+                type(proxy['allow_stripped_prefix']) is bool and
+                (not proxy['allow_stripped_prefix'] or bool(prefix)),
+                'invalid trusted proxy protocol/prefix')
+        result['proxy'] = dict(proxy, trusted_cidrs=client_sources(
+            proxy['trusted_cidrs'], dual_stack=True))
+    return result
+
+
 def policy(value):
     require(isinstance(value, dict) and type(value.get('version')) is int and
-            value['version'] in (1, 2), 'unsupported policy version')
+            value['version'] in (1, 2, 3, 4, 5), 'unsupported policy version')
     required = {'version', 'listen_host', 'listen_port', 'server_name',
                 'upstream_port', 'clients'}
-    if value['version'] == 2:
+    if value['version'] >= 2:
         required.add('allowed_client_cidrs')
+    if value['version'] >= 5:
+        required.add('file_body_bytes')
     require(isinstance(value, dict) and required <= value.keys() and
             value.keys() <= required | DEFAULTS.keys() |
-            ({'upstream_operations_port'} if value['version'] == 2 else set()),
+            ({'upstream_operations_port'} if value['version'] >= 2 else set()) |
+            ({'cors'} if value['version'] >= 3 else set()) |
+            ({'http'} if value['version'] >= 4 else set()),
             'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
-    if value['version'] == 2:
-        value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'])
+    if value['version'] >= 2:
+        value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'],
+                                                       dual_stack=value['version'] >= 3)
+    if value['version'] >= 3:
+        value['cors'] = cors_policy(value.get('cors'))
+    if value['version'] >= 4:
+        value['http'] = http_policy(value.get('http', {}))
     require(isinstance(value['listen_host'], str), 'numeric IPv4 string required')
     try:
-        address = ipaddress.IPv4Address(value['listen_host'])
+        address = (ipaddress.ip_address(value['listen_host']) if value['version'] >= 3 else
+                   ipaddress.IPv4Address(value['listen_host']))
     except (ValueError, TypeError):
         raise ValueError('numeric IPv4 listen_host required') from None
-    private = any(address in ipaddress.IPv4Network(net) for net in
+    private = address.version == 4 and any(address in ipaddress.IPv4Network(net) for net in
                   ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'))
-    require(str(address) == '127.0.0.1' or private,
+    require((value['version'] >= 3 and not address.is_unspecified and
+             not address.is_multicast and '%' not in value['listen_host'] and
+             str(address) == value['listen_host']) or str(address) == '127.0.0.1' or private,
             'only explicit loopback or RFC1918 interface is supported')
-    require(isinstance(value['server_name'], str) and re.fullmatch(
+    name = value['server_name']
+    literal_v6 = False
+    if value['version'] >= 3 and isinstance(name, str):
+        try:
+            literal_v6 = str(ipaddress.IPv6Address(name)) == name and '%' not in name
+        except ValueError:
+            pass
+    require(literal_v6 or (isinstance(value['server_name'], str) and re.fullmatch(
         r'(?=.{1,253}$)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?', value['server_name']) and
         all(re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?', part)
-            for part in value['server_name'].split('.')), 'invalid DNS server_name')
+            for part in value['server_name'].split('.'))), 'invalid DNS server_name')
     bounds = dict(listen_port=(1024,65535), upstream_port=(1024,65535),
         per_client_inflight=(1,8), global_inflight=(1,8), per_client_rps=(1,100),
-        burst=(1,128), body_bytes=(1024,16*1024**2), upstream_idle_seconds=(10,3600))
+        burst=(1,128), body_bytes=(1024,96*1024**2), upstream_idle_seconds=(10,3600))
+    if value['version'] >= 5:
+        bounds['file_body_bytes'] = (1024, 512 * 1024**2 + 65536)
     for name, (lower, upper) in bounds.items():
         require(type(value[name]) is int and lower <= value[name] <= upper,
                 'invalid numeric policy: '+name)
@@ -163,6 +360,7 @@ def quoted(path):
 
 def render(value, directory, backend_policy=None):
     p = policy(value)
+    require(p['version'] in (1, 2), 'legacy nginx renderer requires policy v1/v2')
     require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
             'new LAN gateways require policy v2 with allowed_client_cidrs')
     source_map = source_check = source_log = ''
@@ -193,8 +391,7 @@ def render(value, directory, backend_policy=None):
     # anchored case-sensitive regexes. Tokens are restricted to regex literals.
     clients = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+c['id']+';'
                         for c in p['clients'])
-    routes = '\n'.join('    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
-                       for path,(method,lane) in ROUTES.items())
+    routes = route_map()
     # URI/method comparisons use regexes to reject normalization aliases and
     # queries before proxying. Never send Authorization, cookies or forwarded
     # identity headers to the unauthenticated local model listener.

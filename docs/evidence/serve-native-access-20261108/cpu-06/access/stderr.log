@@ -1,0 +1,24 @@
+test_certificate_expiry_unbinds_entrypoint_without_stopping_backend (__main__.AccessTests.test_certificate_expiry_unbinds_entrypoint_without_stopping_backend) ... ok
+test_certificate_rotation_keeps_same_process_and_existing_sse (__main__.AccessTests.test_certificate_rotation_keeps_same_process_and_existing_sse) ... ok
+test_client_crl_rotation_rejects_revoked_client_and_preserves_others (__main__.AccessTests.test_client_crl_rotation_rejects_revoked_client_and_preserves_others) ... ok
+test_cors_errors_preserve_origin_and_never_bypass_authentication (__main__.AccessTests.test_cors_errors_preserve_origin_and_never_bypass_authentication) ... ok
+test_cors_preflight_needs_no_api_key_or_business_admission (__main__.AccessTests.test_cors_preflight_needs_no_api_key_or_business_admission) ... ok
+test_expired_name_and_key_permission_failures_are_bounded_and_isolated (__main__.AccessTests.test_expired_name_and_key_permission_failures_are_bounded_and_isolated) ... ok
+test_invalid_reload_retains_valid_certificate_then_recovers (__main__.AccessTests.test_invalid_reload_retains_valid_certificate_then_recovers) ... ok
+test_ipv6_actual_peer_cidr_plaintext_and_tls (__main__.AccessTests.test_ipv6_actual_peer_cidr_plaintext_and_tls) ... ok
+test_late_encrypted_body_does_not_discard_early_authentication_error (__main__.AccessTests.test_late_encrypted_body_does_not_discard_early_authentication_error) ... ok
+test_mtls_requires_trusted_client_certificate_without_changing_api_auth (__main__.AccessTests.test_mtls_requires_trusted_client_certificate_without_changing_api_auth) ... ok
+test_nonregular_key_cannot_block_reload_or_core_requests (__main__.AccessTests.test_nonregular_key_cannot_block_reload_or_core_requests) ... ok
+test_plaintext_does_not_load_crypto_and_tls_off_build_is_explicit (__main__.AccessTests.test_plaintext_does_not_load_crypto_and_tls_off_build_is_explicit) ... ok
+test_plaintext_or_slow_tls_peers_do_not_block_other_clients (__main__.AccessTests.test_plaintext_or_slow_tls_peers_do_not_block_other_clients) ... ok
+test_private_admin_requires_live_parent_and_exact_native_identity (__main__.AccessTests.test_private_admin_requires_live_parent_and_exact_native_identity) ... ok
+test_python_policy_rejects_credentialed_wildcard_and_unsafe_native_addresses (__main__.AccessTests.test_python_policy_rejects_credentialed_wildcard_and_unsafe_native_addresses) ... ok
+test_reader_lease_prevents_duplicate_io_across_entrypoint_generations (__main__.AccessTests.test_reader_lease_prevents_duplicate_io_across_entrypoint_generations) ... ok
+test_tls_12_and_13_preserve_json_authentication_and_private_binding (__main__.AccessTests.test_tls_12_and_13_preserve_json_authentication_and_private_binding) ... ok
+test_tls_disconnect_cancels_upstream_without_replay (__main__.AccessTests.test_tls_disconnect_cancels_upstream_without_replay) ... ok
+test_wrong_sni_and_invalid_tls_framing_do_not_reach_backend (__main__.AccessTests.test_wrong_sni_and_invalid_tls_framing_do_not_reach_backend) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 34.752s
+
+OK

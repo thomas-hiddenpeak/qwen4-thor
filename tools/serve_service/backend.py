@@ -35,7 +35,7 @@ def main():
     if 'host_resources' in manifest:
         from tools.serve_service import resources
         resources.attach(args.run, manifest['host_resources'])
-    command = pkg.command(control['package'], manifest)
+    command = pkg.command(control['package'], manifest, state_directory=args.run)
     os.execv(command[0], command)
 
 

@@ -1,0 +1,87 @@
+# R04/N06 当前服务原生观测与受保护留存
+
+2026-11-09。R01/R03默认交付后继续总计划。现有host观察器只接受旧
+backend v5/v6且强制nginx；不能作为当前Guardian原生服务的完整观测。
+旧诊断留存仅认识两文件bundle，未保护活动代次、回退依赖或未归档故障。
+
+N07 真实业务暴露的新缺口：模型 READY 而入口独立验证拒绝时，根状态
+缺少具体原因。已补齐固定 `gateway_*` 原因码与模型代次/年龄，经
+`gateway_binding_reason`、`gateway_binding_model_generation`、
+`gateway_binding_age_ms` 返回；原生观察器投影 `gateway_binding`，指标
+为 `q4t_service_gateway_binding_reason{reason="..."}`。容量、身份、观察、
+客户端策略与等待状态分开，不输出原始异常/Key。根 `reason` 保留真实
+保护故障的优先级；入口诊断不改变模型恢复预算，不调用模型重启。
+旧 unbound 消息兼容；新消息过代则忽略，错误诊断仅计辅助投影错误。
+观察器超过 3 秒省略未知诊断，已绑定且业务就绪的 `none` 仍由当前
+就绪状态证明。18 项直接 CPU 通过，见
+[类型诊断证据](evidence/serve-gateway-diagnostics-20261109/README.md)。
+随后 9 条实际封装/发布操作通过，[默认交付](evidence/serve-gateway-diagnostics-delivery-20261109/README.md)
+为包 `1b1acb17`、Guardian `cee1507d`，publication revision 8，STOPPED。
+引擎与协议字节保持，N07 真实业务按源码审查复用，0 新增 GPU/生成。
+本项缺口闭合后继续 A07 及全部剩余总任务。
+
+## 实施顺序
+
+1. 当前原生服务只读采集：固定包/状态目录/service_id，Guardian私有
+   status验证peer、PID birth、可执行文件与namespace；代次变化重新
+   核对，丢失/冲突/超时为UNKNOWN。核心ready与辅助观测质量分别表示。
+2. 项目自身提供metrics/status与有界loopback HTTP exporter；只用已
+   有Python标准库和原生控制通道，无nginx/Prometheus/NVML依赖。
+   采集在独立进程，导出循环不等待磁盘/控制采集；单worker、预算与
+   未回收不增殖，超过新鲜度省略未知数值，不重复发布旧ready为当前。
+   不向模型/Guardian发送停止、探测、生成或重启操作。
+3. 接到发行与service CLI，保留旧包/旧nginx exporter的显式兼容入口；
+   当前默认走原生实现。当前process资源模式不能伪造memcg限制/读数。
+4. 留存按明确登记的拥有对象执行；活动代次、ledger、回退包/依赖与
+   未归档故障受保护。先dry-run，执行复核身份/内容/保护状态；未知
+   对象不自动删除。按年龄/数量/字节限制并报告保护占用的超额。
+
+## 针对性验证
+
+首组冻结8类CPU：当前服务身份与旧代拒绝、UNKNOWN/READY_DEGRADED
+语义、实际私有控制通道、导出新鲜度、HTTP方法/边界/慢连接、独立
+采集器停止与恢复预算、当前已交付STOPPED包只读采集、旧包兼容。
+先实现后一次运行；具体失败只补受影响项。留存另按实际实现冻结
+直接测试。非性能改动不做完整性能/全模型矩阵，不为纯观察器增加
+GPU生成；实际默认服务STOPPED不被观察器启动。业务/进程状态与
+资源未知必须分开，不能为了显示绿色填零。
+
+R04/N06须完成原生接入、保护留存、针对性证据及可回退交付才标记
+完成；然后继续N04及其余全部总任务，不以本阶段停止总目标。
+
+## 留存实现冻结
+
+只处理本service生成的UUID run目录；每份候选都先复制到state外的
+私有归档，逐文件摘要/大小、原目录身份、service_id与清单确认后才
+形成回执。这样成功和故障run都不因年龄自动失去未归档证据。
+活动进程的argv/cwd/exe/FD引用、当前及旧发行/回退依赖均保护；读取
+身份不明时拒绝。新启动总创建新UUID，不能重用已封存的run。
+
+plan只读；apply复核整个计划及全部候选，先持久retirement intent，
+再改名到私有.retired路径、逐项删除。异常中断可以resume，但残留
+必须是原清单的完整子集且归档仍通过校验；未知新增文件、symlink、
+hardlink、篡改回执/来源/保护状态全部拒绝。ledger、应用存储、发行
+包不在候选树中。常规归档/删除只持独立operator锁，不让清理磁盘成为核心依赖。
+旧格式/跨boot迁移例外仅进行一次下述非阻塞锁核验，持锁期间无文件I/O。
+
+直接CPU冻结7类：归档字节/receipt、活动自有子进程引用、未归档与
+回退保护、年龄/数量/实际分配字节及保护超额、旧计划/新数据拒绝、
+真正删除及中断resume、链接/目录替换拒绝。所有变更都限制在本机
+专属CPU夹具；归档本身的长期数量治理仍属于R08资源总边界，不能
+把run目录限额宣传为整个磁盘硬上限。之后随包CLI组合验证与交付。
+
+
+旧格式/跨boot迁移不修改历史run配置。在外部retention目录写独立
+来源/目录/boot绑定证明：持久STOPPED、无活动代次，前后账本/descriptor
+一致；提前打开并验证GPU/Guardian/writer锁，再一起非阻塞获取，
+只取CLOCK_BOOTTIME时间后立即释放。所有读取、摘要、归档、fsync都
+在核心锁外；任一占用或并发账本变化拒绝，不停止服务/探测GPU。
+原生启动始终新建UUID，不会复用已经核验退场的旧run。证明绑定原
+清单摘要，新增文件或下一次boot使其失效；中断残留只从原完整归档
+恢复上下文。旧run与跨bootresume由retention-migrate补齐，不能把
+“旧版本拒绝清理”当任务终点。
+
+随包留存按descriptor固定manifest确定部署仓库，不以包内source目录
+当仓库。历史发行/回退记录允许沿用原权限，仅作保留输入；父回执
+摘要仍强制核对，全部读取摘要冻结进plan，内容变化即拒绝旧计划。
+实际默认133元数据/476保护路径只读通过，未改历史或删除生产run。

@@ -1,0 +1,12 @@
+[
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_ingress_proxy_tests",
+  "--tests",
+  "ingress_http_policy_validation_is_transactional",
+  "ingress_proxy_untrusted_metadata_is_never_authority",
+  "ingress_proxy_chain_stops_at_first_untrusted_source",
+  "ingress_proxy_ipv6_and_port_syntax",
+  "ingress_xforwarded_parallel_lists_and_safe_singletons",
+  "ingress_proxy_invalid_or_ambiguous_chain_never_falls_back",
+  "ingress_prefix_preserves_encoding_and_requires_stripping_authority",
+  "ingress_forwarding_headers_have_bounded_unambiguous_storage"
+]

@@ -1,0 +1,12 @@
+{
+  "generations": 4,
+  "model_steps": 4,
+  "input_counts": 15,
+  "real_tool_executions": 1,
+  "count_matches_actual_usage": true,
+  "exact_encrypted_history": true,
+  "count_mutations": false,
+  "generation_rpm_tpm_unchanged_by_counts": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

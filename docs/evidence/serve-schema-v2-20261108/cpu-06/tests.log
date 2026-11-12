@@ -1,0 +1,13 @@
+[PASS] schema_graph_recursive_ref_anyof_and_required
+[PASS] schema_graph_local_pointer_escaping_and_exact_enum
+[PASS] schema_graph_numeric_intersections_are_exact
+[PASS] schema_graph_const_equality_and_annotations_do_not_fill_values
+[PASS] schema_graph_lengths_count_unicode_and_require_string_checker
+[PASS] schema_graph_official_size_limits_and_reference_depth
+[PASS] schema_grammar_recursive_anyof_and_nullable_alias
+[PASS] schema_grammar_conjunction_ref_bounds_and_multiple_lcm
+[PASS] schema_grammar_optional_object_and_closed_intersections
+[PASS] schema_grammar_enum_exact_values_and_delimiter_strings
+[PASS] schema_grammar_array_bounds_and_nonproductive_alias_branch
+[PASS] schema_grammar_official_property_scale_5000
+12 tests, 12 passed, 0 failed, 0 skipped

@@ -1,0 +1,8 @@
+{
+  "reason": "Review after first26/26CPU and2SDK passes found signed conversion default0 could reinterpret >INT64_MAX as zero. Check finite exact unsigned range before conversion; add1e20 API and durable checkpoint counter regressions. Only2affected rechecks; normal-range existing evidence reused by unchanged arithmetic/source reasoning.",
+  "required": [
+    "batch_usage_normalizes_endpoints_without_inventing_missing_details",
+    "batch_usage_exact_integer_overflow_and_corruption_never_publish_false_total"
+  ],
+  "gpu_starts": 0
+}

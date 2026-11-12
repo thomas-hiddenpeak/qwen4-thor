@@ -1,0 +1,6 @@
+{
+  "method": "GET",
+  "path": "/v1/vector_stores/vs_e5c99af25ff7bfc3d9e6fc59b7597487/files/file_188019cfeb864753e213d5f14a497629/content",
+  "body": null,
+  "owner": "encryption-test"
+}

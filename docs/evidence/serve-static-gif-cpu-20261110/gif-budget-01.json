@@ -1,0 +1,23 @@
+{
+  "host_cases": [
+    "file_image_gif_complete_structure_rejects_animation_and_truncation",
+    "file_image_gif_actual_pixels_match_pillow_palette_and_canvas",
+    "file_image_gif_frozen_files_keep_original_bytes_and_render_mime",
+    "file_image_gif_real_video_and_separate_decode_timing",
+    "file_image_source_contract_preserves_borrowed_payload_and_detail",
+    "file_image_actual_png_jpeg_files_reach_real_cpu_pixel_processor",
+    "file_image_snapshot_restores_deleted_source_and_rechecks_header_and_budgets",
+    "image_detail_actual_pixels_match_independent_pillow_four_modes",
+    "media_transport_base64_and_mime",
+    "media_policy_discovery",
+    "vision_timing_disabled_is_silent",
+    "vision_timing_accumulates_without_mixing_codecs",
+    "vision_timing_stop_is_idempotent_and_unwind_records_partial",
+    "vision_timing_terminal_fields_and_fresh_request"
+  ],
+  "python_timing_tests": 7,
+  "total": 21,
+  "gpu": 0,
+  "network": 0,
+  "scope": "4 actual static GIF/structural/source/snapshot/video tests plus 10 directly affected image/detail/transport/timing tests and 7 offline timing contract tests. WebP and full API/model business remain required."
+}

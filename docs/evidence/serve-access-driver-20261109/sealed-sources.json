@@ -1,0 +1,5 @@
+{
+  "tools/serve_access/prepare.py": "b952f46277c807c3013e44a46ec2ea1bff33b326233af02f72151121e8189490",
+  "tools/serve_access/test_acceptance.py": "68d53d1c3d1f40596ed58aa3a4fd5b82cb6c07f525247cab3025ca7d13f7fe13",
+  "tools/serve_access/acceptance.py": "a3fe63ad57551167662c8d9129443a634a5409e985827c9bab306ece84de1dd6"
+}

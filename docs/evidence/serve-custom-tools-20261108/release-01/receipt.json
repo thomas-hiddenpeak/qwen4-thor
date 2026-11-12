@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/release-01/bundle",
+  "manifest_sha256": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40",
+  "engine_binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+  "recovery_accepted": false
+}

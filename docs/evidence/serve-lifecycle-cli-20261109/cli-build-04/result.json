@@ -1,0 +1,30 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      ".q4t-work/serve-access-20261109/host",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DQ4T_ENABLE_XGRAMMAR=OFF",
+      "-DQ4T_ENABLE_NATIVE_TLS=OFF"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.6011618017219007
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-access-20261109/host",
+      "--target",
+      "q4t_service_cli_fixture",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.28001952124759555
+  }
+]

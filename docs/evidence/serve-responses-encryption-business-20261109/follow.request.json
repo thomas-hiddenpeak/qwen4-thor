@@ -1,0 +1,119 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "max_output_tokens": 384,
+    "reasoning": {
+      "effort": "low"
+    },
+    "input": [
+      {
+        "id": "rs_10d833589449b0a4d51e096be4bfeb85",
+        "type": "reasoning",
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:4a58c96daea10f5c8acef5113774c236:ff57d0a71cf2549caf83c607:7c240a63df7d1c5ff918d7867c21e688:a0480098af05af116a0e6b087865b765a0c5acccd1ad6d67f5ee238bfb63bd772fa4e1cff94d9543c45bc0ed87e079bd1b61e81954a630420d5c761b3620a21740f266837da01df58e57cd5e08db1891c3027124f6e1cc6af1309e72032cd20cb17c66a3853dc2356fe58714e2867c31941f1f0bb6571a6aeca329673b72028709914c7d09858212d75c7d793f7240d9f023d8bda01da7cad61dea0ae56d792adb1b7be874a9dc4da8f02f8bb4fef0aad048b8dbc0949ffa401667f35e4b0ac35467911e4e195b8b674817a2be18b8f59556ef02a333777ccc7f5531b01bd186f924586411ab234f0995fc807da3f060aea081af202e9ec453abec84e4f03011bd7eaa01a1b987ec05af66f7f9b68ba54564aaaee99bf3c954cd9e2c4ee776f6048c5f1e0ee0803850e6b2903047b196bc22dd5721db16ea71fc24b0b8a41f84917ef34ba2a25494fc4c02c66572d6675ebbefe66e0ed89ef358b4e4c503f1eade1f36a5f57c42ff20b15a15024e38dd65953c1854406e6edf86e7862a4f19f0f9d917930d25a3683b133a9947ad91fdbd11ab22fd209b42ae1effa6c65216d2c5e7a48b90d6fd6e77faa46125381dd3f0ed13f59a11548c34fe841f60b23cfcac43b31c09c399537a9fb45a70a61958c4e8f333a882fccd0882e43cb7a7a86eae77120e629fd4b9dd26cd5907b5353e8d2281ebdc89a0ada43bef0a693a3f44d93f6194f95c58d815da7135553c77802815385e7e6c4a3f02dd117915d82d80abe013c70226a2d5826e869886b7da0289f1b9e56daf30df480c4d08b5e95bcfed9f9b06388c7719eed977867ef928dd6a245578dfdb1c6efab3deec0feca2c85d6fb63afcf938dceac1bf906b2e1293"
+      },
+      {
+        "id": "msg_986943d43bb2d8006abc9d4c7159eca5",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "id": "fc_5aa878aeeeae2b37acbbf675d87d864f",
+        "type": "function_call",
+        "call_id": "call_resp_d7c2e17371f53a9a94f49eb30cbd0e0e_0",
+        "name": "read_project_record",
+        "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+        "status": "completed"
+      },
+      {
+        "type": "function_call_output",
+        "call_id": "call_resp_d7c2e17371f53a9a94f49eb30cbd0e0e_0",
+        "output": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 3, \"citation\": \"[docs/MODEL.md:L1-L3]\", \"text\": \"1: # MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\\n2: \\n3: > \u5bf9\u76ee\u6807\u6a21\u578b\u7684\u7406\u89e3\u7b14\u8bb0, \u968f\u7814\u8bfb\u6df1\u5165\u6301\u7eed\u66f4\u65b0\u3002\", \"truncated\": false}, \"total_lines\": 311}"
+      }
+    ],
+    "instructions": "Return the actual first-line document title and its exact source citation from the tool result as JSON. Do not call another tool.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "read_project_record",
+        "description": "Read bounded real project document lines and citation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/MODEL.md"
+            },
+            "start_line": {
+              "type": "integer",
+              "const": 1
+            },
+            "line_count": {
+              "type": "integer",
+              "const": 3
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "none",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "document",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "citation": {
+              "type": "string",
+              "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+            }
+          },
+          "required": [
+            "title",
+            "citation"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "store": false,
+    "include": [
+      "reasoning.encrypted_content"
+    ]
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18985/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

@@ -1,0 +1,14 @@
+test_corrupt_digest_and_incomplete_restore_do_not_consume_startup (tools.serve_recovery.test_quota_usage_admin.UsageAdminTests.test_corrupt_digest_and_incomplete_restore_do_not_consume_startup) ... ok
+test_foreign_same_uid_can_observe_but_cannot_freeze_or_restore (tools.serve_recovery.test_quota_usage_admin.UsageAdminTests.test_foreign_same_uid_can_observe_but_cannot_freeze_or_restore) ... ok
+test_large_snapshot_and_corrupt_payload_are_bounded_and_transactional (tools.serve_recovery.test_quota_usage_admin.UsageAdminTests.test_large_snapshot_and_corrupt_payload_are_bounded_and_transactional) ... ok
+test_live_window_survives_real_process_replacement_and_replay (tools.serve_recovery.test_quota_usage_admin.UsageAdminTests.test_live_window_survives_real_process_replacement_and_replay) ... ok
+test_dead_publisher_cannot_finish_an_inherited_inflight_publication (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_dead_publisher_cannot_finish_an_inherited_inflight_publication) ... ok
+test_foreign_process_is_readonly_with_actual_peer_credentials (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_foreign_process_is_readonly_with_actual_peer_credentials) ... ok
+test_fragmented_update_preserves_usage_and_survives_management_loss (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_fragmented_update_preserves_usage_and_survives_management_loss) ... ok
+test_message_bounds_deadlines_and_ancillary_fds_do_not_leak (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_message_bounds_deadlines_and_ancillary_fds_do_not_leak) ... ok
+test_stale_invalid_capacity_token_and_callback_failures_are_atomic (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_stale_invalid_capacity_token_and_callback_failures_are_atomic) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.931s
+
+OK

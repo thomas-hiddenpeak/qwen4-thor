@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_malformed_capacity_cannot_open_model_or_create_another_generation (__main__.RuntimeTests.test_malformed_capacity_cannot_open_model_or_create_another_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 295, in test_malformed_capacity_cannot_open_model_or_create_another_generation
+    service.wait(lambda s: (service.directory/'capacity-binding.json').exists())
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_runtime.py", line 171, in wait
+    raise AssertionError(f'lifecycle deadline expired: {latest}')
+AssertionError: lifecycle deadline expired: {'version': 1, 'service_id': 'c4e797f1-138f-4573-a619-5656b79e65aa', 'state': 'RECOVERING', 'guardian_pid': 2010468, 'guardian_start_ticks': 267910495, 'controller_pid': None, 'controller_generation': 2, 'controller_start_ticks': 0, 'controller_events': 9, 'controller_health': None, 'version_recovery': None, 'version_exit_observation': None, 'auxiliary_projection_errors': 0, 'controller_health_age_ms': None, 'continuous_model_recovery': True, 'cold_device_recovery': False, 'cold_probe_used': False, 'probe_used_for_generation': 0, 'retry_after_ms': 918, 'journal_pid': 2010469, 'journal_start_ticks': 267910495, 'controller_ready': False, 'model_pid': None, 'model_start_ticks': 0, 'model_generation': 2, 'model_binary_sha256': None, 'model_protocol_sha256': None, 'model_capacity_sha256': None, 'model_ready': False, 'model_admission_open': False, 'business_ready': False, 'gateway_pid': 2010470, 'gateway_start_ticks': 267910506, 'gateway_generation': 1, 'gateway_ready': True, 'gateway_bound_model': 0, 'gateway_recovering': False, 'gateway_binding_reason': 'gateway_verifying', 'gateway_binding_model_generation': 0, 'gateway_binding_age_ms': 9898, 'quota_wait_ms': 0, 'daemon_detached': False, 'recovery_frozen': False, 'stop_requested': False, 'stop_durable': False, 'cleanup_confirmed': False, 'reason': 'gateway_verifying'}
+
+----------------------------------------------------------------------
+Ran 1 test in 10.272s
+
+FAILED (failures=1)

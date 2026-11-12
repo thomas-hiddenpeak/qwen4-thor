@@ -1,0 +1,13 @@
+test_explicit_stop_before_parent_exit_remains_stopped (tools.serve_recovery.test_outer_parent.ParentTests.test_explicit_stop_before_parent_exit_remains_stopped) ... ok
+test_outer_death_preserves_same_healthy_core_and_original_running_intent (tools.serve_recovery.test_outer_parent.ParentTests.test_outer_death_preserves_same_healthy_core_and_original_running_intent) ... ok
+test_signal_while_parent_is_alive_cannot_invent_owner_loss (tools.serve_recovery.test_outer_parent.ParentTests.test_signal_while_parent_is_alive_cannot_invent_owner_loss) ... ok
+test_parent_keeps_actual_instance_after_guardian_stops (tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_keeps_actual_instance_after_guardian_stops) ... ok
+test_parent_close_does_not_unlock_live_guardian_duplicate (tools.serve_recovery.test_outer_instance.InstanceTests.test_parent_close_does_not_unlock_live_guardian_duplicate) ... ok
+test_foreground_parent_death_is_a_durable_stop (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_parent_death_is_a_durable_stop) ... ok
+test_foreground_control_stop_and_lease_release (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release) ... ok
+test_committed_daemon_survives_short_lived_launcher (tools.serve_recovery.test_runtime.RuntimeTests.test_committed_daemon_survives_short_lived_launcher) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 5.222s
+
+OK

@@ -1,0 +1,34 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 64,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "custom",
+      "custom": {
+        "name": "write_note",
+        "format": {
+          "type": "text"
+        },
+        "description": "Propose a complete essay as raw input text."
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "custom",
+    "custom": {
+      "name": "write_note"
+    }
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Call write_note with a detailed essay of at least 1500 words about the history of mathematics. Put the complete essay in raw input, not a summary."
+    }
+  ]
+}

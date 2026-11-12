@@ -1,0 +1,11 @@
+test_native_adapter_refuses_actual_unprivileged_invocation (tools.serve_recovery.test_device_control.ControlTests.test_native_adapter_refuses_actual_unprivileged_invocation) ... ok
+test_native_attachment_survives_adapter_exit_and_adopts_then_removes (tools.serve_recovery.test_device_control.ControlTests.test_native_attachment_survives_adapter_exit_and_adopts_then_removes) ... ok
+test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe (tools.serve_recovery.test_device_control.ControlTests.test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe) ... ok
+test_stuck_owned_adapter_is_killed_and_reaped_without_touching_lease (tools.serve_recovery.test_device_control.ControlTests.test_stuck_owned_adapter_is_killed_and_reaped_without_touching_lease) ... ok
+test_unheld_lease_and_malformed_request_fail_before_attachment (tools.serve_recovery.test_device_control.ControlTests.test_unheld_lease_and_malformed_request_fail_before_attachment) ... ok
+test_wrong_code_or_kernel_identity_never_adopts_another_rule (tools.serve_recovery.test_device_control.ControlTests.test_wrong_code_or_kernel_identity_never_adopts_another_rule) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.087s
+
+OK

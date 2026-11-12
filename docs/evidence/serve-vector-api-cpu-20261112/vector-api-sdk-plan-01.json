@@ -1,0 +1,12 @@
+{
+  "tests": [
+    "test_javascript_sdk_core_management_and_real_index_content",
+    "test_python_sdk_native_tls_prefix_and_client_isolation",
+    "test_pinned_sources_and_unified_management_shapes"
+  ],
+  "request_limit_per_sdk": 100,
+  "timeout_seconds_per_sdk": 45,
+  "gpu_starts": 0,
+  "vector_generation": "explicit CPU math fixture",
+  "source": "pinned official JS7.47.0/Python3.42.1; native handlers/object workers/TLS ingress"
+}

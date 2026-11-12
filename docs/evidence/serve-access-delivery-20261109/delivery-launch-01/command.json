@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-access-20261109/install_delivery.py"
+  ],
+  "script_sha256": "cf6cea06f81dd404441859e38ffba1ac05230281352d9d3b4c415638670d13fd"
+}

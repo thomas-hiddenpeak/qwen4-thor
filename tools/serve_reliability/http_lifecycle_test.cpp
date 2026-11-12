@@ -5,6 +5,7 @@
 #include "q4t/server/device_memory.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/serve_fault.h"
+#include "q4t/ple/ple_embedding.h"
 #include "q4t/test.h"
 #include "contract_access.h"
 
@@ -19,6 +20,7 @@
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
+#include <cstdlib>
 
 namespace {
 // Model-free equivalent of the successful Start listener handoff. Production
@@ -51,6 +53,13 @@ MetadataUploadBatch::~MetadataUploadBatch() = default;
 namespace q4t::vision {
 VisionTower::~VisionTower() = default;  // Always empty in this fake backend.
 }
+namespace q4t::ple {
+runtime::ModelFault PleEmbedding::HealthFault() const noexcept {
+  // The fixture never owns PLE. Fail loudly if a future fixture violates it;
+  // the production health projection itself is compiled and exercised below.
+  std::abort();
+}
+}  // namespace q4t::ple
 namespace q4t::trace {
 RouterCollector::~RouterCollector() = default;
 }  // namespace q4t::trace
@@ -59,7 +68,9 @@ ChatServer::~ChatServer() = default;
 SessionCache::~SessionCache() = default;
 SessionCache::Entry::~Entry() = default;
 void ChatServer::StopScheduler() {}
-void ChatServer::HandleChat(int, const std::string&) { throw std::bad_alloc(); }
+void ChatServer::HandleChat(int, const std::string&, bool) {
+  throw std::bad_alloc();
+}
 void ChatServer::HandlePreflight(int, const std::string&) {
   throw std::bad_alloc();  // Lifecycle fixture only, not planning acceptance.
 }
@@ -70,6 +81,9 @@ void ChatServer::HandleHealth(int fd) {
   detail::SendSimple(fd, 200, "OK", "ok", "text/plain");
 }
 void ChatServer::HandleModels(int fd) { HandleHealth(fd); }
+void ChatServer::HandleModel(int fd, const std::string&, const std::string&) {
+  HandleHealth(fd);
+}
 void ChatServer::HandleCapabilities(int fd) { HandleHealth(fd); }
 void ChatServer::HandleMetrics(int fd) {
   if (observation_failure.exchange(false)) throw std::bad_alloc();
@@ -1044,7 +1058,8 @@ Q4T_TEST(http_operations_route_before_body_authentication_and_cancel_scope) {
   auto control = ServeContractAccess::Register(server, token, "alpha");
   auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
-  for (const char* path : {"/v1/chat/completions", "/v1/chat/preflight",
+  for (const char* path : {"/v1/chat/completions", "/v1/completions",
+                           "/v1/chat/preflight",
                            "/healthz", "/v1/models/", "/unknown"})
     Q4T_CHECK(
         Request(server,
@@ -1336,5 +1351,34 @@ Q4T_TEST(http_startup_descriptor_exhaustion_fails_without_owned_sockets) {
   Q4T_CHECK(status.message().find("public listener socket failed") !=
             std::string::npos);
   restore.Run();
+  return true;
+}
+
+Q4T_TEST(http_completion_body_capacity_and_model_route_dispatch) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  {
+    HttpBodyLease held(ServeContractAccess::BodyBudget(server));
+    Q4T_CHECK(held.Acquire(kAggregateChatBodyBytes));
+    const auto response = Request(server,
+        "POST /v1/completions HTTP/1.1\r\nHost: t\r\n"
+        "Content-Type: application/json\r\nContent-Length: 1\r\n\r\n");
+    Q4T_CHECK(response.starts_with("HTTP/1.1 503 "));
+    Q4T_CHECK(response.find("body_capacity_exhausted") != response.npos);
+  }
+  for (const auto* method : {"GET", "DELETE"}) {
+    const auto response = Request(server, std::string(method) +
+        " /v1/models/org%2Falias HTTP/1.1\r\nHost: t\r\n\r\n");
+    Q4T_CHECK(response.starts_with("HTTP/1.1 200 "));
+  }
+  const auto wrong = Request(server,
+      "POST /v1/models/m HTTP/1.1\r\nHost: t\r\n"
+      "Content-Type: application/json\r\nContent-Length: 0\r\n\r\n");
+  Q4T_CHECK(wrong.starts_with("HTTP/1.1 405 ") &&
+            wrong.find("Allow: GET, DELETE") != wrong.npos);
+  Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() == 0);
   return true;
 }

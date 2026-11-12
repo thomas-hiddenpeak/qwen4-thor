@@ -1,0 +1,12 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/required-cpu.txt"
+    ],
+    "exit_code": 1,
+    "seconds": 0.41422641603276134
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    ".q4t-work/venvs/public-host/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle"
+  ],
+  "exit_code": 1,
+  "seconds": 0.06389645533636212
+}

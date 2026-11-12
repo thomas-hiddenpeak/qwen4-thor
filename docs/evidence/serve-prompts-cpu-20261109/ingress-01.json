@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_prompt_ingress"
+  ],
+  "exit_code": 0,
+  "seconds": 2.1651817481033504,
+  "ingress_sha256": "5d49abe92dfb97465b342f8f2709637253d1e1d2e8d22f65ac4b4ea0eda40c57"
+}

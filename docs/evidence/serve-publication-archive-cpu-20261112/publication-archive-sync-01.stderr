@@ -1,0 +1,6 @@
+test_interruption_after_atomic_rename_resumes_original_plan (tools.serve_recovery.test_publication_archive.ArchiveTests.test_interruption_after_atomic_rename_resumes_original_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.695s
+
+OK

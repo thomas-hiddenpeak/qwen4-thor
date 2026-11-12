@@ -1,0 +1,10 @@
+[q4t][http] trace_id=req-9f2ae16e8b77246ea958464626d26919 status=500 error=internal_error
+[q4t][http] trace_id=req-9f2ae16e8b77246ea958464626d26919 error=internal_error
+[q4t][http] trace_id=req-b7fbb2c5330895c74e108d22512f0a16 status=409 error=explicit_cancel
+[q4t][http] trace_id=req-b7fbb2c5330895c74e108d22512f0a16 status=500 error=internal_error
+[q4t][http] trace_id=req-b7fbb2c5330895c74e108d22512f0a16 error=internal_error
+[q4t][http] trace_id=req-fd64a7a59f3852f415d2e22000a354eb error=host_memory_exhausted
+[q4t][http] trace_id=req-fd64a7a59f3852f415d2e22000a354eb error=host_memory_exhausted
+[q4t][http] trace_id=req-bf0a7dd6ddef4b1415e38e77dacc5da6 error=internal_error
+[q4t][http] trace_id=req-bf0a7dd6ddef4b1415e38e77dacc5da6 error=internal_error
+[q4t][http] trace_id=req-4745e4eadfb08b4d62627a827dde34a9 status=400 error=invalid_request

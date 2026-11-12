@@ -1,0 +1,66 @@
+{
+  "README.md": {
+    "bytes": 1251,
+    "sha256": "21f2c7239591f05ca1a41c090340cb58a9f29e9bf964303021877004a01463f4"
+  },
+  "binaries.json": {
+    "bytes": 353,
+    "sha256": "bf07b073df4dd97490c6a2909555735f72bb2a01c2aa9573d3a1ec46b5609744"
+  },
+  "build-0.log": {
+    "bytes": 198,
+    "sha256": "7d6d7ab99511450004bce96c2f0eab3785025ad94ab3cb37b06081f2112e788d"
+  },
+  "build-1.log": {
+    "bytes": 849,
+    "sha256": "8bf44fe11cb2c8330363414db215a88ef9c1440729634e9a9d37172a01fd7c8a"
+  },
+  "build-2.log": {
+    "bytes": 5463,
+    "sha256": "d4f208551aecbe9e83eff7660572301966679ce82d0831725c1499978d43593d"
+  },
+  "build-commands.json": {
+    "bytes": 439,
+    "sha256": "a0fd44b5af941389bae818103b67d22983ab260eafb402dfbb59e1177d613729"
+  },
+  "build-result.json": {
+    "bytes": 700,
+    "sha256": "730665569b3f0b5267657a025d1d27e9ddc8d541347aebc0a15cdee185e29edf"
+  },
+  "commands.json": {
+    "bytes": 1943,
+    "sha256": "509016a9773d0a65c9c69f7a38cce33edb520cb74b94b3469e86faf764c61fc6"
+  },
+  "decision.json": {
+    "bytes": 434,
+    "sha256": "b5995743ccf20f59cea078f1901f3311dd5d70874bf8339214737ba97ac587d5"
+  },
+  "identity.json": {
+    "bytes": 362,
+    "sha256": "097ffb6e00e25d06b48bd8a275a5417d866a295f25897fe44ee24fc929a965c3"
+  },
+  "required.txt": {
+    "bytes": 128,
+    "sha256": "5f51c16bcd92454696de45f138320642bbdc37aefd077e8e8f37867838cf639c"
+  },
+  "result.json": {
+    "bytes": 120,
+    "sha256": "57d60dd000736ac7683426474f8b7c6916d9ba8ea8c3fcf2478ed947e3c98936"
+  },
+  "selection.json": {
+    "bytes": 1917,
+    "sha256": "15db32bb8cf83af984646eff877c642c3ba7f2979fb08635da31edd1e9a45154"
+  },
+  "sources.json": {
+    "bytes": 1749,
+    "sha256": "ca8891a8482dd664f688ff23a0969730ec32e662ee417ba01e2e5bb2e007bdf8"
+  },
+  "tests-0.log": {
+    "bytes": 181,
+    "sha256": "9e67b34c5626d39aca011f055b691ace1789ded67d46207a0ae43d2445b9f6ab"
+  },
+  "tests-1.log": {
+    "bytes": 4985,
+    "sha256": "2f8fe741af0196faf6f88118461f2d197838b6869a4dd94b865108bdbcbcdaa1"
+  }
+}

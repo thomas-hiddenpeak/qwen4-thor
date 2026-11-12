@@ -1,0 +1,20 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "enable_thinking": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a long comma-separated list of integers starting at 1 and ending at 1000. Continue until all are written."
+    }
+  ],
+  "max_completion_tokens": 64,
+  "store": true,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "metadata": {
+    "stage": "fault"
+  }
+}

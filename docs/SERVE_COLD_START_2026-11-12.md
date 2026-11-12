@@ -1,0 +1,182 @@
+# R07：NVML 失能时的受控冷启动
+
+本任务继续 Serve 总计划。目标是实现独立的设备访问控制与可核验
+冷启动授权，使 NVML 失能时仍能在受控部署中恢复 LLM 服务；
+没有证据时拒绝启动是保护行为，不是本任务的交付终点。
+
+## 实际短验维护交接（待确认，尚未操作）
+
+候选已封装，清单 `d53caf4d32171d241e6d3a9f64d8a24cf0c2f4954801fe99a784a80e34b54915`；独立服务 `7fba916b-5d50-4e7a-8ef6-0acb050aa852`，运行 UID/GID 2002；
+模型仍为当前已验 96577e45，默认 rev64 STOPPED 保持。
+端口 18161—18163 只读/空绑定核对可用，封包耗时 1.483 秒、0 GPU。
+完整预算与来源见 [固定计划](evidence/serve-cold-driver-cpu-20261112/business-plan-v2.json)。
+
+宿主目前有两个既有单元持有设备：
+
+- nvargus-daemon.service：相机守护，主 PID 2750/start_ticks 1679；
+  NVIDIA/DRM/UVM 句柄仍在，active/enabled，Restart=on-failure。
+- jtop.service：监控，主 PID 2731017/start_ticks 198505032，
+  持有 NVIDIA/UVM 句柄的子 PID 2731055/start_ticks 198505066；
+  active/enabled，Restart=on-failure。
+
+两者无 TriggeredBy/Triggers/PartOf，允许手动 stop。
+AGENTS 第 8 条规定验证只停止自己的进程；这两项不是本阶段启动，
+故临时维护需要用户确认，不将已有 GPU 测试许可扩大为任意宿主服务操作。
+
+确认后的固定流程：核对单元身份未变化，临时 stop 这两个单元；
+不改 enable/disable、启动命令或持久配置。确认设备引用已清空后，
+由以下根驱动持有同一租约，安装只允许本验证域的新 GPU 访问规则：
+
+```bash
+sudo -n /usr/bin/python3 -I -B tools/serve_recovery/cold_host_acceptance.py \
+  --plan .q4t-work/serve-device-domain-20261112/business-01/plan-v2.json \
+  --device-state /var/lib/q4t-cold-validation-7fba916b-5d50-4e7a-8ef6-0acb050aa852
+```
+
+运行最多 1 次模型、3 条 Chat（1 自检+实际工具 JSON/SSE 闭环）、
+1 次真实 CUDA 探测、600 秒；内层注入 NVML 超时，外层严格实测。
+结束先 STOPPED/自有进程退出，再撤设备规则并核对租约，恢复先前
+active 的两个服务，核对状态。验证期间域外的新 GPU 访问将被拒绝。
+规则撤除前不启动这些服务；域未空/清理失败保留现场并明确报告，
+不盲目释放所有权或自动重试。根私有额度/资格记录保留供审计，
+不留下恢复脚本、定时器、自动启动项，也不改默认发行。
+
+需要维护确认时继续不依赖此 GPU 验收的 R09 开发；R07 仍待真实
+资格、业务和发行，不标记完成，总目标继续全部任务。
+
+## 本机驱动资格与管理入口（开发中，未交付）
+
+已取得[NVIDIA R39.2.1官方源码包](https://developer.download.nvidia.com/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2)，
+SHA256 `8346f0371649a92c42293b2d4a7bf3d69e4dd1de23009e1463ea910994a81371`；
+其中 unified GPU/display 源码包 SHA256
+`5635273fa55a0145cf9b93a20b00fadd71dfbfd606c4fd7eb06432297b829fd4`，
+源码版本确为595.78。实际安装的四个模块SHA及加载srcversion逐个绑定在
+`device_platform.py`，不是接受任意同名/同版本驱动。源码只在工作目录
+研读，未复制实现进产品，也不新增运行时下载、编译或readelf依赖。
+
+该版本RM、UVM/tools、caps、IMEX、NVLink/switch、modeset与DRM的
+文件操作绑定模块owner；RM dma-buf通过内核导出宏持有owner。
+本机内核头文件的宏同样设置owner。VMA及传递中的文件引用不能靠
+进程FD列表完整枚举，所以不把一次进程扫描当作独占证据。
+[内核dma-buf合同](https://docs.kernel.org/driver-api/dma-buf.html)
+说明导出模块引用的用途；
+[NVIDIA平台驱动说明](https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/Kernel/DisplayConfigurationAndBringUp/NvLoadDisplayModulesService.html)
+区分OpenRM与NVGPU。当前资格拒绝额外NVGPU/GDR计算入口和未知NVIDIA设备号。
+NVHost媒体/PVA/相机接口不是本配置的OpenRM计算入口，仍计入独立资源治理；
+特权管理员/内核修改不属于本设备域隔离可防御的对象。
+
+**无用户持有引用不等于硬件已经空闲。** 595.78的`nvidia_close`在中断
+路径可能延迟清理；因此静态引用只用于确认外部用户设备能力已消失。
+完整宿主过滤持续存在、允许域为空、驱动/boot身份未变后，仍必须由
+Guardian在原预算下执行有界CUDA探测；卡住的探测不增殖，明确设备故障
+保留保护，不卸载驱动或重置GPU。真实初始独占及冷启动业务仍须验证。
+
+统一入口为`q4t service device-domain`，显式root管理，运行进程降权。
+提供`init/init-resume/status/arm/enter/disarm`。root私有目录绑定服务、
+运行UID/GID与原生控制程序SHA；共享GPU锁、内核实际cgroup和bpffs对象
+分别验证。`arm`在BUSY时不安装策略；中断的安装从已持久的规则意图与
+实际固定程序接管，不能凭JSON重建启动权。`enter`重新核对空域和独立
+事实，先持久扣额度再签一次凭据，只移动自身，设置no_new_privs并降权。
+`disarm`使用保留的规则意图撤销自身注册，不调用NVML、不停止其他进程，
+不清空历史额度。管理失败不进入健康模型控制循环。
+
+本组冻结15新+5直接CPU及1次真实宿主只读观察；不安装宿主GPU策略、不
+启动模型。通过后仍须做真实设备域部署/业务与可回退发行，不能据此
+结束R07或总目标。
+
+旧控制器兼容通过`q4t service version-adapt --package <旧包>
+--manifest-sha256 <旧SHA> --output <新目录>`生成独立包，只回补读取
+冷启动提示和允许向Guardian申请探测两处，不把首次启动伪装成连续
+模型恢复。原引擎和其他控制逻辑保持，可组合既有profile表示适配。
+新设备域包要求登记的回退控制器同样具备冷路径；真实v16来源及CPU
+证据见[冷路径适配](evidence/serve-cold-compat-cpu-20261112/README.md)。
+严格GPU驱动新增显式`--inherit-fd`交接根凭据，外层NVML失败仍然
+ENV_ABORT，不借内层监控降级放宽开发验证的独占规则。
+
+## 已确认的缺口
+
+当前控制器在 NVML 不可用且没有本根控制器连续模型租约时返回
+`cold_nvml_unavailable`。Guardian 也只向已有模型代次授权一次探测。
+这个限制保护共享宿主，但没有实现可选独占部署的首次加载。
+
+2026-11-12 只读宿主观察：cgroup v2、6.8.12-1021-tegra，具备 sudo；
+`nvargus-daemon` 和 `jtop` 持有 NVIDIA 设备句柄。本次未停止这些
+服务，未改变设备权限或全局访问控制，也未启动 GPU 测试。
+进程/FD 枚举不是完整独占证明，CUDA 成功也不是独占证明。
+
+## 连续实施边界
+
+1. R07.1：原生 cgroup 设备访问过滤器、绑定身份和真实内核 CPU
+   验证。只在自建测试 cgroup 内限制 `/dev/zero`，不改变真实 GPU
+   或其他服务的访问权；同时明确部署前旧句柄的处理条件。
+2. R07.2：可选部署控制与凭据。完整宿主作用域、只允许受管域，
+   初始化独立证据、boot/设备/内核规则/服务/租约身份必须一致。
+   所有权中断和遗留授权不得被一份 JSON 或管理员声明抹掉。
+   没有满足初始独占条件不得安装一个看似有效的冷启动凭据。
+3. R07.3：接入 Guardian 和控制器，保持原恢复账本与停止优先，
+   每次冷启动有持久预算、一次有界 CUDA 探测；未知、过期、错域、
+   旧根、设备明确故障均不能扩大授权。监控恢复不重启健康模型。
+4. R07.4：针对性 CPU 负控和真实受管冷启动，原则上同租约最多
+   1 次模型启动、3 条 Chat、600 秒；具体驱动冻结后执行。
+   内层 NVML 失能与外层严格 NVML 验证分开，外层失能仍 ENV_ABORT。
+5. R07.5：可回退封包、默认元数据和运行交接，继续 R08—R10、A/Q/G00。
+
+后端实现优先使用 Linux 系统调用和既有控制模块，不新增 libbpf、
+bpftool、nginx 或 systemd 强依赖。管理权限仅用于显式设备隔离部署；
+普通服务保持原启动方式。初始旧上下文、跨域 FD 传递及管理员权限
+不能被简单的设备 open 过滤器假定已经解决，必须在部署合同和
+实证中闭合。实际共享宿主尚未获得新冷启动授权。
+
+## 核心依据
+
+[Linux cgroup v2 设备控制](https://docs.kernel.org/admin-guide/cgroup-v2.html#device-controller)
+在设备访问时执行 BPF，按设备类型、主次设备号和访问方式判定。
+它不能追溯撤销已经打开的文件描述符。只学习公开 UAPI 和行为，
+实现为本项目原创代码；不复制内核 GPL 实现或示例。
+当前能力以实际内核验证为准，不以文档推断代替验收。
+
+进一步依据：[Linux 模块引用与依赖实现](https://github.com/torvalds/linux/blob/v6.8/kernel/module/main.c)
+区分加载器依赖引用与其他持有引用；
+[NVIDIA nvidia 文件操作](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/590.48.01/kernel-open/nvidia/nv.c)
+和 [UVM 文件操作](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/590.48.01/kernel-open/nvidia-uvm/uvm.c)
+绑定模块所有者。当前事实采集据此报告非依赖引用，不能把数字当成
+进程数或完整 GPU 独占证明。实际宿主为 595.78，不能把公开参考版
+源码检查直接冒充该版本的全部硬件资格；完整部署需要结合已保持的
+内核隔离和本机资格。采集器自身不授予任何模型启动权限。
+
+2026-11-12。R07设备过滤器[6真实内核CPU首过](evidence/serve-device-filter-cpu-20261112/README.md)，0.132秒/0GPU；精确域允许/拒绝、保活FD、旧句柄不撤销反例、独立规则与拒绝越域均过，自有域清理完。零警告/548来源锚点；初始独占与持久凭据继续实现，默认rev64保持，全部任务继续。
+
+2026-11-12。R07持久设备规则[7内核CPU首过](evidence/serve-device-custody-cpu-20261112/README.md)，0.131秒/0GPU：实际创建进程退出后规则仍在，重新接管/降权核验通过，篡改规则与他人pin拒绝，全部自有pin/cgroup回收。初始独占证据与业务启动接线继续；默认rev64保持，全部任务继续。
+
+2026-11-12。R07设备初始证据[13项不同CPU接受](evidence/serve-device-inventory-cpu-20261112/README.md)：首12项通过，真实宿主23位srcversion缺陷修复后2项定点补过；宿主现准确报告BUSY（非依赖引用25/1/8），不授权冷启动。整主设备号内核覆盖通过，0GPU/全局策略未改；继续完整部署/启动接线及全部总任务。
+
+## 一次性启动凭据
+
+管理入口须先持久扣减冷启动额度、核对完整独占部署，才签发 root
+所有的封印 memfd 与只读一次性管道。回执绑定服务、包、boot、部署域、
+资格、账本收据、真实 BPF 对象和 GPU 锁 inode；最长 300 秒。正常运行
+Guardian 降权后检查真实 cgroup、持续持有的 flock 和内核规则，再
+消费一次管道。复制 JSON、fork/dup 或更换控制器不能补充次数。
+凭据只授予冷启动预检路径；模型仍要原恢复账本批准与实际有界 CUDA
+探测。发行/消费原语不替代初始独占资格，当前尚未接入真实部署启动。
+
+2026-11-12。R07一次性启动凭据已成组开发：root封印回执/不可补写管道、实际内核规则与持有租约/域/身份/有效期核对，降权继承不扩权。冻结7新+3直接共10项真实内核CPU，覆盖跨进程重放、伪造、过期、失锁和规则替换；0GPU/默认rev64保持。部署资格/持久预算与Guardian接线继续，全部任务继续。
+
+2026-11-12。R07一次性凭据[10内核CPU首过](evidence/serve-device-admission-cpu-20261112/README.md)，0.132秒/0GPU：降权消费、跨进程重放/伪造/失锁/换规则负控均过，自有资源回收，构建零警告。默认rev64保持；继续独占部署、持久预算与Guardian接线，全部总任务继续。
+
+## 持久准入额度
+
+可选设备域的首次预检同样计费，固定最多 3 次/30 分钟、6 次/24 小时，
+相邻至少 30 秒；使用单调逻辑时钟，重启不获得未知停机时间奖励。
+重新资格与停用保留计数。丢失签发回执不能重建同一管道，下一次发行
+须另扣一次额度。账本缺失/损坏或 I/O 无法确认时不产生启动凭据；
+该辅助管理路径不参与已健康模型的运行循环，也不发模型信号。
+复用已有单写者、校验链及原子提交组件；不新增常驻特权代理。
+
+2026-11-12。R07持久冷启动预算已开发：3次/30分钟、6次/日及30秒冷却，先持久扣减再签凭据；失回执不补发，跨boot/重新资格不清空原额度，原模型恢复预算继续独立生效。冻结6策略+5实际root私有账本CPU，含rename/fsync故障、缺失/并发状态；0GPU，继续管理入口与Guardian接线及全部任务。
+
+2026-11-12。R07管理组件[19 CPU首过](evidence/serve-device-management-cpu-20261112/README.md)：11预算/账本、6真实原生IPC与2直接凭据，0GPU/零警告。丢回执不重发、跨boot不清额度、真实降权拒绝与超时自清理通过；自有CPU域/pin回收。默认rev64保持，继续宿主资格、部署CLI与Guardian接线及全部总任务。
+
+2026-11-12。R07接线[12项不同CPU接受](evidence/serve-device-guardian-cpu-20261112/README.md)：首11/12，旧夹具进度遗漏修复后仅补1项通过；原失败保留。真实root局部域凭据拒绝、普通启动器交接、设备故障保护、连续代次探测与停止优先通过。0GPU/默认rev64保持；继续宿主资格、封包/部署入口与真实冷启动及全部任务。
+
+2026-11-12。R07 v17封包[8 CPU首过](evidence/serve-device-package-cpu-20261112/README.md)，0.732秒；当前真实v16包a3bb4ec8只读核验亦过（0.381秒）。隔离目录导入、原生管理程序身份/篡改负控、历史清单及容量保持通过；0GPU/未发布。继续完整宿主资格与设备域管理入口、真实冷启动及全部总任务。

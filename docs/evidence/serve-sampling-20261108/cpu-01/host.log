@@ -1,0 +1,61 @@
+[q4t][http] trace_id=req-b34ec1eda31c648b1547cc6d626a1659 status=503 error=service_unavailable
+[q4t][http] trace_id=req-33939f78699c867455b6008af50c3fee status=503 error=service_unavailable
+[q4t][http] trace_id=req-6f826c86f6f28759644278dd7063655e error=internal_error
+[PASS] client_rate_refund_cancel_failure_and_preterminal_idempotence
+[PASS] client_rate_pending_survives_window_and_settles_in_current_window
+[PASS] client_token_budget_defaults_aliases_and_encoded_boundaries
+[PASS] chat_capabilities_option_contract
+[PASS] server_terminal_handoff_precedes_wire_and_preserves_cleanup
+[PASS] server_sse_heartbeat_serialization_and_nullable_fields
+[PASS] server_utf8_stream_boundaries
+[PASS] server_utf8_malformed_subparts
+[PASS] server_http_stream_error_is_single_terminal
+[PASS] server_http_stream_creation_identity
+[PASS] chat_contract_error_param_is_explicit
+[PASS] chat_contract_greedy_neutral_options
+[PASS] chat_contract_sampling_fields_are_executable
+[PASS] chat_contract_exact_numeric_spelling
+[PASS] chat_response_reasoning_and_prefilled_prefix
+[PASS] chat_response_tools_typed_and_multiple
+[PASS] chat_response_tool_publication_is_atomic
+[PASS] chat_response_rejects_malformed_and_unknown_tools
+[PASS] chat_response_exact_integer_spellings
+[PASS] chat_response_truncation_and_length
+[PASS] chat_response_raw_compatibility_and_no_tools
+[PASS] chat_response_bounds
+[PASS] chat_response_request_definitions_are_checked
+[PASS] chat_response_reasoning_selection_and_hidden_splits
+[PASS] chat_response_hidden_reasoning_preserves_failure_and_limits
+[PASS] sampling_standard_defaults_and_null
+[PASS] sampling_seed_preserves_signed_64_bit_integer
+[PASS] sampling_invalid_fields_have_specific_paths
+[PASS] sampling_penalties_bias_and_accept_history
+[PASS] sampling_masks_forced_tokens_and_nonfinite_logits
+[PASS] sampling_nucleus_zero_and_tiny_temperature
+[PASS] sampling_seed_and_choice_are_independent
+[PASS] sampling_logprobs_are_raw_and_top20_bounded
+[PASS] sampling_response_utf8_token_bytes_survive_delayed_scalars
+[PASS] sampling_response_repaired_bytes_keep_original_probabilities
+[PASS] sampling_response_hidden_reasoning_and_stop_are_not_content
+[PASS] sampling_response_boundary_crossing_token_is_never_retokenized
+[PASS] sampling_response_constrained_deferred_content_keeps_provenance
+[PASS] sampling_choices_share_prompt_and_aggregate_real_usage
+[PASS] sampling_choices_accounting_and_storage_fail_closed
+  CHECK failed: PlanChatBudget(request, config, 8190, &budget, &error) (line 203)
+[FAIL] sampling_plan_token_bias_and_choice_quota_are_not_shape_only
+[PASS] chat_plan_uniform_output_and_null_defaults
+[PASS] chat_plan_explicit_slot_boundaries
+[PASS] chat_plan_output_spelling_and_capacity_cap
+[PASS] chat_plan_cache_configuration_and_seed_boundary
+[PASS] chat_plan_native_template_and_constraint_adapter
+[PASS] chat_plan_encoder_failure_and_raw_identity
+[PASS] chat_preflight_envelope_and_opt_in_preview
+[PASS] chat_config_effective_sources_and_redaction
+[PASS] chat_config_admission_snapshot_and_queue_policy
+[PASS] chat_config_operations_listener_reports_independent_capacity
+[PASS] structured_decoder_json_utf8_and_stop_mask
+[PASS] structured_decoder_sampling_obeys_mask_before_accept
+[PASS] structured_decoder_no_finite_candidate_or_bad_vocabulary
+[PASS] structured_decoder_forced_token_intersection_is_transactional
+[PASS] structured_decoder_budget_closure_and_utf8_share_accepted_tokens
+56 tests, 55 passed, 1 failed, 0 skipped

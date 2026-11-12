@@ -1,0 +1,26 @@
+{
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  "diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0
+  }
+}

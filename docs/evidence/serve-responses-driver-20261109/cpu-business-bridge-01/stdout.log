@@ -1,0 +1,10 @@
+✔ replay oracle rejects gaps, identity changes, premature EOF and Chat DONE (1.975768ms)
+✔ bounded official SDK bridge executes actual state HTTP without retries (159.667299ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 238.443779

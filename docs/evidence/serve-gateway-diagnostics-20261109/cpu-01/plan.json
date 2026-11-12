@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "scope": "N06 typed gateway diagnostics and unchanged recovery boundaries; targeted CPU only",
+  "tests": [
+    "tools.serve_recovery.test_gateway_diagnostics.DiagnosticTests",
+    "tools.serve_recovery.test_gateway_diagnostics.ClassifierTests",
+    "tools.serve_recovery.test_gateway_diagnostics.ProjectionTests",
+    "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_typed_rejection_and_legacy_recovery_preserve_all_role_identities",
+    "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_stale_and_malformed_diagnostics_cannot_recover_or_revoke_current_model",
+    "tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests",
+    "tools.serve_service.test_service.Case.test_memory_unready_is_distinct_from_permanent_backend_failure",
+    "tools.serve_service.test_service.Case.test_effective_mtp_or_admission_mismatch_fails_closed",
+    "tools.serve_host.test_native.NativeTests.test_freshness_does_not_renew_ready_or_turn_missing_values_into_zero",
+    "tools.serve_recovery.test_production.ControllerTests.test_effective_capacity_mismatch_quarantines_without_retry_or_grant"
+  ],
+  "cases": 18,
+  "sources": {
+    "src/service/guardian_main.cpp": "a7c7bacec4f927c42e61bff64f1455af01a3d4129562f4ed7a5f28361ee112ad",
+    "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
+    "tools/serve_recovery/control.py": "b61f15ad2e7e567ba76ba98d4d760009c2dff4bab59bec044a054fc08328de1b",
+    "tools/serve_recovery/gateway.py": "09dd93be270bbd65a1c64a25ad53483561d83da33f10bcbda1e1f88008f09d44",
+    "tools/serve_host/native.py": "6ae03f6c677bae561d5b431c4b0c97cc3a5b85389458b2539226551751b955ba",
+    "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
+    "tools/serve_recovery/test_runtime.py": "629b856a5b9f5c1588f1db30c9c9dbf96c1313b316534a2e6900271e71676800",
+    "tools/serve_recovery/test_gateway_diagnostics.py": "b391f92412131508d93dae2b52f53c1df1486db849533089c571d13482dc7e80"
+  },
+  "model_starts": 0,
+  "chat_requests": 0,
+  "gpu_queries": 0,
+  "default_changed": false
+}

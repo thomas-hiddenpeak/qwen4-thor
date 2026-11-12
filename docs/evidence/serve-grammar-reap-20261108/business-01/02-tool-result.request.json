@@ -1,0 +1,63 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_tokens": 256,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u8c03\u7528read_project_header\u8bfb\u53d6docs/STATUS.md\u3002"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-7a14cd37bbcf47e63598a21b4b7a109d_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_header",
+            "arguments": "{\"path\":\"docs/STATUS.md\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_chatcmpl-auto-7a14cd37bbcf47e63598a21b4b7a109d_0",
+      "content": "{\"ok\": true, \"source\": {\"path\": \"docs/STATUS.md\", \"sha256\": \"aaaa3ee8c2836d55c60194795a8f3d11e38c540303db049bf4d3702aad77e5bd\", \"start_line\": 1, \"end_line\": 3, \"citation\": \"[docs/STATUS.md:L1-L3]\", \"text\": \"1: # \u5f53\u524d\u72b6\u6001\\n2: \\n3: \u66f4\u65b0\uff1a2026-11-08\u3002\u4ee3\u7801\u662f\u5b9e\u73b0\u4e8b\u5b9e\u6765\u6e90\uff0c\u9a8c\u6536\u4ee5[EVALUATION.md](EVALUATION.md)\u4e3a\u51c6\u3002\", \"truncated\": false}, \"total_lines\": 3235}"
+    },
+    {
+      "role": "user",
+      "content": "\u53ea\u8fd4\u56de\u6587\u6863\u7b2c\u4e00\u884c\u7684\u6807\u9898\uff0c\u5e76\u539f\u6837\u9644\u4e0a\u5de5\u5177\u7ed9\u51fa\u7684\u5f15\u7528\uff0c\u4e0d\u518d\u8c03\u7528\u5de5\u5177\u3002"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_header",
+        "description": "Read the first three lines of a real project document.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/STATUS.md"
+              ]
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "none",
+  "parallel_tool_calls": false
+}

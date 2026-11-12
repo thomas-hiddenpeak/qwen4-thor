@@ -1,0 +1,5 @@
+{
+  "format_fixtures": "tests/fixtures/file_adapters/sources.json",
+  "google_export_contract": "https://developers.google.com/workspace/drive/api/guides/manage-downloads",
+  "google_official_sample": "https://developers.google.com/workspace/sheets/api/quickstart/python"
+}

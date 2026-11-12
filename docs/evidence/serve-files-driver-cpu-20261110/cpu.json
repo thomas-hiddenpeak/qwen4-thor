@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=.q4t-work/serve-files-20261110/driver-cpu-01",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_files_acceptance"
+  ],
+  "exit_code": 0,
+  "seconds": 2.0667077880352736
+}

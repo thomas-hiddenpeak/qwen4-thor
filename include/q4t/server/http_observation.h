@@ -29,6 +29,7 @@ enum class HttpReceiveFailure {
   kUnexpectedBody,
   kRoute,
   kException,
+  kBodyConsumer,
   kCount
 };
 inline constexpr std::array kHttpReceiveReasons = {"none",
@@ -49,7 +50,8 @@ inline constexpr std::array kHttpReceiveReasons = {"none",
                                                    "query",
                                                    "unexpected_body",
                                                    "route",
-                                                   "exception"};
+                                                   "exception",
+                                                   "body_consumer"};
 static_assert(kHttpReceiveReasons.size() ==
               static_cast<size_t>(HttpReceiveFailure::kCount));
 

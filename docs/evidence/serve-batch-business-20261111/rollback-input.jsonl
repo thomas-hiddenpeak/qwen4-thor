@@ -1,0 +1,1 @@
+{"custom_id":"rollback-0","method":"POST","url":"/v1/chat/completions","body":{"model":"qwen3.8-flash-next","temperature":0,"enable_thinking":false,"messages":[{"role":"user","content":"Compute 17 + 25. Reply only with the decimal number."}],"max_completion_tokens":64}}

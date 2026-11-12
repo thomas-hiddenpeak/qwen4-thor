@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_profile_policy",
+    "tools.serve_recovery.test_profile_memory",
+    "tools.serve_recovery.test_profile_store",
+    "tools.serve_recovery.test_profile_io",
+    "tools.serve_recovery.test_usage_io.UsageIoTests.test_independent_worker_large_seal_replacement_and_durable_confirmation"
+  ],
+  "exit_code": 0,
+  "seconds": 5.391192241106182,
+  "protected_before": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9038ea9f7809bbf5a2d22424b187f2c6fadf51c3fe763eb440488b5670382677/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9038ea9f7809bbf5a2d22424b187f2c6fadf51c3fe763eb440488b5670382677/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9038ea9f7809bbf5a2d22424b187f2c6fadf51c3fe763eb440488b5670382677/q4t",
+      "sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/9038ea9f7809bbf5a2d22424b187f2c6fadf51c3fe763eb440488b5670382677/q4t.release.json",
+      "sha256": "c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc"
+    }
+  },
+  "default_unchanged": true
+}

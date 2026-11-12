@@ -1,0 +1,9 @@
+{
+  "tools/examples/chat_client.py": "94dfea93ce4cdbc8734b4c81a66f743e36ecf07c89c2c1b585ff1f6543442ab3",
+  "tools/examples/js/chat_client.mjs": "dcd1e5227b6b06461246c46081d8a1cbf125ed0e2564eba6ab2f1a39e8970223",
+  "tools/serve_http/acceptance.py": "54145accff4c2cf03849b9e78605e379fbb6af4650aac289221d6d7b98348ddb",
+  "tools/serve_http/resume.py": "ff3aedc4926cfa2fa72f1e2463f74938c308acdd3bb8f95e9fd8077afba88eb1",
+  "tools/serve_http/test_acceptance.py": "9a05ab1d5f66abe70d10b491fb4bbc539413a418521d2c7fb5fc8337bb9faf85",
+  "tools/serve_http/test_client_prefix.py": "8da8e97d41bda0967562709a06cae5f0fb36432a78a73682b49abeacf207ebc4",
+  "tools/serve_http/test_client_prefix.mjs": "08d7f5a9dde87bf20bca045f061085c47ed5f170593addeb137d2a4a2d594a3c"
+}

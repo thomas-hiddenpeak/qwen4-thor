@@ -1,0 +1,10 @@
+{
+  "scope": "only verify native format validation and dependency errors remain functional with XGrammar/CUDA absent in public host build",
+  "tests": [
+    "schema_string_format_hostname_corpus",
+    "schema_string_idna_missing_and_resource_are_not_invalid_data",
+    "schema_string_format_nullable_graph_and_local_checks"
+  ],
+  "binary_sha256": "1733ea1f49c0926456cbea4f54a2f3cc2f3d14d9144e48a5dccce17894c8455d",
+  "timeout_seconds": 60
+}

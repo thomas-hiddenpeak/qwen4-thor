@@ -5,13 +5,14 @@
 // BICUBIC uses Pillow 12.3.0 fixed-point coefficients.
 //
 // Pipeline:
-//   1. Decode PNG/JPEG (stb_image) -> RGB uint8 [H, W, 3]
+//   1. Decode PNG/JPEG/static GIF (stb_image) -> RGB uint8 [H, W, 3]
 //   2. smart_resize(H, W, factor=32, min_pixels, max_pixels) -> (rh, rw)
 //   3. BICUBIC resize (Pillow fixed-point, PRECISION_BITS=22) -> uint8
 //   4. rescale: float32(double(px) * double(1.0/255.0))
 //   5. normalize: (f32 - 0.5f) / 0.5f  (mean=std=0.5)
 //   6. patchify: block-major, per-patch [C=3, T=2, P=16, P=16]
 #include "q4t/vision/processor.h"
+#include "q4t/runtime/execution_progress.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/timing.h"
 
@@ -127,6 +128,7 @@ void* DecodeReallocate(void* pointer, size_t bytes) noexcept {
 #define STBI_FREE(pointer) DecodeFree(pointer)
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
+#define STBI_ONLY_GIF
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -134,6 +136,54 @@ namespace q4t {
 namespace vision {
 
 namespace {
+
+TimingStage DecodeStage(uint8_t first) {
+  return first == 0xff  ? TimingStage::kDecodeJpeg
+         : first == 'G' ? TimingStage::kDecodeGif
+                        : TimingStage::kDecodePng;
+}
+
+uint8_t* DecodeRgb(const uint8_t* bytes, size_t count, int* width, int* height,
+                   int* components) {
+  if (bytes[0] != 'G')
+    return stbi_load_from_memory(bytes, static_cast<int>(count), width, height,
+                                 components, 3);
+  GifFrame frame;
+  if (!ReadGifFrame({bytes, count}, &frame)) return nullptr;
+  std::unique_ptr<uint8_t, decltype(&DecodeFree)> opaque(nullptr, DecodeFree);
+  if (frame.transparency_flags) {
+    // PIL's first-frame convert("RGB") keeps a transparent palette entry's
+    // RGB. Suppress animation compositing for this private decoder copy.
+    // The original bytes and their immutable SHA remain untouched.
+    opaque.reset(static_cast<uint8_t*>(DecodeAllocate(count)));
+    if (!opaque) return nullptr;
+    std::memcpy(opaque.get(), bytes, count);
+    opaque.get()[frame.transparency_flags] &= ~uint8_t{1};
+    bytes = opaque.get();
+  }
+  auto* pixels = stbi_load_from_memory(bytes, static_cast<int>(count), width,
+                                       height, components, 3);
+  if (!pixels) return nullptr;
+  if (*width != static_cast<int>(frame.header.width) ||
+      *height != static_cast<int>(frame.header.height)) {
+    stbi_image_free(pixels);
+    return nullptr;
+  }
+  // A still indexed image's untouched canvas is palette zero. stb's GIF
+  // animation background/disposal semantics must not change those pixels.
+  if (frame.left || frame.top || frame.width != frame.header.width ||
+      frame.height != frame.header.height) {
+    for (uint32_t y = 0; y < frame.header.height; ++y) {
+      for (uint32_t x = 0; x < frame.header.width; ++x) {
+        if (x < frame.left || x >= frame.left + frame.width || y < frame.top ||
+            y >= frame.top + frame.height)
+          std::memcpy(pixels + (size_t{y} * frame.header.width + x) * 3,
+                      frame.palette_zero.data(), 3);
+      }
+    }
+  }
+  return pixels;
+}
 
 // ---------------------------------------------------------------------------
 // Pillow 12.3.0 BICUBIC fixed-point resize (exact replication).
@@ -328,7 +378,8 @@ bool PrepareItem(const MediaPlanInput& input, const ProcessorConfig& config,
   if (const auto* admitted = options.admission) {
     const auto& a = admitted->geometry;
     const auto& b = item->geometry;
-    if (admitted->kind != item->kind || admitted->frames != item->frames ||
+    if (admitted->kind != item->kind || admitted->detail != item->detail ||
+        admitted->frames != item->frames ||
         admitted->source_width != item->source_width ||
         admitted->source_height != item->source_height || a.width != b.width ||
         a.height != b.height || a.grid_t != b.grid_t || a.grid_h != b.grid_h ||
@@ -364,23 +415,22 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   if (!image_bytes || !num_bytes)
     return ProcessorFail(options, err, "media_encoded_limit");
   const MediaBytes bytes{image_bytes, num_bytes};
-  const MediaPlanInput input{MediaKind::kImage, {&bytes, 1}};
+  const MediaPlanInput input{
+      MediaKind::kImage, {&bytes, 1}, options.image_detail};
   MediaItemPlan item;
   if (!PrepareItem(input, cfg, options, &item, err)) return false;
   prepare_timing.Stop();
   DecodeScope decode(options);
 
-  // 1. Decode PNG/JPEG -> RGB uint8.
+  // 1. Decode PNG/JPEG/static GIF -> RGB uint8.
   int w = 0, h = 0, comp = 0;
   decode_allocation_failed = false;
-  // PrepareItem has already restricted sources to PNG/JPEG.
-  TimingScope decode_timing(options.timings, image_bytes[0] == 0xff
-                                                ? TimingStage::kDecodeJpeg
-                                                : TimingStage::kDecodePng);
+  // PrepareItem has already restricted sources to PNG/JPEG/static GIF.
+  runtime::ExecutionActivity decode_progress(
+      runtime::ExecutionActivityKind::kMediaDecode);
+  TimingScope decode_timing(options.timings, DecodeStage(image_bytes[0]));
   std::unique_ptr<uint8_t, decltype(&stbi_image_free)> decoded(
-      stbi_load_from_memory(image_bytes, static_cast<int>(num_bytes), &w, &h,
-                            &comp, 3),
-      stbi_image_free);
+      DecodeRgb(image_bytes, num_bytes, &w, &h, &comp), stbi_image_free);
   decode_timing.Stop();
   if (decode_allocation_failed) throw std::bad_alloc();
   if (decode.budget.denied)
@@ -390,20 +440,38 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   if (w != static_cast<int>(item.source_width) ||
       h != static_cast<int>(item.source_height))
     return ProcessorFail(options, err, "media_decoded_dimensions");
+  decode_progress.Finish();
   if (!ProcessorContinue(options, err)) return false;
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. BICUBIC resize (Pillow fixed-point).
+  runtime::ExecutionActivity resize_progress(
+      runtime::ExecutionActivityKind::kMediaResize);
   TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<uint8_t> resized;
   if (rh != h || rw != w) {
     resized.resize(static_cast<size_t>(rh) * rw * 3);
-    BicubicResize(pixels, h, w, resized.data(), rh, rw);
+    if (item.detail == ImageDetail::kOriginal) {
+      // Preserve every original pixel, repeating only the right/bottom edge
+      // to fill the model's spatial merge. Admission already charged padding.
+      for (int y = 0; y < rh; ++y) {
+        if (!(y % 128) && !ProcessorContinue(options, err)) return false;
+        const auto* row =
+            pixels + static_cast<size_t>(std::min(y, h - 1)) * w * 3;
+        auto* output = resized.data() + static_cast<size_t>(y) * rw * 3;
+        std::memcpy(output, row, static_cast<size_t>(w) * 3);
+        for (int x = w; x < rw; ++x)
+          std::memcpy(output + x * 3, row + (w - 1) * 3, 3);
+      }
+    } else {
+      BicubicResize(pixels, h, w, resized.data(), rh, rw);
+    }
   } else {
     resized.assign(pixels, pixels + static_cast<size_t>(h) * w * 3);
   }
   decoded.reset();
   resize_timing.Stop();
+  resize_progress.Finish();
   if (!ProcessorContinue(options, err)) return false;
 
   // 4-5. rescale + normalize (per pixel, per channel, exact float32).
@@ -411,6 +479,8 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   // normalize: (f32 - mean[c]) / std[c]
   // Since 1/255.0 in double is the exact Python literal, this matches
   // transformers' `float64(px) * scale` then `astype(float32)`.
+  runtime::ExecutionActivity normalize_progress(
+      runtime::ExecutionActivityKind::kMediaNormalize);
   TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<float> norm(static_cast<size_t>(rh) * rw * 3);
@@ -420,8 +490,11 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     norm[i] = (f - cfg.image_mean[c]) / cfg.image_std[c];
   }
   normalize_timing.Stop();
+  normalize_progress.Finish();
 
   // 6. Patchify: block-major, per-patch [C=3, T=2, P=16, P=16].
+  runtime::ExecutionActivity patchify_progress(
+      runtime::ExecutionActivityKind::kMediaPatchify);
   TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
@@ -471,6 +544,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   }
 
   patchify_timing.Stop();
+  patchify_progress.Finish();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }
@@ -513,15 +587,13 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     if (options.result) options.result->frame = f;
     if (!ProcessorContinue(options, err)) return false;
     DecodeScope decode(options);
-    TimingScope decode_timing(options.timings, frames[f][0] == 0xff
-                                                  ? TimingStage::kDecodeJpeg
-                                                  : TimingStage::kDecodePng);
+    runtime::ExecutionActivity decode_progress(
+        runtime::ExecutionActivityKind::kMediaDecode);
+    TimingScope decode_timing(options.timings, DecodeStage(frames[f][0]));
     int w = 0, h = 0, comp = 0;
     decode_allocation_failed = false;
     std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
-        stbi_load_from_memory(frames[f], static_cast<int>(frame_bytes[f]), &w,
-                              &h, &comp, 3),
-        stbi_image_free);
+        DecodeRgb(frames[f], frame_bytes[f], &w, &h, &comp), stbi_image_free);
     if (decode_allocation_failed) throw std::bad_alloc();
     if (decode.budget.denied)
       return ProcessorFail(options, err, "media_decode_limit");
@@ -531,11 +603,14 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
       return ProcessorFail(options, err, "media_decoded_dimensions");
     if (!ProcessorContinue(options, err)) return false;
     decoded[f].assign(px, px + static_cast<size_t>(h) * w * 3);
+    decode_progress.Finish();
   }
 
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. Per-frame BICUBIC resize (Pillow fixed-point).
+  runtime::ExecutionActivity resize_progress(
+      runtime::ExecutionActivityKind::kMediaResize);
   TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<std::vector<uint8_t>> resized(F);
   for (int f = 0; f < F; ++f) {
@@ -546,6 +621,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     } else {
       resized[f] = decoded[f];
     }
+    resize_progress.Completed();
   }
 
   // 4. Odd-frame pad: repeat the LAST frame until F is even.
@@ -553,8 +629,11 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   if (Fp != F) resized.push_back(resized[F - 1]);
   const int grid_t = Fp / cfg.temporal_patch_size;
   resize_timing.Stop();
+  resize_progress.End();
 
   // 5. rescale + normalize (per frame, exact float32, same as ProcessImage).
+  runtime::ExecutionActivity normalize_progress(
+      runtime::ExecutionActivityKind::kMediaNormalize);
   TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<std::vector<float>> norm(Fp);
@@ -566,11 +645,15 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
       float fl = static_cast<float>(static_cast<double>(resized[f][i]) * kInv255);
       norm[f][i] = (fl - cfg.image_mean[c]) / cfg.image_std[c];
     }
+    normalize_progress.Completed();
   }
 
   // 6. Temporal patchify: per-patch [C, T, P, P] with T real frames,
   //    block-major spatial within each time group (same layout as image).
   normalize_timing.Stop();
+  normalize_progress.End();
+  runtime::ExecutionActivity patchify_progress(
+      runtime::ExecutionActivityKind::kMediaPatchify);
   TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
@@ -619,6 +702,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   }
 
   patchify_timing.Stop();
+  patchify_progress.Finish();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }

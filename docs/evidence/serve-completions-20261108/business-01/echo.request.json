@@ -1,0 +1,15 @@
+{
+  "action": "completion",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "prompt": "e\u0301\u4e2d literal <think>\ne\u0301\u4e2d literal <think>\ne\u0301\u4e2d literal <think>\ne\u0301\u4e2d literal <think>\ne\u0301\u4e2d literal <think>\ne\u0301\u4e2d literal <think>\nX",
+    "echo": true,
+    "max_tokens": 0,
+    "logprobs": 2
+  },
+  "model": "qwen3.8-flash-next",
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

@@ -1,0 +1,22 @@
+{
+  "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md": "75d67c89d9dc771605ba88a283e1557c9f66c279793ced478c0329d9d5953703",
+  "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
+  "src/server/responses_reasoning.cpp": "bff683eebe99a7cb26697c99e6b4ebd95c446f8ac3ab8f00fee4caabaa853c00",
+  "tests/server_responses_reasoning_test.cpp": "1997919cc2b0b1cd153cff4b054971a0b80808c1944f930f9898b78f94d4fad2",
+  "tools/serve_responses/test_reasoning_contract.py": "e19872d7a0153705b296f2bd1bab9ad0bbb04b4772ff9f5a6c52e16fa3b957f7",
+  "CMakeLists.txt": "3ce705fdeacde5feb6bdc4d92831e45b96f6bc5c138adcc70bfd160f8c49518d",
+  "cmake/ChatProtocolIdentity.cmake": "9792a207da7d1c483570f606b75be2542f21bfcc390acb2985a0f332f18abf36",
+  "cmake/HostTestSources.cmake": "f927436335f4a4d5f6be2ca839e90c0eb7088f8ecaa3d9c4df8961019ef6d270",
+  "docs/README.md": "297f53b6069ad799eb849aa02be2bc8264c1bc97049379c3224499f578a06e4c",
+  "docs/STATUS.md": "63d8421912c04d1f098100ea730026b5b395f2cf4c6eccbaa74c8d199c78b928",
+  "docs/log/2026-11-10.md": "81e3a037630fd40cb5cb05dbc67e788d31ff35dbefabb0d1076c70af0626d602",
+  "docs/serve-input-semantics-v1.json": "ed441431b5545e894a6291c10ebf6bf1217221c9f67d26186976020118fd0256",
+  "src/server/chat_capabilities.cpp": "70ee9b08042a1177c1470636227ce9d162a9725b1a403b9f4ee1752a563c8b52",
+  "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
+  "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
+  "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
+  "tests/server_chat_capabilities_test.cpp": "c191ef9676165f9dfb5dc1a26f979d15b2815d41ffb6756960be7efe562ca2e5",
+  "tests/server_responses_compaction_test.cpp": "a1e93e2db38661a6448b3831fb6cbc0227c7eb62e19144d4f3632ccf64e593bb",
+  "tests/server_responses_execution_test.cpp": "163c2c805c2c68f4fd0955edc46bf78c3d2c0f0f88af6a8794e715342c081bff",
+  "tools/serve_audit/inventory.json": "d70aa2e25b264c8f2e4fc6e06c863700fccb006bc5bd5d284b0cb32fbb5c0e65"
+}

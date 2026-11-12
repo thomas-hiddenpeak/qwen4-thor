@@ -1,0 +1,11 @@
+[
+  {
+    "id": "media-disabled",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"image_url\",\"image_url\":{\"url\":\"AA==\"}}]}]}"
+    }
+  }
+]

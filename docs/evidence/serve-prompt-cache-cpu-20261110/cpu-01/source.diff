@@ -1,0 +1,2973 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6f641c3c..0e3b41be 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -276,6 +276,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/conversation_state.cpp
+   src/server/conversation_api.cpp
+   src/server/prompt_template.cpp
++  src/server/prompt_cache_policy.cpp
++  src/server/prompt_cache_diagnostics.cpp
+   src/server/prompt_registry.cpp
+   src/server/prompt_api.cpp
+   src/server/chat_storage.cpp
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index 9cdde294..7c1ae10c 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -16,6 +16,10 @@ set(protocol_inputs
+   include/q4t/server/responses_input.h
+   src/server/responses_input.cpp
+   include/q4t/server/prompt_registry.h
++  include/q4t/server/prompt_cache_policy.h
++  src/server/prompt_cache_policy.cpp
++  include/q4t/server/prompt_cache_diagnostics.h
++  src/server/prompt_cache_diagnostics.cpp
+   src/server/prompt_internal.h
+   src/server/prompt_template.cpp
+   src/server/prompt_registry.cpp
+diff --git a/cmake/HostTestSources.cmake b/cmake/HostTestSources.cmake
+index 67e865ba..9d358a65 100644
+--- a/cmake/HostTestSources.cmake
++++ b/cmake/HostTestSources.cmake
+@@ -12,6 +12,7 @@ set(Q4T_HOST_TEST_SOURCES
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_compaction.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_compaction_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prompt_registry_test.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prompt_cache_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
+@@ -53,6 +54,8 @@ set(Q4T_HOST_TEST_SOURCES
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_state.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_api.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_template.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_cache_policy.cpp
++  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_cache_diagnostics.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_registry.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_api.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage.cpp
+diff --git a/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md b/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
+index a2d09600..30d41973 100644
+--- a/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
++++ b/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
+@@ -160,3 +160,25 @@ A07.5 [27 项 CPU/来源检查](evidence/serve-prompts-cpu-20261109/README.md)
+ 2026-11-10：[A07.5 真实业务接受](evidence/serve-prompts-business-20261110/README.md)，2 启动/8 请求/7 步，实际版本结果、模板删除后后台回放和文档工具闭环通过，随后可回退默认交付。
+ 
+ 2026-11-10：[A07.5 默认交付](evidence/serve-prompts-delivery-20261110/README.md)完成，原生包945e6f73/revision18，STOPPED；A07.4完整回退与账本保持。A07.6及全部总计划继续。
++
++### A07.6 缓存接入：2026-11-10 连续实现清单
++
++本组是缺失服务语义的实现，非性能优化；不承诺吞吐增益，不跑完整性能/全模型矩阵。
++已有 SessionCache 保存完整目标/MTP 状态并隔离文件 I/O，Responses 尚未接入：options 被执行前拒绝、breakpoint 被输入映射拒绝、写入 usage 一直为零。不得仅回显参数或将这些缺口标成完成。
++
++实现顺序与完成条件：
++
++1. 统一缓存策略与边界：验证 implicit/explicit、prewarm、30m/12h TTL、retention/key 和 comparison_response_id；媒体/file 标记继续沿 A10 解析链保留。按真实模板内容跨度定位，不向模型插入标记串；使用既有 NFC/token 字节偏移确定实际完整 token 边界。显式无断点不读写，隐式选择最后合格消息，最多4个写点；处理最新指南与固定 SDK 的差异并显式记入 schema 来源适配。
++2. 复用本机有界前缀状态：多断点、客户端+key分区、完整目标/MTP状态精确前缀匹配、逐项有效期及总保留边界、容量/取消/损坏/worker失能隔离。未失效条目不会被错误标成命中；没有实际保存/恢复就不增加计数。缓存故障允许普通生成继续，prewarm不得虚报完成缓存写入。
++3. 原生执行与协议：实际 cache read/write tokens，prewarm只运行输入预填充、不采样生成；JSON/SSE/后台/持久响应保持原ID/配额/截止。比较诊断读取同一客户端的原响应，未知/不可用与实际命中分开报告。Chat标准key/retention对接同一缓存策略，保留既有原生scope/checkpoint用法。
++4. 成组完成后冻结直接 CPU：策略/类型/TTL、边界/trim/Unicode/工具顺序、配额/隔离/过期/损坏、零输出/usage/SSE及schema；必要实际 SDK/模型短验覆盖写后命中、显式关闭、key隔离和prewarm，不把合成状态当真实模型证据。待驱动完成后冻结实际启动/请求上限。验证通过再默认可回退交付，随后 A07.7/A07.8 和全部余项。
++
++[官方缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)现已说明12h请求TTL及新的查找边界；固定7.47.0 SDK仍将请求TTL限制为30m、断点允许12h，并描述80个历史断点。实现以明确的原生兼容合同记录该差异，保持最多4写点；TTL表示缓存策略，不能被宣传成每次必命中或重启后必复用。
++
++A07.6 实际路径成组接入（2026-11-10）：原生多断点目标/MTP状态读写、成功恢复与新写入覆盖分别计数、预热不生成/不触发摘要或压缩、Chat标准key/retention、原生默认缓存目录已接入。默认目录为应用状态路径加 `-prompt-cache`，只由隔离worker创建0700目录和匿名SSD文件；故障不关闭核心，后续请求仍可触发已有有界恢复。现代TTL上限24h；单独旧retention的in_memory/24h分别限制总寿命1h/24h，默认30m空闲刷新；没有云计费承诺。
++
++比较诊断改用进程内近期哈希记录：每客户端16条/总128条/1h，按128token分块估计首差异，仅实际恢复覆盖足够才报hit；保存真实成功响应的哈希，不保留raw token/提示词，不经过对象存储IO，也不重启模型。重启/到期报告comparison_response_not_found，无法归因的物理miss报告unavailable。该实现替代初稿中依赖持久响应读取的诊断路径，以保证辅助依赖隔离；持久JSON/SSE仍保存原诊断结果。
++
++冻结42项直接C++、3项schema/真实C++输出检查及来源清单/生成漂移检查，清单原件在 `.q4t-work/serve-prompt-cache-20261110/validation-plan.json`。尚未执行测试或GPU；开始host与实际引擎必要构建。首次schema准备引用旧graph缺少compacted_response，原始失败说明保留；使用同一固定SDK重新生成完整graph并按依赖顺序重建schema。通过后继续实际业务短验与交付，不结束总目标。
++
++构建后静态审查补充：默认等长槽也需执行MTP缓存。原状态范围已用SequenceOffset/Capacity支持两种布局，移除仅显式槽的旧门禁并补实际streamed入口；保留真实设备错误保护，可选缓存scratch不足只关闭本请求缓存。仍未开始测试，原42host/3schema之外追加2个现有纯CPU状态范围用例，独立 `q4t_session_target_contract`，没有CUDA调用。
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index 8cdd4328..de7fdf86 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -4,7 +4,7 @@ A07.5 本地 Prompt 已完成[针对 CPU](evidence/serve-prompts-cpu-20261109/RE
+ 
+ 实际模板版本 v1/v2 得到 42/73，显式旧版及重启默认正确；后台模板删除后原响应/SSE继续回放，真实文档工具闭环、精确用量和错误隔离通过。2 启动/8 请求/7 模型步/86.754秒，82 NVML 全OK并独立清理；安装8条操作通过且0模型/Chat。首次输出漏字段的失败与修复均保留。
+ 
+-A07.1—A07.5已交付，A07整体和总目标仍 active、尚未合 main。现在连续推进 **A07.6 实际缓存控制、断点/TTL与用量**，随后 A07.7—A07.8 及 A/R/Q/G 全部余项；阶段交付不会结束总目标。非性能任务只做直接针对验证，长稳实跑由用户负责。
++A07.1—A07.5已交付，A07整体和总目标仍 active、尚未合 main。A07.6 已按[策略/边界、状态、执行、针对验收](SERVE_RESPONSES_ADVANCED_2026-11-09.md)冻结成组实施，原生实际读写/多断点/TTL、零输出预热、成功用量及无IO哈希诊断已成组接入，冻结42项直接C++/3项schema检查并开始必要构建；尚未本组测试/GPU；现在连续推进 **实际缓存控制、断点/TTL与用量**，随后 A07.7—A07.8 及 A/R/Q/G 全部余项；阶段交付不会结束总目标。非性能任务只做直接针对验证，长稳实跑由用户负责。
+ 
+ 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
+ 
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index e9731119..42ae3d76 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,29 @@
+ # 2026-11-10 开发日志
+ 
++## A07.6 构建通过后补齐默认等长槽的实际缓存入口
++
++- 做了什么：host和实际引擎首轮必要构建零警告、尚未执行测试。静态复核发现旧MTP缓存只允许显式槽，标准API需覆盖默认等长槽；复用已支持两种布局的SequenceOffset/Capacity，补齐streamed prefill选择和MTP范围校验，并扩充现有真实范围CPU用例。可选缓存scratch耗尽不再影响普通生成。
++- 为什么：不能在默认配置下仅接受字段却无法实际写入缓存；设备错误仍按原保护处理，只有可回退的缓存资源不足降级。
++- 下一步：在原42host/3schema上追加2个直接CPU状态范围用例（独立target，无CUDA调用），再统一验收。默认和GPU保持，全部总任务继续。
++
++## A07.6 实际读写、预热与诊断成组接入，冻结直接验证
++
++- 做了什么：接入精确多断点目标/MTP状态、TTL/retention、零输出预热、实际读/新写计数与有界客户端哈希诊断；隔离worker创建原生默认缓存目录，缓存错误继续正常生成并保留后续恢复机会。处理guidance插入后的断点索引和原始prompt路径。
++- 为什么：控制字段需要真正影响执行；预热不能假报写入，诊断不能依赖磁盘并连累核心。新旧TTL/retention与云计费含义分开记录。首次schema准备使用旧graph失败，原件说明保留，固定SDK完整graph重建成功。
++- 下一步：冻结42C++/3schema及来源检查，必要构建后统一直接验证，再冻结实际模型短验预算；默认A07.5 STOPPED，尚未本组测试/GPU，全部总目标持续推进。
++
++## A07.6 策略、实际边界与有效期成组开发中
++
++- 做了什么：增加闭合缓存选项/断点解析、最多4写点及查找选择，模板输出同步记录实际内容跨度，Responses标记独立于模型字段保存；SessionCache增加每条有效期/总保留上限、仅成功恢复刷新及定向边界查找。新增直接用例，尚未执行。
++- 为什么：不能把控制字段丢弃或把猜测字符位置用于数值状态恢复，也不能让12h读取每次重新开始12h时钟。
++- 下一步：必要host构建检查后继续实际生成多断点读写、预热/诊断/usage和原生默认配置，再成组针对验收。默认A07.5保持STOPPED，本组无GPU/测试。
++
++## A07.6 缓存语义缺口重审，成组开发开始
++
++- 做了什么：核对现有前缀完整状态缓存、Responses输入/输出链及官方SDK/指南，冻结策略/真实边界、多状态读写与TTL、预热/诊断/usage及直接验收清单。
++- 为什么：当前缓存选项被拒绝、断点不能进入输入、写usage为零，均需实际实现；沿用已有NFC/token偏移和隔离缓存worker，避免新增外部服务。
++- 下一步：先成组开发，之后统一冻结直接CPU/必要业务短验，再可回退交付与全部总目标；本组0测试，默认A07.5 STOPPED。
++
+ ## A07.5 Prompt 默认可回退交付，继续缓存控制
+ 
+ - 做了什么：8 条实际包/CLI 操作全部通过，默认引擎8feec073、元数据349eecf3、原生包945e6f73，publication revision18，STOPPED。
+diff --git a/docs/serve-application-v1.schema.json b/docs/serve-application-v1.schema.json
+index 7f338b90..fc5cd29b 100644
+--- a/docs/serve-application-v1.schema.json
++++ b/docs/serve-application-v1.schema.json
+@@ -8661,7 +8661,15 @@
+           "$ref": "#/$defs/805"
+         },
+         "prompt_cache_key": {
+-          "$ref": "#/$defs/20"
++          "anyOf": [
++            {
++              "type": "string",
++              "maxLength": 512
++            },
++            {
++              "type": "null"
++            }
++          ]
+         },
+         "prompt_cache_options": {
+           "$ref": "#/$defs/810"
+@@ -9884,7 +9892,10 @@
+           "$ref": "#/$defs/157"
+         },
+         "ttl": {
+-          "$ref": "#/$defs/814"
++          "enum": [
++            "30m",
++            "12h"
++          ]
+         }
+       },
+       "required": [],
+@@ -11567,7 +11578,10 @@
+           "$ref": "#/$defs/944"
+         },
+         "ttl": {
+-          "$ref": "#/$defs/11"
++          "enum": [
++            "30m",
++            "12h"
++          ]
+         }
+       },
+       "required": [
+@@ -17265,7 +17279,15 @@
+               "$ref": "#/$defs/663"
+             },
+             "prompt_cache_key": {
+-              "$ref": "#/$defs/20"
++              "anyOf": [
++                {
++                  "type": "string",
++                  "maxLength": 512
++                },
++                {
++                  "type": "null"
++                }
++              ]
+             },
+             "prompt_cache_retention": {
+               "$ref": "#/$defs/815"
+@@ -17532,7 +17554,15 @@
+                   "$ref": "#/$defs/663"
+                 },
+                 "prompt_cache_key": {
+-                  "$ref": "#/$defs/20"
++                  "anyOf": [
++                    {
++                      "type": "string",
++                      "maxLength": 512
++                    },
++                    {
++                      "type": "null"
++                    }
++                  ]
+                 },
+                 "prompt_cache_retention": {
+                   "$ref": "#/$defs/815"
+@@ -17700,12 +17730,23 @@
+       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+       "native store echo and native response error codes",
+       "SDK-documented include_obfuscation adds optional string padding to delta events only",
++      "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+       "exact integer and bounded native options",
+       "native cancellation credentials and timeout/seed extensions",
+       "SDK combined body/query split on actual HTTP boundary",
+       "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
+     ],
+     "wire_references": [
++      {
++        "date": "2026-11-10",
++        "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
++        "contract": "Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting"
++      },
++      {
++        "date": "2026-11-10",
++        "url": "https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics",
++        "contract": "Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison"
++      },
+       {
+         "date": "2026-11-09",
+         "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",
+diff --git a/docs/serve-chat-request-v1.schema.json b/docs/serve-chat-request-v1.schema.json
+index 5cca16ab..a02e0e17 100644
+--- a/docs/serve-chat-request-v1.schema.json
++++ b/docs/serve-chat-request-v1.schema.json
+@@ -561,6 +561,30 @@
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+     },
++    "prompt_cache_key": {
++      "anyOf": [
++        {
++          "type": "string",
++          "maxLength": 512
++        },
++        {
++          "type": "null"
++        }
++      ]
++    },
++    "prompt_cache_retention": {
++      "anyOf": [
++        {
++          "enum": [
++            "in_memory",
++            "24h"
++          ]
++        },
++        {
++          "type": "null"
++        }
++      ]
++    },
+     "prefix_cache_write_tokens": {
+       "anyOf": [
+         {
+@@ -2950,6 +2974,43 @@
+           }
+         }
+       }
++    },
++    {
++      "if": {
++        "anyOf": [
++          {
++            "required": [
++              "prompt_cache_key"
++            ],
++            "properties": {
++              "prompt_cache_key": {
++                "not": {
++                  "type": "null"
++                }
++              }
++            }
++          },
++          {
++            "required": [
++              "prompt_cache_retention"
++            ],
++            "properties": {
++              "prompt_cache_retention": {
++                "not": {
++                  "type": "null"
++                }
++              }
++            }
++          }
++        ]
++      },
++      "then": {
++        "not": {
++          "required": [
++            "prefix_cache_scope"
++          ]
++        }
++      }
+     }
+   ],
+   "x-q4t": {
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index 3eaf619d..adad1e28 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -351,7 +351,7 @@
+     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
+     "include/q4t/server/application_routes.h": "1d27e45e73d4e7827bcdd18413c0c3f91d9d81291e93b5202ed4ac031ac404e3",
+     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+-    "include/q4t/server/cache_io.h": "4a851632978959b89c66999d0e4532c345fdd792f1a9f4efadbe5350e8cf0e4f",
++    "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
+     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
+     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
+     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
+@@ -384,29 +384,29 @@
+     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
+     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
+     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+-    "src/server/cache_io.cpp": "1495b6d92a77d9dc373e25ce0b94386a4150f5763ca6f26857901ff2fd8b99ba",
++    "src/server/cache_io.cpp": "679d821d52da169a81c1bdc6ad68cead9f967e029a3861f418bd3adec31a9c3c",
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+-    "src/server/cache_worker.cpp": "b8ff127f945835fc91d04b97c6e49b21dfc0047ff846545bc8e4c2ab9a6e0c4a",
++    "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+-    "src/server/chat_contract.cpp": "ec74f4ddeb477288aca098d6d5bfd55a41b56d50d975d7c7594c825df41545a6",
++    "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "ee345146f7768cd0f424334f1585d54f543a154d01c4633a46727ab80d89fd1d",
++    "src/server/chat_generation.cpp": "c5ee040f044c98333e127aff9d5b2590440397ffb2a370166090a69436a9f567",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
+-    "src/server/chat_plan.cpp": "18c4587d739406cb4f57ef83460bd2a95984d320d672d024a07581c102f07fa2",
++    "src/server/chat_plan.cpp": "231920fd40e263dd86b7f4b52b975b8beb1a8285388a7fb1d590ef5a5e520165",
+     "src/server/chat_preflight.cpp": "df89d2fa6ed82beb2aca2e636659ef255072f2bcd1aeeb97fe6d249103ee28c0",
+-    "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
++    "src/server/chat_prompt.cpp": "3139f82e12f3690eecb91f1b280619983f50878994eca6f50f3a1a890ed5205b",
+     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
+     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
+-    "src/server/chat_server.cpp": "b6165f12cc47196a677ce0deed528a6bab2ea64ffc4691ca9f1c3c7a932dbd7e",
++    "src/server/chat_server.cpp": "4075465767836ce0131136b454510680186d17d9300c9e958781f8211e466a6d",
+     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
+     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+-    "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
++    "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
+     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+     "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
+     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
+@@ -432,11 +432,11 @@
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+-    "src/server/responses_execution.cpp": "2fed7c692431c59eb3a724e61e882194cce90097a3ee0e686df86f0f23d95fe2",
++    "src/server/responses_execution.cpp": "6cb9be25c9bb32516676181b65731eefedb6483eb58dc3fb198d838eb391f452",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+-    "src/server/responses_output.cpp": "1d4a24ebeadbd6db0a5aad76e25af71d20d1ab4466e4050f7b74a1018e46cd63",
++    "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "99efaaa891d3c14b5e7bcfb7bdb5904e0aa5d5e3c55de51d013e3f5d510721c1",
++    "src/server/responses_plan.cpp": "4c87b231f6381e8a64836fe7fa44ff81b455516ed81ed06c9ba61648d88d703d",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+@@ -445,7 +445,7 @@
+     "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
+     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
+     "src/server/server_options.cpp": "2fd39a822532c84b4c81257247e016c6e9662c6abc325bea4ec182577364ea5d",
+-    "src/server/session_cache.cpp": "c7f157e9628d1bffbeea288029c62e683d1525d02d9bc5f2e38af259c7ffeec5",
++    "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
+     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
+     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
+diff --git a/docs/serve-openapi-bundle-v1.json b/docs/serve-openapi-bundle-v1.json
+index e399238f..c37865d5 100644
+--- a/docs/serve-openapi-bundle-v1.json
++++ b/docs/serve-openapi-bundle-v1.json
+@@ -4660,6 +4660,30 @@
+             "type": "string",
+             "pattern": "^[0-9a-f]{64}$"
+           },
++          "prompt_cache_key": {
++            "anyOf": [
++              {
++                "type": "string",
++                "maxLength": 512
++              },
++              {
++                "type": "null"
++              }
++            ]
++          },
++          "prompt_cache_retention": {
++            "anyOf": [
++              {
++                "enum": [
++                  "in_memory",
++                  "24h"
++                ]
++              },
++              {
++                "type": "null"
++              }
++            ]
++          },
+           "prefix_cache_write_tokens": {
+             "anyOf": [
+               {
+@@ -7047,6 +7071,43 @@
+                 }
+               }
+             }
++          },
++          {
++            "if": {
++              "anyOf": [
++                {
++                  "required": [
++                    "prompt_cache_key"
++                  ],
++                  "properties": {
++                    "prompt_cache_key": {
++                      "not": {
++                        "type": "null"
++                      }
++                    }
++                  }
++                },
++                {
++                  "required": [
++                    "prompt_cache_retention"
++                  ],
++                  "properties": {
++                    "prompt_cache_retention": {
++                      "not": {
++                        "type": "null"
++                      }
++                    }
++                  }
++                }
++              ]
++            },
++            "then": {
++              "not": {
++                "required": [
++                  "prefix_cache_scope"
++                ]
++              }
++            }
+           }
+         ],
+         "x-q4t": {
+@@ -7630,6 +7691,30 @@
+             "type": "string",
+             "pattern": "^[0-9a-f]{64}$"
+           },
++          "prompt_cache_key": {
++            "anyOf": [
++              {
++                "type": "string",
++                "maxLength": 512
++              },
++              {
++                "type": "null"
++              }
++            ]
++          },
++          "prompt_cache_retention": {
++            "anyOf": [
++              {
++                "enum": [
++                  "in_memory",
++                  "24h"
++                ]
++              },
++              {
++                "type": "null"
++              }
++            ]
++          },
+           "prefix_cache_write_tokens": {
+             "anyOf": [
+               {
+@@ -10157,6 +10242,43 @@
+               }
+             }
+           },
++          {
++            "if": {
++              "anyOf": [
++                {
++                  "required": [
++                    "prompt_cache_key"
++                  ],
++                  "properties": {
++                    "prompt_cache_key": {
++                      "not": {
++                        "type": "null"
++                      }
++                    }
++                  }
++                },
++                {
++                  "required": [
++                    "prompt_cache_retention"
++                  ],
++                  "properties": {
++                    "prompt_cache_retention": {
++                      "not": {
++                        "type": "null"
++                      }
++                    }
++                  }
++                }
++              ]
++            },
++            "then": {
++              "not": {
++                "required": [
++                  "prefix_cache_scope"
++                ]
++              }
++            }
++          },
+           {
+             "not": {
+               "anyOf": [
+@@ -18878,7 +19000,15 @@
+                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/805"
+               },
+               "prompt_cache_key": {
+-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++                "anyOf": [
++                  {
++                    "type": "string",
++                    "maxLength": 512
++                  },
++                  {
++                    "type": "null"
++                  }
++                ]
+               },
+               "prompt_cache_options": {
+                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/810"
+@@ -20101,7 +20231,10 @@
+                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/157"
+               },
+               "ttl": {
+-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/814"
++                "enum": [
++                  "30m",
++                  "12h"
++                ]
+               }
+             },
+             "required": [],
+@@ -21784,7 +21917,10 @@
+                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/944"
+               },
+               "ttl": {
+-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/11"
++                "enum": [
++                  "30m",
++                  "12h"
++                ]
+               }
+             },
+             "required": [
+@@ -27482,7 +27618,15 @@
+                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
+                   },
+                   "prompt_cache_key": {
+-                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++                    "anyOf": [
++                      {
++                        "type": "string",
++                        "maxLength": 512
++                      },
++                      {
++                        "type": "null"
++                      }
++                    ]
+                   },
+                   "prompt_cache_retention": {
+                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+@@ -27749,7 +27893,15 @@
+                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
+                       },
+                       "prompt_cache_key": {
+-                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++                        "anyOf": [
++                          {
++                            "type": "string",
++                            "maxLength": 512
++                          },
++                          {
++                            "type": "null"
++                          }
++                        ]
+                       },
+                       "prompt_cache_retention": {
+                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+@@ -27917,12 +28069,23 @@
+             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+             "native store echo and native response error codes",
+             "SDK-documented include_obfuscation adds optional string padding to delta events only",
++            "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+             "exact integer and bounded native options",
+             "native cancellation credentials and timeout/seed extensions",
+             "SDK combined body/query split on actual HTTP boundary",
+             "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
+           ],
+           "wire_references": [
++            {
++              "date": "2026-11-10",
++              "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
++              "contract": "Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting"
++            },
++            {
++              "date": "2026-11-10",
++              "url": "https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics",
++              "contract": "Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison"
++            },
+             {
+               "date": "2026-11-09",
+               "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",
+diff --git a/docs/serve-vision-request-v1.schema.json b/docs/serve-vision-request-v1.schema.json
+index 039711f2..73f5342b 100644
+--- a/docs/serve-vision-request-v1.schema.json
++++ b/docs/serve-vision-request-v1.schema.json
+@@ -561,6 +561,30 @@
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+     },
++    "prompt_cache_key": {
++      "anyOf": [
++        {
++          "type": "string",
++          "maxLength": 512
++        },
++        {
++          "type": "null"
++        }
++      ]
++    },
++    "prompt_cache_retention": {
++      "anyOf": [
++        {
++          "enum": [
++            "in_memory",
++            "24h"
++          ]
++        },
++        {
++          "type": "null"
++        }
++      ]
++    },
+     "prefix_cache_write_tokens": {
+       "anyOf": [
+         {
+@@ -3090,6 +3114,43 @@
+         }
+       }
+     },
++    {
++      "if": {
++        "anyOf": [
++          {
++            "required": [
++              "prompt_cache_key"
++            ],
++            "properties": {
++              "prompt_cache_key": {
++                "not": {
++                  "type": "null"
++                }
++              }
++            }
++          },
++          {
++            "required": [
++              "prompt_cache_retention"
++            ],
++            "properties": {
++              "prompt_cache_retention": {
++                "not": {
++                  "type": "null"
++                }
++              }
++            }
++          }
++        ]
++      },
++      "then": {
++        "not": {
++          "required": [
++            "prefix_cache_scope"
++          ]
++        }
++      }
++    },
+     {
+       "not": {
+         "anyOf": [
+diff --git a/include/q4t/server/cache_io.h b/include/q4t/server/cache_io.h
+index 8c36c976..06b5e20c 100644
+--- a/include/q4t/server/cache_io.h
++++ b/include/q4t/server/cache_io.h
+@@ -30,6 +30,7 @@ struct CacheIoOptions {
+   int backoff_ms = 500;
+   int restart_window_ms = 60000;
+   int restart_limit = 3;
++  bool create_directory = false;
+ };
+ struct CacheIoHealth {
+   std::string_view state = "disabled";
+diff --git a/include/q4t/server/chat_plan.h b/include/q4t/server/chat_plan.h
+index 70a67729..a45545e7 100644
+--- a/include/q4t/server/chat_plan.h
++++ b/include/q4t/server/chat_plan.h
+@@ -11,6 +11,7 @@
+ #include "q4t/server/output_constraints.h"
+ #include "q4t/server/sampling.h"
+ #include "q4t/server/prediction.h"
++#include "q4t/server/prompt_cache_policy.h"
+ #include "q4t/server/client_policy.h"
+ #include "q4t/server/server_options.h"
+ #include "q4t/status.h"
+@@ -39,6 +40,8 @@ struct ChatPlanConfig {
+   bool structured = false;
+   bool session_cache = false;
+   bool prefix_cache = false;
++  // Internal Responses prefill-only execution, never a caller Chat field.
++  bool prewarm_only = false;
+   std::vector<int> capacities;
+   std::vector<int> checkpoints;
+   uint64_t cuda_quota_limit_bytes = 0;
+@@ -64,6 +67,7 @@ struct ChatRequestPlan {
+   OutputConstraints constraints;
+   SamplingOptions sampling;
+   PredictionOptions prediction;
++  PromptCacheOptions cache;
+   std::vector<std::string> stops;
+   const io::Json& Request(const io::Json& original) const {
+     return normalized_request ? *normalized_request : original;
+diff --git a/include/q4t/server/chat_prompt.h b/include/q4t/server/chat_prompt.h
+index 3ad40345..18f93da7 100644
+--- a/include/q4t/server/chat_prompt.h
++++ b/include/q4t/server/chat_prompt.h
+@@ -5,6 +5,7 @@
+ 
+ #include "q4t/io/json.h"
+ #include "q4t/server/output_constraints.h"
++#include "q4t/server/chat_template.h"
+ #include "q4t/status.h"
+ 
+ namespace q4t::server {
+@@ -18,12 +19,20 @@ struct VisionItem {
+   size_t part_index = 0;
+ };
+ 
++struct ChatPromptLayout {
++  std::vector<ChatMessageSpan> messages;
++  // Per-message source-byte ends of the rendered content parts, including
++  // visual placeholders. A string content has one entry.
++  std::vector<std::vector<size_t>> part_ends;
++};
++
+ // Shared by generation and preflight after ValidateChatContract. The same
+ // constraint adapter and renderer determine the actual generation prefix.
+ Status PrepareChatPrompt(const io::Json& request,
+                          const OutputConstraints& constraints,
+                          std::string* prompt, std::vector<VisionItem>* items,
+                          std::string* error_param,
+-                         std::string* error_code = nullptr);
++                         std::string* error_code = nullptr,
++                         ChatPromptLayout* layout = nullptr);
+ 
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/chat_server.h b/include/q4t/server/chat_server.h
+index fe8910e3..8437930b 100644
+--- a/include/q4t/server/chat_server.h
++++ b/include/q4t/server/chat_server.h
+@@ -27,6 +27,7 @@
+ #include "q4t/trace/router_collector.h"
+ #include "q4t/server/suffix_token_cache.h"
+ #include "q4t/server/session_cache.h"
++#include "q4t/server/prompt_cache_diagnostics.h"
+ #include "q4t/server/http_request.h"
+ #include "q4t/server/http_listener.h"
+ #include "q4t/server/http_response.h"
+@@ -420,6 +421,7 @@ class ChatServer {
+   SuffixTokenCache suffix_token_cache_;
+   SessionCache session_cache_;
+   SessionCache prefix_cache_{IsolatedWorkerDomain::kPrefixCache};
++  PromptCacheDiagnostics prompt_cache_diagnostics_;
+   std::vector<int> prefix_cache_checkpoints_;
+   // Global intervals sampled at request completion under model_mu_. With
+   // concurrent slots an interval can include work from several requests.
+diff --git a/include/q4t/server/chat_template.h b/include/q4t/server/chat_template.h
+index a7c1b713..3f787b29 100644
+--- a/include/q4t/server/chat_template.h
++++ b/include/q4t/server/chat_template.h
+@@ -2,6 +2,7 @@
+ // by the HTTP adapter so decoding image bytes never occurs during formatting.
+ #pragma once
+ 
++#include <cstddef>
+ #include <string>
+ #include <string_view>
+ #include <vector>
+@@ -17,6 +18,16 @@ inline constexpr std::string_view kChatMessageProfile = "qwen3.8-openai-v3";
+ // message order; a lone unnamed leading instruction retains native bytes.
+ bool IsChatInstructionRole(std::string_view role);
+ 
++// Actual content placement in the rendered prompt. Source coordinates refer
++// to the transport-rendered content before Unicode trim. Assistant/tool
++// framing and reordered tool replies are recorded without modifying bytes.
++struct ChatMessageSpan {
++  size_t source_begin = 0;
++  size_t source_size = 0;
++  size_t prompt_begin = 0;
++  size_t prompt_end = 0;
++};
++
+ // Shared by HTTP and the renderer: validate role-specific content, metadata
+ // and historical refusal without decoding media or changing the request.
+ Status ValidateChatMessageProfile(const io::Json& messages,
+@@ -24,6 +35,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
+ 
+ Status RenderChatPrompt(const io::Json& request,
+                         const std::vector<std::string>& contents,
+-                        std::string* prompt);
++                        std::string* prompt,
++                        std::vector<ChatMessageSpan>* spans = nullptr);
+ 
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/responses_execution.h b/include/q4t/server/responses_execution.h
+index 1057e812..b0e07465 100644
+--- a/include/q4t/server/responses_execution.h
++++ b/include/q4t/server/responses_execution.h
+@@ -84,6 +84,9 @@ class ResponsesExecution {
+   const ResponsesEnvelope& Envelope() const { return envelope_; }
+   const ResponsesGenerationPlan& Generation() const { return generation_; }
+   const ResponsesOutput& Output() const { return output_; }
++  void CacheDiagnostics(io::Json value) noexcept {
++    output_.CacheDiagnostics(std::move(value));
++  }
+   int64_t* Sequence() { return output_.Sequence(); }
+   const std::string& Id() const { return plan_.id; }
+   const std::string& Scope() const { return plan_.scope; }
+diff --git a/include/q4t/server/responses_input.h b/include/q4t/server/responses_input.h
+index 4185e09b..af017950 100644
+--- a/include/q4t/server/responses_input.h
++++ b/include/q4t/server/responses_input.h
+@@ -5,6 +5,7 @@
+ 
+ #include "q4t/io/json.h"
+ #include "q4t/server/chat_plan.h"
++#include "q4t/server/prompt_cache_policy.h"
+ #include "q4t/status.h"
+ 
+ namespace q4t::server {
+@@ -12,6 +13,7 @@ struct ResponsesInputPlan {
+   io::Json items;     // Original canonical items, including metadata for A08.
+   io::Json messages;  // Native model adapter; no internal HTTP request.
+   std::vector<std::string> message_paths;
++  std::vector<PromptCacheInputBoundary> cache_boundaries;
+ };
+ 
+ // Object/file/encrypted references must be resolved by the owning request's
+diff --git a/include/q4t/server/responses_output.h b/include/q4t/server/responses_output.h
+index 472825cf..9b7c7261 100644
+--- a/include/q4t/server/responses_output.h
++++ b/include/q4t/server/responses_output.h
+@@ -61,6 +61,7 @@ class ResponsesOutput {
+   int64_t* Sequence() { return &sequence_; }
+   bool Terminal() const { return terminal_; }
+   bool HasSummary() const { return summary_item_ < kMaxItems; }
++  void CacheDiagnostics(io::Json value) noexcept;
+ 
+  private:
+   Status Charge(size_t bytes);
+diff --git a/include/q4t/server/responses_plan.h b/include/q4t/server/responses_plan.h
+index 9a9f716a..b274ad73 100644
+--- a/include/q4t/server/responses_plan.h
++++ b/include/q4t/server/responses_plan.h
+@@ -16,6 +16,7 @@ namespace q4t::server {
+ struct ResponsesEnvelope {
+   io::Json request;
+   io::Json options;
++  PromptCacheOptions cache;
+   bool stream = false;
+   bool store = true;
+   bool background = false;
+diff --git a/include/q4t/server/session_cache.h b/include/q4t/server/session_cache.h
+index b96f8faf..ed33d988 100644
+--- a/include/q4t/server/session_cache.h
++++ b/include/q4t/server/session_cache.h
+@@ -25,6 +25,14 @@ struct SessionRange {
+ // One private lease covers both layouts; switching layouts is a cache miss.
+ enum class SessionLayout { kMtp, kTarget };
+ 
++struct SessionCacheLifetime {
++  int write_seconds = 1800;
++  int read_refresh_seconds = 1800;
++  // Zero retains the legacy sliding lifetime. API-managed entries apply a
++  // finite total retention cap independently of the recent-access timestamp.
++  int max_age_seconds = 0;
++};
++
+ // Capability-keyed prefix snapshots with isolated filesystem I/O. Device copies
+ // by the caller, which must own the model scratch/slot until Transfer returns.
+ // CPU contracts use the same storage path with a checked host-copy callback.
+@@ -47,7 +55,8 @@ class SessionCache {
+   SessionCache(const SessionCache&) = delete;
+   SessionCache& operator=(const SessionCache&) = delete;
+   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
+-              size_t disk_budget = kDiskBudget, bool incremental = false);
++              size_t disk_budget = kDiskBudget, bool incremental = false,
++              bool create_directory = false);
+   // Configuration is distinct from availability: a failed optional worker
+   // must not reject ordinary generation, including requests with session IDs.
+   bool Enabled() const { return staging_ && io_; }
+@@ -55,9 +64,10 @@ class SessionCache {
+   bool Acquire(const std::string& key);
+   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
+   // entry is leased until Release, including the interval before Restore.
+-  bool AcquireNew(const std::string& key);
++  bool AcquireNew(const std::string& key, int minimum_write_seconds = 0);
+   int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
+-                  std::string* key, SessionLayout layout = SessionLayout::kMtp);
++                  std::string* key, SessionLayout layout = SessionLayout::kMtp,
++                  std::span<const int> allowed_boundaries = {});
+   void Release(const std::string& key, bool success);
+   int Match(const std::string& key, std::span<const int32_t> prompt,
+             SessionLayout layout = SessionLayout::kMtp);
+@@ -69,7 +79,8 @@ class SessionCache {
+               std::span<const SessionRange> ranges, const Copy& copy,
+               const Cancel& cancel, int32_t d0,
+               SessionSaveTiming* timing = nullptr,
+-              SessionLayout layout = SessionLayout::kMtp);
++              SessionLayout layout = SessionLayout::kMtp,
++              SessionCacheLifetime lifetime = {});
+   size_t Bytes() const;
+ 
+  private:
+@@ -94,10 +105,16 @@ class SessionCache {
+     std::vector<size_t> sizes;
+     std::vector<trace::Digest> digests;
+     std::chrono::steady_clock::time_point used;
++    SessionCacheLifetime lifetime;
++    std::chrono::steady_clock::time_point expires;
++    std::chrono::steady_clock::time_point retention_end;
+     ~Entry();
+   };
+   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
+   void Refresh();
++  static bool Expired(const Entry& entry,
++                      std::chrono::steady_clock::time_point now);
++  static void Touch(Entry* entry, std::chrono::steady_clock::time_point now);
+   void Erase(Entries::iterator it);
+   Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
+                          const Copy& copy, const Cancel& cancel,
+diff --git a/src/server/cache_io.cpp b/src/server/cache_io.cpp
+index fbf890a4..0a0411ca 100644
+--- a/src/server/cache_io.cpp
++++ b/src/server/cache_io.cpp
+@@ -239,6 +239,7 @@ struct CacheIo::State {
+               init.sequence = ++sequence;
+               init.generation = current_generation;
+               init.operation = kInit;
++              init.offset = options.create_directory ? 1 : 0;
+               init.bytes = options.directory.size();
+               std::vector<uint8_t> path(options.directory.begin(),
+                                         options.directory.end());
+diff --git a/src/server/cache_worker.cpp b/src/server/cache_worker.cpp
+index ec658e7a..5e56a6e8 100644
+--- a/src/server/cache_worker.cpp
++++ b/src/server/cache_worker.cpp
+@@ -36,10 +36,36 @@ struct Storage {
+     if (directory >= 0) close(directory);
+     std::free(buffer);
+   }
+-  bool Open(const std::string& path) {
++  static int OpenOwnedPath(const std::string& path) {
++    if (path.empty() || path.front() != '/') return -1;
++    int parent = open("/", O_DIRECTORY | O_RDONLY | O_CLOEXEC);
++    size_t begin = 1;
++    while (parent >= 0 && begin < path.size()) {
++      const auto end = path.find('/', begin);
++      const auto part = path.substr(begin, end == path.npos ? end : end - begin);
++      if (part.empty() || part == "." || part == "..") {
++        close(parent);
++        return -1;
++      }
++      int next = openat(parent, part.c_str(),
++                        O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
++      if (next < 0 && errno == ENOENT &&
++          (!mkdirat(parent, part.c_str(), 0700) || errno == EEXIST))
++        next = openat(parent, part.c_str(),
++                       O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
++      close(parent);
++      parent = next;
++      if (end == path.npos) break;
++      begin = end + 1;
++    }
++    return parent;
++  }
++  bool Open(const std::string& path, bool create_directory) {
+     if (path.empty() || path.find('\0') != std::string::npos) return false;
+-    directory =
+-        open(path.c_str(), O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
++    directory = create_directory
++                    ? OpenOwnedPath(path)
++                    : open(path.c_str(),
++                           O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+     struct stat st {};
+     struct statfs fs {};
+     if (directory < 0 || fstat(directory, &st) || fstatfs(directory, &fs) ||
+@@ -140,7 +166,7 @@ uint64_t Rss() {
+ bool Shape(const Frame& f, bool initialized) {
+   if (f.reserved || f.magic != kMagic || !f.generation) return false;
+   if (!initialized)
+-    return f.operation == kInit && !f.file && !f.offset && f.bytes > 0 &&
++    return f.operation == kInit && !f.file && f.offset <= 1 && f.bytes > 0 &&
+            f.bytes <= 4096;
+   if (f.operation == kCreate) return !f.file && !f.offset && !f.bytes;
+ #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+@@ -181,7 +207,7 @@ int MaybeRunCacheWorker(int argc, char** argv) {
+       if (!generation) {
+         std::string path(frame.bytes, '\0');
+         if (!detail::WorkerTransfer(path.data(), path.size(), false)) return 3;
+-        ok = storage.Open(path);
++        ok = storage.Open(path, frame.offset == 1);
+         if (ok) {
+           generation = frame.generation;
+           reply.code = kOk;
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index 2e074d60..a73652cf 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -100,8 +100,17 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
+          R"("background":"durable_effective_request_snapshot",)"
+          R"("definition_bytes":262144,"expanded_bytes":4194304,)"
+          R"("max_variables":64,"max_versions":64,"retention":"until_deleted"},)"
++         R"("prompt_cache":{"enabled":true,"native_state":true,)"
++         R"("modes":["implicit","explicit"],"ttl":["30m","12h"],)"
++         R"("minimum_tokens":1024,"max_writes":4,"client_key_isolation":true,)"
++         R"("prewarm":"input_only_no_sampling","write_failure":"503_for_prewarm",)"
++         R"("usage":"actual_reads_and_new_written_prefix_tokens",)"
++         R"("diagnostics":"bounded_client_scoped_hashes_without_storage_io",)"
++         R"("diagnostic_entries":128,"diagnostic_client_entries":16,)"
++         R"("diagnostic_ttl_seconds":3600,"durable_cache":false,)"
++         R"("media_fingerprint_pending":true,"core_readiness_dependency":false},)"
+          R"("pending_execution":[)"
+-         R"("access_programs","moderation","prompt_cache_options",)"
++         R"("access_programs","moderation",)"
+          R"("file_resolution","builtin_tools"]})"
+          R"(,"conversations":{"profile":"q4t-conversations-v1",)"
+          R"("endpoint":"/v1/conversations","create":true,"retrieve":true,)"
+diff --git a/src/server/chat_contract.cpp b/src/server/chat_contract.cpp
+index 06896530..c026fd4f 100644
+--- a/src/server/chat_contract.cpp
++++ b/src/server/chat_contract.cpp
+@@ -1,6 +1,7 @@
+ #include "q4t/server/chat_contract.h"
+ #include "q4t/server/sampling.h"
+ #include "q4t/server/prediction.h"
++#include "q4t/server/prompt_cache_policy.h"
+ #include "q4t/server/legacy_tools.h"
+ #include "q4t/vision/media_plan.h"
+ 
+@@ -130,6 +131,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
+                         "session_id",
+                         "prefix_cache_scope",
+                         "prefix_cache_write_tokens",
++                        "prompt_cache_key",
++                        "prompt_cache_retention",
+                         "parse_response",
+                         "tool_choice",
+                         "parallel_tool_calls"},
+@@ -138,6 +141,12 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
+   ChatStorageOptions storage;
+   status = ParseChatStorageOptions(req, &storage, error_param);
+   if (!status) return status;
++  PromptCacheOptions cache;
++  status = ParsePromptCacheOptions(req, &cache, error_param);
++  if (!status) return status;
++  if (cache.requested && !req.GetString("prefix_cache_scope").empty())
++    return invalid("prefix_cache_scope",
++                   "Choose standard cache controls or a native prefix scope");
+   status = ValidateRequestCredentials(req);
+   if (!status) {
+     const auto* id = req.Find("request_id");
+diff --git a/src/server/chat_generation.cpp b/src/server/chat_generation.cpp
+index 3f30be1a..06161820 100644
+--- a/src/server/chat_generation.cpp
++++ b/src/server/chat_generation.cpp
+@@ -218,7 +218,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     return;
+   }
+ 
+-  const auto planning_config = PlanningConfig(fd);
++  auto planning_config = PlanningConfig(fd);
+   const auto client = http ? http->Client().Id() : std::string_view();
+   ChatRequestPlan request_plan;
+   CompletionRequestPlan completion_plan;
+@@ -244,6 +244,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         return;
+       }
+     }
++    planning_config.prewarm_only = responses->Envelope().cache.prewarm;
+     if (responses->Envelope().truncate) {
+       const auto context_deadline =
+           background
+@@ -358,8 +359,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+   const auto& constraints = request_plan.constraints;
+   const auto& sampling = request_plan.sampling;
+   const bool plain_greedy = sampling.PlainGreedy();
+-  const std::string request_prefix_scope =
+-      ClientScopedKey(client, req.GetString("prefix_cache_scope"));
++  const auto& cache_options = responses ? responses->Envelope().cache
++                                         : request_plan.cache;
++  const bool api_cache = !completion && (responses || cache_options.requested);
++  const bool cache_prewarm = responses && cache_options.prewarm;
++  const std::string api_cache_key =
++      "api-v1:" + trace::HexDigest(trace::Sha256(
++                      {reinterpret_cast<const uint8_t*>(cache_options.key.data()),
++                       cache_options.key.size()}));
++  const std::string request_prefix_scope = ClientScopedKey(
++      client, api_cache ? api_cache_key : req.GetString("prefix_cache_scope"));
+   const int request_prefix_write_tokens =
+       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
+   std::vector<std::unique_ptr<SessionLease>> shared_writes;
+@@ -484,9 +493,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+ 
+   std::string prompt;
+   std::vector<VisionItem> items;
++  ChatPromptLayout prompt_layout;
+   if (!completion)
+     s = PrepareChatPrompt(req, constraints, &prompt, &items,
+-                          &planning_error.param, &planning_error.code);
++                          &planning_error.param, &planning_error.code,
++                          api_cache ? &prompt_layout : nullptr);
+   if (!s) {
+     SendError(fd, 400, s.message(), {}, planning_error.code,
+               planning_error.param);
+@@ -628,7 +639,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     media_plan = {};
+     auto status =
+         PrepareChatPrompt(step_request, step.constraints, &prompt, &items,
+-                          &planning_error.param, &planning_error.code);
++                          &planning_error.param, &planning_error.code,
++                          api_cache ? &prompt_layout : nullptr);
+     if (status) {
+       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+       if (!lock.owns_lock())
+@@ -650,7 +662,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     prompt_encoded = status.ok();
+     return status;
+   };
+-  if (responses) {
++  if (responses && !cache_prewarm) {
+     const auto selected =
+         responses->SelectCompaction(prompt_u32.size(), planning_config);
+     if (!selected.ok()) {
+@@ -686,6 +698,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                                                      : prompt_u32.size(),
+         completion                                   ? completion_output_tokens
+         : standalone_compact && !compact_step_needed ? 0
++        : cache_prewarm                              ? 0
+         : responses                                  ? request_output_limit
+                     : prompt_budget.total_output);
+     if (result != ClientRateResult::kAllowed) {
+@@ -710,6 +723,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       completion_plan.best_of, stream);
+   ResponsesSummaryPlan summary_plan;
+   ResponsesUsage responses_usage;
++  std::optional<PromptCacheDiagnostics::Observation> cache_observation;
+   size_t responses_completed_calls = 0;
+   const auto completed_tokens = [&] {
+     if (responses) return static_cast<uint64_t>(responses_usage.output_tokens);
+@@ -809,11 +823,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         !internal_step && sampling.logprobs &&
+         (!completion || completion_plan.logprobs >= 0);
+     const bool prediction_enabled = step_plan.prediction.enabled;
+-    const int max_tokens = responses ? ChatOutputLimit(req, planning_config)
++    const bool prewarm = cache_prewarm && !internal_step;
++    const int max_tokens = prewarm ? 0
++                          : responses ? ChatOutputLimit(req, planning_config)
+                                      : request_output_limit;
+-    const std::string prefix_scope = internal_step ? "" : request_prefix_scope;
+-    const int prefix_write_tokens =
+-        internal_step ? 0 : request_prefix_write_tokens;
++    std::string prefix_scope = internal_step ? "" : request_prefix_scope;
+     SessionLease summary_session;
+     auto& session = internal_step ? summary_session : request_session;
+     if (summary_step || compacted_primary) {
+@@ -1170,7 +1184,73 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       return;
+     }
+     ids.assign(prompt_u32.begin(), prompt_u32.end());
+-    const size_t required_capacity = prompt_budget.required_capacity;
++    PromptCachePlan cache_plan;
++    bool cache_available = prefix_cache_.Health().available;
++    if (api_cache && !internal_step) {
++      // Visual token expansion needs a media-aware state fingerprint (A10).
++      // Never route images through the text-only cached prefill path.
++      bool mapped = items.empty();
++      cache_available = cache_available && mapped;
++      if (items.empty() && prompt_u32.size() >= 1024) {
++        std::vector<size_t> offsets;
++        Status planned;
++        {
++          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
++          planned = lock.owns_lock()
++                        ? tok_->EchoByteOffsets(prompt, prompt_u32, true,
++                                                 &offsets,
++                                                 {.cancelled = cancelled})
++                        : Status::Fail("Cache mapping cancelled");
++        }
++        std::span<const PromptCacheInputBoundary> boundaries;
++        if (responses)
++          boundaries = responses->Generation().input.cache_boundaries;
++        if (planned) {
++          if (const auto* messages = req.GetArray("messages")) {
++            planned = PlanPromptCacheLayout(
++                cache_options, *messages, prompt_layout, boundaries, offsets,
++                prompt.size(), &cache_plan);
++          } else {
++            const PromptCacheBoundary raw{
++                static_cast<int>(prompt_u32.size()) - 1, 0,
++                PromptCacheBoundary::Kind::kEligibleMessage};
++            planned = PlanPromptCache(cache_options, {&raw, 1},
++                                       static_cast<int>(prompt_u32.size()),
++                                       &cache_plan);
++          }
++        }
++        if (!planned) {
++          mapped = false;
++          cache_available = false;
++          std::fprintf(stderr,
++                       "[prefix-cache] request=%s mapping=unavailable\n",
++                       request_id.c_str());
++        }
++      }
++      if (!mapped ||
++          (cache_plan.reads.empty() && cache_plan.writes.empty()))
++        prefix_scope.clear();
++      if (prewarm && !mapped && prompt_u32.size() >= 1024) {
++        SendError(fd, 503, "Prompt cache prewarm is unavailable", {},
++                  "prompt_cache_unavailable", "prompt_cache_options.prewarm");
++        return;
++      }
++    } else if (!internal_step && request_prefix_write_tokens > 0) {
++      cache_plan.writes.push_back({request_prefix_write_tokens, 1800});
++    }
++    const auto next_cache_boundary = [&](int base, int count) {
++      for (const auto& point : cache_plan.writes)
++        if (point.tokens > base) return std::min(count, point.tokens - base);
++      return count;
++    };
++    const auto cache_boundary = [&](int boundary) -> const PromptCacheWrite* {
++      for (const auto& point : cache_plan.writes)
++        if (point.tokens == boundary) return &point;
++      return nullptr;
++    };
++    int cache_written_tokens = 0;
++    const size_t required_capacity =
++        prewarm ? prompt_u32.size() : prompt_budget.required_capacity;
+ 
+     // B1 multi-request scheduling: each request runs on its own thread. All
+     // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
+@@ -1428,8 +1508,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                                     : 0;
+     const bool request_mtp =
+         mtp_loaded_ && plain_greedy && !structured && !prediction_enabled &&
+-        max_tokens > 0;
+-    const bool stream_mtp = request_mtp && explicit_slots;
++        (max_tokens > 0 || prewarm);
++    const bool stream_mtp =
++        request_mtp && (explicit_slots || (api_cache && !prefix_scope.empty()));
+     const bool target_cache =
+         !request_mtp && (session.cache || !prefix_scope.empty());
+     const SessionLayout cache_layout =
+@@ -1562,8 +1643,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
+                                              "request.session_trunk");
+       if (!allocated.ok()) {
+-        allocation_error(allocated);
+-        return;
++        if (api_cache && !session.cache && allocated.exhausted()) {
++          // Optional cache scratch is not a model health dependency. The
++          // prefill still runs normally; prewarm reports the failed write.
++          prefix_scope.clear();
++          cache_available = false;
++        } else {
++          allocation_error(allocated);
++          return;
++        }
+       }
+     }
+     int restored_prefix = 0;
+@@ -1597,9 +1685,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       SessionCache* selected_cache = &session_cache_;
+       std::string selected_key = session.key;
+       SessionLease shared_read;
+-      if (!prefix_scope.empty()) {
++      if (!prefix_scope.empty() && (!api_cache || !cache_plan.reads.empty())) {
+         const int shared = prefix_cache_.MatchShared(
+-            prefix_scope, ids, &shared_read.key, cache_layout);
++            prefix_scope, ids, &shared_read.key, cache_layout,
++            api_cache ? std::span<const int>(cache_plan.reads)
++                      : std::span<const int>());
+         if (shared > 0) shared_read.cache = &prefix_cache_;
+         if (shared > prefix) {
+           prefix = shared;
+@@ -1663,7 +1753,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                    target_cache ? "target" : "mtp");
+     };
+     const auto save_target = [&](SessionCache* cache, const std::string& key,
+-                                 const char* kind) {
++                                 const char* kind,
++                                 SessionCacheLifetime lifetime = {}) {
+       RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
+       const auto begin = std::chrono::steady_clock::now();
+       SessionSaveTiming timing(request_id.c_str(), kind);
+@@ -1680,7 +1771,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         std::vector<int32_t> prefix(seq.history);
+         prefix.push_back(-1);  // No draft token is part of a target snapshot.
+         saved = cache->Save(key, prefix, ranges, session_copy, cancelled, -1,
+-                            &timing, SessionLayout::kTarget);
++                            &timing, SessionLayout::kTarget, lifetime);
+         if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
+       } else if (saved.ok()) {
+         saved = Status::Fail("incomplete target session boundary");
+@@ -1697,6 +1788,61 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                    saved.ok() ? "none" : saved.message().c_str(), kind);
+       return saved;
+     };
++    const auto save_shared = [&](int boundary) {
++      const auto* point = cache_boundary(boundary);
++      if (!point || prefix_scope.empty() || boundary >= T) return;
++      const auto digest =
++          trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
++                         static_cast<size_t>(boundary) * sizeof(int32_t)});
++      const std::string snapshot_key =
++          prefix_scope + (target_cache ? ":target-v1:" : ":") +
++          trace::HexDigest(digest);
++      if (!prefix_cache_.AcquireNew(snapshot_key,
++                                     api_cache ? point->ttl_seconds : 0))
++        return;
++      auto lease = std::make_unique<SessionLease>();
++      lease->cache = &prefix_cache_;
++      lease->key = snapshot_key;
++      shared_writes.push_back(std::move(lease));
++      const SessionCacheLifetime lifetime =
++          api_cache ? PromptCacheLifetime(cache_options, point->ttl_seconds,
++                                           responses != nullptr)
++                    : SessionCacheLifetime{};
++      Status saved;
++      if (target_cache) {
++        saved = save_target(&prefix_cache_, snapshot_key, "shared", lifetime);
++      } else {
++        RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
++        SessionSaveTiming timing(request_id.c_str(), "shared");
++        std::vector<SessionRange> ranges;
++        {
++          SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
++          saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
++                                     d_mtp_g, d_session_trunk, &ranges);
++        }
++        if (saved)
++          saved = prefix_cache_.Save(
++              snapshot_key, {ids.data(), static_cast<size_t>(boundary + 1)},
++              ranges, session_copy, cancelled, -1, &timing,
++              SessionLayout::kMtp, lifetime);
++        timing.Report(saved.ok());
++      }
++      // Track actual persisted coverage; terminal accounting removes the
++      // prefix already counted as a read so nested snapshots do not double
++      // count input tokens. This is local work accounting, not cloud pricing.
++      if (saved) {
++        cache_written_tokens = std::max(cache_written_tokens, boundary);
++        cache_available = true;
++      } else {
++        cache_available = false;
++      }
++      if (session_gpu_error) s = saved;
++      std::fprintf(stderr,
++                   "[prefix-cache] request=%s event=write prefix=%d ttl=%d "
++                   "saved=%d bytes=%zu\n",
++                   request_id.c_str(), boundary, point->ttl_seconds, saved.ok(),
++                   prefix_cache_.Bytes());
++    };
+     if (score_prompt) {
+       // Teacher-forced prompt scores come from real target logits. Bound
+       // scratch/readback to 16 rows independently of the prompt length.
+@@ -1791,6 +1937,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+       if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+       if (s.ok() && (session.cache || !prefix_scope.empty())) restore_cache();
++      if (s.ok() && restored_prefix > 0) save_shared(restored_prefix);
+       std::vector<int32_t> shifted;
+       std::vector<int> positions;
+       int chunks = 0;
+@@ -1800,27 +1947,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+           break;
+         }
+         const int base = seq.position;
+-        int count = std::min(chunk, T - base);
+-        if (prefix_write_tokens > base)
+-          count = std::min(count, prefix_write_tokens - base);
++        const int count = next_cache_boundary(base, std::min(chunk, T - base));
+         const int boundary = base + count;
+         const bool last = boundary == T;
+-        SessionLease* shared_write = nullptr;
+-        if (!last && prefix_write_tokens > 0 &&
+-            boundary == prefix_write_tokens) {
+-          const auto digest =
+-              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
+-                             static_cast<size_t>(boundary) * sizeof(int32_t)});
+-          const std::string snapshot_key =
+-              prefix_scope + ':' + trace::HexDigest(digest);
+-          if (prefix_cache_.AcquireNew(snapshot_key)) {
+-            auto lease = std::make_unique<SessionLease>();
+-            lease->cache = &prefix_cache_;
+-            lease->key = snapshot_key;
+-            shared_write = lease.get();
+-            shared_writes.push_back(std::move(lease));
+-          }
+-        }
++        const bool snapshot = !last && cache_boundary(boundary);
+         if (router_trace_)
+           router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
+         s = model::ModelPrefillTextChunk(
+@@ -1837,6 +1967,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                                router_trace_.get(),
+                                &metrics_.execution_steps_total);
+         if (!s.ok()) break;
++        // A prewarm has no next output token to sample. Earlier boundaries
++        // already contain the complete draft state needed by later requests.
++        if (prewarm && last) {
++          ++chunks;
++          break;
++        }
+         shifted.resize(count);
+         positions.resize(count);
+         for (int i = 0; i < count; ++i) {
+@@ -1846,12 +1982,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         }
+         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
+                                 positions.data(), count, &stream_d0, d_mtp_g,
+-                                nullptr, seq_id, last, shared_write != nullptr);
++                                nullptr, seq_id, last, snapshot);
+         // The target chunk was committed above. Drain a failed draft submission
+         // before releasing this request's storage or giving scratch to a peer.
+         s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr,
+                                &metrics_.execution_steps_total);
+-        if (s.ok() && (last || shared_write) && d_session_trunk) {
++        if (s.ok() && (last || snapshot) && d_session_trunk) {
+           const auto error = cudaMemcpy(
+               d_session_trunk,
+               d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
+@@ -1861,36 +1997,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+             s = Status::Fail("session prefill final trunk copy failed");
+           }
+         }
+-        if (s.ok() && shared_write) {
+-          RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
+-          const auto save_begin = std::chrono::steady_clock::now();
+-          SessionSaveTiming timing(request_id.c_str(), "shared");
+-          std::vector<SessionRange> ranges;
+-          Status saved;
+-          {
+-            SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+-            saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
+-                                       d_mtp_g, d_session_trunk, &ranges);
+-          }
+-          if (saved.ok())
+-            saved = prefix_cache_.Save(
+-                shared_write->key,
+-                {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
+-                session_copy, cancelled, -1, &timing);
+-          timing.Report(saved.ok());
+-          if (session_gpu_error) s = saved;
+-          std::fprintf(stderr,
+-                       "[prefix-cache] request=%s event=save prefix=%d "
+-                       "bytes=%zu ms=%.3f error=%s\n",
+-                       request_id.c_str(), boundary, prefix_cache_.Bytes(),
+-                       std::chrono::duration<double, std::milli>(
+-                           std::chrono::steady_clock::now() - save_begin)
+-                           .count(),
+-                       saved.ok() ? "none" : saved.message().c_str());
+-        }
++        if (s.ok() && snapshot) save_shared(boundary);
+         ++chunks;
+       }
+-      if (s.ok() && !prefill_cancelled) {
++      if (s.ok() && !prefill_cancelled && !prewarm) {
+         s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+         if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+         stream_draft_ready = s.ok();
+@@ -1915,15 +2025,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       if (s.ok())
+         s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+       if (s.ok()) restore_cache();
++      if (s.ok() && restored_prefix > 0) save_shared(restored_prefix);
+       while (s.ok() && seq.position < T) {
+         if (cancelled()) {
+           prefill_cancelled = true;
+           break;
+         }
+         const int base = seq.position;
+-        int count = std::min(chunk, T - base);
+-        if (prefix_write_tokens > base)
+-          count = std::min(count, prefix_write_tokens - base);
++        const int count = next_cache_boundary(base, std::min(chunk, T - base));
+         const int boundary = base + count;
+         const bool last = boundary == T;
+         if (router_trace_)
+@@ -1941,21 +2050,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                                router_trace_.get(),
+                                &metrics_.execution_steps_total);
+-        if (s.ok() && !last && boundary == prefix_write_tokens) {
+-          const auto digest =
+-              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
+-                             static_cast<size_t>(boundary) * sizeof(int32_t)});
+-          const std::string key =
+-              prefix_scope + ":target-v1:" + trace::HexDigest(digest);
+-          if (prefix_cache_.AcquireNew(key)) {
+-            auto lease = std::make_unique<SessionLease>();
+-            lease->cache = &prefix_cache_;
+-            lease->key = key;
+-            shared_writes.push_back(std::move(lease));
+-            const auto saved = save_target(&prefix_cache_, key, "shared");
+-            if (session_gpu_error) s = saved;
+-          }
+-        }
++        if (s.ok() && !last) save_shared(boundary);
+       }
+       if (!s.ok()) seq.Fail();
+     } else if (scheduled_chunk_prefill) {
+@@ -2231,7 +2326,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+ 
+     std::vector<int32_t> generated;
+     int next_token = -1;
+-    std::string finish_reason = max_tokens == 0 ? "length" : "stop";
++    std::string finish_reason = max_tokens == 0 && !prewarm ? "length" : "stop";
+     bool generation_failed = false;
+     int stop_mtp_steps = 0;
+     int stop_mtp_tokens = 0;
+@@ -2351,7 +2446,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     // back to plain decode. MTP is precision-safe: the main model verifies
+     // every draft token under the documented T>1 near-tie contract; it need not
+     // be bit-identical to the T=1 arithmetic path.
+-    bool use_mtp = request_mtp && d_trunk_full != nullptr &&
++    bool use_mtp = request_mtp && max_tokens > 0 && d_trunk_full != nullptr &&
+                    thinking_budget.CanSpeculate(mtp_k_ + 1);
+     int32_t mtp_b = stream_draft_ready ? next_token : -1;
+     int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
+@@ -3185,14 +3280,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       return;
+     }
+     diagnostic.Stage("response");
+-    if (response_status && structured && !structured->Terminated() &&
++    if (prewarm && !cache_plan.writes.empty() &&
++        std::max(cache_written_tokens, restored_prefix) <
++            cache_plan.writes.back().tokens) {
++      err_guard.ok = false;
++      SendError(fd, 503, "Prompt cache prewarm did not persist its prefix", {},
++                "prompt_cache_unavailable", "prompt_cache_options.prewarm");
++      return;
++    }
++    if (!prewarm && response_status && structured && !structured->Terminated() &&
+         !(responses && finish_reason == "length" &&
+           structured->Failure() == GrammarFailure::kNone))
+       response_status = Status::Fail(
+           "constrained response did not reach a grammar-accepted stop token");
+     // Both transports use the same parser. Never publish a successful terminal
+     // (or a session snapshot) for malformed/truncated model tool output.
+-    if (response_status.ok()) {
++    if (!prewarm && response_status.ok()) {
+       if (responses || completion || stream || text_stop.Enabled() ||
+           sampling.logprobs || prediction_enabled) {
+         std::vector<detail::Utf8Span> spans;
+@@ -3208,14 +3311,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+           response_status = tok_->Decode(gen_u32, true, &text);
+         }
+-        if (response_status.ok()) {
++        if (!prewarm && response_status.ok()) {
+           std::vector<ResponseDelta> ignored;
+           response_status =
+               response_parser.Append(detail::NormalizeUtf8(text), &ignored);
+         }
+       }
+     }
+-    if (response_status.ok()) {
++    if (!prewarm && response_status.ok()) {
+       std::vector<ResponseDelta> deltas;
+       response_status =
+           responses && finish_reason == "length"
+@@ -3292,11 +3395,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       const ResponsesUsage step_usage{
+           T, restored_prefix, static_cast<int64_t>(generated.size()),
+           internal_step ? static_cast<int64_t>(generated.size())
+-                        : thinking_budget.ReasoningTokens()};
++                        : thinking_budget.ReasoningTokens(),
++          std::max(0, cache_written_tokens - restored_prefix)};
+       responses_usage.input_tokens += step_usage.input_tokens;
+       responses_usage.cached_tokens += step_usage.cached_tokens;
++      responses_usage.cache_write_tokens += step_usage.cache_write_tokens;
+       responses_usage.output_tokens += step_usage.output_tokens;
+       responses_usage.reasoning_tokens += step_usage.reasoning_tokens;
++      if (!internal_step) {
++        responses->CacheDiagnostics(prompt_cache_diagnostics_.Compare(
++            client, cache_options.comparison_response_id,
++            responses->Output().Snapshot(), ids, restored_prefix,
++            cache_available, compacted_primary));
++        cache_observation = PromptCacheDiagnostics::Observe(
++            responses->Output().Snapshot(), ids,
++            std::max(restored_prefix, cache_written_tokens), compacted_primary);
++      }
+       if (compaction_step) {
+         if (finish_reason == "length") {
+           err_guard.ok = false;
+@@ -3322,7 +3436,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+           continue;
+         }
+       }
+-      if (!internal_step && finish_reason != "length" &&
++      if (!internal_step && !prewarm && finish_reason != "length" &&
+           !responses->Envelope().summary.empty()) {
+         s = PlanResponsesSummary(
+             responses->Envelope(), responses->Output().Snapshot(),
+@@ -3361,6 +3475,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                   finished.ClientCode());
+         return;
+       }
++      if (cache_observation)
++        prompt_cache_diagnostics_.Remember(client, responses->Id(),
++                                            std::move(*cache_observation));
+     } else if (completion) {
+       CompletionCandidate candidate;
+       candidate.text = (completion_plan.echo ? completion_prompt->echo_text : "") +
+diff --git a/src/server/chat_plan.cpp b/src/server/chat_plan.cpp
+index 6ede50cd..b0ad798f 100644
+--- a/src/server/chat_plan.cpp
++++ b/src/server/chat_plan.cpp
+@@ -36,6 +36,7 @@ std::string Array(const std::vector<T>& values) {
+ const char* Bool(bool value) { return value ? "true" : "false"; }
+ 
+ int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
++  if (config.prewarm_only) return 0;
+   const int fallback =
+       config.client_limits
+           ? std::min(config.default_max_tokens,
+@@ -95,6 +96,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
+   }
+   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
+   if (!status) return status;
++  status = ParsePromptCacheOptions(req, &plan->cache, &error->param);
++  if (!status) return status;
+   status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,
+                                   &error->param);
+   if (!status) return status;
+@@ -155,7 +158,8 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
+           static_cast<int>(config.client_limits->max_output_tokens))
+     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
+                 "requested output exceeds client token limit");
+-  if (!tokens || tokens >= static_cast<size_t>(config.max_len))
++  if (!tokens || tokens > static_cast<size_t>(config.max_len) ||
++      (!config.prewarm_only && tokens == static_cast<size_t>(config.max_len)))
+     return Fail(error, "context_length_exceeded", input,
+                 "prompt tokens must be positive and below context capacity");
+   ChatPromptBudget planned;
+diff --git a/src/server/chat_prompt.cpp b/src/server/chat_prompt.cpp
+index fe91bac2..cb501ca8 100644
+--- a/src/server/chat_prompt.cpp
++++ b/src/server/chat_prompt.cpp
+@@ -17,11 +17,15 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
+                           std::string* err, bool add_vision_id,
+                           int* image_count, int* video_count,
+                           size_t message_index, std::string* error_param,
+-                          std::string* error_code) {
++                          std::string* error_code,
++                          std::vector<size_t>* part_ends) {
+   std::string out;
+   const io::Json* content = m.Find("content");
+   if (content == nullptr || content->IsNull()) return out;
+-  if (content->IsString()) return content->str;
++  if (content->IsString()) {
++    if (part_ends) part_ends->push_back(content->str.size());
++    return content->str;
++  }
+   if (!content->IsArray()) {
+     *err = "Unexpected content type.";
+     return out;
+@@ -67,6 +71,7 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
+       if (add_vision_id)
+         out += "Picture " + std::to_string(*image_count) + ": ";
+       out += "<|vision_start|><|image_pad|><|vision_end|>";
++      if (part_ends) part_ends->push_back(out.size());
+       continue;
+     }
+     const io::Json* vf = part.Find("video_frames");
+@@ -137,17 +142,20 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
+         out += std::format("<{:.1f} seconds>", (times[frame] + last) / 2);
+         out += "<|vision_start|><|video_pad|><|vision_end|>";
+       }
++      if (part_ends) part_ends->push_back(out.size());
+       continue;
+     }
+     const io::Json* text = part.Find("text");
+     if (text && text->IsString()) {
+       out += text->str;
++      if (part_ends) part_ends->push_back(out.size());
+       continue;
+     }
+     const auto* refusal = part.Find("refusal");
+     if (m.GetString("role") == "assistant" &&
+         part.GetString("type") == "refusal" && refusal && refusal->IsString()) {
+       out += refusal->str;
++      if (part_ends) part_ends->push_back(out.size());
+       continue;
+     }
+     *err = "Unexpected item type in content.";
+@@ -162,13 +170,15 @@ Status PrepareChatPrompt(const io::Json& request,
+                          const OutputConstraints& constraints,
+                          std::string* prompt_out,
+                          std::vector<VisionItem>* items_out,
+-                         std::string* error_param, std::string* error_code) {
++                         std::string* error_param, std::string* error_code,
++                         ChatPromptLayout* layout) {
++  if (layout) *layout = {};
+   if (HasLegacyTools(request)) {
+     LegacyToolRequest normalized;
+     auto status = NormalizeLegacyTools(request, &normalized, error_param);
+     if (!status) return status;
+     status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
+-                               items_out, error_param, error_code);
++                               items_out, error_param, error_code, layout);
+     if (!status) LegacyToolErrorParam(request, error_param);
+     return status;
+   }
+@@ -197,16 +207,19 @@ Status PrepareChatPrompt(const io::Json& request,
+     if (!vision_id) vision_id = req.Find("add_vision_id");
+     int image_count = 0, video_count = 0;
+     std::vector<std::string> contents;
++    if (layout) layout->part_ends.resize(messages->array.size());
+     for (size_t index = 0; index < messages->array.size(); ++index) {
+       const auto& message = messages->array[index];
+       std::string error;
+       contents.push_back(RenderContent(
+           message, &items, &error, vision_id && vision_id->boolean,
+-          &image_count, &video_count, index, error_param, error_code));
++          &image_count, &video_count, index, error_param, error_code,
++          layout ? &layout->part_ends[index] : nullptr));
+       if (!error.empty()) return fail(error);
+       error_param->clear();
+     }
+-    const auto rendered = RenderChatPrompt(req, contents, &prompt);
++    const auto rendered = RenderChatPrompt(req, contents, &prompt,
++                                           layout ? &layout->messages : nullptr);
+     if (!rendered) return fail(rendered.message());
+   } else {
+     prompt = req.GetString("prompt");
+diff --git a/src/server/chat_server.cpp b/src/server/chat_server.cpp
+index 56f46d81..aed70548 100644
+--- a/src/server/chat_server.cpp
++++ b/src/server/chat_server.cpp
+@@ -191,9 +191,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
+                  SessionCache::kDiskBudget, SessionCache::kRamBudget,
+                  SessionCache::kStagingBytes);
+   }
+-  if (!opts.prefix_cache_dir.empty()) {
++  {
++    // Reuse the owned application-state filesystem for anonymous cache files
++    // unless an operator selects another SSD directory. The isolated worker
++    // performs all filesystem work; failure only disables cache reuse.
++    const auto directory = opts.prefix_cache_dir.empty()
++                               ? object_options.directory + "-prompt-cache"
++                               : opts.prefix_cache_dir;
+     const Status cache_status =
+-        prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
++        prefix_cache_.Open(directory, 1024, size_t{8} << 30, false,
++                            opts.prefix_cache_dir.empty());
+     if (!cache_status.ok()) {
+       std::fprintf(stderr, "[prefix-cache] unavailable; generation continues\n");
+     }
+diff --git a/src/server/chat_template.cpp b/src/server/chat_template.cpp
+index f0e80448..a2579818 100644
+--- a/src/server/chat_template.cpp
++++ b/src/server/chat_template.cpp
+@@ -25,7 +25,8 @@ bool IsSpace(unsigned cp) {
+          cp == 0x3000;
+ }
+ 
+-std::string Trim(const std::string& s) {
++std::string Trim(const std::string& s, size_t* begin = nullptr,
++                  size_t* bytes = nullptr) {
+   size_t first = s.size(), last = 0;
+   for (size_t i = 0; i < s.size();) {
+     const size_t start = i;
+@@ -49,7 +50,10 @@ std::string Trim(const std::string& s) {
+       last = i;
+     }
+   }
+-  return first == s.size() ? "" : s.substr(first, last - first);
++  const size_t length = first == s.size() ? 0 : last - first;
++  if (begin) *begin = first;
++  if (bytes) *bytes = length;
++  return s.substr(first, length);
+ }
+ 
+ void Quote(const std::string& s, std::string* out) {
+@@ -469,12 +473,14 @@ Status ValidateChatMessageProfile(const io::Json& messages,
+ 
+ Status RenderChatPrompt(const io::Json& request,
+                         const std::vector<std::string>& contents,
+-                        std::string* prompt) {
++                        std::string* prompt,
++                        std::vector<ChatMessageSpan>* spans) {
+   prompt->clear();
++  if (spans) spans->clear();
+   if (HasLegacyTools(request)) {
+     LegacyToolRequest normalized;
+     const auto status = NormalizeLegacyTools(request, &normalized);
+-    return status ? RenderChatPrompt(normalized.request, contents, prompt)
++    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans)
+                   : status;
+   }
+   auto definitions = ValidateToolDefinitions(request);
+@@ -540,11 +546,19 @@ Status RenderChatPrompt(const io::Json& request,
+     instructions += EncodeSchemaJson(*specification);
+   }
+   const auto& ms = messages->array;
++  if (spans) spans->resize(ms.size());
++  const auto begin_content = [&](size_t index) {
++    if (spans) (*spans)[index].prompt_begin = prompt->size();
++  };
++  const auto end_message = [&](size_t index) {
++    if (spans) (*spans)[index].prompt_end = prompt->size();
++  };
+   std::vector<std::string> text;
+   size_t last_query = ms.size();
+   for (size_t i = 0; i < ms.size(); ++i) {
+     if (!ms[i].IsObject()) return Status::Fail("message must be an object");
+-    text.push_back(Trim(contents[i]));
++    text.push_back(Trim(contents[i], spans ? &(*spans)[i].source_begin : nullptr,
++                        spans ? &(*spans)[i].source_size : nullptr));
+     const std::string role = ms[i].GetString("role");
+     if (role == "assistant") {
+       const auto refusal = Trim(ms[i].GetString("refusal"));
+@@ -597,23 +611,36 @@ Status RenderChatPrompt(const io::Json& request,
+           "text or grammar format applies to the decoded string. Do not "
+           "add text after a tool call.";
+     }
+-    if (!system.empty()) *prompt += "\n\n" + system;
++    if (!system.empty()) *prompt += "\n\n";
++    if (leading_instruction) begin_content(0);
++    *prompt += system;
+     *prompt += "<|im_end|>\n";
++    if (leading_instruction) end_message(0);
+   } else if (!system.empty() || !instructions.empty() ||
+              (leading_instruction && !Participant(ms[0]).empty())) {
+     *prompt = first_header + instructions;
+     if (!system.empty()) {
+       if (!instructions.empty()) *prompt += "\n\n";
+-      *prompt += system;
+     }
++    if (leading_instruction) begin_content(0);
++    *prompt += system;
+     *prompt += "<|im_end|>\n";
++    if (leading_instruction) end_message(0);
+   }
+   for (size_t i = 0; i < ms.size(); ++i) {
+     const std::string role = ms[i].GetString("role");
+     if (IsChatInstructionRole(role)) {
+-      if (i) *prompt += Header(ms[i], "system") + text[i] + "<|im_end|>\n";
++      if (i) {
++        *prompt += Header(ms[i], "system");
++        begin_content(i);
++        *prompt += text[i] + "<|im_end|>\n";
++        end_message(i);
++      }
+     } else if (role == "user") {
+-      *prompt += Header(ms[i], "user") + text[i] + "<|im_end|>\n";
++      *prompt += Header(ms[i], "user");
++      begin_content(i);
++      *prompt += text[i] + "<|im_end|>\n";
++      end_message(i);
+     } else if (role == "assistant") {
+       *prompt += Header(ms[i], "assistant");
+       if (preserve || i > last_query) {
+@@ -623,10 +650,12 @@ Status RenderChatPrompt(const io::Json& request,
+         *prompt +=
+             "<think>\n" + Trim(std::string(reasoning)) + "\n</think>\n\n";
+       }
++      begin_content(i);
+       *prompt += text[i];
+       s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt);
+       if (!s) return s;
+       *prompt += "<|im_end|>\n";
++      end_message(i);
+     } else if (role == "tool") {
+       if (i == 0 || ms[i - 1].GetString("role") != "tool") {
+         *prompt += "<|im_start|>user";
+@@ -635,10 +664,12 @@ Status RenderChatPrompt(const io::Json& request,
+       const auto participant = Participant(ms[result]);
+       *prompt += "\n<tool_response>\n";
+       if (!participant.empty()) *prompt += participant.substr(1) + "\n";
++      begin_content(result);
+       *prompt += text[result] + "\n</tool_response>";
+       if (i + 1 == ms.size() || ms[i + 1].GetString("role") != "tool") {
+         *prompt += "<|im_end|>\n";
+       }
++      end_message(result);
+     }
+   }
+   *prompt += "<|im_start|>assistant\n";
+diff --git a/src/server/responses_execution.cpp b/src/server/responses_execution.cpp
+index 219f2b0c..bedcd7bd 100644
+--- a/src/server/responses_execution.cpp
++++ b/src/server/responses_execution.cpp
+@@ -58,6 +58,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
+   if (compaction_.chat.normalized_request)
+     bytes += OutputJson(*compaction_.chat.normalized_request).size();
+   for (const auto& path : generation_.input.message_paths) bytes += path.size();
++  bytes += generation_.input.cache_boundaries.size() *
++           sizeof(PromptCacheInputBoundary);
+   bytes += generation_.chat.constraints.structural_tag.size();
+   return bytes;
+ }
+@@ -107,8 +109,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
+     required = "background";
+   else if (envelope_.reasoning_mode != "standard")
+     required = "reasoning.mode";
+-  for (const char* key :
+-       {"access_programs", "moderation", "prompt_cache_options"})
++  for (const char* key : {"access_programs", "moderation"})
+     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
+   if (!required.empty()) {
+     auto reply =
+diff --git a/src/server/responses_input.cpp b/src/server/responses_input.cpp
+index faafece2..1c22d3c7 100644
+--- a/src/server/responses_input.cpp
++++ b/src/server/responses_input.cpp
+@@ -105,9 +105,21 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
+     const auto at = std::string(path) + '[' + std::to_string(i) + ']';
+     const auto type = part.GetString("type");
+     Status status;
++    bool cache_boundary = false;
++    int cache_ttl = 0;
++    status = ParsePromptCacheBreakpoint(part.Find("prompt_cache_breakpoint"),
++                                       at + ".prompt_cache_breakpoint",
++                                       &cache_boundary, &cache_ttl,
++                                       &error->param);
++    if (!status) return status;
++    if (part.Has("prompt_cache_breakpoint") && type != "input_text" &&
++        type != "input_image" && type != "input_file")
++      return Invalid(error, at + ".prompt_cache_breakpoint",
++                     "Cache breakpoints require an input content block");
+     Json mapped;
+     if (type == "input_text" || type == "output_text") {
+-      status = InputFields(part, {"type", "text", "annotations", "logprobs"},
++      status = InputFields(part, {"type", "text", "annotations", "logprobs",
++                                  "prompt_cache_breakpoint"},
+                            &error->param, at);
+       if (status) status = TextField(part, "text", at, error);
+       if (!status) return status;
+@@ -133,7 +145,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
+         return Invalid(error, at + ".type", "refusal requires assistant");
+       mapped = part;
+     } else if (type == "input_image") {
+-      status = InputFields(part, {"type", "detail", "image_url", "file_id"},
++      status = InputFields(part, {"type", "detail", "image_url", "file_id",
++                                  "prompt_cache_breakpoint"},
+                            &error->param, at);
+       if (!status) return status;
+       if (Nonnull(part, "file_id")) {
+@@ -160,6 +173,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
+     } else {
+       return Invalid(error, at + ".type", "unresolved Responses content type");
+     }
++    if (cache_boundary)
++      Set(&mapped, "prompt_cache_breakpoint", *part.Find("prompt_cache_breakpoint"));
+     content->array.push_back(std::move(mapped));
+   }
+   return {};
+@@ -226,6 +241,23 @@ Status NormalizeResponsesInput(const io::Json& request,
+   plan.items = Array();
+   plan.messages = Array();
+   const auto append = [&](Json message, std::string path) {
++    // Carry annotations through phase insertion/refusal splitting/tool order,
++    // then keep them separate from the model's closed Chat request shape.
++    if (const auto* value = message.Find("content"); value && value->IsArray()) {
++      auto& content = Field(message, "content");
++      for (size_t i = 0; i < content.array.size(); ++i) {
++        auto& part = content.array[i];
++        if (const auto* boundary = part.Find("prompt_cache_breakpoint")) {
++          const auto ttl = boundary->GetString("ttl");
++          plan.cache_boundaries.push_back(
++              {plan.messages.array.size(), i,
++               ttl.empty() ? 0 : (ttl == "12h" ? 43200 : 1800)});
++          std::erase_if(part.object, [](const auto& field) {
++            return field.first == "prompt_cache_breakpoint";
++          });
++        }
++      }
++    }
+     plan.messages.array.push_back(std::move(message));
+     plan.message_paths.push_back(std::move(path));
+   };
+diff --git a/src/server/responses_output.cpp b/src/server/responses_output.cpp
+index cbec3936..8549e0f4 100644
+--- a/src/server/responses_output.cpp
++++ b/src/server/responses_output.cpp
+@@ -107,6 +107,9 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
+                           "previous_response_id",
+                           "conversation",
+                           "prompt",
++                          "prompt_cache_key",
++                          "prompt_cache_options",
++                          "prompt_cache_retention",
+                           "user",
+                           "safety_identifier",
+                           "service_tier",
+@@ -146,6 +149,15 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
+ }
+ 
+ io::Json& ResponsesOutput::Items() { return Field(response_, "output"); }
++void ResponsesOutput::CacheDiagnostics(io::Json value) noexcept {
++  try {
++    if (initialized_ && !terminal_ && value.IsObject() &&
++        OutputJson(value).size() <= 512)
++      Set(&response_, "prompt_cache_diagnostics", std::move(value));
++  } catch (...) {
++    // Optional diagnostics must not turn a valid response into a failure.
++  }
++}
+ io::Json ResponsesOutput::Location(size_t index, bool content) const {
+   const auto& item = response_.GetArray("output")->array.at(index);
+   auto result =
+@@ -481,6 +493,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
+       usage.cached_tokens < 0 || usage.cached_tokens > usage.input_tokens ||
+       usage.cache_write_tokens < 0 ||
+       usage.cache_write_tokens > usage.input_tokens ||
++      usage.cache_write_tokens > usage.input_tokens - usage.cached_tokens ||
+       usage.reasoning_tokens < 0 ||
+       usage.reasoning_tokens > usage.output_tokens ||
+       usage.input_tokens > INT64_MAX - usage.output_tokens || completed_at < 0)
+diff --git a/src/server/responses_plan.cpp b/src/server/responses_plan.cpp
+index d3d89a63..47861d0f 100644
+--- a/src/server/responses_plan.cpp
++++ b/src/server/responses_plan.cpp
+@@ -364,6 +364,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
+     status =
+         IntegerOption(request, "top_logprobs", 0, 20, &result.options, error);
+   if (status) status = StateOptions(request, &result, error);
++  if (status)
++    status = ParsePromptCacheOptions(request, &result.cache, &error->param);
+   if (status) status = Reasoning(request, &result, error);
+   if (status) status = TextOptions(request, &result, error);
+   if (!status) return status;
+@@ -372,23 +374,21 @@ Status ParseResponsesEnvelope(const io::Json& request,
+     *error = {"client_output_limit_exceeded", "max_output_tokens", 400};
+     return Status::Fail("requested output exceeds client token limit");
+   }
+-  std::string truncation = "disabled", tier = "default",
+-              retention = "in_memory";
++  std::string truncation = "disabled", tier = "default";
+   status = ChoiceOption(request, "truncation", {"auto", "disabled"},
+                         &truncation, "", error);
+   if (status)
+     status = ChoiceOption(request, "service_tier",
+                           {"auto", "default", "flex", "priority", "scale"},
+                           &tier, "", error);
+-  if (status)
+-    status = ChoiceOption(request, "prompt_cache_retention",
+-                          {"in_memory", "24h"}, &retention, "", error);
+   if (!status) return status;
+   result.truncate = truncation == "auto";
+   Set(&result.options, "truncation", String(truncation));
+   Set(&result.options, "service_tier",
+       String(tier == "auto" ? "default" : tier));
+-  Set(&result.options, "prompt_cache_retention", String(retention));
++  Set(&result.options, "prompt_cache_retention", String(result.cache.retention));
++  Set(&result.options, "prompt_cache_options",
++      PublicPromptCacheOptions(result.cache));
+   if (const auto* include = request.Find("include");
+       include && !include->IsNull()) {
+     if (!include->IsArray() || include->array.size() > 8)
+@@ -440,8 +440,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
+   }
+   // These are retained service requirements. Validation of their model/tool
+   // policy and application happens in the corresponding service stage.
+-  for (const auto* key :
+-       {"access_programs", "moderation", "prompt_cache_options"})
++  for (const auto* key : {"access_programs", "moderation"})
+     if (const auto* value = request.Find(key); value && !value->IsNull()) {
+       if (!value->IsObject())
+         return Invalid(error, key, "expected options object");
+@@ -529,11 +528,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
+     guidance +=
+         "Give a detailed final answer with the relevant explanation and "
+         "evidence.\n";
+-  if (!guidance.empty())
++  if (!guidance.empty()) {
+     Field(chat, "messages")
+         .array.insert(Field(chat, "messages").array.begin(),
+                       Object({{"role", String("system")},
+                               {"content", String(guidance)}}));
++    for (auto& boundary : result.input.cache_boundaries)
++      ++boundary.message_index;
++  }
+   if (envelope.reasoning_context == "current_turn") {
+     auto& messages = Field(chat, "messages").array;
+     size_t last_user = 0;
+@@ -544,7 +546,9 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
+         return field.first == "reasoning" || field.first == "reasoning_content";
+       });
+   }
+-  status = PlanChatRequest(chat, config, &result.chat, error);
++  auto generation_config = config;
++  generation_config.prewarm_only = envelope.cache.prewarm;
++  status = PlanChatRequest(chat, generation_config, &result.chat, error);
+   if (!status) {
+     if (!guidance.empty() && error->param.starts_with("messages[")) {
+       // Model-adaptation instructions are not caller-controlled input.
+diff --git a/src/server/session_cache.cpp b/src/server/session_cache.cpp
+index 811fd4a1..3dcd5872 100644
+--- a/src/server/session_cache.cpp
++++ b/src/server/session_cache.cpp
+@@ -23,7 +23,8 @@ SessionCache::~SessionCache() {
+ }
+ 
+ Status SessionCache::Open(const std::string& directory, int min_prefix,
+-                          size_t disk_budget, bool incremental) {
++                          size_t disk_budget, bool incremental,
++                          bool create_directory) {
+   if (Enabled()) return Status::Fail("session cache already open");
+   if (min_prefix < 1 || min_prefix > kMaxPrefix || !disk_budget ||
+       disk_budget > kDiskBudget)
+@@ -34,7 +35,8 @@ Status SessionCache::Open(const std::string& directory, int min_prefix,
+   }
+   staging_ = buffer;
+   io_ = std::make_unique<CacheIo>(CacheIoOptions{.directory = directory,
+-                                               .domain = domain_});
++                                               .domain = domain_,
++                                               .create_directory = create_directory});
+   min_prefix_ = min_prefix;
+   disk_budget_ = disk_budget;
+   incremental_ = incremental;
+@@ -55,31 +57,53 @@ void SessionCache::Refresh() {
+   }
+ }
+ 
++bool SessionCache::Expired(const Entry& entry,
++                           std::chrono::steady_clock::time_point now) {
++  return now >= entry.expires;
++}
++
++void SessionCache::Touch(Entry* entry,
++                         std::chrono::steady_clock::time_point now) {
++  entry->used = now;
++  entry->expires = std::min(
++      entry->retention_end,
++      std::max(entry->expires,
++               now + std::chrono::seconds(entry->lifetime.read_refresh_seconds)));
++}
++
+ bool SessionCache::Acquire(const std::string& key) {
+   const std::lock_guard lock(mutex_);
+   return Enabled() && busy_.size() < 32 && busy_.insert(key).second;
+ }
+-bool SessionCache::AcquireNew(const std::string& key) {
++bool SessionCache::AcquireNew(const std::string& key,
++                              int minimum_write_seconds) {
+   const std::lock_guard lock(mutex_);
+   Refresh();
+-  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key)) return false;
++  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key) ||
++      minimum_write_seconds < 0 || minimum_write_seconds > 86400)
++    return false;
+   const auto old = entries_.find(key);
+   if (old != entries_.end()) {
+-    if (std::chrono::steady_clock::now() - old->second->used <=
+-        std::chrono::minutes(30))
++    if (Expired(*old->second, std::chrono::steady_clock::now()))
++      Erase(old);
++    else if (minimum_write_seconds <= old->second->lifetime.write_seconds)
+       return false;
+-    Erase(old);
++    // A requested longer lifetime needs a real replacement write. Hold the
++    // old entry until Save owns the replacement; a failed save becomes a miss.
+   }
+   return busy_.insert(key).second;
+ }
+ 
+ int SessionCache::MatchShared(const std::string& scope,
+                               std::span<const int32_t> prompt, std::string* key,
+-                              SessionLayout layout) {
++                              SessionLayout layout,
++                              std::span<const int> allowed_boundaries) {
+   const std::lock_guard lock(mutex_);
+   key->clear();
+   Refresh();
+-  if (!Enabled() || busy_.size() >= 32) return 0;
++  if (!Enabled() || busy_.size() >= 32 ||
++      !std::is_sorted(allowed_boundaries.begin(), allowed_boundaries.end()))
++    return 0;
+   auto best = entries_.end();
+   const auto now = std::chrono::steady_clock::now();
+   const std::string group = scope + ':';
+@@ -89,13 +113,16 @@ int SessionCache::MatchShared(const std::string& scope,
+       continue;
+     }
+     const auto& e = *it->second;
+-    if (now - e.used > std::chrono::minutes(30)) {
++    if (Expired(e, now)) {
+       auto expired = it++;
+       Erase(expired);
+       continue;
+     }
+     if (it->first.starts_with(group) && e.published && e.layout == layout &&
+         e.prefix.size() <= prompt.size() &&
++        (allowed_boundaries.empty() ||
++         std::binary_search(allowed_boundaries.begin(), allowed_boundaries.end(),
++                             static_cast<int>(e.prefix.size()) - 1)) &&
+         (best == entries_.end() ||
+          e.prefix.size() > best->second->prefix.size()) &&
+         std::equal(e.prefix.begin(), e.prefix.end() - 1, prompt.begin()))
+@@ -138,8 +165,8 @@ int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
+   auto it = entries_.find(key);
+   if (!busy_.contains(key) || it == entries_.end()) return 0;
+   auto& entry = *it->second;
+-  if (std::chrono::steady_clock::now() - entry.used >
+-      std::chrono::minutes(30)) {
++  const auto now = std::chrono::steady_clock::now();
++  if (Expired(entry, now)) {
+     Erase(it);
+     return 0;
+   }
+@@ -147,7 +174,7 @@ int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
+       entry.prefix.size() > prompt.size() ||
+       !std::equal(entry.prefix.begin(), entry.prefix.end() - 1, prompt.begin()))
+     return 0;
+-  entry.used = std::chrono::steady_clock::now();
++  entry.used = now;
+   return static_cast<int>(entry.prefix.size()) - 1;
+ }
+ 
+@@ -323,6 +350,10 @@ Status SessionCache::Restore(const std::string& key,
+   if (!busy_.contains(key) || it == entries_.end() || !it->second->published)
+     return Status::Fail("session cache missing lease/entry");
+   auto& entry = *it->second;
++  if (Expired(entry, std::chrono::steady_clock::now())) {
++    Erase(it);
++    return Status::Fail("session cache expired before restore");
++  }
+   if (entry.layout != layout)
+     return Status::Fail("session cache execution layout mismatch");
+   if (ranges.size() != entry.sizes.size())
+@@ -333,7 +364,10 @@ Status SessionCache::Restore(const std::string& key,
+   const Status s = Transfer(&entry, ranges, copy, cancel, true);
+   if (s.ok() && d0) *d0 = entry.d0;
+   if (s.ok() && pending) *pending = entry.prefix.back();
+-  if (s.ok()) entry.restored = true;
++  if (s.ok()) {
++    entry.restored = true;
++    Touch(&entry, std::chrono::steady_clock::now());
++  }
+   if (!s.ok()) Erase(it);
+   return s;
+ }
+@@ -342,7 +376,15 @@ Status SessionCache::Save(const std::string& key,
+                           std::span<const int32_t> prefix,
+                           std::span<const SessionRange> ranges,
+                           const Copy& copy, const Cancel& cancel, int32_t d0,
+-                          SessionSaveTiming* timing, SessionLayout layout) {
++                          SessionSaveTiming* timing, SessionLayout layout,
++                          SessionCacheLifetime lifetime) {
++  if (lifetime.write_seconds <= 0 || lifetime.write_seconds > 86400 ||
++      lifetime.read_refresh_seconds < 0 ||
++      lifetime.read_refresh_seconds > 86400 || lifetime.max_age_seconds < 0 ||
++      lifetime.max_age_seconds > 86400 ||
++      (lifetime.max_age_seconds &&
++       lifetime.write_seconds > lifetime.max_age_seconds))
++    return Status::Fail("session cache lifetime limits");
+   std::unique_lock<std::mutex> lock;
+   {
+     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCacheLock);
+@@ -448,6 +490,13 @@ Status SessionCache::Save(const std::string& key,
+     return s;
+   }
+   SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPublish);
++  entry->lifetime = lifetime;
++  entry->used = std::chrono::steady_clock::now();
++  entry->expires = entry->used + std::chrono::seconds(lifetime.write_seconds);
++  entry->retention_end = lifetime.max_age_seconds
++                            ? entry->used +
++                                  std::chrono::seconds(lifetime.max_age_seconds)
++                            : std::chrono::steady_clock::time_point::max();
+   bytes_ += std::max(bytes, entry->disk_charge);
+   entries_.emplace(key, std::move(entry));
+   return Status();
+diff --git a/src/server/session_state.cpp b/src/server/session_state.cpp
+index 6cfdfd85..319cd812 100644
+--- a/src/server/session_state.cpp
++++ b/src/server/session_state.cpp
+@@ -69,8 +69,10 @@ Status SessionStateRanges(const model::Model& model, const mtp::MtpModel& draft,
+                           uint16_t* last_main_trunk,
+                           std::vector<SessionRange>* ranges) {
+   ranges->clear();
+-  if (slot < 0 || slot >= draft.max_seq || model.cfg.seq_capacities.empty() ||
+-      draft.cfg.seq_capacities.empty() || prefix < 1 ||
++  // SequenceOffset and Capacity cover both uniform and explicitly sized
++  // slots. The state layout is identical; no explicit-capacity opt-in is
++  // required by the standard API cache path.
++  if (slot < 0 || slot >= draft.max_seq || prefix < 1 ||
+       prefix >= draft.cfg.Capacity(slot) || !rolling_g || !last_main_trunk)
+     return Status::Fail("session state slot/prefix/layout");
+   const auto status = TargetSessionStateRanges(model, slot, prefix, ranges);
+diff --git a/tests/server_cache_io_test.cpp b/tests/server_cache_io_test.cpp
+index a97953ea..d15149a7 100644
+--- a/tests/server_cache_io_test.cpp
++++ b/tests/server_cache_io_test.cpp
+@@ -64,6 +64,48 @@ bool DomainContinues(IsolatedWorkerDomain domain) {
+ }
+ }  // namespace
+ 
++Q4T_TEST(cache_io_creates_private_default_directory_only_in_worker) {
++  Injection cleanup;
++  Fixture fixture;
++  const auto root = fixture.options.directory;
++  fixture.options.directory += "/native/cache";
++  fixture.options.create_directory = true;
++  Q4T_CHECK(!fs::exists(fixture.options.directory));
++  CacheIo io(fixture.options);
++  Q4T_CHECK(Ready(io));
++  struct stat info {};
++  Q4T_CHECK(stat(fixture.options.directory.c_str(), &info) == 0 &&
++            (info.st_mode & 0777) == 0700 && info.st_uid == geteuid());
++  CacheFile file;
++  Q4T_CHECK(io.Create(&file));
++  std::vector<uint8_t> input(CacheIo::kAlignment, 51), actual(input.size());
++  Q4T_CHECK(io.Write(file, 0, input) && io.Read(file, 0, actual));
++  Q4T_CHECK(input == actual && fs::is_empty(fixture.options.directory));
++  io.Close(file);
++  return true;
++}
++
++Q4T_TEST(cache_io_default_directory_rejects_symlinks_and_public_permissions) {
++  Injection cleanup;
++  Fixture fixture;
++  const auto root = fixture.options.directory;
++  fs::create_directory(root + "/public");
++  Q4T_CHECK(chmod((root + "/public").c_str(), 0755) == 0);
++  fs::create_directory_symlink(root, root + "/alias");
++  for (const auto& suffix : {"/alias/created", "/public", "/../escaped"}) {
++    auto options = fixture.options;
++    options.directory += suffix;
++    options.create_directory = true;
++    CacheIo io(options);
++    Q4T_CHECK(!io.Initialize());
++  }
++  Q4T_CHECK(!fs::exists(root + "/created"));
++  struct stat info {};
++  Q4T_CHECK(stat((root + "/public").c_str(), &info) == 0 &&
++            (info.st_mode & 0777) == 0755);
++  return true;
++}
++
+ int CacheIoFixture(int argc, char** argv) {
+   if (argc < 2) return -1;
+   const std::string_view entry = argv[1];
+diff --git a/tests/server_chat_capabilities_test.cpp b/tests/server_chat_capabilities_test.cpp
+index 0addee8b..a38fc8d6 100644
+--- a/tests/server_chat_capabilities_test.cpp
++++ b/tests/server_chat_capabilities_test.cpp
+@@ -275,6 +275,12 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
+   Q4T_CHECK(responses->GetBool("previous_response_id") &&
+             responses->GetBool("conversation"));
+   const auto* summary = responses->Find("summary");
++  const auto* cache = responses->Find("prompt_cache");
++  Q4T_CHECK(cache && cache->GetBool("native_state") &&
++            cache->GetInt("max_writes") == 4 &&
++            cache->GetInt("minimum_tokens") == 1024 &&
++            !cache->GetBool("core_readiness_dependency", true));
++  Q4T_CHECK(cache->GetString("prewarm") == "input_only_no_sampling");
+   const auto* encrypted = responses->Find("encrypted_reasoning");
+   Q4T_CHECK(encrypted && encrypted->GetBool("enabled") &&
+             encrypted->GetString("algorithm") == "AES-256-GCM" &&
+diff --git a/tests/server_responses_execution_test.cpp b/tests/server_responses_execution_test.cpp
+index 76a3051a..fe091ee4 100644
+--- a/tests/server_responses_execution_test.cpp
++++ b/tests/server_responses_execution_test.cpp
+@@ -5,6 +5,7 @@
+ 
+ #include <cstdlib>
+ #include <filesystem>
++#include <fstream>
+ #include <thread>
+ 
+ #include "q4t/server/conversation_state.h"
+@@ -64,6 +65,60 @@ ResponseDelta Text(std::string text) {
+ }
+ }  // namespace
+ 
++Q4T_TEST(responses_cache_prewarm_empty_output_usage_and_diagnostics_persist) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  ResponsesExecution run(store);
++  const auto request = Parse(R"({"input":"prefix","store":true,
++    "prompt_cache_key":"customer","reasoning":{"effort":"none"},
++    "prompt_cache_options":{"prewarm":true,"ttl":"12h"}})");
++  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42)));
++  Q4T_CHECK(run.Envelope().cache.prewarm);
++  std::string wire;
++  Q4T_CHECK(Ok(run.Begin(&wire)));
++  run.CacheDiagnostics(Parse(R"({"type":"unavailable"})"));
++  Q4T_CHECK(Ok(run.Finish(false, 0, {1400, 0, 0, 0, 1300}, 43, &wire)));
++  const auto& snapshot = run.Output().Snapshot();
++  Q4T_CHECK(snapshot.GetString("status") == "completed" &&
++            snapshot.GetArray("output")->array.empty());
++  Q4T_CHECK(snapshot.Find("usage")->GetInt("output_tokens") == 0 &&
++            snapshot.Find("usage")->Find("input_tokens_details")
++                ->GetInt("cache_write_tokens") == 1300);
++  Q4T_CHECK(snapshot.Find("prompt_cache_options")->GetString("ttl") == "12h" &&
++            !snapshot.Find("prompt_cache_options")->Has("prewarm"));
++  const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
++  Q4T_CHECK(Ok(record));
++  Q4T_CHECK(OutputJson(*record.value.Find("response")) == run.Output().Json());
++  const auto& terminal = record.value.GetArray("events")->array.back();
++  Q4T_CHECK(terminal.GetString("type") == "response.completed" &&
++            OutputJson(*terminal.Find("response")) == run.Output().Json());
++  Q4T_CHECK(wire.find("output_item.added") == wire.npos);
++  // Inspect the actual C++ terminal against the separately generated SDK
++  // schema; the Python check does not manufacture missing output properties.
++  if (const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
++    std::ofstream(std::filesystem::path(output) / "cache-prewarm.json.wire")
++        << run.Output().Json();
++    std::ofstream(std::filesystem::path(output) / "cache-prewarm.sse.wire")
++        << wire;
++  }
++  return true;
++}
++
++Q4T_TEST(responses_cache_usage_cannot_double_count_reads_and_writes) {
++  ObjectStoreOptions options;
++  options.directory = "invalid";
++  ObjectStore store(options);
++  ResponsesExecution run(store);
++  Q4T_CHECK(Prepare(&run, R"(,"store":false,"prompt_cache_options":{"mode":"explicit"})"));
++  std::string wire;
++  Q4T_CHECK(Ok(run.Begin(&wire)));
++  Q4T_CHECK(!run.Finish(false, 0, {1400, 1000, 0, 0, 500}, 43, &wire).ok());
++  Q4T_CHECK(!run.Finished() && wire.empty());
++  Q4T_CHECK(Ok(run.Finish(false, 0, {1400, 1000, 0, 0, 400}, 43, &wire)));
++  Q4T_CHECK(store.Health().workers_started == 0);
++  return true;
++}
++
+ namespace {
+ Json ContextRequest(bool background = false) {
+   auto request =
+diff --git a/tests/server_responses_plan_test.cpp b/tests/server_responses_plan_test.cpp
+index fa5b965e..9ae08244 100644
+--- a/tests/server_responses_plan_test.cpp
++++ b/tests/server_responses_plan_test.cpp
+@@ -221,7 +221,8 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
+   Q4T_CHECK(envelope.background && envelope.conversation_id == "conv_a");
+   Q4T_CHECK(envelope.options.Find("prompt")->GetString("version") == "2");
+   Q4T_CHECK(envelope.request.Has("context_management"));
+-  Q4T_CHECK(envelope.options.Find("prompt_cache_options")->GetBool("prewarm"));
++  Q4T_CHECK(envelope.cache.prewarm &&
++            !envelope.options.Find("prompt_cache_options")->Has("prewarm"));
+   Q4T_CHECK(envelope.options.GetString("service_tier") == "priority");
+   // Parsing retains execution requirements; this is not a moderation/cache/
+   // background acceptance. Their owners must execute before any success.
+diff --git a/tests/server_session_isolation_test.cpp b/tests/server_session_isolation_test.cpp
+index cf28ca80..b1a32147 100644
+--- a/tests/server_session_isolation_test.cpp
++++ b/tests/server_session_isolation_test.cpp
+@@ -16,6 +16,24 @@
+ 
+ namespace q4t::server {
+ struct SessionCacheTestPeer {
++  static void Age(SessionCache& cache, const std::string& key,
++                  std::chrono::seconds elapsed) {
++    const std::lock_guard lock(cache.mutex_);
++    auto& entry = *cache.entries_.at(key);
++    entry.used -= elapsed;
++    entry.expires -= elapsed;
++    if (entry.lifetime.max_age_seconds) entry.retention_end -= elapsed;
++  }
++  static std::chrono::steady_clock::time_point Expiry(SessionCache& cache,
++                                                     const std::string& key) {
++    const std::lock_guard lock(cache.mutex_);
++    return cache.entries_.at(key)->expires;
++  }
++  static bool AtRetentionEnd(SessionCache& cache, const std::string& key) {
++    const std::lock_guard lock(cache.mutex_);
++    const auto& entry = *cache.entries_.at(key);
++    return entry.expires == entry.retention_end;
++  }
+   static bool Recover(SessionCache& cache) {
+     const auto end = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+     while (std::chrono::steady_clock::now() < end) {
+@@ -54,6 +72,90 @@ const auto Copy = [](void* host, void* state, size_t bytes, bool restore) {
+ const auto Active = [] { return false; };
+ }  // namespace
+ 
++Q4T_TEST(session_cache_long_ttl_survives_short_read_without_restarting_long_ttl) {
++  Fixture f;
++  f.data.resize(32);
++  SessionCache cache;
++  Q4T_CHECK(cache.Open(f.path));
++  Q4T_CHECK(cache.AcquireNew("scope:key"));
++  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
++                       nullptr, SessionLayout::kMtp, {43200, 1800, 86400}));
++  cache.Release("scope:key", true);
++  SessionCacheTestPeer::Age(cache, "scope:key", 31min);
++  const auto expiry = SessionCacheTestPeer::Expiry(cache, "scope:key");
++  std::string selected;
++  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 8192);
++  int32_t d0 = -1;
++  Q4T_CHECK(cache.Restore(selected, f.Ranges(), Copy, Active, &d0));
++  Q4T_CHECK(d0 == 71 && SessionCacheTestPeer::Expiry(cache, selected) == expiry);
++  cache.Release(selected, true);
++  SessionCacheTestPeer::Age(cache, selected, 12h);
++  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 0);
++  return true;
++}
++
++Q4T_TEST(session_cache_read_refresh_cannot_extend_total_retention) {
++  Fixture f;
++  f.data.resize(32);
++  SessionCache cache;
++  Q4T_CHECK(cache.Open(f.path));
++  Q4T_CHECK(cache.Acquire("same"));
++  Q4T_CHECK(cache.Save("same", f.prefix, f.Ranges(), Copy, Active, 71, nullptr,
++                       SessionLayout::kMtp, {1800, 1800, 3600}));
++  cache.Release("same", true);
++  for (int i = 0; i < 2; ++i) {
++    SessionCacheTestPeer::Age(cache, "same", 25min);
++    Q4T_CHECK(cache.Acquire("same") && cache.Match("same", f.prefix) == 8192);
++    Q4T_CHECK(cache.Restore("same", f.Ranges(), Copy, Active, nullptr));
++    cache.Release("same", true);
++  }
++  Q4T_CHECK(SessionCacheTestPeer::AtRetentionEnd(cache, "same"));
++  SessionCacheTestPeer::Age(cache, "same", 11min);
++  Q4T_CHECK(cache.Acquire("same") && cache.Match("same", f.prefix) == 0);
++  cache.Release("same", false);
++  return true;
++}
++
++Q4T_TEST(session_cache_lookup_only_reuses_requested_boundaries) {
++  Fixture f;
++  f.data.resize(32);
++  SessionCache cache;
++  Q4T_CHECK(cache.Open(f.path) && cache.AcquireNew("scope:key"));
++  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71));
++  cache.Release("scope:key", true);
++  std::string key;
++  const std::vector<int> wrong = {4096}, exact = {8192};
++  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &key, SessionLayout::kMtp,
++                              wrong) == 0 && key.empty());
++  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &key, SessionLayout::kMtp,
++                              exact) == 8192 && key == "scope:key");
++  cache.Release(key, true);
++  return true;
++}
++
++Q4T_TEST(session_cache_lifetime_upgrade_requires_a_real_committed_replacement) {
++  Fixture f;
++  f.data.resize(32);
++  SessionCache cache;
++  Q4T_CHECK(cache.Open(f.path) && cache.AcquireNew("scope:key"));
++  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71));
++  cache.Release("scope:key", true);
++  Q4T_CHECK(!cache.AcquireNew("scope:key", 1800));
++  Q4T_CHECK(cache.AcquireNew("scope:key", 43200));
++  Q4T_CHECK(!cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
++                        nullptr, SessionLayout::kMtp, {43200, 1800, 3600}));
++  cache.Release("scope:key", false);
++  Q4T_CHECK(cache.AcquireNew("scope:key", 43200));
++  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
++                       nullptr, SessionLayout::kMtp, {43200, 1800, 86400}));
++  cache.Release("scope:key", true);
++  SessionCacheTestPeer::Age(cache, "scope:key", 31min);
++  std::string selected;
++  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 8192);
++  cache.Release(selected, true);
++  return true;
++}
++
+ Q4T_TEST(session_cache_unavailable_directory_preserves_session_contract) {
+   Fixture f;
+   f.path += "/later";
+diff --git a/tests/server_session_target_test.cpp b/tests/server_session_target_test.cpp
+index 0543e149..d1e80e6e 100644
+--- a/tests/server_session_target_test.cpp
++++ b/tests/server_session_target_test.cpp
+@@ -120,26 +120,28 @@ Q4T_TEST(target_session_ranges_preserve_effective_state_and_slot_offsets) {
+ }
+ 
+ Q4T_TEST(target_session_layout_is_not_a_shifted_draft_snapshot) {
+-  Fixture f;
+-  mtp::MtpModel draft;
+-  draft.max_seq = draft.cfg.max_seq = 2;
+-  draft.cfg.max_len = 16;
+-  draft.cfg.hc = 1;
+-  draft.cfg.hs = 3;
+-  draft.cfg.seq_capacities = {16, 12};
+-  draft.full_attn = f.model.layers[1].full;
+-  draft.kv_cache = f.kv.data();
+-  draft.idx_raw = f.raw.data();
+-  draft.idx_comp = f.comp.data();
+-  uint16_t g[3]{}, h[3]{};
+-  std::vector<SessionRange> target, mtp;
+-  Q4T_CHECK(TargetSessionStateRanges(f.model, 1, 5, &target));
+-  Q4T_CHECK(SessionStateRanges(f.model, draft, 1, 5, g, h, &mtp));
+-  Q4T_CHECK(mtp.size() == target.size() + 5);
+-  for (size_t i = 0; i < target.size(); ++i)
+-    Q4T_CHECK(target[i].data == mtp[i].data && target[i].bytes == mtp[i].bytes);
+-  Q4T_CHECK(mtp[mtp.size() - 2].data == g && mtp.back().data == h);
+-  Q4T_CHECK(mtp.back().bytes == 6);
++  for (const bool ragged : {false, true}) {
++    Fixture f(ragged);
++    mtp::MtpModel draft;
++    draft.max_seq = draft.cfg.max_seq = 2;
++    draft.cfg.max_len = 16;
++    draft.cfg.hc = 1;
++    draft.cfg.hs = 3;
++    if (ragged) draft.cfg.seq_capacities = {16, 12};
++    draft.full_attn = f.model.layers[1].full;
++    draft.kv_cache = f.kv.data();
++    draft.idx_raw = f.raw.data();
++    draft.idx_comp = f.comp.data();
++    uint16_t g[3]{}, h[3]{};
++    std::vector<SessionRange> target, mtp;
++    Q4T_CHECK(TargetSessionStateRanges(f.model, 1, 5, &target));
++    Q4T_CHECK(SessionStateRanges(f.model, draft, 1, 5, g, h, &mtp));
++    Q4T_CHECK(mtp.size() == target.size() + 5);
++    for (size_t i = 0; i < target.size(); ++i)
++      Q4T_CHECK(target[i].data == mtp[i].data && target[i].bytes == mtp[i].bytes);
++    Q4T_CHECK(mtp[mtp.size() - 2].data == g && mtp.back().data == h);
++    Q4T_CHECK(mtp.back().bytes == 6);
++  }
+   return true;
+ }
+ 
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index 08cefe1b..7425f396 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -432,6 +432,24 @@
+         "tools/serve_chat_storage/test_sdk.mjs",
+         "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+       ]
++    },
++    "prompt_cache_key": {
++      "semantics": "标准缓存分组键：最多512个Unicode字符；按已认证客户端和键摘要隔离，实际 token 前缀与布局仍须相等。",
++      "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
++      "evidence": [
++        "tests/server_prompt_cache_test.cpp",
++        "tests/server_session_isolation_test.cpp",
++        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
++      ]
++    },
++    "prompt_cache_retention": {
++      "semantics": "标准 in_memory/24h 控制原生条目总保留上限；现代 Responses TTL 优先。",
++      "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
++      "evidence": [
++        "tests/server_prompt_cache_test.cpp",
++        "tests/server_session_isolation_test.cpp",
++        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
++      ]
+     }
+   },
+   "routes": {
+@@ -890,6 +908,8 @@
+       "session_id",
+       "prefix_cache_scope",
+       "prefix_cache_write_tokens",
++      "prompt_cache_key",
++      "prompt_cache_retention",
+       "parse_response",
+       "tool_choice",
+       "parallel_tool_calls"
+@@ -1215,8 +1235,8 @@
+     ]
+   },
+   "sources_sha256": {
+-    "CMakeLists.txt": "c7e2688fdff7e25c3573148df3d63402f243b309d3c8011843acbafcb03b5fd6",
+-    "cmake/ChatProtocolIdentity.cmake": "4498cb6aee7dedaeaeb4e87da42e6a9be154f1126b52299f6ee0aee85c534044",
++    "CMakeLists.txt": "9fb5c81493b4ebffaa3c34aa341747dfdf82268c4e148f2e6bf57ceae19d0e28",
++    "cmake/ChatProtocolIdentity.cmake": "3e00e9d582dead8f4754c0d9df970f509849602a0090e807970f27edbc531b31",
+     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+@@ -1238,16 +1258,16 @@
+     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
+     "include/q4t/server/application_routes.h": "1d27e45e73d4e7827bcdd18413c0c3f91d9d81291e93b5202ed4ac031ac404e3",
+     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+-    "include/q4t/server/cache_io.h": "4a851632978959b89c66999d0e4532c345fdd792f1a9f4efadbe5350e8cf0e4f",
++    "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
+     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
+     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
+     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
+-    "include/q4t/server/chat_plan.h": "d4049c98ce54985c6ae242808ae75e762ac5405b0e79b8b0712020a1341f8c81",
+-    "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
++    "include/q4t/server/chat_plan.h": "a12b84016a45ed8fb63fd237b2138fcd88aeff44fa7ef43e8e09c3594a021967",
++    "include/q4t/server/chat_prompt.h": "4fd263a2aeedb67fbef23a0370126f96b58d9e5452de6ba3243362a96b5ac8bb",
+     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
+-    "include/q4t/server/chat_server.h": "b9e8a1d1e364c797dbe7ab9936a0cae515035cdeff551e33f419254be74a7a7a",
++    "include/q4t/server/chat_server.h": "a733d690fb7cdb7e570900c3cc7753ca277e5138abdfac332f2c4fbf04b2eacb",
+     "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
+-    "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
++    "include/q4t/server/chat_template.h": "9b6723142b8bb1116ea56df7742f3f56364122dc5a975977b15132ff56ce3e7e",
+     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
+     "include/q4t/server/client_policy.h": "e70e50548ff3cbff748a3545a69169499ca95821a49617a9967e4bc459df0bad",
+@@ -1286,6 +1306,8 @@
+     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+     "include/q4t/server/progress_context.h": "fc6ed010388bd5e33951d0c585a1b33f7edb07570866cc38c66e7cbee16bcbb3",
+     "include/q4t/server/progress_transport.h": "90adb59393f339d011c37d2a602cff6ffaa955e20bbf0c1725b1455640b9a9e3",
++    "include/q4t/server/prompt_cache_diagnostics.h": "f6701c9eaabda5c613121c6b0d9f4a441e203d03ab4d5cec020cda56dc50cedd",
++    "include/q4t/server/prompt_cache_policy.h": "92ec5b1290b7bfb34f878514675256045b3634ca88cfd8e25fe90fc5e9e5fd3f",
+     "include/q4t/server/prompt_registry.h": "debb09d97bf89e8c542936d217983ebd20926c423804208f0b6f318c704fd3cb",
+     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
+     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
+@@ -1296,13 +1318,13 @@
+     "include/q4t/server/responses_api.h": "2a636939c4c2fbb1806fb7146c0a82aad2ecec1a149609647fde9fd295b6195b",
+     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
+     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
+-    "include/q4t/server/responses_execution.h": "88fe6936531061bf5e30517acb4fa8da8bf317ffffeb6106438512f8ba27d220",
+-    "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
++    "include/q4t/server/responses_execution.h": "94b758407895fe58611d4be2ba004a14059c35c4d6cf66d13312e4d99859e710",
++    "include/q4t/server/responses_input.h": "c27a660a9ea2ba19fc7dfd98c9cb5171f4534c229354c80428b16959b7f5c4ea",
+     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
+     "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
+-    "include/q4t/server/responses_output.h": "b15fd7797c1316315760495b45d93bdee9637044ea3cec78be8a941e6be772a0",
++    "include/q4t/server/responses_output.h": "c9332f6f97f51549ca11485d700b39f52d92e4d4d9355126a6489328eb6f8f1d",
+     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
+-    "include/q4t/server/responses_plan.h": "6c00547649c24bee9cae0f2a7d53dbac0871c3e160070c2addb3b9e2c4b22f02",
++    "include/q4t/server/responses_plan.h": "49d1f0e222c20788c78b7dd4a983aee5462a852b2cf557979b300ce73ea0de1b",
+     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
+     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
+     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
+@@ -1314,7 +1336,7 @@
+     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
+     "include/q4t/server/server_options.h": "87c939370fdf77166b44be7a2f3770d4b5db48949e0048c9640a333d159786c9",
+     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
+-    "include/q4t/server/session_cache.h": "7cc15ec4f41e15a8221a8b2be9629e569446bd09a7c3d5940a8548a47e95333e",
++    "include/q4t/server/session_cache.h": "e66ed26f1faca2ee96353fe1c86fe95f656b8d3f0fa0eb4e4232ea3cfa2b9810",
+     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
+     "include/q4t/server/session_state.h": "45ee23a8433b6dfce3d72f942ba4ad3bd0019cb25c5e20c7f219fb329af8d3e9",
+     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
+@@ -1361,31 +1383,31 @@
+     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
+     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+-    "src/server/cache_io.cpp": "1495b6d92a77d9dc373e25ce0b94386a4150f5763ca6f26857901ff2fd8b99ba",
++    "src/server/cache_io.cpp": "679d821d52da169a81c1bdc6ad68cead9f967e029a3861f418bd3adec31a9c3c",
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+-    "src/server/cache_worker.cpp": "b8ff127f945835fc91d04b97c6e49b21dfc0047ff846545bc8e4c2ab9a6e0c4a",
++    "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+-    "src/server/chat_capabilities.cpp": "3a42978298997c1806bc957a44393f264c8ef2d88e4a56927416c9e949ae344f",
++    "src/server/chat_capabilities.cpp": "15a0ed38d4f54d7a37c1a91954978f106d5daaa955df2a48ef405a08a091bd5f",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+-    "src/server/chat_contract.cpp": "ec74f4ddeb477288aca098d6d5bfd55a41b56d50d975d7c7594c825df41545a6",
++    "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "ee345146f7768cd0f424334f1585d54f543a154d01c4633a46727ab80d89fd1d",
++    "src/server/chat_generation.cpp": "a8c18eb6c2efbeaa1fe3cdde3ffca487bb4c6e0258f5fbc5b3279aebfd236f27",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
+-    "src/server/chat_plan.cpp": "18c4587d739406cb4f57ef83460bd2a95984d320d672d024a07581c102f07fa2",
++    "src/server/chat_plan.cpp": "231920fd40e263dd86b7f4b52b975b8beb1a8285388a7fb1d590ef5a5e520165",
+     "src/server/chat_preflight.cpp": "df89d2fa6ed82beb2aca2e636659ef255072f2bcd1aeeb97fe6d249103ee28c0",
+-    "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
++    "src/server/chat_prompt.cpp": "3139f82e12f3690eecb91f1b280619983f50878994eca6f50f3a1a890ed5205b",
+     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
+     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
+-    "src/server/chat_server.cpp": "b6165f12cc47196a677ce0deed528a6bab2ea64ffc4691ca9f1c3c7a932dbd7e",
++    "src/server/chat_server.cpp": "4075465767836ce0131136b454510680186d17d9300c9e958781f8211e466a6d",
+     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
+     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
+     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+-    "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
++    "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
+     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+     "src/server/client_policy.cpp": "8fbec179e13ad98234d0f064645166f2e3d7004da101ab4ba95f0f664bac2fe4",
+     "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+@@ -1421,6 +1443,8 @@
+     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
+     "src/server/prompt_api.cpp": "03b07433d0586bd24cc9bda3fe99fa647a82527c18a20cbfd820dff1068d22d7",
++    "src/server/prompt_cache_diagnostics.cpp": "521e46dbe3259d0d267bc295fe6a14c9c1923e425a754a32dac4efa13d5cc6d7",
++    "src/server/prompt_cache_policy.cpp": "3b5b74a4876867699d5e17040ca6c2aa9e956085a999c73568cc94c2a5187222",
+     "src/server/prompt_internal.h": "20caa7ae054ffc7b2db8408c06f1de300cf12699b283da4c1af59ff62317073d",
+     "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
+     "src/server/prompt_template.cpp": "54d51d12ec75012e04e78288452aa5c891a06849b3e2fd88056cf7d17b333f29",
+@@ -1430,15 +1454,15 @@
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+-    "src/server/responses_execution.cpp": "2fed7c692431c59eb3a724e61e882194cce90097a3ee0e686df86f0f23d95fe2",
++    "src/server/responses_execution.cpp": "6cb9be25c9bb32516676181b65731eefedb6483eb58dc3fb198d838eb391f452",
+     "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
+-    "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
++    "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
+     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+-    "src/server/responses_output.cpp": "83c3f08e20bdb7bb66dc128a783c910118560626062cba181819af0b7f3ba139",
++    "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "99efaaa891d3c14b5e7bcfb7bdb5904e0aa5d5e3c55de51d013e3f5d510721c1",
++    "src/server/responses_plan.cpp": "4c87b231f6381e8a64836fe7fa44ff81b455516ed81ed06c9ba61648d88d703d",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+@@ -1459,8 +1483,8 @@
+     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
+     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
+     "src/server/server_options.cpp": "2fd39a822532c84b4c81257247e016c6e9662c6abc325bea4ec182577364ea5d",
+-    "src/server/session_cache.cpp": "c7f157e9628d1bffbeea288029c62e683d1525d02d9bc5f2e38af259c7ffeec5",
+-    "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
++    "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
++    "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
+     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
+     "src/server/state_key_admin.cpp": "45a7e68b206d1e9af6ca528e0989c9321384c86d71f208de804d6eee00260a76",
+     "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
+@@ -2888,5 +2912,43 @@
+     "implementation": "Exec-only filesystem owner; one controller and worker per cache domain; own payload lifetime; 2-second per-operation wait, cancellation, generation invalidation, no replay, confirmed reap before replacement, three starts per minute. Core readiness is independent. Flat and incremental snapshots charge actual allocated disk blocks before publication.",
+     "cpu_evidence": "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
+     "pending": "Bounded real cache/resource-progress business and rollback/default delivery; all master tasks remain active."
++  },
++  "prompt_cache_development_20261110": {
++    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
++    "review": "Reviewed actual render/token boundary mapping, legacy cache compatibility, isolated storage/TTL, zero-output prewarm, separate read/new-write usage, bounded hash-only diagnostics and targeted tests. No default or GPU acceptance implied. Final grouped review adds actual cache capability declaration, native worker-only owned directory creation, no-IO diagnostic bounds and prewarm output/slot admission.",
++    "sources": [
++      "CMakeLists.txt",
++      "cmake/ChatProtocolIdentity.cmake",
++      "include/q4t/server/cache_io.h",
++      "include/q4t/server/chat_plan.h",
++      "include/q4t/server/chat_prompt.h",
++      "include/q4t/server/chat_server.h",
++      "include/q4t/server/chat_template.h",
++      "include/q4t/server/prompt_cache_diagnostics.h",
++      "include/q4t/server/prompt_cache_policy.h",
++      "include/q4t/server/responses_execution.h",
++      "include/q4t/server/responses_input.h",
++      "include/q4t/server/responses_output.h",
++      "include/q4t/server/responses_plan.h",
++      "include/q4t/server/session_cache.h",
++      "src/server/cache_io.cpp",
++      "src/server/cache_worker.cpp",
++      "src/server/chat_capabilities.cpp",
++      "src/server/chat_contract.cpp",
++      "src/server/chat_generation.cpp",
++      "src/server/chat_plan.cpp",
++      "src/server/chat_prompt.cpp",
++      "src/server/chat_server.cpp",
++      "src/server/chat_template.cpp",
++      "src/server/prompt_cache_diagnostics.cpp",
++      "src/server/prompt_cache_policy.cpp",
++      "src/server/responses_execution.cpp",
++      "src/server/responses_input.cpp",
++      "src/server/responses_output.cpp",
++      "src/server/responses_plan.cpp",
++      "src/server/session_cache.cpp",
++      "src/server/session_state.cpp"
++    ],
++    "uniform_slot_review": "Reuse SequenceOffset/Capacity for uniform MTP state and actual streaming cache path; optional snapshot scratch exhaustion degrades only cache, CUDA errors retain protection. Add two direct CPU range tests before any validation."
+   }
+ }
+diff --git a/tools/serve_protocol/build_contract.py b/tools/serve_protocol/build_contract.py
+index f4a97862..3b1717eb 100644
+--- a/tools/serve_protocol/build_contract.py
++++ b/tools/serve_protocol/build_contract.py
+@@ -230,6 +230,8 @@ def chat_schema():
+             ("type", "content"))),
+         response_format=response_format, user=dict(type=["string", "null"]),
+         session_id=hex64, prefix_cache_scope=hex64,
++        prompt_cache_key=nullable(dict(type="string", maxLength=512)),
++        prompt_cache_retention=nullable(dict(enum=["in_memory", "24h"])),
+         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
+         parse_response=dict(type="boolean"),
+         tool_choice=nullable(dict(oneOf=[dict(enum=["auto", "none", "required"]),
+@@ -277,7 +279,10 @@ def chat_schema():
+             when(constrained, dict(allOf=[parsed,
+                 dict(properties=dict(stop=dict(enum=[None, []])))])),
+             when(any_present(["session_id", "prefix_cache_scope"]),
+-                 dict(properties=dict(stop=dict(enum=[None, []]))))],
++                 dict(properties=dict(stop=dict(enum=[None, []])))),
++            when(dict(anyOf=[present(key, {"not": dict(type="null")})
++                for key in ("prompt_cache_key", "prompt_cache_retention")]),
++                 {"not": dict(required=["prefix_cache_scope"])})],
+         "x-q4t": dict(profile="qwen3.8-openai-v3", scope="text; experimental media excluded",
+             semantic_contract="serve-input-semantics-v1.json", required_semantic_validation=True,
+             runtime_preflight="POST /v1/chat/preflight", defaults_are_annotations=True,
+diff --git a/tools/serve_responses/build_contract.py b/tools/serve_responses/build_contract.py
+index 7c823fa5..36e25d26 100644
+--- a/tools/serve_responses/build_contract.py
++++ b/tools/serve_responses/build_contract.py
+@@ -56,6 +56,15 @@ def schema(graph):
+     for name, index in graph['roots'].items():
+         definitions[name] = ref(index)
+ 
++    # The current official cache guide adds a 12h request TTL; the pinned SDK
++    # already permits 12h on individual blocks but has a stale request/output
++    # TTL literal. Adapt only the cache-options objects, preserving the graph.
++    for index, node in enumerate(graph['nodes']):
++        fields = {f['name'] for f in node.get('fields', [])}
++        if ({'mode', 'ttl'} <= fields and 'comparison_response_id' in fields
++                and fields <= {'mode', 'ttl', 'prewarm', 'comparison_response_id'}):
++            definitions[str(index)]['properties']['ttl'] = dict(enum=['30m', '12h'])
++
+     def root(name):
+         return definitions[str(graph['roots'][name])]
+ 
+@@ -101,6 +110,7 @@ def schema(graph):
+                         pattern='^[A-Za-z0-9_-]+$'),
+         cancel_token=dict(type='string', pattern='^[0-9a-f]{64}$'),
+         request_timeout_ms=nullable(dict(type='integer', minimum=1, maximum=10800000)))
++    request['properties']['prompt_cache_key'] = nullable(dict(type='string', maxLength=512))
+     request['dependentRequired'] = dict(request_id=['cancel_token'],
+                                         cancel_token=['request_id'])
+     for name, low, high in [('max_output_tokens', 1, 2147483647),
+@@ -154,11 +164,18 @@ def schema(graph):
+                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
+                 'native store echo and native response error codes',
+                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
++                'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
+                 'exact integer and bounded native options',
+                 'native cancellation credentials and timeout/seed extensions',
+                 'SDK combined body/query split on actual HTTP boundary',
+                 'compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted'],
+-            wire_references=[dict(date='2026-11-09',
++            wire_references=[dict(date='2026-11-10',
++                url='https://developers.openai.com/api/docs/guides/prompt-caching',
++                contract='Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting'),
++                dict(date='2026-11-10',
++                url='https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics',
++                contract='Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison'),
++                dict(date='2026-11-09',
+                 url='https://developers.openai.com/api/reference/resources/responses/methods/cancel',
+                 contract='Cancelled resource can have usage:null; no fabricated zero usage'),
+                 dict(date='2026-11-09',

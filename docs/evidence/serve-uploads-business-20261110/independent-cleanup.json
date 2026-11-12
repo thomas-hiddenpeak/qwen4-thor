@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "remaining": [],
+  "ports_released": true,
+  "lock_free": true,
+  "default_unchanged": true,
+  "sources_unchanged": true,
+  "nvml_samples": 52,
+  "all_nvml_ok": true
+}

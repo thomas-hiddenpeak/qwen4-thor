@@ -1,0 +1,12 @@
+{
+  "status": "DELIVERED_R02_STOPPED",
+  "engine_binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "engine_release_sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7",
+  "service_manifest_sha256": "e7652b4cc1a0632c804fd67fbe269dc60ff393016a7c1061e25b3f2c1e428f36",
+  "service_release_sha256": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119",
+  "state_ledger_preserved": true,
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "no_model_started_for_install": true,
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/delivery-02/rollback/receipt.json",
+  "rollback_sha256": "cdb395ba8da7804e6ceada5099414f1d9d1aa0f61b359d8b4c4fd9fa7599826a"
+}

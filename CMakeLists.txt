@@ -173,6 +173,9 @@ add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
+  src/model/embedding_config.cpp
+  src/model/embedding_layout.cpp
+  src/model/embedding_model.cu
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
@@ -202,6 +205,20 @@ add_library(q4t_model STATIC
 target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
+
+# Targeted embedding reference replay; no performance acceptance claims.
+if(Q4T_HAS_ICU)
+  add_executable(q4t_embedding_replay EXCLUDE_FROM_ALL
+    tools/native_embedding/model_replay.cpp src/server/embedding_assets.cpp
+    src/server/grammar_process.cpp src/server/worker_io_broker.cpp
+    src/model/embedding_model.cu)
+  target_compile_definitions(q4t_embedding_replay PRIVATE Q4T_EMBEDDING_TRACE=1)
+  target_link_libraries(q4t_embedding_replay PRIVATE
+    q4t_model q4t_text q4t_runtime)
+  target_compile_options(q4t_embedding_replay PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Werror>
+    $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Werror>)
+endif()
 
 # Standalone A1 diagnostic: never linked by production q4t_model/serve.
 add_library(q4t_moe_replay_gpu STATIC EXCLUDE_FROM_ALL
@@ -259,11 +276,95 @@ add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp
 target_include_directories(q4t_runtime PUBLIC include)
 
 # ---------------------------------------------------------------------------
-# q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
+# q4t_server — native HTTP/application server with isolated optional backends
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/embedding_assets.cpp
+  src/server/object_store.cpp
+  src/server/object_worker.cpp
+  src/server/object_retention.cpp
+  src/server/multipart.cpp
+  src/server/binary_store.cpp
+  src/server/input_snapshot.cpp
+  src/server/application_payload.cpp
+  src/server/input_snapshot_bindings.cpp
+  src/server/files.cpp
+  src/server/files_http.cpp
+  src/server/uploads.cpp
+  src/server/batch_input.cpp
+  src/server/batch_state.cpp
+  src/server/batch_checkpoint.cpp
+  src/server/batch_budget.cpp
+  src/server/batch_quota.cpp
+  src/server/batch_results.cpp
+  src/server/batch_finalization.cpp
+  src/server/batch_usage.cpp
+  src/server/batch_response_link.cpp
+  src/server/batch_preparation.cpp
+  src/server/batch_execution.cpp
+  src/server/batch_validation.cpp
+  src/server/batch_jobs.cpp
+  src/server/application_owner.cpp
+  src/server/batch_api.cpp
+  src/server/file_input.cpp
+  src/server/file_image.cpp
+  src/server/file_webp.cpp
+  src/server/file_webp_worker.cpp
+  src/server/file_fetch.cpp
+  src/server/file_fetch_policy.cpp
+  src/server/file_fetch_http.cpp
+  src/server/file_document.cpp
+  src/server/file_document_worker.cpp
+  src/server/file_document_sandbox.cpp
+  src/server/file_package.cpp
+  src/server/file_package_runtime.cpp
+  src/server/file_office.cpp
+  src/server/file_office_common.cpp
+  src/server/file_office_xml.cpp
+  src/server/file_office_text.cpp
+  src/server/file_office_sheet.cpp
+  src/server/file_office_odf.cpp
+  src/server/file_rtf.cpp
+  src/server/file_rtf_encoding.cpp
+  src/server/file_legacy.cpp
+  src/server/file_legacy_worker.cpp
+  src/server/file_legacy_workspace.cpp
+  src/server/file_legacy_sandbox.cpp
+  src/server/file_extract.cpp
+  src/server/file_snapshot.cpp
+  src/server/file_expansion.cpp
+  src/server/file_input_policy.cpp
+  src/server/chat_file_inputs.cpp
+  src/server/model_preparation.cpp
+  src/server/file_source.cpp
+  src/server/file_pdf.cpp
+  src/server/file_pdf_worker.cpp
+  src/server/file_pdf_sandbox.cpp
+  src/server/responses_state.cpp
+  src/server/responses_execution.cpp
+  src/server/responses_execution_files.cpp
+  src/server/responses_execution_inputs.cpp
+  src/server/responses_execution_compaction.cpp
+  src/server/responses_jobs.cpp
+  src/server/responses_owner.cpp
+  src/server/progress_transport.cpp
+  src/server/responses_api.cpp
+  src/server/application_query.cpp
+  src/server/conversation_state.cpp
+  src/server/conversation_api.cpp
+  src/server/prompt_template.cpp
+  src/server/prompt_cache_policy.cpp
+  src/server/prompt_cache_diagnostics.cpp
+  src/server/prompt_registry.cpp
+  src/server/prompt_api.cpp
+  src/server/chat_storage.cpp
+  src/server/chat_storage_options.cpp
+  src/server/responses_item_shape.cpp
+  src/server/model_catalog.cpp
   src/server/client_policy.cpp
+  src/server/client_policy_admin.cpp
+  src/server/client_rate_state.cpp
   src/server/client_request.cpp
   src/server/chat_device_memory.cpp
   src/server/chat_health.cpp
@@ -271,15 +372,28 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_memory.cpp
   src/server/chat_capabilities.cpp
   src/server/server_options.cpp
+  src/server/object_store_options.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
+  src/server/finite_response.cpp
   src/server/chat_response_parser.cpp
   src/server/thinking_budget.cpp
   src/server/text_stop.cpp
   src/server/reasoning_options.cpp
   src/server/output_schema.cpp
+  src/server/schema_decimal.cpp
+  src/server/schema_graph.cpp
+  src/server/schema_prefix.cpp
+  src/server/schema_receipt.cpp
+  src/server/schema_token_guard.cpp
+  src/server/schema_number_grammar.cpp
+  src/server/schema_grammar.cpp
+  src/server/schema_string.cpp
+  src/server/schema_string_grammar.cpp
+  src/server/schema_idna.cpp
   src/server/output_constraints.cpp
   src/server/grammar_process.cpp
+  src/server/worker_io_broker.cpp
   src/server/grammar_worker.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp
@@ -287,35 +401,102 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_prompt.cpp
   src/server/chat_plan.cpp
   src/server/chat_preflight.cpp
+  src/server/chat_input_tokens.cpp
   src/server/chat_metrics.cpp
   src/server/chat_admission.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
+  src/server/chat_responses.cpp
+  src/server/chat_moderations.cpp
+  src/server/chat_embeddings.cpp
+  src/server/chat_embedding_backend.cpp
+  src/server/chat_vector_ingestion.cpp
+  src/server/chat_vector_search.cpp
+  src/server/chat_model_step.cpp
   src/server/session_cache.cpp
+  src/server/cache_io.cpp
+  src/server/cache_worker.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
+  src/server/sampling.cpp
+  src/server/prediction.cpp
+  src/server/custom_tools.cpp
+  src/server/custom_grammar.cpp
+  src/server/custom_regex.cpp
+  src/server/legacy_tools.cpp
+  src/server/token_logprobs.cpp
+    src/server/completion_plan.cpp
+    src/server/completion_response.cpp
+    src/server/responses_output.cpp
+    src/server/responses_input.cpp
+    src/server/responses_plan.cpp
+    src/server/responses_tokens.cpp
+    src/server/responses_summary.cpp
+    src/server/responses_reasoning.cpp
+    src/server/access_program.cpp
+    src/server/moderation.cpp
+    src/server/moderations_plan.cpp
+    src/server/moderations_execution.cpp
+    src/server/embeddings_plan.cpp
+    src/server/vector_search_plan.cpp
+    src/server/vector_search_rank.cpp
+    src/server/vector_search_corpus.cpp
+    src/server/vector_search_execution.cpp
+    src/server/vector_query_rewrite.cpp
+    src/server/responses_file_search.cpp
+    src/server/responses_file_search_output.cpp
+    src/server/responses_file_search_execution.cpp
+    src/server/responses_file_search_view.cpp
+    src/server/responses_file_citations.cpp
+    src/server/vector_search_api.cpp
+    src/server/vector_index.cpp
+    src/server/vector_stores_internal.cpp
+    src/server/vector_stores.cpp
+    src/server/vector_store_files.cpp
+    src/server/vector_store_api.cpp
+    src/server/vector_store_content.cpp
+    src/server/vector_file_page.cpp
+    src/server/vector_store_batches.cpp
+    src/server/vector_ingestion_state.cpp
+    src/server/vector_ingestion.cpp
+    src/server/vector_embedding_execution.cpp
+    src/server/vector_jobs.cpp
+    src/server/embeddings_execution.cpp
+    src/server/embedding_metadata.cpp
+    src/server/responses_execution_moderation.cpp
+  src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
 target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 q4t_link_structured_output(q4t_server)
+include(cmake/NativeCrypto.cmake)
+include(cmake/NativeDocuments.cmake)
+target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
+  src/server/state_cipher.cpp src/server/responses_crypto.cpp
+  src/server/responses_compaction.cpp
+  src/server/state_key_admin.cpp src/server/state_key_cli.cpp
+  src/server/state_retention_cli.cpp)
+q4t_link_native_crypto(q4t_server)
+q4t_link_native_documents(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
 endif()
 target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
-                                        CUDA::cudart)
+                                        CUDA::cudart q4t_guardian_process)
 
 # ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
+include(cmake/ServiceCLI.cmake)
 add_executable(q4t src/main.cpp)
 q4t_link_structured_output(q4t)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
-                                  q4t_server CUDA::cudart)
+                                  q4t_server q4t_service_cli CUDA::cudart)
 
 add_library(q4t_startup_plan STATIC
   src/runtime/startup_plan.cpp
@@ -417,6 +598,13 @@ target_link_libraries(q4t_preflight_probe PRIVATE q4t_server)
 target_compile_options(q4t_preflight_probe PRIVATE -Wall -Wextra -Werror)
 q4t_link_structured_output(q4t_preflight_probe)
 
+# CPU-only request shape/semantic probe, using the current server identity.
+add_executable(q4t_contract_probe EXCLUDE_FROM_ALL
+  tools/serve_protocol/contract_probe.cpp)
+target_link_libraries(q4t_contract_probe PRIVATE q4t_server)
+target_compile_options(q4t_contract_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_contract_probe)
+
 # Actual preparation/HTTP handlers; no model load. Run under gpu_exclusive.
 add_executable(q4t_prepare_lock_probe EXCLUDE_FROM_ALL
   tools/serve_prepare_lock/probe.cpp)
@@ -446,6 +634,8 @@ if(Q4T_BUILD_TESTS)
     src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_framing_test.cpp
+    tests/server_http_session_test.cpp
     tests/server_http_observation_test.cpp
     tests/server_chat_contract_test.cpp
     src/server/chat_capabilities.cpp
@@ -461,6 +651,19 @@ if(Q4T_BUILD_TESTS)
     tests/server_thinking_budget_test.cpp
     tests/server_text_stop_test.cpp
     src/server/output_schema.cpp
+    src/server/schema_decimal.cpp
+    src/server/schema_graph.cpp
+    src/server/schema_prefix.cpp
+    src/server/schema_receipt.cpp
+    src/server/schema_token_guard.cpp
+    src/server/schema_number_grammar.cpp
+    src/server/schema_grammar.cpp
+    src/server/schema_string.cpp
+    src/server/schema_string_grammar.cpp
+    src/server/schema_idna.cpp
+    tests/server_schema_graph_test.cpp
+    tests/server_schema_prefix_test.cpp
+    tests/server_schema_string_test.cpp
     src/server/output_constraints.cpp
     src/server/grammar_process.cpp
     src/server/grammar_worker.cpp
@@ -468,6 +671,78 @@ if(Q4T_BUILD_TESTS)
     tests/server_output_constraints_test.cpp
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
+    src/server/chat_storage_options.cpp
+    src/server/sampling.cpp
+    src/server/prediction.cpp
+    src/server/custom_tools.cpp
+    src/server/custom_grammar.cpp
+    src/server/custom_regex.cpp
+    src/server/legacy_tools.cpp
+    src/server/token_logprobs.cpp
+    src/server/completion_plan.cpp
+    src/server/completion_response.cpp
+    src/server/responses_output.cpp
+    src/server/responses_input.cpp
+    src/server/responses_plan.cpp
+    src/server/responses_tokens.cpp
+    src/server/responses_summary.cpp
+    src/server/responses_reasoning.cpp
+    src/server/access_program.cpp
+    src/server/moderation.cpp
+    src/server/moderations_plan.cpp
+    src/server/moderations_execution.cpp
+    src/server/embeddings_plan.cpp
+    src/server/vector_search_plan.cpp
+    src/server/vector_search_rank.cpp
+    src/server/vector_search_corpus.cpp
+    src/server/vector_search_execution.cpp
+    src/server/vector_query_rewrite.cpp
+    src/server/responses_file_search.cpp
+    src/server/responses_file_search_output.cpp
+    src/server/responses_file_search_execution.cpp
+    src/server/responses_file_search_view.cpp
+    src/server/responses_file_citations.cpp
+    src/server/vector_search_api.cpp
+    src/server/vector_index.cpp
+    src/server/vector_stores_internal.cpp
+    src/server/vector_stores.cpp
+    src/server/vector_store_files.cpp
+    src/server/vector_store_api.cpp
+    src/server/vector_store_content.cpp
+    src/server/vector_file_page.cpp
+    src/server/vector_store_batches.cpp
+    src/server/vector_ingestion_state.cpp
+    src/server/vector_ingestion.cpp
+    src/server/vector_embedding_execution.cpp
+    src/server/vector_jobs.cpp
+    src/server/embeddings_execution.cpp
+    src/server/embedding_metadata.cpp
+    src/server/responses_execution_moderation.cpp
+    src/server/chat_choices.cpp
+    src/server/model_catalog.cpp
+    tests/server_sampling_test.cpp
+    tests/server_completion_test.cpp
+    tests/server_responses_output_test.cpp
+    tests/server_responses_input_test.cpp
+    tests/server_responses_plan_test.cpp
+    tests/server_responses_tokens_test.cpp
+    tests/server_responses_reasoning_test.cpp
+    tests/server_access_program_test.cpp
+    tests/server_moderation_test.cpp
+    tests/server_moderations_api_test.cpp
+    tests/server_embeddings_api_test.cpp
+    tests/server_vector_search_test.cpp
+    tests/server_responses_file_search_test.cpp
+    tests/server_vector_search_execution_test.cpp
+    tests/server_vector_index_test.cpp
+    tests/server_vector_stores_test.cpp
+    tests/server_vector_ingestion_test.cpp
+    tests/server_vector_jobs_test.cpp
+    tests/server_responses_context_test.cpp
+    tests/server_prediction_test.cpp
+    tests/server_legacy_tools_test.cpp
+    tests/server_custom_tools_test.cpp
+    tests/server_chat_sampling_response_test.cpp
     src/server/chat_prompt.cpp
     src/server/media_admission.cpp
     src/server/chat_plan.cpp
@@ -475,7 +750,9 @@ if(Q4T_BUILD_TESTS)
     tests/server_chat_plan_test.cpp
     tests/server_sequence_admission_test.cpp
     src/server/server_options.cpp
+    src/server/object_store_options.cpp
     src/server/http_response.cpp
+  src/server/finite_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     tests/io_safetensors_test.cpp
@@ -541,12 +818,22 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_vision_tower_contract PRIVATE ${Q4T_TEST_LIBS})
   target_compile_options(q4t_vision_tower_contract PRIVATE -Wall -Wextra -Werror)
   q4t_link_structured_output(q4t_tests)
+  target_sources(q4t_tests PRIVATE src/server/native_crypto.cpp
+    tests/server_native_crypto_test.cpp)
+  q4t_link_native_crypto(q4t_tests)
+q4t_link_native_documents(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
-    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp)
+    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
+      tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp
+      tests/server_schema_string_grammar_test.cpp)
+    list(APPEND Q4T_TEST_SOURCES tests/server_schema_token_guard_test.cpp)
   endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
-  target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
+  # Serve contract tests also need the current application/state dependencies.
+  # Resolve those from the production library instead of a stale partial list.
+  target_link_libraries(q4t_tests PRIVATE q4t_server ${Q4T_TEST_LIBS}
+                                        ${CMAKE_DL_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 
   # These research replays require retained private raw input or a caller-
@@ -601,6 +888,13 @@ if(Q4T_BUILD_TESTS)
   target_link_options(q4t_host_memory_contract PRIVATE LINKER:--wrap=malloc
     LINKER:--wrap=realloc LINKER:--wrap=free LINKER:--wrap=send)
 
+  add_executable(q4t_progress_media_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/vision_progress_test.cpp
+    src/vision/media_plan.cpp src/vision/processor.cpp)
+  target_include_directories(q4t_progress_media_tests PRIVATE include third_party)
+  target_compile_options(q4t_progress_media_tests PRIVATE -Wall -Wextra -Werror)
+  target_link_libraries(q4t_progress_media_tests PRIVATE Threads::Threads)
+
   # Repeatable real-CUDA copy contract; no checkpoint or private input.
   add_executable(q4t_mtp_position_copy
     tests/mtp_position_copy_test.cpp)
@@ -621,23 +915,41 @@ if(Q4T_BUILD_TESTS)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
+  q4t_link_native_crypto(q4t_host_tests)
+q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
+  target_include_directories(q4t_host_tests SYSTEM PRIVATE third_party)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
-  target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
+  target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
-    target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
+    target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp
+      tests/server_embedding_assets_test.cpp src/server/embedding_assets.cpp
+      src/model/embedding_config.cpp src/model/embedding_layout.cpp)
+    target_compile_definitions(q4t_host_tests PRIVATE
+      Q4T_EMBEDDING_ASSET_WORKER_ENTRY=1)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
+    add_executable(q4t_embedding_contract_tests EXCLUDE_FROM_ALL
+      tests/embedding_contract_test.cpp tests/test_main.cpp
+      src/model/embedding_config.cpp src/model/embedding_layout.cpp)
+    target_link_libraries(q4t_embedding_contract_tests PRIVATE q4t_text)
+    target_compile_options(q4t_embedding_contract_tests PRIVATE
+      -Wall -Wextra -Werror)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
       tools/serve_reliability/admission_contract_test.cpp
       src/runtime/system_memory.cpp src/server/memory_admission.cpp
       src/server/chat_memory.cpp
       src/server/chat_device_memory.cpp
+      src/server/chat_health.cpp
       src/server/chat_admission.cpp
+      src/server/grammar_process.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
-      src/server/client_policy.cpp src/server/client_request.cpp
+      src/server/client_policy.cpp src/server/client_rate_state.cpp
+      src/server/client_request.cpp
       src/trace/sha256.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
+      src/server/schema_graph.cpp src/server/schema_decimal.cpp
+      src/server/custom_tools.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE
       include ${CUDAToolkit_INCLUDE_DIRS})
@@ -720,17 +1032,47 @@ target_include_directories(q4t_sha256_contract PRIVATE include)
 target_compile_definitions(q4t_sha256_contract PRIVATE Q4T_SHA256_TESTING=1)
 target_compile_options(q4t_sha256_contract PRIVATE -Wall -Wextra)
 
+find_package(Threads REQUIRED)
 add_executable(q4t_session_storage_contract EXCLUDE_FROM_ALL
   tools/session_cache/storage_contract.cpp src/server/session_cache.cpp
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp
   src/trace/sha256.cpp)
+target_compile_definitions(q4t_session_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_session_storage_contract PRIVATE Threads::Threads)
 target_include_directories(q4t_session_storage_contract PRIVATE include)
 target_compile_options(q4t_session_storage_contract PRIVATE -Wall -Wextra)
 
+# Pure host buffers and actual SSD storage; no CUDA/model execution.
+add_executable(q4t_session_target_contract EXCLUDE_FROM_ALL
+  tests/test_main.cpp tests/server_session_target_test.cpp)
+target_link_libraries(q4t_session_target_contract PRIVATE q4t_server)
+target_compile_definitions(q4t_session_target_contract PRIVATE
+  Q4T_CACHE_WORKER_ENTRY=1)
+target_compile_options(q4t_session_target_contract PRIVATE -Wall -Wextra)
+
 add_executable(q4t_prefix_storage_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/storage_contract.cpp src/server/session_cache.cpp
-  src/server/server_options.cpp src/trace/sha256.cpp)
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp
+  src/server/server_options.cpp src/server/object_store_options.cpp
+  src/trace/sha256.cpp)
+target_compile_definitions(q4t_prefix_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_prefix_storage_contract PRIVATE Threads::Threads)
 target_include_directories(q4t_prefix_storage_contract PRIVATE include)
 target_compile_options(q4t_prefix_storage_contract PRIVATE -Wall -Wextra)
+
+add_executable(q4t_incremental_storage_contract EXCLUDE_FROM_ALL
+  tools/session_incremental/storage_contract.cpp src/server/session_cache.cpp
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp src/trace/sha256.cpp)
+target_include_directories(q4t_incremental_storage_contract PRIVATE include)
+target_compile_definitions(q4t_incremental_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_incremental_storage_contract PRIVATE Threads::Threads)
+target_compile_options(q4t_incremental_storage_contract PRIVATE -Wall -Wextra)
 add_executable(q4t_prefix_state_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/state_contract.cpp)
 target_link_libraries(q4t_prefix_state_contract PRIVATE q4t_server)
@@ -743,13 +1085,7 @@ target_compile_options(q4t_prefill_scoring_contract PRIVATE -Wall -Wextra -Werro
 
 add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
-  src/server/input_contract.cpp
-  tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
-  src/server/chat_tool_history.cpp src/server/output_constraints.cpp
-  src/server/chat_template.cpp src/server/chat_response_parser.cpp
-  src/server/thinking_budget.cpp
-  src/server/text_stop.cpp
-  src/server/reasoning_options.cpp
-  src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
+  tools/prefix_seed/policy_contract.cpp)
+target_link_libraries(q4t_prefix_seed_contract PRIVATE q4t_server)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

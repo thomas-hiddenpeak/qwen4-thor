@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle",
+  "manifest_sha256": "0146e62cc16a4cb6fca5b9d42e05438bc1eae0d3dba8c5c1066b41fd20c09766",
+  "engine_binary_sha256": "312678bc44c85603f540723c771630462afd6cc7676d4a1612ffad94417b2c55",
+  "recovery_accepted": false
+}

@@ -1,0 +1,20 @@
+[q4t][http] trace_id=req-4406dac83669317818e9f7c8ef8f2b78 status=503 error=service_unavailable
+[q4t][http] trace_id=req-ddec419823ec698374a8652759d830f2 status=503 error=service_unavailable
+[q4t][http] trace_id=req-ad072c3594a81387a34ddd7abf704593 error=internal_error
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=req-ddcf74689a1df85519dc85ff2cebbb0c error=host_memory_exhausted
+[q4t][http] trace_id=req-c4306d11d3452ac080a9344dde865fda error=host_memory_exhausted
+[q4t][http] trace_id=req-dd041c25d010ce5c302bc25435ea3c59 error=host_memory_exhausted
+[q4t][http] trace_id=req-05f5c7f1776bd8e52087d29e9c3142ff status=500 error=internal_error
+[q4t][http] trace_id=req-05f5c7f1776bd8e52087d29e9c3142ff error=internal_error
+[q4t][http] trace_id=req-b4143d682078ef14912bb5ec13492590 status=409 error=explicit_cancel
+[q4t][http] trace_id=req-b4143d682078ef14912bb5ec13492590 status=500 error=internal_error
+[q4t][http] trace_id=req-b4143d682078ef14912bb5ec13492590 error=internal_error
+[q4t][http] trace_id=req-d12a58105dd3aa75452653d074feeddc error=host_memory_exhausted
+[q4t][http] trace_id=req-d12a58105dd3aa75452653d074feeddc error=host_memory_exhausted
+[q4t][http] trace_id=req-0f6a5f4262c97783e91d52f1b8b2875a error=internal_error
+[q4t][http] trace_id=req-0f6a5f4262c97783e91d52f1b8b2875a error=internal_error
+[q4t][http] trace_id=req-5eef8532cc36a81d71c0bf62f2dd11b0 status=400 error=invalid_request

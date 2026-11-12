@@ -1,0 +1,122 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_4474174a7b768a0f2184fe9217077d12",
+    "object": "response",
+    "created_at": 1794162099,
+    "completed_at": 1794162099,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_cc3103a046d2499fefe21d3b4e7284e1",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "42",
+            "annotations": [],
+            "logprobs": [
+              {
+                "token": "4",
+                "bytes": [
+                  52
+                ],
+                "logprob": -0.001464988933479422,
+                "top_logprobs": [
+                  {
+                    "token": "4",
+                    "bytes": [
+                      52
+                    ],
+                    "logprob": -0.001464988933479422
+                  },
+                  {
+                    "token": "1",
+                    "bytes": [
+                      49
+                    ],
+                    "logprob": -7.7514649889334795
+                  }
+                ]
+              },
+              {
+                "token": "2",
+                "bytes": [
+                  50
+                ],
+                "logprob": -0.0004645061469971787,
+                "top_logprobs": [
+                  {
+                    "token": "2",
+                    "bytes": [
+                      50
+                    ],
+                    "logprob": -0.0004645061469971787
+                  },
+                  {
+                    "token": "1",
+                    "bytes": [
+                      49
+                    ],
+                    "logprob": -8.625464506146997
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 28,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 3,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 31
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 192,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 2,
+    "access_programs": null,
+    "output_text": "42"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/responses/resp_4474174a7b768a0f2184fe9217077d12?include%5B%5D=message.output_text.logprobs",
+      "method": "GET"
+    }
+  ]
+}

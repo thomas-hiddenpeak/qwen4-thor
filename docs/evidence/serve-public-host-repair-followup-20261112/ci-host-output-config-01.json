@@ -1,0 +1,24 @@
+{
+  "backtrace": 3,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests"
+  ],
+  "name": "q4t_public_host_contracts",
+  "properties": [
+    {
+      "name": "ENVIRONMENT",
+      "value": [
+        "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/public-host-tests",
+        "TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/public-host-tests"
+      ]
+    },
+    {
+      "name": "TIMEOUT",
+      "value": 600.0
+    },
+    {
+      "name": "WORKING_DIRECTORY",
+      "value": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host"
+    }
+  ]
+}

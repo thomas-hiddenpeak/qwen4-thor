@@ -1,0 +1,19 @@
+{
+  "status": "ACCEPT_NATIVE_REFUSAL_MANAGED_CONTINUITY",
+  "primary": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+  "fallback": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+  "actual_starts_including_failure": 4,
+  "actual_chats_including_failure": 7,
+  "actual_probes": 1,
+  "strict_lease_seconds_including_failure": 248.92729680752382,
+  "prior_failure_retained": "../serve-refusal-selfcheck-failure-20261112/README.md",
+  "actual_fatal_gateway_signal": 6,
+  "whole_payload_replaced": true,
+  "original_refusal_retained": true,
+  "refusal_history_public_answer": "42",
+  "profile_budget_preserved": true,
+  "all_caps_preserved": true,
+  "all_owned_resources_cleaned": true,
+  "default_rev72_unchanged": true,
+  "delivery_pending": true
+}

@@ -1,0 +1,47 @@
+{
+  "status": "PASS_BOUNDED_FEATURE_SERVICE",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 56.33542742859572,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 197
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 2650293126958260
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 2650339926119961
+      },
+      {
+        "kind": "chats",
+        "label": "native-refusal",
+        "ordinal": 2,
+        "monotonic_ns": 2650341624979428
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1911646,
+      "start_ticks": 265029312
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+    "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+  },
+  "scenario": "feature_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

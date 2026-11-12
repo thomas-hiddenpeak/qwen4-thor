@@ -1,0 +1,647 @@
+input_item_0_valid 1 1 1 invalid_request 
+input_item_0_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_0_wrong_root 1 0 0 invalid_request input
+input_item_0_missing_content 1 0 0 invalid_request input.content
+input_item_0_missing_role 1 0 0 invalid_request input.content
+input_item_1_valid 1 1 1 invalid_request 
+input_item_1_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_1_wrong_root 1 0 0 invalid_request input
+input_item_1_missing_content 1 0 0 invalid_request input.content
+input_item_1_missing_role 1 0 0 invalid_request input.content
+input_item_2_valid 1 1 1 invalid_request 
+input_item_2_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_2_wrong_root 1 0 0 invalid_request input
+input_item_2_missing_content 1 0 0 invalid_request input.content
+input_item_2_missing_id 0 1 0 invalid_request input.content
+input_item_2_missing_role 1 0 0 invalid_request input.content
+input_item_2_missing_status 0 1 0 invalid_request input.content
+input_item_2_missing_type 1 0 0 invalid_request input.content
+input_item_3_valid 1 1 1 invalid_request 
+input_item_3_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_3_wrong_root 1 0 0 invalid_request input
+input_item_3_missing_id 1 0 0 invalid_request input.queries
+input_item_3_missing_queries 1 0 0 invalid_request input.queries
+input_item_3_missing_status 1 0 0 invalid_request input.queries
+input_item_3_missing_type 0 1 0 invalid_request input.queries
+input_item_4_valid 1 1 1 invalid_request 
+input_item_4_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_4_wrong_root 1 0 0 invalid_request input
+input_item_4_missing_call_id 1 0 0 invalid_request input.pending_safety_checks
+input_item_4_missing_id 1 0 0 invalid_request input.pending_safety_checks
+input_item_4_missing_pending_safety_checks 1 0 0 invalid_request input.pending_safety_checks
+input_item_4_missing_status 1 0 0 invalid_request input.pending_safety_checks
+input_item_4_missing_type 0 1 0 invalid_request input.pending_safety_checks
+input_item_5_valid 1 1 1 invalid_request 
+input_item_5_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_5_wrong_root 1 0 0 invalid_request input
+input_item_5_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_5_missing_output 1 0 0 invalid_request input.call_id
+input_item_5_missing_type 1 0 0 invalid_request input.call_id
+input_item_6_valid 1 1 1 invalid_request 
+input_item_6_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_6_wrong_root 1 0 0 invalid_request input
+input_item_6_missing_action 1 0 0 invalid_request input.status
+input_item_6_missing_id 1 0 0 invalid_request input.action.type
+input_item_6_missing_status 1 0 0 invalid_request input.action.type
+input_item_6_missing_type 1 0 0 invalid_request input.action.type
+input_item_7_valid 1 1 1 invalid_request 
+input_item_7_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_7_wrong_root 1 0 0 invalid_request input
+input_item_7_missing_arguments 1 0 0 invalid_request input.arguments
+input_item_7_missing_call_id 1 0 0 invalid_request input.arguments
+input_item_7_missing_name 1 0 0 invalid_request input.arguments
+input_item_7_missing_type 1 0 0 invalid_request input.arguments
+input_item_8_valid 1 1 1 invalid_request 
+input_item_8_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_8_wrong_root 1 0 0 invalid_request input
+input_item_8_missing_output 1 0 0 invalid_request input.output
+input_item_8_missing_type 1 0 0 invalid_request input.arguments
+input_item_9_valid 1 1 1 invalid_request 
+input_item_9_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_9_wrong_root 1 0 0 invalid_request input
+input_item_9_missing_arguments 1 0 0 invalid_request input.arguments
+input_item_9_missing_type 1 0 0 invalid_request input.arguments
+input_item_10_valid 1 1 1 invalid_request 
+input_item_10_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_10_wrong_root 1 0 0 invalid_request input
+input_item_10_missing_tools 1 0 0 invalid_request input.tools
+input_item_10_missing_type 1 0 0 invalid_request input.tools
+input_item_11_valid 1 1 1 invalid_request 
+input_item_11_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_11_wrong_root 1 0 0 invalid_request input
+input_item_11_missing_role 1 0 0 invalid_request input.tools
+input_item_11_missing_tools 1 0 0 invalid_request input.tools
+input_item_11_missing_type 1 0 0 invalid_request input.tools
+input_item_12_valid 1 1 1 invalid_request 
+input_item_12_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_12_wrong_root 1 0 0 invalid_request input
+input_item_12_missing_type 1 0 0 invalid_request input.approval_request_id
+input_item_13_valid 1 1 1 invalid_request 
+input_item_13_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_13_wrong_root 1 0 0 invalid_request input
+input_item_13_missing_id 1 0 0 invalid_request input.summary
+input_item_13_missing_summary 1 0 0 invalid_request input.summary
+input_item_13_missing_type 0 1 0 invalid_request input.summary
+input_item_14_valid 1 1 1 invalid_request 
+input_item_14_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_14_wrong_root 1 0 0 invalid_request input
+input_item_14_missing_encrypted_content 1 0 0 invalid_request input.encrypted_content
+input_item_14_missing_type 1 0 0 invalid_request input.encrypted_content
+input_item_15_valid 1 1 1 invalid_request 
+input_item_15_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_15_wrong_root 1 0 0 invalid_request input
+input_item_15_missing_id 1 0 0 invalid_request input.result
+input_item_15_missing_result 1 0 0 invalid_request input.status
+input_item_15_missing_status 1 0 0 invalid_request input.result
+input_item_15_missing_type 0 1 0 invalid_request input.result
+input_item_16_valid 1 1 1 invalid_request 
+input_item_16_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_16_wrong_root 1 0 0 invalid_request input
+input_item_16_missing_code 1 0 0 invalid_request input.container_id
+input_item_16_missing_container_id 1 0 0 invalid_request input.container_id
+input_item_16_missing_id 1 0 0 invalid_request input.code
+input_item_16_missing_outputs 1 0 0 invalid_request input.outputs
+input_item_16_missing_status 1 0 0 invalid_request input.status
+input_item_16_missing_type 0 1 0 invalid_request input.code
+input_item_17_valid 1 1 1 invalid_request 
+input_item_17_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_17_wrong_root 1 0 0 invalid_request input
+input_item_17_missing_action 1 0 0 invalid_request input.call_id
+input_item_17_missing_call_id 1 0 0 invalid_request input.action.command
+input_item_17_missing_id 1 0 0 invalid_request input.action.command
+input_item_17_missing_status 1 0 0 invalid_request input.action.command
+input_item_17_missing_type 1 0 0 invalid_request input.action.command
+input_item_18_valid 1 1 1 invalid_request 
+input_item_18_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_18_wrong_root 1 0 0 invalid_request input
+input_item_18_missing_id 1 0 0 invalid_request input.output
+input_item_18_missing_output 1 0 0 invalid_request input.output
+input_item_18_missing_type 0 1 0 invalid_request input.arguments
+input_item_19_valid 1 1 1 invalid_request 
+input_item_19_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_19_wrong_root 1 0 0 invalid_request input
+input_item_19_missing_action 1 0 0 invalid_request input.call_id
+input_item_19_missing_call_id 1 0 0 invalid_request input.action.commands
+input_item_19_missing_type 1 0 0 invalid_request input.action.commands
+input_item_20_valid 1 1 1 invalid_request 
+input_item_20_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_20_wrong_root 1 0 0 invalid_request input
+input_item_20_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_20_missing_output 1 0 0 invalid_request input.call_id
+input_item_20_missing_type 1 0 0 invalid_request input.call_id
+input_item_21_valid 1 1 1 invalid_request 
+input_item_21_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_21_wrong_root 1 0 0 invalid_request input
+input_item_21_missing_call_id 1 0 0 invalid_request input.operation
+input_item_21_missing_operation 1 0 0 invalid_request input.operation
+input_item_21_missing_status 1 0 0 invalid_request input.operation
+input_item_21_missing_type 1 0 0 invalid_request input.operation
+input_item_22_valid 1 1 1 invalid_request 
+input_item_22_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_22_wrong_root 1 0 0 invalid_request input
+input_item_22_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_22_missing_status 1 0 0 invalid_request input.call_id
+input_item_22_missing_type 1 0 0 invalid_request input.operation
+input_item_23_valid 1 1 1 invalid_request 
+input_item_23_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_23_wrong_root 1 0 0 invalid_request input
+input_item_23_missing_id 1 0 0 invalid_request input.server_label
+input_item_23_missing_server_label 1 0 0 invalid_request input.server_label
+input_item_23_missing_tools 1 0 0 invalid_request input.server_label
+input_item_23_missing_type 0 1 0 invalid_request input.server_label
+input_item_24_valid 1 1 1 invalid_request 
+input_item_24_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_24_wrong_root 1 0 0 invalid_request input
+input_item_24_missing_arguments 1 0 0 invalid_request input.server_label
+input_item_24_missing_id 1 0 0 invalid_request input.server_label
+input_item_24_missing_name 1 0 0 invalid_request input.server_label
+input_item_24_missing_server_label 1 0 0 invalid_request input.server_label
+input_item_24_missing_type 0 1 0 invalid_request input.server_label
+input_item_25_valid 1 1 1 invalid_request 
+input_item_25_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_25_wrong_root 1 0 0 invalid_request input
+input_item_25_missing_approval_request_id 1 0 0 invalid_request input.approval_request_id
+input_item_25_missing_approve 1 0 0 invalid_request input.approval_request_id
+input_item_25_missing_type 1 0 0 invalid_request input.approval_request_id
+input_item_26_valid 1 1 1 invalid_request 
+input_item_26_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_26_wrong_root 1 0 0 invalid_request input
+input_item_26_missing_arguments 1 0 0 invalid_request input.server_label
+input_item_26_missing_id 1 0 0 invalid_request input.server_label
+input_item_26_missing_name 1 0 0 invalid_request input.server_label
+input_item_26_missing_server_label 1 0 0 invalid_request input.server_label
+input_item_26_missing_type 0 1 0 invalid_request input.server_label
+input_item_27_valid 1 1 1 invalid_request 
+input_item_27_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_27_wrong_root 1 0 0 invalid_request input
+input_item_27_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_27_missing_output 1 0 0 invalid_request input.call_id
+input_item_27_missing_type 1 0 0 invalid_request input.call_id
+input_item_28_valid 1 1 1 invalid_request 
+input_item_28_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_28_wrong_root 1 0 0 invalid_request input
+input_item_28_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_28_missing_input 1 0 0 invalid_request input.call_id
+input_item_28_missing_name 1 0 0 invalid_request input.call_id
+input_item_28_missing_type 1 0 0 invalid_request input.call_id
+input_item_29_valid 1 1 1 invalid_request 
+input_item_29_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_29_wrong_root 1 0 0 invalid_request input
+input_item_29_missing_type 1 0 0 invalid_request input.approval_request_id
+input_item_30_valid 1 1 1 invalid_request 
+input_item_30_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_30_wrong_root 1 0 0 invalid_request input
+input_item_30_missing_id 1 0 0 invalid_request input.type
+input_item_31_valid 1 1 1 invalid_request 
+input_item_31_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_31_wrong_root 1 0 0 invalid_request input
+input_item_31_missing_call_id 1 0 0 invalid_request input.fingerprint
+input_item_31_missing_code 1 0 0 invalid_request input.fingerprint
+input_item_31_missing_fingerprint 1 0 0 invalid_request input.fingerprint
+input_item_31_missing_id 1 0 0 invalid_request input.call_id
+input_item_31_missing_type 0 1 0 invalid_request input.call_id
+input_item_32_valid 1 1 1 invalid_request 
+input_item_32_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+input_item_32_wrong_root 1 0 0 invalid_request input
+input_item_32_missing_call_id 1 0 0 invalid_request input.call_id
+input_item_32_missing_id 1 0 0 invalid_request input.call_id
+input_item_32_missing_result 1 0 0 invalid_request input.call_id
+input_item_32_missing_status 1 0 0 invalid_request input.call_id
+input_item_32_missing_type 0 1 0 invalid_request input.call_id
+output_item_0_valid 1 1 1 invalid_request 
+output_item_0_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_0_wrong_root 1 0 0 invalid_request input
+output_item_0_missing_content 1 0 0 invalid_request input.content
+output_item_0_missing_id 1 0 0 invalid_request input.content
+output_item_0_missing_role 1 0 0 invalid_request input.content
+output_item_0_missing_status 1 0 0 invalid_request input.content
+output_item_0_missing_type 1 0 0 invalid_request input.content
+output_item_1_valid 1 1 1 invalid_request 
+output_item_1_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_1_wrong_root 1 0 0 invalid_request input
+output_item_1_missing_id 1 0 0 invalid_request input.queries
+output_item_1_missing_queries 1 0 0 invalid_request input.queries
+output_item_1_missing_status 1 0 0 invalid_request input.queries
+output_item_1_missing_type 1 0 0 invalid_request input.queries
+output_item_2_valid 1 1 1 invalid_request 
+output_item_2_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_2_wrong_root 1 0 0 invalid_request input
+output_item_2_missing_call_id 1 0 0 invalid_request input.pending_safety_checks
+output_item_2_missing_id 1 0 0 invalid_request input.pending_safety_checks
+output_item_2_missing_pending_safety_checks 1 0 0 invalid_request input.pending_safety_checks
+output_item_2_missing_status 1 0 0 invalid_request input.pending_safety_checks
+output_item_2_missing_type 1 0 0 invalid_request input.pending_safety_checks
+output_item_3_valid 1 1 1 invalid_request 
+output_item_3_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_3_wrong_root 1 0 0 invalid_request input
+output_item_3_missing_action 1 0 0 invalid_request input.status
+output_item_3_missing_id 1 0 0 invalid_request input.action.type
+output_item_3_missing_status 1 0 0 invalid_request input.action.type
+output_item_3_missing_type 1 0 0 invalid_request input.action.type
+output_item_4_valid 1 1 1 invalid_request 
+output_item_4_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_4_wrong_root 1 0 0 invalid_request input
+output_item_4_missing_arguments 1 0 0 invalid_request input.arguments
+output_item_4_missing_call_id 1 0 0 invalid_request input.arguments
+output_item_4_missing_name 1 0 0 invalid_request input.arguments
+output_item_4_missing_type 1 0 0 invalid_request input.arguments
+output_item_5_valid 1 1 1 invalid_request 
+output_item_5_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_5_wrong_root 1 0 0 invalid_request input
+output_item_5_missing_id 1 0 0 invalid_request input.summary
+output_item_5_missing_summary 1 0 0 invalid_request input.summary
+output_item_5_missing_type 1 0 0 invalid_request input.summary
+output_item_6_valid 1 1 1 invalid_request 
+output_item_6_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_6_wrong_root 1 0 0 invalid_request input
+output_item_6_missing_code 1 0 0 invalid_request input.container_id
+output_item_6_missing_container_id 1 0 0 invalid_request input.container_id
+output_item_6_missing_id 1 0 0 invalid_request input.code
+output_item_6_missing_outputs 1 0 0 invalid_request input.outputs
+output_item_6_missing_status 1 0 0 invalid_request input.status
+output_item_6_missing_type 1 0 0 invalid_request input.code
+output_item_7_valid 1 1 1 invalid_request 
+output_item_7_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_7_wrong_root 1 0 0 invalid_request input
+output_item_7_missing_call_id 1 0 0 invalid_request input.call_id
+output_item_7_missing_input 1 0 0 invalid_request input.call_id
+output_item_7_missing_name 1 0 0 invalid_request input.call_id
+output_item_7_missing_type 1 0 0 invalid_request input.call_id
+output_item_8_valid 1 1 1 invalid_request 
+output_item_8_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_8_wrong_root 1 0 0 invalid_request input
+output_item_8_missing_id 1 0 0 invalid_request input.output
+output_item_8_missing_output 1 0 0 invalid_request input.status
+output_item_8_missing_status 1 0 0 invalid_request input.output
+output_item_8_missing_type 1 0 0 invalid_request input.arguments
+output_item_9_valid 1 1 1 invalid_request 
+output_item_9_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_9_wrong_root 1 0 0 invalid_request input
+output_item_9_missing_call_id 1 0 0 invalid_request input.call_id
+output_item_9_missing_id 1 0 0 invalid_request input.call_id
+output_item_9_missing_output 1 0 0 invalid_request input.call_id
+output_item_9_missing_status 1 0 0 invalid_request input.call_id
+output_item_9_missing_type 1 0 0 invalid_request input.call_id
+output_item_10_valid 1 1 1 invalid_request 
+output_item_10_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_10_wrong_root 1 0 0 invalid_request input
+output_item_10_missing_call_id 1 0 0 invalid_request input.fingerprint
+output_item_10_missing_code 1 0 0 invalid_request input.fingerprint
+output_item_10_missing_fingerprint 1 0 0 invalid_request input.fingerprint
+output_item_10_missing_id 1 0 0 invalid_request input.call_id
+output_item_10_missing_type 1 0 0 invalid_request input.call_id
+output_item_11_valid 1 1 1 invalid_request 
+output_item_11_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_11_wrong_root 1 0 0 invalid_request input
+output_item_11_missing_call_id 1 0 0 invalid_request input.call_id
+output_item_11_missing_id 1 0 0 invalid_request input.call_id
+output_item_11_missing_result 1 0 0 invalid_request input.call_id
+output_item_11_missing_status 1 0 0 invalid_request input.call_id
+output_item_11_missing_type 1 0 0 invalid_request input.call_id
+output_item_12_valid 1 1 1 invalid_request 
+output_item_12_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_12_wrong_root 1 0 0 invalid_request input
+output_item_12_missing_arguments 1 0 0 invalid_request input.arguments
+output_item_12_missing_call_id 1 0 0 invalid_request input.arguments
+output_item_12_missing_execution 1 0 0 invalid_request input.arguments
+output_item_12_missing_id 1 0 0 invalid_request input.arguments
+output_item_12_missing_status 1 0 0 invalid_request input.arguments
+output_item_12_missing_type 1 0 0 invalid_request input.arguments
+output_item_13_valid 1 1 1 invalid_request 
+output_item_13_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_13_wrong_root 1 0 0 invalid_request input
+output_item_13_missing_call_id 1 0 0 invalid_request input.execution
+output_item_13_missing_execution 1 0 0 invalid_request input.execution
+output_item_13_missing_id 1 0 0 invalid_request input.call_id
+output_item_13_missing_status 1 0 0 invalid_request input.call_id
+output_item_13_missing_tools 1 0 0 invalid_request input.call_id
+output_item_13_missing_type 1 0 0 invalid_request input.call_id
+output_item_14_valid 1 1 1 invalid_request 
+output_item_14_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_14_wrong_root 1 0 0 invalid_request input
+output_item_14_missing_id 1 0 0 invalid_request input.role
+output_item_14_missing_role 1 0 0 invalid_request input.tools
+output_item_14_missing_tools 1 0 0 invalid_request input.tools
+output_item_14_missing_type 1 0 0 invalid_request input.role
+output_item_15_valid 1 1 1 invalid_request 
+output_item_15_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_15_wrong_root 1 0 0 invalid_request input
+output_item_15_missing_encrypted_content 1 0 0 invalid_request input.encrypted_content
+output_item_15_missing_id 1 0 0 invalid_request input.encrypted_content
+output_item_15_missing_type 1 0 0 invalid_request input.encrypted_content
+output_item_16_valid 1 1 1 invalid_request 
+output_item_16_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_16_wrong_root 1 0 0 invalid_request input
+output_item_16_missing_id 1 0 0 invalid_request input.result
+output_item_16_missing_result 1 0 0 invalid_request input.status
+output_item_16_missing_status 1 0 0 invalid_request input.result
+output_item_16_missing_type 1 0 0 invalid_request input.result
+output_item_17_valid 1 1 1 invalid_request 
+output_item_17_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_17_wrong_root 1 0 0 invalid_request input
+output_item_17_missing_action 1 0 0 invalid_request input.call_id
+output_item_17_missing_call_id 1 0 0 invalid_request input.action.command
+output_item_17_missing_id 1 0 0 invalid_request input.action.command
+output_item_17_missing_status 1 0 0 invalid_request input.action.command
+output_item_17_missing_type 1 0 0 invalid_request input.action.command
+output_item_18_valid 1 1 1 invalid_request 
+output_item_18_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_18_wrong_root 1 0 0 invalid_request input
+output_item_18_missing_id 1 0 0 invalid_request input.output
+output_item_18_missing_output 1 0 0 invalid_request input.output
+output_item_18_missing_type 1 0 0 invalid_request input.arguments
+output_item_19_valid 1 1 1 invalid_request 
+output_item_19_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_19_wrong_root 1 0 0 invalid_request input
+output_item_19_missing_action 1 0 0 invalid_request input.environment
+output_item_19_missing_call_id 1 0 0 invalid_request input.action.commands
+output_item_19_missing_environment 1 0 0 invalid_request input.action.commands
+output_item_19_missing_id 1 0 0 invalid_request input.action.commands
+output_item_19_missing_status 1 0 0 invalid_request input.action.commands
+output_item_19_missing_type 1 0 0 invalid_request input.action.commands
+output_item_20_valid 1 1 1 invalid_request 
+output_item_20_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_20_wrong_root 1 0 0 invalid_request input
+output_item_20_missing_call_id 1 0 0 invalid_request input.max_output_length
+output_item_20_missing_id 1 0 0 invalid_request input.max_output_length
+output_item_20_missing_max_output_length 1 0 0 invalid_request input.max_output_length
+output_item_20_missing_output 1 0 0 invalid_request input.max_output_length
+output_item_20_missing_status 1 0 0 invalid_request input.max_output_length
+output_item_20_missing_type 1 0 0 invalid_request input.max_output_length
+output_item_21_valid 1 1 1 invalid_request 
+output_item_21_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_21_wrong_root 1 0 0 invalid_request input
+output_item_21_missing_call_id 1 0 0 invalid_request input.operation
+output_item_21_missing_id 1 0 0 invalid_request input.operation
+output_item_21_missing_operation 1 0 0 invalid_request input.operation
+output_item_21_missing_status 1 0 0 invalid_request input.operation
+output_item_21_missing_type 1 0 0 invalid_request input.operation
+output_item_22_valid 1 1 1 invalid_request 
+output_item_22_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_22_wrong_root 1 0 0 invalid_request input
+output_item_22_missing_call_id 1 0 0 invalid_request input.call_id
+output_item_22_missing_id 1 0 0 invalid_request input.call_id
+output_item_22_missing_status 1 0 0 invalid_request input.call_id
+output_item_22_missing_type 1 0 0 invalid_request input.pending_safety_checks
+output_item_23_valid 1 1 1 invalid_request 
+output_item_23_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_23_wrong_root 1 0 0 invalid_request input
+output_item_23_missing_arguments 1 0 0 invalid_request input.server_label
+output_item_23_missing_id 1 0 0 invalid_request input.server_label
+output_item_23_missing_name 1 0 0 invalid_request input.server_label
+output_item_23_missing_server_label 1 0 0 invalid_request input.server_label
+output_item_23_missing_type 1 0 0 invalid_request input.server_label
+output_item_24_valid 1 1 1 invalid_request 
+output_item_24_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_24_wrong_root 1 0 0 invalid_request input
+output_item_24_missing_id 1 0 0 invalid_request input.server_label
+output_item_24_missing_server_label 1 0 0 invalid_request input.server_label
+output_item_24_missing_tools 1 0 0 invalid_request input.server_label
+output_item_24_missing_type 1 0 0 invalid_request input.server_label
+output_item_25_valid 1 1 1 invalid_request 
+output_item_25_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_25_wrong_root 1 0 0 invalid_request input
+output_item_25_missing_arguments 1 0 0 invalid_request input.server_label
+output_item_25_missing_id 1 0 0 invalid_request input.server_label
+output_item_25_missing_name 1 0 0 invalid_request input.server_label
+output_item_25_missing_server_label 1 0 0 invalid_request input.server_label
+output_item_25_missing_type 1 0 0 invalid_request input.server_label
+output_item_26_valid 1 1 1 invalid_request 
+output_item_26_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_26_wrong_root 1 0 0 invalid_request input
+output_item_26_missing_approval_request_id 1 0 0 invalid_request input.approval_request_id
+output_item_26_missing_approve 1 0 0 invalid_request input.approval_request_id
+output_item_26_missing_id 1 0 0 invalid_request input.approval_request_id
+output_item_26_missing_type 1 0 0 invalid_request input.approval_request_id
+output_item_27_valid 1 1 1 invalid_request 
+output_item_27_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+output_item_27_wrong_root 1 0 0 invalid_request input
+output_item_27_missing_call_id 1 0 0 invalid_request input.call_id
+output_item_27_missing_id 1 0 0 invalid_request input.call_id
+output_item_27_missing_output 1 0 0 invalid_request input.call_id
+output_item_27_missing_status 1 0 0 invalid_request input.call_id
+output_item_27_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_0_valid 1 1 1 invalid_request 
+conversation_item_0_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_0_wrong_root 1 0 0 invalid_request input
+conversation_item_0_missing_id 1 0 0 invalid_request input.queries
+conversation_item_0_missing_queries 1 0 0 invalid_request input.queries
+conversation_item_0_missing_status 1 0 0 invalid_request input.queries
+conversation_item_0_missing_type 1 0 0 invalid_request input.queries
+conversation_item_1_valid 1 1 1 invalid_request 
+conversation_item_1_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_1_wrong_root 1 0 0 invalid_request input
+conversation_item_1_missing_call_id 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_1_missing_id 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_1_missing_pending_safety_checks 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_1_missing_status 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_1_missing_type 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_2_valid 1 1 1 invalid_request 
+conversation_item_2_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_2_wrong_root 1 0 0 invalid_request input
+conversation_item_2_missing_action 1 0 0 invalid_request input.status
+conversation_item_2_missing_id 1 0 0 invalid_request input.action.type
+conversation_item_2_missing_status 1 0 0 invalid_request input.action.type
+conversation_item_2_missing_type 1 0 0 invalid_request input.action.type
+conversation_item_3_valid 1 1 1 invalid_request 
+conversation_item_3_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_3_wrong_root 1 0 0 invalid_request input
+conversation_item_3_missing_id 1 0 0 invalid_request input.summary
+conversation_item_3_missing_summary 1 0 0 invalid_request input.summary
+conversation_item_3_missing_type 1 0 0 invalid_request input.summary
+conversation_item_4_valid 1 1 1 invalid_request 
+conversation_item_4_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_4_wrong_root 1 0 0 invalid_request input
+conversation_item_4_missing_code 1 0 0 invalid_request input.container_id
+conversation_item_4_missing_container_id 1 0 0 invalid_request input.container_id
+conversation_item_4_missing_id 1 0 0 invalid_request input.code
+conversation_item_4_missing_outputs 1 0 0 invalid_request input.outputs
+conversation_item_4_missing_status 1 0 0 invalid_request input.status
+conversation_item_4_missing_type 1 0 0 invalid_request input.code
+conversation_item_5_valid 1 1 1 invalid_request 
+conversation_item_5_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_5_wrong_root 1 0 0 invalid_request input
+conversation_item_5_missing_call_id 1 0 0 invalid_request input.call_id
+conversation_item_5_missing_output 1 0 0 invalid_request input.call_id
+conversation_item_5_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_6_valid 1 1 1 invalid_request 
+conversation_item_6_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_6_wrong_root 1 0 0 invalid_request input
+conversation_item_6_missing_call_id 1 0 0 invalid_request input.call_id
+conversation_item_6_missing_input 1 0 0 invalid_request input.call_id
+conversation_item_6_missing_name 1 0 0 invalid_request input.call_id
+conversation_item_6_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_7_valid 1 1 1 invalid_request 
+conversation_item_7_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_7_wrong_root 1 0 0 invalid_request input
+conversation_item_7_missing_id 1 0 0 invalid_request input.output
+conversation_item_7_missing_output 1 0 0 invalid_request input.status
+conversation_item_7_missing_status 1 0 0 invalid_request input.output
+conversation_item_7_missing_type 1 0 0 invalid_request input.arguments
+conversation_item_8_valid 1 1 1 invalid_request 
+conversation_item_8_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_8_wrong_root 1 0 0 invalid_request input
+conversation_item_8_missing_call_id 1 0 0 invalid_request input.call_id
+conversation_item_8_missing_id 1 0 0 invalid_request input.call_id
+conversation_item_8_missing_output 1 0 0 invalid_request input.call_id
+conversation_item_8_missing_status 1 0 0 invalid_request input.call_id
+conversation_item_8_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_9_valid 1 1 1 invalid_request 
+conversation_item_9_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_9_wrong_root 1 0 0 invalid_request input
+conversation_item_9_missing_arguments 1 0 0 invalid_request input.arguments
+conversation_item_9_missing_call_id 1 0 0 invalid_request input.arguments
+conversation_item_9_missing_execution 1 0 0 invalid_request input.arguments
+conversation_item_9_missing_id 1 0 0 invalid_request input.arguments
+conversation_item_9_missing_status 1 0 0 invalid_request input.arguments
+conversation_item_9_missing_type 1 0 0 invalid_request input.arguments
+conversation_item_10_valid 1 1 1 invalid_request 
+conversation_item_10_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_10_wrong_root 1 0 0 invalid_request input
+conversation_item_10_missing_call_id 1 0 0 invalid_request input.execution
+conversation_item_10_missing_execution 1 0 0 invalid_request input.execution
+conversation_item_10_missing_id 1 0 0 invalid_request input.call_id
+conversation_item_10_missing_status 1 0 0 invalid_request input.call_id
+conversation_item_10_missing_tools 1 0 0 invalid_request input.call_id
+conversation_item_10_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_11_valid 1 1 1 invalid_request 
+conversation_item_11_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_11_wrong_root 1 0 0 invalid_request input
+conversation_item_11_missing_encrypted_content 1 0 0 invalid_request input.encrypted_content
+conversation_item_11_missing_id 1 0 0 invalid_request input.encrypted_content
+conversation_item_11_missing_type 1 0 0 invalid_request input.encrypted_content
+conversation_item_12_valid 1 1 1 invalid_request 
+conversation_item_12_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_12_wrong_root 1 0 0 invalid_request input
+conversation_item_12_missing_action 1 0 0 invalid_request input.environment
+conversation_item_12_missing_call_id 1 0 0 invalid_request input.action.commands
+conversation_item_12_missing_environment 1 0 0 invalid_request input.action.commands
+conversation_item_12_missing_id 1 0 0 invalid_request input.action.commands
+conversation_item_12_missing_status 1 0 0 invalid_request input.action.commands
+conversation_item_12_missing_type 1 0 0 invalid_request input.action.commands
+conversation_item_13_valid 1 1 1 invalid_request 
+conversation_item_13_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_13_wrong_root 1 0 0 invalid_request input
+conversation_item_13_missing_call_id 1 0 0 invalid_request input.max_output_length
+conversation_item_13_missing_id 1 0 0 invalid_request input.max_output_length
+conversation_item_13_missing_max_output_length 1 0 0 invalid_request input.max_output_length
+conversation_item_13_missing_output 1 0 0 invalid_request input.max_output_length
+conversation_item_13_missing_status 1 0 0 invalid_request input.max_output_length
+conversation_item_13_missing_type 1 0 0 invalid_request input.max_output_length
+conversation_item_14_valid 1 1 1 invalid_request 
+conversation_item_14_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_14_wrong_root 1 0 0 invalid_request input
+conversation_item_14_missing_call_id 1 0 0 invalid_request input.operation
+conversation_item_14_missing_id 1 0 0 invalid_request input.operation
+conversation_item_14_missing_operation 1 0 0 invalid_request input.operation
+conversation_item_14_missing_status 1 0 0 invalid_request input.operation
+conversation_item_14_missing_type 1 0 0 invalid_request input.operation
+conversation_item_15_valid 1 1 1 invalid_request 
+conversation_item_15_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_15_wrong_root 1 0 0 invalid_request input
+conversation_item_15_missing_call_id 1 0 0 invalid_request input.call_id
+conversation_item_15_missing_id 1 0 0 invalid_request input.call_id
+conversation_item_15_missing_status 1 0 0 invalid_request input.call_id
+conversation_item_15_missing_type 1 0 0 invalid_request input.pending_safety_checks
+conversation_item_16_valid 1 1 1 invalid_request 
+conversation_item_16_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_16_wrong_root 1 0 0 invalid_request input
+conversation_item_16_missing_content 1 0 0 invalid_request input.content
+conversation_item_16_missing_id 1 0 0 invalid_request input.content
+conversation_item_16_missing_role 1 0 0 invalid_request input.content
+conversation_item_16_missing_status 1 0 0 invalid_request input.content
+conversation_item_16_missing_type 1 0 0 invalid_request input.content
+conversation_item_17_valid 1 1 1 invalid_request 
+conversation_item_17_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_17_wrong_root 1 0 0 invalid_request input
+conversation_item_17_missing_arguments 1 0 0 invalid_request input.arguments
+conversation_item_17_missing_call_id 1 0 0 invalid_request input.arguments
+conversation_item_17_missing_id 1 0 0 invalid_request input.arguments
+conversation_item_17_missing_name 1 0 0 invalid_request input.arguments
+conversation_item_17_missing_status 1 0 0 invalid_request input.arguments
+conversation_item_17_missing_type 1 0 0 invalid_request input.arguments
+conversation_item_18_valid 1 1 1 invalid_request 
+conversation_item_18_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_18_wrong_root 1 0 0 invalid_request input
+conversation_item_18_missing_id 1 0 0 invalid_request input.result
+conversation_item_18_missing_result 1 0 0 invalid_request input.status
+conversation_item_18_missing_status 1 0 0 invalid_request input.result
+conversation_item_18_missing_type 1 0 0 invalid_request input.result
+conversation_item_19_valid 1 1 1 invalid_request 
+conversation_item_19_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_19_wrong_root 1 0 0 invalid_request input
+conversation_item_19_missing_id 1 0 0 invalid_request input.tools
+conversation_item_19_missing_role 1 0 0 invalid_request input.tools
+conversation_item_19_missing_tools 1 0 0 invalid_request input.tools
+conversation_item_19_missing_type 1 0 0 invalid_request input.tools
+conversation_item_20_valid 1 1 1 invalid_request 
+conversation_item_20_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_20_wrong_root 1 0 0 invalid_request input
+conversation_item_20_missing_id 1 0 0 invalid_request input.type
+conversation_item_20_missing_type 1 0 0 invalid_request input.approval_request_id
+conversation_item_21_valid 1 1 1 invalid_request 
+conversation_item_21_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_21_wrong_root 1 0 0 invalid_request input
+conversation_item_21_missing_call_id 1 0 0 invalid_request input.fingerprint
+conversation_item_21_missing_code 1 0 0 invalid_request input.fingerprint
+conversation_item_21_missing_fingerprint 1 0 0 invalid_request input.fingerprint
+conversation_item_21_missing_id 1 0 0 invalid_request input.call_id
+conversation_item_21_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_22_valid 1 1 1 invalid_request 
+conversation_item_22_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_22_wrong_root 1 0 0 invalid_request input
+conversation_item_22_missing_call_id 1 0 0 invalid_request input.call_id
+conversation_item_22_missing_id 1 0 0 invalid_request input.call_id
+conversation_item_22_missing_result 1 0 0 invalid_request input.call_id
+conversation_item_22_missing_status 1 0 0 invalid_request input.call_id
+conversation_item_22_missing_type 1 0 0 invalid_request input.call_id
+conversation_item_23_valid 1 1 1 invalid_request 
+conversation_item_23_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_23_wrong_root 1 0 0 invalid_request input
+conversation_item_23_missing_action 1 0 0 invalid_request input.call_id
+conversation_item_23_missing_call_id 1 0 0 invalid_request input.action.command
+conversation_item_23_missing_id 1 0 0 invalid_request input.action.command
+conversation_item_23_missing_status 1 0 0 invalid_request input.action.command
+conversation_item_23_missing_type 1 0 0 invalid_request input.action.command
+conversation_item_24_valid 1 1 1 invalid_request 
+conversation_item_24_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_24_wrong_root 1 0 0 invalid_request input
+conversation_item_24_missing_id 1 0 0 invalid_request input.output
+conversation_item_24_missing_output 1 0 0 invalid_request input.output
+conversation_item_24_missing_type 1 0 0 invalid_request input.arguments
+conversation_item_25_valid 1 1 1 invalid_request 
+conversation_item_25_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_25_wrong_root 1 0 0 invalid_request input
+conversation_item_25_missing_id 1 0 0 invalid_request input.server_label
+conversation_item_25_missing_server_label 1 0 0 invalid_request input.server_label
+conversation_item_25_missing_tools 1 0 0 invalid_request input.server_label
+conversation_item_25_missing_type 1 0 0 invalid_request input.server_label
+conversation_item_26_valid 1 1 1 invalid_request 
+conversation_item_26_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_26_wrong_root 1 0 0 invalid_request input
+conversation_item_26_missing_arguments 1 0 0 invalid_request input.server_label
+conversation_item_26_missing_id 1 0 0 invalid_request input.server_label
+conversation_item_26_missing_name 1 0 0 invalid_request input.server_label
+conversation_item_26_missing_server_label 1 0 0 invalid_request input.server_label
+conversation_item_26_missing_type 1 0 0 invalid_request input.server_label
+conversation_item_27_valid 1 1 1 invalid_request 
+conversation_item_27_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_27_wrong_root 1 0 0 invalid_request input
+conversation_item_27_missing_approval_request_id 1 0 0 invalid_request input.approval_request_id
+conversation_item_27_missing_approve 1 0 0 invalid_request input.approval_request_id
+conversation_item_27_missing_id 1 0 0 invalid_request input.approval_request_id
+conversation_item_27_missing_type 1 0 0 invalid_request input.approval_request_id
+conversation_item_28_valid 1 1 1 invalid_request 
+conversation_item_28_extra 1 0 0 invalid_request input.q4t_unknown_item_field
+conversation_item_28_wrong_root 1 0 0 invalid_request input
+conversation_item_28_missing_arguments 1 0 0 invalid_request input.server_label
+conversation_item_28_missing_id 1 0 0 invalid_request input.server_label
+conversation_item_28_missing_name 1 0 0 invalid_request input.server_label
+conversation_item_28_missing_server_label 1 0 0 invalid_request input.server_label
+conversation_item_28_missing_type 1 0 0 invalid_request input.server_label
+manual_pending_tool 1 1 1 invalid_request 
+manual_missing_tool_name 1 0 0 invalid_request input.type
+manual_refusal 1 1 1 invalid_request 
+manual_image_original 1 1 1 invalid_request 
+manual_image_unknown_detail 1 0 0 invalid_request input.content[0].detail
+manual_open_map 1 1 1 invalid_request 

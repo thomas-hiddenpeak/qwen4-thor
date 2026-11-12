@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "state-retention",
+    "collect",
+    "--object-store-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-retention-20261110/business-01/objects",
+    "--limit",
+    "128",
+    "--item-created-before",
+    "1794256841",
+    "--expected-plan",
+    "8f98e3d70f303c1d7ad6abaf154e6c85fa70f64a678a7ce63b2b0333ac3e91be"
+  ],
+  "returncode": 1,
+  "stdout": "{\"status\":409,\"code\":\"retention_plan_changed\",\"message\":\"Stored objects or retention eligibility changed; inspect again\",\"commit_unknown\":false,\"value\":null}\n",
+  "stderr": ""
+}

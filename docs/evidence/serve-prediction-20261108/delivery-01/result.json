@@ -1,0 +1,17 @@
+{
+  "status": "PASS_PREDICTION_DEFAULT_INSTALL",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/release-01/bundle",
+  "manifest_sha256": "ee95045b59d0f69d36092ce25666365cb7041d933636927cefb1989d087b7f85",
+  "engine_binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+  "engine_release_sha256": "b96c0f351491db15b6ce82f8653b9dd5b468d27db8b3b1a37663b13da82d630b",
+  "service_release_sha256": "9e17f6c0556516225b164e4f581a5057784f42bd5099752f4d13238cffcb34bf",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "ledger_preserved": true,
+  "desired": "STOPPED",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "0de8c1f8da63d9365dc4657badf6e61bb0b9679dd65d402df7e8d3cf10d3edd6",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "policy_keys_quota_unchanged": true
+}

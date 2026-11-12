@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "result": {
+    "id": "conv_0bcfabd4a04b57719525f64d1d96d530",
+    "object": "conversation",
+    "created_at": 1794256840,
+    "metadata": {}
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/conversations",
+      "method": "POST",
+      "body": "{\"items\":[{\"role\":\"user\",\"content\":\"Temporary project note for explicit retention cleanup.\"}]}"
+    }
+  ]
+}

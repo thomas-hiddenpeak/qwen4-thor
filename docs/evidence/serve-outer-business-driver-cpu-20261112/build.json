@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/guardian-build",
+    "--target",
+    "q4t_guardian",
+    "q4t_device_control",
+    "--parallel",
+    "4"
+  ],
+  "exit_code": 0,
+  "seconds": 9.66630160715431,
+  "warnings": 0,
+  "artifacts": {
+    "q4t-guardian": "383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+  }
+}

@@ -16,7 +16,8 @@ registerHooks({ resolve(specifier, context, nextResolve) {
 const config = JSON.parse(readFileSync(process.env.Q4T_PROTOCOL_FIXTURE, 'utf8'));
 globalThis.fetch = async (url, init) => {
   const request = init.body ? JSON.parse(init.body) : null;
-  appendFileSync(config.calls, JSON.stringify({ url: String(url), method: init.method, request })+'\n');
+  appendFileSync(config.calls, JSON.stringify({ url: String(url), method: init.method,
+    request, request_raw: init.body ?? null })+'\n');
   const path = new URL(url).pathname;
   if (path === '/v1/capabilities') return Response.json(config.capabilities);
   if (path === '/v1/models') return Response.json({ object: 'list', data: [

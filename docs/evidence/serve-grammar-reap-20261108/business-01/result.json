@@ -1,0 +1,11 @@
+{
+  "status": "PASS_GRAMMAR_BOUNDED_REAP_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 6,
+    "controls": 40
+  },
+  "seconds": 51.99885324994102,
+  "binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "kernel_uninterruptible_fault": "CPU simulation only; not manufactured on GPU"
+}

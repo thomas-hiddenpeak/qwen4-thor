@@ -1,0 +1,13 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 41,
+  "completion_fields": 21,
+  "routes": 26,
+  "native_routes": 42,
+  "reviewed_source_anchors": 286,
+  "mutation_checks": 5,
+  "errors": [
+    "sources_sha256 requires renewed review: ['include/q4t/server/responses_output.h', 'src/server/chat_capabilities.cpp', 'src/server/responses_api.cpp', 'src/server/responses_execution.cpp', 'src/server/responses_output.cpp', 'tools/serve_service/package.py']"
+  ]
+}

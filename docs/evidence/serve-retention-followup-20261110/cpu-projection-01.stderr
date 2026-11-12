@@ -1,0 +1,6 @@
+test_stored_projection_uses_actual_failed_comparison (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_stored_projection_uses_actual_failed_comparison) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

@@ -64,6 +64,30 @@ class RecoveryContracts(unittest.TestCase):
         self.save("round-00-plan.json", plan)
         return result, plan
 
+    def test_custom_pending_unknown_and_results_never_replay(self):
+        message=dict(role="assistant",content=None,tool_calls=[dict(id="custom-a",type="custom",
+            custom=dict(name="read",input="READ docs/MODEL.md 1 8"))])
+        result=self.response(message)
+        plan=[asdict(p) for p in client.prepare_tool_calls(result,{},custom_validators={"read":lambda value:None})]
+        self.save("round-00-plan.json",plan)
+        self.assertEqual(self.inspect()["state"],"TOOLS_PENDING")
+        self.save("round-00-tool-000-started.json",plan[0])
+        self.assertEqual(self.inspect()["state"],"TOOL_OUTCOME_UNKNOWN")
+        self.save("round-00-tool-000-result.json",dict(tool_call_id="custom-a",content="actual"))
+        state=self.inspect()
+        self.assertEqual(state["completed_tool_calls"],1)
+        self.assertEqual(state["messages"][-1],dict(role="tool",tool_call_id="custom-a",content="actual"))
+
+    def test_legacy_function_journal_keeps_name_association(self):
+        message=dict(role="assistant",content=None,function_call=dict(name="lookup",arguments='{"key":"x"}'))
+        result=self.response(message,finish="function_call")
+        plan=[asdict(p) for p in client.prepare_tool_calls(result,{"lookup":lambda value:None})]
+        self.save("round-00-plan.json",plan)
+        self.assertEqual(self.inspect()["state"],"TOOLS_PENDING")
+        self.save("round-00-tool-000-started.json",plan[0])
+        self.save("round-00-tool-000-result.json",dict(tool_call_id="lookup",content="actual"))
+        self.assertEqual(self.inspect()["messages"][-1],dict(role="function",name="lookup",content="actual"))
+
     def test_no_request_or_submission_is_not_an_unknown_execution(self):
         self.assertEqual(self.inspect()["state"], "READY_TO_REQUEST")
         self.save("round-00-request.json", self.request)

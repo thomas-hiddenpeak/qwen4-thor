@@ -1,5 +1,6 @@
 """Actual Node SDK/subprocess/journal checks with an in-memory test transport."""
 import io
+from decimal import Decimal
 import json
 from pathlib import Path
 import subprocess
@@ -9,7 +10,7 @@ from unittest.mock import patch
 
 import js_client
 from js_client import JsSdkClient, JsSdkError, ROOT
-from chat_client import ProtocolError
+from chat_client import ProtocolError, load_json
 import project_query
 from project_records import VALIDATORS
 from tool_recovery import inspect_recovery
@@ -133,6 +134,23 @@ class Bridge(unittest.TestCase):
     def test_actual_sdk_models_discovery(self):
         self.assertEqual(self.client.models()["data"][0]["id"], CAPS["model"])
         self.assertTrue(self.submitted()[0]["url"].endswith("/v1/models"))
+
+    def test_exact_schema_crosses_python_node_and_sdk_without_rounding(self):
+        schema = dict(type="object", properties=dict(value=dict(type="number",
+            enum=[9007199254740993, Decimal("1e400"), Decimal("1e-400"),
+                  Decimal("0.30000000000000001")])), required=["value"],
+            additionalProperties=False)
+        body = dict(model=CAPS["model"], request_id="bridge-exact", stream=False,
+            messages=[dict(role="user", content="Read docs/MODEL.md")],
+            response_format=dict(type="json_schema", json_schema=dict(
+                name="exact", strict=True, schema=schema)))
+        value = self.client.complete(body)
+        self.assertEqual(value.finish_reason, "tool_calls")
+        raw = self.submitted()[0]["request_raw"]
+        actual = load_json(raw, exact_numbers=True)
+        self.assertEqual(actual["response_format"]["json_schema"]["schema"], schema)
+        self.assertIn('9007199254740993', raw)
+        self.assertNotIn('"1E+400"', raw)
 
 
 class BusinessProfile(unittest.TestCase):

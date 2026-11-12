@@ -1,0 +1,25 @@
+{
+  "status": "ACCEPT_TARGETED_CPU",
+  "cpp_unique": 20,
+  "cpp_initial": 20,
+  "cpp_after_discovery_review": 1,
+  "python_native_package": 5,
+  "gpu_starts": 0,
+  "gpu_requests": 0,
+  "network_requests": 0,
+  "engine_binary_sha256": "94ef412d6322a797e1c99032b2f3badb14b8e979d2499c4097a8013d04dfedec",
+  "host_binary_sha256": "7e05302dc4a8fd821512fcd769acab17803855f540ecdf31533dbc5a8ad90d4c",
+  "protected_sha256": {
+    "build/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+    "build/q4t.release.json": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/manifest.json": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+    ".q4t-work/serve-uploads-20261110/release-01/bundle/engine/q4t": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+  },
+  "protected_unchanged": true,
+  "main_merged": false,
+  "default_replaced": false,
+  "initial_build_failure": "Missing output_schema.h declaration for OutputJson in effective configuration; fixed direct include; original logs retained.",
+  "evidence_reuse": "Native parser/package checks ran against aa345138; final change only splits discovery endpoint/field and adds the assertion. Original 19 other C++ and all 5 Python checks retain source/dependency identity. One capability test rerun on final build.",
+  "source_review": "policy-inventory-review.json",
+  "work_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-inputs-20261110"
+}

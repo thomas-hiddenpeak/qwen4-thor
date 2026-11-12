@@ -1,0 +1,51 @@
+{
+  "owner": {
+    "pid": 983321,
+    "start_ticks": 237153060,
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+    "pid_namespace": 4026531836
+  },
+  "attempt": 1,
+  "captured": {
+    "phase": "READY",
+    "reason": "serving",
+    "monotonic": 2371572.036367728,
+    "progress_reason": "available",
+    "snapshot": {
+      "sequence": 166,
+      "observed_ns": 2371572016036443,
+      "complete": true,
+      "identity": {
+        "pid": 983321,
+        "start_ticks": 237153060,
+        "pid_namespace": 4026531836,
+        "controller_generation": 1,
+        "model_generation": 1,
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "service_id": "319b4124-7304-4ea9-96bd-856150858c69"
+      },
+      "active": 1,
+      "untracked": 0,
+      "successes": 3,
+      "steps": 12,
+      "rows": [
+        {
+          "ticket": 2,
+          "deadline_ns": 0,
+          "stage": 10,
+          "stage_since_ns": 2371569198397115,
+          "wait": 0,
+          "wait_since_ns": 2371569198396976,
+          "work": 8,
+          "work_id": 110,
+          "work_since_ns": 2371571248199845,
+          "completed": 109,
+          "last_completed_ns": 2371571248199623,
+          "updated_ns": 2371571248199845
+        }
+      ],
+      "wire_version": 2
+    },
+    "fault": null
+  }
+}

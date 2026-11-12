@@ -1,0 +1,43 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ec1744a9..b13c36b0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -267,6 +267,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/object_worker.cpp
+   src/server/responses_state.cpp
+   src/server/responses_execution.cpp
++  src/server/responses_execution_compaction.cpp
+   src/server/responses_jobs.cpp
+   src/server/responses_owner.cpp
+   src/server/progress_transport.cpp
+@@ -349,6 +350,7 @@ q4t_link_structured_output(q4t_server)
+ include(cmake/NativeCrypto.cmake)
+ target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
+   src/server/state_cipher.cpp src/server/responses_crypto.cpp
++  src/server/responses_compaction.cpp
+   src/server/state_key_admin.cpp src/server/state_key_cli.cpp)
+ q4t_link_native_crypto(q4t_server)
+ option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
+diff --git a/include/q4t/server/application_routes.h b/include/q4t/server/application_routes.h
+index 546021f6..92dce344 100644
+--- a/include/q4t/server/application_routes.h
++++ b/include/q4t/server/application_routes.h
+@@ -23,6 +23,10 @@ inline bool IsResponsesTarget(std::string_view target) {
+   return path == "/v1/responses" || path.starts_with("/v1/responses/");
+ }
+ 
++inline bool IsResponsesCompaction(std::string_view target) {
++  return target.substr(0, target.find('?')) == "/v1/responses/compact";
++}
++
+ inline bool IsStoredChatTarget(std::string_view target) {
+   const auto path = target.substr(0, target.find('?'));
+   return path == "/v1/chat/completions" ||
+@@ -57,6 +61,7 @@ inline bool ResponsesMethodAllowed(std::string_view method,
+   auto path = target.substr(0, target.find('?'));
+   constexpr std::string_view root = "/v1/responses";
+   if (path == root) return method == "POST";
++  if (IsResponsesCompaction(path)) return method == "POST";
+   if (!path.starts_with("/v1/responses/")) return false;
+   path.remove_prefix(root.size() + 1);
+   const auto end = path.find('/');

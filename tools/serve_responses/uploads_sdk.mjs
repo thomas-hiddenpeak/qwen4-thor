@@ -1,0 +1,77 @@
+// Real pinned SDK, native HTTP/TLS handlers and durable Uploads. No model stub.
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { writeFileSync } from 'node:fs';
+import { loadSdk } from '../serve_protocol/sdk.mjs';
+const [baseURL, key, otherKey, output] = process.argv.slice(2);
+assert.ok(baseURL && key && otherKey && output);
+assert.ok(['127.0.0.1', 'localhost'].includes(new URL(baseURL).hostname));
+const { OpenAI, version } = loadSdk(process.env.Q4T_NODE_SDK_DIR);
+const requests = [];
+const tracedFetch = async (url, options) => {
+  const response = await fetch(url, options);
+  const row = { method: options.method ?? 'GET', path: new URL(url).pathname, status: response.status };
+  if (response.headers.get('content-type')?.includes('application/json')) row.response = await response.clone().json();
+  requests.push(row);
+  return response;
+};
+const make = apiKey => new OpenAI({ baseURL, apiKey, maxRetries: 0, timeout: 30000, fetch: tracedFetch });
+const client = make(key), other = make(otherKey);
+const create = (bytes, extra={}) => client.uploads.create({ bytes, filename: '真实资料.txt', mime_type: 'text/plain', purpose: 'user_data', ...extra });
+const part = (id, bytes) => client.uploads.parts.create(id, { data: new File([bytes], '分块.bin') });
+const files = [];
+const upload = await create(6, { expires_after: { anchor: 'created_at', seconds: 3600 } });
+assert.equal(upload.object, 'upload');
+assert.equal(upload.status, 'pending');
+assert.equal(upload.expires_at - upload.created_at, 3600);
+const [second, first] = await Promise.all([part(upload.id, 'def'), part(upload.id, 'abc')]);
+assert.equal(first.upload_id, upload.id);
+assert.equal(first.object, 'upload.part');
+assert.equal((await client.files.list()).data.length, 0);
+await assert.rejects(other.uploads.cancel(upload.id), error => error.status === 404);
+await assert.rejects(other.uploads.complete(upload.id, { part_ids: [first.id, second.id] }), error => error.status === 404);
+await assert.rejects(client.uploads.complete(upload.id, { part_ids: [first.id] }), error => error.status === 400);
+await assert.rejects(client.uploads.complete(upload.id, { part_ids: [first.id, second.id], md5: '0'.repeat(32) }), error => error.status === 400);
+const completeParams = { part_ids: [first.id, second.id], md5: 'e80b5017098950fc58aad83c8c14978e' };
+const completed = await client.uploads.complete(upload.id, completeParams);
+assert.equal(completed.status, 'completed');
+assert.equal(completed.file.bytes, 6);
+assert.equal(completed.file.expires_at - completed.file.created_at, 3600);
+assert.equal(await (await client.files.content(completed.file.id)).text(), 'abcdef');
+assert.deepEqual(await client.uploads.complete(upload.id, completeParams), completed);
+assert.deepEqual(await client.files.retrieve(completed.file.id), completed.file);
+files.push(completed.file);
+await assert.rejects(part(upload.id, 'late'), error => error.status === 409);
+await assert.rejects(client.uploads.cancel(upload.id), error => error.status === 409);
+const cancelled = await create(1);
+await part(cancelled.id, 'x');
+assert.equal((await client.uploads.cancel(cancelled.id)).status, 'cancelled');
+assert.equal((await client.uploads.cancel(cancelled.id)).status, 'cancelled');
+await assert.rejects(part(cancelled.id, 'late'), error => error.status === 409);
+await assert.rejects(client.uploads.complete(cancelled.id, { part_ids: [] }), error => error.status === 409);
+const empty = await create(0, { purpose: 'evals' });
+const emptyResult = await client.uploads.complete(empty.id, { part_ids: [], md5: 'd41d8cd98f00b204e9800998ecf8427e' });
+assert.equal(emptyResult.file.purpose, 'evals');
+assert.equal(emptyResult.file.bytes, 0);
+files.push(emptyResult.file);
+// Client fixture owns its bytes; the server must stream beyond ordinary JSON caps.
+const bytes = Buffer.alloc(17 * 1024 * 1024 + 13);
+for (let i = 0; i < bytes.length; ++i) bytes[i] = i % 251;
+const big = await create(bytes.length);
+const chunk = await part(big.id, bytes);
+const md5 = createHash('md5').update(bytes).digest('hex');
+const bigResult = await client.uploads.complete(big.id, { part_ids: [chunk.id], md5 });
+const downloaded = new Uint8Array(await (await client.files.content(bigResult.file.id)).arrayBuffer());
+assert.equal(downloaded.byteLength, bytes.length);
+assert.equal(createHash('sha256').update(downloaded).digest('hex'), createHash('sha256').update(bytes).digest('hex'));
+files.push(bigResult.file);
+for (const file of files) assert.equal((await client.files.delete(file.id)).deleted, true);
+assert.equal((await client.files.list()).data.length, 0);
+await assert.rejects(make('wrong').uploads.create({ bytes: 1, filename: 'a.txt', mime_type: 'text/plain', purpose: 'user_data' }), error => error.status === 401);
+await assert.rejects(create(8 * 1024**3 + 1), error => error.status === 413);
+assert.ok(requests.length <= 64);
+writeFileSync(output, JSON.stringify({ status: 'PASS', sdk_version: version,
+  requests, request_count: requests.length, large_bytes: bytes.length,
+  large_sha256: createHash('sha256').update(bytes).digest('hex'), max_retries: 0,
+  actual_network: true, model_starts: 0 }, null, 2)+'\n');
+console.log(JSON.stringify({ status: 'PASS', requests: requests.length, large_bytes: bytes.length }));

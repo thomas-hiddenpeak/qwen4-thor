@@ -15,13 +15,44 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 独立 Guardian 与原生服务入口已完成[有界验收交付](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
 默认包无需nginx/systemd即可提供Bearer鉴权、JSON/SSE及模型/控制器/
 入口恢复；辅助监控故障保留健康业务，恢复预算和停止意图持久化。
-151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
-本机`build/service/bin/q4t service`已安装，状态`build/service-native-state`
-保持停止；原`build/q4t serve`保留原含义。Python控制面依赖仍保留，
-长稳及C/D范围见交付说明；旧A/B包与证据可回退。
+原生恢复151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
+后续[原生TLS/浏览器交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)新增
+71项不同CPU及1启动/6Chat；支持IPv4/IPv6、证书轮换、mTLS与CORS。
+本机统一入口 `build/q4t service` 已安装，状态 `build/service-native-state`
+保持停止；`build/q4t serve` 保留原含义。[原生生命周期](docs/SERVE_NATIVE_LIFECYCLE_2026-11-09.md)
+提供容量配置、check/status/reload/stop 与持久发布/续接/旧代回退。
+默认程序、包和元数据由发布事务共同选择；开发构建使用独立
+`.q4t-work/` 目录，避免覆盖已管理的 `build/q4t`。Python控制面依赖仍保留，
+长稳由用户实跑；其余兼容/恢复任务持续按总计划推进，旧包可回退。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
-历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
+历史、按序system/developer、参与者name及refusal回填和
+`/v1/capabilities`能力/模板身份查询。消息profile为
+`qwen3.8-openai-v3`，无需人为补充user消息；实现与真实SDK验收见
+[消息输入交付](docs/SERVE_CHAT_INPUT_2026-11-08.md)。完整OpenAI协议
+的剩余任务继续按总计划实现。
+
+Responses 的 `truncation:auto` 已接入实际模板、分词与容量规划，
+保留当前任务和工具调用组，持久历史保持完整；前台 JSON/SSE、后台
+及真实文档工具闭环已验，见[实现与交付](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md)。
+`reasoning.summary` 的 concise/detailed/auto 已由本机模型独立生成真实摘要，
+提供 summary item/SSE、持久回放与后台执行；共用剩余输出预算和取消，
+额外模型输入/输出计入 usage/TPM，外部请求只计一次 RPM。没有实际推理
+时不伪造摘要。认证加密状态已交付；实际压缩/compact 的业务已验，
+发布身份及后续 Prompt/缓存/策略任务继续以该计划和 STATUS 为准。
+本地版本化 Prompt 已通过针对性 CPU 和真实业务并交付；客户端可通过
+`prompt:{id,version,variables}`引用，省略版本时在请求提交时固定当前默认。
+原生注册接口与使用边界见上述计划，当前已交付默认身份以 STATUS 为准。
+
+[标准生成参数](docs/SERVE_SAMPLING_2026-11-08.md)已交付：temperature/
+top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实
+logprobs/top_logprobs；多choice共用请求/配额并逐项执行，JSON/SSE
+可重组。Chat默认temperature=1，显式temperature=0且无附加采样约束
+时保留greedy/MTP。采样使用目标logits的CPU实现，未作性能优化主张；
+[prediction](docs/SERVE_PREDICTION_2026-11-08.md)目标验证、回滚与
+accepted/rejected usage已交付；其余接口与组合按总计划继续实现。
+[工具选择与增量流](docs/SERVE_TOOL_STREAM_2026-11-08.md)支持
+allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行工具。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
@@ -65,7 +96,7 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
-  MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
+  MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 与实际采样生成
 - **多模态**: 27 层 ViT、独立HF数值参考、3D MRoPE；`image_url`和私有
   `video_frames`帧序列接入。须显式`--allow-media --no-mtp --max-seq 1`；
   图片/工具/配额已有限接受，视频方向任务与硬解码未接受，仍标experimental。
@@ -95,7 +126,8 @@ token预算不足而失败，canonical分词长度不构成生成上限。
   [有界可靠性交付](docs/STARTUP_DELIVERY_2026-10-21.md)。不保证任意
   配置或异常输入不 OOM，媒体解压等预算仍待完善
 - **HTTP API**: OpenAI 风格 chat/completions 流式/非流式接口，以及模型、
-  健康、指标和取消接口；仅 greedy，不代表支持全部 OpenAI 参数语义
+  健康、指标和取消接口；支持采样、多choice和token概率，剩余OpenAI
+  参数/接口按总计划继续实现
 - **验证边界**: 已有数值缺陷修复、状态/故障测试和五档 HTTP 性能参考。
   [首版私有文本部署](docs/RELEASE_TEXT_V1_2026-09-28.md)已验收；
   公网多租户与业务SLA另行验收。当前结论见 [STATUS](docs/STATUS.md)，
@@ -103,13 +135,167 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 
 ## 原生服务入口与可选前置
 
+原生服务现已支持[密钥轮换/撤销、动态客户端限额和重启用量交接](docs/SERVE_ACCESS_CONTROL_2026-11-09.md#操作入口)。
+配置修改区分持久提交与运行中实际生效；辅助文件失能保留已生效策略，
+正常停止可精确交接，未知交接等待完整配额窗口。兼容包切换保留当前
+密钥、限额和用量，迁移后不能恢复旧静态Key包。默认服务保持停止，
+TLS和外部前置按部署需要选择；[实际交付证据](docs/evidence/serve-access-delivery-20261109/README.md)
+与其余未完成总任务分别记录。
+
+受管默认包已支持[实测轻量配置的自动降级与恢复](docs/SERVE_ADAPTIVE_PROFILES_2026-11-11.md)：
+可靠RAM压力下关闭MTP，保持原上下文、工具、schema和专用嵌入能力；
+恢复需持续余量、冷却及持久预算。`service profiles-status`查询当前选择。
+NVML/日志/指标失能不触发切档，原设备故障保护保持。
+
+受管包已支持[已验旧服务版本的有界自动回退](docs/SERVE_VERSION_RECOVERY_2026-11-11.md)：
+确认的代码致命退出经整树清理、独立设备探测和资格核对后，最多
+回退一次；固定 Guardian 保持原启动预算、客户端用量及停止意图。
+`service version-status`查询当前周期、实际 payload 和已用额度。
+辅助依赖失能不触发版本切换，回退版再失败进入持久保护。可回退发布
+及旧控制根停机回退再升级见[交付证据](docs/evidence/serve-version-delivery-20261112/README.md)。
+
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
 `build/q4t serve`保持原含义，服务封装由Guardian管理入口与模型生命周期。
-原生入口只监听loopback；当前控制器/journal仍使用Python，必要的
-CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
-当前入口与回退方法见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+默认保持loopback策略；原生TLS/LAN、mTLS/本地CRL、换证和CORS已
+完成针对性验收，按部署配置选择启用。标准API与其他接入缺口继续按
+[当前总计划](docs/SERVE_MASTER_PLAN_2026-11-08.md)实现。当前控制器/
+journal仍使用Python，必要的CUDA、系统与模型依赖不变。
+日志阻塞隔离见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
+原生入口既有能力见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+
+首次v4接入包、实际模型TLS短验、凭据管理与回退见
+[原生接入交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
+TLS与认证加密状态使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
+构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
+文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
+运行时TLS入口按需加载libssl/libcrypto；引擎的加密状态、密钥操作和
+Uploads可选MD5按需加载libcrypto，普通Chat/Responses不依赖其可用性。
+原生文件获取在独立子进程内按需加载同一系统libssl，
+不调用外部下载服务；文件输入已通过针对性CPU和真实PDF/表格/历史业务并交付，
+见[文件输入发行](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
+
+当前发行提供`serve --file-input-policy-file FILE`及纯CPU
+`q4t file-input-policy-check FILE`；文件需当前用户所有、0600或0400，
+最小配置为`{"version":1}`，可覆盖获取策略、各解析域预算及表格准备
+输出上限。`service prepare --file-input-policy FILE`将策略封入发行包，
+`/v1/config`的`file_inputs`报告实际数值与SHA，不泄露私有地址或路径。
+请求不能覆盖部署策略；网络或codec故障只失败依赖该功能的请求。
+完整参数、累计预算与发行回退说明见上述文件输入计划。
+关闭TLS仍需OpenSSL开发头以构建加密状态功能。缺库或坏证书不会
+回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
+项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。
+
+PDF解析通过独立受限进程调用系统
+[Poppler](https://poppler.freedesktop.org/)的`pdfinfo`、`pdftotext`和
+`pdftoppm`，使用标准输入输出提取文字与全部页面图像。q4t不链接或
+随包分发这些GPL工具；本机组件版本24.02.0，许可随系统包保存在
+`/usr/share/doc/poppler-utils/copyright`。只在PDF请求时启动，缺失、
+超时或异常只失败该请求；普通文本服务不依赖它们。需要Linux
+Landlock ABI4及seccomp支持，不能用无隔离执行作为回退。实际PDF文本/页图API与跨版本业务已验，见
+[文件输入发行](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
+
+Office容器底座在独立worker内按需加载系统libarchive 13/libxml2 2，
+构建需`libarchive-dev`与`libxml2-dev`头文件。原生适配采用内存ZIP
+读取及禁用外部实体的XML读取，进入纯内存沙箱后解析；不解压到主机
+目录。系统包分别保留BSD与MIT等原始许可（见其copyright文件），
+q4t没有复制这些库源码或随包分发库。OpenXML/ODF内容和原生RTF解析
+已做针对性CPU验证；RTF代码页仅在解析子进程通过系统libc的iconv
+预加载，实际未使用的代码页缺失不影响其他文档。
+
+Legacy Office/Apple适配使用隔离子进程中的系统
+[LibreOfficeKit](https://docs.libreoffice.org/libreofficekit.html) C API，
+构建需`libreofficekit-dev`头；不随q4t分发或启动Office常驻服务。
+只有对应文档请求按需加载系统运行库和过滤器，普通文本、原生
+OpenXML/ODF/RTF不依赖它。固定系统路径可通过CMake的
+`Q4T_SYSTEM_LIBREOFFICE_DIRECTORY`指定，默认`/usr/lib/libreoffice/program`。
+缺失/超时仅失败对应请求，禁止以无隔离模式回退。每次转换使用独立
+私有配置，关闭宏、主动内容和链接更新，限制总写入、文件/线程创建、
+时间及地址空间；未确认退出时不复用占槽或清理其目录。
+本机接口版本24.2.7，系统包保留MPL-2.0、Apache-2.0及各过滤器许可
+（见`/usr/share/doc/libreoffice-core/copyright`和对应依赖包）。q4t按
+官方C ABI实现适配，未复制其实现源码。DOC/XLS/PPT、Apple/XLSB
+实际内容及隔离边界已做针对性CPU验证；转换回执保留产品版本、
+BuildId及转换结果SHA，原件SHA单独保持。Google查看链接和快捷方式
+通过同一来源策略获取真实导出，保留原件与跳转来源；公开Sheets样表
+已做实网短验，私有文档仍须具备实际访问权限，不注入用户凭据。
+嵌入文档和统一API消费已接入；各格式组件证据和综合业务分别记录，
+不会将一种格式的业务短验宣称为所有文档内容都已逐一验收。
+Apple/XLSB适配的固定上游测试资料及无照片派生说明见
+[测试来源与MPL许可](tests/fixtures/file_adapters/README.md)。
+
+WebP静态图片使用隔离子进程按需加载系统libwebpdecoder 3与zlib 1；
+构建需要`libwebp-dev`、`zlib1g-dev`头文件。主进程仅校验容器和预算，
+不链接这两个解码运行库；子进程采用固定系统路径、纯内存沙箱和既有
+超时/取消/退出回收合同。原件、实际RGB PNG、库版本与SHA共同保存，
+历史回放不重新依赖codec。缺库或解码失败只失败对应图片请求。
+按[libwebp官方API](https://developers.google.com/speed/webp/docs/api)与
+[RIFF容器规范](https://developers.google.com/speed/webp/docs/riff_container)
+实现适配，未复制解码器代码；系统libwebp保留BSD及专利许可，zlib保留
+zlib许可（本机`/usr/share/doc/libwebpdecoder3/copyright`和
+`/usr/share/doc/zlib1g/copyright`）。完整API接入及真实模型验收继续实施。
+
+Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
+签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
+原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。
+本机服务UID可用`q4t state-keys inspect|initialize|rotate
+--object-store-dir ABS_DIR`管理密钥；轮换要求`--expected-revision N`，
+旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
+详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
+
+应用状态的原生留存管理使用 `q4t state-retention inspect
+--object-store-dir ABS_DIR`。自动过期清理保护未结束任务及仍被引用的
+状态；永久孤立条目默认保留，可明确用 `--item-created-before UNIX_SECONDS`
+选择创建时间更早的条目。确认计划后，以相同条件运行 `collect
+--expected-plan SHA256`；每批最多128个同客户端对象，变化返回冲突，
+丢回执时重新inspect，不盲目重试。无需重启模型；`--offline`只用于
+可独占的停服目录。详见[留存治理](docs/SERVE_APPLICATION_RETENTION_2026-11-10.md)。
+
+原生Files提供`POST/GET /v1/files`、`GET/DELETE /v1/files/{id}`和
+`GET /v1/files/{id}/content`，兼容官方SDK multipart上传与原字节下载，
+按客户端隔离并持久保存。单File协议上限512MiB（batch输入200MiB），
+部署文件/普通body与存储限额分别生效；上传不整文件缓存到RAM。
+较大文件需显式配置私有客户端策略v4的`max_file_body_bytes`及原生
+入口策略v5的`file_body_bytes`，未升级配置保持原容量，不隐式扩大。
+Files默认batch留存30天，其余永久，可用`expires_after`明确覆盖。
+用法/安全旧包迁移见[客户端容量](docs/SERVE_ACCESS_CONTROL_2026-11-09.md)，
+[业务及发行证据](docs/evidence/serve-files-delivery-20261110/README.md)。
+Uploads已提供原生创建、分块、顺序/MD5完成及取消，生成标准File；重复Part保持原字节，取消有独立准入/内存，见[交付证据](docs/evidence/serve-uploads-delivery-20261110/README.md)。默认部署容量保持，较大Part需显式配置。
+模型原生file_id/file_data/file_url内容消费已完成实际PDF/表格和历史
+复用验收，见[交付记录](docs/evidence/serve-file-inputs-delivery-20261110/README.md)。
+原生Batch提供创建、查询、列表、取消及完整JSONL结果文件，当前
+Chat Completions、Completions、Responses和Moderations四类执行已交付；后台
+Responses等待原任务终态和资源排空，在线/Batch使用独立分钟配额。
+结构化失败与取消保存实际用量，重启不重放已开始且结果不明的行。
+新审核任务回退使用已登记的61649847包，保留审核执行器、原任务和
+结果；[最新交付记录](docs/evidence/serve-moderations-delivery-20261111/README.md)
+列出身份。其余四类Batch后端及完整多模态接口仍按总计划继续实现。
+
+`POST /v1/moderations`及官方SDK `moderations.create()`提供原生审核：
+字符串数组逐项返回结果，文本/图像内容数组合并审核，返回本地实际
+模型的完整13类分数、分类和适用输入。每请求1RPM，各分类步骤累计
+计入TPM，失败或取消不发布部分成功。图像使用显式`--allow-media
+--no-mtp --max-seq 1`配置；默认文本MTP保持。分数为本地模型估计，
+实际良性/威胁与图像短验见[业务证据](docs/evidence/serve-moderations-business-20261111/README.md)。
+
+标准`POST /v1/responses/input_tokens`与SDK
+`responses.inputTokens.count()`已通过计数与真实生成usage业务短验。
+它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与
+加密状态，接受空请求；不生成、不写会话、不消耗生成RPM/TPM。
+结果为初始输入，不包含后续摘要/审核等派生步骤。可用
+`personality:"friendly"|"pragmatic"`选择本模型实际提示风格；原生
+Responses生成也接受此字段，以保持计数与生成同源。
+
+上下文压缩可在 Responses 请求指定
+`context_management:[{"type":"compaction","compact_threshold":4096}]`，
+或用末尾 `{"type":"compaction_trigger"}` 显式触发。阈值按实际模板/
+媒体展开 token 计量，省略时取模型上下文的4/5；实际记忆模型步骤共享
+原请求预算、取消和配额，自动记忆最多使用输出上限的一半且不超过512。
+`POST /v1/responses/compact` 使用配置默认输出预算，返回保留用户消息
+及认证密文的下一输入窗口，可将 `output` 原样作为后续 `input`。
+原始持久历史不删除；截断、无法缩短或认证失败均返回具体错误，
+无可压缩项不编造模型用量。入口原生支持这两种模式，无需外部网关。
 
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
@@ -120,7 +306,7 @@ location / {
     proxy_pass http://127.0.0.1:18161;
     proxy_http_version 1.1;
     proxy_set_header Host $http_host;
-    proxy_set_header Connection close;
+    proxy_set_header Connection "";
     proxy_buffering off;
     proxy_request_buffering on;
     proxy_cache off;
@@ -128,13 +314,26 @@ location / {
 }
 ```
 
-入口支持8条明确路由，认证后的`/livez`只表示入口存活；`/readyz`与
+入口支持[已发布API路由](docs/serve-openapi-v1.json)及相应CORS预检，认证后的`/livez`只表示入口存活；`/readyz`与
 业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
 Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
-16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。
-HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect，
-每连接只处理一个请求；不重放POST/工具，不在新模型上续接被中断的SSE。
-可选前置的普通HTTP与SSE已用CPU后端验证，实际TLS/LAN仍需部署验收。
+96MiB，聚合业务体预留192MiB；32个有界处理槽，数据与控制分别限额。
+客户端`max_body_bytes`与原生入口`body_bytes`可显式设置更低限额；既有
+策略容量不变。文件输入可容纳50000000原字节的base64，模板变量预算
+96MiB，保留原变量的展开结果预算192MiB；模板定义仍为256KiB。
+后台任务累计保留输入默认512MiB，可用`--background-max-input-mib`
+设置1—2048MiB；此为序列化逻辑量，不是进程RSS。持久化原文件、
+提取快照与大inline内容同时计入对象配额，大文件业务须相应配置
+`--object-max-client-mib`与`--object-max-total-mib`，不会绕过存储配额。
+HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
+认证/准入后的`100-continue`，有界持久连接逐请求重新认证。核心默认
+每连接最多100请求、空闲5秒；原生policy v4可配置限额、路径前缀与
+显式可信代理链。SSE具备完整chunk framing，截断关闭；不重放POST/
+工具，不在新模型上续接被中断的流。Python/官方SDK客户端支持
+`https://host/llm/thor/v1`这样的前缀地址，详情和部署例见
+[原生HTTP接入](docs/SERVE_HTTP_TRANSPORT_2026-11-09.md)。
+可选前置普通HTTP与SSE、原生浏览器调用已验；实际TLS已在本机网卡
+地址和自身/32白名单完成模型业务短验，跨主机生产证书/域名按部署配置。
 
 ## 目标模型
 
@@ -162,7 +361,9 @@ HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect�
 # 要求: CMake >= 4.0 (CMAKE_CUDA_STANDARD 23 仅在 4.x 映射 nvcc --std=c++23)
 #   pip install --user --break-system-packages cmake==4.4.3
 # 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
-#   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev
+#   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev \
+#     libssl-dev libarchive-dev libxml2-dev libreofficekit-dev libwebp-dev zlib1g-dev
+# custom grammar构建另需rustc >= 1.65（本机使用固定1.90.0）；不要求cargo
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
   -DQ4T_CUDA_ARCHITECTURES=110a -DQ4T_ENABLE_XGRAMMAR=ON
@@ -177,7 +378,11 @@ python3 tools/evalscope/gpu_exclusive.py \
 ## 使用
 
 构建参数 ON 复现当前默认的工具控制 / 结构化输出能力，并拉取固定
-XGrammar C++ 依赖。CMake 选项自身默认 OFF，公共 host 构建不联网；
+XGrammar C++ 及 regex-syntax 0.8.8 源码依赖（归档和源码摘要校验）。
+后者由 rustc 静态编译，只在已有隔离工作器内准备 custom regex/Lark；
+不需要部署 Rust 工具链或增加外部服务。许可随包保留于
+[依赖声明](third_party/licenses/structured_output/README.md)。
+CMake 选项自身默认 OFF，公共 host 构建不联网；
 OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成。
 
 ```bash
@@ -231,6 +436,7 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
+| `--embedding-model-dir` | 可选固定Qwen3-Embedding-0.6B资产绝对路径；原生执行，32～1024维、每条最多8192 token，独立延迟加载/健康，不要求外部推理服务 |
 | `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
 | `--cuda-allocation-limit-mib` | `auto`，生产wrapper请求字节额度为mem_fraction×MemTotal；0显式关闭，正整数指定MiB，独立于`--no-budget`。不覆盖DSO内部/host堆/driver/文件缓存/CUDA池保留，不是整机RAM硬限额；交付状态见STATUS |
 | `--startup-memory-headroom-mib` | `2048`，大分配前要求真实MemAvailable容纳估算总量及余量；元数据前/ready前复查余量，0禁用，`--no-budget`同时绕过此估算检查 |
@@ -243,6 +449,57 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 [src/server/server_options.cpp](src/server/server_options.cpp)。当前 main 使用
 T>1 batch verifier；`--mtp-verifier` 已移除，sequential 实现在历史提交
 `7f6a69c` 中保留。当前交付与基线见 [STATUS](docs/STATUS.md)。
+
+### 原生项目资料检索向量
+
+显式配置`--embedding-model-dir /absolute/path/to/assets`后，
+`/v1/models`增加`qwen3-embedding-0.6b`。固定资产提交、SHA和许可见
+[专用嵌入说明](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md)。
+`POST /v1/embeddings`使用该模型名即可；支持文本/文本数组、raw token
+及矩阵，`encoding_format`为`float`或`base64`，可选`dimensions`为32～1024。
+文本使用其训练分词器并追加EOS，raw token保持调用者输入；检索查询
+需显式提供`Instruct: <检索任务>\nQuery: <问题>`，文档直接提供原文。
+`/v1/batches`也支持该模型。默认生成模型的原始向量接口继续保留。
+
+资产缺失或损坏只使专用嵌入端点降级；修复后5秒冷却期结束，下一
+请求可在同进程恢复。Chat与readiness不依赖该资产，真实CUDA故障
+仍触发设备保护。配置/健康分别见`/v1/config`的`native_embedding`
+和`native_embedding_health`；资产及工作区计入Thor统一RAM。
+真实检索、取消和重启证据见[业务短验](docs/evidence/serve-native-embedding-business-20261111/README.md)。
+
+### 原生资料入库与 Responses 检索
+
+配置上述专用嵌入资产及持久应用存储后，可通过标准 Files、Vector
+Stores 和 Responses 接口完成资料查询。索引与查询在本机执行，无需
+外部向量数据库；TLS 可使用原生入口。用独立 API Key 区分客户端，
+文件、索引和结果均按客户端隔离。
+
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(base_url=os.environ["Q4T_BASE_URL"],
+                api_key=os.environ["Q4T_API_KEY"])
+with open("docs/SSD_OFFLOAD_CONTRACT.md", "rb") as source:
+    document = client.files.create(file=source, purpose="user_data")
+store = client.vector_stores.create(name="项目资料")
+client.vector_stores.files.create_and_poll(
+    vector_store_id=store.id, file_id=document.id)
+response = client.responses.create(
+    model="qwen3.8-flash-next", reasoning={"effort": "none"},
+    max_output_tokens=256, max_tool_calls=1,
+    tools=[{"type": "file_search", "vector_store_ids": [store.id]}],
+    tool_choice={"type": "file_search"},
+    include=["file_search_call.results"],
+    input="按项目文档说明专家容量应卸载到哪里，并引用依据。")
+print(response.output_text)
+```
+
+`Q4T_BASE_URL` 包含 `/v1`；私有 CA 按客户端证书配置使用，保持证书
+校验。入库完成后再查询；`file_search_call.results` 返回实际检索片段，
+回答中的 `file_citation` 绑定源文件。JSON/SSE、结构化答案及持久历史
+使用同一执行链，历史回填不会再次执行已完成检索。当前交付、资源
+上限与可回退证据见[原生检索说明](docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md)。
 
 ### 独立草稿 head 与启动校验
 
@@ -288,7 +545,7 @@ E2E吞吐收益为完整head约1.98%/1.83%、子集约1.12%/1.05%；decode收益
 超过65536 token预算，其余三个最多65536（输出也占容量）。prefill暂存
 以4096 token分块消费。执行槽仍为4个，解析/排队/生成请求总数上限32；
 16/32突发只验证了短请求，不保证32个长请求的完成时限。单请求body
-上限16MiB、全局body预算48MiB，超限仍会拒绝。长prefill会影响其他请求
+上限96MiB、全局body预算192MiB，超限仍会拒绝。长prefill会影响其他请求
 TTFT，客户端须为排队留足超时。使用、回退及健康检查见
 [长短agent交付记录](docs/MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)。
 
@@ -464,6 +721,7 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
+| [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端已完成针对性业务短验，权重不随代码仓库分发，见[实现与验收](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
 | [KVMem](https://github.com/kvmem/kvmem) | 会话身份、完整状态保存/恢复、存储租约与失败处理；借鉴到 SSD 会话缓存 |
@@ -477,11 +735,52 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 [阶段收尾](docs/REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)，其他参考见
 [参考项目说明](docs/REFERENCE.md)。
 
+## 原生 Completions 与模型目录
+
+`POST /v1/completions`直接执行原始文本或 token ID，支持批量提示、
+`n`、`best_of`、`echo`、真实提示/输出 `logprobs`、`suffix` 和 JSON/SSE。
+`max_tokens=0`可只回显与计分提示；默认输出预算为16。
+模型目录提供`GET /v1/models`和`GET /v1/models/{model}`，模型id按一个
+URL路径参数编码。只读基础模型的删除返回403，未知模型返回404。
+
+`q4t serve --served-model-name private/base --model-alias org/alias`可配置
+公开名称和别名；`tools/serve_recovery/service.py prepare`与
+`tools/serve_service/service.py prepare`也接收这两个参数并保存在启动
+配置中。鉴权、配额、TLS与CORS均可使用原生入口，外部nginx仍可选。
+字段/schema、当前验收边界和SDK示例见
+[Completions合同](docs/SERVE_COMPLETIONS_2026-11-08.md)及
+[官方SDK接入示例](tools/serve_completions/sdk.mjs)。
+
 ## 许可证
 
 MIT (项目代码)。模型权重遵循其发布方条款。
+
+Responses/Conversations的原生item形状合同派生自OpenAI Node
+SDK 7.47.0类型声明，遵循Apache-2.0，保留[原始许可与来源说明](third_party/licenses/openai-node/README.md)。
+提取器使用固定TypeScript5.9.3，仅为开发工具；发行程序不携带或
+运行Node、TypeScript或SDK服务。类型合同不代表对应业务接口已交付，
+实际能力仍以[当前状态](docs/STATUS.md)与针对性验收为准。
 
 本次原生服务入口复用q4t自有POSIX HTTP解析器及进程/JSON组件，未移植
 nginx源码。nginx仅用于可选前置互操作测试及显式旧网关模式；默认新包
 不携带它。后续若引入第三方源码，将列明固定版本、来源、使用范围并
 保留其许可要求的版权声明。
+
+schema v2的格式回归使用
+[JSON-Schema-Test-Suite固定测试数据](tests/fixtures/schema_formats/README.md)，
+保留原始MIT许可。隔离worker按需调用系统
+[libidn2](https://www.gnu.org/software/libidn/#libidn2)的IDNA2008接口
+（LGPL-3.0-or-later库接口），不复制库或启动外部程序。该格式能力
+仅用于hostname/email，缺失时局部报依赖不可用，不停止健康模型。
+schema v2已完成针对性业务验收并安装本机默认；工作分支尚未合main。
+实际交付及剩余组合任务见[当前状态](docs/STATUS.md)。
+
+
+### 可选原生 Responses 访问策略
+
+`access_programs.cyber`支持标准选择及模型/客户端分离授权。可用
+`--access-program-policy-file`配置本地模型策略，发行prepare用
+`--access-program-policy`封装私有副本；不依赖nginx或云端服务。
+本地执行以`q4t_access_program.authority=q4t-local`标识，不能当作
+OpenAI Daybreak批准或私有模型。配置、恢复边界与验收进展见
+[原生执行策略](docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md#原生策略可选配置)。

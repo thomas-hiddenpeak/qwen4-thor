@@ -1,0 +1,10 @@
+[PASS] responses_output_text_reasoning_full_lifecycle
+[PASS] responses_output_parallel_function_custom_and_order
+[PASS] responses_output_incomplete_never_completes_partial_tool
+[PASS] responses_output_failure_has_no_success_or_tool_done
+[PASS] responses_output_rejects_identity_changes_and_orphan_fragments
+[PASS] responses_output_usage_limits_and_no_double_terminal
+[PASS] responses_output_obfuscation_and_malformed_probabilities
+  CHECK failed: parser.Init(request, "</think>\n\n", "id", true) (line 253)
+[FAIL] responses_output_incomplete_parser_preserves_chat_contract
+8 tests, 7 passed, 1 failed, 0 skipped

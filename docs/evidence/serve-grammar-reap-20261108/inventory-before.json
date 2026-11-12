@@ -1,0 +1,12 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 38,
+  "routes": 10,
+  "native_routes": 8,
+  "reviewed_source_anchors": 164,
+  "mutation_checks": 4,
+  "errors": [
+    "sources_sha256 requires renewed review: ['CMakeLists.txt', 'include/q4t/server/chat_server.h', 'include/q4t/server/grammar_process.h', 'src/server/chat_capabilities.cpp', 'src/server/chat_generation.cpp', 'src/server/chat_http.cpp', 'src/server/chat_metrics.cpp', 'src/server/grammar_process.cpp', 'src/server/structured_decoder.cpp']"
+  ]
+}

@@ -1,0 +1,13 @@
+✔ refusal JSON and streaming SDK preserve history and actual probabilities (50.477994ms)
+✔ refusal truncation or mixed tool output cannot be executed (20.43877ms)
+✔ JSON and SSE SDK interpretation agrees with strict captured bytes (19.82756ms)
+✔ split tool deltas produce one complete validated batch (34.010365ms)
+✔ sampling logprobs survive JSON and interleaved choices SSE (31.59105ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 307.041099

@@ -1,0 +1,26 @@
+{
+  "label": "rollback-reader-publish",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/candidate/bundle/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/bundle",
+    "--manifest-sha256",
+    "0146e62cc16a4cb6fca5b9d42e05438bc1eae0d3dba8c5c1066b41fd20c09766",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-batches-20261110/release-01/rollback-reader/service.release.json",
+    "--expected-manifest-sha256",
+    "0dc8948d8847ea11776313477b67da0d93687b3608568c38bd888be0834700ea",
+    "--expected-revision",
+    "40",
+    "--request-id",
+    "de5fcb26-6b3a-453e-b3ed-fd009630d65b"
+  ],
+  "returncode": 0,
+  "seconds": 4.614896561019123
+}

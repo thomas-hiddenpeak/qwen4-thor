@@ -1,5 +1,6 @@
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/structured_admission.h"
+#include "q4t/server/sampling.h"
 
 #include <algorithm>
 #include <cmath>
@@ -19,6 +20,7 @@ struct StructuredDecoder::Impl {
   std::vector<int32_t> mask;
   bool masked = false;
   bool terminated = false;
+  std::vector<SchemaReceipt> receipts;
   GrammarFailure failure = GrammarFailure::kNone;
 
   Status Transfer(void* data, size_t bytes, bool write,
@@ -33,7 +35,8 @@ struct StructuredDecoder::Impl {
     detail::GrammarReply reply;
     auto status = Transfer(&reply, sizeof(reply), false, deadline);
     if (!status) return status;
-    if (reply.magic != detail::kGrammarWireMagic || reply.flags > 3) {
+    if (reply.magic != detail::kGrammarWireMagic || reply.flags > 3 ||
+        reply.reserved || reply.receipts > 128) {
       failure = GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail("invalid grammar worker response");
@@ -41,24 +44,42 @@ struct StructuredDecoder::Impl {
     if (reply.code != detail::WorkerCode::kOk) {
       failure = reply.code == detail::WorkerCode::kResource
                     ? GrammarFailure::kResource
+                : reply.code == detail::WorkerCode::kDependency
+                    ? GrammarFailure::kDependency
                     : GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail(
           failure == GrammarFailure::kResource
               ? "grammar worker memory limit exceeded"
+          : failure == GrammarFailure::kDependency
+              ? "structured output validation dependency unavailable"
               : "grammar worker compilation or matching failed");
     }
     process->ReportRss(reply.reported_rss_bytes);
     terminated = (reply.flags & 1) != 0;
     masked = (reply.flags & 2) != 0;
     const size_t expected = (ready || terminated) ? 0 : mask.size();
-    if (reply.words != expected || (ready && reply.flags) ||
+    if (reply.words != expected || (ready && (reply.flags || reply.receipts)) ||
         (terminated && masked)) {
       failure = GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail("invalid grammar worker mask shape");
     }
-    return Transfer(mask.data(), expected * sizeof(int32_t), false, deadline);
+    status = Transfer(mask.data(), expected * sizeof(int32_t), false, deadline);
+    if (!status) return status;
+    std::vector<SchemaReceipt> next(reply.receipts);
+    if (!next.empty())
+      status = Transfer(next.data(), next.size() * sizeof(SchemaReceipt), false,
+                        deadline);
+    if (!status) return status;
+    if (next.size() < receipts.size() ||
+        !std::equal(receipts.begin(), receipts.end(), next.begin())) {
+      failure = GrammarFailure::kWorker;
+      process->Stop();
+      return Status::Fail("grammar worker changed completed value receipts");
+    }
+    receipts = std::move(next);
+    return {};
   }
 };
 #else
@@ -68,6 +89,14 @@ struct StructuredDecoder::Impl {};
 StructuredDecoder::StructuredDecoder(std::unique_ptr<Impl> impl)
     : impl_(std::move(impl)) {}
 StructuredDecoder::~StructuredDecoder() = default;
+
+GrammarFailure StructuredDecoder::Failure() const {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  return impl_->failure;
+#else
+  return GrammarFailure::kUnavailable;
+#endif
+}
 
 Status StructuredDecoder::Create(const OutputConstraints& plan,
                                  const std::vector<std::string>& decoded_vocab,
@@ -80,7 +109,8 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
   if (failure) *failure = GrammarFailure::kNone;
 #ifdef Q4T_ENABLE_XGRAMMAR
   if (!plan.active || plan.structural_tag.empty() ||
-      plan.structural_tag.size() > 65536 || model_vocab <= 0 ||
+      plan.structural_tag.size() > detail::kGrammarDescriptionLimit ||
+      model_vocab <= 0 ||
       model_vocab > 300000 || decoded_vocab.empty() ||
       decoded_vocab.size() > static_cast<size_t>(model_vocab) ||
       stop_ids.empty() || stop_ids.size() > 32)
@@ -132,10 +162,14 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
     status = check();
     if (!status) return status;
     auto impl = std::make_unique<Impl>(model_vocab);
+    GrammarFailure start_failure = GrammarFailure::kNone;
     status = detail::GrammarProcess::Start("--q4t-grammar-worker", control,
-                                           &impl->process);
+                                           &impl->process, &start_failure);
     if (!status) {
-      if (failure) *failure = GrammarFailure::kWorker;
+      if (failure)
+        *failure = start_failure == GrammarFailure::kUnavailable
+                       ? start_failure
+                       : GrammarFailure::kWorker;
       return status;
     }
     const auto deadline =
@@ -176,25 +210,45 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
 }
 
 Status StructuredDecoder::Select(std::span<const uint16_t> logits,
-                                 int32_t* token, int32_t forced_token) {
+                                 int32_t* token, int32_t forced_token,
+                                 TokenSampler* sampler, SampledToken* sample,
+                                 std::span<const uint8_t> additional_mask) {
   *token = -1;
+  if (sample) *sample = {};
 #ifdef Q4T_ENABLE_XGRAMMAR
   if (logits.size() != static_cast<size_t>(impl_->vocab) || impl_->terminated ||
-      forced_token < -1 || forced_token >= impl_->vocab)
+      forced_token < -1 || forced_token >= impl_->vocab ||
+      (sampler && !sample) ||
+      (!additional_mask.empty() && additional_mask.size() != logits.size()))
     return Status::Fail("invalid constrained decoding state/logit shape");
   try {
-    float best = -std::numeric_limits<float>::infinity();
-    for (int32_t i = 0; i < impl_->vocab; ++i) {
-      if (forced_token >= 0 && i != forced_token) continue;
-      if (impl_->masked && !(static_cast<uint32_t>(impl_->mask[i / 32]) &
-                             (uint32_t{1} << (i % 32))))
-        continue;
-      const uint32_t bits = static_cast<uint32_t>(logits[i]) << 16;
-      float value;
-      std::memcpy(&value, &bits, sizeof(value));
-      if (std::isfinite(value) && (*token < 0 || value > best)) {
-        best = value;
-        *token = i;
+    if (sampler) {
+      std::vector<uint8_t> allowed(impl_->vocab, 1);
+      if (impl_->masked)
+        for (int32_t i = 0; i < impl_->vocab; ++i)
+          allowed[i] =
+              (static_cast<uint32_t>(impl_->mask[i / 32]) >> (i % 32)) & 1;
+      if (!additional_mask.empty())
+        for (int32_t i = 0; i < impl_->vocab; ++i)
+          allowed[i] = allowed[i] && additional_mask[i];
+      auto selected = sampler->Select(logits, sample, allowed, forced_token);
+      if (!selected) return selected;
+      *token = sample->token;
+    } else {
+      float best = -std::numeric_limits<float>::infinity();
+      for (int32_t i = 0; i < impl_->vocab; ++i) {
+        if (forced_token >= 0 && i != forced_token) continue;
+        if (!additional_mask.empty() && !additional_mask[i]) continue;
+        if (impl_->masked && !(static_cast<uint32_t>(impl_->mask[i / 32]) &
+                               (uint32_t{1} << (i % 32))))
+          continue;
+        const uint32_t bits = static_cast<uint32_t>(logits[i]) << 16;
+        float value;
+        std::memcpy(&value, &bits, sizeof(value));
+        if (std::isfinite(value) && (*token < 0 || value > best)) {
+          best = value;
+          *token = i;
+        }
       }
     }
     if (*token < 0) return Status::Fail("no finite grammar-allowed token");
@@ -204,17 +258,21 @@ Status StructuredDecoder::Select(std::span<const uint16_t> logits,
     if (status) status = impl_->Receive(deadline);
     if (!status) {
       *token = -1;
+      if (sample) *sample = {};
       return status;
     }
     return Status();
   } catch (const std::exception& error) {
     *token = -1;
+    if (sample) *sample = {};
     return Status::Fail(std::string("grammar selection failed: ") +
                         error.what());
   }
 #else
   (void)logits;
   (void)forced_token;
+  (void)sampler;
+  (void)additional_mask;
   return Status::Fail("structured decoding backend is not built");
 #endif
 }
@@ -224,6 +282,15 @@ bool StructuredDecoder::Terminated() const {
   return impl_->terminated;
 #else
   return false;
+#endif
+}
+
+const std::vector<SchemaReceipt>& StructuredDecoder::Receipts() const {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  return impl_->receipts;
+#else
+  static const std::vector<SchemaReceipt> empty;
+  return empty;
 #endif
 }
 

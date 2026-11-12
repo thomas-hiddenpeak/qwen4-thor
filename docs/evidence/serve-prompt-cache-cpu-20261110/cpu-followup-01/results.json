@@ -1,0 +1,33 @@
+[
+  {
+    "name": "regenerate",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.10493896109983325
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1005015098489821
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.057817616034299135
+  }
+]

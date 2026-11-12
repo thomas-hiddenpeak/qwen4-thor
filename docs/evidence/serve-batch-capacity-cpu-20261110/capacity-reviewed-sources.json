@@ -1,0 +1,16 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "include/q4t/server/batch_checkpoint.h",
+    "include/q4t/server/batch_preparation.h",
+    "include/q4t/server/batch_state.h",
+    "src/server/batch_checkpoint.cpp",
+    "src/server/batch_preparation.cpp",
+    "src/server/batch_results.cpp",
+    "src/server/batch_state.cpp",
+    "src/server/batch_validation.cpp",
+    "src/server/object_retention.cpp",
+    "src/server/object_worker.cpp"
+  ],
+  "anchors": 483
+}

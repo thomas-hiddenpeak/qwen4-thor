@@ -1,0 +1,14 @@
+{
+  "cpu_passed": 27,
+  "build_warnings": 0,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "real_model_business": false,
+  "new_gap": "quota_manager.live uses gateway-only binding; must switch to verified readonly model observation",
+  "next": [
+    "usage management/migration and limits live query fix",
+    "TLS/SDK and real model quota/key/tool/session recovery",
+    "rollback-compatible delivery"
+  ]
+}

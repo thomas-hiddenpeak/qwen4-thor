@@ -1,0 +1,22 @@
+{
+  "action": "moderations_create",
+  "request": {
+    "input": [
+      {
+        "type": "image_url",
+        "image_url": {
+          "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAgCAIAAAAt/+nTAAAAQklEQVR4nO3PwREAIAzDMMr+O8MUPX+kAZLzvLNrlg/u7vw+ATUBNQE1ATUBNQE1ATUBNQE1ATUBNQE1ATUBNQG1D+PwAj+uza+fAAAAAElFTkSuQmCC"
+        }
+      }
+    ]
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19061/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

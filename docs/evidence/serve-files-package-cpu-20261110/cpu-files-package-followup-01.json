@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots"
+  ],
+  "exit_code": 0,
+  "seconds": 0.26424151100218296
+}

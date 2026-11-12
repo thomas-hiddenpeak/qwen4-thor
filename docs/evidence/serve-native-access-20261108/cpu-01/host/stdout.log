@@ -1,0 +1,12 @@
+[PASS] http_valid_length_and_header_names
+[PASS] http_rejects_duplicate_or_empty_authorization
+[PASS] http_rejects_ambiguous_framing
+[PASS] http_request_line_and_header_budget
+[PASS] http_body_capacity_and_trailing_bytes
+[PASS] http_preflight_body_uses_shared_chat_reservation
+[PASS] http_absolute_deadline_and_body_budget
+[PASS] http_header_identity_and_pre_body_admission
+[PASS] http_observation_receive_shape_and_size_reasons
+[PASS] http_observation_receive_eof_deadline_and_socket
+[PASS] http_observation_body_rejection_preserves_other_lease
+11 tests, 11 passed, 0 failed, 0 skipped

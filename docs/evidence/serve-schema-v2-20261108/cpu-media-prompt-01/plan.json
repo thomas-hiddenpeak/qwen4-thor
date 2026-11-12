@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_schema_v2.test_media",
+    "-v"
+  ],
+  "binary_sha256": "001b42a8f330ce4f11798674c3d82fdea6ea8a52977bfcdf750b9b44bd0c1b3a",
+  "scope": "four unchanged media requests under new model-visible schema/preflight accounting",
+  "timeout_seconds": 60
+}

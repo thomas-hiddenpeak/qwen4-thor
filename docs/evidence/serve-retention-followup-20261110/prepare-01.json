@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/serve_responses/retention_acceptance.py",
+    "prepare",
+    "--binary",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "--output",
+    ".q4t-work/serve-retention-20261110/business-01",
+    "--port",
+    "19003"
+  ],
+  "exit_code": 0,
+  "seconds": 0.9150777170434594
+}

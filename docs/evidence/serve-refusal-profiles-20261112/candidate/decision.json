@@ -1,0 +1,79 @@
+{
+  "status": "PASS_TARGETED_NATIVE_REFUSAL",
+  "acceptance": "ACCEPT_NATIVE_REFUSAL_BUSINESS",
+  "binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+  "protocol_sha256": "f3b0a535722236e035ce57901035b7535ad62445e21adb5e9acb7116acdc4357",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_REFUSAL_BUSINESS",
+    "candidate_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+    "source_commit": "b08f82a1050dc97be806a4c55de7fe28e0c9448d",
+    "counts": {
+      "starts": 1,
+      "chats": 6,
+      "controls": 54
+    },
+    "seconds": 59.554152820724994,
+    "lease_seconds": 60.216811480000615,
+    "env_abort": false,
+    "postflight": {
+      "sources_unchanged": true,
+      "defaults_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "binary_unchanged": true
+    },
+    "plan_sha256": "6f9925efeeb90deeec23e2e20c56b35bc4eeceb88c7bfe21d84c7fd96f9234ca",
+    "lease_sha256": "cf2ccb437c7c092f48f39416d211a5ba27c7f309b59299e7886a1d0903044b6c",
+    "all_queries_ok": true,
+    "summary": {
+      "generations": 6,
+      "model_starts": 1,
+      "tool_executions": 1,
+      "actual_refusal_tokens": 15,
+      "refusal_events": 23,
+      "responses": [
+        "resp_225dba1ff4a49f071db4b5cfa060f8de",
+        "resp_e306b4d08ee016b497c9ef089064af37",
+        "resp_9be6da028336f8d505d4fab851f22480"
+      ],
+      "chat_ids": [
+        "chatcmpl-auto-43598feb02b862897201ecf02630cf65",
+        "chatcmpl-auto-bd96087caa0fe65b1e30ef37ecf82ac4",
+        "chatcmpl-auto-de66f0f04f3ccabf1762b0863d924704"
+      ],
+      "model_generated_refusal": true,
+      "full_quality_or_performance_claim": false
+    },
+    "full_model_quality": false,
+    "performance_acceptance": false,
+    "remaining_master_tasks_open": true
+  },
+  "source_commit": "b08f82a1050dc97be806a4c55de7fe28e0c9448d",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "profile_qualification_pending": false,
+  "profile_qualification": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 86,
+      "cleanup_complete": true,
+      "lease_result_sha256": "af92c81da6e74af30acbf2633a677845dc5c4d5507ae848f32969bc285592fef"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 77
+    },
+    "seconds": 91.38722964702174,
+    "registry_sha256": "3f7bf5b4a71becd9e35ecf6a36a254ce4a7ca340a72945a6b105b021eb7c5895",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "default_changed": false,
+  "remaining_master_tasks_open": true
+}

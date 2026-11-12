@@ -1,0 +1,3 @@
+usage: check_contract.py [-h] --probe PROBE --output OUTPUT
+                         [--only-failed ONLY_FAILED] [--case-list CASE_LIST]
+check_contract.py: error: the following arguments are required: --probe, --output

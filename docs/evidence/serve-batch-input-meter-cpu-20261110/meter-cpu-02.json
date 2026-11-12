@@ -1,0 +1,9 @@
+{
+  "argv": [
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-batches-20261110/meter-retry-required.txt"
+  ],
+  "exit_code": 1,
+  "seconds": 0.11389697203412652
+}

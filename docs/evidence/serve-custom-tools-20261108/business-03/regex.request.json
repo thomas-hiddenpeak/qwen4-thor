@@ -1,0 +1,43 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 256,
+  "stream": false,
+  "tools": [
+    {
+      "type": "custom",
+      "custom": {
+        "name": "read_project_record_regex",
+        "description": "Read actual project lines. Input must be exactly READ docs/MODEL.md 1 16, raw text (not JSON). Use returned citation verbatim.",
+        "format": {
+          "type": "grammar",
+          "grammar": {
+            "syntax": "regex",
+            "definition": "^READ docs/MODEL\\.md 1 16$"
+          }
+        }
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "allowed_tools",
+    "allowed_tools": {
+      "mode": "required",
+      "tools": [
+        {
+          "type": "custom",
+          "custom": {
+            "name": "read_project_record_regex"
+          }
+        }
+      ]
+    }
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Use read_project_record_regex to read the first 16 lines of docs/MODEL.md. Set raw input to exactly: READ docs/MODEL.md 1 16"
+    }
+  ]
+}

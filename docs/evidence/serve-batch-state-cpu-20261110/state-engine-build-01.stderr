@@ -1,0 +1,18 @@
+/home/rm01/models/dev/qwen4-thor/src/server/batch_state.cpp: In function ‘bool q4t::server::{anonymous}::Integer(const q4t::io::Json&, std::string_view, int64_t, int64_t)’:
+/home/rm01/models/dev/qwen4-thor/src/server/batch_state.cpp:64:35: error: cannot convert ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+   64 |   const auto* value = object.Find(key);
+      |                                   ^~~
+      |                                   |
+      |                                   std::string_view {aka std::basic_string_view<char>}
+In file included from /home/rm01/models/dev/qwen4-thor/include/q4t/server/object_store.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/batch_input.h:8,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/batch_state.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/batch_state.cpp:1:
+/home/rm01/models/dev/qwen4-thor/include/q4t/io/json.h:42:39: note:   initializing argument 1 of ‘const q4t::io::Json* q4t::io::Json::Find(const std::string&) const’
+   42 |   const Json* Find(const std::string& key) const;
+      |                    ~~~~~~~~~~~~~~~~~~~^~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:261: CMakeFiles/q4t_server.dir/src/server/batch_state.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

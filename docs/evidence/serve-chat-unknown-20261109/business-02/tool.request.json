@@ -1,0 +1,63 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "enable_thinking": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation."
+      }
+    ],
+    "max_completion_tokens": 192,
+    "store": true,
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "metadata": {
+      "stage": "tool"
+    },
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "description": "Read bounded real project document lines and citation.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "const": "docs/MODEL.md"
+              },
+              "start_line": {
+                "type": "integer",
+                "const": 1
+              },
+              "line_count": {
+                "type": "integer",
+                "const": 3
+              }
+            },
+            "required": [
+              "path",
+              "start_line",
+              "line_count"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "required",
+    "parallel_tool_calls": false
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

@@ -1,0 +1,24 @@
+[q4t][http] trace_id=req-24158eb7d37817458fbe92ca9553de7b status=408 error=request_deadline_exceeded
+[q4t][http] trace_id=req-0e8925c6de016d5bc18116584e8a79ff status=503 error=service_unavailable
+[q4t][http] trace_id=req-d89ff84e63fedc63df8923593b9af9e5 status=503 error=service_unavailable
+[q4t][http] trace_id=req-e7696201f41e439126b30a696d442067 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=req-27ba4996dfc7955027b8325da543620d error=host_memory_exhausted
+[q4t][http] trace_id=req-1b571efef1dcc067e54104f24932d411 error=host_memory_exhausted
+[q4t][http] trace_id=req-ca18570e0024cdc1d669a83fa311d52d error=host_memory_exhausted
+[q4t][http] trace_id=req-1f85ebddbf95b3982ae42b0f6aa6b71a status=429 error=rate_limit_exceeded
+[q4t][http] trace_id=req-1f85ebddbf95b3982ae42b0f6aa6b71a error=internal_error
+[q4t][http] trace_id=req-62e011a87a6e1fb141f29bafb17fcf72 error=internal_error
+[q4t][http] trace_id=req-62e011a87a6e1fb141f29bafb17fcf72 error=internal_error
+[q4t][http] trace_id=req-dab3d66cd56c68c9812d60368732f31d error=host_memory_exhausted
+[q4t][http] trace_id=req-dab3d66cd56c68c9812d60368732f31d error=internal_error
+[q4t][http] trace_id=req-e2d704996d5a458a127de7984b9ac37d status=400 error=invalid_request

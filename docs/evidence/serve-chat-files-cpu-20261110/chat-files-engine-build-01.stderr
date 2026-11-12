@@ -1,0 +1,16 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp: In member function ‘void q4t::server::ChatServer::HandleChatImpl(int, const std::string&, q4t::server::detail::ResponseState*, bool, q4t::server::ResponsesExecution*, std::shared_ptr<q4t::server::RequestControl>, q4t::server::InternalModelStep*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp:459:38: error: ‘NewRequestId’ was not declared in this scope; did you mean ‘q4t::server::detail::NewRequestId’?
+  459 |                                      NewRequestId("chatcmpl-auto-")),
+      |                                      ^~~~~~~~~~~~
+      |                                      q4t::server::detail::NewRequestId
+In file included from /home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_server.h:33,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/chat_server_internal.h:3,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp:2:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/http_response.h:66:13: note: ‘q4t::server::detail::NewRequestId’ declared here
+   66 | std::string NewRequestId(std::string_view prefix = "req-");
+      |             ^~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:1563: CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

@@ -1,0 +1,14 @@
+{
+  "state": "PASS",
+  "elapsed_seconds": 51.864,
+  "results": [
+    {
+      "exit_code": 0,
+      "warnings": 0
+    },
+    {
+      "exit_code": 0,
+      "warnings": 0
+    }
+  ]
+}

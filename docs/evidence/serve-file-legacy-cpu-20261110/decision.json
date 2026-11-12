@@ -1,0 +1,40 @@
+{
+  "status": "COMPONENT_CPU_ACCEPTED",
+  "scope": "Legacy Office decoder and directly affected ODF semantics",
+  "tests_unique": 14,
+  "final_tests": [
+    "file_legacy_actual_doc_unicode_and_confirmed_cleanup",
+    "file_legacy_actual_xls_sheet_coordinates_values_and_formula",
+    "file_legacy_corrupt_input_is_local_and_next_document_works",
+    "file_legacy_resource_rejection_cleans_and_publishes_nothing",
+    "file_legacy_actual_ppt_slide_order",
+    "file_legacy_preflight_and_active_cancellation_are_bounded",
+    "file_legacy_workspace_lease_ownership_and_unrelated_data",
+    "file_office_odf_text_slides_and_repeated_sparse_sheet_rows",
+    "file_office_odf_sparse_rows_trim_only_trailing_grid_and_drawing_pages"
+  ],
+  "reused_tests": [
+    "file_document_worker_actual_text_and_sheet_match_original_data",
+    "worker_io_budget_pumps_during_input_output_and_post_eof_cleanup",
+    "file_document_worker_deferred_exit_keeps_slot_and_loop_reaps"
+  ],
+  "reuse_evidence": {
+    "remaining": "legacy-cpu-01.stdout"
+  },
+  "final_seconds": 2.3168120263144374,
+  "host_sha256": "2425bd1c8efc1d201d3299004052d6b6a8556b971253120d19e4d8e955cbb77a",
+  "engine_sha256": "3b67937cdef7d11c19f6278ec869a2266c66821ad6b88a5107cfacd31cf3445d",
+  "first_failures_preserved": true,
+  "diagnostics": 2,
+  "all_builds_zero_warnings": true,
+  "gpu": 0,
+  "model_starts": 0,
+  "default_unchanged": "cdb5ced9",
+  "api_acceptance": false,
+  "master_complete": false,
+  "final_followup_tests": [
+    "file_legacy_workspace_cleanup_deep_tree_never_follows_symlink",
+    "file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance"
+  ],
+  "final_followup_seconds": 0.015881850849837065
+}

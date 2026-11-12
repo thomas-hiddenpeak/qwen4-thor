@@ -10,6 +10,7 @@ import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
+import re
 from pathlib import Path
 import select
 import signal
@@ -63,10 +64,13 @@ def native_config(value, token):
 
 
 class Stack:
-    def __init__(self, output, *, native_ingress=None, policy_overrides=None):
+    def __init__(self, output, *, native_ingress=None, policy_overrides=None,
+                 tls=None, ssl_context=None, access=None):
         self.directory = Path(tempfile.mkdtemp(
             prefix='native-' if native_ingress else 'nginx-', dir=output))
-        self.service_id = str(uuid.uuid4())
+        self.service_id = access['service_id'] if access is not None else str(uuid.uuid4())
+        self.gateway_generation = 1
+        self.native_ingress = native_ingress
         self.generation, self.token = 1, 'e'*64
         self.ready, self.peer_available = True, True
         self.bound = 0
@@ -76,10 +80,16 @@ class Stack:
         self.stream_disconnected = threading.Event()
         self.requests = []
         self.forwarded = []
+        self.response_hook = None
+        self.model_requests = []
+        self.application_requests = []
+        self.held_application_paths = set()
+        self.release_applications = threading.Event()
         self.events = []
         self.errors = []
         self.servers, self.threads = [], []
         self.value = None
+        self.ssl_context = ssl_context
         stack = self
         class Backend(BaseHTTPRequestHandler):
             protocol_version = 'HTTP/1.1'
@@ -91,9 +101,20 @@ class Stack:
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Content-Length', str(len(raw)))
                 self.send_header('Connection', 'close')
+                for name, value in getattr(stack, 'response_headers', ()):
+                    self.send_header(name, value)
                 self.end_headers()
                 self.wfile.write(raw)
                 self.close_connection = True
+            def application_path(self, method):
+                path = self.path.split('?', 1)[0]
+                roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
+                         '/v1/files', '/v1/uploads', '/v1/batches',
+                         '/v1/vector_stores')
+                return (any(path == root or path.startswith(root+'/')
+                            for root in roots) or
+                        path.startswith('/v1/chat/completions/') or
+                        (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
                 if self.path in ('/livez', '/readyz'):
                     self.response(200, dict(status='ready', live=True, ready=True))
@@ -101,20 +122,91 @@ class Stack:
                     self.response(200, native_config(stack.value, stack.token))
                 elif self.path == '/v1/models':
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
+                elif self.path.startswith('/v1/models/'):
+                    self.model_detail('GET')
+                elif self.application_path('GET'):
+                    self.application('GET')
                 else:
                     self.response(404, dict(error='absent'))
+            def model_detail(self, method):
+                stack.model_requests.append(dict(method=method, path=self.path,
+                    token=self.headers.get('X-Q4T-Gateway-Token'),
+                    client=self.headers.get('X-Q4T-Client-Id'),
+                    authorization=self.headers.get('Authorization')))
+                if self.path not in ('/v1/models/cpu-fixture',
+                                     '/v1/models/org%2Falias'):
+                    self.response(404, dict(error=dict(code='model_not_found')))
+                elif method == 'DELETE':
+                    self.response(403, dict(error=dict(code='model_not_deletable')))
+                else:
+                    self.response(200, dict(id='cpu-fixture', object='model',
+                                            created=42, owned_by='q4t'))
+            def application(self, method):
+                if self.headers.get('Transfer-Encoding', '').lower() == 'chunked':
+                    # Native multipart forwarding streams bounded chunks. This
+                    # CPU HTTP peer must consume them before returning a reply.
+                    parts, size = [], 0
+                    while True:
+                        length = int(self.rfile.readline(128).strip(), 16)
+                        if length == 0:
+                            if self.rfile.read(2) != b'\r\n':
+                                raise ValueError('invalid fixture chunk end')
+                            break
+                        size += length
+                        if size > 16384:
+                            raise ValueError('fixture body limit')
+                        part = self.rfile.read(length)
+                        if len(part) != length or self.rfile.read(2) != b'\r\n':
+                            raise ValueError('invalid fixture chunk')
+                        parts.append(part)
+                    raw = b''.join(parts)
+                else:
+                    raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
+                row = dict(method=method, path=self.path, body=raw.decode(),
+                    upstream_port=self.server.server_port,
+                    token=self.headers.get('X-Q4T-Gateway-Token'),
+                    client=self.headers.get('X-Q4T-Client-Id'),
+                    authorization=self.headers.get('Authorization'))
+                stack.application_requests.append(row)
+                if row['token'] != stack.token:
+                    self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
+                    return
+                # Transport oracle only. Native endpoint/SDK semantics are
+                # exercised separately by the Conversations/Responses SDK fixtures.
+                if self.path in stack.held_application_paths:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/event-stream')
+                    self.send_header('Connection', 'close')
+                    self.end_headers()
+                    self.wfile.write(b'data: cpu-held-application\n\n')
+                    self.wfile.flush()
+                    stack.release_applications.wait(5)
+                    return
+                self.response(200, dict(cpu_fixture=True, method=method,
+                                        path=self.path, client=row['client']))
+            def do_DELETE(self):
+                if self.application_path('DELETE'):
+                    self.application('DELETE')
+                else:
+                    self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
+                if self.application_path('POST'):
+                    self.application('POST')
+                    return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
                 stack.forwarded.append(dict(token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
-                    authorization=self.headers.get('Authorization'), body=raw.decode()))
+                    authorization=self.headers.get('Authorization'), body=raw.decode(),
+                    path=self.path))
                 if self.headers.get('X-Q4T-Gateway-Token') != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
                     return
                 body = json.loads(raw)
                 generation = stack.generation
                 stack.requests.append(dict(body=body, generation=generation))
+                if stack.response_hook and stack.response_hook(self, body, generation):
+                    return
                 if body.get('drop'):
                     return  # Simulated backend transport failure after accepting a POST.
                 if body.get('quota'):
@@ -152,9 +244,11 @@ class Stack:
         if native_ingress:
             self.value.update(version=2, native_ingress=self.value.pop('nginx'),
                 native_ingress_sha256=self.value.pop('nginx_sha256'))
+            if access is not None:self.value.update(version=3, access=access)
         self.value['binary_sha256'] = hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()
         self.value['policy'].update(per_client_rps=100, burst=100)
         self.value['policy'].update(policy_overrides or {})
+        self.value['tls'] = tls
         self.path = self.directory/'gateway.json'
         self.path.write_text(json.dumps(self.value))
         self.path.chmod(0o600)
@@ -163,19 +257,28 @@ class Stack:
         self.listener.listen(8)
         self.listener.settimeout(0.1)
         self.thread(self.peer)
+        self.log = (self.directory/'worker.log').open('wb')
+        self.start_gateway()
+
+    def start_gateway(self):
         self.channel, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         self.channel.settimeout(0.1)
         self.thread(self.receive_events)
-        self.log = (self.directory/'worker.log').open('wb')
         self.process = subprocess.Popen([sys.executable, '-I', '-B',
-            str(ROOT/'tools/serve_recovery'/('native_ingress.py' if native_ingress
+            str(ROOT/'tools/serve_recovery'/('native_ingress.py' if self.native_ingress
                                            else 'gateway.py')), '--config', str(self.path)],
             env=dict(PATH='/no-systemd-or-dbus', LANG='C.UTF-8',
-                Q4T_SERVICE_ID=self.service_id, Q4T_GATEWAY_GENERATION='1',
+                Q4T_SERVICE_ID=self.service_id, Q4T_GATEWAY_GENERATION=str(self.gateway_generation),
                 Q4T_CONTROL_FD=str(endpoint.fileno()), Q4T_GUARDIAN_PID=str(os.getpid()),
                 Q4T_GUARDIAN_START=str(journal.process_start(os.getpid()))),
             pass_fds=(endpoint.fileno(),), stdout=self.log, stderr=self.log)
         endpoint.close()
+
+    def restart_gateway(self):
+        self.process.terminate();self.process.wait(timeout=5)
+        self.channel.close()
+        self.gateway_generation += 1;self.bound = 0
+        self.start_gateway()
 
     def thread(self, function):
         worker = threading.Thread(target=function, daemon=True)
@@ -194,6 +297,12 @@ class Stack:
                 try:
                     sock.settimeout(1)
                     message = journal.receive(sock)
+                    if message['op'] == 'status':
+                        journal.send(sock, dict(version=1, service_id=self.service_id,
+                            guardian_pid=os.getpid(), gateway_pid=self.process.pid,
+                            gateway_start_ticks=journal.process_start(self.process.pid),
+                            gateway_generation=self.gateway_generation))
+                        continue
                     if message['op'] != 'binding' or not self.peer_available:
                         continue
                     value = snapshot(self.value, generation=self.generation, token=self.token)
@@ -208,9 +317,10 @@ class Stack:
                     continue
 
     def receive_events(self):
+        channel = self.channel
         while not self.stopped.is_set():
             try:
-                value = journal.receive(self.channel)
+                value = journal.receive(channel)
             except TimeoutError:
                 continue
             except OSError:
@@ -238,7 +348,10 @@ class Stack:
     def request(self, body=None, *, key='A'*40, path=None, extra=None):
         method = 'POST' if body is not None else 'GET'
         path = path or ('/v1/chat/completions' if body is not None else '/v1/models')
-        connection = http.client.HTTPConnection('127.0.0.1', self.value['policy']['listen_port'], timeout=4)
+        host = self.value['policy']['listen_host']
+        connection = (http.client.HTTPSConnection(host, self.value['policy']['listen_port'],
+            timeout=4, context=self.ssl_context) if self.ssl_context else
+            http.client.HTTPConnection(host, self.value['policy']['listen_port'], timeout=4))
         try:
             headers = {'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}
             headers.update(extra or {})
@@ -249,7 +362,11 @@ class Stack:
             connection.close()
 
     def close(self):
+        if getattr(self, '_closed', False):
+            return
+        self._closed = True
         self.release_stream.set()
+        self.release_applications.set()
         if self.process.poll() is None:
             self.process.terminate()
         self.process.wait(timeout=5)
@@ -268,6 +385,71 @@ class Stack:
 
 
 class NginxTests(unittest.TestCase):
+    def test_static_response_operations_are_not_response_ids(self):
+        self.ready()
+        for operation in ('compact', 'input_tokens'):
+            for method in ('GET', 'DELETE'):
+                with self.subTest(operation=operation, method=method):
+                    connection = http.client.HTTPConnection('127.0.0.1',
+                        self.stack.value['policy']['listen_port'], timeout=4)
+                    try:
+                        connection.request(method, '/v1/responses/'+operation+
+                            '?fixture=reserved', headers={
+                                'Authorization': 'Bearer '+'A'*40})
+                        response = connection.getresponse()
+                        self.assertEqual(response.status, 404, response.read())
+                        self.assertEqual(self.stack.application_requests, [])
+                    finally:
+                        connection.close()
+
+    def test_application_routes_preserve_methods_queries_and_identity(self):
+        from tools.serve_gateway.gateway import APPLICATION_ROUTES
+        self.ready()
+        for method, template, lane in APPLICATION_ROUTES:
+            if not self.stack.native_ingress and lane == 'control':
+                # The optional frontend's real 10 r/s control budget remains
+                # enabled. Route coverage must not exceed that separate gate.
+                time.sleep(0.11)
+            identities = dict(response_id='resp_1', conversation_id='conv_1',
+                              item_id='item_1', completion_id='chat_1',
+                              upload_id='upload_1', file_id='file_1',
+                              prompt_id='pmpt_1', version='1', batch_id='batch_1',
+                              vector_store_id='vs_1')
+            self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
+                                 identities.keys())
+            path = template.format(**identities)
+            if method == 'GET':
+                path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
+            body = '{"cpu_fixture":true}' if method == 'POST' else ''
+            content_type = 'application/json'
+            if method == 'POST' and (template == '/v1/files' or
+                                      template.endswith('/parts')):
+                content_type = 'multipart/form-data; boundary=cpu-route'
+                body = ('--cpu-route\r\nContent-Disposition: form-data; '
+                        'name="file"; filename="fixture.txt"\r\n'
+                        'Content-Type: text/plain\r\n\r\nactual CPU bytes'
+                        '\r\n--cpu-route--\r\n')
+            with self.subTest(method=method, path=path):
+                connection = http.client.HTTPConnection('127.0.0.1',
+                    self.stack.value['policy']['listen_port'], timeout=4)
+                try:
+                    connection.request(method, path, body, {
+                        'Authorization': 'Bearer '+'A'*40,
+                        'Content-Type': content_type})
+                    response = connection.getresponse()
+                    self.assertEqual(response.status, 200, response.read())
+                    row = self.stack.application_requests[-1]
+                    self.assertEqual((row['method'], row['path'], row['body']),
+                                     (method, path, body))
+                    self.assertEqual((row['client'], row['token']),
+                                     ('alpha', 'e'*64))
+                    self.assertEqual(row['upstream_port'],
+                        self.stack.value['policy']['upstream_operations_port'
+                            if lane == 'control' else 'upstream_port'])
+                    self.assertIsNone(row['authorization'])
+                finally:
+                    connection.close()
+
     @classmethod
     def setUpClass(cls):
         cls.libc = ctypes.CDLL(None, use_errno=True)

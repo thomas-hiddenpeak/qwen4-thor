@@ -1,0 +1,10 @@
+{
+  "frozen_at": "2026-11-10T18:39:49.980574+00:00",
+  "reason": "Fix infinite wait on original finite submission failure when auxiliary observer is absent. Only this new fallback branch changes. Existing observed paths, lifetime and process-death checks retain their prior acceptance and identity.",
+  "required": [
+    "batch_background_absent_observer_closes_only_proven_missing_submission",
+    "batch_background_existing_result_waits_for_original_observer_recovery"
+  ],
+  "gpu": 0,
+  "reuse": 24
+}

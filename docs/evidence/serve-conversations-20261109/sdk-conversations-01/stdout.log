@@ -1,0 +1,13 @@
+✔ official conversation CRUD survives a native worker/process restart (87.56208ms)
+✔ official item append and auto-pagination preserve input order (42.74896ms)
+✔ official tools can be recorded before results without executing them (28.952969ms)
+✔ official include arrays affect views without removing retained input (31.945671ms)
+✔ official errors preserve client isolation and reject malformed fields (35.743037ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5358.893732

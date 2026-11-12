@@ -1,0 +1,12 @@
+{
+  "label": "default-profiles",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "profiles-status",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+  ],
+  "returncode": 0,
+  "seconds": 2.6329429070465267
+}

@@ -1,0 +1,24 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/chat_plan.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/file_expansion.h",
+    "include/q4t/server/responses_execution.h",
+    "include/q4t/server/responses_input.h",
+    "include/q4t/server/responses_plan.h",
+    "src/server/chat_preflight.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/file_expansion.cpp",
+    "src/server/responses_execution.cpp",
+    "src/server/responses_execution_compaction.cpp",
+    "src/server/responses_execution_files.cpp",
+    "src/server/responses_input.cpp",
+    "src/server/responses_plan.cpp"
+  ],
+  "semantic_maps_unchanged": true,
+  "whitelists_unchanged": true,
+  "anchors": 453,
+  "review": "Responses owns actual shared expansion, original history and durable input bindings. Separate readiness prevents unexpanded spreadsheet execution; actual model callback integration remains required. Queued raw snapshots precede handoff, subsequent completed steps publish new immutable versions before releasing holds; unknown commits preserve holds. Sibling codec scratch and pure control/source validation, no model startup/default mutation."
+}

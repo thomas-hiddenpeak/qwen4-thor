@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/sc/inc/formulaopt.hxx",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/sc_inc_formulaopt.hxx",
+    "bytes": 4214,
+    "sha256": "eb1626df13a668a97cd4427348e061d80ae7032d7409a065aedabf4c49bc524c"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/sc/source/ui/docshell/docsh.cxx",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/sc_source_ui_docshell_docsh.cxx",
+    "bytes": 131793,
+    "sha256": "b392d529b9289791068d1a3e495927e599a516b11746ede0acb60679dab373b7"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/sc/source/filter/excel/xicontent.cxx",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/sc_source_filter_excel_xicontent.cxx",
+    "bytes": 50057,
+    "sha256": "de835a19fdff9bbdedbb51c2b79b972e930fb9e7a8a9c9f7b9cbb81bc1d4eb27"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/officecfg/registry/schema/org/openoffice/Office/Calc.xcs",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/officecfg_registry_schema_org_openoffice_Office_Calc.xcs",
+    "bytes": 74472,
+    "sha256": "aede40a7c8fffc60f8bbf20fc8337a37de42fb2c44e80933b7b07d0ae485dc43"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/officecfg/registry/schema/org/openoffice/Office/Writer.xcs",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/officecfg_registry_schema_org_openoffice_Office_Writer.xcs",
+    "bytes": 256019,
+    "sha256": "00aed0551f828d1de9abb8f5037e25f6a9140e77b833425cc8eac522fd0ecf60"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/sc/inc/calcconfig.hxx",
+    "path": ".q4t-work/serve-file-inputs-20261110/legacy-source/sc_inc_calcconfig.hxx",
+    "bytes": 2599,
+    "sha256": "03101469cab11f11e394bb9722988a971e5d813b7c54ec2085c1b3f5e2608afa"
+  }
+]

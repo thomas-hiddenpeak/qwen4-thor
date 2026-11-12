@@ -1,0 +1,1 @@
+{"status": "PASS_REPLAY_OF_REAL_REFUSAL_CPU", "receipt": {"id": "chatcmpl-auto-c585383407e32c6e806bf4e07199f143", "usage": {"prompt_tokens": 262, "completion_tokens": 38, "total_tokens": 300}, "strict_json": false, "native_refusal": true}, "new_gpu_requests": 0}

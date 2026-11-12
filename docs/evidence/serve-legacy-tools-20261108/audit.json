@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_LEGACY_TOOLS_SOURCE_RELEASE_AUDIT",
+  "source_commit": "30e1b62c40992fc29a7fb6e326a4b002759a5b89",
+  "source_files": 586,
+  "protocol": "13f426918de77c8c5466d2a3edb38c9e8ea2b08ee9a47e2ecba113d4312cd259",
+  "binary_sha256": "33c52e4ae83d4702af4e15df18475f2434508d6feebc61dfb62eda7dd2227e28",
+  "ports_free": [
+    18161,
+    18162,
+    18163,
+    18164,
+    18165
+  ],
+  "gpu_lock_acquirable": true,
+  "owned_pids_exited": true,
+  "ledger_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "legacy_tools_targeted_accepted": true,
+  "receipt_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/delivery-01/result.json",
+  "receipt_sha256": "0e7b8e6bb97872cb1abf6f6710c2ec584d98a82d151c7f39ce9043953175fccf",
+  "cpu_dependency_reuse": "31 C++,53 schema/native,9 Python clients,6 JS and3 driver passed; unchanged prediction/sampling/native/recovery evidence reused. First JS fixture field-name failure preserved, affected case repaired and bridge check passed."
+}

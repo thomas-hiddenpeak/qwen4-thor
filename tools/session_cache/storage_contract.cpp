@@ -9,6 +9,7 @@
 #include <cstring>
 #include <filesystem>
 #include <stdexcept>
+#include <thread>
 
 namespace q4t::server {
 struct SessionCacheTestPeer {
@@ -16,7 +17,21 @@ struct SessionCacheTestPeer {
     c.entries_.at(key)->used -= std::chrono::hours(1);
   }
   static void Truncate(SessionCache& c, const std::string& key) {
-    if (ftruncate(c.entries_.at(key)->fd, 0)) throw std::runtime_error("truncate");
+    if (!c.io_->TruncateForTesting(c.entries_.at(key)->file))
+      throw std::runtime_error("truncate receipt");
+  }
+  static void Recover(SessionCache& c) {
+    const auto deadline = std::chrono::steady_clock::now() +
+                          std::chrono::seconds(2);
+    while (std::chrono::steady_clock::now() < deadline) {
+      if (c.io_->Initialize()) return;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    throw std::runtime_error("bounded cache recovery");
+  }
+  static void ShortWrite(SessionCache& c) {
+    if (!c.io_->FailNextWriteForTesting())
+      throw std::runtime_error("short-write injection receipt");
   }
   static void Corrupt(SessionCache& c, const std::string& key) {
     c.entries_.at(key)->digests.at(0).at(0) ^= 1;
@@ -25,6 +40,8 @@ struct SessionCacheTestPeer {
 }  // namespace q4t::server
 
 int main(int argc, char** argv) {
+  const int worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (worker >= 0) return worker;
   using namespace q4t;
   using namespace q4t::server;
   int checks = 0;
@@ -91,6 +108,7 @@ int main(int argc, char** argv) {
     require(cache.Acquire("A"), "truncated lease");
     SessionCacheTestPeer::Truncate(cache, "A");
     require(!cache.Restore("A", ranges, copy, no_cancel, &d0), "short read");
+    SessionCacheTestPeer::Recover(cache);
     require(save("A").ok(), "save before expiry");
     cache.Release("A", true);
     require(cache.Acquire("A"), "expiry lease");

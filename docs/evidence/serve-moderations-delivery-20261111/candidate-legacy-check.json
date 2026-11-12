@@ -1,0 +1,10 @@
+{
+  "label": "candidate-legacy-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderations-20261111/release-01/candidate/bundle/bin/q4t",
+    "service",
+    "check"
+  ],
+  "returncode": 0,
+  "seconds": 0.45417615910992026
+}

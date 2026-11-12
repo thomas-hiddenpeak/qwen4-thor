@@ -1,0 +1,7 @@
+test_cancel_idempotence_compares_same_projection_and_rejects_real_changes (tools.serve_responses.test_background_acceptance.Driver.test_cancel_idempotence_compares_same_projection_and_rejects_real_changes) ... ok
+test_remainder_creates_only_unexecuted_work_and_copies_regular_snapshot (tools.serve_responses.test_background_acceptance.Driver.test_remainder_creates_only_unexecuted_work_and_copies_regular_snapshot) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.034s
+
+OK

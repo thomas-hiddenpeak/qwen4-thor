@@ -1,0 +1,6 @@
+{
+  "/home/rm01/models/dev/qwen4-thor/build/q4t": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+  "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2",
+  "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+}

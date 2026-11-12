@@ -1,12 +1,21 @@
 #include "q4t/server/chat_plan.h"
 
 #include <algorithm>
+#include <charconv>
+#include <limits>
 
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/file_expansion.h"
+#include "q4t/server/file_input_policy.h"
+#include "q4t/server/legacy_tools.h"
+#include "q4t/server/embeddings_plan.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/model_catalog.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/text_stop.h"
@@ -31,6 +40,7 @@ std::string Array(const std::vector<T>& values) {
 const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
+  if (config.prewarm_only || config.count_input_only) return 0;
   const int fallback =
       config.client_limits
           ? std::min(config.default_max_tokens,
@@ -58,11 +68,56 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
                        ChatRequestPlan* plan, ChatPlanError* error) {
   *plan = {};
   *error = {};
-  auto status = ValidateChatContract(req, config.model, config.allow_media,
-                                     &error->param);
+  if (HasLegacyTools(req)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(req, &normalized, &error->param);
+    if (!status) return status;
+    status = PlanChatRequest(normalized.request, config, plan, error);
+    if (!status) LegacyToolErrorParam(req, &error->param);
+    plan->legacy_output = normalized.legacy_output;
+    plan->normalized_request = std::move(normalized.request);
+    return status;
+  }
+  const auto* model = req.Find("model");
+  if (model && model->IsString() &&
+      !IsServedModel(model->str, config.model, config.model_aliases)) {
+    error->http_status = 404;
+    error->code = "model_not_found";
+    error->param = "model";
+    return Status::Fail("model is not registered by this server");
+  }
+  auto status = ValidateChatContract(
+      req, model && model->IsString() ? model->str : config.model,
+      config.allow_media, &error->param, config.count_input_only,
+      config.preparing_file_inputs);
+  if (!status) {
+    if (status.message().starts_with("schema_resource_exhausted:")) {
+      error->code = "constraint_resource_exhausted";
+      error->http_status = 503;
+    }
+    return status;
+  }
+  status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
+  status = ParsePromptCacheOptions(req, &plan->cache, &error->param);
+  if (!status) return status;
+  status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,
+                                  &error->param);
+  if (!status) return status;
+  if (const auto* biases = req.Find("logit_bias");
+      biases && biases->IsObject() && config.token_vocab > 0) {
+    for (const auto& [key, bias] : biases->object) {
+      (void)bias;
+      int32_t token = -1;
+      std::from_chars(key.data(), key.data() + key.size(), token);
+      if (token >= config.token_vocab)
+        return Fail(error, "invalid_request", InputParamPath("logit_bias", key),
+                    "logit_bias token outside served vocabulary");
+    }
+  }
   if (config.client_limits &&
-      RequestedOutput(req, config) >
+      static_cast<int64_t>(RequestedOutput(req, config)) *
+              plan->sampling.choices >
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
@@ -98,12 +153,24 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
   if (config.client_limits && tokens > config.client_limits->max_prompt_tokens)
     return Fail(error, "client_prompt_limit_exceeded", input,
                 "encoded prompt exceeds client token limit");
+  if (config.count_input_only) {
+    if (!tokens || tokens > static_cast<size_t>(config.max_len))
+      return Fail(error, "context_length_exceeded", input,
+                  "input tokens exceed context capacity");
+    budget->required_capacity = tokens;
+    budget->output_source = "input_tokens";
+    return {};
+  }
+  SamplingOptions sampling;
+  auto sampling_status = ParseSamplingOptions(req, &sampling, &error->param);
+  if (!sampling_status) return sampling_status;
   if (config.client_limits &&
-      RequestedOutput(req, config) >
+      static_cast<int64_t>(RequestedOutput(req, config)) * sampling.choices >
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
-  if (!tokens || tokens >= static_cast<size_t>(config.max_len))
+  if (!tokens || tokens > static_cast<size_t>(config.max_len) ||
+      (!config.prewarm_only && tokens == static_cast<size_t>(config.max_len)))
     return Fail(error, "context_length_exceeded", input,
                 "prompt tokens must be positive and below context capacity");
   ChatPromptBudget planned;
@@ -128,6 +195,8 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
     for (int slot = 0; slot < config.max_seq; ++slot)
       planned.eligible_slots.push_back(slot);
   }
+  planned.total_output =
+      static_cast<uint64_t>(planned.available_output) * sampling.choices;
   const auto prefix = ValidatePrefixSeedBoundary(
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0)),
       config.checkpoints, tokens);
@@ -152,7 +221,29 @@ Status EncodeChatPrompt(const io::Json& req, const ChatPlanConfig& config,
                 req.Has("messages") ? "messages" : "prompt",
                 "encode failed: " + encoded.message());
   }
-  return PlanChatBudget(req, config, tokens->size(), budget, error);
+  auto status = PlanChatBudget(req, config, tokens->size(), budget, error);
+  SamplingOptions sampling;
+  PredictionOptions prediction;
+  if (status) status = ParseSamplingOptions(req, &sampling, &error->param);
+  if (status)
+    status = ParsePredictionOptions(req, sampling, &prediction, &error->param);
+  if (!status || !prediction.enabled) return status;
+  std::vector<uint32_t> predicted;
+  status = encode(prediction.content, &predicted);
+  if (!status)
+    return Fail(error, "invalid_request", "prediction.content",
+                "prediction encode failed: " + status.message());
+  if (predicted.size() > static_cast<size_t>(budget->available_output))
+    return Fail(error, "context_length_exceeded", "prediction.content",
+                "prediction tokens exceed available completion budget");
+  for (const auto id : predicted) {
+    if (id > static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) ||
+        (config.token_vocab && id >= static_cast<uint32_t>(config.token_vocab)))
+      return Fail(error, "invalid_request", "prediction.content",
+                  "prediction token outside served vocabulary");
+    budget->prediction_tokens.push_back(static_cast<int32_t>(id));
+  }
+  return Status();
 }
 
 Status ValidatePreflightEnvelope(const io::Json& body, ChatPlanError* error) {
@@ -180,7 +271,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const std::string& prompt,
                          const std::vector<uint32_t>& tokens,
                          std::string* output, ChatPlanError* error,
-                         const vision::MediaPlan* media) {
+                         const vision::MediaPlan* media,
+                         const FileExpansionUsage* files) {
   output->clear();
   const bool explicit_slots = !config.capacities.empty();
   std::string out =
@@ -198,7 +290,20 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"(,"requested_tokens":)" + std::to_string(budget.requested_output) +
       R"(,"capped_tokens":)" + std::to_string(budget.capped_output) +
       R"(,"available_tokens":)" + std::to_string(budget.available_output) +
-      R"(,"counts_reasoning_and_forced_tokens":true},"admission":{"policy":)" +
+      R"(,"choices":)" + std::to_string(plan.sampling.choices) +
+      R"(,"total_available_tokens":)" + std::to_string(budget.total_output) +
+      R"(,"prediction_tokens":)" +
+      std::to_string(budget.prediction_tokens.size()) +
+      R"(,"counts_reasoning_and_forced_tokens":true},"sampling":{"temperature":)" +
+      std::to_string(plan.sampling.temperature) + R"(,"top_p":)" +
+      std::to_string(plan.sampling.top_p) + R"(,"path":)" +
+      Quote(plan.prediction.enabled ? "target_prediction_verify"
+            : plan.sampling.PlainGreedy() ? "greedy_mtp_or_scheduler"
+                                        : "target_logits_host_sampler") +
+      R"(,"seed":)" +
+      (plan.sampling.seed ? std::to_string(*plan.sampling.seed) : "null") +
+      R"(,"logprobs":)" + Bool(plan.sampling.logprobs) +
+      R"(},"admission":{"policy":)" +
       Quote(explicit_slots ? "explicit_full_budget" : "uniform_context_clip") +
       R"(,"required_capacity":)" + std::to_string(budget.required_capacity) +
       R"(,"eligible_slots":)" + Array(budget.eligible_slots) +
@@ -219,6 +324,15 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
            R"("prompt_preview":"one_placeholder_per_temporal_group",)"
            R"("token_ids":"expanded_for_inference",)"
            R"("execution_and_quality_validated":false})";
+  }
+  if (files) {
+    out += R"(,"file_preparation":{"source_bytes":)" +
+           std::to_string(files->source_bytes) + R"(,"text_bytes":)" +
+           std::to_string(files->text_bytes) + R"(,"files":)" +
+           std::to_string(files->files) + R"(,"pdf_pages_rasterized":)" +
+           std::to_string(files->pages) + R"(,"images":)" +
+           std::to_string(files->images) +
+           R"(,"snapshots_persisted":false,"model_steps":0})";
   }
   if (config.client_limits) {
     out += R"(,"client_limits":{"max_prompt_tokens":)" +
@@ -282,16 +396,56 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   const int public_handlers = business_connections + kOperationsConnections;
   const int operations_handlers =
       requested.operations_port ? kOperationsConnections : 0;
+  std::string aliases = "[";
+  for (const auto& alias : config.model_aliases) {
+    if (aliases.size() > 1) aliases += ',';
+    aliases += Quote(alias);
+  }
+  aliases += ']';
   return R"({"object":"q4t.serve.config","profile":"q4t-config-v1",)"
          R"("observability_version":5,)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
+         R"(,"model_aliases":)" + aliases + R"(,"native_embedding":)" +
+         NativeEmbeddingDescription(config.native_embedding_enabled) +
+         R"(,"file_inputs":)" +
+         OutputJson(FileInputPolicyDescription(
+             config.file_inputs ? *config.file_inputs : FileExpansionOptions{},
+             config.file_input_policy_sha256)) +
+         R"(,"completions":{"profile":"q4t-completions-v1",)"
+         R"("default_output_tokens":16,"max_batch_candidates":128})"
+         R"(,"application_state":{"profile":"q4t-objects-v1",)"
+         R"("directory_source":)" +
+         Quote(requested.object_store_dir.empty() ? "environment"
+                                                  : "explicit") +
+         R"(,"directory_redacted":true,"isolated_io":true,)"
+         R"("max_object_mib":)" +
+         std::to_string(requested.object_max_object_mib) +
+         R"(,"max_client_mib":)" +
+         std::to_string(requested.object_max_client_mib) +
+         R"(,"max_total_mib":)" +
+         std::to_string(requested.object_max_total_mib) +
+         R"(,"max_client_objects":)" +
+         std::to_string(requested.object_max_client_objects) +
+         R"(,"max_total_objects":)" +
+         std::to_string(requested.object_max_total_objects) +
+         R"(,"io_timeout_ms":)" +
+         std::to_string(requested.object_io_timeout_ms) +
+         R"(,"core_readiness_dependency":false})"
          R"(,"client_policy":{"profile":"q4t-gateway-clients-v1","enabled":)" +
          Bool(config.client_count != 0) + R"(,"sha256":)" +
          Quote(config.client_policy_sha256) + R"(,"clients":)" +
          std::to_string(config.client_count) +
          R"(,"namespace":"client_id","credential_values_redacted":true,)"
-         R"("mutable":false,"per_client_ram_limit":false},)"
+         R"("mutable":)" +
+         Bool(config.client_policy_version >= 3) +
+         (config.client_policy_version >= 3
+              ? R"(,"snapshot":"startup","revision":)" +
+                    std::to_string(config.client_policy_revision) +
+                    R"(,"content_sha256":)" +
+                    Quote(config.client_policy_content_sha256)
+              : std::string()) +
+         R"(,"per_client_ram_limit":false},)"
          R"("client_governance":{"profile":"q4t-client-governance-v1",)"
          R"("policy_version":)" +
          std::to_string(config.client_policy_version) + R"(,"fair_queue":)" +
@@ -440,6 +594,20 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          Bool(requested.operations_port == 0) + R"(,"body_bytes":)" +
          std::to_string(kChatBodyBytes) + R"(,"aggregate_body_bytes":)" +
          std::to_string(kAggregateChatBodyBytes) +
+         R"(,"background_input_bytes":)" +
+         std::to_string(
+             static_cast<uint64_t>(requested.background_max_input_mib) << 20) +
+         R"(,"batch_workers":)" + std::to_string(requested.batch_workers) +
+         R"(,"batch_max_jobs":)" + std::to_string(requested.batch_max_jobs) +
+         R"(,"batch_max_client_jobs":)" +
+         std::to_string(requested.batch_max_client_jobs) +
+         R"(,"batch_result_bytes":)" +
+         std::to_string(static_cast<uint64_t>(requested.batch_max_result_mib)
+                        << 20) +
+         R"(,"batch_model_queue_tokens":)" +
+         std::to_string(requested.batch_model_queue_tokens) +
+         R"(,"batch_client_model_queue_tokens":)" +
+         std::to_string(requested.batch_client_model_queue_tokens) +
          R"(,"tokenizer_input_bytes":)" +
          std::to_string(tokenizer.max_input_bytes) + R"(,"tokenizer_tokens":)" +
          std::to_string(tokenizer.max_tokens) +

@@ -1,0 +1,655 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_a34fcbb977573148cd0454b6910ac428",
+    "object": "response",
+    "created_at": 1794237659,
+    "completed_at": 1794237670,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "cmp_57b40e125c594d7192948a41857781b8",
+        "type": "compaction",
+        "encrypted_content": "q4tc1:cmp_57b40e125c594d7192948a41857781b8:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:40d52adc865f1674dbbea660:a226aa3d416bdbc0ea13c3863bd69e44:35698d57ae9a737a29926ef011cd394291f009d8c5d89776ebf21386fc20e1e29754c1b81aebde5eea8220f8510dcc02f39b0d4771c536a5532bc9e59b058ccb0aea06808dca207fb1e26f06e7bf94676f14d13e355116b3e4fc8cbe039ee0c05e37f879ed679f4d3a25f5ac7b796e3d1ea35d456307d32d4d8afe2296454ae34c4ff46244c1b2e526e1efc65c5a3330f65b1d48ed71a5977970b046d57df9f534dc94346de01b507c7e2b18f15762b6cbd6d18d520a3cdf45f9e9a986c83cb9d4341e2731fbd1ff757c9148a5ebd0a3fdc6bf8356d598d401a31bc4d6c1ef7b503c9451e4063ee24ae5b597d8f5c4f1d335d27df9b28713a0913c4e7f016f4f708c71dd2a120642398d8cae7bb66de7772c807b261ccc45d2fb9f3e7433e99c559e1411b2c2fb94d213081aaca21b5e683f1ee06b3db96481ca3bbfa435072251ae5a07b806564b61e6027c3ac78d55addfefc5dce84b45ed3214ca5372e7dae4eb8aaf093bbf01f1df1bdc6d16b0c628be41d7a044544b68dafb86df1b9248f24e2c06f3ecce6b970003de9f167f406e05d0e5fcd63004ffad760c29dcd79357aa4d40093558d7268256009c9c463e3e0bfd57e4744f89530d93f7ce325151bd2352a525e665c12caea1ab4f4dada7bad3af491847ac5d063d33b96a967df33e23ff7bf3be20503bdf79d8c14ef88b644dbb6f568a52ad6fcd94ff7e76b381dca681394b83f253a2525be2b9777c25aa614205d74d254016fc84aa0e970db505b6da799c5c6ec526bb1d35c0bb6fe2bc441e7ca8cd6cc7bcd5b2fa56851fe9f266919c080306e4694a669aa473d5bdd177dabfec121a5667285e82f6cb0a9b211568a3b64b2b1973311a359a103e37c8fddd84c6ee97602f900aa1f0a9211f9922226fe52eab87f41438bcfea833b160837500b3db028165e265485ab4a9d861577bc8927123b5a049c44165d51dd20ab94433e3b2d58b160e8169d0de82f69529e4b7d0458e12ac5846e13d7f82ad6e2a1dafff527b4bfdb37e1d0662cecd4a922da6e48d5a9c1fb07b97120f5f42047df9ae152483a6334cabc2b60b547f13117eae79972d6c7d2e011c1f82130ae2726e71c9dbc932abdecf949debe2e520242e34a838490e09a1f7c1940f08326a40e754a421a2bff09cbe3c7ec89792d5fc2e1a167b4d5d54781ce5309f55e3e7ff6b993b508d5599094f0c7e8f24087f693c88aa0f7de93a265148251afc4d4af8661c59e3b9ff45faaf051739d0ceaae013915cbe8aa843eba350b308b88fe4317ed1bfa38f5c559f83373c2a1e174b15d4c735c7784ca7124a0134a1e8dac542393470aa284aa05bba61624ea8bb3e11f9d427a81d5528bfcd20aeec360dea2833020ef2d7ebe3720eeb59d89e10579f4e0228ba7a3d5a958ff178966fca5d9d532e9baa479380aef597ea36554373622d2551a3b81fddc1ec69e7a015dc846efb3a394d8cd74384df74a3274892313f52ad43b0df612cb3d37a6df52dba6a52b769182fe1ac34221886c48b6c2bc13948e4395ceb85f92b69607badb326d7d372c7eeb12292fd25959b0f520fd2690f84cb24bb02f5ddbb788bf7bc6698e1027c42671f76564f39aa3c9f8d64e3a71ca6e0af6467b008a3156a7e3d54aad9d5e67f2f49b710694998d24512a711763ea9e375c457e07ae5ec8b1b3618594a051f96d3bf546eb2cea09ed7b455181cb4da4ea9db3611f68fc020d0f5b57a86878b6cd38b69ad499e7b9f32ed46d004f2decb561ca90e4d593d45ef2be117244d88c78f"
+      },
+      {
+        "id": "fc_589476ee5bd04811b48252dab8566e64",
+        "type": "function_call",
+        "call_id": "call_resp_a34fcbb977573148cd0454b6910ac428_0",
+        "name": "read_project_record",
+        "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2037,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 272,
+      "output_tokens_details": {
+        "reasoning_tokens": 222
+      },
+      "total_tokens": 2309
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": false,
+    "tools": [
+      {
+        "type": "function",
+        "name": "read_project_record",
+        "description": "Read bounded real project document lines and citation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/MODEL.md"
+            },
+            "start_line": {
+              "type": "integer",
+              "const": 1
+            },
+            "line_count": {
+              "type": "integer",
+              "const": 3
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "required",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": true,
+    "max_output_tokens": 512,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null
+  },
+  "chunks": [
+    {
+      "response": {
+        "id": "resp_a34fcbb977573148cd0454b6910ac428",
+        "object": "response",
+        "created_at": 1794237659,
+        "completed_at": null,
+        "status": "queued",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": false,
+        "tools": [
+          {
+            "type": "function",
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "tool_choice": "required",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.created",
+      "sequence_number": 0
+    },
+    {
+      "response": {
+        "id": "resp_a34fcbb977573148cd0454b6910ac428",
+        "object": "response",
+        "created_at": 1794237659,
+        "completed_at": null,
+        "status": "queued",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": false,
+        "tools": [
+          {
+            "type": "function",
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "tool_choice": "required",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.queued",
+      "sequence_number": 1
+    },
+    {
+      "response": {
+        "id": "resp_a34fcbb977573148cd0454b6910ac428",
+        "object": "response",
+        "created_at": 1794237659,
+        "completed_at": null,
+        "status": "in_progress",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": false,
+        "tools": [
+          {
+            "type": "function",
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "tool_choice": "required",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.in_progress",
+      "sequence_number": 2
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "cmp_57b40e125c594d7192948a41857781b8",
+        "type": "compaction",
+        "encrypted_content": ""
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 3
+    },
+    {
+      "item_id": "cmp_57b40e125c594d7192948a41857781b8",
+      "output_index": 0,
+      "type": "response.compaction.compacting",
+      "sequence_number": 4
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "cmp_57b40e125c594d7192948a41857781b8",
+        "type": "compaction",
+        "encrypted_content": "q4tc1:cmp_57b40e125c594d7192948a41857781b8:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:40d52adc865f1674dbbea660:a226aa3d416bdbc0ea13c3863bd69e44:35698d57ae9a737a29926ef011cd394291f009d8c5d89776ebf21386fc20e1e29754c1b81aebde5eea8220f8510dcc02f39b0d4771c536a5532bc9e59b058ccb0aea06808dca207fb1e26f06e7bf94676f14d13e355116b3e4fc8cbe039ee0c05e37f879ed679f4d3a25f5ac7b796e3d1ea35d456307d32d4d8afe2296454ae34c4ff46244c1b2e526e1efc65c5a3330f65b1d48ed71a5977970b046d57df9f534dc94346de01b507c7e2b18f15762b6cbd6d18d520a3cdf45f9e9a986c83cb9d4341e2731fbd1ff757c9148a5ebd0a3fdc6bf8356d598d401a31bc4d6c1ef7b503c9451e4063ee24ae5b597d8f5c4f1d335d27df9b28713a0913c4e7f016f4f708c71dd2a120642398d8cae7bb66de7772c807b261ccc45d2fb9f3e7433e99c559e1411b2c2fb94d213081aaca21b5e683f1ee06b3db96481ca3bbfa435072251ae5a07b806564b61e6027c3ac78d55addfefc5dce84b45ed3214ca5372e7dae4eb8aaf093bbf01f1df1bdc6d16b0c628be41d7a044544b68dafb86df1b9248f24e2c06f3ecce6b970003de9f167f406e05d0e5fcd63004ffad760c29dcd79357aa4d40093558d7268256009c9c463e3e0bfd57e4744f89530d93f7ce325151bd2352a525e665c12caea1ab4f4dada7bad3af491847ac5d063d33b96a967df33e23ff7bf3be20503bdf79d8c14ef88b644dbb6f568a52ad6fcd94ff7e76b381dca681394b83f253a2525be2b9777c25aa614205d74d254016fc84aa0e970db505b6da799c5c6ec526bb1d35c0bb6fe2bc441e7ca8cd6cc7bcd5b2fa56851fe9f266919c080306e4694a669aa473d5bdd177dabfec121a5667285e82f6cb0a9b211568a3b64b2b1973311a359a103e37c8fddd84c6ee97602f900aa1f0a9211f9922226fe52eab87f41438bcfea833b160837500b3db028165e265485ab4a9d861577bc8927123b5a049c44165d51dd20ab94433e3b2d58b160e8169d0de82f69529e4b7d0458e12ac5846e13d7f82ad6e2a1dafff527b4bfdb37e1d0662cecd4a922da6e48d5a9c1fb07b97120f5f42047df9ae152483a6334cabc2b60b547f13117eae79972d6c7d2e011c1f82130ae2726e71c9dbc932abdecf949debe2e520242e34a838490e09a1f7c1940f08326a40e754a421a2bff09cbe3c7ec89792d5fc2e1a167b4d5d54781ce5309f55e3e7ff6b993b508d5599094f0c7e8f24087f693c88aa0f7de93a265148251afc4d4af8661c59e3b9ff45faaf051739d0ceaae013915cbe8aa843eba350b308b88fe4317ed1bfa38f5c559f83373c2a1e174b15d4c735c7784ca7124a0134a1e8dac542393470aa284aa05bba61624ea8bb3e11f9d427a81d5528bfcd20aeec360dea2833020ef2d7ebe3720eeb59d89e10579f4e0228ba7a3d5a958ff178966fca5d9d532e9baa479380aef597ea36554373622d2551a3b81fddc1ec69e7a015dc846efb3a394d8cd74384df74a3274892313f52ad43b0df612cb3d37a6df52dba6a52b769182fe1ac34221886c48b6c2bc13948e4395ceb85f92b69607badb326d7d372c7eeb12292fd25959b0f520fd2690f84cb24bb02f5ddbb788bf7bc6698e1027c42671f76564f39aa3c9f8d64e3a71ca6e0af6467b008a3156a7e3d54aad9d5e67f2f49b710694998d24512a711763ea9e375c457e07ae5ec8b1b3618594a051f96d3bf546eb2cea09ed7b455181cb4da4ea9db3611f68fc020d0f5b57a86878b6cd38b69ad499e7b9f32ed46d004f2decb561ca90e4d593d45ef2be117244d88c78f"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 5
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "fc_589476ee5bd04811b48252dab8566e64",
+        "type": "function_call",
+        "call_id": "call_resp_a34fcbb977573148cd0454b6910ac428_0",
+        "name": "read_project_record",
+        "arguments": "",
+        "status": "in_progress"
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 6
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "{\"",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 7
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "path",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 8
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "\":",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 9
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": " \"",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 10
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "docs",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 11
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "/M",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 12
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "ODE",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 13
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "L",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 14
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": ".md",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 15
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "\",",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 16
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": " \"",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 17
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "start",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 18
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "_line",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 19
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "\":",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 20
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": " ",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 21
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "1",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 22
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": ",",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 23
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": " \"",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 24
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "line",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 25
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "_count",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 26
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "\":",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 27
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": " ",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 28
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "3",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 29
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "delta": "}",
+      "type": "response.function_call_arguments.delta",
+      "sequence_number": 30
+    },
+    {
+      "item_id": "fc_589476ee5bd04811b48252dab8566e64",
+      "output_index": 1,
+      "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+      "type": "response.function_call_arguments.done",
+      "sequence_number": 31
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "fc_589476ee5bd04811b48252dab8566e64",
+        "type": "function_call",
+        "call_id": "call_resp_a34fcbb977573148cd0454b6910ac428_0",
+        "name": "read_project_record",
+        "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+        "status": "completed"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 32
+    },
+    {
+      "response": {
+        "id": "resp_a34fcbb977573148cd0454b6910ac428",
+        "object": "response",
+        "created_at": 1794237659,
+        "completed_at": 1794237670,
+        "status": "completed",
+        "error": null,
+        "incomplete_details": null,
+        "output": [
+          {
+            "id": "cmp_57b40e125c594d7192948a41857781b8",
+            "type": "compaction",
+            "encrypted_content": "q4tc1:cmp_57b40e125c594d7192948a41857781b8:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:40d52adc865f1674dbbea660:a226aa3d416bdbc0ea13c3863bd69e44:35698d57ae9a737a29926ef011cd394291f009d8c5d89776ebf21386fc20e1e29754c1b81aebde5eea8220f8510dcc02f39b0d4771c536a5532bc9e59b058ccb0aea06808dca207fb1e26f06e7bf94676f14d13e355116b3e4fc8cbe039ee0c05e37f879ed679f4d3a25f5ac7b796e3d1ea35d456307d32d4d8afe2296454ae34c4ff46244c1b2e526e1efc65c5a3330f65b1d48ed71a5977970b046d57df9f534dc94346de01b507c7e2b18f15762b6cbd6d18d520a3cdf45f9e9a986c83cb9d4341e2731fbd1ff757c9148a5ebd0a3fdc6bf8356d598d401a31bc4d6c1ef7b503c9451e4063ee24ae5b597d8f5c4f1d335d27df9b28713a0913c4e7f016f4f708c71dd2a120642398d8cae7bb66de7772c807b261ccc45d2fb9f3e7433e99c559e1411b2c2fb94d213081aaca21b5e683f1ee06b3db96481ca3bbfa435072251ae5a07b806564b61e6027c3ac78d55addfefc5dce84b45ed3214ca5372e7dae4eb8aaf093bbf01f1df1bdc6d16b0c628be41d7a044544b68dafb86df1b9248f24e2c06f3ecce6b970003de9f167f406e05d0e5fcd63004ffad760c29dcd79357aa4d40093558d7268256009c9c463e3e0bfd57e4744f89530d93f7ce325151bd2352a525e665c12caea1ab4f4dada7bad3af491847ac5d063d33b96a967df33e23ff7bf3be20503bdf79d8c14ef88b644dbb6f568a52ad6fcd94ff7e76b381dca681394b83f253a2525be2b9777c25aa614205d74d254016fc84aa0e970db505b6da799c5c6ec526bb1d35c0bb6fe2bc441e7ca8cd6cc7bcd5b2fa56851fe9f266919c080306e4694a669aa473d5bdd177dabfec121a5667285e82f6cb0a9b211568a3b64b2b1973311a359a103e37c8fddd84c6ee97602f900aa1f0a9211f9922226fe52eab87f41438bcfea833b160837500b3db028165e265485ab4a9d861577bc8927123b5a049c44165d51dd20ab94433e3b2d58b160e8169d0de82f69529e4b7d0458e12ac5846e13d7f82ad6e2a1dafff527b4bfdb37e1d0662cecd4a922da6e48d5a9c1fb07b97120f5f42047df9ae152483a6334cabc2b60b547f13117eae79972d6c7d2e011c1f82130ae2726e71c9dbc932abdecf949debe2e520242e34a838490e09a1f7c1940f08326a40e754a421a2bff09cbe3c7ec89792d5fc2e1a167b4d5d54781ce5309f55e3e7ff6b993b508d5599094f0c7e8f24087f693c88aa0f7de93a265148251afc4d4af8661c59e3b9ff45faaf051739d0ceaae013915cbe8aa843eba350b308b88fe4317ed1bfa38f5c559f83373c2a1e174b15d4c735c7784ca7124a0134a1e8dac542393470aa284aa05bba61624ea8bb3e11f9d427a81d5528bfcd20aeec360dea2833020ef2d7ebe3720eeb59d89e10579f4e0228ba7a3d5a958ff178966fca5d9d532e9baa479380aef597ea36554373622d2551a3b81fddc1ec69e7a015dc846efb3a394d8cd74384df74a3274892313f52ad43b0df612cb3d37a6df52dba6a52b769182fe1ac34221886c48b6c2bc13948e4395ceb85f92b69607badb326d7d372c7eeb12292fd25959b0f520fd2690f84cb24bb02f5ddbb788bf7bc6698e1027c42671f76564f39aa3c9f8d64e3a71ca6e0af6467b008a3156a7e3d54aad9d5e67f2f49b710694998d24512a711763ea9e375c457e07ae5ec8b1b3618594a051f96d3bf546eb2cea09ed7b455181cb4da4ea9db3611f68fc020d0f5b57a86878b6cd38b69ad499e7b9f32ed46d004f2decb561ca90e4d593d45ef2be117244d88c78f"
+          },
+          {
+            "id": "fc_589476ee5bd04811b48252dab8566e64",
+            "type": "function_call",
+            "call_id": "call_resp_a34fcbb977573148cd0454b6910ac428_0",
+            "name": "read_project_record",
+            "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}",
+            "status": "completed"
+          }
+        ],
+        "usage": {
+          "input_tokens": 2037,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 272,
+          "output_tokens_details": {
+            "reasoning_tokens": 222
+          },
+          "total_tokens": 2309
+        },
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": false,
+        "tools": [
+          {
+            "type": "function",
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "tool_choice": "required",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "none",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.completed",
+      "sequence_number": 33
+    }
+  ],
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18987/v1/responses/resp_a34fcbb977573148cd0454b6910ac428?stream=true&include_obfuscation=false",
+      "method": "GET"
+    }
+  ]
+}

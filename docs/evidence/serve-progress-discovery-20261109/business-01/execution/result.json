@@ -1,0 +1,44 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 828, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_progress/acceptance.py\", line 191, in exercise\n    self.declarations()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_progress/acceptance.py\", line 166, in declarations\n    self.engine.require(response['http_status'] == 200,\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/bundle/source/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: candidate discovery unavailable\n",
+  "cleanup_failure": null,
+  "seconds": 45.652702992782,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 1,
+      "probes": 0,
+      "controls": 162
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 1,
+        "monotonic_ns": 2371244223978872
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 1,
+        "monotonic_ns": 2371283351875800
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 982101,
+      "start_ticks": 237124422
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "4e7c7ff118b818cbff77804b5d3037992111d14b",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/bundle",
+    "manifest_sha256": "109b4e7a11d1bbf45bf3590da1ec2f1bb7f11ee44fcfd06c6924387a120a7622",
+    "engine_binary_sha256": "1f3d0de49935ac6b586b67ce1e74673f781480333aba48652836f50eadd0e2be",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

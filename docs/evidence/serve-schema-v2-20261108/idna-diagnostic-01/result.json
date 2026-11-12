@@ -1,0 +1,428 @@
+{
+  "seconds": 0.0015755281783640385,
+  "cases": [
+    {
+      "case": "invalid Punycode",
+      "input": "xn--X",
+      "return_codes": [
+        -202
+      ],
+      "names": [
+        "IDN2_PUNYCODE_BAD_INPUT"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "a valid host name (example.test in Hangul)",
+      "input": "xn--9n2bp8q.xn--9t4b11yi5a",
+      "return_codes": [
+        0,
+        0
+      ],
+      "names": [
+        "IDN2_OK",
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "contains illegal char U+302E Hangul single dot tone mark",
+      "input": "xn--07jt112bpxg.xn--9t4b11yi5a",
+      "return_codes": [
+        -304,
+        0
+      ],
+      "names": [
+        "IDN2_DISALLOWED",
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Begins with a Spacing Combining Mark",
+      "input": "xn--hello-txk",
+      "return_codes": [
+        -303
+      ],
+      "names": [
+        "IDN2_LEADING_COMBINING"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Begins with a Nonspacing Mark",
+      "input": "xn--hello-zed",
+      "return_codes": [
+        -303
+      ],
+      "names": [
+        "IDN2_LEADING_COMBINING"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Begins with an Enclosing Mark",
+      "input": "xn--hello-6bf",
+      "return_codes": [
+        -303
+      ],
+      "names": [
+        "IDN2_LEADING_COMBINING"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Exceptions that are PVALID, left-to-right chars",
+      "input": "xn--zca29lwxobi7a",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Exceptions that are PVALID, right-to-left chars",
+      "input": "xn--qmbc",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Exceptions that are DISALLOWED, right-to-left chars",
+      "input": "xn--chb89f",
+      "return_codes": [
+        -304
+      ],
+      "names": [
+        "IDN2_DISALLOWED"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Exceptions that are DISALLOWED, left-to-right chars",
+      "input": "xn--07jceefgh4c",
+      "return_codes": [
+        -304
+      ],
+      "names": [
+        "IDN2_DISALLOWED"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "MIDDLE DOT with no preceding 'l'",
+      "input": "xn--al-0ea",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "MIDDLE DOT with nothing preceding",
+      "input": "xn--l-fda",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "MIDDLE DOT with no following 'l'",
+      "input": "xn--la-0ea",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "MIDDLE DOT with nothing following",
+      "input": "xn--l-gda",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "MIDDLE DOT with surrounding 'l's",
+      "input": "xn--ll-0ea",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Greek KERAIA not followed by Greek",
+      "input": "xn--S-jib3p",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Greek KERAIA not followed by anything",
+      "input": "xn--wva3j",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Greek KERAIA followed by Greek",
+      "input": "xn--wva3je",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERESH not preceded by Hebrew",
+      "input": "xn--A-2hc5h",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERESH not preceded by anything",
+      "input": "xn--5db1e",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERESH preceded by Hebrew",
+      "input": "xn--4dbc5h",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERSHAYIM not preceded by Hebrew",
+      "input": "xn--A-2hc8h",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERSHAYIM not preceded by anything",
+      "input": "xn--5db3e",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Hebrew GERSHAYIM preceded by Hebrew",
+      "input": "xn--4dbc8h",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "KATAKANA MIDDLE DOT with no Hiragana, Katakana, or Han",
+      "input": "xn--defabc-k64e",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "KATAKANA MIDDLE DOT with no other characters",
+      "input": "xn--vek",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "KATAKANA MIDDLE DOT with Hiragana",
+      "input": "xn--k8j5u",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "KATAKANA MIDDLE DOT with Katakana",
+      "input": "xn--bck0j",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "KATAKANA MIDDLE DOT with Han",
+      "input": "xn--vek778f",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Arabic-Indic digits mixed with Extended Arabic-Indic digits",
+      "input": "xn--ngb6iyr",
+      "return_codes": [
+        -307
+      ],
+      "names": [
+        "IDN2_CONTEXTO"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Arabic-Indic digits not mixed with Extended Arabic-Indic digits",
+      "input": "xn--ngba1o",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "Extended Arabic-Indic digits not mixed with Arabic-Indic digits",
+      "input": "xn--0-gyc",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "ZERO WIDTH JOINER not preceded by Virama",
+      "input": "xn--11b2er09f",
+      "return_codes": [
+        -305
+      ],
+      "names": [
+        "IDN2_CONTEXTJ"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "ZERO WIDTH JOINER not preceded by anything",
+      "input": "xn--02b508i",
+      "return_codes": [
+        -305
+      ],
+      "names": [
+        "IDN2_CONTEXTJ"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "ZERO WIDTH JOINER preceded by Virama",
+      "input": "xn--11b2ezcw70k",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "ZERO WIDTH NON-JOINER preceded by Virama",
+      "input": "xn--11b2ezcs70k",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "ZERO WIDTH NON-JOINER not preceded by Virama but matches regexp",
+      "input": "xn--ngba5hb2804a",
+      "return_codes": [
+        0
+      ],
+      "names": [
+        "IDN2_OK"
+      ],
+      "matches_expected": true
+    },
+    {
+      "case": "contains \"--\" in the 3rd and 4th position",
+      "input": "XN--aa---o47jg78q",
+      "return_codes": [
+        -301
+      ],
+      "names": [
+        "IDN2_2HYPHEN"
+      ],
+      "matches_expected": true
+    }
+  ],
+  "all_expected": true
+}

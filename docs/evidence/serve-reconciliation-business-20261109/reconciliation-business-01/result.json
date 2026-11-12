@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_FOREGROUND_RECOVERY_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 52
+  },
+  "seconds": 54.609030675143,
+  "binary_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f"
+}

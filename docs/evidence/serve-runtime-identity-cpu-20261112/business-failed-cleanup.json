@@ -1,0 +1,12 @@
+{
+  "state": "STOPPED",
+  "reason": null,
+  "service_id": "adf3800c-ada2-4fae-b4a1-51d4788d8b34",
+  "business_ready": false,
+  "stop_requested": true,
+  "stop_durable": true,
+  "tree_cleanup_verified": true,
+  "cleanup_confirmed": true,
+  "outer_supervised": true,
+  "live_control": true
+}

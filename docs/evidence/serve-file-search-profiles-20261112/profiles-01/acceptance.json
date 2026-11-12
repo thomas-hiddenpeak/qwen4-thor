@@ -1,0 +1,21 @@
+{
+  "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 86,
+    "cleanup_complete": true,
+    "lease_result_sha256": "da85d546203c7c99d68e8031a991f5295cd05f2a6a24db676282cab98953220d"
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 76
+  },
+  "seconds": 90.3791492562741,
+  "registry_sha256": "80305d517c9e20ddfb9b3133cb7145342507e06bd1fe8ccfffb43d73430b3f84",
+  "default_unchanged": true,
+  "automatic_managed_switching_accepted": false,
+  "performance_claim": false
+}

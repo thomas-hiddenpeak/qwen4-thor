@@ -1,0 +1,8 @@
+test_actual_cpp_float_and_base64_fp32 (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_actual_cpp_float_and_base64_fp32) ... ok
+test_sdk_identity_protocol_route_and_compiled_sources (tools.serve_responses.test_embeddings_contract.EmbeddingsContract.test_sdk_identity_protocol_route_and_compiled_sources) ... ok
+test_protocol_contract_has_separate_bounded_capacity (tools.serve_gateway.test_gateway.GatewayTests.test_protocol_contract_has_separate_bounded_capacity) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.203s
+
+OK

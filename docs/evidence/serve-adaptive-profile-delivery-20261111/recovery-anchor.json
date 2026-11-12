@@ -1,0 +1,10 @@
+{
+  "kind": "qualified_same_version_republication_anchor",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/profile-release-01/bundle",
+  "manifest_sha256": "f312f81dea8e25c4a4509290c6d84414b9235547f3ff809da130faeb588c0d92",
+  "previous_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-adaptive-profiles-20261111/memory-release-02/bundle",
+  "previous_manifest_sha256": "b2bd575ace695b1fcbedc3ab965e7312be39ad14e1a9dfa1da326848a026ea60",
+  "previous_automated_profiles_compatible": false,
+  "automatic_older_code_fallback_implemented": false,
+  "command": "q4t service publish --state STATE --default-root ROOT --package ANCHOR --manifest-sha256 ANCHOR_SHA --service-release ANCHOR_RELEASE --expected-manifest-sha256 CURRENT_SHA --expected-revision CURRENT_REVISION --request-id NEW_UUID"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS_UPLOADS_TARGETED_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 60,
+    "files": 20
+  },
+  "seconds": 53.650516976136714,
+  "binary_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232"
+}

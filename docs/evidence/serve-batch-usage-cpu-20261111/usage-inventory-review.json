@@ -1,0 +1,17 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "src/server/batch_jobs.cpp",
+    "src/server/chat_choices.cpp",
+    "src/server/batch_results.cpp",
+    "src/server/batch_state.cpp",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/batch_usage.h",
+    "src/server/chat_generation.cpp",
+    "include/q4t/server/chat_choices.h",
+    "include/q4t/server/batch_state.h",
+    "src/server/batch_usage.cpp"
+  ],
+  "anchors": 491,
+  "review": "Native usage normalization, atomic result accounting, original-result-only recount before execution/finalization and Batch-only unbounded reasoning observation; no model restart/performance change claimed."
+}

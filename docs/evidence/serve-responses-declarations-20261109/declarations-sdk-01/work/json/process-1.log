@@ -1,0 +1,2 @@
+[q4t][http] trace_id=req-fe743356894b5966aca3d5c34dea8851 status=400 error=invalid_request
+[q4t][http] trace_id=req-07e5c196698415807d6970e1c1591d72 status=404 error=object_not_found

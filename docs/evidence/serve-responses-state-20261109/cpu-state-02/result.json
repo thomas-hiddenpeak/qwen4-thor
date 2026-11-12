@@ -1,0 +1,11 @@
+{
+  "command": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-responses-20261108/cpu-state-02/required.txt"
+  ],
+  "executable_sha256": "4be90457876e6f03337ac511227a7cc89a845e928a387383fced358ab594fe1a",
+  "exit_code": 0,
+  "seconds": 0.0760801238939166,
+  "required_count": 8
+}

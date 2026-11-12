@@ -1,0 +1,14 @@
+[
+  "env",
+  "Q4T_CURRENT_APPLICATION_WIRE=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/declarations-sdk-01/work",
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_responses.test_contract.ApplicationContract.test_archived_background_and_conversations",
+  "tools.serve_responses.test_contract.ApplicationContract.test_archived_real_business_wire",
+  "tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict",
+  "tools.serve_responses.test_contract.ApplicationContract.test_sdk_graph_and_closed_native_requests",
+  "tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle"
+]

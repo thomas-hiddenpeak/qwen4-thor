@@ -1,0 +1,21 @@
+{
+  "status": "PASS_TARGETED_CACHE_BUSINESS_DRIVER_CPU",
+  "tests": 3,
+  "gpu_starts": 0,
+  "chats": 0,
+  "candidate_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "limits": {
+    "starts": 1,
+    "chats": 8,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "source_sha256": {
+    "tools/serve_cache_io/acceptance.py": "f02e37eea7e0f377f75de7a517a15b163176769f3c7750c20d42440e1af863b1",
+    "tools/serve_cache_io/progress_capture.py": "9824a3069ead9e9b19f64b5c99aa86de37628635861c2b75e81dfc35f81d6465",
+    "tools/serve_cache_io/test_acceptance.py": "0ec28d80bad76398c925b19e0d8f7dcf09d65cbaef56d3819e981e82cea3c005"
+  },
+  "same_model_recovery": true,
+  "default_replaced": false,
+  "remaining": "actual cache/resource business followed by normal rollback/default delivery; all master tasks active"
+}

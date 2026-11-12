@@ -1,0 +1,12 @@
+{
+  "parent_commit": "28ad5f66497801d8417be6b46e63234cc8a47361",
+  "classification": "nonperformance native quota recovery primitives",
+  "default_files": {
+    "build/q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "build/q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc"
+  },
+  "default_service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle",
+  "default_changed": false,
+  "gpu_starts": 0,
+  "chat_requests": 0
+}

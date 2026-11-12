@@ -1,0 +1,24 @@
+{
+  "python": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.examples.test_chat_client.ClientContracts.test_refusal_json_stream_history_and_incomplete_are_preserved",
+    "tools.examples.test_chat_client.ClientContracts.test_refusal_probabilities_reassemble_without_content_alias",
+    "tools.examples.test_chat_client.ClientContracts.test_stream_and_json_preserve_message_and_usage",
+    "tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+    "tools.examples.test_chat_client.ClientContracts.test_stream_identity_order_and_types",
+    "tools.examples.test_chat_client.ClientContracts.test_tool_and_usage_validation"
+  ],
+  "node_pattern": "refusal|JSON and SSE SDK interpretation|split tool deltas|sampling logprobs survive",
+  "python_cases": 6,
+  "node_cases": 5,
+  "sources": {
+    "tools/examples/chat_client.py": "76429d85d45770e417fb251acb61813ea9f328fe8e7cd00b084d4fb4237ef20b",
+    "tools/examples/test_chat_client.py": "5d26231caf304334de1a7eb22a89f17f0d054336a93c411aa6e8404989a9f5e5",
+    "tools/examples/js/chat_client.mjs": "3cecdd18623b299cdf389e7a45716a0155fd36516b4cbb13a125337f087d86fc",
+    "tools/examples/js/test_chat_client.mjs": "b63aa4197ffb2f90a3924e209e488ea797bc0be6008e5721fbd5ddd2dc9e4725"
+  },
+  "gpu_used": 0
+}

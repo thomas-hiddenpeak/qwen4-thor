@@ -1,0 +1,38 @@
+[
+  {
+    "role": "user",
+    "content": "Make exactly two tool calls in this assistant turn. First call the custom tool read_project_record_regex with raw input READ docs/MODEL.md 1 16. Also call the function read_project_record with path docs/ARCHITECTURE.md, start_line 1 and line_count 8. Both are required before answering."
+  },
+  {
+    "role": "assistant",
+    "content": "\n",
+    "tool_calls": [
+      {
+        "id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_0",
+        "type": "custom",
+        "custom": {
+          "name": "read_project_record_regex",
+          "input": "READ docs/MODEL.md 1 16"
+        }
+      },
+      {
+        "id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_1",
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "arguments": "{\"path\":\"docs/ARCHITECTURE.md\",\"start_line\":1,\"line_count\":8}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "tool_call_id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_0",
+    "content": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 16, \"citation\": \"[docs/MODEL.md:L1-L16]\", \"text\": \"1: # MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\\n2: \\n3: > \u5bf9\u76ee\u6807\u6a21\u578b\u7684\u7406\u89e3\u7b14\u8bb0, \u968f\u7814\u8bfb\u6df1\u5165\u6301\u7eed\u66f4\u65b0\u3002\\n4: > \u6765\u6e90: \u6a21\u578b\u76ee\u5f55 `config.json` / `ssd-stream.json` /\\n5: > sglang-ssd-stream \u6e90\u7801 / SGLang `qwen4_exp.py` (\u6743\u5a01 forward pass)\u3002\\n6: > **\u672a\u786e\u8ba4\u7684\u8bed\u4e49\u6807\u6ce8 [\u5f85\u786e\u8ba4]**, \u4e0d\u81c6\u6d4b\u3002\\n7: >\\n8: > **\u6743\u5a01\u53c2\u8003**: `reference/sglang-qwen4-exp/qwen4_exp.py`\\n9: > (SGLang @ 0a79825, \u5373 sglang-ssd-stream \u4e3a aarch64/Thor pin \u7684\u7248\u672c)\u3002\\n10: > \u8be5\u6587\u4ef6\u7528\u4e8e\u5bf9\u7167\u4e0a\u6e38\u6a21\u578b\u8bed\u4e49\uff1b\u672c\u9879\u76ee\u5b9e\u9645\u6267\u884c\u8def\u5f84\u4ee5src/\u4ee3\u7801\u4e3a\u51c6\u3002\\n11: > \u6a21\u578b\u6700\u5927\u914d\u7f6e\u4e0d\u662f\u5f53\u524d\u53d1\u5e03\u9a8c\u6536\u8303\u56f4\uff0c\u540e\u8005\u89c1[STATUS](STATUS.md)\u3002\\n12: \\n13: \u6a21\u578b\u76ee\u5f55 (\u53ea\u8bfb):\\n14: `~/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream`\\n15: \\n16: ## \u603b\u89c8\", \"truncated\": false}, \"total_lines\": 311}"
+  },
+  {
+    "role": "tool",
+    "tool_call_id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_1",
+    "content": "{\"ok\": true, \"source\": {\"path\": \"docs/ARCHITECTURE.md\", \"sha256\": \"744f05b637c88a1c7ace1e5e35b0635581801c3c9bbeb915a9c45e7607c40e49\", \"start_line\": 1, \"end_line\": 8, \"citation\": \"[docs/ARCHITECTURE.md:L1-L8]\", \"text\": \"1: # ARCHITECTURE.md \u2014 \u5f53\u524d\u5b9e\u73b0\u4e0e\u8bbe\u8ba1\u8fb9\u754c\\n2: \\n3: 2026-10-17\u6309\u4ee3\u7801\u9759\u6001\u6838\u5bf9\uff0c2026-10-21\u8865\u6b63SSD\u5378\u8f7d\u4e0e\u7edf\u4e00RAM\u8fb9\u754c\uff1b\\n4: 2026-11-08\u8865\u5145\u4f9d\u8d56\u6700\u5c0f\u5316\u539f\u5219\u3001\u524d\u7f6e\u63a5\u5165\u8fb9\u754c\u53ca\u6062\u590d\u5305\u5b9e\u9645\u4f9d\u8d56\u3002\\n5: \u672c\u6587\u63cf\u8ff0\u5f53\u524d\u6a21\u5757\uff0c\u4e0d\u628a\u8bbe\u8ba1\u76ee\u6807\u6216\u65e7\u5b9e\u6d4b\\n6: \u5f53\u4f5c\u5df2\u4ea4\u4ed8\u529f\u80fd\uff1b\u9a8c\u6536\u8303\u56f4\u89c1[STATUS](STATUS.md)\u548c[EVALUATION](EVALUATION.md)\u3002\\n7: \u65e7\u8bbe\u8ba1\u8bb0\u5f55\u89c1[\u5386\u53f2\u7248\u672c](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7356f235e972b5e1be201923a4ba27b214b31e12/docs/ARCHITECTURE.md)\u3002\\n8: \", \"truncated\": false}, \"total_lines\": 199}"
+  }
+]

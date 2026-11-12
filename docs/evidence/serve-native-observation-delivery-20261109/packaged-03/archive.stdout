@@ -1,0 +1,1 @@
+{"format": "q4t.service.run-archive.v1", "run_id": "39a1d4ea-50e3-4b00-8bec-2aee7a55cb99", "service_id": "13f74328-095a-45c3-87c3-a89e10d108fa", "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged-03/archive", "archive_manifest_sha256": "1c9afce00b13fef77d091932f58e6306f6782a798e52c132c3b50b2381045c47"}

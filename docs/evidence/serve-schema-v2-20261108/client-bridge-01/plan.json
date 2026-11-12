@@ -1,0 +1,22 @@
+{
+  "scope": "Actual Python->Node->pinned SDK exact schema and affected journal/terminal contracts; in-memory transport, no network/model/GPU",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_bridge.Bridge.test_exact_schema_crosses_python_node_and_sdk_without_rounding",
+    "test_bridge.Bridge.test_real_read_journal_roundtrip_json",
+    "test_bridge.Bridge.test_real_read_journal_roundtrip_sse_and_two_results",
+    "test_bridge.Bridge.test_http_error_preserves_status_code_and_raw_with_zero_retries",
+    "test_bridge.Bridge.test_missing_done_does_not_commit_or_dispatch"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol",
+  "sources": {
+    "tools/serve_protocol/js_client.py": "c43aa869b843c6182290ebc174c0559c9ff6bac36dec5d8a0bd3d5d70b186063",
+    "tools/serve_protocol/run_sdk.mjs": "d116f08289cd203bb581664d8f0ec8673917d716dad30f2ae6cc549be0366d56",
+    "tools/serve_protocol/fixture_transport.mjs": "3aa3131e523f864d128efded637d1d7b2bd3205594175849aab2190398998517",
+    "tools/serve_protocol/test_bridge.py": "44eb6a662739f6c40336462a1b3168ecee8bd0014a063dddb451d8be5320b309"
+  }
+}

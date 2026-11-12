@@ -1,0 +1,16 @@
+{
+  "label": "version-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-delivery-20261112/release-01/registration.json",
+    "--expected-cycle",
+    "ca5419bc-9700-4224-99a7-aebbb171b2b2"
+  ],
+  "returncode": 0,
+  "seconds": 6.347332634031773
+}
