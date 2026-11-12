@@ -104,6 +104,26 @@ def environment():
     return dict(PATH='/usr/bin:/bin', LANG='C.UTF-8', PYTHONDONTWRITEBYTECODE='1')
 
 
+def entry_environment(value, *, lease_fd=None, lease_path=None):
+    """Carry only an actual selected lease through the protected root exec."""
+    env = environment(); raw = os.environ.get('Q4T_MANAGED_LEASE_FD')
+    if lease_fd is None:
+        if raw is None: return env
+        ledger.require(raw.isdecimal() and len(raw) <= 7 and 3 <= int(raw) <= 1000000,
+                       'invalid inherited host lease descriptor')
+        lease_fd = int(raw)
+    chosen = value['artifact']
+    manifest = store.decode(artifact.read(Path(chosen['package'])/'manifest.json',
+        artifact.MANIFEST_LIMIT, chosen['manifest_sha256']))
+    path = manifest['lock_path']
+    ledger.require(lease_path is None or str(lease_path) == path,
+                   'host entry must retain the selected package lease path')
+    device_domain.lease(lease_fd, path, value)
+    os.set_inheritable(lease_fd, True)
+    env['Q4T_MANAGED_LEASE_FD'] = str(lease_fd)
+    return env
+
+
 def check_runtime(directory, value, *, probe=False):
     """Run the protected verifier after dropping UID, never import package code."""
     artifact.verify(directory, value['artifact'])
@@ -265,7 +285,7 @@ def remove(directory):
 
 
 def entry(directory, *, operation='enter', daemon=False):
-    ledger.require(os.geteuid() == 0 and operation in ('enter', 'ensure', 'stop'),
+    ledger.require(os.geteuid() == 0 and operation in ('enter', 'start', 'ensure', 'stop'),
                    'explicit privileged host entry required')
     with exclusive(directory) as directory:
         value = load(directory)
@@ -279,14 +299,15 @@ def entry(directory, *, operation='enter', daemon=False):
                    '--directory', str(directory)]
         if daemon: command.append('--daemon')
         # After exec only the protected source can perform privileged entry.
-        os.execve(command[0], command, environment())
+        env = environment() if operation == 'stop' else entry_environment(value)
+        os.execve(command[0], command, env)
 
 
 def main(argv=None):
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='operation', required=True)
-    for operation in ('init', 'init-resume', 'status', 'enable', 'disable', 'remove', 'enter', 'ensure', 'stop'):
+    for operation in ('init', 'init-resume', 'status', 'enable', 'disable', 'remove', 'enter', 'start', 'ensure', 'stop'):
         command = commands.add_parser(operation)
         command.add_argument('--directory', type=Path, required=True)
         if operation == 'init':
@@ -294,7 +315,7 @@ def main(argv=None):
                 command.add_argument('--'+name, type=Path, required=True)
             for name in ('digest', 'service-id'): command.add_argument('--'+name, required=True)
             for name in ('runtime-uid', 'runtime-gid'): command.add_argument('--'+name, type=int, required=True)
-        if operation == 'enter': command.add_argument('--daemon', action='store_true')
+        if operation in ('enter', 'start'): command.add_argument('--daemon', action='store_true')
     args = parser.parse_args(argv)
     if args.operation == 'init':
         value = initialize(args.directory, args.package, args.digest, args.state, args.service_id,

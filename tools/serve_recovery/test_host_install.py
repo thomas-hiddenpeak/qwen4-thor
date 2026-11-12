@@ -36,6 +36,21 @@ def prepare(path, *, native=False, cold=False):
         fixture.save(fixture.build, build)
     receipt = fixture.prepare(); package = Path(receipt['package'])
     injection = '''\n# Explicit CPU fixture: verification substitution only after UID drop.\nif os.geteuid() != 0:\n    import json\n    from tools.serve_recovery import bundle as cpu_bundle, service as cpu_service\n    cpu_bundle.engine.verify = lambda *_a, **_kw: json.loads(%r)\n    def cpu_no_gpu(*_a, **_kw): raise AssertionError('GPU forbidden in host CPU fixture')\n    cpu_service.acquire_lease = cpu_no_gpu\n\n''' % json.dumps(fixture.base)
+    if cold:
+        private_lease = str(fixture.directory/'private-cold-cpu-lease')
+        injection = injection.replace('    cpu_service.acquire_lease = cpu_no_gpu\n',
+            '''    cpu_original_lease = cpu_service.acquire_lease
+    def cpu_private_lease(path):
+        if str(path) != %r: raise AssertionError('only the CPU private lease is allowed')
+        return cpu_original_lease(path)
+    cpu_service.acquire_lease = cpu_private_lease
+    if 'Q4T_MANAGED_LEASE_FD' in os.environ:
+        from tools.serve_recovery import child as cpu_child
+        cpu_fd = int(os.environ['Q4T_MANAGED_LEASE_FD'])
+        cpu_child.verify_lease(cpu_fd, %r)
+        cpu_info = os.fstat(cpu_fd)
+        Path(%r).write_text(json.dumps(dict(uid=os.geteuid(), device=cpu_info.st_dev, inode=cpu_info.st_ino)))
+''' % (private_lease, private_lease, str(fixture.directory/'cpu-managed-lease.json')))
     manifest = json.loads((package/'manifest.json').read_text())
     for name in ('host_entry', 'outer_daemon', *(('cold_verify',) if cold else ())):
         relative = 'source/tools/serve_recovery/'+name+'.py'; script = package/relative

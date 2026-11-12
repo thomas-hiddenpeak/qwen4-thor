@@ -420,15 +420,33 @@ def disarm(directory, lease_fd, lease_path):
         return dict(armed=False, model_actions=False)
 
 
-def enter(directory, lease_fd, lease_path, manifest_sha256, command):
+def enter(directory, lease_fd, lease_path, manifest_sha256, command, *,
+          host_directory=None, activate=False, daemon=False):
     device_budget.hashed(manifest_sha256)
-    ledger.require(1 <= len(command) <= 64 and os.path.isabs(command[0]) and
-        all(type(arg) is str and len(arg) <= 4096 and '\0' not in arg for arg in command),
-        'explicit absolute device entry command required')
     with managed(directory) as (directory, config, binding, executable):
-        ledger.require('resource' not in config,
-                       'resource-bound entry requires the per-generation native admission channel')
         held = lease(lease_fd, lease_path, config)
+        if 'resource' in config:
+            from tools.serve_recovery import cold_authority, host_install
+            ledger.require(host_directory is not None and not command and
+                type(activate) is bool and type(daemon) is bool,
+                'resource-bound entry selects --host-directory and no arbitrary command')
+            with host_install.exclusive(host_directory) as host_directory:
+                value, root, selected_directory, selected_config = cold_authority.selection(host_directory)
+                ledger.require(selected_directory == directory and selected_config == config and
+                    value['artifact']['manifest_sha256'] == manifest_sha256,
+                    'device entry differs from the selected protected host')
+                env = host_install.entry_environment(value, lease_fd=lease_fd, lease_path=lease_path)
+                argv = [value['artifact']['python']['path'], '-I', '-B',
+                    str(root/'tools/serve_recovery/host_entry.py'), '--start' if activate else '--enter',
+                    '--directory', str(host_directory)]
+                if daemon: argv.append('--daemon')
+                os.execve(argv[0], argv, env)
+                raise RuntimeError('resource-bound host exec returned')
+        ledger.require(host_directory is None and not activate and not daemon,
+                       'legacy device command does not use host entry options')
+        ledger.require(1 <= len(command) <= 64 and os.path.isabs(command[0]) and
+            all(type(arg) is str and len(arg) <= 4096 and '\0' not in arg for arg in command),
+            'explicit absolute device entry command required')
         with scope(config) as (group, pin, target, allowed):
             record = current(directory, config, binding, Observation(lease_fd))
             control = device_control.Control(executable, lease_fd, lease_path)
@@ -492,6 +510,9 @@ def run(argv=None):
     parser.add_argument('--device-control', type=Path)
     parser.add_argument('--device-control-sha256')
     parser.add_argument('--resource-directory', type=Path)
+    parser.add_argument('--host-directory', type=Path)
+    parser.add_argument('--activate', action='store_true')
+    parser.add_argument('--daemon', action='store_true')
     parser.add_argument('--lease-path', type=Path)
     parser.add_argument('--lease-fd', type=int)
     parser.add_argument('--manifest-sha256')
@@ -499,6 +520,8 @@ def run(argv=None):
     argsv = list(sys.argv[1:] if argv is None else argv)
     index = argsv.index('--') if '--' in argsv else len(argsv)
     args = parser.parse_args(argsv[:index]); command = argsv[index+1:]
+    ledger.require(args.operation == 'enter' or not (args.host_directory or args.activate or args.daemon),
+                   'host entry options require the enter operation')
     os.umask(0o077)
     device_store.privileged()
     if args.operation == 'init':
@@ -520,7 +543,8 @@ def run(argv=None):
             if args.operation == 'arm': result = arm(args.directory, lease_fd, args.lease_path)
             elif args.operation == 'disarm': result = disarm(args.directory, lease_fd, args.lease_path)
             else:
-                result = enter(args.directory, lease_fd, args.lease_path, args.manifest_sha256, command)
+                result = enter(args.directory, lease_fd, args.lease_path, args.manifest_sha256, command,
+                               host_directory=args.host_directory, activate=args.activate, daemon=args.daemon)
         finally:
             if owned: os.close(lease_fd)
     print(json.dumps(result, sort_keys=True), flush=True)

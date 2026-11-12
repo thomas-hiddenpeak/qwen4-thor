@@ -82,3 +82,20 @@ adopt 或冷启动消费。旧原生helper若没有新操作则明确失败，�
 2026-11-12。外层逐代冷许可与宿主入口已接线：先落原启动意图、释放journal锁核验并取新凭据，fork前重验STOPPED/故障/禁用；通道不可用先等候不扣outer额度。原生分离issuer只管辅助树，无关联时零依赖；宿主卸载先撤issuer，跨boot续原资源epoch，仅既往armed围栏重新资格。冻结6新外层CPU（含真实原生两根/30秒冷却，签发明确模拟）、6新宿主/设备CPU、10直接回归及3封包共25不同项；0GPU/不动既有服务。实际设备业务、自监护剩余边界及全部总任务继续。
 
 2026-11-12。外层逐代冷许可/宿主组合[27不同CPU接受](evidence/serve-cold-outer-cpu-20261112/README.md)，31调用累计80.662秒。实际两代原生CPU根/30秒冷却、停止竞争、root分离入口/原资源续办通过；fork前bind及撤销断链两缺陷已定点修复，原失败保留。签发/设备为明确CPU夹具，0GPU/自有issuer全清/默认和R07保持；继续公共入口租约交接、进程失能恢复、实际业务发行与全部任务。
+
+2026-11-12。公开冷入口已补实现：v2 device-domain enter显式选原host并走保护源码/原资源，原单次command仍仅用于v1；host-entry start与device --activate显式激活，enter/ensure保持STOPPED。实际选定GPU租约FD经两次root exec及降权保持，错误FD/owner/path拒绝，无任意root命令回退。冻结6新CPU（含两入口显式start、JSON回执/原FD、sealed凭据适配）、3直接回归及3封包共12项；使用私有CPU租约/未armed设备，不用真实GPU或根规则。issuer失能恢复、业务发行与全部任务继续。
+
+公开入口（显式启动）：
+
+```bash
+q4t service host-entry start --directory HOST [--daemon]
+q4t service device-domain enter --directory DEVICE --host-directory HOST \
+  --manifest-sha256 SHA --lease-path LEASE [--lease-fd FD] [--activate] \
+  [--daemon]
+```
+
+`enter` 和 `ensure` 只续原意图；资源绑定设备入口只执行所选保护入口，
+不接受任意 command。GPU 开发验证仍须由严格 `gpu_exclusive` 持有同一
+租约，封包和配置先完成身份核验。
+
+2026-11-12。原生公开冷入口[12针对性CPU首过](evidence/serve-cold-entry-cpu-20261112/README.md)，累计16.037秒：实际双root exec/降权保持原私有租约，显式start与自动STOPPED合同、前后台及sealed凭据适配通过。设备unarmed/零模型角色/0GPU，自有域与issuer清理完成，默认及R07保持。继续issuer进程恢复、实际业务发行及全部总任务。

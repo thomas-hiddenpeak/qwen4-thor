@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。原生公开冷入口[12针对性CPU首过](evidence/serve-cold-entry-cpu-20261112/README.md)，累计16.037秒：实际双root exec/降权保持原私有租约，显式start与自动STOPPED合同、前后台及sealed凭据适配通过。设备unarmed/零模型角色/0GPU，自有域与issuer清理完成，默认及R07保持。继续issuer进程恢复、实际业务发行及全部总任务。
+
+2026-11-12。公开冷入口已补实现：v2 device-domain enter显式选原host并走保护源码/原资源，原单次command仍仅用于v1；host-entry start与device --activate显式激活，enter/ensure保持STOPPED。实际选定GPU租约FD经两次root exec及降权保持，错误FD/owner/path拒绝，无任意root命令回退。冻结6新CPU（含两入口显式start、JSON回执/原FD、sealed凭据适配）、3直接回归及3封包共12项；使用私有CPU租约/未armed设备，不用真实GPU或根规则。issuer失能恢复、业务发行与全部任务继续。
+
 2026-11-12。外层逐代冷许可/宿主组合[27不同CPU接受](evidence/serve-cold-outer-cpu-20261112/README.md)，31调用累计80.662秒。实际两代原生CPU根/30秒冷却、停止竞争、root分离入口/原资源续办通过；fork前bind及撤销断链两缺陷已定点修复，原失败保留。签发/设备为明确CPU夹具，0GPU/自有issuer全清/默认和R07保持；继续公共入口租约交接、进程失能恢复、实际业务发行与全部任务。
 
 2026-11-12。daemon身份补3项为2过/1失败（5.489秒），fork后绑定已生效；最后一项暴露撤销时issuer先自行退出、stop回执被reset的竞争。现以已固定pidfd的实际退出判定完成，断链本身不计退出；补1活peer负控及1EOF传输分类，只重验失败卸载。前轮通过继续复用，原失败保持，0GPU/默认保持，随后3封包及全部任务。

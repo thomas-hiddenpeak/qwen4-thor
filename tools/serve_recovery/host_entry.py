@@ -62,7 +62,7 @@ def probe(directory, checked):
 
 def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
     ledger.require(os.geteuid() == 0, 'host entry requires explicit root invocation')
-    checked = None
+    checked = None; activate = operation == 'start'
     with host.exclusive(directory) as directory:
         value = host.load(directory)
         ledger.require(value['phase'] in ('ready', 'revoking') and
@@ -100,6 +100,7 @@ def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
     if operation == 'ensure' and not checked['resume_needed']:
         print(json.dumps(dict(checked, status='NO_ACTION', cold_issuer=cold), sort_keys=True)); return 0
     if operation == 'ensure': operation = 'enter'; daemon = True
+    if operation == 'start': operation = 'enter'
     with host.exclusive(directory) as directory:
         current = host.load(directory)
         ledger.require(all(current[n] == value[n] for n in
@@ -116,9 +117,11 @@ def privileged(directory, operation, *, daemon=False, systemd_trigger=False):
             str(root/'tools/serve_recovery/host_entry.py'),
             '--runtime-stop' if operation == 'stop' else '--runtime', '--directory', str(directory)]
         if daemon: command.append('--daemon')
+        if activate: command.append('--activate')
         if operation == 'enter':
             host.check_resource(current, renew=True)
-            os.environ.pop(cold_client.ENVIRONMENT, None)
+            env = host.entry_environment(current)
+            os.environ.clear(); os.environ.update(env)
             if cold['selected']: os.environ[cold_client.ENVIRONMENT] = str(directory)
             resource_launch.enter(value['resource']['directory'], command)
         else:
@@ -134,14 +137,17 @@ def main(argv=None):
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     operations = parser.add_mutually_exclusive_group(required=True)
-    for name in ('check', 'probe', 'enter', 'ensure', 'stop', 'runtime', 'runtime-stop'):
+    for name in ('check', 'probe', 'enter', 'start', 'ensure', 'stop', 'runtime', 'runtime-stop'):
         operations.add_argument('--'+name, action='store_true')
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--daemon', action='store_true')
+    parser.add_argument('--activate', action='store_true')
     parser.add_argument('--systemd-trigger', action='store_true')
     args = parser.parse_args(argv)
-    if args.enter or args.ensure or args.stop:
-        return privileged(args.directory, 'stop' if args.stop else 'ensure' if args.ensure else 'enter',
+    ledger.require(not args.activate or args.runtime, 'activation flag requires the checked runtime entry')
+    if args.enter or args.start or args.ensure or args.stop:
+        return privileged(args.directory, 'stop' if args.stop else 'ensure' if args.ensure else
+                          'start' if args.start else 'enter',
                           daemon=args.daemon, systemd_trigger=args.systemd_trigger)
     ledger.require(not args.systemd_trigger, 'systemd trigger requires privileged ensure')
     no_new_privileges(); checked = check(args.directory)
@@ -153,14 +159,15 @@ def main(argv=None):
                             package=Path(chosen['package']), digest=chosen['manifest_sha256'])
     ledger.require(value['phase'] == 'ready' and value['enabled'] and checked['outer_enabled'],
                    'host runtime admission is disabled')
-    # Resume never turns STOPPED into RUNNING or erases pending/fault history.
+    # Only explicit start activates; ordinary entry/ensure preserve STOPPED.
     if args.daemon:
         from tools.serve_recovery import outer_daemon
         result = outer_daemon.start(state, Path(chosen['package']), chosen['manifest_sha256'],
-                                    activate=False, timeout=30)
+                                    activate=args.activate, timeout=30)
     else:
         from tools.serve_recovery import outer_runtime
-        result = outer_runtime.run(state, Path(chosen['package']), chosen['manifest_sha256'], activate=False)
+        result = outer_runtime.run(state, Path(chosen['package']), chosen['manifest_sha256'],
+                                   activate=args.activate)
     print(json.dumps(result, sort_keys=True))
     return 1 if args.daemon and result.get('startup_confirmed') is not True else 0
 
