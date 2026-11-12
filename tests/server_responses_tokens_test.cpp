@@ -15,6 +15,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/test.h"
 
 namespace {
@@ -322,7 +323,8 @@ Q4T_TEST(responses_tokens_empty_null_and_empty_array_use_real_template) {
     Q4T_CHECK(f.plan.input.items.array.empty());
   }
   Q4T_CHECK(Ok(f.Prepare(Read(R"({"reasoning":{"effort":"none"}})"))));
-  Q4T_CHECK(Prompt(f.plan, true) ==
+  Q4T_CHECK(Prompt(f.plan, true) == "<|im_start|>system\n" +
+            std::string(kRefusalInstruction) + "<|im_end|>\n"
             "<|im_start|>assistant\n<think>\n\n</think>\n\n");
   // No hidden dummy user message was introduced to satisfy Chat validation.
   Q4T_CHECK(f.plan.generation_request.GetArray("messages")->array.empty());
@@ -534,13 +536,13 @@ Q4T_TEST(responses_tokens_deadline_cancellation_before_state_or_rendering) {
 Q4T_TEST(
     responses_tokens_auto_truncation_uses_count_budget_and_keeps_last_turn) {
   Fixture f;
-  f.config.max_len = 128;
+  f.config.max_len = 1024;
   auto request = Read(R"({"reasoning":{"effort":"none"},"truncation":"auto",
     "input":[{"role":"user","content":"old"},
              {"role":"assistant","content":"old answer"},
              {"role":"user","content":"current"}]})");
   auto input = *request.Find("input");
-  Set(&input.array[0], "content", String(std::string(256, 'x')));
+  Set(&input.array[0], "content", String(std::string(2000, 'x')));
   Set(&request, "input", std::move(input));
   Q4T_CHECK(Ok(f.Prepare(request)));
   ChatPlanError error;

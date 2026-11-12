@@ -290,16 +290,28 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(service.stop()['cleanup_confirmed'])
         service.assert_lease_free()
 
-    def test_malformed_capacity_cannot_open_model_or_create_another_generation(self):
+    def test_malformed_capacity_cannot_open_model_and_recovery_spends_budget(self):
         service = self.launch(models=True, gateway=True, capacity_fingerprint='not-qualified')
-        service.wait(lambda s: (service.directory/'capacity-binding.json').exists())
-        reply = json.loads((service.directory/'capacity-binding.json').read_text())
-        self.assertFalse(reply['ok'])
-        current = service.status()
+        current = service.wait(lambda s: s['controller_generation'] >= 2)
+        attempt = json.loads((service.directory/'capacity-attempt-1.json').read_text())
+        self.assertEqual(attempt['capacity_sha256'], 'not-qualified')
+        self.assertEqual(attempt['controller_generation'], 1)
+        self.assertFalse(Path(f"/proc/{attempt['owner']['pid']}").exists())
+        # A rejection reply may be read before the invalid controller is
+        # retired. Neither delivery nor that scheduling race is required.
+        reply_path = service.directory/'capacity-binding.json'
+        if reply_path.exists():
+            self.assertFalse(json.loads(reply_path.read_text())['ok'])
         self.assertFalse(current['business_ready'])
         self.assertFalse(current['recovery_frozen'])
-        self.assertEqual(current['model_generation'], 1)
         self.assertIsNone(current['model_capacity_sha256'])
+        self.assertEqual(len(service.persistent()['attempts']['controller']), 1)
+        observations = [json.loads(line) for line in
+                        (service.directory/'observations.jsonl').read_text().splitlines()]
+        self.assertTrue(observations)
+        self.assertTrue(all(not row['business_ready'] and
+                            row['model_capacity_sha256'] is None
+                            for row in observations))
         self.assertTrue(service.stop()['cleanup_confirmed'])
         service.assert_lease_free()
 

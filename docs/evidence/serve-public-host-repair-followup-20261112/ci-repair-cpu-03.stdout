@@ -1,0 +1,21 @@
+[PASS] cache_io_stopped_worker_deadline_and_cancellation_are_bounded
+[PASS] session_cache_partial_restore_loss_evicts_generation_and_rebuilds
+[PASS] session_cache_cancelled_write_is_unpublished_and_not_replayed
+[CACHE_CANCEL_BEFORE_WRITE] seconds=0.000078 status=cache storage cancelled
+[PASS] session_cache_cancellation_before_write_never_waits_for_cleanup
+[PASS] uploads_subset_repeated_parts_preserve_exact_order_and_binary_bytes
+[PASS] file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance
+[PASS] file_pdf_sandbox_enforces_system_read_only_and_no_network_processes
+[PASS] object_retention_reference_capacity_preserves_incomplete_owner
+[PASS] chat_capabilities_identity
+[PASS] http_observation_receive_shape_and_size_reasons
+[PASS] chat_contract_error_param_is_explicit
+[PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+[PASS] thinking_budget_bad_closure_and_total_limit_fail_closed
+[PASS] text_stop_incomplete_tool_never_succeeds
+[PASS] schema_graph_const_equality_and_annotations_do_not_fill_values
+[PASS] responses_tokens_empty_null_and_empty_array_use_real_template
+  CHECK failed: FitResponsesContext( f.envelope, f.config, [&](const auto& candidate, auto* failure) { ChatPromptBudget budget; return PlanChatBudget(candidate.generation_request, f.config, Prompt(candidate, true).size(), &budget, failure); }, &f.plan, &error) (line 550)
+[FAIL] responses_tokens_auto_truncation_uses_count_budget_and_keeps_last_turn
+[PASS] chat_plan_native_template_and_constraint_adapter
+18 tests, 17 passed, 1 failed, 0 skipped

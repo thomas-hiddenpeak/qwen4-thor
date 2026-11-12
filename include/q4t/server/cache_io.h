@@ -62,7 +62,9 @@ class CacheIo {
   Status Write(CacheFile file, uint64_t offset, std::span<const uint8_t> input,
                const Cancel& cancel = {});
   Status Stat(CacheFile file, CacheFileStat* stat, const Cancel& cancel = {});
-  void Close(CacheFile file) noexcept;
+  // Cancellation must also bound failure cleanup. If the close cannot be
+  // confirmed, retire that generation rather than retain an anonymous file.
+  void Close(CacheFile file, const Cancel& cancel = {}) noexcept;
   CacheIoHealth Health() const;
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS

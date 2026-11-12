@@ -127,6 +127,12 @@ def controller(channel, args):
                     protocol_sha256=args.protocol_fingerprint)
             if args.capacity_fingerprint is not None:
                 value['capacity_sha256'] = args.capacity_fingerprint
+                # The native root can retire a controller immediately after
+                # rejecting a private protocol violation. Record the attempted
+                # identity before sending; delivery of its reply is not a fence.
+                (args.model_fixture/f"capacity-attempt-{grant['generation']}.json").write_text(
+                    json.dumps(dict(capacity_sha256=args.capacity_fingerprint,
+                        controller_generation=channel.generation, owner=owner)))
                 reply = channel.transact('bind', dict(role='model', ticket=grant['ticket'], binding=value))
                 (args.model_fixture/'capacity-binding.json').write_text(json.dumps(reply))
                 if not reply['ok']: idle(channel)

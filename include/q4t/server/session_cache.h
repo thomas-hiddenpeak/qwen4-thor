@@ -108,6 +108,7 @@ class SessionCache {
     SessionCacheLifetime lifetime;
     std::chrono::steady_clock::time_point expires;
     std::chrono::steady_clock::time_point retention_end;
+    void Close(const Cancel& cancel = {}) noexcept;
     ~Entry();
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
@@ -115,7 +116,7 @@ class SessionCache {
   static bool Expired(const Entry& entry,
                       std::chrono::steady_clock::time_point now);
   static void Touch(Entry* entry, std::chrono::steady_clock::time_point now);
-  void Erase(Entries::iterator it);
+  void Erase(Entries::iterator it, const Cancel& cancel = {});
   Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
                          const Copy& copy, const Cancel& cancel,
                          SessionSaveTiming* timing);

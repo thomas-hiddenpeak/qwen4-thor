@@ -407,13 +407,13 @@ Status CacheIo::Stat(CacheFile file, CacheFileStat* stat,
     return Status::Fail("cache storage missing stat handle");
   return Dispatch(kStat, file, 0, {}, {}, nullptr, stat, cancel);
 }
-void CacheIo::Close(CacheFile file) noexcept {
+void CacheIo::Close(CacheFile file, const Cancel& cancel) noexcept {
   if (!file.id) return;
   try {
     // A failed close receipt cannot leak files until the worker fills up.
     // Invalidate only the matching generation; stale handles are harmless.
     if (Health().generation == file.generation &&
-        !Dispatch(kClose, file, 0, {}, {}, nullptr, nullptr, {})) {
+        !Dispatch(kClose, file, 0, {}, {}, nullptr, nullptr, cancel)) {
       const std::lock_guard lock(state_->mutex);
       if (state_->generation == file.generation)
         state_->invalidated.store(true);

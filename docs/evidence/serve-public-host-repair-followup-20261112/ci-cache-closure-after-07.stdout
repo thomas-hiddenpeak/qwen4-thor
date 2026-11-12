@@ -1,0 +1,12 @@
+[PASS] cache_io_stopped_worker_deadline_and_cancellation_are_bounded
+[PASS] session_cache_partial_restore_loss_evicts_generation_and_rebuilds
+[PASS] session_cache_cancelled_write_is_unpublished_and_not_replayed
+[CACHE_CANCEL_BEFORE_WRITE] seconds=0.000069 status=cache storage cancelled
+[PASS] session_cache_cancellation_before_write_never_waits_for_cleanup
+[CACHE_CANCEL_EXISTING] restore=1 seconds=0.000004 status=session cache cancelled
+[PASS] session_cache_cancelled_restore_cleanup_never_waits
+[CACHE_CANCEL_EXISTING] restore=0 seconds=0.000002 status=cache storage cancelled
+[PASS] session_cache_cancelled_replacement_cleanup_never_waits
+[CACHE_CANCEL_EXISTING] restore=0 seconds=0.000012 status=session cache cancelled
+[PASS] session_cache_cancelled_incremental_cleanup_never_waits
+7 tests, 7 passed, 0 failed, 0 skipped

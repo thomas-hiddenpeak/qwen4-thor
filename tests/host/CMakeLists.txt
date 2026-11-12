@@ -48,7 +48,10 @@ set_tests_properties(q4t_guardian_process_contracts PROPERTIES
   TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${guardian_output}")
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
-set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 600)
+set(host_output "${CMAKE_CURRENT_BINARY_DIR}/public-host-tests")
+file(MAKE_DIRECTORY "${host_output}")
+set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 600
+  ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${host_output};TMPDIR=${host_output}")
 
 # Offline trace validation shares no runtime/CUDA dependencies.
 add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp

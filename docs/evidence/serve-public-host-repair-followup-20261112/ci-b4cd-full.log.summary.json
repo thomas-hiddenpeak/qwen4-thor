@@ -1,0 +1,22 @@
+{
+  "original_sha256": "aa75b2ea407858134f07f8f0725da50f57050a43154edc1f180ed9ac0fef2cd5",
+  "failures": [
+    "session_cache_cancelled_write_is_unpublished_and_not_replayed"
+  ],
+  "sandbox": [
+    "2026-11-12T12:51:03.3756088Z ##[notice]kernel=7.0.0-1017-azure arch=x86_64 landlock_abi=8 errno=0",
+    "2026-11-12T12:51:03.3765392Z ##[notice]path=/usr/lib uid=0 mode=40755 errno=0",
+    "2026-11-12T12:51:03.3766704Z ##[notice]path=/lib uid=0 mode=40755 errno=0",
+    "2026-11-12T12:51:03.3767843Z ##[notice]path=/etc/ld.so.cache uid=0 mode=100644 errno=0",
+    "2026-11-12T12:51:03.3768980Z ##[notice]path=/etc/fonts uid=0 mode=40755 errno=0",
+    "2026-11-12T12:51:03.3770075Z ##[notice]path=/usr/share/fonts uid=0 mode=40777 errno=0",
+    "2026-11-12T12:51:03.3771655Z ##[notice]path=/var/cache/fontconfig uid=0 mode=40755 errno=0",
+    "2026-11-12T12:51:03.3772800Z ##[notice]path=/usr/share/fontconfig uid=0 mode=40777 errno=0",
+    "2026-11-12T12:51:03.3773934Z ##[notice]path=/usr/share/poppler uid=0 mode=0 errno=2",
+    "2026-11-12T12:51:03.3775169Z ##[notice]path=/lib64/ld-linux-x86-64.so.2 uid=0 mode=100755 errno=0",
+    "2026-11-12T12:51:03.3776409Z ##[notice]path=/lib/ld-linux-aarch64.so.1 uid=0 mode=0 errno=2",
+    "2026-11-12T12:51:03.3777563Z ##[notice]sandbox=native reported=1 ready=1 errno=0 status=0",
+    "2026-11-12T12:51:03.3778746Z ##[notice]sandbox=pdf reported=1 ready=0 errno=2 status=0",
+    "2026-11-12T12:51:03.3779906Z ##[notice]sandbox=legacy reported=1 ready=0 errno=2 status=0"
+  ]
+}

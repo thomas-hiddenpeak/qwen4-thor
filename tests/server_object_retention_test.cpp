@@ -234,7 +234,9 @@ Q4T_TEST(object_retention_unknown_owner_protection_and_plan_identity) {
 
 Q4T_TEST(object_retention_reference_capacity_preserves_incomplete_owner) {
   std::string raw = R"({"items":[)";
-  for (size_t i = 0; i < 30000; ++i) {
+  // Exceed the 4 MiB reference budget, including each std::string slot.
+  // The previous 30K short references fit the expanded Batch checkpoint cap.
+  for (size_t i = 0; i < 100000; ++i) {
     if (i) raw += ',';
     raw += R"({"id":"item_1234567890"})";
   }

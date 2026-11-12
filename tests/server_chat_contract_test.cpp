@@ -23,7 +23,7 @@ Q4T_TEST(chat_contract_error_param_is_explicit) {
       {R"({"prompt":"x","stream_options":{"include_usage":1}})",
        "stream_options.include_usage"},
       {R"({"messages":[{"role":"function","content":"x"}]})",
-       "messages[0].role"},
+       "messages[0]"},  // Legacy role is valid; this result has no call.
       {R"({"prompt":"x","unknown":true})", "unknown"},
       {R"([])", "body"}};
   for (const auto& [wire, expected] : cases) {
@@ -142,7 +142,7 @@ Q4T_TEST(chat_contract_rejects_wrong_types_and_ambiguous_input) {
         R"({"prompt":"x","max_tokens":2147483648})",
         R"({"prompt":"x","max_tokens":true})",
         R"({"prompt":"x","temperature":false})",
-        R"({"prompt":"x","seed":9007199254740992})",
+        R"({"prompt":"x","seed":9223372036854775808})",
         R"({"prompt":"x","seed":1.5})", R"({"prompt":"x","model":"other"})",
         R"({"prompt":"x","stream_options":{"include_usage":1}})",
         R"({"prompt":"x","stream_options":{"extra":true}})"}) {

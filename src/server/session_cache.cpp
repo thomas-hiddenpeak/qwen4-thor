@@ -13,9 +13,11 @@ size_t Aligned(size_t n) {
 }
 }  // namespace
 
-SessionCache::Entry::~Entry() {
-  if (io) io->Close(file);
+void SessionCache::Entry::Close(const Cancel& cancel) noexcept {
+  if (io) io->Close(file, cancel);
+  file = {};
 }
+SessionCache::Entry::~Entry() { Close(); }
 SessionCache::~SessionCache() {
   entries_.clear();
   io_.reset();
@@ -135,8 +137,9 @@ int SessionCache::MatchShared(const std::string& scope,
   busy_.insert(*key);
   return static_cast<int>(best->second->prefix.size()) - 1;
 }
-void SessionCache::Erase(Entries::iterator it) {
+void SessionCache::Erase(Entries::iterator it, const Cancel& cancel) {
   bytes_ -= std::max(it->second->bytes, it->second->disk_charge);
+  it->second->Close(cancel);
   entries_.erase(it);
 }
 void SessionCache::Release(const std::string& key, bool success) {
@@ -351,7 +354,7 @@ Status SessionCache::Restore(const std::string& key,
     return Status::Fail("session cache missing lease/entry");
   auto& entry = *it->second;
   if (Expired(entry, std::chrono::steady_clock::now())) {
-    Erase(it);
+    Erase(it, cancel);
     return Status::Fail("session cache expired before restore");
   }
   if (entry.layout != layout)
@@ -368,7 +371,7 @@ Status SessionCache::Restore(const std::string& key,
     entry.restored = true;
     Touch(&entry, std::chrono::steady_clock::now());
   }
-  if (!s.ok()) Erase(it);
+  if (!s.ok()) Erase(it, cancel);
   return s;
 }
 
@@ -393,6 +396,13 @@ Status SessionCache::Save(const std::string& key,
   Refresh();
   size_t bytes = 0;
   std::unique_ptr<Entry> entry;
+  struct PendingCleanup {
+    std::unique_ptr<Entry>& entry;
+    const Cancel& cancel;
+    ~PendingCleanup() {
+      if (entry) entry->Close(cancel);
+    }
+  } cleanup{entry, cancel};
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
     if (!busy_.contains(key) || prefix.size() <= size_t(min_prefix_) ||
@@ -432,7 +442,8 @@ Status SessionCache::Save(const std::string& key,
     // The old prefix is no longer needed by this request after restoration.
     // Losing a cache entry on a failed replacement is a miss, never stale
     // reuse.
-    if (auto old = entries_.find(key); old != entries_.end()) Erase(old);
+    if (auto old = entries_.find(key); old != entries_.end())
+      Erase(old, cancel);
     // Reserve bounded filesystem allocation overhead before writing. The
     // final charge uses fstat, including unwritten extents, never sparse EOF.
     const size_t reserve = incremental_ ? (size_t{64} << 20) : 0;
@@ -447,7 +458,7 @@ Status SessionCache::Save(const std::string& key,
           victim = it;
       }
       if (victim == entries_.end()) return Status::Fail("session cache full");
-      Erase(victim);
+      Erase(victim, cancel);
     }
   }
   if (!entry) entry = std::make_unique<Entry>();
@@ -486,6 +497,9 @@ Status SessionCache::Save(const std::string& key,
   }
   if (!s.ok()) {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCleanup);
+    // A cancellation can precede Write dispatch (for example while hashing).
+    // Do not turn its cleanup into an uncancellable close on a stalled worker.
+    entry->Close(cancel);
     entry.reset();
     return s;
   }

@@ -48,6 +48,15 @@ jobs:
           g++-14 --version
           cmake --version
           /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
+      - name: Protect runner system font resources
+        run: |
+          # Hosted images make these root-owned directories world-writable.
+          # Restore trusted read-only resources; never weaken the sandbox.
+          for path in /usr/share/fonts /usr/share/fontconfig; do
+            test "$(stat -c '%u' "$path")" = 0
+            sudo chmod go-w "$path"
+            stat -c '%n owner=%u mode=%a' "$path"
+          done
       - name: Install pinned SDK for native TLS client contracts
         timeout-minutes: 2
         run: |

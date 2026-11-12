@@ -6,6 +6,7 @@
 
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/refusal_frame.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/test.h"
 
@@ -160,8 +161,8 @@ Q4T_TEST(chat_plan_native_template_and_constraint_adapter) {
   std::vector<VisionItem> items;
   Q4T_CHECK(
       PrepareChatPrompt(req, plan.constraints, &prompt, &items, &error.param));
-  Q4T_CHECK(prompt ==
-            "<|im_start|>system\nRULE<|im_end|>\n"
+  Q4T_CHECK(prompt == "<|im_start|>system\n" +
+            std::string(kRefusalInstruction) + "\n\nRULE<|im_end|>\n"
             "<|im_start|>user\nq<|im_end|>\n"
             "<|im_start|>assistant\n<think>\n\n</think>\n\n");
   Q4T_CHECK(items.empty());

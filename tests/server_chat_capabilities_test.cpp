@@ -201,7 +201,7 @@ Q4T_TEST(chat_capabilities_identity) {
   const auto* templ = caps.Find("template");
   Q4T_CHECK(templ && templ->IsObject());
   Q4T_CHECK(templ->GetString("id") == "qwen4_exp-openai-v3");
-  Q4T_CHECK(templ->GetString("message_profile") == "qwen3.8-openai-v3");
+  Q4T_CHECK(templ->GetString("message_profile") == "qwen3.8-openai-v4");
   Q4T_CHECK(templ->GetString("developer_mapping") == "system");
   Q4T_CHECK(templ->GetBool("mixed_instruction_roles"));
   Q4T_CHECK(templ->GetBool("refusal_history"));

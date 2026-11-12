@@ -1,0 +1,19 @@
+{
+  "base": "b4cd150eec9620b81f52f999aa072816cf7394b5",
+  "type": "bugfix_non_performance",
+  "scope": [
+    "CI document sandbox trusted font permissions",
+    "cache cancellation host timing failure",
+    "Guardian malformed capacity fixture failure",
+    "host uploads segmentation fault"
+  ],
+  "tests": "Directly affected CPU reproductions and isolation checks only; public CI remains required",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "additional_failure_scope": [
+    "11 reproducible stale contract fixtures",
+    "public host output directory required by 117 fixtures",
+    "cancellation failure cleanup must preserve original 200ms bound",
+    "malformed private binding retirement does not guarantee controller receives rejection reply"
+  ]
+}

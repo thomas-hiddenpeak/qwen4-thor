@@ -77,6 +77,9 @@ inline int RunTests(const std::vector<std::string>& names,
       ++failed;
       std::printf("[FAIL] %s: unknown exception\n", c.name.c_str());
     }
+    // Keep the last completed case visible if a later case crashes. Pipe
+    // buffering otherwise hides many successful cases from CI diagnostics.
+    std::fflush(stdout);
   }
   std::printf("%zu tests, %d passed, %d failed, %d skipped\n",
               names.size(), passed, failed, skipped);

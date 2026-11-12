@@ -167,7 +167,7 @@ Q4T_TEST(schema_graph_const_equality_and_annotations_do_not_fill_values) {
   Q4T_CHECK(!graph.Check(Parse(R"({})")));
   auto duplicate = Schema(R"({"type":"number","enum":[1,1.0]})");
   Q4T_CHECK(!graph.Init(duplicate, true, &error));
-  Q4T_CHECK(error == "schema.properties.v.enum");
+  Q4T_CHECK(error == "schema.properties.v.enum[1]");
   const auto object = Schema(R"({"const":{"a":1,"b":[2]}})");
   Q4T_CHECK(graph.Init(object, true, &error));
   Q4T_CHECK(graph.Check(Parse(R"({"v":{"b":[2.0],"a":1.0}})")));

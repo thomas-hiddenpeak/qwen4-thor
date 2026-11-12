@@ -279,7 +279,12 @@ Q4T_TEST(thinking_budget_bad_closure_and_total_limit_fail_closed) {
     Q4T_CHECK(parser.Finish(true, &deltas).ok() == !strict);
     Q4T_CHECK(budget.ForcedTokens() == 1 && budget.Consumed() == 0);
     Q4T_CHECK(budget.Thinking());
-    if (strict) Q4T_CHECK(deltas.empty());
+    // Incremental reasoning is provisional, including under a final schema.
+    // Failure must never certify a content value or completed tool call.
+    if (strict)
+      for (const auto& delta : deltas)
+        Q4T_CHECK(delta.kind == q4t::server::ResponseDelta::Kind::kReasoning);
+    Q4T_CHECK(parser.Content().empty() && !parser.HasToolCalls());
   }
   return true;
 }

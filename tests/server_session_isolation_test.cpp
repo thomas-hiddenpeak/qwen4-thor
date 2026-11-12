@@ -259,6 +259,94 @@ Q4T_TEST(session_cache_cancelled_write_is_unpublished_and_not_replayed) {
   return true;
 }
 
+Q4T_TEST(session_cache_cancellation_before_write_never_waits_for_cleanup) {
+  Fixture f;
+  f.data.resize(4096);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path) && cache.Acquire("same"));
+  bool cancelled = false;
+  int copies = 0;
+  const auto copy_and_cancel = [&](void* host, void* state, size_t n,
+                                   bool restore) {
+    Copy(host, state, n, restore);
+    ++copies;
+    cancelled = true;
+    return kill(cache.Health().worker_pid, SIGSTOP) == 0
+               ? q4t::Status()
+               : q4t::Status::Fail("owned worker pause");
+  };
+  const auto start = Clock::now();
+  const auto status = cache.Save("same", f.prefix, f.Ranges(), copy_and_cancel,
+                                  [&] { return cancelled; }, 4);
+  const auto elapsed = Clock::now() - start;
+  std::printf("[CACHE_CANCEL_BEFORE_WRITE] seconds=%.6f status=%s\n",
+              std::chrono::duration<double>(elapsed).count(),
+              status.message().c_str());
+  Q4T_CHECK(!status && status.message() == "cache storage cancelled");
+  Q4T_CHECK(elapsed < 200ms && copies == 1);
+  cache.Release("same", true);
+  Q4T_CHECK(cache.Acquire("same") && !cache.Match("same", f.prefix));
+  Q4T_CHECK(SessionCacheTestPeer::Recover(cache));
+  Q4T_CHECK(cache.Health().workers_started == 2 && copies == 1);
+  Q4T_CHECK(cache.Bytes() == 0);
+  return true;
+}
+
+namespace {
+bool CancelledExisting(bool restore, bool incremental = false) {
+  Fixture f;
+  f.data.resize(4096);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path, 1, 128 << 20, incremental) &&
+            cache.Acquire("same"));
+  Q4T_CHECK(cache.Save("same", f.prefix, f.Ranges(), Copy, Active, 4));
+  cache.Release("same", true);
+  Q4T_CHECK(cache.Acquire("same"));
+  if (incremental) {
+    // Take the existing entry into Save's local owner, including early exits.
+    std::fill(f.data.begin(), f.data.end(), 0);
+    int32_t d0 = -1;
+    Q4T_CHECK(cache.Restore("same", f.Ranges(), Copy, Active, &d0));
+    Q4T_CHECK(d0 == 4 && f.data == std::vector<uint8_t>(4096, 91));
+  }
+  Q4T_CHECK(kill(cache.Health().worker_pid, SIGSTOP) == 0);
+  int copies = 0;
+  const auto copy = [&](void* host, void* state, size_t n, bool reading) {
+    ++copies;
+    return Copy(host, state, n, reading);
+  };
+  const auto cancelled = [] { return true; };
+  const auto start = Clock::now();
+  int32_t d0 = -1;
+  const auto status = restore
+      ? cache.Restore("same", f.Ranges(), copy, cancelled, &d0)
+      : cache.Save("same", f.prefix, f.Ranges(), copy, cancelled, 5);
+  const auto elapsed = Clock::now() - start;
+  std::printf("[CACHE_CANCEL_EXISTING] restore=%d seconds=%.6f status=%s\n",
+              restore, std::chrono::duration<double>(elapsed).count(),
+              status.message().c_str());
+  Q4T_CHECK(!status && status.message().find("cancelled") != std::string::npos);
+  Q4T_CHECK(elapsed < 200ms && copies == 0 && d0 == -1);
+  cache.Release("same", true);
+  Q4T_CHECK(cache.Acquire("same") && !cache.Match("same", f.prefix));
+  Q4T_CHECK(SessionCacheTestPeer::Recover(cache));
+  Q4T_CHECK(cache.Health().workers_started == 2 && cache.Bytes() == 0);
+  return true;
+}
+}  // namespace
+
+Q4T_TEST(session_cache_cancelled_restore_cleanup_never_waits) {
+  return CancelledExisting(true);
+}
+
+Q4T_TEST(session_cache_cancelled_replacement_cleanup_never_waits) {
+  return CancelledExisting(false);
+}
+
+Q4T_TEST(session_cache_cancelled_incremental_cleanup_never_waits) {
+  return CancelledExisting(false, true);
+}
+
 Q4T_TEST(session_cache_health_is_optional_and_contains_no_private_content) {
   CacheIoHealth health;
   std::printf("[CACHE_HEALTH]%s\n", CacheIoHealthJson(health).c_str());

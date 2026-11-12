@@ -1,0 +1,4 @@
+[CACHE_CANCEL_BEFORE_WRITE] seconds=2.000134 status=cache storage cancelled
+  CHECK failed: elapsed < 200ms && copies == 1 (line 286)
+[FAIL] session_cache_cancellation_before_write_never_waits_for_cleanup
+1 tests, 0 passed, 1 failed, 0 skipped

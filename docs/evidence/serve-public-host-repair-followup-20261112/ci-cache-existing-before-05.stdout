@@ -1,0 +1,7 @@
+[CACHE_CANCEL_EXISTING] restore=1 seconds=2.000057 status=session cache cancelled
+  CHECK failed: elapsed < 200ms && copies == 0 && d0 == -1 (line 321)
+[FAIL] session_cache_cancelled_restore_cleanup_never_waits
+[CACHE_CANCEL_EXISTING] restore=0 seconds=2.000067 status=cache storage cancelled
+  CHECK failed: elapsed < 200ms && copies == 0 && d0 == -1 (line 321)
+[FAIL] session_cache_cancelled_replacement_cleanup_never_waits
+2 tests, 0 passed, 2 failed, 0 skipped

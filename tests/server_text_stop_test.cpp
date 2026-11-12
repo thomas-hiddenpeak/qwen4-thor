@@ -202,8 +202,14 @@ Q4T_TEST(text_stop_incomplete_tool_never_succeeds) {
         Q4T_CHECK(parser.Append(stream.Append(std::string(1, c)), &deltas));
       Q4T_CHECK(stream.Matched() && !parser.HasToolCalls());
       Q4T_CHECK(!parser.Finish(false, &deltas, true));
-      for (const auto& delta : deltas)
-        Q4T_CHECK(delta.kind != ResponseDelta::Kind::kTool);
+      // Streaming tool fragments are provisional until successful terminal.
+      // They must not become a completed executable call after an early stop.
+      Q4T_CHECK(parser.CompletedToolCalls() == 0 && !parser.HasToolCalls());
+      for (const auto& delta : deltas) {
+        Q4T_CHECK(delta.kind == ResponseDelta::Kind::kTool);
+        Q4T_CHECK(delta.call.index == 0);
+        if (delta.tool_start) Q4T_CHECK(delta.call.name == "f");
+      }
     }
   }
   return true;

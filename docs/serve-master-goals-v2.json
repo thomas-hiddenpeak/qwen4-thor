@@ -1798,7 +1798,7 @@
     {
       "id": "R01",
       "required": true,
-      "state": "delivered",
+      "state": "delivered_prior_isolation_cancel_cleanup_fix_pending_delivery",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
       "depends_on": [],
@@ -1838,6 +1838,12 @@
           "source": "tools/serve_service/memory.py Watchdog",
           "issue": "Runtime missing RAM observations previously escalated to model termination. UNKNOWN now clears unconfirmed pressure without signalling healthy core; startup unknown and confirmed critical pressure remain protected.",
           "state": "implemented_verified_delivered"
+        },
+        {
+          "source": "src/server/session_cache.cpp Save failure cleanup and CacheIo::Close",
+          "issue": "Cancellation before cache I/O also left new, restored and replaced entry cleanup waiting on a stopped worker for 2s. Independent reproductions; propagate cancellation through Close/Erase and all pending-entry exits, retiring only that generation.",
+          "state": "implemented_targeted_cpu_verified_pending_business_delivery",
+          "evidence": "evidence/serve-public-host-repair-followup-20261112/README.md"
         }
       ],
       "cache_io_candidate": {
@@ -1849,7 +1855,14 @@
         "chat_requests": 7,
         "real_business_accepted": true
       },
-      "remaining": []
+      "remaining": [
+        "Validate and deliver cancellation propagation through new, restored, evicted and incremental session-cache cleanup"
+      ],
+      "cancel_cleanup_business_bounds": {
+        "model_starts": 3,
+        "requests": 16,
+        "seconds": 1500
+      }
     },
     {
       "id": "R02",
@@ -2355,7 +2368,9 @@
         "evidence": "evidence/serve-public-host-repair-20261112/README.md",
         "targeted_cpu_passed": 18,
         "github_document_sandbox_pending": true,
-        "merged": false
+        "merged": false,
+        "followup_evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
+        "followup_targeted_runtime_cpu_passed": 24
       }
     },
     {
