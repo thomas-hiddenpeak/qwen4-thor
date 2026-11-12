@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "current_profiles_pass_managed_projection_fixture_recheck",
+        "state": "current_qualified_stopped_delivery_next",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -979,6 +979,11 @@
           "starts": 1,
           "business_requests": 2,
           "seconds": 300
+        },
+        "qualification_evidence": "docs/evidence/serve-async-resume-qualification-20261113",
+        "delivery_budget": {
+          "commands": 17,
+          "model_starts": 0
         }
       }
     },

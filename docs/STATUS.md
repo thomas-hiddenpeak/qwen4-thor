@@ -33,6 +33,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 当前异步引擎的[主轻、独立回退与实际整树切换均通过](evidence/serve-async-resume-qualification-20261113/README.md)。
+  5启动/14业务/1探测，三个阶段正常清理；原调用切换后仍可接收真实
+  迟到结果。默认rev102保持，接着17项STOPPED可回退发行（0GPU），
+  随后合主线并继续延迟发现、程序调用及全部master。
+
 - 新引擎在回退载荷中已正确完成异步独立回答；验收比较空logprobs与
   GET默认投影时失败，[驱动修复及两项原文回放通过](evidence/serve-async-managed-projection-20261113/README.md)。
   原失败保留，仅补1启动/2业务/300秒，生产代码与已验主轻资格不变。
