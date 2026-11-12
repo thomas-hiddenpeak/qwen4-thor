@@ -1,6 +1,6 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
-更新：2026-11-07；客户端、当前托管与任务交接已完成独立短验。当前为单台Thor、单模型的
+更新：2026-11-08；客户端、托管与任务交接已完成各自独立短验。当前为单台Thor、单模型的
 文本Chat服务，以及只读项目资料查询应用。工具调用、有限结构化输出、
 错误/取消、运行保障和持久任务恢复已有分阶段短验；不宣称全部OpenAI
 接口、所有客户端、任意配置组合或长期生产负载已验。
@@ -14,6 +14,12 @@
 原结果、失败、证据和日志均保留。[SRV-20合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)
 只核对源码与证据；后续[03c锁等待取消](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
 已新增原生/真实工具短验并交付默认。
+
+当前默认服务封装已完成[原生入口及有界自恢复](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
+Bearer鉴权、模型/控制器/入口恢复无需nginx或systemd；Python控制面
+仍保留。151项不同CPU及3启动/18Chat真实短验通过，现安装为STOPPED，
+PR #22尚未合main。旧客户端、托管与持久任务仍按各自已验身份使用，
+不因新服务入口交付而自动完成协议迁移或视觉恢复组合验收。
 
 ## 边界与成熟度
 
@@ -47,8 +53,8 @@
 |---|---|---|
 | 本机文本Chat | 原生serve；默认loopback，不要求TLS材料 | JSON/SSE、工具与错误合同；[03c当前默认短验](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md) |
 | 独立运维入口 | 显式`--operations-port`，默认0；仅loopback | 公共慢头满额下运维可用；自身控制/观测仍各4额 |
-| TLS、独立Key、来源限制 | 显式网关包；runner以`--client-policy-file`绑定client策略；CIDR显式选择 | [来源短验](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)与[托管组合](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)；实际LAN/DNS/防火墙另验 |
-| 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [当前包短验](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)；无自动常驻安装或恢复旧请求 |
+| 独立Key、来源限制与可选TLS | 原生service入口自行验证Bearer/Host/实际CIDR；runner绑定client策略；TLS可由外部HTTP网关提供 | [原生入口短验](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)；实际LAN/DNS/证书/防火墙另验，不强制nginx |
+| 服务托管 / 重启 | 原生serve不隐式启动Guardian；显式新service包具有持久预算与有界恢复，旧托管包按原合同运行 | [模型/控制器/入口恢复](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)已验；不重放旧请求，Guardian整树死亡需外层启动 |
 | 部署组合/回退检查 | 显式profile prepare/check，固定包摘要 | [工具与有限结果](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)；只检查身份与组合，不授予业务接受；内存退场组合NO_GO |
 | host记账域 | 显式host memory high/max及tasks max配置 | [02k](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)；不覆盖全部CUDA物理RAM记账 |
 | CUDA申请额度 | 原生默认auto，可显式调整`--cuda-allocation-limit-mib` | [02j2生产接线](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)；申请额度不是整机物理RAM硬限额 |
@@ -61,6 +67,9 @@
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见
 [OpenAPI](serve-openapi-v1.json)。下表按调用者可见行为分组，不以静态
 schema代替动态预算、模板、语法编译或真实业务验收。
+10条是后端API清单；当前原生公共入口只转发8条明确路由，不公开
+`/metrics`和`/v1/config`，两者保留在本机后端/运维入口。入口的
+`/livez`表示自身存活；`/readyz`还必须满足恢复代次自检及配额隔离。
 
 | API / 能力 | 当前状态 | 限制与证据 / 行动 |
 |---|---|---|
@@ -93,13 +102,13 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | POST /v1/requests/cancel / deadline | 已验，Q4T 扩展 | 202仅接受，404不证明未执行；03c准备tokenizer等待已检查自身取消，其他锁/GPU在途计算无硬抢占保证 |
 | request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
 | X-Request-Id | 已验 | 128字节受限ASCII，自动128随机位；与JSON请求/取消ID独立，不提供幂等 |
-| GET /healthz、/livez、/readyz | 限定已验 | 三者语义不同；监听在模型加载前保留，HTTP在Start成功且Run接管后服务；TCP连接成功不等于ready；GPU unhealthy/排空/内存压力或观测失效可使ready503 |
+| GET /healthz、/livez、/readyz | 限定已验 | 三者语义不同；TCP连接成功不等于ready；GPU/PLE永久故障、排空、内存压力或必要内存观察失效关闭ready；辅助NVML/日志/metrics失能不据此判健康模型失效 |
 | HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
 | 控制入口 / 慢读 | 限定已验 | 4控制连接预留；业务/观测满仍健康和有效取消；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
 | GET /metrics / 观测入口 | 12b/12g/12l限定已验 | 公共4观测/4控制；可另启loopback运维监听，136公共慢头满时已验可用；每个入口自身仍有上限，监督器观测有总截止并响应stop |
 | POST /v1/chat/preflight | SRV-07限定已验 | 共用合同/模板/分词/预算；可选prompt/IDs；不预留资源或保证执行 |
 | GET /v1/config | SRV-07/02b/12b/02i限定已验 | 实际容量/来源、准入/等候、连接分区及媒体解码/函数能力；私有v1 schema/指纹随合同更新，固定消费者需选版本；不暴露模型目录/凭据 |
-| 请求准入 / slot队列 | 02b/10c限定已验 | chat/preflight共享上限、准备后的容量FIFO；可配置每client并发/正文/输入输出预算和状态域隔离；不保证租户公平、RPM/TPM或RAM预留 |
+| 请求准入 / slot队列 / RPM/TPM | [客户端治理](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)限定已验 | chat/preflight共享上限；v2策略显式启用分钟请求/token额度及准备后按client轮转准入；默认策略关闭时维持容量FIFO，不保证GPU时间/时延公平或RAM预留；新service恢复等待完整分钟窗口，原生进程额度本身不持久化 |
 | 内存准入 / 申请额度 | 02c至02e/02j2/02k限定已验 | MemAvailable准入、生产CUDA申请额度、可选host记账域；各有计量口径，不能合称Thor整机物理RAM硬上限 |
 | 设备/host资源错误 | 02f至02i限定已验 | 已知OOM恢复，未知设备/释放错误停服，host固定错误封套，视觉加载失败拒绝启动；不覆盖所有外部库故障或物理OOM |
 | 机器schema | SRV-08限定交付 | 38字段/10路由OpenAPI加必需原生语义清单；396 CPU差分，实际25 wire/56封套；标准schema本身不证明动态准入 |
@@ -108,7 +117,7 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | OpenAI Python SDK | 3.42.1 限定互通通过 | models、JSON/SSE、工具往返、预算与参数错误；关闭自动重试 |
 | OpenAI JS SDK | 7.47.0限定HTTP通过 | Node24.18.0；models、JSON/SSE、真实工具成功/错误/双结果、截断后显式答案恢复；完整终态批次门，零自动重试 |
 | 其他 SDK / 框架 | 未验证 | 不从 Python / JS 或自有客户端通过外推 |
-| 鉴权 / TLS / 多客户端隔离 | 可选网关及runner策略已本机短验 | 显式Key、TLS/CA、CIDR与预算；实际LAN、正式证书及通知启用时验收；不提供完整多租户计费或浏览器CORS接入合同 |
+| 鉴权 / TLS / 多客户端隔离 | 原生入口及runner策略已短验，外部TLS按需启用 | 显式Key、CIDR与预算；实际LAN、正式证书及通知启用时验收；不提供完整多租户计费或浏览器CORS接入合同 |
 
 
 实现入口：[请求合同](../src/server/chat_contract.cpp)、
@@ -142,13 +151,16 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 2. **客户端及版本交接已补齐：** [08b](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)
    已验全程网络截止和JS Key/CA/IP；当前托管/任务有独立结果。更多
    SDK与组合按实际选用入口验收，不从固定版本外推。
-3. **资源与多人SLO：** 当前有配额、没有租户公平或RPM/TPM合同；Thor
-   整机物理RAM硬保护尚未证明。明确需求与计量后独立推进，不能以改名
-   “CPU卸载”或已有memcg/CUDA额度代替容量保护。
+3. **资源与多人SLO：** RPM/TPM及准备后的客户端公平准入已交付；
+   GPU时间/吞吐/时延公平和Thor整机物理RAM硬保护尚未证明。不能
+   把轮转准入当作延迟SLO，也不能用已有memcg/CUDA额度代替物理容量保护。
 4. **用户验证/可选部署：** 当前ELF小时与天级长稳交用户；正式LAN、
    证书/来源/通知/留存策略仅在选择时验收。三份day计划仍未执行。
 5. **范围扩展：** 任意schema、工具参数逐token增量、更多模型/模板、
    采样、多choice、Responses、音频及分布式按具体业务立项。
+6. **持续服务的难故障：** 自恢复设计A/B及原生入口解耦已接受；C的
+   普通日志阻塞隔离、grammar有界回收、执行无进度监督未闭合；D的
+   自动轻量profile/发布回退仍后置。已有监控降级不能替代这些能力。
 
 与成熟参考系统相比，当前主要差距在可组合范围、更多客户端、长期
 负载及运营证明。已交付的工具响应、developer适配、推理/stop、预检、

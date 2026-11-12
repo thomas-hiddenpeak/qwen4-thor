@@ -1,0 +1,88 @@
+{
+  "status": "DELIVERED_STOPPED",
+  "release": {
+    "version": 1,
+    "profile": "q4t-service-recovery-v1",
+    "acceptance": "ACCEPT_BOUNDED_SELF_RECOVERY_AB",
+    "recovery_accepted": true,
+    "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-recovery-b2-20261108/closeout/result.json",
+    "acceptance_sha256": "7c4fb67ae50f4d005e3b2f6f55eb92568de578a83243832fa4869ade5a7fb4db",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-recovery-b2-20261108/package-attempt-02/bundle",
+    "manifest_sha256": "1d414218fbb108d1c1f1689fd3b42cfdab14f0ffaa12c1a81d86b3f8e760c472",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "engine_release_sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133",
+    "entry": "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+    "state": "/home/rm01/models/dev/qwen4-thor/build/service-state",
+    "service_id": "6fc1411e-4cc0-4c61-8816-8e02fd0bda03",
+    "initial_desired": "STOPPED",
+    "automatically_started": false,
+    "listen": "127.0.0.1:18161",
+    "upstream": "127.0.0.1:18162",
+    "operations": "127.0.0.1:18163",
+    "clients": [
+      {
+        "id": "alpha",
+        "rpm": 30,
+        "tpm": 6000
+      },
+      {
+        "id": "beta",
+        "rpm": 1,
+        "tpm": 6000
+      }
+    ],
+    "scope": "single-slot text/MTP, loopback, process resource mode; local short acceptance only",
+    "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-recovery-b2-20261108/delivery-attempt-01/rollback/receipt.json",
+    "rollback_sha256": "ba11fca5bfd9f0887f8512b521bf5b3c7d5fb63232a25894ebf7ff1b643a7a2f",
+    "engine_default_replaced": false,
+    "gpu_starts_for_install": 0,
+    "long_stability_accepted": false,
+    "tls_lan_accepted": false,
+    "limitations": [
+      "No Guardian resurrection without an outer manager",
+      "Blocking log isolation, bounded grammar reap and execution progress watchdog remain C/D",
+      "No delegated cgroup/physical RAM hard limit or NVML-free cold start"
+    ]
+  },
+  "release_sha256": "684bc12073a363eae74915c2768c5aba338e635e17371b984ed6dd82ffe73281",
+  "initialized": {
+    "state": "/home/rm01/models/dev/qwen4-thor/build/service-state",
+    "service_id": "6fc1411e-4cc0-4c61-8816-8e02fd0bda03",
+    "initialized": true,
+    "desired": "STOPPED",
+    "automatic_start": false
+  },
+  "checks": [
+    {
+      "argv": [
+        "--help"
+      ],
+      "exit_code": 0,
+      "stdout": "usage: q4t [-h] {prepare,init,run,start,status,stop} ...\n\nUnified recovery service entrypoint; no systemd, shell loop or auto install.\n\npositional arguments:\n  {prepare,init,run,start,status,stop}\n\noptions:\n  -h, --help            show this help message and exit\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "init",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-state"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"state\": \"/home/rm01/models/dev/qwen4-thor/build/service-state\", \"service_id\": \"6fc1411e-4cc0-4c61-8816-8e02fd0bda03\", \"initialized\": true, \"desired\": \"STOPPED\", \"automatic_start\": false}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-state"
+      ],
+      "exit_code": 1,
+      "stdout": "{\"service_id\": \"6fc1411e-4cc0-4c61-8816-8e02fd0bda03\", \"state\": \"UNKNOWN\", \"business_ready\": false, \"live_control\": false}\n",
+      "stderr": ""
+    }
+  ],
+  "engine_default_unchanged": true,
+  "model_starts": 0,
+  "chats": 0
+}

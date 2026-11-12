@@ -1,6 +1,80 @@
 # 当前状态
 
-更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+
+核心serve能力核对已同步到[应用兼容矩阵](APPLICATION_SERVICE.md)：
+纠正旧“无RPM/TPM及公平准入”、nginx强绑定和默认无恢复的描述，
+区分10条后端路由与8条原生公共路由。A/B及入口解耦已验，C的日志
+阻塞/grammar回收/执行无进度仍未闭合；本次仅文档，不追加运行验证。
+
+## 默认原生服务入口已解耦并有界交付
+
+[最终结果与操作](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：默认v2包
+已去掉nginx，独立C++入口承担Bearer、实际来源CIDR、逐请求恢复准入
+及有界JSON/SSE；保留普通HTTP可选前置。未移植nginx源码，README
+已注明。原生入口只链接标准C/C++库，Python控制面依赖如实保留。
+
+151项不同CPU通过，原生目标零警告，163来源锚点/8入口路由/4负控。
+CIDR旧ELF负控发现误放行，新4a499f1a实际对端检查及17项回归通过；
+旧失败保留，重复用例不算新增。新Guardian a23f31fa/探测ef1af475
+与旧ELF不同，已补齐实际构建的CPU及CUDA业务证据。
+
+同一严格GPU租约一次通过：3启动/18Chat/1探测，驱动191.673秒、
+租约192.691秒，179次外层NVML全OK。三代JSON/SSE和真实文档工具
+闭环、辅助故障同PID继续、模型/控制器/入口恢复、401/429/503与
+不重放通过。31个已记录进程身份退出，GPU/端口/锁释放。
+[203份原件](evidence/serve-native-ingress-20261108/README.md)已封存，
+311 Git/39 Python/27原生来源独立核对；排除14项已知凭据。
+
+`build/service`已指向新封装41cb22ea，发布元数据同步；**状态目录改为
+`build/service-native-state`**，仅初始化STOPPED，无常驻服务。
+安装0模型/0Chat。旧1d414218包及`build/service-state`保留，旧状态
+revision=0、从未启动，未清空使用过的恢复预算；回退回执与摘要可核验。
+原生默认60b1c4c1/d2ae8db2未改。实现提交0fd6deef，PR #22交接；
+本阶段交付不表示已经合main。
+
+模型/控制器/入口恢复单次观察61.085/61.027/5.538秒，前两项包含
+完整分钟配额隔离，不承诺SLA或性能优化。原生仅loopback；实际TLS/
+LAN、视觉恢复和长稳未扩展。C/D及Guardian整树死亡边界仍保留。
+依赖原则见[项目约定](../AGENTS.md)与[架构](ARCHITECTURE.md#外部依赖与可选前置接入)。
+
+## 自动恢复 A/B 原包已交付（历史基线）
+
+旧包验收见[历史结果](SERVE_SELF_RECOVERY_RESULT_2026-11-08.md)，当前入口
+以顶部v2说明为准。原A/B实现无需
+systemd 的独立 Guardian、持久恢复预算/停止意图、模型/控制器恢复
+与网关代次重绑已完成。辅助 NVML/日志返回错误/metrics 缺失保留
+健康模型；真实设备故障、身份损坏和清理不确定仍进入保护。连续
+租约下旧模型清空后允许一次独立 CUDA 小探测；冷启动仍严格观测。
+每代生成自检、完整 60 秒分钟配额窗口后才开放入口，不重放请求。
+
+177 项不同 CPU 通过，两个原生目标零警告，158 来源锚点/3 负控。
+用户已授权最后补验，将累计上限修订为 5 启动/21 Chat/30 分钟。
+本次补验实际 2 启动/6 Chat/115.996 秒，控制器/网关恢复、JSON/SSE、
+严格工具/真实资料引用、持久停止和清理通过，外层 COMPLETED。
+grammar 实际由 3/2 在 51.820 毫秒内齐平到 3/3；原生无界 wait4
+仍属 C，验收等待不冒充这一实现修复。
+
+三轮累计 5 启动/21 Chat、驱动 281.342 秒，完整租约 284.712 秒。
+267 次外层 NVML 全 OK，19 个已记录角色身份退出，GPU/端口/锁释放。
+前两轮 FAILED/COMMAND_FAILED 原样保留：首轮 numeric enum 工具
+夹具错误，第二轮即时回收快照；相同生产身份已通过证据明确复用。
+每轮各持完整严格租约，不声称一次无失败通过。离线核对 870 Git/
+38 Python/16 原生构建来源，[282 份原件](evidence/serve-self-recovery-ab-20261108/README.md)
+已归档，API Key/内部凭据排除。6dee72df 的远端 CI 已通过。
+
+显式入口 `build/service/bin/q4t service` 已安装，封装 1d414218，
+元数据 `build/service.release.json`，状态 `build/service-state` 只
+初始化 STOPPED。当前没有活 Guardian，status 如实返回 UNKNOWN；
+没有常驻服务。原生默认 60b1c4c1/d2ae8db2 保持，回退二元组已复制
+核验；安装仅 help/init/status，0 模型/0 Chat。代码与证据在
+`codex/serve-self-recovery` 收尾交接，不等于已经合 main。
+
+C/D 的日志阻塞、grammar 有界回收、通用进度 watchdog、留存治理、
+exporter 新接入与可选 profile/cgroup 后置；实际 LAN/视觉恢复组合
+未扩展，长稳由用户执行。无外层管理器时 Guardian 自身/整树/整机
+死亡后不会反向拉起，也不安装隐藏恢复脚本。A/B 目标可按限定范围
+闭合，旧包不原地升级；本机新服务实际配置与回退见最终说明。
 
 ## 当前交付状态
 
@@ -18,8 +92,9 @@ PR #21已合main fad0e929，服务可靠性实现与12条真实业务验收证�
 [963份原始记录](evidence/vision-rowmax-mainline-20261107/README.md)已归档。
 
 NVML厂商根因未确定；原ENV_ABORT不追改。v9/v10封存包的实际
-业务证据仍绑定478a325e，不自动迁移旧包或重启模型。exporter接入、
-语法worker有界回收、日志阻塞隔离与控制器接管另列后续；视频时序
+业务证据仍绑定478a325e，不自动迁移旧包。新入口按上述 A/B 恢复；
+exporter接入、语法worker有界回收、日志阻塞隔离与存活模型无缝接管
+另列后续；视频时序
 任务质量、硬解码、视觉并发和用户负责的长稳范围不扩展。
 
 以下为历史阶段记录，含当时的HOLD/未合入状态；当前结论以上述

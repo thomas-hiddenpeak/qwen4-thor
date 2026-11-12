@@ -1,5 +1,9 @@
 # docs/ — 开发记录文档体系
 
+- [原生入口解耦实际交付：无nginx默认包、151 CPU及3启动18Chat](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)
+- [原生服务入口、可选nginx前置与有界解耦计划](SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md)
+- [自动恢复 A/B 真实业务接受、显式服务入口与回退](SERVE_SELF_RECOVERY_RESULT_2026-11-08.md)
+- [持续LLM服务、故障分类与自动恢复设计](SERVE_SELF_RECOVERY_DESIGN_2026-11-07.md)
 - [Serve阶段独立PR、统一交接与研究保留](SERVE_RESILIENCE_CLOSEOUT_2026-11-07.md)
 - [下一阶段目标：host exporter接入与语法worker有界回收](SERVE_RESILIENCE_NEXT_PLAN_2026-11-07.md)
 - [资源控制面依赖隔离CPU阶段](SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md)

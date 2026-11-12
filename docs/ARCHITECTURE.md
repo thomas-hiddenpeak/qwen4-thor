@@ -1,6 +1,7 @@
 # ARCHITECTURE.md — 当前实现与设计边界
 
-2026-10-17按代码静态核对，2026-10-21补正SSD卸载与统一RAM边界。
+2026-10-17按代码静态核对，2026-10-21补正SSD卸载与统一RAM边界；
+2026-11-08补充依赖最小化原则、前置接入边界及恢复包实际依赖。
 本文描述当前模块，不把设计目标或旧实测
 当作已交付功能；验收范围见[STATUS](STATUS.md)和[EVALUATION](EVALUATION.md)。
 旧设计记录见[历史版本](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7356f235e972b5e1be201923a4ba27b214b31e12/docs/ARCHITECTURE.md)。
@@ -127,12 +128,59 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 多设备PD部署、独立prefill/decode池与跨设备状态交接仍是设计目标。
 历史“PD-ready”“零风险”等措辞不能作为已交付或无状态污染的承诺。
 
+## 外部依赖与可选前置接入
+
+2026-11-08用户明确：项目设计应尽量减少外部依赖，兼容nginx前置，
+但不能强制绑定。新v2封装与原生入口已完成CPU及真实模型短验，
+本机默认服务入口已安装为v2并保持停止；v1包与证据作为回退保留。
+
+- 默认发行应独立提供原生API、鉴权、准入、健康及有界自恢复，
+  无需安装、携带或启动nginx；systemd继续作为可选外层管理器。
+- 外部网关通过标准HTTP接入q4t，按需承担TLS终止或统一接入策略。
+  原生服务合同不依赖nginx特有模块、私有准入子请求或网关进程身份。
+  网关退出只影响经过它的流量，不触发健康模型重启。
+- 身份、配额、自检完成与否、恢复期准入仍由q4t守住；前置存在
+  不应改变JSON/SSE、取消、工具响应及请求不自动重放的合同。
+  公共调用者提供的内部身份头和转发头不能自动成为可信身份。
+- 新增依赖须说明解决的问题、已有能力为何不足、启用范围及失效
+  影响。必要的系统/推理依赖与可选接入、观测及开发工具分别登记；
+  辅助依赖失能只降低相关能力，真实设备故障的保护继续保留。
+- 复用现有原生HTTP实现，新增入口能力限定于q4t服务合同。可选TLS
+  等集成保持明确的启用边界，不为去掉nginx重做通用Web服务器或密码库。
+
+当前实现与验收边界：
+
+| 环节 | 当前代码 | 解耦要求 |
+|---|---|---|
+| 原生推理入口 | 直接`serve`保持；新`q4t-ingress`独立于模型，模型/控制器恢复期间返回503/Retry-After | 真实文本恢复通过；非通用Web代理 |
+| 客户端鉴权 | C++入口验证Bearer并拒绝伪造内部身份；后端`ClientAdmission`继续执行RPM/TPM、公平准入 | 前置只需标准HTTP；每个内部凭据只绑定一个模型代次 |
+| 恢复准入 | 读体前/转发前经PID限定的Unix IPC核对Guardian准入；两次绑定必须相同 | CPU覆盖读体中换代/配额等待、失联；仍等模型自检及完整分钟窗口 |
+| 恢复封装 | 新v2默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；v1旧包保留 | 本机v2已交付STOPPED；显式nginx模式保留 |
+
+实现入口：[原生HTTP](../include/q4t/server/chat_server.h)、
+[鉴权与配额](../src/server/client_policy.cpp)、
+[恢复自检与开放入口](../tools/serve_recovery/controller.py)、
+[当前封装](../tools/serve_recovery/bundle.py)、
+[独立入口](../src/service/ingress_main.cpp)、
+[私有准入](../tools/serve_recovery/native_ingress.py)。Guardian既有GATEWAY
+角色在新包管理原生入口；它不表示nginx依赖。外部前置不访问这条
+私有IPC，也不控制q4t模型或Guardian生命周期。
+
+151项不同CPU检查已覆盖伪造身份、未ready请求、额度保护、SSE中断、停止、
+无nginx运行及可选前置；163来源锚点、8条原生路由和4个审计负控。
+新入口动态依赖仅标准C/C++运行库。真实JSON/SSE、工具和三类恢复
+在同一严格租约3启动/18Chat/192.691秒内通过，179次NVML全OK；
+身份、验收与操作边界见[结果](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+
 ## 构建与验证工具
 
 CMake要求4.0+，host/device标准均为C++23，目标SM110a；本机工具链
 CUDA13.3/g++-14。liburing缺失时PLE读取器被禁用，ICU缺失时tokenizer
-不构建，因此完整推理需要相应开发依赖。推理服务不依赖Python，
-评估工具使用Python；共享GPU验证lease及其局限见
+不构建，因此完整推理需要相应开发依赖。原生`build/q4t serve`
+不依赖Python；恢复封装的控制器/journal/入口工作进程使用Python。
+v1包强制携带nginx，新v2默认包改为自有C++入口；不能把入口的原生
+实现误写为整个服务封装已经不需要Python。
+评估工具也使用Python；共享GPU验证lease及其局限见
 [评估工具说明](../tools/evalscope/README.md)。
 
 源码决定实际行为，模型config与固定上游实现用于核对数学语义，

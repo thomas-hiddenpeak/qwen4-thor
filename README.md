@@ -12,6 +12,14 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
+独立 Guardian 与原生服务入口已完成[有界验收交付](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
+默认包无需nginx/systemd即可提供Bearer鉴权、JSON/SSE及模型/控制器/
+入口恢复；辅助监控故障保留健康业务，恢复预算和停止意图持久化。
+151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
+本机`build/service/bin/q4t service`已安装，状态`build/service-native-state`
+保持停止；原`build/q4t serve`保留原含义。Python控制面依赖仍保留，
+长稳及C/D范围见交付说明；旧A/B包与证据可回退。
+
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
@@ -92,6 +100,41 @@ token预算不足而失败，canonical分词长度不构成生成上限。
   [首版私有文本部署](docs/RELEASE_TEXT_V1_2026-09-28.md)已验收；
   公网多租户与业务SLA另行验收。当前结论见 [STATUS](docs/STATUS.md)，
   已知缺陷与未覆盖项见 [完善度审计](docs/PROJECT_READINESS_REVIEW_2026-09-27.md)
+
+## 原生服务入口与可选前置
+
+新`service prepare`默认选择原生入口，显式提供`--native-ingress`
+所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
+`--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
+`build/q4t serve`保持原含义，服务封装由Guardian管理入口与模型生命周期。
+原生入口只监听loopback；当前控制器/journal仍使用Python，必要的
+CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
+当前入口与回退方法见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+
+部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
+无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
+Host须与原生入口策略的`server_name`一致，TLS/来源限制由部署方按需配置：
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:18161;
+    proxy_http_version 1.1;
+    proxy_set_header Host $http_host;
+    proxy_set_header Connection close;
+    proxy_buffering off;
+    proxy_request_buffering on;
+    proxy_cache off;
+    proxy_next_upstream off;
+}
+```
+
+入口支持8条明确路由，认证后的`/livez`只表示入口存活；`/readyz`与
+业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
+Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
+16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。
+HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect，
+每连接只处理一个请求；不重放POST/工具，不在新模型上续接被中断的SSE。
+可选前置的普通HTTP与SSE已用CPU后端验证，实际TLS/LAN仍需部署验收。
 
 ## 目标模型
 
@@ -437,3 +480,8 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 ## 许可证
 
 MIT (项目代码)。模型权重遵循其发布方条款。
+
+本次原生服务入口复用q4t自有POSIX HTTP解析器及进程/JSON组件，未移植
+nginx源码。nginx仅用于可选前置互操作测试及显式旧网关模式；默认新包
+不携带它。后续若引入第三方源码，将列明固定版本、来源、使用范围并
+保留其许可要求的版权声明。

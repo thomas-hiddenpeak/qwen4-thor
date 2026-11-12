@@ -18,6 +18,11 @@ def current_surface(root):
     fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
+    native = (root / "src/service/ingress_main.cpp").read_text()
+    native_routes = re.findall(
+        r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
+    if len(native_routes) < 5:
+        raise ValueError("cannot extract native ingress routes; review extractor")
     if not fields or not routes:
         raise ValueError("empty protocol inventory")
     nested = {}
@@ -32,7 +37,11 @@ def current_surface(root):
     # These anchors intentionally cover more than the wire protocol identity:
     # reader, cancellation, scheduling, configuration, and tokenizer matter too.
     paths = sorted(set(root.glob("src/server/**/*.*")) |
-                   set(root.glob("include/q4t/server/**/*.*")) | {
+                   set(root.glob("include/q4t/server/**/*.*")) |
+                   set(root.glob("src/service/**/*.cpp")) |
+                   set(root.glob("include/q4t/service/**/*.h")) |
+                   {p for p in root.glob("tools/serve_recovery/*.py")
+                    if not p.name.startswith("test_")} | {
                        root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
@@ -62,11 +71,16 @@ def current_surface(root):
                        root / "src/model/model.cu", root / "src/mtp/mtp.cu",
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
+                       root / "cmake/GuardianProcess.cmake",
+                       root / "cmake/NativeIngress.cmake",
+                       root / "cmake/RecoveryProbe.cmake",
+                       root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake"})
     return {"fields": sorted(fields),
             "routes": sorted(f"{method} {path}" for path, method in routes),
+            "native_routes": sorted(f"{method} {path}" for method, path, _ in native_routes),
             "whitelists": nested,
             "sources_sha256": {str(p.relative_to(root)):
                                hashlib.sha256(p.read_bytes()).hexdigest()
@@ -75,8 +89,8 @@ def current_surface(root):
 
 def check(inventory, actual, root=ROOT):
     errors = []
-    for group in ("fields", "routes"):
-        recorded = inventory[group]
+    for group in ("fields", "routes", "native_routes"):
+        recorded = inventory.get(group, {})
         missing = set(actual[group]) - recorded.keys()
         stale = recorded.keys() - set(actual[group])
         if missing or stale:
@@ -102,6 +116,7 @@ def mutation_checks(inventory, actual):
     # Independent failure modes of the anti-omission gate, not serving tests.
     cases = [dict(actual, fields=actual["fields"] + ["uncatalogued_option"]),
              dict(actual, routes=actual["routes"] + ["GET /uncatalogued"]),
+             dict(actual, native_routes=actual["native_routes"] + ["GET /uncatalogued"]),
              dict(actual, sources_sha256=dict(actual["sources_sha256"],
                                              **{"src/server/chat_http.cpp": "0"}))]
     for case in cases:
@@ -122,6 +137,7 @@ def main():
                       "semantics_certified": False,
                       "fields": len(actual["fields"]),
                       "routes": len(actual["routes"]),
+                      "native_routes": len(actual["native_routes"]),
                       "reviewed_source_anchors": len(actual["sources_sha256"]),
                       "mutation_checks": mutations, "errors": errors},
                      ensure_ascii=False, indent=2))

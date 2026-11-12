@@ -1,0 +1,158 @@
+{
+  "status": "ACCEPT_BOUNDED_NATIVE_INGRESS",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle",
+    "manifest_sha256": "41cb22eaf6166ed316b4999c13e4f355a3c357d19debccc54073a660dd030909",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  },
+  "source_commit": "0fd6deef25c0aaae25947b4308154aa8fc106d5c",
+  "cpu_distinct": 151,
+  "cpu_groups": {
+    "http_reader": 10,
+    "native_ingress": 17,
+    "admission_races": 4,
+    "native_bundle": 7,
+    "gateway_policy": 14,
+    "production": 22,
+    "legacy_nginx": 6,
+    "optional_proxy": 3,
+    "acceptance_driver": 8,
+    "guardian_process": 18,
+    "guardian_journal": 7,
+    "guardian_lifecycle": 35
+  },
+  "counts": {
+    "starts": 3,
+    "chats": 18,
+    "probes": 1,
+    "controls": 655
+  },
+  "seconds": 191.67339618876576,
+  "lease_seconds": 192.69089525192976,
+  "nvml_queries": 179,
+  "all_nvml_ok": true,
+  "source_entries_verified": 311,
+  "packaged_python_sources": 39,
+  "native_build_sources": 27,
+  "responses": [
+    {
+      "label": "beta-minute-quota",
+      "status": 429
+    },
+    {
+      "label": "chat-01-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "label": "chat-09-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "label": "chat-14-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "label": "controller-recovery-503",
+      "status": 503
+    },
+    {
+      "label": "controller-recovery-503-unauthorized",
+      "status": 401
+    },
+    {
+      "label": "generation-1-json",
+      "status": 200,
+      "seconds": 0.3035319847986102
+    },
+    {
+      "label": "generation-1-sse",
+      "status": 200,
+      "seconds": 0.2562487842515111
+    },
+    {
+      "label": "generation-1-tool-call",
+      "status": 200,
+      "seconds": 3.6094442480243742
+    },
+    {
+      "label": "generation-1-tool-final",
+      "status": 200,
+      "seconds": 1.487950858194381
+    },
+    {
+      "label": "generation-2-json",
+      "status": 200,
+      "seconds": 0.3303781496360898
+    },
+    {
+      "label": "generation-2-sse",
+      "status": 200,
+      "seconds": 0.30837124586105347
+    },
+    {
+      "label": "generation-2-tool-call",
+      "status": 200,
+      "seconds": 3.6723011508584023
+    },
+    {
+      "label": "generation-2-tool-final",
+      "status": 200,
+      "seconds": 1.5173476287163794
+    },
+    {
+      "label": "generation-3-json",
+      "status": 200,
+      "seconds": 0.32992996694520116
+    },
+    {
+      "label": "generation-3-sse",
+      "status": 200,
+      "seconds": 0.2845952701754868
+    },
+    {
+      "label": "generation-3-tool-call",
+      "status": 200,
+      "seconds": 3.6536859082989395
+    },
+    {
+      "label": "generation-3-tool-final",
+      "status": 200,
+      "seconds": 1.4715804569423199
+    },
+    {
+      "label": "model-recovery-503",
+      "status": 503
+    },
+    {
+      "label": "model-recovery-503-unauthorized",
+      "status": 401
+    }
+  ],
+  "known_process_identities_retired": 31,
+  "native_entrypoint_generations": 2,
+  "nginx_packaged": false,
+  "nginx_observed": false,
+  "observation_limit": "Periodic process observations are not continuous tracing",
+  "lock_free": true,
+  "ports_free": [
+    18161,
+    18162,
+    18163
+  ],
+  "final_compute_pids": [],
+  "recovery_seconds": {
+    "model": 61.08472371613607,
+    "controller": 61.02698064688593,
+    "gateway": 5.537949803750962
+  },
+  "grammar_drain_seconds": {
+    "2": 0.05185694480314851,
+    "3": 0.05212774779647589
+  },
+  "negative_cidr_reproduction_preserved": true,
+  "all_business_checks_in_one_lease": true,
+  "engine_default_unchanged": true,
+  "performance_acceptance": false,
+  "long_stability_acceptance": false
+}

@@ -122,6 +122,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   size_t length = 0;
   bool seen_length = false, seen_host = false;
   bool seen_id = false, seen_type = false;
+  bool seen_authorization = false;
   bool seen_client = false, seen_gateway = false;
   size_t pos = line_end + 2;
   while (pos < head.size()) {
@@ -157,6 +158,14 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     } else if (name == "host") {
       if (seen_host || value.empty()) return false;
       seen_host = true;
+      headers->host = value;
+    } else if (name == "authorization") {
+      if (seen_authorization || value.empty()) {
+        headers->error_code = "invalid_authorization_header";
+        return false;
+      }
+      seen_authorization = true;
+      headers->authorization = value;
     } else if (name == "x-request-id") {
       if (seen_id || !ValidHttpRequestId(value)) {
         headers->request_id.clear();

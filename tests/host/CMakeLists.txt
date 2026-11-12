@@ -17,6 +17,14 @@ target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads)
 
 enable_testing()
+include(../../cmake/GuardianProcess.cmake)
+include(../../cmake/NativeIngress.cmake)
+set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
+file(MAKE_DIRECTORY "${guardian_output}")
+add_test(NAME q4t_guardian_process_contracts
+  COMMAND q4t_guardian_process_tests)
+set_tests_properties(q4t_guardian_process_contracts PROPERTIES
+  TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${guardian_output}")
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
 set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 180)
@@ -27,6 +35,13 @@ add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE ../../include)
 target_compile_options(q4t_router_trace_check PRIVATE -Wall -Wextra -Werror)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(journal_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-journal-tests")
+file(MAKE_DIRECTORY "${journal_output}")
+add_test(NAME q4t_guardian_journal_contracts
+  COMMAND q4t_guardian_journal_tests ${Python3_EXECUTABLE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/serve_recovery/journal.py)
+set_tests_properties(q4t_guardian_journal_contracts PROPERTIES
+  TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${journal_output}")
 add_test(NAME q4t_router_trace_wire_contracts
   COMMAND ${Python3_EXECUTABLE} -B
     ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_wire.py
@@ -138,6 +153,28 @@ q4t_add_python_contract(q4t_serve_role_stage_contracts
   tools/serve_stage_b1/test_stage.py)
 q4t_add_python_contract(q4t_chat_acceptance_contracts
   tools/response_protocol/test_acceptance.py)
+q4t_add_python_contract(q4t_recovery_fault_policy_contracts
+  tools/serve_recovery/test_policy.py)
+q4t_add_python_contract(q4t_recovery_ledger_contracts
+  tools/serve_recovery/test_ledger.py)
+q4t_add_python_contract(q4t_recovery_journal_contracts
+  tools/serve_recovery/test_journal.py)
+q4t_add_python_contract(q4t_guardian_runtime_contracts
+  tools/serve_recovery/test_runtime.py --guardian $<TARGET_FILE:q4t_guardian>)
+q4t_add_python_contract(q4t_recovery_child_contracts
+  tools/serve_recovery/test_child.py)
+q4t_add_python_contract(q4t_recovery_gateway_contracts
+  tools/serve_recovery/test_gateway.py)
+q4t_add_python_contract(q4t_native_ingress_contracts
+  tools/serve_recovery/test_native_ingress.py --ingress $<TARGET_FILE:q4t_ingress>)
+q4t_add_python_contract(q4t_native_bundle_contracts
+  tools/serve_recovery/test_native_bundle.py)
+q4t_add_python_contract(q4t_native_admission_contracts
+  tools/serve_recovery/test_native_admission.py --ingress $<TARGET_FILE:q4t_ingress>)
+q4t_add_python_contract(q4t_recovery_production_contracts
+  tools/serve_recovery/test_production.py)
+q4t_add_python_contract(q4t_recovery_acceptance_contracts
+  tools/serve_recovery/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the
 # guard's actual contract before assigning its real descendant-cleanup tests.
 set(Q4T_GPU_GUARD_PYTHON "" CACHE FILEPATH
