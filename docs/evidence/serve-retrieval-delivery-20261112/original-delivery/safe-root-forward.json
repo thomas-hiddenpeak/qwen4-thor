@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+    "--manifest-sha256",
+    "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-01/primary-service.release.json",
+    "--expected-manifest-sha256",
+    "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+    "--expected-revision",
+    "86",
+    "--request-id",
+    "f169474f-894c-452c-ac37-f56254142769"
+  ],
+  "returncode": 0,
+  "seconds": 5.780849128961563,
+  "protected_state_unchanged": true
+}

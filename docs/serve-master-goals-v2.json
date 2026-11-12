@@ -1290,7 +1290,8 @@
         "evidence/serve-file-search-business-20261112/README.md",
         "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
         "evidence/serve-file-search-profiles-20261112/README.md",
-        "evidence/serve-retrieval-managed-business-20261112/README.md"
+        "evidence/serve-retrieval-managed-business-20261112/README.md",
+        "evidence/serve-retrieval-delivery-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1298,16 +1299,16 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "actual_managed_tls_business_accepted_delivery_pending",
+        "state": "delivered",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
         "production_routes": true,
         "responses_executor": true,
-        "default_changed": false,
+        "default_changed": true,
         "whole_task_complete": false,
         "foundation_evidence": "evidence/serve-vector-search-foundation-20261112/README.md",
         "index_snapshot": {
-          "state": "cpu_accepted_integration_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-index-cpu-20261112/README.md",
           "cases": 11,
           "actual_tokenizer": true,
@@ -1315,10 +1316,12 @@
           "gpu_starts": 0,
           "file_ingestion_adapter": true,
           "durable_store_parent": true,
-          "production_routes": true
+          "production_routes": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md",
+          "default_changed": true
         },
         "durable_store": {
-          "state": "cpu_accepted_executor_integration_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-stores-cpu-20261112/README.md",
           "cpu_cases": 19,
           "actual_worker": true,
@@ -1328,10 +1331,11 @@
           "recovery_controller": true,
           "ingestion_adapter": true,
           "http": true,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "ingestion": {
-          "state": "cpu_accepted_native_executor_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-ingestion-cpu-20261112/README.md",
           "cpu_cases": 11,
           "real_files": true,
@@ -1341,27 +1345,30 @@
           "native_quota_owner": true,
           "production_controller": true,
           "production_http": true,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "quota_bridge": {
-          "state": "cpu_accepted_native_controller_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-quota-cpu-20261112/README.md",
           "cpu_cases": 14,
           "real_admission": true,
           "gpu_starts": 0,
           "production_callback": true,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "controller": {
-          "state": "cpu_accepted_public_api_business_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-jobs-cpu-20261112/README.md",
           "cpu_cases": 18,
           "native_engine_built": true,
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "file_batches": {
-          "state": "cpu_accepted_http_business_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-vector-batches-cpu-20261112/README.md",
           "cpu_cases": 17,
           "durable_cancellation": true,
@@ -1369,20 +1376,22 @@
           "batch_request_limit": 2000,
           "http": true,
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "search_route": true,
         "management_api": {
-          "state": "cpu_sdk_accepted_real_search_business_pending",
+          "state": "integrated_validated_delivered",
           "operations": 15,
           "cpp_cases": 12,
           "sdk_protocol_cases": 3,
           "evidence": "evidence/serve-vector-api-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "query_execution": {
-          "state": "targeted_cpu_accepted",
+          "state": "integrated_validated_delivered",
           "cases": 18,
           "evidence": "evidence/serve-vector-query-cpu-20261112/README.md",
           "scope_snapshot": true,
@@ -1391,48 +1400,54 @@
           "gpu_starts": 0,
           "http": true,
           "actual_model_business": true,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "search_api": {
-          "state": "targeted_cpu_sdk_accepted_real_business_pending",
+          "state": "integrated_validated_delivered",
           "cpp_cases": 11,
           "sdk_schema_cases": 3,
           "evidence": "evidence/serve-vector-search-api-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "responses_contract": {
-          "state": "targeted_cpu_accepted_execution_pending",
+          "state": "integrated_validated_delivered",
           "cpu_cases": 13,
           "evidence": "evidence/serve-file-search-contract-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "multi_store_execution": {
-          "state": "targeted_cpu_accepted_responses_integration_pending",
+          "state": "integrated_validated_delivered",
           "cpu_cases": 16,
           "evidence": "evidence/serve-vector-multi-store-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "responses_execution": {
-          "state": "targeted_cpu_sdk_accepted_business_pending",
+          "state": "integrated_validated_delivered",
           "cpu_cases": 34,
           "sdk_schema_cases": 3,
           "evidence": "evidence/serve-responses-file-search-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "combinations": {
-          "state": "targeted_cpu_accepted_business_pending",
+          "state": "integrated_validated_delivered",
           "cpu_cases": 18,
           "evidence": "evidence/serve-file-search-combinations-cpu-20261112/README.md",
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "actual_model_business": true,
         "business": {
-          "state": "accepted_original_business_after_oracle_fix",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-file-search-business-20261112/README.md",
           "model_starts": 1,
           "model_http_requests": 6,
@@ -1440,27 +1455,30 @@
           "original_failure_preserved": true,
           "repeated_model_requests": 0,
           "engine_sha256": "f9ed346bd597e2237e1d6e9ab716674c2b3de6f3257e5d23ac68de61a2cb44c2",
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "discovery_upgrade": {
-          "state": "targeted_cpu_accepted_delivery_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
           "cpu_cases": 8,
           "gpu_starts": 0,
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "profiles": {
-          "state": "actual_qualified_candidate_packaged_managed_pending",
+          "state": "integrated_validated_delivered",
           "evidence": "evidence/serve-file-search-profiles-20261112/README.md",
           "model_starts": 2,
           "model_http_requests": 8,
           "driver_seconds": 90.3791492562741,
           "engine_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
           "candidate_manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
-          "default_changed": false
+          "default_changed": true,
+          "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
         },
         "managed_acceptance": {
-          "state": "accepted_delivery_pending",
+          "state": "accepted_delivered",
           "retained_manifest": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
           "primary_manifest": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
           "tls_manifest": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
@@ -1472,14 +1490,25 @@
             "probes": 0,
             "seconds": 300
           },
-          "default_changed": false,
+          "default_changed": true,
           "evidence": "evidence/serve-retrieval-managed-business-20261112/README.md",
           "model_starts_including_failure": 5,
           "model_http_including_selfchecks": 10,
           "probes": 1,
           "driver_seconds": 314.13303343299776,
           "original_failure_preserved": true
-        }
+        },
+        "release": {
+          "publication_revision": 92,
+          "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+          "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+          "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+          "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+          "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+          "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+        },
+        "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       }
     },
     {
@@ -2252,7 +2281,7 @@
     {
       "id": "Q01",
       "required": true,
-      "state": "planned",
+      "state": "project_retrieval_business_accepted_remaining_compositions",
       "implementation": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
       "acceptance": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
       "depends_on": [
@@ -2262,19 +2291,23 @@
         "N07",
         "R10"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-retrieval-managed-business-20261112/README.md"
+      ],
       "release": null
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "planned",
+      "state": "staged_releases_delivered_main_integration_pending",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
         "Q01"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-retrieval-delivery-20261112/README.md"
+      ],
       "release": null,
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -2289,6 +2322,16 @@
         "publication_revision": 80,
         "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
         "whole_task_complete": false
+      },
+      "latest_release": {
+        "publication_revision": 92,
+        "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
+        "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
+        "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
+        "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
+        "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
+        "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
       }
     },
     {
@@ -2304,6 +2347,6 @@
       "release": null
     }
   ],
-  "next_task": "A11 native project-record retrieval/tool execution and Responses events, remaining A07/A09/A10/A12 contracts; R07 refresh after fixed sources/current rev80, R08-R10 and Q/G00 continue. All master tasks required; no phase-end stop.",
-  "next": "A11 native project-record retrieval/tool execution and Responses events, remaining A07/A09/A10/A12 contracts; R07 refresh after fixed sources/current rev80, R08-R10 and Q/G00 continue. All master tasks required; no phase-end stop."
+  "next_task": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop.",
+  "next": "Q02 main integration and A07/A11 remaining namespace/output-schema/MCP/built-in execution, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue all master tasks, not phase-end stop."
 }

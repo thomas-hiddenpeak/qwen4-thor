@@ -1,0 +1,16 @@
+{
+  "label": "rollback-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/delivery-completion-01/rollback-registration.json",
+    "--expected-cycle",
+    "25d1668c-1a16-45f8-a247-1c22c600abbc"
+  ],
+  "returncode": 0,
+  "seconds": 3.5500841923058033
+}

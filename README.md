@@ -467,6 +467,40 @@ T>1 batch verifier；`--mtp-verifier` 已移除，sequential 实现在历史提�
 和`native_embedding_health`；资产及工作区计入Thor统一RAM。
 真实检索、取消和重启证据见[业务短验](docs/evidence/serve-native-embedding-business-20261111/README.md)。
 
+### 原生资料入库与 Responses 检索
+
+配置上述专用嵌入资产及持久应用存储后，可通过标准 Files、Vector
+Stores 和 Responses 接口完成资料查询。索引与查询在本机执行，无需
+外部向量数据库；TLS 可使用原生入口。用独立 API Key 区分客户端，
+文件、索引和结果均按客户端隔离。
+
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(base_url=os.environ["Q4T_BASE_URL"],
+                api_key=os.environ["Q4T_API_KEY"])
+with open("docs/SSD_OFFLOAD_CONTRACT.md", "rb") as source:
+    document = client.files.create(file=source, purpose="user_data")
+store = client.vector_stores.create(name="项目资料")
+client.vector_stores.files.create_and_poll(
+    vector_store_id=store.id, file_id=document.id)
+response = client.responses.create(
+    model="qwen3.8-flash-next", reasoning={"effort": "none"},
+    max_output_tokens=256, max_tool_calls=1,
+    tools=[{"type": "file_search", "vector_store_ids": [store.id]}],
+    tool_choice={"type": "file_search"},
+    include=["file_search_call.results"],
+    input="按项目文档说明专家容量应卸载到哪里，并引用依据。")
+print(response.output_text)
+```
+
+`Q4T_BASE_URL` 包含 `/v1`；私有 CA 按客户端证书配置使用，保持证书
+校验。入库完成后再查询；`file_search_call.results` 返回实际检索片段，
+回答中的 `file_citation` 绑定源文件。JSON/SSE、结构化答案及持久历史
+使用同一执行链，历史回填不会再次执行已完成检索。当前交付、资源
+上限与可回退证据见[原生检索说明](docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md)。
+
 ### 独立草稿 head 与启动校验
 
 `--mtp-subset-head` 是进程启动参数，不是 HTTP 请求参数。不能与

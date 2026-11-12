@@ -9,24 +9,32 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev80；服务包 `4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb` |
-| Generation | `407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2` |
-| 引擎 | `18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8` |
-| 引擎发布记录 | `12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee` |
+| 发布 | rev92；服务包 `32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853` |
+| Generation | `56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f` |
+| 引擎 | `a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169` |
+| 引擎发布记录 | `e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 实际已验同应用能力v12控制payload `c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7` |
+| 版本回退 | 实际已验同应用能力rev80控制payload `241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434` |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-refusal-delivery-20261112/README.md)
-包含17项实际发布/回退/再次发布检查。原核心、Key/配额及outer状态
-保持；profile仅资格身份及revision更新，预算/时钟/历史不变。
-新版本周期保留前驱及原结果；没有新模型启动或开机项安装。
-自动回退保持现代原生固定根；人工整根回退的旧入口能力单独记录。
+[发行结果与回退记录](evidence/serve-retrieval-delivery-20261112/README.md)
+包含18项实际换根/周期登记/回退/再次发布检查，0新增GPU。原17步驱动
+在第9步遗漏周期登记而失败，原件保留；修正流程后人工旧入口和自动
+payload回退均有对应接受。原核心、Key/配额和outer状态保持，profile
+仅资格registry/revision更新、预算/历史不变；版本周期显式登记并完整
+保留前驱，自动恢复不能重置。主/回退均保留现代原生outer能力。
 工作分支已推送，**本轮尚未合入main**；主线交付仍属于Q02。
 
 ## 最近完成的实现和验证
+
+- A11[原生资料检索已可回退发行](evidence/serve-retrieval-delivery-20261112/README.md)，
+  默认rev92。实际检索、引用、历史/后台/schema、受监护版本回退及
+  官方SDK原生TLS均通过；人工换根遗漏登记已修复并实际通过18项检查。
+  MCP/其他内建工具仍未完成，继续全部master任务。
+
+以下为各实施组的历史进展，当前发行结论以上方表格为准。
 
 - A11实际发布已到rev88主包，但人工整根回退检查因驱动漏登记控制根
   恢复周期失败，保留原件，尚不宣称发行接受。已恢复已验主包，核心/
