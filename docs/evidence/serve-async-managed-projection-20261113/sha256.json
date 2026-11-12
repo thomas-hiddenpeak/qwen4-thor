@@ -1,0 +1,18 @@
+{
+  "managed-retained-run-02.json": "06edb7b9f146c022875ebd4298c01ae17a2dd35716040d2607e9c45030233cf8",
+  "tool_managed_acceptance_v2.py": "b774e0b70ab2b3172d2ed5cda4bf4af07767be3e7e8148d16cc0ca9c02a1b21d",
+  "managed-driver-cpu-02.stderr": "bea978647b19fd843a9f21262ecfaac3c8b7fed8b6dd6f7dccc63bc04fbbe217",
+  "managed-driver-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "managed-projection-cpu-01.json": "e74a5421b06563b2e4d6ed8d222c91eb61d31f57081629e789b789acfd6dad80",
+  "managed-driver-cpu-02.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "managed-retained-run-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "original-failure.tar.gz": "b97bbdb29ff780c60489fc4913caf3429c7aed04df8aee8905787a3d017acb76",
+  "managed-driver-cpu-01.stderr": "fcf0edc21c6d2357a28d358efa52c79e9543fc4813e1cf24a30cc05327d7b20e",
+  "README.md": "7712710515cd5d76511fc8b1d364bbc8fac4fa19ccb82055371fae355b4ffbf3",
+  "managed-projection-cpu-01.stderr": "5d1389717665d1a4d3e6af1fe5911029fbc0b99167bdb3ee7043ef2cce8991a9",
+  "managed-projection-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "managed-driver-cpu-02.json": "8c35c486862a77323cbc09b8255f79d88f6185f9c3005013ffd79da8c9c99a93",
+  "test_tool_managed_v2.py": "17b23ffd6c4b94b55d3fa3379aa104371bb84d031cdfac654fda2da433e43b4b",
+  "managed-driver-cpu-01.json": "7cbe7d6857e22bccad61278114e4b8eb3e1880e4b8ae981989792ebc3893f2bf",
+  "managed-retained-run-02.stdout": "12cf5e90c9550a9cbb62a5f835c25807fa2a105893fec7c8a327370a50fa334e"
+}

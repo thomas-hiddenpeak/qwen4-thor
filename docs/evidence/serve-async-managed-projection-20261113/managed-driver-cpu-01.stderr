@@ -1,0 +1,20 @@
+E....
+======================================================================
+ERROR: test_actual_wire_and_mutations_of_identity_result_or_stream (__main__.FeatureDriverTests.test_actual_wire_and_mutations_of_identity_result_or_stream)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/test_tool_managed.py", line 105, in test_actual_wire_and_mutations_of_identity_result_or_stream
+    wire=(Path(__file__).parent/'business-03/namespace-function.wire').read_bytes()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/business-03/namespace-function.wire'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.339s
+
+FAILED (errors=1)

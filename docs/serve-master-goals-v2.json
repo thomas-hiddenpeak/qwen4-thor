@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "resume_business_validated_new_profiles_pending",
+        "state": "current_profiles_pass_managed_projection_fixture_recheck",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -973,7 +973,13 @@
         "resume_cpu": "docs/evidence/serve-async-resume-cpu-20261113",
         "resume_output_budget": 256,
         "current_business_evidence": "docs/evidence/serve-async-resume-business-20261113",
-        "current_engine": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3"
+        "current_engine": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "managed_projection_evidence": "docs/evidence/serve-async-managed-projection-20261113",
+        "additional_managed_budget": {
+          "starts": 1,
+          "business_requests": 2,
+          "seconds": 300
+        }
       }
     },
     {

@@ -33,6 +33,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 新引擎在回退载荷中已正确完成异步独立回答；验收比较空logprobs与
+  GET默认投影时失败，[驱动修复及两项原文回放通过](evidence/serve-async-managed-projection-20261113/README.md)。
+  原失败保留，仅补1启动/2业务/300秒，生产代码与已验主轻资格不变。
+
 - 异步续答修复后的[完整JSON/SSE业务通过](evidence/serve-async-resume-business-20261113/README.md)：
   1启动/8创建/70.180秒，输出256与实际客户端边界一致，两类真实
   迟到结果均闭环。新引擎6d7d5e92正在重新取得主轻/回退资格；
