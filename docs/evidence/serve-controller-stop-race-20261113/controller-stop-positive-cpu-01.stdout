@@ -1,0 +1,20 @@
+[PASS] cache_io_stopped_worker_deadline_and_cancellation_are_bounded
+[PASS] cache_io_unreaped_worker_retains_only_its_own_domain
+[PASS] cache_io_restart_budget_and_stop_intent
+[PASS] cache_io_controller_exception_spawn_stall_and_thread_failure
+  idle=1 stop=1 early_notify=0 owner_released=1
+[PASS] cache_session_stop_cannot_miss_idle_wait_transition
+  idle=1 stop=1 early_notify=0 owner_released=1
+[PASS] cache_prefix_stop_cannot_miss_idle_wait_transition
+[PASS] responses_api_history_pagination_and_scope_survive_worker_restart
+[PASS] responses_api_replay_completes_http_chunks_before_connection_reuse
+[PASS] object_store_durable_crud_and_exact_data
+[PASS] object_store_stuck_spawn_retains_one_controller
+[PASS] object_store_error_reporting_allocation_failure_is_isolated
+[PASS] object_controller_repeated_faults_backoff_and_keep_one_owner
+[PASS] object_controller_failed_thread_start_recovers_on_demand
+[PASS] object_controller_stop_during_backoff_releases_only_own_slot
+  idle=1 stop=1 early_notify=0 owner_released=1
+[PASS] object_controller_stop_cannot_miss_idle_wait_transition
+[PASS] object_controller_recovery_cannot_reset_worker_spawn_budget
+16 tests, 16 passed, 0 failed, 0 skipped

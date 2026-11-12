@@ -1,0 +1,44 @@
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host
+[  0%] Built target q4t_regex_build
+[  1%] Built target q4t_service_tools
+[  2%] Built target q4t_guardian_process
+[  3%] Built target q4t_client_policy_check
+[  5%] Built target q4t_client_policy_fixture
+[  5%] Built target q4t_gpu_cache_schedule
+[  6%] Built target q4t_router_trace_check
+[  7%] Built target q4t_offload_sort
+[  7%] Built target q4t_device_filter
+[  8%] Built target q4t_guardian_journal
+[  8%] Built target q4t_service_cli
+[  8%] Built target q4t_guardian_process_tests
+[ 15%] Built target xgrammar
+[ 15%] Built target q4t_device_admission
+[ 15%] Built target q4t_guardian_journal_tests
+[ 16%] Built target q4t_ingress_access
+[ 17%] Built target q4t_service_cli_fixture
+[ 18%] Built target q4t_device_control
+[ 19%] Built target q4t_device_filter_tests
+[ 20%] Built target q4t_guardian
+[ 21%] Built target q4t_ingress_proxy_tests
+[ 21%] Built target q4t_ingress_access_tests
+[ 23%] Built target q4t_ingress
+[ 25%] Built target q4t_ingress_no_tls
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/cache_io.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_store.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[ 27%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[ 28%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

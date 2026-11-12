@@ -1,0 +1,1 @@
+object_controller_stop_cannot_miss_idle_wait_transition

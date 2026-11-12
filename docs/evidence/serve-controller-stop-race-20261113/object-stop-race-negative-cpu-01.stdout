@@ -1,0 +1,4 @@
+  idle=1 stop=1 early_notify=1 owner_released=0
+  CHECK failed: idle_entered && stop_entered && stopped_on_time && !gates->gate_timed_out && !notified_while_predicate_locked && released_owner (line 753)
+[FAIL] object_controller_stop_cannot_miss_idle_wait_transition
+1 tests, 0 passed, 1 failed, 0 skipped
