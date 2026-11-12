@@ -344,12 +344,33 @@ def finish_lease(fd,output,clean):
     os.fsync(fd)
 
 
+def verify_as_owner(plan):
+    """Private user policies must be verified under their original identity."""
+    uid,gid = plan['runtime_uid'],plan['runtime_gid'];out = Path(plan['output'])
+    if not (os.geteuid() == 0 and type(uid) is int and type(gid) is int and gid > 0 and
+            uid == int(os.environ['SUDO_UID']) > 0 and out.stat().st_uid == uid and
+            out.stat().st_gid == gid):raise ValueError('explicit original administrator required')
+    pid = os.fork()
+    if pid == 0:
+        try:
+            os.setgroups([]);os.setresgid(gid,gid,gid);os.setresuid(uid,uid,uid)
+            LEGACY['verify'](plan)
+        except BaseException:
+            traceback.print_exc();os._exit(1)
+        os._exit(0)
+    try:
+        code = reap(pid,30)
+        if code is None:raise TimeoutError('bounded source verification deadline')
+        pid = None
+        if code != 0:raise ValueError('original user package verification failed')
+    finally:
+        if pid is not None:finish_child(pid)
+
+
 def host(plan,path):
-    LEGACY['verify'](plan)
+    verify_as_owner(plan);LEGACY['load_modules'](plan)
     from tools.serve_recovery import ledger, resource_install, resource_kernel, resource_launch
     uid,gid = plan['runtime_uid'],plan['runtime_gid'];out = Path(plan['output'])
-    ledger.require(os.geteuid() == 0 and uid == int(os.environ['SUDO_UID']) > 0 and
-        out.stat().st_uid == uid and out.stat().st_gid == gid, 'explicit original administrator required')
     directory = Path('/var/lib')/('q4t-resource-validation-'+plan['service_id'])
     ledger.require(not directory.exists(), 'new private validation resource domain required')
     lock_path = Path(plan['lease_path']);fd = os.open(lock_path,os.O_RDWR|os.O_NOFOLLOW|os.O_CLOEXEC)

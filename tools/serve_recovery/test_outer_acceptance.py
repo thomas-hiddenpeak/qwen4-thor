@@ -146,4 +146,36 @@ class DriverTests(unittest.TestCase):
         with lock.open('r+') as following:fcntl.flock(following,fcntl.LOCK_EX|fcntl.LOCK_NB)
 
 
+@unittest.skipUnless(os.geteuid()==0,'explicit administrator CPU source check')
+class OwnerTests(DriverTests):
+    def owner(self):
+        uid,gid=int(os.environ['SUDO_UID']),int(os.environ['SUDO_GID'])
+        os.chown(self.path,uid,gid)
+        return dict(runtime_uid=uid,runtime_gid=gid,output=str(self.path))
+
+    def test_real_private_source_check_runs_after_permanent_owner_drop(self):
+        from tools.serve_gateway import client_policy
+        plan=self.owner();private=self.path/'private.json';private.write_bytes(b'owner-only')
+        os.chown(private,plan['runtime_uid'],plan['runtime_gid']);private.chmod(0o400)
+        def verify(_):
+            assert os.getresuid()==(plan['runtime_uid'],)*3
+            assert os.getresgid()==(plan['runtime_gid'],)*3 and os.getgroups()==[]
+            assert client_policy.read_private(private)==b'owner-only'
+            (self.path/'owner-result.json').write_text(json.dumps(dict(uid=os.geteuid(),verified=True)))
+        with mock.patch.dict(driver.LEGACY,verify=verify):driver.verify_as_owner(plan)
+        self.assertEqual(os.geteuid(),0)
+        self.assertEqual(json.loads((self.path/'owner-result.json').read_text()),
+                         dict(uid=plan['runtime_uid'],verified=True))
+
+    def test_invalid_owner_or_failed_child_never_advances_to_resource_action(self):
+        plan=self.owner()
+        with mock.patch.object(os,'fork') as fork,self.assertRaises(ValueError):
+            driver.verify_as_owner(dict(plan,runtime_uid=0))
+        fork.assert_not_called()
+        def fail(_):raise ValueError('explicit CPU private source rejection')
+        with mock.patch.dict(driver.LEGACY,verify=fail),self.assertRaisesRegex(ValueError,'verification failed'):
+            driver.verify_as_owner(plan)
+        self.assertEqual(os.geteuid(),0)
+
+
 if __name__ == '__main__':unittest.main(module=None)
