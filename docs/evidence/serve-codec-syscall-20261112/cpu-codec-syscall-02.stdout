@@ -1,0 +1,35 @@
+[PASS] worker_io_budget_real_writes_and_scalar_offsets_preserve_bytes
+[PASS] worker_io_budget_rejects_before_write_or_sparse_growth
+[PASS] worker_io_budget_bounds_actual_file_and_thread_creation
+[PASS] worker_io_budget_pumps_during_input_output_and_post_eof_cleanup
+[PASS] worker_io_budget_invalid_listener_and_duplicate_attach_do_not_leak
+[PASS] worker_io_budget_deadline_and_cancel_interrupt_active_notifications
+[PASS] worker_io_budget_listener_wait_and_bad_limits_are_bounded
+legacy worker status=9 reaped=1
+[PASS] file_legacy_actual_doc_unicode_and_confirmed_cleanup
+legacy worker status=9 reaped=1
+legacy sheet name=Actual data source_rows=2 columns=2 retained=2
+fixture cell: Item 中文
+fixture cell: Count
+fixture cell: Original
+fixture cell: 42 [cached formula result; formula: of:=SUM(20;22)]
+[PASS] file_legacy_actual_xls_sheet_coordinates_values_and_formula
+legacy worker status=9 reaped=1
+[PASS] file_legacy_actual_ppt_slide_order
+legacy word.doc: 400 invalid_file_document
+[PASS] file_legacy_corrupt_input_is_local_and_next_document_works
+legacy worker status=768 reaped=1
+legacy word.doc: 413 file_document_capacity
+legacy worker status=9 reaped=1
+legacy word.doc: 413 file_document_capacity
+legacy worker status=9 reaped=1
+legacy word.doc: 413 file_document_capacity
+[PASS] file_legacy_resource_rejection_cleans_and_publishes_nothing
+legacy worker status=9 reaped=1
+legacy worker status=9 reaped=1
+legacy word.doc: 408 request_deadline_exceeded
+[PASS] file_legacy_preflight_and_active_cancellation_are_bounded
+[PASS] file_legacy_workspace_lease_ownership_and_unrelated_data
+[PASS] file_legacy_workspace_cleanup_deep_tree_never_follows_symlink
+[PASS] file_legacy_sandbox_enforces_files_network_writes_and_thread_inheritance
+16 tests, 16 passed, 0 failed, 0 skipped

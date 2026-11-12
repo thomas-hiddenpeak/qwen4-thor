@@ -46,8 +46,12 @@ int Listener() {
       BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, architecture, 1, 0),
       BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
       BPF_STMT(BPF_LD | BPF_W | BPF_ABS, offsetof(seccomp_data, nr))};
-  for (uint32_t call : {SYS_write, SYS_pwrite64, SYS_openat, SYS_mkdirat,
-                        SYS_clone, SYS_ftruncate}) {
+  std::vector<uint32_t> metered_calls{SYS_write,   SYS_pwrite64, SYS_openat,
+                                      SYS_mkdirat, SYS_clone,    SYS_ftruncate};
+#if defined(__x86_64__)
+  metered_calls.insert(metered_calls.end(), {SYS_open, SYS_mkdir});
+#endif
+  for (uint32_t call : metered_calls) {
     filters.push_back(BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, call, 0, 1));
     filters.push_back(BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_USER_NOTIF));
   }
@@ -116,6 +120,26 @@ int WorkerIoBudgetFixture(int argc, char** argv) {
       if (fd < 0) return 5;
       close(fd);
     }
+  } else if (mode == "--io-budget-directories") {
+    for (int i = 0; i < 3; ++i) {
+      const auto path = directory / ("created-" + std::to_string(i));
+#if defined(__x86_64__)
+      if (i != 1) {
+        if (syscall(SYS_mkdir, path.c_str(), 0700)) return 5;
+        continue;
+      }
+#endif
+      if (syscall(SYS_mkdirat, AT_FDCWD, path.c_str(), 0700)) return 5;
+    }
+#if defined(__x86_64__)
+  } else if (mode == "--io-budget-legacy-open") {
+    for (int i = 0; i < 3; ++i) {
+      const auto path = directory / ("created-" + std::to_string(i));
+      const int fd = syscall(SYS_open, path.c_str(), O_CREAT | O_WRONLY, 0600);
+      if (fd < 0) return 5;
+      close(fd);
+    }
+#endif
   } else if (mode == "--io-budget-threads") {
     for (int i = 0; i < 3; ++i) {
       bool written = false;
@@ -173,11 +197,16 @@ Q4T_TEST(worker_io_budget_rejects_before_write_or_sparse_growth) {
   return true;
 }
 Q4T_TEST(worker_io_budget_bounds_actual_file_and_thread_creation) {
-  {
+  std::vector<const char*> creation_modes{"--io-budget-create",
+                                          "--io-budget-directories"};
+#if defined(__x86_64__)
+  creation_modes.push_back("--io-budget-legacy-open");
+#endif
+  for (const auto* mode : creation_modes) {
     Fixture fixture;
     WorkerIoBudget budget;
     budget.file_creations = 2;
-    Q4T_CHECK(fixture.Start("--io-budget-create", budget));
+    Q4T_CHECK(fixture.Start(mode, budget));
     std::string result;
     Q4T_CHECK(!fixture.process->CollectOutput(&result, 10, Clock::now() + 2s) &&
               fixture.process->Failure() == GrammarFailure::kResource &&

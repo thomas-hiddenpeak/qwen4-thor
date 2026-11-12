@@ -1,0 +1,14 @@
+{
+  "base": "9f00c7b95d11dc3a50f927742518a026d2452e52",
+  "source_sha256": {
+    "src/server/file_legacy_sandbox.cpp": "7d71fb3f591ce0c10160ad18cd9456e63b3ba3e9b13c1eb1a7bb20de389019a9",
+    "src/server/worker_io_broker.cpp": "bb7ead8d038868af5bdca8148bec08d313eeb685fefaf57c502ee97e0a29830a",
+    "tests/server_worker_io_budget_test.cpp": "44c9af91c33f2ee9d3620cccb4485317196ca5250ff0b994fa3e4d9f6cf97b9c"
+  },
+  "host_test_sha256": "bbb102d84ab3c3b112c170225a2f979663869c1b83ed07aeb3caea9e971d42d8",
+  "architecture": "aarch64",
+  "cpu_tests": 16,
+  "passed": 16,
+  "gpu_starts": 0,
+  "remote_x86_pending": true
+}

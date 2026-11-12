@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23的实际退出已定位为x86旧mkdir未进有界IO代理；已补齐等价ABI，
+  [16项针对性CPU通过](evidence/serve-codec-syscall-20261112/README.md)。
+  文件创建仍计费、路径仍受Landlock限制，等待真实远端结果再合并；
+  0GPU，默认rev94不变，继续全部master。
+
 - PR23实际沙箱ready后仍有编解码退出，另三项存储/过期夹具
   [针对性CPU通过](evidence/serve-host-storage-codec-20261112/README.md)。
   原失败完整保留，远端增加有界系统调用诊断；尚未合并，rev94保持，

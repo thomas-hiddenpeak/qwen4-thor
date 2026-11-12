@@ -88,6 +88,13 @@ WorkerIoBroker::Result WorkerIoBroker::Pump() {
               Charge(1, &remaining_.file_creations);
   else if (call == SYS_mkdirat)
     allowed = Charge(1, &remaining_.file_creations);
+#if defined(__x86_64__)
+  else if (call == SYS_open)
+    allowed = !(args[1] & (O_CREAT | (O_TMPFILE & ~O_DIRECTORY))) ||
+              Charge(1, &remaining_.file_creations);
+  else if (call == SYS_mkdir)
+    allowed = Charge(1, &remaining_.file_creations);
+#endif
   else if (call == SYS_clone) {
     constexpr uint64_t required = CLONE_VM | CLONE_SIGHAND | CLONE_THREAD;
     constexpr uint64_t permitted =

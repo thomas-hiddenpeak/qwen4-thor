@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [Legacy文档x86系统调用修复](evidence/serve-codec-syscall-20261112/README.md)
+
 - [CI存储夹具及编解码退出定位](evidence/serve-host-storage-codec-20261112/README.md)
 
 [CI可信localtime资源与Guardian exec握手续修](evidence/serve-host-localtime-exec-20261112/README.md)

@@ -142,8 +142,14 @@ int EnterLegacyDocumentSandbox(int scratch_fd) {
   // Filesystem writes must not bypass cumulative scalar-argument admission.
   // In particular: no writev/pwritev, io_uring, splice, copy_file_range,
   // fallocate, shared mmap, or ioctl clone/reflink paths.
-  for (uint32_t call : {SYS_write, SYS_pwrite64, SYS_ftruncate, SYS_openat,
-                        SYS_mkdirat, SYS_clone}) {
+  std::vector<uint32_t> metered_calls{SYS_write,  SYS_pwrite64, SYS_ftruncate,
+                                      SYS_openat, SYS_mkdirat,  SYS_clone};
+#if defined(__x86_64__)
+  // x86 libc still uses the original pathname ABI for directory creation.
+  // Charge the same budget as *at calls; Landlock checks the actual path.
+  metered_calls.insert(metered_calls.end(), {SYS_open, SYS_mkdir});
+#endif
+  for (uint32_t call : metered_calls) {
     filter.push_back(BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, call, 0, 1));
     filter.push_back(BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_USER_NOTIF));
   }
@@ -267,8 +273,10 @@ int EnterLegacyDocumentSandbox(int scratch_fd) {
     filter.push_back(BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW));
   }
 #if defined(__x86_64__)
+  // These have the same Landlock restrictions as the permitted *at forms.
   for (uint32_t call :
-       {SYS_arch_prctl, SYS_dup2, SYS_readlink, SYS_access, SYS_poll}) {
+       {SYS_arch_prctl, SYS_dup2, SYS_readlink, SYS_access, SYS_poll, SYS_stat,
+        SYS_lstat, SYS_rename, SYS_unlink, SYS_rmdir}) {
     filter.push_back(BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, call, 0, 1));
     filter.push_back(BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW));
   }
