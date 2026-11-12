@@ -1,0 +1,6 @@
+{
+  "scope": "uploads_part_64m_boundary_streams_and_overflow_keeps_parent_unchanged",
+  "source_sha256": "b7b7544411c72b704d0b4fcae9c2249c8970310f6be4ac482d55354e9fd37c99",
+  "same_local_command_also_ran": "7 namespace/result-contract cases on the local next-stage candidate; not claimed as this CI tip",
+  "gpu_starts": 0
+}
