@@ -53,8 +53,9 @@ export async function execute(input) {
     else if (input.action === 'cancel') value = await client.responses.cancel(input.id, options);
     else if (input.action === 'input_items') {
       const page = await client.responses.inputItems.list(input.id, input.query ?? {}, options);
-      value = { object: 'list', data: page.data, first_id: page.first_id,
-        last_id: page.last_id, has_more: page.has_more };
+      value = JSON.parse(Buffer.concat(wire).toString('utf8'));
+      requireValue(JSON.stringify(page.data) === JSON.stringify(value.data) &&
+        page.has_more === value.has_more, 'SDK page differs from wire');
     } else if (input.action === 'delete') {
       value = await (await client.responses.delete(input.id, options).asResponse()).json();
     } else throw new Error('unknown background SDK action');

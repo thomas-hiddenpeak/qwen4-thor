@@ -1,0 +1,21 @@
+{
+  "binary_sha256": "eef8a0976b28b237ea36e0d43164e1010a0c04a78fc862d36ec100916aa1bb87",
+  "original_attempt_failed": true,
+  "accepted_prefix": "namespaced function, result rejection and actual document JSON closure",
+  "records": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/plan.json": "7fd553b9d7699e09fd1392cdb672b67ce1928e7fa199b6347c78591f45c827e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/result.json": "9dd89f393ce7746279de5d321199ec7163820722a2b1434e12a754ece16749eb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/cleanup.json": "71881ec8335cd656b3f14934be2145afda5ae5097d228a29504777e4b603dd93",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/function-execution.json": "358b345202fa5f59715e4e41b02c35b8464a8560c7d2009d93d96ee2e49c0114",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/namespace-function.sdk.json": "72dc83350bac36f3e6c4ebd3edd3a3f3dddc872bf1fed9337a417bab8ad0a6fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/namespace-function.wire": "e7638c8c22547d0029659a395a7cd1ebc464e9f2a56beb0c4b87270ab39233e0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/invalid-result.sdk.json": "7f2334bee9552074460f198bcf4b3106c7f910f2c166fc8d4eaa2648e3d8f756",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/invalid-result.wire": "4a58fb3bd1329a9d7f8ab330306d23c9f8d0bac35475aaf2c2fc1b4fd476a4fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/function-follow.sdk.json": "04e5a051b23aad11f7eea4c4025c90f052349c2c0e768eda6cd3e362e2be0bd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/function-follow.wire": "470ea7e8a339cfd521d36bdbf378da7357e37276b571cdc09a0777b004ec6c89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/function-inputs.sdk.json": "8d1c16dd47e82076b34bb8fcd8ce091e46563535bedd0d2713d90aaf7d92ffb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/business-01/function-inputs.wire": "1f881269f88f62c1ea9106604d9a3852595bc34235d1044f6f9f7dde3267d5f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/lease-01/exit.json": "acb7be8b28e80762e7f0bec1c230104da61fb97e125bad9a92ae9c99e5012865",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/lease-01/events.jsonl": "0d0366bedff80781f9fbfa8519904a6d93b9f987199d394ccfbeef798bf1335a"
+  }
+}

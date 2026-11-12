@@ -29,6 +29,10 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- A07首轮函数调用/结果拒绝/真实资料JSON闭环通过；整体因SDK分页桥接
+  丢游标FAILED，服务线包正确。[修复后6条CPU回放通过](evidence/serve-tool-identity-business-prefix-20261112/README.md)。
+  首轮1启动3请求52.758秒已清理；只补custom的1启动3请求，rev94保持。
+
 - A07真实引擎CPU worker暴露512MiB小于动态库映射，已改为有界1GiB，
   [实际正/负例及回收通过](evidence/serve-tool-result-worker-20261112/README.md)。
   复核候选源码审计锚点；继续1启动/6请求业务短验，默认rev94保持。

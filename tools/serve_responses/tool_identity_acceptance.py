@@ -15,6 +15,7 @@ from tools.serve_service.package import read, require, save, sha
 
 base = foreground.base
 LIMITS = dict(starts=1, chats=6, controls=2000, seconds=900)
+CUSTOM_LIMITS = dict(starts=1, chats=3, controls=2000, seconds=600)
 
 
 def requests():
@@ -43,12 +44,15 @@ def requests():
 
 
 def prepare(args):
-    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    prior = reuse_function(args.reuse_function, args.binary) if args.reuse_function else None
+    background.prepare(args, rows=requests(),
+        limits=CUSTOM_LIMITS if prior else LIMITS, scope=__doc__)
     path = args.output.resolve() / 'plan.json'
     plan = read(path)
     plan['sources']['tools/serve_responses/tool_identity_acceptance.py'] = sha(Path(__file__))
     plan['mutations'] = ['own stored Responses/conversation only; no service fault injection',
                          'two actual bounded reads of docs/MODEL.md lines1-3']
+    plan['prior_function_evidence'] = prior
     plan['derived_requests'] = [
         'call IDs, namespace and previous/conversation IDs come from actual outputs',
         'invalid JSON result returns 400 before generation even with tools removed',
@@ -133,6 +137,14 @@ class Stage(foreground.Stage):
         follow['input'][0]['output'] = json.dumps(result, ensure_ascii=False)
         completed = self.answer('function-follow', follow, result)
         self.sdk('function-inputs', 'input_items', response_id=completed['id'])
+        self.custom_business()
+        save(self.out / 'business-summary.json', dict(model_starts=1, create_requests=6,
+            complete_generations=4, invalid_results=1, incomplete_generations=1,
+            actual_tool_executions=2, identity_and_result_contract=True,
+            full_quality_or_performance_claim=False))
+
+    def custom_business(self):
+        rows = self.plan['requests']
         conversation = self.sdk('conversation', 'conversation_create', {})
         custom_request = dict(rows['custom'], conversation=conversation['id'])
         custom = self.sdk('namespace-custom', 'create', custom_request)
@@ -154,10 +166,66 @@ class Stage(foreground.Stage):
         require(not any(e['type'] == 'response.custom_tool_call_input.done' for e in events),
                 'truncated call claimed executable input')
         self.drained('final')
-        save(self.out / 'business-summary.json', dict(model_starts=1, create_requests=6,
-            complete_generations=4, invalid_results=1, incomplete_generations=1,
-            actual_tool_executions=2, identity_and_result_contract=True,
-            full_quality_or_performance_claim=False))
+
+
+class CustomStage(Stage):
+    limits = CUSTOM_LIMITS
+    success_status = 'PASS_CUSTOM_IDENTITY_REMAINING_BUSINESS'
+
+    def business(self):
+        prior = self.plan['prior_function_evidence']
+        require(prior and prior['binary_sha256'] == self.plan['binary_sha256'],
+                'prior function engine differs')
+        for path, digest in prior['records'].items():
+            require(sha(Path(path)) == digest, 'prior evidence changed: ' + path)
+        self.custom_business()
+        save(self.out / 'business-summary.json', dict(model_starts=1, create_requests=3,
+            complete_generations=2, incomplete_generations=1, actual_tool_executions=1,
+            reused_function_evidence=prior, aggregate_model_starts=2,
+            aggregate_create_requests=6, full_quality_or_performance_claim=False))
+
+
+def reuse_function(directory, binary):
+    directory = directory.resolve(strict=True)
+    result = read(directory / 'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+            result['counts']['chats'] == 3 and 'first_id' in result['error'] and
+            'last_id' in result['error'], 'unrecognized partial attempt')
+    plan = read(directory / 'plan.json')
+    require(plan['binary_sha256'] == sha(binary) and
+            plan['sources'][foreground.DOCUMENT] == sha(ROOT / foreground.DOCUMENT),
+            'prior engine/document changed')
+    cleanup = read(directory / 'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+            cleanup['ports_released'] and cleanup['lease_continuously_held'],
+            'prior cleanup incomplete')
+    for name in ['namespace-function', 'function-follow']:
+        response = read(directory / (name + '.sdk.json'))
+        require(response['ok'] and len(response['exchanges']) == 1, 'prior SDK failed')
+        background.check_response(response['result'], 'completed')
+    rejected = read(directory / 'invalid-result.sdk.json')
+    require(not rejected['ok'] and rejected['error']['status'] == 400 and
+            rejected['error']['code'] == 'invalid_tool_output', 'prior rejection differs')
+    check_shape(read(directory / 'function-inputs.wire'), 'input_items_list')
+    lease = directory.parent / 'lease-01'
+    guard = read(lease / 'exit.json')
+    events = [json.loads(line) for line in (lease / 'events.jsonl').read_text().splitlines()]
+    monitors = [row for row in events if row['event'] == 'monitor']
+    require(guard['status'] == 'COMMAND_FAILED' and guard['child_returncode'] == 1 and
+            guard['compute_backend'] == 'nvml' and monitors and
+            events[-1]['event'] == 'lease_released' and
+            all(not row.get('conflicts') and not row.get('unreadable_processes')
+                for row in events) and
+            not any(row['event'] in ('env_abort', 'monitor_error') for row in events),
+            'prior strict GPU environment not accepted')
+    names = ['plan.json', 'result.json', 'cleanup.json', 'function-execution.json']
+    for name in ['namespace-function', 'invalid-result', 'function-follow', 'function-inputs']:
+        names.extend([name + '.sdk.json', name + '.wire'])
+    return dict(binary_sha256=plan['binary_sha256'], original_attempt_failed=True,
+        accepted_prefix='namespaced function, result rejection and actual document JSON closure',
+        records={str(path): sha(path) for path in
+                 [*(directory / name for name in names),
+                  lease / 'exit.json', lease / 'events.jsonl']})
 
 
 def main():
@@ -167,6 +235,7 @@ def main():
     p.add_argument('--binary', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18164)
+    p.add_argument('--reuse-function', type=Path)
     p = modes.add_parser('run')
     p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
@@ -174,7 +243,9 @@ def main():
         prepare(args)
     else:
         with base.lifecycle.child_subreaper():
-            Stage(read(args.plan)).run()
+            plan = read(args.plan)
+            cls = CustomStage if plan.get('prior_function_evidence') else Stage
+            cls(plan).run()
 
 
 if __name__ == '__main__':
