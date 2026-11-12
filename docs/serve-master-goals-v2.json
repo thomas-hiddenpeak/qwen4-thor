@@ -1457,6 +1457,21 @@
           "engine_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
           "candidate_manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
           "default_changed": false
+        },
+        "managed_acceptance": {
+          "state": "retained_and_version_accepted_tls_driver_fixed_retest_pending",
+          "retained_manifest": "241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434",
+          "primary_manifest": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
+          "tls_manifest": "5ba1c81ae14512df9fca07102744ef514a45a63ecbf3f1b9959904fe731ba666",
+          "sdk_driver_cpu_cases": 2,
+          "sdk_driver_evidence": "evidence/serve-sdk-wire-capture-cpu-20261112/README.md",
+          "tls_supplement_budget": {
+            "starts": 1,
+            "requests_including_selfcheck": 2,
+            "probes": 0,
+            "seconds": 300
+          },
+          "default_changed": false
         }
       }
     },

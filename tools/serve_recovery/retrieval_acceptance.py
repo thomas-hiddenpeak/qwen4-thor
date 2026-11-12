@@ -85,7 +85,9 @@ def check_business(value, *, version, tls):
         text = direct.foreground.text(follow)
         direct.require('SSD' in text and 'DRAM' in text, 'fallback lost actual retrieval context')
     if tls:
+        from tools.serve_responses import sdk_capture
         sdk = value['sdk']
+        sdk_capture.validate(sdk)
         direct.require(sdk['version'] == '3.42.1' and type(sdk['requests']) is int and
             sdk['requests'] == 1 and
             sdk['response'] == value['response'] and sdk['events'], 'native TLS SDK incomplete')
@@ -427,27 +429,9 @@ def finalize(path):
 
 
 def sdk_child():
-    import ssl
-    import httpx2 as httpx
-    import openai
-    config=json.load(sys.stdin)
-    if openai.__version__ != '3.42.1':raise RuntimeError('SDK version changed')
-    if not config['base_url'].startswith('https://127.0.0.1:'):
-        raise RuntimeError('SDK must target private native TLS')
-    requests=[]
-    def sent(request):
-        requests.append(dict(method=request.method,path=request.url.path))
-        if len(requests)>1:raise RuntimeError('SDK request replay')
-    transport=httpx.Client(verify=ssl.create_default_context(cafile=config['ca']),
-                           event_hooks={'request':[sent]})
-    request=dict(config['request']);request.pop('stream')
-    with openai.OpenAI(base_url=config['base_url'],api_key=config['key'],max_retries=0,
-                       timeout=120,http_client=transport) as client:
-        with client.responses.stream(**request) as stream:
-            events=[event.model_dump(mode='json',exclude_unset=True) for event in stream]
-            response=stream.get_final_response().model_dump(mode='json',exclude_unset=True)
-    print(json.dumps(dict(version=openai.__version__,requests=len(requests),
-                          events=events,response=response)))
+    sys.path.insert(0,str(ROOT))
+    from tools.serve_responses.sdk_capture import stream_response
+    print(json.dumps(stream_response(json.load(sys.stdin))))
 
 
 def main():

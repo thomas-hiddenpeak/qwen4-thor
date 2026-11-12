@@ -1,0 +1,7 @@
+test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_incomplete_wire_sdk_metadata_mismatch_and_replay_cannot_certify) ... ok
+test_official_high_level_helper_and_split_native_wire_stay_separate (tools.serve_responses.test_sdk_capture.SdkCaptureTests.test_official_high_level_helper_and_split_native_wire_stay_separate) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.966s
+
+OK

@@ -28,6 +28,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11受监护检索与真实版本回退已通过；原生TLS实际请求成功后，
+  驱动误序列化SDK附加字段而失败，原件保留。驱动改为原始SSE与
+  SDK解析观察分别校验，[2项CPU已过](evidence/serve-sdk-wire-capture-cpu-20261112/README.md)，
+  仅TLS补验1启动/2请求/300秒；
+  三段累计上限5启动/10请求/1探测/1500秒，复用已过且包身份未变
+  的受监护/回退证据，默认rev80保持，不重跑无关用例。
+
 - A11受监护检索、版本切换及原生TLS驱动已通过
   [5项CPU](evidence/serve-retrieval-managed-driver-cpu-20261112/README.md)，
   后续分三租约累计最多4启动/8请求（含4自检）/1探测/1200秒，
