@@ -72,7 +72,8 @@ root命名空间。private安装意图先持久，再创建实际内核域，最
 
 `resource-domain enter --directory DIR -- /绝对路径/q4t service outer-run …`
 是显式管理员入口。调用者自身先进入outer，再释放安装管理锁，设置
-no_new_privs并清除root UID/GID/附加组，exec普通用户外层命令。
+no_new_privs并清除root UID/GID，只保留目标账号已有video/render设备
+附加组，exec普通用户外层命令；不继承管理员附加组或新增成员资格。
 公开ready回执与实际cgroup身份必须一致。service迁移FD在永久降权后
 打开；接收者再按普通UID重新打开。每次子启动先核对原回执，
 只写0进入service，然后关闭该FD再exec Guardian。普通run路径
@@ -207,3 +208,5 @@ profile_memory模块，避免改写历史包source清单。验证副本时从
 2026-11-12。版本恢复资源组冻结18针对性CPU：8新精确适配/原包和无关方法保持/双payload接线/真实sealed worker与身份负控，7直接新客户端/原profile/无资源版本/旧CLI回归及3封包。另冻结1次已接受v16真实旧包的只读来源核验与独立适配封包，不启动模型。全部0GPU；只有具体失败才定点补验，当前默认及冻结R07不变，总任务继续。
 
 2026-11-12。双版本资源[18不同CPU接受](evidence/serve-resource-version-cpu-20261112/README.md)，20调用累计11.908秒；原2夹具错误保留并定点补过。真实已验v12原件10155da3的独立适配59934942逐字节核验通过（两次来源检查3.717秒，首版本断言错误保留），原件/无关故障方法/历史清单保持。0GPU/默认与R07不变；继续实际外层资源业务、冷准入和可回退交付，全部任务保持。
+
+2026-11-12。实际外层资源短验02失败：2次模型派生/0Chat/0探测，24.958秒后重复故障保护；日志明确NvRmMemInitNvmap Permission denied。资源入口清空附加组，导致原运行用户丢video权限；CPU夹具未覆盖CUDA设备DAC。自有进程/端口/资源域已清、原锁released，默认/其他服务不变。已开发仅保留目标账号已有video/render成员资格的永久降权，清除管理员附加组，仍要求no_new_privs；资源及直接设备入口共用。冻结4新CPU（实际文件DAC旧/新对照、nvmap只读access判定、不回root、缺身份/权限负控）+3直接资源/原生角色+3封包，共10项。原GPU预算累计已用2/3启动，完整补验仍需额外启动额度；R07原冻结入口同类问题也保留为待更新，不执行旧计划。

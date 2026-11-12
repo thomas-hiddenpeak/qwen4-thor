@@ -1,0 +1,31 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":124048392192}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 310 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.99 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=101739793304 runtime_peak=99625978920 estimated_total=101739793304
+[q4t][startup] budget 487 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=2 policy=client_round_robin_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":101739793304,"headroom_bytes":2147483648,"required_bytes":103887276952,"observed_total_bytes":131920637952,"observed_available_bytes":123601747968}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+NvRmMemInitNvmap failed: error Permission denied
+NvRmMemMgrInit failed: Memory Manager Not supported, line 340
+NvRmMemMgrInit failed: error type 196626
+NvRmMemInitNvmap failed: error Permission denied
+NvRmMemMgrInit failed: Memory Manager Not supported, line 340
+NvRmMemMgrInit failed: error type 196626
+[startup-reservation] {"schema":1,"event":"prepare_failed","status":"FAILED","count":1606,"device_bytes":85541278088,"allocated":0,"consumed":0,"freed":0,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"allocation_failed","backend_rc":100,"error_index":1559,"prepared":false,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup] startup_resource_plan 1941 ms
+[q4t][startup] startup_total 2739 ms
+serve start failed: startup reservation: allocation_failed index=1559 backend_rc=100
+[startup-reservation] {"schema":1,"event":"finalized","status":"FAILED","count":1606,"device_bytes":85541278088,"allocated":0,"consumed":0,"freed":0,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"allocation_failed","backend_rc":100,"error_index":1559,"prepared":false,"startup_complete":false,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":3355443200,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":1,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

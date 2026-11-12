@@ -1,0 +1,50 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/acceptance.py\", line 832, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py\", line 258, in exercise\n    first = self.resource_ready(1,'primary')\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/outer_acceptance.py\", line 224, in resource_ready\n    state = self.version_ready(generation,payload)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/version_acceptance.py\", line 229, in version_ready\n    state=self.ready(generation,'primary')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/profile_managed_acceptance.py\", line 214, in ready\n    state = self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/acceptance.py\", line 443, in wait\n    last = self.sample()\n           ^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/tools/serve_recovery/acceptance.py\", line 431, in sample\n    self.engine.require(not value['recovery_frozen'] and value['state'] != 'QUARANTINED',\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle/source/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: service entered protective state\n",
+  "cleanup_failure": null,
+  "seconds": 24.958123619668186,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 0,
+      "probes": 0,
+      "controls": 86
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 2641581394652209
+      },
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 2,
+        "monotonic_ns": 2641590266807065
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1878479,
+      "start_ticks": 264158139
+    },
+    "2": {
+      "pid": 1878518,
+      "start_ticks": 264159026
+    }
+  },
+  "quota_deadlines": {
+    "2": 2641644.630263246
+  },
+  "source_commit": "170540f77b7b36a85c65775ab8c1c20985850dd5",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-outer-recovery-20261112/worktree/.q4t-work/serve-outer-business-20261112/business-02/bundle",
+    "manifest_sha256": "f1da23bcee84a2e9148621354827a77c110baa6e892bc5f3c819b81f238a2e27",
+    "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

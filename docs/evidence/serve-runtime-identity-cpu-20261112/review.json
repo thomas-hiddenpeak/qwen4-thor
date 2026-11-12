@@ -1,0 +1,28 @@
+{
+  "status": "TARGETED_RUNTIME_IDENTITY_CPU_ACCEPTED",
+  "tests": 10,
+  "seconds": 5.039868774823844,
+  "real_uid_drop": true,
+  "existing_device_groups_only": true,
+  "root_and_administration_denied": true,
+  "cpu_tests_open_gpu": false,
+  "prior_business": {
+    "status": "FAILED",
+    "model_starts": 2,
+    "chats": 0,
+    "probes": 0,
+    "seconds": 24.958123619668186,
+    "cause": "supplementary video group removed before nvmap access",
+    "cleanup_confirmed": true
+  },
+  "business_acceptance": "PENDING_NEW_FIX_IDENTITY",
+  "default_unchanged": true,
+  "source_sha256": {
+    "tools/serve_recovery/runtime_identity.py": "49c737a851df8afe97da6c9d5897f54f2759e3447939f5577940dba735aa5708",
+    "tools/serve_recovery/resource_launch.py": "87c545ac01484ec785141611cf30470a8d633d5942afd4176e7342829aa608cf",
+    "tools/serve_recovery/device_domain.py": "e3776d3795a8e363136c0ca44291e362167eb3ed5539d276f850b3b43bd9e512",
+    "tools/serve_recovery/bundle.py": "c0d877760b8eabdbb949a373a9ebcd352c18d4cafdb8040f5a499fdd4bdcdc71",
+    "tools/serve_recovery/test_runtime_identity.py": "dc69c57cc0684e21c9cefcfa7a9efdce82f02161df9166fc82ac54fbef802c13",
+    "tools/serve_recovery/test_native_bundle.py": "be08a10385fe63633c206fbc7f3d899620360371f6b860b9b629740cba2cd506"
+  }
+}

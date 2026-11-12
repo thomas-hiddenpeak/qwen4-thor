@@ -78,11 +78,8 @@ def enter(directory, command):
         # Admin removal now sees this process in outer until it actually exits.
         libc = ctypes.CDLL(None, use_errno=True)
         ledger.require(libc.prctl(38, 1, 0, 0, 0) == 0, 'cannot set no_new_privs')
-        os.setgroups([])
-        os.setresgid(value['runtime_gid'], value['runtime_gid'], value['runtime_gid'])
-        os.setresuid(value['runtime_uid'], value['runtime_uid'], value['runtime_uid'])
-        ledger.require(os.getresuid() == (value['runtime_uid'],)*3 and
-            os.getresgid() == (value['runtime_gid'],)*3, 'resource privilege drop failed')
+        from tools.serve_recovery import runtime_identity
+        runtime_identity.drop(value['runtime_uid'], value['runtime_gid'])
         with kernel.Scope(value['record']) as scope:
             entry_fd = scope.join_descriptor('service')
         os.set_inheritable(entry_fd, True)

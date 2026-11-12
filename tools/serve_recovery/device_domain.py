@@ -478,9 +478,8 @@ def enter(directory, lease_fd, lease_path, manifest_sha256, command, *,
                     for fd in (*fds, lease_fd): os.set_inheritable(fd, True)
                     libc = ctypes.CDLL(None, use_errno=True)
                     ledger.require(libc.prctl(38, 1, 0, 0, 0) == 0, 'cannot set no_new_privs')
-                    os.setgroups([]); os.setresgid(config['runtime_gid'], config['runtime_gid'], config['runtime_gid'])
-                    os.setresuid(config['runtime_uid'], config['runtime_uid'], config['runtime_uid'])
-                    ledger.require(os.geteuid() == config['runtime_uid'], 'device entry did not drop privilege')
+                    from tools.serve_recovery import runtime_identity
+                    runtime_identity.drop(config['runtime_uid'], config['runtime_gid'])
                     os.execve(command[0], command, env)
 
 
