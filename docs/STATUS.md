@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-12）
 
+2026-11-12。隔离分支codex/serve-outer-recovery推进至4c904958：原生公开冷入口12 CPU、自主辅助监护16不同CPU、资源压力组合17不同CPU接受；实际许可/监护SIGKILL恢复与限流、旧OFD防重叠、真实自有memcg high及独立物理计量通过。原资源夹具超时保留并定点修复，均0GPU/默认rev64保持。继续版本恢复当前与保留payload资源接线、实际冷/恢复业务发行及全部API总计划，尚未合main；见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)。本工作区R07 plan-v2运行源码保持，既有服务维护确认仍待回复。
+
 2026-11-12。R07/R08/R09隔离分支codex/serve-outer-recovery已推送c7c52844：宿主切包交接19不同CPU、显式设备detach14、资源绑定15、保护许可通道20、外层/宿主组合27不同CPU接受。实际两代原生CPU根/30秒冷却、STOPPED竞争、root IPC及辅助退出验证完成，签发/设备正向部分明确为CPU夹具；原失败与修复保留，自有issuer/资源域已清理，0GPU/默认rev64保持。继续公共入口租约交接、issuer失能恢复、实际业务发行及全部API总任务，尚未合main；见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)。本工作区R07 plan-v2运行源码保持，既有服务维护确认仍待回复。
 
 2026-11-12。R08/R09隔离工作分支codex/serve-outer-recovery已推送d1f136da：宿主ensure 11不同CPU及可选systemd触发19不同CPU接受；实际Guardian健康根同PID接管、真实自有/run timer的STOPPED检查/禁用/卸载通过，注册/链接/资源域均清理。触发器组原14夹具清理失败及回收证据保留；0GPU，不改/etc、既有服务或默认rev64。隔离工作区继续宿主升级绑定开发/针对性验证，尚未模型业务/发行或合main；见[隔离状态](../.q4t-work/serve-outer-recovery-20261112/worktree/docs/STATUS.md)。本工作区R07 plan-v2源码保持，既有服务维护确认仍未收到，全部计划继续。
