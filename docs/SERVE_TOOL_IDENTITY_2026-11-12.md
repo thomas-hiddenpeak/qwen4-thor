@@ -47,6 +47,12 @@ SDK的function/custom选择器只有type与name，没有namespace字段。
 ## 当前验证与下一步
 
 [CPU归档](evidence/serve-tool-identity-cpu-20261112/README.md)记录37项不同
-C++用例、官方SDK及公开schema通过。namespace和调用时output_schema
-已实现，尚待1启动/6请求/900秒实际业务短验；不是A07完整交付。
-结果校验复用当前schema dialect，完整JSON Schema扩展仍须落实。
+C++用例、官方SDK及公开schema通过；标准custom grammar转换、真实
+结果worker和SDK分页修复分别有针对性记录。
+[实际工具业务](evidence/serve-tool-identity-business-20261112/README.md)、
+[主轻资格及跨停机存储](evidence/serve-tool-identity-profiles-20261113/README.md)、
+[保持新能力的真实服务回退](evidence/serve-tool-identity-managed-20261113/README.md)
+均已通过，继续可回退发行；尚不等于完整A07。
+
+结果校验复用当前schema dialect，完整官方支持范围仍须落实。
+async/caller/defer_loading、typed内容数组及其余master任务继续。

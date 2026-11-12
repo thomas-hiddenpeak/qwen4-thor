@@ -1,0 +1,1 @@
+{"acceptance": "ACCEPT_TOOL_IDENTITY_VERSION", "strict_lease_seconds": 112.38553092489019, "nvml_queries": 105, "env_abort": false, "counts": {"starts": 2, "chats": 4, "probes": 1, "controls": 346}}

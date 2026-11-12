@@ -1,0 +1,62 @@
+{
+  "status": "NEW_PAYLOAD_ACTUAL_ACCEPTANCE_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+    "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+  },
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/candidate-02/bundle",
+    "manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle",
+    "manifest_sha256": "0c5f6f6299883c42423c3eb1863053d4736818b21e24422d583f836adfd16386"
+  },
+  "changed_files": [
+    "bin/q4t-guardian",
+    "bin/q4t-ingress",
+    "native-build.json",
+    "profile-light.json",
+    "profile-primary.json"
+  ],
+  "compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+    "to_registry": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+    "to_identity": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+    "capabilities_sha256": "1454f6c7cc710bea17ca3017d47c722c05beb90f206a5ac11b227d8b072c43e3",
+    "automatic": true
+  },
+  "native_helpers": "Exact current accepted helper bytes and build receipt; v12 does not install the v18 device-control executable.",
+  "control_implementation": "Exact accepted c93e9714 older Python control; current engine and native helpers. No independent older engine rollback.",
+  "original_acceptance_not_relabelled": true,
+  "default_unchanged": true,
+  "driver_sha256": "786f2d326236d358d3b6d2345faf663d819d88b089f7f98b27856a0a48bc79f9"
+}

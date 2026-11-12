@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "id": "conv_b0ac9bd7beb4a3d426a770867d78d84e",
+    "object": "conversation.deleted",
+    "deleted": true
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19069/v1/conversations/conv_b0ac9bd7beb4a3d426a770867d78d84e",
+      "method": "DELETE"
+    }
+  ]
+}

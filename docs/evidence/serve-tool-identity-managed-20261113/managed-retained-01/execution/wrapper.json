@@ -1,0 +1,21 @@
+{
+  "production": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/retained-01/bundle/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/execution/state/runs/a06b392d-9bb7-4ebf-b2fc-47f6ab60c161/controller.json"
+  ],
+  "validation": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/tool_managed_acceptance.py",
+    "controller",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-namespace-20261112/managed-retained-01/execution/state/runs/a06b392d-9bb7-4ebf-b2fc-47f6ab60c161/controller.json"
+  ]
+}

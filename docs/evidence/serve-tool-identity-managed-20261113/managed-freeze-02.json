@@ -1,0 +1,16 @@
+{
+  "scope": "Current namespace and result contract survives actual native whole-payload fallback",
+  "cpu_cases": 5,
+  "limits": {
+    "starts": 3,
+    "chats": 6,
+    "probes": 1,
+    "seconds": 900
+  },
+  "no_full_quality_or_performance": true,
+  "driver_sha256": "fd6c4728c3f15eb92a9df25344d9c639fefb19a56c2f10fb20f4bdd8c1aa7742",
+  "tests_sha256": "9ca9907f75666a8557ec6783db0fee448debf47f0045ec3dd390ec99c18a9695",
+  "source_template_sha256": "77833b5dbf1e6212759d35e3db63f50c402f6bcdd50b6132b14e5e463c006429",
+  "cpu_status": "PASS_5_CASES",
+  "initial_cpu_setup_error": "First standalone test import lacked repository sys.path; no tests or GPU executed; repaired entry and all five cases pass."
+}

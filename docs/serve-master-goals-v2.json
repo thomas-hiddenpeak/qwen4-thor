@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-12",
+  "updated": "2026-11-13",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active_master_goal",
   "app_migration": {
@@ -911,7 +911,11 @@
           "create_requests": 10,
           "seconds": 159.27142818830907
         },
-        "new_cpu_custom_shape_tests": 2
+        "new_cpu_custom_shape_tests": 2,
+        "profile_evidence": "docs/evidence/serve-tool-identity-profiles-20261113/README.md",
+        "managed_recovery_evidence": "docs/evidence/serve-tool-identity-managed-20261113/README.md",
+        "delivery": "pending_reversible_publication",
+        "current_candidate_manifest_sha256": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4"
       }
     },
     {
@@ -1901,6 +1905,13 @@
         "seconds": 2100,
         "actual_starts": 4,
         "actual_requests": 15
+      },
+      "controller_stop_race": {
+        "state": "cpu_and_real_primary_light_storage_accepted_pending_delivery",
+        "evidence": [
+          "docs/evidence/serve-controller-stop-race-20261113/README.md",
+          "docs/evidence/serve-tool-identity-profiles-20261113/README.md"
+        ]
       }
     },
     {

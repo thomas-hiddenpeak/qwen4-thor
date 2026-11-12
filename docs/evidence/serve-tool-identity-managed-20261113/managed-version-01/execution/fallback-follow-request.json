@@ -1,0 +1,49 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_output_tokens": 256,
+  "reasoning": {
+    "effort": "none"
+  },
+  "input": [
+    {
+      "type": "function_call_output",
+      "call_id": "call_resp_f057878a20c2ef2417da669baac0aacf_0",
+      "output": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 3, \"citation\": \"[docs/MODEL.md:L1-L3]\", \"text\": \"1: # MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记\\n2: \\n3: > 对目标模型的理解笔记, 随研读深入持续更新。\", \"truncated\": false}, \"total_lines\": 311}"
+    }
+  ],
+  "instructions": "Return the actual first-line document title and its exact source citation from the tool result as JSON. Do not call another tool.",
+  "tools": [],
+  "tool_choice": "none",
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "document",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "citation": {
+            "type": "string",
+            "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+          }
+        },
+        "required": [
+          "title",
+          "citation"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "stream": true,
+  "previous_response_id": "resp_f057878a20c2ef2417da669baac0aacf",
+  "stream_options": {
+    "include_obfuscation": false
+  }
+}

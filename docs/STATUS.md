@@ -29,6 +29,12 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- 新工具合同与ObjectStore/CacheIo停止修复已取得[真实主/轻量资格](evidence/serve-tool-identity-profiles-20261113/README.md)，
+  含同一存储会话跨重启读取/删除。兼容回退载荷的独立运行和
+  [实际整树切换后工具闭环](evidence/serve-tool-identity-managed-20261113/README.md)也通过，
+  合计3启动/6生成/1探测/165.913秒，全部资源清理。继续可回退发行；
+  rev94保持，PR23最新17d8dbe2续验中，全部master仍active。
+
 - PR23续验发现HTTP夹具把随机请求ID中的999误判成子用量泄漏；
   已确定性负控复现并只检查真实用量头。批任务正常存储与故障期限
   也已分开，[17项针对性CPU首过](evidence/serve-ci-trace-storage-20261113/README.md)。
