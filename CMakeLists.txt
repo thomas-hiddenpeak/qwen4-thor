@@ -487,6 +487,10 @@ target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
   src/server/state_retention_cli.cpp)
 q4t_link_native_crypto(q4t_server)
 q4t_link_native_documents(q4t_server)
+include(cmake/NativeProgrammatic.cmake)
+target_sources(q4t_server PRIVATE src/server/program_worker.cpp
+  src/server/program_vm.cpp)
+q4t_link_native_programmatic(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -837,6 +841,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_native_crypto_test.cpp)
   q4t_link_native_crypto(q4t_tests)
 q4t_link_native_documents(q4t_tests)
+  q4t_link_native_programmatic(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
       tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp

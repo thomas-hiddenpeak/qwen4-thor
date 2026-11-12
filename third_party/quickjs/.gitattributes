@@ -1,0 +1,3 @@
+# Preserve the byte-identical upstream source, including original whitespace.
+*.c -text -whitespace
+*.h -text -whitespace

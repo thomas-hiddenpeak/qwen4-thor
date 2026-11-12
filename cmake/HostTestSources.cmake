@@ -1,8 +1,12 @@
+include(${CMAKE_CURRENT_LIST_DIR}/NativeProgrammatic.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 # Shared by the Thor release gate and the standalone public host build.
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_vm.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_program_worker_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_admin.cpp

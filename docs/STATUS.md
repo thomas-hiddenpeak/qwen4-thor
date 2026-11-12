@@ -32,9 +32,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
 异步实现已实际合main（PR25，`4e87a03f`），
 [合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev118可用，
-工具发现已发行，PR26仍待当前head检查及实际合main；程序调用等全部master继续。
+工具发现已发行并实际合main（PR26，`090f0d48`），
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用等全部master继续。
 
 ## 最近完成的实现和验证
+
+- [程序调用隔离执行部件](SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)已通过
+  [13项针对性CPU](evidence/serve-programmatic-worker-cpu-20261113/README.md)：
+  真实JavaScript、并行/依赖续接、结果顺序、资源限额和回收验证通过；
+  构建零警告、0GPU、默认rev118保持。公开授权/持久续接/执行接线、
+  真实业务与发行仍待完成，不能算对外能力已交付；全部master继续。
+
+- PR26精确head `1282ece2`的push/PR两组CI均通过，已实际合main
+  （`090f0d48`）；[回执](evidence/serve-pr26-merged-20261113/README.md)保留。
 
 - PR26旧head一次CI暴露正常Batch恢复误用150ms故障期限；已将三项
   同类夹具的正常/注入期限分开，[7项针对性CPU首过](evidence/serve-ci-batch-recount-deadline-20261113/README.md)。

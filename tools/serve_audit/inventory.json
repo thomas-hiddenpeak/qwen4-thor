@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "3adcdc6576e25900154c79962a963dd490d2a9a491c1840a6fbb77665ee778ca",
-    "cmake/ChatProtocolIdentity.cmake": "fca656a5fd04e3f8dca973784644f39da9987742a4d17119d09950b958b6b9a8",
+    "CMakeLists.txt": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151",
+    "cmake/ChatProtocolIdentity.cmake": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1887,7 +1887,7 @@
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
-    "include/q4t/server/grammar_process.h": "cc0d110a991a97ee590072984fafd1ba34884d9ce9db52f9395f8c9bcc5ff74a",
+    "include/q4t/server/grammar_process.h": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
     "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -1916,6 +1916,7 @@
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
     "include/q4t/server/prediction.h": "2b641a3cb00cb9c788d4418e3a4719e8b4c884352fee4068a7f6f47b9be049fb",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/program_worker.h": "7ecbe959e69b3cbe9ed65ebef2680d9f86a5687143a0ab7feede3ae18efca0e9",
     "include/q4t/server/progress_context.h": "fc6ed010388bd5e33951d0c585a1b33f7edb07570866cc38c66e7cbee16bcbb3",
     "include/q4t/server/progress_transport.h": "90adb59393f339d011c37d2a602cff6ffaa955e20bbf0c1725b1455640b9a9e3",
     "include/q4t/server/prompt_cache_diagnostics.h": "f6701c9eaabda5c613121c6b0d9f4a441e203d03ab4d5cec020cda56dc50cedd",
@@ -2005,7 +2006,7 @@
     "include/q4t/vision/timing.h": "1cf7c2342f1fbd58085a5ce4421ff0872fe56c247daadf3719ea34959d3b8ebf",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "f5751e6844057a62b5a8fd7ec0faf05deec00c2bb19d2bd955e63e85abdbe619",
+    "src/main.cpp": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "fd855fab933d9538c6326c1d9d7d003e3d0e6af52c33f84b07bec7480513625e",
@@ -2138,7 +2139,7 @@
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
-    "src/server/grammar_process.cpp": "72bebd0f5893829436ed7501e6529b0538d272cd53800295290d77a05469fa5c",
+    "src/server/grammar_process.cpp": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "a963e1099af8505277ca04dd75f18da090bcab5fd8c058eb826ff10e3a25a8b1",
@@ -2164,6 +2165,9 @@
     "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+    "src/server/program_vm.cpp": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb",
+    "src/server/program_vm.h": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126",
+    "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
     "src/server/prompt_api.cpp": "03b07433d0586bd24cc9bda3fe99fa647a82527c18a20cbfd820dff1068d22d7",
     "src/server/prompt_cache_diagnostics.cpp": "521e46dbe3259d0d267bc295fe6a14c9c1923e425a754a32dac4efa13d5cc6d7",
@@ -4747,5 +4751,49 @@
     "change": "Recognize paired native tool discovery output types only with known ordered-loading capability; explicit extension only, automatic feature equality and original evidence/history retained.",
     "evidence": "docs/evidence/serve-tool-discovery-migration-cpu-20261113/README.md",
     "engine_and_native_unchanged": true
+  },
+  "programmatic_component_review_20261113": {
+    "scope": "Isolated bounded JavaScript core only; no public programmatic tool acceptance or execution claim",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "3adcdc6576e25900154c79962a963dd490d2a9a491c1840a6fbb77665ee778ca",
+        "after": "4bc292dbbab3032ae762d65d802457d0e25843b9a05ae7e357887d7b377c5151"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "fca656a5fd04e3f8dca973784644f39da9987742a4d17119d09950b958b6b9a8",
+        "after": "d5787bd1505e2f5a131a585188afd96ad589a99adcb8501782e84b7254ca49ad"
+      },
+      "include/q4t/server/grammar_process.h": {
+        "before": "cc0d110a991a97ee590072984fafd1ba34884d9ce9db52f9395f8c9bcc5ff74a",
+        "after": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660"
+      },
+      "include/q4t/server/program_worker.h": {
+        "before": null,
+        "after": "7ecbe959e69b3cbe9ed65ebef2680d9f86a5687143a0ab7feede3ae18efca0e9"
+      },
+      "src/main.cpp": {
+        "before": "f5751e6844057a62b5a8fd7ec0faf05deec00c2bb19d2bd955e63e85abdbe619",
+        "after": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56"
+      },
+      "src/server/grammar_process.cpp": {
+        "before": "72bebd0f5893829436ed7501e6529b0538d272cd53800295290d77a05469fa5c",
+        "after": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e"
+      },
+      "src/server/program_vm.cpp": {
+        "before": null,
+        "after": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb"
+      },
+      "src/server/program_vm.h": {
+        "before": null,
+        "after": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126"
+      },
+      "src/server/program_worker.cpp": {
+        "before": null,
+        "after": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5"
+      }
+    },
+    "evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113/README.md",
+    "caller_and_state_wiring": "required and pending",
+    "default": "rev118 unchanged"
   }
 }

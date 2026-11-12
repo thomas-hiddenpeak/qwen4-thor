@@ -1,0 +1,30 @@
+{
+  "baseRefOid": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+  "headRefOid": "1282ece2f4c15977a077c44ff803332d76cf44f6",
+  "isDraft": false,
+  "mergeStateStatus": "CLEAN",
+  "state": "OPEN",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-12T21:48:10Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/43311031019/job/131506852533",
+      "name": "host-contracts",
+      "startedAt": "2026-11-12T21:31:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-12T21:47:04Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/43311018317/job/131506806788",
+      "name": "host-contracts",
+      "startedAt": "2026-11-12T21:31:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    }
+  ],
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/26"
+}

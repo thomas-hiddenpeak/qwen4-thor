@@ -34,6 +34,7 @@
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/file_document_worker.h"
+#include "q4t/server/program_worker.h"
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
 #include "q4t/server/file_legacy.h"
@@ -917,6 +918,8 @@ int main(int argc, char** argv) {
   const int embedding_worker =
       q4t::server::MaybeRunEmbeddingAssetWorker(argc, argv);
   if (embedding_worker >= 0) return embedding_worker;
+  const int program = q4t::server::MaybeRunProgramWorker(argc, argv);
+  if (program >= 0) return program;
   const int tool_results = q4t::server::MaybeRunToolResultWorker(argc, argv);
   if (tool_results >= 0) return tool_results;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
