@@ -984,7 +984,8 @@
         "delivery_budget": {
           "commands": 17,
           "model_starts": 0
-        }
+        },
+        "migration_fix_cpu": "docs/evidence/serve-async-migration-cpu-20261113"
       }
     },
     {

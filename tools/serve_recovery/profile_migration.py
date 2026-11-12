@@ -25,7 +25,9 @@ def semantic_capabilities(value):
     The full original observations remain in the sealed registry/evidence.
     v4 adds model refusal framing to the unchanged v3 message input schema;
     refusal itself remains a capability and cannot disappear on recovery.
-    Unknown template revisions and other changed values are not normalized.
+    Renderer and tool-history fingerprints identify code, not capabilities;
+    the original hashes stay bound in each sealed qualification. Unknown
+    template revisions and other changed values are not normalized.
     """
     result = copy.deepcopy(value)
     responses = result.get('responses')
@@ -45,9 +47,12 @@ def semantic_capabilities(value):
         responses['output_items'] = {item: True for item in items}
     template = result.get('template')
     if isinstance(template, dict):
-        renderer = template.pop('renderer_source_sha256', None)
-        ledger.require(renderer is None or (type(renderer) is str and
-            ledger.HASH.fullmatch(renderer)), 'invalid renderer source identity')
+        for key in ('renderer_source_sha256', 'tool_history_source_sha256'):
+            if key in template:
+                fingerprint = template.pop(key)
+                ledger.require(type(fingerprint) is str and
+                    ledger.HASH.fullmatch(fingerprint),
+                    'invalid template source identity: '+key)
         if template.get('message_profile') == 'qwen3.8-openai-v4':
             refusal = result.get('chat', {}).get('refusal_output', {})
             ledger.require(type(refusal) is dict and

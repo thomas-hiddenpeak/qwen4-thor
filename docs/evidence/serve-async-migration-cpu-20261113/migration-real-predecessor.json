@@ -1,0 +1,58 @@
+{
+  "status": "PASS_REAL_PREDECESSOR_CPU",
+  "permit": {
+    "format": "q4t-profile-migration-permit-v3",
+    "from_registry": "c775078078952ce72e6d73fd02509a5b7ff4abc005d7041d61d57c04dad0846a",
+    "to_registry": "04c181593b03d329baa7da856113957bc12766f92a9e7771f312b2b61a5c7998",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "76f64ed9377011fb475fad16873a9083d46e4e060048dca617e67dfc455b51a5",
+    "to_identity": "fca7332545eea1ca2b74036949b5c09bf8facbafebafb7afed8b798762f951ed",
+    "capabilities_sha256": "1454f6c7cc710bea17ca3017d47c722c05beb90f206a5ac11b227d8b072c43e3",
+    "automatic": false,
+    "target_profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "target_capabilities_sha256": "16b4a0b9f828d73629d8e88856783d0bda91b7f0af47468c0498bb8abe48a507"
+  },
+  "protected_fields": [
+    "history",
+    "pending",
+    "selected",
+    "not_before_ns",
+    "light_since_ns",
+    "clock",
+    "profiles",
+    "configuration"
+  ],
+  "profile_budget_preserved": true,
+  "original_manifest": "39d30ccd3f23ebbc4532d3b42aa1afddb60ce8946ae01c19a878791240ed4ce4",
+  "target_manifest": "6a163a1debe64597b90a5334f8a6f1ec775536f912f0fdbe1135328f43772c91",
+  "default_changed": false,
+  "new_gpu_starts": 0
+}

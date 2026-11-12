@@ -33,6 +33,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 发布准备发现工具历史源码哈希误作能力变化，已[修复并通过10项CPU、旧版负控及实际资格迁移](evidence/serve-async-migration-cpu-20261113/README.md)。
+  默认未写入，rev102保持；仅更新主包控制模块，复用未改引擎与业务
+  证据，继续17项实际停止态发布及全部master。
+
 - 当前异步引擎的[主轻、独立回退与实际整树切换均通过](evidence/serve-async-resume-qualification-20261113/README.md)。
   5启动/14业务/1探测，三个阶段正常清理；原调用切换后仍可接收真实
   迟到结果。默认rev102保持，接着17项STOPPED可回退发行（0GPU），

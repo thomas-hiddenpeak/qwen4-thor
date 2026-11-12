@@ -199,6 +199,54 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.extended_permit(self.new, evidence, allow_capability_extension=True)
 
+    def test_history_source_change_preserves_original_qualification_identity(self):
+        records = {n:copy.deepcopy(r['record']) for n,r in self.first.items()}
+        for record in records.values():
+            record['capabilities']['template']['tool_history_source_sha256'] = '1'*64
+        self.first = bind_records(self.old, records)
+        updated = copy.deepcopy(records)
+        for record in updated.values():
+            record['capabilities']['template']['tool_history_source_sha256'] = '2'*64
+        evidence = bind_records(self.new, updated)
+        original = copy.deepcopy((self.first, evidence))
+        grant = self.extended_permit(self.new, evidence, automatic=True)
+        self.assertEqual(grant['format'], migration.FORMAT)
+        self.assertEqual((self.first, evidence), original)
+        self.assertNotEqual(migration.observations(self.old, self.first),
+                            migration.observations(self.new, evidence))
+
+    def test_template_fingerprints_reject_invalid_values_without_mutating_observation(self):
+        for field in ('renderer_source_sha256', 'tool_history_source_sha256'):
+            for value in (None, True, 1, '', 'g'*64, 'a'*63, ['a'*64]):
+                caps = {'template':{field:value}}
+                before = copy.deepcopy(caps)
+                with self.subTest(field=field, value=value), self.assertRaisesRegex(
+                        ValueError, 'template source identity'):
+                    migration.semantic_capabilities(caps)
+                self.assertEqual(caps, before)
+
+    def test_history_fingerprint_cannot_hide_async_or_template_contract_loss(self):
+        records = {n:copy.deepcopy(r['record']) for n,r in self.first.items()}
+        for record in records.values():
+            record['capabilities']['template']['tool_history_source_sha256'] = '1'*64
+            record['capabilities'].setdefault('responses', {})['async_tools'] = {
+                'profile':'q4t-async-tools-v1', 'late_results':True}
+        self.first = bind_records(self.old, records)
+        for change in (
+                lambda c:c['responses']['async_tools'].update(late_results=False),
+                lambda c:c['responses'].pop('async_tools'),
+                lambda c:c['template'].update(message_profile='unknown-v9'),
+                lambda c:c['template'].update(roles=['user'])):
+            updated = copy.deepcopy(records)
+            for record in updated.values():
+                caps = record['capabilities']
+                caps['template']['tool_history_source_sha256'] = '2'*64
+                change(caps)
+            evidence = bind_records(self.new, updated)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.extended_permit(self.new, evidence,
+                                     allow_capability_extension=True)
+
     def test_combined_extension_and_capacity_preserves_historical_qualification(self):
         new, evidence = self.extension(capacity=True)
         with self.assertRaisesRegex(ValueError, 'explicit historical'):

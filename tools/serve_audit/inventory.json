@@ -2355,7 +2355,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "8450f4c8427788341b5467ed1bec6d284c90e03556e379642f415c67e9db9668",
+    "tools/serve_recovery/profile_migration.py": "d552a0df8298406598a352bf6cb342390f29a6b46c3f5ea3d3c36249fa0ee4bb",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -4694,5 +4694,11 @@
         "after": "196b826860562e073d9c82129f65348619705e8c72607299e59a34ecc04fc937"
       }
     }
+  },
+  "profile_migration_review_20261113": {
+    "source": "tools/serve_recovery/profile_migration.py",
+    "change": "Separate validated tool-history/renderer SHA identities from functional capability comparison; original sealed observations remain unchanged. Reject malformed fingerprints and all actual feature loss; only explicit qualified STOPPED additions allowed.",
+    "evidence": "docs/evidence/serve-async-migration-cpu-20261113",
+    "engine_and_native_unchanged": true
   }
 }
