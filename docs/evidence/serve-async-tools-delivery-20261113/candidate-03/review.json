@@ -1,0 +1,20 @@
+{
+  "status": "PASS_MIGRATION_CONTROL_PATCH_CPU",
+  "original_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-02/bundle",
+  "original_manifest_sha256": "9c11a13fc1a40a50a5ee72401541d4d9aaf04112aef1f71c2f10f847c6466fe4",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/bundle",
+  "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
+  "source_commit": "1d1ccba67100cc12c52f0e5086df692e1cf7c592",
+  "delta": {
+    "source/tools/serve_recovery/profile_migration.py": {
+      "before": "8450f4c8427788341b5467ed1bec6d284c90e03556e379642f415c67e9db9668",
+      "after": "d552a0df8298406598a352bf6cb342390f29a6b46c3f5ea3d3c36249fa0ee4bb"
+    }
+  },
+  "exact_engine_and_native_bytes": true,
+  "exact_primary_light_qualification": true,
+  "reused_gpu_evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/managed-version-02/decision.json",
+  "cpu_evidence": "docs/evidence/serve-async-migration-cpu-20261113",
+  "new_gpu_starts": 0,
+  "scope": "Only qualified migration capability comparison changes; GPU model, HTTP and supervision sources unchanged. STOPPED publication checks remain required."
+}

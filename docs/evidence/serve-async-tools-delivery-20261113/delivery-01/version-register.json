@@ -1,0 +1,16 @@
+{
+  "label": "version-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/delivery-01/registration.json",
+    "--expected-cycle",
+    "87410126-1479-44fa-b5f9-ac60de0f0b98"
+  ],
+  "returncode": 0,
+  "seconds": 3.7384863048791885
+}
