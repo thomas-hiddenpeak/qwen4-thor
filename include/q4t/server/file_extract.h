@@ -10,6 +10,9 @@ struct FileExtractOptions {
   FileDocumentLimits document;
   FilePdfOptions pdf;
   FileLegacyOptions legacy;
+  // Retrieval ingestion requires complete rows even in embedded documents.
+  // Ordinary file-input callers keep their documented bounded row window.
+  bool require_complete_rows = false;
 };
 // Signature-led routing, complete extraction, and original byte identity.
 // Caller-owned options are deployment policy, never fields in a file part.

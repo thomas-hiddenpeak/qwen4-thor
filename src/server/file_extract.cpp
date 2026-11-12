@@ -107,6 +107,9 @@ ObjectReply Tree(const FileInputContent& input,
   FileDocument next;
   reply = Decode(input, selected, detail, access, &next, control);
   if (!reply.ok()) return reply;
+  if (options.require_complete_rows)
+    for (const auto& sheet : next.sheets)
+      if (sheet.source_rows > sheet.rows.size()) return Capacity();
   reply = Charge(next, remaining);
   if (!reply.ok()) return reply;
   std::string combined;

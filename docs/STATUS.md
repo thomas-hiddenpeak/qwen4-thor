@@ -28,6 +28,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11真实Files/隔离文档提取与tokenizer接线已编码，[11项CPU首过](evidence/serve-vector-ingestion-cpu-20261112/README.md)；
+  原文件与NFC文本分别绑定，完整分块/EOS预算先准入，失败保留实际
+  用量与未知提交身份。生产控制器/API/模型回调仍继续接线。
 - A11持久父对象/文件关联、原子计数与索引发布、过期/回收和有界
   claim恢复状态已编码，[19项CPU已通过](evidence/serve-vector-stores-cpu-20261112/README.md)。实际提取/embedding
   执行器、HTTP/SDK及Responses仍继续实施，当前未增公开能力。

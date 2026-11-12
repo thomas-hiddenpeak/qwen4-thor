@@ -46,12 +46,14 @@ set(protocol_inputs
   src/server/vector_search_rank.cpp
   include/q4t/server/vector_index.h
   include/q4t/server/vector_stores.h
+  include/q4t/server/vector_ingestion.h
   src/server/vector_stores_internal.h
   src/server/vector_index.cpp
   src/server/vector_stores_internal.cpp
   src/server/vector_stores.cpp
   src/server/vector_store_files.cpp
   src/server/vector_ingestion_state.cpp
+  src/server/vector_ingestion.cpp
   include/q4t/server/embeddings_execution.h
   include/q4t/server/embedding_metadata.h
   src/server/embeddings_plan.cpp

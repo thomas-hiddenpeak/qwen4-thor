@@ -126,3 +126,33 @@ file_batches入口继续是后续实现项，当前不新增公开路由。
 创建/更新字段分别核对[Create](https://developers.openai.com/api/reference/resources/vector_stores/methods/create)
 及[Update](https://developers.openai.com/api/reference/resources/vector_stores/methods/update)。
 本组默认与公开路由保持；接下来继续真实执行适配和API闭环。
+
+
+## 真实文件与tokenizer接线组
+
+2026-11-12。准备路径读取scope内真实Files字节，复用签名分类和隔离
+提取器；源文件SHA始终来自实际读取。原生tokenizer使用raw encode
+再按真实token逐个decode形成规范文本与边界，文本SHA绑定该NFC
+结果，原始上传内容仍在Files可核验。分块后所有重叠token和逐块EOS
+先算完整预算，配额回调通过后才允许执行embedding。
+
+普通文件输入的表格前1000行窗口保持；向量入库要求完整行，包含
+嵌套文件在内超窗口则报告容量不足，不发布截断索引。没有可提取
+文字的文件失败，不用零向量/编造摘要代替。PDF页图像不作为本次
+文本embedding输入；视觉/媒体检索及后端组合仍按总计划补齐。
+
+执行适配复用实际索引构建、快照和父对象提交。错误/取消仍返回
+真实已消费token；不自动重启模型。未知快照或父提交保留原引用和
+hold，可原ID重读后完成确认，不再次运行模型。已执行结果不能被
+重复调用静默清零。明确成功后的hold清理失败只记辅助诊断。
+
+冻结8项新CPU及3项提取/分块直接回归（11项），使用真实Files、
+隔离文档worker与实际安装tokenizer，向量仍为明确CPU数学夹具。
+原生HTTP、真实embedding回调/配额归属、持久控制器、file_batches、
+SDK与Responses循环继续接线；此适配器不等于已上线工具能力。
+
+
+[真实文件适配11项CPU首过](evidence/serve-vector-ingestion-cpu-20261112/README.md)，
+1.184秒；实际Files/文档worker/tokenizer与持久状态执行，向量仍为
+数学夹具。默认rev80保持。继续真实模型/配额与持久控制器接入，
+以及HTTP/file_batches/search/SDK/Responses闭环和全部剩余任务。

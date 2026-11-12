@@ -1275,7 +1275,8 @@
       "evidence": [
         "evidence/serve-vector-search-foundation-20261112/README.md",
         "evidence/serve-vector-index-cpu-20261112/README.md",
-        "evidence/serve-vector-stores-cpu-20261112/README.md"
+        "evidence/serve-vector-stores-cpu-20261112/README.md",
+        "evidence/serve-vector-ingestion-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1298,7 +1299,7 @@
           "actual_tokenizer": true,
           "actual_storage_worker": true,
           "gpu_starts": 0,
-          "file_ingestion_adapter": false,
+          "file_ingestion_adapter": true,
           "durable_store_parent": true,
           "production_routes": false
         },
@@ -1311,8 +1312,21 @@
           "actual_lost_commit_receipt": true,
           "private_recovery_scan": true,
           "recovery_controller": false,
-          "ingestion_adapter": false,
+          "ingestion_adapter": true,
           "http": false,
+          "default_changed": false
+        },
+        "ingestion": {
+          "state": "cpu_accepted_native_executor_pending",
+          "evidence": "evidence/serve-vector-ingestion-cpu-20261112/README.md",
+          "cpu_cases": 11,
+          "real_files": true,
+          "real_document_worker": true,
+          "actual_tokenizer": true,
+          "gpu_embedding": false,
+          "native_quota_owner": false,
+          "production_controller": false,
+          "production_http": false,
           "default_changed": false
         }
       }
