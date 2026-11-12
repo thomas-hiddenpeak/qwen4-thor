@@ -186,7 +186,9 @@ Q4T_TEST(responses_program_argument_and_original_result_schema_enforced) {
   Json output;
   for (const auto* code : {"await tools.read({n:'wrong'});",
                            "await tools.read({n:1,extra:true});"}) {
-    Q4T_CHECK(!Run(cipher, Array({Create(cipher, code)}), &output).ok());
+    const auto invalid = Run(cipher, Array({Create(cipher, code)}), &output);
+    Q4T_CHECK(invalid.http_status == 502 &&
+              invalid.code == "program_arguments_invalid");
     Q4T_CHECK(output.array.empty());
   }
   auto history = Array({Create(cipher, "text(await tools.read({n:1}));")});
@@ -298,7 +300,9 @@ Q4T_TEST(responses_program_namespace_custom_format_dispatch_checked) {
               output.array[0].GetString("result") == "actual document");
     auto bad =
         Array({Create(cipher, "text(await tools.docs.read('WRONG'));", tools)});
-    Q4T_CHECK(Run(cipher, bad, &output).http_status == 400 &&
+    const auto rejected = Run(cipher, bad, &output);
+    Q4T_CHECK(rejected.http_status == 502 &&
+              rejected.code == "program_arguments_invalid" &&
               output.array.empty());
   }
   return true;

@@ -8,6 +8,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_program.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -228,6 +229,26 @@ Status CollectModerationOutput(const io::Json& items,
       if (!data || !data->IsString())
         return Invalid(error, "output", "Missing generated tool argument data");
       status = collector.Text("tool_arguments", data->str);
+    } else if (type == "program" || type == "program_output") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                          error, "output." + type);
+      if (!status) return status;
+      if (type == "program") {
+        status = collector.Text(type, item.GetString("code"));
+      } else {
+        Json content;
+        status =
+            DecodeResponsesProgramOutput(item.GetString("result"), &content);
+        if (status && content.IsArray())
+          for (auto& part : content.array)
+            if (part.GetString("type") == "input_image")
+              part = Object({{"type", String("image_url")},
+                             {"image_url",
+                              Object({{"url", *part.Find("image_url")},
+                                      {"detail", String(part.GetString(
+                                                     "detail", "auto"))}})}});
+        if (status) status = collector.Content(content, type);
+      }
     } else if (type == "file_search_call") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
                                           error, "output.file_search_call");

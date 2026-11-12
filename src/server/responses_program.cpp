@@ -15,6 +15,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/tool_result_schema.h"
+#include "q4t/server/tool_result_contracts.h"
 
 namespace q4t::server {
 namespace {
@@ -177,7 +178,8 @@ bool ResponsesToolAllows(const Json& definition, std::string_view caller) {
 ObjectReply CreateResponsesProgram(StateCipher& cipher, std::string code,
                                    const Json& active_tools,
                                    const ChatPlanConfig& config,
-                                   const StateAccess& access, Json* program) {
+                                   const StateAccess& access, Json* program,
+                                   bool parallel) {
   auto active = Active(access);
   if (!active.ok()) return active;
   if (!program || !active_tools.IsArray() || active_tools.array.size() > 128 ||
@@ -235,6 +237,7 @@ ObjectReply CreateResponsesProgram(StateCipher& cipher, std::string code,
                          {"program", item},
                          {"tools", std::move(tools)},
                          {"seed", Number(seed)},
+                         {"parallel", Boolean(parallel)},
                          {"epoch_ms", Number(now * 1000)},
                          {"expires_at", Number(now + kLifetime)}}));
   if (plaintext.bytes.size() > kStateBytes)
@@ -298,13 +301,15 @@ ObjectReply OpenResponsesPrograms(
       state.program = item;
       state.tools = *payload.GetArray("tools");
       state.input_index = i;
-      state.worker_input = Object({{"code", *item.Find("code")},
-                                   {"tools", state.tools},
-                                   {"seed", *payload.Find("seed")},
-                                   {"epoch_ms", *payload.Find("epoch_ms")},
-                                   {"expires_at", *payload.Find("expires_at")},
-                                   {"calls", Array()},
-                                   {"results", Array()}});
+      state.worker_input =
+          Object({{"code", *item.Find("code")},
+                  {"tools", state.tools},
+                  {"seed", *payload.Find("seed")},
+                  {"epoch_ms", *payload.Find("epoch_ms")},
+                  {"expires_at", *payload.Find("expires_at")},
+                  {"parallel", Boolean(payload.GetBool("parallel", true))},
+                  {"calls", Array()},
+                  {"results", Array()}});
       states.push_back(std::move(state));
       continue;
     }
@@ -438,7 +443,11 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
        calls.array.size() < program.calls.size()))
     return Invalid("Program history does not match its execution");
   auto validated = CallsContract(program, calls, access);
-  if (!validated.ok()) return validated;
+  if (!validated.ok()) {
+    if (validated.http_status == 400)
+      return Error(502, "program_arguments_invalid", validated.message);
+    return validated;
+  }
   auto result = Array();
   for (size_t i = program.calls.size(); i < calls.array.size(); ++i) {
     const auto* tool = FindTool(program.tools, calls.array[i].GetString("key"));
@@ -449,11 +458,16 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
     if (executed.value.GetString("status") == "incomplete") {
       output = OutputJson(Object({{"error", *executed.value.Find("error")}}));
     } else {
+      auto content = Array();
       for (const auto& value : executed.value.GetArray("output")->array) {
-        if (!output.empty()) output += '\n';
-        output += value.GetString("type") == "text" ? value.GetString("value")
-                                                    : OutputJson(value);
+        const bool image = value.GetString("type") == "image";
+        content.array.push_back(
+            Object({{"type", String(image ? "input_image" : "input_text")},
+                    {image ? "image_url" : "text", *value.Find("value")}}));
       }
+      auto encoded = EncodeResponsesProgramOutput(content, &output);
+      if (!encoded)
+        return Error(502, "program_output_invalid", encoded.message());
     }
     result.array.push_back(Object(
         {{"id",
@@ -465,6 +479,35 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
          {"result", String(std::move(output))}}));
   }
   *emitted = std::move(result);
+  return {};
+}
+
+ObjectReply BindResponsesProgramContracts(const ResponsesProgramState& program,
+                                          const Json& items, Json* contracts) {
+  if (!items.IsArray()) return Invalid("Invalid program child contracts");
+  for (const auto& item : items.array) {
+    if (!IsResultBoundToolCall(item)) continue;
+    if (!item.Find("caller") ||
+        !Same(*item.Find("caller"), Caller(program.program)))
+      continue;
+    const auto key = ResponsesToolModelName(
+        item.GetString("namespace"), item.GetString("name"),
+        item.GetString("type") == "function_call" ? "function" : "custom");
+    const auto* tool = FindTool(program.tools, key);
+    if (!tool) return Invalid("Program schema outside sealed authority");
+    auto definition = *tool->Find("definition");
+    // The snapshot is already loaded at invocation, even when its original
+    // declaration carried defer_loading. Do not erase the sealed original.
+    Set(&definition, "defer_loading", Boolean(false));
+    if (!tool->GetString("namespace").empty())
+      definition = Object({{"type", String("namespace")},
+                           {"name", *tool->Find("namespace")},
+                           {"tools", Array({std::move(definition)})}});
+    auto result = BindToolResultContracts(
+        Object({{"tools", Array({std::move(definition)})}}), Array({item}),
+        contracts, true);
+    if (!result.ok()) return result;
+  }
   return {};
 }
 }  // namespace q4t::server

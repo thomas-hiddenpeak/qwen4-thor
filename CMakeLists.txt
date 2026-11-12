@@ -490,6 +490,9 @@ q4t_link_native_documents(q4t_server)
 include(cmake/NativeProgrammatic.cmake)
 target_sources(q4t_server PRIVATE src/server/program_worker.cpp
   src/server/responses_program.cpp
+  src/server/responses_program_plan.cpp
+  src/server/responses_program_output.cpp
+  src/server/responses_program_execution.cpp
   src/server/program_vm.cpp)
 q4t_link_native_programmatic(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)

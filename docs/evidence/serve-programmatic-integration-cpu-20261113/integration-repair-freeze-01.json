@@ -1,0 +1,25 @@
+{
+  "prior": "integration-cpu-01",
+  "prior_passed": 41,
+  "prior_failed": 2,
+  "cause": [
+    "custom negative fixture retained old HTTP 400 after generated argument errors became HTTP 502",
+    "FileInputSource borrowed strings from decoded temporary program content; candidate now owns stable shared JSON through acquisition"
+  ],
+  "affected_tests": [
+    "responses_program_namespace_custom_format_dispatch_checked",
+    "responses_program_api_media_is_prepared_reviewed_and_replayable",
+    "responses_program_api_media_budget_and_bad_pixels_fail_before_publish",
+    "file_expansion_real_text_preserves_original_tool_paths_and_cache_boundary",
+    "file_expansion_all_source_validation_precedes_external_io",
+    "file_expansion_combined_source_text_and_rendered_budgets_are_atomic",
+    "file_expansion_combined_retained_payload_is_atomic"
+  ],
+  "reuse": 36,
+  "gpu_starts": 0,
+  "created": "2026-11-12T22:38:57.547346+00:00",
+  "sources": {
+    "src/server/file_expansion.cpp": "ab874b3175a5b1223f3db3d8b821310e819dce2c912da28aa107377cd83e7886",
+    "tests/server_responses_program_test.cpp": "80a5ae85fdef5c2df4d8f74bfde078e1e557f56f56e7ed6b80cb56cb68ccb188"
+  }
+}

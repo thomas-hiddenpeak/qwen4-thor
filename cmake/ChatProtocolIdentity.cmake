@@ -19,6 +19,9 @@ set(protocol_inputs
   src/server/tool_result_schema.cpp
   src/server/program_worker.cpp
   src/server/responses_program.cpp
+  src/server/responses_program_plan.cpp
+  src/server/responses_program_output.cpp
+  src/server/responses_program_execution.cpp
   include/q4t/server/responses_program.h
   src/server/program_vm.cpp
   src/server/program_vm.h

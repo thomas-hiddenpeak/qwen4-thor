@@ -189,6 +189,9 @@ bool Valid(const Json& input) {
       tools->array.size() > 128 || !calls || calls->array.size() > kMaxCalls ||
       !results || results->array.size() > calls->array.size())
     return false;
+  if (const auto* parallel = input.Find("parallel");
+      parallel && !parallel->IsBool())
+    return false;
   for (const char* key : {"seed", "epoch_ms"}) {
     const auto* value = input.Find(key);
     if (!value || !value->IsNumber() || !std::isfinite(value->number) ||
@@ -247,6 +250,24 @@ bool Install(Execution& run) {
   auto global = JS_GetGlobalObject(context);
   auto tools = JS_NewObjectProto(context, JS_NULL);
   bool okay = !JS_IsException(tools);
+  JSValue serialize = JS_UNDEFINED;
+  if (!run.input->GetBool("parallel", true)) {
+    // Keep the queue and native functions in inaccessible closures. Deferred
+    // calls enter the native replay log only after the previous result, so
+    // their causal positions survive fresh-runtime continuation unchanged.
+    constexpr char factory[] = R"js((() => {
+      let tail = Promise.resolve();
+      const then = Function.prototype.call.bind(Promise.prototype.then);
+      return fn => (...args) => {
+        const next = then(tail, () => fn(...args));
+        tail = then(next, () => {}, () => {});
+        return next;
+      };
+    })())js";
+    serialize = JS_Eval(context, factory, sizeof(factory) - 1,
+                        "q4t-program-serial-tools", JS_EVAL_TYPE_GLOBAL);
+    okay = okay && !JS_IsException(serialize);
+  }
   const auto& entries = run.input->GetArray("tools")->array;
   std::vector<size_t> order;
   for (int pass = 0; pass < 2; ++pass)
@@ -272,12 +293,19 @@ bool Install(Execution& run) {
     }
     if (okay) {
       auto function = JS_NewCFunctionData(context, Tool, 1, i, 0, nullptr);
-      okay = JS_DefinePropertyValueStr(context, owner,
+      if (!JS_IsUndefined(serialize)) {
+        auto wrapped = JS_Call(context, serialize, JS_UNDEFINED, 1, &function);
+        JS_FreeValue(context, function);
+        function = wrapped;
+      }
+      okay = !JS_IsException(function) &&
+             JS_DefinePropertyValueStr(context, owner,
                                        tool.GetString("name").c_str(), function,
                                        JS_PROP_ENUMERABLE) >= 0;
     }
     JS_FreeValue(context, owner);
   }
+  JS_FreeValue(context, serialize);
   okay = okay && JS_DefinePropertyValueStr(context, global, "tools", tools,
                                            JS_PROP_ENUMERABLE) >= 0;
   for (int i = 0; okay && i < 2; ++i) {

@@ -1228,16 +1228,38 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     response_step = input ? first_business_step : ResponseStep::kFinish;
     return true;
   };
+  const auto prepare_output_review = [&] {
+    if (!moderate_output) {
+      response_step = ResponseStep::kFinish;
+      return true;
+    }
+    ModerationContent content;
+    const auto visible = responses->PublicResponse();
+    s = CollectModerationOutput(*visible.GetArray("output"), &content,
+                                &planning_error);
+    if (s)
+      s = PlanModeration(moderation_options, content, planning_config,
+                         kMaxModerationStepTokens, &output_moderation,
+                         &planning_error);
+    if (!s)
+      return finish_review(false,
+                           ModerationError("moderation_preparation_failed",
+                                           s.message().substr(0, 1024)));
+    response_step = ResponseStep::kOutputReview;
+    return true;
+  };
   ResponsesGenerationPlan continuation_generation;
   bool file_search_continuation = false;
   // Native tool continuations plus at most one independent async answer.
   // Neither path retries an answer or a client operation.
   const int response_steps =
       7 +
-      (responses && (responses->HasFileSearch() || responses->HasToolSearch())
+      (responses && (responses->HasFileSearch() || responses->HasToolSearch() ||
+                     responses->HasPrograms())
            ? ResponsesExecution::kMaxNativeToolCalls
            : 0) +
-      (responses && (responses->HasAsyncTools() || responses->HasToolSearch())
+      (responses && (responses->HasAsyncTools() || responses->HasToolSearch() ||
+                     responses->HasPrograms())
            ? 1
            : 0);
   for (int choice_index = 0;
@@ -1277,6 +1299,80 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         headers_started = true;
         if (http) http->StartHeartbeats(control);
       }
+    }
+    if (responses && !cache_prewarm && responses->PendingProgramResume() &&
+        (response_step == ResponseStep::kPrimary ||
+         response_step == ResponseStep::kPro)) {
+      std::string wire;
+      auto result = begin_response(&wire);
+      if (result.ok() && stream) {
+        if ((!headers_started &&
+             !detail::BeginStreamingResponse(fd, response_state,
+                                             {.control = control.get()})) ||
+            !write_stream(wire))
+          return;
+        headers_started = true;
+        if (http) http->StartHeartbeats(control);
+      }
+      bool client_wait = false;
+      if (result.ok())
+        result = responses->RunPrograms(0, &client_wait,
+                                        [&](const std::string& part) {
+                                          return !stream || write_stream(part);
+                                        });
+      if (!result.ok()) {
+        SendError(fd, result.http_status, result.ClientMessage(), {},
+                  result.ClientCode(), result.value.GetString("param"));
+        return;
+      }
+      bool independent = false;
+      const auto check_resumed_context =
+          [&](const ResponsesGenerationPlan& plan, ChatPlanError* error) {
+            size_t tokens = 0;
+            return measure_context(plan, &tokens, error);
+          };
+      if (client_wait && responses->HasAsyncTools()) {
+        result = responses->ContinueAsyncTools(
+            0, responses_usage.output_tokens, planning_config,
+            check_resumed_context, &continuation_generation, &independent,
+            &wire);
+        if (!result.ok()) {
+          SendError(fd, result.http_status, result.ClientMessage(), {},
+                    result.ClientCode(), result.value.GetString("param"));
+          return;
+        }
+        if (stream && !write_stream(wire)) return;
+      }
+      if (client_wait && !independent) {
+        // No primary model work occurred in this continuation. Preserve the
+        // normal output-review and terminal path, including block buffering.
+        rate_lease.StartPrompt(0);
+        if (!prepare_output_review()) return;
+        continue;
+      }
+      if (!independent)
+        result = responses->ContinueFileSearch(
+            responses_usage.output_tokens, planning_config,
+            check_resumed_context, &continuation_generation);
+      if (!result.ok()) {
+        SendError(fd, result.http_status, result.ClientMessage(), {},
+                  result.ClientCode(), result.value.GetString("param"));
+        return;
+      }
+      file_search_continuation = true;
+      if (response_step == ResponseStep::kPro) {
+        s = PlanResponsesDeliberation(
+            continuation_generation, request_output_limit,
+            responses_usage.output_tokens, planning_config, &pro_plan,
+            &planning_error);
+        if (!s) {
+          SendError(fd, planning_error.http_status, s.message(), {},
+                    planning_error.code, planning_error.param);
+          return;
+        }
+      }
+      // The next iteration re-encodes and reserves the actual resumed prompt.
+      continue;
     }
     const bool compaction_step =
         responses && response_step == ResponseStep::kCompaction;
@@ -4265,6 +4361,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (result.ok() && responses->PendingToolSearch())
           result = responses->RunToolSearches(
               response_parser.CompletedToolCalls(), &client_wait, publish);
+        if (result.ok() && responses->PendingPrograms()) {
+          bool program_wait = false;
+          result = responses->RunPrograms(response_parser.CompletedToolCalls(),
+                                          &program_wait, publish);
+          client_wait |= program_wait;
+        }
         answer = !client_wait &&
                  native_calls == response_parser.CompletedToolCalls();
         settle_search.Run();
@@ -4358,24 +4460,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!summary_step)
         responses_completed_calls = response_parser.CompletedToolCalls();
       if (moderate_output) {
-        ModerationContent content;
-        const auto visible_output = responses->PublicResponse();
-        s = CollectModerationOutput(*visible_output.GetArray("output"),
-                                    &content, &planning_error);
-        if (s)
-          s = PlanModeration(moderation_options, content, planning_config,
-                             kMaxModerationStepTokens, &output_moderation,
-                             &planning_error);
         trace_outcome = trace::RequestOutcome::kSuccess;
         cleanup();
-        if (!s) {
-          if (!finish_review(false,
-                             ModerationError("moderation_preparation_failed",
-                                             s.message().substr(0, 1024))))
-            return;
-        } else {
-          response_step = ResponseStep::kOutputReview;
-        }
+        if (!prepare_output_review()) return;
         continue;
       }
       const bool success = finish_response();

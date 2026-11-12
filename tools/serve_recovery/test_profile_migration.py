@@ -417,4 +417,63 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(actual['clock']['logical_ns'],self.pending['clock']['logical_ns'])
 
 
+    def program_extension(self):
+        records, _ = self.discovery_extension()
+        self.first = bind_records(self.old, copy.deepcopy(records))
+        for record in records.values():
+            response = record['capabilities']['responses']
+            response['output_items'].extend(('program', 'program_output'))
+            response['programmatic_tools'] = dict(profile='q4t-programmatic-tools-v1',
+                enabled=True, allowed_callers=True, authenticated_continuation=True,
+                isolated_worker=True, loaded_tools_only=True,
+                caller_binding='program_call_id', schema_binding='invocation_time',
+                automatic_tool_replay=False, model_restart_on_error=False)
+        return records, bind_records(self.new, records)
+
+    def test_program_extension_and_recovery_preserve_capabilities_and_budgets(self):
+        records, evidence = self.program_extension()
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            self.extended_permit(self.new, evidence, automatic=True)
+        grant = self.extended_permit(self.new, evidence, allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(self.new, self.old, evidence, self.first,
+                self.config, self.config, allow_capability_extension=True)
+        same = bind_records(self.old, copy.deepcopy(records))
+        for record in records.values():
+            record['capabilities']['responses']['output_items'].reverse()
+        reordered = bind_records(self.new, records)
+        grant = migration.permit(self.old, self.new, same, reordered,
+            self.config, self.config, automatic=True)
+        initial = policy.initial(self.old, self.stamp(0), self.config)
+        pending = policy.prepare(initial, 'light', 'sustained_memory_pressure',
+                                 str(uuid.uuid4()), 7, self.stamp(1))
+        moved = migration.candidate(pending, grant, self.stamp(999999))
+        for key in ('history', 'pending', 'not_before_ns', 'selected', 'profiles',
+                    'completed_generation', 'light_since_ns'):
+            self.assertEqual(moved[key], pending[key])
+        self.assertEqual(moved['clock']['logical_ns'], pending['clock']['logical_ns'])
+
+    def test_program_outputs_require_paired_types_and_authenticated_implementation(self):
+        records, _ = self.program_extension()
+        original = records['primary']['capabilities']
+        self.assertTrue(migration.semantic_capabilities(original)['responses']['output_items']['program'])
+        mutations = [lambda r:r['output_items'].remove('program'),
+                     lambda r:r['output_items'].remove('program_output'),
+                     lambda r:r['output_items'].append('program'),
+                     lambda r:r.pop('programmatic_tools')]
+        for key, value in [('enabled', False), ('allowed_callers', 1),
+                           ('authenticated_continuation', False),
+                           ('isolated_worker', False), ('loaded_tools_only', False),
+                           ('profile', 'unknown'), ('caller_binding', 'latest'),
+                           ('schema_binding', 'latest'), ('automatic_tool_replay', True),
+                           ('model_restart_on_error', True)]:
+            mutations.append(lambda r,k=key,v=value:r['programmatic_tools'].update({k:v}))
+        for mutate in mutations:
+            changed = copy.deepcopy(original)
+            mutate(changed['responses'])
+            with self.subTest(mutate=mutate), self.assertRaises(ValueError):
+                migration.semantic_capabilities(changed)
+
+
 if __name__=='__main__':unittest.main()

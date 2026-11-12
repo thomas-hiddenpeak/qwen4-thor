@@ -14,6 +14,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_program.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/trace/sha256.h"
 #include "responses_json.h"
@@ -365,8 +366,12 @@ Status PlanResponsesToolIdentities(
     const auto* async = tool.Find("async");
     if (async && !async->IsBool())
       return Invalid(error, path + ".async", "async must be boolean");
-    identities->push_back(
-        {type, name, space, model_name, path, tool.GetBool("async")});
+    auto callers = ValidateResponsesAllowedCallers(tool, error, path);
+    if (!callers) return callers;
+    identities->push_back({type, name, space, model_name, path,
+                           tool.GetBool("async"),
+                           ResponsesToolAllows(tool, "direct"),
+                           ResponsesToolAllows(tool, "programmatic")});
     return {};
   };
   for (size_t i = 0; i < tools->array.size(); ++i) {
@@ -489,6 +494,9 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::unordered_map<std::string, bool> expected;
   std::unordered_map<std::string, std::pair<std::string, std::string>> names;
   std::unordered_set<std::string> returned, call_ids, item_ids, async_ids;
+  std::unordered_set<std::string> program_ids, program_results;
+  std::unordered_map<std::string, std::string> program_children;
+  std::unordered_set<std::string> program_child_results;
   std::string reasoning, assistant_path;
   size_t automatic_returns = 0;
   const auto flush = [&]() -> Status {
@@ -526,7 +534,89 @@ Status NormalizeResponsesInput(const io::Json& request,
     if (item.Has("id") && !item_ids.insert(item.GetString("id")).second)
       return Invalid(error, path + ".id", "duplicate input item ID");
     const auto type = item.GetString("type", "message");
-    if (type == "message") {
+    if (type == "program" || type == "program_output") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
+                                          error, path);
+      if (!status) return status;
+      const auto id = item.GetString("call_id");
+      if (id.empty() || id.size() > 256)
+        return Invalid(error, path + ".call_id", "Invalid program call ID");
+      if (type == "program") {
+        if (!results.empty()) {
+          status = flush();
+          if (!status) return status;
+        }
+        if (!call_ids.insert(id).second || !program_ids.insert(id).second)
+          return Invalid(error, path, "Duplicate program call");
+        // The execution owner authenticates the fingerprint before any
+        // dispatch. Template history contains code/result, never sealed state
+        // or intermediate client outputs intended only for program execution.
+        if (assistant_path.empty()) assistant_path = path;
+        calls.array.push_back(Object(
+            {{"id", String(id)},
+             {"type", String("function")},
+             {"function", Object({{"name", String(kResponsesProgramModelName)},
+                                  {"arguments",
+                                   String(OutputJson(Object(
+                                       {{"code", *item.Find("code")}})))}})}}));
+        expected.emplace(id, false);
+        async_ids.insert(id);
+        plan.async_tool_call_ids.push_back(id);
+      } else {
+        if (!program_ids.contains(id) || !program_results.insert(id).second)
+          return Invalid(error, path, "Orphan or duplicate program output");
+        returned.insert(id);
+        Json content, mapped;
+        status =
+            DecodeResponsesProgramOutput(item.GetString("result"), &content);
+        if (status)
+          status = Parts(content, "tool", path + ".result", &mapped, error,
+                         preparing_files);
+        if (!status) return status;
+        results.emplace_back(Object({{"role", String("tool")},
+                                     {"tool_call_id", String(id)},
+                                     {"content", std::move(mapped)}}),
+                             path);
+        ++automatic_returns;
+      }
+    } else if (const auto* caller = item.Find("caller");
+               caller && caller->GetString("type") == "program") {
+      status = InputFields(*caller, {"type", "caller_id"}, &error->param,
+                           path + ".caller");
+      if (!status) return status;
+      const auto parent = caller->GetString("caller_id");
+      const auto id = item.GetString("call_id");
+      if (!program_ids.contains(parent) || program_results.contains(parent) ||
+          id.empty() || id.size() > 256)
+        return Invalid(error, path, "Invalid program child relationship");
+      const bool invocation =
+          type == "function_call" || type == "custom_tool_call";
+      const bool result =
+          type == "function_call_output" || type == "custom_tool_call_output";
+      if (!invocation && !result)
+        return Invalid(error, path, "Invalid program caller item");
+      auto public_item = item;
+      if (type == "custom_tool_call" || type == "custom_tool_call_output")
+        std::erase_if(public_item.object, [](const auto& field) {
+          return field.first == "status" || field.first == "created_by";
+        });
+      status = ValidateResponsesItemShape(
+          public_item, ResponsesItemShape::kInput, error, path);
+      if (!status) return status;
+      if (invocation) {
+        if (!call_ids.insert(id).second ||
+            !program_children.emplace(id, parent).second ||
+            item.GetString("status", "completed") != "completed")
+          return Invalid(error, path, "Invalid program child call");
+      } else if (!program_children.contains(id) ||
+                 program_children.at(id) != parent ||
+                 !program_child_results.insert(id).second) {
+        return Invalid(error, path, "Orphan or duplicate program child result");
+      }
+    } else if (program_children.contains(item.GetString("call_id"))) {
+      return Invalid(error, path + ".caller",
+                     "Program child requires its caller");
+    } else if (type == "message") {
       status = flush();
       if (!status) return status;
       status = InputFields(item,
@@ -889,6 +979,10 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     std::string path, name_space, description;
   };
   std::vector<Entry> entries;
+  bool program_enabled = false;
+  std::string program_path;
+  std::vector<std::string> model_paths;
+  std::unordered_set<std::string> program_only;
   constexpr size_t top_level = 128;
   std::vector<ResponsesFileSearchBinding> native;
   auto binding_status =
@@ -922,6 +1016,15 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         return Invalid(error, at + ".type",
                        "tool type must be a nonempty string");
       const auto type = definition.GetString("type");
+      if (type == "programmatic_tool_calling") {
+        auto status = InputFields(definition, {"type"}, &error->param, at);
+        if (!status) return status;
+        if (program_enabled)
+          return Invalid(error, at, "Duplicate program tool");
+        program_enabled = true;
+        program_path = at;
+        continue;
+      }
       if (type == "file_search") {
         const auto found = std::find_if(
             native.begin(), native.end(), [&](const auto& binding) {
@@ -930,6 +1033,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         if (found == native.end())
           return Invalid(error, at, "Missing native tool binding");
         tools->array.push_back(NativeFileSearchDefinition(found->model_name));
+        model_paths.push_back(at);
         continue;
       }
       if (type == "tool_search") {
@@ -943,6 +1047,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
             NativeResponsesToolSearchDefinition(catalog, &native_search, error);
         if (!status) return status;
         tools->array.push_back(std::move(native_search));
+        model_paths.push_back(at);
         continue;
       }
       if (type != "function" && type != "custom") return Unresolved(error, at);
@@ -986,12 +1091,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           return status;
         }
       }
-      if (const auto* callers = definition.Find("allowed_callers");
-          callers && !callers->IsNull()) {
-        if (!callers->IsArray() || callers->array.size() != 1 ||
-            !callers->array[0].IsString() || callers->array[0].str != "direct")
-          return Unresolved(error, at + ".allowed_callers");
-      }
+      status = ValidateResponsesAllowedCallers(definition, error, at);
+      if (!status) return status;
       Json body = Object();
       for (const char* key :
            {"name", "description", "parameters", "strict", "format"})
@@ -1058,6 +1159,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       }
       const auto model_name = ResponsesToolModelName(
           entry.name_space, definition.GetString("name"), type);
+      if (!ResponsesToolAllows(definition, "direct"))
+        program_only.insert(model_name);
       Set(&body, "name", String(model_name));
       if (model_name != definition.GetString("name")) {
         const auto label = Object({{"namespace", String(entry.name_space)},
@@ -1068,15 +1171,26 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       }
       tools->array.push_back(
           Object({{"type", String(type)}, {type, std::move(body)}}));
+      model_paths.push_back(at);
     }
   }
+  if (program_enabled) {
+    tools->array.push_back(NativeResponsesProgramDefinition(
+        effective_tools ? *effective_tools : *request.Find("tools"),
+        request.GetBool("parallel_tool_calls", true)));
+    model_paths.push_back(program_path);
+  }
   if (const auto* original = request.Find("tool_choice")) {
-    Json selected, mapped;
+    Json selected, native_choice, mapped;
     // Client selectors are mapped before builtin expansion. A builtin's
     // private model name must never be reinterpreted as a child's bare name.
     auto status = MapNamespaceChoice(*original, identities, &selected, error);
     if (status)
-      status = MapResponsesFileSearchChoice(selected, native, &mapped, error);
+      status = MapResponsesProgramChoice(selected, program_enabled,
+                                         &native_choice, error);
+    if (status)
+      status =
+          MapResponsesFileSearchChoice(native_choice, native, &mapped, error);
     if (status)
       status = ToolSelection(mapped, choice, "tool_choice", {}, error);
     if (!status) return status;
@@ -1089,7 +1203,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     if (error->param.starts_with("tools[") && end != std::string::npos) {
       const auto parsed = std::from_chars(error->param.data() + 6,
                                           error->param.data() + end, index);
-      if (parsed.ec == std::errc() && index < entries.size()) {
+      if (parsed.ec == std::errc() && index < model_paths.size()) {
         auto suffix = error->param.substr(end + 1);
         const bool custom = suffix.starts_with(".custom");
         for (const auto* part : {".function", ".custom"})
@@ -1100,11 +1214,28 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         if (custom && suffix.starts_with(".format.grammar"))
           suffix.erase(std::string_view(".format").size(),
                        std::string_view(".grammar").size());
-        error->param = entries[index].path + suffix;
+        error->param = model_paths[index] + suffix;
       }
     }
   }
-  return status;
+  if (!status) return status;
+  const auto prohibited = [&](const Json& tool) {
+    const auto* value = tool.Find(tool.GetString("type"));
+    return value && program_only.contains(value->GetString("name"));
+  };
+  if (prohibited(*choice))
+    return Invalid(error, "tool_choice",
+                   "Selected tool requires a program caller");
+  if (const auto* selected = choice->Find("allowed_tools"))
+    if (const auto* items = selected->GetArray("tools"))
+      for (const auto& item : items->array)
+        if (prohibited(item))
+          return Invalid(error, "tool_choice.tools",
+                         "Selected tool requires a program caller");
+  // Validate every declaration before removing the direct route. Program-only
+  // schemas and custom formats must not escape validation by being hidden.
+  std::erase_if(tools->array, prohibited);
+  return {};
 }
 
 Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,

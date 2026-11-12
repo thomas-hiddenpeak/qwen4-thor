@@ -1,0 +1,8 @@
+{
+  "prior": "publication-python-01",
+  "passed_reused": 2,
+  "failed": 1,
+  "cause": "fixture pending record was bound before program qualification changed registry; rebuild only fixture pending after binding the qualified predecessor",
+  "test": "tools.serve_recovery.test_profile_migration.MigrationTests.test_program_extension_and_recovery_preserve_capabilities_and_budgets",
+  "source_sha256": "bec32959fb1dc858c1a1484d0f8447729862902d73d4b3c440af4acdfe094a00"
+}

@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Deferred server/client discovery and additional_tools delivered rev118 and merged PR26. Programmatic isolated worker passed 13 targeted CPU checks; continue public authorization, persistent authenticated continuation, native dispatch, JSON/SSE, bounded real business and reversible delivery. Remaining typed outputs/MCP/builtins stay mandatory.",
+      "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -1053,16 +1053,21 @@
         }
       },
       "programmatic": {
-        "state": "implementation_in_progress",
+        "state": "public_integration_cpu_passed",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
-        "public_capability_not_yet_enabled": true,
+        "public_capability_not_yet_enabled": false,
         "gpu_started": false,
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "public generation/dispatch, persistent history and JSON/SSE; real business and reversible delivery remain required"
+        "next": "Frozen 1 start/8 creates/900s real project read closure, applicable profile/recovery qualification, reversible release and main merge; full master continues",
+        "default_capability_delivered": false,
+        "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
+        "integration_cpu_passed": 54,
+        "integration_sdk_passed": 2,
+        "integration_python_passed": 7
       }
     },
     {
@@ -1747,18 +1752,23 @@
         }
       },
       "programmatic": {
-        "state": "implementation_in_progress",
+        "state": "public_integration_cpu_passed",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
-        "public_capability_not_yet_enabled": true,
+        "public_capability_not_yet_enabled": false,
         "gpu_started": false,
         "delivery_pending": true,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "public generation/dispatch, persistent history and JSON/SSE; real business and reversible delivery remain required"
+        "next": "Frozen 1 start/8 creates/900s real project read closure, applicable profile/recovery qualification, reversible release and main merge; full master continues",
+        "default_capability_delivered": false,
+        "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
+        "integration_cpu_passed": 54,
+        "integration_sdk_passed": 2,
+        "integration_python_passed": 7
       },
-      "current_work": "Deferred server/client discovery and additional_tools delivered rev118 and merged PR26. Programmatic isolated worker passed 13 targeted CPU checks; continue public authorization, persistent authenticated continuation, native dispatch, JSON/SSE, bounded real business and reversible delivery. Remaining typed outputs/MCP/builtins stay mandatory."
+      "current_work": "Programmatic public integration CPU verified; real business, applicable qualification, reversible delivery and main merge pending. All other master gaps remain required."
     },
     {
       "id": "A12",
@@ -2690,6 +2700,6 @@
       "release": null
     }
   ],
-  "next_task": "A07/A11 programmatic public authorization, persistent continuation, dispatch/JSON/SSE and reversible delivery; then typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
-  "next": "A07/A11 programmatic public authorization, persistent continuation, dispatch/JSON/SSE and reversible delivery; then typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
+  "next_task": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
+  "next": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
 }

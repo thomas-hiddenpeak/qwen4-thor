@@ -12,6 +12,7 @@
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/responses_output.h"
+#include "q4t/server/responses_program.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/tool_result_contracts.h"
@@ -160,6 +161,12 @@ bool HasFileParts(const Json& value, size_t depth = 0) {
     if (type == "input_file" || type == "file" || type == "input_image" ||
         type == "image_url")
       return true;
+    if (type == "program_output") {
+      Json content;
+      return !DecodeResponsesProgramOutput(value.GetString("result"),
+                                           &content) ||
+             HasFileParts(content, depth + 1);
+    }
     for (const auto* key : {"content", "output", "results"})
       if (const auto* child = value.Find(key);
           child && HasFileParts(*child, depth + 1))
