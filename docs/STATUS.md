@@ -31,6 +31,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- PR24完整CI定位到custom内部Item/公开Conversation投影夹具错用，
+  [6项针对性CPU通过](evidence/serve-ci-custom-views-20261113/README.md)。
+  32输入及31会话形状均保留校验，生产源码/默认rev102未变；继续CI及实际合并。
+
 - A07下一组已冻结[异步工具原生接线及验证计划](SERVE_ASYNC_TOOLS_2026-11-13.md)：
   补历史/模板/持续生成及迟到结果，不只接受async字段；程序调用与
   延迟发现保留连续任务。先成组开发，当前尚未新增测试，rev102保持。

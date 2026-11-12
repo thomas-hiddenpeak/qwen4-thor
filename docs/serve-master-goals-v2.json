@@ -2459,6 +2459,14 @@
         "latest_fixture_evidence": "docs/evidence/serve-ci-trace-storage-20261113/README.md",
         "merge_commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
         "merge_evidence": "docs/evidence/serve-pr23-merged-20261113"
+      },
+      "namespace_main_integration": {
+        "pr": 24,
+        "state": "fixture_fixed_pending_CI",
+        "merged": false,
+        "evidence": "docs/evidence/serve-ci-custom-views-20261113",
+        "cpu_passed": 6,
+        "runtime_changed": false
       }
     },
     {
