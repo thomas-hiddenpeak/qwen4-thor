@@ -659,6 +659,8 @@ Q4T_TEST(uploads_streaming_md5_known_vectors_and_terminal_state) {
 Q4T_TEST(
     uploads_part_64m_boundary_streams_and_overflow_keeps_parent_unchanged) {
   Fixture fixture;
+  // This is a full 64 MiB storage boundary, not a timeout-injection test.
+  fixture.options.io_timeout_ms = 10000;
   fixture.options.max_client_bytes = 256ULL << 20;
   fixture.options.max_total_bytes = 512ULL << 20;
   ObjectStore objects(fixture.options);
@@ -686,7 +688,9 @@ Q4T_TEST(
     }
   }
   auto state = objects.Execute(Request(id), Access().deadline);
-  Q4T_CHECK(state.value.Find("data")->GetArray("parts")->array.size() == 1 &&
+  Q4T_CHECK(Ok(state) && state.value.Find("data") &&
+            state.value.Find("data")->GetArray("parts") &&
+            state.value.Find("data")->GetArray("parts")->array.size() == 1 &&
             state.value.Find("data")->GetInt("received_bytes") ==
                 static_cast<int64_t>(kUploadPartBytes));
   const auto completed =

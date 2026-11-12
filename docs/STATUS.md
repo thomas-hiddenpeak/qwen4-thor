@@ -29,6 +29,10 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23的x86文档转换诊断已过；完整CI暴露64MiB上传容量夹具未检查
+  错误回复的解引用。[补齐检查和容量IO预算后本机通过](evidence/serve-upload-capacity-fixture-20261112/README.md)。
+  生产预算与故障用例未改，继续真实CI及合并，rev94保持。
+
 - A07真实custom请求发现Responses/Chat grammar形状缺转换，已原生
   [补齐并通过7项针对性CPU](evidence/serve-responses-custom-format-20261112/README.md)。
   第二轮1启动1请求在生成前失败并清理；新引擎重验1启动6请求，累计
