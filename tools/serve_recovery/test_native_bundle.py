@@ -92,6 +92,30 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(cfg['version'], 2)
         self.assertNotIn('nginx', cfg)
 
+    def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
+        deployment = self.directory/'deployment';deployment.mkdir()
+        subprocess.run(['git','init','-q',str(deployment)],check=True,timeout=5)
+        self.directory = deployment/'.q4t-work/candidate'
+        self.directory.mkdir(parents=True)
+        original = json.loads(self.build.read_text())
+        corrupt = json.loads(self.build.read_text())
+        corrupt['source_files']['src/service/guardian_main.cpp'] = 'f'*64
+        self.save(self.build,corrupt)
+        with self.assertRaisesRegex(ValueError,'native source changed since build'):
+            self.prepare(repository=deployment)
+        self.assertFalse((self.directory/'package').exists())
+        self.save(self.build,original)
+        receipt = self.prepare(repository=deployment)
+        package = Path(receipt['package']);value = bundle.verify(package,receipt['manifest_sha256'])
+        self.assertEqual(value['repository'],str(deployment))
+        self.assertEqual(value['lock_path'],str(deployment/'.q4t-work/gpu-exclusive.lock'))
+        self.assertEqual(json.loads((package/'native-build.json').read_text())['source_files'],
+                         original['source_files'])
+        for name in ('controller.py','resource_client.py'):
+            source = Path('tools/serve_recovery')/name
+            self.assertEqual((package/'source'/source).read_bytes(),(ROOT/source).read_bytes())
+        self.assertFalse((deployment/'src/service/guardian_main.cpp').exists())
+
     def test_changed_native_binary_blocks_before_lease_acquisition(self):
         receipt = self.prepare()
         path = Path(receipt['package'])/'bin/q4t-ingress'

@@ -82,6 +82,7 @@ def prepare(args):
     for name, digest in review['artifacts'].items():
         engine.require(engine.sha(build/name) == digest, 'native artifact changed')
     native.update(source_files={p:engine.sha(ROOT/p) for p in bundle.NATIVE_SOURCES},
+        source_repository=str(ROOT),
         guardian_sha256=engine.sha(build/'q4t-guardian'),
         device_control_sha256=engine.sha(build/'q4t-device-control'))
     engine.save(out/'native-build.json', native)
@@ -95,6 +96,7 @@ def prepare(args):
         build/'q4t-guardian', origin/'bin/q4t-cuda-probe', None, origin/'gateway-policy.json',
         origin/'engine/client-policy.json', out/'bundle', native_receipt=out/'native-build.json',
         native_ingress=origin/'bin/q4t-ingress', device_control=build/'q4t-device-control',
+        repository=Path(old['repository']),
         capacity_config=capacity, application_state=application, model_names=settings.get('model_names'),
         embedding_model_dir=Path(settings['native_embedding']['directory']),
         recovery_profiles=qualified/'registry.json', recovery_profile_policy=old['recovery_profile_policy'])

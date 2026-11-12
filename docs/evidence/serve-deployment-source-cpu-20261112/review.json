@@ -1,0 +1,15 @@
+{
+  "status": "TARGETED_BUILD_SOURCE_DEPLOYMENT_BINDING_CPU_ACCEPTED",
+  "tests": 3,
+  "seconds": 0.5815325737930834,
+  "actual_different_deployment_directory": true,
+  "original_source_hash_negative_control": true,
+  "default_and_historical_packages_preserved": true,
+  "version_compatibility_not_relaxed": true,
+  "model_starts": 0,
+  "source_sha256": {
+    "tools/serve_recovery/bundle.py": "07c3fa9a538dc12a4af6a49851af1b72383be140db0d8c0e2dee24c398a0cad4",
+    "tools/serve_recovery/test_native_bundle.py": "f90c5dc3d75a2e825d055834ce03fdceb239be813d95ccb2be333fec44141cd0",
+    "tools/serve_recovery/outer_acceptance.py": "e7a93c6418174f9a3838d86940144dddcfae56230ca980d17a268cb4257c9762"
+  }
+}

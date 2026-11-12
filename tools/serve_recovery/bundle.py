@@ -233,8 +233,10 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         (device_control is None or build.get('device_control_sha256') == engine.sha(device_control)),
         'native build receipt mismatch')
     for name, digest in build['source_files'].items():
+        # Sources are copied from this builder's ROOT below. The explicit
+        # repository selects deployment paths and its cooperative lease.
         ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
-                       engine.sha(repository/name) == digest, 'native source changed since build')
+                       engine.sha(ROOT/name) == digest, 'native source changed since build')
     if tls is not None:
         tls_control.check(native_ingress, policy, tls, Path(output).parent)
     target = engine.private_directory(output, repository)
