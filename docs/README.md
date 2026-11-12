@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[当前实际状态与全部任务入口](STATUS.md) · [2026-11-12完整历史状态快照](HISTORY_STATUS_2026-11-12.md)
+
 [A07.7原生推敲、审核与访问执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)
 
 [N04原生密钥、动态客户端限额与用量连续性交付及操作](SERVE_ACCESS_CONTROL_2026-11-09.md)
