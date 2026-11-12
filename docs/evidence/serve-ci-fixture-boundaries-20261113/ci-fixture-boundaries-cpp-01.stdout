@@ -1,0 +1,12 @@
+[PASS] batch_state_cancel_prevents_late_validation_and_waits_for_owner
+  CHECK failed: objects.Execute(erase, Access().deadline).code == "batch_active_delete_conflict" (line 930)
+[FAIL] batch_recovery_scan_is_bounded_private_and_survives_cursor_deletion
+[PASS] batch_background_actual_ttl_retains_until_result_copy_then_collects
+[PASS] batch_background_original_parent_expiry_cancels_queued_execution
+[PASS] batch_background_absent_observer_closes_only_proven_missing_submission
+[PASS] responses_foreground_unknown_begin_is_closed_without_model_execution
+[PASS] responses_foreground_unknown_success_preserves_committed_result
+[PASS] responses_foreground_unknown_checkpoint_preserves_partial_output
+[PASS] vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files
+[PASS] vector_batches_lost_cancel_receipt_recovers_without_model
+10 tests, 9 passed, 1 failed, 0 skipped
