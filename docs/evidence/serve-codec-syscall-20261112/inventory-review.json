@@ -1,0 +1,9 @@
+{
+  "inventory_current": true,
+  "semantics_certified": false,
+  "reviewed": [
+    "src/server/file_legacy_sandbox.cpp",
+    "src/server/worker_io_broker.cpp"
+  ],
+  "mutation_checks": 5
+}

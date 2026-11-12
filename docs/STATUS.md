@@ -29,6 +29,9 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23编解码修复的两个生产源码锚点已按实际diff复核并更新审计索引；
+  清单与5项防遗漏负控通过，沿用16项CPU证据。继续真实CI及合并。
+
 - A07工具命名空间/custom公开投影/调用时output_schema合同的
   [37项不同CPU及官方SDK/schema检查已通过](evidence/serve-tool-identity-cpu-20261112/README.md)。
   独立结果校验worker、存储续接及压缩历史已接线；冻结1启动/6请求/
