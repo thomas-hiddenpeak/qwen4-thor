@@ -1,0 +1,17 @@
+{
+  "status": "PASS_COMPONENT_CPU_NOT_PUBLIC_EXECUTION",
+  "tests": 10,
+  "gpu_starts": 0,
+  "final_run": "catalog-cpu-03.json",
+  "source_sha256": {
+    "include/q4t/server/responses_tool_search.h": "adcb3427458d7423babfcf920527c0ee29a2e6968f68782403dc28d344902af1",
+    "src/server/responses_tool_search.cpp": "7ff9a96a817672de0cf45223b5b9b3d601dc8a12fb2cc53b271f969cc994f8cf",
+    "src/server/responses_tool_catalog_history.cpp": "6a10ad804bde27b727d4bbfec95b3c13545ea1cfd0748844fc9ddf3dc9484028",
+    "tests/server_responses_tool_search_test.cpp": "092e851f2f404e9d1735787c912ed717c9932035c13a659d12f05f64733e05f0",
+    "CMakeLists.txt": "8ca58bab8f298cc73327c79211ad487cf240d6be47fe841e885cd51326993083",
+    "cmake/HostTestSources.cmake": "15239a10b5e301257f268a3c6df405d1fa01e607de366c2efbd72c096f067129"
+  },
+  "default_revision": 110,
+  "default_unchanged": true,
+  "remaining": "Responses normalization/template/grammar/execution/state integration and actual business; full master stays active"
+}

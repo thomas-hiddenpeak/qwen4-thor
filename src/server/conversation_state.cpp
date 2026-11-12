@@ -270,6 +270,7 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
       data.Find("tool_contracts") ? *data.Find("tool_contracts") : Json();
   checked = MergeToolResultContracts(Json(), *all_items, &contracts);
   if (!checked.ok()) return checked;
+  std::vector<int64_t> item_revisions;
   for (const auto& item : new_items.array) {
     ObjectRequest get;
     get.kind = ObjectKind::kConversationItem;
@@ -291,23 +292,32 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
         checked = MergeToolResultContracts(*bound, *all_items, &contracts);
         if (!checked.ok()) return checked;
       }
+      // Imported items keep their original binding, including explicit null
+      // for legacy items. This conversation cannot retroactively grant one.
+      checked = BindToolResultContracts(Object(), Array({item}), &contracts);
+      if (!checked.ok()) return checked;
       item_revision = previous.value.GetInt("revision");
     } else if (previous.http_status != 404) {
       return previous;
     }
+    item_revisions.push_back(item_revision);
+  }
+  // Newly supplied calls can follow explicit discovery/additional_tools in
+  // this conversation. Bind at that actual position after all imported
+  // invocation contracts have been collected, before publishing any item.
+  checked = BindToolResultContracts(Object(), *all_items, &contracts);
+  if (!checked.ok()) return checked;
+  size_t index = 0;
+  for (const auto& item : new_items.array) {
     Json own;
     checked = SelectInputSnapshots(bindings, Array({item}), &own);
-    if (!checked.ok()) return checked;
-    // Manually added calls have no declaring request. Existing stored calls
-    // retain their original schema; a later tools list cannot replace it.
-    checked = BindToolResultContracts(Object(), Array({item}), &contracts);
     if (!checked.ok()) return checked;
     Json own_contracts;
     checked =
         MergeToolResultContracts(contracts, Array({item}), &own_contracts);
     if (!checked.ok()) return checked;
-    mutations.push_back(Write(ObjectKind::kConversationItem, get.id,
-                              item_revision,
+    mutations.push_back(Write(ObjectKind::kConversationItem,
+                              item.GetString("id"), item_revisions[index++],
                               Object({{"item", item},
                                       {"input_snapshots", own},
                                       {"tool_contracts", own_contracts}}),

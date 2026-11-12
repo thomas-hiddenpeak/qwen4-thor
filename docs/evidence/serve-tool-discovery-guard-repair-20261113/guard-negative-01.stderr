@@ -1,0 +1,2 @@
+schema_resource_exhausted: semantic token guard
+token=1 failure=3: grammar worker memory limit exceeded

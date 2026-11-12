@@ -279,6 +279,15 @@ Status SchemaTokenGuard::Filter(std::span<const std::string> vocabulary,
                                   ? ProbeRefusalPrefix(body, &refusal_space)
                                   : RefusalPrefix::kOrdinary;
   const bool refusing = refusal_prefix == RefusalPrefix::kRefusal;
+  // Once a refusal-only branch has an ordinary prefix, it cannot become a
+  // root refusal later. Its tool/text syntax is already enforced by the
+  // lexical matcher; rescanning every XML string candidate adds no semantic
+  // constraint and exhausts work with a real model vocabulary. Keep stop and
+  // empty-token checks, and never apply this to JSON or bound schema values.
+  const bool ordinary_lexical_only =
+      impl_->refusal && !reasoning &&
+      refusal_prefix == RefusalPrefix::kOrdinary && !impl_->content &&
+      impl_->tools.empty() && !impl_->json_content;
   const auto refusal_end = refusing ? body.find(kRefusalClose) : body.npos;
   bool in_string = false, escaped = false;
   if (!reasoning && !refusing)
@@ -308,6 +317,7 @@ Status SchemaTokenGuard::Filter(std::span<const std::string> vocabulary,
     if (vocabulary[i].size() > kOutputLimit - impl_->accepted.size())
       return Resource();
     if (!stop) {
+      if (ordinary_lexical_only) continue;
       // The lexical matcher already proves syntax/length/pattern viability.
       // No value becomes complete inside a string without a quote; no JSON
       // value exists before a reasoning/tool boundary. Check only candidates

@@ -1,0 +1,17 @@
+{
+  "failed": [
+    "responses_discovery_server_parameters_constrain_paths_and_keep_refs",
+    "responses_discovery_cancel_and_reserved_user_name_cannot_dispatch",
+    "responses_discovery_redefinition_does_not_rewrite_prior_call_prefix",
+    "responses_discovery_builtin_budget_closes_skipped_calls_without_loading",
+    "responses_discovery_bad_or_unfinished_arguments_never_dispatch",
+    "responses_discovery_compaction_keeps_executable_definitions_exact",
+    "responses_discovery_input_count_matches_generation_without_prefix_leak"
+  ],
+  "reason": "two implementation defects and five invalid fixtures; prior passes retained",
+  "sources": {
+    "src/server/responses_tool_search.cpp": "ccc6a9fcb3587150d504a4cfd67d5028a768c80a7209d5f8f4dcf10bc642b259",
+    "src/server/responses_input.cpp": "574ff5ed76de1af721037cd4036ac0f8257253a7c5f36f6343e18117bd78628e",
+    "tests/server_responses_tool_discovery_test.cpp": "8b4be7aabffcf443cfaaa0ce60a5e9c9bdc3a683a0201be6b25b1a97aacf0669"
+  }
+}

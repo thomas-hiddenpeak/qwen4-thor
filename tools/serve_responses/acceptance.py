@@ -112,6 +112,7 @@ class Stage(base.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_RESPONSES_FOREGROUND_BUSINESS'
+    max_output_tokens = 384
 
     def start(self):
         for port in (self.plan['port'], self.plan['operations_port']):
@@ -121,7 +122,7 @@ class Stage(base.Stage):
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
             '--operations-port', str(self.plan['operations_port']), '--mtp',
             '--max-seq', '1', '--max-len', '8192', '--max-prefill', '2048',
-            '--max-tokens', '384', '--max-inflight-requests', '8',
+            '--max-tokens', str(self.max_output_tokens), '--max-inflight-requests', '8',
             '--max-queued-requests', '2', '--object-store-dir', str(self.out/'objects')]
         save(self.out/'model-command.json', args)
         self.budget('starts')

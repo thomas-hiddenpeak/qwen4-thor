@@ -1,0 +1,26 @@
+{
+  "label": "root-rollback",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/candidate-02/bundle/engine/q4t",
+    "service",
+    "publish-rollback",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/candidate-02/bundle",
+    "--manifest-sha256",
+    "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+    "--generation-sha256",
+    "cc48b408ee228d67fca6c01109baf53fcc056090405c1e076c3cc5e6dafc57c7",
+    "--expected-manifest-sha256",
+    "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+    "--expected-revision",
+    "114",
+    "--request-id",
+    "ece00415-8866-47e7-a8fa-d41bc2ff0e4f"
+  ],
+  "returncode": 0,
+  "seconds": 8.747577453963459
+}

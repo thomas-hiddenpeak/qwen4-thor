@@ -1,0 +1,9 @@
+{
+  "reason": "suspected refusal-only semantic guard rescans 300000 allowed legacy XML-string tokens and exhausts work budget, misreported as memory; two direct CPU reproductions, no GPU",
+  "tests": [
+    "schema_guard_refusal_only_legacy_tool_has_bounded_mask_work",
+    "structured_decoder_large_vocab_discovery_string_uses_bounded_worker"
+  ],
+  "production_sha256": "17d60f1b88ea8ad8ee59a37aaeec3e9d7317fb0b8dcbf7b2debb0be90861a74c",
+  "expected_before_repair": "FAIL; original business failed, not reclassified"
+}

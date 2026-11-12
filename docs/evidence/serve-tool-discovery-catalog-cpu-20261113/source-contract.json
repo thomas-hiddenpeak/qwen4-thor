@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-13",
+  "official_url": "https://developers.openai.com/api/docs/guides/tools-tool-search",
+  "official_cache_sha256": "a409a8c94f3860dc669d1388b1a2c1101bbd1e58bf7db84027d6d9ad51252a22",
+  "sdk_version": "7.47.0",
+  "sdk_sha256": "36e7fa75452efa336eaae2e8664a5f872073a8ce8522b62879de5bf3e53a56f8",
+  "default_revision": 110,
+  "gpu_starts": 1,
+  "response_creates": 10,
+  "gpu_seconds": 900,
+  "new_external_dependency": false
+}

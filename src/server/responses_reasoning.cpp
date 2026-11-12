@@ -25,6 +25,8 @@ Status Replan(const Json& request, const ChatPlanConfig& config,
   auto adapted = config;
   adapted.async_tool_call_ids = history.async_tool_call_ids;
   adapted.responses_tool_media = history.responses_tool_media;
+  adapted.header_tools = history.header_tools;
+  adapted.tool_call_formats = history.tool_call_formats;
   auto status = PlanChatRequest(request, adapted, plan, error);
   if (!status) error->param = "reasoning.mode";
   return status;

@@ -1,0 +1,7 @@
+[PASS] responses_namespace_persistence_restart_and_queued_history
+[PASS] tool_result_contract_conversation_copy_and_frozen_queue_keep_schema
+[PASS] tool_result_schema_content_array_and_legacy_unbound_are_independent
+  CHECK failed: Ok(created) (line 261)
+[FAIL] responses_discovery_conversation_append_binds_previous_loaded_contract
+[PASS] responses_discovery_client_arbitrary_arguments_and_new_rest_definitions
+5 tests, 4 passed, 1 failed, 0 skipped

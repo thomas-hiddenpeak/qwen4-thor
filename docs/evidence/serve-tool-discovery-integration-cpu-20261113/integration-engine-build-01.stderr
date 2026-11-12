@@ -1,0 +1,5 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp: In member function ‘q4t::server::ChatPlanConfig q4t::server::ChatServer::PlanningConfig(int) const’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp:49:64: warning: missing initializer for member ‘q4t::server::ChatPlanConfig::header_tools’ [-Wmissing-field-initializers]
+   49 |           .file_input_policy_sha256 = file_input_policy_sha256_};
+      |                                                                ^
+/home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp:49:64: warning: missing initializer for member ‘q4t::server::ChatPlanConfig::tool_call_formats’ [-Wmissing-field-initializers]

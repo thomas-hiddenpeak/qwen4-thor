@@ -1,0 +1,15 @@
+[PASS] responses_tool_catalog_hides_deferred_schemas_and_namespace_children
+[PASS] responses_tool_search_loads_exact_authorized_subset_and_no_duplicates
+[PASS] responses_tool_search_client_catalog_preserves_schema_without_execution
+  CHECK failed: !PlanResponsesToolCatalog(Read(text), &plan, &error) && plan.eager.IsNull() && plan.deferred.IsNull() && plan.search.IsNull() && !error.param.empty() (line 116)
+[FAIL] responses_tool_catalog_rejects_bad_definitions_before_publishing
+[PASS] responses_tool_search_rejects_bad_queries_without_partial_loading
+  CHECK failed: ResolveResponsesToolHistory(Array(), history, &plan, &error) (line 163)
+[FAIL] responses_tool_history_loads_client_definitions_outside_initial_catalog
+[PASS] responses_tool_history_additions_preserve_order_and_previous_schemas
+[PASS] responses_tool_history_matches_search_results_and_never_replays
+  CHECK failed: ResolveResponsesToolHistory(Array(), history, &plan, &error) && plan.active.array.empty() && plan.activations.empty() (line 226)
+[FAIL] responses_tool_history_incomplete_results_do_not_authorize_tools
+  CHECK failed: ResolveResponsesToolHistory(Array(), first, &a, &error) && ResolveResponsesToolHistory(Array(), Array(), &b, &error) && a.active.array.size() == 1 && b.active.array.empty() (line 238)
+[FAIL] responses_tool_history_catalogs_are_request_local_and_bounded
+10 tests, 6 passed, 4 failed, 0 skipped

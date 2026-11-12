@@ -146,16 +146,22 @@ ObjectReply MeasureResponse(ResponsesExecution& response,
       const auto* files = response.FileUsage();
       const uint64_t sheets = files ? files->sheets : 0;
       const uint64_t calls =
-          response.HasFileSearch() && !envelope.cache.prewarm
+          (response.HasFileSearch() || response.HasToolSearch()) &&
+                  !envelope.cache.prewarm
               ? std::min<uint64_t>(
                     envelope.options.GetInt("max_tool_calls", INT64_MAX),
                     ResponsesExecution::kMaxNativeToolCalls)
               : 0;
-      const uint64_t queries =
-          calls * kVectorSearchQueries * model::EmbeddingConfig::kInputTokens;
+      const uint64_t queries = response.HasFileSearch()
+                                   ? calls * kVectorSearchQueries *
+                                         model::EmbeddingConfig::kInputTokens
+                                   : 0;
       const auto steps = (kBatchTokenLimit - queries) / config.max_len;
       const uint64_t async =
-          response.HasAsyncTools() && !envelope.cache.prewarm ? 1 : 0;
+          (response.HasAsyncTools() || response.HasToolSearch()) &&
+                  !envelope.cache.prewarm
+              ? 1
+              : 0;
       if (steps < 6 + calls + async || sheets > steps - 6 - calls - async)
         return Invalid();
       budget.prompt_capacity =
@@ -251,7 +257,7 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     if (status) {
       std::vector<std::vector<int32_t>> inputs;
       status = PrepareEmbeddingInputs(plan, config, encode, &inputs,
-                                       &meter.input.tokens, &error);
+                                      &meter.input.tokens, &error);
     }
     meter.output = 0;
   } else if (endpoint == "/v1/moderations") {

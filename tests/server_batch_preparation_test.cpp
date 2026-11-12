@@ -759,7 +759,6 @@ Q4T_TEST(batch_validation_driver_chunk_crossing_final_line_and_short_pins) {
 
 Q4T_TEST(batch_validation_driver_unknown_source_pin_is_sticky_and_resumable) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 100;
   ValidationWork work;
   {
     ObjectStore objects(fixture.options);
@@ -768,7 +767,9 @@ Q4T_TEST(batch_validation_driver_unknown_source_pin_is_sticky_and_resumable) {
   ObjectWorkerEntryForTesting("--q4t-object-worker-application-lost-ack");
   ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
   {
-    ObjectStore objects(fixture.options);
+    auto fault_options = fixture.options;
+    fault_options.io_timeout_ms = 100;
+    ObjectStore objects(fault_options);
     BatchValidation failed(objects, work.id, fixture.config);
     const auto result = failed.Step(Access());
     Q4T_CHECK(result.commit_unknown && failed.RowsChecked() == 0 &&
@@ -931,7 +932,6 @@ Q4T_TEST(batch_inline_input_scope_deadline_binding_and_immutable_page) {
 
 Q4T_TEST(batch_inline_input_actual_lost_page_receipt_survives_restart) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 150;
   Work work;
   BatchPreparedInput prepared;
   {
@@ -945,7 +945,9 @@ Q4T_TEST(batch_inline_input_actual_lost_page_receipt_survives_restart) {
   ObjectWorkerEntryForTesting("--q4t-object-worker-application-lost-ack");
   ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
   {
-    ObjectStore objects(fixture.options);
+    auto fault_options = fixture.options;
+    fault_options.io_timeout_ms = 150;
+    ObjectStore objects(fault_options);
     BatchRowPosition position{work.row.line,
                               work.row.offset,
                               work.row.wire_bytes,
@@ -1588,7 +1590,6 @@ Q4T_TEST(batch_recount_native_frozen_file_prefix_resumes_without_fetch) {
 
 Q4T_TEST(batch_recount_actual_partial_lost_ack_resumes_next_original_row) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 150;
   ValidationWork work;
   {
     ObjectStore objects(fixture.options);
@@ -1609,7 +1610,11 @@ Q4T_TEST(batch_recount_actual_partial_lost_ack_resumes_next_original_row) {
   ObjectWorkerEntryForTesting("--q4t-object-worker-batch-recount-lost-ack");
   ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
   {
-    ObjectStore objects(fixture.options);
+    // The short deadline forces receipt loss only here. Normal setup and
+    // resumed storage retain the production deadline, including cold exec.
+    auto fault_options = fixture.options;
+    fault_options.io_timeout_ms = 150;
+    ObjectStore objects(fault_options);
     const auto reply = RecountBatchInput(objects, Access(), work.id,
                                          fixture.config, fixed(7, 1));
     Q4T_CHECK(!reply.ok() && reply.commit_unknown);

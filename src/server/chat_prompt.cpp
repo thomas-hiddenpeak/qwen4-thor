@@ -181,14 +181,13 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
 
 }  // namespace
 
-Status PrepareChatPrompt(const io::Json& request,
-                         const OutputConstraints& constraints,
-                         std::string* prompt_out,
-                         std::vector<VisionItem>* items_out,
-                         std::string* error_param, std::string* error_code,
-                         ChatPromptLayout* layout, bool allow_empty,
-                         std::span<const std::string> async_call_ids,
-                         bool responses_tool_media) {
+Status PrepareChatPrompt(
+    const io::Json& request, const OutputConstraints& constraints,
+    std::string* prompt_out, std::vector<VisionItem>* items_out,
+    std::string* error_param, std::string* error_code, ChatPromptLayout* layout,
+    bool allow_empty, std::span<const std::string> async_call_ids,
+    bool responses_tool_media, const io::Json* header_tools,
+    std::span<const ChatToolCallFormat> call_formats) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
@@ -196,7 +195,8 @@ Status PrepareChatPrompt(const io::Json& request,
     if (!status) return status;
     status = PrepareChatPrompt(
         normalized.request, constraints, prompt_out, items_out, error_param,
-        error_code, layout, allow_empty, async_call_ids, responses_tool_media);
+        error_code, layout, allow_empty, async_call_ids, responses_tool_media,
+        header_tools, call_formats);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -237,11 +237,27 @@ Status PrepareChatPrompt(const io::Json& request,
       if (!error.empty()) return fail(error);
       error_param->clear();
     }
+    io::Json header, adapted_header, empty_header;
+    empty_header.type = io::Json::Type::kArray;
+    const io::Json* selected_header = nullptr;
     const auto* history_tools = request.GetArray("tools");
+    if (header_tools) {
+      header = request;
+      std::erase_if(header.object,
+                    [](const auto& field) { return field.first == "tools"; });
+      header.object.emplace_back("tools", *header_tools);
+      adapted_header = constraints.active
+                           ? ConstraintTemplateRequest(header, constraints)
+                           : header;
+      history_tools = header.GetArray("tools");
+      selected_header = adapted_header.GetArray("tools");
+      if (!selected_header) selected_header = &empty_header;
+    }
     const auto rendered = RenderChatPrompt(
         req, contents, &prompt, layout ? &layout->messages : nullptr,
         allow_empty, async_call_ids,
-        history_tools ? history_tools->array : std::span<const io::Json>{});
+        history_tools ? history_tools->array : std::span<const io::Json>{},
+        selected_header, call_formats);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

@@ -27,6 +27,8 @@ struct ResponsesEnvelope {
   bool logprobs = false;
   bool truncate = false;
   bool encrypted_reasoning = false;
+  // Execution-owned budget policy, never accepted from public JSON.
+  bool native_tools_exhausted = false;
   std::string previous_response_id;
   std::string conversation_id;
   std::string summary;
@@ -52,8 +54,10 @@ struct ResponsesGenerationPlan {
   ResponsesInputPlan input;
   io::Json generation_request;
   io::Json effective_tools;
+  io::Json active_tools;
   ChatRequestPlan chat;
   size_t truncated_items = 0;
+  std::vector<size_t> input_source_indices;
 };
 
 struct ResponsesSummaryPlan {

@@ -260,7 +260,8 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
         identity = &candidate;
         break;
       }
-    if (!identity && call->name.starts_with("q4t_ns_"))
+    if (!identity && (call->name.starts_with("q4t_ns_") ||
+                      call->name.starts_with("q4t_builtin_")))
       return Status::Fail("unknown Responses internal tool identity");
     item = Object(
         {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
@@ -515,7 +516,8 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     fields = Location(index, true);
     Set(&fields, "part", part);
     Event("response.content_part.done", std::move(fields), wire);
-  } else if (type != "reasoning" && type != "file_search_call" && !incomplete) {
+  } else if ((type == "function_call" || type == "custom_tool_call") &&
+             !incomplete) {
     const bool custom = type == "custom_tool_call";
     auto fields = Location(index);
     Set(&fields, custom ? "input" : "arguments",
@@ -640,7 +642,8 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     }
   if (!incomplete)
     for (size_t i = 0; i < Items().array.size(); ++i)
-      if (Items().array[i].GetString("type") == "file_search_call" &&
+      if ((Items().array[i].GetString("type") == "file_search_call" ||
+           Items().array[i].GetString("type") == "tool_search_call") &&
           !closed_items_.contains(i))
         return Status::Fail("Cannot finish an unexecuted file search");
   for (size_t i = 0; i < Items().array.size(); ++i) {
@@ -650,6 +653,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     const bool partial =
         incomplete &&
         (Items().array[i].GetString("type") == "file_search_call" ||
+         Items().array[i].GetString("type") == "tool_search_call" ||
          (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
                                       : i + 1 == Items().array.size()));
     Set(&Items().array[i], "status",

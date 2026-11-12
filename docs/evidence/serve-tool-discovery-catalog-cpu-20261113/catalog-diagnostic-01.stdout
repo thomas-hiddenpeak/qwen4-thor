@@ -1,0 +1,9 @@
+  CHECK failed: !status && plan.eager.IsNull() && plan.deferred.IsNull() && plan.search.IsNull() && !error.param.empty() (line 121)
+[FAIL] responses_tool_catalog_rejects_bad_definitions_before_publishing
+  CHECK failed: status (line 172)
+[FAIL] responses_tool_history_loads_client_definitions_outside_initial_catalog
+  CHECK failed: status && plan.active.array.empty() && plan.activations.empty() (line 239)
+[FAIL] responses_tool_history_incomplete_results_do_not_authorize_tools
+  CHECK failed: first_status && second_status && a.active.array.size() == 1 && b.active.array.empty() (line 259)
+[FAIL] responses_tool_history_catalogs_are_request_local_and_bounded
+4 tests, 0 passed, 4 failed, 0 skipped

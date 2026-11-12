@@ -16,7 +16,8 @@ FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
-    'custom_tool_call', 'compaction', 'file_search_call'))
+    'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
+    'tool_search_output'))
 
 
 def semantic_capabilities(value):
@@ -42,6 +43,16 @@ def semantic_capabilities(value):
                 search.get('profile') == 'q4t-file-search-v1' and
                 search.get('implemented') is True,
                 'file search output lacks its implementation capability')
+        discovery_items = {'tool_search_call', 'tool_search_output'}
+        if discovery_items.intersection(items):
+            discovery = responses.get('tool_discovery')
+            ledger.require(discovery_items.issubset(items) and
+                type(discovery) is dict and
+                discovery.get('profile') == 'q4t-tool-discovery-v1' and
+                discovery.get('definitions') == 'ordered_history' and
+                all(discovery.get(key) is True for key in ('defer_loading',
+                    'server_paths', 'client_search', 'additional_tools')),
+                'tool discovery outputs lack their implementation capability')
         # This field declares an unordered set of output types. Normalize only
         # this reviewed enum; all other arrays retain exact-value comparison.
         responses['output_items'] = {item: True for item in items}

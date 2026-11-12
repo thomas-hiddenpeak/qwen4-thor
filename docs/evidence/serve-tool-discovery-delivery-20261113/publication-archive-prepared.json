@@ -1,0 +1,10 @@
+{
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/publication-archive-01/plan.json",
+  "sha256": "ba644bc3479fdb7568bee9a72c15919a424c75f1958f782d947c4a0d786b423e",
+  "selected": [
+    "f1663bf0f34c939b67eca03c0ddcf72250d9e15da80acf7d3c4f378387a6ad0d",
+    "6be1619289eff0e82b1d9f310a42c9bb76072b57f0e0274a9ef35d7ebd075645"
+  ],
+  "model_actions": false,
+  "files_moved": false
+}

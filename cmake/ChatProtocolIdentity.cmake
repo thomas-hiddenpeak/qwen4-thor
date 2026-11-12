@@ -433,6 +433,28 @@ set(protocol_inputs
   src/server/schema_idna.cpp
   src/server/output_constraints.cpp
   src/server/structured_decoder.cpp)
+# Stateful execution and recovery also change the public serving contract.
+# check_inventory.py rejects an unregistered server source/header.
+list(APPEND protocol_inputs
+  src/server/chat_server_internal.h
+  src/server/responses_jobs.cpp
+  src/server/responses_execution_inputs.cpp
+  src/server/responses_tool_search.cpp
+  src/server/responses_tool_search_execution.cpp
+  src/server/session_state.cpp
+  src/server/responses_tool_search_output.cpp
+  src/server/responses_tool_catalog_history.cpp
+  include/q4t/server/scheduler_submission.h
+  include/q4t/server/session_state.h
+  include/q4t/server/serve_fault.h
+  include/q4t/server/session_save_timing.h
+  include/q4t/server/responses_tool_search.h
+  include/q4t/server/mtp_policy.h
+  include/q4t/server/suffix_token_cache.h
+  include/q4t/server/suffix_causal.h
+  include/q4t/server/lifetime.h
+  include/q4t/server/prefix_cache_policy.h
+  include/q4t/server/responses_jobs.h)
 list(SORT protocol_inputs)
 set(protocol_manifest "")
 set(protocol_sources "{}")

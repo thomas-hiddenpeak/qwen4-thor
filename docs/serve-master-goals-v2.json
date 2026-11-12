@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "implemented_targeted_validated_delivered_main_pending",
+        "state": "implemented_targeted_validated_delivered_main_merged",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -989,7 +989,61 @@
         "delivery_evidence": "docs/evidence/serve-async-tools-delivery-20261113",
         "publication_revision": 110,
         "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
-        "engine_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3"
+        "engine_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "main_integration": {
+          "pr": 25,
+          "merge_commit": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+          "evidence": "docs/evidence/serve-pr25-merged-20261113"
+        }
+      },
+      "tool_discovery": {
+        "state": "delivered_main_integration_pending",
+        "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
+        "public_capability_not_yet_enabled": false,
+        "gpu_budget": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 900
+        },
+        "gpu_started": true,
+        "programmatic_and_mcp_remain_required": true,
+        "component_evidence": "docs/evidence/serve-tool-discovery-catalog-cpu-20261113",
+        "targeted_cpp_passed": 77,
+        "targeted_sdk_driver_passed": 4,
+        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
+        "business_failure": "docs/evidence/serve-tool-discovery-business-failure-20261113",
+        "actual_attempt": {
+          "starts": 1,
+          "response_creates": 1,
+          "seconds": 39.86322369938716
+        },
+        "default_unchanged": false,
+        "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
+        "guard_repair_cpu": 12,
+        "aggregate_gpu_budget": {
+          "starts": 2,
+          "response_creates": 11,
+          "seconds": 1200
+        },
+        "business_evidence": "docs/evidence/serve-tool-discovery-business-20261113",
+        "business": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 104.44730356521904
+        },
+        "default_capability_not_yet_published": false,
+        "pr": 26,
+        "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
+        "qualification_actual": {
+          "starts": 5,
+          "requests": 14,
+          "probes": 1,
+          "nvml_queries": 244
+        },
+        "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
+        "migration_targeted_cpu": 10,
+        "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
+        "default_revision": 118
       }
     },
     {
@@ -1617,6 +1671,54 @@
           "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
         },
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
+      },
+      "tool_discovery": {
+        "state": "delivered_main_integration_pending",
+        "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
+        "targeted_cpp_passed": 77,
+        "targeted_sdk_driver_passed": 4,
+        "integration_evidence": "docs/evidence/serve-tool-discovery-integration-cpu-20261113",
+        "public_capability_not_yet_enabled": false,
+        "gpu_started": true,
+        "gpu_budget": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 900
+        },
+        "programmatic_and_mcp_remain_required": true,
+        "business_failure": "docs/evidence/serve-tool-discovery-business-failure-20261113",
+        "actual_attempt": {
+          "starts": 1,
+          "response_creates": 1,
+          "seconds": 39.86322369938716
+        },
+        "default_unchanged": false,
+        "guard_repair_evidence": "docs/evidence/serve-tool-discovery-guard-repair-20261113",
+        "guard_repair_cpu": 12,
+        "aggregate_gpu_budget": {
+          "starts": 2,
+          "response_creates": 11,
+          "seconds": 1200
+        },
+        "business_evidence": "docs/evidence/serve-tool-discovery-business-20261113",
+        "business": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 104.44730356521904
+        },
+        "default_capability_not_yet_published": false,
+        "pr": 26,
+        "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
+        "qualification_actual": {
+          "starts": 5,
+          "requests": 14,
+          "probes": 1,
+          "nvml_queries": 244
+        },
+        "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
+        "migration_targeted_cpu": 10,
+        "delivery_evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
+        "default_revision": 118
       }
     },
     {
@@ -2472,10 +2574,10 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 110,
-        "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
-        "generation_sha256": "44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9",
-        "evidence": "docs/evidence/serve-async-tools-delivery-20261113",
+        "revision": 118,
+        "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
+        "generation_sha256": "52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615",
+        "evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
         "state": "STOPPED",
         "main_integration_pending": true
       },
@@ -2516,12 +2618,21 @@
       "namespace_main_integration": {
         "pr": 24,
         "state": "MERGED",
-        "merged": false,
+        "merged": true,
         "evidence": "docs/evidence/serve-pr24-merged-20261113",
         "cpu_passed": 6,
         "runtime_changed": false,
         "current_ci_head": "82240c5e6390205b84742c948a9007e9666748e5",
         "merge_commit": "79f6e391f4e7e9e7287ec022c16d5dcdf7af824d"
+      },
+      "async_main_integration": {
+        "pr": 25,
+        "merge_commit": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+        "evidence": "docs/evidence/serve-pr25-merged-20261113"
+      },
+      "tool_discovery_main_integration": {
+        "pr": 26,
+        "merged": false
       }
     },
     {
@@ -2537,6 +2648,6 @@
       "release": null
     }
   ],
-  "next_task": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery.",
-  "next": "Q02 actual main integration; A07/A11 async/caller/deferred discovery, typed outputs/MCP/builtins; A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 retained. Continue every master task after this delivery."
+  "next_task": "PR26 actual main integration, then A07/A11 programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
+  "next": "A07/A11 tool discovery real business, reversible delivery and actual main integration; then programmatic caller/typed outputs/MCP/builtins, A10 backends and A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
 }

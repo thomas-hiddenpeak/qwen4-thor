@@ -1,0 +1,38 @@
+{
+  "status": "PASS_TOOL_DISCOVERY_FALLBACK_DELIVERY",
+  "acceptance": "ACCEPT_TOOL_DISCOVERY_FALLBACK_DELIVERY",
+  "manifest_sha256": "11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf",
+  "engine_binary_sha256": "ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531",
+  "actual_business": {
+    "status": "ACCEPT_TOOL_DISCOVERY_RETAINED",
+    "strict_lease_seconds": 56.85801275121048,
+    "nvml_queries": 54,
+    "env_abort": false,
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 162
+    },
+    "source_commit": "aa2df70518deab2e40b40c4aa435b3924ae3d0dc",
+    "plan_sha256": "9dcc8aeb5fb755416007ccbfcd7cfdb5ed2aedf6ab919fdcabfb3a695d42b5b7",
+    "result_sha256": "e58e62ca6efe5645756c4d96d982cd75ccb4048700de808ef645d81aca5681dc",
+    "lease_result_sha256": "030ab3271b33d603152b6eda1b6f4c86c943d291bca62ae6436a3e3407e772ed",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "original_decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/managed-retained-01/decision.json",
+    "sha256": "aabea1fa584223c888b20eeab1d4c29f939ee6640c5996bd2767a153bfe74d13"
+  },
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/delivery-01/review.json",
+  "new_gpu_starts": 0,
+  "remaining_master_tasks_open": true,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

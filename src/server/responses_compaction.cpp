@@ -61,9 +61,14 @@ std::string Fingerprint(Json items) {
   return Digest(canonical);
 }
 bool Primary(const Json& item) {
-  return item.GetString("type") == "message" &&
-         (item.GetString("role") == "system" ||
-          item.GetString("role") == "developer");
+  const auto type = item.GetString("type");
+  // Tool definitions are executable policy, not prose that a summarizer may
+  // paraphrase or discard. Preserve their original loading points and IDs.
+  if (type == "additional_tools" || type == "tool_search_call" ||
+      type == "tool_search_output")
+    return true;
+  return type == "message" && (item.GetString("role") == "system" ||
+                               item.GetString("role") == "developer");
 }
 bool User(const Json& item) {
   return item.GetString("type") == "message" &&

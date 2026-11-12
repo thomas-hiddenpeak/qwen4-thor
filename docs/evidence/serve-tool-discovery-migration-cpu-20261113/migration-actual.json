@@ -1,0 +1,95 @@
+{
+  "status": "PASS_ACTUAL_QUALIFIED_DISCOVERY_MIGRATION",
+  "explicit_extension": {
+    "format": "q4t-profile-migration-permit-v3",
+    "from_registry": "04c181593b03d329baa7da856113957bc12766f92a9e7771f312b2b61a5c7998",
+    "to_registry": "5ec1c1fffe5ea18c9fedc921f5d34f4ad41398b04707336a1c1f8126570cb19a",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "fca7332545eea1ca2b74036949b5c09bf8facbafebafb7afed8b798762f951ed",
+    "to_identity": "26a31c2a40d9b084e5d5c4ea11ca434b0ed7acbebfdefe2c241d6e32e1887801",
+    "capabilities_sha256": "16b4a0b9f828d73629d8e88856783d0bda91b7f0af47468c0498bb8abe48a507",
+    "automatic": false,
+    "target_profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "target_capabilities_sha256": "7eb3d3efe935ae5e3f12e56b597a60dbcaeac8a360deafc9792ea57b1a8434cf"
+  },
+  "automatic_recovery": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "5ec1c1fffe5ea18c9fedc921f5d34f4ad41398b04707336a1c1f8126570cb19a",
+    "to_registry": "5ec1c1fffe5ea18c9fedc921f5d34f4ad41398b04707336a1c1f8126570cb19a",
+    "profiles": {
+      "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+      "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "26a31c2a40d9b084e5d5c4ea11ca434b0ed7acbebfdefe2c241d6e32e1887801",
+    "to_identity": "26a31c2a40d9b084e5d5c4ea11ca434b0ed7acbebfdefe2c241d6e32e1887801",
+    "capabilities_sha256": "7eb3d3efe935ae5e3f12e56b597a60dbcaeac8a360deafc9792ea57b1a8434cf",
+    "automatic": true
+  },
+  "descriptors": [
+    {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-async-tools-20261113/candidate-03/bundle",
+      "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1"
+    },
+    {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/candidate-01/bundle",
+      "manifest_sha256": "cb40656e41281c4e057edd746b5c72982b9e1ef2d60def74eb8bc1a2481c2299"
+    },
+    {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-discovery-20261113/retained-01/bundle",
+      "manifest_sha256": "9f8f68fd7404ad7a70250f7105a340dde2699a406c8c119afbc6d5ab3066ece2"
+    }
+  ],
+  "source_sha256": "c4b81816fc711f513ed17b6621da51ec442a8ba730ce5ef00e0f69d1077dcee1",
+  "new_gpu_starts": 0,
+  "default_changed": false
+}

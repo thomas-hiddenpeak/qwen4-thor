@@ -1,0 +1,83 @@
+test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) ... 
+  test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) (automatic=False) ... FAIL
+  test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) (automatic=True) ... FAIL
+test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) ... ERROR
+test_discovery_recovery_keeps_contract_and_pending_history (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_recovery_keeps_contract_and_pending_history) ... ERROR
+test_discovery_outputs_require_paired_items_and_actual_profile (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_outputs_require_paired_items_and_actual_profile) ... ERROR
+
+======================================================================
+ERROR: test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 158, in test_discovery_extension_requires_deployment_and_rejects_feature_loss
+    grant = self.extended_permit(self.new, evidence,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 74, in extended_permit
+    return migration.permit(self.old, new, self.first, evidence,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 94, in permit
+    old_contract, new_contract = map(semantic_capabilities, (first, second))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 36, in semantic_capabilities
+    ledger.require(type(items) is list and all(type(x) is str for x in items)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities
+
+======================================================================
+ERROR: test_discovery_recovery_keeps_contract_and_pending_history (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_recovery_keeps_contract_and_pending_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 172, in test_discovery_recovery_keeps_contract_and_pending_history
+    grant = migration.permit(self.old, self.new, same, reordered,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 94, in permit
+    old_contract, new_contract = map(semantic_capabilities, (first, second))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 36, in semantic_capabilities
+    ledger.require(type(items) is list and all(type(x) is str for x in items)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities
+
+======================================================================
+ERROR: test_discovery_outputs_require_paired_items_and_actual_profile (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_outputs_require_paired_items_and_actual_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 184, in test_discovery_outputs_require_paired_items_and_actual_profile
+    normalized = migration.semantic_capabilities(valid)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 36, in semantic_capabilities
+    ledger.require(type(items) is list and all(type(x) is str for x in items)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities
+
+======================================================================
+FAIL: test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) (automatic=False)
+----------------------------------------------------------------------
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 155, in test_discovery_extension_requires_deployment_and_rejects_feature_loss
+    with self.subTest(automatic=automatic), self.assertRaisesRegex(
+AssertionError: "application capabilities" does not match "invalid response output capabilities"
+
+======================================================================
+FAIL: test_discovery_extension_requires_deployment_and_rejects_feature_loss (tools.serve_recovery.test_profile_migration.MigrationTests.test_discovery_extension_requires_deployment_and_rejects_feature_loss) (automatic=True)
+----------------------------------------------------------------------
+tools.serve_recovery.ledger.LedgerError: invalid response output capabilities
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 155, in test_discovery_extension_requires_deployment_and_rejects_feature_loss
+    with self.subTest(automatic=automatic), self.assertRaisesRegex(
+AssertionError: "application capabilities" does not match "invalid response output capabilities"
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.114s
+
+FAILED (failures=2, errors=3)

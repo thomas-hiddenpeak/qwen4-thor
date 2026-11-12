@@ -1,0 +1,6 @@
+503 response_storage_exhausted : Cancellation requires an active background response
+invalid_request tools[0].parameters.additionalProperties: object must be closed
+400 invalid_request input[1]: missing output for a tool call
+503 response_storage_exhausted : Cancellation requires an active background response
+invalid_request input[0].content: Expected an array
+500 invalid_count_configuration : Input count requires count-only planning

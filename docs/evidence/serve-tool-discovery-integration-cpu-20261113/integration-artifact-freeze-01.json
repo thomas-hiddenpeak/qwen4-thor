@@ -1,0 +1,17 @@
+{
+  "reason": "emit actual native parser/executor JSON and SSE for independent pinned SDK validation; C++ production delta since adapter pass is formatting only; business harness output capacity is explicitly 256",
+  "tests": [
+    "responses_discovery_real_parser_receipt_and_sse_items_are_consistent",
+    "tools.serve_responses.test_tool_discovery_acceptance (4 cases)"
+  ],
+  "sources": {
+    "tests/server_responses_tool_discovery_test.cpp": "e31d8f0b6af23fe43864769a1fba6503c3510df06b8b3da730a89a941546dad9",
+    "src/server/responses_tool_search.cpp": "b73429e8dbac20630baf88c3ef89667e31e6d4bc15b20c7e56f9ad1d7b44cb9d",
+    "src/server/responses_tool_search_execution.cpp": "9046a68713a27663ad1175cd1725c1052c4fe9db176a95b5e8f2f07752bbc2a5",
+    "src/server/responses_tool_search_output.cpp": "270895f1134a0fefee6abcc6913fab858f20c355d141692dfeb0ee757c6ef9fc",
+    "tools/serve_responses/acceptance.py": "8ad444426d2b138965b60a9e87915a0fb4422a3bf96b670f6cb999537f6976c6",
+    "tools/serve_responses/tool_discovery_acceptance.py": "c418bef65eba871d3e438a7fec771a42cd72d201e310830e40e12780fcf09d9a",
+    "tools/serve_responses/test_tool_discovery_acceptance.py": "6e720543da21f0e8a026b4731a31c7171a584757ee2416a44af56fc858f5cf9e"
+  },
+  "gpu_started": false
+}

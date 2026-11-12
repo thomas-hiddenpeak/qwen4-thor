@@ -9,20 +9,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev110；服务包 `eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1` |
-| Generation | `44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9` |
-| 引擎 | `6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3` |
-| 引擎发布记录 | `82dd88855e8369031dc192589c71a7d724ac9084ef9483350a79c9a627fc0658` |
+| 发布 | rev118；服务包 `bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2` |
+| Generation | `52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615` |
+| 引擎 | `ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531` |
+| 引擎发布记录 | `a2500b5603f5963d719f3addee02fe1595b1fd09a9bbd4fb6a9172122c0ea3b6` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `6a163a1debe64597b90a5334f8a6f1ec775536f912f0fdbe1135328f43772c91`；保持新工具能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-async-tools-delivery-20261113/README.md)
-包含17项STOPPED交付检查，0新增GPU。异步函数/custom同Response续答、
-迟到真实结果、当前主轻资格及整树切换均已接受；单项迁移比较修复
-经CPU及实际发布验证，保持已验引擎和原生组件。
+[发行结果与回退记录](evidence/serve-tool-discovery-delivery-20261113/README.md)
+包含17项STOPPED交付检查，0新增GPU。server/client工具发现与
+additional_tools实际闭环、主轻资格及整树切换均已接受；发布迁移
+遗漏已补齐，严格保持能力与预算。namespace/async原有能力保留。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
 自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
@@ -30,9 +30,59 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
 提交也已实际合main（PR24，`79f6e391`），
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
-后续async提交尚待独立合入，全部master任务继续。
+异步实现已实际合main（PR25，`4e87a03f`），
+[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev118可用，
+工具发现已发行，PR26仍待当前head检查及实际合main；程序调用等全部master继续。
 
 ## 最近完成的实现和验证
+
+- PR26旧head一次CI暴露正常Batch恢复误用150ms故障期限；已将三项
+  同类夹具的正常/注入期限分开，[7项针对性CPU首过](evidence/serve-ci-batch-recount-deadline-20261113/README.md)。
+  生产和rev118字节未变，0GPU；继续最新head检查及实际合main。
+
+- 原生工具发现已[可回退发行rev118](evidence/serve-tool-discovery-delivery-20261113/README.md)：
+  17项STOPPED检查全过、0GPU，实际回退再前进，密钥/配额/core/outer
+  及恢复预算保持。PR26待检查与实际合main；继续程序调用及全部master。
+
+- 工具发现[主轻、独立回退与整树恢复均通过](evidence/serve-tool-discovery-qualification-20261113/README.md)：
+  5启动14业务1探测，244次NVML正常、资源清理；真实资料结果在切换
+  后继续闭环。只做17项STOPPED可回退交付，随后实际合main；全部
+  master继续，默认rev110尚未改变。
+
+- 回退准备暴露工具发现输出枚举遗漏；已[修复并通过10项CPU及实际资格迁移](evidence/serve-tool-discovery-migration-cpu-20261113/README.md)。
+  主轻2启动8请求已通过；引擎/原生helper不变，继续原定独立回退与
+  整树恢复短验，再可回退发行和实际合main；默认rev110保持。
+
+- 工具发现[真实业务补验通过](evidence/serve-tool-discovery-business-20261113/README.md)：
+  1启动/10创建/104.447秒，server函数JSON/custom SSE、client目录外
+  定义及additional_tools四次实际读取闭环通过，错误结果400拒绝。
+  98次NVML正常，资源清理；连原失败累计2/11/144.311秒。PR26已建，
+  继续主轻/恢复资格、可回退发行及实际合main；默认rev110保持。
+
+- 已用两项大词表CPU负控复现工具发现失败：仅检查拒答的guard重复
+  扫描XML候选耗尽工作额度，误报内存。[修后12项针对性CPU通过](evidence/serve-tool-discovery-guard-repair-20261113/README.md)，
+  grammar/拒答/停止/schema检查及资源上限保持。补验固定1启动10创建，
+  含原失败累计2启动11创建1200秒；默认rev110未变，全部master继续。
+
+- 工具发现[首次真实短验失败](evidence/serve-tool-discovery-business-failure-20261113/README.md)：
+  1启动/1创建/39.863秒，首请求触发grammar资源错误。39次NVML查询
+  正常，进程/端口/锁已清理，默认rev110保持。正在CPU复现语义guard
+  工作预算与内存错误的混淆，修复后补原业务闭环，不把失败归档当收口。
+
+- 工具发现公开执行链的[77项不同CPU、4项SDK/驱动检查最终通过](evidence/serve-tool-discovery-integration-cpu-20261113/README.md)：
+  原位置加载、真实派发、持久结果合同、异步/推理续答、裁剪压缩及
+  JSON/SSE接线已验证；失败及修正原件保留。补齐19项协议来源漏登，
+  增加来源遗漏检查。接着冻结1启动10创建900秒真实业务；默认rev110
+  保持，尚未宣称GPU通过或对外交付，总目标继续。
+
+- PR25两组CI全过并已实际合main（4e87a03f）。后续[目录/历史加载部件10项CPU通过](evidence/serve-tool-discovery-catalog-cpu-20261113/README.md)，
+  失败及修正原件保留；尚待公开执行器/模板/状态接线，不能视为
+  tool_search已可用。继续接线和全部master；默认rev110保持，0GPU。
+
+- [工具发现实施清单](SERVE_TOOL_DISCOVERY_2026-11-13.md)已固定：server/client
+  搜索、additional_tools、按历史位置加载与权限/结果约束持续性。
+  正开发原生目录及执行接线，未宣称完成；默认rev110保持。异步
+  PR25（be7c2236）两组CI已过并合main，新开发保持独立。
 
 - 异步工具已[可回退交付rev110](evidence/serve-async-tools-delivery-20261113/README.md)：
   17项实际STOPPED检查全部通过、0GPU；回退再前进、密钥/配额/

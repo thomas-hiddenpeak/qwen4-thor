@@ -1,0 +1,17 @@
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::StartToolSearch(const q4t::server::ResponseToolCall&, bool, size_t*, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp:38:24: error: ‘OutputJson’ was not declared in this scope
+   38 |   auto status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+      |                        ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::CompleteToolSearchCall(size_t, const q4t::io::Json&, bool, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp:64:31: error: ‘OutputJson’ was not declared in this scope
+   64 |   if (status) status = Charge(OutputJson(arguments).size());
+      |                               ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::CompleteToolSearchOutput(size_t, const q4t::io::Json&, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp:90:31: error: ‘OutputJson’ was not declared in this scope
+   90 |   if (status) status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+      |                               ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3803: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

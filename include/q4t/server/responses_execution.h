@@ -15,6 +15,7 @@
 #include "q4t/server/state_cipher.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_tool_search.h"
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
@@ -66,6 +67,7 @@ class ResponsesExecution {
     const auto* context = envelope_.request.GetArray("context_management");
     return PendingFileSheets() ||
            (!envelope_.cache.prewarm && HasFileSearch()) ||
+           (!envelope_.cache.prewarm && HasToolSearch()) ||
            (!envelope_.cache.prewarm && HasAsyncTools()) ||
            envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
@@ -124,6 +126,14 @@ class ResponsesExecution {
   Status CiteFileSearchSources(std::string* wire);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
   bool HasAsyncTools() const { return has_async_tools_; }
+  bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
+  bool PendingToolSearch() const { return !tool_search_pending_.empty(); }
+  size_t PendingNativeCalls() const {
+    return file_search_pending_.size() + tool_search_pending_.size();
+  }
+  ObjectReply RunToolSearches(
+      size_t completed_calls, bool* client_wait,
+      const std::function<bool(const std::string&)>& publish);
   bool PendingFileSearch() const { return !file_search_pending_.empty(); }
   static constexpr size_t kMaxNativeToolCalls = 64;
   ObjectReply RunFileSearches(
@@ -204,6 +214,9 @@ class ResponsesExecution {
   Status RecordOutput(Status status, std::string* wire);
   Status AppendFileSearch(const ResponseDelta& delta, bool* handled,
                           std::string* wire);
+  Status AppendToolSearch(const ResponseDelta& delta, bool* handled,
+                          std::string* wire);
+  Status BindActiveTools(const io::Json& active, ChatPlanError* error);
   Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
   std::unique_ptr<FileExpansion> files_;
@@ -232,8 +245,16 @@ class ResponsesExecution {
     bool dispatched = false;
   };
   std::map<size_t, NativeFileCall> file_search_pending_;
-  size_t file_search_calls_ = 0;
+  size_t native_tool_calls_ = 0;
   size_t file_search_argument_bytes_ = 0;
+  ResponsesToolCatalog tool_search_catalog_;
+  struct NativeSearchCall {
+    ResponseToolCall call;
+    size_t output_index = 0;
+    bool dispatched = false;
+  };
+  std::map<size_t, NativeSearchCall> tool_search_pending_;
+  size_t tool_search_argument_bytes_ = 0;
   bool has_async_tools_ = false;
   bool async_continued_ = false;
   ResponsesCompactionPlan compaction_;

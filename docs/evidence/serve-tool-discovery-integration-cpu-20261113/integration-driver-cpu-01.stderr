@@ -1,0 +1,9 @@
+test_actual_cpp_parser_and_executor_match_sdk_wire_shapes (tools.serve_responses.test_tool_discovery_acceptance.ToolDiscoveryAcceptance.test_actual_cpp_parser_and_executor_match_sdk_wire_shapes) ... ok
+test_requests_match_sdk_and_frozen_output_capacity (tools.serve_responses.test_tool_discovery_acceptance.ToolDiscoveryAcceptance.test_requests_match_sdk_and_frozen_output_capacity) ... ok
+test_search_oracle_rejects_wrong_identity_definitions_and_order (tools.serve_responses.test_tool_discovery_acceptance.ToolDiscoveryAcceptance.test_search_oracle_rejects_wrong_identity_definitions_and_order) ... ok
+test_stream_oracle_rejects_missing_done_and_function_adapter_leak (tools.serve_responses.test_tool_discovery_acceptance.ToolDiscoveryAcceptance.test_stream_oracle_rejects_missing_done_and_function_adapter_leak) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.171s
+
+OK

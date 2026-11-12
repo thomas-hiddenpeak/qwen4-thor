@@ -77,10 +77,11 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
     Q4T_CHECK(search->GetString("results_include") ==
               "file_search_call.results");
     const auto* items = response->GetArray("output_items");
-    Q4T_CHECK(items && items->array.size() == 6);
+    Q4T_CHECK(items && items->array.size() == 8);
     for (const auto* type :
          {"message", "reasoning", "function_call", "custom_tool_call",
-          "compaction", "file_search_call"})
+          "compaction", "file_search_call", "tool_search_call",
+          "tool_search_output"})
       Q4T_CHECK(std::count_if(items->array.begin(), items->array.end(),
                               [&](const auto& item) {
                                 return item.IsString() && item.str == type;
@@ -108,8 +109,8 @@ Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
             !files->GetBool("file_resolution_pending"));
   Q4T_CHECK(files->GetArray("purposes")->array.size() == 6);
   const auto* inputs = value.Find("file_inputs");
-  Q4T_CHECK(inputs && inputs->GetString("policy_profile") ==
-                          "q4t-file-input-policy-v1" &&
+  Q4T_CHECK(inputs &&
+            inputs->GetString("policy_profile") == "q4t-file-input-policy-v1" &&
             inputs->GetString("configuration_endpoint") == "/v1/config" &&
             inputs->GetString("configuration_field") == "file_inputs" &&
             inputs->GetBool("policy_check_cli") &&
@@ -137,7 +138,8 @@ Q4T_TEST(chat_capabilities_transport_observation_contract) {
   Q4T_CHECK(http->GetString("expect_continue") ==
             "after_authentication_and_admission");
   Q4T_CHECK(http->GetString("sse_http11_framing") == "chunked");
-  Q4T_CHECK(http->GetString("request_identity") == "reauthenticate_each_request");
+  Q4T_CHECK(http->GetString("request_identity") ==
+            "reauthenticate_each_request");
   Q4T_CHECK(http->GetString("truncated_stream") == "close_without_replay");
   Q4T_CHECK(http->GetBool("observation_during_drain") &&
             http->GetBool("reservation_excludes_unclassified_header_flood"));
@@ -351,8 +353,8 @@ Q4T_TEST(chat_capabilities_native_completions_and_models) {
   Q4T_CHECK(q4t::io::ParseJson(
       q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
   const auto* completion = caps.Find("completions");
-  Q4T_CHECK(completion && completion->GetString("profile") ==
-            "q4t-completions-v1");
+  Q4T_CHECK(completion &&
+            completion->GetString("profile") == "q4t-completions-v1");
   Q4T_CHECK(completion->GetBool("usage_includes_unreturned_candidates"));
   Q4T_CHECK(completion->GetBool("prompt_logprobs"));
   Q4T_CHECK(completion->GetString("token_input") == "exact_ids");
@@ -393,8 +395,8 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             moderation->GetInt("auxiliary_output_tokens_per_step") == 512 &&
             !moderation->GetBool("model_restart_on_error", true));
   const auto* execution = responses->Find("reasoning_execution");
-  Q4T_CHECK(execution && execution->GetString("pro") ==
-                            "native_deliberation_then_answer" &&
+  Q4T_CHECK(execution &&
+            execution->GetString("pro") == "native_deliberation_then_answer" &&
             execution->GetBool("effort_independent") &&
             execution->GetBool("shared_output_budget") &&
             !execution->GetBool("speculative_tool_execution", true) &&
@@ -438,8 +440,7 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             jobs->GetBool("cancel_idempotent") &&
             !jobs->GetBool("replays_started_generation", true) &&
             !jobs->GetBool("recovery_resets_deadline", true));
-  Q4T_CHECK(jobs->GetString("recovery") ==
-            "verified_dead_owner_queued_only");
+  Q4T_CHECK(jobs->GetString("recovery") == "verified_dead_owner_queued_only");
   const auto* conversations = caps.Find("conversations");
   Q4T_CHECK(conversations && conversations->GetBool("items_append") &&
             conversations->GetString("retention") == "until_explicit_delete");

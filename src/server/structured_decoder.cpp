@@ -50,7 +50,7 @@ struct StructuredDecoder::Impl {
       process->Stop();
       return Status::Fail(
           failure == GrammarFailure::kResource
-              ? "grammar worker memory limit exceeded"
+              ? "grammar worker resource limit exceeded"
           : failure == GrammarFailure::kDependency
               ? "structured output validation dependency unavailable"
               : "grammar worker compilation or matching failed");

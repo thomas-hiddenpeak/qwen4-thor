@@ -1,0 +1,4 @@
+catalog case [{"type":"tool_search"},{"type":"function","name":"read","defer_loading":true,"parameters":{"type":"broken"}}]:  ()
+client history: input[1].tools[0].strict (Required item field is missing)
+incomplete history: input[1].tools[0].parameters (Required item field is missing)
+first history: input[0].tools[0].parameters (Required item field is missing)

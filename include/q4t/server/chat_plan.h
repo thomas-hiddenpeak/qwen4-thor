@@ -15,6 +15,7 @@
 #include "q4t/server/prediction.h"
 #include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/client_policy.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/server/server_options.h"
 #include "q4t/status.h"
 
@@ -59,6 +60,10 @@ struct ChatPlanConfig {
   // Validated Responses history only. Public Chat cannot set this policy.
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
+  // Responses discovery keeps later definitions at their historical position.
+  // This affects rendering only; the actual tools still constrain generation.
+  std::optional<io::Json> header_tools;
+  std::vector<ChatToolCallFormat> tool_call_formats;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;
@@ -85,6 +90,8 @@ struct ChatPlanError {
 struct ChatRequestPlan {
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
+  std::optional<io::Json> header_tools;
+  std::vector<ChatToolCallFormat> tool_call_formats;
   std::optional<io::Json> normalized_request;
   bool legacy_output = false;
   OutputConstraints constraints;
@@ -94,6 +101,9 @@ struct ChatRequestPlan {
   std::vector<std::string> stops;
   const io::Json& Request(const io::Json& original) const {
     return normalized_request ? *normalized_request : original;
+  }
+  const io::Json* HeaderTools() const {
+    return header_tools ? &*header_tools : nullptr;
   }
 };
 
