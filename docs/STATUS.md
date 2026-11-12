@@ -32,6 +32,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
   过滤及有界cosine/BM25排序16项CPU首过（0.026秒）；持久索引、
   API和Responses执行循环接着实现，尚未声明生产file_search可用。
   [实施与验收计划](SERVE_NATIVE_FILE_SEARCH_2026-11-12.md)，默认rev80保持。
+- A11索引构建/持久化成组编码：实际token分块保UTF-8、逐块EOS和
+  已消费用量，索引绑定源文件及embedding/tokenizer身份，复用不可变
+  快照持久化；9新+2资产直接回归CPU首过（0.984秒）。尚未接公开存储API和
+  Responses执行器，下一步继续对象管理/任务恢复/工具闭环。
 - 原生外层恢复、真实资源域采集与版本回退组合已验并发行。真实root
   死亡后清树重建、未知配额保守窗口、单次文档工具、JSON/SSE与原存储
   Chat保持通过。[业务记录](evidence/serve-outer-resource-business-20261112/README.md)：

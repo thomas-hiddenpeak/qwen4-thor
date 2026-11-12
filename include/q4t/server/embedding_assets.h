@@ -15,6 +15,8 @@ inline constexpr char kNativeEmbeddingRevision[] =
     "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3";
 inline constexpr char kNativeEmbeddingWeightSha256[] =
     "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd";
+inline constexpr char kNativeEmbeddingTokenizerSha256[] =
+    "def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a";
 inline constexpr size_t kNativeEmbeddingFileBytes = 1191586416;
 inline constexpr int kEmbeddingAssetTimeoutMs = 60000;
 

@@ -440,6 +440,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/embeddings_plan.cpp
     src/server/vector_search_plan.cpp
     src/server/vector_search_rank.cpp
+    src/server/vector_index.cpp
     src/server/embeddings_execution.cpp
     src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
@@ -671,6 +672,7 @@ if(Q4T_BUILD_TESTS)
     src/server/embeddings_plan.cpp
     src/server/vector_search_plan.cpp
     src/server/vector_search_rank.cpp
+    src/server/vector_index.cpp
     src/server/embeddings_execution.cpp
     src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
@@ -688,6 +690,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_moderations_api_test.cpp
     tests/server_embeddings_api_test.cpp
     tests/server_vector_search_test.cpp
+    tests/server_vector_index_test.cpp
     tests/server_responses_context_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp

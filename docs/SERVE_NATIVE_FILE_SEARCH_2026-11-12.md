@@ -67,3 +67,26 @@ caller/async/namespace/output_schema继续是总目标任务，未移出范围�
 身份不变时复用；新索引/模型工具循环做必要HTTP/SDK短验，GPU预算
 在接线完成后冻结并持有同一严格租约。不跑五档性能或整模型质量。
 默认rev80保持，未部署未验收候选。
+
+## 不可变索引实现组
+
+2026-11-12。实际raw token边界分块已编码，UTF-8交界向内调整，不
+破坏字符、不超过声明的token/重叠；每块实际embedding回调追加单个
+EOS。中途失败/异常保留已消费计量，不发布部分索引。权重、tokenizer、
+LAST/L2/MRL维度及分块版本形成绑定，文件/提取文本身份同时保留。
+
+持久化复用已有InputSnapshotStore：原文和little-endian float32两段
+二进制、不可变内容、哈希/客户端scope/配额、有限准备hold；未知提交
+保留原ID和hold，不重复发布或猜测删除。可变文件属性在读取投影时
+绑定，不因改标签重新运行embedding。尚未创建公开向量存储入口。
+
+冻结9项索引CPU（含真实已安装tokenizer、实际快照worker重启和故意
+丢提交回执）+2项因常量共用而直接受影响的embedding资产CPU；无GPU。
+这些用例中的向量由明确的数学夹具提供，不冒充真实模型生成证据。
+验收后继续持久父对象/任务管理、HTTP/SDK和Responses真实执行。
+
+[索引11项CPU首过](evidence/serve-vector-index-cpu-20261112/README.md)，
+0.984秒，实际tokenizer、对象worker重启及丢提交回执均执行。两次
+构建失败及一次未执行启动记录保留；修复头文件/测试入口后零警告。
+源文件身份字段仍须由后续Files真实提取适配器赋值；公开父对象、
+任务恢复、API与工具循环未完成，继续实施，默认rev80保持。

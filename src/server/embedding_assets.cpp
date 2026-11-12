@@ -21,8 +21,6 @@ constexpr size_t kConfigBytes = 727;
 constexpr size_t kTokenizerBytes = 11423705;
 constexpr char kConfigDigest[] =
     "b5bf1f51fc45be473a54718cef92448d90a1be001bf9b9a44b8c7f10a19feaa9";
-constexpr char kTokenizerDigest[] =
-    "def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a";
 struct Request {
   uint64_t magic = kMagic;
   uint64_t path_bytes = 0;
@@ -133,7 +131,7 @@ Status LoadEmbeddingAssets(const std::string& directory,
         !transfer(tokenizer.data(), tokenizer.size(), false))
       return fail(process->Failure(), "embedding metadata transfer failed");
     if (Digest(Bytes(config)) != kConfigDigest ||
-        Digest(Bytes(tokenizer)) != kTokenizerDigest)
+        Digest(Bytes(tokenizer)) != kNativeEmbeddingTokenizerSha256)
       return fail(GrammarFailure::kDependency, "embedding metadata SHA256 differs");
     io::Json parsed;
     io::JsonParseLimits limits{.max_depth = 16, .max_values = 32768,

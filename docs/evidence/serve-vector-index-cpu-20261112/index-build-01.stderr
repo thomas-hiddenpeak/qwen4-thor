@@ -1,0 +1,29 @@
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:18:18: error: ‘EmbeddingConfig’ in namespace ‘q4t::model’ does not name a type
+   18 | using C = model::EmbeddingConfig;
+      |                  ^~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp: In function ‘bool q4t::server::{anonymous}::Identity(const q4t::server::VectorIndexIdentity&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:52:33: error: ‘C’ has not been declared
+   52 |          identity.dimensions >= C::kMinimumDimensions &&
+      |                                 ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:53:33: error: ‘C’ has not been declared
+   53 |          identity.dimensions <= C::kHidden && Chunking(identity.chunking) &&
+      |                                 ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp: In function ‘std::string q4t::server::VectorEmbeddingIdentity(size_t)’:
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:143:20: error: ‘C’ has not been declared
+  143 |   if (dimensions < C::kMinimumDimensions || dimensions > C::kHidden) return {};
+      |                    ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:143:58: error: ‘C’ has not been declared
+  143 |   if (dimensions < C::kMinimumDimensions || dimensions > C::kHidden) return {};
+      |                                                          ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp: In function ‘q4t::server::ObjectReply q4t::server::BuildVectorIndex(const VectorIndexIdentity&, std::string_view, std::span<const unsigned int>, std::span<const long unsigned int>, const VectorIndexEmbedding&, const VectorSearchControl&, VectorIndex*, uint64_t*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:221:22: error: ‘C’ has not been declared
+  221 |     if (tokens[i] >= C::kVocab) return Invalid();
+      |                      ^
+/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp:237:21: error: ‘C’ has not been declared
+  237 |     input.push_back(C::kEos);
+      |                     ^
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3663: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

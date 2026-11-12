@@ -1,0 +1,12 @@
+/usr/bin/ld: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_index_test.cpp.o: in function `q4t_test_fn_vector_index_real_tokenizer_raw_boundaries_and_eos_are_preserved()':
+server_vector_index_test.cpp:(.text+0x22b4): undefined reference to `q4t::server::LoadEmbeddingAssets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, q4t::server::EmbeddingHostAssets*, q4t::server::GrammarControl, q4t::server::GrammarFailure*, bool)'
+/usr/bin/ld: server_vector_index_test.cpp:(.text+0x251c): undefined reference to `q4t::text::Tokenizer::Encode(std::basic_string_view<char, std::char_traits<char> >, std::vector<unsigned int, std::allocator<unsigned int> >*, q4t::text::EncodeOptions const&) const'
+/usr/bin/ld: server_vector_index_test.cpp:(.text+0x25e0): undefined reference to `q4t::text::Tokenizer::Decode(std::vector<unsigned int, std::allocator<unsigned int> > const&, bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*) const'
+/usr/bin/ld: server_vector_index_test.cpp:(.text+0x2ca4): undefined reference to `q4t::text::Tokenizer::~Tokenizer()'
+/usr/bin/ld: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_index_test.cpp.o: in function `q4t::server::EmbeddingHostAssets::~EmbeddingHostAssets()':
+server_vector_index_test.cpp:(.text._ZN3q4t6server19EmbeddingHostAssetsD2Ev[_ZN3q4t6server19EmbeddingHostAssetsD5Ev]+0x88): undefined reference to `q4t::text::Tokenizer::~Tokenizer()'
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:4775: q4t_host_tests] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

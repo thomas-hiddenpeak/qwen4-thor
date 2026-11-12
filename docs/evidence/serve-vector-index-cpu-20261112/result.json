@@ -1,0 +1,18 @@
+{
+  "result": "PASS_TARGETED_IMMUTABLE_VECTOR_INDEX",
+  "cases": 11,
+  "new_cases": 9,
+  "affected_asset_cases": 2,
+  "seconds": 0.9835421666502953,
+  "binary_sha256": "a54148db8b0bd8e8939b5d33240f825e263173f0d58f5f3710c0ebdf64d60108",
+  "gpu_starts": 0,
+  "default_changed": false,
+  "actual_tokenizer_loaded": true,
+  "actual_storage_worker_restart": true,
+  "actual_lost_publish_receipt": true,
+  "model_embeddings": "explicit mathematical CPU fixture; not GPU acceptance",
+  "public_store_api": false,
+  "file_ingestion_adapter": false,
+  "responses_executor": false,
+  "whole_A11_complete": false
+}

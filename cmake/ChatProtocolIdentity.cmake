@@ -44,6 +44,8 @@ set(protocol_inputs
   include/q4t/server/vector_search.h
   src/server/vector_search_plan.cpp
   src/server/vector_search_rank.cpp
+  include/q4t/server/vector_index.h
+  src/server/vector_index.cpp
   include/q4t/server/embeddings_execution.h
   include/q4t/server/embedding_metadata.h
   src/server/embeddings_plan.cpp

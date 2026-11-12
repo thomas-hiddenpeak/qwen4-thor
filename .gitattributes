@@ -111,3 +111,5 @@ docs/evidence/serve-refusal-managed-business-20261112/**/*.wire binary
 # Preserve original compiler/configuration and targeted test output bytes.
 docs/evidence/serve-vector-search-foundation-20261112/*.stdout -text -whitespace
 docs/evidence/serve-vector-search-foundation-20261112/*.stderr -text -whitespace
+docs/evidence/serve-vector-index-cpu-20261112/*.stdout -text -whitespace
+docs/evidence/serve-vector-index-cpu-20261112/*.stderr -text -whitespace

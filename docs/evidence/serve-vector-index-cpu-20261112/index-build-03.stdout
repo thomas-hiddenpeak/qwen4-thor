@@ -1,0 +1,5 @@
+[  1%] Built target q4t_regex_build
+[ 11%] Built target xgrammar
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_index_test.cpp.o
+[ 12%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
