@@ -39,11 +39,11 @@ class Control:
 
     def call(self, operation, args, *, inherited=(), timeout=5):
         device_store.privileged()
-        ledger.require(operation in ('attach', 'adopt', 'recover', 'remove', 'issue') and
+        ledger.require(operation in ('attach', 'adopt', 'recover', 'remove', 'detach', 'issue') and
                        0 < timeout <= 5, 'invalid bounded device operation')
         ledger.require(self.pending is None or self.pending.poll() is not None,
                        'device control worker is not reaped')
-        expected = 0 if operation == 'remove' else 2
+        expected = 0 if operation in ('remove', 'detach') else 2
         command = ledger.canonical(dict(version=1, op=operation,
             lease_fd=self.lease_fd, lease_path=self.lease_path, args=args))
         ledger.require(len(command) <= MAXIMUM, 'device control request too large')

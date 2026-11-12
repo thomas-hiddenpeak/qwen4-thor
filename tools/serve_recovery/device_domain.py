@@ -266,9 +266,20 @@ def arm(directory, lease_fd, lease_path):
                 devices=args['devices'], target_cgroup_id=os.fstat(target).st_ino,
                 allowed_cgroup_id=os.fstat(allowed).st_ino)
             if pin.exists():
+                ledger.require(not any(os.path.lexists(directory/name) for name in
+                    ('removal.json', 'removal.json.pending')),
+                               'complete the original device removal before rearming')
                 ledger.require(read_record(directory/'fence.json') == intent,
                                'retained fence differs; disarm its original rules first')
             else:
+                removed = False
+                for name in ('removal.json', 'removal.json.pending'):
+                    removal = directory/name
+                    if removal.exists(): removal.unlink(); removed = True
+                if removed:
+                    fd = os.open(directory, os.O_DIRECTORY | os.O_RDONLY | os.O_CLOEXEC)
+                    try: os.fsync(fd)
+                    finally: os.close(fd)
                 write_record(directory/'fence.json', intent)
             with control.call('recover' if pin.exists() else 'attach', args,
                               inherited=(target, allowed)) as retained:
@@ -323,9 +334,21 @@ def disarm(directory, lease_fd, lease_path):
                 control = device_control.Control(executable, lease_fd, lease_path)
                 args = dict(target_fd=target, allowed_fd=allowed,
                             devices=intent['devices'], pin=str(pin))
-                with control.call('recover', args, inherited=(target, allowed)) as retained:
-                    with control.call('remove', dict(args, identity=retained.result),
-                                      inherited=(target, allowed)): pass
+                removal = directory/'removal.json'
+                if removal.exists():
+                    selected = read_record(removal)
+                    ledger.keys(selected, ('version', 'intent', 'identity'))
+                    ledger.require(selected['version'] == 1 and selected['intent'] == intent,
+                                   'device removal selection changed')
+                else:
+                    with control.call('recover', args, inherited=(target, allowed)) as retained:
+                        selected = dict(version=1, intent=intent, identity=retained.result)
+                        write_record(removal, selected)
+                # A separate operation is intentional: old helpers that only
+                # unlink a pin must reject, never claim an explicit detach.
+                with control.call('detach', dict(args, identity=selected['identity']),
+                                  inherited=(target, allowed)) as detached:
+                    ledger.require(detached.result == 'detached', 'device detach receipt differs')
             # No processes are moved or killed to force this cleanup through.
         group.rmdir(); pins.rmdir()
         return dict(armed=False, model_actions=False)

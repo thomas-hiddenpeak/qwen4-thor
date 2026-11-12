@@ -1,0 +1,33 @@
+{
+  "status": "TARGETED_EXPLICIT_DEVICE_DETACH_CPU_PASS",
+  "distinct_tests": 14,
+  "all_first_pass": true,
+  "cpu_seconds": 1.0442299442365766,
+  "build_seconds": 9.24618359701708,
+  "build_zero_warnings": true,
+  "actual_kernel_cgroup_and_link_detach": true,
+  "retained_link_fd_no_longer_enforces_rule": true,
+  "detached_pin_resume_only_teardown": true,
+  "other_rule_preserved": true,
+  "actual_native_ipc": true,
+  "persisted_removal_identity": true,
+  "no_legacy_unpin_downgrade": true,
+  "model_gpu_starts": 0,
+  "host_root_device_filter_changed": false,
+  "owned_cgroups_and_pins_remaining": [],
+  "default_unchanged": true,
+  "source_sha256": {
+    "include/q4t/service/device_filter.h": "260b36b468198b9c2cc41a7125fdeeb37cc22f45dbe89e1a219dabfcef57b5b7",
+    "src/service/device_filter.cpp": "3c93ffea127653e58766cba4deb87680d50bb51f15d1e07a34303c77c2e09828",
+    "src/service/device_control_main.cpp": "df56297c3469b0b60e5dcacd398ae747a31e3c66df8062641b02cf8f2b347fbc",
+    "tests/device_filter_test.cpp": "7ca48dbf74be8352ff31f4c656fba0d32a3ff078ad444ec2f740e3f103960980",
+    "tools/serve_recovery/device_control.py": "83cf5f0d7572bfdca1a469beb29f1c9614945aac2499caf86b8c8889926e80bc",
+    "tools/serve_recovery/device_domain.py": "3b08fd914062d73e69921c4fc0d7434f324f81c2d96b315bc8fce85879bc1a4d",
+    "tools/serve_recovery/test_device_control.py": "9f15e52d427765f1ac7c61ce453d61b211eedd54e69b901ed10ccfa1cfdf2596",
+    "tools/serve_recovery/test_device_domain.py": "1d9679738f137dc67019708acc5228fbe5f7696c117b54f38466e466addca267"
+  },
+  "device_control_sha256": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f",
+  "guardian_rebuilt": false,
+  "original_r07_candidate_unchanged": true,
+  "released": false
+}

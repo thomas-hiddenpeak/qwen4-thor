@@ -90,6 +90,27 @@ class ControlTests(unittest.TestCase):
         with self.control.call('recover', self.args, inherited=self.inherited) as recovered:
             self.assertEqual(recovered.result, identity)
 
+    def test_explicit_native_detach_revokes_rule_while_client_keeps_descriptors(self):
+        attached = self.attach(); before = os.fstat(attached.fds[0])
+        args = dict(self.args, identity=attached.result)
+        with self.control.call('detach', args, inherited=self.inherited) as detached:
+            self.assertEqual(detached.result, 'detached'); self.assertEqual(detached.fds, [])
+        self.assertEqual(os.fstat(attached.fds[0]).st_ino, before.st_ino)
+        info = Path('/proc/self/fdinfo')/str(attached.fds[0])
+        fields = dict(row.split(':', 1) for row in info.read_text().splitlines() if ':' in row)
+        self.assertEqual(fields['cgroup_id'].strip(), '0')
+        self.assertFalse(self.pin.exists()); self.assertIsNone(self.control.pending)
+
+    def test_explicit_native_detach_rejects_wrong_original_rules(self):
+        attached = self.attach()
+        args = dict(self.args, identity=attached.result,
+                    devices=[dict(major=1, minor=3, all_minors=False)])
+        with self.assertRaisesRegex(ValueError, 'rejected'):
+            self.control.call('detach', args, inherited=self.inherited)
+        self.assertTrue(self.pin.exists())
+        with self.control.call('adopt', dict(self.args, identity=attached.result),
+                               inherited=self.inherited): pass
+
     def test_native_issuer_returns_immutable_root_receipt_and_one_use_pipe(self):
         attached = self.attach()
         claims = self.admission(attached.result)

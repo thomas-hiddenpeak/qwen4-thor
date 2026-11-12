@@ -86,12 +86,14 @@ class DomainTests(unittest.TestCase):
     def reply(self, operation, args, **_kwargs):
         self.operations.append(operation)
         if operation == 'attach': self.pin.write_bytes(b'cpu-only-fake-link')
-        if operation == 'remove': self.pin.unlink()
-        yield mock.Mock(result=self.kernel, fds=[self.target, self.allowed])
+        if operation in ('remove', 'detach'): self.pin.unlink()
+        yield mock.Mock(result='detached' if operation == 'detach' else self.kernel,
+                        fds=[self.target, self.allowed])
 
     @contextmanager
     def environment(self):
         with mock.patch.object(d, 'scope', side_effect=self.scope), \
+             mock.patch.object(d, 'names', return_value=(self.group, self.pin.parent)), \
              mock.patch.object(d, 'empty'), \
              mock.patch.object(d.Observation, 'inspect', return_value=self.observed), \
              mock.patch.object(d.device_control.Control, 'call', side_effect=self.reply):
@@ -203,6 +205,52 @@ class DomainTests(unittest.TestCase):
             fcntl.flock(self.lease, fcntl.LOCK_UN)
             with self.assertRaises(ValueError): d.arm(self.directory, self.lease, self.lease_path)
         scope.assert_not_called()
+
+    def test_detach_interruption_resumes_saved_identity_without_recovering_authority(self):
+        with self.environment(): d.arm(self.directory, self.lease, self.lease_path)
+        original = self.reply
+        @contextmanager
+        def fail(operation, args, **kwargs):
+            if operation == 'detach': raise OSError('injected detach before receipt')
+            with original(operation, args, **kwargs) as result: yield result
+        with self.environment(), mock.patch.object(d.device_control.Control, 'call', side_effect=fail), \
+                self.assertRaises(OSError):
+            d.disarm(self.directory, self.lease, self.lease_path)
+        before = d.read_record(self.directory/'removal.json')
+        self.assertEqual(before['identity'], self.kernel); self.assertTrue(self.pin.exists())
+        self.operations.clear()
+        with self.environment(), mock.patch.object(d, 'names', return_value=(self.group, self.pin.parent)):
+            self.assertFalse(d.disarm(self.directory, self.lease, self.lease_path)['armed'])
+        self.assertNotIn('recover', self.operations); self.assertIn('detach', self.operations)
+        self.assertEqual(d.read_record(self.directory/'removal.json'), before)
+
+    def test_pending_detach_cannot_requalify_or_change_its_selected_fence(self):
+        with self.environment(): d.arm(self.directory, self.lease, self.lease_path)
+        intent = d.read_record(self.directory/'fence.json')
+        d.write_record(self.directory/'removal.json', dict(version=1, intent=intent, identity=self.kernel))
+        before = self.policy()
+        with self.environment(), self.assertRaisesRegex(ValueError, 'removal before rearming'):
+            d.arm(self.directory, self.lease, self.lease_path)
+        self.assertEqual(self.policy(), before); self.assertTrue(self.pin.exists())
+        d.write_record(self.directory/'removal.json', dict(version=1,
+            intent=dict(intent, allowed_cgroup_id=42), identity=self.kernel))
+        with self.environment(), self.assertRaisesRegex(ValueError, 'removal selection changed'):
+            d.disarm(self.directory, self.lease, self.lease_path)
+        self.assertTrue(self.pin.exists())
+
+    def test_detach_failure_never_falls_back_to_unpin_only_helper(self):
+        with self.environment(): d.arm(self.directory, self.lease, self.lease_path)
+        original = self.reply; calls = []
+        @contextmanager
+        def legacy(operation, args, **kwargs):
+            calls.append(operation)
+            if operation == 'detach': raise ValueError('legacy helper has no detach operation')
+            with original(operation, args, **kwargs) as result: yield result
+        with self.environment(), mock.patch.object(d.device_control.Control, 'call', side_effect=legacy), \
+                self.assertRaisesRegex(ValueError, 'legacy helper'):
+            d.disarm(self.directory, self.lease, self.lease_path)
+        self.assertTrue(self.pin.exists()); self.assertNotIn('remove', calls)
+        self.assertTrue((self.directory/'removal.json').exists())
 
     def test_actual_management_cli_status_never_claims_runtime_qualification(self):
         output = io.StringIO()
