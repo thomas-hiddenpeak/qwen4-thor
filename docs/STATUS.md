@@ -25,8 +25,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
 自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
-PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`正进行CI，
-其后namespace提交尚未合main；继续实际合入及全部master任务。
+PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
+[合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
+提交尚未合main，继续单独主线检查及全部master任务。
 
 ## 最近完成的实现和验证
 

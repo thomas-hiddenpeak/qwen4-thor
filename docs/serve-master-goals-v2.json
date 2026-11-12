@@ -2435,17 +2435,14 @@
       },
       "main_integration": {
         "pr": 23,
-        "state": "CI_17d8dbe2_in_progress",
+        "state": "PR23_MERGED",
         "evidence": "evidence/serve-public-host-repair-20261112/README.md",
         "targeted_cpu_passed": 18,
-        "github_document_sandbox_pending": true,
-        "merged": false,
+        "github_document_sandbox_pending": false,
+        "merged": true,
         "followup_evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
         "followup_targeted_runtime_cpu_passed": 24,
-        "remaining_failures": [
-          "Legacy document sandbox prerequisites on hosted runner",
-          "Batch fault-injection fixture short I/O timeout also applied to unrelated setup/verification"
-        ],
+        "remaining_failures": [],
         "host_prerequisites_batch_evidence": "evidence/serve-host-prerequisites-batch-20261112/README.md",
         "codec_syscall_repair": {
           "commit": "ac7806c0770b847c9cadf30d41cb0e0402362576",
@@ -2455,11 +2452,13 @@
             43247688537,
             43247705253
           ],
-          "remote_result": "in_progress",
-          "merged": false
+          "remote_result": "passed_in_final_17d8dbe2_runs",
+          "merged": true
         },
         "current_ci_head": "17d8dbe2d7f909f7367d9191c00e1a62d6b9d3d7",
-        "latest_fixture_evidence": "docs/evidence/serve-ci-trace-storage-20261113/README.md"
+        "latest_fixture_evidence": "docs/evidence/serve-ci-trace-storage-20261113/README.md",
+        "merge_commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
+        "merge_evidence": "docs/evidence/serve-pr23-merged-20261113"
       }
     },
     {
