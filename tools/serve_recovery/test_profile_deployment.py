@@ -46,16 +46,23 @@ class DeploymentTests(unittest.TestCase):
                               for w in deployment.FAMILIES.values())]}
         self.request = str(uuid.uuid4())
 
-    def prepare(self, name, *, legacy=False, config=None, max_tokens=None):
+    def prepare(self, name, *, legacy=False, config=None, max_tokens=None,
+                capability_extension=False):
         path, registry, records = test_profile_integration.evidence_files(self.fixture)
         if max_tokens is not None:
             primary = dict(registry['profiles']['primary'], max_tokens=max_tokens)
             self.fixture.base['settings']['profile'] = primary
             registry['profiles'] = profile_contract.profiles(primary)
+        if max_tokens is not None or capability_extension:
             for kind, record in records.items():
                 record['capacity'] = registry['profiles'][kind]
                 record['configuration'].update(supervisor.expected_configuration(record['capacity']))
-                record['configuration']['default_output_tokens'] = max_tokens
+                record['configuration']['default_output_tokens'] = record['capacity']['max_tokens']
+                if capability_extension:
+                    record['capabilities']['chat']['refusal_output'] = dict(
+                        profile='q4t-refusal-v1', chat_json=True, chat_sse=True)
+                    record['capabilities']['template'].update(
+                        message_profile='qwen3.8-openai-v4', renderer_source_sha256='e'*64)
                 evidence = path.parent/(kind+'.json')
                 bundle.engine.save(evidence, record)
                 registry['qualifications'][kind] = profile_contract.qualification(kind,
@@ -121,6 +128,27 @@ class DeploymentTests(unittest.TestCase):
             cwd=self.old, capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), self.load())
+
+    def test_qualified_feature_upgrade_replays_but_old_feature_loss_cannot_rollback(self):
+        self.new, self.new_sha = self.prepare('extended', capability_extension=True)
+        self.switch(); self.assert_preserved(2)
+        self.assertTrue(self.switch()['replayed'])
+        before = (self.state/'service-deployment/policy.json').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            deployment.switch(self.state, self.old, self.old_sha,
+                expected=self.new_sha, request_id=str(uuid.uuid4()), rollback=True)
+        self.assertEqual((self.state/'service-deployment/policy.json').read_bytes(), before)
+        self.assert_preserved(2)
+
+    def test_feature_upgrade_prepared_failure_resumes_exact_original_intent(self):
+        self.new, self.new_sha = self.prepare('extended', capability_extension=True)
+        with mock.patch.object(profile_manager, 'deploy', side_effect=OSError('before extension')):
+            with self.assertRaises(OSError):
+                self.switch()
+        self.assertEqual(deployment.status(self.state)['phase'], 'prepared')
+        self.assert_preserved(1)
+        self.switch(); self.assert_preserved(2)
+        self.assertTrue(self.switch()['replayed'])
 
     def test_prepared_intent_interruption_keeps_old_state_then_migrates_once(self):
         raw = (self.state/'profile-selection/policy.json').read_bytes()

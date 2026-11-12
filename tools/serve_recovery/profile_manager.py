@@ -45,7 +45,8 @@ def compatible(old, new, old_package=None, new_package=None):
     return profile_migration.permit(old['recovery_profiles'],
         new['recovery_profiles'], evidence(old_package, old),
         evidence(new_package, new), old['recovery_profile_policy'],
-        new['recovery_profile_policy'], allow_capacity_change=True)
+        new['recovery_profile_policy'], allow_capacity_change=True,
+        allow_capability_extension=True)
 
 
 def migration_store(grants):

@@ -1,0 +1,29 @@
+{
+  "kind": "nonperformance_targeted_cpu",
+  "tests": [
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_extension_keeps_pending_work_budget_and_original_capability_evidence",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_new_feature_cannot_hide_existing_media_tools_embeddings_or_type_loss",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_renderer_fingerprint_is_bound_separately_but_unknown_template_is_not_ignored",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_combined_extension_and_capacity_preserves_historical_qualification",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_actual_pending_and_history_survive_new_identity_without_time_credit",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_resigned_capability_loss_or_asset_change_is_not_a_compatible_version",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_explicit_policy_change_keeps_existing_hold_and_automatic_change_refused",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_runtime_contract_cannot_migrate_or_erase_budget_with_authorized_contract",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_unknown_migration_rename_requires_deployment_authority_to_resume",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_real_postrename_receipt_loss_preserves_original_switch_and_one_migration",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_upgrade_replay_and_v12_rollback_keep_original_pending_and_state",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_qualified_feature_upgrade_replays_but_old_feature_loss_cannot_rollback",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_feature_upgrade_prepared_failure_resumes_exact_original_intent",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_profile_rename_failure_requires_exact_deployment_and_recovers_once",
+    "tools.serve_recovery.test_profile_deployment.DeploymentTests.test_qualification_tamper_is_rejected_before_preparing_deployment"
+  ],
+  "count": 16,
+  "gpu_starts": 0,
+  "sources": {
+    "tools/serve_recovery/profile_migration.py": "d9426cb8f85ddbe1648eff8c79d417ad3ec26248980bf872f938ee511e554be2",
+    "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
+    "tools/serve_recovery/test_profile_migration.py": "b9d62d20f02d200346898a6e80f02331f81e96ee61d7c486d306b432c8297fe1",
+    "tools/serve_recovery/test_profile_deployment.py": "4e39b9ada5e458f97e48c388c5a1f9b25b46f6e36e6c45c0922cc3021de8b30f"
+  }
+}

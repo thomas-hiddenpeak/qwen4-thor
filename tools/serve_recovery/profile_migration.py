@@ -14,6 +14,40 @@ from tools.serve_recovery import profile_policy as policy
 
 FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
+EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
+
+
+def semantic_capabilities(value):
+    """Separate reviewed implementation identities from promised behavior.
+
+    The full original observations remain in the sealed registry/evidence.
+    v4 adds model refusal framing to the unchanged v3 message input schema;
+    refusal itself remains a capability and cannot disappear on recovery.
+    Unknown template revisions and other changed values are not normalized.
+    """
+    result = copy.deepcopy(value)
+    template = result.get('template')
+    if isinstance(template, dict):
+        renderer = template.pop('renderer_source_sha256', None)
+        ledger.require(renderer is None or (type(renderer) is str and
+            ledger.HASH.fullmatch(renderer)), 'invalid renderer source identity')
+        if template.get('message_profile') == 'qwen3.8-openai-v4':
+            refusal = result.get('chat', {}).get('refusal_output', {})
+            ledger.require(type(refusal) is dict and
+                refusal.get('profile') == 'q4t-refusal-v1',
+                'v4 template lacks its refusal capability')
+            template['message_profile'] = 'qwen3.8-openai-v3'
+    return result
+
+
+def extends(previous, target):
+    """Object additions only; deletion, replacement and type coercion fail."""
+    if type(previous) is not type(target):
+        return False
+    if type(previous) is dict:
+        return all(key in target and extends(value, target[key])
+                   for key, value in previous.items())
+    return previous == target
 
 
 def observations(registry, evidence):
@@ -32,10 +66,16 @@ def observations(registry, evidence):
 
 def permit(previous, target, previous_evidence, target_evidence,
            previous_config, target_config, *, automatic=False,
-           allow_capacity_change=False):
+           allow_capacity_change=False, allow_capability_extension=False):
     first = observations(previous, previous_evidence)
     second = observations(target, target_evidence)
-    ledger.require(first == second, 'migration would change application capabilities')
+    old_contract, new_contract = map(semantic_capabilities, (first, second))
+    extension = old_contract != new_contract
+    ledger.require(type(allow_capability_extension) is bool and
+        (not extension or (allow_capability_extension and not automatic and
+                           extends(old_contract, new_contract))),
+        'migration would change application capabilities without an explicit '
+        'qualified extension; automatic recovery cannot lose or add features')
     changed = previous['profiles'] != target['profiles']
     ledger.require(type(allow_capacity_change) is bool and
         (not changed or (allow_capacity_change and not automatic)),
@@ -47,7 +87,8 @@ def permit(previous, target, previous_evidence, target_evidence,
     ledger.require(type(automatic) is bool and
         (not automatic or previous_config == target_config),
         'automatic fallback cannot alter profile policy')
-    return validate(dict(format=CAPACITY_FORMAT if changed else FORMAT,
+    return validate(dict(format=EXTENSION_FORMAT if extension else
+        CAPACITY_FORMAT if changed else FORMAT,
         from_registry=profile_contract.digest(previous),
         to_registry=profile_contract.digest(target),
         profiles={n:ledger.digest(v) for n,v in previous['profiles'].items()},
@@ -57,26 +98,34 @@ def permit(previous, target, previous_evidence, target_evidence,
         to_identity=ledger.digest(target['identity']),
         capabilities_sha256=ledger.digest(first), automatic=automatic,
         **(dict(target_profiles={n:ledger.digest(v) for n,v in target['profiles'].items()})
-           if changed else {})))
+           if changed or extension else {}),
+        **(dict(target_capabilities_sha256=ledger.digest(second)) if extension else {})))
 
 
 def validate(value):
     capacity_change = type(value) is dict and value.get('format') == CAPACITY_FORMAT
+    extension = type(value) is dict and value.get('format') == EXTENSION_FORMAT
     ledger.keys(value, ('format','from_registry','to_registry','profiles',
         'from_configuration','to_configuration','from_identity','to_identity',
         'capabilities_sha256','automatic',
-        *(('target_profiles',) if capacity_change else ())))
-    ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT) and
+        *(('target_profiles',) if capacity_change or extension else ()),
+        *(('target_capabilities_sha256',) if extension else ())))
+    ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT, EXTENSION_FORMAT) and
                    type(value['automatic']) is bool,
                    'invalid profile migration permit')
-    if capacity_change:
+    if capacity_change or extension:
         ledger.keys(value['target_profiles'], profile_contract.NAMES)
-        ledger.require(not value['automatic'] and value['target_profiles'] != value['profiles'],
-                       'capacity migration must be explicit and change capacity')
+        ledger.require(not value['automatic'] and
+            (extension or value['target_profiles'] != value['profiles']),
+            'capacity/feature migration must be explicit')
+    if extension:
+        ledger.require(value['target_capabilities_sha256'] != value['capabilities_sha256'],
+                       'extension must bind different actual capabilities')
     ledger.keys(value['profiles'], profile_contract.NAMES)
     for h in [value[k] for k in ('from_registry','to_registry','from_identity',
                                'to_identity','capabilities_sha256')]+list(value['profiles'].values())+list(
-                                   value.get('target_profiles', {}).values()):
+                                   value.get('target_profiles', {}).values())+(
+                                   [value['target_capabilities_sha256']] if extension else []):
         ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
                        'invalid profile migration identity')
     policy.configuration(value['from_configuration'])
@@ -95,7 +144,8 @@ def candidate(previous, authorization, stamp):
         'profile migration predecessor differs')
     # No elapsed time, including same-boot STOPPED time, earns new budget.
     value = policy.resume(previous, stamp)
-    if authorization['format'] == CAPACITY_FORMAT:
+    if authorization['format'] in (CAPACITY_FORMAT, EXTENSION_FORMAT) and \
+            authorization['target_profiles'] != previous['profiles']:
         value = policy.historical(value)
         value['profiles'] = copy.deepcopy(authorization['target_profiles'])
     value.update(registry_sha256=authorization['to_registry'],

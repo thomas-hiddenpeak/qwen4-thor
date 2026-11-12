@@ -50,6 +50,108 @@ class MigrationTests(unittest.TestCase):
         return migration.permit(self.old,self.new,self.first,self.second,self.config,
                                 self.config if config is None else config,automatic=automatic)
 
+    def extension(self, mutate=None, *, capacity=False):
+        new = copy.deepcopy(self.new)
+        if capacity:
+            new['profiles'] = profile_contract.profiles(dict(
+                new['profiles']['primary'], max_tokens=512))
+        records = {name:copy.deepcopy(row['record']) for name,row in self.second.items()}
+        for name, record in records.items():
+            record['capabilities']['chat']['refusal_output'] = dict(
+                profile='q4t-refusal-v1', chat_json=True, chat_sse=True)
+            record['capabilities']['template'].update(
+                message_profile='qwen3.8-openai-v4', renderer_source_sha256='e'*64)
+            if capacity:
+                from tools.serve_service import supervisor
+                record['configuration'].update(supervisor.expected_configuration(
+                    new['profiles'][name]))
+                record['configuration']['default_output_tokens'] = 512
+            if mutate:
+                mutate(record['capabilities'])
+        return new, bind_records(new, records)
+
+    def extended_permit(self, new, evidence, **kwargs):
+        return migration.permit(self.old, new, self.first, evidence,
+            self.config, self.config, **kwargs)
+
+    def test_feature_extension_requires_explicit_deployment_and_cannot_be_automatic(self):
+        new, evidence = self.extension()
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            self.extended_permit(new, evidence)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            self.extended_permit(new, evidence, automatic=True,
+                                 allow_capability_extension=True)
+        grant = self.extended_permit(new, evidence, allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        self.assertEqual(grant['target_capabilities_sha256'], ledger.digest(
+            migration.observations(new, evidence)))
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(new, self.old, evidence, self.first, self.config,
+                self.config, allow_capability_extension=True)
+
+    def test_extension_keeps_pending_work_budget_and_original_capability_evidence(self):
+        new, evidence = self.extension()
+        original = copy.deepcopy((self.old, self.first, self.pending))
+        grant = self.extended_permit(new, evidence, allow_capability_extension=True)
+        value = migration.candidate(self.pending, grant, self.stamp(999999))
+        for key in ('history','pending','not_before_ns','selected','profiles',
+                    'completed_generation','light_since_ns'):
+            self.assertEqual(value[key], self.pending[key])
+        self.assertEqual(value['clock']['logical_ns'], self.pending['clock']['logical_ns'])
+        self.assertEqual((self.old,self.first,self.pending), original)
+        with self.assertRaises(ValueError):
+            policy.transition(self.pending, value)
+        migration.AuthorizedContract(grant).transition(self.pending, value)
+        for bad in (dict(grant, automatic=True), dict(grant, target_capabilities_sha256='x'),
+                    dict(grant, target_capabilities_sha256=grant['capabilities_sha256'])):
+            with self.assertRaises(ValueError):
+                migration.validate(bad)
+        damaged = copy.deepcopy(evidence)
+        damaged['light']['record']['capabilities']['chat']['refusal_output']['chat_sse'] = False
+        with self.assertRaises(ValueError):
+            self.extended_permit(new, damaged, allow_capability_extension=True)
+
+    def test_new_feature_cannot_hide_existing_media_tools_embeddings_or_type_loss(self):
+        for mutate in (lambda c:c.pop('tools'), lambda c:c.pop('media'),
+                       lambda c:c['embeddings']['native_backend'].update(enabled=False),
+                       lambda c:c['chat'].update(stream=False),
+                       lambda c:c['template'].update(name_max_bytes=True),
+                       lambda c:c['template'].update(roles=['user'])):
+            new, evidence = self.extension(mutate)
+            with self.subTest(mutate=mutate), self.assertRaisesRegex(
+                    ValueError, 'application capabilities'):
+                self.extended_permit(new, evidence, allow_capability_extension=True)
+
+    def test_renderer_fingerprint_is_bound_separately_but_unknown_template_is_not_ignored(self):
+        records = {name:copy.deepcopy(row['record']) for name,row in self.second.items()}
+        for record in records.values():
+            record['capabilities']['template']['renderer_source_sha256'] = 'e'*64
+        evidence = bind_records(self.new, records)
+        grant = self.extended_permit(self.new, evidence, automatic=True)
+        self.assertEqual(grant['format'], migration.FORMAT)
+        for profile in ('unknown-v5', 'qwen3.8-openai-v4'):
+            invalid = copy.deepcopy(records)
+            for record in invalid.values():
+                record['capabilities']['template']['message_profile'] = profile
+            evidence = bind_records(self.new, invalid)
+            with self.assertRaises(ValueError):
+                self.extended_permit(self.new, evidence, allow_capability_extension=True)
+
+    def test_combined_extension_and_capacity_preserves_historical_qualification(self):
+        new, evidence = self.extension(capacity=True)
+        with self.assertRaisesRegex(ValueError, 'explicit historical'):
+            self.extended_permit(new, evidence, allow_capability_extension=True)
+        grant = self.extended_permit(new, evidence, allow_capability_extension=True,
+                                     allow_capacity_change=True)
+        value = migration.candidate(self.pending, grant, self.stamp(9000))
+        self.assertEqual(value['format'], policy.HISTORY_FORMAT)
+        pending = self.pending['pending']
+        self.assertEqual(value['history_bindings'][pending['request_id']]['registry_sha256'],
+                         profile_contract.digest(self.old))
+        self.assertEqual(value['pending'], pending)
+        self.assertEqual(value['history'], self.pending['history'])
+        migration.AuthorizedContract(grant).transition(self.pending, value)
+
     def test_actual_pending_and_history_survive_new_identity_without_time_credit(self):
         authorization = self.permit()
         for boot,second in [(self.boot,999999),(str(uuid.uuid4()),0)]:
