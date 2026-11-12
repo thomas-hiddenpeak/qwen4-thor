@@ -2070,6 +2070,7 @@
     "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
     "tools/serve_recovery/native_ingress.py": "99bdfa02800e38215e58d189d2ad91fe440a94ef582bf6ac4b69bb17ff4cb4cc",
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "tools/serve_recovery/outer_acceptance.py": "868cba3975b132944048a17907c5f86ba27cdb877dee7d1ca7d8e1b970b21170",
     "tools/serve_recovery/outer_control.py": "b490729dac4c8e2cfe05505a04ef3002a3c6b5ce720391c3843abeca1f9cf94d",
     "tools/serve_recovery/outer_daemon.py": "87aabdf77883e7b51c8bf19c2934957ae3e307c57658021690f90b9809fe83b3",
     "tools/serve_recovery/outer_instance.py": "41a10ff6f59f67bf631d08df99cc96302c7511aaba1e2641ab3ef2a906d06154",

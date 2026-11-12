@@ -1,0 +1,6 @@
+test_host_cleanup_receipt_retains_original_lock_and_pending_failure (tools.serve_recovery.test_outer_acceptance.DriverTests.test_host_cleanup_receipt_retains_original_lock_and_pending_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+OK
