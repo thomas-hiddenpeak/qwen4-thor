@@ -9,9 +9,11 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/file_input.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/schema_graph.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/trace/sha256.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -203,6 +205,7 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
 }
 
 Status ToolSelection(const Json& original, Json* choice, std::string_view path,
+                     const std::vector<ResponsesToolIdentity>& identities,
                      ChatPlanError* error) {
   if (original.IsString()) {
     if (original.str != "none" && original.str != "auto" &&
@@ -220,8 +223,29 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
     if (!status) return status;
     if (!ValidInputName(original.GetString("name")))
       return Invalid(error, std::string(path) + ".name", "invalid tool name");
+    auto name = original.GetString("name");
+    const ResponsesToolIdentity* selected = nullptr;
+    // Exact global names take precedence. Qualified names are an explicit
+    // selector spelling; an unqualified duplicate never picks an arbitrary
+    // namespace. The SDK selector has no separate namespace field.
+    for (int pass = 0; pass < 3 && !selected; ++pass) {
+      for (const auto& identity : identities) {
+        if (identity.type != type) continue;
+        const bool matches =
+            pass == 0   ? identity.name_space.empty() && identity.name == name
+            : pass == 1 ? !identity.name_space.empty() &&
+                              identity.name_space + '.' + identity.name == name
+                        : identity.name == name;
+        if (!matches) continue;
+        if (selected)
+          return Invalid(error, std::string(path) + ".name",
+                         "ambiguous tool selector; use a qualified name");
+        selected = &identity;
+      }
+    }
+    if (selected) name = selected->model_name;
     *choice = Object({{"type", String(type)},
-                      {type, Object({{"name", *original.Find("name")}})}});
+                      {type, Object({{"name", String(std::move(name))}})}});
     return {};
   }
   if (type != "allowed_tools") return Unresolved(error, std::string(path));
@@ -240,9 +264,10 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
       return Unresolved(
           error, std::string(path) + ".tools[" + std::to_string(i) + ']');
     Json converted;
-    status = ToolSelection(
-        item, &converted,
-        std::string(path) + ".tools[" + std::to_string(i) + ']', error);
+    status =
+        ToolSelection(item, &converted,
+                      std::string(path) + ".tools[" + std::to_string(i) + ']',
+                      identities, error);
     if (!status) return status;
     items.array.push_back(std::move(converted));
   }
@@ -252,7 +277,113 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
                Object({{"mode", String(mode)}, {"tools", std::move(items)}})}});
   return {};
 }
+
+Status MapNamespaceChoice(const Json& original,
+                          const std::vector<ResponsesToolIdentity>& identities,
+                          Json* mapped, ChatPlanError* error,
+                          std::string_view path = "tool_choice") {
+  *mapped = original;
+  const auto type = original.GetString("type");
+  if (type == "function" || type == "custom") {
+    Json selected;
+    auto status = ToolSelection(original, &selected, path, identities, error);
+    if (!status) return status;
+    Set(mapped, "name", *selected.Find(type)->Find("name"));
+  } else if (type == "allowed_tools") {
+    const auto* selected = original.GetArray("tools");
+    if (!selected) return {};
+    auto items = Array();
+    for (size_t i = 0; i < selected->array.size(); ++i) {
+      Json item;
+      auto status = MapNamespaceChoice(
+          selected->array[i], identities, &item, error,
+          std::string(path) + ".tools[" + std::to_string(i) + ']');
+      if (!status) return status;
+      items.array.push_back(std::move(item));
+    }
+    Set(mapped, "tools", std::move(items));
+  }
+  return {};
+}
 }  // namespace
+
+std::string ResponsesToolModelName(std::string_view name_space,
+                                   std::string_view name,
+                                   std::string_view type) {
+  constexpr std::string_view prefix = "q4t_ns_";
+  if (name_space.empty() && !name.starts_with(prefix)) return std::string(name);
+  const auto key =
+      OutputJson(Array({String(std::string(name_space)),
+                        String(std::string(name)), String(std::string(type))}));
+  const auto hash =
+      trace::Sha256({reinterpret_cast<const uint8_t*>(key.data()), key.size()});
+  return std::string(prefix) + trace::HexDigest(hash).substr(0, 56);
+}
+
+Status PlanResponsesToolIdentities(
+    const Json& request, std::vector<ResponsesToolIdentity>* identities,
+    ChatPlanError* error) {
+  identities->clear();
+  *error = {};
+  const auto* tools = request.Find("tools");
+  if (!tools) return {};
+  if (!tools->IsArray() || tools->array.size() > 128)
+    return Invalid(error, "tools", "tools must be an array up to 128 items");
+  std::unordered_set<std::string> namespaces, public_names, model_names;
+  size_t count = 0;
+  const auto add = [&](const Json& tool, const std::string& space,
+                       const std::string& path) -> Status {
+    if (++count > 128) {
+      *error = {"tool_resource_exhausted", path, 503};
+      return Status::Fail("expanded tools exceed the 128-callable budget");
+    }
+    const auto type = tool.GetString("type");
+    if (type != "function" && type != "custom") return {};
+    const auto name = tool.GetString("name");
+    if (!ValidInputName(name))
+      return Invalid(error, path + ".name", "invalid tool name");
+    const auto key = OutputJson(Array({String(space), String(name)}));
+    if (!public_names.insert(key).second)
+      return Invalid(error, path + ".name", "duplicate tool in namespace");
+    const auto model_name = ResponsesToolModelName(space, name, type);
+    if (!model_names.insert(model_name).second)
+      return Invalid(error, path + ".name", "model tool identity collision");
+    identities->push_back({type, name, space, model_name, path});
+    return {};
+  };
+  for (size_t i = 0; i < tools->array.size(); ++i) {
+    const auto& tool = tools->array[i];
+    const auto path = "tools[" + std::to_string(i) + ']';
+    if (tool.GetString("type") != "namespace") {
+      auto status = add(tool, "", path);
+      if (!status) return status;
+      continue;
+    }
+    auto status = InputFields(tool, {"type", "name", "description", "tools"},
+                              &error->param, path);
+    if (!status) return status;
+    const auto space = tool.GetString("name");
+    if (!ValidInputName(space) || !namespaces.insert(space).second)
+      return Invalid(error, path + ".name", "invalid or duplicate namespace");
+    if (!tool.Find("description") || !tool.Find("description")->IsString())
+      return Invalid(error, path + ".description",
+                     "namespace description required");
+    const auto* children = tool.GetArray("tools");
+    if (!children || children->array.empty())
+      return Invalid(error, path + ".tools", "namespace requires tools");
+    for (size_t j = 0; j < children->array.size(); ++j) {
+      const auto& child = children->array[j];
+      const auto at = path + ".tools[" + std::to_string(j) + ']';
+      if (child.GetString("type") != "function" &&
+          child.GetString("type") != "custom")
+        return Invalid(error, at + ".type",
+                       "namespace children require function or custom tools");
+      status = add(child, space, at);
+      if (!status) return status;
+    }
+  }
+  return {};
+}
 
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
@@ -310,6 +441,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   Json calls = Array();
   std::vector<std::pair<Json, std::string>> results;
   std::unordered_map<std::string, bool> expected;
+  std::unordered_map<std::string, std::pair<std::string, std::string>> names;
   std::unordered_set<std::string> returned, call_ids, item_ids;
   std::string reasoning, assistant_path;
   size_t automatic_returns = 0;
@@ -328,6 +460,7 @@ Status NormalizeResponsesInput(const io::Json& request,
     calls = Array();
     results.clear();
     expected.clear();
+    names.clear();
     returned.clear();
     automatic_returns = 0;
     reasoning.clear();
@@ -486,8 +619,10 @@ Status NormalizeResponsesInput(const io::Json& request,
                             "input", "status", "async", "caller", "namespace"},
                            &error->param, path);
       if (!status) return status;
-      for (const auto* key : {"caller", "namespace"})
-        if (Nonnull(item, key)) return Unresolved(error, path + '.' + key);
+      if (Nonnull(item, "caller")) return Unresolved(error, path + ".caller");
+      if (Nonnull(item, "namespace") &&
+          !ValidInputName(item.GetString("namespace")))
+        return Invalid(error, path + ".namespace", "invalid tool namespace");
       if (const auto* async = item.Find("async")) {
         if (!async->IsBool())
           return Invalid(error, path + ".async", "async must be boolean");
@@ -503,9 +638,14 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (!status) return status;
       if (item.Has(custom ? "arguments" : "input"))
         return Invalid(error, path, "tool payload does not match its type");
-      Json payload = Object({{"name", *item.Find("name")},
-                             {custom ? "input" : "arguments",
-                              *item.Find(custom ? "input" : "arguments")}});
+      const auto name = item.GetString("name");
+      const auto space = item.GetString("namespace");
+      names.emplace(id, std::make_pair(name, space));
+      Json payload =
+          Object({{"name", String(ResponsesToolModelName(
+                               space, name, custom ? "custom" : "function"))},
+                  {custom ? "input" : "arguments",
+                   *item.Find(custom ? "input" : "arguments")}});
       if (!custom) {
         Json arguments;
         status = io::ParseJson(item.GetString("arguments"), &arguments, true,
@@ -527,8 +667,7 @@ Status NormalizeResponsesInput(const io::Json& request,
                             "namespace", "caller"},
                            &error->param, path);
       if (!status) return status;
-      for (const auto* key : {"namespace", "caller"})
-        if (Nonnull(item, key)) return Unresolved(error, path + '.' + key);
+      if (Nonnull(item, "caller")) return Unresolved(error, path + ".caller");
       const auto id = item.GetString("call_id");
       const auto match = expected.find(id);
       if (match == expected.end() || !returned.insert(id).second ||
@@ -536,14 +675,13 @@ Status NormalizeResponsesInput(const io::Json& request,
         return Invalid(error, path + ".call_id",
                        "orphan, duplicate or mismatched output");
       if (const auto* name = item.Find("name"); name && !name->IsNull()) {
-        const auto call = std::find_if(
-            calls.array.begin(), calls.array.end(),
-            [&](const Json& value) { return value.GetString("id") == id; });
-        const auto* definition =
-            call->Find(match->second ? "custom" : "function");
-        if (!name->IsString() || name->str != definition->GetString("name"))
+        if (!name->IsString() || name->str != names.at(id).first)
           return Invalid(error, path + ".name", "tool output name mismatch");
       }
+      if (const auto* space = item.Find("namespace"); space && !space->IsNull())
+        if (!space->IsString() || space->str != names.at(id).second)
+          return Invalid(error, path + ".namespace",
+                         "tool output namespace mismatch");
       const auto* value = item.Find("output");
       if (!value)
         return Invalid(error, path + ".output", "tool output required");
@@ -589,6 +727,18 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
   *choice = String("auto");
   *error = {};
   if (effective_tools) *effective_tools = Array();
+  std::vector<ResponsesToolIdentity> identities;
+  auto identity_status =
+      PlanResponsesToolIdentities(request, &identities, error);
+  if (!identity_status) return identity_status;
+  struct Entry {
+    const Json* definition;
+    size_t outer;
+    size_t child;
+    std::string path, name_space, description;
+  };
+  std::vector<Entry> entries;
+  constexpr size_t top_level = 128;
   std::vector<ResponsesFileSearchBinding> native;
   auto binding_status =
       PlanResponsesFileSearchBindings(request, &native, error);
@@ -596,9 +746,24 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
   if (const auto* definitions = request.Find("tools")) {
     if (!definitions->IsArray() || definitions->array.size() > 128)
       return Invalid(error, "tools", "tools must be an array up to 128 items");
+    if (effective_tools) *effective_tools = *definitions;
     for (size_t i = 0; i < definitions->array.size(); ++i) {
       const auto& definition = definitions->array[i];
       const auto at = "tools[" + std::to_string(i) + ']';
+      if (definition.GetString("type") == "namespace") {
+        const auto& children = definition.GetArray("tools")->array;
+        for (size_t j = 0; j < children.size(); ++j)
+          entries.push_back({&children[j], i, j,
+                             at + ".tools[" + std::to_string(j) + ']',
+                             definition.GetString("name"),
+                             definition.GetString("description")});
+      } else {
+        entries.push_back({&definition, i, top_level, at, "", ""});
+      }
+    }
+    for (const auto& entry : entries) {
+      const auto& definition = *entry.definition;
+      const auto& at = entry.path;
       if (!definition.IsObject())
         return Invalid(error, at, "tool definition must be an object");
       const auto* kind = definition.Find("type");
@@ -608,12 +773,12 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
       const auto type = definition.GetString("type");
       if (type == "file_search") {
         const auto found = std::find_if(
-            native.begin(), native.end(),
-            [&](const auto& binding) { return binding.tool_index == i; });
+            native.begin(), native.end(), [&](const auto& binding) {
+              return binding.tool_index == entry.outer;
+            });
         if (found == native.end())
           return Invalid(error, at, "Missing native tool binding");
         tools->array.push_back(NativeFileSearchDefinition(found->model_name));
-        if (effective_tools) effective_tools->array.push_back(definition);
         continue;
       }
       if (type != "function" && type != "custom") return Unresolved(error, at);
@@ -629,14 +794,35 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                              "allowed_callers", "async", "defer_loading"},
                             &error->param, at);
       if (!status) return status;
+      if (const auto* description = definition.Find("description");
+          description && !description->IsNull() && !description->IsString())
+        return Invalid(error, at + ".description",
+                       "tool description must be text or null");
       for (const auto* flag : {"async", "defer_loading"}) {
         const auto* value = definition.Find(flag);
         if (value && !value->IsBool())
           return Invalid(error, at + '.' + flag, "tool flag must be boolean");
         if (value && value->boolean) return Unresolved(error, at + '.' + flag);
       }
-      if (Nonnull(definition, "output_schema"))
-        return Unresolved(error, at + ".output_schema");
+      if (const auto* schema = definition.Find("output_schema");
+          schema && !schema->IsNull()) {
+        if (!schema->IsObject())
+          return Invalid(error, at + ".output_schema",
+                         "output_schema requires an object");
+        OutputSchemaGraph graph;
+        status =
+            graph.Init(*schema, false, &error->param, at + ".output_schema",
+                       OutputSchemaPurpose::kToolResult);
+        if (!status) {
+          error->code =
+              status.message().starts_with("schema_resource_exhausted:")
+                  ? "tool_result_validation_capacity"
+                  : "invalid_tool_output_schema";
+          error->http_status =
+              error->code == "tool_result_validation_capacity" ? 503 : 400;
+          return status;
+        }
+      }
       if (const auto* callers = definition.Find("allowed_callers");
           callers && !callers->IsNull()) {
         if (!callers->IsArray() || callers->array.size() != 1 ||
@@ -680,30 +866,54 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
         Json effective = definition;
         for (const char* key : {"parameters", "strict"})
           if (const auto* value = body.Find(key)) Set(&effective, key, *value);
-        effective_tools->array.push_back(std::move(effective));
+        auto* target = &effective_tools->array[entry.outer];
+        if (entry.child != top_level)
+          target = &Field(*target, "tools").array[entry.child];
+        *target = std::move(effective);
+      }
+      const auto model_name = ResponsesToolModelName(
+          entry.name_space, definition.GetString("name"), type);
+      Set(&body, "name", String(model_name));
+      if (model_name != definition.GetString("name")) {
+        const auto label = Object({{"namespace", String(entry.name_space)},
+                                   {"name", *definition.Find("name")}});
+        Set(&body, "description",
+            String("Tool identity: " + OutputJson(label) + "\n" +
+                   entry.description + "\n" + body.GetString("description")));
       }
       tools->array.push_back(
           Object({{"type", String(type)}, {type, std::move(body)}}));
     }
   }
   if (const auto* original = request.Find("tool_choice")) {
-    Json mapped;
-    auto status =
-        MapResponsesFileSearchChoice(*original, native, &mapped, error);
-    if (status) status = ToolSelection(mapped, choice, "tool_choice", error);
+    Json selected, mapped;
+    // Client selectors are mapped before builtin expansion. A builtin's
+    // private model name must never be reinterpreted as a child's bare name.
+    auto status = MapNamespaceChoice(*original, identities, &selected, error);
+    if (status)
+      status = MapResponsesFileSearchChoice(selected, native, &mapped, error);
+    if (status)
+      status = ToolSelection(mapped, choice, "tool_choice", {}, error);
     if (!status) return status;
   }
   auto status =
       ValidateToolDefinitions(Object({{"tools", *tools}}), &error->param);
   if (!status) {
     const auto end = error->param.find(']');
-    if (end != std::string::npos)
-      for (const auto* part : {".function", ".custom"}) {
-        const auto offset = end + 1;
-        if (error->param.compare(offset, std::char_traits<char>::length(part),
-                                 part) == 0)
-          error->param.erase(offset, std::char_traits<char>::length(part));
+    size_t index = 0;
+    if (error->param.starts_with("tools[") && end != std::string::npos) {
+      const auto parsed = std::from_chars(error->param.data() + 6,
+                                          error->param.data() + end, index);
+      if (parsed.ec == std::errc() && index < entries.size()) {
+        auto suffix = error->param.substr(end + 1);
+        for (const auto* part : {".function", ".custom"})
+          if (suffix.starts_with(part)) {
+            suffix.erase(0, std::char_traits<char>::length(part));
+            break;
+          }
+        error->param = entries[index].path + suffix;
       }
+    }
   }
   return status;
 }

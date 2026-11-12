@@ -72,6 +72,25 @@ io::Json EventProbabilities(io::Json probabilities) {
 }
 }  // namespace
 
+io::Json ResponsesPublicValue(io::Json value) {
+  if (value.GetString("type") == "custom_tool_call")
+    std::erase_if(value.object, [](const auto& field) {
+      return field.first == "status" || field.first == "created_by";
+    });
+  const auto object = value.GetString("object");
+  if ((object == "response" || object == "response.compaction") &&
+      value.GetArray("output"))
+    for (auto& item : Field(value, "output").array)
+      item = ResponsesPublicValue(std::move(item));
+  if (value.GetString("type").starts_with("response.")) {
+    if (value.Has("response"))
+      Set(&value, "response", ResponsesPublicValue(Field(value, "response")));
+    if (value.Has("item"))
+      Set(&value, "item", ResponsesPublicValue(Field(value, "item")));
+  }
+  return value;
+}
+
 Status ResponsesOutput::Init(const io::Json& options, std::string id,
                              int64_t created, bool obfuscation, size_t limit) {
   if (initialized_ || !options.IsObject() || id.empty() || created < 0 ||
@@ -79,6 +98,10 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
     return Status::Fail("invalid Responses output initialization");
   limit_ = limit;
   obfuscation_ = obfuscation;
+  ChatPlanError error;
+  auto identity =
+      PlanResponsesToolIdentities(options, &tool_identities_, &error);
+  if (!identity) return identity;
   response_ =
       Object({{"id", String(std::move(id))},
               {"object", String("response")},
@@ -136,6 +159,7 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
                             std::string* wire) {
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
+  fields = ResponsesPublicValue(std::move(fields));
   // The public stream option pads delta events, not lifecycle snapshots.
   if (obfuscation_ && type.ends_with(".delta")) {
     const auto random = detail::NewRequestId("");
@@ -229,12 +253,23 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
   const bool refusal = kind == ResponseDelta::Kind::kRefusal;
   const bool message = kind == ResponseDelta::Kind::kContent || refusal;
   if (kind == ResponseDelta::Kind::kTool) {
+    const ResponsesToolIdentity* identity = nullptr;
+    for (const auto& candidate : tool_identities_)
+      if (candidate.model_name == call->name &&
+          (candidate.type == "custom") == call->custom) {
+        identity = &candidate;
+        break;
+      }
+    if (!identity && call->name.starts_with("q4t_ns_"))
+      return Status::Fail("unknown Responses internal tool identity");
     item = Object(
         {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
          {"type", String(call->custom ? "custom_tool_call" : "function_call")},
          {"call_id", String(call->id)},
-         {"name", String(call->name)},
+         {"name", String(identity ? identity->name : call->name)},
          {call->custom ? "input" : "arguments", String("")}});
+    if (identity && !identity->name_space.empty())
+      Set(&item, "namespace", String(identity->name_space));
   } else {
     item =
         Object({{"id", String(detail::NewRequestId(message ? "msg_" : "rs_"))},
@@ -304,6 +339,7 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
       status = AddItem(delta.kind, &delta.call, &index, wire);
       if (!status) return status;
       calls_.emplace(delta.call.index, index);
+      model_names_.emplace(delta.call.index, delta.call.name);
     } else {
       if (it == calls_.end())
         return Status::Fail("Responses tool fragment without a start");
@@ -312,7 +348,7 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
       if ((!delta.call.id.empty() &&
            delta.call.id != item.GetString("call_id")) ||
           (!delta.call.name.empty() &&
-           delta.call.name != item.GetString("name")) ||
+           delta.call.name != model_names_.at(delta.call.index)) ||
           delta.call.custom != (item.GetString("type") == "custom_tool_call"))
         return Status::Fail("Responses tool identity changed within stream");
     }
@@ -640,7 +676,9 @@ Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
   return {};
 }
 
-std::string ResponsesOutput::Json() const { return OutputJson(response_); }
+std::string ResponsesOutput::Json() const {
+  return OutputJson(ResponsesPublicValue(response_));
+}
 
 std::string ResponsesOutput::RenderStreamError(void* owner, int status,
                                                const std::string& message,

@@ -882,6 +882,24 @@
         "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
         "publication_revision": 80,
         "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+      },
+      "tool_identity_result_contract": {
+        "state": "cpu_validated_business_pending",
+        "source_plan": "docs/SERVE_TOOL_IDENTITY_2026-11-12.md",
+        "evidence": "docs/evidence/serve-tool-identity-cpu-20261112",
+        "distinct_cpp_tests": 37,
+        "cpp_passed": 37,
+        "official_sdk_namespace_tests": 2,
+        "strict_schema": "native JSON/SSE, Conversation and input_items passed",
+        "invocation_binding": "preserved across changed declarations, restart, refs, conversations, queued snapshots and authenticated history",
+        "business_budget": {
+          "starts": 1,
+          "create_requests": 6,
+          "seconds": 900
+        },
+        "business_result": "pending",
+        "default": "rev94 unchanged",
+        "remaining": "async/caller/defer, complete schema dialect and media/builtin integration remain required"
       }
     },
     {
@@ -2385,7 +2403,18 @@
           "Legacy document sandbox prerequisites on hosted runner",
           "Batch fault-injection fixture short I/O timeout also applied to unrelated setup/verification"
         ],
-        "host_prerequisites_batch_evidence": "evidence/serve-host-prerequisites-batch-20261112/README.md"
+        "host_prerequisites_batch_evidence": "evidence/serve-host-prerequisites-batch-20261112/README.md",
+        "codec_syscall_repair": {
+          "commit": "ac7806c0770b847c9cadf30d41cb0e0402362576",
+          "evidence": "docs/evidence/serve-codec-syscall-20261112",
+          "cpu_passed": 16,
+          "remote_runs": [
+            43247688537,
+            43247705253
+          ],
+          "remote_result": "in_progress",
+          "merged": false
+        }
       }
     },
     {

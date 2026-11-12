@@ -1,0 +1,7 @@
+[PASS] compaction_optional_id_enters_actual_response_generation_plan
+[PASS] compaction_and_encrypted_reasoning_form_one_authenticated_history
+[PASS] tool_result_invocation_schema_survives_restart_changed_tools_and_refs
+[PASS] tool_result_contract_conversation_copy_and_frozen_queue_keep_schema
+[PASS] tool_result_schema_content_array_and_legacy_unbound_are_independent
+[PASS] chat_capabilities_native_responses_state_and_recovery
+6 tests, 6 passed, 0 failed, 0 skipped

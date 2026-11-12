@@ -18,6 +18,7 @@
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 #include "q4t/server/object_store.h"
+#include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/file_pdf.h"
@@ -57,6 +58,8 @@ int main(int argc, char** argv) {
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
   const int cache_fixture = CacheIoFixture(argc, argv);
   if (cache_fixture >= 0) return cache_fixture;
+  const int tool_results = q4t::server::MaybeRunToolResultWorker(argc, argv);
+  if (tool_results >= 0) return tool_results;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);

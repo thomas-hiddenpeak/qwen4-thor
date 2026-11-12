@@ -1,0 +1,238 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::Ok(const q4t::server::ObjectReply&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:34:70: error: a function-definition is not allowed here before ‘{’ token
+   34 |   ObjectReply Validate(const Json& schema, const std::string& value) {
+      |                                                                      ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:54:24: error: empty parentheses were disambiguated as a function declaration [-Werror=vexing-parse]
+   54 |   ChatPlanConfig Config() {
+      |                        ^~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:54:24: note: remove parentheses to default-initialize a variable
+   54 |   ChatPlanConfig Config() {
+      |                        ^~
+      |                        --
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:54:24: note: or replace parentheses with braces to aggregate-initialize a variable
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:54:27: error: a function-definition is not allowed here before ‘{’ token
+   54 |   ChatPlanConfig Config() {
+      |                           ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:60:15: error: empty parentheses were disambiguated as a function declaration [-Werror=vexing-parse]
+   60 |   Json Request() {
+      |               ^~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:60:15: note: remove parentheses to default-initialize a variable
+   60 |   Json Request() {
+      |               ^~
+      |               --
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:60:15: note: or replace parentheses with braces to aggregate-initialize a variable
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:60:18: error: a function-definition is not allowed here before ‘{’ token
+   60 |   Json Request() {
+      |                  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:66:39: error: a function-definition is not allowed here before ‘{’ token
+   66 |   bool Emit(ResponsesExecution * run) {
+      |                                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:78:34: error: a function-definition is not allowed here before ‘{’ token
+   78 |   Json Follow(std::string value) {
+      |                                  ^
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:12:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_schema_json_roots_open_objects_and_exact_numbers()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:103:18: error: ‘Validate’ was not declared in this scope
+  103 |     Q4T_CHECK(Ok(Validate(Parse(schema), value)));
+      |                  ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:113:19: error: ‘Validate’ was not declared in this scope
+  113 |     auto result = Validate(Parse(schema), value);
+      |                   ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_schema_formats_patterns_and_definition_errors()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:122:16: error: ‘Validate’ was not declared in this scope
+  122 |   Q4T_CHECK(Ok(Validate(Parse(R"({"format":"date"})"), "\"2024-02-29\"")));
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:124:7: error: ‘Validate’ was not declared in this scope
+  124 |       Validate(Parse(R"({"format":"date"})"), "\"2023-02-29\"").http_status ==
+      |       ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:134:16: error: ‘Validate’ was not declared in this scope
+  134 |   Q4T_CHECK(Ok(Validate(Parse(R"({"pattern":"^rev[0-9]+$"})"), "\"rev94\"")));
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:135:13: error: ‘Validate’ was not declared in this scope
+  135 |   Q4T_CHECK(Validate(Parse(R"({"pattern":"^rev[0-9]+$"})"), "\"revXX\"")
+      |             ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_schema_worker_cancel_deadline_and_independent_slot()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:159:16: error: ‘Validate’ was not declared in this scope
+  159 |   Q4T_CHECK(Ok(Validate(Object(), "true")));
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:170:16: error: ‘Validate’ was not declared in this scope
+  170 |   Q4T_CHECK(Ok(Validate(Object(), "1")));
+      |                ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_invocation_schema_survives_restart_changed_tools_and_refs()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:188:3: error: ‘Fixture’ was not declared in this scope
+  188 |   Fixture f;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:192:25: error: ‘f’ was not declared in this scope
+  192 |     ObjectStore objects(f.options);
+      |                         ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:194:30: error: ‘Request’ was not declared in this scope
+  194 |     Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                              ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:194:41: error: ‘Config’ was not declared in this scope
+  194 |     Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                         ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:194:69: error: ‘Emit’ was not declared in this scope
+  194 |     Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                                                     ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:201:23: error: ‘f’ was not declared in this scope
+  201 |   ObjectStore objects(f.options);
+      |                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:204:20: error: ‘Follow’ was not declared in this scope
+  204 |     auto request = Follow(valid ? "[1]" : "\"changed\"");
+      |                    ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:206:45: error: ‘Config’ was not declared in this scope
+  206 |     const auto reply = run.Prepare(request, Config(), Access(), 44);
+      |                                             ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:211:20: error: ‘Follow’ was not declared in this scope
+  211 |     auto request = Follow("\"bypass\"");
+      |                    ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:215:36: error: ‘Config’ was not declared in this scope
+  215 |     Q4T_CHECK(run.Prepare(request, Config(), Access(), 44).code ==
+      |                                    ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_contract_conversation_copy_and_frozen_queue_keep_schema()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:222:3: error: ‘Fixture’ was not declared in this scope
+  222 |   Fixture f;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:223:23: error: ‘f’ was not declared in this scope
+  223 |   ObjectStore objects(f.options);
+      |                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:225:28: error: ‘Request’ was not declared in this scope
+  225 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                            ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:225:39: error: ‘Config’ was not declared in this scope
+  225 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                       ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:225:67: error: ‘Emit’ was not declared in this scope
+  225 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                                                   ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:231:18: error: ‘Follow’ was not declared in this scope
+  231 |   auto invalid = Follow("\"bad\"");
+      |                  ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:234:39: error: ‘Config’ was not declared in this scope
+  234 |   Q4T_CHECK(rejected.Prepare(invalid, Config(), Access(), 44).code ==
+      |                                       ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:240:38: error: ‘Config’ was not declared in this scope
+  240 |   Q4T_CHECK(Ok(next.Prepare(request, Config(), Access(), 44, true)));
+      |                                      ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:246:47: error: ‘Config’ was not declared in this scope
+  246 |   Q4T_CHECK(Ok(restored.RestoreInputs(inputs, Config(), Access(), 45)));
+      |                                               ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: In function ‘bool {anonymous}::q4t_test_fn_tool_result_schema_content_array_and_legacy_unbound_are_independent()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:251:3: error: ‘Fixture’ was not declared in this scope
+  251 |   Fixture f;
+      |   ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:252:23: error: ‘f’ was not declared in this scope
+  252 |   ObjectStore objects(f.options);
+      |                       ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:254:28: error: ‘Request’ was not declared in this scope
+  254 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                            ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:254:39: error: ‘Config’ was not declared in this scope
+  254 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                       ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:254:67: error: ‘Emit’ was not declared in this scope
+  254 |   Q4T_CHECK(Ok(run.Prepare(Request(), Config(), Access(), 42)) && Emit(&run));
+      |                                                                   ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:255:18: error: ‘Follow’ was not declared in this scope
+  255 |   auto request = Follow("unused");
+      |                  ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:260:38: error: ‘Config’ was not declared in this scope
+  260 |   Q4T_CHECK(Ok(next.Prepare(request, Config(), Access(), 44)));
+      |                                      ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:261:14: error: ‘Request’ was not declared in this scope
+  261 |   auto old = Request();
+      |              ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:267:36: error: ‘Config’ was not declared in this scope
+  267 |   Q4T_CHECK(Ok(legacy.Prepare(old, Config(), Access(), 42)) && Emit(&legacy));
+      |                                    ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:267:64: error: ‘Emit’ was not declared in this scope
+  267 |   Q4T_CHECK(Ok(legacy.Prepare(old, Config(), Access(), 42)) && Emit(&legacy));
+      |                                                                ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:271:40: error: ‘Config’ was not declared in this scope
+  271 |   Q4T_CHECK(Ok(unbound.Prepare(follow, Config(), Access(), 44)));
+      |                                        ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp: At global scope:
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:273:2: error: expected ‘}’ at end of input
+  273 | }
+      |  ^
+/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp:14:11: note: to match this ‘{’
+   14 | namespace {
+      |           ^
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2109: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

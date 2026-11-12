@@ -860,3 +860,108 @@ Q4T_TEST(
   Q4T_CHECK(first != wire.npos && second != wire.npos && first < second);
   return true;
 }
+
+Q4T_TEST(responses_namespace_json_sse_and_fragments_keep_public_calls) {
+  Json declarations;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"model":"cpu","tools":[
+    {"type":"namespace","name":"crm","description":"records","tools":[
+      {"type":"function","name":"read"},{"type":"custom","name":"query"}]}]})",
+                               &declarations));
+  auto options = Options();
+  for (auto& [key, value] : options.object)
+    if (key == "tools") value = *declarations.Find("tools");
+  for (const bool incomplete : {false, true}) {
+    ResponsesOutput output;
+    std::string wire, part;
+    Q4T_CHECK(output.Init(options, "resp_namespaced", 42, false));
+    Q4T_CHECK(output.Start(&wire));
+    for (size_t i = 0; i < 2; ++i) {
+      const bool custom = i == 1;
+      const auto name = ResponsesToolModelName("crm", custom ? "query" : "read",
+                                               custom ? "custom" : "function");
+      auto delta = Tool(i, custom ? "SELECT " : "{", true, custom);
+      delta.call.name = name;
+      Q4T_CHECK(output.Append(delta, "null", &part));
+      wire += part;
+      delta = Tool(i, custom ? "*" : "}", false, custom);
+      delta.call.name = name;
+      Q4T_CHECK(output.Append(delta, "null", &part));
+      wire += part;
+    }
+    Q4T_CHECK(output.Finish(incomplete, incomplete ? 1 : 2, {10, 0, 4, 0}, 43,
+                            &part));
+    wire += part;
+    Q4T_CHECK(wire.find("q4t_ns_") == std::string::npos);
+    const auto& items = output.Snapshot().GetArray("output")->array;
+    Q4T_CHECK(items[0].GetString("name") == "read" &&
+              items[0].GetString("namespace") == "crm" &&
+              items[0].GetString("arguments") == "{}");
+    Q4T_CHECK(items[1].GetString("name") == "query" &&
+              items[1].GetString("namespace") == "crm");
+    std::vector<Json> events;
+    Q4T_CHECK(Events(wire, &events));
+    Q4T_CHECK(events.back().GetString("type") ==
+              (incomplete ? "response.incomplete" : "response.completed"));
+    Q4T_CHECK(
+        Save(incomplete ? "namespace-incomplete" : "namespace", output, wire));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_namespace_wrong_model_alias_never_leaks_as_a_public_name) {
+  Json options;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"tools":[{"type":"namespace","name":"crm",
+    "description":"records","tools":[{"type":"function","name":"read"}]}]})",
+                               &options));
+  ResponsesOutput output;
+  std::string wire;
+  Q4T_CHECK(output.Init(options, "resp_namespace_errors", 42, false));
+  Q4T_CHECK(output.Start(&wire));
+  auto delta = Tool(0, "{", true);
+  delta.call.name = ResponsesToolModelName("support", "read", "function");
+  Q4T_CHECK(!output.Append(delta, "null", &wire));
+  Q4T_CHECK(wire.empty() &&
+            output.Snapshot().GetArray("output")->array.empty());
+  delta.call.name = ResponsesToolModelName("crm", "read", "function");
+  Q4T_CHECK(output.Append(delta, "null", &wire));
+  delta.tool_start = false;
+  delta.call.name = ResponsesToolModelName("support", "read", "function");
+  Q4T_CHECK(!output.Append(delta, "null", &wire));
+  Q4T_CHECK(wire.empty());
+  return true;
+}
+
+Q4T_TEST(responses_custom_output_projection_all_terminal_states) {
+  for (const auto* ending : {"complete", "incomplete", "fail", "cancel"}) {
+    auto options = Options();
+    for (auto& [key, value] : options.object)
+      if (key == "background") value.boolean = true;
+    ResponsesOutput output;
+    std::string wire, part;
+    Q4T_CHECK(output.Init(options, "resp_custom_projection", 42, false));
+    Q4T_CHECK(output.Start(&wire));
+    Q4T_CHECK(output.StartRunning(&part));
+    wire += part;
+    Q4T_CHECK(output.Append(Tool(0, "raw\n中文", true, true), "null", &part));
+    wire += part;
+    if (std::string(ending) == "cancel") {
+      Q4T_CHECK(output.Cancel());
+    } else {
+      if (std::string(ending) == "fail")
+        Q4T_CHECK(output.Fail("worker_failed", "fixture", &part));
+      else
+        Q4T_CHECK(output.Finish(std::string(ending) == "incomplete",
+                                std::string(ending) == "complete" ? 1 : 0,
+                                {8, 0, 3, 0}, 43, &part));
+      wire += part;
+    }
+    Json response;
+    Q4T_CHECK(q4t::io::ParseJson(output.Json(), &response));
+    Q4T_CHECK(!response.GetArray("output")->array[0].Has("status"));
+    Q4T_CHECK(output.Snapshot().GetArray("output")->array[0].Has("status"));
+    Q4T_CHECK((wire.find("custom_tool_call_input.done") != wire.npos) ==
+              (std::string(ending) == "complete"));
+    Q4T_CHECK(Save(std::string("custom-projection-") + ending, output, wire));
+  }
+  return true;
+}

@@ -238,6 +238,9 @@ std::vector<const Json*> Children(const Json& schema) {
     for (const auto& [name, child] : properties->object)
       result.push_back(&child);
   if (const auto* items = schema.Find("items")) result.push_back(items);
+  if (const auto* additional = schema.Find("additionalProperties");
+      additional && additional->IsObject())
+    result.push_back(additional);
   return result;
 }
 }  // namespace
@@ -256,11 +259,14 @@ Status OutputSchemaGraph::Error(const std::string& path,
 
 Status OutputSchemaGraph::Collect(const Json& schema, const std::string& path,
                                   size_t depth) {
-  if (!schema.IsObject()) return Error(path, "schema must be an object");
+  if (!schema.IsObject() &&
+      !(purpose_ == OutputSchemaPurpose::kToolResult && schema.IsBool()))
+    return Error(path, "schema must be an object");
   if (depth > 64 || nodes_.size() >= 20000)
     return Error(path, "schema_resource_exhausted: schema graph capacity");
   nodes_[&schema] = path;
   order_.push_back(&schema);
+  if (schema.IsBool()) return {};
   for (const auto* field : {"properties", "$defs"}) {
     const auto* object = schema.Find(field);
     if (!object) continue;
@@ -295,11 +301,20 @@ Status OutputSchemaGraph::Collect(const Json& schema, const std::string& path,
     auto status = Collect(*items, path + ".items", depth + 1);
     if (!status) return status;
   }
+  if (purpose_ == OutputSchemaPurpose::kToolResult)
+    if (const auto* additional = schema.Find("additionalProperties");
+        additional && additional->IsObject()) {
+      auto status =
+          Collect(*additional, path + ".additionalProperties", depth + 1);
+      if (!status) return status;
+    }
   return Status();
 }
 
 Status OutputSchemaGraph::Definition(const Json& schema,
                                      const std::string& path) {
+  const bool generation = purpose_ == OutputSchemaPurpose::kGeneration;
+  if (!generation && schema.IsBool()) return {};
   const auto types = Types(schema);
   if (const auto* type = schema.Find("type")) {
     if (types.empty() ||
@@ -316,7 +331,7 @@ Status OutputSchemaGraph::Definition(const Json& schema,
                          (type->IsArray() ? '[' + std::to_string(i) + ']' : ""),
                      "invalid or duplicate schema type");
     }
-  } else if (!schema.Has("$ref") && !schema.Has("anyOf") &&
+  } else if (generation && !schema.Has("$ref") && !schema.Has("anyOf") &&
              !schema.Has("enum") && !schema.Has("const")) {
     return Error(path + ".type", "schema requires type, reference or union");
   }
@@ -343,8 +358,13 @@ Status OutputSchemaGraph::Definition(const Json& schema,
                key == "additionalProperties") {
       if (!types.empty() && !Has(types, "object"))
         return Error(location, "object keyword on non-object type");
-      if (key == "additionalProperties" && (!value.IsBool() || value.boolean))
-        return Error(location, "additionalProperties must be false");
+      if (key == "additionalProperties" &&
+          (generation ? !value.IsBool() || value.boolean
+                      : !value.IsBool() && !value.IsObject()))
+        return Error(location,
+                     generation
+                         ? "additionalProperties must be false"
+                         : "additionalProperties requires schema or boolean");
       if (key == "required") {
         if (!value.IsArray()) return Error(location, "required must be array");
         std::unordered_set<std::string> names;
@@ -434,14 +454,16 @@ Status OutputSchemaGraph::Definition(const Json& schema,
     if (properties && !properties->IsObject())
       return Error(path + ".properties", "properties must be a schema map");
     const auto* additional = schema.Find("additionalProperties");
-    if (!additional || !additional->IsBool() || additional->boolean)
+    if (generation &&
+        (!additional || !additional->IsBool() || additional->boolean))
       return Error(path + ".additionalProperties", "object must be closed");
     std::unordered_set<std::string> required;
     if (const auto* list = schema.Find("required")) {
       if (!list->IsArray()) return Error(path + ".required", "expected array");
       for (size_t i = 0; i < list->array.size(); ++i) {
         const auto& item = list->array[i];
-        if (!item.IsString() || !properties || !properties->Has(item.str) ||
+        if (!item.IsString() ||
+            (generation && (!properties || !properties->Has(item.str))) ||
             !required.insert(item.str).second)
           return Error(path + ".required[" + std::to_string(i) + ']',
                        "required must name unique declared properties");
@@ -450,8 +472,8 @@ Status OutputSchemaGraph::Definition(const Json& schema,
     if (strict_ && properties && required.size() != properties->object.size())
       return Error(path + ".required", "strict objects require every property");
   }
-  if (Has(types, "array") && !schema.Has("items") && !schema.Has("$ref") &&
-      !schema.Has("anyOf"))
+  if (generation && Has(types, "array") && !schema.Has("items") &&
+      !schema.Has("$ref") && !schema.Has("anyOf"))
     return Error(path + ".items", "array requires item schema");
   for (const auto* suffix : {"Items", "Length"}) {
     const auto* minimum = schema.Find(std::string("min") + suffix);
@@ -474,7 +496,10 @@ Status OutputSchemaGraph::Depth(const Json& schema, size_t depth,
   if (active->size() >= 64)
     return Error(nodes_.at(&schema),
                  "schema_resource_exhausted: reference traversal depth");
-  if (depth > 10) return Error(nodes_.at(&schema), "schema exceeds 10 levels");
+  if (purpose_ == OutputSchemaPurpose::kGeneration && depth > 10)
+    return Error(nodes_.at(&schema), "schema exceeds 10 levels");
+  if (depth > 64)
+    return Error(nodes_.at(&schema), "schema_resource_exhausted: schema depth");
   if (const auto prior = seen->find(&schema);
       prior != seen->end() && prior->second >= depth)
     return Status();
@@ -499,11 +524,12 @@ Status OutputSchemaGraph::Depth(const Json& schema, size_t depth,
 }
 
 Status OutputSchemaGraph::Init(const Json& root, bool strict,
-                               std::string* error_param,
-                               std::string_view path) {
+                               std::string* error_param, std::string_view path,
+                               OutputSchemaPurpose purpose) {
   *this = {};
   root_ = &root;
   strict_ = strict;
+  purpose_ = purpose;
   error_param_ = error_param;
   if (error_param_) error_param_->clear();
   auto status = Collect(root, std::string(path), 0);
@@ -523,7 +549,8 @@ Status OutputSchemaGraph::Init(const Json& root, bool strict,
                    "nonproductive root reference");
     effective = RefTarget(*effective);
   }
-  if (effective->GetString("type") != "object" || effective->Has("anyOf"))
+  if (purpose_ == OutputSchemaPurpose::kGeneration &&
+      (effective->GetString("type") != "object" || effective->Has("anyOf")))
     return Error(std::string(path) + ".type",
                  "root must be an object, not anyOf");
   std::unordered_set<const Json*> active;
@@ -543,6 +570,9 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
   if (!status) return status;
   if (depth > 64)
     return Status::Fail("schema_resource_exhausted: output depth");
+  if (schema.IsBool())
+    return schema.boolean ? Status()
+                          : Status::Fail("output violates false schema");
   if (active->size() >= 64)
     return Status::Fail("schema_resource_exhausted: value reference traversal");
   if (!active->insert(&schema).second)
@@ -659,8 +689,9 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
         if (!value.Has(key.str))
           return Status::Fail("missing required property");
     const auto* properties = schema.Find("properties");
-    const bool closed = schema.Has("additionalProperties") &&
-                        !schema.GetBool("additionalProperties");
+    const auto* additional = schema.Find("additionalProperties");
+    const bool closed =
+        additional && additional->IsBool() && !additional->boolean;
     std::unordered_set<std::string> seen;
     for (const auto& [key, item] : value.object) {
       status = Charge(key.size(), work);
@@ -668,6 +699,7 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
       const auto* child = properties ? properties->Find(key) : nullptr;
       if (!seen.insert(key).second || (!child && closed))
         return Status::Fail("unknown or duplicate output property");
+      if (!child && additional && additional->IsObject()) child = additional;
       if (child) {
         std::unordered_set<const Json*> child_active;
         status = Value(*child, item, depth + 1, work, strings, &child_active);
@@ -803,6 +835,9 @@ Status OutputSchemaGraph::CheckPrefix(const SchemaPrefixValue& value,
                                       size_t* work_remaining,
                                       const StringCheck& strings) const {
   if (!valid_) return Status::Fail("schema graph is not initialized");
+  if (purpose_ != OutputSchemaPurpose::kGeneration)
+    return Status::Fail(
+        "tool result schemas do not constrain generated tokens");
   if (!work_remaining)
     return Status::Fail(
         "schema_resource_exhausted: prefix work budget missing");

@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [工具身份与结果合同CPU候选](evidence/serve-tool-identity-cpu-20261112/README.md)
+
 - [Legacy文档x86系统调用修复](evidence/serve-codec-syscall-20261112/README.md)
 
 - [CI存储夹具及编解码退出定位](evidence/serve-host-storage-codec-20261112/README.md)

@@ -1,0 +1,150 @@
+{
+  "chat_capabilities_native_responses_state_and_recovery": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "compaction_and_encrypted_reasoning_form_one_authenticated_history": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "compaction_optional_id_enters_actual_response_generation_plan": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "conversation_state_invalid_and_conflicting_items_are_atomic": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "conversation_state_pending_tool_and_later_result": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "responses_custom_output_projection_all_terminal_states": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "responses_custom_output_projection_keeps_conversation_lifecycle": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "responses_execution_commits_actual_ordered_events_and_usage": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "responses_execution_echoes_public_tool_choice": {
+    "status": "PASS",
+    "evidence": "cpu-repair-01"
+  },
+  "responses_input_custom_history_keeps_unstructured_bytes": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_input_invalid_tools_never_fabricate_results": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_input_malformed_tool_type_is_not_unresolved_capability": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_input_reasoning_parallel_calls_and_reverse_results": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_input_tools_resolve_strict_defaults_and_effective_schema": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_namespace_definitions_preserve_public_identity_and_defaults": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_namespace_history_maps_without_current_declarations": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_namespace_json_sse_and_fragments_keep_public_calls": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "responses_namespace_native_search_preserves_original_binding_index": {
+    "status": "PASS",
+    "evidence": "cpu-native-repair-02"
+  },
+  "responses_namespace_paths_duplicates_and_callable_budget": {
+    "status": "PASS",
+    "evidence": "cpu-repair-01"
+  },
+  "responses_namespace_persistence_restart_and_queued_history": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "responses_namespace_selection_is_explicit_and_never_arbitrary": {
+    "status": "PASS",
+    "evidence": "cpu-repair-01"
+  },
+  "responses_namespace_wrong_model_alias_never_leaks_as_a_public_name": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_output_failure_has_no_success_or_tool_done": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "responses_output_incomplete_never_completes_partial_tool": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_output_parallel_function_custom_and_order": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "responses_output_rejects_identity_changes_and_orphan_fragments": {
+    "status": "PASS",
+    "evidence": "cpu-01"
+  },
+  "responses_state_tool_result_resolves_original_call_identity": {
+    "status": "PASS",
+    "evidence": "cpu-custom-projection-01"
+  },
+  "schema_graph_numeric_intersections_are_exact": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "schema_graph_official_size_limits_and_reference_depth": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "schema_graph_recursive_ref_anyof_and_required": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "tool_result_contract_conversation_copy_and_frozen_queue_keep_schema": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "tool_result_invocation_schema_survives_restart_changed_tools_and_refs": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "tool_result_schema_content_array_and_legacy_unbound_are_independent": {
+    "status": "PASS",
+    "evidence": "cpu-result-context-01"
+  },
+  "tool_result_schema_does_not_relax_generation_contract": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "tool_result_schema_formats_patterns_and_definition_errors": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "tool_result_schema_json_roots_open_objects_and_exact_numbers": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  },
+  "tool_result_schema_worker_cancel_deadline_and_independent_slot": {
+    "status": "PASS",
+    "evidence": "cpu-result-contract-02"
+  }
+}

@@ -1,0 +1,6 @@
+test_native_namespace_json_and_events_match_official_shapes (tools.serve_responses.test_tool_identity_contract.ToolIdentityContract.test_native_namespace_json_and_events_match_official_shapes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.055s
+
+OK

@@ -28,7 +28,7 @@ void HideResponse(Json* response) {
 Json ResponsesExecution::PublicResponse() const {
   auto response = output_.Snapshot();
   if (!IncludeResults(envelope_)) HideResponse(&response);
-  return response;
+  return ResponsesPublicValue(std::move(response));
 }
 
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {

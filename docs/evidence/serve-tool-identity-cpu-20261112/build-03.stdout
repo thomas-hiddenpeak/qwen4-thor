@@ -1,0 +1,11 @@
+[  0%] Built target q4t_regex_build
+[  8%] Built target xgrammar
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_input_test.cpp.o
+[ 10%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[100%] Building CXX object CMakeFiles/q4t_guardian_process.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_process.cpp.o
+[100%] Linking CXX static library libq4t_guardian_process.a
+[100%] Built target q4t_guardian_process
+[100%] Building CXX object CMakeFiles/q4t_guardian_process_tests.dir/home/rm01/models/dev/qwen4-thor/tests/guardian_process_test.cpp.o
+[100%] Linking CXX executable q4t_guardian_process_tests
+[100%] Built target q4t_guardian_process_tests

@@ -11,7 +11,9 @@
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/responses_output.h"
 #include "q4t/server/schema_graph.h"
+#include "q4t/server/tool_result_contracts.h"
 
 namespace q4t::server {
 namespace {
@@ -60,6 +62,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                         {"history", plan.history},
                         {"own_input", plan.own_input},
                         {"input_snapshots", plan.input_snapshots},
+                        {"tool_contracts", plan.tool_contracts},
                         {"request", plan.request},
                         {"events", events}});
   if (!Terminal(response))
@@ -111,9 +114,9 @@ void CanonicalItem(Json* item) {
               {Object({{"type", String("input_text")}, {"text", *content}})}));
   }
   for (const char* recorded :
-       {"message", "function_call", "function_call_output",
-        "computer_call_output", "tool_search_call", "tool_search_output",
-        "shell_call", "shell_call_output"})
+       {"message", "function_call", "function_call_output", "custom_tool_call",
+        "custom_tool_call_output", "computer_call_output", "tool_search_call",
+        "tool_search_output", "shell_call", "shell_call_output"})
     if (type == recorded) Default(item, "status", String("completed"));
   if (type == "tool_search_call" || type == "tool_search_output") {
     // These are client-supplied historical items, not executions by q4t.
@@ -177,9 +180,10 @@ ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
 
 ObjectReply ResponsesState::ResolveItems(const Json& input,
                                          const StateAccess& access,
-                                         size_t maximum,
-                                         Json* input_snapshots) {
+                                         size_t maximum, Json* input_snapshots,
+                                         Json* tool_contracts) {
   if (input_snapshots) *input_snapshots = {};
+  if (tool_contracts) *tool_contracts = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
   auto items = Array();
@@ -204,6 +208,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
   }
   std::unordered_set<std::string> ids;
   auto snapshots = Array();
+  auto contracts = Array();
   for (auto& item : items.array) {
     // The SDK allows an omitted or null discriminator for ItemReference.
     const auto type = item.GetString("type");
@@ -218,6 +223,18 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
       auto reference = Data(stored, "item");
       if (!reference.ok()) return reference;
       item = std::move(reference.value);
+      if (tool_contracts && IsResultBoundToolCall(item)) {
+        Json own;
+        if (const auto* bound =
+                stored.value.Find("data")->Find("tool_contracts")) {
+          auto reply = MergeToolResultContracts(*bound, Array({item}), &own);
+          if (!reply.ok()) return reply;
+        }
+        auto reply = BindToolResultContracts(Object(), Array({item}), &own);
+        if (!reply.ok()) return reply;
+        contracts.array.insert(contracts.array.end(), own.array.begin(),
+                               own.array.end());
+      }
       if (input_snapshots)
         if (const auto* bound =
                 stored.value.Find("data")->Find("input_snapshots")) {
@@ -244,13 +261,26 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     const auto id = item.GetString("id");
     if (!ValidId(id) || !ids.insert(id).second)
       return Error(400, "invalid_request", "Invalid or repeated input item ID");
-    if (input_snapshots && explicit_item && HasFileParts(item)) {
+    if (explicit_item && ((input_snapshots && HasFileParts(item)) ||
+                          (tool_contracts && IsResultBoundToolCall(item)))) {
       auto existing = Get(ObjectKind::kConversationItem, id, access);
       if (existing.ok()) {
         auto original = Data(existing, "item");
         if (!original.ok()) return original;
         auto same = CompareStoredItem(original.value, item);
         if (!same.ok()) return same;
+        if (tool_contracts && IsResultBoundToolCall(item)) {
+          Json own;
+          if (const auto* bound =
+                  existing.value.Find("data")->Find("tool_contracts")) {
+            auto reply = MergeToolResultContracts(*bound, Array({item}), &own);
+            if (!reply.ok()) return reply;
+          }
+          auto reply = BindToolResultContracts(Object(), Array({item}), &own);
+          if (!reply.ok()) return reply;
+          contracts.array.insert(contracts.array.end(), own.array.begin(),
+                                 own.array.end());
+        }
         if (const auto* bound =
                 existing.value.Find("data")->Find("input_snapshots")) {
           Json own;
@@ -267,6 +297,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
   ObjectReply result;
   result.value = std::move(items);
   if (input_snapshots) *input_snapshots = std::move(snapshots);
+  if (tool_contracts) *tool_contracts = std::move(contracts);
   return result;
 }
 
@@ -286,7 +317,7 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
   auto resolved = ResolveItems(input ? *input : Json(), access, 4096,
-                               &plan->input_snapshots);
+                               &plan->input_snapshots, &plan->tool_contracts);
   if (!resolved.ok()) return resolved;
   plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {
@@ -313,6 +344,19 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
     const auto& output = response->GetArray("output")->array;
     plan->history.array.insert(plan->history.array.end(), output.begin(),
                                output.end());
+    Json inherited;
+    if (const auto* contracts = data->Find("tool_contracts")) {
+      auto reply =
+          MergeToolResultContracts(*contracts, plan->history, &inherited);
+      if (!reply.ok()) return reply;
+    }
+    auto reply = BindToolResultContracts(Object(), plan->history, &inherited);
+    if (!reply.ok()) return reply;
+    auto all = plan->history;
+    all.array.insert(all.array.end(), plan->own_input.array.begin(),
+                     plan->own_input.array.end());
+    reply = MergeToolResultContracts(inherited, all, &plan->tool_contracts);
+    if (!reply.ok()) return reply;
     // Previous request.instructions is deliberately not consulted.
   } else if (!envelope.conversation_id.empty()) {
     auto conversation =
@@ -326,6 +370,19 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
     plan->conversation_revision = conversation.value.GetInt("revision");
     plan->conversation = *data;
     plan->history = *items;
+    Json inherited;
+    if (const auto* contracts = data->Find("tool_contracts")) {
+      auto reply =
+          MergeToolResultContracts(*contracts, plan->history, &inherited);
+      if (!reply.ok()) return reply;
+    }
+    auto reply = BindToolResultContracts(Object(), plan->history, &inherited);
+    if (!reply.ok()) return reply;
+    auto all = plan->history;
+    all.array.insert(all.array.end(), plan->own_input.array.begin(),
+                     plan->own_input.array.end());
+    reply = MergeToolResultContracts(inherited, all, &plan->tool_contracts);
+    if (!reply.ok()) return reply;
     if (const auto* bindings = data->Find("input_snapshots")) {
       auto all = plan->history;
       all.array.insert(all.array.end(), plan->own_input.array.begin(),
@@ -337,6 +394,9 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->history.array.insert(plan->history.array.end(),
                              plan->own_input.array.begin(),
                              plan->own_input.array.end());
+  auto result_contracts = BindToolResultContracts(
+      plan->request, plan->own_input, &plan->tool_contracts);
+  if (!result_contracts.ok()) return result_contracts;
   if (plan->history.array.size() > 4096)
     return Error(400, "input_limit_exceeded",
                  "Resolved history exceeds 4096 items");
@@ -366,6 +426,14 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->history = *data->Find("history");
   plan->own_input = *data->Find("own_input");
   plan->request = *data->Find("request");
+  if (const auto* contracts = data->Find("tool_contracts")) {
+    auto reply = MergeToolResultContracts(*contracts, plan->history,
+                                          &plan->tool_contracts);
+    if (!reply.ok()) return reply;
+  }
+  auto result_contracts =
+      BindToolResultContracts(Object(), plan->history, &plan->tool_contracts);
+  if (!result_contracts.ok()) return result_contracts;
   plan->input_snapshots = Array();
   if (const auto* bindings = data->Find("input_snapshots")) {
     auto reply =
@@ -439,7 +507,7 @@ ObjectReply ResponsesState::Interrupt(const std::string& id,
   events.array.push_back(
       Object({{"type", String("response.failed")},
               {"sequence_number", Number(events.array.size())},
-              {"response", snapshot}}));
+              {"response", ResponsesPublicValue(snapshot)}}));
   auto result = Finish(snapshot, events, access, &plan);
   if (!result.commit_unknown && (result.code == "object_too_large" ||
                                  result.code == "object_quota_exceeded"))
@@ -480,6 +548,9 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
+  bindings = BindToolResultContracts(
+      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
+  if (!bindings.ok()) return bindings;
   auto written =
       objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
                              SavedResponse(*plan, snapshot, events),
@@ -505,6 +576,9 @@ ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
+  bindings = BindToolResultContracts(
+      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
+  if (!bindings.ok()) return bindings;
   auto written = objects_.Execute(
       Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
             SavedResponse(*plan, snapshot, events),
@@ -525,10 +599,15 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
       !events.IsArray() || (plan->store && plan->response_revision <= 0))
     return StateError("Invalid terminal response state");
   for (const auto& item : snapshot.GetArray("output")->array)
-    if (!Shape(item, ResponsesItemShape::kOutput, "output").ok())
+    if (!Shape(ResponsesPublicValue(item), ResponsesItemShape::kOutput,
+               "output")
+             .ok())
       return StateError("Generated response item violates the output contract");
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
+  if (!bindings.ok()) return bindings;
+  bindings = BindToolResultContracts(
+      plan->request, *snapshot.GetArray("output"), &plan->tool_contracts);
   if (!bindings.ok()) return bindings;
   if (!plan->store && plan->conversation_id.empty()) {
     plan->finished = true;
@@ -572,6 +651,11 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     bindings = MergeInputSnapshots(plan->input_snapshots, *previous, &bound);
     if (!bindings.ok()) return bindings;
     Set(&conversation, "input_snapshots", std::move(bound));
+    Json contracts;
+    bindings =
+        MergeToolResultContracts(plan->tool_contracts, *previous, &contracts);
+    if (!bindings.ok()) return bindings;
+    Set(&conversation, "tool_contracts", std::move(contracts));
     mutations.push_back(Write(ObjectKind::kConversation, plan->conversation_id,
                               access, plan->conversation_revision,
                               std::move(conversation), true));
@@ -621,10 +705,16 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     } else if (existing.http_status != 404) {
       return existing;
     }
-    mutations.push_back(
-        Write(ObjectKind::kConversationItem, id, access, revision,
-              Object({{"item", item}, {"input_snapshots", item_bindings}}),
-              keep, temporary));
+    Json contracts;
+    bindings = MergeToolResultContracts(plan->tool_contracts, Array({item}),
+                                        &contracts);
+    if (!bindings.ok()) return bindings;
+    mutations.push_back(Write(ObjectKind::kConversationItem, id, access,
+                              revision,
+                              Object({{"item", item},
+                                      {"input_snapshots", item_bindings},
+                                      {"tool_contracts", contracts}}),
+                              keep, temporary));
   }
   auto written =
       objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
@@ -666,7 +756,9 @@ ObjectReply ResponsesState::FailWithinReservation(const Json& snapshot,
 
 ObjectReply ResponsesState::Retrieve(std::string id,
                                      const StateAccess& access) {
-  return Data(Get(ObjectKind::kResponse, id, access), "response");
+  auto result = Data(Get(ObjectKind::kResponse, id, access), "response");
+  if (result.ok()) result.value = ResponsesPublicValue(std::move(result.value));
+  return result;
 }
 ObjectReply ResponsesState::ReadRecord(const std::string& id,
                                        const StateAccess& access) {

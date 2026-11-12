@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "q4t/io/json.h"
@@ -15,6 +16,18 @@ struct ResponsesInputPlan {
   std::vector<std::string> message_paths;
   std::vector<PromptCacheInputBoundary> cache_boundaries;
 };
+
+struct ResponsesToolIdentity {
+  std::string type, name, name_space, model_name, path;
+};
+// Stable model names are independent of declaration order and current tools,
+// so stored calls keep their identity even when a later turn changes tools.
+std::string ResponsesToolModelName(std::string_view name_space,
+                                   std::string_view name,
+                                   std::string_view type);
+Status PlanResponsesToolIdentities(
+    const io::Json& request, std::vector<ResponsesToolIdentity>* identities,
+    ChatPlanError* error);
 
 // Object/file/encrypted references must be resolved by the owning request's
 // client-scoped state layer first. This function never performs external I/O.

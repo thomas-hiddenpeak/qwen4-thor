@@ -1,0 +1,3 @@
+  CHECK failed: Ok(next.Cancel()) (line 1221)
+[FAIL] responses_custom_output_projection_keeps_conversation_lifecycle
+1 tests, 0 passed, 1 failed, 0 skipped

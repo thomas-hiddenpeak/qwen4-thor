@@ -1,4 +1,5 @@
 #include "q4t/server/conversation_state.h"
+#include "q4t/server/tool_result_contracts.h"
 
 #include <algorithm>
 #include <unordered_set>
@@ -55,8 +56,13 @@ ObjectReply ValidateItems(const Json& items) {
     const auto& item = items.array[i];
     const auto path = "items[" + std::to_string(i) + ']';
     ChatPlanError error;
+    const auto type = item.GetString("type");
+    const bool custom =
+        type == "custom_tool_call" || type == "custom_tool_call_output";
     auto status = ValidateResponsesItemShape(
-        item, ResponsesItemShape::kConversation, &error, path);
+        custom ? ProjectStoredItem(item, {}, StoredItemView::kConversation)
+               : item,
+        ResponsesItemShape::kConversation, &error, path);
     if (!status) {
       auto result = Error(error.http_status, error.code, status.message());
       result.value = Object({{"param", String(error.param)}});
@@ -159,13 +165,21 @@ Status ParseItemViewOptions(const Json& query, ItemViewOptions* options,
   return {};
 }
 
-Json ProjectStoredItem(const Json& item, const ItemViewOptions& options) {
+Json ProjectStoredItem(const Json& item, const ItemViewOptions& options,
+                       StoredItemView view) {
   auto result = item;
   const auto included = [&](std::string_view key) {
     return std::find(options.include.begin(), options.include.end(), key) !=
            options.include.end();
   };
   const auto type = result.GetString("type");
+  // The SDK's conversation union uses the base custom-call types. Its
+  // Responses input_items list uses the Item variants with status instead.
+  if (view == StoredItemView::kConversation &&
+      (type == "custom_tool_call" || type == "custom_tool_call_output")) {
+    Hide(&result, "status", false);
+    Hide(&result, "created_by", false);
+  }
   if (type == "file_search_call" && !included("file_search_call.results"))
     Hide(&result, "results");
   if (type == "web_search_call") {
@@ -194,7 +208,8 @@ Json ProjectStoredItem(const Json& item, const ItemViewOptions& options) {
   return result;
 }
 
-ObjectReply PageStoredItems(const Json& items, const ItemViewOptions& options) {
+ObjectReply PageStoredItems(const Json& items, const ItemViewOptions& options,
+                            StoredItemView view) {
   if (!items.IsArray()) return StateError();
   if (options.limit < 1 || options.limit > 100)
     return Invalid("limit requires an integer between 1 and 100", "limit");
@@ -214,7 +229,7 @@ ObjectReply PageStoredItems(const Json& items, const ItemViewOptions& options) {
   const auto end = std::min(size, start + options.limit);
   for (size_t i = start; i < end; ++i)
     page.array.push_back(ProjectStoredItem(
-        items.array[options.descending ? size - 1 - i : i], options));
+        items.array[options.descending ? size - 1 - i : i], options, view));
   return Result(Page(std::move(page), end < size));
 }
 
@@ -251,6 +266,10 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
   if (!all_items) return StateError();
   auto checked = MergeInputSnapshots(Json(), *all_items, &bindings);
   if (!checked.ok()) return checked;
+  auto contracts =
+      data.Find("tool_contracts") ? *data.Find("tool_contracts") : Json();
+  checked = MergeToolResultContracts(Json(), *all_items, &contracts);
+  if (!checked.ok()) return checked;
   for (const auto& item : new_items.array) {
     ObjectRequest get;
     get.kind = ObjectKind::kConversationItem;
@@ -268,6 +287,10 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
         checked = MergeInputSnapshots(*bound, *all_items, &bindings);
         if (!checked.ok()) return checked;
       }
+      if (const auto* bound = old_data->Find("tool_contracts")) {
+        checked = MergeToolResultContracts(*bound, *all_items, &contracts);
+        if (!checked.ok()) return checked;
+      }
       item_revision = previous.value.GetInt("revision");
     } else if (previous.http_status != 404) {
       return previous;
@@ -275,11 +298,23 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
     Json own;
     checked = SelectInputSnapshots(bindings, Array({item}), &own);
     if (!checked.ok()) return checked;
-    mutations.push_back(
-        Write(ObjectKind::kConversationItem, get.id, item_revision,
-              Object({{"item", item}, {"input_snapshots", own}}), access));
+    // Manually added calls have no declaring request. Existing stored calls
+    // retain their original schema; a later tools list cannot replace it.
+    checked = BindToolResultContracts(Object(), Array({item}), &contracts);
+    if (!checked.ok()) return checked;
+    Json own_contracts;
+    checked =
+        MergeToolResultContracts(contracts, Array({item}), &own_contracts);
+    if (!checked.ok()) return checked;
+    mutations.push_back(Write(ObjectKind::kConversationItem, get.id,
+                              item_revision,
+                              Object({{"item", item},
+                                      {"input_snapshots", own},
+                                      {"tool_contracts", own_contracts}}),
+                              access));
   }
   Set(&data, "input_snapshots", std::move(bindings));
+  Set(&data, "tool_contracts", std::move(contracts));
   mutations.insert(mutations.begin(), Write(ObjectKind::kConversation, id,
                                             revision, std::move(data), access));
   return objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
@@ -383,7 +418,8 @@ ObjectReply ConversationState::Append(const std::string& id, const Json& items,
   if (!written.ok()) return written;
   auto result = Array();
   for (const auto& item : items.array)
-    result.array.push_back(ProjectStoredItem(item, options));
+    result.array.push_back(
+        ProjectStoredItem(item, options, StoredItemView::kConversation));
   return Result(Page(std::move(result), false));
 }
 
@@ -392,7 +428,8 @@ ObjectReply ConversationState::ListItems(const std::string& id,
                                          const StateAccess& access) {
   auto existing = Read(id, access);
   if (!existing.ok()) return existing;
-  return PageStoredItems(*existing.value.Find("data")->Find("items"), options);
+  return PageStoredItems(*existing.value.Find("data")->Find("items"), options,
+                         StoredItemView::kConversation);
 }
 
 ObjectReply ConversationState::RetrieveItem(const std::string& id,
@@ -404,7 +441,8 @@ ObjectReply ConversationState::RetrieveItem(const std::string& id,
   const auto* items = existing.value.Find("data")->GetArray("items");
   for (const auto& item : items->array)
     if (item.GetString("id") == item_id)
-      return Result(ProjectStoredItem(item, options));
+      return Result(
+          ProjectStoredItem(item, options, StoredItemView::kConversation));
   return Error(404, "object_not_found",
                "Item does not belong to this conversation");
 }
@@ -427,6 +465,13 @@ ObjectReply ConversationState::EraseItem(const std::string& id,
         SelectInputSnapshots(*bindings, *data.Find("items"), &retained);
     if (!checked.ok()) return checked;
     Set(&data, "input_snapshots", std::move(retained));
+  }
+  if (const auto* contracts = data.Find("tool_contracts")) {
+    Json retained;
+    auto checked =
+        MergeToolResultContracts(*contracts, Field(data, "items"), &retained);
+    if (!checked.ok()) return checked;
+    Set(&data, "tool_contracts", std::move(retained));
   }
   auto resource = *data.Find("resource");
   auto written = objects_.Execute(

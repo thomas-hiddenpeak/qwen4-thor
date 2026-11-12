@@ -29,10 +29,20 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- A07工具命名空间/custom公开投影/调用时output_schema合同的
+  [37项不同CPU及官方SDK/schema检查已通过](evidence/serve-tool-identity-cpu-20261112/README.md)。
+  独立结果校验worker、存储续接及压缩历史已接线；冻结1启动/6请求/
+  900秒实际业务短验，尚未执行或交付，默认rev94保持。其余A07及
+  全部master缺口继续，不能把这组通过当总目标完成。
+
 - PR23的实际退出已定位为x86旧mkdir未进有界IO代理；已补齐等价ABI，
   [16项针对性CPU通过](evidence/serve-codec-syscall-20261112/README.md)。
   文件创建仍计费、路径仍受Landlock限制，等待真实远端结果再合并；
   0GPU，默认rev94不变，继续全部master。
+
+- A07命名空间19项不同CPU及custom公开投影两项已过，官方SDK与严格
+  schema校验通过；继续调用时output_schema绑定和独立校验worker，
+  冻结14项针对性检查。尚未真实模型验收或交付，默认rev94保持。
 
 - PR23实际沙箱ready后仍有编解码退出，另三项存储/过期夹具
   [针对性CPU通过](evidence/serve-host-storage-codec-20261112/README.md)。
@@ -43,6 +53,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
   夹具竞态；[18项Guardian针对性CPU通过](evidence/serve-host-localtime-exec-20261112/README.md)。
   临时CI路径权限与exec握手已修，生产沙箱/默认rev94保持，原两轮
   失败原件保留，等待真实远端通过再合并；全部master仍active。
+
+- A07命名空间的定义/模型身份/JSON/SSE/历史及存储续接已成组编码，
+  [结果合同的连续计划](SERVE_TOOL_IDENTITY_2026-11-12.md)保留output_schema
+  与其余高级工具任务。冻结19项针对性CPU，尚未验收或交付；0GPU，
+  rev94保持，PR23实际CI仍在运行。
 
 - PR23剩余Batch夹具已[9项针对性CPU通过](evidence/serve-host-prerequisites-batch-20261112/README.md)，
   包含完整50000行/391轮/792对象；故障注入短超时不变，容量用例单独

@@ -288,3 +288,160 @@ Q4T_TEST(responses_input_tools_allowed_custom_and_source_errors) {
   Q4T_CHECK(error.http_status == 400 && error.param == "tool_choice");
   return true;
 }
+
+Q4T_TEST(
+    responses_namespace_definitions_preserve_public_identity_and_defaults) {
+  auto request = Read(R"({"tools":[
+    {"type":"namespace","name":"crm","description":"Customer records",
+      "tools":[{"type":"function","name":"read"}]},
+    {"type":"namespace","name":"support","description":"Ticket records",
+      "tools":[{"type":"function","name":"read"},
+               {"type":"custom","name":"query"}]},
+    {"type":"function","name":"q4t_ns_public"}]})");
+  Json tools, choice, effective;
+  ChatPlanError error;
+  Q4T_CHECK(
+      NormalizeResponsesTools(request, &tools, &choice, &error, &effective));
+  Q4T_CHECK(tools.array.size() == 4 && effective.array.size() == 3);
+  const auto& customer = *tools.array[0].Find("function");
+  const auto& support = *tools.array[1].Find("function");
+  Q4T_CHECK(customer.GetString("name") != support.GetString("name"));
+  Q4T_CHECK(customer.GetString("description").find("Customer records") !=
+            std::string::npos);
+  Q4T_CHECK(customer.GetString("description").find("crm") != std::string::npos);
+  const auto& original = effective.array[0].GetArray("tools")->array[0];
+  Q4T_CHECK(original.GetString("name") == "read" && original.GetBool("strict"));
+  Q4T_CHECK(original.Find("parameters") && !original.Has("namespace"));
+  Q4T_CHECK(tools.array[2].Find("custom")->GetString("name") ==
+            ResponsesToolModelName("support", "query", "custom"));
+  Q4T_CHECK(tools.array[3].Find("function")->GetString("name") !=
+            "q4t_ns_public");
+  return true;
+}
+
+Q4T_TEST(responses_namespace_selection_is_explicit_and_never_arbitrary) {
+  for (const bool allowed : {false, true}) {
+    for (const auto* name : {"crm.read", "support.read", "read"}) {
+      auto request = Read(R"({"tools":[
+        {"type":"namespace","name":"crm","description":"customers",
+         "tools":[{"type":"function","name":"read"}]},
+        {"type":"namespace","name":"support","description":"tickets",
+         "tools":[{"type":"function","name":"read"}]}]})");
+      auto selector =
+          Read(std::string(R"({"type":"function","name":")") + name + R"("})");
+      if (allowed)
+        selector =
+            Read(R"({"type":"allowed_tools","mode":"required","tools":[)" +
+                 OutputJson(selector) + "]}");
+      request.object.emplace_back("tool_choice", selector);
+      Json tools, choice;
+      ChatPlanError error;
+      auto status = NormalizeResponsesTools(request, &tools, &choice, &error);
+      if (std::string(name) == "read") {
+        Q4T_CHECK(!status && error.http_status == 400 &&
+                  error.param == (allowed ? "tool_choice.tools[0].name"
+                                          : "tool_choice.name"));
+      } else {
+        Q4T_CHECK(status);
+        const auto& picked =
+            allowed ? choice.Find("allowed_tools")->GetArray("tools")->array[0]
+                    : choice;
+        const auto space =
+            std::string(name).substr(0, std::string(name).find('.'));
+        Q4T_CHECK(picked.Find("function")->GetString("name") ==
+                  ResponsesToolModelName(space, "read", "function"));
+      }
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(responses_namespace_paths_duplicates_and_callable_budget) {
+  for (
+      const auto& [body, path] :
+      std::vector<std::pair<std::string, std::string>>{
+          {R"({"type":"namespace","name":"crm","description":"x","tools":[]})",
+           "tools[0].tools"},
+          {R"({"type":"namespace","name":"crm","description":null,"tools":[{"type":"function","name":"x"}]})",
+           "tools[0].description"},
+          {R"({"type":"namespace","name":"crm","description":"x","tools":[{"type":"file_search"}]})",
+           "tools[0].tools[0].type"},
+          {R"({"type":"namespace","name":"crm","description":"x","tools":[{"type":"function","name":"x"},{"type":"custom","name":"x"}]})",
+           "tools[0].tools[1].name"},
+          {R"({"type":"namespace","name":"crm","description":"x","tools":[{"type":"function","name":"x","description":42}]})",
+           "tools[0].tools[0].description"}}) {
+    Json tools, choice;
+    ChatPlanError error;
+    Q4T_CHECK(!NormalizeResponsesTools(Read("{\"tools\":[" + body + "]}"),
+                                       &tools, &choice, &error));
+    Q4T_CHECK(error.param == path && error.http_status == 400);
+  }
+  auto request = Read(R"({"tools":[{"type":"namespace","name":"crm",
+    "description":"bounded","tools":[]}]})");
+  auto& children = request.object[0].second.array[0].object[3].second.array;
+  for (size_t i = 0; i < 129; ++i) {
+    children.push_back(
+        Read(R"({"type":"function","name":"f)" + std::to_string(i) + R"("})"));
+    if (i < 127) continue;
+    Json tools, choice;
+    ChatPlanError error;
+    const auto result =
+        NormalizeResponsesTools(request, &tools, &choice, &error);
+    Q4T_CHECK(i == 127 ? result.ok()
+                       : !result && error.http_status == 503 &&
+                             error.code == "tool_resource_exhausted");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_namespace_history_maps_without_current_declarations) {
+  auto request = Read(R"({"input":[
+    {"type":"function_call","namespace":"crm","name":"read",
+     "call_id":"a","arguments":"{}"},
+    {"type":"custom_tool_call","namespace":"support","name":"read",
+     "call_id":"b","input":"raw\n中文"},
+    {"type":"custom_tool_call_output","call_id":"b","output":"ticket"},
+    {"type":"function_call_output","call_id":"a","output":"customer"}]})");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto& calls = plan.messages.array[0].GetArray("tool_calls")->array;
+  Q4T_CHECK(calls[0].Find("function")->GetString("name") ==
+            ResponsesToolModelName("crm", "read", "function"));
+  Q4T_CHECK(calls[1].Find("custom")->GetString("name") ==
+            ResponsesToolModelName("support", "read", "custom"));
+  Q4T_CHECK(plan.items.array[0].GetString("namespace") == "crm");
+  Q4T_CHECK(PlanToolResultOrder(plan.messages));
+  auto& result = request.object[0].second.array[3];
+  result.object.emplace_back("namespace", Read(R"("support")"));
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  Q4T_CHECK(error.param == "input[3].namespace");
+  return true;
+}
+
+Q4T_TEST(responses_namespace_native_search_preserves_original_binding_index) {
+  auto request = Read(R"({"tools":[
+    {"type":"namespace","name":"crm","description":"records","tools":[
+      {"type":"function","name":"read"},
+      {"type":"function","name":"q4t_file_search_1"}]},
+    {"type":"file_search","vector_store_ids":["vs_project"]}],
+    "tool_choice":{"type":"allowed_tools","mode":"required","tools":[
+      {"type":"function","name":"crm.read"},{"type":"file_search"}]}})");
+  Json tools, choice, effective;
+  ChatPlanError error;
+  Q4T_CHECK(
+      NormalizeResponsesTools(request, &tools, &choice, &error, &effective));
+  Q4T_CHECK(tools.array.size() == 3 && effective.array.size() == 2);
+  Q4T_CHECK(tools.array[2].Find("function")->GetString("name") ==
+            "q4t_file_search_1");
+  const auto& selected = choice.Find("allowed_tools")->GetArray("tools")->array;
+  Q4T_CHECK(selected.size() == 2);
+  Q4T_CHECK(selected[1].Find("function")->GetString("name") ==
+            "q4t_file_search_1");
+  OutputConstraints constraints;
+  auto chat = Read(R"({"tools":[],"tool_choice":null,"messages":[]})");
+  chat.object[0].second = tools;
+  chat.object[1].second = choice;
+  Q4T_CHECK(PlanOutputConstraints(chat, &constraints));
+  return true;
+}

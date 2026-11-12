@@ -1,0 +1,6 @@
+[PASS] responses_execution_echoes_public_tool_choice
+[PASS] responses_namespace_selection_is_explicit_and_never_arbitrary
+[PASS] responses_namespace_paths_duplicates_and_callable_budget
+  CHECK failed: PlanOutputConstraints(chat, &constraints) (line 445)
+[FAIL] responses_namespace_native_search_preserves_original_binding_index
+4 tests, 3 passed, 1 failed, 0 skipped

@@ -1,4 +1,5 @@
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/tool_result_contracts.h"
 
 #include <algorithm>
 #include <cstring>
@@ -48,12 +49,12 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = 0;
   for (const auto* value :
        {&plan_.request, &plan_.history, &plan_.own_input,
-        &plan_.input_snapshots, &plan_.conversation, &plan_.execution_owner,
-        &envelope_.request, &envelope_.options, &generation_.generation_request,
-        &generation_.effective_tools, &generation_.input.items,
-        &generation_.input.messages, &generation_history_, &compaction_.source,
-        &compaction_.retained, &compaction_.request, &compaction_window_,
-        &output_.Snapshot()})
+        &plan_.input_snapshots, &plan_.tool_contracts, &plan_.conversation,
+        &plan_.execution_owner, &envelope_.request, &envelope_.options,
+        &generation_.generation_request, &generation_.effective_tools,
+        &generation_.input.items, &generation_.input.messages,
+        &generation_history_, &compaction_.source, &compaction_.retained,
+        &compaction_.request, &compaction_window_, &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();
@@ -209,6 +210,18 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     reply.value = Object({{"param", String(error.param)}});
     return reply;
   }
+  auto result_contracts = plan_.tool_contracts;
+  if (encrypted_input) {
+    // Opening an authenticated compaction may expand consumed historical
+    // calls. Their results were checked before sealing, and cannot acquire
+    // today's tool definitions. Newly supplied calls retain bound schemas.
+    auto bound = BindToolResultContracts(Object(), generation_history_,
+                                         &result_contracts);
+    if (!bound.ok()) return bound;
+  }
+  auto result_contract = CheckToolResultContracts(
+      envelope_.request, generation_history_, result_contracts, access_);
+  if (!result_contract.ok()) return result_contract;
   if (HasFileInputs(generation_history_)) {
     files_ = std::make_unique<FileExpansion>(
         &objects_,
