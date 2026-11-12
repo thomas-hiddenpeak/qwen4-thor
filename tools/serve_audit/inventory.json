@@ -1206,6 +1206,17 @@
         "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
         "docs/evidence/serve-vector-api-cpu-20261112/README.md"
       ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/search": {
+      "semantics": "Authenticated source-bound native search with actual primary rewrite and dedicated embedding, complete corpus and shared request quota; optional native CORS preflight follows the same route.",
+      "boundary": "Request scope/permissions precede model work. Exact total query TPM and one external RPM; no partial result or model replay on snapshot conflict. CPU contract evidence does not claim actual model search acceptance.",
+      "evidence": [
+        "src/server/chat_vector_search.cpp",
+        "src/server/vector_search_api.cpp",
+        "src/server/vector_search_execution.cpp",
+        "tests/server_vector_search_execution_test.cpp",
+        "tools/serve_responses/test_vector_stores_transport.py"
+      ]
     }
   },
   "whitelists": {
@@ -1777,8 +1788,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "1db2d100785b976f28fa7952dbdb4dfc814bdd756e0b497b077983157a019b9e",
-    "cmake/ChatProtocolIdentity.cmake": "7184977a7e477de338ca3825f2cc3aa4668da4dffa0d1c5afe93555a432d89ca",
+    "CMakeLists.txt": "56fe0942f6ea7ecea771bdd435a70dcd8760fadfb2d02abf6ff4a822eada7e7a",
+    "cmake/ChatProtocolIdentity.cmake": "a7a6c3ac97614d6361f63331ede92c4950c6df95a434597ace0448492b0e461e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1809,7 +1820,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "67d827f867d8e8d152fa76e77d346feaa7cff7abb7f9e48d8980ee7ac5bb9ae7",
+    "include/q4t/server/application_routes.h": "ec2f8f6d6f0ef42f39bcadf430afd03797ed2c3a727704d5abfc24f8c37ccd76",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
     "include/q4t/server/batch_checkpoint.h": "ce3e49ef7d94b95d9b813c50e7fbc930c17a77f932437ed428ef17a93db659b9",
@@ -1833,7 +1844,7 @@
     "include/q4t/server/chat_plan.h": "d9e025d9d2b66161d9d47abee903934c0a625ed1954a0a47b89c469580cbf8c6",
     "include/q4t/server/chat_prompt.h": "40f524f8de1cada46e16a1c982ab8ef29d4a2c404df276bdd5d941b32afe5605",
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
-    "include/q4t/server/chat_server.h": "95276e2beec5ce4a12a6ea47e4f4944d3d6fbccec3017481b5a7819a60be9765",
+    "include/q4t/server/chat_server.h": "bca38d00df8ecf4d84b3cecf44aa50aab7e95e611f5b69f06eda9d1353213e22",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "5631a55354862668597bd86325b003fb2c1030dff9554a927255221d2b57df10",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -1956,6 +1967,7 @@
     "include/q4t/server/vector_ingestion.h": "892299bfcd22b747752b1dd196580638bdf4747fd50719eb80e94e430bca7b34",
     "include/q4t/server/vector_jobs.h": "6694ba76f8b4787bee9a737c7090a1c0461774f859aacd4e1d77eb19a48bc2cf",
     "include/q4t/server/vector_search.h": "2ac47b612d03edd2fce0aa61c4bd20a878f1ca893b82c853e31a7274d6cbbe08",
+    "include/q4t/server/vector_search_api.h": "eddbcec311db9ce70445d213bcacd8fa1c7e9e3b1c8c1ed3fd9bd34207a1bcd4",
     "include/q4t/server/vector_search_execution.h": "b22034b882d5f1e9a9f2642cadf1a65ba13c5199b13c23380320fe0d397f1ead",
     "include/q4t/server/vector_store_api.h": "1f6bf72f96d759d4f2d2883615b6efb0b0a108608d9f987bb6a4d76d90d68adf",
     "include/q4t/server/vector_stores.h": "8fdae30c9f23e4c88c73be14713511c43031b8481e3b383ca84cfc3cc22d9d31",
@@ -2032,7 +2044,7 @@
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
     "src/server/chat_generation.cpp": "e26c18e99ad209c22d82636bc20dc4fc57c081f1c6ca0bc0ba7496e30dc64517",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "16d7be0a66302bfce0b5afcf0da38864e7d821189c61c5b28676a10385025568",
+    "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
@@ -2053,6 +2065,7 @@
     "src/server/chat_template.cpp": "b4efd5d13d9f6a3757a74130d8bac1065ab63a1dc324bbe979acbb990acf7cbb",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
+    "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
     "src/server/client_policy.cpp": "1e87f542adf319f5aea52e10e4467bb24692978f375f6c834df7e96362063830",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
@@ -2208,11 +2221,12 @@
     "src/server/vector_ingestion_state.cpp": "1867446631c51e8f94f5e599e152108fe20793175d2974e21666a5ff6d2e528d",
     "src/server/vector_jobs.cpp": "59fb0e36d95aabf9d670286f46e80eb0993bb9326b28701d5c31a57537bb1693",
     "src/server/vector_query_rewrite.cpp": "4bbe453babee944abcc9059a1319f6e1a971ea70902e00c3eca03671fc061731",
+    "src/server/vector_search_api.cpp": "5152e795bc4a879fff755b738363e643b17c340a7524f21e0f2d5f6d250e3b93",
     "src/server/vector_search_corpus.cpp": "1fe58cd00aa8f985c5cba44e7466c239914b5257c242050d0337b2fa03a74157",
     "src/server/vector_search_execution.cpp": "5ae689a004ed83c22b0efbb041ef9f90edc6212d37c34241ec576d2a61fc3516",
     "src/server/vector_search_plan.cpp": "a3153b74e87cf70797912e83b2a3b9b2fcbaf99c1086e4e00025bfee27b299bf",
     "src/server/vector_search_rank.cpp": "d4e1d690eba20b52cd98ad0b04fbd23d24bb35733df0dddac4c4e1e95de6e6d4",
-    "src/server/vector_store_api.cpp": "d401e3c2da89a0661f027b940d696971abe2f432d837b46da2071f598eb4033a",
+    "src/server/vector_store_api.cpp": "9baa1ba4b8a3ad2f862a46041799c6dc4742936b1e20a5c144e9cd88a000bb1f",
     "src/server/vector_store_batches.cpp": "eaa8c0ba3e5688cd423d27b840e43b0ffd1a916e34258d3dfb78e57136d203bc",
     "src/server/vector_store_content.cpp": "daa1d7a68af23b28b12b018b7d4b2ea0b767846427aee5364b00ce59e3da5500",
     "src/server/vector_store_files.cpp": "484cbdfcb7b2d766636cee30413cef21b058b7bb958631b0b80dba2d792bb1e7",
@@ -3909,6 +3923,28 @@
         "include/q4t/server/application_routes.h",
         "docs/SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
         "docs/evidence/serve-vector-api-cpu-20261112/README.md"
+      ]
+    },
+    "OPTIONS /v1/vector_stores/{vector_store_id}/search": {
+      "semantics": "Authenticated source-bound native search with actual primary rewrite and dedicated embedding, complete corpus and shared request quota; optional native CORS preflight follows the same route.",
+      "boundary": "Request scope/permissions precede model work. Exact total query TPM and one external RPM; no partial result or model replay on snapshot conflict. CPU contract evidence does not claim actual model search acceptance.",
+      "evidence": [
+        "src/server/chat_vector_search.cpp",
+        "src/server/vector_search_api.cpp",
+        "src/server/vector_search_execution.cpp",
+        "tests/server_vector_search_execution_test.cpp",
+        "tools/serve_responses/test_vector_stores_transport.py"
+      ]
+    },
+    "POST /v1/vector_stores/{vector_store_id}/search": {
+      "semantics": "Authenticated source-bound native search with actual primary rewrite and dedicated embedding, complete corpus and shared request quota; optional native CORS preflight follows the same route.",
+      "boundary": "Request scope/permissions precede model work. Exact total query TPM and one external RPM; no partial result or model replay on snapshot conflict. CPU contract evidence does not claim actual model search acceptance.",
+      "evidence": [
+        "src/server/chat_vector_search.cpp",
+        "src/server/vector_search_api.cpp",
+        "src/server/vector_search_execution.cpp",
+        "tests/server_vector_search_execution_test.cpp",
+        "tools/serve_responses/test_vector_stores_transport.py"
       ]
     }
   },

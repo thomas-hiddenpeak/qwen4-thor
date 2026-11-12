@@ -1281,7 +1281,8 @@
         "evidence/serve-vector-jobs-cpu-20261112/README.md",
         "evidence/serve-vector-batches-cpu-20261112/README.md",
         "evidence/serve-vector-api-cpu-20261112/README.md",
-        "evidence/serve-vector-query-cpu-20261112/README.md"
+        "evidence/serve-vector-query-cpu-20261112/README.md",
+        "evidence/serve-vector-search-api-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1289,7 +1290,7 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "query_cpu_accepted_http_responses_in_progress",
+        "state": "search_api_sdk_cpu_accepted_responses_business_in_progress",
         "foundation_cpu_cases": 16,
         "persistent_index": true,
         "production_routes": true,
@@ -1362,7 +1363,7 @@
           "gpu_starts": 0,
           "default_changed": false
         },
-        "search_route": false,
+        "search_route": true,
         "management_api": {
           "state": "cpu_sdk_accepted_real_search_business_pending",
           "operations": 15,
@@ -1380,8 +1381,16 @@
           "exact_query_budget": true,
           "native_engine_built": true,
           "gpu_starts": 0,
-          "http": false,
+          "http": true,
           "actual_model_business": false,
+          "default_changed": false
+        },
+        "search_api": {
+          "state": "targeted_cpu_sdk_accepted_real_business_pending",
+          "cpp_cases": 11,
+          "sdk_schema_cases": 3,
+          "evidence": "evidence/serve-vector-search-api-cpu-20261112/README.md",
+          "gpu_starts": 0,
           "default_changed": false
         }
       }

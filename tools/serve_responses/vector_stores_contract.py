@@ -86,7 +86,46 @@ def definitions():
     def deleted(name):
         return obj(dict(id=identity, object=dict(const=name+'.deleted'),
                         deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    scalar = dict(anyOf=[dict(type='string', maxLength=512),
+                         dict(type='number'), dict(type='boolean')])
+    comparison = obj(dict(type=dict(enum=['eq', 'ne', 'gt', 'gte', 'lt', 'lte'],
+                                   default='eq'),
+        key=dict(type='string', minLength=1, maxLength=64), value=scalar),
+        ['key', 'value'])
+    membership = obj(dict(type=dict(enum=['in', 'nin']),
+        key=dict(type='string', minLength=1, maxLength=64),
+        value=dict(type='array', maxItems=128, items=dict(anyOf=[
+            dict(type='string', maxLength=512), dict(type='number')]))),
+        ['type', 'key', 'value'])
+    compound = obj(dict(type=dict(enum=['and', 'or']), filters=dict(type='array',
+        minItems=1, maxItems=256, items=ref('vector_search_filter'))),
+        ['type', 'filters'])
+    filters = dict(oneOf=[comparison, membership, compound])
+    filters['x-q4t-constraint'] = 'depth <=16, nodes <=256, operand bytes <=65536'
+    search = obj(dict(query=dict(oneOf=[dict(type='string', minLength=1),
+        dict(type='array', minItems=1, maxItems=16,
+             items=dict(type='string', minLength=1))]),
+        filters=nullable(ref('vector_search_filter')),
+        max_num_results=dict(type='integer', minimum=1, maximum=50, default=10),
+        rewrite_query=dict(type='boolean', default=False),
+        ranking_options=obj(dict(ranker=dict(enum=['none', 'auto', 'default-2024-11-15']),
+                                 score_threshold=dict(type='number', minimum=0, maximum=1)))),
+        ['query'])
+    search['x-q4t-constraint'] = 'aggregate query UTF-8 bytes <=65536; complete bounded corpus'
+    hit = obj(dict(file_id=file_id, filename=dict(type='string'),
+        score=dict(type='number', minimum=0, maximum=1), attributes=attributes,
+        content=dict(type='array', minItems=1, items=obj(dict(type=dict(const='text'),
+            text=dict(type='string')), ['type', 'text']))),
+        ['file_id', 'filename', 'score', 'attributes', 'content'])
     return dict(vector_store_create=create, vector_store_update=update,
+        vector_search_filter=filters, vector_search_request=search,
+        vector_search_hit=hit, vector_search_page=obj(dict(
+            object=dict(const='vector_store.search_results.page'),
+            search_query=dict(type='array', minItems=1, maxItems=16,
+                              items=dict(type='string', minLength=1)),
+            data=dict(type='array', maxItems=50, items=ref('vector_search_hit')),
+            has_more=dict(const=False), next_page=dict(type='null')),
+            ['object', 'search_query', 'data', 'has_more', 'next_page']),
         vector_store_resource=obj(store_fields, store_fields),
         vector_store_query=query, vector_store_list=page('vector_store_resource'),
         vector_store_deleted=deleted('vector_store'), vector_file_create=attach,
@@ -113,6 +152,7 @@ def operations():
         (store, 'get', None, None, 'vector_store_resource'),
         (store, 'post', 'vector_store_update', None, 'vector_store_resource'),
         (store, 'delete', None, None, 'vector_store_deleted'),
+        (store+'/search', 'post', 'vector_search_request', None, 'vector_search_page'),
         (files, 'get', None, 'vector_file_query', 'vector_file_list'),
         (files, 'post', 'vector_file_create', None, 'vector_file_resource'),
         (files+'/{file_id}', 'get', None, None, 'vector_file_resource'),
@@ -141,4 +181,8 @@ def add_openapi(paths, response, error):
         if request:
             operation['requestBody'] = dict(required=not path.endswith('/cancel'),
                 content={'application/json': dict(schema=external(request))})
+        if path.endswith('/search'):
+            operation['description'] = ('Native scoped source-bound retrieval with actual query embedding, '
+                'optional real model rewriting, exact shared quota and complete snapshot checks; '
+                'auto ranking uses local cosine/BM25 RRF, not the private hosted ranker.')
         paths.setdefault(path, {})[method] = operation

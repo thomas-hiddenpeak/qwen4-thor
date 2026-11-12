@@ -184,6 +184,8 @@ class ChatServer {
   void HandleResponsesTokenCount(int fd, const std::string& body);
   void HandleModerations(int fd, const std::string& body,
                          std::shared_ptr<RequestControl> owner = {});
+  void HandleVectorSearch(int fd, const std::string& method,
+                           const std::string& path, const std::string& body);
   void HandleEmbeddings(int fd, const std::string& body,
                          std::shared_ptr<RequestControl> owner = {});
   ObjectReply RunEmbeddingInput(

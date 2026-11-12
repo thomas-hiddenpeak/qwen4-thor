@@ -43,11 +43,13 @@ set(protocol_inputs
   include/q4t/server/embeddings_plan.h
   include/q4t/server/vector_search.h
   include/q4t/server/vector_search_execution.h
+  include/q4t/server/vector_search_api.h
   src/server/vector_search_plan.cpp
   src/server/vector_search_rank.cpp
   src/server/vector_search_corpus.cpp
   src/server/vector_search_execution.cpp
   src/server/vector_query_rewrite.cpp
+  src/server/vector_search_api.cpp
   include/q4t/server/vector_index.h
   include/q4t/server/vector_stores.h
   include/q4t/server/vector_store_api.h
@@ -75,6 +77,7 @@ set(protocol_inputs
   src/server/chat_embeddings.cpp
   src/server/chat_embedding_backend.cpp
   src/server/chat_vector_ingestion.cpp
+  src/server/chat_vector_search.cpp
   include/q4t/model/embedding_config.h
   src/model/embedding_config.cpp
   include/q4t/model/embedding_layout.h

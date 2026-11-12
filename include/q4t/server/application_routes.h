@@ -15,7 +15,7 @@ inline bool ValidApplicationId(std::string_view id) {
 
 enum class VectorStoreRouteKind {
   kInvalid, kStores, kStore, kFiles, kFile, kContent, kBatches, kBatch,
-  kBatchFiles, kBatchCancel
+  kBatchFiles, kBatchCancel, kSearch
 };
 struct VectorStoreRoute {
   VectorStoreRouteKind kind = VectorStoreRouteKind::kInvalid;
@@ -39,6 +39,7 @@ inline VectorStoreRoute ParseVectorStoreRoute(std::string_view target) {
   if (!ValidApplicationId(store)) return {};
   if (slash == path.npos) return {Kind::kStore, store, {}};
   path.remove_prefix(slash + 1);
+  if (path == "search") return {Kind::kSearch, store, {}};
   slash = path.find('/');
   const auto collection = path.substr(0, slash);
   const bool files = collection == "files";
@@ -68,6 +69,7 @@ inline std::string_view VectorStoreAllowedMethods(VectorStoreRouteKind kind) {
     case Kind::kBatch:
     case Kind::kBatchFiles: return "GET";
     case Kind::kBatches:
+    case Kind::kSearch:
     case Kind::kBatchCancel: return "POST";
     case Kind::kInvalid: return {};
   }

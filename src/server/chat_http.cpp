@@ -525,6 +525,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     }
     return;
   }
+  if (ParseVectorStoreRoute(path).kind == VectorStoreRouteKind::kSearch) {
+    HandleVectorSearch(fd, method, path, body);
+    return;
+  }
   if ((IsStoredChatTarget(path) &&
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||

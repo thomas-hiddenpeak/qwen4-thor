@@ -69,6 +69,9 @@ class VectorTransportTests(unittest.TestCase):
             ('vector_batch_create', {'files':[{'file_id':'file_a'}],
                                      'attributes':'ignored global value'}),
             ('vector_batch_cancel', {}),
+            ('vector_search_request', {'query':['PLE','MTP'], 'rewrite_query':True}),
+            ('vector_search_request', {'query':'x', 'filters':{'type':'and',
+                'filters':[{'key':'rev','value':80}, {'type':'in','key':'tag','value':['run']}]}}),
             ('vector_file_query', {'limit':1, 'filter':'completed'})]
         for name, value in accepted:self.assertFalse(errors(value, name), name)
         rejected = [
@@ -82,6 +85,13 @@ class VectorTransportTests(unittest.TestCase):
             ('vector_batch_create', {'file_ids':['file_a'], 'files':[]}),
             ('vector_batch_create', {'file_ids':['file_'+str(i) for i in range(2001)]}),
             ('vector_batch_cancel', {'force':True})]
+        rejected += [
+            ('vector_search_request', {'query':[]}),
+            ('vector_search_request', {'query':'x','owner':'other'}),
+            ('vector_search_request', {'query':'x','max_num_results':51}),
+            ('vector_search_request', {'query':'x','rewrite_query':'true'}),
+            ('vector_search_request', {'query':'x','filters':{'type':'or','filters':[]}}),
+            ('vector_search_request', {'query':'x','filters':{'type':'in','key':'x','value':[True]}})]
         for name, value in rejected:self.assertTrue(errors(value, name), name)
 
 

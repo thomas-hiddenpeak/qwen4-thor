@@ -16,6 +16,7 @@
 #include "q4t/server/batch_api.h"
 #include "q4t/server/vector_store_api.h"
 #include "q4t/server/vector_jobs.h"
+#include "q4t/server/vector_search_api.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
@@ -58,7 +59,7 @@ int FilesApiFixture(int argc, char** argv) {
     if (vector_fixture) {
       VectorJobsOptions jobs;
       jobs.scan_interval = 10ms;
-      jobs.ingestion.dimensions = 32;
+      jobs.ingestion.dimensions = 1024;
       vectors = std::make_unique<VectorJobs>(
           objects, clients, jobs,
           [](auto text, const auto& control, auto* output) {
@@ -269,7 +270,55 @@ int FilesApiFixture(int argc, char** argv) {
             if (file) {
               file->Serve(fd);
             } else {
-              const auto reply = vector_fixture
+              ObjectReply reply;
+              if (vector_fixture && ParseVectorStoreRoute(target).kind ==
+                                        VectorStoreRouteKind::kSearch) {
+                ClientRateLease rate;
+                ActualUsageCounter usage;
+                VectorNativeSearchCallbacks callbacks;
+                callbacks.encode = [](auto text, const auto& control,
+                                        auto* output) {
+                  return EncodeVectorText(
+                      text,
+                      [](auto source, auto* tokens) {
+                        for (unsigned char c : source) tokens->push_back(c);
+                        return q4t::Status{};
+                      },
+                      [](uint32_t token, auto* piece) {
+                        *piece = std::string(1, static_cast<char>(token));
+                        return q4t::Status{};
+                      }, control, output);
+                };
+                callbacks.embed = [](const auto& tokens, auto* output) {
+                  output->committed_input = tokens.size();
+                  output->hidden.assign(1024, 0);
+                  output->hidden[0] = 0x3f80;
+                  return ObjectReply{};
+                };
+                callbacks.rewrite = [&](const auto& plan, auto& account,
+                                         auto* output) {
+                  using namespace object_detail;
+                  auto admitted = account.ReservePrompt(10);
+                  if (!admitted.ok()) return admitted;
+                  if (!account.StartStep())
+                    throw std::runtime_error("CPU rewrite owner missing");
+                  account.ObserveOutput(3);
+                  usage.Merge(ActualUsage{10, 3});
+                  Json input;
+                  if (!Parse(plan.request.GetArray("messages")->array[1]
+                                 .GetString("content"), &input))
+                    throw std::runtime_error("CPU rewrite JSON missing");
+                  *output = {
+                      OutputJson(Object({{"queries", *input.Find("query")}})),
+                      "stop"};
+                  return ObjectReply{};
+                };
+                reply = HandleVectorSearchRequest(
+                    objects, clients, true, method, target, body, identity,
+                    {"client:" + std::string(identity.Id()), Clock::now() + 30s,
+                     [&] { return stopping.load(); }}, rate, usage, callbacks);
+              } else {
+                reply = vector_fixture
                   ? HandleVectorStoreRequest(
                       objects, clients, true, method, target, body, identity,
                       {"client:" + std::string(identity.Id()), Clock::now() + 30s,
@@ -278,6 +327,7 @@ int FilesApiFixture(int argc, char** argv) {
                   objects, batches.get(), method, target, body, identity,
                   {"client:" + std::string(identity.Id()), Clock::now() + 30s,
                    [&] { return stopping.load(); }});
+              }
               if (reply.ok())
                 detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
                                    "application/json");

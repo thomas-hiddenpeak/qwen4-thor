@@ -162,6 +162,16 @@ def current_surface(root):
                    ('GET', store + '/file_batches/{batch_id}'),
                    ('GET', store + '/file_batches/{batch_id}/files'),
                    ('POST', store + '/file_batches/{batch_id}/cancel')]
+        if 'HandleVectorSearch(fd, method, path, body)' in dispatch:
+            search = (root / 'src/server/chat_vector_search.cpp').read_text()
+            api = (root / 'src/server/vector_search_api.cpp').read_text()
+            if 'HandleVectorSearchRequest(' not in search or \
+                    'RunNativeEmbeddingInput(' not in search or \
+                    'RunInternalModelStep(' not in search or \
+                    'ExecuteVectorSearchRequest(' not in api or \
+                    'Kind::kSearch' not in application_routes:
+                raise ValueError('review actual native search executor before cataloguing')
+            vectors.append(('POST', store + '/search'))
         routes.extend((path, method) for method, path in vectors)
         if 'server::VectorStoreMethodAllowed(method, path)' in native:
             native_routes.extend((method, path, 'true' if

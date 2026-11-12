@@ -1,0 +1,68 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  0%] Built target q4t_service_tools
+[  3%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_service_cli
+[  7%] Built target q4t_text
+[ 10%] Built target q4t_quant
+[ 21%] Built target xgrammar
+[ 32%] Built target q4t_model
+[ 32%] Built target q4t_startup_plan
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vector_search.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/moderations_execution.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_search_rank.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_search_corpus.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_search_execution.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_query_rewrite.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_search_api.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_index.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_stores_internal.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_stores.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_store_files.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_store_api.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_store_content.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_file_page.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_store_batches.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_ingestion_state.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_ingestion.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_embedding_execution.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/vector_jobs.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/embeddings_execution.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_execution_moderation.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/state_cipher.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/state_key_admin.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/state_key_cli.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/state_retention_cli.cpp.o
+[ 42%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[ 33%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 66%] Built target q4t_ingress_access
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_proxy.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_transport.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

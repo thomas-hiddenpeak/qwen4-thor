@@ -9,6 +9,7 @@ const requests = [];
 let status = 'FAIL';
 process.on('exit', () => writeFileSync(output, JSON.stringify({status,
   sdk_version:version, requests, model_starts:0,
+  rewrite:'explicit_CPU_model_fixture',
   vectors:'explicit_CPU_math_fixture', actual_network:true, max_retries:0}, null, 2)+'\n'));
 const tracedFetch = async (url, options) => {
   const reply = await fetch(url, options);
@@ -45,6 +46,16 @@ assert.deepEqual((await v.files.content(a.id, {vector_store_id:store.id})).data,
   [{type:'text', text}]);
 assert.equal((await v.files.update(b.id, {vector_store_id:store.id,
   attributes:{release:81}})).attributes.release,81);
+const found = await v.search(store.id, {query:['release','retrieval'],
+  filters:{type:'and',filters:[{type:'eq',key:'release',value:81}]},
+  ranking_options:{ranker:'none',score_threshold:0.9}, max_num_results:3});
+assert.equal(found.data.length,1);assert.equal(found.data[0].file_id,b.id);
+assert.deepEqual(found.data[0].content,[{type:'text',text}]);
+assert.equal(found.data[0].score,1);
+assert.equal((await v.search(store.id,{query:'project',rewrite_query:true})).data.length,2);
+assert.equal((await v.search(store.id,{query:'project',filters:{key:'missing',value:true}})).data.length,0);
+await assert.rejects(other.vectorStores.search(store.id,{query:'private'}),e=>e.status===404);
+await assert.rejects(v.search(store.id,{query:'invalid',max_num_results:51}),e=>e.status===400);
 let page = await v.files.list(store.id, {limit:1, order:'asc', filter:'completed'});
 assert.equal(page.data.length,1);assert.equal(page.has_more,true);
 assert.equal((await page.getNextPage()).data.length,1);

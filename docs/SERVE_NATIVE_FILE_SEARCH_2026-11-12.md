@@ -276,3 +276,21 @@ search真实query执行与Responses内建循环，不将本组当A11完成。
 双SDK、Responses真实循环及必要模型业务，本组不结束A11或总计划。
 
 [查询执行18项CPU通过](evidence/serve-vector-query-cpu-20261112/README.md)，首轮17/18及夹具TTL修复记录保留；实际引擎零警告，0GPU/默认rev80保持。下一步立即接公开search/官方SDK与Responses，全部任务继续。
+
+
+## 原生search入口、真实模型回调与标准SDK接线组
+
+2026-11-12。公开POST /v1/vector_stores/{id}/search接共享原生路由、
+业务容量、认证scope与完整参数合同。主模型改写复用InternalModelStep
+及约束JSON，查询用原生1024维embedding；同一个外部RPM、累计
+输入/输出TPM，失败/取消/异常结算实际用量，未知回执保留准入成本。
+原生请求共享并发、进度、设备保护和取消，无递归HTTP或模型自动重启。
+
+统一schema/OpenAPI登记16条向量操作；固定官方JS/Python通过search
+数组、属性过滤、rewrite、空结果和跨scope拒绝。CPU服务夹具明确用
+BF16数学向量及受计量改写夹具，不能冒充实际模型质量。冻结9新+2
+直接C++和3项SDK/schema检查，双SDK仍各最多100请求/45秒；必要
+host/引擎/实际q4t_ingress构建，0GPU、不改默认rev80。下一步继续
+Responses内建工具及真实GPU业务验收，A11与总目标仍未完成。
+
+[原生search 11项C++及3项SDK/schema首过](evidence/serve-vector-search-api-cpu-20261112/README.md)，实际引擎/入口零警告，保留首次缺头文件构建失败；0GPU/默认rev80保持。公开search已有生产回调接线，实际模型业务与Responses继续，不能计A11完成。

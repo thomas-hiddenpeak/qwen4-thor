@@ -1,0 +1,6 @@
+[q4t][http] trace_id=req-68af433eab8266b5238e932de30af9e5 status=404 error=object_not_found
+[q4t][http] trace_id=req-1553874a9383ae37ac2316b484d85f28 status=404 error=object_not_found
+[q4t][http] trace_id=req-3f6b62c17aff82024c6cfa62d7a04066 status=400 error=invalid_request
+[q4t][http] trace_id=req-30e680d29033ca577908064f4bd09421 status=400 error=invalid_request
+[q4t][http] trace_id=req-98a9a4a364d7fafb67cf0f6b635293a8 status=404 error=object_not_found
+[q4t][http] trace_id=req-85ac1dc639221c4bb5ecc03e7d8f7828 status=404 error=vector_store_file_not_found

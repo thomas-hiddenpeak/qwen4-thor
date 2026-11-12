@@ -16994,6 +16994,292 @@
       "required": [],
       "additionalProperties": false
     },
+    "vector_search_filter": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "eq",
+                "ne",
+                "gt",
+                "gte",
+                "lt",
+                "lte"
+              ],
+              "default": "eq"
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "in",
+                "nin"
+              ]
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "value": {
+              "type": "array",
+              "maxItems": 128,
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "type",
+            "key",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "and",
+                "or"
+              ]
+            },
+            "filters": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 256,
+              "items": {
+                "$ref": "#/$defs/vector_search_filter"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "filters"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-q4t-constraint": "depth <=16, nodes <=256, operand bytes <=65536"
+    },
+    "vector_search_request": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          ]
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/vector_search_filter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_num_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 10
+        },
+        "rewrite_query": {
+          "type": "boolean",
+          "default": false
+        },
+        "ranking_options": {
+          "type": "object",
+          "properties": {
+            "ranker": {
+              "enum": [
+                "none",
+                "auto",
+                "default-2024-11-15"
+              ]
+            },
+            "score_threshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false,
+      "x-q4t-constraint": "aggregate query UTF-8 bytes <=65536; complete bounded corpus"
+    },
+    "vector_search_hit": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^file_[A-Za-z0-9_-]+$"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "attributes": {
+          "anyOf": [
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "score",
+        "attributes",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "vector_search_page": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "vector_store.search_results.page"
+        },
+        "search_query": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "data": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/vector_search_hit"
+          }
+        },
+        "has_more": {
+          "const": false
+        },
+        "next_page": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "object",
+        "search_query",
+        "data",
+        "has_more",
+        "next_page"
+      ],
+      "additionalProperties": false
+    },
     "vector_store_resource": {
       "type": "object",
       "properties": {

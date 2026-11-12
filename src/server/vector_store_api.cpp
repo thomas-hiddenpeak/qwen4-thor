@@ -142,6 +142,7 @@ ObjectReply HandleVectorStoreRequest(
       return stores.ListBatchFiles(access, id, child, query.value);
     case Kind::kBatchCancel:
       return stores.CancelBatch(access, id, child);
+    case Kind::kSearch:
     case Kind::kInvalid:
       break;
   }

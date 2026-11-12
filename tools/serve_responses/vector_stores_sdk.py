@@ -59,6 +59,19 @@ def main():
         assert [item.text for item in content.data] == [text]
         assert v.files.update(b.id, vector_store_id=store.id,
                               attributes={'release':81}).attributes['release'] == 81
+        found = v.search(store.id, query=['release','retrieval'], max_num_results=3,
+            filters={'type':'and','filters':[{'type':'eq','key':'release','value':81}]},
+            ranking_options={'ranker':'none','score_threshold':.9})
+        assert len(found.data) == 1 and found.data[0].file_id == b.id
+        assert [part.text for part in found.data[0].content] == [text]
+        assert found.data[0].score == 1
+        assert len(v.search(store.id, query='project', rewrite_query=True).data) == 2
+        assert not v.search(store.id, query='project',
+            filters={'key':'missing','value':True}).data
+        missing(lambda: other.vector_stores.search(store.id, query='private'))
+        try:v.search(store.id, query='invalid', max_num_results=51)
+        except openai.BadRequestError:pass
+        else:raise AssertionError('invalid search accepted')
         page = v.files.list(store.id, limit=1, order='asc', filter='completed')
         assert len(page.data) == 1 and page.has_next_page()
         assert len(page.get_next_page().data) == 1
@@ -87,6 +100,7 @@ def main():
         transport.close()
         Path(output).write_text(json.dumps(dict(status=status, sdk_version=openai.__version__,
             requests=requests, actual_network=True, model_starts=0, max_retries=0,
+            rewrite='explicit_CPU_model_fixture',
             vectors='explicit_CPU_math_fixture'), ensure_ascii=False, indent=2)+'\n')
 
 

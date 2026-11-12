@@ -10,6 +10,9 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/model/embedding_config.h"
 #include "q4t/server/files.h"
+#include "q4t/server/vector_search_api.h"
+#include "q4t/server/client_request.h"
+#include "q4t/server/http_connection.h"
 #include "q4t/test.h"
 
 namespace {
@@ -68,7 +71,7 @@ struct Fixture {
     id = root.value.GetString("id");
   }
   std::string Add(std::string text = "PLE streams immutable tables from SSD.",
-                  bool complete = true) {
+                  bool complete = true, size_t dimensions = 32) {
     const std::string wire =
         "--f\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\n"
         "user_data\r\n--f\r\nContent-Disposition: form-data; name=\"file\"; "
@@ -85,15 +88,15 @@ struct Fixture {
     VectorIngestionClaim claim;
     Require(stores.Claim(Access(), id, file, "cpu-query-fixture", 60, &claim));
     VectorIngestionOptions options;
-    options.dimensions = 32;
+    options.dimensions = dimensions;
     VectorIngestionPrepared prepared;
     Require(PrepareVectorIngestion(*objects, Access(), claim, options, Bytes,
                                    &prepared));
     VectorIngestionResult ingested;
     Require(ExecuteVectorIngestion(
         *objects, Access(), prepared, [](auto) { return ObjectReply{}; },
-        [](auto tokens, auto* vector, auto* used) {
-          vector->assign(32, 0);
+        [dimensions](auto tokens, auto* vector, auto* used) {
+          vector->assign(dimensions, 0);
           vector->front() = 1;
           *used = tokens.size();
           return ObjectReply{};
@@ -157,6 +160,63 @@ ObjectReply Execute(Fixture& fixture, const Json& request, Calls& calls,
   return ExecuteVectorSearchRequest(*fixture.objects, access, fixture.id,
                                     request, 32, calls.callbacks, usage);
 }
+struct Api {
+  ClientAdmission clients;
+  ClientIdentity client;
+  ActualUsageCounter usage;
+  VectorNativeSearchCallbacks callbacks;
+  int embeds = 0, rewrites = 0;
+  explicit Api(uint64_t tpm = 10000, uint64_t prompt = 8192) {
+    GatewayClientPolicy policy;
+    const auto text = OutputJson(Object(
+        {{"version", Number(3)},
+         {"revision", Number(0)},
+         {"gateway_token", String(std::string(64, 'a'))},
+         {"fair_queue", Boolean(true)},
+         {"clients", Array({Object({{"id", String("search")},
+                                    {"max_inflight", Number(2)},
+                                    {"max_control_inflight", Number(1)},
+                                    {"max_prompt_tokens", Number(prompt)},
+                                    {"max_output_tokens", Number(64)},
+                                    {"max_body_bytes", Number(65536)},
+                                    {"requests_per_minute", Number(1)},
+                                    {"tokens_per_minute", Number(tpm)}})})}}));
+    if (!ParseGatewayClientPolicy(text, &policy) ||
+        !clients.Configure(std::move(policy)))
+      throw std::runtime_error("Query policy fixture");
+    client = clients.Authenticate("search", std::string(64, 'a'));
+    callbacks.encode = Bytes;
+    callbacks.embed = [&](const auto& tokens, auto* out) {
+      ++embeds;
+      return Embed(tokens, out);
+    };
+    callbacks.rewrite = [&](const auto& plan, auto& account, auto* out) {
+      ++rewrites;
+      auto reply = account.ReservePrompt(10);
+      if (!reply.ok()) return reply;
+      if (!account.StartStep()) throw std::runtime_error("Rewrite ownership");
+      account.ObserveOutput(3);
+      usage.Merge(ActualUsage{10, 3});
+      Json input;
+      if (!Parse(
+              plan.request.GetArray("messages")->array[1].GetString("content"),
+              &input))
+        throw std::runtime_error("Rewrite fixture input");
+      *out = {OutputJson(Object({{"queries", *input.GetArray("query")}})),
+              "stop"};
+      return ObjectReply{};
+    };
+  }
+  ObjectReply Run(Fixture& fixture, Json request = Query(),
+                  std::string method = "POST", std::string suffix = {},
+                  bool configured = true, BinaryAccess access = Access()) {
+    ClientRateLease rate;
+    return HandleVectorSearchRequest(
+        *fixture.objects, clients, configured, method,
+        "/v1/vector_stores/" + fixture.id + "/search" + suffix,
+        OutputJson(request), client, access, rate, usage, callbacks);
+  }
+};
 }  // namespace
 
 Q4T_TEST(vector_query_actual_files_text_vectors_and_exact_all_query_budget) {
@@ -509,5 +569,167 @@ Q4T_TEST(vector_rewrite_parser_rejects_truncation_shape_and_count_errors) {
         R"({"queries":["one","two"],"extra":true})", "not JSON"})
     Q4T_CHECK(!ParseVectorRewrite(original, invalid, "stop", &queries).ok() &&
               queries.empty());
+  return true;
+}
+
+Q4T_TEST(vector_search_api_exact_wire_scope_and_data_lane) {
+  Fixture fixture;
+  Api api;
+  const auto path = "/v1/vector_stores/" + fixture.id + "/search";
+  Q4T_CHECK(VectorStoreMethodAllowed("POST", path) &&
+            !VectorStoreMethodAllowed("GET", path) &&
+            !VectorStoreMethodAllowed("POST", path + "/extra") &&
+            !VectorStoreMethodAllowed("POST", path + "/") &&
+            !IsVectorStoreObservation("POST", path) &&
+            ClassifyHttpConnection("POST", path) ==
+                HttpConnectionClass::kBusiness);
+  Q4T_CHECK(api.Run(fixture, Query(), "GET").http_status == 405 &&
+            api.Run(fixture, Query(), "GET").value.GetString("allow") ==
+                "POST");
+  Q4T_CHECK(api.Run(fixture, Query(), "POST", "?owner=forged").http_status ==
+            400);
+  Q4T_CHECK(api.Run(fixture, Query(), "POST", {}, true, Access("client:other"))
+                .http_status == 403);
+  auto request = Query();
+  Set(&request, "owner", String("other"));
+  Q4T_CHECK(api.Run(fixture, request).http_status == 400 &&
+            api.clients.RateUsage(0).requests == 0 && api.embeds == 0);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_rewrite_and_all_queries_share_one_rpm_actual_tpm) {
+  Fixture fixture;
+  fixture.Add("PLE SSD document", true, 1024);
+  Api api;
+  auto request = Query();
+  Set(&request, "query", Array({String("PLE"), String("SSD")}));
+  Set(&request, "rewrite_query", Boolean(true));
+  auto result = api.Run(fixture, request);
+  const uint64_t input = 10 + 2 * (kVectorQueryInstruction.size() + 3 + 1);
+  const auto used = api.usage.Total();
+  const auto rates = api.clients.RateUsage(0);
+  Q4T_CHECK(Ok(result) && api.embeds == 2 && api.rewrites == 1 && used &&
+            used->input == input && used->output == 3 && rates.requests == 1 &&
+            rates.admitted == 1 && rates.settled_tokens == input + 3 &&
+            rates.reserved == 0);
+  Q4T_CHECK(api.Run(fixture).code == "client_rpm_exhausted" && api.embeds == 2);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_empty_corpus_still_admits_one_external_request) {
+  Fixture fixture;
+  Api api;
+  const auto reply = api.Run(fixture);
+  Q4T_CHECK(Ok(reply) && reply.value.GetArray("data")->array.empty() &&
+            api.embeds == 0 && api.rewrites == 0 && api.usage.Total() &&
+            api.usage.Total()->input == 0 &&
+            api.clients.RateUsage(0).requests == 1 &&
+            api.clients.RateUsage(0).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_failures_and_exceptions_settle_partial_input) {
+  Fixture fixture;
+  fixture.Add("PLE SSD document", true, 1024);
+  for (const bool exception : {false, true}) {
+    Api api;
+    api.callbacks.embed = [exception](const auto&, auto* out) -> ObjectReply {
+      out->committed_input = 7;
+      if (exception) throw std::runtime_error("CPU model failure");
+      return Error(503, "embedding_compute_failed", "CPU model failure");
+    };
+    bool failed = false;
+    try {
+      failed = api.Run(fixture).code == "embedding_compute_failed";
+    } catch (const std::runtime_error&) {
+      failed = exception;
+    }
+    const auto rates = api.clients.RateUsage(0);
+    Q4T_CHECK(failed && rates.settled_tokens == 7 && rates.reserved == 0 &&
+              rates.requests == 1 && api.usage.Total() &&
+              api.usage.Total()->input == 7);
+  }
+  return true;
+}
+
+Q4T_TEST(vector_search_api_unknown_usage_keeps_entire_admitted_input) {
+  Fixture fixture;
+  fixture.Add("PLE SSD document", true, 1024);
+  Api api;
+  uint64_t reserved = 0;
+  api.callbacks.embed = [&](const auto& tokens, auto* out) {
+    auto reply = Embed(tokens, out);
+    reserved = tokens.size();
+    ++out->committed_input;
+    return reply;
+  };
+  Q4T_CHECK(api.Run(fixture).code == "embedding_result_invalid" &&
+            !api.usage.Total() && reserved > 0 &&
+            api.clients.RateUsage(0).settled_tokens == reserved &&
+            api.clients.RateUsage(0).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_rewrite_error_never_embeds_and_keeps_actual_usage) {
+  Fixture fixture;
+  fixture.Add("PLE SSD document", true, 1024);
+  Api api;
+  auto execute = api.callbacks.rewrite;
+  api.callbacks.rewrite = [&](const auto& plan, auto& account, auto* out) {
+    auto reply = execute(plan, account, out);
+    out->finish_reason = "length";
+    return reply;
+  };
+  auto request = Query();
+  Set(&request, "rewrite_query", Boolean(true));
+  Q4T_CHECK(api.Run(fixture, request).code == "vector_query_rewrite_invalid" &&
+            api.embeds == 0 && api.rewrites == 1 && api.usage.Total() &&
+            api.usage.Total()->input == 10 && api.usage.Total()->output == 3 &&
+            api.clients.RateUsage(0).settled_tokens == 13 &&
+            api.clients.RateUsage(0).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_tpm_extension_and_cumulative_prompt_limit) {
+  Fixture fixture;
+  fixture.Add("PLE SSD document", true, 1024);
+  auto request = Query();
+  Set(&request, "rewrite_query", Boolean(true));
+  for (const bool prompt_limit : {false, true}) {
+    Api api(prompt_limit ? 10000 : 250, prompt_limit ? 64 : 8192);
+    const auto reply = api.Run(fixture, request);
+    Q4T_CHECK(reply.code == (prompt_limit ? "client_prompt_limit_exceeded"
+                                          : "client_tpm_exhausted") &&
+              api.rewrites == 1 && api.embeds == 0 &&
+              api.clients.RateUsage(0).requests == 1 &&
+              api.clients.RateUsage(0).settled_tokens == 13 &&
+              api.clients.RateUsage(0).reserved == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(vector_search_api_missing_backend_preserves_rate_and_other_requests) {
+  Fixture fixture;
+  Api api;
+  Q4T_CHECK(api.Run(fixture, Query(), "POST", {}, false).code ==
+                "vector_search_backend_unavailable" &&
+            api.clients.RateUsage(0).requests == 0);
+  Q4T_CHECK(Ok(api.Run(fixture)) && api.clients.RateUsage(0).requests == 1);
+  return true;
+}
+
+Q4T_TEST(vector_search_api_rewrite_uses_actual_primary_chat_planning) {
+  VectorRewritePlan rewrite;
+  Require(PlanVectorRewrite({"PLE source?", "MTP draft?"}, &rewrite));
+  ChatPlanConfig config;
+  config.model = "native-qwen";
+  config.structured = true;
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  const auto status = PlanChatRequest(rewrite.request, config, &plan, &error);
+  Q4T_CHECK(status && plan.constraints.json_output &&
+            !rewrite.request.Has("tools"));
+  config.structured = false;
+  Q4T_CHECK(!PlanChatRequest(rewrite.request, config, &plan, &error));
   return true;
 }

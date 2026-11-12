@@ -28,6 +28,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11原生search/实际模型回调及共享配额已接线，
+  [11项C++与3项SDK/schema首过](evidence/serve-vector-search-api-cpu-20261112/README.md)。
+  官方JS直连36请求、Python原生TLS34请求；实际Files/存储，CPU
+  模型夹具。0GPU、默认rev80保持，继续Responses执行及真实业务。
+
 - A11查询执行/改写合同与搜索快照一致性已通过
   [18项针对性CPU](evidence/serve-vector-query-cpu-20261112/README.md)：实际源/完整索引、
   全查询预算、错误消费及并发版本保护；原夹具失败保留，仅重验该项。

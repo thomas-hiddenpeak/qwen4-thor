@@ -1,0 +1,55 @@
+{
+  "state": "ACCEPTED_TARGETED_CPU_SDK_ONLY",
+  "cpp_cases": 11,
+  "sdk_schema_cases": 3,
+  "cpp_seconds": 0.33276392985135317,
+  "sdk_seconds": 6.941580597311258,
+  "sdk": {
+    "javascript-core": {
+      "version": "7.47.0",
+      "requests": 36,
+      "status": "PASS"
+    },
+    "python-tls": {
+      "version": "3.42.1",
+      "requests": 34,
+      "status": "PASS"
+    }
+  },
+  "sources_sha256": {
+    "CMakeLists.txt": "56fe0942f6ea7ecea771bdd435a70dcd8760fadfb2d02abf6ff4a822eada7e7a",
+    "cmake/HostTestSources.cmake": "dc47184f31e1af5b94d9b6eebebbae51e718130fe32c8d582de5d5681039c765",
+    "cmake/ChatProtocolIdentity.cmake": "a7a6c3ac97614d6361f63331ede92c4950c6df95a434597ace0448492b0e461e",
+    "include/q4t/server/vector_search_api.h": "eddbcec311db9ce70445d213bcacd8fa1c7e9e3b1c8c1ed3fd9bd34207a1bcd4",
+    "include/q4t/server/application_routes.h": "ec2f8f6d6f0ef42f39bcadf430afd03797ed2c3a727704d5abfc24f8c37ccd76",
+    "include/q4t/server/chat_server.h": "bca38d00df8ecf4d84b3cecf44aa50aab7e95e611f5b69f06eda9d1353213e22",
+    "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
+    "src/server/vector_search_api.cpp": "5152e795bc4a879fff755b738363e643b17c340a7524f21e0f2d5f6d250e3b93",
+    "src/server/vector_store_api.cpp": "9baa1ba4b8a3ad2f862a46041799c6dc4742936b1e20a5c144e9cd88a000bb1f",
+    "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
+    "tests/files_api_fixture.cpp": "89f96b46608f34e9c41c1e074e49059b291d8537ded253ba70d163010ab69443",
+    "tests/server_vector_search_execution_test.cpp": "0abb566d39252236e4cd6da5cb10a82710c39e036fd92c7e48fbc6115c650240",
+    "tools/serve_responses/vector_stores_contract.py": "3fe8c8e34af502d72e8655ffbdfd81cbad6bb076c6faf5d101afaf6f0895c8c0",
+    "tools/serve_responses/vector_stores_sdk.mjs": "0e3112382cf1b36bb554173492b9a4c6a8e1cdbce4270da16fdc508e519bd39c",
+    "tools/serve_responses/vector_stores_sdk.py": "be27256568633c3261c141c21af5874b4ccbb18a13b816267b3ca09c4d0cfddc",
+    "tools/serve_responses/test_vector_stores_transport.py": "48aaa11f4e1e8c039ed00037154b89496cd702db2e1cc2cad104b8800339d46e",
+    "tools/serve_audit/check_inventory.py": "c0eede652eb29b80a8c5687114c3378d352f966431d52e58a20f090749d819d5",
+    "tools/serve_audit/inventory.json": "84407e703f2c1c9bcacacd09eadfa765b31e2668e5f418d0900390d721848ad8",
+    "docs/serve-application-v1.schema.json": "56aab1e9b54a7d118d7e77fe04a0f6b0dc1f679797d23905208ea22956fed401",
+    "docs/serve-openapi-v1.json": "1b9e39e37d9ab4b90a2f7375fb1ced99a2be7dc0c62e70cfe72377f3a487d8e5",
+    "docs/serve-openapi-bundle-v1.json": "d5b189431ccc570095889efb8d048d4bca3c19d3f68435276634c776b661e4db",
+    "docs/serve-input-semantics-v1.json": "d5f0d7056142a63e3ea0411666307202d4e9c17c37dfef0741bee9d804cc473a"
+  },
+  "binaries_sha256": {
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "a8643c4a5a4d34ee486044229a684c1a4aeace77bb9aa839f93e94bf4ab95e2a",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "66fdee2040d883436a0d7b85d909324d2d3100945fad18ec7c1897663a9acb12",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress": "bfaa0220a9424ab0e737940c672e1ab73ebf0f8a0838ef15a764a8fde79a094a"
+  },
+  "temporary_processes_remaining": [],
+  "warning_count": 0,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "actual_model_business": false,
+  "responses_executor": false,
+  "whole_task_complete": false
+}

@@ -1,0 +1,837 @@
+{
+  "status": "PASS",
+  "sdk_version": "7.47.0",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "file",
+        "bytes": 70,
+        "created_at": 1794474993,
+        "filename": "STATUS.md",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "response": {
+        "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "object": "file",
+        "bytes": 70,
+        "created_at": 1794474993,
+        "filename": "release.md",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores",
+      "status": 200,
+      "response": {
+        "id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "object": "vector_store",
+        "created_at": 1794474993,
+        "last_active_at": 1794474993,
+        "name": "项目记录",
+        "description": "",
+        "metadata": {},
+        "expires_after": null,
+        "expires_at": null,
+        "status": "in_progress",
+        "file_counts": {
+          "in_progress": 1,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 1
+        },
+        "usage_bytes": 0
+      },
+      "request": {
+        "name": "项目记录",
+        "file_ids": [
+          "file_5ea0a9fdc2376725c96fb3bef95bc4b5"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores",
+      "status": 200,
+      "response": {
+        "id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "object": "vector_store",
+        "created_at": 1794474993,
+        "last_active_at": 1794474993,
+        "name": "第二库",
+        "description": "",
+        "metadata": {},
+        "expires_after": null,
+        "expires_at": null,
+        "status": "completed",
+        "file_counts": {
+          "in_progress": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 0
+        },
+        "usage_bytes": 0
+      },
+      "request": {
+        "name": "第二库"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d",
+      "status": 200,
+      "response": {
+        "id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "object": "vector_store",
+        "created_at": 1794474993,
+        "last_active_at": 1794474993,
+        "name": "项目记录",
+        "description": "",
+        "metadata": {
+          "stage": "80"
+        },
+        "expires_after": null,
+        "expires_at": null,
+        "status": "in_progress",
+        "file_counts": {
+          "in_progress": 1,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 1
+        },
+        "usage_bytes": 0
+      },
+      "request": {
+        "metadata": {
+          "stage": "80"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d",
+      "status": 200,
+      "response": {
+        "id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "object": "vector_store",
+        "created_at": 1794474993,
+        "last_active_at": 1794474993,
+        "name": "项目记录",
+        "description": "",
+        "metadata": {
+          "stage": "80"
+        },
+        "expires_after": null,
+        "expires_at": null,
+        "status": "in_progress",
+        "file_counts": {
+          "in_progress": 1,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 1
+        },
+        "usage_bytes": 0
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files",
+      "status": 200,
+      "response": {
+        "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "object": "vector_store.file",
+        "created_at": 1794474993,
+        "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "status": "in_progress",
+        "usage_bytes": 0,
+        "last_error": null,
+        "attributes": {
+          "release": 80,
+          "stable": true
+        },
+        "chunking_strategy": {
+          "type": "static",
+          "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400
+          }
+        }
+      },
+      "request": {
+        "file_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "attributes": {
+          "release": 80,
+          "stable": true
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "vector_store.file",
+        "created_at": 1794474993,
+        "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "status": "in_progress",
+        "usage_bytes": 0,
+        "last_error": null,
+        "attributes": {},
+        "chunking_strategy": {
+          "type": "static",
+          "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400
+          }
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "vector_store.file",
+        "created_at": 1794474993,
+        "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "status": "completed",
+        "usage_bytes": 4166,
+        "last_error": null,
+        "attributes": {},
+        "chunking_strategy": {
+          "type": "static",
+          "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400
+          }
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_2586b04d447bd9ee5579f3a9c27b053a",
+      "status": 200,
+      "response": {
+        "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "object": "vector_store.file",
+        "created_at": 1794474993,
+        "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "status": "completed",
+        "usage_bytes": 4166,
+        "last_error": null,
+        "attributes": {
+          "release": 80,
+          "stable": true
+        },
+        "chunking_strategy": {
+          "type": "static",
+          "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400
+          }
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5/content",
+      "status": 200,
+      "response": {
+        "object": "vector_store.file_content.page",
+        "data": [
+          {
+            "type": "text",
+            "text": "Project record: release 80 preserves source-bound document retrieval.\n"
+          }
+        ],
+        "has_more": false,
+        "next_page": null
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_2586b04d447bd9ee5579f3a9c27b053a",
+      "status": 200,
+      "response": {
+        "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "object": "vector_store.file",
+        "created_at": 1794474993,
+        "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "status": "completed",
+        "usage_bytes": 4166,
+        "last_error": null,
+        "attributes": {
+          "release": 81
+        },
+        "chunking_strategy": {
+          "type": "static",
+          "static": {
+            "max_chunk_size_tokens": 800,
+            "chunk_overlap_tokens": 400
+          }
+        }
+      },
+      "request": {
+        "attributes": {
+          "release": 81
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/search",
+      "status": 200,
+      "response": {
+        "object": "vector_store.search_results.page",
+        "search_query": [
+          "release",
+          "retrieval"
+        ],
+        "data": [
+          {
+            "file_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+            "filename": "release.md",
+            "score": 1,
+            "attributes": {
+              "release": 81
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Project record: release 80 preserves source-bound document retrieval.\n"
+              }
+            ]
+          }
+        ],
+        "has_more": false,
+        "next_page": null
+      },
+      "request": {
+        "query": [
+          "release",
+          "retrieval"
+        ],
+        "filters": {
+          "type": "and",
+          "filters": [
+            {
+              "type": "eq",
+              "key": "release",
+              "value": 81
+            }
+          ]
+        },
+        "ranking_options": {
+          "ranker": "none",
+          "score_threshold": 0.9
+        },
+        "max_num_results": 3
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/search",
+      "status": 200,
+      "response": {
+        "object": "vector_store.search_results.page",
+        "search_query": [
+          "project"
+        ],
+        "data": [
+          {
+            "file_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+            "filename": "release.md",
+            "score": 1,
+            "attributes": {
+              "release": 81
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Project record: release 80 preserves source-bound document retrieval.\n"
+              }
+            ]
+          },
+          {
+            "file_id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+            "filename": "STATUS.md",
+            "score": 0.9838709677419355,
+            "attributes": {},
+            "content": [
+              {
+                "type": "text",
+                "text": "Project record: release 80 preserves source-bound document retrieval.\n"
+              }
+            ]
+          }
+        ],
+        "has_more": false,
+        "next_page": null
+      },
+      "request": {
+        "query": "project",
+        "rewrite_query": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/search",
+      "status": 200,
+      "response": {
+        "object": "vector_store.search_results.page",
+        "search_query": [
+          "project"
+        ],
+        "data": [],
+        "has_more": false,
+        "next_page": null
+      },
+      "request": {
+        "query": "project",
+        "filters": {
+          "key": "missing",
+          "value": true
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/search",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      },
+      "request": {
+        "query": "private"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/search",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "Expected integer 1..50",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_num_results"
+        }
+      },
+      "request": {
+        "query": "invalid",
+        "max_num_results": 51
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+            "object": "vector_store.file",
+            "created_at": 1794474993,
+            "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+            "status": "completed",
+            "usage_bytes": 4166,
+            "last_error": null,
+            "attributes": {
+              "release": 81
+            },
+            "chunking_strategy": {
+              "type": "static",
+              "static": {
+                "max_chunk_size_tokens": 800,
+                "chunk_overlap_tokens": 400
+              }
+            }
+          }
+        ],
+        "first_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "last_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "has_more": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+            "object": "vector_store.file",
+            "created_at": 1794474993,
+            "vector_store_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+            "status": "completed",
+            "usage_bytes": 4166,
+            "last_error": null,
+            "attributes": {},
+            "chunking_strategy": {
+              "type": "static",
+              "static": {
+                "max_chunk_size_tokens": 800,
+                "chunk_overlap_tokens": 400
+              }
+            }
+          }
+        ],
+        "first_id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "last_id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "has_more": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df/file_batches",
+      "status": 200,
+      "response": {
+        "id": "vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+        "object": "vector_store.files_batch",
+        "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "created_at": 1794474993,
+        "status": "in_progress",
+        "file_counts": {
+          "in_progress": 2,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 2
+        }
+      },
+      "request": {
+        "files": [
+          {
+            "file_id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5"
+          },
+          {
+            "file_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+            "attributes": {
+              "release": 80
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df/file_batches/vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+      "status": 200,
+      "response": {
+        "id": "vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+        "object": "vector_store.files_batch",
+        "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "created_at": 1794474993,
+        "status": "in_progress",
+        "file_counts": {
+          "in_progress": 2,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 2
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df/file_batches/vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+      "status": 200,
+      "response": {
+        "id": "vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+        "object": "vector_store.files_batch",
+        "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "created_at": 1794474993,
+        "status": "completed",
+        "file_counts": {
+          "in_progress": 0,
+          "completed": 2,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 2
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df/file_batches/vsfb_1b7c9cbd181c54f3db98e293724e0c72/files",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+            "object": "vector_store.file",
+            "created_at": 1794474993,
+            "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+            "status": "completed",
+            "usage_bytes": 4166,
+            "last_error": null,
+            "attributes": {},
+            "chunking_strategy": {
+              "type": "static",
+              "static": {
+                "max_chunk_size_tokens": 800,
+                "chunk_overlap_tokens": 400
+              }
+            }
+          },
+          {
+            "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+            "object": "vector_store.file",
+            "created_at": 1794474993,
+            "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+            "status": "completed",
+            "usage_bytes": 4166,
+            "last_error": null,
+            "attributes": {
+              "release": 80
+            },
+            "chunking_strategy": {
+              "type": "static",
+              "static": {
+                "max_chunk_size_tokens": 800,
+                "chunk_overlap_tokens": 400
+              }
+            }
+          }
+        ],
+        "first_id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "last_id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "has_more": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df/file_batches/vsfb_1b7c9cbd181c54f3db98e293724e0c72/cancel",
+      "status": 200,
+      "response": {
+        "id": "vsfb_1b7c9cbd181c54f3db98e293724e0c72",
+        "object": "vector_store.files_batch",
+        "vector_store_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "created_at": 1794474993,
+        "status": "completed",
+        "file_counts": {
+          "in_progress": 0,
+          "completed": 2,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 2
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+            "object": "vector_store",
+            "created_at": 1794474993,
+            "last_active_at": 1794474993,
+            "name": "第二库",
+            "description": "",
+            "metadata": {},
+            "expires_after": null,
+            "expires_at": null,
+            "status": "completed",
+            "file_counts": {
+              "in_progress": 0,
+              "completed": 2,
+              "failed": 0,
+              "cancelled": 0,
+              "total": 2
+            },
+            "usage_bytes": 8332
+          }
+        ],
+        "first_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "last_id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "has_more": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores",
+      "status": 200,
+      "response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+            "object": "vector_store",
+            "created_at": 1794474993,
+            "last_active_at": 1794474993,
+            "name": "项目记录",
+            "description": "",
+            "metadata": {
+              "stage": "80"
+            },
+            "expires_after": null,
+            "expires_at": null,
+            "status": "completed",
+            "file_counts": {
+              "in_progress": 0,
+              "completed": 2,
+              "failed": 0,
+              "cancelled": 0,
+              "total": 2
+            },
+            "usage_bytes": 8332
+          }
+        ],
+        "first_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "last_id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "has_more": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores",
+      "status": 400,
+      "response": {
+        "error": {
+          "message": "limit must be 1..100",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "limit"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5/content",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "Object not found",
+          "type": "invalid_request_error",
+          "code": "object_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "vector_store.file.deleted",
+        "deleted": true
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "file",
+        "bytes": 70,
+        "created_at": 1794474993,
+        "filename": "STATUS.md",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5/content",
+      "status": 404,
+      "response": {
+        "error": {
+          "message": "File is not in this store",
+          "type": "invalid_request_error",
+          "code": "vector_store_file_not_found",
+          "param": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/vs_50d79f88ef06dda00bcd288f6aba403d",
+      "status": 200,
+      "response": {
+        "id": "vs_50d79f88ef06dda00bcd288f6aba403d",
+        "object": "vector_store.deleted",
+        "deleted": true
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+      "status": 200,
+      "response": {
+        "id": "vs_7ef0ff12e5f1fde3f0e5ffefd1dff7df",
+        "object": "vector_store.deleted",
+        "deleted": true
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+      "status": 200,
+      "response": {
+        "id": "file_5ea0a9fdc2376725c96fb3bef95bc4b5",
+        "object": "file",
+        "deleted": true
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_2586b04d447bd9ee5579f3a9c27b053a",
+      "status": 200,
+      "response": {
+        "id": "file_2586b04d447bd9ee5579f3a9c27b053a",
+        "object": "file",
+        "deleted": true
+      }
+    }
+  ],
+  "model_starts": 0,
+  "rewrite": "explicit_CPU_model_fixture",
+  "vectors": "explicit_CPU_math_fixture",
+  "actual_network": true,
+  "max_retries": 0
+}
