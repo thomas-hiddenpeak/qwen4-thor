@@ -1648,7 +1648,7 @@
     {
       "id": "N05",
       "required": true,
-      "state": "delivered_native_optional_route_fix_pending_delivery",
+      "state": "delivered_pending_mainline",
       "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
       "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
       "depends_on": [
@@ -1663,29 +1663,31 @@
         "evidence/serve-http-driver-20261109/decision.json",
         "evidence/serve-http-prefix-fix-20261109/decision.json",
         "evidence/serve-http-business-20261109/decision.json",
-        "evidence/serve-http-delivery-20261109/decision.json"
+        "evidence/serve-http-delivery-20261109/decision.json",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
       ],
       "release": {
-        "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
-        "release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba",
-        "engine_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
-        "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
-        "rollback_sha256": "916783a879e54776017c42c843f9bbb1c333b2cc55b0b42acccd7bb319600a58",
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a",
+        "engine_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "rollback_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
       },
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
       "remaining": [
-        "Deliver and mainline the renewed optional frontend route table for all current public operations"
+        "Complete actual PR23 mainline integration after remaining public host failures are repaired"
       ],
-      "development_status": "Prior native transport remains delivered; audit found optional nginx route drift after newer APIs. Full route parity repaired and targeted CPU HTTP accepted; renewed package/mainline delivery pending.",
+      "development_status": "Native transport and current optional frontend route parity delivered in rev94; mainline pending.",
       "optional_route_parity": {
-        "state": "implemented_targeted_cpu_verified",
+        "state": "implemented_verified_delivered",
         "added_operations": 29,
         "total_public_api_operations": 66,
         "evidence": "evidence/serve-optional-route-parity-20261112/README.md",
-        "default_changed": false
+        "default_changed": true,
+        "delivery_revision": 94
       }
     },
     {
@@ -1798,7 +1800,7 @@
     {
       "id": "R01",
       "required": true,
-      "state": "delivered_prior_isolation_cancel_cleanup_fix_pending_delivery",
+      "state": "delivered_pending_mainline",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
       "depends_on": [],
@@ -1810,14 +1812,18 @@
         "evidence/serve-cache-io-cpu-20261109/decision.json",
         "evidence/serve-cache-io-business-20261109/decision.json",
         "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json",
-        "evidence/serve-memory-isolation-delivery-20261111/README.md"
+        "evidence/serve-memory-isolation-delivery-20261111/README.md",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
       ],
       "release": {
-        "manifest_sha256": "fac58f347f8ba65857d9c8c7b2a1abf07668f80bd59b6d4dfa1b422358d2c10f",
-        "release_sha256": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a",
+        "engine_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "rollback_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
         "state": "STOPPED",
         "merged_main": false,
-        "rollback_sha256": "8ccbd366fc6f43cd84aea13c9082e4fb4a291831059d9dd6c2af6447e2efaa2c"
+        "whole_task_complete": false
       },
       "gpu_completion_budget": {
         "total_starts": 2,
@@ -1842,8 +1848,9 @@
         {
           "source": "src/server/session_cache.cpp Save failure cleanup and CacheIo::Close",
           "issue": "Cancellation before cache I/O also left new, restored and replaced entry cleanup waiting on a stopped worker for 2s. Independent reproductions; propagate cancellation through Close/Erase and all pending-entry exits, retiring only that generation.",
-          "state": "implemented_targeted_cpu_verified_pending_business_delivery",
-          "evidence": "evidence/serve-public-host-repair-followup-20261112/README.md"
+          "state": "implemented_targeted_cpu_business_verified_delivered",
+          "evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
+          "delivery_evidence": "evidence/serve-cache-route-delivery-20261112/README.md"
         }
       ],
       "cache_io_candidate": {
@@ -1856,12 +1863,14 @@
         "real_business_accepted": true
       },
       "remaining": [
-        "Validate and deliver cancellation propagation through new, restored, evicted and incremental session-cache cleanup"
+        "Complete actual PR23 mainline integration after remaining public host failures are repaired"
       ],
       "cancel_cleanup_business_bounds": {
-        "model_starts": 3,
+        "model_starts": 4,
         "requests": 16,
-        "seconds": 1500
+        "seconds": 2100,
+        "actual_starts": 4,
+        "actual_requests": 15
       }
     },
     {
@@ -2328,7 +2337,8 @@
         "Q01"
       ],
       "evidence": [
-        "evidence/serve-retrieval-delivery-20261112/README.md"
+        "evidence/serve-retrieval-delivery-20261112/README.md",
+        "evidence/serve-cache-route-delivery-20261112/README.md"
       ],
       "release": null,
       "capability_upgrade": {
@@ -2346,14 +2356,14 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "publication_revision": 92,
-        "engine_binary_sha256": "a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169",
-        "engine_release_sha256": "e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621",
-        "generation_sha256": "56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f",
-        "manifest_sha256": "32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/candidate-01/unqualified-bundle",
-        "service_acceptance_sha256": "e416b89370b5ae2b6cb5a2940c7b7a15528fd81a5f04b3af732b3dbdd88052ba",
-        "service_release_sha256": "5991f67248ee1888ee728320d93b821114bbb3f41df30b56e8bf04914a280656"
+        "publication_revision": 94,
+        "engine_binary_sha256": "9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7",
+        "engine_release_sha256": "2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5",
+        "generation_sha256": "bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38",
+        "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-main-integration-20261112/candidate-01/bundle",
+        "service_acceptance_sha256": "969f02e4d4b46ea20b35e4a6c9745942697d8298a954145fb43e76cc468422a6",
+        "service_release_sha256": "f1fd6f172635813a2a4d099067ac0f86a26f69ca70d358a6b8f3cb3666cacb2a"
       },
       "merged_foundation": {
         "pr": 22,
@@ -2370,7 +2380,11 @@
         "github_document_sandbox_pending": true,
         "merged": false,
         "followup_evidence": "evidence/serve-public-host-repair-followup-20261112/README.md",
-        "followup_targeted_runtime_cpu_passed": 24
+        "followup_targeted_runtime_cpu_passed": 24,
+        "remaining_failures": [
+          "Legacy document sandbox prerequisites on hosted runner",
+          "Batch fault-injection fixture short I/O timeout also applied to unrelated setup/verification"
+        ]
       }
     },
     {

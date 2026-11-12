@@ -9,26 +9,30 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev92；服务包 `32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853` |
-| Generation | `56afa126d9406a55908c985a966ebf52d8f16c6dea6eb6e72d6fb46c1505c35f` |
-| 引擎 | `a06155e93ed84f2d2fb9ad8604ef91e644eccf74077b9b4d1912f906a7679169` |
-| 引擎发布记录 | `e1ba8ff4a28048ccb43a2d0c8119f228987f9f341a295847e5c711ba8af48621` |
+| 发布 | rev94；服务包 `e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd` |
+| Generation | `bf981a1f9998b134ebade865c4213afcf2db61b1db8421088b0906129e179c38` |
+| 引擎 | `9a1035ffae2c8e075559f55e2686459658f10d5d29edf3326945186be763c7d7` |
+| 引擎发布记录 | `2f5186913b93149f90ac87132a2a8bca32b389a047c1d56b569a10dcce061db5` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 实际已验同应用能力rev80控制payload `241a4ef423bdb989ced922041e1041b35ac3c8bee7076c2347eff4c308247434` |
+| 版本回退 | 原rev92包 `32d3b81900e1339918dfed97663e441a6628a360137a5420da98c5b21eec5853`；保留修前已知限制 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-retrieval-delivery-20261112/README.md)
-包含18项实际换根/周期登记/回退/再次发布检查，0新增GPU。原17步驱动
-在第9步遗漏周期登记而失败，原件保留；修正流程后人工旧入口和自动
-payload回退均有对应接受。原核心、Key/配额和outer状态保持，profile
-仅资格registry/revision更新、预算/历史不变；版本周期显式登记并完整
-保留前驱，自动恢复不能重置。主/回退均保留现代原生outer能力。
+[发行结果与回退记录](evidence/serve-cache-route-delivery-20261112/README.md)
+包含11项STOPPED交付检查，0新增GPU；真实缓存业务与原资格组合接受。
+旧rev92保留为回退，核心、Key/配额和outer状态保持；profile只更新
+资格绑定，版本周期显式登记并完整保留前驱。回退含修前已知缺陷，
+未重跑未变恢复机制或宣称长稳。总目标仍active。
 PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 其后的本轮新增实现仍在工作分支，继续Q02主线审查，不把本机发行当作合并。
 
 ## 最近完成的实现和验证
+
+- R01取消清理、N05可选路由和配置schema已[可回退发行rev94](evidence/serve-cache-route-delivery-20261112/README.md)。
+  缓存7请求同PID成功并恢复目标/MTP布局，含失败累计4启动15请求。
+  11项STOPPED交付保持恢复预算。PR23仍修实际CI的Batch/legacy沙箱，
+  尚未合主线；继续全部master任务。
 
 - R01主/轻配置资格通过；缓存短验发现配置schema漏向量入库状态，
   [正式合同已补齐并校验3份真实响应及39负控](evidence/serve-cache-config-contract-20261112/README.md)。
@@ -190,8 +194,8 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 | A10 | 原生embedding检索及moderation等已有交付；audio/realtime/image generation/edit/video等后端、媒体缓存及组合仍待实现 |
 | A11 | 原生资料检索/Responses闭环已完成实际业务短验并发行；MCP及其余内建工具仍须实现 |
 | A12 | 官方Python/JS及现有客户端的最终兼容、错误/流、迁移和发行矩阵待闭合 |
-| N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；N05可选前置新增路由已验，封包/主线交付待完成 |
-| R01—R06 | 已验隔离与恢复保持；R01取消后缓存清理遗漏已实修并过CPU，业务/交付待完成；后续组合继续见R07—R10 |
+| N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；N05可选前置路由已随rev94发行，主线待完成 |
+| R01—R06 | 已验隔离与恢复保持；R01取消后缓存清理修复已过CPU/真实业务并随rev94发行；后续组合继续见R07—R10 |
 | R07 | NVML失能冷准入代码/CPU验证已推进；实际设备独占资格、冷业务与组合验收未完成 |
 | R08 | 原生资源域、压力观察与实际恢复组合已推进；物理内存硬边界及完整资源验收仍须完成 |
 | R09 | 正常NVML下原生外层/资源/版本恢复已验发行；冷准入及宿主故障组合仍须闭合 |
