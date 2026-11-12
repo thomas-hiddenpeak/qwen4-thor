@@ -1,0 +1,7 @@
+  idle=1 stop=1 early_notify=1 owner_released=0
+  CHECK failed: idle_entered && stop_entered && stopped_on_time && !gates->gate_timed_out && !notified_while_predicate_locked && released_owner (line 412)
+[FAIL] cache_session_stop_cannot_miss_idle_wait_transition
+  idle=1 stop=1 early_notify=1 owner_released=0
+  CHECK failed: idle_entered && stop_entered && stopped_on_time && !gates->gate_timed_out && !notified_while_predicate_locked && released_owner (line 412)
+[FAIL] cache_prefix_stop_cannot_miss_idle_wait_transition
+2 tests, 0 passed, 2 failed, 0 skipped

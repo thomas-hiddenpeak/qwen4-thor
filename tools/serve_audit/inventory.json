@@ -1838,7 +1838,7 @@
     "include/q4t/server/batch_validation.h": "62a3ac4ee2e9295a2de51894b56aec67867d25926c9d0a98f51d38cdbb3bb334",
     "include/q4t/server/binary_store.h": "edb2878f213dd86d136e162250e9f558ad2ec01a5599bad89bf5f5fd2c417821",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
-    "include/q4t/server/cache_io.h": "8384df00427ce9952e0bbb13c7f42f129a61b7707f54afb576ffed8c9b138858",
+    "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
     "include/q4t/server/chat_capabilities.h": "cc272435d36bd4d7d9a6f953ecb5b3ceb2ea6518c84bac4e1ceb37c1803bb536",
     "include/q4t/server/chat_choices.h": "adc843de79322b84d2a3e91db5ae93099f2ee5d2c6c3934343ae67a2d95dcab7",
     "include/q4t/server/chat_contract.h": "b85a04f979e8ceecd1c88494192513e7a93ad53f20ed3dfb18f0efd012b047cd",
@@ -1908,7 +1908,7 @@
     "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
     "include/q4t/server/native_crypto.h": "1a0c8acb43c9da06cca484c7dba9819a1147354a80563bd9ffb0c0b3c49ed5d8",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "dea44749bcbfe1e7af17f913af30b9ab721c5da931504811cc3e179c5150b124",
+    "include/q4t/server/object_store.h": "868322935efc90bbbadf9ed091058852c85db185b52c93aa051b5bae281be197",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
@@ -2036,7 +2036,7 @@
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
     "src/server/binary_store.cpp": "78d07fffd88b2f375b59d8f6f01788aa4d4c4a522658850cfc6db192e9d574df",
-    "src/server/cache_io.cpp": "fc50e9c486243c894e852d6049b19cc1a77563b23061534f3f832714fb9bfd38",
+    "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
@@ -2155,7 +2155,7 @@
     "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "06c465d72492cb095c15290338c71045fb37f6cc4317d411a4ed56f8879c1e83",
     "src/server/object_retention.cpp": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
-    "src/server/object_store.cpp": "5a807755d05d81a78230c531ebbe1629e99c465a1a69aa2475cf2fe5f3936b99",
+    "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
     "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
@@ -4535,5 +4535,20 @@
     "scope": "Public-projection moderation, anonymous Batch native-step/query bound, cancelled file-search terminal; background/frozen input/crypto/pro/summary/schema combinations",
     "evidence": "docs/evidence/serve-file-search-combinations-cpu-20261112/README.md",
     "limitations": "CPU model fixtures; real business and delivery pending"
+  },
+  "controller_stop_review_20261113": {
+    "reason": "Condition-variable stop publication must use predicate mutex to avoid permanent unique-controller retention",
+    "production_scope": [
+      "ObjectStore",
+      "session CacheIo",
+      "prefix CacheIo"
+    ],
+    "unchanged": [
+      "100ms destructor wait",
+      "unreaped worker and stalled controller ownership",
+      "operation and restart budgets"
+    ],
+    "negative_controls": "Old production ordering with host-only gates reproduces missed notification in all three domains",
+    "evidence": "docs/evidence/serve-controller-stop-race-20261113/README.md"
   }
 }

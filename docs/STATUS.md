@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- PR23续验定位到真实停止竞态：ObjectStore及session/prefix缓存可能
+  丢失唤醒并永久占槽。[三项旧序负控复现、修后16项CPU首过](evidence/serve-controller-stop-race-20261113/README.md)。
+  已将停止通知与等待条件用同一把锁；100ms等待及防增殖保护保持。
+  0GPU、rev94保持，继续业务交付、实际CI/合并及全部master。
+
 - PR23完整CI中的分页终结、正常存储与故障期限夹具已修复，
   [12项不同CPU最终通过](evidence/serve-ci-fixture-boundaries-20261113/README.md)。
   原失败及新增断言修正保留；生产预算未放宽，0GPU、rev94保持。

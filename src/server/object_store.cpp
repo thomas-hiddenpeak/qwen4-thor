@@ -28,6 +28,15 @@ std::string test_entry;
 std::atomic<bool> test_defer_spawn{false};
 std::atomic<bool> test_fail_controller{false};
 std::atomic<bool> test_fail_thread_start{false};
+std::function<void(std::string_view)> test_wait_hook;
+void TestControllerWait(std::string_view stage) {
+  std::function<void(std::string_view)> hook;
+  {
+    const std::lock_guard lock(test_mutex);
+    hook = test_wait_hook;
+  }
+  if (hook) hook(stage);
+}
 #endif
 // Process-lifetime ownership survives a destructor's bounded wait. A stuck
 // spawn cannot cause another ObjectStore to create replacement threads.
@@ -316,7 +325,13 @@ struct ObjectStore::State {
     for (;;) {
       {
         std::unique_lock lock(mutex);
-        changed.wait(lock, [&] { return stop.load() || !jobs.empty(); });
+        changed.wait(lock, [&] {
+          const bool ready = stop.load() || !jobs.empty();
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+          if (!ready) TestControllerWait("idle_wait");
+#endif
+          return ready;
+        });
         if (stop.load()) break;
         active = jobs.front();
         jobs.pop_front();
@@ -426,9 +441,17 @@ ObjectStore::ObjectStore(ObjectStoreOptions options)
 }
 
 ObjectStore::~ObjectStore() {
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  TestControllerWait("stop_begin");
+#endif
+  // Publish under the wait predicate's mutex. An idle dispatcher must not
+  // miss stop between checking the predicate and atomically going to sleep.
+  std::unique_lock lock(state_->mutex);
   state_->stop.store(true);
   state_->changed.notify_all();
-  std::unique_lock lock(state_->mutex);
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  TestControllerWait("stop_notified");
+#endif
   if (!state_->controller_active && !state_->done) state_->Retire();
   // A stuck exec/syscall retains the shared state and unique controller slot.
   state_->changed.wait_for(lock, 100ms, [&] { return state_->done; });
@@ -752,5 +775,10 @@ void DeferObjectSpawnForTesting(bool enabled) {
 }
 void FailObjectControllerForTesting() { test_fail_controller.store(true); }
 void FailObjectThreadStartForTesting() { test_fail_thread_start.store(true); }
+void ObjectControllerWaitHookForTesting(
+    std::function<void(std::string_view)> hook) {
+  const std::lock_guard lock(test_mutex);
+  test_wait_hook = std::move(hook);
+}
 #endif
 }  // namespace q4t::server

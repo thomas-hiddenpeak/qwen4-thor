@@ -87,5 +87,7 @@ void DeferCacheSpawnForTesting(bool enabled);
 void FailCacheControllerForTesting();
 void FailCacheThreadStartForTesting();
 void CacheWorkerEntryForTesting(std::string entry);
+void CacheControllerWaitHookForTesting(
+    std::function<void(std::string_view)> hook);
 #endif
 }  // namespace q4t::server

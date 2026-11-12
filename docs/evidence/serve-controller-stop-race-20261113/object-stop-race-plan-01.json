@@ -1,0 +1,11 @@
+{
+  "reason": "Actual condition-variable stop publication outside wait mutex can lose notification and retain global object owner",
+  "negative": "Original production lock order with deterministic host-only scheduling gates",
+  "positive": "Publish stop while holding predicate mutex; same fixed 100ms destructor wait and unique-owner protection",
+  "gpu_starts": 0,
+  "sources": {
+    "src/server/object_store.cpp": "33308ac3ac4406660176d88b81413ea3580e0a8bd282bf3c8efafd7e64b4cd6a",
+    "include/q4t/server/object_store.h": "868322935efc90bbbadf9ed091058852c85db185b52c93aa051b5bae281be197",
+    "tests/server_object_store_test.cpp": "7576e6264bd485eb6b094b788abe936d90f0f308a28e65ab96ee3af398cf5daf"
+  }
+}

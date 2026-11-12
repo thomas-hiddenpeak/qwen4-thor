@@ -1,0 +1,31 @@
+{
+  "cases": [
+    "object_controller_stop_cannot_miss_idle_wait_transition",
+    "cache_session_stop_cannot_miss_idle_wait_transition",
+    "cache_prefix_stop_cannot_miss_idle_wait_transition",
+    "object_store_durable_crud_and_exact_data",
+    "object_store_stuck_spawn_retains_one_controller",
+    "object_store_error_reporting_allocation_failure_is_isolated",
+    "object_controller_repeated_faults_backoff_and_keep_one_owner",
+    "object_controller_failed_thread_start_recovers_on_demand",
+    "object_controller_stop_during_backoff_releases_only_own_slot",
+    "object_controller_recovery_cannot_reset_worker_spawn_budget",
+    "cache_io_stopped_worker_deadline_and_cancellation_are_bounded",
+    "cache_io_unreaped_worker_retains_only_its_own_domain",
+    "cache_io_restart_budget_and_stop_intent",
+    "cache_io_controller_exception_spawn_stall_and_thread_failure",
+    "responses_api_history_pagination_and_scope_survive_worker_restart",
+    "responses_api_replay_completes_http_chunks_before_connection_reuse"
+  ],
+  "negative_controls": 3,
+  "production_change": "Stop publication and notification use idle predicate mutex; unchanged bounded destructor and unique ownership",
+  "new_gpu_starts": 0,
+  "sources": {
+    "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
+    "include/q4t/server/object_store.h": "868322935efc90bbbadf9ed091058852c85db185b52c93aa051b5bae281be197",
+    "tests/server_object_store_test.cpp": "7576e6264bd485eb6b094b788abe936d90f0f308a28e65ab96ee3af398cf5daf",
+    "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
+    "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
+    "tests/server_cache_io_test.cpp": "3476f972a5df60ed055c4a953b1695652ad46a614df5a87a552c18e6d7e91475"
+  }
+}

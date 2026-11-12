@@ -180,6 +180,8 @@ void ObjectWorkerEntryForTesting(std::string entry);
 void DeferObjectSpawnForTesting(bool enabled);
 void FailObjectControllerForTesting();
 void FailObjectThreadStartForTesting();
+void ObjectControllerWaitHookForTesting(
+    std::function<void(std::string_view)> hook);
 #endif
 
 }  // namespace q4t::server

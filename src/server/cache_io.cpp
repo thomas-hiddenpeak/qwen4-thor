@@ -27,6 +27,15 @@ std::atomic<bool> defer_spawn{false}, fail_controller{false},
     fail_thread{false};
 std::mutex entry_mutex;
 std::string test_entry;
+std::function<void(std::string_view)> test_wait_hook;
+void TestControllerWait(std::string_view stage) {
+  std::function<void(std::string_view)> hook;
+  {
+    const std::lock_guard lock(entry_mutex);
+    hook = test_wait_hook;
+  }
+  if (hook) hook(stage);
+}
 #endif
 bool Valid(const CacheIoOptions& o) {
   return !o.directory.empty() && o.directory.size() <= 4096 &&
@@ -194,7 +203,13 @@ struct CacheIo::State {
       bool discard;
       {
         std::unique_lock lock(mutex);
-        changed.wait(lock, [&] { return stop || pending || invalidated; });
+        changed.wait(lock, [&] {
+          const bool ready = stop || pending || invalidated;
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+          if (!ready) TestControllerWait("idle_wait");
+#endif
+          return ready;
+        });
         if (stop) break;
         discard = invalidated.exchange(false);
         job = pending;
@@ -316,9 +331,16 @@ CacheIo::CacheIo(CacheIoOptions options) : state_(std::make_shared<State>()) {
   state_->Launch(state_);
 }
 CacheIo::~CacheIo() {
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  TestControllerWait("stop_begin");
+#endif
+  // Stop shares the idle wait's mutex so its notification cannot be lost.
+  std::unique_lock lock(state_->mutex);
   state_->stop.store(true);
   state_->changed.notify_all();
-  std::unique_lock lock(state_->mutex);
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  TestControllerWait("stop_notified");
+#endif
   if (!state_->controller_active && !state_->done) state_->Retire();
   state_->changed.wait_for(lock, 100ms, [&] { return state_->done; });
 }
@@ -451,6 +473,11 @@ void FailCacheThreadStartForTesting() { fail_thread.store(true); }
 void CacheWorkerEntryForTesting(std::string entry) {
   const std::lock_guard lock(entry_mutex);
   test_entry = std::move(entry);
+}
+void CacheControllerWaitHookForTesting(
+    std::function<void(std::string_view)> hook) {
+  const std::lock_guard lock(entry_mutex);
+  test_wait_hook = std::move(hook);
 }
 #endif
 }  // namespace q4t::server

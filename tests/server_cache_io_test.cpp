@@ -5,9 +5,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <atomic>
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
+#include <future>
 #include <thread>
 #include <vector>
 
@@ -361,4 +363,67 @@ Q4T_TEST(cache_io_controller_exception_spawn_stall_and_thread_failure) {
   CacheIo recovered(f.options);
   Q4T_CHECK(Ready(recovered));
   return true;
+}
+
+namespace {
+bool CacheStopWaitRace(IsolatedWorkerDomain domain) {
+  struct Gates {
+    std::promise<void> idle, stopping, notified, release;
+    std::shared_future<void> released = release.get_future().share();
+    std::atomic<bool> idle_seen{false}, stop_seen{false}, notify_seen{false};
+    std::atomic<bool> gate_timed_out{false};
+  };
+  auto gates = std::make_shared<Gates>();
+  auto idle = gates->idle.get_future();
+  auto stopping = gates->stopping.get_future();
+  auto notified = gates->notified.get_future();
+  CacheControllerWaitHookForTesting([gates](std::string_view stage) {
+    if (stage == "idle_wait" && !gates->idle_seen.exchange(true)) {
+      // Pause after the predicate observed false, before the atomic unlock
+      // and wait. An unprotected stop notification is lost in this interval.
+      gates->idle.set_value();
+      gates->gate_timed_out =
+          gates->released.wait_for(3s) != std::future_status::ready;
+    } else if (stage == "stop_begin" && !gates->stop_seen.exchange(true)) {
+      gates->stopping.set_value();
+    } else if (stage == "stop_notified" &&
+               !gates->notify_seen.exchange(true)) {
+      gates->notified.set_value();
+    }
+  });
+  Fixture fixture;
+  fixture.options.domain = domain;
+  auto store = std::make_unique<CacheIo>(fixture.options);
+  const bool idle_entered = idle.wait_for(2s) == std::future_status::ready;
+  auto stopped = std::async(std::launch::async, [&] { store.reset(); });
+  const bool stop_entered = stopping.wait_for(2s) == std::future_status::ready;
+  const bool notified_while_predicate_locked =
+      notified.wait_for(100ms) == std::future_status::ready;
+  gates->release.set_value();
+  const bool stopped_on_time =
+      stopped.wait_for(2s) == std::future_status::ready;
+  stopped.get();
+  CacheControllerWaitHookForTesting({});
+  CacheIo replacement(fixture.options);
+  const bool released_owner = replacement.Health().state != "controller_owned";
+  std::printf("  idle=%d stop=%d early_notify=%d owner_released=%d\n",
+              idle_entered, stop_entered, notified_while_predicate_locked,
+              released_owner);
+  Q4T_CHECK(idle_entered && stop_entered && stopped_on_time &&
+            !gates->gate_timed_out && !notified_while_predicate_locked &&
+            released_owner);
+  Q4T_CHECK(Ready(replacement));
+  CacheFile file;
+  Q4T_CHECK(replacement.Create(&file));
+  replacement.Close(file);
+  return true;
+}
+}  // namespace
+
+Q4T_TEST(cache_session_stop_cannot_miss_idle_wait_transition) {
+  return CacheStopWaitRace(IsolatedWorkerDomain::kSessionCache);
+}
+
+Q4T_TEST(cache_prefix_stop_cannot_miss_idle_wait_transition) {
+  return CacheStopWaitRace(IsolatedWorkerDomain::kPrefixCache);
 }
