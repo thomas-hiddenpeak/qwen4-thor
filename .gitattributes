@@ -99,3 +99,7 @@ docs/evidence/serve-refusal-cpu-20261112/** -text -whitespace
 docs/evidence/serve-refusal-cpu-20261112/**/*.wire binary
 docs/evidence/serve-refusal-business-20261112/** -text -whitespace
 docs/evidence/serve-refusal-business-20261112/**/*.wire binary
+
+# Preserve actual primary/light qualification observations and protocol bytes.
+docs/evidence/serve-refusal-profiles-20261112/** -text -whitespace
+docs/evidence/serve-refusal-profiles-20261112/**/*.wire binary

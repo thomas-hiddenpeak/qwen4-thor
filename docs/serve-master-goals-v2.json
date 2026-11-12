@@ -877,7 +877,8 @@
         "cpu_adapter_cases": 19,
         "evidence": "docs/evidence/serve-refusal-cpu-20261112/README.md",
         "business_evidence": "docs/evidence/serve-refusal-business-20261112/README.md",
-        "delivery_pending": true
+        "delivery_pending": true,
+        "qualified_package": "docs/evidence/serve-refusal-profiles-20261112/README.md"
       }
     },
     {
@@ -1730,10 +1731,12 @@
       "managed_business_evidence": "evidence/serve-adaptive-profile-managed-20261111/README.md",
       "remaining": [],
       "capability_upgrade": {
-        "state": "cpu_passed_actual_profiles_and_delivery_pending",
+        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
         "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
-        "existing_default_rev72_preserved": true
+        "existing_default_rev72_preserved": true,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
       }
     },
     {
@@ -1809,10 +1812,12 @@
       ],
       "remaining": [],
       "capability_upgrade": {
-        "state": "cpu_passed_actual_profiles_and_delivery_pending",
+        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
         "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
-        "existing_default_rev72_preserved": true
+        "existing_default_rev72_preserved": true,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
       }
     },
     {
@@ -2065,10 +2070,12 @@
       "evidence": [],
       "release": null,
       "capability_upgrade": {
-        "state": "cpu_passed_actual_profiles_and_delivery_pending",
+        "state": "actual_profiles_and_package_passed_version_and_delivery_pending",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
         "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
-        "existing_default_rev72_preserved": true
+        "existing_default_rev72_preserved": true,
+        "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
+        "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
       }
     },
     {

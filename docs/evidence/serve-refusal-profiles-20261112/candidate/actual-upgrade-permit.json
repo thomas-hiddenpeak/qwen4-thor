@@ -1,0 +1,40 @@
+{
+  "format": "q4t-profile-migration-permit-v3",
+  "from_registry": "8627cb868adb30ba6824c7e320b6d18fde6e1e1670bcd4d14478ebf9b6a8f9ad",
+  "to_registry": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+  "profiles": {
+    "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+    "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+  },
+  "from_configuration": {
+    "version": 1,
+    "degrade_below_mib": 8192,
+    "recover_above_mib": 16384,
+    "pressure_seconds": 30,
+    "recovery_seconds": 120,
+    "minimum_light_seconds": 300,
+    "cooldown_seconds": 300,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  },
+  "to_configuration": {
+    "version": 1,
+    "degrade_below_mib": 8192,
+    "recover_above_mib": 16384,
+    "pressure_seconds": 30,
+    "recovery_seconds": 120,
+    "minimum_light_seconds": 300,
+    "cooldown_seconds": 300,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  },
+  "from_identity": "040ba351a7c42bc3ff39a7c6d86647a0957af445396545c1e7db1a0ebfd847bf",
+  "to_identity": "3990e1f692ea727cb2d400014b714572bb52e71a17528c495e16f66ba9e741b8",
+  "capabilities_sha256": "68c3349531cf8ff042ee582a53fbdf227cb73cc6a5e7f0c9679f1409faded1d7",
+  "automatic": false,
+  "target_profiles": {
+    "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+    "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+  },
+  "target_capabilities_sha256": "e19d3caf6ea213a15effe61c0a474b7b7e471bd0b61647c6e5c799dd63dc06f5"
+}
