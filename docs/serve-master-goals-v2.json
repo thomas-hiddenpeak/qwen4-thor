@@ -997,7 +997,7 @@
         }
       },
       "tool_discovery": {
-        "state": "real_business_pass_reversible_delivery_pending",
+        "state": "qualified_reversible_delivery_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "public_capability_not_yet_enabled": false,
         "gpu_budget": {
@@ -1032,7 +1032,16 @@
           "seconds": 104.44730356521904
         },
         "default_capability_not_yet_published": true,
-        "pr": 26
+        "pr": 26,
+        "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
+        "qualification_actual": {
+          "starts": 5,
+          "requests": 14,
+          "probes": 1,
+          "nvml_queries": 244
+        },
+        "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
+        "migration_targeted_cpu": 10
       }
     },
     {
@@ -1662,7 +1671,7 @@
         "delivery_evidence": "evidence/serve-retrieval-delivery-20261112/README.md"
       },
       "tool_discovery": {
-        "state": "real_business_pass_reversible_delivery_pending",
+        "state": "qualified_reversible_delivery_pending",
         "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
         "targeted_cpp_passed": 77,
         "targeted_sdk_driver_passed": 4,
@@ -1696,7 +1705,16 @@
           "seconds": 104.44730356521904
         },
         "default_capability_not_yet_published": true,
-        "pr": 26
+        "pr": 26,
+        "qualification_evidence": "docs/evidence/serve-tool-discovery-qualification-20261113",
+        "qualification_actual": {
+          "starts": 5,
+          "requests": 14,
+          "probes": 1,
+          "nvml_queries": 244
+        },
+        "migration_repair": "docs/evidence/serve-tool-discovery-migration-cpu-20261113",
+        "migration_targeted_cpu": 10
       }
     },
     {

@@ -36,6 +36,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 工具发现[主轻、独立回退与整树恢复均通过](evidence/serve-tool-discovery-qualification-20261113/README.md)：
+  5启动14业务1探测，244次NVML正常、资源清理；真实资料结果在切换
+  后继续闭环。只做17项STOPPED可回退交付，随后实际合main；全部
+  master继续，默认rev110尚未改变。
+
 - 回退准备暴露工具发现输出枚举遗漏；已[修复并通过10项CPU及实际资格迁移](evidence/serve-tool-discovery-migration-cpu-20261113/README.md)。
   主轻2启动8请求已通过；引擎/原生helper不变，继续原定独立回退与
   整树恢复短验，再可回退发行和实际合main；默认rev110保持。
