@@ -1,0 +1,22 @@
+{
+  "cpu_cases": [
+    "responses_tool_catalog_hides_deferred_schemas_and_namespace_children",
+    "responses_tool_search_loads_exact_authorized_subset_and_no_duplicates",
+    "responses_tool_search_client_catalog_preserves_schema_without_execution",
+    "responses_tool_catalog_rejects_bad_definitions_before_publishing",
+    "responses_tool_search_rejects_bad_queries_without_partial_loading",
+    "responses_tool_history_loads_client_definitions_outside_initial_catalog",
+    "responses_tool_history_additions_preserve_order_and_previous_schemas",
+    "responses_tool_history_matches_search_results_and_never_replays",
+    "responses_tool_history_incomplete_results_do_not_authorize_tools",
+    "responses_tool_history_catalogs_are_request_local_and_bounded"
+  ],
+  "gpu_starts": 0,
+  "stage": "directory and ordered activation components; public Responses executor not wired yet",
+  "sources": {
+    "include/q4t/server/responses_tool_search.h": "0e2d2448e890a52a4f191eefd3079e4abddbb9de4f785a7480ae888c40095e85",
+    "src/server/responses_tool_search.cpp": "a490576cf236d3bc73fd2ff3c5f46fa0deabe52819b6ef138180ee3739dc57d3",
+    "src/server/responses_tool_catalog_history.cpp": "fcf37d7ae5d2a9cc385542f3ae1c4caac790873a0fa3256ca63a4b3c9890dd42",
+    "tests/server_responses_tool_search_test.cpp": "b4dcd9251349a1008573a656900a1030736f91aa2616da385f365a6121460922"
+  }
+}

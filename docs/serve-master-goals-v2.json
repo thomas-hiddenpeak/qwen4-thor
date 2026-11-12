@@ -925,7 +925,7 @@
         "original_business_binary_sha256": "b90324c1090472f9c98b3c52f8d36e967c5834bcfae8c95bffe2d764b694e9a7"
       },
       "async_tool_execution": {
-        "state": "implemented_targeted_validated_delivered_main_pending",
+        "state": "implemented_targeted_validated_delivered_main_merged",
         "plan": "docs/SERVE_ASYNC_TOOLS_2026-11-13.md",
         "public_flag_only_is_not_completion": true,
         "gpu_budget": {
@@ -989,7 +989,25 @@
         "delivery_evidence": "docs/evidence/serve-async-tools-delivery-20261113",
         "publication_revision": 110,
         "manifest_sha256": "eeba689ceb1a0d5df0cd1e351525af5ac1806ca421b9d7cb738ed20393b2fea1",
-        "engine_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3"
+        "engine_sha256": "6d7d5e929f411d7458deaebff4654b78868f585d279c3a14c05bf158224404f3",
+        "main_integration": {
+          "pr": 25,
+          "merge_commit": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+          "evidence": "docs/evidence/serve-pr25-merged-20261113"
+        }
+      },
+      "tool_discovery": {
+        "state": "catalog_history_components_cpu_pass_execution_wiring_in_progress",
+        "plan": "docs/SERVE_TOOL_DISCOVERY_2026-11-13.md",
+        "public_capability_not_yet_enabled": true,
+        "gpu_budget": {
+          "starts": 1,
+          "response_creates": 10,
+          "seconds": 900
+        },
+        "gpu_started": false,
+        "programmatic_and_mcp_remain_required": true,
+        "component_evidence": "docs/evidence/serve-tool-discovery-catalog-cpu-20261113"
       }
     },
     {
@@ -2477,7 +2495,7 @@
         "generation_sha256": "44bb0f3ca03bc7e007d2ca1242ea5796eeed23500cf3fcad1b77b93be7ea66f9",
         "evidence": "docs/evidence/serve-async-tools-delivery-20261113",
         "state": "STOPPED",
-        "main_integration_pending": true
+        "main_integration_pending": false
       },
       "merged_foundation": {
         "pr": 22,
@@ -2522,6 +2540,11 @@
         "runtime_changed": false,
         "current_ci_head": "82240c5e6390205b84742c948a9007e9666748e5",
         "merge_commit": "79f6e391f4e7e9e7287ec022c16d5dcdf7af824d"
+      },
+      "async_main_integration": {
+        "pr": 25,
+        "merge_commit": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+        "evidence": "docs/evidence/serve-pr25-merged-20261113"
       }
     },
     {

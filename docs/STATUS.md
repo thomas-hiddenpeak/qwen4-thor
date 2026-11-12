@@ -30,9 +30,20 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
 提交也已实际合main（PR24，`79f6e391`），
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
-后续async提交尚待独立合入，全部master任务继续。
+异步实现已实际合main（PR25，`4e87a03f`），
+[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev110可用，
+工具发现等全部master任务继续。
 
 ## 最近完成的实现和验证
+
+- PR25两组CI全过并已实际合main（4e87a03f）。后续[目录/历史加载部件10项CPU通过](evidence/serve-tool-discovery-catalog-cpu-20261113/README.md)，
+  失败及修正原件保留；尚待公开执行器/模板/状态接线，不能视为
+  tool_search已可用。继续接线和全部master；默认rev110保持，0GPU。
+
+- [工具发现实施清单](SERVE_TOOL_DISCOVERY_2026-11-13.md)已固定：server/client
+  搜索、additional_tools、按历史位置加载与权限/结果约束持续性。
+  正开发原生目录及执行接线，未宣称完成；默认rev110保持。异步
+  PR25（be7c2236）两组CI已过并合main，新开发保持独立。
 
 - 异步工具已[可回退交付rev110](evidence/serve-async-tools-delivery-20261113/README.md)：
   17项实际STOPPED检查全部通过、0GPU；回退再前进、密钥/配额/

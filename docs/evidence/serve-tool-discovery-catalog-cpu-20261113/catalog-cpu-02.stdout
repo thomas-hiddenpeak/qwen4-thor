@@ -1,0 +1,14 @@
+  CHECK failed: PlanResponsesToolCatalog(tools, &plan, &error) (line 50)
+[FAIL] responses_tool_catalog_hides_deferred_schemas_and_namespace_children
+[FAIL] responses_tool_search_loads_exact_authorized_subset_and_no_duplicates: Tool catalog fixture: tools[1].tools[0].parameters.additionalProperties
+  CHECK failed: PlanResponsesToolCatalog(tools, &plan, &error) && OutputJson(plan.search) == OutputJson(tools.array[0]) (line 96)
+[FAIL] responses_tool_search_client_catalog_preserves_schema_without_execution
+[FAIL] responses_tool_catalog_rejects_bad_definitions_before_publishing: Tool catalog fixture: tools[1].tools[0].parameters.additionalProperties
+[FAIL] responses_tool_search_rejects_bad_queries_without_partial_loading: Tool catalog fixture: tools[1].tools[0].parameters.additionalProperties
+  CHECK failed: status (line 172)
+[FAIL] responses_tool_history_loads_client_definitions_outside_initial_catalog
+[PASS] responses_tool_history_additions_preserve_order_and_previous_schemas
+[PASS] responses_tool_history_matches_search_results_and_never_replays
+[PASS] responses_tool_history_incomplete_results_do_not_authorize_tools
+[PASS] responses_tool_history_catalogs_are_request_local_and_bounded
+10 tests, 4 passed, 6 failed, 0 skipped
