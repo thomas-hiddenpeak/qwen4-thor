@@ -9,19 +9,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev72；服务包 `5468f36a15f3303aa9360b313794459e09341a137001e297dbbc18b615ead2d8` |
-| Generation | `a9713e3917d0d8e5d25c042f28ed564f6e379750656596d65d38700eb6e7cab2` |
-| 引擎 | `96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a` |
-| 引擎发布记录 | `c527fa7d589a9bc8a77dd3dc47558a3aa8122f818d1d55424626a4a4137c89bc` |
+| 发布 | rev80；服务包 `4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb` |
+| Generation | `407157c6a754106060e634336a93a99d8883906d6ea8c2e4dd1dd30bb523f9e2` |
+| 引擎 | `18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8` |
+| 引擎发布记录 | `12df970750d3d42aa0c5cdd89375ed9f50946585d989c07e5e08f901fea0b8ee` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 实际已验v12资源适配包 `5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b` |
+| 版本回退 | 实际已验同应用能力v12控制payload `c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7` |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-outer-resource-delivery-20261112/README.md)
-包含完整包路径、身份、原状态保护及19项实际发布/回退/再次发布检查。
-原核心、Key/配额和profile账本保持；没有新模型启动或开机项安装。
+[发行结果与回退记录](evidence/serve-refusal-delivery-20261112/README.md)
+包含17项实际发布/回退/再次发布检查。原核心、Key/配额及outer状态
+保持；profile仅资格身份及revision更新，预算/时钟/历史不变。
+新版本周期保留前驱及原结果；没有新模型启动或开机项安装。
+自动回退保持现代原生固定根；人工整根回退的旧入口能力单独记录。
 工作分支已推送，**本轮尚未合入main**；主线交付仍属于Q02。
 
 ## 最近完成的实现和验证
@@ -34,16 +36,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
   缺陷已修复，实际模型启动通过。[CPU与原失败](evidence/serve-runtime-identity-cpu-20261112/README.md)。
 - 冷准入验收的root入口现在在永久降权子进程中核验私有策略；
   [5项CPU通过](evidence/serve-cold-owner-cpu-20261112/README.md)，未操作GPU或设备规则。
-- A07拒绝输出已接通模型帧、约束分支及独立receipt、Chat/Responses
-  JSON/SSE、真实logprobs和状态回填。80项原生及19项协议/SDK/客户端
-  针对性检查通过，[CPU证据](evidence/serve-refusal-cpu-20261112/README.md)
-  保留原失败与修复。[真实业务](evidence/serve-refusal-business-20261112/README.md)
-  1启动/6生成/60.217秒通过，含模型拒绝与实际工具闭环；可回退发行
-  待完成，实际默认仍为上表rev72。
-  [主/轻量实际资格](evidence/serve-refusal-profiles-20261112/README.md)已通过
-  2启动/6Chat/2embedding/91.950秒并封包，[受监护及版本回退](evidence/serve-refusal-managed-business-20261112/README.md)已通过，发行继续。
-  同能力独立回退包已准备；[受监护驱动5项CPU边界](evidence/serve-feature-driver-cpu-20261112/README.md)已通过，
-  首轮发现旧自检把合法refusal的null正文送入JSON解析，已修复并通过3项CPU与真实响应回放；[原失败](evidence/serve-refusal-selfcheck-failure-20261112/README.md)保留，补验累计上限4启动/7Chat/1探测/1200秒，不重跑模型全矩阵。
+- A07模型生成拒绝已发行：Chat/Responses JSON/SSE、约束独立分支、
+  真实概率、对象/历史与Python/JS客户端均接通。80项原生+19项适配
+  [CPU](evidence/serve-refusal-cpu-20261112/README.md)、6请求
+  [真实业务](evidence/serve-refusal-business-20261112/README.md)、
+  [主/轻量资格](evidence/serve-refusal-profiles-20261112/README.md)通过。
+- 新能力升级及回退已发行：修复旧启动自检对合法refusal的TypeError，
+  [受监护及真实版本回退](evidence/serve-refusal-managed-business-20261112/README.md)
+  累计含失败4启动/7Chat/1探测/248.927秒；拒绝对象、历史和预算保持。
+  [发布副本归档](evidence/serve-publication-archive-20261112/README.md)保留
+  原包及证据，0文件删除；发行后活动池31/32，归档2代可核验恢复。
 - 已发布资源域约束覆盖内核memcg计量及独立物理可用内存观察，
   **没有声称实现统一DRAM/GPU物理硬上限**；R08仍须解决剩余边界。
 
@@ -59,14 +61,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 | A03/A04 | 采样/penalty/logprobs/multi-choice/prediction与工具选择、增量流、legacy/custom工具已验交付 |
 | A05 | 丰富JSON Schema及工具/媒体组合已交付；A10媒体身份与状态缓存的组合尚待实现 |
 | A06 | Completions/Models已验交付 |
-| A07 | Responses核心、状态、reasoning/summary/encryption/compaction等已交付；原生refusal生产/SSE及恢复已验待发行；内建工具及媒体items、async/caller/namespace/output_schema等仍须实现 |
+| A07 | Responses核心、状态、reasoning/summary/encryption/compaction等已交付；原生refusal生产/SSE及恢复已发行；内建工具及媒体items、async/caller/namespace/output_schema等仍须实现 |
 | A08 | 持久Chat/Responses、Conversations、background/cancel等已交付 |
 | A09 | Files/Uploads/Batch已有实际交付；剩余8类endpoint后端及对应SDK/发行仍须与A10完成 |
 | A10 | 原生embedding检索及moderation等已有交付；audio/realtime/image generation/edit/video等后端、媒体缓存及组合仍待实现 |
 | A11 | 内建工具/MCP及项目资料检索执行边界待实现；权限、超时、取消、输出上限与完整事件是验收要求 |
 | A12 | 官方Python/JS及现有客户端的最终兼容、错误/流、迁移和发行矩阵待闭合 |
 | N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；外部前置保持可选 |
-| R01—R06 | rev72的隔离与恢复已验交付；新API能力的profile升级/回退连续性正在补齐，16项迁移及3项驱动CPU、新主/轻量实际资格通过；新回退组合已验、发行待完成 |
+| R01—R06 | rev80保留已验隔离与恢复；新能力profile升级及同能力回退已验发行，原恢复预算保持；后续组合继续见R07—R10 |
 | R07 | NVML失能冷准入代码/CPU验证已推进；实际设备独占资格、冷业务与组合验收未完成 |
 | R08 | 原生资源域、压力观察与实际恢复组合已推进；物理内存硬边界及完整资源验收仍须完成 |
 | R09 | 正常NVML下原生外层/资源/版本恢复已验发行；冷准入及宿主故障组合仍须闭合 |
@@ -75,15 +77,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 接下来
 
-发布代离线归档/恢复工具6项CPU及1项持久化补验通过；
-[实际归档](evidence/serve-publication-archive-20261112/README.md)将2代无活动
-依赖的副本移入可恢复归档，活动池31→29、上限32不变。默认rev72、
-原包/证据保持，0文件删除、0模型启动；接着可回退发行。
-
-1. 基于已修复入口与实际rev72身份重建R07冻结计划。原v1 plan-v2
+1. 基于已修复入口与实际rev80身份重建R07冻结计划。原v1 plan-v2
    因入口缺陷及来源/默认变化而失效，不能执行。涉及nvargus/jtop的
    维护问题仍待回复，不以等待阻塞独立开发，不擅自干预其他服务。
-2. 先完成[能力升级及恢复连续性](SERVE_CAPABILITY_UPGRADE_2026-11-12.md)的新包资格/发行，保持原生接入和恢复能力。继续推进[A07模型拒绝输出合同](SERVE_REFUSAL_OUTPUT_2026-11-12.md)、A11工具执行及A10所需后端；先按官方合同
+2. [能力升级及恢复连续性](SERVE_CAPABILITY_UPGRADE_2026-11-12.md)已发行，继续A11项目资料查询的服务端工具执行/Responses事件，以及A10所需后端；先按官方合同
    和代码明确缺口，再成组实现，做针对性CPU及必要真实业务。
 3. R08/R09剩余项与R10组合持续推进；各阶段可回退交付后继续下一项，
    全部计划完成前不结束总目标。

@@ -857,7 +857,7 @@
       },
       "execution_audit": "serve-responses-execution-audit-v1.json",
       "refusal_output": {
-        "state": "real_business_passed_delivery_pending",
+        "state": "delivered",
         "plan": "SERVE_REFUSAL_OUTPUT_2026-11-12.md",
         "required": true,
         "model_special_token_available": false,
@@ -877,9 +877,12 @@
         "cpu_adapter_cases": 19,
         "evidence": "docs/evidence/serve-refusal-cpu-20261112/README.md",
         "business_evidence": "docs/evidence/serve-refusal-business-20261112/README.md",
-        "delivery_pending": true,
+        "delivery_pending": false,
         "qualified_package": "docs/evidence/serve-refusal-profiles-20261112/README.md",
-        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md"
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md",
+        "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
+        "publication_revision": 80,
+        "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
       }
     },
     {
@@ -2071,14 +2074,18 @@
       "evidence": [],
       "release": null,
       "capability_upgrade": {
-        "state": "managed_and_version_passed_delivery_pending",
+        "state": "delivered_subset",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
         "evidence": "docs/evidence/serve-feature-migration-cpu-20261112/README.md",
-        "existing_default_rev72_preserved": true,
+        "existing_default_rev72_preserved": false,
         "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
         "candidate_manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
         "fallback_manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
-        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md"
+        "managed_evidence": "docs/evidence/serve-refusal-managed-business-20261112/README.md",
+        "previous_default_rev72_backed_up": true,
+        "publication_revision": 80,
+        "delivery_evidence": "docs/evidence/serve-refusal-delivery-20261112/README.md",
+        "whole_task_complete": false
       }
     },
     {
@@ -2094,6 +2101,6 @@
       "release": null
     }
   ],
-  "next_task": "A07 native model-produced refusal and complete output lifecycle while R07 maintenance remains pending; refresh cold plan only with fixed sources/current default; continue A10/A11/A12, R08-R10 and Q/G00 without stopping at a phase.",
-  "next": "A07 native model-produced refusal and complete output lifecycle while R07 maintenance remains pending; refresh cold plan only with fixed sources/current default; continue A10/A11/A12, R08-R10 and Q/G00 without stopping at a phase."
+  "next_task": "A11 native project-record retrieval/tool execution and Responses events, remaining A07/A09/A10/A12 contracts; R07 refresh after fixed sources/current rev80, R08-R10 and Q/G00 continue. All master tasks required; no phase-end stop.",
+  "next": "A11 native project-record retrieval/tool execution and Responses events, remaining A07/A09/A10/A12 contracts; R07 refresh after fixed sources/current rev80, R08-R10 and Q/G00 continue. All master tasks required; no phase-end stop."
 }

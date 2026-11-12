@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+    "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "682222b7-6a8e-4f97-9147-a14ddb23b111",
+    "root_manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+        "binding_sha256": "9b068fa0feb9db4c455f0fa540106a1e298cbf677c14652454d32fdeb5ddf24b"
+      },
+      "fallback": {
+        "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+        "binding_sha256": "0a9665ea8a9e852bfcf3f610031594c4ef590f9afbfe5d9e4cd9e6042c7ad7f2"
+      }
+    },
+    "compatibility_sha256": "0c92ceb72e1f2df43d22166b8dc937ec96a8005ad92fbdcc48b0bfaaf0dd7808",
+    "qualification_sha256": "eba9df97cb96d25859ad0fd7b81b5c84a00d786e7a9c3bcf311311e09ede4c6f"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/service-release.json",
+      "sha256": "23a6041d8d493769a596e17614ce8436e881df3960dd027c38c0c464581f455a"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/retained-business-02/decision.json",
+      "sha256": "013b2db6159e0a351b5ceb60ddcf4f6ca161b31d7a5e0f1824e3951f01cf2ddb"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+        "manifest_sha256": "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb"
+      },
+      "binding": {
+        "binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+        "protocol_sha256": "f3b0a535722236e035ce57901035b7535ad62445e21adb5e9acb7116acdc4357",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+        "controller_sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+        "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+      },
+      "binding": {
+        "binary_sha256": "18c44ab1f301a0f7f69775f815295e649ecd8bbff8918b2de0a795cfa63cc9f8",
+        "protocol_sha256": "f3b0a535722236e035ce57901035b7535ad62445e21adb5e9acb7116acdc4357",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "d4bbc7cd06d3888567b25a7f7e3c7e8d2bf1b4d8abdab9dc6f951c9c505dbb0e",
+          "light": "695c0b39deb51868e384dd6401a7a8dae2aab9503d87a5714ce12430a8c96ed1"
+        },
+        "profile_registry_sha256": "a961008ceac1a0105bd9ca7a020b125e33449b83cc45b6c98cb9c016b13342ab",
+        "controller_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+        "ingress_sha256": "6b676fda21b43a90367502efd1a5920f4ad21752585b84ace91a157040b57d51"
+      }
+    }
+  }
+}

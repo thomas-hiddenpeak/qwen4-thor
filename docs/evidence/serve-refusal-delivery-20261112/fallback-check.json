@@ -1,0 +1,14 @@
+{
+  "label": "fallback-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary/engine/q4t",
+    "service",
+    "check",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+    "--manifest-sha256",
+    "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+  ],
+  "returncode": 0,
+  "seconds": 0.8220954812131822
+}

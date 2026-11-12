@@ -1,0 +1,26 @@
+{
+  "label": "candidate-publish",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/primary",
+    "--manifest-sha256",
+    "4263d0c36088598a69bceaafbe8e0bc7b79eb9c051dc3be2a6de4be3f10332bb",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/delivery-01/primary-service.release.json",
+    "--expected-manifest-sha256",
+    "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7",
+    "--expected-revision",
+    "74",
+    "--request-id",
+    "bd5566ab-6876-4afd-8318-dd9b3e639e82"
+  ],
+  "returncode": 0,
+  "seconds": 5.702705997042358
+}
