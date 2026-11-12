@@ -301,7 +301,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A08 persistent retention dependency, then A09/A10/A11 with all remaining A07 event/item tasks retained",
+      "current_work": "Native model-produced refusal signal plus constraints, parser, Chat/Responses JSON/SSE, storage and SDK lifecycle; implementation must precede acceptance. Continue remaining items/tools/media and full master plan.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -855,7 +855,22 @@
         "publication_revision": 30,
         "delivery_evidence": "evidence/serve-request-fields-delivery-20261110/README.md"
       },
-      "execution_audit": "serve-responses-execution-audit-v1.json"
+      "execution_audit": "serve-responses-execution-audit-v1.json",
+      "refusal_output": {
+        "state": "implementation_preparation",
+        "plan": "SERVE_REFUSAL_OUTPUT_2026-11-12.md",
+        "required": true,
+        "model_special_token_available": false,
+        "model_signal_adapter_required": true,
+        "moderation_must_remain_distinct": true,
+        "transport_only_not_complete": true,
+        "initial_business_cap": {
+          "starts": 1,
+          "requests": 6,
+          "seconds": 900
+        },
+        "business_budget_used": false
+      }
     },
     {
       "id": "A08",
@@ -2043,6 +2058,6 @@
       "release": null
     }
   ],
-  "next_task": "R07 NVML-free cold-start deployment control, independent evidence and bounded probes; then remaining R08-R10 and A/Q/G00 tasks. All tasks required before goal completion.",
-  "next": "R07 NVML-free cold-start deployment control, independent evidence and bounded probes; then remaining R08-R10 and A/Q/G00 tasks. All tasks required before goal completion."
+  "next_task": "A07 native model-produced refusal and complete output lifecycle while R07 maintenance remains pending; refresh cold plan only with fixed sources/current default; continue A10/A11/A12, R08-R10 and Q/G00 without stopping at a phase.",
+  "next": "A07 native model-produced refusal and complete output lifecycle while R07 maintenance remains pending; refresh cold plan only with fixed sources/current default; continue A10/A11/A12, R08-R10 and Q/G00 without stopping at a phase."
 }
