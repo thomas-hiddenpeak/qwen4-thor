@@ -50,11 +50,15 @@ inline std::string Kind(ObjectKind kind) {
       return "prompt";
     case ObjectKind::kInputSnapshot:
       return "input_snapshot";
+    case ObjectKind::kVectorStore:
+      return "vector_store";
+    case ObjectKind::kVectorStoreFile:
+      return "vector_store_file";
   }
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kInputSnapshot); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kVectorStoreFile); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

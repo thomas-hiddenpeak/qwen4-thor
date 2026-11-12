@@ -66,7 +66,8 @@ ObjectReply IoError(bool uncertain = false) {
 }
 bool ApplicationKind(std::string_view kind) {
   return kind == "chat" || kind == "response" || kind == "conversation" ||
-         kind == "item" || kind == "prompt" || kind == "batch";
+         kind == "item" || kind == "prompt" || kind == "batch" ||
+         kind == "vector_store" || kind == "vector_store_file";
 }
 ObjectReply SnapshotConflict() {
   return Error(409, "input_snapshot_reference_conflict",
@@ -286,6 +287,10 @@ class DiskStore {
     if (operation == "scan_batches") {
       auto pruned = Prune();
       return pruned.ok() ? ScanBatches(request) : pruned;
+    }
+    if (operation == "scan_vector_files") {
+      auto pruned = Prune();
+      return pruned.ok() ? ScanVectorFiles(request) : pruned;
     }
     if (operation == "batch") {
       auto pruned = Prune();
@@ -1272,6 +1277,68 @@ class DiskStore {
     return result;
   }
 
+  ObjectReply ScanVectorFiles(const Json& request) {
+    const auto after = request.GetString("after");
+    if (!after.empty() && !ValidFilename(after))
+      return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+    auto current = records_.upper_bound(after);
+    auto rows = Array();
+    std::string cursor = after;
+    size_t scanned = 0;
+    for (; current != records_.end() && scanned < 32 && rows.array.size() < 8;
+         ++current, ++scanned) {
+      cursor = current->first;
+      const auto& metadata = current->second;
+      if (metadata.kind != "vector_store_file") continue;
+      Json record;
+      if (!ReadKnown(current->first, metadata, &record)) return IoError();
+      const auto* data = record.Find("data");
+      const auto* file = data ? data->Find("file") : nullptr;
+      const auto* job = data ? data->Find("job") : nullptr;
+      if (!data || data->GetString("format") != "q4t.vector_store_file.v1" ||
+          !file || !job || file->GetString("status") != "in_progress")
+        continue;
+      const auto store_id = file->GetString("vector_store_id");
+      const auto parent = records_.find(metadata.owner + ".vector_store." +
+                                        store_id + ".json");
+      if (parent == records_.end()) continue;
+      Json root;
+      if (!ReadKnown(parent->first, parent->second, &root)) return IoError();
+      const auto* root_data = root.Find("data");
+      const auto* store = root_data ? root_data->Find("vector_store") : nullptr;
+      const auto* members = root_data ? root_data->GetArray("members") : nullptr;
+      if (!store || !members || members->array.size() > 10000 ||
+          (store->GetInt("expires_at") > 0 &&
+           store->GetInt("expires_at") <= std::time(nullptr)) ||
+          std::none_of(members->array.begin(), members->array.end(),
+                       [&](const auto& member) {
+                         return member.GetString("id") == metadata.id &&
+                                member.GetString("file_id") == file->GetString("id");
+                       }))
+        continue;
+      auto scope = data->GetString("scope");
+      if (scope.empty() || scope.size() > 256 || Digest(scope) != metadata.owner)
+        scope.clear();
+      rows.array.push_back(Object(
+          {{"id", String(metadata.id)}, {"scope", String(scope)},
+           {"owner_digest", String(metadata.owner)},
+           {"store_id", String(store_id)},
+           {"file_id", String(file->GetString("id"))},
+           {"state", String(job->GetString("state"))},
+           {"token", String(job->GetString("token"))},
+           {"owner", String(job->GetString("owner"))},
+           {"deadline_at", Number(job->GetInt("deadline_at"))},
+           {"execution_deadline_at", Number(job->GetInt("execution_deadline_at"))},
+           {"attempts", Number(job->GetInt("attempts"))}}));
+    }
+    ObjectReply result;
+    result.value = Object({{"data", std::move(rows)},
+                           {"cursor", String(cursor)},
+                           {"scanned", Number(scanned)},
+                           {"has_more", Boolean(current != records_.end())}});
+    return result;
+  }
+
   ObjectReply List(const Json& request) {
     const auto limit = request.GetInt("limit");
     const auto after = request.GetString("after"),
@@ -1474,10 +1541,7 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       if (reply.ok() && lose_application_ack) {
         const auto application = [](const Json& value) {
           const auto kind = value.GetString("kind");
-          return value.GetString("operation") == "put" &&
-                 (kind == "chat" || kind == "response" ||
-                  kind == "conversation" || kind == "item" ||
-                  kind == "prompt" || kind == "batch");
+          return value.GetString("operation") == "put" && ApplicationKind(kind);
         };
         if (application(request))
           for (;;) pause();

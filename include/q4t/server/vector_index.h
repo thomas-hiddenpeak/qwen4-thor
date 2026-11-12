@@ -30,6 +30,9 @@ struct VectorIndex {
 // backend identity requires reindexing, never a silent mixed-vector search.
 std::string VectorEmbeddingIdentity(size_t dimensions);
 std::string VectorIndexBinding(const VectorIndexIdentity& identity);
+io::Json VectorIndexIdentityJson(const VectorIndexIdentity& identity);
+bool ParseVectorIndexIdentity(const io::Json& value,
+                              VectorIndexIdentity* identity);
 
 // Boundaries are exact prefix byte lengths from decoding each raw token with
 // special tokens preserved. There are N+1 strictly increasing boundaries,

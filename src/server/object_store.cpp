@@ -91,7 +91,8 @@ bool ApplicationObject(ObjectKind kind) {
   return kind == ObjectKind::kChat || kind == ObjectKind::kResponse ||
          kind == ObjectKind::kConversation ||
          kind == ObjectKind::kConversationItem || kind == ObjectKind::kPrompt ||
-         kind == ObjectKind::kBatch;
+         kind == ObjectKind::kBatch || kind == ObjectKind::kVectorStore ||
+         kind == ObjectKind::kVectorStoreFile;
 }
 bool PreparePayload(const ObjectRequest& request) {
   return request.operation == ObjectOperation::kPut &&
@@ -519,6 +520,16 @@ ObjectReply ObjectStore::ScanBatches(std::string after,
                   false, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::ScanVectorFiles(
+    std::string after, Clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  if (after.size() > 320)
+    return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+  return Dispatch(OutputJson(Object({{"operation", String("scan_vector_files")},
+                                     {"after", String(std::move(after))}})),
+                  false, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::Retention(int64_t item_created_before, size_t limit,
                                    std::string expected_plan,
                                    Clock::time_point deadline,
@@ -717,6 +728,7 @@ std::string NewObjectId(ObjectKind kind) {
   if (kind == ObjectKind::kResponse) prefix = "resp";
   if (kind == ObjectKind::kConversation) prefix = "conv";
   if (kind == ObjectKind::kChat) prefix = "chatcmpl";
+  if (kind == ObjectKind::kVectorStore) prefix = "vs";
   unsigned char bytes[16];
   if (getrandom(bytes, sizeof(bytes), GRND_NONBLOCK) != sizeof(bytes))
     return {};

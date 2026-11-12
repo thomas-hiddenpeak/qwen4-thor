@@ -1,0 +1,11 @@
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp: In member function ‘q4t::server::ObjectReply q4t::server::{anonymous}::DiskStore::ScanVectorFiles(const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp:1337:83: error: missing initializer for member ‘q4t::server::ObjectReply::code’ [-Werror=missing-field-initializers]
+ 1337 |                                 {"has_more", Boolean(current != records_.end())}})};
+      |                                                                                   ^
+/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp:1337:83: error: missing initializer for member ‘q4t::server::ObjectReply::message’ [-Werror=missing-field-initializers]
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:611: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:205: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:212: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:148: q4t_host_tests] Error 2

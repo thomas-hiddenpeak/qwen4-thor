@@ -24,7 +24,9 @@ enum class ObjectKind {
   kBatch,
   kToolRun,
   kPrompt,
-  kInputSnapshot
+  kInputSnapshot,
+  kVectorStore,
+  kVectorStoreFile
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 
@@ -147,6 +149,10 @@ class ObjectStore {
   ObjectReply ScanBatches(std::string after,
                          std::chrono::steady_clock::time_point deadline,
                          const std::function<bool()>& cancelled = {});
+  // Trusted recovery metadata only; excludes document text, vectors and keys.
+  ObjectReply ScanVectorFiles(std::string after,
+                              std::chrono::steady_clock::time_point deadline,
+                              const std::function<bool()>& cancelled = {});
   // Trusted same-UID operator control only. Empty expected_plan inspects;
   // collection requires the exact prior plan digest and rechecks dependencies.
   ObjectReply Retention(int64_t item_created_before, size_t limit,

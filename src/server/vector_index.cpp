@@ -156,6 +156,30 @@ std::string VectorIndexBinding(const VectorIndexIdentity& identity) {
     return {};
   return result;
 }
+io::Json VectorIndexIdentityJson(const VectorIndexIdentity& identity) {
+  return Identity(identity) ? IdentityJson(identity) : Json();
+}
+bool ParseVectorIndexIdentity(const Json& value, VectorIndexIdentity* identity) {
+  *identity = {};
+  if (!InputFields(value, {"file_id", "filename", "source_sha256", "text_sha256",
+                           "backend_sha256", "dimensions",
+                           "max_chunk_size_tokens", "chunk_overlap_tokens"}))
+    return false;
+  VectorIndexIdentity result;
+  result.file_id = value.GetString("file_id");
+  result.filename = value.GetString("filename");
+  result.source_sha256 = value.GetString("source_sha256");
+  result.text_sha256 = value.GetString("text_sha256");
+  result.backend_sha256 = value.GetString("backend_sha256");
+  if (!Integer(value, "dimensions", C::kHidden, &result.dimensions) ||
+      !Integer(value, "max_chunk_size_tokens", 4096,
+               &result.chunking.max_tokens) ||
+      !Integer(value, "chunk_overlap_tokens", 2048,
+               &result.chunking.overlap_tokens) || !Identity(result))
+    return false;
+  *identity = std::move(result);
+  return true;
+}
 ObjectReply PlanVectorTokenChunks(std::string_view text,
                                   std::span<const size_t> boundaries,
                                   const VectorChunking& chunking,

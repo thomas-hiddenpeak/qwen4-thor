@@ -28,6 +28,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 最近完成的实现和验证
 
+- A11持久父对象/文件关联、原子计数与索引发布、过期/回收和有界
+  claim恢复状态已编码，[19项CPU已通过](evidence/serve-vector-stores-cpu-20261112/README.md)。实际提取/embedding
+  执行器、HTTP/SDK及Responses仍继续实施，当前未增公开能力。
 - A11原生资料检索开始成组实现：官方合同核对完成，参数、精确属性
   过滤及有界cosine/BM25排序16项CPU首过（0.026秒）；持久索引、
   API和Responses执行循环接着实现，尚未声明生产file_search可用。

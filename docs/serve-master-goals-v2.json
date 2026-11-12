@@ -1274,7 +1274,8 @@
       ],
       "evidence": [
         "evidence/serve-vector-search-foundation-20261112/README.md",
-        "evidence/serve-vector-index-cpu-20261112/README.md"
+        "evidence/serve-vector-index-cpu-20261112/README.md",
+        "evidence/serve-vector-stores-cpu-20261112/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1282,9 +1283,9 @@
       ],
       "plan": "SERVE_NATIVE_FILE_SEARCH_2026-11-12.md",
       "native_file_search": {
-        "state": "foundation_cpu_accepted_integration_pending",
+        "state": "index_and_store_cpu_accepted_integration_pending",
         "foundation_cpu_cases": 16,
-        "persistent_index": false,
+        "persistent_index": true,
         "production_routes": false,
         "responses_executor": false,
         "default_changed": false,
@@ -1298,8 +1299,21 @@
           "actual_storage_worker": true,
           "gpu_starts": 0,
           "file_ingestion_adapter": false,
-          "durable_store_parent": false,
+          "durable_store_parent": true,
           "production_routes": false
+        },
+        "durable_store": {
+          "state": "cpu_accepted_executor_integration_pending",
+          "evidence": "evidence/serve-vector-stores-cpu-20261112/README.md",
+          "cpu_cases": 19,
+          "actual_worker": true,
+          "actual_files": true,
+          "actual_lost_commit_receipt": true,
+          "private_recovery_scan": true,
+          "recovery_controller": false,
+          "ingestion_adapter": false,
+          "http": false,
+          "default_changed": false
         }
       }
     },

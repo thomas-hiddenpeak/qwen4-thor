@@ -199,6 +199,27 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
         else
           inspector.value.uncertain = true;
       }
+  } else if (kind == "vector_store" &&
+             data.GetString("format") == "q4t.vector_store.v1") {
+    const auto* store = data.Find("vector_store");
+    const auto* members = data.GetArray("members");
+    if (!store || !members || members->array.size() > 10000) {
+      inspector.value.uncertain = true;
+    } else {
+      inspector.value.references_before = store->GetInt("expires_at");
+      for (const auto& member : members->array)
+        inspector.Reference(member.Find("id"));
+    }
+  } else if (kind == "vector_store_file" &&
+             data.GetString("format") == "q4t.vector_store_file.v1") {
+    const auto* file = data.Find("file");
+    const auto status = file ? file->GetString("status") : "";
+    inspector.value.uncertain = status != "in_progress" && status != "completed" &&
+                                status != "failed" && status != "cancelled";
+    // Only the live owning store or an explicit bounded read hold retains
+    // this member. An abandoned job cannot protect an expired store forever.
+    inspector.value.collect_when_unreferenced = true;
+    if (file) inspector.Reference(file->Find("id"));
   } else if (kind == "batch" && data.GetString("format") == "q4t.batch.v1") {
     const auto* batch = data.Find("batch");
     const auto* pages = data.GetArray("pages");
@@ -329,7 +350,8 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   // Snapshot validation adds uncertainty; ordinary shape checks above must
   // never overwrite a malformed private dependency's conservative protection.
   if (kind == "response" || kind == "conversation" || kind == "item" ||
-      kind == "chat" || kind == "prompt" || kind == "batch") {
+      kind == "chat" || kind == "prompt" || kind == "batch" ||
+      kind == "vector_store" || kind == "vector_store_file") {
     inspector.Snapshots(data);
     inspector.Payloads(data);
   }
