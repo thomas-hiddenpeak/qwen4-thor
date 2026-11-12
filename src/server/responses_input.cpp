@@ -834,6 +834,28 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
            {"name", "description", "parameters", "strict", "format"})
         if (const auto* value = definition.Find(key); value && !value->IsNull())
           Set(&body, key, *value);
+      if (type == "custom") {
+        if (const auto* format = body.Find("format")) {
+          const bool grammar = format->GetString("type") == "grammar";
+          status = grammar
+                       ? InputFields(*format, {"type", "syntax", "definition"},
+                                     &error->param, at + ".format")
+                       : InputFields(*format, {"type"}, &error->param,
+                                     at + ".format");
+          if (!status) return status;
+          if (grammar) {
+            // Responses uses a flat format; Chat's internal custom format
+            // nests the same syntax/definition under grammar.
+            auto converted = Object();
+            for (const auto* key : {"syntax", "definition"})
+              if (const auto* value = format->Find(key))
+                Set(&converted, key, *value);
+            Set(&body, "format",
+                Object({{"type", String("grammar")},
+                        {"grammar", std::move(converted)}}));
+          }
+        }
+      }
       if (type == "function") {
         if (!body.Has("parameters"))
           Set(&body, "parameters",
@@ -906,11 +928,15 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                                           error->param.data() + end, index);
       if (parsed.ec == std::errc() && index < entries.size()) {
         auto suffix = error->param.substr(end + 1);
+        const bool custom = suffix.starts_with(".custom");
         for (const auto* part : {".function", ".custom"})
           if (suffix.starts_with(part)) {
             suffix.erase(0, std::char_traits<char>::length(part));
             break;
           }
+        if (custom && suffix.starts_with(".format.grammar"))
+          suffix.erase(std::string_view(".format").size(),
+                       std::string_view(".grammar").size());
         error->param = entries[index].path + suffix;
       }
     }

@@ -1237,3 +1237,27 @@ Q4T_TEST(responses_custom_output_projection_keeps_conversation_lifecycle) {
   }
   return true;
 }
+
+Q4T_TEST(responses_custom_grammar_standard_shape_reaches_generation_plan) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto config = Config();
+  config.structured = true;
+  ResponsesExecution run(objects);
+  auto request = Parse(R"({"input":"Use raw to read docs/MODEL.md",
+    "reasoning":{"effort":"none"},"parallel_tool_calls":false,
+    "tools":[{"type":"namespace","name":"project","description":"records",
+      "tools":[{"type":"custom","name":"raw","format":{"type":"grammar",
+        "syntax":"regex","definition":"read docs/MODEL\\.md"}}]}],
+    "tool_choice":{"type":"custom","name":"project.raw"}})");
+  Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+  const auto& generation = run.Generation();
+  Q4T_CHECK(generation.generation_request.GetArray("tools") &&
+            generation.generation_request.GetArray("tools")
+                    ->array[0]
+                    .Find("custom")
+                    ->Find("format")
+                    ->Find("grammar")
+                    ->GetString("syntax") == "regex");
+  return true;
+}

@@ -445,3 +445,46 @@ Q4T_TEST(responses_namespace_native_search_preserves_original_binding_index) {
   Q4T_CHECK(PlanOutputConstraints(chat, &constraints));
   return true;
 }
+
+Q4T_TEST(responses_custom_grammar_flat_format_preserves_public_definition) {
+  for (const bool namespaced : {false, true}) {
+    for (const auto* syntax : {"regex", "lark"}) {
+      const auto tool =
+          std::string(R"({"type":"custom","name":"raw","format":{)") +
+          R"("type":"grammar","syntax":")" + syntax +
+          R"(","definition":"read docs/MODEL.md"}})";
+      const auto tools =
+          namespaced
+              ? R"({"type":"namespace","name":"project","description":"records","tools":[)" +
+                    tool + "]}"
+              : tool;
+      const auto request = Read("{\"tools\":[" + tools + "]}");
+      Json normalized, choice, effective;
+      ChatPlanError error;
+      Q4T_CHECK(NormalizeResponsesTools(request, &normalized, &choice, &error,
+                                        &effective));
+      const auto* format = normalized.array[0].Find("custom")->Find("format");
+      Q4T_CHECK(format->Find("grammar")->GetString("syntax") == syntax &&
+                format->Find("grammar")->GetString("definition") ==
+                    "read docs/MODEL.md");
+      Q4T_CHECK(OutputJson(effective) == OutputJson(*request.Find("tools")));
+    }
+  }
+  for (const auto& [format, param] :
+       std::vector<std::pair<std::string, std::string>>{
+           {R"({"type":"grammar","syntax":"other","definition":"x"})",
+            "syntax"},
+           {R"({"type":"grammar","syntax":"regex","definition":""})",
+            "definition"},
+           {R"({"type":"text","syntax":"regex"})", "syntax"},
+           {R"({"type":"grammar","grammar":{}})", "grammar"}}) {
+    const auto request = Read(R"({"tools":[{"type":"namespace","name":"project",
+      "description":"records","tools":[{"type":"custom","name":"raw","format":)" +
+                              format + "}]}]}");
+    Json normalized, choice;
+    ChatPlanError error;
+    Q4T_CHECK(!NormalizeResponsesTools(request, &normalized, &choice, &error) &&
+              error.param == "tools[0].tools[0].format." + param);
+  }
+  return true;
+}

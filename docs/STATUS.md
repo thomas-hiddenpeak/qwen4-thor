@@ -29,6 +29,11 @@ PR #22基础实现已真实合入main（`ea0ad39a`，两项检查通过）。
 
 ## 最近完成的实现和验证
 
+- A07真实custom请求发现Responses/Chat grammar形状缺转换，已原生
+  [补齐并通过7项针对性CPU](evidence/serve-responses-custom-format-20261112/README.md)。
+  第二轮1启动1请求在生成前失败并清理；新引擎重验1启动6请求，累计
+  上限3启动10请求，默认rev94保持。继续所有master任务。
+
 - A07首轮函数调用/结果拒绝/真实资料JSON闭环通过；整体因SDK分页桥接
   丢游标FAILED，服务线包正确。[修复后6条CPU回放通过](evidence/serve-tool-identity-business-prefix-20261112/README.md)。
   首轮1启动3请求52.758秒已清理；只补custom的1启动3请求，rev94保持。
