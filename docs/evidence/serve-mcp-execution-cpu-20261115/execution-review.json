@@ -1,0 +1,101 @@
+{
+  "scope": "Responses MCP execution owner: private credentials, exact owned listing, single dispatch, approvals and durable retries, output events, preparation restoration, errors, moderation and shared native budget. Basic owner CPU exercised with actual local MCP HTTP; public SDK/GPU/recovery/delivery and required combinations remain.",
+  "sources": {
+    "CMakeLists.txt": {
+      "before": "f1e218415b937073a9d467b26dfb59abdf43de41d6001d54e0607f914fd2d870",
+      "after": "950047c5e90ef9ee56945a554997ade5e8b7185906edc7075b70c4167c1d74fa"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "7659e7e41444b5be66500b62c179968b23e236e9ae5238dd055cc83dfde7b423",
+      "after": "c6e910d5e0c1e4879b53ccafa92149faf1d1b23e7bbeefffdea6afb5bdce17e3"
+    },
+    "include/q4t/server/responses_execution.h": {
+      "before": "19a36ae77f7768d10c4401002690812842aa657fc1ceb067234cefbc3ea93725",
+      "after": "09876319bf552c04dbc588f25ba294b2504b8821d4fcd1cb58158a5116c9485a"
+    },
+    "include/q4t/server/responses_input.h": {
+      "before": "fab67f495d1ffd4dc4c2248a1de8f0cc845b47be1cd410fedd00b556f704280a",
+      "after": "10fb358dcba81a5ea08b1491050389b0660bacb9bdd3fbc4b9b476269f5cf587"
+    },
+    "include/q4t/server/responses_mcp.h": {
+      "before": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf",
+      "after": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4"
+    },
+    "include/q4t/server/responses_mcp_state.h": {
+      "before": "97a4bd805561d9f3f964b01fe36e47ca9a286d0174ea5c888fcfa4fb0a1bb371",
+      "after": "7315eb8e9c7a461b12fa655720ae75f610e6564e31190896a9b9344db3d3156d"
+    },
+    "include/q4t/server/responses_state.h": {
+      "before": "64196334ba93428071e04d9630673d15a3f58e01c0272d5c0a6ae78577904de2",
+      "after": "22d66487e2bad57919e63860fd64435db4e4c66e3ea1ef143d24d19d1a40daa9"
+    },
+    "include/q4t/server/responses_tool_search.h": {
+      "before": "22d28add469fdeab521ce7a2c45b961c20d15ad81712c8fd2e00423402e33e2a",
+      "after": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f"
+    },
+    "src/server/batch_budget.cpp": {
+      "before": "111c3c8619ec8a2f88c16cb1e829a61ad617703af57a762f3f7b14906ab791b3",
+      "after": "57c0c4272be92b8883f5c5bd3809df5d6754d7f3607558fb3c613f95f1f97611"
+    },
+    "src/server/chat_generation.cpp": {
+      "before": "0d908482e8079f95c474901366c297544aa778052b2273d15c61de56595865d7",
+      "after": "6c7a1720678db080de4da118f17fa3d3e19f9131115393b233f4d8d64a9bf022"
+    },
+    "src/server/moderation.cpp": {
+      "before": "101571d57bd094560859c4d85dd7896ef7a40eb7710ed493a6c0bc915d88646c",
+      "after": "e42cfbef07960d87c4d30502d886550c7bef1e9b7ef5d1c5176fe9ea91c15a33"
+    },
+    "src/server/object_retention.cpp": {
+      "before": "10583be99f3c36523399f759e7025925c3bd4f4a78ce4049426f9aafdde12308",
+      "after": "3f8c6c1663e6d7df92976f0e95b000783fffd9cc0606e545c1d41df3a3d254c8"
+    },
+    "src/server/responses_execution.cpp": {
+      "before": "5042eaed1b135c45da9de40fb68a09fc98b4da54f22cb20599a80276a4aab736",
+      "after": "0e896b4225169edcfae75099edebba90871ee19b13ca15be4ce95de75a92d6ff"
+    },
+    "src/server/responses_execution_inputs.cpp": {
+      "before": "734d9d81a2659e40026be9c5979d6708f887d1ad0a906712d01844657c8848eb",
+      "after": "ada01229a4f0e6988945f6e1dda37f28a5eb6feed276cbe17a2d2508c773af42"
+    },
+    "src/server/responses_execution_moderation.cpp": {
+      "before": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
+      "after": "6b235c9d2956f752d8c5ddb76aa9bc16f152ad6bdf90a1ecbf5a874f5fa86732"
+    },
+    "src/server/responses_file_search_execution.cpp": {
+      "before": "9e1602cfccb2893858cf19901c52e58624d2ea6b093ea2fb2c7fbbdee45a6837",
+      "after": "cbce441ce36d67580bf166d34e8f856c870bf24aa0827fc5ef6782f29407a70c"
+    },
+    "src/server/responses_input.cpp": {
+      "before": "00ff61b6d1b6000f7f358f1515c9900efe58b363b0b7bf1bb6e43647a212d60c",
+      "after": "a3d51c3fce1d7962bc2006aacd2b77cde68d4e5c21b5b3dd5b8ce58eaf71a44b"
+    },
+    "src/server/responses_mcp.cpp": {
+      "before": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9",
+      "after": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04"
+    },
+    "src/server/responses_mcp_execution.cpp": {
+      "before": null,
+      "after": "6798e71a78f570ceea98c8112bc2600f9bad90ef7e9f22ff3665f36fc35a72f1"
+    },
+    "src/server/responses_mcp_preparation.cpp": {
+      "before": null,
+      "after": "5e998f8f4682cd2409bb9839e6e5529fe3e6044f3bfd180a88a36623d27f4b89"
+    },
+    "src/server/responses_mcp_state.cpp": {
+      "before": "05f6ca55ad0cf7e167bc8ecfcd593ea7848fc23cd149174b9c517bfe382fa709",
+      "after": "0aec62430f669e4410a35453eba7ce4fed4bcb92fc7033b00d862b10a98e94ff"
+    },
+    "src/server/responses_state.cpp": {
+      "before": "d28d4e47b6f6947418d5d984e65e1a92c64aafdcf026a6a1e479dacd05db5f5c",
+      "after": "49feadc0dc2dd5a10065ad2fe3312139fb23402d341b01c487ee9ac0193042cc"
+    },
+    "src/server/responses_tool_catalog_history.cpp": {
+      "before": "6bbe646d37de50dd5c0c5f7d4d4bbb06c2681c02653243ab50b6a926fb524ce4",
+      "after": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5"
+    },
+    "src/server/responses_tool_search_execution.cpp": {
+      "before": "db8c125522dd1f9e68d2b5d26e9a883a49bd244d33f2d104816c2d834c09c4d6",
+      "after": "720e4904ff5585a46078303874226d2a60c4114408ca0e1799eccf17e14983c1"
+    }
+  }
+}

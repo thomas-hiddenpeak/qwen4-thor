@@ -229,6 +229,22 @@ Status CollectModerationOutput(const io::Json& items,
       if (!data || !data->IsString())
         return Invalid(error, "output", "Missing generated tool argument data");
       status = collector.Text("tool_arguments", data->str);
+    } else if (type == "mcp_list_tools" || type == "mcp_call" ||
+               type == "mcp_approval_request") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                          error, "output." + type);
+      if (!status) return status;
+      // Catalogs are input definitions, not generated argument/result data.
+      if (type != "mcp_list_tools") {
+        status = collector.Text("mcp_arguments", item.GetString("arguments"));
+        for (const auto* key : {"output", "error"}) {
+          const auto* value = item.Find(key);
+          if (!status || !value || value->IsNull()) continue;
+          status = collector.Text("mcp_result", value->IsString()
+                                                    ? value->str
+                                                    : OutputJson(*value));
+        }
+      }
     } else if (type == "program" || type == "program_output") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
                                           error, "output." + type);

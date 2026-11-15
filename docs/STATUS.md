@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP实际执行拥有者22项CPU首过](evidence/serve-mcp-execution-cpu-20261115/README.md)：
+  本地HTTP调用、审批/续接/不重放、冻结目录与凭据隔离、故障后文本
+  续答和审核组合已验证；7项来源负控通过、0GPU、rev126保持。
+  Batch/程序/媒体/恢复等组合及SDK/真实模型业务继续，尚未发行MCP。
+
 - [MCP请求规划与历史组合19项CPU最终通过](evidence/serve-mcp-planning-cpu-20261115/README.md)：
   工具发现按server_label、原schema/选择、审批/失败历史及截断/压缩
   依赖已接线；首次两项夹具失败保留，修后仅补2项。7项来源负控

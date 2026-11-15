@@ -103,6 +103,37 @@ Json Record(ObjectStore& store, std::string id) {
 }
 }  // namespace
 
+Q4T_TEST(
+    responses_mcp_credentials_must_be_resupplied_and_http_error_is_standard) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto catalog = Catalog(state, definition);
+  auto proposed = Propose(state, catalog, definition);
+  Q4T_CHECK(Ok(proposed));
+  const auto id = proposed.value.GetString("id");
+  ResponsesMcpDefinition anonymous;
+  ChatPlanError error;
+  Q4T_CHECK(
+      PlanResponsesMcpDefinition(definition.declaration, &anonymous, &error));
+  Q4T_CHECK(state.Permit(id, anonymous, Access()).code ==
+            "mcp_credentials_required");
+  Q4T_CHECK(state.Inspect(id, Access()).value.GetString("state") == "ready");
+  const auto permit = state.Permit(id, definition, Access());
+  Q4T_CHECK(Ok(permit));
+  auto receipt = Success(permit.value.GetString("dispatch_id"));
+  receipt.outcome_unknown = true;
+  auto transport = Error(502, "mcp_http_error", "Remote request failed");
+  transport.value = Object({{"upstream_status", Number(503)}});
+  const auto finished = state.Finish(id, receipt, transport, Access());
+  Q4T_CHECK(Ok(finished) && finished.value.GetString("status") == "failed");
+  Q4T_CHECK(finished.value.Find("error")->GetString("type") == "http_error" &&
+            finished.value.Find("error")->GetInt("code") == 503 &&
+            state.Inspect(id, Access()).value.GetString("state") == "unknown");
+  return true;
+}
+
 Q4T_TEST(responses_mcp_state_catalog_rejects_forgery_scope_and_model) {
   Fixture f;
   ObjectStore objects(f.options);

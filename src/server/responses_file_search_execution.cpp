@@ -174,14 +174,23 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || output_used < 0 ||
+      PendingToolSearch() || PendingPrograms() || PendingMcp() || output_used < 0 ||
       output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
   auto history = generation_history_;
   const auto& output = output_.Snapshot().GetArray("output")->array;
-  history.array.insert(history.array.end(), output.begin(), output.end());
+  for (const auto& item : output) {
+    if (item.GetString("type").starts_with("mcp_") &&
+        std::any_of(history.array.begin(), history.array.end(),
+                    [&](const auto& old) {
+                      return old.GetString("id") == item.GetString("id") &&
+                             OutputJson(old) == OutputJson(item);
+                    }))
+      continue;  // Exact owned catalog or retried terminal approval result.
+    history.array.push_back(item);
+  }
   ChatPlanError error;
   auto choice = envelope.request.Find("tool_choice")
                     ? *envelope.request.Find("tool_choice")
@@ -198,6 +207,9 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
                 {"tools", Array({Object({{"type", String("file_search")}})})}});
   if (choice.GetString("type") == "programmatic_tool_calling")
     choice = String("auto");
+  if (choice.GetString("type") == "mcp")
+    choice = Object({{"type", String("allowed_tools")},
+                     {"mode", String("auto")}, {"tools", Array({choice})}});
   if (choice.GetString("type") == "allowed_tools")
     Set(&choice, "mode", String("auto"));
   envelope.native_tools_exhausted = exhausted;

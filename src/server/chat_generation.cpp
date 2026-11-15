@@ -1256,11 +1256,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const int response_steps =
       7 +
       (responses && (responses->HasFileSearch() || responses->HasToolSearch() ||
-                     responses->HasPrograms())
+                     responses->HasPrograms() || responses->HasMcp())
            ? ResponsesExecution::kMaxNativeToolCalls
            : 0) +
       (responses && (responses->HasAsyncTools() || responses->HasToolSearch() ||
-                     responses->HasPrograms())
+                     responses->HasPrograms() || responses->HasMcp())
            ? 1
            : 0);
   for (int choice_index = 0;
@@ -1301,7 +1301,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (http) http->StartHeartbeats(control);
       }
     }
-    if (responses && !cache_prewarm && responses->PendingProgramResume() &&
+    if (responses && !cache_prewarm &&
+        (responses->PendingProgramResume() || responses->PendingMcpResume()) &&
         (response_step == ResponseStep::kPrimary ||
          response_step == ResponseStep::kPro)) {
       std::string wire;
@@ -1316,7 +1317,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (http) http->StartHeartbeats(control);
       }
       bool client_wait = false;
-      if (result.ok())
+      if (result.ok() && responses->PendingMcpResume())
+        result = responses->RunMcpApprovals([&](const std::string& part) {
+          return !stream || write_stream(part);
+        });
+      if (result.ok() && responses->PendingProgramResume())
         result = responses->RunPrograms(0, &client_wait,
                                         [&](const std::string& part) {
                                           return !stream || write_stream(part);
@@ -4372,6 +4377,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           result = responses->RunPrograms(response_parser.CompletedToolCalls(),
                                           &program_wait, publish);
           client_wait |= program_wait;
+        }
+        if (result.ok() && responses->PendingMcp()) {
+          bool mcp_wait = false;
+          result = responses->RunMcp(response_parser.CompletedToolCalls(),
+                                     &mcp_wait, publish);
+          client_wait |= mcp_wait;
         }
         answer = !client_wait &&
                  native_calls == response_parser.CompletedToolCalls();

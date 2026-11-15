@@ -51,6 +51,7 @@ ObjectReply ResponsesExecution::FreezeInputs(Json* inputs) {
               {"own_input", plan_.own_input},
               {"input_snapshots", plan_.input_snapshots},
               {"tool_contracts", plan_.tool_contracts},
+              {"mcp_catalogs", plan_.mcp_catalogs},
               {"request", plan_.request},
               {"options", envelope_.options},
               {"conversation_id", String(plan_.conversation_id)},
@@ -144,6 +145,8 @@ ObjectReply ResponsesExecution::RestoreInputs(
   plan_.store = store->boolean;
   plan_.ephemeral = ephemeral->boolean;
   plan_.request = *request;
+  if (const auto* catalogs = inputs.Find("mcp_catalogs"))
+    plan_.mcp_catalogs = *catalogs;
   plan_.history = *history;
   plan_.own_input = *own;
   plan_.conversation_id = envelope_.conversation_id;

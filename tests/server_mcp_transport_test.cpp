@@ -17,6 +17,7 @@
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_mcp_state.h"
+#include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
 
 namespace {
@@ -333,8 +334,8 @@ Q4T_TEST(mcp_transport_call_waits_for_durable_permission) {
     unknown.commit_unknown = true;
     return unknown;
   });
-  Q4T_CHECK(result.code == "mcp_state_commit_unknown" && result.commit_unknown &&
-            !receipt.call_permitted && !server.calls);
+  Q4T_CHECK(result.code == "mcp_state_commit_unknown" &&
+            result.commit_unknown && !receipt.call_permitted && !server.calls);
   Q4T_CHECK(Invoke(server, &receipt, "tools/call").ok());
   Q4T_CHECK(receipt.call_permitted && !receipt.outcome_unknown &&
             server.calls == 1);
@@ -363,15 +364,17 @@ Q4T_TEST(mcp_transport_actual_call_requires_owned_persisted_approval) {
   ResponsesMcpDefinition definition;
   ChatPlanError error;
   Q4T_CHECK(PlanResponsesMcpDefinition(
-      Object({{"type", String("mcp")}, {"server_label", String("project")},
+      Object({{"type", String("mcp")},
+              {"server_label", String("project")},
               {"server_url", String(server.Endpoint().url)}}),
       &definition, &error));
   McpTransportReceipt receipt;
   Q4T_CHECK(Invoke(server, &receipt).ok());
-  auto catalog = state.Catalog(definition, *receipt.result.Find("tools"), access());
+  auto catalog =
+      state.Catalog(definition, *receipt.result.Find("tools"), access());
   Q4T_CHECK(catalog.ok());
   auto proposed = state.Propose(catalog.value, definition, "read_project",
-                                 *Call().Find("arguments"), "direct", access());
+                                *Call().Find("arguments"), "direct", access());
   Q4T_CHECK(proposed.ok());
   const auto id = proposed.value.GetString("id");
   const auto permit = [&] { return state.Permit(id, definition, access()); };
@@ -382,8 +385,8 @@ Q4T_TEST(mcp_transport_actual_call_requires_owned_persisted_approval) {
   server.handler = [&](const Request& request, int, std::stop_token) {
     if (request.rpc.GetString("method") == "tools/call") {
       const auto record = state.Inspect(id, access());
-      saw_durable_permission = record.ok() &&
-          record.value.GetString("state") == "dispatching" &&
+      saw_durable_permission =
+          record.ok() && record.value.GetString("state") == "dispatching" &&
           record.value.Find("decision")->GetBool("approve");
     }
     return false;
@@ -715,5 +718,343 @@ Q4T_TEST(mcp_transport_session_cleanup_failure_preserves_known_result) {
   Q4T_CHECK(Invoke(server, &receipt, "tools/call").ok());
   Q4T_CHECK(receipt.call_permitted && !receipt.outcome_unknown &&
             server.calls == 1);
+  return true;
+}
+
+namespace {
+struct ExecutionFixture {
+  ObjectStoreOptions options;
+  explicit ExecutionFixture() {
+    const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+    auto root =
+        std::filesystem::absolute(output ? output : ".q4t-work/mcp-cpu");
+    std::filesystem::create_directories(root);
+    auto directory = (root / "mcp-execution-XXXXXX").string();
+    if (!mkdtemp(directory.data()))
+      throw std::runtime_error("MCP fixture path");
+    options.directory = directory + "/objects";
+    options.restart_backoff_ms = 0;
+  }
+};
+StateAccess ExecutionAccess() {
+  return {"client:mcp-execution", Clock::now() + 10s, {}};
+}
+ChatPlanConfig ExecutionConfig(const Server& server) {
+  ChatPlanConfig config;
+  config.model = "cpu-mcp";
+  config.structured = true;
+  auto files = std::make_shared<FileExpansionOptions>();
+  files->fetch = server.Options();
+  config.file_inputs = files;
+  return config;
+}
+Json ExecutionRequest(const Server& server, std::string approval = "never",
+                      bool credentials = true) {
+  auto tool = Object({{"type", String("mcp")},
+                      {"server_label", String("project")},
+                      {"server_url", String(server.Endpoint().url)},
+                      {"require_approval", String(std::move(approval))}});
+  if (credentials) {
+    Set(&tool, "authorization", String("mcp-request-secret"));
+    Set(&tool, "headers", Object({{"X-Private", String("mcp-header-secret")}}));
+  }
+  return Object({{"input", String("Read the project document")},
+                 {"reasoning", Object({{"effort", String("none")}})},
+                 {"tools", Array({std::move(tool)})}});
+}
+bool ExecutionOk(const ObjectReply& reply) {
+  if (!reply.ok() || reply.commit_unknown)
+    std::fprintf(stderr, "MCP execution: %s: %s (%s)\n", reply.code.c_str(),
+                 reply.message.c_str(), reply.value.GetString("param").c_str());
+  return reply.ok() && !reply.commit_unknown;
+}
+bool ModelCall(ResponsesExecution* run, bool partial, std::string* wire) {
+  const auto* tools = run->Generation().generation_request.GetArray("tools");
+  if (!tools || tools->array.size() != 1) return false;
+  ResponseDelta start;
+  start.kind = ResponseDelta::Kind::kTool;
+  start.tool_start = true;
+  start.call.index = 0;
+  start.call.id = "model_call_1";
+  start.call.name = tools->array[0].Find("function")->GetString("name");
+  start.call.arguments = " { \"path\" : ";
+  if (!run->Append(start, "", wire)) return false;
+  if (partial) return true;
+  start.tool_start = false;
+  start.call.arguments = "\"docs/MODEL.md\" } ";
+  std::string part;
+  if (!run->Append(start, "", &part)) return false;
+  *wire += part;
+  return true;
+}
+bool FinishExecution(ResponsesExecution* run, size_t calls = 0) {
+  ResponseDelta text;
+  text.kind = ResponseDelta::Kind::kContent;
+  text.text = "CPU executor final reply";
+  std::string wire;
+  return run->Append(text, "", &wire) &&
+         ExecutionOk(run->Finish(false, calls, {}, 43, &wire));
+}
+bool ContinueExecution(ResponsesExecution* run, const ChatPlanConfig& config) {
+  ResponsesGenerationPlan next;
+  return ExecutionOk(run->ContinueFileSearch(
+      8, config, [](const auto&, auto*) { return q4t::Status{}; }, &next));
+}
+Json ApprovalResponse(const Json& request, const Json& approval, bool approve,
+                      const std::string& previous) {
+  auto next = request;
+  Set(&next, "previous_response_id", String(previous));
+  Set(&next, "input",
+      Array({Object({{"type", String("mcp_approval_response")},
+                     {"approval_request_id", *approval.Find("id")},
+                     {"approve", Boolean(approve)}})}));
+  return next;
+}
+}  // namespace
+
+Q4T_TEST(
+    responses_mcp_execution_streams_actual_call_and_keeps_credentials_private) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesExecution run(objects);
+  const auto config = ExecutionConfig(server);
+  Q4T_CHECK(ExecutionOk(
+      run.Prepare(ExecutionRequest(server), config, ExecutionAccess(), 42)));
+  Q4T_CHECK(run.HasMcp() && run.VariableInputSteps());
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(run.FreezeInputs(&frozen)));
+  const auto encoded = OutputJson(frozen);
+  Q4T_CHECK(encoded.find("mcp-request-secret") == encoded.npos &&
+            encoded.find("mcp-header-secret") == encoded.npos &&
+            frozen.GetArray("mcp_catalogs")->array.size() == 1);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)));
+  Q4T_CHECK(wire.find("response.mcp_list_tools.completed") != wire.npos);
+  Q4T_CHECK(ModelCall(&run, false, &wire));
+  Q4T_CHECK(wire.find("response.mcp_call_arguments.delta") != wire.npos &&
+            wire.find("function_call") == wire.npos && server.calls == 0);
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, [&](const auto& part) {
+    wire += part;
+    return true;
+  })));
+  Q4T_CHECK(!waiting && server.calls == 1 && !run.PendingMcp());
+  const auto& call = run.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(
+      call.GetString("type") == "mcp_call" &&
+      call.GetString("status") == "completed" &&
+      call.GetString("arguments") == " { \"path\" : \"docs/MODEL.md\" } " &&
+      call.GetString("output").find("document result") != std::string::npos);
+  ModerationContent moderation;
+  ChatPlanError moderation_error;
+  Q4T_CHECK(CollectModerationOutput(*run.Output().Snapshot().Find("output"),
+                                    &moderation, &moderation_error));
+  Q4T_CHECK(moderation.text &&
+            OutputJson(moderation.records).find("document result") !=
+                std::string::npos);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+  Q4T_CHECK(run.ResultJson().find("mcp-request-secret") == std::string::npos);
+  for (const auto& request : server.Requests())
+    if (request.rpc.GetString("method") == "tools/call")
+      Q4T_CHECK(request.headers.at("authorization") ==
+                    "Bearer mcp-request-secret" &&
+                request.headers.at("x-private") == "mcp-header-secret");
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_invalid_history_fails_before_network_and_stored_items_strip_secrets) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ExecutionRequest(server);
+  auto tool = request.GetArray("tools")->array[0];
+  Set(&tool, "defer_loading", Boolean(true));
+  Set(&request, "tools",
+      Array({tool, Object({{"type", String("tool_search")}})}));
+  Set(&request, "input",
+      Array({Object({{"type", String("function_call_output")},
+                     {"call_id", String("orphan")},
+                     {"output", String("fake result")}})}));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(!run.Prepare(request, config, ExecutionAccess(), 42).ok());
+  Q4T_CHECK(server.Requests().empty());
+  ResponsesState state(objects);
+  const auto resolved =
+      state.ResolveItems(Array({Object({{"type", String("additional_tools")},
+                                        {"role", String("developer")},
+                                        {"tools", Array({tool})}})}),
+                         ExecutionAccess(), 20);
+  Q4T_CHECK(ExecutionOk(resolved));
+  Q4T_CHECK(OutputJson(resolved.value).find("mcp-request-secret") ==
+                std::string::npos &&
+            OutputJson(resolved.value).find("mcp-header-secret") ==
+                std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_execution_approval_resume_and_retry_never_repeat_call) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  const auto request = ExecutionRequest(server, "always");
+  ResponsesExecution first(objects);
+  Q4T_CHECK(ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunMcp(1, &waiting, {})) && waiting &&
+            !server.calls);
+  const auto approval =
+      first.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(approval.GetString("type") == "mcp_approval_request");
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(ExecutionOk(
+      resumed.Prepare(ApprovalResponse(request, approval, true, first.Id()),
+                      config, ExecutionAccess(), 44)));
+  Q4T_CHECK(resumed.PendingMcpResume() && ExecutionOk(resumed.Begin(&wire)));
+  Q4T_CHECK(ExecutionOk(resumed.RunMcpApprovals({})) && server.calls == 1 &&
+            !resumed.PendingMcpResume());
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  ResponsesExecution retry(objects);
+  Q4T_CHECK(ExecutionOk(
+      retry.Prepare(ApprovalResponse(request, approval, true, resumed.Id()),
+                    config, ExecutionAccess(), 45)));
+  Q4T_CHECK(ExecutionOk(retry.Begin(&wire)) &&
+            ExecutionOk(retry.RunMcpApprovals({})) && server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&retry, config) && FinishExecution(&retry));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_execution_denial_and_truncation_do_not_dispatch) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  const auto request = ExecutionRequest(server, "always");
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunMcp(1, &waiting, {})) && waiting);
+  const auto approval =
+      first.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  ResponsesExecution denied(objects);
+  Q4T_CHECK(ExecutionOk(denied.Prepare(
+                ApprovalResponse(request, approval, false, first.Id()), config,
+                ExecutionAccess(), 44)) &&
+            ExecutionOk(denied.Begin(&wire)));
+  Q4T_CHECK(
+      ExecutionOk(denied.RunMcpApprovals({})) && !server.calls &&
+      denied.Output().Snapshot().GetArray("output")->array.back().GetString(
+          "status") == "failed");
+  Q4T_CHECK(ContinueExecution(&denied, config) && FinishExecution(&denied));
+  ResponsesExecution partial(objects);
+  Q4T_CHECK(ExecutionOk(partial.Prepare(ExecutionRequest(server), config,
+                                        ExecutionAccess(), 42)) &&
+            ExecutionOk(partial.Begin(&wire)) &&
+            ModelCall(&partial, true, &wire));
+  Q4T_CHECK(ExecutionOk(partial.Finish(true, 0, {}, 43, &wire)) &&
+            !server.calls);
+  Q4T_CHECK(wire.find("response.mcp_call_arguments.done") == wire.npos);
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_prepared_restore_reuses_catalog_and_requires_credentials) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  for (const bool credentials : {true, false}) {
+    ResponsesExecution first(objects);
+    auto request = ExecutionRequest(server, "never", credentials);
+    Q4T_CHECK(
+        ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+    Json frozen;
+    Q4T_CHECK(ExecutionOk(first.FreezeInputs(&frozen)));
+    const auto before = server.Requests().size();
+    ResponsesExecution restored(objects);
+    const auto result =
+        restored.RestoreInputs(frozen, config, ExecutionAccess(), 42);
+    if (credentials) {
+      Q4T_CHECK(result.code == "mcp_credentials_required" &&
+                result.http_status == 400);
+    } else {
+      Q4T_CHECK(ExecutionOk(result) && restored.HasMcp());
+      std::string wire;
+      Q4T_CHECK(ExecutionOk(restored.Begin(&wire)) &&
+                FinishExecution(&restored));
+    }
+    Q4T_CHECK(server.Requests().size() == before && !server.calls);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_list_failure_and_moderation_preserve_core_text) {
+  Server server;
+  server.handler = [](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list") return false;
+    Send(fd, Http(503));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.Prepare(ExecutionRequest(server), config,
+                                    ExecutionAccess(), 42)) &&
+            !run.HasMcp());
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)));
+  Q4T_CHECK(wire.find("response.mcp_list_tools.failed") != wire.npos);
+  Q4T_CHECK(ExecutionOk(run.HoldUnreviewedOutput()));
+  run.DiscardUnreviewedOutput();
+  Q4T_CHECK(FinishExecution(&run) && !server.calls);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_remote_unknown_is_durable_and_does_not_retry) {
+  Server server;
+  server.handler = [&](const Request& request, int, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    return true;  // Connection lost after accepting the call.
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(
+      run.Prepare(ExecutionRequest(server), config, ExecutionAccess(), 42)));
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  const auto call = run.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(call.GetString("status") == "failed" &&
+            OutputJson(*call.Find("error")).find("mcp_result_unknown") !=
+                std::string::npos);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+  ResponsesMcpState state(objects, config);
+  const auto durable = state.Inspect(call.GetString("id"), ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(durable) &&
+            durable.value.GetString("state") == "unknown");
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      ExecutionRequest(server).GetArray("tools")->array.front(), &definition,
+      &error));
+  Q4T_CHECK(
+      !state.Permit(call.GetString("id"), definition, ExecutionAccess()).ok() &&
+      server.calls == 1);
   return true;
 }

@@ -14,6 +14,34 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
   auto status =
       PlanResponsesFileSearchBindings(request, &file_search_bindings_, error);
   if (!status) return status;
+  status = PlanResponsesMcpRequestBindings(
+      Object({{"tools", active}, {"input", generation_history_}}),
+      &mcp_bindings_, error);
+  if (!status) return status;
+  for (auto& binding : mcp_bindings_) {
+    const auto catalog = std::find_if(
+        generation_history_.array.begin(), generation_history_.array.end(),
+        [&](const auto& item) { return item.GetString("id") == binding.catalog_id; });
+    ResponsesMcpDefinition definition;
+    for (const auto& tool : active.array)
+      if (tool.GetString("type") == "mcp" &&
+          tool.GetString("server_label") == binding.server_label) {
+        status = PlanResponsesMcpDefinition(tool, &definition, error);
+        if (!status) return status;
+        break;
+      }
+    if (!mcp_state_ || catalog == generation_history_.array.end())
+      return Status::Fail("Missing owned MCP catalog");
+    auto opened = mcp_state_->OpenCatalog(*catalog, definition, access_);
+    if (!opened.ok()) {
+      *error = {opened.code, "tools", opened.http_status};
+      return Status::Fail(opened.message);
+    }
+    const auto& original = *opened.value.Find("declaration");
+    binding.approval |= ResponsesMcpApprovalRequired(original, binding.tool);
+    binding.direct &= ResponsesToolAllows(original, "direct");
+    binding.programmatic &= ResponsesToolAllows(original, "programmatic");
+  }
   std::vector<ResponsesToolIdentity> identities;
   status = PlanResponsesToolIdentities(request, &identities, error);
   if (!status) return status;

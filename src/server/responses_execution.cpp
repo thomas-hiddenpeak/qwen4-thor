@@ -52,6 +52,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
                             &plan_.own_input,
                             &plan_.input_snapshots,
                             &plan_.tool_contracts,
+                            &plan_.mcp_catalogs,
+                            &mcp_resume_,
                             &plan_.conversation,
                             &plan_.execution_owner,
                             &envelope_.request,
@@ -94,6 +96,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   bytes += file_search_argument_bytes_;
   bytes += tool_search_argument_bytes_;
   bytes += program_argument_bytes_;
+  bytes += mcp_argument_bytes_;
   for (const auto& program : programs_) {
     for (const auto* value : {&program.program, &program.tools,
                               &program.worker_input, &program.terminal})
@@ -105,6 +108,15 @@ size_t ResponsesExecution::RetainedInputBytes() const {
              OutputJson(binding.tool.search.filters).size();
     for (const auto& id : binding.tool.store_ids) bytes += id.size();
   }
+  for (const auto& definition : mcp_credentials_) {
+    bytes += OutputJson(definition.declaration).size() +
+             definition.credentials.url.size() +
+             definition.credentials.authorization.size();
+    for (const auto& [name, value] : definition.credentials.headers)
+      bytes += name.size() + value.size();
+  }
+  for (const auto& binding : mcp_bindings_)
+    bytes += OutputJson(binding.function).size() + OutputJson(binding.tool).size();
   return bytes;
 }
 
@@ -145,6 +157,8 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   }
   auto required = RequiredExecutors(background_executor);
   if (!required.ok()) return required;
+  auto credentials = CaptureMcpCredentials();
+  if (!credentials.ok()) return credentials;
   auto resolved = state_.Resolve(envelope_, access_, &plan_);
   if (!resolved.ok()) return resolved;
   return PlanGeneration(config, created);
@@ -249,6 +263,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   }
   ChatPlanError error;
   Json effective_tools;
+  auto mcp = PrepareMcp(config);
+  if (!mcp.ok()) return mcp;
   auto status = PlanResponsesFileSearchBindings(envelope_.request,
                                                 &file_search_bindings_, &error);
   if (status)
@@ -428,6 +444,11 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   size_t bytes = event_bytes_;
   std::string start;
   auto status = candidate.Start(&start);
+  if (status && !envelope_.background) {
+    std::string catalogs;
+    status = BeginMcpCatalogs(&candidate, &catalogs);
+    start += catalogs;
+  }
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
   if (plan_.store && require_cleanup_ && !cleanup_)
@@ -490,6 +511,11 @@ ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
   size_t bytes = event_bytes_;
   std::string start;
   auto status = candidate.StartRunning(&start);
+  if (status) {
+    std::string catalogs;
+    status = BeginMcpCatalogs(&candidate, &catalogs);
+    start += catalogs;
+  }
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
   auto result = BindMutationResult(
@@ -539,6 +565,8 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
   status = AppendToolSearch(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendProgram(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendMcp(delta, &handled, wire);
   if (!status || handled) return status;
   return RecordOutput(output_.Append(delta, probabilities, wire), wire);
 }

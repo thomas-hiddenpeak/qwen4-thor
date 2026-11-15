@@ -91,8 +91,10 @@ Json ResponsesToolItemDefaults(Json item) {
 Status NormalizeActiveResponsesTools(const Json& request,
                                      const ResponsesToolCatalog& catalog,
                                      Json* tools, Json* choice,
-                                     ChatPlanError* error) {
-  auto status = NormalizeResponsesCallableTools(request, tools, choice, error);
+                                     ChatPlanError* error,
+                                     bool definitions_only) {
+  auto status = NormalizeResponsesCallableTools(request, tools, choice, error,
+                                                 nullptr, definitions_only);
   if (!status) return status;
   for (auto& tool : tools->array) {
     const auto* function = tool.Find("function");

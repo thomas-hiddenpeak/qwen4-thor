@@ -56,6 +56,8 @@ class Inspector {
     }
     Reference(items->Find("id"));
     Reference(items->Find("file_id"));
+    if (items->GetString("type").starts_with("mcp_"))
+      Reference(items->Find("approval_request_id"));
     // Traverse typed item/content containers, not metadata, arbitrary tool
     // arguments, text, or user-authored JSON strings that look like IDs.
     for (const auto* key : {"content", "content_parts", "output", "results"})
@@ -175,6 +177,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.Request(data.Find("request"));
     inspector.Items(data.Find("history"));
     inspector.Items(data.Find("own_input"));
+    inspector.Items(data.Find("mcp_catalogs"));
     if (const auto* continuation = data.Find("continuation")) {
       const auto* id = continuation->Find("conversation_id");
       if (id && id->IsString() && !id->str.empty()) inspector.Reference(id);

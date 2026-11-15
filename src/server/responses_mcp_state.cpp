@@ -7,6 +7,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/chat_response_parser.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/responses_program.h"
@@ -86,7 +87,8 @@ ObjectReply Definition(const Json& original,
       old.target_kind != now.target_kind || old.target_id != now.target_id ||
       old.declaration.GetString("server_label") !=
           now.declaration.GetString("server_label"))
-    return Invalid("MCP server identity differs from the original authority");
+    return Error(409, "mcp_server_changed",
+                 "MCP server identity differs from the original authority");
   if (tool && (!ResponsesMcpToolAllowed(old.declaration, *tool) ||
                !ResponsesMcpToolAllowed(now.declaration, *tool) ||
                !ResponsesToolAllows(old.declaration, caller) ||
@@ -305,6 +307,8 @@ ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
   auto reply = Write(id, "catalog",
                      Object({{"public", item},
                              {"tools", std::move(authority)},
+                             {"credentials_required",
+                              Boolean(ResponsesMcpHasCredentials(definition))},
                              {"declaration", clean.declaration}}),
                      0, std::time(nullptr) + lifetime, access);
   if (reply.ok() && !reply.commit_unknown) reply.value = item;
@@ -383,7 +387,8 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
                                        std::string name, Json arguments,
                                        std::string caller,
                                        const StateAccess& access,
-                                       std::string reserved_id) {
+                                       std::string reserved_id,
+                                       std::string original_arguments) {
   Json record, payload;
   auto reply =
       Read(catalog.GetString("id"), "catalog", access, &record, &payload);
@@ -402,6 +407,14 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
   if (!reply.ok()) return reply;
   reply = ValidateArguments(*selected, arguments, access);
   if (!reply.ok()) return reply;
+  if (!original_arguments.empty()) {
+    Json original;
+    if (original_arguments.size() > ChatResponseParser::kMaxToolBytes ||
+        !Parse(original_arguments, &original) || !Same(original, arguments))
+      return Invalid("Streamed MCP arguments differ from validated arguments");
+  } else {
+    original_arguments = OutputJson(arguments);
+  }
   const bool approval =
       ResponsesMcpApprovalRequired(*declaration, *selected) ||
       ResponsesMcpApprovalRequired(current.declaration, *selected);
@@ -417,11 +430,14 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
   auto next = Object(
       {{"state", String(approval ? "approval" : "ready")},
        {"declaration", *declaration},
+       {"credentials_required",
+        Boolean(payload.GetBool("credentials_required") ||
+                ResponsesMcpHasCredentials(current))},
        {"tool", *selected},
        {"caller", String(std::move(caller))},
        {"call", Object({{"id", String(call_id)},
                         {"name", String(std::move(name))},
-                        {"arguments", String(OutputJson(arguments))},
+                        {"arguments", String(std::move(original_arguments))},
                         {"server_label", *declaration->Find("server_label")},
                         {"approval_request_id",
                          approval ? String(approval_id) : Json()}})}});
@@ -468,6 +484,10 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
   if (payload.GetString("state") != "ready")
     return Error(409, "mcp_dispatch_not_ready",
                  "MCP call cannot be dispatched again");
+  if (payload.GetBool("credentials_required") &&
+      !ResponsesMcpHasCredentials(current))
+    return Error(400, "mcp_credentials_required",
+                 "Resupply request credentials before invoking this MCP tool");
   reply = Definition(*payload.Find("declaration"), current,
                      payload.Find("tool"), payload.GetString("caller"));
   if (!reply.ok()) return reply;
@@ -547,10 +567,19 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
   bool unknown = state == "dispatching" &&
                  (receipt.outcome_unknown || !receipt.call_permitted);
   if (!success) {
-    error = ExecutionError(
-        unknown ? "mcp_result_unknown" : transport.code,
-        unknown ? "Remote outcome unknown; call will not be replayed"
-                : transport.message);
+    if (transport.code == "mcp_http_error") {
+      error = Object(
+          {{"type", String("http_error")},
+           {"code", Number(transport.value.GetInt("upstream_status"))},
+           {"message",
+            String(unknown ? "Remote HTTP failure; outcome unknown, no replay"
+                           : transport.message)}});
+    } else {
+      error = ExecutionError(
+          unknown ? "mcp_result_unknown" : transport.code,
+          unknown ? "Remote outcome unknown; call will not be replayed"
+                  : transport.message);
+    }
   } else if (!receipt.error.IsNull()) {
     error = Object({{"type", String("mcp_protocol_error")},
                     {"code", *receipt.error.Find("code")},

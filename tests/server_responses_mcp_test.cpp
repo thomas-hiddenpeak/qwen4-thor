@@ -29,6 +29,41 @@ Json Tool(std::string name = "read", bool read_only = true) {
 }
 }  // namespace
 
+Q4T_TEST(responses_mcp_capture_is_typed_and_conflicts_never_partially_publish) {
+  auto tool = Declaration();
+  Set(&tool, "authorization", String("request-private-token"));
+  auto request = Object(
+      {{"tools", Array({tool})},
+       {"input",
+        Array({Object({{"type", String("additional_tools")},
+                       {"role", String("developer")},
+                       {"tools", Array({tool})}}),
+               Object({{"type", String("function_call_output")},
+                       {"call_id", String("client_result")},
+                       {"output",
+                        String("{\"authorization\":\"user data\"}")}})})}});
+  std::vector<ResponsesMcpDefinition> credentials;
+  ChatPlanError error;
+  Q4T_CHECK(CaptureResponsesMcpCredentials(&request, &credentials, &error));
+  Q4T_CHECK(credentials.size() == 1 &&
+            ResponsesMcpHasCredentials(credentials[0]));
+  const auto clean = OutputJson(request);
+  Q4T_CHECK(clean.find("request-private-token") == clean.npos &&
+            clean.find("user data") != clean.npos);
+  ResponsesMcpDefinition rebound;
+  Q4T_CHECK(PlanResponsesMcpDefinition(request.GetArray("tools")->array[0],
+                                       &rebound, &error));
+  BindResponsesMcpCredentials(&rebound, credentials);
+  Q4T_CHECK(rebound.credentials.authorization == "request-private-token");
+  auto other = tool;
+  Set(&other, "authorization", String("different-private-token"));
+  request = Object({{"tools", Array({tool, other})}});
+  const auto before = OutputJson(request);
+  Q4T_CHECK(!CaptureResponsesMcpCredentials(&request, &credentials, &error));
+  Q4T_CHECK(OutputJson(request) == before && error.param == "tools[1]");
+  return true;
+}
+
 Q4T_TEST(responses_mcp_credentials_are_request_local_not_echoed) {
   auto input = Declaration();
   Set(&input, "authorization", String("private-fixture-token"));

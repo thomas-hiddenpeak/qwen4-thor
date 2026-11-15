@@ -105,6 +105,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_output.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_binding.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_preparation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_binding_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_worker.cpp

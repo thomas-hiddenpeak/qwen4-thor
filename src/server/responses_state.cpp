@@ -13,6 +13,7 @@
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_mcp.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/tool_result_contracts.h"
@@ -65,6 +66,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                         {"own_input", plan.own_input},
                         {"input_snapshots", plan.input_snapshots},
                         {"tool_contracts", plan.tool_contracts},
+                        {"mcp_catalogs", plan.mcp_catalogs},
                         {"request", plan.request},
                         {"events", events}});
   if (!Terminal(response))
@@ -225,6 +227,18 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
       return Error(400, "invalid_request",
                    "compaction_trigger must be the final item");
   }
+  auto private_request = Object({{"input", items}});
+  std::vector<ResponsesMcpDefinition> credentials;
+  ChatPlanError credential_error;
+  auto sanitized = CaptureResponsesMcpCredentials(&private_request, &credentials,
+                                                   &credential_error);
+  if (!sanitized) {
+    auto reply = Error(credential_error.http_status, credential_error.code,
+                        sanitized.message());
+    reply.value = Object({{"param", String(credential_error.param)}});
+    return reply;
+  }
+  items = std::move(Field(private_request, "input"));
   std::unordered_set<std::string> ids;
   auto snapshots = Array();
   auto contracts = Array();
@@ -445,6 +459,8 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->history = *data->Find("history");
   plan->own_input = *data->Find("own_input");
   plan->request = *data->Find("request");
+  if (const auto* catalogs = data->Find("mcp_catalogs"))
+    plan->mcp_catalogs = *catalogs;  // Execution owner authenticates each entry.
   if (const auto* contracts = data->Find("tool_contracts")) {
     auto reply = MergeToolResultContracts(*contracts, plan->history,
                                           &plan->tool_contracts);

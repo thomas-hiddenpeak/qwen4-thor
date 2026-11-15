@@ -18,7 +18,8 @@ class ResponsesMcpState {
   ObjectReply Propose(const io::Json& catalog,
                       const ResponsesMcpDefinition& current, std::string name,
                       io::Json arguments, std::string caller,
-                      const StateAccess& access, std::string reserved_id = "");
+                      const StateAccess& access, std::string reserved_id = "",
+                      std::string original_arguments = "");
   // Authenticated reads: OpenCatalog returns PRIVATE original metadata;
   // Authenticate returns the canonical public item, filling omitted optional
   // fields from evidence without trusting caller-supplied results.

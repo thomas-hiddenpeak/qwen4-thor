@@ -146,7 +146,8 @@ ObjectReply MeasureResponse(ResponsesExecution& response,
       const auto* files = response.FileUsage();
       const uint64_t sheets = files ? files->sheets : 0;
       const uint64_t calls =
-          (response.HasFileSearch() || response.HasToolSearch()) &&
+          (response.HasFileSearch() || response.HasToolSearch() ||
+           response.HasMcp()) &&
                   !envelope.cache.prewarm
               ? std::min<uint64_t>(
                     envelope.options.GetInt("max_tool_calls", INT64_MAX),

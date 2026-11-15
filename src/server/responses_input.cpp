@@ -415,7 +415,8 @@ Status PlanResponsesToolIdentities(
 
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
-                               bool allow_empty, bool preparing_files) {
+                               bool allow_empty, bool preparing_files,
+                               bool preparing_mcp) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -486,7 +487,7 @@ Status NormalizeResponsesInput(const io::Json& request,
     status = NormalizeActiveResponsesTools(Object({{"tools", initial},
                                                     {"input", plan.items}}),
                                            discovery.initial, &native, &ignored,
-                                           error);
+                                           error, preparing_mcp);
     if (!status) return status;
     remember_formats(native);
   }
@@ -821,7 +822,7 @@ Status NormalizeResponsesInput(const io::Json& request,
         status = NormalizeActiveResponsesTools(
             Object({{"tools", discovery.activations[activation].definitions},
                     {"input", plan.items}}),
-            discovery.initial, &native, &ignored, error);
+            discovery.initial, &native, &ignored, error, preparing_mcp);
         if (status) status = RenderChatToolDefinitions(native, &definitions);
         if (!status) return status;
         remember_formats(native);

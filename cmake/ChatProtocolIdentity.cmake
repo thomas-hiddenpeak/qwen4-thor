@@ -257,6 +257,8 @@ set(protocol_inputs
   src/server/responses_mcp_output.cpp
   include/q4t/server/responses_mcp_binding.h
   src/server/responses_mcp_binding.cpp
+  src/server/responses_mcp_preparation.cpp
+  src/server/responses_mcp_execution.cpp
   src/server/mcp_transport_internal.h
   src/server/mcp_http.cpp
   src/server/mcp_transport.cpp

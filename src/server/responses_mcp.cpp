@@ -253,4 +253,85 @@ Status ProjectResponsesMcpCatalog(const ResponsesMcpDefinition& definition,
   *authority = std::move(original);
   return {};
 }
+bool ResponsesMcpHasCredentials(const ResponsesMcpDefinition& definition) {
+  return !definition.credentials.authorization.empty() ||
+         !definition.credentials.headers.empty();
+}
+
+void BindResponsesMcpCredentials(
+    ResponsesMcpDefinition* definition,
+    const std::vector<ResponsesMcpDefinition>& credentials) {
+  for (const auto& source : credentials) {
+    if (source.target_kind == definition->target_kind &&
+        source.target_id == definition->target_id &&
+        source.declaration.GetString("server_label") ==
+            definition->declaration.GetString("server_label")) {
+      definition->credentials = source.credentials;
+      return;
+    }
+  }
+}
+
+Status CaptureResponsesMcpCredentials(
+    Json* request, std::vector<ResponsesMcpDefinition>* credentials,
+    ChatPlanError* error) {
+  if (!request || !credentials || !error)
+    return Status::Fail("Missing request credential owner");
+  auto clean = *request;
+  std::vector<ResponsesMcpDefinition> private_values;
+  size_t bytes = 0;
+  const auto capture = [&](Json* tools, const std::string& path) -> Status {
+    if (!tools || !tools->IsArray()) return {};
+    for (size_t i = 0; i < tools->array.size(); ++i) {
+      auto& tool = tools->array[i];
+      if (tool.GetString("type") != "mcp") continue;
+      const auto at = path + '[' + std::to_string(i) + ']';
+      ResponsesMcpDefinition definition;
+      auto status = PlanResponsesMcpDefinition(tool, &definition, error, at);
+      if (!status) return status;
+      if (ResponsesMcpHasCredentials(definition)) {
+        const auto old = std::find_if(
+            private_values.begin(), private_values.end(), [&](const auto& v) {
+              return v.target_kind == definition.target_kind &&
+                     v.target_id == definition.target_id &&
+                     v.declaration.GetString("server_label") ==
+                         definition.declaration.GetString("server_label");
+            });
+        if (old != private_values.end()) {
+          if (old->credentials.authorization !=
+                  definition.credentials.authorization ||
+              old->credentials.headers != definition.credentials.headers)
+            return Invalid(error, at,
+                           "Conflicting credentials for the same MCP server");
+        } else {
+          bytes += OutputJson(tool).size();
+          if (private_values.size() >= 128 || bytes > (4U << 20))
+            return Invalid(error, at, "MCP credential budget exceeded", true);
+          private_values.push_back(definition);
+        }
+      }
+      tool = std::move(definition.declaration);
+    }
+    return {};
+  };
+  auto status =
+      capture(clean.Find("tools") ? &Field(clean, "tools") : nullptr, "tools");
+  if (!status) return status;
+  if (clean.GetArray("input")) {
+    auto& input = Field(clean, "input").array;
+    for (size_t i = 0; i < input.size(); ++i) {
+      auto& item = input[i];
+      const auto type = item.GetString("type");
+      if ((type != "additional_tools" && type != "tool_search_output") ||
+          !item.Find("tools"))
+        continue;
+      status = capture(&Field(item, "tools"),
+                       "input[" + std::to_string(i) + "].tools");
+      if (!status) return status;
+    }
+  }
+  *request = std::move(clean);
+  *credentials = std::move(private_values);
+  return {};
+}
 }  // namespace q4t::server

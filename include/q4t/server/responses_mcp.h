@@ -16,6 +16,16 @@ Status PlanResponsesMcpDefinition(const io::Json& input,
                                   ResponsesMcpDefinition* output,
                                   ChatPlanError* error,
                                   const std::string& path = "tools");
+// Before any durable request/prompt/conversation publication, extract secrets
+// only from actual tool declarations (including discovery input items). Never
+// walk arbitrary tool arguments or user JSON by matching a field name.
+Status CaptureResponsesMcpCredentials(
+    io::Json* request, std::vector<ResponsesMcpDefinition>* credentials,
+    ChatPlanError* error);
+bool ResponsesMcpHasCredentials(const ResponsesMcpDefinition& definition);
+void BindResponsesMcpCredentials(
+    ResponsesMcpDefinition* definition,
+    const std::vector<ResponsesMcpDefinition>& credentials);
 // Apply only validated declarations and catalog entries; these predicates do
 // not establish stored-item authority or approve a dispatch.
 bool ResponsesMcpToolAllowed(const io::Json& declaration,
