@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-16",
+  "task_type": "nonperformance_mcp_resource_authority",
+  "targeted_cpp_distinct": 16,
+  "targeted_cpp_invocations": 16,
+  "cpp_passed": 16,
+  "cpp_failed": 0,
+  "cpp_skipped": 0,
+  "source_mutation_checks": 7,
+  "reviewed_source_anchors": 671,
+  "host_build": "passed_zero_warnings",
+  "engine_build": "passed_zero_warnings",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "public_capability_delivered": false,
+  "master_goal": "active",
+  "engine_sha256": "1d92a7466192d5cdc576c445fdaaec0972dae5e6e5175b2f9ece8e066b47a978"
+}

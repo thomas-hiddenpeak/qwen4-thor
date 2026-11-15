@@ -1226,6 +1226,113 @@ Q4T_TEST(responses_mcp_program_parallel_native_calls_and_serial_policy) {
   return true;
 }
 
+Q4T_TEST(responses_mcp_resource_real_transport_uses_sealed_single_read) {
+  for (const bool disconnect : {false, true}) {
+    Server server;
+    std::atomic<int> reads{0};
+    const std::string uri = "file:///etc/hostname";
+    server.handler = [&](const Request& r, int fd, std::stop_token) {
+      const auto method = r.rpc.GetString("method");
+      if (method == "initialize") {
+        const auto result =
+            Object({{"protocolVersion", String("2025-06-18")},
+                    {"capabilities",
+                     Object({{"tools", Object()}, {"resources", Object()}})},
+                    {"serverInfo", Object({{"name", String("resources")},
+                                           {"version", String("1")}})}});
+        Send(fd, Http(200, OutputJson(Rpc(r, result))));
+        return true;
+      }
+      if (method == "tools/call") {
+        ++server.calls;
+        Send(fd,
+             Http(200,
+                  OutputJson(Rpc(
+                      r, Object({{"content",
+                                  Array({Object(
+                                      {{"type", String("resource_link")},
+                                       {"uri", String(uri)},
+                                       {"name", String("hostname")}})})}})))));
+        return true;
+      }
+      if (method != "resources/read") return false;
+      ++reads;
+      if (disconnect) return true;
+      Send(fd,
+           Http(200,
+                OutputJson(Rpc(
+                    r, Object({{"contents",
+                                Array({Object(
+                                    {{"uri", String(uri)},
+                                     {"text",
+                                      String("frozen remote data")}})})}})))));
+      return true;
+    };
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    ResponsesMcpState state(objects, config, "resp_resource");
+    ResponsesMcpDefinition definition;
+    ChatPlanError error;
+    Q4T_CHECK(PlanResponsesMcpDefinition(
+        ExecutionRequest(server).GetArray("tools")->array.front(), &definition,
+        &error));
+    McpTransportReceipt receipt;
+    Q4T_CHECK(InvokeMcp({ExecutionAccess().scope, Clock::now() + 3s, {}},
+                        definition.credentials, server.Options(), "tools/list",
+                        Object(), {}, &receipt)
+                  .ok());
+    const auto catalog = state.Catalog(
+        definition, *receipt.result.Find("tools"), ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(catalog));
+    const auto proposed =
+        state.Propose(catalog.value, definition, "read_project", Object(),
+                      "direct", ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(proposed));
+    const auto id = proposed.value.GetString("id");
+    auto transport = InvokeMcp(
+        {ExecutionAccess().scope, Clock::now() + 3s, {}},
+        definition.credentials, server.Options(), "tools/call",
+        Object({{"name", String("read_project")}, {"arguments", Object()}}),
+        [&] { return state.Permit(id, definition, ExecutionAccess()); },
+        &receipt);
+    const auto final = state.Finish(id, receipt, transport, ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(final) &&
+              final.value.GetString("status") == "completed");
+    Q4T_CHECK(ExecutionOk(
+        state.ProposeResource(id, uri, definition, ExecutionAccess())));
+    transport = InvokeMcp(
+        {ExecutionAccess().scope, Clock::now() + 3s, {}},
+        definition.credentials, server.Options(), "resources/read",
+        Object({{"uri", String(uri)}}),
+        [&] {
+          return state.PermitResource(id, uri, definition, ExecutionAccess());
+        },
+        &receipt);
+    const auto resource =
+        state.FinishResource(id, uri, receipt, transport, ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(resource) && reads == 1 && server.calls == 1);
+    Q4T_CHECK(resource.value.GetString("state") ==
+              (disconnect ? "unknown" : "completed"));
+    if (!disconnect)
+      Q4T_CHECK(resource.value.Find("result")
+                    ->GetArray("contents")
+                    ->array.front()
+                    .GetString("text") == "frozen remote data");
+    ResponsesMcpState reopened(objects, config);
+    Q4T_CHECK(OutputJson(reopened.Resource(id, uri, ExecutionAccess()).value) ==
+              OutputJson(resource.value));
+    Q4T_CHECK(OutputJson(reopened.Authenticate(final.value, ExecutionAccess())
+                             .value) == OutputJson(final.value));
+    Q4T_CHECK(
+        !reopened.ProposeResource(id, uri, definition, ExecutionAccess()).ok());
+    Q4T_CHECK(
+        !reopened.PermitResource(id, uri, definition, ExecutionAccess()).ok());
+    Q4T_CHECK(reads == 1 && server.calls == 1);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_mcp_program_unknown_result_is_reused_without_dispatch) {
   Server server;
   server.handler = [&](const Request& request, int, std::stop_token) {

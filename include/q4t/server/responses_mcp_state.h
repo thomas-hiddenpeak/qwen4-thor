@@ -48,6 +48,25 @@ class ResponsesMcpState {
   // there is no method to reset it to ready or to replay the remote call.
   ObjectReply Inspect(const std::string& authority_id,
                       const StateAccess& access);
+  // Private preparation of a resource_link returned by this exact completed
+  // invocation. The URI is never a local path or a new network destination.
+  // Ready/dispatching states, receipts and frozen results share the call's
+  // encrypted lifetime/capacity. Neither failure nor recovery permits replay.
+  ObjectReply ProposeResource(const std::string& authority_id,
+                              const std::string& uri,
+                              const ResponsesMcpDefinition& current,
+                              const StateAccess& access);
+  ObjectReply Resource(const std::string& authority_id, const std::string& uri,
+                       const StateAccess& access);
+  ObjectReply PermitResource(const std::string& authority_id,
+                             const std::string& uri,
+                             const ResponsesMcpDefinition& current,
+                             const StateAccess& access);
+  ObjectReply FinishResource(const std::string& authority_id,
+                             const std::string& uri,
+                             const McpTransportReceipt& receipt,
+                             const ObjectReply& transport,
+                             const StateAccess& access);
   // Only a proven dead process may be recovered automatically. ended is an
   // internal cleanup proof, supplied only after that exact Response execution
   // has drained; both its response ID and original process identity must match

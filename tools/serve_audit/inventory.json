@@ -1942,7 +1942,7 @@
     "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
-    "include/q4t/server/responses_mcp_state.h": "64fa5333cf6eca7eef497082dbe52c580739d2d9634b8a552358a8c83f37fe71",
+    "include/q4t/server/responses_mcp_state.h": "ab18df871e6b7493f9e45d8281f7bf7e267f296d9afe57f4b717dbb39dc81b8e",
     "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
@@ -2211,7 +2211,7 @@
     "src/server/responses_mcp_execution.cpp": "48f9c3e8c1bef87945e1f0e5e37adc154c15d3769e8a1fd40fce49f065234496",
     "src/server/responses_mcp_output.cpp": "bfa34595df96c00a98fc0322077796604cd86c6934adf2ddeeae525dbdbc76de",
     "src/server/responses_mcp_preparation.cpp": "3ad1ff89971c1ef136868524f9b3d26e4519a3e9f1b1f1c7daf77008fac72217",
-    "src/server/responses_mcp_state.cpp": "16c400e8f3f110ac337167bfe0754f2530de2700f8c04bb4f9f9ecf341f8dc0f",
+    "src/server/responses_mcp_state.cpp": "319ec76ab42094e5d7c3cdac5467e7908cc26e23725d01cd87ef819c9d83d58e",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
@@ -5360,5 +5360,15 @@
     "public_capability_delivered": false,
     "remaining": "Model media preparation and immutable resource resolution, sessions/mappings and full business/recovery delivery remain required.",
     "repair": "Failed native output requires a calling invocation, typed isError result and exact matching public error content; other failures still cannot fabricate output."
+  },
+  "mcp_resource_freeze_review_20261116": {
+    "scope": "Private linked resource authority, original endpoint/current credentials/policy, single durable read, own execution recovery, raw tool outcome preservation, shared capacity and pending failure reserve.",
+    "reviewed_sources": [
+      "include/q4t/server/responses_mcp_state.h",
+      "src/server/responses_mcp_state.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Execution-owned media/resource preparation, frozen model projection/budgets, session/mapping and business/recovery delivery."
   }
 }

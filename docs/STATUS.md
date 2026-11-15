@@ -39,6 +39,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP资源冻结16项CPU首过](evidence/serve-mcp-resource-freeze-cpu-20261116/README.md)：
+  原调用/目标/权限绑定、单次读取、重启冻结、精确拥有者和共享
+  容量已验证；为在途失败预留收尾空间。主机/完整引擎零警告，
+  0GPU、默认保持，继续模型媒体准备和全部交付。
+
+
 - [MCP原生内容与资源读取26项CPU最终通过](evidence/serve-mcp-content-cpu-20261116/README.md)：
   五类内容、资源许可/已知与未知结果、原生错误结构化数据恢复和
   JSON/SSE发布已接线，官方SDK新增1项通过。主机/完整引擎零警告，

@@ -1150,10 +1150,10 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Native content/resource transport and full native isError results preserved through durable program/SSE output. Built only, no MCP release or GPU acceptance yet.",
+        "engine_build_note": "Native resources use original invocation authority, durable single dispatch, own execution recovery and shared capacity with pending failure reserve. Built only; model media preparation and complete MCP delivery continue.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "fb3d5427e0a913cca7d69c0e5088a5f59b1da01104d6bb10af130dc2909d5482",
+        "engine_candidate_sha256": "1d92a7466192d5cdc576c445fdaaec0972dae5e6e5175b2f9ece8e066b47a978",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
@@ -1163,7 +1163,9 @@
         "program_boundary_targeted_cpp_passed": 8,
         "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
         "native_content_targeted_cpp_passed": 26,
-        "native_content_sdk_passed": 1
+        "native_content_sdk_passed": 1,
+        "resource_freeze_evidence": "evidence/serve-mcp-resource-freeze-cpu-20261116/README.md",
+        "resource_freeze_targeted_cpp_passed": 16
       }
     },
     {
@@ -1946,10 +1948,10 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Native content/resource transport and full native isError results preserved through durable program/SSE output. Built only, no MCP release or GPU acceptance yet.",
+        "engine_build_note": "Native resources use original invocation authority, durable single dispatch, own execution recovery and shared capacity with pending failure reserve. Built only; model media preparation and complete MCP delivery continue.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "fb3d5427e0a913cca7d69c0e5088a5f59b1da01104d6bb10af130dc2909d5482",
+        "engine_candidate_sha256": "1d92a7466192d5cdc576c445fdaaec0972dae5e6e5175b2f9ece8e066b47a978",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
@@ -1959,7 +1961,9 @@
         "program_boundary_targeted_cpp_passed": 8,
         "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
         "native_content_targeted_cpp_passed": 26,
-        "native_content_sdk_passed": 1
+        "native_content_sdk_passed": 1,
+        "resource_freeze_evidence": "evidence/serve-mcp-resource-freeze-cpu-20261116/README.md",
+        "resource_freeze_targeted_cpp_passed": 16
       }
     },
     {

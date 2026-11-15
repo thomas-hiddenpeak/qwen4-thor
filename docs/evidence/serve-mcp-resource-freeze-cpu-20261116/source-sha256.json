@@ -1,0 +1,7 @@
+{
+  "include/q4t/server/responses_mcp_state.h": "ab18df871e6b7493f9e45d8281f7bf7e267f296d9afe57f4b717dbb39dc81b8e",
+  "src/server/responses_mcp_state.cpp": "319ec76ab42094e5d7c3cdac5467e7908cc26e23725d01cd87ef819c9d83d58e",
+  "tests/server_mcp_transport_test.cpp": "9ae48b20cf4bf846bb51db56e813a0bd377569b6f4a12810d96dca85f04d4ce5",
+  "tests/server_responses_mcp_state_test.cpp": "c3d4defe415581c5aad62b1279dcc07d5023b3ed7836d9c436b4dacbce3688b9",
+  "tools/serve_audit/inventory.json": "df6344b0ec26b834d9d0d3beb6bac5278b73bade585b4f168523d73f7fca0f44"
+}

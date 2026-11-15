@@ -4,6 +4,7 @@
 #include <array>
 #include <cmath>
 #include <ctime>
+#include <set>
 
 #include "object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
@@ -152,6 +153,74 @@ ObjectReply ValidateArguments(const Json& tool, const Json& arguments,
   return ValidateToolResultSchemas(
       checks, {access.scope, access.deadline, access.cancelled});
 }
+ObjectReply ResourceAuthority(const Json& payload, const std::string& uri,
+                              const ResponsesMcpDefinition& current) {
+  const auto* terminal = payload.Find("terminal");
+  Json result;
+  if (!McpResourceUri(uri) || !terminal ||
+      !Parse(terminal->GetString("output"), &result) ||
+      !ValidateMcpToolResult(result))
+    return Error(403, "mcp_resource_denied", "No native resource authority");
+  const auto& content = result.GetArray("content")->array;
+  if (std::none_of(content.begin(), content.end(), [&](const auto& part) {
+        return part.GetString("type") == "resource_link" &&
+               part.GetString("uri") == uri;
+      }))
+    return Error(403, "mcp_resource_denied",
+                 "Resource was not returned by this invocation");
+  auto reply = Definition(*payload.Find("declaration"), current,
+                          payload.Find("tool"), payload.GetString("caller"));
+  if (!reply.ok()) return reply;
+  if (payload.GetBool("credentials_required") &&
+      !ResponsesMcpHasCredentials(current))
+    return Error(400, "mcp_credentials_required",
+                 "Resupply credentials before reading this MCP resource");
+  const auto* decision = payload.Find("decision");
+  if (ResponsesMcpApprovalRequired(current.declaration,
+                                   *payload.Find("tool")) &&
+      (!decision || !decision->GetBool("approve")))
+    return Error(403, "mcp_approval_required",
+                 "Current resource policy requires approved tool authority");
+  return {};
+}
+Json* ResourceEntry(Json* payload, const std::string& uri) {
+  if (!payload->GetArray("resources")) return nullptr;
+  for (auto& entry : Field(*payload, "resources").array)
+    if (entry.GetString("uri") == uri) return &entry;
+  return nullptr;
+}
+ObjectReply ResourceView(const Json& entry) {
+  ObjectReply reply;
+  reply.value = Object({{"uri", *entry.Find("uri")},
+                        {"state", *entry.Find("state")},
+                        {"result", *entry.Find("result")},
+                        {"error", *entry.Find("error")}});
+  return reply;
+}
+Json ResourceError(std::string code, std::string message) {
+  return Object({{"code", String(std::move(code))},
+                 {"message", String(std::move(message))}});
+}
+size_t ResourceReserve(const Json& payload) {
+  size_t bytes = 0;
+  if (const auto* resources = payload.GetArray("resources"))
+    for (const auto& entry : resources->array)
+      if (entry.GetString("state") == "ready" ||
+          entry.GetString("state") == "dispatching")
+        bytes += 1024;  // Dispatch identity and bounded failure closure.
+  return bytes;
+}
+bool EndedOwner(const Json& value, const StateAccess& access,
+                const ResponseStatePlan* ended) {
+  const auto* owner = value.Find("execution_owner");
+  const bool proved = owner && ended && !ended->id.empty() &&
+                      ended->scope == access.scope &&
+                      value.GetString("response_id") == ended->id &&
+                      ValidResponseOwner(ended->execution_owner) &&
+                      Same(*owner, ended->execution_owner);
+  return proved ||
+         (owner && ResponseOwnerStatus(*owner) == ResponseOwnerState::kGone);
+}
 }  // namespace
 
 ObjectReply ResponsesMcpState::Read(const std::string& id,
@@ -209,6 +278,29 @@ ObjectReply ResponsesMcpState::Read(const std::string& id,
         !call->Find("approval_request_id") || !call->Find("arguments") ||
         !call->Find("name") || !call->Find("id") || !call->Find("server_label"))
       return Invalid("Invalid MCP invocation state");
+    if (const auto* resources = payload->Find("resources")) {
+      if (!resources->IsArray() || resources->array.size() > 32)
+        return Invalid("Invalid MCP resource state capacity");
+      std::set<std::string> uris;
+      for (const auto& resource : resources->array) {
+        const auto state = resource.GetString("state");
+        const auto uri = resource.GetString("uri");
+        const auto* owner = resource.Find("execution_owner");
+        const auto* result = resource.Find("result");
+        const auto* error = resource.Find("error");
+        if (!McpResourceUri(uri) || !uris.insert(uri).second ||
+            (state != "ready" && state != "dispatching" &&
+             state != "completed" && state != "failed" && state != "unknown") ||
+            !owner || !ValidResponseOwner(*owner) || !result || !error ||
+            (!result->IsNull() && !result->IsObject()) ||
+            (!error->IsNull() && !error->IsObject()) ||
+            !resource.Find("response_id") ||
+            !resource.Find("response_id")->IsString() ||
+            (state == "dispatching" &&
+             resource.GetString("dispatch_id").empty()))
+          return Invalid("Invalid MCP resource preparation");
+      }
+    }
   }
   *record = std::move(reply.value);
   return {};
@@ -607,6 +699,140 @@ ObjectReply ResponsesMcpState::Inspect(const std::string& id,
   reply.value = std::move(payload);
   return reply;
 }
+ObjectReply ResponsesMcpState::ProposeResource(
+    const std::string& id, const std::string& uri,
+    const ResponsesMcpDefinition& current, const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  reply = ResourceAuthority(payload, uri, current);
+  if (!reply.ok()) return reply;
+  if (response_id_.size() > 256)
+    return Invalid("Resource response identity exceeds capacity");
+  if (ResourceEntry(&payload, uri))
+    return Error(409, "mcp_resource_already_prepared",
+                 "Resource preparation cannot be repeated");
+  if (!payload.Has("resources")) Set(&payload, "resources", Array());
+  auto& resources = Field(payload, "resources").array;
+  if (resources.size() >= 32)
+    return Error(413, "mcp_resource_capacity",
+                 "Invocation resource preparation limit reached");
+  resources.push_back(Object({{"uri", String(uri)},
+                              {"state", String("ready")},
+                              {"result", Json()},
+                              {"error", Json()},
+                              {"execution_owner", CurrentResponseOwner()},
+                              {"response_id", String(response_id_)}}));
+  if (OutputJson(payload).size() + ResourceReserve(payload) > kPayloadBytes)
+    return Error(413, "mcp_resource_capacity",
+                 "Resource preparation has no reserved completion capacity");
+  auto view = ResourceView(resources.back());
+  reply = Write(record.GetString("id"), "call", std::move(payload),
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
+  return reply.ok() && !reply.commit_unknown ? view : reply;
+}
+ObjectReply ResponsesMcpState::Resource(const std::string& id,
+                                        const std::string& uri,
+                                        const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  const auto* entry = ResourceEntry(&payload, uri);
+  return entry ? ResourceView(*entry)
+               : Error(404, "mcp_resource_unprepared",
+                       "No frozen resource preparation for this invocation");
+}
+ObjectReply ResponsesMcpState::PermitResource(
+    const std::string& id, const std::string& uri,
+    const ResponsesMcpDefinition& current, const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  reply = ResourceAuthority(payload, uri, current);
+  if (!reply.ok()) return reply;
+  if (response_id_.size() > 256)
+    return Invalid("Resource response identity exceeds capacity");
+  auto* entry = ResourceEntry(&payload, uri);
+  if (!entry || entry->GetString("state") != "ready")
+    return Error(409, "mcp_resource_not_ready",
+                 "Resource read cannot be dispatched again");
+  const auto dispatch = detail::NewRequestId("mcprd_");
+  if (dispatch.empty())
+    return Error(503, "mcp_entropy_unavailable",
+                 "Resource dispatch ID unavailable");
+  Set(entry, "state", String("dispatching"));
+  Set(entry, "dispatch_id", String(dispatch));
+  Set(entry, "execution_owner", CurrentResponseOwner());
+  Set(entry, "response_id", String(response_id_));
+  reply = Write(record.GetString("id"), "call", std::move(payload),
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
+  if (reply.ok() && !reply.commit_unknown)
+    reply.value =
+        Object({{"dispatch_id", String(dispatch)}, {"uri", String(uri)}});
+  return reply;
+}
+ObjectReply ResponsesMcpState::FinishResource(
+    const std::string& id, const std::string& uri,
+    const McpTransportReceipt& receipt, const ObjectReply& transport,
+    const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  auto* entry = ResourceEntry(&payload, uri);
+  if (!entry || (entry->GetString("state") != "ready" &&
+                 entry->GetString("state") != "dispatching"))
+    return Error(409, "mcp_resource_already_final",
+                 "Resource read is already resolved or was never prepared");
+  const bool dispatched = entry->GetString("state") == "dispatching";
+  if ((dispatched &&
+       (receipt.dispatch_id.empty() ||
+        receipt.dispatch_id != entry->GetString("dispatch_id"))) ||
+      (!dispatched && !receipt.dispatch_id.empty()))
+    return Error(409, "mcp_resource_owner_conflict",
+                 "Resource receipt belongs to another dispatch");
+  const bool success = transport.ok() && !transport.commit_unknown;
+  if ((success &&
+       (!dispatched || !receipt.call_permitted || receipt.outcome_unknown)) ||
+      (!dispatched && receipt.call_permitted))
+    return Invalid("Resource result has no matching dispatch authority");
+  const bool unknown =
+      dispatched && (receipt.outcome_unknown || !receipt.call_permitted);
+  Json error, result;
+  if (!success) {
+    error = ResourceError(unknown ? "mcp_resource_unknown" : transport.code,
+                          unknown ? "Remote resource outcome unknown; no replay"
+                                  : transport.message);
+  } else if (!receipt.error.IsNull()) {
+    // Keep the original RPC error as source data, not a successful resource.
+    error = Object({{"code", String("mcp_resource_rpc_error")},
+                    {"rpc_error", receipt.error}});
+  } else if (!ValidateMcpResourcesResult(receipt.result)) {
+    error = ResourceError("mcp_resource_invalid",
+                          "Remote resources violate the native contract");
+  } else {
+    result = receipt.result;
+  }
+  Set(entry, "state",
+      String(unknown          ? "unknown"
+             : error.IsNull() ? "completed"
+                              : "failed"));
+  Set(entry, "result", std::move(result));
+  Set(entry, "error", std::move(error));
+  if (OutputJson(payload).size() + ResourceReserve(payload) > kPayloadBytes) {
+    Set(entry, "state", String(unknown ? "unknown" : "failed"));
+    Set(entry, "result", Json());
+    Set(entry, "error",
+        ResourceError(
+            unknown ? "mcp_resource_unknown" : "mcp_resource_capacity",
+            unknown ? "Remote resource outcome unknown; no replay"
+                    : "Frozen resource exceeds invocation capacity"));
+  }
+  // Raw tool outcome is already durable and never rewritten by preparation.
+  auto view = ResourceView(*entry);
+  reply = Write(record.GetString("id"), "call", std::move(payload),
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
+  return reply.ok() && !reply.commit_unknown ? view : reply;
+}
 ObjectReply ResponsesMcpState::Recover(const std::string& id,
                                        const StateAccess& access,
                                        const ResponseStatePlan* ended) {
@@ -614,7 +840,30 @@ ObjectReply ResponsesMcpState::Recover(const std::string& id,
   auto reply = Read(id, "call", access, &record, &payload);
   if (!reply.ok()) return reply;
   if (const auto* terminal = payload.Find("terminal")) {
-    reply.value = *terminal;
+    const auto item = *terminal;
+    bool changed = false;
+    if (payload.GetArray("resources"))
+      for (auto& resource : Field(payload, "resources").array) {
+        const auto state = resource.GetString("state");
+        if ((state != "ready" && state != "dispatching") ||
+            !EndedOwner(resource, access, ended))
+          continue;
+        const bool dispatched = state == "dispatching";
+        Set(&resource, "state", String(dispatched ? "unknown" : "failed"));
+        Set(&resource, "error",
+            ResourceError(dispatched ? "mcp_resource_unknown"
+                                     : "mcp_resource_interrupted",
+                          dispatched ? "Resource owner ended; no replay"
+                                     : "Resource owner ended before dispatch"));
+        changed = true;
+      }
+    if (changed) {
+      reply =
+          Write(record.GetString("id"), "call", std::move(payload),
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
+      if (!reply.ok() || reply.commit_unknown) return reply;
+    }
+    reply.value = item;
     return reply;
   }
   const auto state = payload.GetString("state");
@@ -660,7 +909,10 @@ ObjectReply ResponsesMcpState::Reconcile(Json* items,
                                          const StateAccess& access) {
   if (!items || !items->IsArray()) return Invalid("Expected MCP output items");
   for (auto& item : items->array) {
-    if (!Unfinished(item)) continue;
+    if (!Unfinished(item) && !(item.GetString("type") == "mcp_call" &&
+                               (item.GetString("status") == "completed" ||
+                                item.GetString("status") == "failed")))
+      continue;
     auto recovered = Recover(item.GetString("id"), access, &ended);
     if (recovered.commit_unknown) return recovered;
     // An argument fragment may predate Propose. A sibling request may also

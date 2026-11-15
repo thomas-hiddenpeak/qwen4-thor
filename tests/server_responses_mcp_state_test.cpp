@@ -108,7 +108,331 @@ Json Record(ObjectStore& store, std::string id) {
   if (!Ok(reply)) throw std::runtime_error("fixture record");
   return reply.value;
 }
+Json CompletedResourceCall(ResponsesMcpState& state,
+                           const ResponsesMcpDefinition& definition,
+                           size_t links = 1) {
+  const auto proposed = Propose(state, Catalog(state, definition), definition);
+  if (!Ok(proposed)) throw std::runtime_error("resource call proposal");
+  const auto id = proposed.value.GetString("id");
+  const auto permitted = state.Permit(id, definition, Access());
+  if (!Ok(permitted)) throw std::runtime_error("resource call permission");
+  auto receipt = Success(permitted.value.GetString("dispatch_id"));
+  for (size_t i = 0; i < links; ++i)
+    Field(receipt.result, "content")
+        .array.push_back(
+            Object({{"type", String("resource_link")},
+                    {"name", String("report")},
+                    {"uri", String("file:///report" + std::to_string(i))}}));
+  const auto final = state.Finish(id, receipt, {}, Access());
+  if (!Ok(final)) throw std::runtime_error("resource call finish");
+  return final.value;
+}
+McpTransportReceipt ResourceResult(std::string dispatch,
+                                   std::string text = "remote document") {
+  McpTransportReceipt receipt;
+  receipt.dispatch_id = std::move(dispatch);
+  receipt.call_permitted = true;
+  receipt.result = Object(
+      {{"contents", Array({Object({{"uri", String("file:///report0")},
+                                   {"mimeType", String("text/plain")},
+                                   {"text", String(std::move(text))}})})}});
+  return receipt;
+}
 }  // namespace
+
+Q4T_TEST(responses_mcp_resource_requires_original_link_scope_and_policy) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition);
+  const auto id = final.GetString("id");
+  const std::string uri = "file:///report0";
+  Q4T_CHECK(state.ProposeResource(id, "file:///different", definition, Access())
+                .code == "mcp_resource_denied");
+  Q4T_CHECK(
+      !state.ProposeResource(id, uri, definition, Access("client:other")).ok());
+  auto other_config = Config();
+  other_config.model = "another-model";
+  ResponsesMcpState other(objects, other_config);
+  Q4T_CHECK(!other.ProposeResource(id, uri, definition, Access()).ok());
+  auto changed = definition;
+  Set(&changed.declaration, "server_url",
+      String("https://different.example/mcp"));
+  Q4T_CHECK(state.ProposeResource(id, uri, changed, Access()).code ==
+            "mcp_server_changed");
+  changed = definition;
+  changed.credentials.authorization.clear();
+  changed.credentials.headers.clear();
+  Q4T_CHECK(state.ProposeResource(id, uri, changed, Access()).code ==
+            "mcp_credentials_required");
+  changed = definition;
+  Set(&changed.declaration, "allowed_tools", Array({String("different")}));
+  Q4T_CHECK(state.ProposeResource(id, uri, changed, Access()).code ==
+            "mcp_tool_denied");
+  Q4T_CHECK(
+      state.ProposeResource(id, uri, Definition("always"), Access()).code ==
+      "mcp_approval_required");
+  Q4T_CHECK(state.Resource(id, uri, Access()).http_status == 404);
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_single_dispatch_freezes_result_across_restart) {
+  Fixture f;
+  Json final, frozen;
+  std::string id;
+  const auto definition = Definition("never");
+  const std::string uri = "file:///report0";
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config(), "resp_resource_owner");
+    final = CompletedResourceCall(state, definition);
+    id = final.GetString("id");
+    Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+    Q4T_CHECK(
+        !state.FinishResource(id, uri, ResourceResult(""), {}, Access()).ok());
+    const auto permitted = state.PermitResource(id, uri, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    Q4T_CHECK(state.PermitResource(id, uri, definition, Access()).http_status ==
+              409);
+    auto receipt = ResourceResult("wrong-owner");
+    Q4T_CHECK(state.FinishResource(id, uri, receipt, {}, Access()).code ==
+              "mcp_resource_owner_conflict");
+    receipt.dispatch_id = permitted.value.GetString("dispatch_id");
+    const auto completed = state.FinishResource(id, uri, receipt, {}, Access());
+    Q4T_CHECK(Ok(completed) &&
+              completed.value.GetString("state") == "completed");
+    Q4T_CHECK(OutputJson(*completed.value.Find("result")) ==
+              OutputJson(receipt.result));
+    frozen = completed.value;
+    Q4T_CHECK(!frozen.Has("dispatch_id") && !frozen.Has("execution_owner"));
+  }
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto reopened = state.Resource(id, uri, Access());
+  Q4T_CHECK(Ok(reopened) && OutputJson(reopened.value) == OutputJson(frozen));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  Q4T_CHECK(state.ProposeResource(id, uri, definition, Access()).http_status ==
+            409);
+  Q4T_CHECK(state.PermitResource(id, uri, definition, Access()).http_status ==
+            409);
+  Q4T_CHECK(!state.Resource(id, uri, Access("client:other")).ok());
+  Q4T_CHECK(OutputJson(Record(objects, id)).find("remote document") ==
+            std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_failures_preserve_known_tool_and_never_replay) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const std::string uri = "file:///report0";
+  for (const int variant : {0, 1, 2, 3}) {
+    const auto final = CompletedResourceCall(state, definition);
+    const auto id = final.GetString("id");
+    Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+    McpTransportReceipt receipt;
+    ObjectReply transport;
+    if (!variant) {
+      transport =
+          Error(502, "mcp_resources_unavailable", "No resource capability");
+    } else {
+      const auto permitted =
+          state.PermitResource(id, uri, definition, Access());
+      Q4T_CHECK(Ok(permitted));
+      receipt = ResourceResult(permitted.value.GetString("dispatch_id"));
+      if (variant == 1) {
+        receipt.outcome_unknown = true;
+        transport = Error(502, "mcp_transport_error", "Connection lost");
+      } else if (variant == 2) {
+        receipt.result = Object({{"contents", Array({Object()})}});
+      } else {
+        receipt.error = Value(
+            R"({"code":-32602,"message":"No resource","data":{"uri":"file:///report0"}})");
+      }
+    }
+    const auto completed =
+        state.FinishResource(id, uri, receipt, transport, Access());
+    Q4T_CHECK(Ok(completed));
+    Q4T_CHECK(completed.value.GetString("state") ==
+              (variant == 1 ? "unknown" : "failed"));
+    Q4T_CHECK(completed.value.Find("result")->IsNull());
+    Q4T_CHECK(
+        !state.FinishResource(id, uri, receipt, transport, Access()).ok());
+    Q4T_CHECK(!state.PermitResource(id, uri, definition, Access()).ok());
+    Q4T_CHECK(!state.ProposeResource(id, uri, definition, Access()).ok());
+    Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+              OutputJson(final));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_cleanup_uses_its_own_execution_identity) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState original(objects, Config(), "resp_original_tool");
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(original, definition, 3);
+  const auto id = final.GetString("id");
+  ResponsesMcpState reader(objects, Config(), "resp_resource_owner");
+  for (int i = 0; i < 3; ++i) {
+    const auto uri = "file:///report" + std::to_string(i);
+    Q4T_CHECK(Ok(reader.ProposeResource(id, uri, definition, Access())));
+    if (!i) continue;
+    const auto permitted = reader.PermitResource(id, uri, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    if (i == 2)
+      Q4T_CHECK(Ok(reader.FinishResource(
+          id, uri, ResourceResult(permitted.value.GetString("dispatch_id")), {},
+          Access())));
+  }
+  ResponseStatePlan ended;
+  ended.id = "resp_original_tool";
+  ended.scope = Access().scope;
+  ended.execution_owner = CurrentResponseOwner();
+  Q4T_CHECK(Ok(original.Recover(id, Access(), &ended)));
+  Q4T_CHECK(reader.Resource(id, "file:///report0", Access())
+                .value.GetString("state") == "ready");
+  Q4T_CHECK(reader.Resource(id, "file:///report1", Access())
+                .value.GetString("state") == "dispatching");
+  ended.id = "resp_resource_owner";
+  auto items = Array({final});
+  Q4T_CHECK(Ok(reader.Reconcile(&items, ended, Access())));
+  Q4T_CHECK(OutputJson(items.array.front()) == OutputJson(final));
+  Q4T_CHECK(reader.Resource(id, "file:///report0", Access())
+                .value.GetString("state") == "failed");
+  Q4T_CHECK(reader.Resource(id, "file:///report1", Access())
+                .value.GetString("state") == "unknown");
+  Q4T_CHECK(reader.Resource(id, "file:///report2", Access())
+                .value.GetString("state") == "completed");
+  Q4T_CHECK(
+      !reader.PermitResource(id, "file:///report1", definition, Access()).ok());
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_capacity_cannot_erase_tool_or_frozen_sibling) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition, 2);
+  const auto id = final.GetString("id");
+  Json first;
+  for (int i = 0; i < 2; ++i) {
+    const auto uri = "file:///report" + std::to_string(i);
+    Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+    const auto permitted = state.PermitResource(id, uri, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    const auto receipt =
+        ResourceResult(permitted.value.GetString("dispatch_id"),
+                       std::string((i ? 2 : 3) << 20, 'x'));
+    const auto completed = state.FinishResource(id, uri, receipt, {}, Access());
+    Q4T_CHECK(Ok(completed));
+    if (!i) {
+      Q4T_CHECK(completed.value.GetString("state") == "completed");
+      first = completed.value;
+    } else {
+      Q4T_CHECK(completed.value.GetString("state") == "failed");
+      Q4T_CHECK(completed.value.Find("error")->GetString("code") ==
+                "mcp_resource_capacity");
+      Q4T_CHECK(completed.value.Find("result")->IsNull());
+    }
+  }
+  Q4T_CHECK(OutputJson(state.Resource(id, "file:///report0", Access()).value) ==
+            OutputJson(first));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_concurrent_permission_has_one_winner) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition);
+  const auto id = final.GetString("id");
+  const std::string uri = "file:///report0";
+  Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+  std::latch ready(2), go(1);
+  ObjectReply results[2];
+  auto worker = [&](size_t i) {
+    ResponsesMcpState owned(objects, Config());
+    ready.count_down();
+    go.wait();
+    results[i] = owned.PermitResource(id, uri, definition, Access());
+  };
+  std::thread first(worker, 0), second(worker, 1);
+  ready.wait();
+  go.count_down();
+  first.join();
+  second.join();
+  Q4T_CHECK(int(results[0].ok()) + int(results[1].ok()) == 1);
+  const auto& won = results[results[0].ok() ? 0 : 1];
+  Q4T_CHECK(Ok(state.FinishResource(
+      id, uri, ResourceResult(won.value.GetString("dispatch_id")), {},
+      Access())));
+  Q4T_CHECK(!state.PermitResource(id, uri, definition, Access()).ok());
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_reserves_space_to_close_pending_siblings) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition, 2);
+  const auto id = final.GetString("id");
+  for (const auto* uri : {"file:///report0", "file:///report1"})
+    Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+  const auto permitted =
+      state.PermitResource(id, "file:///report0", definition, Access());
+  Q4T_CHECK(Ok(permitted));
+  auto receipt = ResourceResult(permitted.value.GetString("dispatch_id"), "");
+  auto candidate = state.Inspect(id, Access());
+  Q4T_CHECK(Ok(candidate));
+  auto& entry = Field(candidate.value, "resources").array.front();
+  Set(&entry, "state", String("completed"));
+  Set(&entry, "result", receipt.result);
+  const auto bytes = (4U << 20) - OutputJson(candidate.value).size() - 512;
+  receipt = ResourceResult(receipt.dispatch_id, std::string(bytes, 'x'));
+  const auto completed =
+      state.FinishResource(id, "file:///report0", receipt, {}, Access());
+  Q4T_CHECK(Ok(completed) && completed.value.GetString("state") == "failed");
+  Q4T_CHECK(completed.value.Find("error")->GetString("code") ==
+            "mcp_resource_capacity");
+  Q4T_CHECK(Ok(state.FinishResource(
+      id, "file:///report1", {},
+      Error(502, "fixture_unavailable", "Resource unavailable"), Access())));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_resource_count_bound_keeps_existing_preparations) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition, 33);
+  const auto id = final.GetString("id");
+  for (int i = 0; i < 32; ++i)
+    Q4T_CHECK(Ok(state.ProposeResource(id, "file:///report" + std::to_string(i),
+                                       definition, Access())));
+  Q4T_CHECK(state.ProposeResource(id, "file:///report32", definition, Access())
+                .code == "mcp_resource_capacity");
+  Q4T_CHECK(state.Resource(id, "file:///report32", Access()).http_status ==
+            404);
+  Q4T_CHECK(state.Resource(id, "file:///report31", Access())
+                .value.GetString("state") == "ready");
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
 
 Q4T_TEST(responses_mcp_recovery_requires_real_exit_and_never_replays) {
   for (const int phase : {0, 1, 2}) {
