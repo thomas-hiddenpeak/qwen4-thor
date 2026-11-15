@@ -33,6 +33,11 @@ ObjectReply ResponsesExecution::BuildPreparedGeneration(
     for (auto& program : programs_)
       for (auto& result : Field(program.worker_input, "results").array) {
         const auto& call = program.calls.at(result.GetInt("index"));
+        // MCP has no public call_id. Its authenticated native result must not
+        // match an unrelated item through two empty call_id strings.
+        if (call.GetString("type") != "function_call" &&
+            call.GetString("type") != "custom_tool_call")
+          continue;
         for (const auto& item : generation_history_.array) {
           if (item.GetString("call_id") != call.GetString("call_id") ||
               !item.Has("output"))

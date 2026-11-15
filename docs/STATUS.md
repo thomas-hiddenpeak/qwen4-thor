@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [程序/MCP媒体边界复核8项CPU首过](evidence/serve-mcp-program-boundary-cpu-20261116/README.md)：
+  恢复公开批次的媒体校验边界，文件准备仅映射客户端子调用，避免
+  空call_id触及MCP私有结果；完整引擎零警告、0GPU、rev126保持。
+  继续MCP媒体/资源、会话/映射及完整业务发行，master保持active。
+
 - [MCP程序子调用49项CPU最终通过](evidence/serve-mcp-program-cpu-20261116/README.md)：
   原生派发、审批续接、混合工具因果顺序、原schema/权限、计数和冻结
   恢复已验证；主机/完整引擎零警告、0GPU、rev126保持。继续媒体、

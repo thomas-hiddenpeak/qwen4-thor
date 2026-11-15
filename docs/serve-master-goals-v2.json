@@ -1153,12 +1153,14 @@
         "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "104ca03a86a6197757e057480748071e2f3642414dbbab2f4a5024ed593f0e67",
+        "engine_candidate_sha256": "ba8225ca257973d15395d9c63c23564140bdf5695c1cd0fb71974a854a8227a2",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
-        "programmatic_targeted_cpp_passed": 49
+        "programmatic_targeted_cpp_passed": 49,
+        "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
+        "program_boundary_targeted_cpp_passed": 8
       }
     },
     {
@@ -1944,12 +1946,14 @@
         "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "104ca03a86a6197757e057480748071e2f3642414dbbab2f4a5024ed593f0e67",
+        "engine_candidate_sha256": "ba8225ca257973d15395d9c63c23564140bdf5695c1cd0fb71974a854a8227a2",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
-        "programmatic_targeted_cpp_passed": 49
+        "programmatic_targeted_cpp_passed": 49,
+        "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
+        "program_boundary_targeted_cpp_passed": 8
       }
     },
     {

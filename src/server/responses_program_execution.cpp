@@ -164,10 +164,7 @@ ObjectReply ResponsesExecution::RunPrograms(
   };
   const auto execute = [&](ResponsesProgramState program,
                            bool fresh) -> ObjectReply {
-    if (fresh) {
-      auto result = append(program, Array({program.program}));
-      if (!result.ok()) return result;
-    } else {
+    if (!fresh) {
       // Approval execution precedes program continuation. Reopen its newly
       // authenticated result instead of replaying the pre-approval snapshot.
       auto result = reopen(program.program.GetString("call_id"), &program);
@@ -177,18 +174,18 @@ ObjectReply ResponsesExecution::RunPrograms(
     const auto limit = static_cast<uint64_t>(
         envelope_.options.GetInt("max_tool_calls", INT64_MAX));
     if (native_tool_calls_ >= limit ||
-        native_tool_calls_ >= kMaxNativeToolCalls)
-      return append(
-          program,
-          Array({Object(
-              {{"type", String("program_output")},
-               {"id", String("prog_out_" +
-                             Digest(program.program.GetString("call_id"))
-                                 .substr(0, 56))},
-               {"call_id", *program.program.Find("call_id")},
-               {"result",
-                String("{\"error\":\"program_call_budget_exhausted\"}")},
-               {"status", String("incomplete")}})}));
+        native_tool_calls_ >= kMaxNativeToolCalls) {
+      auto ended = Array({Object(
+          {{"type", String("program_output")},
+           {"id",
+            String("prog_out_" +
+                   Digest(program.program.GetString("call_id")).substr(0, 56))},
+           {"call_id", *program.program.Find("call_id")},
+           {"result", String("{\"error\":\"program_call_budget_exhausted\"}")},
+           {"status", String("incomplete")}})});
+      if (fresh) ended.array.insert(ended.array.begin(), program.program);
+      return append(program, std::move(ended));
+    }
     ++native_tool_calls_;
     for (size_t step = 0; step <= kMaxNativeToolCalls; ++step) {
       if (access_.cancelled && access_.cancelled())
@@ -204,19 +201,34 @@ ObjectReply ResponsesExecution::RunPrograms(
           });
       const bool aborted = terminal != emitted.array.end() &&
                            terminal->GetString("status") == "incomplete";
+      const bool finished = terminal != emitted.array.end();
       const auto before =
           program.worker_input.GetArray("results")->array.size();
+      if (fresh) emitted.array.insert(emitted.array.begin(), program.program);
+      // Prepare each complete public batch before publishing any of it. A
+      // pure program producing invalid media must not leak its code/item.
+      auto public_items = Array();
       for (const auto& item : emitted.array) {
         if (item.GetString("type") == kResponsesProgramMcpIntent) {
           // An aborted VM cannot authorize new external side effects.
           if (aborted) continue;
+          if (!public_items.array.empty()) {
+            result = append(program, std::move(public_items));
+            if (!result.ok()) return result;
+            public_items = Array();
+          }
           result = ExecuteProgramMcp(program, item, publish);
+          if (!result.ok()) return result;
         } else {
-          result = append(program, Array({item}));
+          public_items.array.push_back(item);
         }
+      }
+      if (!public_items.array.empty()) {
+        result = append(program, std::move(public_items));
         if (!result.ok()) return result;
       }
-      if (terminal != emitted.array.end()) return {};
+      fresh = false;
+      if (finished) return {};
       result = reopen(program.program.GetString("call_id"), &program);
       if (!result.ok()) return result;
       const auto& results = program.worker_input.GetArray("results")->array;

@@ -1418,6 +1418,53 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(responses_mcp_program_file_preparation_preserves_native_result_type) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  AddClientTool(&request);
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) &&
+      ProgramCode(&first,
+                  "const r=await tools['mcp:project'].read_project({});"
+                  "await tools.local({});text(r.content[0].text);",
+                  &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting &&
+            server.calls == 1 &&
+            ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  const auto child = OutputItem(first, "function_call");
+  Set(&request, "previous_response_id", String(first.Id()));
+  Set(&request, "input",
+      Array(
+          {Object({{"type", String("function_call_output")},
+                   {"call_id", *child.Find("call_id")},
+                   {"caller", *child.Find("caller")},
+                   {"output", String("{}")}}),
+           Object({{"role", String("user")},
+                   {"content",
+                    Array({Object(
+                        {{"type", String("input_file")},
+                         {"filename", String("note.txt")},
+                         {"file_data",
+                          String("data:text/plain;base64,aGVsbG8=")}})})}})}));
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+      ExecutionOk(resumed.Begin(&wire)) &&
+      ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+      server.calls == 1 &&
+      OutputItem(resumed, "program_output").GetString("result") ==
+          "document result");
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
+
 Q4T_TEST(responses_mcp_prompt_freezes_version_and_uses_request_credentials) {
   Server server;
   ExecutionFixture fixture;

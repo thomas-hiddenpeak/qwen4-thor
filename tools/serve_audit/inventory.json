@@ -2192,7 +2192,7 @@
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
     "src/server/responses_execution.cpp": "22feb490e9f2338525ba943e476b0cfec59d4bf52821bfeff2ecb1186497fe55",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
-    "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
+    "src/server/responses_execution_files.cpp": "06ff8a3933c9a4982ea99eef69c2daecdf22e4094a68668c5dcdb4c232e299b7",
     "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
     "src/server/responses_execution_moderation.cpp": "6b235c9d2956f752d8c5ddb76aa9bc16f152ad6bdf90a1ecbf5a874f5fa86732",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
@@ -2214,7 +2214,7 @@
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
     "src/server/responses_program.cpp": "5a9caa7de80237b8380d1cfb14a4c8d4a8c1d9d243d331a25b539596154486b5",
-    "src/server/responses_program_execution.cpp": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db",
+    "src/server/responses_program_execution.cpp": "3b853dff54e2bbbd1763ebc6643175c9c0f5411ccd78047235a574182a940ba0",
     "src/server/responses_program_output.cpp": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587",
     "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
@@ -5322,5 +5322,22 @@
     "gpu_starts": 0,
     "public_mcp_delivery": false,
     "evidence": "docs/evidence/serve-mcp-program-cpu-20261116"
+  },
+  "mcp_program_media_boundary_review_20261116": {
+    "scope": "Preserve atomic publication of public program batches until media validation; MCP dispatch still checkpoints prior to remote work. File preparation only remaps function/custom public call_id children, leaving authenticated MCP results intact.",
+    "sources": {
+      "src/server/responses_execution_files.cpp": {
+        "before": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
+        "after": "06ff8a3933c9a4982ea99eef69c2daecdf22e4094a68668c5dcdb4c232e299b7"
+      },
+      "src/server/responses_program_execution.cpp": {
+        "before": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db",
+        "after": "3b853dff54e2bbbd1763ebc6643175c9c0f5411ccd78047235a574182a940ba0"
+      }
+    },
+    "targeted_cpu_passed": 8,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-program-boundary-cpu-20261116"
   }
 }
