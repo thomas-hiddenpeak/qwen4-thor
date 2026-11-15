@@ -1142,7 +1142,10 @@
         "planning_evidence": "evidence/serve-mcp-planning-cpu-20261115/README.md",
         "planning_targeted_cpp_passed": 19,
         "execution_owner_evidence": "evidence/serve-mcp-execution-cpu-20261115/README.md",
-        "execution_owner_targeted_cpp_passed": 22
+        "execution_owner_targeted_cpp_passed": 22,
+        "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
+        "batch_source_targeted_cpp_passed": 12,
+        "full_engine_build_passed": true
       }
     },
     {
@@ -1917,7 +1920,10 @@
         "planning_evidence": "evidence/serve-mcp-planning-cpu-20261115/README.md",
         "planning_targeted_cpp_passed": 19,
         "execution_owner_evidence": "evidence/serve-mcp-execution-cpu-20261115/README.md",
-        "execution_owner_targeted_cpp_passed": 22
+        "execution_owner_targeted_cpp_passed": 22,
+        "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
+        "batch_source_targeted_cpp_passed": 12,
+        "full_engine_build_passed": true
       }
     },
     {

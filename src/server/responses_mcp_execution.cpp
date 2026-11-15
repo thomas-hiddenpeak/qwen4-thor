@@ -83,6 +83,14 @@ Status ResponsesExecution::AppendMcp(const ResponseDelta& delta, bool* handled,
 ObjectReply ResponsesExecution::ExecuteMcpCall(
     const Json& call, const ResponsesMcpDefinition& definition, size_t index,
     const std::function<bool(const std::string&)>& publish) {
+  // Do not even initialize an anonymous remote session when an owned call
+  // requires credentials that were deliberately omitted from durable state.
+  auto owned = mcp_state_->Inspect(call.GetString("id"), access_);
+  if (!owned.ok()) return owned;
+  if (owned.value.GetBool("credentials_required") &&
+      !ResponsesMcpHasCredentials(definition))
+    return Error(400, "mcp_credentials_required",
+                 "Resupply request credentials for this MCP server");
   auto status = output_.CallingMcp(index);
   if (!status)
     return Error(503, "response_storage_exhausted", status.message());

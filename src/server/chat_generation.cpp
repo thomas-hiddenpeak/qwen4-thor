@@ -162,9 +162,17 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
             client.Scoped() ? "client:" + std::string(client.Id())
                             : "local:anonymous",
             owner->deadline(), [owner] { return owner->Cancelled(); }};
+        io::Json credential_source;
+        if (!io::ParseJson(body, &credential_source, true,
+                           kApplicationJsonLimits)) {
+          SendError(fd, 500, "Original Batch request unavailable", {},
+                    "batch_prepared_input_invalid");
+          return;
+        }
         const auto restored =
             responses->RestoreInputs(*frozen_inputs, PlanningConfig(fd), access,
-                                     std::time(nullptr), batch_parent);
+                                     std::time(nullptr), batch_parent,
+                                     &credential_source);
         if (!restored.ok()) {
           SendError(fd, restored.http_status, restored.ClientMessage(), {},
                     restored.ClientCode(), restored.value.GetString("param"));

@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -108,13 +109,16 @@ size_t ResponsesExecution::RetainedInputBytes() const {
              OutputJson(binding.tool.search.filters).size();
     for (const auto& id : binding.tool.store_ids) bytes += id.size();
   }
-  for (const auto& definition : mcp_credentials_) {
-    bytes += OutputJson(definition.declaration).size() +
-             definition.credentials.url.size() +
-             definition.credentials.authorization.size();
-    for (const auto& [name, value] : definition.credentials.headers)
-      bytes += name.size() + value.size();
-  }
+  bytes += mcp_credential_source_sha256_.size();
+  for (const auto* definitions : {&mcp_credentials_, &mcp_definitions_})
+    for (const auto& definition : *definitions) {
+      bytes += OutputJson(definition.declaration).size() +
+               definition.target_kind.size() + definition.target_id.size() +
+               definition.credentials.url.size() +
+               definition.credentials.authorization.size();
+      for (const auto& [name, value] : definition.credentials.headers)
+        bytes += name.size() + value.size();
+    }
   for (const auto& binding : mcp_bindings_)
     bytes += OutputJson(binding.function).size() + OutputJson(binding.tool).size();
   return bytes;
@@ -159,6 +163,12 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   if (!required.ok()) return required;
   auto credentials = CaptureMcpCredentials();
   if (!credentials.ok()) return credentials;
+  if (!mcp_credentials_.empty()) {
+    const auto identity =
+        InputValueIdentity(request, &mcp_credential_source_sha256_);
+    if (!identity)
+      return Error(413, "mcp_credential_source_capacity", identity.message());
+  }
   auto resolved = state_.Resolve(envelope_, access_, &plan_);
   if (!resolved.ok()) return resolved;
   return PlanGeneration(config, created);

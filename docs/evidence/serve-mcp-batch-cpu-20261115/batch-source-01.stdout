@@ -1,0 +1,13 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 45,
+  "completion_fields": 21,
+  "routes": 71,
+  "native_routes": 117,
+  "reviewed_source_anchors": 669,
+  "mutation_checks": 7,
+  "errors": [
+    "sources_sha256 requires renewed review: ['include/q4t/server/responses_execution.h', 'src/server/batch_budget.cpp', 'src/server/chat_generation.cpp', 'src/server/responses_execution.cpp', 'src/server/responses_execution_inputs.cpp', 'src/server/responses_mcp_execution.cpp']"
+  ]
+}

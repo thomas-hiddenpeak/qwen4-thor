@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP Batch来源鉴权12项CPU最终通过](evidence/serve-mcp-batch-cpu-20261115/README.md)：
+  原始File行与准备身份绑定、重启后计数/真实本地派发、凭据隔离及
+  缺凭据不联网已验证；完整引擎零警告构建、0GPU、rev126保持。
+  继续目录权限/发现/程序/媒体/恢复等组合及真实业务和发行。
+
 - [向量任务CI夹具期限修正](evidence/serve-ci-vector-deadline-20261115/README.md)：
   正常IO恢复生产默认期限，4处故障注入保留100ms；6项相关CPU首过，
   生产/default未变、0GPU。旧head的4项失败保留，继续最新head检查

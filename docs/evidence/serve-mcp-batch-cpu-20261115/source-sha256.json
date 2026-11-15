@@ -1,0 +1,9 @@
+{
+  "include/q4t/server/responses_execution.h": "425ae70d43543ca33775ee2fdb63b74734117460eaae49f77c4a1add55e53275",
+  "src/server/batch_budget.cpp": "6295858bdcda9098f943cfa42b1afb04ceb11649cb0f5c4a93e804511a5f45c9",
+  "src/server/chat_generation.cpp": "ac783006586e21913696c76fb23d4a8a9d1063b4c3105920e9d7519815cf8025",
+  "src/server/responses_execution.cpp": "d2c02e7a0efa90ec0ad165d6254ffa6d26b8c228380ff17f43e4f7f9b7d40cff",
+  "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
+  "src/server/responses_mcp_execution.cpp": "4b55db52f3b6f26da70ae7db96e8409dcd2fee1287bffa3d5eaefd8dcaa38489",
+  "tests/server_mcp_transport_test.cpp": "68a2026c246c10e485b10fc4e38100218ae223d3429443a0be94b1dbb98cd30c"
+}

@@ -243,7 +243,7 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     ResponsesExecution response(objects);
     auto reply = response.RestoreInputs(
         prepared, config, {access.scope, access.deadline, access.cancelled},
-        std::time(nullptr));
+        std::time(nullptr), nullptr, &row.body);
     if (!reply.ok()) return reply;
     reply =
         MeasureResponse(response, config, &meter, rate ? &planned : nullptr);

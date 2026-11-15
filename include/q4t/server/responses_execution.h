@@ -63,7 +63,8 @@ class ResponsesExecution {
   ObjectReply RestoreInputs(const io::Json& inputs,
                             const ChatPlanConfig& config, StateAccess access,
                             int64_t created,
-                            const BatchResponseLink* batch_parent = nullptr);
+                            const BatchResponseLink* batch_parent = nullptr,
+                            const io::Json* credential_source = nullptr);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
   bool VariableInputSteps() const {
@@ -269,6 +270,9 @@ class ResponsesExecution {
   ResponsesOutput output_;
   std::unique_ptr<ResponsesMcpState> mcp_state_;
   std::vector<ResponsesMcpDefinition> mcp_credentials_;
+  // Digest of the caller's original request, not the expanded/stored one.
+  // Batch may resupply that authenticated File row, never persisted secrets.
+  std::string mcp_credential_source_sha256_;
   std::vector<ResponsesMcpDefinition> mcp_definitions_;
   std::vector<ResponsesMcpBinding> mcp_bindings_;
   FileFetchOptions mcp_fetch_;

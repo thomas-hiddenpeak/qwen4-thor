@@ -14,6 +14,9 @@
 #include <thread>
 
 #include "../src/server/object_protocol.h"
+#include "q4t/server/batch_preparation.h"
+#include "q4t/server/batch_state.h"
+#include "q4t/server/files.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_mcp_state.h"
@@ -1056,5 +1059,167 @@ Q4T_TEST(responses_mcp_remote_unknown_is_durable_and_does_not_retry) {
   Q4T_CHECK(
       !state.Permit(call.GetString("id"), definition, ExecutionAccess()).ok() &&
       server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_batch_restart_rebinds_original_file_and_counts_input) {
+  Server server;
+  ExecutionFixture fixture;
+  const auto config = ExecutionConfig(server);
+  const auto access = [] {
+    const auto state = ExecutionAccess();
+    return BinaryAccess{state.scope, state.deadline, state.cancelled};
+  };
+  BatchInputRow row;
+  row.line = 1;
+  row.custom_id = "mcp-authenticated-batch";
+  row.body = ExecutionRequest(server);
+  const auto line = OutputJson(Object({{"custom_id", String(row.custom_id)},
+                                       {"method", String("POST")},
+                                       {"url", String("/v1/responses")},
+                                       {"body", row.body}})) +
+                    '\n';
+  row.wire_bytes = line.size();
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    FileUpload upload(objects, access(), "multipart/form-data; boundary=mcp");
+    const auto multipart =
+        "--mcp\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\n"
+        "batch\r\n--mcp\r\nContent-Disposition: form-data; name=\"file\"; "
+        "filename=\"mcp.jsonl\"\r\n\r\n" +
+        line + "\r\n--mcp--\r\n";
+    Q4T_CHECK(ExecutionOk(upload.Feed(multipart, access().deadline)));
+    const auto file = upload.Finish();
+    Q4T_CHECK(ExecutionOk(file));
+    const auto batch = BatchState(objects).Create(
+        access(), {file.value.GetString("id"), "/v1/responses", Object()});
+    Q4T_CHECK(ExecutionOk(batch));
+    id = batch.value.GetString("id");
+    BatchPreparedInput prepared;
+    Q4T_CHECK(ExecutionOk(BatchPreparation(objects).Prepare(
+        access(), id, "/v1/responses", row, config, &prepared)));
+    Q4T_CHECK(OutputJson(prepared.inline_input).find("mcp-request-secret") ==
+              std::string::npos);
+    BatchRowPosition position{row.line,
+                              row.offset,
+                              row.wire_bytes,
+                              Digest(row.custom_id),
+                              prepared.reference,
+                              prepared.binding_sha256,
+                              prepared.inline_input};
+    Q4T_CHECK(ExecutionOk(BatchState(objects).AppendValidationPage(
+        access(), id, std::span(&position, 1))));
+    BatchPreparation(objects).Published(access(), &prepared, false);
+  }
+  // The explicit user-uploaded Batch File is the only credential source;
+  // neither the encrypted catalog nor the prepared Response contains a key.
+  ObjectStore objects(fixture.options);
+  BatchInputRow original;
+  Q4T_CHECK(ExecutionOk(
+      BatchState(objects).ReadInputRow(access(), id, 0, &original)));
+  Q4T_CHECK(original.body.GetArray("tools")->array.front().GetString(
+                "authorization") == "mcp-request-secret");
+  const auto checkpoint = BatchState(objects).Row(access(), id, 0);
+  Q4T_CHECK(ExecutionOk(checkpoint));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(BatchPreparation(objects).Read(
+      access(), id, "/v1/responses", original, checkpoint.value, &frozen)));
+  Q4T_CHECK(OutputJson(frozen).find("mcp-request-secret") ==
+                std::string::npos &&
+            OutputJson(frozen).find("mcp-header-secret") == std::string::npos);
+  auto changed = original;
+  Set(&changed.body, "input", String("substituted row"));
+  Json rejected;
+  Q4T_CHECK(BatchPreparation(objects)
+                .Read(access(), id, "/v1/responses", changed, checkpoint.value,
+                      &rejected)
+                .code == "batch_prepared_input_invalid");
+  const auto requests = server.Requests().size();
+  BatchTokenCodec codec;
+  codec.encode = [](std::string_view text, std::vector<uint32_t>* tokens) {
+    tokens->assign(text.begin(), text.end());
+    return q4t::Status{};
+  };
+  codec.decode = [](const auto& tokens, std::string* text) {
+    text->assign(tokens.begin(), tokens.end());
+    return q4t::Status{};
+  };
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  Q4T_CHECK(
+      ExecutionOk(MeasureBatchInput(objects, "/v1/responses", original, frozen,
+                                    config, access(), codec, &input, &rate)));
+  Q4T_CHECK(input.tokens > 0 && input.exact && !rate.input_exact &&
+            rate.prompt_capacity >= input.tokens && rate.output > 0);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(ExecutionOk(restored.RestoreInputs(
+      frozen, config, ExecutionAccess(), 42, nullptr, &original.body)));
+  Q4T_CHECK(server.Requests().size() == requests && !server.calls);
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(restored.Begin(&wire)) &&
+            ModelCall(&restored, false, &wire));
+  Q4T_CHECK(ExecutionOk(restored.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&restored, config) && FinishExecution(&restored));
+  for (const auto& request : server.Requests()) {
+    if (request.rpc.GetString("method") != "tools/call") continue;
+    Q4T_CHECK(request.headers.at("authorization") ==
+                  "Bearer mcp-request-secret" &&
+              request.headers.at("x-private") == "mcp-header-secret");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_frozen_credential_source_must_match_exact_request) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  const auto request = ExecutionRequest(server);
+  ResponsesExecution first(objects);
+  Q4T_CHECK(ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(first.FreezeInputs(&frozen)));
+  const auto requests = server.Requests().size();
+  for (int mutation = 0; mutation < 3; ++mutation) {
+    auto changed = request;
+    if (mutation == 0)
+      Set(&changed, "input", String("different authenticated row"));
+    else
+      Set(&Field(changed, "tools").array.front(),
+          mutation == 1 ? "authorization" : "server_url",
+          String(mutation == 1 ? "different-key" : "https://example.test"));
+    ResponsesExecution restored(objects);
+    Q4T_CHECK(restored
+                  .RestoreInputs(frozen, config, ExecutionAccess(), 42, nullptr,
+                                 &changed)
+                  .code == "mcp_credential_source_changed");
+  }
+  Q4T_CHECK(server.Requests().size() == requests && !server.calls);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_missing_live_credentials_never_initialize_remote) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(first.Prepare(ExecutionRequest(server), config,
+                                      ExecutionAccess(), 42)) &&
+            ExecutionOk(first.Begin(&wire)) && FinishExecution(&first));
+  auto request = ExecutionRequest(server, "never", false);
+  Set(&request, "previous_response_id", String(first.Id()));
+  ResponsesExecution next(objects);
+  const auto requests = server.Requests().size();
+  Q4T_CHECK(ExecutionOk(next.Prepare(request, config, ExecutionAccess(), 44)) &&
+            ExecutionOk(next.Begin(&wire)) && ModelCall(&next, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(next.RunMcp(1, &waiting, {}).code == "mcp_credentials_required");
+  Q4T_CHECK(server.Requests().size() == requests && !server.calls);
+  Q4T_CHECK(ExecutionOk(next.CloseUnfinished()));
   return true;
 }
