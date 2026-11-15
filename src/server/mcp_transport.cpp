@@ -167,8 +167,8 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   checked = BindSession(access, endpoint, deployment, session);
   if (!checked.ok()) return checked;
   control.domain = IsolatedWorkerDomain::kMcp;
-  control.address_space_bytes =
-      std::min<uint64_t>(control.address_space_bytes, 512U << 20);
+  control.address_space_bytes = std::min<uint64_t>(control.address_space_bytes,
+                                                   kMcpWorkerAddressSpaceLimit);
   control.compile_deadline = std::min(
       {access.deadline, control.compile_deadline,
        Clock::now() + std::chrono::milliseconds(deployment.timeout_ms)});

@@ -1,0 +1,12 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool q4t_test_fn_mcp_agent_exact_ids_and_non200_errors()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4815:17: error: possibly dangling reference to a temporary [-Werror=dangling-reference]
+ 4815 |     const auto& error = At(At(reply.value, "resp_json"), "error");
+      |                 ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4815:27: note: the temporary was destroyed at the end of the full expression ‘{anonymous}::At((* & {anonymous}::At(reply.q4t::server::ObjectReply::value, std::__cxx11::basic_string<char>(((const char*)"resp_json"), std::allocator<char>()))), std::__cxx11::basic_string<char>(((const char*)"error"), std::allocator<char>()))’
+ 4815 |     const auto& error = At(At(reply.value, "resp_json"), "error");
+      |                         ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1563: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

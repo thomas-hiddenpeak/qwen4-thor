@@ -1185,9 +1185,10 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "isolated worker/broker/session/approval/resource/program wired and CPU verified; own agent, actual HTTP/SDK/business/recovery/release/main remain required",
+      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
-      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md"
     },
     {
       "id": "A08",
@@ -2004,9 +2005,10 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "isolated worker/broker/session/approval/resource/program wired and CPU verified; own agent, actual HTTP/SDK/business/recovery/release/main remain required",
+      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
-      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md"
     },
     {
       "id": "A12",

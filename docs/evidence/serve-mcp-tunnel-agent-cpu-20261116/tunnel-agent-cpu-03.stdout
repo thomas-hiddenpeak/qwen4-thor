@@ -1,0 +1,11 @@
+[PASS] mcp_tunnel_invalid_terminal_completes_without_overwriting_known_result
+[PASS] mcp_tunnel_unknown_transport_status_and_duplicate_ack
+[PASS] mcp_native_tunnel_progress_and_http_error_keep_exact_rpc_outcome
+[PASS] mcp_native_tunnel_known_result_wins_cancellation_during_worker_return
+[PASS] mcp_agent_no_tool_replay_after_404_or_disconnect
+[PASS] mcp_agent_fixed_target_deadline_and_payload_bounds
+[PASS] mcp_agent_broker_actual_http_roundtrip
+[PASS] mcp_agent_broker_actual_legacy_roundtrip
+[PASS] mcp_native_tunnel_synthetic_failure_remains_unknown
+[PASS] responses_mcp_native_unknown_transport_is_durable
+10 tests, 10 passed, 0 failed, 0 skipped

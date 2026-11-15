@@ -128,6 +128,9 @@ class GrammarProcess {
   int Pid() const { return pid_; }
   // Nonblocking pidfd observation; does not reap or transfer ownership.
   bool Exited() const;
+  // Nonblocking output observation for supervisors that must send an orderly
+  // stop before invoking Transfer's cancelling (and terminating) path.
+  bool OutputReady() const;
   void ReportRss(uint64_t bytes);
   void Stop();
 

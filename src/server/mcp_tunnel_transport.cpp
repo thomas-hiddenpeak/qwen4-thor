@@ -294,6 +294,13 @@ ObjectReply TunnelExchange::Forward(const Json& wire, bool permitted) {
       (!lease.instance.empty() && instance != lease.instance))
     return Invalid();
   lease.instance = instance;
+  if (reply.value.GetBool("q4t_outcome_unknown")) {
+    auto failed = Error(502, "mcp_tunnel_outcome_unknown",
+                        "Private MCP outcome unavailable");
+    Set(&failed.value, "upstream_status",
+        Number(reply.value.GetInt("resp_code")));
+    return failed;
+  }
   if (initialize) {
     const auto* response = reply.value.Find("resp_json");
     const auto* result = response ? response->Find("result") : nullptr;

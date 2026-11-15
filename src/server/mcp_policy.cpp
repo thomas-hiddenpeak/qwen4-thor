@@ -129,8 +129,7 @@ Status ParseMcpDeploymentPolicy(std::string_view raw,
   return {};
 }
 
-Status LoadMcpDeploymentPolicy(const std::string& path,
-                               McpDeploymentPolicy* output) {
+Status ReadMcpPrivateConfig(const std::string& path, std::string* output) {
   if (!output || path.empty() || path.size() > 4096 ||
       path.find('\0') != path.npos)
     return Invalid();
@@ -167,7 +166,16 @@ Status LoadMcpDeploymentPolicy(const std::string& path,
       before.st_ctim.tv_nsec != after.st_ctim.tv_nsec)
     return Invalid();
   raw.resize(count);
-  return ParseMcpDeploymentPolicy(raw, output);
+  *output = std::move(raw);
+  return {};
+}
+
+Status LoadMcpDeploymentPolicy(const std::string& path,
+                               McpDeploymentPolicy* output) {
+  if (!output) return Invalid();
+  std::string raw;
+  const auto status = ReadMcpPrivateConfig(path, &raw);
+  return status ? ParseMcpDeploymentPolicy(raw, output) : status;
 }
 
 ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,

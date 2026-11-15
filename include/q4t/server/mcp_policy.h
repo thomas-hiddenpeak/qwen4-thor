@@ -5,6 +5,9 @@
 #include "q4t/server/mcp_tunnel.h"
 
 namespace q4t::server {
+// Shared private MCP configuration reader: owned regular file, one link,
+// no symlink/group/world access, stable descriptor identity, at most 64 KiB.
+Status ReadMcpPrivateConfig(const std::string& path, std::string* raw);
 struct ResponsesMcpDefinition;
 struct McpDeploymentTarget {
   std::string kind;

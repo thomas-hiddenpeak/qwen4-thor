@@ -1,0 +1,10 @@
+[PASS] mcp_agent_config_strict_network_and_redacted_description
+[PASS] mcp_agent_fixed_target_deadline_and_payload_bounds
+[PASS] mcp_agent_broker_actual_http_roundtrip
+[PASS] mcp_agent_broker_actual_legacy_roundtrip
+[PASS] mcp_agent_auth_failure_stops_no_restart
+[PASS] mcp_agent_auth_failure_cleanup_cannot_restart_owner
+[PASS] mcp_agent_upload_retry_preserves_body_and_one_dispatch
+[PASS] mcp_agent_skips_expired_processes_multiple_poll
+[PASS] mcp_agent_failed_progress_upload_still_final
+9 tests, 9 passed, 0 failed, 0 skipped

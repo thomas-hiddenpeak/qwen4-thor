@@ -222,7 +222,7 @@ Q4T_TEST(mcp_tunnel_progress_does_not_finish_or_extend_deadline) {
 
 Q4T_TEST(
     mcp_tunnel_invalid_terminal_completes_without_overwriting_known_result) {
-  for (int mode = 0; mode < 5; ++mode) {
+  for (int mode = 0; mode < 7; ++mode) {
     McpTunnelBroker broker;
     Q4T_CHECK(broker.Configure({Route()}));
     Q4T_CHECK(Submit(broker).ok());
@@ -236,10 +236,13 @@ Q4T_TEST(
           Object({{"Mcp-Session-Id", Array({String("wide-😀")})}}));
     if (mode == 3) Set(&response, "resp_type", String("notify_ack"));
     if (mode == 4) Set(&response, "shard_token", At(command, "shard_token"));
+    if (mode == 5) Set(&response, "q4t_outcome_unknown", String("true"));
+    if (mode == 6) Set(&response, "q4t_outcome_unknown", Boolean(true));
     Q4T_CHECK(Respond(broker, command, response).http_status == 400);
     Q4T_CHECK(Respond(broker, command, Response(command)).http_status == 409);
     const auto result = broker.Wait(Caller(), command.GetString("request_id"));
     Q4T_CHECK(result.ok() && result.value.GetInt("resp_code") == 502 &&
+              result.value.GetBool("q4t_outcome_unknown") &&
               At(At(result.value, "resp_json"), "error").GetInt("code") ==
                   -32603);
   }
@@ -605,5 +608,29 @@ Q4T_TEST(mcp_tunnel_detached_cleanup_releases_capacity_without_waiting) {
                 .Submit(Caller(), "tunnel_private", "deployment-1", "main",
                         Object(), Object(), false, {}, true)
                 .code == "invalid_tunnel_request");
+  return true;
+}
+
+Q4T_TEST(mcp_tunnel_unknown_transport_status_and_duplicate_ack) {
+  McpTunnelBroker broker;
+  Q4T_CHECK(broker.Configure({Route()}));
+  Q4T_CHECK(Submit(broker).ok());
+  const auto command = Command(Poll(broker));
+  auto rpc =
+      Object({{"jsonrpc", String("2.0")},
+              {"id", At(At(command, "jsonrpc"), "id")},
+              {"error", Object({{"code", Number(-32603)},
+                                {"message", String("transport failure")}})}});
+  auto response = Response(command, rpc);
+  Set(&response, "resp_code", Number(502));
+  Set(&response, "q4t_outcome_unknown", Boolean(true));
+  Q4T_CHECK(Respond(broker, command, response).ok());
+  Q4T_CHECK(Respond(broker, command, response).ok());
+  auto contradictory = response;
+  Set(&contradictory, "q4t_outcome_unknown", Boolean(false));
+  Q4T_CHECK(Respond(broker, command, contradictory).http_status == 409);
+  const auto result = broker.Wait(Caller(), command.GetString("request_id"));
+  Q4T_CHECK(result.ok() && result.value.GetBool("q4t_outcome_unknown") &&
+            result.value.GetInt("resp_code") == 502);
   return true;
 }

@@ -358,6 +358,12 @@ bool GrammarProcess::Exited() const {
   return poll(&event, 1, 0) > 0 && (event.revents & POLLIN);
 }
 
+bool GrammarProcess::OutputReady() const {
+  if (socket_ < 0) return true;
+  pollfd event{socket_, POLLIN, 0};
+  return poll(&event, 1, 0) > 0;
+}
+
 Status GrammarProcess::Transfer(
     void* data, size_t bytes, bool write,
     std::chrono::steady_clock::time_point deadline,

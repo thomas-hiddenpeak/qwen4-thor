@@ -1,0 +1,29 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘const q4t::io::Json& {anonymous}::At(const q4t::io::Json&, std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4550:34: error: cannot convert ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+ 4550 |   const auto* found = value.Find(key);
+      |                                  ^~~
+      |                                  |
+      |                                  std::string_view {aka std::basic_string_view<char>}
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/object_store.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/binary_store.h:6,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_input.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_fetch.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/mcp_transport.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:1:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/io/json.h:45:39: note:   initializing argument 1 of ‘const q4t::io::Json* q4t::io::Json::Find(const std::string&) const’
+   45 |   const Json* Find(const std::string& key) const;
+      |                    ~~~~~~~~~~~~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool {anonymous}::AgentOk(const q4t::server::ObjectReply&, std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4579:19: error: cannot convert ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’}
+ 4579 |          rpc->Has(member);
+      |                   ^~~~~~
+      |                   |
+      |                   std::string_view {aka std::basic_string_view<char>}
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/io/json.h:46:31: note:   initializing argument 1 of ‘bool q4t::io::Json::Has(const std::string&) const’
+   46 |   bool Has(const std::string& key) const { return Find(key) != nullptr; }
+      |            ~~~~~~~~~~~~~~~~~~~^~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1563: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

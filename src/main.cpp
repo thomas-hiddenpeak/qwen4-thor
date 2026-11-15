@@ -33,6 +33,7 @@
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/mcp_transport.h"
+#include "q4t/server/mcp_tunnel_agent.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/file_document_worker.h"
@@ -77,6 +78,7 @@ void PrintUsage(const char* prog) {
       "  state-retention  Inspect/collect protected application state\n"
       "              (q4t state-retention --help)\n"
       "  mcp-policy-check FILE  Validate MCP deployment without a model\n"
+      "  mcp-tunnel-agent (check|run) FILE  Native private MCP agent\n"
       "  file-input-policy-check FILE  Validate file policy without a model\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
@@ -911,6 +913,11 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  if (argc > 1 && std::strcmp(argv[1], "mcp-tunnel-agent") == 0)
+    return q4t::server::RunMcpTunnelAgentCommand(argc, argv);
+  const int tunnel_agent =
+      q4t::server::MaybeRunMcpTunnelAgentWorker(argc, argv);
+  if (tunnel_agent >= 0) return tunnel_agent;
   if (argc > 1 && std::strcmp(argv[1], "mcp-policy-check") == 0)
     return q4t::server::RunMcpDeploymentPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "file-input-policy-check") == 0)

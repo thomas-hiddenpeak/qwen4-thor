@@ -1,0 +1,18 @@
+test_intentional_stop_closes_private_session_without_respawn (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_intentional_stop_closes_private_session_without_respawn) ... ok
+test_owned_watchdog_recovery_and_restart_budget (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_owned_watchdog_recovery_and_restart_budget) ... FAIL
+test_verified_tls_native_ingress_prefix_and_real_private_document (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_verified_tls_native_ingress_prefix_and_real_private_document) ... ok
+
+======================================================================
+FAIL: test_owned_watchdog_recovery_and_restart_budget (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_owned_watchdog_recovery_and_restart_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_agent.py", line 308, in test_owned_watchdog_recovery_and_restart_budget
+    self.wait(lambda: len(self.control_headers) >= 1 and len(self.children()) == 1)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_agent.py", line 189, in wait
+    self.fail('bounded agent fixture deadline')
+AssertionError: bounded agent fixture deadline
+
+----------------------------------------------------------------------
+Ran 3 tests in 8.469s
+
+FAILED (failures=1)

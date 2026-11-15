@@ -319,6 +319,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp
+  src/server/mcp_tunnel_agent_http.cpp
+  src/server/mcp_tunnel_agent.cpp
+  src/server/mcp_tunnel_agent_config.cpp
   src/server/mcp_content.cpp
   src/server/mcp_projection.cpp
   src/server/mcp_transport.cpp

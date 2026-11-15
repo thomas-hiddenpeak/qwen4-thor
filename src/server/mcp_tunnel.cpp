@@ -470,6 +470,7 @@ ObjectReply McpTunnelBroker::Respond(const BinaryAccess& agent,
   if (!rpc) rpc = response.Find("rpc_resp");
   Json headers;
   const auto* wire_headers = response.Find("resp_headers");
+  const auto* unknown = response.Find("q4t_outcome_unknown");
   const auto size = OutputJson(response).size();
   bool valid =
       size <= kResponseBytes && status && IsInputInteger(*status) &&
@@ -478,6 +479,7 @@ ObjectReply McpTunnelBroker::Respond(const BinaryAccess& agent,
       (!response.Has("channel") || response.Find("channel")->IsString()) &&
       (!response.Has("resp_type") || response.Find("resp_type")->IsString()) &&
       !(response.Has("resp_json") && response.Has("rpc_resp")) &&
+      (!unknown || unknown->IsBool()) &&
       Headers(wire_headers ? *wire_headers : Object(), true, &headers);
   if (progress) {
     valid = valid && !request.termination && request.has_rpc_id && rpc &&
@@ -493,12 +495,17 @@ ObjectReply McpTunnelBroker::Respond(const BinaryAccess& agent,
   } else {
     valid = false;
   }
+  if (unknown && unknown->IsBool() && unknown->boolean)
+    valid = valid && type == "jsonrpc_response" && rpc && rpc->Has("error") &&
+            status->number >= 400;
   if (channel != request.channel) return Denied();
   auto result =
       Object({{"resp_type", String(type)},
               {"resp_code", Number(valid ? FinalStatus(status->number) : 502)},
               {"resp_headers", std::move(headers)}});
   if (rpc && valid) Set(&result, "resp_json", *rpc);
+  if (valid && response.GetBool("q4t_outcome_unknown"))
+    Set(&result, "q4t_outcome_unknown", Boolean(true));
   const auto identity = valid ? Digest(OutputJson(result)) : "";
   if (request.done) {
     if (valid && !progress && identity == request.final_identity) return Ack();
@@ -516,8 +523,10 @@ ObjectReply McpTunnelBroker::Respond(const BinaryAccess& agent,
                                              : "notify_ack")},
                 {"resp_code", Number(502)},
                 {"resp_headers", Object()}});
-    if (request.has_rpc_id)
+    if (request.has_rpc_id) {
       Set(&result, "resp_json", GatewayError(request.rpc_id));
+      Set(&result, "q4t_outcome_unknown", Boolean(true));
+    }
   }
   const auto result_bytes = OutputJson(result).size();
   if (progress) {

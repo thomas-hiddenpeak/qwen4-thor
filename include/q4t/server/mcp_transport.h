@@ -7,6 +7,10 @@
 #include "q4t/server/file_fetch.h"
 
 namespace q4t::server {
+// The real engine's read-only CUDA library mappings exceed 512 MiB before
+// main. Keep a fixed 1 GiB virtual ceiling, as for other engine workers;
+// this is not a physical-RAM allowance or an unbounded heap.
+inline constexpr uint64_t kMcpWorkerAddressSpaceLimit = 1ULL << 30;
 class McpTunnelBroker;
 struct McpEndpoint {
   std::string url;

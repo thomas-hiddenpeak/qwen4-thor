@@ -1,0 +1,1 @@
+{"status": {"VmSize": "848416 kB", "VmRSS": "179588 kB"}, "cublas_mapped_bytes": 608452608, "rejected_worker_ceiling": 536870912, "cublas_alone_exceeds_ceiling": true}

@@ -484,13 +484,14 @@ ObjectReply RemoteHttp::Open(const Url& url, const FileFetchOptions& options,
                              const RemoteHeaders& headers,
                              std::string_view body, uint64_t max_bytes,
                              Deadline deadline,
-                             std::unique_ptr<RemoteHttp>* output) {
+                             std::unique_ptr<RemoteHttp>* output,
+                             uint64_t max_request_bytes) {
   if (!output) return Error(500, "remote_http_state", "Missing output");
   output->reset();
   if ((method != "POST" && method != "GET" && method != "DELETE") ||
       ((method == "GET" || method == "DELETE") && !body.empty()) ||
-      body.size() > (1U << 20) || max_bytes > (16U << 20) ||
-      !ValidOptions(options))
+      max_request_bytes > (4U << 20) || body.size() > max_request_bytes ||
+      max_bytes > (16U << 20) || !ValidOptions(options))
     return Error(400, "remote_http_request", "Invalid HTTP exchange");
   std::string request = std::string(method) + " " + url.target +
                         " HTTP/1.1\r\nHost: " + url.authority +

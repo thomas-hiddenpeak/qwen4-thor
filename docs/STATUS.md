@@ -39,6 +39,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [自有agent 32项CPU及4项实际CLI最终通过](evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md)：
+  固定私网HTTP/SSE、真实broker往返、TLS入口/资料、会话清理及
+  35秒监护/重启预算已验证。鉴权终态与unknown传递缺口已修复；
+  实际CUDA映射超过512MiB，MCP/agent改为既有1GiB虚拟上限。
+  首次失败保留，最终主机/引擎零警告、来源7项过；0GPU、rev126
+  保持。继续提供方/SDK/业务/恢复发行/main，完整隧道与master未完成。
+
+
 - [原生隧道隔离传输38项CPU最终通过](evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md)：
   原权限/加密会话/实例亲和、审批/资源/程序调用、已知终态和清理
   已接线；头转换和会话schema遗漏已修复，首次失败保留。来源7项、

@@ -1,6 +1,9 @@
 #include "q4t/server/mcp_transport.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/mcp_tunnel.h"
+#include "q4t/server/mcp_tunnel_agent.h"
+#include "../src/server/mcp_tunnel_agent_internal.h"
+#include "../src/server/file_fetch_internal.h"
 #include "../src/server/mcp_tunnel_transport_internal.h"
 
 #include <arpa/inet.h>
@@ -3977,6 +3980,7 @@ class TunnelPeer {
   std::shared_ptr<McpTunnelBroker> broker = std::make_shared<McpTunnelBroker>();
   std::atomic<int> initialized{0}, called{0}, read{0}, terminated{0};
   std::atomic<bool> drop_call{false}, rpc_failure{false}, progress{false};
+  std::atomic<bool> transport_failure{false}, invalid_final{false};
   TunnelPeer() {
     CloseMcpSessions();
     McpTunnelLimits limits;
@@ -4071,10 +4075,15 @@ class TunnelPeer {
                   Object({{"code", Number(-32042)},
                           {"message", String("Authorization expired")},
                           {"data", Object({{"retryable", Boolean(false)},
+                                           {"outcome_unknown", Boolean(true)},
                                            {"detail", String("原始错误")}})}}));
               Set(&response, "resp_code", Number(401));
             }
             Set(&response, "resp_json", message);
+            if (method == "tools/call" && transport_failure)
+              Set(&response, "q4t_outcome_unknown", Boolean(true));
+            if (method == "tools/call" && invalid_final)
+              Set(&Field(response, "resp_json"), "id", String("invalid-id"));
             if (progress) {
               auto notify = response;
               Set(&notify, "resp_type", String("jsonrpc_notify"));
@@ -4538,5 +4547,636 @@ Q4T_TEST(mcp_http_error_rejects_fractional_rpc_identity_and_code) {
     Q4T_CHECK(reply.code == "mcp_http_error" && receipt.call_permitted &&
               receipt.outcome_unknown && calls == 1);
   }
+  return true;
+}
+
+namespace {
+using mcp_detail::TunnelAgentBackend;
+const Json& At(const Json& value, const char* key) {
+  const auto* found = value.Find(key);
+  if (!found) throw std::runtime_error("missing tunnel fixture field");
+  return *found;
+}
+Json AgentCommand(std::string method = "initialize", Json headers = Object(),
+                  Json id = String("original-rpc")) {
+  return Object(
+      {{"request_id", String("original-wire")},
+       {"command_type", String("jsonrpc")},
+       {"channel", String("main")},
+       {"headers", std::move(headers)},
+       {"jsonrpc",
+        Object({{"jsonrpc", String("2.0")},
+                {"id", std::move(id)},
+                {"method", String(method)},
+                {"params", method == "tools/call" ? Call() : Object()}})}});
+}
+Json AgentSessionHeaders(const ObjectReply& result,
+                         std::string protocol = "2025-06-18") {
+  return Object({{"mcp-session-id",
+                  At(At(result.value, "resp_headers"), "mcp-session-id")},
+                 {"mcp-protocol-version", Array({String(protocol)})}});
+}
+ObjectReply AgentExchange(TunnelAgentBackend& agent, const Json& command) {
+  return agent.Exchange(command, Clock::now() + 3s);
+}
+bool AgentOk(const ObjectReply& reply, const std::string& member = "result") {
+  const auto* rpc = reply.value.Find("resp_json");
+  return reply.ok() && reply.value.GetInt("resp_code") == 200 && rpc &&
+         rpc->Has(member);
+}
+McpTunnelAgentConfig AgentConfig(const Server& control, const Server& target) {
+  McpTunnelAgentConfig config;
+  config.api_base = "http://127.0.0.1:" + std::to_string(control.port) + "/v1";
+  config.api_key = "control-secret";
+  config.tunnel_id = "tunnel_private";
+  config.target = target.Endpoint();
+  config.control_fetch = control.Options();
+  config.target_fetch = target.Options();
+  return config;
+}
+// Production broker/HTTP handler and production isolated agent. Only the two
+// local TCP servers are CPU fixtures; no wire peer substitutes for the agent.
+struct AgentBroker {
+  McpTunnelBroker broker;
+  Server server;
+  std::atomic<bool> valid{true};
+  std::string instance;
+  std::mutex mutex;
+  AgentBroker() {
+    if (!broker.Configure({{"tunnel_private",
+                            "gen-1",
+                            {"client:caller"},
+                            {"client:agent"},
+                            {"main"}}}))
+      throw std::runtime_error("agent broker fixture");
+    server.handler = [this](const Request& r, int fd, std::stop_token) {
+      const auto get = [&](const char* key) {
+        const auto i = r.headers.find(key);
+        return i == r.headers.end() ? std::string{} : i->second;
+      };
+      if (get("authorization") != "Bearer control-secret" ||
+          get("x-tunnel-client-wire-protocol-version") != "2026-08-25")
+        valid = false;
+      const auto current = get("x-tunnel-client-instance-id");
+      {
+        std::lock_guard lock(mutex);
+        if (!instance.empty() && instance != current) valid = false;
+        instance = current;
+      }
+      const auto reply = HandleMcpTunnelRequest(
+          broker, {"client:agent", Clock::now() + 3s, {}}, r.verb, r.target,
+          r.body, current, get("x-tunnel-shard-token"));
+      Send(fd, Http(reply.http_status,
+                    reply.http_status == 204 ? "" : OutputJson(reply.value)));
+      return true;
+    };
+  }
+  ObjectReply Exchange(const Json& command, bool terminate = false) {
+    BinaryAccess caller{"client:caller", Clock::now() + 5s, {}};
+    const auto queued = broker.Submit(
+        caller, "tunnel_private", "gen-1", "main", At(command, "headers"),
+        terminate ? Json() : At(command, "jsonrpc"), terminate);
+    if (!queued.ok()) return queued;
+    return broker.Wait(caller, queued.value.GetString("request_id"));
+  }
+};
+}  // namespace
+
+Q4T_TEST(mcp_agent_config_strict_network_and_redacted_description) {
+  Json raw;
+  Q4T_CHECK(Parse(R"({"version":1,"api_base":"https://control.example/v1/",
+    "api_key":"control-private-token","tunnel_id":"tunnel_private",
+    "control_fetch":{"allow_http":false},
+    "target":{"url":"https://mcp.example/mcp","authorization":"target-token"}})",
+                  &raw));
+  McpTunnelAgentConfig config;
+  Q4T_CHECK(ParseMcpTunnelAgentConfig(OutputJson(raw), &config));
+  Q4T_CHECK(config.api_base == "https://control.example/v1" &&
+            config.control_fetch.max_redirects == 0 &&
+            config.target_fetch.max_redirects == 0);
+  const auto description = OutputJson(McpTunnelAgentDescription(config));
+  Q4T_CHECK(description.find("token") == description.npos &&
+            description.find("example") == description.npos &&
+            description.find(config.sha256) != description.npos);
+  for (const auto* key : {"version", "api_key", "channel", "restart_limit",
+                          "target", "control_fetch", "unknown"}) {
+    auto bad = raw;
+    Set(&bad, key, Array());
+    Q4T_CHECK(!ParseMcpTunnelAgentConfig(OutputJson(bad), &config));
+  }
+  for (const auto* url : {"http://127.0.0.1/v1", "https://x/v1?q=secret",
+                          "https://user:secret@host/v1"}) {
+    auto bad = raw;
+    Set(&bad, "api_base", String(url));
+    Q4T_CHECK(!ParseMcpTunnelAgentConfig(OutputJson(bad), &config));
+  }
+  Q4T_CHECK(
+      !ParseMcpTunnelAgentConfig(R"({"version":1,"version":1})", &config));
+  return true;
+}
+
+Q4T_TEST(mcp_agent_timeout_grammar_anchored_and_local_bound) {
+  const auto received = Clock::now() - 2s;
+  for (const auto& [value, expected] :
+       std::vector<std::pair<std::string, std::chrono::nanoseconds>>{
+           {"0s", 0ns},
+           {"9ns", 9ns},
+           {"12us", 12us},
+           {"250ms", 250ms},
+           {"3s", 3s},
+           {"1m", 30s},
+           {"1h", 30s},
+           {"1.5s", 30s},
+           {"-1s", 30s},
+           {"1m2s", 30s},
+           {"", 30s},
+           {"18446744073709551615h", 30s}}) {
+    const auto command = Object({{"response_timeout", String(value)}});
+    Q4T_CHECK(mcp_detail::TunnelCommandDeadline(command, received, 30s) ==
+              received + expected);
+  }
+  Q4T_CHECK(mcp_detail::TunnelCommandDeadline(
+                Object({{"response_timeout", Number(0)}}), received, 30s) ==
+            received + 30s);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_modern_session_call_resource_delete) {
+  StatefulMcp remote;
+  TunnelAgentBackend agent(remote.server.Endpoint(), remote.server.Options());
+  const auto init = AgentExchange(agent, AgentCommand());
+  Q4T_CHECK(AgentOk(init));
+  const auto headers = AgentSessionHeaders(init);
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand("tools/list", headers))));
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand("tools/call", headers))));
+  const auto resource =
+      AgentExchange(agent, AgentCommand("resources/read", headers));
+  Q4T_CHECK(AgentOk(resource) &&
+            OutputJson(resource.value).find("same session resource") !=
+                std::string::npos);
+  auto terminate = AgentCommand("ignored", headers);
+  Set(&terminate, "command_type", String("session_termination"));
+  const auto closed = AgentExchange(agent, terminate);
+  Q4T_CHECK(closed.ok() && closed.value.GetInt("resp_code") == 204 &&
+            closed.value.GetString("resp_type") ==
+                "session_termination_response");
+  Q4T_CHECK(AgentExchange(agent, AgentCommand("tools/call", headers))
+                .value.GetInt("resp_code") == 404);
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1 && remote.closed == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_legacy_session_continuity_and_cleanup) {
+  LegacyStatefulMcp remote;
+  TunnelAgentBackend agent(remote.server.Endpoint(), remote.server.Options());
+  const auto init = AgentExchange(agent, AgentCommand());
+  Q4T_CHECK(AgentOk(init));
+  const auto headers = AgentSessionHeaders(init, "2024-11-05");
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand("tools/list", headers))));
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand("tools/call", headers))));
+  Q4T_CHECK(
+      AgentOk(AgentExchange(agent, AgentCommand("resources/read", headers))));
+  agent.Clear();
+  Q4T_CHECK(AgentExchange(agent, AgentCommand("resources/read", headers))
+                .value.GetInt("resp_code") == 404);
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_legacy_cross_origin_denied) {
+  Server remote, other;
+  remote.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.verb == "POST")
+      Send(fd, Http(405));
+    else
+      Send(fd,
+           Http(200, "event: endpoint\ndata: " + other.Endpoint().url + "\n\n",
+                "text/event-stream"));
+    return true;
+  };
+  auto target = remote.Endpoint();
+  target.authorization = "private-token";
+  auto network = remote.Options();
+  network.ports.push_back(other.port);
+  TunnelAgentBackend agent(target, network);
+  const auto result = AgentExchange(agent, AgentCommand());
+  Q4T_CHECK(result.ok() && result.value.GetInt("resp_code") == 403 &&
+            other.Requests().empty());
+  return true;
+}
+
+Q4T_TEST(mcp_agent_headers_conflicts_before_private_io) {
+  Server remote;
+  auto target = remote.Endpoint();
+  target.authorization = "operator-token";
+  TunnelAgentBackend agent(target, remote.Options());
+  for (const auto& headers :
+       {Object({{"Authorization", Array({String("Bearer delegated")})}}),
+        Object({{"Mcp-Session-Id", Array({String("unknown")})}}),
+        Object({{"X-Custom", Array({String("one\r\nInjected: bad")})}}),
+        Object({{"X-Custom", Array({String("one")})},
+                {"x-custom", Array({String("two")})}})}) {
+    const auto result =
+        AgentExchange(agent, AgentCommand("tools/call", headers));
+    Q4T_CHECK(result.ok() && result.value.GetInt("resp_code") >= 400);
+  }
+  Q4T_CHECK(remote.Requests().empty());
+  auto headers =
+      Object({{"Authorization", Array({String("Bearer operator-token")})},
+              {"Cookie", Array({String("a=1"), String("b=2")})},
+              {"X-Latin", Array({String("café")})},
+              {"Connection", Array({String("x-omit")})},
+              {"X-Omit", Array({String("hidden")})}});
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand("tools/call", headers))));
+  const auto rows = remote.Requests();
+  Q4T_CHECK(rows.size() == 1 && !rows[0].headers.contains("x-omit") &&
+            rows[0].headers.at("cookie") == "a=1; b=2" &&
+            rows[0].headers.at("x-latin") == "caf\xe9" &&
+            rows[0].headers.at("authorization") == "Bearer operator-token");
+  return true;
+}
+
+Q4T_TEST(mcp_agent_exact_ids_and_non200_errors) {
+  Server remote;
+  remote.handler = [](const Request& r, int fd, std::stop_token) {
+    auto answer = Object(
+        {{"jsonrpc", String("2.0")},
+         {"id", At(r.rpc, "id")},
+         {"error", Object({{"code", Number(-32010)},
+                           {"message", String("原始错误")},
+                           {"data", Object({{"retry", Boolean(false)}})}})}});
+    Send(fd, Http(409, OutputJson(answer)));
+    return true;
+  };
+  TunnelAgentBackend agent(remote.Endpoint(), remote.Options());
+  Json integer;
+  Q4T_CHECK(Parse("9007199254740993", &integer));
+  for (const auto& id : {integer, String("用户原始ID")}) {
+    const auto reply =
+        AgentExchange(agent, AgentCommand("tools/call", Object(), id));
+    Q4T_CHECK(reply.ok() && reply.value.GetInt("resp_code") == 409 &&
+              OutputJson(At(At(reply.value, "resp_json"), "id")) ==
+                  OutputJson(id));
+    const auto& error = At(At(reply.value, "resp_json"), "error");
+    Q4T_CHECK(error.GetInt("code") == -32010 &&
+              error.GetString("message") == "原始错误" &&
+              !At(error, "data").GetBool("retry", true));
+  }
+  Q4T_CHECK(remote.Requests().size() == 2);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_failed_progress_and_ping_preserve_terminal) {
+  Server remote;
+  remote.handler = [](const Request& r, int fd, std::stop_token stop) {
+    if (r.rpc.GetString("method") != "tools/call") return false;
+    Send(fd,
+         "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
+         "Transfer-Encoding: chunked\r\n\r\n");
+    for (int n = 0; n < 2; ++n)
+      Chunk(fd,
+            "data: "
+            "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/progress\"}\n\n");
+    Chunk(
+        fd,
+        "data: {\"jsonrpc\":\"2.0\",\"method\":\"ping\",\"id\":\"ping\"}\n\n");
+    Chunk(fd, "data: " + OutputJson(Rpc(r, Object({{"content", Array()}}))) +
+                  "\n\n");
+    Stall(stop);
+    return true;
+  };
+  TunnelAgentBackend agent(remote.Endpoint(), remote.Options());
+  int notifications = 0;
+  const auto result = agent.Exchange(AgentCommand("tools/call"),
+                                     Clock::now() + 2s, [&](const Json&) {
+                                       ++notifications;
+                                       return false;
+                                     });
+  Q4T_CHECK(AgentOk(result) && notifications == 1);
+  const auto requests = remote.Requests();
+  Q4T_CHECK(requests.size() == 2 && requests[1].rpc.GetString("id") == "ping" &&
+            requests[1].rpc.Has("result"));
+  return true;
+}
+
+Q4T_TEST(mcp_agent_no_tool_replay_after_404_or_disconnect) {
+  StatefulMcp remote;
+  TunnelAgentBackend agent(remote.server.Endpoint(), remote.server.Options());
+  const auto init = AgentExchange(agent, AgentCommand());
+  Q4T_CHECK(AgentOk(init));
+  const auto headers = AgentSessionHeaders(init);
+  remote.expire_call = true;
+  const auto lost = AgentExchange(agent, AgentCommand("tools/call", headers));
+  Q4T_CHECK(lost.ok() && lost.value.GetInt("resp_code") == 404 &&
+            remote.dispatched == 1 && remote.initialized == 1);
+  Q4T_CHECK(AgentExchange(agent, AgentCommand("resources/read", headers))
+                    .value.GetInt("resp_code") == 404 &&
+            remote.read == 0);
+  Server broken;
+  std::atomic<int> calls{0};
+  broken.handler = [&](const Request&, int, std::stop_token) {
+    ++calls;
+    return true;
+  };
+  TunnelAgentBackend disconnected(broken.Endpoint(), broken.Options());
+  const auto unknown = AgentExchange(disconnected, AgentCommand("tools/call"));
+  Q4T_CHECK(unknown.ok() && unknown.value.GetBool("q4t_outcome_unknown") &&
+            unknown.value.GetInt("resp_code") >= 400 && calls == 1 &&
+            At(At(At(unknown.value, "resp_json"), "error"), "data")
+                .GetBool("outcome_unknown"));
+  return true;
+}
+
+Q4T_TEST(mcp_agent_invalid_initialize_cleanup) {
+  Server remote;
+  std::atomic<int> deleted{0};
+  remote.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.verb == "DELETE") {
+      if (r.headers.at("mcp-session-id") == "allocated-before-invalid")
+        ++deleted;
+      Send(fd, Http(204));
+    } else {
+      Send(fd, Http(200, OutputJson(Rpc(r, Object())), "application/json",
+                    "Mcp-Session-Id: allocated-before-invalid\r\n"));
+    }
+    return true;
+  };
+  TunnelAgentBackend agent(remote.Endpoint(), remote.Options());
+  const auto result = AgentExchange(agent, AgentCommand());
+  Q4T_CHECK(result.ok() && result.value.GetInt("resp_code") == 502 &&
+            deleted == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_capacity_frees_on_termination) {
+  StatefulMcp remote;
+  TunnelAgentBackend agent(remote.server.Endpoint(), remote.server.Options());
+  Json first;
+  for (int n = 0; n < 16; ++n) {
+    const auto init = AgentExchange(agent, AgentCommand());
+    Q4T_CHECK(AgentOk(init));
+    if (!n) first = AgentSessionHeaders(init);
+  }
+  Q4T_CHECK(AgentExchange(agent, AgentCommand()).value.GetInt("resp_code") ==
+                503 &&
+            remote.initialized == 16);
+  auto terminate = AgentCommand("ignored", first);
+  Set(&terminate, "command_type", String("session_termination"));
+  Q4T_CHECK(AgentExchange(agent, terminate).value.GetInt("resp_code") == 204);
+  Q4T_CHECK(AgentOk(AgentExchange(agent, AgentCommand())) &&
+            remote.initialized == 17);
+  agent.Clear();
+  Q4T_CHECK(remote.closed == 17);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_fixed_target_deadline_and_payload_bounds) {
+  Server remote, other;
+  std::atomic<bool> oversized{false};
+  remote.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (!oversized) return false;
+    Send(fd, Http(200, OutputJson(Rpc(r, String(std::string(4U << 20, 'x'))))));
+    return true;
+  };
+  TunnelAgentBackend agent(remote.Endpoint(), remote.Options());
+  auto command = AgentCommand("tools/call");
+  Set(&command, "url", String(other.Endpoint().url));
+  Q4T_CHECK(AgentOk(AgentExchange(agent, command)) && other.Requests().empty());
+  const auto expired = agent.Exchange(command, Clock::now() - 1ms);
+  Q4T_CHECK(expired.value.GetInt("resp_code") == 408 && remote.calls == 1);
+  oversized = true;
+  const auto large = AgentExchange(agent, command);
+  Q4T_CHECK(large.ok() && large.value.GetInt("resp_code") == 413 &&
+            OutputJson(large.value).size() < 4096);
+  return true;
+}
+
+namespace {
+bool AgentBrokerRoundtrip(Server& remote, std::string protocol) {
+  AgentBroker control;
+  const auto config = AgentConfig(control.server, remote);
+  std::atomic<int> result{-1};
+  std::jthread supervisor([&](std::stop_token stop) {
+    result = RunMcpTunnelAgent(config, [&] { return stop.stop_requested(); });
+  });
+  const auto init = control.Exchange(AgentCommand());
+  Q4T_CHECK(AgentOk(init));
+  const auto headers = AgentSessionHeaders(init, protocol);
+  Q4T_CHECK(AgentOk(control.Exchange(AgentCommand("tools/list", headers))));
+  Q4T_CHECK(AgentOk(control.Exchange(AgentCommand("tools/call", headers))));
+  Q4T_CHECK(AgentOk(control.Exchange(AgentCommand("resources/read", headers))));
+  Q4T_CHECK(control.Exchange(AgentCommand("ignored", headers), true)
+                .value.GetInt("resp_code") == 204);
+  supervisor.request_stop();
+  supervisor.join();
+  Q4T_CHECK(result == 0 && control.valid && !control.instance.empty());
+  for (const auto& row : remote.Requests())
+    Q4T_CHECK(!row.headers.contains("authorization") &&
+              !row.headers.contains("x-tunnel-shard-token"));
+  return true;
+}
+}  // namespace
+Q4T_TEST(mcp_agent_broker_actual_http_roundtrip) {
+  StatefulMcp remote;
+  Q4T_CHECK(AgentBrokerRoundtrip(remote.server, "2025-06-18"));
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1 && remote.closed == 1);
+  return true;
+}
+Q4T_TEST(mcp_agent_broker_actual_legacy_roundtrip) {
+  LegacyStatefulMcp remote;
+  Q4T_CHECK(AgentBrokerRoundtrip(remote.server, "2024-11-05"));
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1);
+  return true;
+}
+Q4T_TEST(mcp_agent_auth_failure_stops_no_restart) {
+  Server control, remote;
+  control.handler = [](const Request&, int fd, std::stop_token) {
+    Send(fd, Http(401));
+    return true;
+  };
+  const auto deadline = Clock::now() + 3s;
+  Q4T_CHECK(RunMcpTunnelAgent(AgentConfig(control, remote),
+                              [&] { return Clock::now() >= deadline; }) == 2);
+  Q4T_CHECK(control.Requests().size() == 1 && remote.Requests().empty());
+  return true;
+}
+
+Q4T_TEST(mcp_agent_auth_failure_cleanup_cannot_restart_owner) {
+  Server control, remote;
+  std::atomic<int> polls{0}, deletes{0};
+  remote.handler = [&](const Request& r, int, std::stop_token stop) {
+    if (r.verb != "DELETE") return false;
+    ++deletes;
+    Stall(stop);
+    return true;
+  };
+  control.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.verb == "POST") {
+      Send(fd, Http(401));
+    } else {
+      ++polls;
+      auto command = AgentCommand();
+      Set(&command, "shard_token", String("original-shard"));
+      Send(fd, Http(200, OutputJson(Object({{"commands", Array({command})}}))));
+    }
+    return true;
+  };
+  const auto begin = Clock::now();
+  Q4T_CHECK(RunMcpTunnelAgent(AgentConfig(control, remote),
+                              [&] { return Clock::now() - begin >= 5s; }) == 2);
+  Q4T_CHECK(polls == 1 && deletes == 1 && Clock::now() - begin < 3s);
+  return true;
+}
+
+namespace {
+// Wire faults live at the actual TCP upload boundary, after the backend call.
+bool AgentDelivery(bool progress_failure, bool multiple) {
+  Server control, remote;
+  std::atomic<int> uploads{0}, notifications{0}, polls{0};
+  std::atomic<bool> done{false}, valid{true};
+  std::mutex mutex;
+  std::string original;
+  remote.handler = [&](const Request& r, int fd, std::stop_token) {
+    ++remote.calls;
+    if (progress_failure) {
+      const auto notice =
+          "data: "
+          "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/progress\"}\n\n";
+      Send(fd,
+           Http(200,
+                std::string(notice) + notice + "data: " +
+                    OutputJson(Rpc(r, Object({{"content", Array()}}))) + "\n\n",
+                "text/event-stream"));
+    } else {
+      Send(fd, Http(200, OutputJson(Rpc(
+                             r, String(std::string((1U << 20) + 32, 'a'))))));
+    }
+    return true;
+  };
+  control.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.verb == "GET") {
+      if (++polls > 1) {
+        Send(fd, Http(204));
+        return true;
+      }
+      auto command = AgentCommand("tools/call");
+      Set(&command, "shard_token", String("original-shard"));
+      Set(&command, "response_timeout", String("5s"));
+      auto commands = Array();
+      if (multiple) {
+        auto expired = command;
+        Set(&expired, "response_timeout", String("0s"));
+        commands.array.push_back(expired);
+      }
+      commands.array.push_back(command);
+      if (multiple) {
+        Set(&command, "request_id", String("second"));
+        commands.array.push_back(command);
+      }
+      Send(fd, Http(200, OutputJson(Object({{"commands", commands}}))));
+      return true;
+    }
+    if (r.headers.at("x-tunnel-shard-token") != "original-shard" ||
+        r.headers.at("authorization") != "Bearer control-secret")
+      valid = false;
+    if (r.rpc.GetString("resp_type") == "jsonrpc_notify") {
+      ++notifications;  // Deliberately lose the HTTP acknowledgement.
+      return true;
+    }
+    const int count = ++uploads;
+    {
+      std::lock_guard lock(mutex);
+      if (original.empty())
+        original = r.body;
+      else if (!multiple && original != r.body)
+        valid = false;
+    }
+    if (!progress_failure && !multiple && count == 1) {
+      Send(fd, Http(503, "", "application/json", "Retry-After: 0\r\n"));
+    } else {
+      Send(fd, Http(204));
+      if (!multiple || count == 2) done = true;
+    }
+    return true;
+  };
+  const auto end = Clock::now() + 8s;
+  const auto result = RunMcpTunnelAgent(AgentConfig(control, remote), [&] {
+    return done || Clock::now() >= end;
+  });
+  Q4T_CHECK(result == 0 && done && valid);
+  Q4T_CHECK(remote.calls == (multiple ? 2 : 1));
+  Q4T_CHECK(uploads == (progress_failure ? 1 : 2));
+  Q4T_CHECK(notifications == (progress_failure ? 1 : 0));
+  return true;
+}
+}  // namespace
+Q4T_TEST(mcp_agent_upload_retry_preserves_body_and_one_dispatch) {
+  return AgentDelivery(false, false);
+}
+Q4T_TEST(mcp_agent_skips_expired_processes_multiple_poll) {
+  return AgentDelivery(false, true);
+}
+Q4T_TEST(mcp_agent_failed_progress_upload_still_final) {
+  return AgentDelivery(true, false);
+}
+
+Q4T_TEST(mcp_native_tunnel_synthetic_failure_remains_unknown) {
+  for (int mode = 0; mode < 3; ++mode) {
+    TunnelPeer peer;
+    peer.rpc_failure = true;
+    peer.transport_failure = mode == 1;
+    peer.invalid_final = mode == 2;
+    McpSession session;
+    McpTransportReceipt receipt;
+    Q4T_CHECK(peer.Invoke(&session, &receipt).ok());
+    const auto result = peer.Invoke(&session, &receipt, "tools/call");
+    Q4T_CHECK(receipt.call_permitted && peer.called == 1);
+    if (!mode) {
+      // Arbitrary upstream error data is not a transport authority flag.
+      Q4T_CHECK(result.ok() && !receipt.outcome_unknown &&
+                receipt.error.GetInt("code") == -32042);
+    } else {
+      Q4T_CHECK(result.code == "mcp_tunnel_outcome_unknown" &&
+                receipt.outcome_unknown && receipt.error.IsNull());
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_native_unknown_transport_is_durable) {
+  TunnelPeer peer;
+  peer.rpc_failure = true;
+  peer.transport_failure = true;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = peer.Config();
+  ResponsesExecution run(objects);
+  Q4T_CHECK(
+      ExecutionOk(run.Prepare(peer.Request(), config, ExecutionAccess(), 42)));
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting &&
+            peer.called == 1);
+  const auto call = run.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(call.GetString("status") == "failed" &&
+            OutputJson(*call.Find("error")).find("mcp_result_unknown") !=
+                std::string::npos);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+  ResponsesMcpState state(objects, config);
+  const auto durable = state.Inspect(call.GetString("id"), ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(durable) &&
+            durable.value.GetString("state") == "unknown");
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      peer.Request().GetArray("tools")->array.front(), &definition, &error));
+  Q4T_CHECK(
+      !state.Permit(call.GetString("id"), definition, ExecutionAccess()).ok() &&
+      peer.called == 1);
   return true;
 }
