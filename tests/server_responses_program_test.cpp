@@ -286,7 +286,15 @@ Q4T_TEST(responses_program_namespace_custom_format_dispatch_checked) {
     Json output;
     auto history =
         Array({Create(cipher, "text(await tools.docs.read('DOC42'));", tools)});
-    Q4T_CHECK(Ok(Run(cipher, history, &output)) && output.array.size() == 1);
+    const auto dispatched = Run(cipher, history, &output);
+#ifndef Q4T_ENABLE_XGRAMMAR
+    // The public CPU build has no grammar validator. It must fail closed
+    // before dispatch, including when a program invokes a custom tool.
+    Q4T_CHECK(dispatched.http_status == 503 &&
+              dispatched.code == "tool_result_validation_unavailable" &&
+              output.array.empty());
+#else
+    Q4T_CHECK(Ok(dispatched) && output.array.size() == 1);
     Q4T_CHECK(output.array[0].GetString("namespace") == "docs" &&
               output.array[0].GetString("input") == "DOC42");
     history.array.push_back(output.array[0]);
@@ -304,6 +312,7 @@ Q4T_TEST(responses_program_namespace_custom_format_dispatch_checked) {
     Q4T_CHECK(rejected.http_status == 502 &&
               rejected.code == "program_arguments_invalid" &&
               output.array.empty());
+#endif
   }
   return true;
 }

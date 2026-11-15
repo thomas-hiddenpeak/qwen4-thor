@@ -1,4 +1,4 @@
-# 当前状态（2026-11-13）
+# 当前状态（2026-11-15）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -36,6 +36,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用等全部master继续。
 
 ## 最近完成的实现和验证
+
+- PR27的无XGrammar构建断言已[修复，两种构建针对性CPU均通过](evidence/serve-programmatic-ci-grammar-20261115/README.md)：
+  ON保持regex/Lark实际派发与拒绝，OFF验证零派发及明确错误；生产
+  源码/引擎和rev118未变，已有业务及主轻资格复用。继续精确回退包、
+  整树恢复、可回退交付及实际合main。另依据PR23/24实际合并回执
+  修正N05/R01滞后的任务状态；剩余全部master任务继续。
 
 - 程序调用[真实资料JSON/SSE闭环通过](evidence/serve-programmatic-business-20261113/README.md)：
   修后1启动/8创建/121.786秒，115次NVML正常、资源清理；含首次失败
