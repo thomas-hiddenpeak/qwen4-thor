@@ -9,18 +9,20 @@ namespace q4t::server {
 using namespace object_detail;
 
 Status ResponsesExecution::BindActiveTools(const io::Json& active,
-                                           ChatPlanError* error) {
+                                           ChatPlanError* error,
+                                           const io::Json* input) {
+  const auto& history = input ? *input : generation_history_;
   const auto request = Object({{"tools", active}});
   auto status =
       PlanResponsesFileSearchBindings(request, &file_search_bindings_, error);
   if (!status) return status;
   status = PlanResponsesMcpRequestBindings(
-      Object({{"tools", active}, {"input", generation_history_}}),
+      Object({{"tools", active}, {"input", history}}),
       &mcp_bindings_, error);
   if (!status) return status;
   for (auto& binding : mcp_bindings_) {
     const auto catalog = std::find_if(
-        generation_history_.array.begin(), generation_history_.array.end(),
+        history.array.begin(), history.array.end(),
         [&](const auto& item) { return item.GetString("id") == binding.catalog_id; });
     ResponsesMcpDefinition definition;
     for (const auto& tool : active.array)
@@ -30,7 +32,7 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
         if (!status) return status;
         break;
       }
-    if (!mcp_state_ || catalog == generation_history_.array.end())
+    if (!mcp_state_ || catalog == history.array.end())
       return Status::Fail("Missing owned MCP catalog");
     auto opened = mcp_state_->OpenCatalog(*catalog, definition, access_);
     if (!opened.ok()) {

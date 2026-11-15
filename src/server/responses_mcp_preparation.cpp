@@ -4,6 +4,7 @@
 #include <set>
 
 #include "object_protocol.h"
+#include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server {
 namespace {
@@ -12,6 +13,19 @@ ObjectReply PlanError(const Status& status, const ChatPlanError& error) {
   auto result = Error(error.http_status, error.code, status.message());
   result.value = Object({{"param", String(error.param)}});
   return result;
+}
+bool SamePolicy(const Json& previous, const Json& current) {
+  const auto policy = [](const Json& definition) {
+    auto result = Object();
+    for (const auto* field :
+         {"allowed_tools", "allowed_callers", "require_approval"})
+      if (const auto* value = definition.Find(field); value && !value->IsNull())
+        Set(&result, field, *value);
+    return result;
+  };
+  std::string left, right;
+  return InputValueIdentity(policy(previous), &left) &&
+         InputValueIdentity(policy(current), &right) && left == right;
 }
 }  // namespace
 
@@ -25,7 +39,9 @@ ObjectReply ResponsesExecution::CaptureMcpCredentials() {
   return {};
 }
 
-ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
+ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
+                                           Json* continuation) {
+  auto& input = continuation ? *continuation : generation_history_;
   const auto* declared = envelope_.request.GetArray("tools");
   auto definitions = declared ? *declared : Array();
   // Include declarations available at their actual discovery activation. All
@@ -33,19 +49,11 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
   // explicitly supplied credentials can be rebound below.
   ResponsesToolHistory discovery;
   ChatPlanError error;
-  if (HasResponsesToolDiscovery(definitions, generation_history_)) {
-    auto status = ResolveResponsesToolHistory(definitions, generation_history_,
-                                              &discovery, &error);
+  if (HasResponsesToolDiscovery(definitions, input)) {
+    auto status =
+        ResolveResponsesToolHistory(definitions, input, &discovery, &error);
     if (!status) return PlanError(status, error);
-    for (const auto& active : discovery.active.array) {
-      if (active.GetString("type") != "mcp") continue;
-      std::erase_if(definitions.array, [&](const auto& old) {
-        return old.GetString("type") == "mcp" &&
-               old.GetString("server_label") ==
-                   active.GetString("server_label");
-      });
-      definitions.array.push_back(active);
-    }
+    definitions = std::move(discovery.active);
   }
   mcp_definitions_.clear();
   for (size_t i = 0; i < definitions.array.size(); ++i) {
@@ -59,17 +67,16 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
     mcp_definitions_.push_back(std::move(definition));
   }
   const bool history =
-      std::any_of(generation_history_.array.begin(),
-                  generation_history_.array.end(), [](const auto& item) {
-                    return item.GetString("type").starts_with("mcp_");
-                  });
+      std::any_of(input.array.begin(), input.array.end(), [](const auto& item) {
+        return item.GetString("type").starts_with("mcp_");
+      });
   if (mcp_definitions_.empty() && !history && plan_.mcp_catalogs.IsNull())
     return {};
   // Validate ordinary roles, tool causality, discovery and file shapes before
   // fetching remote metadata. This projection grants no MCP callable and is
   // never sent to the model; real schema/choice planning follows the listing.
   auto preflight = envelope_.request;
-  Set(&preflight, "input", generation_history_);
+  Set(&preflight, "input", input);
   ResponsesInputPlan checked_input;
   auto checked = NormalizeResponsesInput(preflight, &checked_input, &error,
                                          config.count_input_only, true, true);
@@ -84,15 +91,16 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
   if (!plan_.mcp_catalogs.IsArray() || plan_.mcp_catalogs.array.size() > 128 ||
       OutputJson(plan_.mcp_catalogs).size() > (4U << 20))
     return Error(503, "mcp_preparation_invalid", "Invalid owned MCP catalogs");
-  for (auto& item : generation_history_.array) {
+  for (auto& item : input.array) {
     if (!item.GetString("type").starts_with("mcp_")) continue;
     auto authenticated = mcp_state_->Authenticate(item, access_);
     if (!authenticated.ok()) return authenticated;
     item = std::move(authenticated.value);
   }
-  mcp_resume_ = Array();
+  if (!continuation) mcp_resume_ = Array();
   std::set<std::string> approvals;
-  for (const auto& item : plan_.own_input.array) {
+  const auto approvals_input = continuation ? Array() : plan_.own_input;
+  for (const auto& item : approvals_input.array) {
     if (item.GetString("type") != "mcp_approval_response") continue;
     if (!approvals.insert(item.GetString("approval_request_id")).second)
       return Error(400, "invalid_request", "Duplicate MCP approval response");
@@ -109,11 +117,11 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
     auto authenticated = mcp_state_->Authenticate(item, access_);
     if (!authenticated.ok()) return authenticated;
     item = std::move(authenticated.value);
-    if (std::none_of(generation_history_.array.begin(),
-                     generation_history_.array.end(), [&](const auto& old) {
+    if (std::none_of(input.array.begin(), input.array.end(),
+                     [&](const auto& old) {
                        return old.GetString("id") == item.GetString("id");
                      }))
-      generation_history_.array.push_back(item);
+      input.array.push_back(item);
   }
   std::set<std::string> labels;
   for (const auto& definition : mcp_definitions_) {
@@ -121,24 +129,39 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
     if (!labels.insert(label).second)
       return Error(400, "invalid_request", "Duplicate MCP server label");
     bool available = false;
-    for (auto i = generation_history_.array.rbegin();
-         i != generation_history_.array.rend(); ++i) {
+    for (auto i = input.array.rbegin(); i != input.array.rend(); ++i) {
       if (i->GetString("type") != "mcp_list_tools" ||
           i->GetString("server_label") != label)
         continue;
       auto opened = mcp_state_->OpenCatalog(*i, definition, access_);
       if (opened.code == "mcp_server_changed") continue;
       if (!opened.ok()) return opened;
+      const bool policy_changed = !SamePolicy(*opened.value.Find("declaration"),
+                                              definition.declaration);
+      const bool owned =
+          std::any_of(plan_.mcp_catalogs.array.begin(),
+                      plan_.mcp_catalogs.array.end(), [&](const auto& catalog) {
+                        return catalog.GetString("id") == i->GetString("id");
+                      });
+      const bool refresh = policy_changed || (!owned && i->Find("error") &&
+                                              !i->Find("error")->IsNull());
+      if (policy_changed && require_frozen_inputs_ && !continuation)
+        return Error(409, "mcp_preparation_policy_changed",
+                     "Queued catalog must retain its original policy");
       if (opened.value.GetBool("credentials_required") &&
-          !ResponsesMcpHasCredentials(definition) && require_frozen_inputs_ &&
-          !config.count_input_only)
+          !ResponsesMcpHasCredentials(definition) &&
+          (require_frozen_inputs_ || refresh) && !config.count_input_only)
         return Error(400, "mcp_credentials_required",
                      "Resupply request credentials for this MCP server");
+      // A new request/explicit discovery may refresh metadata once. Old
+      // proposals keep their own authority; a failed listing cannot poison
+      // all later requests, and new policy must match new model bindings.
+      if (refresh && (!require_frozen_inputs_ || continuation)) break;
       available = true;
       break;
     }
     if (available) continue;
-    if (require_frozen_inputs_)
+    if (require_frozen_inputs_ && !continuation)
       return Error(409, "mcp_preparation_missing",
                    "Queued MCP work has no original catalog");
     if (definition.target_kind != "server_url")
@@ -167,17 +190,18 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config) {
     if (OutputJson(plan_.mcp_catalogs).size() > (4U << 20))
       return Error(503, "mcp_catalog_capacity",
                    "Catalog byte budget exhausted");
-    generation_history_.array.push_back(std::move(catalog.value));
+    input.array.push_back(std::move(catalog.value));
   }
-  if (generation_history_.array.size() > 4096)
+  if (input.array.size() > 4096)
     return Error(400, "input_limit_exceeded", "MCP history exceeds item limit");
   return {};
 }
 
 Status ResponsesExecution::BeginMcpCatalogs(ResponsesOutput* output,
-                                            std::string* wire) {
+                                            std::string* wire, size_t begin) {
   wire->clear();
-  for (const auto& catalog : plan_.mcp_catalogs.array) {
+  for (size_t i = begin; i < plan_.mcp_catalogs.array.size(); ++i) {
+    const auto& catalog = plan_.mcp_catalogs.array[i];
     auto starting = catalog;
     Set(&starting, "tools", Array());
     std::erase_if(starting.object,

@@ -1223,3 +1223,222 @@ Q4T_TEST(responses_mcp_missing_live_credentials_never_initialize_remote) {
   Q4T_CHECK(ExecutionOk(next.CloseUnfinished()));
   return true;
 }
+
+Q4T_TEST(responses_mcp_discovery_loads_remote_only_when_activated) {
+  for (const bool frozen : {false, true}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    auto request = ExecutionRequest(server);
+    Set(&Field(request, "tools").array.front(), "defer_loading", Boolean(true));
+    Field(request, "tools")
+        .array.push_back(Object({{"type", String("tool_search")}}));
+    auto run = std::make_unique<ResponsesExecution>(objects);
+    Q4T_CHECK(
+        ExecutionOk(run->Prepare(request, config, ExecutionAccess(), 42)));
+    Q4T_CHECK(server.Requests().empty() && !run->HasMcp());
+    if (frozen) {
+      Json prepared;
+      Q4T_CHECK(ExecutionOk(run->FreezeInputs(&prepared)));
+      run = std::make_unique<ResponsesExecution>(objects);
+      Q4T_CHECK(ExecutionOk(run->RestoreInputs(
+          prepared, config, ExecutionAccess(), 42, nullptr, &request)));
+      Q4T_CHECK(server.Requests().empty() && !run->HasMcp());
+    }
+    std::string wire;
+    Q4T_CHECK(ExecutionOk(run->Begin(&wire)));
+    ResponseDelta search;
+    search.kind = ResponseDelta::Kind::kTool;
+    search.tool_start = true;
+    search.call = {
+        0, "discover_mcp", std::string(kResponsesToolSearchModelName),
+        OutputJson(
+            Object({{"arguments_json", String(R"({"paths":["project"]})")}})),
+        false};
+    Q4T_CHECK(run->Append(search, {}, &wire));
+    bool waiting = true;
+    Q4T_CHECK(ExecutionOk(run->RunToolSearches(1, &waiting, {})) && !waiting);
+    Q4T_CHECK(server.Requests().empty());
+    ResponsesGenerationPlan next;
+    std::string listing;
+    Q4T_CHECK(ExecutionOk(
+        run->ContinueFileSearch(8, config, {}, &next, [&](const auto& part) {
+          listing += part;
+          return true;
+        })));
+    Q4T_CHECK(run->HasMcp() && !server.Requests().empty() && !server.calls);
+    Q4T_CHECK(listing.find("response.mcp_list_tools.completed") !=
+              listing.npos);
+    ResponseDelta call;
+    call.kind = ResponseDelta::Kind::kTool;
+    call.tool_start = true;
+    call.call = {0, "discovered_remote",
+                 ResponsesMcpModelName("project", "read_project"),
+                 R"({"path":"docs/MODEL.md"})", false};
+    Q4T_CHECK(run->Append(call, {}, &wire));
+    Q4T_CHECK(ExecutionOk(run->RunMcp(1, &waiting, {})) && !waiting &&
+              server.calls == 1);
+    Q4T_CHECK(ContinueExecution(run.get(), config) &&
+              FinishExecution(run.get()));
+    size_t catalogs = 0;
+    for (const auto& item : run->Output().Snapshot().GetArray("output")->array)
+      catalogs += item.GetString("type") == "mcp_list_tools";
+    Q4T_CHECK(catalogs == 1 && run->ResultJson().find("mcp-request-secret") ==
+                                   std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_current_caller_policy_gets_new_catalog) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ExecutionRequest(server);
+  Set(&Field(request, "tools").array.front(), "allowed_callers",
+      Array({String("programmatic")}));
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) && FinishExecution(&first));
+  const auto catalog =
+      first.Output().Snapshot().GetArray("output")->array[0].GetString("id");
+  request = ExecutionRequest(server);
+  Set(&request, "previous_response_id", String(first.Id()));
+  ResponsesExecution next(objects);
+  Q4T_CHECK(ExecutionOk(next.Prepare(request, config, ExecutionAccess(), 44)) &&
+            ExecutionOk(next.Begin(&wire)));
+  Q4T_CHECK(next.Output().Snapshot().GetArray("output")->array[0].GetString(
+                "id") != catalog);
+  Q4T_CHECK(ModelCall(&next, false, &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(next.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&next, config) && FinishExecution(&next));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_policy_refresh_does_not_approve_original_call) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(first.Prepare(ExecutionRequest(server, "always"),
+                                      config, ExecutionAccess(), 42)) &&
+            ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunMcp(1, &waiting, {})) && waiting &&
+            !server.calls);
+  const auto approval =
+      first.Output().Snapshot().GetArray("output")->array.back().GetString(
+          "id");
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  auto request = ExecutionRequest(server);
+  Set(&request, "previous_response_id", String(first.Id()));
+  ResponsesExecution next(objects);
+  Q4T_CHECK(ExecutionOk(next.Prepare(request, config, ExecutionAccess(), 44)) &&
+            ExecutionOk(next.Begin(&wire)) && ModelCall(&next, false, &wire));
+  Q4T_CHECK(ExecutionOk(next.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&next, config) && FinishExecution(&next));
+  const auto original =
+      ResponsesMcpState(objects, config).Inspect(approval, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(original) &&
+            original.value.GetString("state") == "approval" &&
+            !original.value.Find("decision"));
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_failed_catalog_recovers_on_new_request_not_frozen_replay) {
+  Server server;
+  std::atomic<bool> failed{true};
+  server.handler = [&](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list" || !failed)
+      return false;
+    Send(fd, Http(503));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ExecutionRequest(server);
+  ResponsesExecution first(objects);
+  Q4T_CHECK(ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(first.FreezeInputs(&frozen)));
+  const auto requests = server.Requests().size();
+  failed = false;
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(ExecutionOk(restored.RestoreInputs(
+      frozen, config, ExecutionAccess(), 42, nullptr, &request)));
+  Q4T_CHECK(server.Requests().size() == requests && !restored.HasMcp());
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(restored.Begin(&wire)) && FinishExecution(&restored));
+  Set(&request, "previous_response_id", String(restored.Id()));
+  ResponsesExecution next(objects);
+  Q4T_CHECK(ExecutionOk(next.Prepare(request, config, ExecutionAccess(), 44)) &&
+            ExecutionOk(next.Begin(&wire)) && ModelCall(&next, false, &wire));
+  Q4T_CHECK(server.Requests().size() > requests);
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(next.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&next, config) && FinishExecution(&next));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_client_discovery_binds_new_credentials_and_real_call) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  const auto search_tool = Object(
+      {{"type", String("tool_search")}, {"execution", String("client")}});
+  auto request = ExecutionRequest(server);
+  const auto remote_tools = *request.Find("tools");
+  Set(&request, "tools", Array({search_tool}));
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)));
+  ResponseDelta search;
+  search.kind = ResponseDelta::Kind::kTool;
+  search.tool_start = true;
+  search.call = {0, "client_discover",
+                 std::string(kResponsesToolSearchModelName),
+                 OutputJson(Object({{"arguments_json", String("{}")}})), false};
+  Q4T_CHECK(first.Append(search, {}, &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunToolSearches(1, &waiting, {})) && waiting);
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  const auto call_id =
+      first.Output().Snapshot().GetArray("output")->array[0].GetString(
+          "call_id");
+  Q4T_CHECK(server.Requests().empty());
+  Set(&request, "previous_response_id", String(first.Id()));
+  Set(&request, "input",
+      Array({Object({{"type", String("tool_search_output")},
+                     {"call_id", String(call_id)},
+                     {"tools", remote_tools}})}));
+  ResponsesExecution next(objects);
+  Q4T_CHECK(ExecutionOk(next.Prepare(request, config, ExecutionAccess(), 44)));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(next.FreezeInputs(&frozen)) &&
+            OutputJson(frozen).find("mcp-request-secret") == std::string::npos);
+  Q4T_CHECK(ExecutionOk(next.Begin(&wire)));
+  ResponseDelta call;
+  call.kind = ResponseDelta::Kind::kTool;
+  call.tool_start = true;
+  call.call = {0, "new_mcp", ResponsesMcpModelName("project", "read_project"),
+               R"({"path":"docs/MODEL.md"})", false};
+  Q4T_CHECK(next.Append(call, {}, &wire));
+  Q4T_CHECK(ExecutionOk(next.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&next, config) && FinishExecution(&next));
+  return true;
+}

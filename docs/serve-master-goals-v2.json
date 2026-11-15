@@ -1145,7 +1145,9 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": true
+        "full_engine_build_passed": true,
+        "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
+        "discovery_policy_targeted_cpp_passed": 23
       }
     },
     {
@@ -1923,7 +1925,9 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": true
+        "full_engine_build_passed": true,
+        "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
+        "discovery_policy_targeted_cpp_passed": 23
       }
     },
     {

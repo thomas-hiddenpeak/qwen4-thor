@@ -1,4 +1,4 @@
-# 当前状态（2026-11-15）
+# 当前状态（2026-11-16）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -38,6 +38,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+- [MCP发现/权限及开放schema23项CPU最终通过](evidence/serve-mcp-discovery-cpu-20261116/README.md)：
+  延迟目录实际激活、客户端新定义、权限刷新及故障后续请求恢复；
+  修复strict混合工具错误封闭MCP参数，原schema由独立worker校验
+  并绑定回执。完整引擎零警告、0GPU、rev126保持，其他组合继续。
 
 - [MCP Batch来源鉴权12项CPU最终通过](evidence/serve-mcp-batch-cpu-20261115/README.md)：
   原始File行与准备身份绑定、重启后计数/真实本地派发、凭据隔离及

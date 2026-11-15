@@ -1,0 +1,2 @@
+MCP execution: invalid_request: object must be closed (tools[1].parameters.additionalProperties)
+MCP execution: invalid_output_constraint: object must be closed (tools[1].parameters.additionalProperties)

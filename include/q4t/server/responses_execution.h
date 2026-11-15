@@ -164,7 +164,9 @@ class ResponsesExecution {
   ObjectReply ContinueFileSearch(int64_t output_used,
                                  const ChatPlanConfig& config,
                                  const ResponsesContextCheck& check,
-                                 ResponsesGenerationPlan* next);
+                                 ResponsesGenerationPlan* next,
+                                 const std::function<bool(const std::string&)>&
+                                     publish = {});
   ObjectReply ContinueAsyncTools(size_t completed_calls, int64_t output_used,
                                  const ChatPlanConfig& config,
                                  const ResponsesContextCheck& check,
@@ -244,10 +246,13 @@ class ResponsesExecution {
       const io::Json& call, const ResponsesMcpDefinition& definition,
       size_t output_index,
       const std::function<bool(const std::string&)>& publish);
-  Status BindActiveTools(const io::Json& active, ChatPlanError* error);
+  Status BindActiveTools(const io::Json& active, ChatPlanError* error,
+                         const io::Json* history = nullptr);
   ObjectReply CaptureMcpCredentials();
-  ObjectReply PrepareMcp(const ChatPlanConfig& config);
-  Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire);
+  ObjectReply PrepareMcp(const ChatPlanConfig& config,
+                         io::Json* continuation = nullptr);
+  Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire,
+                          size_t begin = 0);
   Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
   std::unique_ptr<FileExpansion> files_;

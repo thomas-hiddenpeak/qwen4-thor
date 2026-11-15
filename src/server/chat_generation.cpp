@@ -1367,7 +1367,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!independent)
         result = responses->ContinueFileSearch(
             responses_usage.output_tokens, planning_config,
-            check_resumed_context, &continuation_generation);
+            check_resumed_context, &continuation_generation,
+            [&](const std::string& part) {
+              return !stream || write_stream(part);
+            });
       if (!result.ok()) {
         SendError(fd, result.http_status, result.ClientMessage(), {},
                   result.ClientCode(), result.value.GetString("param"));
@@ -4409,7 +4412,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 size_t tokens = 0;
                 return measure_context(plan, &tokens, error);
               },
-              &next);
+              &next, publish);
           if (!result.ok()) {
             err_guard.ok = false;
             SendError(fd, result.http_status, result.ClientMessage(), {},

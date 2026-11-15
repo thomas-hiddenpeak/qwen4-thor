@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../src/server/object_protocol.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/chat_template.h"
@@ -439,5 +440,34 @@ Q4T_TEST(output_constraints_allowed_tools_errors_are_precise) {
     Q4T_CHECK(!q4t::server::PlanOutputConstraints(request, &plan, &param));
     Q4T_CHECK(param == "tool_choice.allowed_tools." + path);
   }
+  return true;
+}
+
+Q4T_TEST(output_constraints_open_advisory_keeps_schema_and_strict_neighbour) {
+  auto request = Request({}, true);
+  auto open = Parse(R"({"type":"function","function":{"name":"open",
+    "strict":false,"parameters":{"type":"object","properties":{
+      "path":{"type":"string","pattern":"^docs/"}},"required":["path"],
+      "additionalProperties":{"type":"integer"}}}})");
+  auto& tools = q4t::server::object_detail::Field(request, "tools").array;
+  tools.push_back(open);
+  OutputConstraints plan;
+  std::string error;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan, &error));
+  Q4T_CHECK(plan.active && plan.schema_receipts && error.empty());
+  const auto format = Parse(plan.structural_tag);
+  const auto* guards = format.Find("q4t_guard")->GetArray("tools");
+  Q4T_CHECK(guards && guards->array.size() == 1);
+  const auto& guard = guards->array.front();
+  Q4T_CHECK(
+      guard.GetString("name") == "open" && guard.GetBool("completion_only") &&
+      !guard.GetBool("strict") &&
+      q4t::server::OutputJson(*guard.Find("schema")) ==
+          q4t::server::OutputJson(*open.Find("function")->Find("parameters")));
+  Q4T_CHECK(q4t::server::ValidateChatContract(request, "m", false, &error));
+  auto& function = q4t::server::object_detail::Field(tools.back(), "function");
+  q4t::server::object_detail::Field(function, "strict").boolean = true;
+  Q4T_CHECK(!q4t::server::PlanOutputConstraints(request, &plan, &error));
+  Q4T_CHECK(error == "tools[2].function.parameters.additionalProperties");
   return true;
 }
