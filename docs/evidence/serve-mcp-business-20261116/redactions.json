@@ -1,0 +1,67 @@
+{
+  "business-02/agent-private-config.json": {
+    "original_sha256": "0061e7c2a60a15146a518c0e45687e2b97aae3d766426d973fce61568a1742b3",
+    "public_sha256": "c57794b5c6bd4ba0730cee5e7a9674a2a0bc1646ad45c4f42a286f90cdc655d1",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approval-for-denial.request.json": {
+    "original_sha256": "86fd322808b79113d665adc0384db12a2594bb390af6d4163eb72e99f4c1a390",
+    "public_sha256": "4aa35d12bc9f99447c133ddef78fae9a634e47b571c464dd1403ffdc034cbdb9",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approval-for-denial.sdk.json": {
+    "original_sha256": "733d3d99a59f9d946653553de200bdf5a7d4d32e78b4ce9861b7b17459b1ceaa",
+    "public_sha256": "870f7509e64509f72430ddd487e409c015815b04231cf517b201fdbec5f00738",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approval.request.json": {
+    "original_sha256": "86fd322808b79113d665adc0384db12a2594bb390af6d4163eb72e99f4c1a390",
+    "public_sha256": "4aa35d12bc9f99447c133ddef78fae9a634e47b571c464dd1403ffdc034cbdb9",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approval.sdk.json": {
+    "original_sha256": "2f7e792ebaea9b4308af8781d6dd0e069127e9fc1b896c44aa605970d8a30501",
+    "public_sha256": "6d5ec2315a222b84481582cdf1d82e44a85d612de3c196f6d050885eb1fc3ceb",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approved.request.json": {
+    "original_sha256": "f04362208b51dc6c9287ce4cdb6e29da9b5727ee5f399b6312b89ef793af7113",
+    "public_sha256": "154522cf642e2eb586bf97eba292e53a38f5ba0631997fc691ff9692ced3ad69",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/approved.sdk.json": {
+    "original_sha256": "e50b5f08550f984fa283e83b78d98d1b7895410743bff45b64326d266d952a62",
+    "public_sha256": "ad8a4b130438c15815026f08116580301640eff87bc055131bd230b7c8b68ac9",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/denied.request.json": {
+    "original_sha256": "7121644fb0e992d926cd1efb3584665ab999333a9ad36a7465fb2a6dace61f0d",
+    "public_sha256": "489455fa740062437ead5b075029262163d03d1d7bb8cea7e548150748a0b734",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/denied.sdk.json": {
+    "original_sha256": "ec5627849243a55e77823079087065775bb27c9db0bb896c643fcaf8e9012f64",
+    "public_sha256": "b31b21e692d3a74bc40ffc6100dba2751801b741cb0e94009f96d4cb9f7111ce",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/lost-tool-receipt.request.json": {
+    "original_sha256": "ed267e95c21e67438d0be8a1b5afd92f507b32182df15a1acf2b28949389082e",
+    "public_sha256": "d69446c85c14a36f1913a112b372292c4f90a05c79a5f7dc8d237f1164460c7e",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/lost-tool-receipt.sdk.json": {
+    "original_sha256": "6f6bbf2c8c013ccc82266552120b8f56d083520710d17d0e4d7eb4532f19f887",
+    "public_sha256": "ede281837953c84e1443bb734d57493944969514f8cc6ca06fd41ff5c84245b5",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/native-tunnel.request.json": {
+    "original_sha256": "35d13b17532eac2808c6399be072cd8132bc944dad634875df1f2fe4e003143b",
+    "public_sha256": "b4ff4ffcb9b3045e0dda096e2db4032d21dcbd9df0c235dce75ef8392e1d7504",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  },
+  "business-02/native-tunnel.sdk.json": {
+    "original_sha256": "2000aabcd65dc31f78c6b30d242bf43821efe7e64883e9167d1d8c0d006dcbfc",
+    "public_sha256": "39d34eecb2a65972029fcf135095332e002409ee6487fe7c2a2beabdb446cf3f",
+    "reason": "Generated test MCP/agent credential; original retained in private work directory"
+  }
+}

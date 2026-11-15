@@ -1189,7 +1189,15 @@
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
-      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      }
     },
     {
       "id": "A08",
@@ -2010,7 +2018,15 @@
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
-      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      }
     },
     {
       "id": "A12",
@@ -2033,7 +2049,15 @@
       ],
       "evidence": [],
       "release": null,
-      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      }
     },
     {
       "id": "N01",
@@ -2850,7 +2874,15 @@
       "evidence": [
         "evidence/serve-retrieval-managed-business-20261112/README.md"
       ],
-      "release": null
+      "release": null,
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      }
     },
     {
       "id": "Q02",

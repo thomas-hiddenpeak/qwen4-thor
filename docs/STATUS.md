@@ -39,10 +39,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
-[MCP实际业务驱动CPU准备](evidence/serve-mcp-business-driver-cpu-20261116/README.md)
-已完成：2项C++、6项Python、7项来源检查及零警告构建通过；补能力
-声明与资料模块导入。下一步严格租约首组1启动/8创建/900秒真实模型
-业务；GPU尚未启动，rev126保持，全部master继续。
+[MCP真实模型与SDK业务](evidence/serve-mcp-business-20261116/README.md)
+已通过：1启动/8创建/89.225秒，直接HTTPS审批/拒绝、原生隧道SSE、
+实际资料与资源读取、未知结果不重放及同PID普通推理；84次NVML正常。
+本机进程/端口/锁已清理，现代持久会话按续接合同保留。首次入口缺少
+继承租约参数在0启动/0请求时失败，原件保留；随机凭据和私钥不公开。
+默认rev126保持，继续精确主轻资格、恢复发行/main及全部33项master。
+[驱动CPU证据](evidence/serve-mcp-business-driver-cpu-20261116/README.md)复用。
 
 - [隧道公开合同与可选前置22项CPU最终通过](evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md)：
   三条OpenAPI/schema、两种可选nginx的TLS/受保护头与独立准入已接通；
