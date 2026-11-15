@@ -136,19 +136,32 @@ bool Unfinished(const Json& item) {
          (!item.Has("output") || item.Find("output")->IsNull()) &&
          (!item.Has("error") || item.Find("error")->IsNull());
 }
-ObjectReply Definition(const Json& original,
+enum class TargetUse { kInspect, kDispatch, kDeny };
+ObjectReply Definition(const Json& payload,
                        const ResponsesMcpDefinition& current,
                        const Json* tool = nullptr,
-                       std::string_view caller = "direct") {
+                       std::string_view caller = "direct",
+                       TargetUse use = TargetUse::kDispatch) {
   ResponsesMcpDefinition old, now;
   ChatPlanError error;
-  if (!PlanResponsesMcpDefinition(original, &old, &error) ||
+  const auto* original = payload.Find("declaration");
+  if (!original || !PlanResponsesMcpDefinition(*original, &old, &error) ||
       !PlanResponsesMcpDefinition(current.declaration, &now, &error) ||
       old.target_kind != now.target_kind || old.target_id != now.target_id ||
       old.declaration.GetString("server_label") !=
           now.declaration.GetString("server_label"))
     return Error(409, "mcp_server_changed",
                  "MCP server identity differs from the original authority");
+  if (old.target_kind != "server_url" && use != TargetUse::kDeny) {
+    if (current.target_binding.empty()) {
+      if (use == TargetUse::kDispatch)
+        return Error(503, "mcp_target_mapping_required",
+                     "MCP operation needs its configured deployment route");
+    } else if (payload.GetString("target_binding") != current.target_binding) {
+      return Error(409, "mcp_target_changed",
+                   "MCP route differs from the original authority");
+    }
+  }
   if (tool && (!ResponsesMcpToolAllowed(old.declaration, *tool) ||
                !ResponsesMcpToolAllowed(now.declaration, *tool) ||
                !ResponsesToolAllows(old.declaration, caller) ||
@@ -215,8 +228,8 @@ ObjectReply ResourceAuthority(const Json& payload, const std::string& uri,
       }))
     return Error(403, "mcp_resource_denied",
                  "Resource was not returned by this invocation");
-  auto reply = Definition(*payload.Find("declaration"), current,
-                          payload.Find("tool"), payload.GetString("caller"));
+  auto reply = Definition(payload, current, payload.Find("tool"),
+                          payload.GetString("caller"));
   if (!reply.ok()) return reply;
   if (payload.GetBool("credentials_required") &&
       !ResponsesMcpHasCredentials(current))
@@ -335,6 +348,13 @@ ObjectReply ResponsesMcpState::Read(const std::string& id,
       payload->GetInt("expires_at") != expires ||
       payload->GetString("id") != id || payload->GetString("kind") != kind)
     return Invalid("Invalid MCP authority payload");
+  if (const auto* target = payload->Find("target_binding");
+      target &&
+      (!target->IsString() || target->str.size() != 64 ||
+       !std::all_of(target->str.begin(), target->str.end(), [](char c) {
+         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+       })))
+    return Invalid("Invalid sealed MCP route binding");
   if (const auto* session = payload->Find("session");
       session && !ValidSession(*session, access))
     return Invalid("Invalid sealed MCP session");
@@ -496,6 +516,12 @@ ObjectReply ResponsesMcpState::Catalog(
                          {"credentials_required",
                           Boolean(ResponsesMcpHasCredentials(definition))},
                          {"declaration", clean.declaration}});
+  if (definition.target_kind != "server_url") {
+    if (definition.target_binding.size() != 64)
+      return Error(503, "mcp_target_mapping_required",
+                   "MCP catalog needs a resolved deployment route");
+    Set(&payload, "target_binding", String(definition.target_binding));
+  }
   if (session) {
     if (!ValidSession(*session, access)) return Invalid("Invalid MCP session");
     Set(&payload, "session", *session);
@@ -513,7 +539,7 @@ ObjectReply ResponsesMcpState::Session(const std::string& catalog_id,
   if (!reply.ok()) return reply;
   const auto* declaration = payload.Find("declaration");
   if (!declaration) return Invalid("Missing MCP catalog declaration");
-  reply = Definition(*declaration, current);
+  reply = Definition(payload, current);
   if (!reply.ok()) return reply;
   reply.value =
       Object({{"revision", *record.Find("revision")},
@@ -532,7 +558,7 @@ ObjectReply ResponsesMcpState::BindSession(
   const auto* declaration = payload.Find("declaration");
   if (!declaration || !ValidSession(session, access))
     return Invalid("Invalid MCP session publication");
-  reply = Definition(*declaration, current);
+  reply = Definition(payload, current);
   if (!reply.ok()) return reply;
   if (const auto* prior = payload.Find("session");
       prior && Same(*prior, session)) {
@@ -631,7 +657,7 @@ ObjectReply ResponsesMcpState::OpenCatalog(
   const auto* declaration = payload.Find("declaration");
   if (!declaration || !payload.GetArray("tools"))
     return Invalid("Invalid private MCP catalog");
-  reply = Definition(*declaration, current);
+  reply = Definition(payload, current, nullptr, "direct", TargetUse::kInspect);
   if (reply.ok()) reply.value = std::move(payload);
   return reply;
 }
@@ -654,7 +680,7 @@ ObjectReply ResponsesMcpState::Propose(
     if (tool.GetString("name") == name) selected = &tool;
   if (!selected)
     return Error(403, "mcp_tool_denied", "Tool is not in the catalog");
-  reply = Definition(*declaration, current, selected, caller);
+  reply = Definition(payload, current, selected, caller);
   if (!reply.ok()) return reply;
   reply = ValidateArguments(*selected, arguments, access);
   if (!reply.ok()) return reply;
@@ -732,6 +758,8 @@ ObjectReply ResponsesMcpState::Propose(
                         {"server_label", *declaration->Find("server_label")},
                         {"approval_request_id",
                          approval ? String(approval_id) : Json()}})}});
+  if (const auto* target = payload.Find("target_binding"))
+    Set(&next, "target_binding", *target);
   if (program_origin) Set(&next, "program_origin", *program_origin);
   reply = Write(id, "call", next, 0, record.GetInt("expires_at"), access);
   return reply.ok() && !reply.commit_unknown ? View(next) : reply;
@@ -759,8 +787,9 @@ ObjectReply ResponsesMcpState::Decide(const std::string& id, bool approve,
       payload.Find("call")->GetString("approval_request_id") != id)
     return Error(409, "mcp_approval_already_decided",
                  "MCP approval is not pending");
-  reply = Definition(*payload.Find("declaration"), current,
-                     payload.Find("tool"), payload.GetString("caller"));
+  reply = Definition(payload, current, payload.Find("tool"),
+                     payload.GetString("caller"),
+                     approve ? TargetUse::kDispatch : TargetUse::kDeny);
   if (!reply.ok()) return reply;
   Set(&payload, "state", String(approve ? "ready" : "denied"));
   if (approve) {
@@ -795,8 +824,8 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
       !ResponsesMcpHasCredentials(current))
     return Error(400, "mcp_credentials_required",
                  "Resupply request credentials before invoking this MCP tool");
-  reply = Definition(*payload.Find("declaration"), current,
-                     payload.Find("tool"), payload.GetString("caller"));
+  reply = Definition(payload, current, payload.Find("tool"),
+                     payload.GetString("caller"));
   if (!reply.ok()) return reply;
   // A later request may tighten approval after a never-policy proposal.
   const auto* decision = payload.Find("decision");

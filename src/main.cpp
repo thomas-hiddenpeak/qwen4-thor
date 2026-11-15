@@ -34,6 +34,7 @@
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/mcp_transport.h"
 #include "q4t/server/file_input_policy.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/file_pdf.h"
@@ -75,6 +76,7 @@ void PrintUsage(const char* prog) {
       "              (q4t state-keys --help)\n"
       "  state-retention  Inspect/collect protected application state\n"
       "              (q4t state-retention --help)\n"
+      "  mcp-policy-check FILE  Validate MCP deployment without a model\n"
       "  file-input-policy-check FILE  Validate file policy without a model\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
@@ -87,7 +89,7 @@ void PrintUsage(const char* prog) {
       "[--startup-memory-headroom-mib N] "
       "[--cuda-allocation-limit-mib auto|0|N] "
       "[--client-policy-file FILE] [--access-program-policy-file FILE] "
-      "[--file-input-policy-file FILE] "
+      "[--file-input-policy-file FILE] [--mcp-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
       "[--object-store-dir DIR] [--object-max-object-mib N] "
@@ -909,6 +911,8 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  if (argc > 1 && std::strcmp(argv[1], "mcp-policy-check") == 0)
+    return q4t::server::RunMcpDeploymentPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "file-input-policy-check") == 0)
     return q4t::server::RunFileInputPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "service") == 0) {

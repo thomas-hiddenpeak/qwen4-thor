@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "q4t/server/mcp_policy.h"
 
 namespace q4t::server {
 using namespace object_detail;
@@ -73,9 +74,11 @@ ObjectReply ResponsesExecution::ResolveMcpResource(const std::string& id,
         return value.declaration.GetString("server_label") ==
                original.declaration.GetString("server_label");
       });
-  const auto& definition =
-      current == mcp_definitions_.end() ? original : *current;
-  auto result = TrackMcpCall(id);
+  auto definition = current == mcp_definitions_.end() ? original : *current;
+  auto result = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
+                                           access_.scope, &definition);
+  if (!result.ok()) return result;
+  result = TrackMcpCall(id);
   if (!result.ok()) return result;
   result = mcp_state_->ProposeResource(id, uri, definition, access_);
   if (!result.ok() || result.commit_unknown)

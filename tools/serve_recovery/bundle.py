@@ -189,7 +189,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             model_names=None, application_state=None, capacity_config=None,
             repository=None, access_program_policy=None, file_input_policy=None,
             embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None,
-            device_control=None):
+            device_control=None, mcp_policy=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -246,7 +246,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         client_policy=backend_policy_path, nvml_policy='degrade', model_names=model_names,
         application_state=application_state, capacity_config=capacity_config,
         repository=repository, access_program_policy=access_program_policy,
-        file_input_policy=file_input_policy, embedding_model_dir=embedding_model_dir)
+        file_input_policy=file_input_policy, embedding_model_dir=embedding_model_dir,
+        mcp_policy=mcp_policy)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     programs = list(zip(executables, (guardian, cuda_probe, executable)))

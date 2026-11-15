@@ -356,6 +356,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--capacity-config', type=Path)
     prepare.add_argument('--access-program-policy', type=Path)
     prepare.add_argument('--file-input-policy', type=Path)
+    prepare.add_argument('--mcp-policy', type=Path)
     prepare.add_argument('--embedding-model-dir', type=Path)
     prepare.add_argument('--recovery-profiles', type=Path)
     prepare.add_argument('--recovery-profile-policy', type=Path)
@@ -448,6 +449,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     if args.capacity_config is not None else None,
                 repository=repository, access_program_policy=args.access_program_policy,
                 file_input_policy=args.file_input_policy,
+                mcp_policy=args.mcp_policy,
                 embedding_model_dir=args.embedding_model_dir,
                 recovery_profiles=args.recovery_profiles,
                 recovery_profile_policy=engine.read(args.recovery_profile_policy)

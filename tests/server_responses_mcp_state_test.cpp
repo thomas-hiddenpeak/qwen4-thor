@@ -1807,3 +1807,96 @@ Q4T_TEST(responses_mcp_session_resource_keeps_original_after_catalog_renewal) {
       Ok(state.FinishResource(id, "file:///report0", resource, {}, Access())));
   return true;
 }
+
+namespace {
+ResponsesMcpDefinition MappedDefinition(std::string approval = "always",
+                                        std::string generation = "one") {
+  auto declaration = Definition(approval).declaration;
+  std::erase_if(declaration.object,
+                [](const auto& field) { return field.first == "server_url"; });
+  Set(&declaration, "tunnel_id", String("tunnel_project"));
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  if (!PlanResponsesMcpDefinition(declaration, &definition, &error))
+    throw std::runtime_error("Mapped state fixture");
+  definition.credentials.url = "https://private.example/relay";
+  definition.target_binding = Digest(generation);
+  return definition;
+}
+}  // namespace
+
+Q4T_TEST(responses_mcp_mapping_original_catalog_and_approval_cannot_migrate) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto original = MappedDefinition();
+  const auto changed = MappedDefinition("always", "two");
+  const auto catalog = Catalog(state, original);
+  Q4T_CHECK(OutputJson(catalog).find(original.target_binding) ==
+            std::string::npos);
+  Q4T_CHECK(state.OpenCatalog(catalog, changed, Access()).code ==
+            "mcp_target_changed");
+  Q4T_CHECK(Propose(state, catalog, changed).code == "mcp_target_changed");
+  const auto pending = Propose(state, catalog, original);
+  Q4T_CHECK(Ok(pending));
+  const auto id = pending.value.GetString("id");
+  Q4T_CHECK(state.Decide(id, true, "", changed, Access()).code ==
+            "mcp_target_changed");
+  Q4T_CHECK(state.Inspect(id, Access()).value.GetString("state") == "approval");
+  Q4T_CHECK(Ok(state.Decide(id, true, "", original, Access())));
+  const auto call =
+      state.Inspect(id, Access()).value.Find("call")->GetString("id");
+  Q4T_CHECK(state.Permit(call, changed, Access()).code == "mcp_target_changed");
+  Q4T_CHECK(Ok(state.Permit(call, original, Access())));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_mapping_missing_allows_offline_history_and_denial_only) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto original = MappedDefinition();
+  const auto catalog = Catalog(state, original);
+  const auto pending = Propose(state, catalog, original);
+  Q4T_CHECK(Ok(pending));
+  auto missing = original;
+  missing.target_binding.clear();
+  missing.credentials.url.clear();
+  Q4T_CHECK(Ok(state.OpenCatalog(catalog, missing, Access())));
+  Q4T_CHECK(Propose(state, catalog, missing).code ==
+            "mcp_target_mapping_required");
+  Q4T_CHECK(
+      state.Decide(pending.value.GetString("id"), true, "", missing, Access())
+          .code == "mcp_target_mapping_required");
+  Q4T_CHECK(Ok(state.Decide(pending.value.GetString("id"), false, "cancel",
+                            missing, Access())));
+  Q4T_CHECK(Ok(state.Authenticate(catalog, Access())));
+  Q4T_CHECK(state.Catalog(missing, Tools(), Access()).code ==
+            "mcp_target_mapping_required");
+  return true;
+}
+
+Q4T_TEST(responses_mcp_mapping_resource_stays_bound_after_store_restart) {
+  Fixture fixture;
+  const auto original = MappedDefinition("never");
+  const auto changed = MappedDefinition("never", "replacement");
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesMcpState state(objects, Config());
+    id = CompletedResourceCall(state, original).GetString("id");
+  }
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  Q4T_CHECK(
+      state.ProposeResource(id, "file:///report0", changed, Access()).code ==
+      "mcp_target_changed");
+  Q4T_CHECK(
+      Ok(state.ProposeResource(id, "file:///report0", original, Access())));
+  Q4T_CHECK(
+      state.PermitResource(id, "file:///report0", changed, Access()).code ==
+      "mcp_target_changed");
+  Q4T_CHECK(
+      Ok(state.PermitResource(id, "file:///report0", original, Access())));
+  return true;
+}

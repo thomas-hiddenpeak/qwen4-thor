@@ -1,0 +1,13 @@
+test_actual_native_checker_and_package_binding_redact_private_routes (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_actual_native_checker_and_package_binding_redact_private_routes) ... ok
+test_invalid_and_changed_policy_never_fall_back (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_invalid_and_changed_policy_never_fall_back) ... ok
+test_old_engine_cannot_claim_mcp_policy_support (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_old_engine_cannot_claim_mcp_policy_support) ... ok
+test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes) ... ok
+test_unconfigured_package_preserves_existing_startup (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_unconfigured_package_preserves_existing_startup) ... ok
+test_native_checker_uses_actual_parser_and_redacts (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_native_checker_uses_actual_parser_and_redacts) ... ok
+test_native_rejects_invalid_or_raced_policy_without_fallback (tools.serve_responses.test_file_input_policy.FileInputPolicyPackage.test_native_rejects_invalid_or_raced_policy_without_fallback) ... ok
+test_commands_preserve_actual_selected_capacity_and_private_state (tools.serve_recovery.test_profile_acceptance.QualificationDriverTests.test_commands_preserve_actual_selected_capacity_and_private_state) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.707s
+
+OK

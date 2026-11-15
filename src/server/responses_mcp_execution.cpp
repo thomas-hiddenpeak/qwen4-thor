@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
 
@@ -104,8 +105,12 @@ Status ResponsesExecution::AppendMcp(const ResponseDelta& delta, bool* handled,
 }
 
 ObjectReply ResponsesExecution::ExecuteMcpCall(
-    const Json& call, const ResponsesMcpDefinition& definition, size_t index,
+    const Json& call, const ResponsesMcpDefinition& requested, size_t index,
     const std::function<bool(const std::string&)>& publish) {
+  auto definition = requested;
+  auto resolved = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
+                                             access_.scope, &definition);
+  if (!resolved.ok()) return resolved;
   // Do not even initialize an anonymous remote session when an owned call
   // requires credentials that were deliberately omitted from durable state.
   auto owned = mcp_state_->Inspect(call.GetString("id"), access_);
@@ -211,12 +216,18 @@ ObjectReply ResponsesExecution::ExecuteProgramMcp(
                                   &error))
     return Error(500, "mcp_state_invalid", "Invalid sealed MCP declaration");
   BindResponsesMcpCredentials(&original, mcp_credentials_);
+  auto resolved = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
+                                             access_.scope, &original);
+  if (!resolved.ok()) return resolved;
   const auto current = std::find_if(
       mcp_definitions_.begin(), mcp_definitions_.end(), [&](const auto& value) {
         return value.declaration.GetString("server_label") ==
                source.GetString("server_label");
       });
   auto definition = current == mcp_definitions_.end() ? original : *current;
+  resolved = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
+                                        access_.scope, &definition);
+  if (!resolved.ok()) return resolved;
   auto catalog =
       mcp_state_->CatalogById(source.GetString("catalog_id"), access_);
   if (!catalog.ok()) return catalog;
@@ -362,6 +373,11 @@ ObjectReply ResponsesExecution::RunMcpApprovals(
       BindResponsesMcpCredentials(&definition, mcp_credentials_);
     }
     const bool approved = approval.GetBool("approve");
+    if (approved && !original.value.Has("terminal")) {
+      auto resolved = ResolveMcpDeploymentTarget(
+          cipher_config_.mcp_policy.get(), access_.scope, &definition);
+      if (!resolved.ok()) return resolved;
+    }
     if (approved && !original.value.Has("terminal") &&
         original.value.GetBool("credentials_required") &&
         !ResponsesMcpHasCredentials(definition))
@@ -477,6 +493,9 @@ ObjectReply ResponsesExecution::RunMcp(
         catalog == generation_history_.array.end())
       return Error(500, "mcp_state_invalid",
                    "Missing request-owned MCP binding");
+    auto resolved = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
+                                               access_.scope, &*definition);
+    if (!resolved.ok()) return resolved;
     if (pending.public_id.empty())
       pending.public_id = detail::NewRequestId("mcp_");
     if (pending.public_id.empty())

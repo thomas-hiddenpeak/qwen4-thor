@@ -33,6 +33,7 @@ struct ServerOptions {
       client_policy_file;  // Private immutable gateway policy, optional.
   std::string access_program_policy_file;  // Optional native policy snapshot.
   std::string file_input_policy_file;  // Optional trusted preparation policy.
+  std::string mcp_policy_file;  // Optional trusted MCP routing/network policy.
   int port = 8000;
   // Optional independent local operations listener; 0 disables. Always
   // 127.0.0.1, with its own bounded handlers; never serves generation.

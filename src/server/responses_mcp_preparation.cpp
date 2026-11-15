@@ -4,6 +4,7 @@
 #include <set>
 
 #include "object_protocol.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/responses_owner.h"
 
@@ -42,6 +43,9 @@ ObjectReply ResponsesExecution::CaptureMcpCredentials() {
 
 ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
                                            Json* continuation) {
+  // The executor retains the exact immutable policy used for preparation;
+  // later dispatch/approval/resource callbacks do not receive ChatPlanConfig.
+  cipher_config_.mcp_policy = config.mcp_policy;
   auto& input = continuation ? *continuation : generation_history_;
   const auto* declared = envelope_.request.GetArray("tools");
   auto definitions = declared ? *declared : Array();
@@ -65,6 +69,10 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
         tool, &definition, &error, "tools[" + std::to_string(i) + ']');
     if (!status) return PlanError(status, error);
     BindResponsesMcpCredentials(&definition, mcp_credentials_);
+    // Missing/revoked deployment routes do not prevent offline consumption of
+    // authenticated frozen history. Any new I/O must resolve again below.
+    (void)ResolveMcpDeploymentTarget(config.mcp_policy.get(), access_.scope,
+                                     &definition);
     mcp_definitions_.push_back(std::move(definition));
   }
   const bool history =
@@ -97,8 +105,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
   if (plan_.execution_owner.IsNull())
     plan_.execution_owner = CurrentResponseOwner();
   mcp_state_ = std::make_unique<ResponsesMcpState>(objects_, config, plan_.id);
-  mcp_fetch_ =
-      config.file_inputs ? config.file_inputs->fetch : FileFetchOptions{};
+  mcp_fetch_ = config.mcp_policy    ? config.mcp_policy->fetch
+               : config.file_inputs ? config.file_inputs->fetch
+                                    : FileFetchOptions{};
   if (plan_.mcp_catalogs.IsNull()) plan_.mcp_catalogs = Array();
   if (!plan_.mcp_catalogs.IsArray() || plan_.mcp_catalogs.array.size() > 128 ||
       OutputJson(plan_.mcp_catalogs).size() > (4U << 20))
@@ -136,7 +145,7 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
       input.array.push_back(item);
   }
   std::set<std::string> labels;
-  for (const auto& definition : mcp_definitions_) {
+  for (auto& definition : mcp_definitions_) {
     const auto label = definition.declaration.GetString("server_label");
     if (!labels.insert(label).second)
       return Error(400, "invalid_request", "Duplicate MCP server label");
@@ -146,7 +155,12 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
           i->GetString("server_label") != label)
         continue;
       auto opened = mcp_state_->OpenCatalog(*i, definition, access_);
-      if (opened.code == "mcp_server_changed") continue;
+      if (opened.code == "mcp_target_changed" && require_frozen_inputs_ &&
+          !continuation)
+        return opened;
+      if (opened.code == "mcp_server_changed" ||
+          opened.code == "mcp_target_changed")
+        continue;
       if (!opened.ok()) return opened;
       const bool policy_changed = !SamePolicy(*opened.value.Find("declaration"),
                                               definition.declaration);
@@ -176,9 +190,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
     if (require_frozen_inputs_ && !continuation)
       return Error(409, "mcp_preparation_missing",
                    "Queued MCP work has no original catalog");
-    if (definition.target_kind != "server_url")
-      return Error(503, "mcp_target_mapping_required",
-                   "MCP connector or tunnel needs a deployment mapping");
+    auto resolved = ResolveMcpDeploymentTarget(config.mcp_policy.get(),
+                                               access_.scope, &definition);
+    if (!resolved.ok()) return resolved;
     McpTransportReceipt receipt;
     McpSession session;
     auto listed =

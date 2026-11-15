@@ -4,6 +4,7 @@
 #include "chat_server_internal.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
 
@@ -142,6 +143,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const auto object_options =
       ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
                                 home_directory ? home_directory : "");
+  if (!opts.mcp_policy_file.empty()) {
+    auto policy = std::make_shared<McpDeploymentPolicy>();
+    const auto status = LoadMcpDeploymentPolicy(opts.mcp_policy_file, policy.get());
+    if (!status) return status;
+    mcp_policy_ = std::move(policy);
+  } else {
+    mcp_policy_.reset();
+  }
   FileInputPolicy file_policy;
   if (!opts.file_input_policy_file.empty()) {
     const auto status =

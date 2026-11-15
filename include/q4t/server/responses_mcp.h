@@ -11,6 +11,8 @@ struct ResponsesMcpDefinition {
   McpEndpoint credentials;
   std::string target_kind;
   std::string target_id;
+  // Private resolved deployment identity; never a public request field.
+  std::string target_binding;
 };
 Status PlanResponsesMcpDefinition(const io::Json& input,
                                   ResponsesMcpDefinition* output,

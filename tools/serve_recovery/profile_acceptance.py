@@ -164,7 +164,8 @@ def prepare(args):
     assets = Path(base['settings']['native_embedding']['directory'])
     plan['native_assets'] = {str(assets/name):sha(assets/name) for name in
                             ['config.json', 'tokenizer.json', 'model.safetensors']}
-    for name in ('access-program-policy.json', 'file-input-policy.json'):
+    for name in ('access-program-policy.json', 'file-input-policy.json',
+                 'mcp-policy.json'):
         if (engine/name).is_file():
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)
