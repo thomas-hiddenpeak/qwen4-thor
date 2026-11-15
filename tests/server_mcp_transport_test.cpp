@@ -6,7 +6,9 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <mutex>
 #include <sstream>
 #include <thread>
@@ -14,6 +16,7 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/responses_mcp_state.h"
 #include "q4t/test.h"
 
 namespace {
@@ -325,11 +328,72 @@ Q4T_TEST(mcp_transport_call_waits_for_durable_permission) {
   Q4T_CHECK(checkpoint && result.code == "fixture_state_unavailable");
   Q4T_CHECK(!receipt.call_permitted && !receipt.outcome_unknown &&
             !server.calls);
+  result = Invoke(server, &receipt, "tools/call", [] {
+    ObjectReply unknown;
+    unknown.commit_unknown = true;
+    return unknown;
+  });
+  Q4T_CHECK(result.code == "mcp_state_commit_unknown" && result.commit_unknown &&
+            !receipt.call_permitted && !server.calls);
   Q4T_CHECK(Invoke(server, &receipt, "tools/call").ok());
   Q4T_CHECK(receipt.call_permitted && !receipt.outcome_unknown &&
             server.calls == 1);
   Q4T_CHECK(receipt.result.GetArray("content")->array[0].GetString("text") ==
             "document result");
+  return true;
+}
+
+Q4T_TEST(mcp_transport_actual_call_requires_owned_persisted_approval) {
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto root = std::filesystem::absolute(
+      output ? output : ".q4t-work/mcp-state-transport-cpu");
+  std::filesystem::create_directories(root);
+  auto directory = (root / "mcp-transport-state-XXXXXX").string();
+  Q4T_CHECK(mkdtemp(directory.data()));
+  ObjectStoreOptions options;
+  options.directory = directory + "/objects";
+  ObjectStore objects(options);
+  ChatPlanConfig config;
+  config.model = "mcp-transport-fixture";
+  ResponsesMcpState state(objects, config);
+  const auto access = [] {
+    return StateAccess{"client:mcp", Clock::now() + 5s, {}};
+  };
+  Server server;
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      Object({{"type", String("mcp")}, {"server_label", String("project")},
+              {"server_url", String(server.Endpoint().url)}}),
+      &definition, &error));
+  McpTransportReceipt receipt;
+  Q4T_CHECK(Invoke(server, &receipt).ok());
+  auto catalog = state.Catalog(definition, *receipt.result.Find("tools"), access());
+  Q4T_CHECK(catalog.ok());
+  auto proposed = state.Propose(catalog.value, definition, "read_project",
+                                 *Call().Find("arguments"), "direct", access());
+  Q4T_CHECK(proposed.ok());
+  const auto id = proposed.value.GetString("id");
+  const auto permit = [&] { return state.Permit(id, definition, access()); };
+  Q4T_CHECK(Invoke(server, &receipt, "tools/call", permit).http_status == 409 &&
+            !receipt.call_permitted && !server.calls);
+  Q4T_CHECK(state.Decide(id, true, "read project", definition, access()).ok());
+  std::atomic<bool> saw_durable_permission{false};
+  server.handler = [&](const Request& request, int, std::stop_token) {
+    if (request.rpc.GetString("method") == "tools/call") {
+      const auto record = state.Inspect(id, access());
+      saw_durable_permission = record.ok() &&
+          record.value.GetString("state") == "dispatching" &&
+          record.value.Find("decision")->GetBool("approve");
+    }
+    return false;
+  };
+  const auto called = Invoke(server, &receipt, "tools/call", permit);
+  Q4T_CHECK(called.ok() && saw_durable_permission && server.calls == 1);
+  const auto finished = state.Finish(id, receipt, called, access());
+  Q4T_CHECK(finished.ok() && finished.value.GetString("status") == "completed");
+  Q4T_CHECK(!Invoke(server, &receipt, "tools/call", permit).ok() &&
+            !receipt.call_permitted && server.calls == 1);
   return true;
 }
 

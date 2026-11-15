@@ -39,6 +39,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP目录与持久审批20项针对性CPU最终通过](evidence/serve-mcp-authority-cpu-20261115/README.md)：
+  单次派发、未知不重放、原schema及凭据不存储验证通过；首次清理
+  夹具失败保留，修后单项通过。0GPU、rev126保持；继续公开MCP
+  items/SSE与状态/程序/真实业务，全部master仍active。
+
+- MCP目录/凭据/过滤7项及受影响传输头1项CPU首过；正在接认证
+  目录、审批和单次派发的持久状态，尚未开放MCP对外能力。0GPU、
+  rev126保持，真实业务与全部master继续。
+
 - PR27精确head `9e0a4b44` 的两组CI全部通过，已[实际合main](evidence/serve-pr27-merged-20261115/README.md)
   （`1f0ed01a`）。程序调用rev126已交付；MCP仍在后续开发中，
   继续审批/公开接线及全部剩余master任务。

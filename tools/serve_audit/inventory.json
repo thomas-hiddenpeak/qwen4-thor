@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "3eefae2a550735187c19d48fcdf823b975f632b5bb3de85a1b3f8ddae5efc64a",
-    "cmake/ChatProtocolIdentity.cmake": "d70e26b0d6bde97a7edc70f62fd187d1ecb91dffa7ff57c6881face34babcb3c",
+    "CMakeLists.txt": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5",
+    "cmake/ChatProtocolIdentity.cmake": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2159,7 +2159,7 @@
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
     "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "06c465d72492cb095c15290338c71045fb37f6cc4317d411a4ed56f8879c1e83",
-    "src/server/object_retention.cpp": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
+    "src/server/object_retention.cpp": "92433e3d30130357a4f1a19c925b8bf582951f24954c0262dadca7dcc602e531",
     "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
@@ -2448,10 +2448,14 @@
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "include/q4t/server/mcp_transport.h": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e",
-    "src/server/mcp_transport.cpp": "c3b96421351cdb1a8921181617f6bdb7b85e39423e9a71b73e9baf1575efdc8c",
+    "src/server/mcp_transport.cpp": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd",
     "src/server/remote_http_internal.h": "2ff012c16ed2a2760875e27c4b54073e8b62662ad222d9d45b4e6d80bef2bba0",
-    "src/server/mcp_transport_internal.h": "6d63aab1cee095f7b8f8080009ff6e9ae81222fe3d1606317dc0fff8122e343a",
-    "src/server/mcp_http.cpp": "9b8e9b1815732f07c30633da9307b10229034eb039d9cd0616f45f15c620c58c"
+    "src/server/mcp_transport_internal.h": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93",
+    "src/server/mcp_http.cpp": "ba0f31d5d9eb3986cf8dabd22202627aac14b4ebd6c93db6af1503c8edbf8617",
+    "include/q4t/server/responses_mcp.h": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf",
+    "src/server/responses_mcp.cpp": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9",
+    "include/q4t/server/responses_mcp_state.h": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404",
+    "src/server/responses_mcp_state.cpp": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -5041,6 +5045,53 @@
       }
     },
     "evidence": "docs/evidence/serve-mcp-transport-cpu-20261115/README.md",
+    "public_integration_required": true
+  },
+  "mcp_authority_review_20261115": {
+    "scope": "MCP request-local credentials, validated catalog/filters, original schemas; client/model-bound encrypted authority, approval and single-dispatch CAS. Unknown commit cannot acknowledge transport. Result-unknown never replays. Self-contained records retain original TTL, register no local media references. No public MCP API enabled yet; engine/default unchanged.",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "3eefae2a550735187c19d48fcdf823b975f632b5bb3de85a1b3f8ddae5efc64a",
+        "after": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "d70e26b0d6bde97a7edc70f62fd187d1ecb91dffa7ff57c6881face34babcb3c",
+        "after": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef"
+      },
+      "src/server/mcp_http.cpp": {
+        "before": "9b8e9b1815732f07c30633da9307b10229034eb039d9cd0616f45f15c620c58c",
+        "after": "ba0f31d5d9eb3986cf8dabd22202627aac14b4ebd6c93db6af1503c8edbf8617"
+      },
+      "src/server/mcp_transport_internal.h": {
+        "before": "6d63aab1cee095f7b8f8080009ff6e9ae81222fe3d1606317dc0fff8122e343a",
+        "after": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93"
+      },
+      "src/server/mcp_transport.cpp": {
+        "before": "c3b96421351cdb1a8921181617f6bdb7b85e39423e9a71b73e9baf1575efdc8c",
+        "after": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd"
+      },
+      "src/server/object_retention.cpp": {
+        "before": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
+        "after": "92433e3d30130357a4f1a19c925b8bf582951f24954c0262dadca7dcc602e531"
+      },
+      "include/q4t/server/responses_mcp.h": {
+        "before": null,
+        "after": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf"
+      },
+      "src/server/responses_mcp.cpp": {
+        "before": null,
+        "after": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": null,
+        "after": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": null,
+        "after": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a"
+      }
+    },
+    "evidence": "docs/evidence/serve-mcp-authority-cpu-20261115/README.md",
     "public_integration_required": true
   }
 }

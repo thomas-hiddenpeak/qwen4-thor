@@ -115,6 +115,11 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
       // The caller must durably bind permission before any external dispatch.
       // Failure/expiry here cannot be turned into an automatic retry.
       auto permitted = before_call();
+      if (permitted.commit_unknown) {
+        permitted.code = "mcp_state_commit_unknown";
+        permitted.message = "MCP dispatch permission receipt unavailable";
+        return permitted;
+      }
       if (!permitted.ok()) return permitted;
       if (control.cancelled()) return Failed(GrammarFailure::kCancelled);
       if (Clock::now() >= control.compile_deadline)

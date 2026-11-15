@@ -339,6 +339,9 @@ ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
     return Error(500, "mcp_policy_invalid", "Invalid MCP deployment policy");
   if (!file_detail::AllowedUrl(url, deployment))
     return Error(403, "mcp_target_denied", "MCP target is not permitted");
+  return CheckHeaders(endpoint);
+}
+ObjectReply CheckHeaders(const McpEndpoint& endpoint) {
   size_t total = endpoint.authorization.size();
   if (!endpoint.authorization.empty() && !Visible(endpoint.authorization, 8192))
     return Error(400, "mcp_headers_invalid", "Invalid MCP authorization");

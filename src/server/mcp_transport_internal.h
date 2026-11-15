@@ -3,6 +3,7 @@
 #include "q4t/server/mcp_transport.h"
 
 namespace q4t::server::mcp_detail {
+ObjectReply CheckHeaders(const McpEndpoint& endpoint);
 ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
                           const FileFetchOptions& deployment);
 ObjectReply Exchange(const McpEndpoint& endpoint,

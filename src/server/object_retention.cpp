@@ -294,7 +294,17 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");
-    if (format == "q4t.binary_chunk.v1") {
+    if (format == "q4t.mcp.catalog.v1" || format == "q4t.mcp.call.v1") {
+      // Self-contained encrypted authority: remote schemas/results do not own
+      // local files. Keep until its original expiry (or a live public item
+      // reference); a dispatch record must never be collected just because
+      // its response has not committed yet. Typed local media needs explicit
+      // dependency metadata before it can be added to this record format.
+      const auto* sealed = data.Find("sealed");
+      inspector.value.uncertain = data.object.size() != 2 || !sealed ||
+                                  !sealed->IsString() ||
+                                  !sealed->str.starts_with("q4t1:");
+    } else if (format == "q4t.binary_chunk.v1") {
       inspector.value.collect_when_unreferenced = true;
     } else if (format == "q4t.binary_stage.v1" ||
                format == "q4t.binary_read.v1") {
