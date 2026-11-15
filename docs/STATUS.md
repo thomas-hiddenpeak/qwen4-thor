@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [向量任务CI夹具期限修正](evidence/serve-ci-vector-deadline-20261115/README.md)：
+  正常IO恢复生产默认期限，4处故障注入保留100ms；6项相关CPU首过，
+  生产/default未变、0GPU。旧head的4项失败保留，继续最新head检查
+  及MCP组合实现，总目标仍active。
+
 - [MCP实际执行拥有者22项CPU首过](evidence/serve-mcp-execution-cpu-20261115/README.md)：
   本地HTTP调用、审批/续接/不重放、冻结目录与凭据隔离、故障后文本
   续答和审核组合已验证；7项来源负控通过、0GPU、rev126保持。
