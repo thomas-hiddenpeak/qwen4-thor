@@ -32,6 +32,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/mcp_transport.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/program_worker.h"
@@ -924,6 +925,8 @@ int main(int argc, char** argv) {
   if (tool_results >= 0) return tool_results;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
+  const int mcp_worker = q4t::server::MaybeRunMcpWorker(argc, argv);
+  if (mcp_worker >= 0) return mcp_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);

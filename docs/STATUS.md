@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 缺陷已修复并完成整树恢复中的最终回答。主轻及精确回退包均已验。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 保留前驱。旧默认程序和状态备份保留；自动版本恢复保留现代根，
-人工整根回退到v12入口没有outer。PR27待最终检查和实际合main，
+人工整根回退到v12入口没有outer。PR27已实际合main（1f0ed01a），
 未宣称长稳或完整OpenAI兼容，全部master继续。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
@@ -35,9 +35,22 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 异步实现已实际合main（PR25，`4e87a03f`），
 [合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。前驱rev118的
 工具发现已发行并实际合main（PR26，`090f0d48`），
-[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付，PR27待合main，全部master继续。
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+- PR27精确head `9e0a4b44` 的两组CI全部通过，已[实际合main](evidence/serve-pr27-merged-20261115/README.md)
+  （`1f0ed01a`）。程序调用rev126已交付；MCP仍在后续开发中，
+  继续审批/公开接线及全部剩余master任务。
+
+- [原生MCP传输部件21项针对性CPU最终通过](evidence/serve-mcp-transport-cpu-20261115/README.md)：
+  JSON/SSE/旧传输、单次派发/取消、未回收隔离及HTTPS真实资料读取；
+  7项来源负控通过。0GPU、rev126保持；审批/公开接线和业务发行
+  继续，不能把传输部件通过当作MCP完整交付。
+
+- [原生MCP实施清单](SERVE_MCP_2026-11-15.md)已固定，正在开发传输、
+  审批和实际执行；默认rev126保持。PR27最终head检查进行中，
+  全部33项继续，MCP未接线/未验收前不宣称交付。
 
 - 原生程序调用已[可回退发行rev126](evidence/serve-programmatic-delivery-20261115/README.md)：
   17项STOPPED检查全过，实际回退再前进，密钥/配额/core/outer及

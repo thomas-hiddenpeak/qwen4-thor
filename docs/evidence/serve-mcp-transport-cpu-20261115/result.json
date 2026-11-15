@@ -1,0 +1,19 @@
+{
+  "targeted_distinct_cpp_passed": 19,
+  "cpp_invocations": 20,
+  "targeted_python_passed": 2,
+  "source_mutation_checks": 7,
+  "original_failure": "Fixture treated ping response as unsupported request, returning HTTP 400; fixture fixed; affected SSE test passed. First compile failed explicit string_view conversion; corrected.",
+  "gpu_starts": 0,
+  "public_mcp_capability_delivered": false,
+  "default_revision": 126,
+  "default_unchanged": true,
+  "host_binary_sha256": "e77713bf053db252976cfc503e492c322a5fb96ae3ea73f356efdfef0a56663e",
+  "remaining": [
+    "authenticated catalog and approvals",
+    "public Responses/SDK/state/deferred/program combinations",
+    "actual model business and recovery qualification",
+    "reversible delivery and main integration",
+    "all remaining master tasks"
+  ]
+}
