@@ -37,6 +37,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- 程序调用受控续答缺陷已[通过真实补验](evidence/serve-programmatic-qualification-20261115/README.md)：
+  新引擎主轻2启动8业务、独立回退1启动2业务、整树恢复2启动4业务
+  1探测均通过。切换后保留原程序/caller和schema，真实资料只读一次，
+  VM恢复后模型成功输出最终SSE答案；自有资源清理。原失败仍保留，
+  默认rev118保持，接着17项停止态可回退发布与PR27实际合main；
+  剩余全部master任务继续。
+
 - 首次入场前程序续接配额已[修复，26项针对性CPU通过](evidence/serve-programmatic-resume-rate-cpu-20261115/README.md)：
   重新预留未入场提示，保留RPM、输出预算、已发生用量与Batch额度；
   实际引擎d7dd0c6d及主机零警告构建，4个原生helper字节保持。
