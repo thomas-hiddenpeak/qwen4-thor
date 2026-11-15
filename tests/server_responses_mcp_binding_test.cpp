@@ -2,6 +2,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/responses_input.h"
+#include "q4t/server/moderation.h"
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_plan.h"
 #include "q4t/server/responses_tool_search.h"
@@ -207,6 +208,62 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(responses_mcp_prepared_content_survives_context_and_rejects_gaps) {
+  auto call = Value(R"({"id":"mcp_private_content","type":"mcp_call",
+    "server_label":"project docs","name":"read project",
+    "arguments":"{\"path\":\"STATUS.md\"}","status":"completed",
+    "output":"original native receipt"})");
+  const auto current = Value(R"({"type":"message","role":"user",
+    "content":"Explain the document"})");
+  auto history = Array({Catalog(), current, call, current});
+  auto request = Object({{"input", history},
+                         {"reasoning", Object({{"effort", String("none")}})},
+                         {"truncation", String("auto")},
+                         {"tools", Array({Definition().declaration})}});
+  ChatPlanConfig config;
+  config.model = "cpu";
+  config.structured = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(ParseResponsesEnvelope(request, config, &envelope, &error));
+  envelope.mcp_content = Object(
+      {{"mcp_private_content",
+        Array({Value(
+            R"({"type":"input_text","text":"Authenticated extracted document"})")})}});
+  Q4T_CHECK(
+      PrepareResponsesGeneration(envelope, history, config, &plan, &error));
+  Q4T_CHECK(OutputJson(plan.input.messages).find("Authenticated extracted") !=
+            std::string::npos);
+  Q4T_CHECK(OutputJson(plan.input.messages).find("original native receipt") ==
+            std::string::npos);
+  Q4T_CHECK(OutputJson(plan.input.items).find("original native receipt") !=
+            std::string::npos);
+  Q4T_CHECK(FitResponsesContext(
+      envelope, config,
+      [](const auto& candidate, ChatPlanError* error) -> q4t::Status {
+        if (candidate.input.items.array.size() < 4) return {};
+        *error = {"context_length_exceeded", "input", 400};
+        return q4t::Status::Fail("fixture context");
+      },
+      &plan, &error));
+  Q4T_CHECK(plan.truncated_items == 1 &&
+            OutputJson(plan.input.messages).find("Authenticated extracted") !=
+                std::string::npos);
+  envelope.mcp_content = Object();
+  Q4T_CHECK(
+      !PrepareResponsesGeneration(envelope, history, config, &plan, &error));
+  Q4T_CHECK(error.code == "responses_input_resolution_required");
+  ModerationContent reviewed;
+  Q4T_CHECK(!CollectModerationOutput(Array({call}), &reviewed, &error,
+                                     &envelope.mcp_content));
+  Q4T_CHECK(error.code == "moderation_content_unavailable");
+  // A public extra field cannot create the execution-owned map.
+  Set(&request, "mcp_content", Object({{"mcp_private_content", Array()}}));
+  Q4T_CHECK(!ParseResponsesEnvelope(request, config, &envelope, &error));
+  return true;
+}
+
 Q4T_TEST(responses_mcp_request_declaration_only_never_grants_calls) {
   auto first = Definition().declaration;
   Set(&first, "authorization", String("request-only-secret"));
@@ -223,10 +280,10 @@ Q4T_TEST(responses_mcp_request_declaration_only_never_grants_calls) {
               {"server_label", *first.Find("server_label")},
               {"name", String("not_known_until_listing")}}));
   Q4T_CHECK(NormalizeResponsesCallableTools(request, &tools, &choice, &error,
-                                           &effective, true));
+                                            &effective, true));
   Q4T_CHECK(tools.array.empty());
   Q4T_CHECK(!NormalizeResponsesCallableTools(request, &tools, &choice, &error,
-                                            &effective));
+                                             &effective));
   Q4T_CHECK(error.code == "mcp_catalog_resolution_required");
   Set(&request, "tools", Array({first, first}));
   Q4T_CHECK(!NormalizeResponsesCallableTools(request, &tools, &choice, &error,

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 359, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 343, in main
+    actual = current_surface(ROOT)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 29, in current_surface
+    raise ValueError("server files missing from protocol identity: " + str(missing))
+ValueError: server files missing from protocol identity: ['include/q4t/server/responses_mcp_media.h']

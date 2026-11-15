@@ -594,7 +594,10 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
   Set(&request, "input", resolved_input);
   ResponsesInputPlan input;
   auto status = NormalizeResponsesInput(request, &input, error,
-                                        config.count_input_only, true);
+                                        config.count_input_only, true, false,
+                                        envelope.mcp_content.IsNull()
+                                            ? nullptr
+                                            : &envelope.mcp_content);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
   status = GenerationOptions(envelope, &options, effective_tools, error,
@@ -625,7 +628,10 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   auto request = envelope.request;
   Set(&request, "input", resolved_input);
   auto status = NormalizeResponsesInput(request, &result.input, error,
-                                        config.count_input_only);
+                                        config.count_input_only, false, false,
+                                        envelope.mcp_content.IsNull()
+                                            ? nullptr
+                                            : &envelope.mcp_content);
   if (!status) return status;
   for (size_t i = 0; i < result.input.items.array.size(); ++i)
     result.input_source_indices.push_back(i);

@@ -16,8 +16,11 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/file_expansion.h"
+#include "q4t/server/moderation.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/responses_input.h"
+#include "q4t/server/responses_mcp_media.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
@@ -405,6 +408,247 @@ Q4T_TEST(responses_mcp_media_dependency_metadata_must_match_sealed_sources) {
             read.message.find("dependencies") != std::string::npos);
   Q4T_CHECK(!state.Authenticate(final, Access()).ok());
   Q4T_CHECK(Ok(prepared.Release(MediaAccess())));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_model_and_review_use_actual_image) {
+  Fixture f;
+  Json final, rendered;
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config());
+    final = CompletedMediaCall(state, MediaParts());
+    ResponsesMcpMedia media(objects);
+    Q4T_CHECK(
+        Ok(media.Prepare(state, Array({final}), {}, {}, Access(), false)));
+    Q4T_CHECK(!media.PendingSheets() && media.Budget().usage.files == 2 &&
+              media.Budget().usage.images == 1);
+    Q4T_CHECK(Ok(media.Persist(state, Access())) &&
+              Ok(media.Render(&rendered)));
+    const auto id = final.GetString("id");
+    Q4T_CHECK(state.ModelContent(id, Access()).value.GetBool("complete"));
+    ResponsesInputPlan input;
+    ChatPlanError error;
+    Q4T_CHECK(NormalizeResponsesInput(Object({{"input", Array({final})}}),
+                                      &input, &error, false, false, false,
+                                      &rendered));
+    Q4T_CHECK(input.messages.array.size() == 2);
+    const auto& content = *input.messages.array.back().GetArray("content");
+    Q4T_CHECK(std::count_if(content.array.begin(), content.array.end(),
+                            [](const auto& part) {
+                              return part.GetString("type") == "image_url";
+                            }) == 1);
+    Q4T_CHECK(OutputJson(content).find("hello") != std::string::npos);
+    Q4T_CHECK(OutputJson(content).find("hidden-client-data") ==
+              std::string::npos);
+    ModerationContent in, out;
+    Q4T_CHECK(CollectModerationInput(input.messages, &in, &error));
+    Q4T_CHECK(CollectModerationOutput(Array({final}), &out, &error, &rendered));
+    Q4T_CHECK(in.images.array.size() == 1 && out.images.array.size() == 1 &&
+              OutputJson(in.images) == OutputJson(out.images));
+    Q4T_CHECK(OutputJson(out.records).find("hello") != std::string::npos &&
+              OutputJson(out.records).find("iVBOR") == std::string::npos);
+    Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+              OutputJson(final));
+  }
+  ObjectStore restarted(f.options);
+  ResponsesMcpState state(restarted, Config());
+  ResponsesMcpMedia replay(restarted);
+  Q4T_CHECK(Ok(replay.Prepare(state, Array({final}), {}, {}, Access(), true)));
+  Q4T_CHECK(Ok(replay.Persist(state, Access())));
+  Json again;
+  Q4T_CHECK(Ok(replay.Render(&again)) &&
+            OutputJson(again) == OutputJson(rendered));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_budget_cannot_refill_between_calls) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto first = CompletedMediaCall(state, MediaParts());
+  const auto second = CompletedMediaCall(state, MediaParts());
+  const auto text = CompletedMediaCall(
+      state, Array({Value(R"({"type":"text","text":"after image quota"})")}));
+  FileExpansionOptions limits;
+  limits.max_files = 2;
+  limits.extraction.pdf.max_pixels = 1;
+  ResponsesMcpMedia media(objects);
+  Q4T_CHECK(
+      Ok(media.Prepare(state, Array({first}), limits, {}, Access(), false)));
+  Q4T_CHECK(Ok(media.Persist(state, Access())));
+  const auto before = media.Budget();
+  Q4T_CHECK(Ok(
+      media.Prepare(state, Array({first, text}), limits, {}, Access(), false)));
+  Q4T_CHECK(media.Budget().usage.files == before.usage.files &&
+            media.Budget().usage.pixels == before.usage.pixels);
+  Q4T_CHECK(
+      !media.Prepare(state, Array({second}), limits, {}, Access(), false).ok());
+  Q4T_CHECK(media.Budget().usage.files == 2 &&
+            !state.ModelContent(second.GetString("id"), Access())
+                 .value.GetBool("complete"));
+  ResponsesMcpMedia mixed(objects);
+  ResponsesMediaBudget other;
+  other.usage.files = 1;
+  Q4T_CHECK(
+      !mixed.Prepare(state, Array({first}), limits, other, Access(), false)
+           .ok());
+  Q4T_CHECK(mixed.Budget().usage.files == 0);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_resource_unknown_is_frozen_not_replayed) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config(), "resp_mcp_media");
+  const auto definition = Definition("never");
+  const auto final = CompletedResourceCall(state, definition);
+  int resolved = 0;
+  const auto resolve = [&](const std::string& id, const std::string& uri) {
+    ++resolved;
+    auto result = state.ProposeResource(id, uri, definition, Access());
+    if (!result.ok()) return result;
+    result = state.PermitResource(id, uri, definition, Access());
+    if (!result.ok()) return result;
+    McpTransportReceipt receipt;
+    receipt.dispatch_id = result.value.GetString("dispatch_id");
+    receipt.call_permitted = true;
+    receipt.outcome_unknown = true;
+    return state.FinishResource(id, uri, receipt,
+                                Error(502, "mcp_worker_failed", "lost receipt"),
+                                Access());
+  };
+  ResponsesMcpMedia media(objects);
+  Q4T_CHECK(Ok(media.Prepare(state, Array({final}), {}, {}, Access(), false,
+                             resolve)) &&
+            resolved == 1);
+  Json content;
+  Q4T_CHECK(Ok(media.Render(&content)) &&
+            OutputJson(content).find("unknown") != std::string::npos);
+  ResponsesMcpMedia replay(objects);
+  Q4T_CHECK(Ok(replay.Prepare(state, Array({final}), {}, {}, Access(), true,
+                              resolve)) &&
+            resolved == 1);
+  Json again;
+  Q4T_CHECK(Ok(replay.Render(&again)) &&
+            OutputJson(content) == OutputJson(again));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_needs_owner_and_authentic_original) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto linked = CompletedResourceCall(state, Definition("never"));
+  ResponsesMcpMedia pending(objects);
+  int calls = 0;
+  const auto forbidden = [&](const auto&, const auto&) {
+    ++calls;
+    return ObjectReply{};
+  };
+  Q4T_CHECK(
+      pending.Prepare(state, Array({linked}), {}, {}, Access(), true, forbidden)
+              .code == "mcp_resource_preparation_required" &&
+      calls == 0);
+  const auto final = CompletedMediaCall(state, MediaParts());
+  ResponsesMcpMedia frozen(objects);
+  Q4T_CHECK(
+      !frozen.Prepare(state, Array({final}), {}, {}, Access(), true).ok());
+  auto forged = final;
+  Set(&forged, "output", String("forged native content"));
+  Q4T_CHECK(
+      !frozen.Prepare(state, Array({forged}), {}, {}, Access(), false).ok());
+  Q4T_CHECK(!frozen
+                 .Prepare(state, Array({final}), {}, {}, Access("client:other"),
+                          false)
+                 .ok());
+  Q4T_CHECK(frozen.Budget().usage.files == 0);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_sheet_steps_freeze_and_resume_exactly) {
+  Fixture f;
+  Json calls, expected;
+  FileExpansionOptions limits;
+  limits.summary_output_tokens = 64;
+  limits.total_summary_output_tokens = 128;
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config());
+    const auto csv = Array({Value(R"({"type":"resource","resource":{
+      "uri":"project:sheet","mimeType":"text/csv",
+      "blob":"bmFtZSx2YWx1ZQphbHBoYSw0MgpiZXRhLDcK"}})")});
+    calls =
+        Array({CompletedMediaCall(state, csv), CompletedMediaCall(state, csv)});
+    ResponsesMcpMedia media(objects);
+    Q4T_CHECK(Ok(media.Prepare(state, calls, limits, {}, Access(), false)));
+    Q4T_CHECK(media.PendingSheets() && media.PendingOutputBudget() == 128 &&
+              media.Budget().usage.model_steps == 0);
+    Q4T_CHECK(Ok(media.Persist(state, Access())));
+    Q4T_CHECK(!media.Render(&expected).ok());
+  }
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config());
+    ResponsesMcpMedia media(objects);
+    Q4T_CHECK(Ok(media.Prepare(state, calls, limits, {}, Access(), true)));
+    auto config = Config();
+    config.structured = true;
+    for (int i = 0; i < 2; ++i) {
+      FileSheetStep step;
+      Q4T_CHECK(Ok(media.NextSheet(config, &step)));
+      auto forged = step;
+      forged.prompt_sha256 = std::string(64, '0');
+      Q4T_CHECK(!media.CompleteSheet(forged, "{}", "stop", 100, 12).ok());
+      Q4T_CHECK(Ok(media.CompleteSheet(
+          step,
+          R"({"summary":"CPU receipt: alpha 42, beta 7",)"
+          R"("headers":["name: row label","value: quantity"]})",
+          "stop", 100, 12)));
+      Q4T_CHECK(Ok(media.Persist(state, Access())));
+    }
+    Q4T_CHECK(!media.PendingSheets() && media.PendingOutputBudget() == 0 &&
+              media.Budget().usage.model_steps == 2 &&
+              media.Budget().usage.model_output_tokens == 24);
+    Q4T_CHECK(Ok(media.Render(&expected)));
+  }
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  ResponsesMcpMedia media(objects);
+  Q4T_CHECK(Ok(media.Prepare(state, calls, limits, {}, Access(), true)));
+  Q4T_CHECK(!media.PendingSheets() && media.Budget().usage.model_steps == 0);
+  Json actual;
+  Q4T_CHECK(Ok(media.Render(&actual)) &&
+            OutputJson(actual) == OutputJson(expected));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_shared_media_sheet_reservation_cannot_refill) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto csv = Array({Value(R"({"type":"resource","resource":{
+    "uri":"project:sheet","mimeType":"text/csv",
+    "blob":"bmFtZSx2YWx1ZQphbHBoYSw0MgpiZXRhLDcK"}})")});
+  const auto calls =
+      Array({CompletedMediaCall(state, csv), CompletedMediaCall(state, csv)});
+  FileExpansionOptions limits;
+  limits.summary_output_tokens = 64;
+  limits.total_summary_output_tokens = 64;
+  ResponsesMcpMedia media(objects);
+  Q4T_CHECK(media.Prepare(state, calls, limits, {}, Access(), false).code ==
+            "file_input_capacity_exceeded");
+  Q4T_CHECK(media.Budget().usage.files == 1 &&
+            media.PendingOutputBudget() == 64);
+  ResponsesMcpMedia mixed(objects);
+  ResponsesMediaBudget other;
+  other.usage.model_output_tokens = 1;
+  Q4T_CHECK(mixed
+                .Prepare(state, Array({calls.array[0]}), limits, other,
+                         Access(), false)
+                .code == "file_input_capacity_exceeded");
   return true;
 }
 

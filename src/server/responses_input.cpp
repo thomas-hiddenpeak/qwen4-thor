@@ -416,7 +416,7 @@ Status PlanResponsesToolIdentities(
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
                                bool allow_empty, bool preparing_files,
-                               bool preparing_mcp) {
+                               bool preparing_mcp, const Json* mcp_content) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -598,9 +598,18 @@ Status NormalizeResponsesInput(const io::Json& request,
                             {"error", Json()}});
       for (const auto* key : {"output", "error"})
         if (const auto* value = item.Find(key)) Set(&result, key, *value);
+      Json content = String(OutputJson(result));
+      if (mcp_content) {
+        const auto* prepared = mcp_content->Find(id);
+        if (!prepared || !prepared->IsArray())
+          return Unresolved(error, path + ".output");
+        status = Parts(*prepared, "tool", path + ".output", &content, error,
+                        preparing_files);
+        if (!status) return status;
+      }
       results.emplace_back(Object({{"role", String("tool")},
                                    {"tool_call_id", String(id)},
-                                   {"content", String(OutputJson(result))}}),
+                                   {"content", std::move(content)}}),
                            path);
       expected.emplace(id, false);
       returned.insert(id);

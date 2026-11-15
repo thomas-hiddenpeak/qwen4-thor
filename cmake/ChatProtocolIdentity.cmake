@@ -256,11 +256,13 @@ set(protocol_inputs
   include/q4t/server/responses_mcp.h
   src/server/responses_mcp.cpp
   include/q4t/server/responses_mcp_state.h
+  include/q4t/server/responses_mcp_media.h
   src/server/responses_mcp_state.cpp
   src/server/responses_mcp_output.cpp
   include/q4t/server/responses_mcp_binding.h
   src/server/responses_mcp_binding.cpp
   src/server/responses_mcp_preparation.cpp
+  src/server/responses_mcp_media.cpp
   src/server/responses_mcp_execution.cpp
   src/server/mcp_transport_internal.h
   src/server/mcp_http.cpp
