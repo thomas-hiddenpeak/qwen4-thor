@@ -1,0 +1,9 @@
+[PASS] mcp_transport_actual_call_requires_owned_persisted_approval
+[PASS] responses_mcp_state_approval_single_use_and_denial_survive_restart
+[PASS] responses_mcp_state_result_schema_errors_and_no_result_forgery
+[PASS] responses_mcp_state_cancel_expiry_and_retention_are_bounded
+[PASS] responses_mcp_history_approval_index_and_optional_call_fields
+[PASS] responses_mcp_history_catalog_restores_metadata_without_weakening_schema
+[PASS] responses_mcp_history_stream_ids_and_failed_catalog_are_owned
+[PASS] responses_mcp_history_approval_index_is_atomic_under_object_quota
+8 tests, 8 passed, 0 failed, 0 skipped

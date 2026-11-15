@@ -1,6 +1,7 @@
 #include "q4t/server/responses_mcp_state.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <ctime>
 
@@ -9,6 +10,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/server/tool_result_schema.h"
 
 namespace q4t::server {
@@ -44,6 +46,34 @@ bool Same(const Json& left, const Json& right) {
   std::string a, b;
   return InputValueIdentity(left, &a) && InputValueIdentity(right, &b) &&
          a == b;
+}
+// Only known optional MCP item/tool metadata may be omitted. Schema values and
+// results are compared as complete values; never accept a weakened schema.
+bool PublicMatches(const Json& incoming, const Json& stored) {
+  for (const auto& [key, value] : incoming.object) {
+    const auto* original = stored.Find(key);
+    if (!original) {
+      if (key == "error" && value.IsNull()) continue;
+      return false;
+    }
+    if (key == "tools" && incoming.GetString("type") == "mcp_list_tools") {
+      if (!value.IsArray() || !original->IsArray() ||
+          value.array.size() != original->array.size())
+        return false;
+      for (size_t i = 0; i < value.array.size(); ++i) {
+        for (const auto& [field, member] : value.array[i].object) {
+          const auto* old = original->array[i].Find(field);
+          if (!old && member.IsNull() &&
+              (field == "annotations" || field == "description"))
+            continue;
+          if (!old || !Same(member, *old)) return false;
+        }
+      }
+    } else if (!Same(value, *original)) {
+      return false;
+    }
+  }
+  return true;
 }
 ObjectReply Definition(const Json& original,
                        const ResponsesMcpDefinition& current,
@@ -117,6 +147,20 @@ ObjectReply ResponsesMcpState::Read(const std::string& id,
   auto reply = Active(access);
   if (!reply.ok()) return reply;
   if (!ValidId(id)) return Invalid("Invalid MCP state identifier");
+  if (kind == "call" && id.starts_with("mcpr_")) {
+    Json link_record, link;
+    reply = Read(id, "approval", access, &link_record, &link);
+    if (!reply.ok()) return reply;
+    const auto call_id = link.GetString("call_id");
+    if (!call_id.starts_with("mcp_") ||
+        call_id != link_record.Find("data")->GetString("call_id"))
+      return Invalid("Invalid MCP approval reference");
+    reply = Read(call_id, "call", access, record, payload);
+    if (!reply.ok()) return reply;
+    if (payload->Find("call")->GetString("approval_request_id") != id)
+      return Invalid("MCP approval does not belong to this call");
+    return {};
+  }
   ObjectRequest request;
   request.kind = ObjectKind::kToolRun;
   request.id = id;
@@ -183,7 +227,43 @@ ObjectReply ResponsesMcpState::Write(const std::string& id,
   request.data =
       Object({{"format", String("q4t.mcp." + std::string(kind) + ".v1")},
               {"sealed", String(std::move(sealed))}});
-  reply = objects_.Execute(request, access.deadline, access.cancelled);
+  const auto* call = payload.Find("call");
+  const auto approval_id = call ? call->GetString("approval_request_id") : "";
+  if (kind == "call" && revision == 0 && !approval_id.empty()) {
+    // Keep the call at its public call ID. Approval is an atomic owned index;
+    // standard history may omit the optional approval_request_id field.
+    auto link = Object({{"version", Number(1)},
+                        {"id", String(approval_id)},
+                        {"kind", String("approval")},
+                        {"expires_at", Number(expires)},
+                        {"call_id", String(id)}});
+    Plaintext linked;
+    linked.bytes = OutputJson(link);
+    std::string opaque;
+    reply = cipher_.Seal(linked.bytes, Binding(model_, "approval", approval_id),
+                         access, &opaque);
+    if (!reply.ok() || reply.commit_unknown) return reply;
+    auto alias = request;
+    alias.id = approval_id;
+    alias.data = Object({{"format", String("q4t.mcp.approval.v1")},
+                         {"sealed", String(std::move(opaque))},
+                         {"call_id", String(id)}});
+    const std::array requests{request, alias};
+    reply = objects_.ExecuteBatch(requests, access.deadline, access.cancelled);
+    if (reply.ok() && !reply.commit_unknown) {
+      const auto* rows = reply.value.GetArray("data");
+      if (!rows || rows->array.size() != 2) {
+        reply =
+            Error(503, "mcp_state_commit_unknown", "MCP state receipt invalid");
+        reply.commit_unknown = true;
+      } else {
+        auto created = rows->array.front();
+        reply.value = std::move(created);
+      }
+    }
+  } else {
+    reply = objects_.Execute(request, access.deadline, access.cancelled);
+  }
   if (reply.commit_unknown) {
     reply.code = "mcp_state_commit_unknown";
     reply.message = "MCP state commit unknown; no dispatch authorized";
@@ -194,7 +274,9 @@ ObjectReply ResponsesMcpState::Write(const std::string& id,
 ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
                                        const Json& tools,
                                        const StateAccess& access,
-                                       int64_t lifetime) {
+                                       int64_t lifetime,
+                                       std::string reserved_id,
+                                       std::string listing_error) {
   if (lifetime < 1 || lifetime > kLifetime)
     return Invalid("Invalid MCP retention");
   Json projected, authority;
@@ -205,14 +287,21 @@ ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
   ResponsesMcpDefinition clean;
   status = PlanResponsesMcpDefinition(definition.declaration, &clean, &error);
   if (!status) return Invalid("Invalid MCP server declaration");
-  const auto id = detail::NewRequestId("mcpl_");
+  if ((!reserved_id.empty() &&
+       (!reserved_id.starts_with("mcpl_") || !ValidId(reserved_id))) ||
+      listing_error.size() > 65536 ||
+      (!listing_error.empty() && !authority.array.empty()))
+    return Invalid("Invalid MCP catalog identity or failure");
+  const auto id = reserved_id.empty() ? detail::NewRequestId("mcpl_")
+                                      : std::move(reserved_id);
   if (id.empty())
     return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
-  const auto item =
-      Object({{"id", String(id)},
-              {"type", String("mcp_list_tools")},
-              {"server_label", *clean.declaration.Find("server_label")},
-              {"tools", std::move(projected)}});
+  auto item = Object({{"id", String(id)},
+                      {"type", String("mcp_list_tools")},
+                      {"server_label", *clean.declaration.Find("server_label")},
+                      {"tools", std::move(projected)}});
+  if (!listing_error.empty())
+    Set(&item, "error", String(std::move(listing_error)));
   auto reply = Write(id, "catalog",
                      Object({{"public", item},
                              {"tools", std::move(authority)},
@@ -221,11 +310,80 @@ ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
   if (reply.ok() && !reply.commit_unknown) reply.value = item;
   return reply;
 }
+ObjectReply ResponsesMcpState::Authenticate(const Json& item,
+                                            const StateAccess& access) {
+  ChatPlanError error;
+  auto valid = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
+                                          &error, "input.mcp");
+  if (!valid) return Invalid(valid.message());
+  const auto type = item.GetString("type");
+  const bool listing = type == "mcp_list_tools";
+  if (!listing && type != "mcp_call" && type != "mcp_approval_request" &&
+      type != "mcp_approval_response")
+    return Invalid("Expected MCP history item");
+  const auto id = item.GetString(
+      type == "mcp_approval_response" ? "approval_request_id" : "id");
+  Json record, payload;
+  auto reply =
+      Read(id, listing ? "catalog" : "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  if (type == "mcp_approval_response") {
+    if (payload.Find("call")->GetString("approval_request_id") != id)
+      return Invalid("Approval response does not match the original request");
+    if (const auto* decision = payload.Find("decision");
+        decision && decision->GetBool("approve") != item.GetBool("approve"))
+      return Error(409, "mcp_approval_already_decided",
+                   "Approval decision differs");
+    reply.value = item;
+    return reply;
+  }
+  Json expected;
+  if (listing) {
+    const auto* original = payload.Find("public");
+    if (!original) return Invalid("Missing authenticated catalog");
+    expected = *original;
+  } else if (type == "mcp_approval_request") {
+    if (payload.Find("call")->GetString("approval_request_id") != id)
+      return Invalid("Approval request identity differs");
+    Set(&payload, "state", String("approval"));
+    expected = View(payload).value;
+  } else {
+    const auto* terminal = payload.Find("terminal");
+    if (!terminal)
+      return Error(409, "mcp_result_pending",
+                   "MCP invocation has no terminal result");
+    expected = *terminal;
+  }
+  if (!PublicMatches(item, expected))
+    return Invalid("MCP item differs from its authenticated history");
+  reply.value = std::move(expected);
+  return reply;
+}
+
+ObjectReply ResponsesMcpState::OpenCatalog(
+    const Json& catalog, const ResponsesMcpDefinition& current,
+    const StateAccess& access) {
+  auto authenticated = Authenticate(catalog, access);
+  if (!authenticated.ok()) return authenticated;
+  if (catalog.GetString("type") != "mcp_list_tools")
+    return Invalid("Expected MCP catalog");
+  Json record, payload;
+  auto reply =
+      Read(catalog.GetString("id"), "catalog", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  const auto* declaration = payload.Find("declaration");
+  if (!declaration || !payload.GetArray("tools"))
+    return Invalid("Invalid private MCP catalog");
+  reply = Definition(*declaration, current);
+  if (reply.ok()) reply.value = std::move(payload);
+  return reply;
+}
 ObjectReply ResponsesMcpState::Propose(const Json& catalog,
                                        const ResponsesMcpDefinition& current,
                                        std::string name, Json arguments,
                                        std::string caller,
-                                       const StateAccess& access) {
+                                       const StateAccess& access,
+                                       std::string reserved_id) {
   Json record, payload;
   auto reply =
       Read(catalog.GetString("id"), "catalog", access, &record, &payload);
@@ -247,11 +405,15 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
   const bool approval =
       ResponsesMcpApprovalRequired(*declaration, *selected) ||
       ResponsesMcpApprovalRequired(current.declaration, *selected);
-  const auto call_id = detail::NewRequestId("mcp_");
+  if (!reserved_id.empty() &&
+      (approval || !reserved_id.starts_with("mcp_") || !ValidId(reserved_id)))
+    return Invalid("Invalid streamed MCP call identity or approval policy");
+  const auto call_id = reserved_id.empty() ? detail::NewRequestId("mcp_")
+                                           : std::move(reserved_id);
   const auto approval_id = approval ? detail::NewRequestId("mcpr_") : "";
   if (call_id.empty() || (approval && approval_id.empty()))
     return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
-  const auto id = approval ? approval_id : call_id;
+  const auto& id = call_id;
   auto next = Object(
       {{"state", String(approval ? "approval" : "ready")},
        {"declaration", *declaration},
@@ -293,8 +455,8 @@ ObjectReply ResponsesMcpState::Decide(const std::string& id, bool approve,
         ExecutionError("mcp_approval_denied", "Tool approval denied"));
     Set(&payload, "terminal", std::move(item));
   }
-  reply = Write(id, "call", payload, record.GetInt("revision"),
-                record.GetInt("expires_at"), access);
+  reply = Write(record.GetString("id"), "call", payload,
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
   return reply.ok() && !reply.commit_unknown ? View(payload) : reply;
 }
 ObjectReply ResponsesMcpState::Permit(const std::string& id,
@@ -321,8 +483,8 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
   if (dispatch_id.empty())
     return Error(503, "mcp_entropy_unavailable", "MCP dispatch ID unavailable");
   Set(&payload, "dispatch_id", String(dispatch_id));
-  reply = Write(id, "call", payload, record.GetInt("revision"),
-                record.GetInt("expires_at"), access);
+  reply = Write(record.GetString("id"), "call", payload,
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
   if (reply.ok() && !reply.commit_unknown)
     reply.value = Object({{"dispatch_id", String(dispatch_id)},
                           {"call", *payload.Find("call")},
@@ -433,8 +595,8 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
     Set(&payload, "state", String("failed"));
     Set(&payload, "terminal", item);
   }
-  reply = Write(id, "call", payload, record.GetInt("revision"),
-                record.GetInt("expires_at"), access);
+  reply = Write(record.GetString("id"), "call", payload,
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
   if (reply.ok() && !reply.commit_unknown) reply.value = std::move(item);
   return reply;
 }

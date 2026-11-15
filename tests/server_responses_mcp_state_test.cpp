@@ -419,3 +419,141 @@ Q4T_TEST(responses_mcp_state_cancel_expiry_and_retention_are_bounded) {
   Q4T_CHECK(!state.Permit(id, definition, Access()).ok());
   return true;
 }
+
+Q4T_TEST(responses_mcp_history_approval_index_and_optional_call_fields) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto catalog = Catalog(state);
+  const auto proposal = Propose(state, catalog);
+  Q4T_CHECK(Ok(proposal));
+  const auto approval_id = proposal.value.GetString("id");
+  Q4T_CHECK(Ok(state.Authenticate(proposal.value, Access())));
+  auto decision = Object({{"type", String("mcp_approval_response")},
+                          {"approval_request_id", String(approval_id)},
+                          {"approve", Boolean(true)}});
+  Q4T_CHECK(Ok(state.Authenticate(decision, Access())));
+  Q4T_CHECK(state.Inspect(approval_id, Access()).value.GetString("state") ==
+            "approval");
+  auto allowed =
+      state.Decide(approval_id, true, "read", Definition(), Access());
+  Q4T_CHECK(Ok(allowed));
+  const auto call_id = allowed.value.GetString("id");
+  Q4T_CHECK(call_id.starts_with("mcp_") && call_id != approval_id);
+  Q4T_CHECK(state.Inspect(call_id, Access()).value.GetString("state") ==
+            "ready");
+  const auto permitted = state.Permit(approval_id, Definition(), Access());
+  Q4T_CHECK(Ok(permitted));
+  const auto finished = state.Finish(
+      call_id, Success(permitted.value.GetString("dispatch_id")), {}, Access());
+  Q4T_CHECK(Ok(finished));
+  auto omitted = finished.value;
+  std::erase_if(omitted.object, [](const auto& field) {
+    return field.first == "approval_request_id" || field.first == "status" ||
+           field.first == "error";
+  });
+  const auto restored = state.Authenticate(omitted, Access());
+  Q4T_CHECK(Ok(restored) &&
+            OutputJson(restored.value) == OutputJson(finished.value));
+  Q4T_CHECK(Ok(state.Authenticate(proposal.value, Access())));
+  Set(&decision, "approve", Boolean(false));
+  Q4T_CHECK(state.Authenticate(decision, Access()).http_status == 409);
+  auto forged = omitted;
+  Set(&forged, "output", String("fabricated result"));
+  Q4T_CHECK(!state.Authenticate(forged, Access()).ok());
+  Q4T_CHECK(!state.Authenticate(omitted, Access("client:foreign")).ok());
+  const auto alias = Record(objects, approval_id);
+  const auto call = Record(objects, call_id);
+  Q4T_CHECK(alias.GetInt("expires_at") == call.GetInt("expires_at"));
+  const auto retention =
+      InspectObjectRetention("tool_run", *alias.Find("data"));
+  Q4T_CHECK(!retention.uncertain && !retention.collect_when_unreferenced &&
+            retention.references == std::vector<std::string>{call_id});
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_history_catalog_restores_metadata_without_weakening_schema) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto catalog = Catalog(state);
+  auto minimal = catalog;
+  auto& tool = Field(minimal, "tools").array[0];
+  std::erase_if(tool.object, [](const auto& field) {
+    return field.first == "description" || field.first == "annotations";
+  });
+  const auto restored = state.Authenticate(minimal, Access());
+  Q4T_CHECK(Ok(restored) && OutputJson(restored.value) == OutputJson(catalog));
+  auto opened = state.OpenCatalog(minimal, Definition(), Access());
+  Q4T_CHECK(Ok(opened) &&
+            opened.value.GetArray("tools")->array[0].Has("outputSchema"));
+  Q4T_CHECK(
+      !state
+           .OpenCatalog(
+               minimal,
+               Definition(
+                   "always",
+                   Value(R"({"server_url":"https://other.example/mcp"})")),
+               Access())
+           .ok());
+  Set(&Field(minimal, "tools").array[0], "input_schema", Object());
+  Q4T_CHECK(!state.Authenticate(minimal, Access()).ok());
+  return true;
+}
+
+Q4T_TEST(responses_mcp_history_stream_ids_and_failed_catalog_are_owned) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto catalog =
+      state.Catalog(definition, Tools(), Access(), 600, "mcpl_streamed");
+  Q4T_CHECK(Ok(catalog) && catalog.value.GetString("id") == "mcpl_streamed");
+  Q4T_CHECK(state.Catalog(definition, Tools(), Access(), 600, "mcpl_streamed")
+                .http_status == 409);
+  const auto args = Value(R"({"path":"docs/MODEL.md"})");
+  const auto call = state.Propose(catalog.value, definition, "read", args,
+                                  "direct", Access(), "mcp_streamed");
+  Q4T_CHECK(Ok(call) && call.value.GetString("id") == "mcp_streamed");
+  Q4T_CHECK(state
+                .Propose(catalog.value, definition, "read", args, "direct",
+                         Access(), "mcp_streamed")
+                .http_status == 409);
+  Q4T_CHECK(!state
+                 .Propose(catalog.value, Definition(), "read", args, "direct",
+                          Access(), "mcp_requires_approval")
+                 .ok());
+  Q4T_CHECK(
+      !state.Catalog(definition, Tools(), Access(), 600, "mcpl_bad", "failed")
+           .ok());
+  const auto failed = state.Catalog(definition, Array(), Access(), 600,
+                                    "mcpl_failed", "MCP target unavailable");
+  Q4T_CHECK(Ok(failed) && Ok(state.Authenticate(failed.value, Access())));
+  Q4T_CHECK(
+      !state.Propose(failed.value, definition, "read", args, "direct", Access())
+           .ok());
+  return true;
+}
+
+Q4T_TEST(responses_mcp_history_approval_index_is_atomic_under_object_quota) {
+  Fixture f;
+  // Catalog occupies one; approval+call require two. Neither may be left by a
+  // rejected atomic creation. The key ring has a separate internal scope.
+  f.options.max_client_objects = 2;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto catalog = Catalog(state);
+  Q4T_CHECK(!Propose(state, catalog).ok());
+  ObjectRequest list;
+  list.operation = ObjectOperation::kList;
+  list.kind = ObjectKind::kToolRun;
+  list.scope = Access().scope;
+  auto records = objects.Execute(list, Access().deadline);
+  Q4T_CHECK(Ok(records));
+  const auto* data = records.value.GetArray("data");
+  Q4T_CHECK(data && data->array.size() == 1 &&
+            data->array.front().GetString("id") == catalog.GetString("id"));
+  Q4T_CHECK(Ok(state.Authenticate(catalog, Access())));
+  return true;
+}

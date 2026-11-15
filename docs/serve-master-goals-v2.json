@@ -1126,7 +1126,7 @@
         "rate_repair_status": "validated_delivered_main_merged"
       },
       "mcp": {
-        "state": "transport_authority_output_cpu_accepted_public_execution_in_progress",
+        "state": "components_cpu_accepted_public_execution_in_progress",
         "plan": "SERVE_MCP_2026-11-15.md",
         "public_capability_delivered": false,
         "whole_task_complete": false,
@@ -1136,7 +1136,9 @@
         "authority_targeted_cpu_passed": 20,
         "output_owner_evidence": "evidence/serve-mcp-output-owner-cpu-20261115/README.md",
         "output_owner_targeted_cpp_passed": 16,
-        "output_sdk_passed": 2
+        "output_sdk_passed": 2,
+        "binding_history_evidence": "evidence/serve-mcp-binding-history-cpu-20261115/README.md",
+        "binding_history_targeted_cpp_passed": 13
       }
     },
     {
@@ -1895,7 +1897,7 @@
       },
       "current_work": "Integrate native MCP request-local credentials, authenticated history/catalog, templates, actual Responses execution and discovery/program/background/Batch combinations; then real business and reversible release. All remaining master tasks continue.",
       "mcp": {
-        "state": "transport_authority_output_cpu_accepted_public_execution_in_progress",
+        "state": "components_cpu_accepted_public_execution_in_progress",
         "plan": "SERVE_MCP_2026-11-15.md",
         "public_capability_delivered": false,
         "whole_task_complete": false,
@@ -1905,7 +1907,9 @@
         "authority_targeted_cpu_passed": 20,
         "output_owner_evidence": "evidence/serve-mcp-output-owner-cpu-20261115/README.md",
         "output_owner_targeted_cpp_passed": 16,
-        "output_sdk_passed": 2
+        "output_sdk_passed": 2,
+        "binding_history_evidence": "evidence/serve-mcp-binding-history-cpu-20261115/README.md",
+        "binding_history_targeted_cpp_passed": 13
       }
     },
     {

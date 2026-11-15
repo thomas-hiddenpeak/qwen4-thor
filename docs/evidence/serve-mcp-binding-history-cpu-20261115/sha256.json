@@ -1,0 +1,23 @@
+{
+  "README.md": "95ff68fa2d4bcc7d40244b91c43ef69c3eb0380342c33742cfa1648fdfda4cc8",
+  "binding-build-01.json": "7038d9ca27f5242bf9a222d4771d3b7be8b97fa74d72b75fef1fb4910ec1c996",
+  "binding-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "binding-build-01.stdout": "2f53b59698b5c1ba1dcc065588152bdcad6eba7bb86570e39aed4632566d07a0",
+  "binding-cpu-01.json": "ac73dc8d7414489a398f9333eb903e9c212fda93c936dbf7995f33290e34e07a",
+  "binding-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "binding-cpu-01.stdout": "dccb085a7bfbfbaf6dba8b693fbfd1b765a23fcb53830fe2e56c70a46a2a09dc",
+  "binding-history-inventory-01.json": "53d096cd85ac29c43a7fbfb8e71d4f5811bf17291213688f5f793de4bff20729",
+  "binding-history-inventory-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "binding-history-inventory-01.stdout": "cec459f71e8dee425d2b3b826bdc519656387b6e292fe5dc387e87e418d8bc6f",
+  "binding-history-review.json": "ab0d122c4c8495310601e08d87c06b46f48bc269fca6829bc4e6b9034ee28957",
+  "binding-required-01.txt": "89f2aeb745b0824f7a59e3baf44f1fd8f07581ad9f391aa2f81b660483c40502",
+  "history-build-01.json": "d92aa272891e7b24fab9aeb07338160f9589f826c18f990789c2efceba307c16",
+  "history-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "history-build-01.stdout": "5b717d2bcef0212838145344115204352dd95501297adfed39cc4eb5f37a0887",
+  "history-cpu-01.json": "dd172fb081ae029a30ba312f4986da4713b3f6b31b3be0d5a3772653056491d0",
+  "history-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "history-cpu-01.stdout": "f6bc6f33aebe368af32364a7de232a4ad8ea91ab87bce20bf2c6f81133387623",
+  "history-required-01.txt": "1109b8ca9de76107729703be31a1de503eea76a53e62cce18facef8f3da5feda",
+  "run.py": "da8f049e2084443069e77cb428009a3fbd441dbbbc28bc37487f8118a1f20794",
+  "sources-sha256.json": "7dfb47a2a60b0424db469ce124fc6b4548d2492869a4f5ae9812cbfb6174ab46"
+}

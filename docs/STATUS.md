@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP模型绑定及认证历史13项CPU首过](evidence/serve-mcp-binding-history-cpu-20261115/README.md)：
+  原schema、标准可选字段、调用ID续接及原子审批索引已验证；7项
+  来源负控通过、零警告，0GPU、rev126保持。继续实际公开执行链
+  和全部master，尚未交付MCP接口。
+
 - [MCP输出与派发拥有者16项CPU、2项SDK最终通过](evidence/serve-mcp-output-owner-cpu-20261115/README.md)：
   参数逐片事件、截断/取消形状与并发失败不覆盖在途结果已验证。
   公开执行/历史和组合仍在接线，尚无MCP对外交付；0GPU、rev126

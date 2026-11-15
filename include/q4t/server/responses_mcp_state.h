@@ -12,11 +12,20 @@ class ResponsesMcpState {
       : objects_(objects), cipher_(objects), model_(config.model) {}
   ObjectReply Catalog(const ResponsesMcpDefinition& definition,
                       const io::Json& native_tools, const StateAccess& access,
-                      int64_t lifetime_seconds = 30 * 24 * 3600);
+                      int64_t lifetime_seconds = 30 * 24 * 3600,
+                      std::string reserved_id = "",
+                      std::string listing_error = "");
   ObjectReply Propose(const io::Json& catalog,
                       const ResponsesMcpDefinition& current, std::string name,
                       io::Json arguments, std::string caller,
-                      const StateAccess& access);
+                      const StateAccess& access, std::string reserved_id = "");
+  // Authenticated reads: OpenCatalog returns PRIVATE original metadata;
+  // Authenticate returns the canonical public item, filling omitted optional
+  // fields from evidence without trusting caller-supplied results.
+  ObjectReply OpenCatalog(const io::Json& catalog,
+                          const ResponsesMcpDefinition& current,
+                          const StateAccess& access);
+  ObjectReply Authenticate(const io::Json& item, const StateAccess& access);
   ObjectReply Decide(const std::string& approval_id, bool approve,
                      std::string reason, const ResponsesMcpDefinition& current,
                      const StateAccess& access);
