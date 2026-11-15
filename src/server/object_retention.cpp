@@ -213,8 +213,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       for (const auto& member : members->array)
         inspector.Reference(member.Find("id"));
       if (const auto* batches = data.GetArray("batches")) {
-        if (batches->array.size() > 10000) inspector.value.uncertain = true;
-        else for (const auto& batch : batches->array) inspector.Reference(&batch);
+        if (batches->array.size() > 10000)
+          inspector.value.uncertain = true;
+        else
+          for (const auto& batch : batches->array) inspector.Reference(&batch);
       } else if (data.Has("batches")) {
         inspector.value.uncertain = true;
       }
@@ -224,7 +226,8 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // Historical counts and metadata must not pin detached files or indexes.
     // The live parent retains this receipt; store expiration releases it.
     inspector.value.collect_when_unreferenced = true;
-    inspector.value.uncertain = !data.GetArray("members") || !data.Find("batch");
+    inspector.value.uncertain =
+        !data.GetArray("members") || !data.Find("batch");
     if (const auto* members = data.GetArray("members"))
       for (const auto& row : members->array)
         if (row.GetBool("detached") && row.GetString("status") == "in_progress")
@@ -233,8 +236,9 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
              data.GetString("format") == "q4t.vector_store_file.v1") {
     const auto* file = data.Find("file");
     const auto status = file ? file->GetString("status") : "";
-    inspector.value.uncertain = status != "in_progress" && status != "completed" &&
-                                status != "failed" && status != "cancelled";
+    inspector.value.uncertain = status != "in_progress" &&
+                                status != "completed" && status != "failed" &&
+                                status != "cancelled";
     // Only the live owning store or an explicit bounded read hold retains
     // this member. An abandoned job cannot protect an expired store forever.
     inspector.value.collect_when_unreferenced = true;
@@ -250,7 +254,8 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       inspector.value.active = status == "validating" ||
                                status == "in_progress" ||
                                status == "finalizing" || status == "cancelling";
-      inspector.value.uncertain |= !inspector.value.active && !BatchTerminal(status);
+      inspector.value.uncertain |=
+          !inspector.value.active && !BatchTerminal(status);
       const auto* released = data.Find("resources_released");
       if (released && (!released->IsBool() ||
                        (released->boolean && !BatchTerminal(status))))
@@ -299,21 +304,23 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     const auto format = data.GetString("format");
     if (format == "q4t.mcp.approval.v1") {
       const auto* sealed = data.Find("sealed");
-      inspector.value.uncertain = data.object.size() != 3 || !sealed ||
-                                  !sealed->IsString() ||
-                                  !sealed->str.starts_with("q4t1:") ||
-                                  !data.GetString("call_id").starts_with("mcp_");
+      inspector.value.uncertain =
+          data.object.size() != 3 || !sealed || !sealed->IsString() ||
+          !sealed->str.starts_with("q4t1:") ||
+          !data.GetString("call_id").starts_with("mcp_");
       inspector.Reference(data.Find("call_id"));
     } else if (format == "q4t.mcp.catalog.v1" || format == "q4t.mcp.call.v1") {
-      // Self-contained encrypted authority: remote schemas/results do not own
-      // local files. Keep until its original expiry (or a live public item
-      // reference); a dispatch record must never be collected just because
-      // its response has not committed yet. Typed local media needs explicit
-      // dependency metadata before it can be added to this record format.
+      // Native authority stays until its original expiry or a live public
+      // reference, including before the Response commits. Locally prepared
+      // media has explicit snapshot dependencies mirrored in the sealed call;
+      // remote resource URIs themselves never become local file references.
       const auto* sealed = data.Find("sealed");
-      inspector.value.uncertain = data.object.size() != 2 || !sealed ||
-                                  !sealed->IsString() ||
+      const bool media =
+          format == "q4t.mcp.call.v1" && data.Has("input_snapshots");
+      inspector.value.uncertain = data.object.size() != (media ? 3U : 2U) ||
+                                  !sealed || !sealed->IsString() ||
                                   !sealed->str.starts_with("q4t1:");
+      if (media) inspector.Snapshots(data);
     } else if (format == "q4t.binary_chunk.v1") {
       inspector.value.collect_when_unreferenced = true;
     } else if (format == "q4t.binary_stage.v1" ||
@@ -334,8 +341,9 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       } else {
         for (const auto& row : rows->array) {
           const auto status = row.GetString("status");
-          inspector.value.uncertain |= status != "pending" && status != "running" &&
-                                       status != "completed" && status != "failed";
+          inspector.value.uncertain |=
+              status != "pending" && status != "running" &&
+              status != "completed" && status != "failed";
           inspector.Reference(row.Find("result_id"));
           if (const auto* background = row.Find("background_response")) {
             BatchResponseLink link;

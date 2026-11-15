@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "06cef224ca78f1cad0bc23e34dce0ef9069ff47faf095624a14cc7160256f7f3",
-    "cmake/ChatProtocolIdentity.cmake": "44a8c967f4380663e5d19c524463230896050eb1097fff85feb132a421429f1c",
+    "CMakeLists.txt": "961ac029e39646a3af3dc8cdea147df6fcf076327cc9274d61e9549d87aa45fd",
+    "cmake/ChatProtocolIdentity.cmake": "81dbfd0537de6480f18c3a16c49eb88351273a9ce3ba46e32cd32b60359b6d11",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1899,7 +1899,7 @@
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
-    "include/q4t/server/mcp_content.h": "96b4052e2da1404cf9d057e1b15eb8195a806d5c5e544c5b6601acec9603ba57",
+    "include/q4t/server/mcp_content.h": "80f421825338d9b8574be9e8beb54e2d84ebe7a4303c8471dcab40744a21a223",
     "include/q4t/server/mcp_transport.h": "8419882b1b2392d4dd83c52a4745b21627c6b93c9e2a6f112f919076f3aae079",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
@@ -1942,7 +1942,7 @@
     "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
-    "include/q4t/server/responses_mcp_state.h": "ab18df871e6b7493f9e45d8281f7bf7e267f296d9afe57f4b717dbb39dc81b8e",
+    "include/q4t/server/responses_mcp_state.h": "ddcf0865db884dc9f34ec1b4697c11b5062433f93892b88ef305eac5e4a26535",
     "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
@@ -2156,6 +2156,7 @@
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/mcp_content.cpp": "421599723f7af3d2c805e407803e44926777c666c77b372f9920343f211d3965",
     "src/server/mcp_http.cpp": "38d068ab7b7f38fec87eec8c27ee3f338ad87246b1477c18b246e295206cd930",
+    "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
     "src/server/mcp_transport.cpp": "8d1a7d84a395d557a67eb6e6b096ddef896e0436c372c2da4dd1cc2bd90c7e11",
     "src/server/mcp_transport_internal.h": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
@@ -2168,7 +2169,7 @@
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
     "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "06c465d72492cb095c15290338c71045fb37f6cc4317d411a4ed56f8879c1e83",
-    "src/server/object_retention.cpp": "3f8c6c1663e6d7df92976f0e95b000783fffd9cc0606e545c1d41df3a3d254c8",
+    "src/server/object_retention.cpp": "712e524139de80a68b33173956ad7136273ce1b44002590d04508a1b7f034e7a",
     "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
@@ -2211,7 +2212,7 @@
     "src/server/responses_mcp_execution.cpp": "48f9c3e8c1bef87945e1f0e5e37adc154c15d3769e8a1fd40fce49f065234496",
     "src/server/responses_mcp_output.cpp": "bfa34595df96c00a98fc0322077796604cd86c6934adf2ddeeae525dbdbc76de",
     "src/server/responses_mcp_preparation.cpp": "3ad1ff89971c1ef136868524f9b3d26e4519a3e9f1b1f1c7daf77008fac72217",
-    "src/server/responses_mcp_state.cpp": "319ec76ab42094e5d7c3cdac5467e7908cc26e23725d01cd87ef819c9d83d58e",
+    "src/server/responses_mcp_state.cpp": "e32518444e2c7d85272d19f9398ac77fe16e25bb036cd2e77b00f0c3892cd1f0",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
@@ -5370,5 +5371,20 @@
     "public_surface_changed": false,
     "public_capability_delivered": false,
     "remaining": "Execution-owned media/resource preparation, frozen model projection/budgets, session/mapping and business/recovery delivery."
+  },
+  "mcp_media_projection_review_20261116": {
+    "scope": "Private typed native content projection and authenticated resource sources; optimistic immutable FileExpansion snapshot publication with explicit sealed dependency mirror and retention.",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/mcp_content.h",
+      "include/q4t/server/responses_mcp_state.h",
+      "src/server/mcp_projection.cpp",
+      "src/server/object_retention.cpp",
+      "src/server/responses_mcp_state.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Shared execution preparation, model admission/moderation/count/compaction and native audio backend; sessions/mappings and full business/recovery delivery."
   }
 }

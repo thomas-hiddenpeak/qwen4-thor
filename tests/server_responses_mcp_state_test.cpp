@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
@@ -14,6 +15,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/file_expansion.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
@@ -138,7 +140,273 @@ McpTransportReceipt ResourceResult(std::string dispatch,
                                    {"text", String(std::move(text))}})})}});
   return receipt;
 }
+Json CompletedMediaCall(ResponsesMcpState& state, Json content) {
+  const auto definition = Definition("never");
+  auto proposed = Propose(state, Catalog(state, definition), definition);
+  if (!Ok(proposed)) throw std::runtime_error("media call proposal");
+  const auto id = proposed.value.GetString("id");
+  auto permitted = state.Permit(id, definition, Access());
+  if (!Ok(permitted)) throw std::runtime_error("media call permission");
+  auto receipt = Success(permitted.value.GetString("dispatch_id"));
+  Set(&receipt.result, "content", std::move(content));
+  Set(&receipt.result, "_meta",
+      Object({{"private_ui", String("hidden-client-data")}}));
+  auto final = state.Finish(id, receipt, {}, Access());
+  if (!Ok(final)) throw std::runtime_error("media call finish");
+  return final.value;
+}
+Json MediaParts() {
+  const std::string png =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGPYoiECAA"
+      "KEAPFkHeRLAAAAAElFTkSuQmCC";
+  return Array({Object({{"type", String("image")},
+                        {"mimeType", String("image/png")},
+                        {"data", String(png)}}),
+                Value(R"({"type":"resource","resource":{"uri":"project:note",
+                   "mimeType":"text/plain; charset=utf-8","blob":"aGVsbG8="}})")});
+}
+Json MediaItems(const std::string& id, const ObjectReply& projection) {
+  return Array({Object(
+      {{"id", String(id)}, {"content", *projection.value.Find("content")}})});
+}
+BinaryAccess MediaAccess() {
+  auto access = Access();
+  return {access.scope, access.deadline, access.cancelled};
+}
 }  // namespace
+
+Q4T_TEST(responses_mcp_media_real_files_freeze_and_replay_without_codec) {
+  Fixture fixture;
+  Json final, rendered, bindings;
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesMcpState state(objects, Config());
+    final = CompletedMediaCall(state, MediaParts());
+    id = final.GetString("id");
+    auto source = state.ModelContent(id, Access());
+    Q4T_CHECK(Ok(source) &&
+              source.value.GetArray("unresolved_resources")->array.empty());
+    Q4T_CHECK(OutputJson(source.value).find("hidden-client-data") ==
+              std::string::npos);
+    Q4T_CHECK(final.GetString("output").find("hidden-client-data") !=
+              std::string::npos);
+    const auto items = MediaItems(id, source);
+    FileExpansion prepared(&objects, {});
+    Q4T_CHECK(Ok(prepared.Prepare(items, FileInputProfile::kResponsesStored,
+                                  Array(), MediaAccess())));
+    Q4T_CHECK(!prepared.PendingSheets() && prepared.Usage().files == 2 &&
+              prepared.Usage().images == 1 && prepared.Usage().pixels == 1);
+    Q4T_CHECK(Ok(prepared.Render(items, &rendered)));
+    Q4T_CHECK(OutputJson(rendered).find("hello") != std::string::npos);
+    Q4T_CHECK(Ok(prepared.Persist(MediaAccess())));
+    bindings = prepared.Bindings();
+    Q4T_CHECK(Ok(state.BindModelSnapshots(id, source.value.GetInt("revision"),
+                                          bindings, true, Access())));
+    Q4T_CHECK(Ok(prepared.Release(MediaAccess())));
+    const auto record = Record(objects, id);
+    const auto dependencies =
+        InspectObjectRetention("tool_run", *record.Find("data"));
+    Q4T_CHECK(!dependencies.uncertain);
+    Q4T_CHECK(dependencies.references.size() == bindings.array.size());
+    for (const auto& binding : bindings.array)
+      Q4T_CHECK(std::find(dependencies.references.begin(),
+                          dependencies.references.end(),
+                          binding.Find("snapshot")->GetString("id")) !=
+                dependencies.references.end());
+    Q4T_CHECK(OutputJson(*record.Find("data")->Find("input_snapshots")) ==
+              OutputJson(bindings));
+    Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+              OutputJson(final));
+  }
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto source = state.ModelContent(id, Access());
+  Q4T_CHECK(Ok(source) && source.value.GetBool("complete"));
+  FileExpansion frozen(&objects, {});
+  GrammarControl control;
+  control.counters = std::make_shared<GrammarWorkerCounters>();
+  const auto items = MediaItems(id, source);
+  Q4T_CHECK(Ok(frozen.Prepare(items, FileInputProfile::kResponsesStored,
+                              *source.value.Find("input_snapshots"),
+                              MediaAccess(), true, control)));
+  Json replayed;
+  Q4T_CHECK(Ok(frozen.Render(items, &replayed)) &&
+            control.counters->started == 0);
+  Q4T_CHECK(OutputJson(replayed) == OutputJson(rendered));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_media_requires_all_sources_and_revision_ownership) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto final = CompletedMediaCall(state, MediaParts());
+  const auto id = final.GetString("id");
+  auto source = state.ModelContent(id, Access());
+  Q4T_CHECK(Ok(source));
+  Q4T_CHECK(!state
+                 .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                     Array(), true, Access())
+                 .ok());
+  FileExpansion prepared(&objects, {});
+  Q4T_CHECK(Ok(prepared.Prepare(MediaItems(id, source),
+                                FileInputProfile::kResponsesStored, Array(),
+                                MediaAccess())));
+  Q4T_CHECK(Ok(prepared.Persist(MediaAccess())));
+  auto forged = prepared.Bindings();
+  Set(&forged.array.front(), "binding_sha256", String(std::string(64, '0')));
+  Q4T_CHECK(!state
+                 .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                     forged, true, Access())
+                 .ok());
+  Q4T_CHECK(Ok(state.BindModelSnapshots(id, source.value.GetInt("revision"),
+                                        prepared.Bindings(), true, Access())));
+  Q4T_CHECK(state
+                .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                    prepared.Bindings(), true, Access())
+                .code == "mcp_media_revision_conflict");
+  source = state.ModelContent(id, Access());
+  Q4T_CHECK(Ok(source));
+  Q4T_CHECK(state
+                .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                    prepared.Bindings(), false, Access())
+                .code == "mcp_media_already_final");
+  Q4T_CHECK(Ok(state.BindModelSnapshots(id, source.value.GetInt("revision"),
+                                        prepared.Bindings(), true, Access())));
+  Q4T_CHECK(!state.ModelContent(id, Access("client:other")).ok());
+  Q4T_CHECK(Ok(prepared.Release(MediaAccess())));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_media_reads_frozen_resources_and_retains_failures) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const std::string uri = "file:///report0";
+  for (const bool failed : {false, true}) {
+    const auto final = CompletedResourceCall(state, definition);
+    const auto id = final.GetString("id");
+    auto source = state.ModelContent(id, Access());
+    Q4T_CHECK(Ok(source) &&
+              source.value.GetArray("unresolved_resources")->array.size() == 1);
+    Q4T_CHECK(state
+                  .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                      Array(), true, Access())
+                  .code == "mcp_resource_pending");
+    Q4T_CHECK(Ok(state.ProposeResource(id, uri, definition, Access())));
+    if (failed) {
+      Q4T_CHECK(Ok(state.FinishResource(
+          id, uri, {},
+          Error(502, "fixture_unavailable", "The resource could not be read"),
+          Access())));
+    } else {
+      const auto permitted =
+          state.PermitResource(id, uri, definition, Access());
+      Q4T_CHECK(Ok(permitted));
+      auto receipt = ResourceResult(permitted.value.GetString("dispatch_id"));
+      receipt.result = Object(
+          {{"contents",
+            Array({Object(
+                {{"uri", String(uri)},
+                 {"mimeType", String("image/png")},
+                 {"blob", *MediaParts().array.front().Find("data")}})})}});
+      Q4T_CHECK(Ok(state.FinishResource(id, uri, receipt, {}, Access())));
+    }
+    source = state.ModelContent(id, Access());
+    Q4T_CHECK(Ok(source) &&
+              source.value.GetArray("unresolved_resources")->array.empty());
+    const auto items = MediaItems(id, source);
+    FileExpansion prepared(&objects, {});
+    Q4T_CHECK(Ok(prepared.Prepare(items, FileInputProfile::kResponsesStored,
+                                  Array(), MediaAccess())));
+    Q4T_CHECK(prepared.Usage().images == (failed ? 0U : 1U));
+    Json rendered;
+    Q4T_CHECK(Ok(prepared.Render(items, &rendered)));
+    if (failed)
+      Q4T_CHECK(OutputJson(rendered).find("The resource could not be read") !=
+                std::string::npos);
+    Q4T_CHECK(Ok(prepared.Persist(MediaAccess())));
+    Q4T_CHECK(
+        Ok(state.BindModelSnapshots(id, source.value.GetInt("revision"),
+                                    prepared.Bindings(), true, Access())));
+    Q4T_CHECK(Ok(prepared.Release(MediaAccess())));
+    Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+              OutputJson(final));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_media_audience_and_audio_do_not_become_fake_text) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  auto parts = MediaParts();
+  Set(&parts.array.front(), "annotations", Value(R"({"audience":["user"]})"));
+  parts.array.pop_back();
+  parts.array.push_back(Value(R"({"type":"audio","mimeType":"audio/wav",
+      "data":"UklGRg=="})"));
+  const auto final = CompletedMediaCall(state, parts);
+  const auto id = final.GetString("id");
+  const auto source = state.ModelContent(id, Access());
+  Q4T_CHECK(Ok(source) && !source.value.GetBool("complete"));
+  size_t audio = 0;
+  for (const auto& part : source.value.GetArray("content")->array) {
+    Q4T_CHECK(part.GetString("type") != "input_image");
+    if (part.GetString("type") != "input_audio") continue;
+    ++audio;
+    Q4T_CHECK(part.Find("input_audio")->GetString("data") == "UklGRg==" &&
+              part.Find("input_audio")->GetString("format") == "wav");
+  }
+  Q4T_CHECK(audio == 1);
+  // A10 still needs an actual audio backend. This tests preserving the pending
+  // obligation, not declaring audio delivered through a successful text path.
+  Q4T_CHECK(state
+                .BindModelSnapshots(id, source.value.GetInt("revision"),
+                                    Array(), true, Access())
+                .code == "mcp_media_backend_unavailable");
+  Q4T_CHECK(!state.ModelContent(id, Access()).value.GetBool("complete"));
+  Q4T_CHECK(OutputJson(state.Authenticate(final, Access()).value) ==
+            OutputJson(final));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_media_dependency_metadata_must_match_sealed_sources) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto final = CompletedMediaCall(state, MediaParts());
+  const auto id = final.GetString("id");
+  const auto source = state.ModelContent(id, Access());
+  Q4T_CHECK(Ok(source));
+  FileExpansion prepared(&objects, {});
+  Q4T_CHECK(Ok(prepared.Prepare(MediaItems(id, source),
+                                FileInputProfile::kResponsesStored, Array(),
+                                MediaAccess())));
+  Q4T_CHECK(Ok(prepared.Persist(MediaAccess())));
+  Q4T_CHECK(Ok(state.BindModelSnapshots(id, source.value.GetInt("revision"),
+                                        prepared.Bindings(), true, Access())));
+  const auto record = Record(objects, id);
+  ObjectRequest tamper;
+  tamper.operation = ObjectOperation::kPut;
+  tamper.kind = ObjectKind::kToolRun;
+  tamper.scope = Access().scope;
+  tamper.id = id;
+  tamper.expected_revision = record.GetInt("revision");
+  tamper.expires_at = record.GetInt("expires_at");
+  tamper.data = *record.Find("data");
+  Set(&tamper.data, "input_snapshots", Array());
+  Q4T_CHECK(Ok(objects.Execute(tamper, Access().deadline)));
+  const auto read = state.ModelContent(id, Access());
+  Q4T_CHECK(read.code == "invalid_mcp_state" &&
+            read.message.find("dependencies") != std::string::npos);
+  Q4T_CHECK(!state.Authenticate(final, Access()).ok());
+  Q4T_CHECK(Ok(prepared.Release(MediaAccess())));
+  return true;
+}
 
 Q4T_TEST(responses_mcp_resource_requires_original_link_scope_and_policy) {
   Fixture f;

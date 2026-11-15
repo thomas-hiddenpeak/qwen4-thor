@@ -252,6 +252,7 @@ set(protocol_inputs
   include/q4t/server/mcp_transport.h
   include/q4t/server/mcp_content.h
   src/server/mcp_content.cpp
+  src/server/mcp_projection.cpp
   include/q4t/server/responses_mcp.h
   src/server/responses_mcp.cpp
   include/q4t/server/responses_mcp_state.h

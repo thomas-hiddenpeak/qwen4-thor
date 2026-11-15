@@ -12,4 +12,15 @@ bool McpResourceUri(std::string_view uri);
 // operations; a structurally valid result is not proof of decoded media.
 Status ValidateMcpToolResult(const io::Json& result);
 Status ValidateMcpResourcesResult(const io::Json& result);
+
+// Private model preparation, not a replacement for the public native result.
+// resources are authenticated frozen Resource() views from the invocation
+// owner. Unresolved URIs must be settled before model admission; returned file,
+// image and audio parts still require the corresponding bounded preparation.
+struct McpContentProjection {
+  io::Json content;
+  std::vector<std::string> unresolved_resources;
+};
+Status ProjectMcpToolResult(const io::Json& result, const io::Json& resources,
+                            McpContentProjection* projection);
 }  // namespace q4t::server

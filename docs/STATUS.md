@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP模型媒体投影12项CPU首过](evidence/serve-mcp-projection-cpu-20261116/README.md)：
+  真实图片/文件准备、持久来源绑定、重启无codec回放及依赖回收
+  通过；主机/完整引擎零警告、7项来源负控通过。0GPU，rev126
+  保持，762ab1aa远端CI通过；继续实际执行/审核/计数/共享预算及交付。
+
 - [MCP资源冻结16项CPU首过](evidence/serve-mcp-resource-freeze-cpu-20261116/README.md)：
   原调用/目标/权限绑定、单次读取、重启冻结、精确拥有者和共享
   容量已验证；为在途失败预留收尾空间。主机/完整引擎零警告，

@@ -67,6 +67,17 @@ class ResponsesMcpState {
                              const McpTransportReceipt& receipt,
                              const ObjectReply& transport,
                              const StateAccess& access);
+  // Private typed source parts and unresolved URIs. This read grants no remote
+  // operation, performs no codec work, and is not yet a ready model request.
+  ObjectReply ModelContent(const std::string& authority_id,
+                           const StateAccess& access);
+  // Publish FileExpansion bindings before releasing its preparation holds.
+  // expected_revision comes from ModelContent; a concurrent winner is never
+  // overwritten. Unknown publication requires retaining preparation holds.
+  ObjectReply BindModelSnapshots(const std::string& authority_id,
+                                 int64_t expected_revision,
+                                 const io::Json& bindings, bool complete,
+                                 const StateAccess& access);
   // Only a proven dead process may be recovered automatically. ended is an
   // internal cleanup proof, supplied only after that exact Response execution
   // has drained; both its response ID and original process identity must match

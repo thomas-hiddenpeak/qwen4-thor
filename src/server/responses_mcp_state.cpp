@@ -221,6 +221,28 @@ bool EndedOwner(const Json& value, const StateAccess& access,
   return proved ||
          (owner && ResponseOwnerStatus(*owner) == ResponseOwnerState::kGone);
 }
+ObjectReply ModelProjection(const Json& payload,
+                            McpContentProjection* projection) {
+  *projection = {};
+  const auto* terminal = payload.Find("terminal");
+  if (!terminal)
+    return Error(409, "mcp_result_pending", "No known MCP result to prepare");
+  Json result;
+  if (terminal->Find("output") && !terminal->Find("output")->IsNull()) {
+    if (!Parse(terminal->GetString("output"), &result))
+      return Invalid("Invalid native MCP result");
+    const auto* resources = payload.GetArray("resources");
+    const auto status = ProjectMcpToolResult(
+        result, resources ? *resources : Array(), projection);
+    if (!status) return Error(502, "mcp_content_invalid", status.message());
+  } else {
+    projection->content = Array(
+        {Object({{"type", String("input_text")},
+                 {"text", String("MCP invocation failed (untrusted):\n" +
+                                 OutputJson(*terminal->Find("error")))}})});
+  }
+  return {};
+}
 }  // namespace
 
 ObjectReply ResponsesMcpState::Read(const std::string& id,
@@ -278,6 +300,16 @@ ObjectReply ResponsesMcpState::Read(const std::string& id,
         !call->Find("approval_request_id") || !call->Find("arguments") ||
         !call->Find("name") || !call->Find("id") || !call->Find("server_label"))
       return Invalid("Invalid MCP invocation state");
+    const auto* bindings = payload->Find("media_bindings");
+    const auto* dependencies = data->Find("input_snapshots");
+    if ((bindings &&
+         (!bindings->IsArray() || bindings->array.size() > 4096 ||
+          !payload->Find("media_complete") ||
+          !payload->Find("media_complete")->IsBool() ||
+          payload->GetString("media_projection_sha256").size() != 64)) ||
+        !Same(bindings ? *bindings : Json(),
+              dependencies ? *dependencies : Json()))
+      return Invalid("MCP media dependencies differ from sealed authority");
     if (const auto* resources = payload->Find("resources")) {
       if (!resources->IsArray() || resources->array.size() > 32)
         return Invalid("Invalid MCP resource state capacity");
@@ -333,6 +365,9 @@ ObjectReply ResponsesMcpState::Write(const std::string& id,
   request.data =
       Object({{"format", String("q4t.mcp." + std::string(kind) + ".v1")},
               {"sealed", String(std::move(sealed))}});
+  if (kind == "call")
+    if (const auto* bindings = payload.Find("media_bindings"))
+      Set(&request.data, "input_snapshots", *bindings);
   const auto* call = payload.Find("call");
   const auto approval_id = call ? call->GetString("approval_request_id") : "";
   if (kind == "call" && revision == 0 && !approval_id.empty()) {
@@ -741,6 +776,96 @@ ObjectReply ResponsesMcpState::Resource(const std::string& id,
   return entry ? ResourceView(*entry)
                : Error(404, "mcp_resource_unprepared",
                        "No frozen resource preparation for this invocation");
+}
+ObjectReply ResponsesMcpState::ModelContent(const std::string& id,
+                                            const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  McpContentProjection projection;
+  reply = ModelProjection(payload, &projection);
+  if (!reply.ok()) return reply;
+  std::string digest;
+  if (!InputValueIdentity(projection.content, &digest))
+    return Error(413, "mcp_content_capacity",
+                 "MCP content identity exceeds capacity");
+  if (payload.Has("media_bindings") &&
+      payload.GetString("media_projection_sha256") != digest)
+    return Invalid("MCP model source changed after snapshot publication");
+  auto unresolved = Array();
+  for (const auto& uri : projection.unresolved_resources)
+    unresolved.array.push_back(String(uri));
+  reply.value =
+      Object({{"content", std::move(projection.content)},
+              {"unresolved_resources", std::move(unresolved)},
+              {"revision", *record.Find("revision")},
+              {"input_snapshots", payload.Has("media_bindings")
+                                      ? *payload.Find("media_bindings")
+                                      : Array()},
+              {"complete", Boolean(payload.GetBool("media_complete"))}});
+  return reply;
+}
+ObjectReply ResponsesMcpState::BindModelSnapshots(const std::string& id,
+                                                  int64_t expected_revision,
+                                                  const Json& bindings,
+                                                  bool complete,
+                                                  const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  if (expected_revision != record.GetInt("revision"))
+    return Error(409, "mcp_media_revision_conflict", "MCP preparation changed");
+  McpContentProjection projection;
+  reply = ModelProjection(payload, &projection);
+  if (!reply.ok()) return reply;
+  if (!projection.unresolved_resources.empty())
+    return Error(409, "mcp_resource_pending",
+                 "Resolve linked resources before freezing media");
+  std::string digest;
+  if (!InputValueIdentity(projection.content, &digest))
+    return Error(413, "mcp_content_capacity",
+                 "MCP content identity exceeds capacity");
+  std::set<std::string> expected;
+  for (size_t i = 0; i < projection.content.array.size(); ++i) {
+    const auto type = projection.content.array[i].GetString("type");
+    if (type == "input_file" || type == "input_image")
+      expected.insert("/content/" + std::to_string(i));
+    else if (type != "input_text")
+      return Error(503, "mcp_media_backend_unavailable",
+                   "This native media requires its typed preparation backend");
+  }
+  Json normalized;
+  const auto items =
+      Array({Object({{"id", String(record.GetString("id"))},
+                     {"content", std::move(projection.content)}})});
+  reply = MergeInputSnapshots(bindings, items, &normalized);
+  if (!reply.ok()) return reply;
+  for (const auto& row : normalized.array)
+    if (!expected.erase(row.GetString("path")))
+      return Invalid("MCP snapshot does not bind a media source");
+  if (!expected.empty())
+    return Invalid("MCP media preparation omitted source snapshots");
+  if (payload.Has("media_bindings") &&
+      payload.GetString("media_projection_sha256") != digest)
+    return Invalid("MCP media source identity changed");
+  if (payload.GetBool("media_complete")) {
+    if (!complete || !Same(normalized, *payload.Find("media_bindings")))
+      return Error(409, "mcp_media_already_final",
+                   "Frozen MCP model preparation is immutable");
+    reply.value = Object({{"revision", *record.Find("revision")}});
+    return reply;
+  }
+  Set(&payload, "media_bindings", std::move(normalized));
+  Set(&payload, "media_projection_sha256", String(std::move(digest)));
+  Set(&payload, "media_complete", Boolean(complete));
+  if (OutputJson(payload).size() + ResourceReserve(payload) > kPayloadBytes)
+    return Error(413, "mcp_media_capacity",
+                 "MCP media bindings exceed shared capacity");
+  reply = Write(record.GetString("id"), "call", std::move(payload),
+                expected_revision, record.GetInt("expires_at"), access);
+  if (reply.ok() && !reply.commit_unknown)
+    reply.value = Object({{"revision", Number(expected_revision + 1)}});
+  return reply;
 }
 ObjectReply ResponsesMcpState::PermitResource(
     const std::string& id, const std::string& uri,
