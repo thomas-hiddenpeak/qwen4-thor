@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [计数统一26项CPU首过](evidence/serve-mcp-count-cpu-20261116/README.md)：
+  MCP图像与生成输入一致、多份CSV精确额度及冻结复用、新目录
+  只读元数据和全部计数直接合同通过；主机/完整引擎零警告，
+  7项来源负控通过。0GPU、rev126保持；继续会话/映射与全部交付。
+
 - [MCP实际媒体执行20项CPU最终通过](evidence/serve-mcp-media-execution-cpu-20261116/README.md)：
   实际HTTP图像/文档/资源、冻结续接、共享预算、晚到sheet原配额
   和历史资源清理责任已接线；首次媒体夹具配置失败保留，补单项

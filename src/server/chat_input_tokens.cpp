@@ -68,34 +68,37 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
   config.count_input_only = true;
   ResponsesEnvelope envelope;
   ResponsesGenerationPlan generation;
+  uint64_t preparation_budget = 0, preparation_steps = 0;
+  std::optional<ModelPreparation> preparation;
   const auto prepare_files = [&](FileExpansion& files) -> ObjectReply {
-    preparation_control = requests_.Register(
-        detail::NewRequestId("count-auto-"), "", access.deadline, client.Id());
     if (!preparation_control) {
-      ObjectReply error;
-      error.http_status = 409;
-      error.code = "request_id_conflict";
-      error.message = "Input preparation identity already active";
-      return error;
+      preparation_control = requests_.Register(
+          detail::NewRequestId("count-auto-"), "", access.deadline, client.Id());
+      if (!preparation_control) {
+        ObjectReply error;
+        error.http_status = 409;
+        error.code = "request_id_conflict";
+        error.message = "Input preparation identity already active";
+        return error;
+      }
+      preparation.emplace(clients_, client, preparation_rate, 0, 0,
+                           preparation_budget);
     }
-    ModelPreparation preparation(clients_, client, preparation_rate, 0, 0,
-                                 files.PendingOutputBudget());
-    uint64_t steps = 0;
     ScopeExit report([&] {
-      http->SetPreparationUsage(
-          {preparation.InputTokens(), preparation.OutputTokens(), steps});
+      http->SetPreparationUsage({preparation->InputTokens(),
+                                 preparation->OutputTokens(), preparation_steps});
     });
     while (files.PendingSheets()) {
       FileSheetStep sheet;
       auto result = files.NextSheet(config, &sheet);
       if (!result.ok()) return result;
-      const auto before = preparation.InputTokens();
+      const auto before = preparation->InputTokens();
       ScopeExit observe_step([&] {
-        if (preparation.InputTokens() > before) ++steps;
+        if (preparation->InputTokens() > before) ++preparation_steps;
       });
       InternalModelStep work{sheet.request,
                              config,
-                             preparation,
+                             *preparation,
                              [] { return ObjectReply{}; },
                              {},
                              false,
@@ -113,7 +116,8 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
   };
   auto prepared =
       PrepareResponsesTokenCount(request, config, *objects_, access, &envelope,
-                                 &generation, prepare_files);
+                                 &generation, prepare_files, nullptr,
+                                 background_.Get(), true, &preparation_budget);
   if (!prepared.ok()) {
     send(prepared);
     return;

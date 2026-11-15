@@ -4,6 +4,7 @@
 #include "q4t/server/file_expansion.h"
 
 namespace q4t::server {
+class IResponsesCleanup;
 
 // Strict count-only contract. Accepts an omitted/null body, resolves only
 // authenticated existing state, and never begins a response or runs a tool.
@@ -16,7 +17,9 @@ ObjectReply PrepareResponsesTokenCount(
     const StateAccess& access, ResponsesEnvelope* envelope,
     ResponsesGenerationPlan* generation,
     const ResponsesFilePreparation& prepare = {},
-    FileExpansionUsage* file_usage = nullptr);
+    FileExpansionUsage* file_usage = nullptr,
+    IResponsesCleanup* cleanup = nullptr, bool require_cleanup = false,
+    uint64_t* preparation_output_budget = nullptr);
 
 // Enforces the request deadline even when no storage read is necessary.
 ObjectReply CheckResponsesTokenCountActive(const StateAccess& access);

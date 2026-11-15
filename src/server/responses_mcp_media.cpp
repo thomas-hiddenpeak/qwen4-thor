@@ -233,6 +233,30 @@ ObjectReply ResponsesMcpMedia::Render(Json* content) const {
   return {};
 }
 
+ObjectReply ResponsesMcpMedia::PrepareSheets(
+    const std::function<ObjectReply(FileExpansion&)>& prepare) {
+  if (!issued_.empty()) return Invalid("A MCP sheet is already issued");
+  for (auto& [_, entry] : entries_) {
+    if (!entry.files || !entry.files->PendingSheets()) continue;
+    if (!prepare)
+      return Error(503, "file_preparation_unavailable",
+                   "MCP input requires native sheet preparation");
+    auto result = prepare(*entry.files);
+    if (!result.ok()) return result;
+    if (entry.files->PendingSheets())
+      return Error(503, "file_preparation_incomplete",
+                   "MCP sheet preparation did not complete");
+    entry.dirty = true;
+    result = entry.files->Render(entry.source, &entry.rendered);
+    if (!result.ok()) return result;
+    auto combined = other_;
+    AddResponsesMediaBudget(Budget(), &combined);
+    result = CheckResponsesMediaBudget(limits_, combined);
+    if (!result.ok()) return result;
+  }
+  return {};
+}
+
 bool ResponsesMcpMedia::PendingSheets() const {
   return std::any_of(entries_.begin(), entries_.end(), [](const auto& pair) {
     return pair.second.files && pair.second.files->PendingSheets();

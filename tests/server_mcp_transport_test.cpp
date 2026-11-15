@@ -1290,6 +1290,15 @@ Q4T_TEST(responses_mcp_execution_media_reaches_model_and_frozen_continuation) {
             OutputJson(resumed.Generation().input.messages).find("hello") !=
                 std::string::npos &&
             server.calls == 1 && server.Requests().size() == before);
+  auto count_config = config;
+  count_config.count_input_only = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan counted;
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      request, count_config, objects, ExecutionAccess(), &envelope, &counted)));
+  Q4T_CHECK(OutputJson(counted.input.messages) ==
+            OutputJson(resumed.Generation().input.messages));
+  Q4T_CHECK(server.Requests().size() == before && server.calls == 1);
   return true;
 }
 
@@ -1420,6 +1429,121 @@ Q4T_TEST(responses_mcp_execution_resources_read_once_and_unknown_stays_frozen) {
         ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 43)));
     Q4T_CHECK(reads == 1 && server.calls == 1);
   }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_count_prepares_multiple_sheets_on_one_output_budget) {
+  Server server;
+  const std::string csv = "bmFtZSx2YWx1ZQphbHBoYSw0MgpiZXRhLDcK";
+  server.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    const auto native = Object(
+        {{"content",
+          Array({Object({{"type", String("resource")},
+                         {"resource", Object({{"uri", String("project:sheet")},
+                                              {"mimeType", String("text/csv")},
+                                              {"blob", String(csv)}})}})})}});
+    Send(fd, Http(200, OutputJson(Rpc(r, native))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto config = ExecutionConfig(server);
+  ResponsesExecution original(objects);
+  Q4T_CHECK(ExecutionOk(original.Prepare(ExecutionRequest(server), config,
+                                         ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(original.Begin(&wire)) &&
+            ModelCall(&original, false, &wire));
+  Q4T_CHECK(ExecutionOk(original.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(FinishExecution(&original));
+  const auto request = Object(
+      {{"previous_response_id", String(original.Id())},
+       {"input",
+        Array({Object(
+            {{"role", String("user")},
+             {"content", Array({Object({{"type", String("input_file")},
+                                        {"filename", String("other.csv")},
+                                        {"file_data", String(csv)}})})}})})}});
+  config.count_input_only = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan counted;
+  FileExpansionUsage usage;
+  uint64_t budget = 0;
+  int callbacks = 0;
+  const auto prepare = [&](FileExpansion& files) {
+    ++callbacks;
+    if (budget != 4096)
+      return Error(500, "fixture_budget", "Expected both sheet reservations");
+    FileSheetStep step;
+    auto result = files.NextSheet(config, &step);
+    if (!result.ok()) return result;
+    return files.CompleteSheet(
+        step,
+        R"({"summary":"CPU count receipt: alpha 42, beta 7",)"
+        R"("headers":["name: row label","value: quantity"]})",
+        "stop", 111, 19);
+  };
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      request, config, objects, ExecutionAccess(), &envelope, &counted, prepare,
+      &usage, nullptr, false, &budget)));
+  Q4T_CHECK(callbacks == 2 && server.calls == 1 && usage.model_steps == 2 &&
+            usage.model_input_tokens == 222 && usage.model_output_tokens == 38);
+  Q4T_CHECK(OutputJson(counted.input.messages).find("CPU count receipt") !=
+            std::string::npos);
+  // The MCP preparation persisted under the original invocation. Only the
+  // new, unsaved input attachment needs a model step on the following count.
+  budget = 0;
+  const auto second = [&](FileExpansion& files) {
+    if (budget != 2048)
+      return Error(500, "fixture_budget", "Frozen MCP sheet was not reused");
+    FileSheetStep step;
+    auto result = files.NextSheet(config, &step);
+    if (!result.ok()) return result;
+    return files.CompleteSheet(
+        step,
+        R"({"summary":"CPU count receipt: alpha 42, beta 7",)"
+        R"("headers":["name: row label","value: quantity"]})",
+        "stop", 111, 19);
+  };
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      request, config, objects, ExecutionAccess(), &envelope, &counted, second,
+      &usage, nullptr, false, &budget)));
+  Q4T_CHECK(usage.model_steps == 1 && server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_count_new_catalog_is_metadata_only_and_scope_bound) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto config = ExecutionConfig(server);
+  config.count_input_only = true;
+  auto request = ExecutionRequest(server);
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan counted;
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      request, config, objects, ExecutionAccess(), &envelope, &counted)));
+  Q4T_CHECK(server.calls == 0 &&
+            counted.generation_request.GetArray("tools")->array.size() == 1);
+  for (const auto& r : server.Requests())
+    Q4T_CHECK(r.rpc.GetString("method") != "tools/call");
+  const auto listing =
+      std::find_if(counted.input.items.array.begin(),
+                   counted.input.items.array.end(), [](const auto& item) {
+                     return item.GetString("type") == "mcp_list_tools";
+                   });
+  Q4T_CHECK(listing != counted.input.items.array.end());
+  Set(&request, "input", Array({*listing}));
+  auto other = ExecutionAccess();
+  other.scope = "client:other-count";
+  const auto before = server.Requests().size();
+  Q4T_CHECK(!PrepareResponsesTokenCount(request, config, objects, other,
+                                        &envelope, &counted)
+                 .ok());
+  Q4T_CHECK(server.calls == 0 && server.Requests().size() == before);
   return true;
 }
 

@@ -34,6 +34,8 @@ class ResponsesMcpMedia {
                       const StateAccess& access, bool require_frozen,
                       const Resolve& resolve = {});
   ObjectReply Persist(ResponsesMcpState& state, const StateAccess& access);
+  ObjectReply PrepareSheets(
+      const std::function<ObjectReply(FileExpansion&)>& prepare);
   ObjectReply Render(io::Json* content) const;
   bool PendingSheets() const;
   uint64_t PendingOutputBudget() const;

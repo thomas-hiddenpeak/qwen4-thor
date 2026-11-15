@@ -22,7 +22,7 @@ ResponsesMediaBudget ResponsesExecution::OtherMcpMediaBudget() const {
 uint64_t ResponsesExecution::FileOutputBudget() const {
   uint64_t pending = files_ ? files_->PendingOutputBudget() : 0;
   if (mcp_media_) pending += mcp_media_->PendingOutputBudget();
-  if (HasMcp() && !envelope_.cache.prewarm) {
+  if (HasMcp() && !envelope_.cache.prewarm && !cipher_config_.count_input_only) {
     const auto limit = static_cast<uint64_t>(
         program_file_options_.total_summary_output_tokens);
     const auto used = FileUsage()->model_output_tokens;

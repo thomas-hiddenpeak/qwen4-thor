@@ -1,0 +1,12 @@
+{
+  "include/q4t/server/responses_execution.h": "4044f7e757e99d5ad91085d152ae680531185ba79216d22875ca73ee2be71612",
+  "include/q4t/server/responses_mcp_media.h": "49f332687353cbb07141081409e8236ef15033768564efaea25b3008aefc5c4c",
+  "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
+  "src/server/chat_input_tokens.cpp": "fbe52074398504070dea6f68404f6e9d6b1c2ae17273efa236e2a6cb5088a05e",
+  "src/server/responses_execution.cpp": "7b06e3f9647d21655a64151c49edcb0f08fd22ac24559ce9b522dc3c42eb4290",
+  "src/server/responses_execution_files.cpp": "df9d771e7b83dd5fbd6bd58be10b74437eef312102dd4f425470416b85918492",
+  "src/server/responses_execution_mcp_media.cpp": "463190caa135a089cd26c8bd41ac20e201b94544159dd51fc543f44736537f14",
+  "src/server/responses_mcp_media.cpp": "a0c64c423bd831884da6c6c3294e8fe8b4b6de3624b4a24b58b339d325d17727",
+  "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
+  "tests/server_mcp_transport_test.cpp": "2da47f9770d0f3b343412635a83997b5dc80a72baeae9603add6c8c589bfaa62"
+}

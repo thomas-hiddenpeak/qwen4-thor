@@ -98,6 +98,11 @@ class ResponsesExecution {
                                 std::string_view finish_reason,
                                 uint64_t input_tokens, uint64_t output_tokens,
                                 const ChatPlanConfig& config);
+  // Count preparation reuses the same owned files and MCP state without
+  // publishing a Response or granting any new tools/call.
+  ObjectReply PrepareInputSheets(
+      const ChatPlanConfig& config,
+      const std::function<ObjectReply(FileExpansion&)>& prepare);
   ObjectReply FitContext(const ChatPlanConfig& config,
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);

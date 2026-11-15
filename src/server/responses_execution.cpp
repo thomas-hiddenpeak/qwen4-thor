@@ -237,6 +237,7 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
   cipher_config_.model = config.model;
+  cipher_config_.count_input_only = config.count_input_only;
   auto history = plan_.history;
   compaction_trigger_ =
       !plan_.own_input.array.empty() &&

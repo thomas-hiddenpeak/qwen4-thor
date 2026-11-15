@@ -113,6 +113,35 @@ ObjectReply ResponsesExecution::NextFileSheet(const ChatPlanConfig& config,
                            : files_->NextSheet(config, step);
 }
 
+ObjectReply ResponsesExecution::PrepareInputSheets(
+    const ChatPlanConfig& config,
+    const std::function<ObjectReply(FileExpansion&)>& prepare) {
+  if (!prepared_ || begun_ || plan_.finished || commit_unknown_)
+    return FileState();
+  auto result = Active(access_);
+  if (!result.ok()) return result;
+  if (files_ && files_->PendingSheets()) {
+    if (!prepare)
+      return Error(503, "file_preparation_unavailable",
+                   "Input count requires native sheet preparation");
+    result = prepare(*files_);
+    if (!result.ok()) return result;
+    if (files_->PendingSheets())
+      return Error(503, "file_preparation_incomplete",
+                   "Input count preparation did not complete");
+  }
+  if (mcp_media_) {
+    result = mcp_media_->PrepareSheets(prepare);
+    if (!result.ok()) return result;
+    result = mcp_media_->Persist(*mcp_state_, access_);
+    if (!result.ok() || result.commit_unknown)
+      return BindMutationResult(std::move(result));
+    result = mcp_media_->Render(&envelope_.mcp_content);
+    if (!result.ok()) return result;
+  }
+  return generation_ready_ ? ObjectReply{} : BuildPreparedGeneration(config);
+}
+
 ObjectReply ResponsesExecution::CompleteFileSheet(
     const FileSheetStep& step, std::string_view output,
     std::string_view finish_reason, uint64_t input_tokens,
