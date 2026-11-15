@@ -24,6 +24,7 @@
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_jobs.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/responses_tokens.h"
 #include "q4t/test.h"
 
 namespace {
@@ -809,7 +810,8 @@ bool ContinueExecution(ResponsesExecution* run, const ChatPlanConfig& config) {
 Json McpPrompt(const Server& server, std::string name = "read_project") {
   auto request = ExecutionRequest(server, "never", false);
   Set(&request, "tool_choice",
-      Object({{"type", String("mcp")}, {"server_label", String("project")},
+      Object({{"type", String("mcp")},
+              {"server_label", String("project")},
               {"name", String(std::move(name))}}));
   return Object({{"request", std::move(request)}, {"variables", Object()}});
 }
@@ -823,7 +825,598 @@ Json ApprovalResponse(const Json& request, const Json& approval, bool approve,
                      {"approve", Boolean(approve)}})}));
   return next;
 }
+Json ProgramRequest(const Server& server, std::string approval = "never",
+                    bool credentials = true) {
+  auto request = ExecutionRequest(server, std::move(approval), credentials);
+  Set(&Field(request, "tools").array[0], "allowed_callers",
+      Array({String("programmatic")}));
+  Field(request, "tools")
+      .array.push_back(Object({{"type", String("programmatic_tool_calling")}}));
+  return request;
+}
+bool ProgramCode(ResponsesExecution* run, std::string code, std::string* wire) {
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.tool_start = true;
+  delta.call = {0, "model_program", kResponsesProgramModelName,
+                OutputJson(Object({{"code", String(std::move(code))}})), false};
+  return run->Append(delta, "", wire).ok();
+}
+Json OutputItem(const ResponsesExecution& run, std::string_view type) {
+  for (const auto& item : run.Output().Snapshot().GetArray("output")->array)
+    if (item.GetString("type") == type) return item;
+  return {};
+}
+void AddClientTool(Json* request) {
+  Field(*request, "tools")
+      .array.push_back(
+          Object({{"type", String("function")},
+                  {"name", String("local")},
+                  {"allowed_callers", Array({String("programmatic")})},
+                  {"parameters", Object({{"type", String("object")}})}}));
+}
 }  // namespace
+
+Q4T_TEST(
+    responses_mcp_program_actual_call_standard_items_and_private_authority) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesExecution run(objects);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  Set(&request, "stream", Boolean(true));
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+  const auto descriptor = OutputJson(run.Generation().generation_request);
+  Q4T_CHECK(descriptor.find("mcp:project") != descriptor.npos &&
+            descriptor.find("mcp-request-secret") == descriptor.npos &&
+            descriptor.find(server.Endpoint().url) == descriptor.npos);
+  std::string wire, full;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) &&
+            ProgramCode(&run,
+                        "const r = await tools['mcp:project']"
+                        ".read_project({path:'docs/MODEL.md'});"
+                        "text(r.content[0].text);",
+                        &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.RunPrograms(1, &waiting,
+                                        [&](const auto& part) {
+                                          full += part;
+                                          return true;
+                                        })) &&
+            !waiting && server.calls == 1);
+  const auto call = OutputItem(run, "mcp_call");
+  Q4T_CHECK(call.GetString("status") == "completed" && !call.Has("caller") &&
+            !call.Has("call_id") && OutputItem(run, "function_call").IsNull());
+  Q4T_CHECK(OutputItem(run, "program_output").GetString("result") ==
+            "document result");
+  Q4T_CHECK(full.find("response.mcp_call_arguments.done") != full.npos &&
+            full.find("response.mcp_call.completed") != full.npos &&
+            full.find("q4t_program_mcp_intent") == full.npos &&
+            full.find("program_origin") == full.npos);
+  ResponsesMcpState state(objects, config);
+  const auto owned = state.Inspect(call.GetString("id"), ExecutionAccess());
+  Q4T_CHECK(
+      ExecutionOk(owned) && owned.value.GetString("caller") == "programmatic" &&
+      owned.value.Find("program_origin")->GetInt("index", -1) == 0 &&
+      OutputJson(owned.value).find("mcp-request-secret") == std::string::npos);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_program_approval_and_denial_resume_the_original_program) {
+  for (const bool approve : {true, false}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    const auto request = ProgramRequest(server, "always");
+    ResponsesExecution first(objects);
+    std::string wire;
+    Q4T_CHECK(
+        ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+        ExecutionOk(first.Begin(&wire)) &&
+        ProgramCode(&first,
+                    "const r=await tools['mcp:project']"
+                    ".read_project({}); text(!!r.isError);",
+                    &wire));
+    bool waiting = false;
+    Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting &&
+              server.calls == 0 && !first.HasAsyncTools());
+    const auto approval = OutputItem(first, "mcp_approval_request");
+    Q4T_CHECK(!approval.IsNull() &&
+              ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+    ResponsesExecution resumed(objects);
+    Q4T_CHECK(ExecutionOk(resumed.Prepare(
+                  ApprovalResponse(request, approval, approve, first.Id()),
+                  config, ExecutionAccess(), 44)) &&
+              resumed.PendingProgramResume() && resumed.PendingMcpResume() &&
+              ExecutionOk(resumed.Begin(&wire)));
+    Q4T_CHECK(ExecutionOk(resumed.RunMcpApprovals({})) &&
+              ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+              server.calls == (approve ? 1 : 0));
+    Q4T_CHECK(OutputItem(resumed, "program_output").GetString("result") ==
+              (approve ? "false" : "true"));
+    Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+    ResponsesExecution retry(objects);
+    Q4T_CHECK(ExecutionOk(retry.Prepare(
+                  ApprovalResponse(request, approval, approve, resumed.Id()),
+                  config, ExecutionAccess(), 45)) &&
+              !retry.PendingProgramResume() &&
+              ExecutionOk(retry.Begin(&wire)) &&
+              ExecutionOk(retry.RunMcpApprovals({})) &&
+              server.calls == (approve ? 1 : 0));
+    Q4T_CHECK(ContinueExecution(&retry, config) && FinishExecution(&retry));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_parallel_client_result_preserves_causal_order) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  AddClientTool(&request);
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) &&
+      ProgramCode(&first, R"js(
+const remote=tools['mcp:project'].read_project({n:1});
+const local=tools.local({});
+const winner=await Promise.race([remote.then(()=>"remote"),local.then(()=>"local")]);
+await local;
+const last=await tools['mcp:project'].read_project({n:3});
+text(winner+":"+last.content[0].text);
+)js",
+                  &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting &&
+            server.calls == 1);
+  const auto child = OutputItem(first, "function_call");
+  Q4T_CHECK(!child.IsNull() &&
+            ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  Set(&request, "previous_response_id", String(first.Id()));
+  Set(&request, "input",
+      Array({Object({{"type", String("function_call_output")},
+                     {"call_id", *child.Find("call_id")},
+                     {"caller", *child.Find("caller")},
+                     {"output", String("{\"value\":2}")}})}));
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+      ExecutionOk(resumed.Begin(&wire)) &&
+      ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+      server.calls == 2);
+  Q4T_CHECK(OutputItem(resumed, "program_output").GetString("result") ==
+            "remote:document result");
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_parallel_native_calls_and_serial_policy) {
+  for (const bool parallel : {true, false}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    auto request = ProgramRequest(server);
+    Set(&request, "parallel_tool_calls", Boolean(parallel));
+    ResponsesExecution run(objects);
+    std::string wire;
+    Q4T_CHECK(
+        ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)) &&
+        ExecutionOk(run.Begin(&wire)) &&
+        ProgramCode(
+            &run,
+            "const rs=await Promise.all(["
+            "tools['mcp:project'].read_project({n:1}),"
+            "tools['mcp:project'].read_project({n:2})]);text(rs.length);",
+            &wire));
+    bool waiting = true;
+    Q4T_CHECK(ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting &&
+              server.calls == 2 &&
+              OutputItem(run, "program_output").GetString("result") == "2");
+    Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_unknown_result_is_reused_without_dispatch) {
+  Server server;
+  server.handler = [&](const Request& request, int, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    return true;  // The peer cannot know whether the tool performed its work.
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server, "never", false);
+  Set(&request, "store", Boolean(false));
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) &&
+      ProgramCode(&first,
+                  "const r=await tools['mcp:project']"
+                  ".read_project({});text(!!r.isError);",
+                  &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  const auto program = OutputItem(first, "program");
+  Q4T_CHECK(OutputItem(first, "mcp_call")
+                .Find("error")
+                ->Find("content")
+                ->GetString("code") == "mcp_result_unknown");
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  // Even dropping the published child from stateless history cannot replay it.
+  Set(&request, "tools", Array());
+  Set(&request, "input", Array({program}));
+  const auto before = server.Requests().size();
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+      ExecutionOk(resumed.Begin(&wire)) &&
+      ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+      server.calls == 1 && server.Requests().size() == before);
+  Q4T_CHECK(OutputItem(resumed, "program_output").GetString("result") ==
+            "true");
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_original_input_and_output_schema_are_enforced) {
+  for (const bool invalid_input : {true, false}) {
+    Server server;
+    server.handler = [&](const Request& request, int fd, std::stop_token) {
+      if (request.rpc.GetString("method") != "tools/list") return false;
+      auto tool = Tool();
+      Json schema;
+      if (!Parse(R"({"type":"object","properties":{"n":{"type":"integer"}},
+                     "required":["n"],"additionalProperties":false})",
+                 &schema))
+        throw std::runtime_error("fixture schema");
+      Set(&tool, "inputSchema", schema);
+      Set(&tool, "outputSchema", schema);  // Default result lacks required n.
+      Send(fd, Http(200, OutputJson(Rpc(request,
+                                        Object({{"tools", Array({tool})}})))));
+      return true;
+    };
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    ResponsesExecution run(objects);
+    std::string wire;
+    Q4T_CHECK(ExecutionOk(run.Prepare(ProgramRequest(server), config,
+                                      ExecutionAccess(), 42)) &&
+              ExecutionOk(run.Begin(&wire)) &&
+              ProgramCode(&run,
+                          std::string("const r=await tools['mcp:project']"
+                                      ".read_project({n:") +
+                              (invalid_input ? "'wrong'" : "1") +
+                              "});text(!!r.isError);",
+                          &wire));
+    bool waiting = false;
+    const auto result = run.RunPrograms(1, &waiting, {});
+    if (invalid_input) {
+      Q4T_CHECK(result.code == "program_arguments_invalid" &&
+                server.calls == 0);
+      ResponsesExecution::ObserveError(&run, 502, result.message, result.code);
+      Q4T_CHECK(ExecutionOk(run.CloseUnfinished()));
+    } else {
+      Q4T_CHECK(ExecutionOk(result) && !waiting && server.calls == 1 &&
+                OutputItem(run, "mcp_call").GetString("status") == "failed" &&
+                OutputItem(run, "program_output").GetString("result") ==
+                    "true");
+      Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run, 1));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_program_native_budget_and_aborted_vm_never_dispatch_extra) {
+  for (const bool aborted : {true, false}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    auto request = ProgramRequest(server);
+    if (!aborted) Set(&request, "max_tool_calls", Number(1));
+    ResponsesExecution run(objects);
+    std::string wire;
+    Q4T_CHECK(
+        ExecutionOk(run.Prepare(request, ExecutionConfig(server),
+                                ExecutionAccess(), 42)) &&
+        ExecutionOk(run.Begin(&wire)) &&
+        ProgramCode(
+            &run,
+            aborted
+                ? "tools['mcp:project'].read_project({});throw Error('abort');"
+                : "await tools['mcp:project'].read_project({});",
+            &wire));
+    bool waiting = false;
+    const auto result = run.RunPrograms(1, &waiting, {});
+    Q4T_CHECK(server.calls == 0);
+    if (aborted) {
+      Q4T_CHECK(ExecutionOk(result) &&
+                OutputItem(run, "program_output").GetString("status") ==
+                    "incomplete");
+      Q4T_CHECK(ExecutionOk(run.Finish(false, 1, {}, 43, &wire)));
+    } else {
+      Q4T_CHECK(result.code == "mcp_execution_capacity");
+      ResponsesExecution::ObserveError(&run, 503, result.message, result.code);
+      Q4T_CHECK(ExecutionOk(run.CloseUnfinished()));
+    }
+    ResponsesExecution healthy(objects);
+    Q4T_CHECK(ExecutionOk(healthy.Prepare(Object({{"input", String("hello")}}),
+                                          ExecutionConfig(server),
+                                          ExecutionAccess(), 44)) &&
+              ExecutionOk(healthy.Begin(&wire)) && FinishExecution(&healthy));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_unicode_and_nul_names_keep_exact_identity) {
+  Server server;
+  const std::string label("资料\0x", 8), name("read\0value", 10);
+  server.handler = [&](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list") return false;
+    Send(fd,
+         Http(200, OutputJson(Rpc(request,
+                                  Object({{"tools", Array({Tool(name)})}})))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto request = ProgramRequest(server);
+  Set(&Field(request, "tools").array[0], "server_label", String(label));
+  ResponsesExecution run(objects);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, ExecutionConfig(server),
+                                    ExecutionAccess(), 42)) &&
+            ExecutionOk(run.Begin(&wire)) &&
+            ProgramCode(&run,
+                        "text((await tools[" +
+                            OutputJson(String("mcp:" + label)) + "][" +
+                            OutputJson(String(name)) +
+                            "]({})).content[0].text);",
+                        &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting &&
+            server.calls == 1 &&
+            OutputItem(run, "mcp_call").GetString("name") == name);
+  for (const auto& request : server.Requests())
+    if (request.rpc.GetString("method") == "tools/call")
+      Q4T_CHECK(request.rpc.Find("params")->GetString("name") == name);
+  Q4T_CHECK(ExecutionOk(run.Finish(false, 1, {}, 43, &wire)));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_continuation_intersects_current_authority) {
+  for (const bool changed_target : {false, true}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    auto request = ProgramRequest(server);
+    AddClientTool(&request);
+    ResponsesExecution first(objects);
+    std::string wire;
+    Q4T_CHECK(
+        ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+        ExecutionOk(first.Begin(&wire)) &&
+        ProgramCode(&first,
+                    "await tools.local({});"
+                    "text(await tools['mcp:project'].read_project({}));",
+                    &wire));
+    bool waiting = false;
+    Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting);
+    const auto child = OutputItem(first, "function_call");
+    Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+    Set(&request, "previous_response_id", String(first.Id()));
+    Set(&request, "input",
+        Array({Object({{"type", String("function_call_output")},
+                       {"call_id", *child.Find("call_id")},
+                       {"caller", *child.Find("caller")},
+                       {"output", String("{}")}})}));
+    auto& current = Field(request, "tools").array[0];
+    if (changed_target)
+      Set(&current, "server_url", String(server.Endpoint().url + "/changed"));
+    else
+      Set(&current, "allowed_callers", Array({String("direct")}));
+    ResponsesExecution resumed(objects);
+    Q4T_CHECK(
+        ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+        ExecutionOk(resumed.Begin(&wire)));
+    const auto result = resumed.RunPrograms(0, &waiting, {});
+    Q4T_CHECK(result.code ==
+                  (changed_target ? "mcp_server_changed" : "mcp_tool_denied") &&
+              server.calls == 0);
+    ResponsesExecution::ObserveError(&resumed, result.http_status,
+                                     result.message, result.code);
+    Q4T_CHECK(ExecutionOk(resumed.CloseUnfinished()));
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_program_stateless_approval_retains_original_credentials) {
+  for (const bool credentials : {false, true}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    auto request = ProgramRequest(server, "always", credentials);
+    Set(&request, "store", Boolean(false));
+    ResponsesExecution first(objects);
+    std::string wire;
+    Q4T_CHECK(
+        ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+        ExecutionOk(first.Begin(&wire)) &&
+        ProgramCode(&first,
+                    "const r=await tools['mcp:project']"
+                    ".read_project({});text(r.content[0].text);",
+                    &wire));
+    bool waiting = false;
+    Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting &&
+              ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+    const auto approval = OutputItem(first, "mcp_approval_request");
+    auto history = *first.Output().Snapshot().GetArray("output");
+    history.array.push_back(
+        Object({{"type", String("mcp_approval_response")},
+                {"approval_request_id", *approval.Find("id")},
+                {"approve", Boolean(true)}}));
+    Set(&request, "input", history);
+    Set(&request, "tools", Array());
+    const auto before = server.Requests().size();
+    ResponsesExecution resumed(objects);
+    Q4T_CHECK(
+        ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+        ExecutionOk(resumed.Begin(&wire)));
+    const auto result = resumed.RunMcpApprovals({});
+    if (credentials) {
+      Q4T_CHECK(result.code == "mcp_credentials_required" &&
+                server.calls == 0 && server.Requests().size() == before);
+      ResponsesExecution::ObserveError(&resumed, 400, result.message,
+                                       result.code);
+      Q4T_CHECK(ExecutionOk(resumed.CloseUnfinished()));
+      ResponsesMcpState authority(objects, config);
+      Q4T_CHECK(authority.Inspect(approval.GetString("id"), ExecutionAccess())
+                    .value.GetString("state") == "approval");
+      Set(&request, "tools", *ProgramRequest(server, "always").Find("tools"));
+      ResponsesExecution supplied(objects);
+      Q4T_CHECK(ExecutionOk(
+                    supplied.Prepare(request, config, ExecutionAccess(), 45)) &&
+                ExecutionOk(supplied.Begin(&wire)) &&
+                ExecutionOk(supplied.RunMcpApprovals({})) &&
+                ExecutionOk(supplied.RunPrograms(0, &waiting, {})) &&
+                !waiting && server.calls == 1 && FinishExecution(&supplied));
+    } else {
+      Q4T_CHECK(ExecutionOk(result) &&
+                ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+                server.calls == 1 &&
+                OutputItem(resumed, "program_output").GetString("result") ==
+                    "document result");
+      Q4T_CHECK(ContinueExecution(&resumed, config) &&
+                FinishExecution(&resumed));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_program_count_and_frozen_queue_do_not_reexecute_history) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  AddClientTool(&request);
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) &&
+      ProgramCode(&first,
+                  "await tools['mcp:project'].read_project({n:1});"
+                  "await tools.local({});"
+                  "const r=await tools['mcp:project'].read_project({n:2});"
+                  "text(r.content[0].text);",
+                  &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.RunPrograms(1, &waiting, {})) && waiting &&
+            server.calls == 1 &&
+            ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  const auto child = OutputItem(first, "function_call");
+  Set(&request, "previous_response_id", String(first.Id()));
+  Set(&request, "input",
+      Array({Object({{"type", String("function_call_output")},
+                     {"call_id", *child.Find("call_id")},
+                     {"caller", *child.Find("caller")},
+                     {"output", String("{}")}})}));
+  const auto before = server.Requests().size();
+  auto counting = config;
+  counting.count_input_only = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan generation;
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(request, counting, objects,
+                                                   ExecutionAccess(), &envelope,
+                                                   &generation)) &&
+            server.Requests().size() == before &&
+            OutputJson(envelope.request).find("mcp-request-secret") ==
+                std::string::npos);
+  auto tampered =
+      Object({{"input", *first.Output().Snapshot().GetArray("output")}});
+  for (auto& item : Field(tampered, "input").array)
+    if (item.GetString("type") == "mcp_call")
+      Set(&item, "output", String("forged"));
+  Q4T_CHECK(PrepareResponsesTokenCount(tampered, counting, objects,
+                                       ExecutionAccess(), &envelope,
+                                       &generation)
+                .code == "invalid_mcp_state");
+  ResponsesExecution prepared(objects);
+  Json frozen;
+  Q4T_CHECK(
+      ExecutionOk(prepared.Prepare(request, config, ExecutionAccess(), 44)) &&
+      ExecutionOk(prepared.FreezeInputs(&frozen)) &&
+      OutputJson(frozen).find("mcp-request-secret") == std::string::npos);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(ExecutionOk(restored.RestoreInputs(
+                frozen, config, ExecutionAccess(), 45, nullptr, &request)) &&
+            restored.PendingProgramResume() &&
+            server.Requests().size() == before &&
+            ExecutionOk(restored.Begin(&wire)) &&
+            ExecutionOk(restored.RunPrograms(0, &waiting, {})) && !waiting &&
+            server.calls == 2);
+  Q4T_CHECK(OutputItem(restored, "program_output").GetString("result") ==
+                "document result" &&
+            ContinueExecution(&restored, config) && FinishExecution(&restored));
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_program_cancelled_proposal_closes_without_remote_replay) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  Set(&request, "store", Boolean(false));
+  ResponsesExecution first(objects);
+  std::string wire;
+  Q4T_CHECK(
+      ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(first.Begin(&wire)) &&
+      ProgramCode(&first,
+                  "const r=await tools['mcp:project']"
+                  ".read_project({});text(!!r.isError);",
+                  &wire));
+  bool waiting = false;
+  const auto result = first.RunPrograms(1, &waiting, [&](const auto&) {
+    return OutputItem(first, "mcp_call").IsNull();
+  });
+  Q4T_CHECK(result.http_status == 499 && server.calls == 0);
+  ResponsesExecution::ObserveError(&first, 499, result.message, result.code);
+  Q4T_CHECK(ExecutionOk(first.CloseUnfinished()));
+  auto items = *first.Output().Snapshot().GetArray("output");
+  Q4T_CHECK(!OutputItem(first, "mcp_call").IsNull());
+  Set(&request, "input", std::move(items));
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 44)) &&
+      ExecutionOk(resumed.Begin(&wire)) &&
+      ExecutionOk(resumed.RunPrograms(0, &waiting, {})) && !waiting &&
+      server.calls == 0 &&
+      OutputItem(resumed, "program_output").GetString("result") == "true");
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
 
 Q4T_TEST(responses_mcp_prompt_freezes_version_and_uses_request_credentials) {
   Server server;
@@ -850,11 +1443,10 @@ Q4T_TEST(responses_mcp_prompt_freezes_version_and_uses_request_credentials) {
   Q4T_CHECK(ExecutionOk(prompts.Erase(id, ExecutionAccess())));
   const auto listed = server.Requests().size();
   ResponsesExecution run(objects);
-  Q4T_CHECK(ExecutionOk(run.RestoreInputs(frozen, config, ExecutionAccess(),
-                                         42, nullptr, &request)));
+  Q4T_CHECK(ExecutionOk(run.RestoreInputs(frozen, config, ExecutionAccess(), 42,
+                                          nullptr, &request)));
   Q4T_CHECK(server.Requests().size() == listed);
-  Q4T_CHECK(run.Envelope().options.Find("prompt")->GetString("version") ==
-            "1");
+  Q4T_CHECK(run.Envelope().options.Find("prompt")->GetString("version") == "1");
   std::string wire;
   Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
   bool waiting = true;
@@ -881,8 +1473,8 @@ Q4T_TEST(responses_mcp_prompt_checks_choices_without_inventing_catalogs) {
   auto saved = prompts.Create(definition, config, ExecutionAccess());
   Q4T_CHECK(ExecutionOk(saved) && server.Requests().empty());
   ResponsesExecution run(objects);
-  const auto request = Object(
-      {{"prompt", Object({{"id", *saved.value.Find("id")}})}});
+  const auto request =
+      Object({{"prompt", Object({{"id", *saved.value.Find("id")}})}});
   const auto rejected = run.Prepare(request, config, ExecutionAccess(), 42);
   Q4T_CHECK(rejected.http_status == 400 && !server.calls &&
             !server.Requests().empty());
@@ -911,7 +1503,8 @@ Q4T_TEST(responses_mcp_prompt_checks_choices_without_inventing_catalogs) {
   auto& req = Field(allowed, "request");
   const auto selector = *req.Find("tool_choice");
   Set(&req, "tool_choice",
-      Object({{"type", String("allowed_tools")}, {"mode", String("required")},
+      Object({{"type", String("allowed_tools")},
+              {"mode", String("required")},
               {"tools", Array({selector})}}));
   Q4T_CHECK(ExecutionOk(prompts.Create(allowed, config, ExecutionAccess())));
   Q4T_CHECK(server.Requests().size() == previous);
@@ -924,7 +1517,8 @@ Q4T_TEST(responses_mcp_prompt_secrets_rejected_before_persistence) {
   ObjectStore objects(fixture.options);
   PromptRegistry prompts(objects);
   const auto config = ExecutionConfig(server);
-  const auto saved = prompts.Create(McpPrompt(server), config, ExecutionAccess());
+  const auto saved =
+      prompts.Create(McpPrompt(server), config, ExecutionAccess());
   Q4T_CHECK(ExecutionOk(saved));
   const auto id = saved.value.GetString("id");
   const auto original = prompts.Retrieve(id, "", ExecutionAccess());
@@ -935,10 +1529,10 @@ Q4T_TEST(responses_mcp_prompt_secrets_rejected_before_persistence) {
     if (variant == 0)
       Set(&Field(invalid, "request"), "tools", private_tools);
     else {
-      auto input = Array({Object(
-          {{"type", String(variant == 1 ? "additional_tools"
-                                         : "tool_search_output")},
-           {"tools", private_tools}})});
+      auto input =
+          Array({Object({{"type", String(variant == 1 ? "additional_tools"
+                                                      : "tool_search_output")},
+                         {"tools", private_tools}})});
       if (variant == 2) {
         Set(&input.array.front(), "call_id", String("search_external"));
         Set(&input.array.front(), "execution", String("client"));
@@ -948,8 +1542,9 @@ Q4T_TEST(responses_mcp_prompt_secrets_rejected_before_persistence) {
     }
     Q4T_CHECK(prompts.Create(invalid, config, ExecutionAccess()).http_status ==
               400);
-    Q4T_CHECK(prompts.Append(id, 1, invalid, config, ExecutionAccess())
-                  .http_status == 400);
+    Q4T_CHECK(
+        prompts.Append(id, 1, invalid, config, ExecutionAccess()).http_status ==
+        400);
     Q4T_CHECK(OutputJson(prompts.Retrieve(id, "", ExecutionAccess()).value) ==
               OutputJson(original.value));
   }
@@ -1012,8 +1607,7 @@ Q4T_TEST(responses_mcp_cleanup_and_reconciliation_allow_honest_continuation) {
     Q4T_CHECK(ExecutionOk(canonical));
     Q4T_CHECK(canonical.value.GetString("status") ==
               (phase == 3 ? "completed" : "failed"));
-    if (phase == 2)
-      Q4T_CHECK(OutputJson(canonical.value) == OutputJson(call));
+    if (phase == 2) Q4T_CHECK(OutputJson(canonical.value) == OutputJson(call));
     auto next = request;
     if (phase == 0)
       Set(&next, "input", *final.Find("output"));
@@ -1022,8 +1616,8 @@ Q4T_TEST(responses_mcp_cleanup_and_reconciliation_allow_honest_continuation) {
       Set(&next, "input", String("Explain what actually happened"));
     }
     ResponsesExecution continued(objects);
-    Q4T_CHECK(ExecutionOk(
-        continued.Prepare(next, config, ExecutionAccess(), 44)));
+    Q4T_CHECK(
+        ExecutionOk(continued.Prepare(next, config, ExecutionAccess(), 44)));
     Q4T_CHECK(ExecutionOk(continued.Begin(&wire)) &&
               FinishExecution(&continued));
     Q4T_CHECK(server.calls == (phase == 3 ? 1 : 0));
@@ -1066,8 +1660,8 @@ Q4T_TEST(responses_mcp_cleanup_survives_storage_failure_without_reexecution) {
       ChatPlanError error;
       Q4T_CHECK(PlanResponsesMcpDefinition(
           request.GetArray("tools")->array.front(), &definition, &error));
-      Q4T_CHECK(ExecutionOk(calls.Permit(call.GetString("id"), definition,
-                                        ExecutionAccess())));
+      Q4T_CHECK(ExecutionOk(
+          calls.Permit(call.GetString("id"), definition, ExecutionAccess())));
     }
     // Keep normal operations on their production deadline. The simulated
     // storage controller failure is followed by a stuck replacement spawn.
@@ -1076,16 +1670,17 @@ Q4T_TEST(responses_mcp_cleanup_survives_storage_failure_without_reexecution) {
     Q4T_CHECK(!run.CloseUnfinished().ok());
     Q4T_CHECK(jobs.Health().foreground_pending == 1);
     const auto starting = Clock::now() + 5s;
-    while ((objects.Health().state != "starting" || !objects.Health().pending) &&
-           Clock::now() < starting)
+    while (
+        (objects.Health().state != "starting" || !objects.Health().pending) &&
+        Clock::now() < starting)
       std::this_thread::sleep_for(5ms);
     Q4T_CHECK(objects.Health().state == "starting" && objects.Health().pending);
     const auto errors_before = jobs.Health().foreground_errors;
     ResponsesExecution healthy(objects, &jobs, true);
-    const auto plain = Object({{"input", String("ordinary text")},
-                               {"store", Boolean(false)}});
-    Q4T_CHECK(ExecutionOk(
-        healthy.Prepare(plain, config, ExecutionAccess(), 44)));
+    const auto plain =
+        Object({{"input", String("ordinary text")}, {"store", Boolean(false)}});
+    Q4T_CHECK(
+        ExecutionOk(healthy.Prepare(plain, config, ExecutionAccess(), 44)));
     Q4T_CHECK(ExecutionOk(healthy.Begin(&wire)) && FinishExecution(&healthy));
     const auto first = Clock::now() + 5s;
     while (jobs.Health().foreground_errors == errors_before &&
@@ -1106,7 +1701,8 @@ Q4T_TEST(responses_mcp_cleanup_survives_storage_failure_without_reexecution) {
         recovered.value.Find("error")->Find("content")->GetString("code") ==
         (dispatched ? "mcp_result_unknown" : "mcp_execution_interrupted"));
     if (!dispatched)
-      Q4T_CHECK(ResponsesState(objects).Retrieve(run.Id(), ExecutionAccess())
+      Q4T_CHECK(ResponsesState(objects)
+                    .Retrieve(run.Id(), ExecutionAccess())
                     .http_status == 404);
     Q4T_CHECK(server.calls == 0);
   }
@@ -1122,17 +1718,18 @@ Q4T_TEST(responses_mcp_cleanup_metadata_is_bounded_and_scope_bound) {
     throw std::runtime_error("unexpected executor");
   });
   uint64_t ticket = 0;
-  Q4T_CHECK(ExecutionOk(jobs.Reserve(ExecutionAccess().scope, "resp_cleanup",
-                                    &ticket)));
+  Q4T_CHECK(ExecutionOk(
+      jobs.Reserve(ExecutionAccess().scope, "resp_cleanup", &ticket)));
   const auto owner = CurrentResponseOwner();
   for (size_t i = 0; i < 64; ++i)
     Q4T_CHECK(ExecutionOk(jobs.TrackMcp(ticket, "cpu", owner,
-                                       "mcp_cleanup_" + std::to_string(i))));
+                                        "mcp_cleanup_" + std::to_string(i))));
   Q4T_CHECK(ExecutionOk(jobs.TrackMcp(ticket, "cpu", owner, "mcp_cleanup_0")));
   Q4T_CHECK(jobs.TrackMcp(ticket, "cpu", owner, "mcp_overflow").http_status ==
             429);
   Q4T_CHECK(
-      jobs.TrackMcp(ticket, "other", owner, "mcp_cleanup_0").http_status == 409);
+      jobs.TrackMcp(ticket, "other", owner, "mcp_cleanup_0").http_status ==
+      409);
   uint64_t extra = 0;
   Q4T_CHECK(jobs.Reserve("client:other", "resp_other", &extra).http_status ==
             429);
@@ -1574,12 +2171,11 @@ Q4T_TEST(responses_mcp_discovery_loads_remote_only_when_activated) {
           return field.first == "authorization" || field.first == "headers";
         });
       auto saved = PromptRegistry(objects).Create(
-          Object({{"request", std::move(definition)},
-                  {"variables", Object()}}),
+          Object({{"request", std::move(definition)}, {"variables", Object()}}),
           config, ExecutionAccess());
       Q4T_CHECK(ExecutionOk(saved) && server.Requests().empty());
       request = Object({{"prompt", Object({{"id", *saved.value.Find("id")}})},
-                         {"tools", *request.Find("tools")}});
+                        {"tools", *request.Find("tools")}});
     }
     auto run = std::make_unique<ResponsesExecution>(objects);
     Q4T_CHECK(

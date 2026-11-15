@@ -10,7 +10,9 @@
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/tool_result_schema.h"
@@ -412,13 +414,11 @@ ObjectReply ResponsesMcpState::OpenCatalog(
   if (reply.ok()) reply.value = std::move(payload);
   return reply;
 }
-ObjectReply ResponsesMcpState::Propose(const Json& catalog,
-                                       const ResponsesMcpDefinition& current,
-                                       std::string name, Json arguments,
-                                       std::string caller,
-                                       const StateAccess& access,
-                                       std::string reserved_id,
-                                       std::string original_arguments) {
+ObjectReply ResponsesMcpState::Propose(
+    const Json& catalog, const ResponsesMcpDefinition& current,
+    std::string name, Json arguments, std::string caller,
+    const StateAccess& access, std::string reserved_id,
+    std::string original_arguments, const Json* program_origin) {
   Json record, payload;
   auto reply =
       Read(catalog.GetString("id"), "catalog", access, &record, &payload);
@@ -445,6 +445,43 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
   } else {
     original_arguments = OutputJson(arguments);
   }
+  if (program_origin) {
+    std::string param;
+    const auto* index = program_origin->Find("index");
+    const auto* call = program_origin->Find("call");
+    const auto* after = call ? call->Find("after_results") : nullptr;
+    const auto* positions = program_origin->GetArray("positions");
+    if (caller != "programmatic" ||
+        !InputFields(*program_origin,
+                     {"program_id", "call_id", "index", "call", "positions"},
+                     &param, "program") ||
+        !program_origin->GetString("program_id").starts_with("prog_") ||
+        !ValidId(program_origin->GetString("program_id")) ||
+        !program_origin->GetString("call_id").starts_with("call_prog_") ||
+        !ValidId(program_origin->GetString("call_id")) || !index ||
+        !IsInputInteger(*index) || index->AsInt() < 0 || index->AsInt() >= 64 ||
+        !call ||
+        !InputFields(*call, {"key", "arguments", "after_results"}, &param,
+                     "program.call") ||
+        call->GetString("key") !=
+            ResponsesMcpModelName(current.declaration.GetString("server_label"),
+                                  name) ||
+        call->GetString("arguments") != original_arguments || !after ||
+        !IsInputInteger(*after) || after->AsInt() < 0 ||
+        after->AsInt() > index->AsInt() || !positions ||
+        positions->array.size() > 64 ||
+        static_cast<size_t>(index->AsInt()) >= positions->array.size() ||
+        !Same(positions->array[index->AsInt()], *after) ||
+        reserved_id !=
+            ResponsesMcpProgramCallId(program_origin->GetString("call_id"),
+                                      index->AsInt()))
+      return Invalid("MCP program invocation differs from its owned origin");
+    for (size_t i = 0; i < positions->array.size(); ++i)
+      if (!IsInputInteger(positions->array[i]) ||
+          positions->array[i].AsInt() < 0 ||
+          positions->array[i].AsInt() > static_cast<int64_t>(i))
+        return Invalid("Invalid MCP program causal position");
+  }
   const bool approval =
       ResponsesMcpApprovalRequired(*declaration, *selected) ||
       ResponsesMcpApprovalRequired(current.declaration, *selected);
@@ -461,6 +498,7 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
       {{"state", String(approval ? "approval" : "ready")},
        {"execution_owner", CurrentResponseOwner()},
        {"response_id", String(response_id_)},
+       {"catalog_id", *catalog.Find("id")},
        {"declaration", *declaration},
        {"credentials_required",
         Boolean(payload.GetBool("credentials_required") ||
@@ -473,8 +511,19 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
                         {"server_label", *declaration->Find("server_label")},
                         {"approval_request_id",
                          approval ? String(approval_id) : Json()}})}});
+  if (program_origin) Set(&next, "program_origin", *program_origin);
   reply = Write(id, "call", next, 0, record.GetInt("expires_at"), access);
   return reply.ok() && !reply.commit_unknown ? View(next) : reply;
+}
+ObjectReply ResponsesMcpState::CatalogById(const std::string& id,
+                                           const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(id, "catalog", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  const auto* item = payload.Find("public");
+  if (!item) return Invalid("Missing authenticated MCP catalog");
+  reply.value = *item;
+  return reply;
 }
 ObjectReply ResponsesMcpState::Decide(const std::string& id, bool approve,
                                       std::string reason,
@@ -576,20 +625,19 @@ ObjectReply ResponsesMcpState::Recover(const std::string& id,
                          payload.GetString("response_id") == ended->id &&
                          ValidResponseOwner(ended->execution_owner) &&
                          Same(*owner, ended->execution_owner);
-  if (!own_ended && (!owner || ResponseOwnerStatus(*owner) !=
-                                  ResponseOwnerState::kGone))
+  if (!own_ended &&
+      (!owner || ResponseOwnerStatus(*owner) != ResponseOwnerState::kGone))
     return Error(409, "mcp_result_pending",
                  "MCP execution owner is live or cannot be verified");
   auto item = CallItem(payload);
   const bool dispatched = state == "dispatching";
   Set(&item, "status", String("failed"));
   Set(&item, "error",
-      ExecutionError(dispatched ? "mcp_result_unknown"
-                                : "mcp_execution_interrupted",
-                     dispatched
-                         ? "Execution owner ended; remote outcome unknown, "
-                           "call will not be replayed"
-                         : "Execution owner ended before remote dispatch"));
+      ExecutionError(
+          dispatched ? "mcp_result_unknown" : "mcp_execution_interrupted",
+          dispatched ? "Execution owner ended; remote outcome unknown, "
+                       "call will not be replayed"
+                     : "Execution owner ended before remote dispatch"));
   Set(&payload, "state", String(dispatched ? "unknown" : "failed"));
   Set(&payload, "terminal", item);
   reply = Write(record.GetString("id"), "call", payload,

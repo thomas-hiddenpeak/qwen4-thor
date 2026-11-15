@@ -143,9 +143,8 @@ class ResponsesExecution {
   bool PendingMcpResume() const { return !mcp_resume_.array.empty(); }
   ObjectReply RunMcpApprovals(
       const std::function<bool(const std::string&)>& publish);
-  ObjectReply RunMcp(
-      size_t completed_calls, bool* client_wait,
-      const std::function<bool(const std::string&)>& publish);
+  ObjectReply RunMcp(size_t completed_calls, bool* client_wait,
+                     const std::function<bool(const std::string&)>& publish);
   bool PendingPrograms() const { return !program_pending_.empty(); }
   bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
@@ -164,12 +163,10 @@ class ResponsesExecution {
       size_t completed_calls, const VectorSearchCallbacks& callbacks,
       VectorSearchUsage* usage, bool* continue_answer,
       const std::function<bool(const std::string&)>& publish);
-  ObjectReply ContinueFileSearch(int64_t output_used,
-                                 const ChatPlanConfig& config,
-                                 const ResponsesContextCheck& check,
-                                 ResponsesGenerationPlan* next,
-                                 const std::function<bool(const std::string&)>&
-                                     publish = {});
+  ObjectReply ContinueFileSearch(
+      int64_t output_used, const ChatPlanConfig& config,
+      const ResponsesContextCheck& check, ResponsesGenerationPlan* next,
+      const std::function<bool(const std::string&)>& publish = {});
   ObjectReply ContinueAsyncTools(size_t completed_calls, int64_t output_used,
                                  const ChatPlanConfig& config,
                                  const ResponsesContextCheck& check,
@@ -244,10 +241,14 @@ class ResponsesExecution {
                           std::string* wire);
   Status AppendProgram(const ResponseDelta& delta, bool* handled,
                        std::string* wire);
-  Status AppendMcp(const ResponseDelta& delta, bool* handled, std::string* wire);
+  Status AppendMcp(const ResponseDelta& delta, bool* handled,
+                   std::string* wire);
   ObjectReply ExecuteMcpCall(
       const io::Json& call, const ResponsesMcpDefinition& definition,
       size_t output_index,
+      const std::function<bool(const std::string&)>& publish);
+  ObjectReply ExecuteProgramMcp(
+      const ResponsesProgramState& program, const io::Json& intent,
       const std::function<bool(const std::string&)>& publish);
   Status BindActiveTools(const io::Json& active, ChatPlanError* error,
                          const io::Json* history = nullptr);

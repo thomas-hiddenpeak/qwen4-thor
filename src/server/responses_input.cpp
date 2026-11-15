@@ -484,10 +484,9 @@ Status NormalizeResponsesInput(const io::Json& request,
     if (!discovery.initial.search.IsNull())
       initial.array.push_back(discovery.initial.search);
     Json native, ignored;
-    status = NormalizeActiveResponsesTools(Object({{"tools", initial},
-                                                    {"input", plan.items}}),
-                                           discovery.initial, &native, &ignored,
-                                           error, preparing_mcp);
+    status = NormalizeActiveResponsesTools(
+        Object({{"tools", initial}, {"input", plan.items}}), discovery.initial,
+        &native, &ignored, error, preparing_mcp);
     if (!status) return status;
     remember_formats(native);
   }
@@ -558,10 +557,11 @@ Status NormalizeResponsesInput(const io::Json& request,
       // a successful tool result or dispatch from this pure projection.
       status = flush();
       if (!status) return status;
-      append(Object({{"role", String(type == "mcp_approval_request"
-                                          ? "assistant" : "user")},
-                     {"content", String("[MCP approval]\n" +
-                                         OutputJson(item))}}), path);
+      append(
+          Object({{"role", String(type == "mcp_approval_request" ? "assistant"
+                                                                 : "user")},
+                  {"content", String("[MCP approval]\n" + OutputJson(item))}}),
+          path);
     } else if (type == "mcp_call") {
       const auto terminal = item.GetString("status");
       if (terminal != "completed" && terminal != "failed") {
@@ -580,19 +580,22 @@ Status NormalizeResponsesInput(const io::Json& request,
         return Invalid(error, path + ".id", "Duplicate MCP call identity");
       Json arguments;
       if (!io::ParseJson(item.GetString("arguments"), &arguments, true,
-                          kSchemaJsonLimits) || !arguments.IsObject())
+                         kSchemaJsonLimits) ||
+          !arguments.IsObject())
         return Invalid(error, path + ".arguments", "Invalid MCP arguments");
       const auto model_name = ResponsesMcpModelName(
           item.GetString("server_label"), item.GetString("name"));
       if (assistant_path.empty()) assistant_path = path;
       calls.array.push_back(Object(
-          {{"id", String(id)}, {"type", String("function")},
+          {{"id", String(id)},
+           {"type", String("function")},
            {"function", Object({{"name", String(model_name)},
-                                 {"arguments", *item.Find("arguments")}})}}));
+                                {"arguments", *item.Find("arguments")}})}}));
       // A result remains source data. The private invocation owner, not this
       // projection, validates original input/output schemas and execution.
       auto result = Object({{"status", String(terminal)},
-                             {"output", Json()}, {"error", Json()}});
+                            {"output", Json()},
+                            {"error", Json()}});
       for (const auto* key : {"output", "error"})
         if (const auto* value = item.Find(key)) Set(&result, key, *value);
       results.emplace_back(Object({{"role", String("tool")},
@@ -1059,8 +1062,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       PlanResponsesFileSearchBindings(request, &native, error);
   if (!binding_status) return binding_status;
   std::vector<ResponsesMcpBinding> mcp;
-  binding_status = PlanResponsesMcpRequestBindings(request, &mcp, error,
-                                                   definitions_only);
+  binding_status =
+      PlanResponsesMcpRequestBindings(request, &mcp, error, definitions_only);
   if (!binding_status) return binding_status;
   if (const auto* definitions = request.Find("tools")) {
     if (!definitions->IsArray() || definitions->array.size() > 128)
@@ -1092,8 +1095,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       const auto type = definition.GetString("type");
       if (type == "mcp") {
         ResponsesMcpDefinition checked;
-        auto status = PlanResponsesMcpDefinition(definition, &checked, error,
-                                                 at);
+        auto status =
+            PlanResponsesMcpDefinition(definition, &checked, error, at);
         if (!status) return status;
         if (effective_tools)
           effective_tools->array[entry.outer] = checked.declaration;
@@ -1104,8 +1107,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           for (const auto* key : {"description", "parameters", "strict"})
             Set(&body, key, *binding.function.Find(key));
           Set(&body, "name", String(binding.model_name));
-          tools->array.push_back(Object({{"type", String("function")},
-                                         {"function", std::move(body)}}));
+          tools->array.push_back(Object(
+              {{"type", String("function")}, {"function", std::move(body)}}));
           model_paths.push_back(at);
           if (!binding.direct) program_only.insert(binding.model_name);
         }
@@ -1272,7 +1275,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
   if (program_enabled) {
     tools->array.push_back(NativeResponsesProgramDefinition(
         effective_tools ? *effective_tools : *request.Find("tools"),
-        request.GetBool("parallel_tool_calls", true)));
+        request.GetBool("parallel_tool_calls", true), &mcp));
     model_paths.push_back(program_path);
   }
   if (const auto* original = request.Find("tool_choice")) {
@@ -1288,8 +1291,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           native_choice, mcp, &mcp_choice, error,
           definitions_only ? request.GetArray("tools") : nullptr);
     if (status)
-      status =
-          MapResponsesFileSearchChoice(mcp_choice, native, &mapped, error);
+      status = MapResponsesFileSearchChoice(mcp_choice, native, &mapped, error);
     if (status)
       status = ToolSelection(mapped, choice, "tool_choice", {}, error);
     if (!status) return status;
@@ -1376,12 +1378,11 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     Json ignored;
     auto initial_request = request;
     Set(&initial_request, "tools", initial);
-    std::erase_if(initial_request.object, [](const auto& pair) {
-      return pair.first == "tool_choice";
-    });
-    status = NormalizeActiveResponsesTools(initial_request,
-                                           history.initial, header_tools,
-                                           &ignored, error, definitions_only);
+    std::erase_if(initial_request.object,
+                  [](const auto& pair) { return pair.first == "tool_choice"; });
+    status = NormalizeActiveResponsesTools(initial_request, history.initial,
+                                           header_tools, &ignored, error,
+                                           definitions_only);
     if (!status) return status;
   }
   if (effective_tools) *effective_tools = history.initial.definitions;

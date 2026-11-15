@@ -120,7 +120,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
         bytes += name.size() + value.size();
     }
   for (const auto& binding : mcp_bindings_)
-    bytes += OutputJson(binding.function).size() + OutputJson(binding.tool).size();
+    bytes +=
+        OutputJson(binding.function).size() + OutputJson(binding.tool).size();
   return bytes;
 }
 
@@ -262,8 +263,9 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                            item.GetString("type") == "program_output" ||
                            (caller && caller->GetString("type") == "program");
                   })) {
+    ResponsesMcpState authority(objects_, config, plan_.id);
     auto opened = OpenResponsesPrograms(cipher_, generation_history_, config,
-                                        access_, &programs_);
+                                        access_, &programs_, &authority);
     if (!opened.ok()) return opened;
     for (const auto& program : programs_) {
       auto bound = BindResponsesProgramContracts(program, generation_history_,
@@ -759,9 +761,9 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
   ScopeExit release_cleanup([&] {
     DiscardUnreviewedOutput();
     if (cleanup_ticket_) {
-      cleanup_->Close(cleanup_ticket_,
-                      plan_.finished ||
-                          (!durable_begin_attempted_ && !mcp_state_));
+      cleanup_->Close(
+          cleanup_ticket_,
+          plan_.finished || (!durable_begin_attempted_ && !mcp_state_));
       cleanup_ticket_ = 0;
     }
   });

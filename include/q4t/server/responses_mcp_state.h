@@ -23,13 +23,15 @@ class ResponsesMcpState {
                       const ResponsesMcpDefinition& current, std::string name,
                       io::Json arguments, std::string caller,
                       const StateAccess& access, std::string reserved_id = "",
-                      std::string original_arguments = "");
+                      std::string original_arguments = "",
+                      const io::Json* program_origin = nullptr);
   // Authenticated reads: OpenCatalog returns PRIVATE original metadata;
   // Authenticate returns the canonical public item, filling omitted optional
   // fields from evidence without trusting caller-supplied results.
   ObjectReply OpenCatalog(const io::Json& catalog,
                           const ResponsesMcpDefinition& current,
                           const StateAccess& access);
+  ObjectReply CatalogById(const std::string& id, const StateAccess& access);
   ObjectReply Authenticate(const io::Json& item, const StateAccess& access);
   ObjectReply Decide(const std::string& approval_id, bool approve,
                      std::string reason, const ResponsesMcpDefinition& current,

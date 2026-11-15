@@ -206,19 +206,21 @@ bool Valid(const Json& input) {
     for (const char* field : {"key", "name", "namespace"}) {
       const auto* value = tool.Find(field);
       if (value &&
-          (!value->IsString() || value->str.find('\0') != std::string::npos))
+          (!value->IsString() || (std::strcmp(field, "key") == 0 &&
+                                  value->str.find('\0') != std::string::npos)))
         return false;
     }
     if (!tool.IsObject() || tool.GetString("key").empty() ||
         tool.GetString("key").size() > 256 || tool.GetString("name").empty() ||
-        tool.GetString("name").size() > 128 ||
-        tool.GetString("namespace").size() > 128 ||
+        tool.GetString("name").size() > 256 ||
+        tool.GetString("namespace").size() > 512 ||
         (tool.GetString("type") != "function" &&
-         tool.GetString("type") != "custom") ||
+         tool.GetString("type") != "custom" &&
+         tool.GetString("type") != "mcp") ||
         !keys.insert(tool.GetString("key")).second ||
         !identities
-             .insert(tool.GetString("namespace") + '\0' +
-                     tool.GetString("name"))
+             .insert(OutputJson(Array({String(tool.GetString("namespace")),
+                                       String(tool.GetString("name"))})))
              .second)
       return false;
   }
@@ -281,15 +283,19 @@ bool Install(Execution& run) {
     auto owner = JS_DupValue(context, tools);
     if (!name_space.empty()) {
       JS_FreeValue(context, owner);
-      owner = JS_GetPropertyStr(context, tools, name_space.c_str());
+      const auto atom =
+          JS_NewAtomLen(context, name_space.data(), name_space.size());
+      owner = JS_GetProperty(context, tools, atom);
       if (JS_IsUndefined(owner)) {
         owner = JS_NewObjectProto(context, JS_NULL);
-        okay = JS_DefinePropertyValueStr(context, tools, name_space.c_str(),
-                                         JS_DupValue(context, owner),
-                                         JS_PROP_ENUMERABLE) >= 0;
+        okay = atom != JS_ATOM_NULL &&
+               JS_DefinePropertyValue(context, tools, atom,
+                                      JS_DupValue(context, owner),
+                                      JS_PROP_ENUMERABLE) >= 0;
       } else if (!JS_IsObject(owner)) {
         okay = false;
       }
+      JS_FreeAtom(context, atom);
     }
     if (okay) {
       auto function = JS_NewCFunctionData(context, Tool, 1, i, 0, nullptr);
@@ -298,10 +304,15 @@ bool Install(Execution& run) {
         JS_FreeValue(context, function);
         function = wrapped;
       }
-      okay = !JS_IsException(function) &&
-             JS_DefinePropertyValueStr(context, owner,
-                                       tool.GetString("name").c_str(), function,
-                                       JS_PROP_ENUMERABLE) >= 0;
+      const auto name = tool.GetString("name");
+      const auto atom = JS_NewAtomLen(context, name.data(), name.size());
+      okay = !JS_IsException(function) && atom != JS_ATOM_NULL;
+      if (okay)
+        okay = JS_DefinePropertyValue(context, owner, atom, function,
+                                      JS_PROP_ENUMERABLE) >= 0;
+      else
+        JS_FreeValue(context, function);
+      JS_FreeAtom(context, atom);
     }
     JS_FreeValue(context, owner);
   }

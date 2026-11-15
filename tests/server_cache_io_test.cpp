@@ -282,14 +282,17 @@ Q4T_TEST(cache_io_stopped_worker_deadline_and_cancellation_are_bounded) {
 Q4T_TEST(cache_io_unreaped_worker_retains_only_its_own_domain) {
   Injection cleanup;
   Fixture f;
-  f.options.timeout_ms = 100;
   CacheIo io(f.options);
   CacheFile file;
   Q4T_CHECK(io.Create(&file));
   detail::DeferGrammarReapingForTesting(true);
   Q4T_CHECK(kill(io.Health().worker_pid, SIGSTOP) == 0);
   std::vector<uint8_t> data(4096);
-  Q4T_CHECK(!io.Write(file, 0, data));
+  // Cancel the stopped operation promptly without shortening healthy worker
+  // startup/readback in this resource-isolation test.
+  const auto cancel_at = Clock::now() + 100ms;
+  Q4T_CHECK(
+      !io.Write(file, 0, data, [&] { return Clock::now() >= cancel_at; }));
   std::this_thread::sleep_for(150ms);
   Q4T_CHECK(!io.Initialize());
   Q4T_CHECK(io.Health().workers_started == 1 &&
@@ -311,7 +314,8 @@ Q4T_TEST(cache_io_unreaped_worker_retains_only_its_own_domain) {
 
 Q4T_TEST(cache_io_restart_budget_and_stop_intent) {
   Fixture f;
-  f.options.timeout_ms = 100;
+  // SIGKILL causes immediate EOF. Healthy restarts keep the production I/O
+  // deadline rather than consuming the budget on test-host scheduling delay.
   {
     CacheIo io(f.options);
     for (int i = 0; i < 3; ++i) {
@@ -386,8 +390,7 @@ bool CacheStopWaitRace(IsolatedWorkerDomain domain) {
           gates->released.wait_for(3s) != std::future_status::ready;
     } else if (stage == "stop_begin" && !gates->stop_seen.exchange(true)) {
       gates->stopping.set_value();
-    } else if (stage == "stop_notified" &&
-               !gates->notify_seen.exchange(true)) {
+    } else if (stage == "stop_notified" && !gates->notify_seen.exchange(true)) {
       gates->notified.set_value();
     }
   });

@@ -4,22 +4,22 @@
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server {
 using namespace object_detail;
 
 ObjectReply ResponsesExecution::TrackMcpCall(const std::string& id) {
   if (!cleanup_)
-    return require_cleanup_
-               ? Error(503, "mcp_reconciliation_unavailable",
-                       "MCP lifecycle owner unavailable")
-               : ObjectReply{};
+    return require_cleanup_ ? Error(503, "mcp_reconciliation_unavailable",
+                                    "MCP lifecycle owner unavailable")
+                            : ObjectReply{};
   if (!cleanup_ticket_) {
     auto reserved = cleanup_->Reserve(plan_.scope, plan_.id, &cleanup_ticket_);
     if (!reserved.ok()) return reserved;
   }
   return cleanup_->TrackMcp(cleanup_ticket_, cipher_config_.model,
-                             plan_.execution_owner, id);
+                            plan_.execution_owner, id);
 }
 
 ObjectReply ResponsesExecution::CloseMcpExecution(const StateAccess& access) {
@@ -150,6 +150,131 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
   return {};
 }
 
+ObjectReply ResponsesExecution::ExecuteProgramMcp(
+    const ResponsesProgramState& program, const Json& intent,
+    const std::function<bool(const std::string&)>& publish) {
+  if (!mcp_state_ || intent.GetString("type") != kResponsesProgramMcpIntent)
+    return Error(500, "mcp_state_invalid", "Missing MCP program executor");
+  const auto& origin = *intent.Find("origin");
+  const auto& call = *origin.Find("call");
+  const auto tool =
+      std::find_if(program.tools.array.begin(), program.tools.array.end(),
+                   [&](const auto& value) {
+                     return value.GetString("key") == call.GetString("key");
+                   });
+  if (tool == program.tools.array.end() || tool->GetString("type") != "mcp")
+    return Error(403, "mcp_tool_denied",
+                 "MCP tool is outside program authority");
+  const auto& source = *tool->Find("mcp");
+  ResponsesMcpDefinition original;
+  ChatPlanError error;
+  if (!PlanResponsesMcpDefinition(*source.Find("declaration"), &original,
+                                  &error))
+    return Error(500, "mcp_state_invalid", "Invalid sealed MCP declaration");
+  BindResponsesMcpCredentials(&original, mcp_credentials_);
+  const auto current = std::find_if(
+      mcp_definitions_.begin(), mcp_definitions_.end(), [&](const auto& value) {
+        return value.declaration.GetString("server_label") ==
+               source.GetString("server_label");
+      });
+  auto definition = current == mcp_definitions_.end() ? original : *current;
+  auto catalog =
+      mcp_state_->CatalogById(source.GetString("catalog_id"), access_);
+  if (!catalog.ok()) return catalog;
+  auto authority = mcp_state_->OpenCatalog(catalog.value, original, access_);
+  if (!authority.ok()) return authority;
+  const auto& tools = authority.value.GetArray("tools")->array;
+  const auto native =
+      std::find_if(tools.begin(), tools.end(), [&](const auto& value) {
+        return value.GetString("name") == tool->GetString("name");
+      });
+  if (native == tools.end() ||
+      !ResponsesToolAllows(original.declaration, "programmatic") ||
+      !ResponsesMcpToolAllowed(original.declaration, *native))
+    return Error(403, "mcp_tool_denied", "Sealed program denies this MCP tool");
+  // The invocation snapshot may tighten a catalog's approval policy. A later
+  // request can tighten it again, but cannot weaken either original grant.
+  if (ResponsesMcpApprovalRequired(original.declaration, *native))
+    Set(&definition.declaration, "require_approval", String("always"));
+  const auto limit = static_cast<uint64_t>(
+      envelope_.options.GetInt("max_tool_calls", INT64_MAX));
+  if (native_tool_calls_ >= limit || native_tool_calls_ >= kMaxNativeToolCalls)
+    return Error(503, "mcp_execution_capacity", "Native tool budget exhausted");
+  Json arguments;
+  if (!Parse(call.GetString("arguments"), &arguments))
+    return Error(502, "program_arguments_invalid",
+                 "Invalid MCP program arguments");
+  const auto id = intent.GetString("id");
+  auto owned = mcp_state_->Inspect(id, access_);
+  ObjectReply proposed;
+  bool terminal = false;
+  if (owned.ok()) {
+    std::string expected, actual;
+    const auto* old = owned.value.Find("program_origin");
+    if (!old || !InputValueIdentity(*old, &expected) ||
+        !InputValueIdentity(origin, &actual) || expected != actual ||
+        owned.value.GetString("catalog_id") != source.GetString("catalog_id"))
+      return Error(409, "invalid_program_state",
+                   "MCP program dispatch changed");
+    if (owned.value.GetString("state") == "approval") {
+      const auto& previous = *owned.value.Find("call");
+      proposed.value = Object({{"type", String("mcp_approval_request")},
+                               {"id", *previous.Find("approval_request_id")},
+                               {"name", *previous.Find("name")},
+                               {"server_label", *previous.Find("server_label")},
+                               {"arguments", *previous.Find("arguments")}});
+    } else {
+      // An omitted history item never grants a second dispatch, even when the
+      // request is reconstructed from the same sealed program fingerprint.
+      proposed = mcp_state_->Recover(id, access_);
+      if (!proposed.ok() || proposed.commit_unknown)
+        return BindMutationResult(std::move(proposed));
+      terminal = true;
+    }
+  } else if (owned.http_status == 404) {
+    auto tracked = TrackMcpCall(id);
+    if (!tracked.ok()) return tracked;
+    proposed =
+        mcp_state_->Propose(catalog.value, definition, tool->GetString("name"),
+                            std::move(arguments), "programmatic", access_, id,
+                            call.GetString("arguments"), &origin);
+    if (!proposed.ok() || proposed.commit_unknown)
+      return BindMutationResult(std::move(proposed));
+  } else {
+    return owned;
+  }
+  ++native_tool_calls_;
+  const bool approval =
+      proposed.value.GetString("type") == "mcp_approval_request";
+  auto starting = proposed.value;
+  if (terminal) {
+    Set(&starting, "status", String("in_progress"));
+    Set(&starting, "output", Json());
+    Set(&starting, "error", Json());
+  }
+  size_t index = 0;
+  std::string wire, part;
+  auto status = output_.StartMcpItem(starting, &index, &wire);
+  if (status && !approval) status = output_.CompleteMcpArguments(index, &part);
+  wire += part;
+  if (status && terminal) {
+    if (proposed.value.GetString("status") == "completed")
+      status = output_.CallingMcp(index);
+    if (status) status = output_.CompleteMcpItem(index, proposed.value, &part);
+    wire += part;
+  }
+  status = RecordOutput(status, &wire);
+  if (!status)
+    return Error(503, "response_storage_exhausted", status.message());
+  auto saved = Checkpoint();
+  if (!saved.ok() || saved.commit_unknown) return saved;
+  if (publish && !publish(wire))
+    return Error(499, "request_cancelled", "MCP program subscriber cancelled");
+  return approval || terminal
+             ? ObjectReply{}
+             : ExecuteMcpCall(proposed.value, definition, index, publish);
+}
+
 ObjectReply ResponsesExecution::RunMcpApprovals(
     const std::function<bool(const std::string&)>& publish) {
   if (!begun_ || plan_.finished || commit_unknown_ || !mcp_state_ ||
@@ -176,22 +301,40 @@ ObjectReply ResponsesExecution::RunMcpApprovals(
       if (!original.ok()) return original;
     }
     const auto label = original.value.Find("call")->GetString("server_label");
-    const auto definition = std::find_if(
+    const auto current = std::find_if(
         mcp_definitions_.begin(), mcp_definitions_.end(),
         [&](const auto& value) {
           return value.declaration.GetString("server_label") == label;
         });
-    if (definition == mcp_definitions_.end())
-      return Error(400, "mcp_definition_required",
-                   "Resupply the MCP server declaration for approval");
+    ResponsesMcpDefinition definition;
+    if (current != mcp_definitions_.end()) {
+      definition = *current;
+    } else {
+      // A sealed program can continue without redeclaring its tools. Its
+      // origin was authenticated before planning; secrets are still supplied
+      // solely by the current request and are never recovered from storage.
+      ChatPlanError error;
+      if (original.value.GetString("caller") != "programmatic" ||
+          !original.value.Find("program_origin") ||
+          !PlanResponsesMcpDefinition(*original.value.Find("declaration"),
+                                      &definition, &error))
+        return Error(400, "mcp_definition_required",
+                     "Resupply the MCP server declaration for approval");
+      BindResponsesMcpCredentials(&definition, mcp_credentials_);
+    }
+    const bool approved = approval.GetBool("approve");
+    if (approved && !original.value.Has("terminal") &&
+        original.value.GetBool("credentials_required") &&
+        !ResponsesMcpHasCredentials(definition))
+      return Error(400, "mcp_credentials_required",
+                   "Resupply request credentials before deciding this call");
     auto tracked = TrackMcpCall(original.value.Find("call")->GetString("id"));
     if (!tracked.ok()) return tracked;
-    const bool approved = approval.GetBool("approve");
     Json terminal;
     ObjectReply decision;
     if (original.value.GetString("state") == "approval") {
       decision = mcp_state_->Decide(id, approved, approval.GetString("reason"),
-                                    *definition, access_);
+                                    definition, access_);
       if (!decision.ok() || decision.commit_unknown)
         return BindMutationResult(std::move(decision));
       if (!approved) terminal = decision.value;
@@ -237,7 +380,7 @@ ObjectReply ResponsesExecution::RunMcpApprovals(
       if (publish && !publish(wire))
         return Error(499, "request_cancelled", "Approval subscriber cancelled");
     } else {
-      auto result = ExecuteMcpCall(call, *definition, index, publish);
+      auto result = ExecuteMcpCall(call, definition, index, publish);
       if (!result.ok()) return result;
     }
   }

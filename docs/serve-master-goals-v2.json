@@ -1150,13 +1150,15 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Includes bounded cleanup continuation and native API/Batch/background entry binding; not executed or delivered.",
+        "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "01e39d45cf0f653aef7f82f0fd4a5934f732f9a60f53c0b569bb3c25ae5f6ca7",
-        "next": "Programmatic/media/session/mapping combinations, then public SDK/business/recovery qualification and reversible delivery.",
+        "engine_candidate_sha256": "104ca03a86a6197757e057480748071e2f3642414dbbab2f4a5024ed593f0e67",
+        "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
-        "cleanup_continuation_targeted_cpp_passed": 18
+        "cleanup_continuation_targeted_cpp_passed": 18,
+        "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
+        "programmatic_targeted_cpp_passed": 49
       }
     },
     {
@@ -1939,13 +1941,15 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Includes bounded cleanup continuation and native API/Batch/background entry binding; not executed or delivered.",
+        "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "01e39d45cf0f653aef7f82f0fd4a5934f732f9a60f53c0b569bb3c25ae5f6ca7",
-        "next": "Programmatic/media/session/mapping combinations, then public SDK/business/recovery qualification and reversible delivery.",
+        "engine_candidate_sha256": "104ca03a86a6197757e057480748071e2f3642414dbbab2f4a5024ed593f0e67",
+        "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
-        "cleanup_continuation_targeted_cpp_passed": 18
+        "cleanup_continuation_targeted_cpp_passed": 18,
+        "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
+        "programmatic_targeted_cpp_passed": 49
       }
     },
     {
@@ -2900,6 +2904,6 @@
       "release": null
     }
   ],
-  "next_task": "Complete native MCP catalog, approvals, dispatch and Responses/SDK/business/recovery delivery after transport CPU acceptance; all remaining master tasks mandatory. PR27 actually merged.",
+  "next_task": "Complete MCP typed media/resources, session continuity and mapped targets, then full SDK/business/recovery delivery; all remaining master tasks mandatory. PR27 actually merged.",
   "next": "Complete native MCP catalog, approvals, dispatch and Responses/SDK/business/recovery delivery after transport CPU acceptance; all remaining master tasks mandatory. PR27 actually merged."
 }

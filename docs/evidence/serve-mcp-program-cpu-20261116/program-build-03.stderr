@@ -1,0 +1,21 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool {anonymous}::ProgramCode(q4t::server::ResponsesExecution*, std::string, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:842:21: error: cannot convert ‘q4t::Status’ to ‘bool’ in return
+  842 |   return run->Append(delta, "", wire);
+      |          ~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+      |                     |
+      |                     q4t::Status
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/io/json.h:20,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/object_store.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/binary_store.h:6,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_input.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_fetch.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/mcp_transport.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:1:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/status.h:19:12: note: explicit conversion function was not considered
+   19 |   explicit operator bool() const { return ok(); }
+      |            ^~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1381: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

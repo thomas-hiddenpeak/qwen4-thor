@@ -71,7 +71,16 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
       std::any_of(input.array.begin(), input.array.end(), [](const auto& item) {
         return item.GetString("type").starts_with("mcp_");
       });
-  if (mcp_definitions_.empty() && !history && plan_.mcp_catalogs.IsNull())
+  const bool program_mcp =
+      std::any_of(programs_.begin(), programs_.end(), [](const auto& program) {
+        return program.terminal.IsNull() &&
+               std::any_of(program.tools.array.begin(),
+                           program.tools.array.end(), [](const auto& tool) {
+                             return tool.GetString("type") == "mcp";
+                           });
+      });
+  if (mcp_definitions_.empty() && !history && !program_mcp &&
+      plan_.mcp_catalogs.IsNull())
     return {};
   // Validate ordinary roles, tool causality, discovery and file shapes before
   // fetching remote metadata. This projection grants no MCP callable and is

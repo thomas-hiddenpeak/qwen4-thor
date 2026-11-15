@@ -1934,18 +1934,18 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70",
+    "include/q4t/server/responses_execution.h": "8f9200097313838f3fc3a712161fe679cce21737debcc1b4fbd45717b6ce02e1",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
-    "include/q4t/server/responses_mcp_state.h": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
+    "include/q4t/server/responses_mcp_state.h": "64fa5333cf6eca7eef497082dbe52c580739d2d9634b8a552358a8c83f37fe71",
     "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
-    "include/q4t/server/responses_program.h": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
+    "include/q4t/server/responses_program.h": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "22d66487e2bad57919e63860fd64435db4e4c66e3ea1ef143d24d19d1a40daa9",
     "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
@@ -2173,7 +2173,7 @@
     "src/server/output_constraints.cpp": "27f79f55134b574fd041e43d8e77c8d6314723febc7eb0e2ef746421057c229b",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
-    "src/server/program_vm.cpp": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686",
+    "src/server/program_vm.cpp": "044e3fbe62059a56c99ee0771247deeaf34bbd795ac58013db7654cd9d78b5f0",
     "src/server/program_vm.h": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126",
     "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
@@ -2190,7 +2190,7 @@
     "src/server/responses_api.cpp": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9",
+    "src/server/responses_execution.cpp": "22feb490e9f2338525ba943e476b0cfec59d4bf52821bfeff2ecb1186497fe55",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
     "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
     "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
@@ -2200,27 +2200,27 @@
     "src/server/responses_file_search_execution.cpp": "befb07c310f5e4e247c8e036ccd10382bac57b76783637a85f7ba5a3b8685168",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
-    "src/server/responses_input.cpp": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
+    "src/server/responses_input.cpp": "597743a1b8409c2019babead83fc24216b5dd289a01ccc4daa904ec545f2305a",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
-    "src/server/responses_mcp_execution.cpp": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a",
+    "src/server/responses_mcp_execution.cpp": "48f9c3e8c1bef87945e1f0e5e37adc154c15d3769e8a1fd40fce49f065234496",
     "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd",
-    "src/server/responses_mcp_preparation.cpp": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
-    "src/server/responses_mcp_state.cpp": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f",
+    "src/server/responses_mcp_preparation.cpp": "3ad1ff89971c1ef136868524f9b3d26e4519a3e9f1b1f1c7daf77008fac72217",
+    "src/server/responses_mcp_state.cpp": "b4717ab5a7dfd5baf7e581b3d156e9472ac9fd29bc011df40b7c43bd538bbc3a",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
-    "src/server/responses_program.cpp": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
-    "src/server/responses_program_execution.cpp": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94",
+    "src/server/responses_program.cpp": "5a9caa7de80237b8380d1cfb14a4c8d4a8c1d9d243d331a25b539596154486b5",
+    "src/server/responses_program_execution.cpp": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db",
     "src/server/responses_program_output.cpp": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587",
-    "src/server/responses_program_plan.cpp": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
+    "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
     "src/server/responses_state.cpp": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
-    "src/server/responses_tokens.cpp": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
+    "src/server/responses_tokens.cpp": "17ee2d3761fab52a65b43675fb8dedd2797fda4980c0a72146f12b2a5ed78caf",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
     "src/server/responses_tool_search.cpp": "42b50b7e4333a91a0636c950ecc7a3d69472e3ba2691f7237489f66c8cd7a3a1",
     "src/server/responses_tool_search_execution.cpp": "a2bbce47d6b2b1d764bd7f036a0c892af38e8d17e183ed40bf413d577f01d2f0",
@@ -5261,5 +5261,66 @@
     "public_mcp_delivery": false,
     "progress": "Acknowledged child cleanup cursor survives bounded retry, so later IDs are not starved by repeated prefix scans.",
     "evidence": "docs/evidence/serve-mcp-cleanup-cpu-20261116"
+  },
+  "mcp_program_review_20261116": {
+    "scope": "Programmatic native MCP dispatch with sealed catalog, declaration, original schema and caller authority; standard MCP public items without invented caller fields. Private batch causal positions preserve mixed client/native replay; approvals, cancellation, unknown results, current-policy tightening, frozen restore and authenticated counting retain existing bounds. Missing credentials do not consume approval. No new dependency or model restart.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70",
+        "after": "8f9200097313838f3fc3a712161fe679cce21737debcc1b4fbd45717b6ce02e1"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
+        "after": "64fa5333cf6eca7eef497082dbe52c580739d2d9634b8a552358a8c83f37fe71"
+      },
+      "include/q4t/server/responses_program.h": {
+        "before": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
+        "after": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5"
+      },
+      "src/server/program_vm.cpp": {
+        "before": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686",
+        "after": "044e3fbe62059a56c99ee0771247deeaf34bbd795ac58013db7654cd9d78b5f0"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9",
+        "after": "22feb490e9f2338525ba943e476b0cfec59d4bf52821bfeff2ecb1186497fe55"
+      },
+      "src/server/responses_input.cpp": {
+        "before": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
+        "after": "597743a1b8409c2019babead83fc24216b5dd289a01ccc4daa904ec545f2305a"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a",
+        "after": "48f9c3e8c1bef87945e1f0e5e37adc154c15d3769e8a1fd40fce49f065234496"
+      },
+      "src/server/responses_mcp_preparation.cpp": {
+        "before": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
+        "after": "3ad1ff89971c1ef136868524f9b3d26e4519a3e9f1b1f1c7daf77008fac72217"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f",
+        "after": "b4717ab5a7dfd5baf7e581b3d156e9472ac9fd29bc011df40b7c43bd538bbc3a"
+      },
+      "src/server/responses_program.cpp": {
+        "before": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
+        "after": "5a9caa7de80237b8380d1cfb14a4c8d4a8c1d9d243d331a25b539596154486b5"
+      },
+      "src/server/responses_program_execution.cpp": {
+        "before": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94",
+        "after": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db"
+      },
+      "src/server/responses_program_plan.cpp": {
+        "before": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
+        "after": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3"
+      },
+      "src/server/responses_tokens.cpp": {
+        "before": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
+        "after": "17ee2d3761fab52a65b43675fb8dedd2797fda4980c0a72146f12b2a5ed78caf"
+      }
+    },
+    "targeted_cpu_passed": 49,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-program-cpu-20261116"
   }
 }

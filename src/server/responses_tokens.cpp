@@ -6,6 +6,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/responses_crypto.h"
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_mcp_state.h"
 
 namespace q4t::server {
 namespace {
@@ -63,6 +64,9 @@ ObjectReply PrepareResponsesTokenCount(
             key == "tools" || key == "tool_choice");
   });
   Set(&normalized, "store", Boolean(false));
+  std::vector<ResponsesMcpDefinition> credentials;
+  status = CaptureResponsesMcpCredentials(&normalized, &credentials, &error);
+  if (!status) return Invalid(status, error);
   status = ParseResponsesEnvelope(normalized, config, envelope, &error);
   if (!status) return Invalid(status, error);
   ResponsesState state(objects);
@@ -92,6 +96,13 @@ ObjectReply PrepareResponsesTokenCount(
     history = std::move(resolved.history);
   }
   Json effective_tools;
+  ResponsesMcpState mcp(objects, config);
+  for (auto& item : history.array) {
+    if (!item.GetString("type").starts_with("mcp_")) continue;
+    auto authenticated = mcp.Authenticate(item, access);
+    if (!authenticated.ok()) return authenticated;
+    item = std::move(authenticated.value);
+  }
   if (std::any_of(history.array.begin(), history.array.end(),
                   [](const auto& item) {
                     const auto* caller = item.Find("caller");
@@ -100,7 +111,8 @@ ObjectReply PrepareResponsesTokenCount(
                            (caller && caller->GetString("type") == "program");
                   })) {
     std::vector<ResponsesProgramState> programs;
-    result = OpenResponsesPrograms(cipher, history, config, access, &programs);
+    result =
+        OpenResponsesPrograms(cipher, history, config, access, &programs, &mcp);
     if (!result.ok()) return result;
   }
   status = ValidateResponsesPreparation(*envelope, history, config,
