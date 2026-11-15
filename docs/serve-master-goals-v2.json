@@ -1197,6 +1197,13 @@
         "creates": 8,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
       }
     },
     {
@@ -2025,6 +2032,13 @@
         "starts": 1,
         "creates": 8,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
         "full_task_complete": false
       }
     },
@@ -2882,6 +2896,13 @@
         "creates": 8,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
       }
     },
     {
@@ -2983,6 +3004,13 @@
         "head": "9e0a4b4464ac38c9f9183a94b21b864bd4d689b7",
         "commit": "1f0ed01a16e1a78d5e5bedbed4dbebe656006d5e",
         "evidence": "evidence/serve-pr27-merged-20261115"
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
       }
     },
     {

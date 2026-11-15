@@ -39,6 +39,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[MCP能力包的受控恢复](evidence/serve-mcp-managed-20261116/README.md)
+已通过：回退包1启动2业务，整树切换2启动4业务1探测；Guardian保留、
+控制器/模型/入口换代，原程序/调用/schema/存储与预算保持，实际资料
+只读1次并SSE续答。MCP远端业务与会话CPU证据分别绑定，未混称为
+同一端到端故障场景。累计6启动22请求（含2embedding）1探测，全部
+清理；主包437e477c、回退52c399d7待STOPPED发行，rev126仍保持。
+
 [MCP恢复合同与主轻资格](evidence/serve-mcp-recovery-contract-20261116/README.md)
 已通过：同一引擎主/轻2启动8业务、88.606秒；随后修复MCP能力迁移
 和自动回退私有策略保持，7项CPU首过、来源负控最终通过。4个helper
