@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-16",
+  "task_type": "nonperformance_mcp_media_execution",
+  "targeted_cpp_distinct": 20,
+  "targeted_cpp_invocations": 21,
+  "cpp_final_passed": 20,
+  "cpp_first_failed": 1,
+  "failure": "image fixture had allow_media=false; enabled explicitly and reran only failed test",
+  "cpp_skipped": 0,
+  "source_mutation_checks": 7,
+  "reviewed_source_anchors": 675,
+  "host_build": "passed_zero_warnings",
+  "engine_build": "passed_zero_warnings",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "public_capability_delivered": false,
+  "master_goal": "active",
+  "engine_sha256": "09dc41d2f9fae707b9321a23d95983b103bc1d0a34ba99432ee0a023165706d0"
+}

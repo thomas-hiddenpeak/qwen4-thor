@@ -10,34 +10,9 @@ using namespace object_detail;
 
 ObjectReply ResponsesExecution::PrepareProgramMedia(Json* items) {
   if (!HasFileInputs(*items)) return {};
-  auto options = program_file_options_;
-  const auto previous = files_ ? files_->Usage() : FileExpansionUsage{};
-  const auto remaining = [](auto limit, uint64_t used) {
-    return limit - std::min<uint64_t>(limit, used);
-  };
-  options.max_source_bytes =
-      remaining(options.max_source_bytes,
-                previous.source_bytes + program_media_usage_.source_bytes);
-  options.max_files =
-      remaining(options.max_files, previous.files + program_media_usage_.files);
-  options.extraction.pdf.max_image_bytes =
-      remaining(options.extraction.pdf.max_image_bytes,
-                previous.image_bytes + program_media_usage_.image_bytes);
-  options.extraction.pdf.max_pixels =
-      remaining(options.extraction.pdf.max_pixels,
-                previous.pixels + program_media_usage_.pixels);
-  options.max_retained_bytes = remaining(
-      options.max_retained_bytes,
-      (files_ ? files_->RetainedBytes() : 0) + program_media_retained_);
-  options.max_rendered_bytes = remaining(
-      options.max_rendered_bytes,
-      OutputJson(generation_history_).size() + program_media_rendered_);
-  if (!options.max_source_bytes || !options.max_files ||
-      !options.extraction.pdf.max_image_bytes ||
-      !options.extraction.pdf.max_pixels || !options.max_retained_bytes ||
-      !options.max_rendered_bytes)
-    return Error(413, "file_input_capacity_exceeded",
-                 "Program media exhausted the shared preparation budget");
+  auto used = OtherMcpMediaBudget();
+  if (mcp_media_) AddResponsesMediaBudget(mcp_media_->Budget(), &used);
+  const auto options = RemainingResponsesMediaOptions(program_file_options_, used);
   FileExpansion media(&objects_, options);
   const BinaryAccess access{access_.scope, access_.deadline, access_.cancelled};
   auto result = media.Prepare(*items, FileInputProfile::kResponsesStored,
@@ -47,13 +22,17 @@ ObjectReply ResponsesExecution::PrepareProgramMedia(Json* items) {
   result = media.Render(*items, &rendered);
   if (!result.ok()) return result;
   const auto& usage = media.Usage();
-  program_media_usage_.source_bytes += usage.source_bytes;
-  program_media_usage_.image_bytes += usage.image_bytes;
-  program_media_usage_.pixels += usage.pixels;
-  program_media_usage_.files += usage.files;
-  program_media_usage_.images += usage.images;
-  program_media_retained_ += media.RetainedBytes();
-  program_media_rendered_ += OutputJson(rendered).size();
+  const ResponsesMediaBudget current{usage, media.RetainedBytes(),
+                                     OutputJson(rendered).size(), 0};
+  AddResponsesMediaBudget(current, &used);
+  result = CheckResponsesMediaBudget(program_file_options_, used);
+  if (!result.ok()) return result;
+  ResponsesMediaBudget programs{program_media_usage_, program_media_retained_,
+                                program_media_rendered_, 0};
+  AddResponsesMediaBudget(current, &programs);
+  program_media_usage_ = programs.usage;
+  program_media_retained_ = programs.retained;
+  program_media_rendered_ = programs.rendered;
   // The published result contains frozen data URLs. Storage and stateless
   // replay therefore retain the same bytes without a second external read.
   *items = std::move(rendered);

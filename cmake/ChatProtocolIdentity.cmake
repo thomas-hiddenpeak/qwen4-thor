@@ -263,6 +263,7 @@ set(protocol_inputs
   src/server/responses_mcp_binding.cpp
   src/server/responses_mcp_preparation.cpp
   src/server/responses_mcp_media.cpp
+  src/server/responses_execution_mcp_media.cpp
   src/server/responses_mcp_execution.cpp
   src/server/mcp_transport_internal.h
   src/server/mcp_http.cpp

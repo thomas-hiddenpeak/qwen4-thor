@@ -1,0 +1,16 @@
+{
+  "CMakeLists.txt": "598628c5fca83bec1a9450b6c24137f7537838073f0f81781413a7ac0c974ad9",
+  "cmake/ChatProtocolIdentity.cmake": "a1926b8fd0f6d350270405b6123cd2d770808656162c2024d0be8dbfc858373d",
+  "cmake/HostTestSources.cmake": "0d03d5772f56f51d23e331e939c7bee6b8f5af2c8197793d434581d24a40cf37",
+  "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
+  "include/q4t/server/responses_execution.h": "ed887d3c95e44109bd839141edd260f53ee28fa573a7c6fec727a500331ca7d2",
+  "src/server/chat_generation.cpp": "fc815880f0eb59d32d885496e033b903bd89802e8646e97ca4cfdd6f1bfa4c62",
+  "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
+  "src/server/responses_execution.cpp": "71bef3419df43b008c3d956d49f6fd1b42ba0a1eb0a7649e9ad50816235876a0",
+  "src/server/responses_execution_files.cpp": "c026d4baec7bc33e9d590db1ad951253f1fe791bd8a833c75c84c550dc5c6bd5",
+  "src/server/responses_file_search_execution.cpp": "0f6f0a66a63ed33a92f9ff01691f20c5cb7957a90766fc97fb8e00c5e062b20f",
+  "src/server/responses_program_execution.cpp": "5655ebd611f06505533d0dcd1dd2e4cc85c399a0744d75f7eb37eb481e992b22",
+  "tests/server_client_policy_test.cpp": "10c942d4095807fc6762883ebd5005b52b9c6b1668d04246188c4d4185487fc5",
+  "tests/server_mcp_transport_test.cpp": "d672926e71d5a30401418c7d20148b56571eab2547c070d7f9b49973659fb1fa",
+  "src/server/responses_execution_mcp_media.cpp": "760095fa9caffb41673cd71a6462f6a7692677034a85f7ae76f70358b59ba041"
+}

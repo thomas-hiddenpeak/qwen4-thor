@@ -53,6 +53,12 @@ ObjectReply ResponsesExecution::BuildPreparedGeneration(
         }
       }
   }
+  if (mcp_media_) {
+    auto used = OtherMcpMediaBudget();
+    AddResponsesMediaBudget(mcp_media_->Budget(), &used);
+    reply = CheckResponsesMediaBudget(program_file_options_, used);
+    if (!reply.ok()) return reply;
+  }
   ChatPlanError error;
   auto status = PrepareResponsesGeneration(envelope_, generation_history_,
                                            config, &generation_, &error);
@@ -101,7 +107,10 @@ ObjectReply ResponsesExecution::NextFileSheet(const ChatPlanConfig& config,
   if (!prepared_ || !PendingFileSheets() || plan_.finished || commit_unknown_)
     return FileState();
   auto reply = Active(access_);
-  return reply.ok() ? files_->NextSheet(config, step) : reply;
+  if (!reply.ok()) return reply;
+  mcp_sheet_issued_ = !(files_ && files_->PendingSheets());
+  return mcp_sheet_issued_ ? mcp_media_->NextSheet(config, step)
+                           : files_->NextSheet(config, step);
 }
 
 ObjectReply ResponsesExecution::CompleteFileSheet(
@@ -112,10 +121,26 @@ ObjectReply ResponsesExecution::CompleteFileSheet(
     return FileState();
   auto reply = Active(access_);
   if (!reply.ok()) return reply;
-  reply = files_->CompleteSheet(step, output, finish_reason, input_tokens,
-                                output_tokens);
+  reply = mcp_sheet_issued_
+              ? mcp_media_->CompleteSheet(step, output, finish_reason,
+                                           input_tokens, output_tokens)
+              : files_->CompleteSheet(step, output, finish_reason, input_tokens,
+                                       output_tokens);
   if (!reply.ok()) return reply;
-  if (!PendingFileSheets()) {
+  if (mcp_media_) {
+    auto budget = OtherMcpMediaBudget();
+    AddResponsesMediaBudget(mcp_media_->Budget(), &budget);
+    reply = CheckResponsesMediaBudget(program_file_options_, budget);
+    if (!reply.ok()) return reply;
+    reply = mcp_media_->Persist(*mcp_state_, access_);
+    if (!reply.ok() || reply.commit_unknown)
+      return BindMutationResult(std::move(reply));
+    if (!mcp_media_->PendingSheets()) {
+      reply = mcp_media_->Render(&envelope_.mcp_content);
+      if (!reply.ok()) return reply;
+    }
+  }
+  if (!PendingFileSheets() && !generation_ready_) {
     reply = BuildPreparedGeneration(config);
     if (!reply.ok()) return reply;
   }
@@ -123,7 +148,7 @@ ObjectReply ResponsesExecution::CompleteFileSheet(
     reply = PersistPreparedInputs();
     if (reply.ok()) reply = Checkpoint();
     if (!reply.ok()) {
-      if (reply.commit_unknown) files_->RetainUncertainHolds();
+      if (reply.commit_unknown && files_) files_->RetainUncertainHolds();
       return reply;
     }
     ReleasePreparedInputs();

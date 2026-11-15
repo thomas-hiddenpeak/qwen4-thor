@@ -1226,6 +1226,203 @@ Q4T_TEST(responses_mcp_program_parallel_native_calls_and_serial_policy) {
   return true;
 }
 
+Q4T_TEST(responses_mcp_execution_media_reaches_model_and_frozen_continuation) {
+  Server server;
+  const std::string png =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGPYoiECAA"
+      "KEAPFkHeRLAAAAAElFTkSuQmCC";
+  const auto native =
+      Object({{"content",
+               Array({Object({{"type", String("image")},
+                              {"mimeType", String("image/png")},
+                              {"data", String(png)}}),
+                      Object({{"type", String("resource")},
+                              {"resource",
+                               Object({{"uri", String("project:document")},
+                                       {"mimeType", String("text/plain")},
+                                       {"blob", String("aGVsbG8=")}})}})})}});
+  server.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    Send(fd, Http(200, OutputJson(Rpc(r, native))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto config = ExecutionConfig(server);
+  config.allow_media = true;
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(
+      run.Prepare(ExecutionRequest(server), config, ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)) &&
+            !run.PendingFileSheets());
+  Q4T_CHECK(run.FileUsage()->files == 2 && run.FileUsage()->images == 1);
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(ExecutionOk(run.ContinueFileSearch(8, config, {}, &next)));
+  const auto prompt = OutputJson(next.input.messages);
+  Q4T_CHECK(prompt.find("image_url") != prompt.npos &&
+            prompt.find("hello") != prompt.npos);
+  const auto response = run.PublicResponse();
+  const auto& output = response.GetArray("output")->array;
+  const auto call = std::find_if(
+      output.begin(), output.end(),
+      [](const auto& v) { return v.GetString("type") == "mcp_call"; });
+  Q4T_CHECK(call != output.end() &&
+            call->GetString("output") == OutputJson(native));
+  ModerationContent content;
+  ChatPlanError error;
+  Q4T_CHECK(CollectModerationOutput(*response.GetArray("output"), &content,
+                                    &error, &run.Envelope().mcp_content));
+  Q4T_CHECK(content.images.array.size() == 1);
+  Q4T_CHECK(FinishExecution(&run));
+  const auto before = server.Requests().size();
+  auto request = Object({{"previous_response_id", String(run.Id())},
+                         {"input", String("Explain the image and note")},
+                         {"reasoning", Object({{"effort", String("none")}})}});
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 43)));
+  Q4T_CHECK(resumed.FileUsage()->images == 1 &&
+            OutputJson(resumed.Generation().input.messages).find("hello") !=
+                std::string::npos &&
+            server.calls == 1 && server.Requests().size() == before);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_execution_csv_uses_owned_steps_and_frozen_receipts) {
+  Server server;
+  server.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    const auto native = Object(
+        {{"content",
+          Array({Object(
+              {{"type", String("resource")},
+               {"resource",
+                Object(
+                    {{"uri", String("project:sheet")},
+                     {"mimeType", String("text/csv")},
+                     {"blob",
+                      String("bmFtZSx2YWx1ZQphbHBoYSw0MgpiZXRhLDcK")}})}})})}});
+    Send(fd, Http(200, OutputJson(Rpc(r, native))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(
+      run.Prepare(ExecutionRequest(server), config, ExecutionAccess(), 42)));
+  Q4T_CHECK(run.FileOutputBudget() == 8192);
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)) &&
+            run.PendingFileSheets());
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(run.ContinueFileSearch(8, config, {}, &next).code ==
+            "file_preparation_incomplete");
+  FileSheetStep step;
+  Q4T_CHECK(ExecutionOk(run.NextFileSheet(config, &step)));
+  Q4T_CHECK(ExecutionOk(run.CompleteFileSheet(
+      step,
+      R"({"summary":"CPU native step receipt: alpha 42 and beta 7",)"
+      R"("headers":["name: row label","value: quantity"]})",
+      "stop", 100, 12, config)));
+  Q4T_CHECK(!run.PendingFileSheets() && run.FileUsage()->model_steps == 1 &&
+            run.FileOutputBudget() == 8180);
+  Q4T_CHECK(ExecutionOk(run.ContinueFileSearch(8, config, {}, &next)));
+  Q4T_CHECK(OutputJson(next.input.messages).find("CPU native step receipt") !=
+                std::string::npos &&
+            FinishExecution(&run));
+  ResponsesExecution resumed(objects);
+  const auto request = Object({{"previous_response_id", String(run.Id())},
+                               {"input", String("Use the original sheet")}});
+  Q4T_CHECK(
+      ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 43)));
+  Q4T_CHECK(!resumed.PendingFileSheets() &&
+            resumed.FileUsage()->model_steps == 0 && server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_execution_resources_read_once_and_unknown_stays_frozen) {
+  for (const bool disconnect : {false, true}) {
+    Server server;
+    std::atomic<int> reads{0};
+    server.handler = [&](const Request& r, int fd, std::stop_token) {
+      const auto method = r.rpc.GetString("method");
+      if (method == "initialize") {
+        Send(fd, Http(200,
+                      OutputJson(Rpc(
+                          r, Object({{"protocolVersion", String("2025-06-18")},
+                                     {"capabilities",
+                                      Object({{"tools", Object()},
+                                              {"resources", Object()}})},
+                                     {"serverInfo",
+                                      Object({{"name", String("media")},
+                                              {"version", String("1")}})}})))));
+        return true;
+      }
+      if (method == "tools/call") {
+        ++server.calls;
+        Send(fd,
+             Http(200,
+                  OutputJson(Rpc(
+                      r, Object({{"content",
+                                  Array({Object(
+                                      {{"type", String("resource_link")},
+                                       {"uri", String("file:///remote")},
+                                       {"name", String("document")}})})}})))));
+        return true;
+      }
+      if (method != "resources/read") return false;
+      ++reads;
+      if (!disconnect)
+        Send(
+            fd,
+            Http(
+                200,
+                OutputJson(Rpc(
+                    r,
+                    Object({{"contents",
+                             Array({Object(
+                                 {{"uri", String("file:///remote")},
+                                  {"text",
+                                   String("actual remote resource")}})})}})))));
+      return true;
+    };
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    ResponsesExecution run(objects);
+    Q4T_CHECK(ExecutionOk(
+        run.Prepare(ExecutionRequest(server), config, ExecutionAccess(), 42)));
+    std::string wire;
+    bool waiting = true;
+    Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+    Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+    Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)) && reads == 1);
+    ResponsesGenerationPlan next;
+    Q4T_CHECK(ExecutionOk(run.ContinueFileSearch(8, config, {}, &next)));
+    Q4T_CHECK(OutputJson(next.input.messages)
+                  .find(disconnect ? "unknown" : "actual remote resource") !=
+              std::string::npos);
+    Q4T_CHECK(FinishExecution(&run));
+    ResponsesExecution resumed(objects);
+    const auto request = Object({{"previous_response_id", String(run.Id())},
+                                 {"input", String("Continue")}});
+    Q4T_CHECK(
+        ExecutionOk(resumed.Prepare(request, config, ExecutionAccess(), 43)));
+    Q4T_CHECK(reads == 1 && server.calls == 1);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_mcp_resource_real_transport_uses_sealed_single_read) {
   for (const bool disconnect : {false, true}) {
     Server server;

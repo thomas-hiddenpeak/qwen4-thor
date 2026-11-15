@@ -19,6 +19,7 @@
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_mcp_state.h"
+#include "q4t/server/responses_mcp_media.h"
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
@@ -69,7 +70,10 @@ class ResponsesExecution {
                             const BatchResponseLink* batch_parent = nullptr,
                             const io::Json* credential_source = nullptr);
   bool GenerationReady() const { return generation_ready_; }
-  bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
+  bool PendingFileSheets() const {
+    return (files_ && files_->PendingSheets()) ||
+           (mcp_media_ && mcp_media_->PendingSheets());
+  }
   bool VariableInputSteps() const {
     const auto* context = envelope_.request.GetArray("context_management");
     return PendingFileSheets() ||
@@ -83,12 +87,11 @@ class ResponsesExecution {
             (envelope_.reasoning_mode == "pro" || !envelope_.summary.empty() ||
              compaction_trigger_ || (context && !context->array.empty())));
   }
-  uint64_t FileOutputBudget() const {
-    return files_ ? files_->PendingOutputBudget() : 0;
-  }
-  const FileExpansionUsage* FileUsage() const {
-    return files_ ? &files_->Usage() : nullptr;
-  }
+  uint64_t FileOutputBudget() const;
+  const FileExpansionUsage* FileUsage() const;
+  ObjectReply PrepareToolMedia(
+      const ChatPlanConfig& config,
+      const std::function<bool(const std::string&)>& publish = {});
   ObjectReply NextFileSheet(const ChatPlanConfig& config, FileSheetStep* step);
   ObjectReply CompleteFileSheet(const FileSheetStep& step,
                                 std::string_view output,
@@ -257,6 +260,10 @@ class ResponsesExecution {
   ObjectReply TrackMcpCall(const std::string& id);
   ObjectReply PrepareMcp(const ChatPlanConfig& config,
                          io::Json* continuation = nullptr);
+  ObjectReply ResolveMcpResource(const std::string& id, const std::string& uri);
+  ObjectReply PrepareMcpMedia(const ChatPlanConfig& config,
+                              const io::Json& history);
+  ResponsesMediaBudget OtherMcpMediaBudget() const;
   Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire,
                           size_t begin = 0);
   Status ApplyActualUsage(ResponsesOutput* output) const;
@@ -280,6 +287,9 @@ class ResponsesExecution {
   ResponseStatePlan plan_;
   ResponsesOutput output_;
   std::unique_ptr<ResponsesMcpState> mcp_state_;
+  std::unique_ptr<ResponsesMcpMedia> mcp_media_;
+  mutable FileExpansionUsage file_usage_;
+  bool mcp_sheet_issued_ = false;
   std::vector<ResponsesMcpDefinition> mcp_credentials_;
   // Digest of the caller's original request, not the expanded/stored one.
   // Batch may resupply that authenticated File row, never persisted secrets.

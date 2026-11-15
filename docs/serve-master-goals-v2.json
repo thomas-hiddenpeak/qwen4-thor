@@ -1169,7 +1169,9 @@
         "media_projection_evidence": "evidence/serve-mcp-projection-cpu-20261116/README.md",
         "media_projection_targeted_cpp_passed": 12,
         "shared_media_evidence": "evidence/serve-mcp-shared-media-cpu-20261116/README.md",
-        "shared_media_targeted_cpp_passed": 14
+        "shared_media_targeted_cpp_passed": 14,
+        "media_execution_evidence": "evidence/serve-mcp-media-execution-cpu-20261116/README.md",
+        "media_execution_targeted_cpp_passed": 20
       }
     },
     {
@@ -1971,7 +1973,9 @@
         "media_projection_evidence": "evidence/serve-mcp-projection-cpu-20261116/README.md",
         "media_projection_targeted_cpp_passed": 12,
         "shared_media_evidence": "evidence/serve-mcp-shared-media-cpu-20261116/README.md",
-        "shared_media_targeted_cpp_passed": 14
+        "shared_media_targeted_cpp_passed": 14,
+        "media_execution_evidence": "evidence/serve-mcp-media-execution-cpu-20261116/README.md",
+        "media_execution_targeted_cpp_passed": 20
       }
     },
     {

@@ -195,6 +195,12 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   const auto catalogs = plan_.mcp_catalogs.array.size();
   auto prepared_mcp = PrepareMcp(config, &history);
   if (!prepared_mcp.ok()) return prepared_mcp;
+  prepared_mcp = PrepareMcpMedia(config, history);
+  if (!prepared_mcp.ok()) return prepared_mcp;
+  if (PendingFileSheets())
+    return Error(503, "file_preparation_incomplete",
+                 "Complete tool document model steps before continuation");
+  envelope.mcp_content = envelope_.mcp_content;
   if (plan_.mcp_catalogs.array.size() > catalogs) {
     for (size_t i = catalogs; i < plan_.mcp_catalogs.array.size(); ++i)
       generation_history_.array.push_back(plan_.mcp_catalogs.array[i]);
@@ -291,6 +297,12 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   // user message or an invented tool result. Keep it local to this model step.
   history.array.push_back(Object(
       {{"role", String("developer")}, {"content", String(instructions)}}));
+  auto media = PrepareMcpMedia(config, history);
+  if (!media.ok()) return media;
+  if (PendingFileSheets())
+    return Error(503, "file_preparation_incomplete",
+                 "Complete tool document model steps before continuation");
+  envelope.mcp_content = envelope_.mcp_content;
   ChatPlanError error;
   status = PrepareResponsesGeneration(envelope, history, config, next, &error);
   if (status)

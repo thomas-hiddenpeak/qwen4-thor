@@ -324,6 +324,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/responses_mcp_binding.cpp
   src/server/responses_mcp_preparation.cpp
   src/server/responses_mcp_media.cpp
+  src/server/responses_execution_mcp_media.cpp
   src/server/responses_mcp_execution.cpp
   src/server/file_document.cpp
   src/server/file_document_worker.cpp

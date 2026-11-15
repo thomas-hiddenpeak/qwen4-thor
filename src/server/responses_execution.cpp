@@ -39,6 +39,7 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   if (reply.commit_unknown) {
     commit_unknown_ = true;
     if (files_) files_->RetainUncertainHolds();
+    if (mcp_media_) mcp_media_->RetainUncertainHolds();
     reply.message +=
         "; retrieve response " + plan_.id + " before retrying this request";
     reply.value = Object({{"response_id", String(plan_.id)}});
@@ -59,6 +60,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
                             &plan_.execution_owner,
                             &envelope_.request,
                             &envelope_.options,
+                            &envelope_.mcp_content,
                             &generation_.generation_request,
                             &generation_.effective_tools,
                             &generation_.active_tools,
@@ -93,6 +95,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   bytes += generation_.input_source_indices.size() * sizeof(size_t);
   bytes += generation_.chat.constraints.structural_tag.size();
   if (files_) bytes += files_->RetainedBytes();
+  if (mcp_media_) bytes += mcp_media_->Budget().retained;
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   bytes += file_search_argument_bytes_;
   bytes += tool_search_argument_bytes_;
@@ -233,6 +236,7 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  cipher_config_.model = config.model;
   auto history = plan_.history;
   compaction_trigger_ =
       !plan_.own_input.array.empty() &&
@@ -326,6 +330,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   }
   program_file_options_ =
       config.file_inputs ? *config.file_inputs : FileExpansionOptions{};
+  auto media = PrepareMcpMedia(config, files_ ? file_history_ : generation_history_);
+  if (!media.ok()) return media;
   if (!PendingFileSheets()) {
     auto built = BuildPreparedGeneration(config);
     if (!built.ok()) return built;
@@ -761,9 +767,12 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
   ScopeExit release_cleanup([&] {
     DiscardUnreviewedOutput();
     if (cleanup_ticket_) {
+      // A terminal parent does not prove that preparations of historical MCP
+      // calls closed. Keep their tracked cleanup responsibility until the
+      // reconciler confirms each invocation/resource under this exact owner.
       cleanup_->Close(
           cleanup_ticket_,
-          plan_.finished || (!durable_begin_attempted_ && !mcp_state_));
+          !mcp_state_ && (plan_.finished || !durable_begin_attempted_));
       cleanup_ticket_ = 0;
     }
   });
