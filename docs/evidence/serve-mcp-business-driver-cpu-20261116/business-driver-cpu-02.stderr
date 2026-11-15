@@ -1,0 +1,9 @@
+test_approval_uses_actual_identity_and_cannot_mutate_original_request (tools.serve_responses.test_mcp_acceptance.McpAcceptance.test_approval_uses_actual_identity_and_cannot_mutate_original_request) ... ok
+test_requests_are_real_sdk_shapes_with_frozen_budget (tools.serve_responses.test_mcp_acceptance.McpAcceptance.test_requests_are_real_sdk_shapes_with_frozen_budget) ... ok
+test_dropped_receipt_follows_one_actual_read_and_session_can_be_closed (tools.serve_responses.test_mcp_acceptance.ProjectPeer.test_dropped_receipt_follows_one_actual_read_and_session_can_be_closed) ... ok
+test_tls_auth_actual_document_and_exact_resource_target (tools.serve_responses.test_mcp_acceptance.ProjectPeer.test_tls_auth_actual_document_and_exact_resource_target) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.119s
+
+OK

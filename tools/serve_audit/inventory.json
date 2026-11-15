@@ -2087,7 +2087,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "f6035e2edb4b253287f271e58a56310b58f376debc25062c0d500ed22e289aba",
+    "src/server/chat_capabilities.cpp": "176eed274d2fda5c25758149d0c0bbd3451b929cac7233654e7100276e4cce3f",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -5627,5 +5627,14 @@
     "gpu_starts": 0,
     "complete_tunnel_delivered": false,
     "semantics": "Public wire schema, optional nginx separate tunnel lanes/protected headers; stored Chat filePart reference closure."
+  },
+  "mcp_business_driver_review_20261116": {
+    "base_commit": "d1c91a54",
+    "changed_anchors": [
+      "src/server/chat_capabilities.cpp"
+    ],
+    "implementation_only": true,
+    "release_attestation": false,
+    "description": "Expose actual MCP items, isolated transports, programmatic execution and recovery boundary; native provider adapters remain a required open task. Prepare bounded real SDK business without broad performance testing."
   }
 }

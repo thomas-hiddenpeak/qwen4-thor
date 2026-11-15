@@ -1,0 +1,2 @@
+chat_capabilities_native_file_search_conditions_and_output_types
+chat_capabilities_mcp_native_execution_and_recovery_boundaries

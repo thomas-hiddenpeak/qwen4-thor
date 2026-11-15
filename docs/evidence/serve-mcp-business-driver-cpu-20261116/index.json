@@ -1,0 +1,53 @@
+{
+  "base_commit": "d1c91a54d9d72bfbe31971f862424dc2a85da247",
+  "cpp_tests": 2,
+  "python_tests": 6,
+  "import_failure_preserved": true,
+  "source_mutations": 7,
+  "source_anchors": 688,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "business_verified": false,
+  "complete_mcp_delivered": false,
+  "bounds": {
+    "starts": 1,
+    "creates": 8,
+    "seconds": 900
+  },
+  "candidate_engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+  "candidate_ingress_sha256": "8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a",
+  "sources_sha256": {
+    "src/server/chat_capabilities.cpp": "176eed274d2fda5c25758149d0c0bbd3451b929cac7233654e7100276e4cce3f",
+    "tests/server_chat_capabilities_test.cpp": "ec9839ef3fef29f3b9c5cb1bf4603fba9e5d0652bd54bda3e228a300062f39bc",
+    "tools/examples/project_records.py": "6389b2ca1f6775fad6d7f7424ae8f7db878c74ee59502324eed188f667b18283",
+    "tools/serve_responses/mcp_business_peer.py": "944b3350755e6927266e9fb9291920904ab9014c996fb2f41f3c2abaa9678cce",
+    "tools/serve_responses/mcp_acceptance.py": "83b545b9060399200af09cdb15e836a9bfc9e28a6953fca92b98b30a1f536eae",
+    "tools/serve_responses/test_mcp_acceptance.py": "e156af38378149111792a752257da67648088ebe1d49bdc99c618ec7848fa1a4"
+  },
+  "files_sha256": {
+    "business-driver-engine-01.json": "ddc4a0e9359efadca1e448b67096abcf4151056be82825232692d954c2fd7b60",
+    "business-driver-build-01.stdout": "15a88d9c6910089c725f0737bd721415672b7591bb40d89aa2cd66d5632e89b1",
+    "business-driver-native-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-build-01.json": "b2c1466c20a6b7a4931111ba0561a4287c58df3de9fe2302dfcb75ccbf4eea24",
+    "business-driver-cpu-02.stderr": "4ee01db84190a62b0155c85cc896023e171a81f5d0f4afabd49f641891b2c0be",
+    "business-driver-records-01.stderr": "f25f4a5e0431e5e5cc97683e066c33ab26455dc88ca59e99afa095386b3781b6",
+    "business-driver-native-01.json": "cfd5baea2bebb21000762f1e5e29314b47097d12fa41ed65a7656752bf42e69c",
+    "business-driver-cpu-01.json": "01b1b0d4849a281592013d15eb4b4ed063e4463e56ddda032ecdc2c4c0234294",
+    "business-driver-engine-01.stdout": "27c9c980e7596148a28cdb11e958fe9d913b2de732ef01b8ade207688f677a11",
+    "business-driver-source-01.stdout": "9fa375f8677f846fe6376fcb3d5fb75d50731823dd6ff0d9cfef0f19f9e62714",
+    "business-driver-cpu-02.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-source-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-native-01.stdout": "5390ff359787b0057506ba3378345a793548b1beb093b8cd5279387724bc0053",
+    "business-driver-cpu-01.stderr": "564c3f47cc9b08495b9d8d66ef6dd8c7ee7f4e70dd4abd70718b7d25b5797fe2",
+    "business-driver-engine-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-records-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "business-driver-records-01.json": "99145abca5038d05a682cb77977d82494e804242e5361542161f3c16b2350fae",
+    "business-driver-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "previous-agent-ci.json": "5d5d938801624b955ac8e726d9d09e3b924ba55a11d964efa3267dab0166c9ce",
+    "required.txt": "a7de61be38b1cae650a903917aea0ecc7de9c7aa889612e83b3c7efaedf83aff",
+    "business-driver-cpu-02.json": "1c78c6291940d16d69f918cd4c52bd61c48f985768e84bdaf52238ee301c321b",
+    "business-driver-source-01.json": "c878105c83d58b669dc65dbb7d06f31cd5dfaa9395f0f26233a213bc6e31f736",
+    "README.md": "238adcf13cffda903cbc3992dee2476651f32e7809e2c885ade3063676adb794"
+  }
+}

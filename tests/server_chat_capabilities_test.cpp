@@ -77,16 +77,39 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
     Q4T_CHECK(search->GetString("results_include") ==
               "file_search_call.results");
     const auto* items = response->GetArray("output_items");
-    Q4T_CHECK(items && items->array.size() == 10);
+    Q4T_CHECK(items && items->array.size() == 13);
     for (const auto* type :
          {"message", "reasoning", "function_call", "custom_tool_call",
           "compaction", "file_search_call", "tool_search_call",
-          "tool_search_output", "program", "program_output"})
+          "tool_search_output", "program", "program_output", "mcp_list_tools",
+          "mcp_approval_request", "mcp_call"})
       Q4T_CHECK(std::count_if(items->array.begin(), items->array.end(),
                               [&](const auto& item) {
                                 return item.IsString() && item.str == type;
                               }) == 1);
   }
+  return true;
+}
+
+Q4T_TEST(chat_capabilities_mcp_native_execution_and_recovery_boundaries) {
+  using namespace q4t::server;
+  q4t::io::Json value;
+  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("m", false, true), &value));
+  const auto* responses = value.Find("responses");
+  const auto* mcp = responses->Find("mcp");
+  Q4T_CHECK(mcp && mcp->GetString("profile") == "q4t-native-mcp-v1");
+  Q4T_CHECK(mcp->GetBool("enabled") && mcp->GetBool("native_tunnel_agent") &&
+            mcp->GetBool("authenticated_continuation") &&
+            mcp->GetBool("encrypted_session_state"));
+  Q4T_CHECK(mcp->GetString("approval_default") == "always");
+  for (const auto* field :
+       {"automatic_tool_replay", "model_restart_on_error",
+        "core_readiness_dependency", "external_agent_required",
+        "native_provider_adapters"})
+    Q4T_CHECK(!mcp->GetBool(field, true));
+  Q4T_CHECK(responses->Find("programmatic_tools")
+                ->Find("tool_types")
+                ->GetBool("mcp"));
   return true;
 }
 
