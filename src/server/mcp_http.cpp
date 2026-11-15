@@ -487,9 +487,9 @@ struct Sessions::Impl {
 Sessions::Sessions() : impl_(std::make_unique<Impl>()) {}
 Sessions::~Sessions() { Clear(); }
 size_t Sessions::Size() const { return impl_->entries.size(); }
-void Sessions::Clear() {
+void Sessions::Clear(bool release_remote) {
   for (auto& [id, entry] : impl_->entries)
-    if (entry.client) entry.client->Close();
+    if (release_remote && entry.client) entry.client->Close();
   impl_->entries.clear();
 }
 void Sessions::Collect() {
@@ -560,7 +560,10 @@ ObjectReply Sessions::Exchange(
               session->GetBool("lost") ||
               (found != entries.end() && !found->second.client) ||
               (session->GetBool("legacy") && found == entries.end());
-    if (replace && !allow_new) return lost();
+    if (replace && !allow_new) {
+      Set(session, "lost", Boolean(true));
+      return lost();
+    }
   } else if (!allow_new) {
     return lost();
   }
@@ -622,12 +625,25 @@ ObjectReply Sessions::Exchange(
             .first;
   }
   auto& entry = found->second;
-  entry.client->Begin(deadline);
+  entry.client->Begin(std::min(
+      deadline,
+      Clock::now() + std::chrono::milliseconds(std::max<int64_t>(
+                         0, entry.state.GetInt("expires_ms") - NowMillis()))));
   Set(&entry.state, "idle_expires_ms",
       Number(NowMillis() + entry.state.GetInt("idle_ms")));
   *session = entry.state;
   if (!checkpoint || !checkpoint(entry.state))
     return Error(409, "mcp_session_not_confirmed", "MCP session not confirmed");
+  // Publication may consume the remaining session lifetime. Do not ask for
+  // tool permission after expiry; HTTP also uses the absolute session limit
+  // if permission itself takes time to publish.
+  if (NowMillis() >= entry.state.GetInt("expires_ms")) {
+    entry.client->Close();
+    entry.client.reset();
+    Set(&entry.state, "lost", Boolean(true));
+    *session = entry.state;
+    return lost();
+  }
   auto reply = Perform(*entry.client, method, params, permit, receipt);
   entry.touched = Clock::now();
   if (!reply.ok() && (entry.client->Legacy() ||

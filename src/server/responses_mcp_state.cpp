@@ -53,6 +53,53 @@ bool Same(const Json& left, const Json& right) {
   return InputValueIdentity(left, &a) && InputValueIdentity(right, &b) &&
          a == b;
 }
+bool ValidSession(const Json& session, const StateAccess& access) {
+  std::string param, scope;
+  if (!InputFields(session,
+                   {"id", "binding", "scope", "protocol", "session_id",
+                    "legacy", "tools", "resources", "created_ms", "expires_ms",
+                    "idle_ms", "idle_expires_ms", "lost"},
+                   &param, "session") ||
+      OutputJson(session).size() > 4096 ||
+      !InputValueIdentity(String(access.scope), &scope) ||
+      session.GetString("scope") != scope ||
+      session.GetString("binding").size() != 64 ||
+      !session.GetString("id").starts_with("mcps_") ||
+      !ValidId(session.GetString("id")))
+    return false;
+  const auto protocol = session.GetString("protocol");
+  if (protocol != "2025-06-18" && protocol != "2025-03-26" &&
+      protocol != "2024-11-05")
+    return false;
+  for (const auto* field : {"legacy", "tools", "resources"})
+    if (!session.Find(field) || !session.Find(field)->IsBool()) return false;
+  if (session.Has("lost") && !session.Find("lost")->IsBool()) return false;
+  const auto* token = session.Find("session_id");
+  if (!token || !token->IsString() || token->str.size() > 1024) return false;
+  for (unsigned char c : token->str)
+    if (c < 0x21 || c > 0x7e) return false;
+  for (const auto* field :
+       {"created_ms", "expires_ms", "idle_ms", "idle_expires_ms"})
+    if (!session.Find(field) || !IsInputInteger(*session.Find(field)))
+      return false;
+  const auto created = session.GetInt("created_ms");
+  const auto expires = session.GetInt("expires_ms");
+  return created > 0 && created < (1LL << 52) && expires > created &&
+         expires - created <= 3600000 && session.GetInt("idle_ms") > 0 &&
+         session.GetInt("idle_ms") <= 300000 &&
+         session.GetInt("idle_expires_ms") >= created &&
+         session.GetInt("idle_expires_ms") <= expires + 300000;
+}
+bool SameSession(const Json& left, const Json& right) {
+  for (const auto* field :
+       {"id", "binding", "scope", "protocol", "session_id", "legacy", "tools",
+        "resources", "created_ms", "expires_ms", "idle_ms"}) {
+    const auto* a = left.Find(field);
+    const auto* b = right.Find(field);
+    if (!a || !b || !Same(*a, *b)) return false;
+  }
+  return true;
+}
 // Only known optional MCP item/tool metadata may be omitted. Schema values and
 // results are compared as complete values; never accept a weakened schema.
 bool PublicMatches(const Json& incoming, const Json& stored) {
@@ -288,6 +335,9 @@ ObjectReply ResponsesMcpState::Read(const std::string& id,
       payload->GetInt("expires_at") != expires ||
       payload->GetString("id") != id || payload->GetString("kind") != kind)
     return Invalid("Invalid MCP authority payload");
+  if (const auto* session = payload->Find("session");
+      session && !ValidSession(*session, access))
+    return Invalid("Invalid sealed MCP session");
   if (kind == "call") {
     const auto state = payload->GetString("state");
     const auto* call = payload->Find("call");
@@ -412,12 +462,10 @@ ObjectReply ResponsesMcpState::Write(const std::string& id,
   }
   return reply;
 }
-ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
-                                       const Json& tools,
-                                       const StateAccess& access,
-                                       int64_t lifetime,
-                                       std::string reserved_id,
-                                       std::string listing_error) {
+ObjectReply ResponsesMcpState::Catalog(
+    const ResponsesMcpDefinition& definition, const Json& tools,
+    const StateAccess& access, int64_t lifetime, std::string reserved_id,
+    std::string listing_error, const Json* session) {
   if (lifetime < 1 || lifetime > kLifetime)
     return Invalid("Invalid MCP retention");
   Json projected, authority;
@@ -443,14 +491,59 @@ ObjectReply ResponsesMcpState::Catalog(const ResponsesMcpDefinition& definition,
                       {"tools", std::move(projected)}});
   if (!listing_error.empty())
     Set(&item, "error", String(std::move(listing_error)));
-  auto reply = Write(id, "catalog",
-                     Object({{"public", item},
-                             {"tools", std::move(authority)},
-                             {"credentials_required",
-                              Boolean(ResponsesMcpHasCredentials(definition))},
-                             {"declaration", clean.declaration}}),
-                     0, std::time(nullptr) + lifetime, access);
+  auto payload = Object({{"public", item},
+                         {"tools", std::move(authority)},
+                         {"credentials_required",
+                          Boolean(ResponsesMcpHasCredentials(definition))},
+                         {"declaration", clean.declaration}});
+  if (session) {
+    if (!ValidSession(*session, access)) return Invalid("Invalid MCP session");
+    Set(&payload, "session", *session);
+  }
+  auto reply = Write(id, "catalog", std::move(payload), 0,
+                     std::time(nullptr) + lifetime, access);
   if (reply.ok() && !reply.commit_unknown) reply.value = item;
+  return reply;
+}
+ObjectReply ResponsesMcpState::Session(const std::string& catalog_id,
+                                       const ResponsesMcpDefinition& current,
+                                       const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(catalog_id, "catalog", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  const auto* declaration = payload.Find("declaration");
+  if (!declaration) return Invalid("Missing MCP catalog declaration");
+  reply = Definition(*declaration, current);
+  if (!reply.ok()) return reply;
+  reply.value =
+      Object({{"revision", *record.Find("revision")},
+              {"session",
+               payload.Has("session") ? *payload.Find("session") : Json()}});
+  return reply;
+}
+ObjectReply ResponsesMcpState::BindSession(
+    const std::string& catalog_id, const ResponsesMcpDefinition& current,
+    int64_t expected_revision, const Json& session, const StateAccess& access) {
+  Json record, payload;
+  auto reply = Read(catalog_id, "catalog", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  if (record.GetInt("revision") != expected_revision)
+    return Error(409, "mcp_session_revision_conflict", "MCP session changed");
+  const auto* declaration = payload.Find("declaration");
+  if (!declaration || !ValidSession(session, access))
+    return Invalid("Invalid MCP session publication");
+  reply = Definition(*declaration, current);
+  if (!reply.ok()) return reply;
+  if (const auto* prior = payload.Find("session");
+      prior && Same(*prior, session)) {
+    reply.value = Object({{"revision", Number(expected_revision)}});
+    return reply;
+  }
+  Set(&payload, "session", session);
+  reply = Write(catalog_id, "catalog", std::move(payload), expected_revision,
+                record.GetInt("expires_at"), access);
+  if (reply.ok() && !reply.commit_unknown)
+    reply.value = Object({{"revision", Number(expected_revision + 1)}});
   return reply;
 }
 ObjectReply ResponsesMcpState::Authenticate(const Json& item,
@@ -690,7 +783,8 @@ ObjectReply ResponsesMcpState::Decide(const std::string& id, bool approve,
 }
 ObjectReply ResponsesMcpState::Permit(const std::string& id,
                                       const ResponsesMcpDefinition& current,
-                                      const StateAccess& access) {
+                                      const StateAccess& access,
+                                      const Json* session) {
   Json record, payload;
   auto reply = Read(id, "call", access, &record, &payload);
   if (!reply.ok()) return reply;
@@ -711,6 +805,17 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
       (!decision || !decision->GetBool("approve")))
     return Error(403, "mcp_approval_required",
                  "Current policy requires approval");
+  auto catalog = Session(payload.GetString("catalog_id"), current, access);
+  if (!catalog.ok()) return catalog;
+  const auto* bound = catalog.value.Find("session");
+  if (bound && !bound->IsNull()) {
+    if (!session || !ValidSession(*session, access) ||
+        session->GetBool("lost") || !SameSession(*bound, *session))
+      return Invalid("MCP dispatch differs from its owned session");
+    Set(&payload, "session", *session);
+  } else if (session) {
+    return Invalid("MCP dispatch session was not published");
+  }
   Set(&payload, "state", String("dispatching"));
   Set(&payload, "execution_owner", CurrentResponseOwner());
   Set(&payload, "response_id", String(response_id_));
@@ -869,12 +974,20 @@ ObjectReply ResponsesMcpState::BindModelSnapshots(const std::string& id,
 }
 ObjectReply ResponsesMcpState::PermitResource(
     const std::string& id, const std::string& uri,
-    const ResponsesMcpDefinition& current, const StateAccess& access) {
+    const ResponsesMcpDefinition& current, const StateAccess& access,
+    const Json* session) {
   Json record, payload;
   auto reply = Read(id, "call", access, &record, &payload);
   if (!reply.ok()) return reply;
   reply = ResourceAuthority(payload, uri, current);
   if (!reply.ok()) return reply;
+  const auto* original = payload.Find("session");
+  if ((original &&
+       (!session || !ValidSession(*session, access) ||
+        session->GetBool("lost") || !SameSession(*original, *session))) ||
+      (!original && session))
+    return Invalid("MCP resource differs from its original call session");
+  if (session) Set(&payload, "session", *session);
   if (response_id_.size() > 256)
     return Invalid("Resource response identity exceeds capacity");
   auto* entry = ResourceEntry(&payload, uri);
@@ -899,7 +1012,7 @@ ObjectReply ResponsesMcpState::PermitResource(
 ObjectReply ResponsesMcpState::FinishResource(
     const std::string& id, const std::string& uri,
     const McpTransportReceipt& receipt, const ObjectReply& transport,
-    const StateAccess& access) {
+    const StateAccess& access, const Json* session) {
   Json record, payload;
   auto reply = Read(id, "call", access, &record, &payload);
   if (!reply.ok()) return reply;
@@ -920,6 +1033,14 @@ ObjectReply ResponsesMcpState::FinishResource(
        (!dispatched || !receipt.call_permitted || receipt.outcome_unknown)) ||
       (!dispatched && receipt.call_permitted))
     return Invalid("Resource result has no matching dispatch authority");
+  if (session) {
+    const auto* original = payload.Find("session");
+    if (!original || !ValidSession(*session, access) ||
+        !SameSession(*original, *session))
+      return Invalid("Resource result differs from its original call session");
+    Set(&payload, "session", *session);
+    entry = ResourceEntry(&payload, uri);
+  }
   const bool unknown =
       dispatched && (receipt.outcome_unknown || !receipt.call_permitted);
   Json error, result;
@@ -1054,7 +1175,8 @@ ObjectReply ResponsesMcpState::Reconcile(Json* items,
 ObjectReply ResponsesMcpState::Finish(const std::string& id,
                                       const McpTransportReceipt& receipt,
                                       const ObjectReply& transport,
-                                      const StateAccess& access) {
+                                      const StateAccess& access,
+                                      const Json* session) {
   Json record, payload;
   auto reply = Read(id, "call", access, &record, &payload);
   if (!reply.ok()) return reply;
@@ -1076,6 +1198,13 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
     return Invalid("Successful result has no confirmed dispatch authority");
   if (state == "ready" && receipt.call_permitted)
     return Invalid("Remote call has no matching dispatch record");
+  if (session && receipt.call_permitted) {
+    const auto* original = payload.Find("session");
+    if (!original || !ValidSession(*session, access) ||
+        !SameSession(*original, *session))
+      return Invalid("MCP result differs from its original call session");
+    Set(&payload, "session", *session);
+  }
   if (success) {
     if (!receipt.error.IsNull()) {
       const auto* code = receipt.error.Find("code");

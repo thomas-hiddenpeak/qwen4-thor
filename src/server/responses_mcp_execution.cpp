@@ -123,13 +123,41 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
   if (!Parse(call.GetString("arguments"), &arguments))
     return Error(500, "mcp_state_invalid", "Owned call arguments invalid");
   const auto id = call.GetString("id");
+  const auto catalog_id = owned.value.GetString("catalog_id");
+  auto private_session = mcp_state_->Session(catalog_id, definition, access_);
+  if (!private_session.ok()) return private_session;
+  auto revision = private_session.value.GetInt("revision");
+  McpSession session;
+  session.state = *private_session.value.Find("session");
+  Json published_session = session.state;
+  session.checkpoint = [&](const Json& value) {
+    auto saved = mcp_state_->BindSession(catalog_id, definition, revision,
+                                         value, access_);
+    if (saved.ok() && !saved.commit_unknown) {
+      revision = saved.value.GetInt("revision");
+      published_session = value;
+    }
+    return saved;
+  };
   McpTransportReceipt receipt;
-  auto result = InvokeMcp(
-      {access_.scope, access_.deadline, access_.cancelled},
-      definition.credentials, mcp_fetch_, "tools/call",
-      Object(
-          {{"name", *call.Find("name")}, {"arguments", std::move(arguments)}}),
-      [&] { return mcp_state_->Permit(id, definition, access_); }, &receipt);
+  const auto invoke = [&] {
+    return InvokeMcp(
+        {access_.scope, access_.deadline, access_.cancelled},
+        definition.credentials, mcp_fetch_, "tools/call",
+        Object({{"name", *call.Find("name")}, {"arguments", arguments}}),
+        [&] {
+          return mcp_state_->Permit(id, definition, access_, &session.state);
+        },
+        &receipt, {}, &session);
+  };
+  auto result = invoke();
+  if (result.code == "mcp_session_binding_changed" && !receipt.call_permitted) {
+    // The catalog/target was authenticated above. Newly supplied credentials
+    // or deployment policy need a fresh session, never the previous token.
+    // This preflight error performed no remote I/O or permission mutation.
+    session.state = Json();
+    result = invoke();
+  }
   if (result.commit_unknown) return BindMutationResult(std::move(result));
   // The network request owns this single dispatch identity. A timeout or
   // disconnected subscriber cannot prevent bounded durable result closure.
@@ -137,7 +165,9 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
       access_.scope,
       std::chrono::steady_clock::now() + std::chrono::seconds(2),
       {}};
-  auto completed = mcp_state_->Finish(id, receipt, result, cleanup);
+  auto completed =
+      mcp_state_->Finish(id, receipt, result, cleanup,
+                         receipt.call_permitted ? &session.state : nullptr);
   if (!completed.ok() || completed.commit_unknown)
     return BindMutationResult(std::move(completed));
   std::string wire;
@@ -147,6 +177,15 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
     return Error(503, "response_storage_exhausted", status.message());
   if (publish && !publish(wire))
     return Error(499, "request_cancelled", "MCP output subscriber cancelled");
+  if (session.state.Has("protocol") &&
+      OutputJson(published_session) != OutputJson(session.state)) {
+    // Persist session loss only after the actual tool outcome is durable.
+    // Storage failure here must never turn the known result into a replay.
+    auto saved_session = mcp_state_->BindSession(
+        catalog_id, definition, revision, session.state, cleanup);
+    if (!saved_session.ok() || saved_session.commit_unknown)
+      return BindMutationResult(std::move(saved_session));
+  }
   return {};
 }
 

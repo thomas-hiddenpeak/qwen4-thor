@@ -16,6 +16,7 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/file_expansion.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/moderation.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/lifetime.h"
@@ -1663,5 +1664,146 @@ Q4T_TEST(responses_mcp_history_approval_index_is_atomic_under_object_quota) {
   Q4T_CHECK(data && data->array.size() == 1 &&
             data->array.front().GetString("id") == catalog.GetString("id"));
   Q4T_CHECK(Ok(state.Authenticate(catalog, Access())));
+  return true;
+}
+
+namespace {
+Json PrivateSession(std::string id = "mcps_fixture",
+                    std::string token = "private-token") {
+  std::string scope;
+  if (!InputValueIdentity(String(Access().scope), &scope))
+    throw std::runtime_error("fixture session scope");
+  const auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                       std::chrono::system_clock::now().time_since_epoch())
+                       .count();
+  return Object({{"id", String(std::move(id))},
+                 {"binding", String(Digest("fixture"))},
+                 {"scope", String(scope)},
+                 {"protocol", String("2025-06-18")},
+                 {"session_id", String(std::move(token))},
+                 {"legacy", Boolean(false)},
+                 {"tools", Boolean(true)},
+                 {"resources", Boolean(true)},
+                 {"created_ms", Number(now)},
+                 {"expires_ms", Number(now + 3600000)},
+                 {"idle_ms", Number(300000)},
+                 {"idle_expires_ms", Number(now + 300000)}});
+}
+}  // namespace
+
+Q4T_TEST(responses_mcp_session_catalog_is_sealed_scope_bound_and_cas_owned) {
+  Fixture fixture;
+  const auto definition = Definition("never");
+  const auto session = PrivateSession();
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesMcpState state(objects, Config());
+    const auto catalog =
+        state.Catalog(definition, Tools(), Access(), 600, "", "", &session);
+    Q4T_CHECK(Ok(catalog));
+    id = catalog.value.GetString("id");
+    Q4T_CHECK(OutputJson(catalog.value).find("private-token") ==
+              std::string::npos);
+    Q4T_CHECK(OutputJson(Record(objects, id)).find("private-token") ==
+              std::string::npos);
+    auto read = state.Session(id, definition, Access());
+    Q4T_CHECK(Ok(read) && read.value.GetInt("revision") == 1 &&
+              read.value.Find("session")->GetString("session_id") ==
+                  "private-token");
+    auto next = PrivateSession("mcps_next", "replacement-token");
+    Q4T_CHECK(Ok(state.BindSession(id, definition, 1, next, Access())));
+    Q4T_CHECK(state.BindSession(id, definition, 1, session, Access()).code ==
+              "mcp_session_revision_conflict");
+    Q4T_CHECK(!state.Session(id, definition, Access("client:other")).ok());
+    auto changed = Definition(
+        "never", Object({{"server_url", String("https://other.example/mcp")}}));
+    Q4T_CHECK(state.Session(id, changed, Access()).code ==
+              "mcp_server_changed");
+    Set(&next, "authorization", String("must-not-store"));
+    Q4T_CHECK(!state.BindSession(id, definition, 2, next, Access()).ok());
+    Q4T_CHECK(Ok(state.Authenticate(catalog.value, Access())));
+  }
+  ObjectStore restarted(fixture.options);
+  ResponsesMcpState state(restarted, Config());
+  const auto read = state.Session(id, definition, Access());
+  Q4T_CHECK(Ok(read) && read.value.GetInt("revision") == 2 &&
+            read.value.Find("session")->GetString("session_id") ==
+                "replacement-token");
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_dispatch_and_result_keep_exact_authority) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  auto session = PrivateSession();
+  const auto catalog =
+      state.Catalog(definition, Tools(), Access(), 600, "", "", &session);
+  Q4T_CHECK(Ok(catalog));
+  const auto proposed = Propose(state, catalog.value, definition);
+  Q4T_CHECK(Ok(proposed));
+  const auto id = proposed.value.GetString("id");
+  Q4T_CHECK(!state.Permit(id, definition, Access()).ok());
+  auto changed = PrivateSession("mcps_other", "other-token");
+  Q4T_CHECK(!state.Permit(id, definition, Access(), &changed).ok());
+  const auto permitted = state.Permit(id, definition, Access(), &session);
+  Q4T_CHECK(Ok(permitted));
+  auto receipt = Success(permitted.value.GetString("dispatch_id"));
+  Q4T_CHECK(!state.Finish(id, receipt, {}, Access(), &changed).ok());
+  Q4T_CHECK(Ok(state.Finish(id, receipt, {}, Access(), &session)));
+  Q4T_CHECK(!state.Permit(id, definition, Access(), &session).ok());
+  const auto private_call = state.Inspect(id, Access());
+  Q4T_CHECK(Ok(private_call) && private_call.value.Find("session")->GetString(
+                                    "session_id") == "private-token");
+  Q4T_CHECK(OutputJson(Record(objects, id)).find("private-token") ==
+            std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_resource_keeps_original_after_catalog_renewal) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  auto session = PrivateSession();
+  const auto catalog =
+      state.Catalog(definition, Tools(), Access(), 600, "", "", &session);
+  Q4T_CHECK(Ok(catalog));
+  const auto proposed = Propose(state, catalog.value, definition);
+  Q4T_CHECK(Ok(proposed));
+  const auto id = proposed.value.GetString("id");
+  const auto permitted = state.Permit(id, definition, Access(), &session);
+  Q4T_CHECK(Ok(permitted));
+  auto receipt = Success(permitted.value.GetString("dispatch_id"));
+  Field(receipt.result, "content")
+      .array.push_back(Object({{"type", String("resource_link")},
+                               {"name", String("source")},
+                               {"uri", String("file:///report0")}}));
+  Q4T_CHECK(Ok(state.Finish(id, receipt, {}, Access(), &session)));
+  auto renewed = PrivateSession("mcps_new", "new-token");
+  Q4T_CHECK(Ok(state.BindSession(catalog.value.GetString("id"), definition, 1,
+                                 renewed, Access())));
+  Q4T_CHECK(
+      Ok(state.ProposeResource(id, "file:///report0", definition, Access())));
+  Q4T_CHECK(!state
+                 .PermitResource(id, "file:///report0", definition, Access(),
+                                 &renewed)
+                 .ok());
+  Q4T_CHECK(
+      !state.PermitResource(id, "file:///report0", definition, Access()).ok());
+  auto lost = session;
+  Set(&lost, "lost", Boolean(true));
+  Q4T_CHECK(
+      !state.PermitResource(id, "file:///report0", definition, Access(), &lost)
+           .ok());
+  auto dispatched = state.PermitResource(id, "file:///report0", definition,
+                                         Access(), &session);
+  Q4T_CHECK(Ok(dispatched));
+  const auto resource =
+      ResourceResult(dispatched.value.GetString("dispatch_id"));
+  Q4T_CHECK(
+      Ok(state.FinishResource(id, "file:///report0", resource, {}, Access())));
   return true;
 }

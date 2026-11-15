@@ -180,10 +180,11 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
       return Error(503, "mcp_target_mapping_required",
                    "MCP connector or tunnel needs a deployment mapping");
     McpTransportReceipt receipt;
+    McpSession session;
     auto listed =
         InvokeMcp({access_.scope, access_.deadline, access_.cancelled},
                   definition.credentials, mcp_fetch_, "tools/list", Object(),
-                  {}, &receipt);
+                  {}, &receipt, {}, &session);
     if (listed.commit_unknown || listed.http_status == 408 ||
         listed.http_status == 499)
       return listed;
@@ -192,8 +193,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
     const auto failure = success        ? ""
                          : !listed.ok() ? listed.code + ": " + listed.message
                                         : "MCP tools/list failed";
-    auto catalog = mcp_state_->Catalog(definition, success ? *tools : Array(),
-                                       access_, 30 * 24 * 3600, "", failure);
+    auto catalog = mcp_state_->Catalog(
+        definition, success ? *tools : Array(), access_, 30 * 24 * 3600, "",
+        failure, session.state.Has("protocol") ? &session.state : nullptr);
     if (!catalog.ok() || catalog.commit_unknown)
       return BindMutationResult(std::move(catalog));
     if (plan_.mcp_catalogs.array.size() >= 128)

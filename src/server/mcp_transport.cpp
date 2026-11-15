@@ -107,7 +107,7 @@ void PollMcpSessions() {
     owner.worker.reset();
 }
 
-bool CloseMcpSessions() {
+bool CloseMcpSessions(bool release_remote) {
   auto& owner = SessionOwner();
   const std::unique_lock lock(owner.mutex, std::try_to_lock);
   if (!lock.owns_lock()) return false;
@@ -115,7 +115,9 @@ bool CloseMcpSessions() {
   // A bounded best-effort DELETE/stream close. A remote cleanup failure never
   // changes a known invocation result and cannot stop the healthy model.
   const auto deadline = Clock::now() + std::chrono::milliseconds(250);
-  auto bytes = OutputJson(Object({{"type", String("close")}}));
+  auto bytes =
+      OutputJson(Object({{"type", String("close")},
+                         {"release_remote", Boolean(release_remote)}}));
   Frame frame{kVersion, 1, bytes.size()};
   if (owner.worker->Transfer(&frame, sizeof(frame), true, deadline) &&
       owner.worker->Transfer(bytes.data(), bytes.size(), true, deadline) &&
@@ -333,7 +335,7 @@ int MaybeRunMcpWorker(int argc, char** argv) {
           !Parse(bytes, &request))
         return 3;
       if (request.GetString("type") == "close") {
-        sessions.Clear();
+        sessions.Clear(request.GetBool("release_remote"));
         WriteWorker(Object({{"type", String("closed")}}));
         return 0;
       }

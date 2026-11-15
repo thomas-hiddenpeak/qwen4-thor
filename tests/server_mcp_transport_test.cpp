@@ -895,6 +895,7 @@ Q4T_TEST(mcp_transport_session_cleanup_failure_preserves_known_result) {
 namespace {
 struct ExecutionFixture {
   ObjectStoreOptions options;
+  ~ExecutionFixture() { CloseMcpSessions(); }
   explicit ExecutionFixture() {
     const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
     auto root =
@@ -2337,8 +2338,14 @@ Q4T_TEST(responses_mcp_cleanup_survives_storage_failure_without_reexecution) {
       ChatPlanError error;
       Q4T_CHECK(PlanResponsesMcpDefinition(
           request.GetArray("tools")->array.front(), &definition, &error));
-      Q4T_CHECK(ExecutionOk(
-          calls.Permit(call.GetString("id"), definition, ExecutionAccess())));
+      const auto owned = calls.Inspect(call.GetString("id"), ExecutionAccess());
+      Q4T_CHECK(ExecutionOk(owned));
+      const auto session = calls.Session(owned.value.GetString("catalog_id"),
+                                         definition, ExecutionAccess());
+      Q4T_CHECK(ExecutionOk(session));
+      Q4T_CHECK(ExecutionOk(calls.Permit(call.GetString("id"), definition,
+                                         ExecutionAccess(),
+                                         session.value.Find("session"))));
     }
     // Keep normal operations on their production deadline. The simulated
     // storage controller failure is followed by a stuck replacement spawn.
@@ -3069,7 +3076,7 @@ struct StatefulMcp {
   std::mutex mutex;
   std::map<std::string, bool> sessions;
   std::atomic<int> initialized{0}, dispatched{0}, read{0}, closed{0};
-  std::atomic<bool> expire_call{false};
+  std::atomic<bool> expire_call{false}, expire_read{false};
   Server server;
   StatefulMcp() {
     server.handler = [this](const Request& r, int fd, std::stop_token) {
@@ -3119,6 +3126,11 @@ struct StatefulMcp {
       }
       if (method == "resources/read") {
         ++read;
+        if (expire_read.exchange(false)) {
+          sessions.erase(header->second);
+          Send(fd, Http(404));
+          return true;
+        }
         if (!sessions[header->second]) {
           Send(fd, Http(409));
           return true;
@@ -3481,5 +3493,265 @@ Q4T_TEST(mcp_session_legacy_capacity_is_per_scope_and_frees_on_idle) {
   std::this_thread::sleep_for(550ms);
   Q4T_CHECK(remote.Invoke(sessions.back(), receipt).ok());
   Q4T_CHECK(remote.initialized == 6);
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_session_actual_resource_and_frozen_count_use_one_session) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(remote.server);
+  const auto request = ExecutionRequest(remote.server);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(run.FreezeInputs(&frozen)));
+  Q4T_CHECK(OutputJson(frozen).find("private-fixture-session-") ==
+            std::string::npos);
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1);
+  Q4T_CHECK(run.ResultJson().find("private-fixture-session-") ==
+            std::string::npos);
+  const auto request_count = remote.server.Requests().size();
+  Q4T_CHECK(CloseMcpSessions(false));
+  Q4T_CHECK(remote.closed == 0);
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan counted;
+  const auto count = Object({{"previous_response_id", String(run.Id())},
+                             {"input", String("Continue")}});
+  auto count_config = config;
+  count_config.count_input_only = true;
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      count, count_config, objects, ExecutionAccess(), &envelope, &counted)));
+  Q4T_CHECK(remote.server.Requests().size() == request_count);
+  Q4T_CHECK(OutputJson(counted.input.messages).find("same session resource") !=
+            std::string::npos);
+  Q4T_CHECK(
+      OutputJson(counted.input.messages).find("private-fixture-session-") ==
+      std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_approval_survives_store_and_owner_restart) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  const auto config = ExecutionConfig(remote.server);
+  const auto request = ExecutionRequest(remote.server, "always");
+  Json approval;
+  std::string response;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesExecution run(objects);
+    Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+    std::string wire;
+    bool waiting = false;
+    Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+    Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && waiting);
+    approval = run.Output().Snapshot().GetArray("output")->array.back();
+    Q4T_CHECK(approval.GetString("type") == "mcp_approval_request");
+    Q4T_CHECK(ExecutionOk(run.Finish(false, 1, {}, 43, &wire)));
+    response = run.Id();
+  }
+  Q4T_CHECK(CloseMcpSessions(false) && remote.closed == 0);
+  ObjectStore objects(fixture.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(
+      run.Prepare(ApprovalResponse(request, approval, true, response), config,
+                  ExecutionAccess(), 44)));
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)));
+  Q4T_CHECK(ExecutionOk(run.RunMcpApprovals({})));
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1);
+  ResponsesExecution retry(objects);
+  Q4T_CHECK(ExecutionOk(
+      retry.Prepare(ApprovalResponse(request, approval, true, run.Id()), config,
+                    ExecutionAccess(), 45)));
+  Q4T_CHECK(ExecutionOk(retry.Begin(&wire)) &&
+            ExecutionOk(retry.RunMcpApprovals({})));
+  Q4T_CHECK(remote.dispatched == 1 && remote.read == 1);
+  Q4T_CHECK(FinishExecution(&retry));
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_session_frozen_preparation_resumes_with_fresh_credentials) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  const auto config = ExecutionConfig(remote.server);
+  auto request = ExecutionRequest(remote.server);
+  Json frozen;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesExecution run(objects);
+    Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+    Q4T_CHECK(ExecutionOk(run.FreezeInputs(&frozen)));
+    run.InputsPublished(false);
+  }
+  Q4T_CHECK(CloseMcpSessions(false));
+  ObjectStore objects(fixture.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.RestoreInputs(frozen, config, ExecutionAccess(), 43,
+                                          nullptr, &request)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_rotated_credentials_use_new_remote_authority) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(remote.server);
+  auto request = ExecutionRequest(remote.server, "always");
+  ResponsesExecution first(objects);
+  Q4T_CHECK(ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire));
+  Q4T_CHECK(ExecutionOk(first.RunMcp(1, &waiting, {})) && waiting);
+  const auto approval =
+      first.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  auto next = ApprovalResponse(request, approval, true, first.Id());
+  Set(&Field(next, "tools").array.front(), "authorization",
+      String("rotated-token"));
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(ExecutionOk(resumed.Prepare(next, config, ExecutionAccess(), 44)));
+  Q4T_CHECK(ExecutionOk(resumed.Begin(&wire)) &&
+            ExecutionOk(resumed.RunMcpApprovals({})));
+  Q4T_CHECK(remote.initialized == 2 && remote.dispatched == 1);
+  for (const auto& r : remote.server.Requests()) {
+    if (r.rpc.GetString("method") != "tools/call") continue;
+    Q4T_CHECK(r.headers.at("authorization") == "Bearer rotated-token");
+    Q4T_CHECK(r.headers.at("mcp-session-id") == "private-fixture-session-2");
+  }
+  Q4T_CHECK(ExecutionOk(resumed.PrepareToolMedia(config)));
+  Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_legacy_resource_loss_keeps_actual_tool_result) {
+  LegacyStatefulMcp remote;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(remote.server);
+  const auto request = ExecutionRequest(remote.server);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(CloseMcpSessions(false));
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  ResponsesGenerationPlan continued;
+  Q4T_CHECK(ExecutionOk(run.ContinueFileSearch(8, config, {}, &continued)));
+  Q4T_CHECK(OutputJson(continued.input.messages).find("mcp_session_lost") !=
+            std::string::npos);
+  const auto& item = run.Output().Snapshot().GetArray("output")->array.back();
+  Q4T_CHECK(item.GetString("status") == "completed" &&
+            item.GetString("output").find("resource://legacy-owned") !=
+                std::string::npos);
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 0);
+  Q4T_CHECK(FinishExecution(&run));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_session_resource_404_is_frozen_before_owner_restart) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  const auto config = ExecutionConfig(remote.server);
+  const auto request = ExecutionRequest(remote.server);
+  std::string previous;
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesExecution run(objects);
+    Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+    std::string wire;
+    bool waiting = true;
+    Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+    Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+    remote.expire_read = true;
+    Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+    Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+    const auto& call = run.Output().Snapshot().GetArray("output")->array[1];
+    Q4T_CHECK(call.GetString("type") == "mcp_call" &&
+              call.GetString("status") == "completed");
+    ResponsesMcpState state(objects, config);
+    const auto owned = state.Inspect(call.GetString("id"), ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(owned) &&
+              owned.value.Find("session")->GetBool("lost"));
+    ResponsesMcpDefinition definition;
+    ChatPlanError error;
+    Q4T_CHECK(PlanResponsesMcpDefinition(
+        request.GetArray("tools")->array.front(), &definition, &error));
+    const auto catalog = state.Session(owned.value.GetString("catalog_id"),
+                                       definition, ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(catalog) &&
+              catalog.value.Find("session")->GetBool("lost"));
+    previous = run.Id();
+  }
+  Q4T_CHECK(CloseMcpSessions(false));
+  ObjectStore objects(fixture.options);
+  auto next = request;
+  Set(&next, "previous_response_id", String(previous));
+  Set(&next, "input", String("Make a new independent query"));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.Prepare(next, config, ExecutionAccess(), 44)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(remote.initialized == 2 && remote.dispatched == 2 &&
+            remote.read == 1);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  Q4T_CHECK(remote.read == 2);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  return true;
+}
+
+Q4T_TEST(mcp_session_absolute_lifetime_bounds_slow_publication_and_permission) {
+  for (const bool slow_permission : {false, true}) {
+    StatefulMcp remote;
+    McpSession session;
+    session.lifetime_ms = 120;
+    McpTransportReceipt receipt;
+    const auto delay = [&](const Json& state) {
+      const auto expires = std::chrono::system_clock::time_point(
+          std::chrono::milliseconds(state.GetInt("expires_ms")));
+      std::this_thread::sleep_until(expires + 20ms);
+    };
+    if (!slow_permission) {
+      session.checkpoint = [&](const Json& state) {
+        delay(state);
+        return ObjectReply{};
+      };
+    }
+    const auto result =
+        remote.Invoke(session, receipt, "tools/call", Access(), [&] {
+          if (slow_permission) delay(session.state);
+          return ObjectReply{};
+        });
+    Q4T_CHECK(!result.ok() && remote.initialized == 1 &&
+              remote.dispatched == 0);
+    Q4T_CHECK(receipt.call_permitted == slow_permission);
+  }
   return true;
 }

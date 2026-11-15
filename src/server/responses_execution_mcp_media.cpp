@@ -22,7 +22,8 @@ ResponsesMediaBudget ResponsesExecution::OtherMcpMediaBudget() const {
 uint64_t ResponsesExecution::FileOutputBudget() const {
   uint64_t pending = files_ ? files_->PendingOutputBudget() : 0;
   if (mcp_media_) pending += mcp_media_->PendingOutputBudget();
-  if (HasMcp() && !envelope_.cache.prewarm && !cipher_config_.count_input_only) {
+  if (HasMcp() && !envelope_.cache.prewarm &&
+      !cipher_config_.count_input_only) {
     const auto limit = static_cast<uint64_t>(
         program_file_options_.total_summary_output_tokens);
     const auto used = FileUsage()->model_output_tokens;
@@ -80,19 +81,44 @@ ObjectReply ResponsesExecution::ResolveMcpResource(const std::string& id,
   if (!result.ok() || result.commit_unknown)
     return BindMutationResult(std::move(result));
   McpTransportReceipt receipt;
+  McpSession session;
+  session.allow_new = false;
+  if (const auto* original_session = owned.value.Find("session"))
+    session.state = *original_session;
   result = InvokeMcp(
       {access_.scope, access_.deadline, access_.cancelled},
       definition.credentials, mcp_fetch_, "resources/read",
       Object({{"uri", String(uri)}}),
-      [&] { return mcp_state_->PermitResource(id, uri, definition, access_); },
-      &receipt);
+      [&] {
+        return mcp_state_->PermitResource(id, uri, definition, access_,
+                                          &session.state);
+      },
+      &receipt, {}, &session);
   if (result.commit_unknown) return BindMutationResult(std::move(result));
   const StateAccess cleanup{
       access_.scope,
       std::chrono::steady_clock::now() + std::chrono::seconds(2),
       {}};
-  return BindMutationResult(
-      mcp_state_->FinishResource(id, uri, receipt, result, cleanup));
+  auto completed = mcp_state_->FinishResource(
+      id, uri, receipt, result, cleanup,
+      session.state.Has("protocol") ? &session.state : nullptr);
+  if (!completed.ok() || completed.commit_unknown)
+    return BindMutationResult(std::move(completed));
+  if (session.state.Has("protocol")) {
+    const auto catalog_id = owned.value.GetString("catalog_id");
+    const auto current = mcp_state_->Session(catalog_id, definition, cleanup);
+    if (!current.ok()) return current;
+    const auto* bound = current.value.Find("session");
+    // A newer catalog session must not be replaced by an older call's read.
+    if (bound && bound->GetString("id") == session.state.GetString("id")) {
+      auto saved = mcp_state_->BindSession(catalog_id, definition,
+                                           current.value.GetInt("revision"),
+                                           session.state, cleanup);
+      if (!saved.ok() || saved.commit_unknown)
+        return BindMutationResult(std::move(saved));
+    }
+  }
+  return completed;
 }
 
 ObjectReply ResponsesExecution::PrepareMcpMedia(const ChatPlanConfig& config,

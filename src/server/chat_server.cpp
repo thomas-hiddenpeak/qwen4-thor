@@ -34,6 +34,7 @@
 #endif
 #include "q4t/vision/vision.h"
 #include "q4t/vision/configuration.h"
+#include "q4t/server/mcp_transport.h"
 
 namespace q4t::server {
 
@@ -61,6 +62,9 @@ ChatServer::~ChatServer() {
   batches_.Join();
   vector_jobs_.Join();
   background_.Join();
+  // Drop the auxiliary owner without deleting modern sessions still held by
+  // sealed catalogs/approvals. Their fresh credentials are required on resume.
+  CloseMcpSessions(false);
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
   const auto release = [&](auto*& pointer, const char* site) {

@@ -58,6 +58,9 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
 void PollMcpSessions();
 // Explicit bounded shutdown of this process's idle MCP owner only. Active
 // exchanges are never interrupted by this function.
-bool CloseMcpSessions();
+// During service restart, false preserves resumable modern remote sessions;
+// the local owner and legacy connections still close. Explicit release uses
+// best-effort DELETE. Neither operation replays a tool.
+bool CloseMcpSessions(bool release_remote = true);
 int MaybeRunMcpWorker(int argc, char** argv);
 }  // namespace q4t::server

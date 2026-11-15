@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Integrate native MCP request-local credentials, authenticated history/catalog, templates, actual Responses execution and discovery/program/background/Batch combinations; then real business and reversible release. All remaining master tasks continue.",
+      "current_work": "Implement actual connector/tunnel deployment mapping and adapters; complete SDK, real business, recovery qualification, reversible release and main integration. All master tasks continue.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -1150,11 +1150,11 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Native resources use original invocation authority, durable single dispatch, own execution recovery and shared capacity with pending failure reserve. Built only; model media preparation and complete MCP delivery continue.",
+        "engine_build_note": "Private MCP sessions now persist through catalogs, dispatch authority, original resources, approval/frozen recovery and lifecycle detach. CPU validated; candidate built only, full MCP delivery pending.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "10ee305755e43017016c7ddb14cd72acacfc5eb51260980d1a4a36619a6960ab",
-        "next": "Persist and bind private sessions to catalogs, calls and real approval/background/Batch/count execution; mapped targets, full SDK/business/recovery delivery still required.",
+        "engine_candidate_sha256": "e17ae2e77a7101cd4c0d45e20ef8ec8a5da2061bc7f1304c4ae181a163550040",
+        "next": "Implement actual connector/tunnel deployment mapping and adapters; complete SDK, real business, recovery qualification, reversible release and main integration. All master tasks continue.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
@@ -1175,7 +1175,9 @@
         "count_preparation_evidence": "evidence/serve-mcp-count-cpu-20261116/README.md",
         "count_preparation_targeted_cpp_passed": 26,
         "session_transport_evidence": "evidence/serve-mcp-sessions-transport-cpu-20261116/README.md",
-        "session_transport_targeted_cpp_passed": 30
+        "session_transport_targeted_cpp_passed": 30,
+        "session_execution_evidence": "evidence/serve-mcp-sessions-execution-cpu-20261116/README.md",
+        "session_execution_targeted_cpp_passed": 41
       }
     },
     {
@@ -1932,7 +1934,7 @@
         },
         "rate_repair_status": "validated_delivered_main_merged"
       },
-      "current_work": "Integrate native MCP request-local credentials, authenticated history/catalog, templates, actual Responses execution and discovery/program/background/Batch combinations; then real business and reversible release. All remaining master tasks continue.",
+      "current_work": "Implement actual connector/tunnel deployment mapping and adapters; complete SDK, real business, recovery qualification, reversible release and main integration. All master tasks continue.",
       "mcp": {
         "state": "basic_execution_cpu_accepted_required_combinations_in_progress",
         "plan": "SERVE_MCP_2026-11-15.md",
@@ -1958,11 +1960,11 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Native resources use original invocation authority, durable single dispatch, own execution recovery and shared capacity with pending failure reserve. Built only; model media preparation and complete MCP delivery continue.",
+        "engine_build_note": "Private MCP sessions now persist through catalogs, dispatch authority, original resources, approval/frozen recovery and lifecycle detach. CPU validated; candidate built only, full MCP delivery pending.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "10ee305755e43017016c7ddb14cd72acacfc5eb51260980d1a4a36619a6960ab",
-        "next": "Persist and bind private sessions to catalogs, calls and real approval/background/Batch/count execution; mapped targets, full SDK/business/recovery delivery still required.",
+        "engine_candidate_sha256": "e17ae2e77a7101cd4c0d45e20ef8ec8a5da2061bc7f1304c4ae181a163550040",
+        "next": "Implement actual connector/tunnel deployment mapping and adapters; complete SDK, real business, recovery qualification, reversible release and main integration. All master tasks continue.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
@@ -1983,7 +1985,9 @@
         "count_preparation_evidence": "evidence/serve-mcp-count-cpu-20261116/README.md",
         "count_preparation_targeted_cpp_passed": 26,
         "session_transport_evidence": "evidence/serve-mcp-sessions-transport-cpu-20261116/README.md",
-        "session_transport_targeted_cpp_passed": 30
+        "session_transport_targeted_cpp_passed": 30,
+        "session_execution_evidence": "evidence/serve-mcp-sessions-execution-cpu-20261116/README.md",
+        "session_execution_targeted_cpp_passed": 41
       }
     },
     {

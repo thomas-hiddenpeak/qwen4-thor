@@ -1,0 +1,15 @@
+{
+  "include/q4t/server/mcp_transport.h": "a7cad04f748ade54bcfdff2cb7366ff5c348cf265829fd6964edb4e5cad6c670",
+  "include/q4t/server/responses_mcp_state.h": "aeaf5e0ff66e98fde9e3676c5793a3fb9629889abe67a4ee8db6a9643abb94b8",
+  "src/server/chat_server.cpp": "c88103a756a26508321755551aae65604d6db5a9a9dc1e91b59e995dc957b839",
+  "src/server/mcp_http.cpp": "dc5c07e9b6c0baaeac5dc46505951586a5412caa32cf17fbbe19822b541f3ae6",
+  "src/server/mcp_transport.cpp": "e74ed5f49a1a42ff6803c5edfbd1bc9aea128bc311a4f60c6b257e461d6397e1",
+  "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
+  "src/server/responses_execution_mcp_media.cpp": "495c46b653e361b6c938b61dc46f06d79343fd8a0337bd7e6ff31b4d2273e1c6",
+  "src/server/responses_mcp_execution.cpp": "b5eda80c0c6326abd05b5eba808c10f3c4c19194027c9005a97165757af6c33f",
+  "src/server/responses_mcp_preparation.cpp": "7bdee66f0685962ca3bbcb34d4b225639b2031aef54ca0672b8060ad15694d81",
+  "src/server/responses_mcp_state.cpp": "22d502e028af0a849566a85fb961a1922a0bdb58d670c87acdaf0096e73f1d63",
+  "tests/server_mcp_transport_test.cpp": "149b00d58f823eab5e1d19d20f3de51736c64086a5efe9af5ec175631dc9485b",
+  "tests/server_responses_mcp_state_test.cpp": "db46a77a7d9d5b6a60e3fc828eadcc34f947cccd57c33bbe041ff0022399e16a",
+  "tools/serve_audit/inventory.json": "3836d39133ed9dd414a8e2253684e0c561e332d8cd7da6dead6eefc147aa71d3"
+}

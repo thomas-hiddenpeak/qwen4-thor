@@ -5,7 +5,8 @@
 
 namespace q4t::server {
 // Private owned state. Only public items returned by these methods may be
-// exposed. Credentials never enter this store, including encrypted payloads.
+// exposed. Request authorization/headers never enter this store. Remote
+// session handles are sealed separately and still require fresh credentials.
 class ResponsesMcpState {
  public:
   ResponsesMcpState(ObjectStore& objects, const ChatPlanConfig& config,
@@ -18,7 +19,17 @@ class ResponsesMcpState {
                       const io::Json& native_tools, const StateAccess& access,
                       int64_t lifetime_seconds = 30 * 24 * 3600,
                       std::string reserved_id = "",
-                      std::string listing_error = "");
+                      std::string listing_error = "",
+                      const io::Json* session = nullptr);
+  // Private session metadata belongs to the authenticated catalog, never to
+  // caller-supplied public items. CAS prevents overwriting a newer session.
+  ObjectReply Session(const std::string& catalog_id,
+                      const ResponsesMcpDefinition& current,
+                      const StateAccess& access);
+  ObjectReply BindSession(const std::string& catalog_id,
+                          const ResponsesMcpDefinition& current,
+                          int64_t expected_revision, const io::Json& session,
+                          const StateAccess& access);
   ObjectReply Propose(const io::Json& catalog,
                       const ResponsesMcpDefinition& current, std::string name,
                       io::Json arguments, std::string caller,
@@ -40,10 +51,12 @@ class ResponsesMcpState {
   // sole permission to send. Its lost receipt is NOT permission to send.
   ObjectReply Permit(const std::string& authority_id,
                      const ResponsesMcpDefinition& current,
-                     const StateAccess& access);
+                     const StateAccess& access,
+                     const io::Json* session = nullptr);
   ObjectReply Finish(const std::string& authority_id,
                      const McpTransportReceipt& receipt,
-                     const ObjectReply& transport, const StateAccess& access);
+                     const ObjectReply& transport, const StateAccess& access,
+                     const io::Json* session = nullptr);
   // Internal recovery inspection. An unresolved dispatch stays unknown;
   // there is no method to reset it to ready or to replay the remote call.
   ObjectReply Inspect(const std::string& authority_id,
@@ -61,12 +74,14 @@ class ResponsesMcpState {
   ObjectReply PermitResource(const std::string& authority_id,
                              const std::string& uri,
                              const ResponsesMcpDefinition& current,
-                             const StateAccess& access);
+                             const StateAccess& access,
+                             const io::Json* session = nullptr);
   ObjectReply FinishResource(const std::string& authority_id,
                              const std::string& uri,
                              const McpTransportReceipt& receipt,
                              const ObjectReply& transport,
-                             const StateAccess& access);
+                             const StateAccess& access,
+                             const io::Json* session = nullptr);
   // Private typed source parts and unresolved URIs. This read grants no remote
   // operation, performs no codec work, and is not yet a ready model request.
   ObjectReply ModelContent(const std::string& authority_id,

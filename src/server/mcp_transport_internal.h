@@ -28,7 +28,7 @@ class Sessions {
                        const std::function<bool()>& permit_call,
                        McpTransportReceipt* receipt);
   void Collect();
-  void Clear();
+  void Clear(bool release_remote = true);
   size_t Size() const;
 
  private:

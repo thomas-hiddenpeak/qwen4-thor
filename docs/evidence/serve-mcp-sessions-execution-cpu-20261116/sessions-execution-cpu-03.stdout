@@ -1,0 +1,4 @@
+[PASS] mcp_session_stateful_list_call_resource_and_private_checkpoint
+[PASS] mcp_session_legacy_reuses_stream_with_each_operation_deadline
+[PASS] mcp_session_absolute_lifetime_bounds_slow_publication_and_permission
+3 tests, 3 passed, 0 failed, 0 skipped
