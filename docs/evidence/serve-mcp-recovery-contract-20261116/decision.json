@@ -1,0 +1,37 @@
+{
+  "status": "PASS_MCP_RECOVERY_CONTRACT_CPU",
+  "cpu_tests": 7,
+  "source_negative_checks": 7,
+  "source_anchors": 688,
+  "binary_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+  "sources": {
+    "tools/serve_recovery/profile_migration.py": "5bc16689fcc12ed804508c27979c40a74b323131822db1c415942dba30b058f4",
+    "tools/serve_recovery/version_contract.py": "8f786b5dd72c06b23b06df5dab58eafb5c03faca244b8ecece0c44159143c4ec"
+  },
+  "qualification": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 84,
+      "cleanup_complete": true,
+      "lease_result_sha256": "8749f1a889a7e98f9b76b719aae7203dc3b8f91f65c0e785c1b8c30d0fcd29ed"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 74
+    },
+    "seconds": 88.60632477328181,
+    "registry_sha256": "5d060e6150e004441d76ffc3ee860eb5751316c6453dfc842533c001ce97a1aa",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "qualification_source_commit": "86ae61e89dd2f4b016ae14772c08cdaf5cdbbbc6",
+  "qualification_reuse": "Exact engine and all compiled sources unchanged; only the two management contract validators changed after qualification. Managed acceptance still required.",
+  "source_check_initial_failures": 2,
+  "default_unchanged": true,
+  "remaining_master_tasks_open": true
+}
