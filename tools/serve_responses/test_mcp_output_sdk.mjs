@@ -96,3 +96,24 @@ test('MCP SSE keeps incremental arguments and list/call/answer order', async () 
     assert.equal(call.output, 'Project documentation fixture');
   });
 });
+
+test('MCP native error retains its result in JSON, SSE and continuation', async () => {
+  const expected = json('native-error.json');
+  for (const stream of [false, true]) {
+    await peer(stream ? 'native-error.wire' : 'native-error.json', stream,
+      async sdk => {
+        const response = stream
+          ? await sdk.responses.stream(request).finalResponse()
+          : await sdk.responses.create(request);
+        assert.deepEqual(response.output, expected.output);
+        const [call] = toResponseInputItems(response.output);
+        assert.equal(call.type, 'mcp_call');
+        assert.equal(call.status, 'failed');
+        const native = JSON.parse(call.output);
+        assert.equal(native.isError, true);
+        assert.deepEqual(native.structuredContent, {reason: 'missing'});
+        assert.deepEqual(call.error.content, native.content);
+        assert.equal(response.status, 'completed');
+      });
+  }
+});

@@ -351,6 +351,169 @@ Q4T_TEST(mcp_transport_call_waits_for_durable_permission) {
   return true;
 }
 
+Q4T_TEST(mcp_transport_reads_remote_uri_only_after_owned_permission) {
+  Server server;
+  const std::string uri = "file:///etc/hostname";
+  std::atomic<int> reads{0};
+  server.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.rpc.GetString("method") == "initialize") {
+      Send(fd,
+           Http(200,
+                OutputJson(Rpc(
+                    r,
+                    Object(
+                        {{"protocolVersion", String("2025-06-18")},
+                         {"capabilities", Object({{"resources", Object()}})},
+                         {"serverInfo", Object({{"name", String("resources")},
+                                                {"version", String("1")}})}}))),
+                "application/json", "Mcp-Session-Id: resource-session\r\n"));
+      return true;
+    }
+    if (r.rpc.GetString("method") != "resources/read") return false;
+    ++reads;
+    Send(
+        fd,
+        Http(200,
+             OutputJson(Rpc(
+                 r, Object({{"contents",
+                             Array({Object(
+                                 {{"uri", String(uri)},
+                                  {"text", String("remote fixture content")},
+                                  {"mimeType", String("text/plain")}})})}})))));
+    return true;
+  };
+  auto endpoint = server.Endpoint();
+  endpoint.authorization = "resource-test-token";
+  const auto params = Object({{"uri", String(uri)}});
+  McpTransportReceipt receipt;
+  auto invoke = [&](const std::function<ObjectReply()>& permit) {
+    return InvokeMcp(Access(), endpoint, server.Options(), "resources/read",
+                     params, permit, &receipt);
+  };
+  Q4T_CHECK(invoke({}).code == "mcp_operation_invalid");
+  Q4T_CHECK(server.Requests().empty());
+  Q4T_CHECK(invoke([] {
+              return Error(403, "fixture_denied", "No grant");
+            }).code == "fixture_denied");
+  Q4T_CHECK(!reads && !receipt.call_permitted);
+  Q4T_CHECK(invoke([] { return ObjectReply{}; }).ok());
+  Q4T_CHECK(reads == 1 && !server.calls && receipt.call_permitted &&
+            !receipt.outcome_unknown);
+  Q4T_CHECK(
+      receipt.result.GetArray("contents")->array.front().GetString("text") ==
+      "remote fixture content");
+  size_t requests = 0;
+  for (const auto& r : server.Requests()) {
+    if (r.rpc.GetString("method") != "resources/read") continue;
+    ++requests;
+    Q4T_CHECK(r.target == "/mcp" &&
+              r.rpc.Find("params")->GetString("uri") == uri);
+    Q4T_CHECK(r.headers.at("authorization") == "Bearer resource-test-token");
+    Q4T_CHECK(r.headers.at("mcp-session-id") == "resource-session");
+  }
+  Q4T_CHECK(requests == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_transport_resource_capability_and_operation_preflight) {
+  Server server;
+  McpTransportReceipt receipt;
+  for (const auto& params : {Object({{"uri", String("../secret")}}),
+                             Object({{"uri", String("file:///secret")},
+                                     {"path", String("/secret")}})}) {
+    Q4T_CHECK(InvokeMcp(
+                  Access(), server.Endpoint(), server.Options(),
+                  "resources/read", params, [] { return ObjectReply{}; },
+                  &receipt)
+                  .code == "mcp_operation_invalid");
+  }
+  Q4T_CHECK(server.Requests().empty());
+  bool granted = false;
+  const auto result = InvokeMcp(
+      Access(), server.Endpoint(), server.Options(), "resources/read",
+      Object({{"uri", String("file:///report")}}),
+      [&] {
+        granted = true;
+        return ObjectReply{};
+      },
+      &receipt);
+  Q4T_CHECK(result.code == "mcp_resources_unavailable" && !granted &&
+            !receipt.call_permitted);
+  for (const auto& r : server.Requests())
+    Q4T_CHECK(r.rpc.GetString("method") != "resources/read");
+  return true;
+}
+
+Q4T_TEST(mcp_transport_resource_result_failures_never_repeat_read) {
+  for (const int variant : {0, 1, 2}) {
+    Server server;
+    std::atomic<int> reads{0};
+    server.handler = [&](const Request& r, int fd, std::stop_token) {
+      const auto method = r.rpc.GetString("method");
+      if (method == "initialize") {
+        const auto result =
+            Object({{"protocolVersion", String("2025-06-18")},
+                    {"capabilities", Object({{"resources", Object()}})},
+                    {"serverInfo", Object({{"name", String("resources")},
+                                           {"version", String("1")}})}});
+        Send(fd, Http(200, OutputJson(Rpc(r, result))));
+        return true;
+      }
+      if (method != "resources/read") return false;
+      ++reads;
+      if (variant == 2) return true;
+      const auto resource =
+          Object({{"uri", String("remote:report.pdf")},
+                  {"mimeType", String("application/pdf")},
+                  {"blob", String(variant ? "!invalid" : "JVBERg==")}});
+      Send(fd, Http(200, OutputJson(Rpc(
+                             r, Object({{"contents", Array({resource})}})))));
+      return true;
+    };
+    McpTransportReceipt receipt;
+    const auto result = InvokeMcp(
+        Access(), server.Endpoint(), server.Options(), "resources/read",
+        Object({{"uri", String("remote:report.pdf")}}),
+        [] { return ObjectReply{}; }, &receipt);
+    Q4T_CHECK(reads == 1 && !server.calls && receipt.call_permitted);
+    Q4T_CHECK(receipt.outcome_unknown == (variant == 2));
+    if (!variant) {
+      Q4T_CHECK(result.ok());
+      Q4T_CHECK(
+          receipt.result.GetArray("contents")->array[0].GetString("blob") ==
+          "JVBERg==");
+    } else {
+      Q4T_CHECK(!result.ok());
+      if (variant == 1) Q4T_CHECK(result.code == "mcp_protocol_error");
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(mcp_transport_bad_native_content_is_known_without_tool_replay) {
+  for (const auto* content :
+       {R"({"type":"text","text":false})",
+        R"({"type":"audio","mimeType":"audio/wav","data":"Zh=="})",
+        R"({"type":"resource","resource":{"uri":"x:a"}})"}) {
+    Server server;
+    Json part;
+    Q4T_CHECK(Parse(content, &part));
+    server.handler = [&](const Request& r, int fd, std::stop_token) {
+      if (r.rpc.GetString("method") != "tools/call") return false;
+      ++server.calls;
+      Send(fd,
+           Http(200, OutputJson(Rpc(r, Object({{"content", Array({part})}})))));
+      return true;
+    };
+    McpTransportReceipt receipt;
+    Q4T_CHECK(Invoke(server, &receipt, "tools/call").code ==
+              "mcp_protocol_error");
+    Q4T_CHECK(server.calls == 1 && receipt.call_permitted &&
+              !receipt.outcome_unknown);
+  }
+  return true;
+}
+
 Q4T_TEST(mcp_transport_actual_call_requires_owned_persisted_approval) {
   const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
   const auto root = std::filesystem::absolute(
@@ -994,6 +1157,44 @@ text(winner+":"+last.content[0].text);
   Q4T_CHECK(OutputItem(resumed, "program_output").GetString("result") ==
             "remote:document result");
   Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_program_remote_error_keeps_native_structured_content) {
+  Server server;
+  server.handler = [&](const Request& r, int fd, std::stop_token) {
+    if (r.rpc.GetString("method") != "tools/call") return false;
+    ++server.calls;
+    const auto result = Object(
+        {{"content", Array({Object({{"type", String("text")},
+                                    {"text", String("missing field")}})})},
+         {"structuredContent", Object({{"reason", String("missing")}})},
+         {"isError", Boolean(true)},
+         {"_meta", Object({{"trace", String("original")}})}});
+    Send(fd, Http(200, OutputJson(Rpc(r, result))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesExecution run(objects);
+  const auto config = ExecutionConfig(server);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Prepare(ProgramRequest(server), config,
+                                    ExecutionAccess(), 42)) &&
+            ExecutionOk(run.Begin(&wire)) &&
+            ProgramCode(&run, R"js(
+const result=await tools['mcp:project'].read_project({});
+text([result.isError,result.structuredContent.reason,result._meta.trace,
+      result.content[0].text].join(":"));
+)js",
+                        &wire));
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(OutputItem(run, "program_output").GetString("result") ==
+            "true:missing:original:missing field");
+  Q4T_CHECK(OutputItem(run, "mcp_call").GetString("status") == "failed");
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
   return true;
 }
 

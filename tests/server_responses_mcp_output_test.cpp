@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "../src/server/responses_json.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
 
@@ -154,6 +155,54 @@ Q4T_TEST(responses_mcp_output_approval_is_complete_without_fabricated_call) {
   Q4T_CHECK(!output.Snapshot().GetArray("output")->array[0].Has("status"));
   Q4T_CHECK(wire.find("response.mcp_call") == wire.npos);
   Q4T_CHECK(Save("approval", output, wire));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_output_native_error_data_matches_failure_and_dispatch) {
+  ResponsesOutput output;
+  std::string wire, part;
+  size_t call;
+  Q4T_CHECK(output.Init(Options(), "resp_native_error", 42, false));
+  Q4T_CHECK(output.Start(&wire));
+  Q4T_CHECK(output.StartMcpItem(Call(), &call, &part));
+  wire += part;
+  Q4T_CHECK(output.AppendMcpArguments(call, "{}", &part));
+  wire += part;
+  Q4T_CHECK(output.CompleteMcpArguments(call, &part));
+  wire += part;
+  auto failed = output.Snapshot().GetArray("output")->array[call];
+  const auto native = Value(R"({"content":[{"type":"text","text":"missing"}],
+    "structuredContent":{"reason":"missing"},"isError":true})");
+  Set(&failed, "status", String("failed"));
+  Set(&failed, "output", String(OutputJson(native)));
+  Set(&failed, "error",
+      Object({{"type", String("mcp_tool_execution_error")},
+              {"content", *native.Find("content")}}));
+  Q4T_CHECK(!output.CompleteMcpItem(call, failed, &part));
+  Q4T_CHECK(output.CallingMcp(call));
+  for (const int variant : {0, 1, 2}) {
+    auto forged = failed;
+    if (!variant) {
+      Set(&Field(forged, "error"), "content", Array());
+    } else if (variant == 1) {
+      auto success = native;
+      Set(&success, "isError", Boolean(false));
+      Set(&forged, "output", String(OutputJson(success)));
+    } else {
+      Set(&forged, "error",
+          Value(R"({"type":"http_error","code":503,"message":"down"})"));
+    }
+    Q4T_CHECK(!output.CompleteMcpItem(call, forged, &part));
+  }
+  Q4T_CHECK(output.CompleteMcpItem(call, failed, &part));
+  wire += part;
+  Q4T_CHECK(output.Finish(false, 0, {}, 43, &part));
+  wire += part;
+  Q4T_CHECK(Shapes(output));
+  Q4T_CHECK(wire.find("response.mcp_call.failed") != wire.npos);
+  Q4T_CHECK(output.Snapshot().GetArray("output")->array[call].GetString(
+                "output") == OutputJson(native));
+  Q4T_CHECK(Save("native-error", output, wire));
   return true;
 }
 

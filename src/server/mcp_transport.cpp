@@ -8,6 +8,7 @@
 
 #include "file_fetch_internal.h"
 #include "mcp_transport_internal.h"
+#include "q4t/server/mcp_content.h"
 #include "object_protocol.h"
 
 namespace q4t::server {
@@ -28,6 +29,8 @@ ObjectReply Failed(GrammarFailure failure) {
 bool ValidOperation(std::string_view method, const Json& params) {
   if (!params.IsObject()) return false;
   if (method == "tools/list") return params.object.empty();
+  if (method == "resources/read")
+    return params.object.size() == 1 && McpResourceUri(params.GetString("uri"));
   if (method != "tools/call" || params.object.size() != 2) return false;
   const auto* name = params.Find("name");
   const auto* arguments = params.Find("arguments");
@@ -56,7 +59,7 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   auto checked = mcp_detail::CheckEndpoint(endpoint, deployment);
   if (!checked.ok()) return checked;
   if (!ValidOperation(method, params) ||
-      (method == "tools/call" && !before_call))
+      (method != "tools/list" && !before_call))
     return Error(400, "mcp_operation_invalid", "Invalid MCP operation");
   control.domain = IsolatedWorkerDomain::kMcp;
   control.address_space_bytes =
@@ -111,7 +114,7 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
     if (!transfer(bytes.data(), bytes.size(), false) || !Parse(bytes, &wire))
       return failed();
     if (wire.GetString("type") == "before_call") {
-      if (messages || method != "tools/call") return failed();
+      if (messages || method == "tools/list") return failed();
       // The caller must durably bind permission before any external dispatch.
       // Failure/expiry here cannot be turned into an automatic retry.
       auto permitted = before_call();

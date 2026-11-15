@@ -125,14 +125,16 @@ Q4T_TEST(responses_mcp_recovery_requires_real_exit_and_never_replays) {
           ObjectStore objects(fixture.options);
           ResponsesMcpState state(objects, Config());
           const auto definition = Definition("never");
-          auto proposed = Propose(state, Catalog(state, definition), definition);
+          auto proposed =
+              Propose(state, Catalog(state, definition), definition);
           if (!Ok(proposed)) _exit(2);
           id = proposed.value.GetString("id");
           if (phase) {
             auto permit = state.Permit(id, definition, Access());
             if (!Ok(permit)) _exit(3);
             if (phase == 2 &&
-                !Ok(state.Finish(id, Success(permit.value.GetString("dispatch_id")),
+                !Ok(state.Finish(id,
+                                 Success(permit.value.GetString("dispatch_id")),
                                  {}, Access())))
               _exit(4);
           }
@@ -152,7 +154,8 @@ Q4T_TEST(responses_mcp_recovery_requires_real_exit_and_never_replays) {
       if (!reaped) {
         kill(child, SIGKILL);
         int status;
-        while (waitpid(child, &status, 0) < 0 && errno == EINTR) {}
+        while (waitpid(child, &status, 0) < 0 && errno == EINTR) {
+        }
       }
     });
     pollfd ready{channel[0], POLLIN, 0};
@@ -225,8 +228,9 @@ Q4T_TEST(responses_mcp_recovery_requires_exact_response_cleanup_proof) {
   }
   const auto approval = Propose(state, Catalog(state));
   Q4T_CHECK(Ok(approval));
-  Q4T_CHECK(state.Recover(approval.value.GetString("id"), Access())
-                .http_status == 409);
+  Q4T_CHECK(
+      state.Recover(approval.value.GetString("id"), Access()).http_status ==
+      409);
   Q4T_CHECK(Ok(state.Authenticate(approval.value, Access())));
   return true;
 }
@@ -244,7 +248,8 @@ Q4T_TEST(responses_mcp_recovery_unknown_identity_is_not_death) {
   StateCipher cipher(objects);
   const StateCipherBinding binding{
       Config().model,
-      Digest(std::string(identity::kTemplateReference) + ':' + identity::kRenderer),
+      Digest(std::string(identity::kTemplateReference) + ':' +
+             identity::kRenderer),
       "responses.mcp.call.v1", id};
   std::string plain;
   Q4T_CHECK(Ok(cipher.Open(record.Find("data")->GetString("sealed"), binding,
@@ -282,8 +287,9 @@ Q4T_TEST(responses_mcp_unproposed_fragment_grants_no_result_or_permission) {
     "name":"read","server_label":"project","arguments":"{\"path\":",
     "status":"incomplete","output":null,"error":null})");
   Q4T_CHECK(Ok(state.Authenticate(fragment, Access())));
-  Q4T_CHECK(state.Permit("mcp_never_proposed", Definition(), Access())
-                .http_status == 404);
+  Q4T_CHECK(
+      state.Permit("mcp_never_proposed", Definition(), Access()).http_status ==
+      404);
   Set(&fragment, "output", String("forged output"));
   Q4T_CHECK(!state.Authenticate(fragment, Access()).ok());
   Set(&fragment, "output", Json());
@@ -569,11 +575,54 @@ Q4T_TEST(responses_mcp_state_result_schema_errors_and_no_result_forgery) {
                          {"text", String(std::string(2U << 20, 'x'))}})}));
     }
     const auto finished = state.Finish(id, receipt, {}, Access());
-    Q4T_CHECK(Ok(finished) && finished.value.GetString("status") == "failed" &&
-              finished.value.Find("output")->IsNull());
+    Q4T_CHECK(Ok(finished) && finished.value.GetString("status") == "failed");
+    if (variant == 2) {
+      Q4T_CHECK(finished.value.GetString("output") ==
+                OutputJson(receipt.result));
+    } else {
+      Q4T_CHECK(finished.value.Find("output")->IsNull());
+    }
     Q4T_CHECK(!state.Finish(id, Success(), {}, Access()).ok());
     Q4T_CHECK(!state.Permit(id, definition, Access()).ok());
   }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_state_native_error_preserves_data_after_restart) {
+  Fixture f;
+  std::string id;
+  Json expected;
+  const auto definition = Definition("never");
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config());
+    const auto proposal =
+        Propose(state, Catalog(state, definition), definition);
+    Q4T_CHECK(Ok(proposal));
+    id = proposal.value.GetString("id");
+    const auto permitted = state.Permit(id, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    auto receipt = Success(permitted.value.GetString("dispatch_id"));
+    receipt.result = Value(R"({"isError":true,"content":[
+      {"type":"text","text":"remote validation failed"},
+      {"type":"audio","mimeType":"audio/wav","data":"UklGRg=="}],
+      "structuredContent":{"reason":"missing field","retryable":false},
+      "_meta":{"trace":"remote-id"}})");
+    auto finished = state.Finish(id, receipt, {}, Access());
+    Q4T_CHECK(Ok(finished) && finished.value.GetString("status") == "failed");
+    Q4T_CHECK(finished.value.GetString("output") == OutputJson(receipt.result));
+    expected = finished.value;
+  }
+  ObjectStore objects(f.options);
+  ResponsesMcpState recovered(objects, Config());
+  auto authenticated = recovered.Authenticate(expected, Access());
+  Q4T_CHECK(Ok(authenticated) &&
+            OutputJson(authenticated.value) == OutputJson(expected));
+  Q4T_CHECK(Ok(recovered.Recover(id, Access())));
+  Q4T_CHECK(recovered.Permit(id, definition, Access()).http_status == 409);
+  auto forged = expected;
+  Set(&forged, "output", String("{\"isError\":false,\"content\":[]}"));
+  Q4T_CHECK(!recovered.Authenticate(forged, Access()).ok());
   return true;
 }
 
@@ -740,9 +789,9 @@ Q4T_TEST(responses_mcp_history_stream_ids_and_failed_catalog_are_owned) {
                 .Propose(catalog.value, definition, "read", args, "direct",
                          Access(), "mcp_streamed")
                 .http_status == 409);
-  const auto waiting = state.Propose(catalog.value, Definition(), "read", args,
-                                      "direct", Access(),
-                                      "mcp_requires_approval");
+  const auto waiting =
+      state.Propose(catalog.value, Definition(), "read", args, "direct",
+                    Access(), "mcp_requires_approval");
   Q4T_CHECK(Ok(waiting) &&
             waiting.value.GetString("type") == "mcp_approval_request");
   Q4T_CHECK(state.Permit("mcp_requires_approval", Definition(), Access())

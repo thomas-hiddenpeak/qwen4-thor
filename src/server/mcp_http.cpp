@@ -5,6 +5,7 @@
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/mcp_content.h"
 #include "remote_http_internal.h"
 
 namespace q4t::server::mcp_detail {
@@ -130,7 +131,7 @@ class Client {
     headers_["Accept"] = "application/json, text/event-stream";
     headers_["Content-Type"] = "application/json";
   }
-  ObjectReply Initialize() {
+  ObjectReply Initialize(bool resource_read) {
     auto params =
         Object({{"protocolVersion", String("2025-06-18")},
                 {"capabilities", Object()},
@@ -181,10 +182,12 @@ class Client {
         !info->Find("name") || !info->Find("name")->IsString() ||
         !info->Find("version") || !info->Find("version")->IsString())
       return Protocol();
-    const auto* tools = caps->Find("tools");
-    if (!tools || !tools->IsObject())
-      return Error(502, "mcp_tools_unavailable",
-                   "Server has no tools capability");
+    const auto* capability = caps->Find(resource_read ? "resources" : "tools");
+    if (!capability || !capability->IsObject())
+      return Error(
+          502,
+          resource_read ? "mcp_resources_unavailable" : "mcp_tools_unavailable",
+          "Server lacks the requested MCP capability");
     headers_["MCP-Protocol-Version"] = protocol;
     Json notification =
         Object({{"jsonrpc", String("2.0")},
@@ -366,26 +369,25 @@ ObjectReply Exchange(const McpEndpoint& endpoint,
                      McpTransportReceipt* receipt) {
   Client client(endpoint, deployment, deadline);
   ScopeExit close([&] { client.Close(); });
-  auto reply = client.Initialize();
+  auto reply = client.Initialize(method == "resources/read");
   if (!reply.ok()) return reply;
   receipt->protocol = client.protocol;
   receipt->legacy_sse = client.Legacy();
-  if (method == "tools/call") {
+  if (method == "tools/call" || method == "resources/read") {
     if (!permit || !permit())
       return Error(409, "mcp_call_not_permitted", "MCP dispatch not confirmed");
     receipt->call_permitted = receipt->outcome_unknown = true;
     reply = client.Invoke(method, params, &receipt->result, &receipt->error);
     if (!reply.ok()) return reply;
-    if (receipt->error.IsNull()) {
-      const auto* content = receipt->result.Find("content");
-      const auto* structured = receipt->result.Find("structuredContent");
-      const auto* error = receipt->result.Find("isError");
-      if (!content || !content->IsArray() ||
-          (structured && !structured->IsObject()) ||
-          (error && !error->IsBool()))
-        return Protocol();
-    }
+    // A matched complete RPC response is a known outcome even when its typed
+    // content is unusable. Neither case authorizes replaying the operation.
     receipt->outcome_unknown = false;
+    if (receipt->error.IsNull()) {
+      auto checked = method == "tools/call"
+                         ? ValidateMcpToolResult(receipt->result)
+                         : ValidateMcpResourcesResult(receipt->result);
+      if (!checked) return Protocol();
+    }
     return {};
   }
   auto tools = Array();

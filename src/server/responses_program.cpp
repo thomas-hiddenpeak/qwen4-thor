@@ -442,7 +442,12 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         Json value;
         const auto* error = canonical.Find("error");
         if (error && !error->IsNull()) {
-          value = Object({{"isError", Boolean(true)}, {"error", *error}});
+          const bool native_error =
+              error->GetString("type") == "mcp_tool_execution_error" &&
+              Parse(canonical.GetString("output"), &value) &&
+              value.GetBool("isError");
+          if (!native_error)
+            value = Object({{"isError", Boolean(true)}, {"error", *error}});
         } else if (!Parse(canonical.GetString("output"), &value)) {
           return Invalid("MCP result is not an authenticated native value");
         }

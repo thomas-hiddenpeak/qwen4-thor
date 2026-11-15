@@ -39,6 +39,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP原生内容与资源读取26项CPU最终通过](evidence/serve-mcp-content-cpu-20261116/README.md)：
+  五类内容、资源许可/已知与未知结果、原生错误结构化数据恢复和
+  JSON/SSE发布已接线，官方SDK新增1项通过。主机/完整引擎零警告，
+  043e5786远端CI全部通过；0GPU、rev126保持。模型媒体准备/资源冻结等继续。
+
+
 - [程序/MCP媒体边界复核8项CPU首过](evidence/serve-mcp-program-boundary-cpu-20261116/README.md)：
   恢复公开批次的媒体校验边界，文件准备仅映射客户端子调用，避免
   空call_id触及MCP私有结果；完整引擎零警告、0GPU、rev126保持。

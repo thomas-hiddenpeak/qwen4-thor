@@ -27,7 +27,8 @@ struct McpTransportReceipt {
   bool outcome_unknown = false;
 };
 
-// tools/list collects bounded pages; tools/call sends at most once. Each
+// tools/list collects bounded pages; tools/call and resources/read send at
+// most once, after before_call grants the exact invocation/resource. Each
 // operation owns a negotiated session, closed before returning. The execution
 // layer binds a fresh operation to its authenticated catalog/approval. A
 // successful response is not evidence of side-effect-free remote execution.

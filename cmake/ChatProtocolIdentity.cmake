@@ -250,6 +250,8 @@ set(protocol_inputs
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   include/q4t/server/mcp_transport.h
+  include/q4t/server/mcp_content.h
+  src/server/mcp_content.cpp
   include/q4t/server/responses_mcp.h
   src/server/responses_mcp.cpp
   include/q4t/server/responses_mcp_state.h

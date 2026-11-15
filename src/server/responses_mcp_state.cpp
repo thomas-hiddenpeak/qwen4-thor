@@ -11,6 +11,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/mcp_content.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_item_shape.h"
@@ -707,13 +708,6 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
           std::trunc(code->number) != code->number || !message ||
           !message->IsString())
         return Invalid("Malformed MCP protocol error receipt");
-    } else if (!receipt.result.IsObject() ||
-               !receipt.result.GetArray("content") ||
-               (receipt.result.Has("isError") &&
-                !receipt.result.Find("isError")->IsBool()) ||
-               (receipt.result.Has("structuredContent") &&
-                !receipt.result.Find("structuredContent")->IsObject())) {
-      return Invalid("Malformed MCP execution receipt");
     }
   }
   auto item = CallItem(payload);
@@ -738,9 +732,20 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
     error = Object({{"type", String("mcp_protocol_error")},
                     {"code", *receipt.error.Find("code")},
                     {"message", *receipt.error.Find("message")}});
+  } else if (!ValidateMcpToolResult(receipt.result)) {
+    // A complete response with bad content is still a known remote outcome.
+    // Close the owned dispatch; do not leave it pending or authorize replay.
+    const bool capacity = OutputJson(receipt.result).size() > kPayloadBytes;
+    error =
+        ExecutionError(capacity ? "mcp_result_capacity" : "mcp_result_invalid",
+                       "MCP result violates the native content contract");
   } else if (receipt.result.GetBool("isError")) {
     error = Object({{"type", String("mcp_tool_execution_error")},
                     {"content", *receipt.result.Find("content")}});
+    // A tool-reported error is a known native result, including structured
+    // data, media and metadata. Preserve it independently of the public error
+    // discriminator, which has no field for structuredContent.
+    Set(&item, "output", String(OutputJson(receipt.result)));
   } else {
     const auto* schema = payload.Find("tool")->Find("outputSchema");
     if (schema) {

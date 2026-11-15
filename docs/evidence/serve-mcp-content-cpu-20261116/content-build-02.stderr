@@ -1,0 +1,13 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp: In function ‘q4t::io::Json {anonymous}::Value(std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp:11:14: error: invalid initialization of reference of type ‘const std::string&’ {aka ‘const std::__cxx11::basic_string<char>&’} from expression of type ‘std::string_view’ {aka ‘std::basic_string_view<char>’}
+   11 |   if (!Parse(text, &result)) throw std::runtime_error("MCP content fixture");
+      |              ^~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp:3:
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:98:40: note: in passing argument 1 of ‘q4t::Status q4t::server::object_detail::Parse(const std::string&, q4t::io::Json*)’
+   98 | inline Status Parse(const std::string& text, Json* result) {
+      |                     ~~~~~~~~~~~~~~~~~~~^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1381: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

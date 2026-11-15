@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <limits>
 
+#include "object_protocol.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/mcp_content.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
@@ -25,6 +27,15 @@ bool Arguments(std::string_view text) {
          io::ParseJson(std::string(text), &arguments, true,
                        kSchemaJsonLimits) &&
          arguments.IsObject();
+}
+bool NativeFailureOutput(const io::Json& item) {
+  const auto* error = item.Find("error");
+  io::Json native;
+  return error && error->GetString("type") == "mcp_tool_execution_error" &&
+         item.GetString("output").size() <= (4U << 20) &&
+         object_detail::Parse(item.GetString("output"), &native) &&
+         ValidateMcpToolResult(native) && native.GetBool("isError") &&
+         Same(error->Find("content"), native.Find("content"));
 }
 }  // namespace
 
@@ -160,7 +171,8 @@ Status ResponsesOutput::CompleteMcpItem(size_t index, const io::Json& item,
         (!failed && item.Has("error") && !item.Find("error")->IsNull()) ||
         (!failed &&
          (!item.Find("output") || !item.Find("output")->IsString())) ||
-        (failed && item.Has("output") && !item.Find("output")->IsNull()))
+        (failed && item.Has("output") && !item.Find("output")->IsNull() &&
+         (old.GetString("status") != "calling" || !NativeFailureOutput(item))))
       return Status::Fail("MCP result is inconsistent with invocation");
   } else {
     failed = item.Has("error") && !item.Find("error")->IsNull();

@@ -1150,17 +1150,20 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
+        "engine_build_note": "Native content/resource transport and full native isError results preserved through durable program/SSE output. Built only, no MCP release or GPU acceptance yet.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "ba8225ca257973d15395d9c63c23564140bdf5695c1cd0fb71974a854a8227a2",
+        "engine_candidate_sha256": "fb3d5427e0a913cca7d69c0e5088a5f59b1da01104d6bb10af130dc2909d5482",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
         "programmatic_targeted_cpp_passed": 49,
         "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
-        "program_boundary_targeted_cpp_passed": 8
+        "program_boundary_targeted_cpp_passed": 8,
+        "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
+        "native_content_targeted_cpp_passed": 26,
+        "native_content_sdk_passed": 1
       }
     },
     {
@@ -1943,17 +1946,20 @@
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Includes native MCP programmatic execution, approval/causal replay, authenticated counting and frozen restore. Built only; not executed or delivered.",
+        "engine_build_note": "Native content/resource transport and full native isError results preserved through durable program/SSE output. Built only, no MCP release or GPU acceptance yet.",
         "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
         "recovery_owner_targeted_cpp_passed": 21,
-        "engine_candidate_sha256": "ba8225ca257973d15395d9c63c23564140bdf5695c1cd0fb71974a854a8227a2",
+        "engine_candidate_sha256": "fb3d5427e0a913cca7d69c0e5088a5f59b1da01104d6bb10af130dc2909d5482",
         "next": "Typed media/resources, cross-operation session continuity and connector/tunnel mappings; complete SDK/business/recovery qualification and reversible delivery remain mandatory.",
         "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
         "cleanup_continuation_targeted_cpp_passed": 18,
         "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
         "programmatic_targeted_cpp_passed": 49,
         "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
-        "program_boundary_targeted_cpp_passed": 8
+        "program_boundary_targeted_cpp_passed": 8,
+        "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
+        "native_content_targeted_cpp_passed": 26,
+        "native_content_sdk_passed": 1
       }
     },
     {

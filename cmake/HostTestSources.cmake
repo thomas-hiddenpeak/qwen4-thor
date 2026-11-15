@@ -96,6 +96,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_content.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_content_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_transport_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp.cpp
