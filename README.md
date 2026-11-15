@@ -335,6 +335,29 @@ HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
 可选前置普通HTTP与SSE、原生浏览器调用已验；实际TLS已在本机网卡
 地址和自身/32白名单完成模型业务短验，跨主机生产证书/域名按部署配置。
 
+## MCP工具与私网接入
+
+Responses现已原生执行MCP工具：列表与过滤、默认逐调用审批、审批
+拒绝/续接、原参数和结果schema、JSON/SSE及持久状态。实际资料查询、
+私网agent与未知结果不重放已通过[业务和发行验收](docs/evidence/serve-mcp-delivery-20261116/README.md)。
+数据源失能只影响相应工具，不重启健康模型，也不让核心readiness失败。
+
+请求使用`tools:[{"type":"mcp","server_label":"project",
+"server_url":"https://mcp.example.com/mcp"}]`，根据返回的
+`mcp_approval_request`发送绑定其ID的`mcp_approval_response`继续。
+私有凭据通过工具的`authorization`或`headers`提供，续接时重新提供；
+服务不会把它们保存到公开Response。默认出站网络受部署策略约束。
+部署可用`q4t mcp-policy-check FILE`检查私有策略，并通过
+`q4t serve --mcp-policy-file FILE`或`service prepare --mcp-policy FILE`
+显式启用。使用方法与状态合同见[MCP说明](docs/SERVE_MCP_2026-11-15.md)。
+
+私网侧可运行自有`q4t mcp-tunnel-agent check FILE`和
+`q4t mcp-tunnel-agent run FILE`，固定目标、独立控制与工具凭据、
+有界重连/进程恢复。核心不依赖agent存活，不要求nginx或第三方agent。
+[隧道配置](docs/SERVE_MCP_TUNNEL_2026-11-16.md)和
+[公开wire schema](docs/serve-mcp-tunnel-v1.schema.json)描述接入合同。
+具体云提供方原生适配及剩余兼容任务继续按总计划实现。
+
 ## 目标模型
 
 - 架构: `qwen4_exp` (48 层: 36 linear_attention + 12 full_attention)
@@ -721,7 +744,7 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
-| [OpenAI tunnel-client](https://github.com/openai/tunnel-client) | Apache-2.0；参考固定版本的MCP隧道wire合同，原生实现进行中，不引入其程序作为核心依赖，见[接入计划](docs/SERVE_MCP_TUNNEL_2026-11-16.md) |
+| [OpenAI tunnel-client](https://github.com/openai/tunnel-client) | Apache-2.0；参考固定版本的MCP隧道wire合同，原生broker/agent已交付，不引入其程序作为核心依赖，见[接入说明](docs/SERVE_MCP_TUNNEL_2026-11-16.md) |
 | [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端已完成针对性业务短验，权重不随代码仓库分发，见[实现与验收](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |

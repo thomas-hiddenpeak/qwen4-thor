@@ -9,24 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev126；服务包 `6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a` |
-| Generation | `813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0` |
-| 引擎 | `d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080` |
-| 引擎发布记录 | `5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a` |
+| 发布 | rev134；服务包 `437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577` |
+| Generation | `b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f` |
+| 引擎 | `a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885` |
+| 引擎发布记录 | `f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
+| 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `5251373be1781e6ecf6e3bb75995ff6c3622e7406c73e1ab68437f832b7cf17f`；保持新工具能力 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
+| 版本回退 | 已验旧控制/当前引擎包 `52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e`；保持新MCP能力 |
+| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；MCP数据源、私网目标/凭据与TLS/CORS等按部署显式配置 |
 
-[程序调用发行与回退记录](evidence/serve-programmatic-delivery-20261115/README.md)
-包含17项STOPPED交付检查，0新增GPU。原生程序调用、认证续接、
-原工具schema、caller与JSON/SSE实际闭环已通过；首次入场前配额
-缺陷已修复并完成整树恢复中的最终回答。主轻及精确回退包均已验。
+[MCP发行与回退记录](evidence/serve-mcp-delivery-20261116/README.md)包含
+17项STOPPED交付检查，54.136秒，0新增GPU。实际MCP的审批/拒绝、
+原生隧道SSE、资料与资源读取、未知不重放、同PID普通推理已验；
+主轻资格和共享程序/存储/配额的整树恢复分别有精确包证据。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱。旧默认程序和状态备份保留；自动版本恢复保留现代根，
-人工整根回退到v12入口没有outer。PR27已实际合main（1f0ed01a），
-未宣称长稳或完整OpenAI兼容，全部master继续。
+保留前驱；旧默认程序和状态备份保留。自动版本恢复保留现代根，
+人工整根回退到v12入口没有outer；不是独立旧引擎回退。
+本次代码待最终检查和实际合main；提供方原生适配、完整客户端矩阵、
+其他协议及可靠性组合继续，未宣称完整OpenAI兼容或长稳通过。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
@@ -38,6 +40,8 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+以下保留各阶段发生时的默认身份；当前已交付身份以上表为准。
 
 [MCP能力包的受控恢复](evidence/serve-mcp-managed-20261116/README.md)
 已通过：回退包1启动2业务，整树切换2启动4业务1探测；Guardian保留、

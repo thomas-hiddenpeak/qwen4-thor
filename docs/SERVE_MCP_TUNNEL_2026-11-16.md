@@ -1,5 +1,13 @@
 # 原生 MCP 反向隧道接入
 
+当前原生实现已随rev134交付，默认身份见[STATUS](STATUS.md)。
+[真实模型与官方SDK](evidence/serve-mcp-business-20261116/README.md)、
+[主轻及恢复合同](evidence/serve-mcp-recovery-contract-20261116/README.md)、
+[共享执行与整树恢复](evidence/serve-mcp-managed-20261116/README.md)和
+[实际发布/回退](evidence/serve-mcp-delivery-20261116/README.md)分别留证。
+默认没有自动配置私网目标/凭据；具体提供方原生适配及全部master
+仍继续。以下按阶段保留实施记录，不以早期阶段的未验状态覆盖当前证据。
+
 沿用 A07/A11/A12 与 R01/R03/Q01—Q03，总目标持续推进。HTTP部署
 映射已完成CPU验证（50bef003），它连接已存在的MCP适配入口；本组
 补齐私网主动连接的传输，不能以把tunnel_id改名为URL作为完成。

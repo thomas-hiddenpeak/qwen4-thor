@@ -1,0 +1,10 @@
+{
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-20261115/publication-archive-01/plan.json",
+  "sha256": "21254acd2cb2539d0130c1f47cf1081d0d619515d368e8bad79a005a8850f409",
+  "selected": [
+    "9efded02cbe6152c51e00148fd502cb1953f9b527aae1b91a2bd0446f354e257",
+    "755109e313123090715bf0713dca411b7379bd4106b097a7eb05fca0c5832ab9"
+  ],
+  "model_actions": false,
+  "files_moved": false
+}

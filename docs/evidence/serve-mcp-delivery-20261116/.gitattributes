@@ -1,0 +1,2 @@
+*.stdout -text -whitespace
+*.stderr -text -whitespace
