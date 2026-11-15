@@ -1,0 +1,38 @@
+{
+  "status": "PASS_PROGRAMMATIC_TOOLS_PRIMARY_DELIVERY",
+  "acceptance": "ACCEPT_PROGRAMMATIC_TOOLS_PRIMARY_DELIVERY",
+  "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a",
+  "engine_binary_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+  "actual_business": {
+    "status": "ACCEPT_PROGRAMMATIC_TOOLS_VERSION",
+    "strict_lease_seconds": 141.65597146516666,
+    "nvml_queries": 132,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 340
+    },
+    "source_commit": "bc5cf6448beb5a22064ad821ac1d1c2fa9ac0e9b",
+    "plan_sha256": "a2dfba7273ce3ffb69a7c899544a98e412dfaa03093c53aa4536f4e8bb4f62ae",
+    "result_sha256": "3a6663b3c9f394b7f5d234fa185858bb0540e82c07aad7eb95606c09a26e4318",
+    "lease_result_sha256": "b14e2d2a84f04c3b58a23d4096851fd8fd7c08c636e5ebfca5fb9f565b933f8c",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "original_decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-programmatic-tools-20261113/managed-version-02/decision.json",
+    "sha256": "49743988ed93c4ad81657ee8219b352b7722ce26a40532471bfe41ec4b02b5ef"
+  },
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-programmatic-tools-20261113/delivery-01/review.json",
+  "new_gpu_starts": 0,
+  "remaining_master_tasks_open": true,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

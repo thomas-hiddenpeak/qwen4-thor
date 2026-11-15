@@ -51,44 +51,33 @@ b376e839b322978313d929fd20663b11ba58b75df5a46c126dd19ea2fa70ad2a。
 实际资料、结果聚合及最后答案，分别验证JSON/SSE、存储续接及错误路径。
 不运行完整性能或全模型质量矩阵，不将一次阶段通过标为总目标完成。
 
-当前：上游核心与许可已固定，隔离执行部件13项CPU首过，源码审计通过；
-[证据](evidence/serve-programmatic-worker-cpu-20261113/README.md)保留。
-公开接线、授权/持久续接、业务验证和发行尚未完成。实际默认rev118保持，
-PR26已实际合main（090f0d48），继续程序调用和全部master任务。
+## 当前交付与证据（2026-11-15）
 
-认证/回放部件19项不同CPU最终通过，见[证据](evidence/serve-programmatic-authority-cpu-20261113/README.md)。
-指纹保存调用时权限及schema，绑定客户/模型/模板/原代码；续接有效期
-30天，与默认对象保留期一致，密钥撤销也使待续接状态失效。VM记录
-每次子调用发生前的结果数量，伪造依赖调用时序会被拒绝。公开接线、
-队列/压缩、媒体语义和发行仍待完成，不能把当前部件称为完整能力。
+已可回退交付rev126（d7dd0c6d），[17项停止态发布检查](evidence/serve-programmatic-delivery-20261115/README.md)
+通过；默认STOPPED。PR27待最终检查与实际合main，总目标继续。
 
+- [隔离执行部件13项CPU](evidence/serve-programmatic-worker-cpu-20261113/README.md)、
+  [认证/回放19项CPU](evidence/serve-programmatic-authority-cpu-20261113/README.md)及
+  [公开接入54项不同C++、2项SDK、7项Python](evidence/serve-programmatic-integration-cpu-20261113/README.md)
+  最终通过，初始失败与修正保留。程序身份绑定客户/模型/模板/原代码，
+  续接有效期30天，撤销密钥也使待续接身份失效。
+- [真实资料JSON/SSE闭环](evidence/serve-programmatic-business-20261113/README.md)
+  覆盖函数/custom namespace、实际文档结果、纯计算、截断及普通业务。
+  大字符串约束问题经[11项CPU修复](evidence/serve-programmatic-length-repair-20261113/README.md)，
+  保持原min/max、Unicode/转义及资源合同。
+- 实际受控恢复暴露[首次模型入场前配额失败](evidence/serve-programmatic-resume-failure-20261115/README.md)。
+  [26项CPU修复](evidence/serve-programmatic-resume-rate-cpu-20261115/README.md)重新预留未入场提示，
+  保持RPM、共享输出预算、已发生用量与Batch额度；随后
+  [新精确引擎资格及整树业务](evidence/serve-programmatic-qualification-20261115/README.md)
+  5启动14业务1探测通过。原程序在切换后收取一次实际资料读取结果，
+  VM恢复并由模型完成最终SSE答案。含原资格尝试累计10启动28业务
+  2探测；所有资源已清理，不把只恢复进程当业务成功。
+- [两种语法构建合同](evidence/serve-programmatic-ci-grammar-20261115/README.md)
+  针对性通过。生产启用XGrammar；未链接它的公开CPU构建明确报错，
+  不能错误派发受grammar约束的工具。
 
-公开接入现已完成本组针对性 CPU 验证：54项不同C++、2项官方SDK、
-7项Python最终通过，[原件与失败修正](evidence/serve-programmatic-integration-cpu-20261113/README.md)保留。
-完成生成调度、caller/原始合同、JSON/SSE、持久/无状态/后台快照、
-裁剪/压缩、发现后授权、串行与异步、媒体准备/审核/冻结与共同预算。
 程序图片在标准string结果中使用有版本的内容编码，纯文本不误解析。
-公开程序只有已加载function/custom工具；其他内建执行适配仍在A11。
-
-真实短验固定1启动/8创建/900秒：函数JSON与custom SSE实际读取
-本项目docs/MODEL.md，验证previous_response_id及Conversation回填后
-程序继续并生成真实标题/引用；错误结果schema拒绝、本地程序续答、
-截断不派发和普通业务继续。未执行前不算通过；随后适用资格/发行/
-main合入继续，媒体GPU组合在A10/R10仍是必做，总目标保持active。
-
-
-真实资料闭环补验通过，见[记录](evidence/serve-programmatic-business-20261113/README.md)。
-首次长度语法失败与11项CPU修复独立保留；默认rev118仍未替换。
-交付资格固定：主轻2启动8业务/900秒，旧控制当前引擎独立1启动2业务/
-300秒，程序等待实际结果时整树恢复2启动4业务1探测/600秒，总上限
-5启动14业务1探测1800秒。每项全程持严格GPU租约，后项依赖前项的
-精确资格；不重放外部工具，不跑全量性能/质量。随后停止态可回退发行、
-PR27实际合main及全部master持续。
-
-2026-11-15实际受控整树续答暴露首次模型步输入预留缺陷，
-[原失败](evidence/serve-programmatic-resume-failure-20261115/README.md)
-与[26项CPU修复](evidence/serve-programmatic-resume-rate-cpu-20261115/README.md)
-独立保留。新引擎仅改配额/入场3项运行时来源，原生helper身份未变。
-新精确资格与受影响业务上限5启动14业务1探测1800秒；连原资格组
-累计上限10启动28业务2探测3600秒。默认rev118保持，真实续答通过
-后才可回退交付；不将原无客户端限额业务当成此组合已通过。
+已加载function/custom工具可执行；MCP及其他内建执行适配、媒体GPU
+与恢复组合等仍是A10/A11/R10必做工作，不能用本阶段替代总计划。
+独立回退包使用当前引擎和旧控制实现；自动切换保留现代固定根，
+人工整根回退到v12没有outer功能，不能将其称为独立旧引擎回退。

@@ -9,33 +9,41 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev118；服务包 `bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2` |
-| Generation | `52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615` |
-| 引擎 | `ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531` |
-| 引擎发布记录 | `a2500b5603f5963d719f3addee02fe1595b1fd09a9bbd4fb6a9172122c0ea3b6` |
+| 发布 | rev126；服务包 `6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a` |
+| Generation | `813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0` |
+| 引擎 | `d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080` |
+| 引擎发布记录 | `5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf`；保持新工具能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `5251373be1781e6ecf6e3bb75995ff6c3622e7406c73e1ab68437f832b7cf17f`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-tool-discovery-delivery-20261113/README.md)
-包含17项STOPPED交付检查，0新增GPU。server/client工具发现与
-additional_tools实际闭环、主轻资格及整树切换均已接受；发布迁移
-遗漏已补齐，严格保持能力与预算。namespace/async原有能力保留。
+[程序调用发行与回退记录](evidence/serve-programmatic-delivery-20261115/README.md)
+包含17项STOPPED交付检查，0新增GPU。原生程序调用、认证续接、
+原工具schema、caller与JSON/SSE实际闭环已通过；首次入场前配额
+缺陷已修复并完成整树恢复中的最终回答。主轻及精确回退包均已验。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
-自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
+保留前驱。旧默认程序和状态备份保留；自动版本恢复保留现代根，
+人工整根回退到v12入口没有outer。PR27待最终检查和实际合main，
+未宣称长稳或完整OpenAI兼容，全部master继续。
+
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
 提交也已实际合main（PR24，`79f6e391`），
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
 异步实现已实际合main（PR25，`4e87a03f`），
-[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev118可用，
+[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。前驱rev118的
 工具发现已发行并实际合main（PR26，`090f0d48`），
-[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用等全部master继续。
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付，PR27待合main，全部master继续。
 
 ## 最近完成的实现和验证
+
+- 原生程序调用已[可回退发行rev126](evidence/serve-programmatic-delivery-20261115/README.md)：
+  17项STOPPED检查全过，实际回退再前进，密钥/配额/core/outer及
+  恢复预算保持，0新增模型启动。PR27待最终检查和实际合main；
+  剩余协议/工具/模型后端及恢复组合继续，未结束总目标。
+
 
 - 程序调用受控续答缺陷已[通过真实补验](evidence/serve-programmatic-qualification-20261115/README.md)：
   新引擎主轻2启动8业务、独立回退1启动2业务、整树恢复2启动4业务

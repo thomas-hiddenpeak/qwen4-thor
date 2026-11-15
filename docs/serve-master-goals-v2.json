@@ -300,7 +300,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Controlled program resume and whole-tree recovery now accepted on repaired engine; reversible delivery and main merge pending. All other master gaps remain required.",
+      "current_work": "Native programmatic tools delivered in rev126 with real controlled recovery closure; actual main merge pending, then all remaining master tasks.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -1053,17 +1053,17 @@
         }
       },
       "programmatic": {
-        "state": "managed_resume_repaired_actual_qualification_passed",
+        "state": "delivered_main_pending",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": false,
         "gpu_started": true,
-        "delivery_pending": true,
+        "delivery_pending": false,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Reversible stopped-state delivery and actual main merge, then all remaining master tasks",
-        "default_capability_delivered": false,
+        "next": "Actual PR27 main merge, then typed outputs, MCP and all remaining master tasks",
+        "default_capability_delivered": true,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
         "integration_sdk_passed": 2,
@@ -1105,6 +1105,17 @@
           "requests": 14,
           "probes": 1,
           "nvml_queries": 291
+        },
+        "delivery_evidence": "docs/evidence/serve-programmatic-delivery-20261115",
+        "default_revision": 126,
+        "default_release": {
+          "revision": 126,
+          "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a",
+          "generation_sha256": "813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0",
+          "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+          "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
+          "state": "STOPPED",
+          "main_integration_pending": true
         }
       }
     },
@@ -1790,17 +1801,17 @@
         }
       },
       "programmatic": {
-        "state": "managed_resume_repaired_actual_qualification_passed",
+        "state": "delivered_main_pending",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
         "public_capability_not_yet_enabled": false,
         "gpu_started": true,
-        "delivery_pending": true,
+        "delivery_pending": false,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Reversible stopped-state delivery and actual main merge, then all remaining master tasks",
-        "default_capability_delivered": false,
+        "next": "Actual PR27 main merge, then typed outputs, MCP and all remaining master tasks",
+        "default_capability_delivered": true,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
         "integration_sdk_passed": 2,
@@ -1842,9 +1853,20 @@
           "requests": 14,
           "probes": 1,
           "nvml_queries": 291
+        },
+        "delivery_evidence": "docs/evidence/serve-programmatic-delivery-20261115",
+        "default_revision": 126,
+        "default_release": {
+          "revision": 126,
+          "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a",
+          "generation_sha256": "813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0",
+          "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+          "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
+          "state": "STOPPED",
+          "main_integration_pending": true
         }
       },
-      "current_work": "Controlled program resume and whole-tree recovery now accepted on repaired engine; reversible delivery and main merge pending. All other master gaps remain required."
+      "current_work": "Native programmatic tools delivered in rev126 with real controlled recovery closure; actual main merge pending, then all remaining master tasks."
     },
     {
       "id": "A12",
@@ -2687,7 +2709,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "staged_releases_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -2713,12 +2735,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 118,
-        "manifest_sha256": "bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2",
-        "generation_sha256": "52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615",
-        "evidence": "docs/evidence/serve-tool-discovery-delivery-20261113",
+        "revision": 126,
+        "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a",
+        "generation_sha256": "813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0",
+        "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+        "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
         "state": "STOPPED",
-        "main_integration_pending": false
+        "main_integration_pending": true
       },
       "merged_foundation": {
         "pr": 22,
@@ -2790,6 +2813,6 @@
       "release": null
     }
   ],
-  "next_task": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage.",
-  "next": "A07/A11 programmatic real business, applicable qualification and reversible delivery; then typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations; R07-R10/Q03/G00 remain mandatory. Continue all tasks after each stage."
+  "next_task": "Confirm PR27 exact head checks and merge delivered programmatic work; continue typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations. R07-R10/Q03/G00 remain mandatory; no stopping after a stage.",
+  "next": "Confirm PR27 exact head checks and merge delivered programmatic work; continue typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations. R07-R10/Q03/G00 remain mandatory; no stopping after a stage."
 }
