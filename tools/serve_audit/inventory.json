@@ -1934,11 +1934,11 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83",
+    "include/q4t/server/responses_execution.h": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
-    "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
+    "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
     "include/q4t/server/responses_mcp_state.h": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
@@ -2056,7 +2056,7 @@
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
-    "src/server/chat_generation.cpp": "b06ecd0d9b47252f87d03db8a859537393223ef25134bcb618ce7ee1d839b212",
+    "src/server/chat_generation.cpp": "673a06f5739a7b4b3af7e5d5acf7365d5540c71054ced9121f75405288fea43d",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2187,10 +2187,10 @@
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
     "src/server/remote_http_internal.h": "2ff012c16ed2a2760875e27c4b54073e8b62662ad222d9d45b4e6d80bef2bba0",
-    "src/server/responses_api.cpp": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
+    "src/server/responses_api.cpp": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18",
+    "src/server/responses_execution.cpp": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
     "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
     "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
@@ -2202,14 +2202,14 @@
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
     "src/server/responses_input.cpp": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
-    "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
+    "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
-    "src/server/responses_mcp_execution.cpp": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e",
+    "src/server/responses_mcp_execution.cpp": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a",
     "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd",
     "src/server/responses_mcp_preparation.cpp": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
-    "src/server/responses_mcp_state.cpp": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3",
+    "src/server/responses_mcp_state.cpp": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
@@ -5219,5 +5219,47 @@
     "gpu_starts": 0,
     "public_mcp_delivery": false,
     "evidence": "docs/evidence/serve-mcp-recovery-cpu-20261116"
+  },
+  "mcp_cleanup_review_20261116": {
+    "scope": "Bounded existing cleanup coordinator records MCP IDs and exact owner before durable proposal/approval; stateless/storage failure retains cleanup duty. No credentials, remote replay, model restart, extra daemon or worker. Background reserves MCP metadata only when needed.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83",
+        "after": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70"
+      },
+      "include/q4t/server/responses_jobs.h": {
+        "before": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
+        "after": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff"
+      },
+      "src/server/chat_generation.cpp": {
+        "before": "b06ecd0d9b47252f87d03db8a859537393223ef25134bcb618ce7ee1d839b212",
+        "after": "673a06f5739a7b4b3af7e5d5acf7365d5540c71054ced9121f75405288fea43d"
+      },
+      "src/server/responses_api.cpp": {
+        "before": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
+        "after": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18",
+        "after": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9"
+      },
+      "src/server/responses_jobs.cpp": {
+        "before": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
+        "after": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e",
+        "after": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3",
+        "after": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f"
+      }
+    },
+    "targeted_cpu_passed": 18,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "progress": "Acknowledged child cleanup cursor survives bounded retry, so later IDs are not starved by repeated prefix scans.",
+    "evidence": "docs/evidence/serve-mcp-cleanup-cpu-20261116"
   }
 }

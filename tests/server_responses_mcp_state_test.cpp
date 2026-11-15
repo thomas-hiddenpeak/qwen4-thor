@@ -740,10 +740,13 @@ Q4T_TEST(responses_mcp_history_stream_ids_and_failed_catalog_are_owned) {
                 .Propose(catalog.value, definition, "read", args, "direct",
                          Access(), "mcp_streamed")
                 .http_status == 409);
-  Q4T_CHECK(!state
-                 .Propose(catalog.value, Definition(), "read", args, "direct",
-                          Access(), "mcp_requires_approval")
-                 .ok());
+  const auto waiting = state.Propose(catalog.value, Definition(), "read", args,
+                                      "direct", Access(),
+                                      "mcp_requires_approval");
+  Q4T_CHECK(Ok(waiting) &&
+            waiting.value.GetString("type") == "mcp_approval_request");
+  Q4T_CHECK(state.Permit("mcp_requires_approval", Definition(), Access())
+                .http_status == 409);
   Q4T_CHECK(
       !state.Catalog(definition, Tools(), Access(), 600, "mcpl_bad", "failed")
            .ok());

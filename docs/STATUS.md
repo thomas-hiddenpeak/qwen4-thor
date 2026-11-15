@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP存储故障清理续办18项CPU通过](evidence/serve-mcp-cleanup-cpu-20261116/README.md)：
+  派发前登记有界元数据，stateless收尾失败继续保留责任；已确认
+  进程存活/存储恢复阻塞时普通请求继续，恢复后收尾不重放。主机/
+  完整引擎零警告、0GPU、rev126保持；继续程序/媒体/会话/映射及交付。
+
 - [MCP拥有者恢复21项CPU首过](evidence/serve-mcp-recovery-cpu-20261116/README.md)：
   真实进程退出、精确请求清理、未知不重放、已知结果保留和异常续接
   已验证。主机/完整引擎零警告、0GPU、rev126保持；继续存储短暂

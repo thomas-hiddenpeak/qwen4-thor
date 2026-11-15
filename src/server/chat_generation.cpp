@@ -142,13 +142,8 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                   "object_scope_unavailable");
         return;
       }
-      const auto* frozen_request =
-          frozen_inputs ? frozen_inputs->Find("request") : nullptr;
-      const bool frozen_background =
-          frozen_request && frozen_request->GetBool("background");
       responses = std::make_unique<ResponsesExecution>(
-          *objects_, frozen_background ? nullptr : background_.Get(),
-          !frozen_background, api == GenerationApi::kCompact);
+          *objects_, background_.Get(), true, api == GenerationApi::kCompact);
       context->SetUsageObserver(&ResponsesExecution::ObserveUsage,
                                 responses.get());
       if (frozen_inputs) {

@@ -8,6 +8,20 @@
 namespace q4t::server {
 using namespace object_detail;
 
+ObjectReply ResponsesExecution::TrackMcpCall(const std::string& id) {
+  if (!cleanup_)
+    return require_cleanup_
+               ? Error(503, "mcp_reconciliation_unavailable",
+                       "MCP lifecycle owner unavailable")
+               : ObjectReply{};
+  if (!cleanup_ticket_) {
+    auto reserved = cleanup_->Reserve(plan_.scope, plan_.id, &cleanup_ticket_);
+    if (!reserved.ok()) return reserved;
+  }
+  return cleanup_->TrackMcp(cleanup_ticket_, cipher_config_.model,
+                             plan_.execution_owner, id);
+}
+
 ObjectReply ResponsesExecution::CloseMcpExecution(const StateAccess& access) {
   if (!mcp_state_) return {};
   auto items = *output_.Snapshot().GetArray("output");
@@ -170,6 +184,8 @@ ObjectReply ResponsesExecution::RunMcpApprovals(
     if (definition == mcp_definitions_.end())
       return Error(400, "mcp_definition_required",
                    "Resupply the MCP server declaration for approval");
+    auto tracked = TrackMcpCall(original.value.Find("call")->GetString("id"));
+    if (!tracked.ok()) return tracked;
     const bool approved = approval.GetBool("approve");
     Json terminal;
     ObjectReply decision;
@@ -279,6 +295,12 @@ ObjectReply ResponsesExecution::RunMcp(
         catalog == generation_history_.array.end())
       return Error(500, "mcp_state_invalid",
                    "Missing request-owned MCP binding");
+    if (pending.public_id.empty())
+      pending.public_id = detail::NewRequestId("mcp_");
+    if (pending.public_id.empty())
+      return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
+    auto tracked = TrackMcpCall(pending.public_id);
+    if (!tracked.ok()) return tracked;
     pending.dispatched = true;
     auto proposed = mcp_state_->Propose(
         *catalog, *definition, binding.name, arguments[current++], "direct",

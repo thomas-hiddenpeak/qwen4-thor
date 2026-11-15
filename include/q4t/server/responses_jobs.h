@@ -102,10 +102,14 @@ class ResponsesJobs : public IResponsesCleanup {
   // No prompt, executor callback, request fd or client permit is retained.
   ObjectReply Reserve(const std::string& scope, const std::string& id,
                       uint64_t* ticket) override;
+  ObjectReply TrackMcp(uint64_t ticket, const std::string& model,
+                       const io::Json& owner,
+                       const std::string& authority_id) override;
   void Close(uint64_t ticket, bool known_terminal) noexcept override;
 
  private:
   struct State;
+  struct McpCleanup;
   std::unique_ptr<State> state_;
   ObjectReply Adopt(std::unique_ptr<ResponsesExecution> run,
                     ClientIdentity client, const TransferPermit& transfer,
@@ -115,7 +119,8 @@ class ResponsesJobs : public IResponsesCleanup {
   void Execute(const std::shared_ptr<Job>& job) noexcept;
   void Reconcile(const std::shared_ptr<Job>& job) noexcept;
   void ReconcileForeground(uint64_t ticket, std::string_view scope,
-                           std::string_view id) noexcept;
+                           std::string_view id,
+                           const McpCleanup& mcp) noexcept;
   void Release(const std::shared_ptr<Job>& job, bool known_terminal);
 };
 using BackgroundRatePlanner =

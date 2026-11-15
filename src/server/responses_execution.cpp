@@ -461,10 +461,11 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   }
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
-  if (plan_.store && require_cleanup_ && !cleanup_)
+  if ((plan_.store || mcp_state_) && require_cleanup_ && !cleanup_)
     return Error(503, "response_reconciliation_unavailable",
                  "Response lifecycle owner unavailable");
-  if (plan_.store && cleanup_ && !cleanup_ticket_) {
+  if (!envelope_.background && (plan_.store || mcp_state_) && cleanup_ &&
+      !cleanup_ticket_) {
     const auto reserved =
         cleanup_->Reserve(plan_.scope, plan_.id, &cleanup_ticket_);
     if (!reserved.ok()) return reserved;
@@ -759,7 +760,8 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
     DiscardUnreviewedOutput();
     if (cleanup_ticket_) {
       cleanup_->Close(cleanup_ticket_,
-                      plan_.finished || !durable_begin_attempted_);
+                      plan_.finished ||
+                          (!durable_begin_attempted_ && !mcp_state_));
       cleanup_ticket_ = 0;
     }
   });

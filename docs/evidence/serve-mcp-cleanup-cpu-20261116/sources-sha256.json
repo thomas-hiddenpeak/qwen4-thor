@@ -1,0 +1,12 @@
+{
+  "include/q4t/server/responses_execution.h": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70",
+  "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
+  "src/server/chat_generation.cpp": "673a06f5739a7b4b3af7e5d5acf7365d5540c71054ced9121f75405288fea43d",
+  "src/server/responses_api.cpp": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00",
+  "src/server/responses_execution.cpp": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9",
+  "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
+  "src/server/responses_mcp_execution.cpp": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a",
+  "src/server/responses_mcp_state.cpp": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f",
+  "tests/server_mcp_transport_test.cpp": "066379768736895e03230f57c9f4404d50f08f547ba6f641096a43f112b7508f",
+  "tests/server_responses_mcp_state_test.cpp": "6fed1836ae0a7853c32c9ad5a068cc210fe358b1179539ad8a55ffd07a1133d6"
+}

@@ -22,6 +22,8 @@
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_jobs.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
 namespace {
@@ -1026,6 +1028,123 @@ Q4T_TEST(responses_mcp_cleanup_and_reconciliation_allow_honest_continuation) {
               FinishExecution(&continued));
     Q4T_CHECK(server.calls == (phase == 3 ? 1 : 0));
   }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_cleanup_survives_storage_failure_without_reexecution) {
+  for (const bool dispatched : {false, true}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    ResponsesJobs jobs(objects, {}, [](auto&) {
+      throw std::runtime_error("cleanup must not invoke model execution");
+    });
+    ScopeExit reset([] { DeferObjectSpawnForTesting(false); });
+    ResponsesExecution run(objects, &jobs, true);
+    auto request = ExecutionRequest(server);
+    Set(&request, "store", Boolean(dispatched));
+    Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+    std::string wire;
+    Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+    bool waiting = false, interrupted = false;
+    try {
+      (void)run.RunMcp(1, &waiting, [](const auto&) -> bool {
+        throw std::runtime_error("fixture transport owner ended");
+      });
+    } catch (const std::runtime_error&) {
+      interrupted = true;
+    }
+    Q4T_CHECK(interrupted && jobs.Health().foreground_active == 1);
+    Json call;
+    for (const auto& item : run.Output().Snapshot().GetArray("output")->array)
+      if (item.GetString("type") == "mcp_call") call = item;
+    Q4T_CHECK(!call.IsNull());
+    ResponsesMcpState calls(objects, config, run.Id());
+    if (dispatched) {
+      ResponsesMcpDefinition definition;
+      ChatPlanError error;
+      Q4T_CHECK(PlanResponsesMcpDefinition(
+          request.GetArray("tools")->array.front(), &definition, &error));
+      Q4T_CHECK(ExecutionOk(calls.Permit(call.GetString("id"), definition,
+                                        ExecutionAccess())));
+    }
+    // Keep normal operations on their production deadline. The simulated
+    // storage controller failure is followed by a stuck replacement spawn.
+    DeferObjectSpawnForTesting(true);
+    FailObjectControllerForTesting();
+    Q4T_CHECK(!run.CloseUnfinished().ok());
+    Q4T_CHECK(jobs.Health().foreground_pending == 1);
+    const auto starting = Clock::now() + 5s;
+    while ((objects.Health().state != "starting" || !objects.Health().pending) &&
+           Clock::now() < starting)
+      std::this_thread::sleep_for(5ms);
+    Q4T_CHECK(objects.Health().state == "starting" && objects.Health().pending);
+    const auto errors_before = jobs.Health().foreground_errors;
+    ResponsesExecution healthy(objects, &jobs, true);
+    const auto plain = Object({{"input", String("ordinary text")},
+                               {"store", Boolean(false)}});
+    Q4T_CHECK(ExecutionOk(
+        healthy.Prepare(plain, config, ExecutionAccess(), 44)));
+    Q4T_CHECK(ExecutionOk(healthy.Begin(&wire)) && FinishExecution(&healthy));
+    const auto first = Clock::now() + 5s;
+    while (jobs.Health().foreground_errors == errors_before &&
+           Clock::now() < first)
+      std::this_thread::sleep_for(5ms);
+    Q4T_CHECK(jobs.Health().foreground_errors > errors_before &&
+              !jobs.Health().failed);
+    DeferObjectSpawnForTesting(false);
+    const auto until = Clock::now() + 8s;
+    while (jobs.Health().foreground_owned && Clock::now() < until)
+      std::this_thread::sleep_for(5ms);
+    Q4T_CHECK(jobs.Health().foreground_owned == 0 &&
+              jobs.Health().foreground_reconciled == 1 &&
+              !jobs.Health().failed);
+    auto recovered = calls.Authenticate(call, ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(recovered));
+    Q4T_CHECK(
+        recovered.value.Find("error")->Find("content")->GetString("code") ==
+        (dispatched ? "mcp_result_unknown" : "mcp_execution_interrupted"));
+    if (!dispatched)
+      Q4T_CHECK(ResponsesState(objects).Retrieve(run.Id(), ExecutionAccess())
+                    .http_status == 404);
+    Q4T_CHECK(server.calls == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_cleanup_metadata_is_bounded_and_scope_bound) {
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesJobsOptions limits;
+  limits.max_jobs = limits.max_client_jobs = 1;
+  ResponsesJobs jobs(objects, limits, [](auto&) {
+    throw std::runtime_error("unexpected executor");
+  });
+  uint64_t ticket = 0;
+  Q4T_CHECK(ExecutionOk(jobs.Reserve(ExecutionAccess().scope, "resp_cleanup",
+                                    &ticket)));
+  const auto owner = CurrentResponseOwner();
+  for (size_t i = 0; i < 64; ++i)
+    Q4T_CHECK(ExecutionOk(jobs.TrackMcp(ticket, "cpu", owner,
+                                       "mcp_cleanup_" + std::to_string(i))));
+  Q4T_CHECK(ExecutionOk(jobs.TrackMcp(ticket, "cpu", owner, "mcp_cleanup_0")));
+  Q4T_CHECK(jobs.TrackMcp(ticket, "cpu", owner, "mcp_overflow").http_status ==
+            429);
+  Q4T_CHECK(
+      jobs.TrackMcp(ticket, "other", owner, "mcp_cleanup_0").http_status == 409);
+  uint64_t extra = 0;
+  Q4T_CHECK(jobs.Reserve("client:other", "resp_other", &extra).http_status ==
+            429);
+  jobs.Close(ticket, false);
+  Q4T_CHECK(jobs.TrackMcp(ticket, "cpu", owner, "mcp_cleanup_0").http_status ==
+            409);
+  const auto until = Clock::now() + 5s;
+  while (jobs.Health().foreground_owned && Clock::now() < until)
+    std::this_thread::sleep_for(5ms);
+  Q4T_CHECK(!jobs.Health().foreground_owned && !jobs.Health().failed);
+  Q4T_CHECK(ExecutionOk(jobs.Reserve("client:other", "resp_other", &extra)));
+  jobs.Close(extra, true);
   return true;
 }
 

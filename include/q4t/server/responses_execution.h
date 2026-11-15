@@ -30,6 +30,9 @@ class IResponsesCleanup {
   virtual ~IResponsesCleanup() = default;
   virtual ObjectReply Reserve(const std::string& scope, const std::string& id,
                               uint64_t* ticket) = 0;
+  virtual ObjectReply TrackMcp(uint64_t ticket, const std::string& model,
+                               const io::Json& owner,
+                               const std::string& authority_id) = 0;
   virtual void Close(uint64_t ticket, bool known_terminal) noexcept = 0;
 };
 
@@ -250,6 +253,7 @@ class ResponsesExecution {
                          const io::Json* history = nullptr);
   ObjectReply CaptureMcpCredentials();
   ObjectReply CloseMcpExecution(const StateAccess& access);
+  ObjectReply TrackMcpCall(const std::string& id);
   ObjectReply PrepareMcp(const ChatPlanConfig& config,
                          io::Json* continuation = nullptr);
   Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire,

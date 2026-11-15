@@ -449,8 +449,8 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
       ResponsesMcpApprovalRequired(*declaration, *selected) ||
       ResponsesMcpApprovalRequired(current.declaration, *selected);
   if (!reserved_id.empty() &&
-      (approval || !reserved_id.starts_with("mcp_") || !ValidId(reserved_id)))
-    return Invalid("Invalid streamed MCP call identity or approval policy");
+      (!reserved_id.starts_with("mcp_") || !ValidId(reserved_id)))
+    return Invalid("Invalid reserved MCP call identity");
   const auto call_id = reserved_id.empty() ? detail::NewRequestId("mcp_")
                                            : std::move(reserved_id);
   const auto approval_id = approval ? detail::NewRequestId("mcpr_") : "";
