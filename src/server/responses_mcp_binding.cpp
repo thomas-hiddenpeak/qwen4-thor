@@ -198,7 +198,8 @@ Status PlanResponsesMcpBindings(
 
 Status MapResponsesMcpChoice(const Json& choice,
                              const std::vector<ResponsesMcpBinding>& bindings,
-                             Json* mapped, ChatPlanError* error) {
+                             Json* mapped, ChatPlanError* error,
+                             const Json* definitions_only) {
   if (!mapped || !error) return Status::Fail("Missing MCP choice owner");
   *mapped = {};
   *error = {};
@@ -216,6 +217,28 @@ Status MapResponsesMcpChoice(const Json& choice,
     if (!label || !label->IsString() || label->str.empty() ||
         (name && !name->IsNull() && (!name->IsString() || name->str.empty())))
       return Invalid(error, path, "Invalid MCP tool selector");
+    if (definitions_only) {
+      const Json* declaration = nullptr;
+      for (const auto& tool : definitions_only->array)
+        if (tool.GetString("type") == "mcp" &&
+            tool.GetString("server_label") == label->str)
+          declaration = &tool;
+      if (!declaration)
+        return Invalid(error, path, "Selected MCP server is not declared");
+      if (!ResponsesToolAllows(*declaration, "direct"))
+        return Invalid(error, path,
+                       "Selected MCP tool requires a program caller");
+      const auto* allowed = declaration->Find("allowed_tools");
+      const auto* names = allowed && allowed->IsObject()
+                              ? allowed->GetArray("tool_names")
+                              : allowed;
+      if (name && !name->IsNull() && names && names->IsArray() &&
+          std::none_of(names->array.begin(), names->array.end(),
+                       [&](const auto& item) { return item.str == name->str; }))
+        return Invalid(error, path, "Selected MCP name is not allowed");
+      // No remote existence/annotation claim and no synthetic callable.
+      return {};
+    }
     const auto previous = items->array.size();
     for (const auto& binding : bindings) {
       if (binding.server_label != label->str ||
@@ -240,14 +263,22 @@ Status MapResponsesMcpChoice(const Json& choice,
   if (choice.GetString("type") == "mcp") {
     auto status = expand(choice, "tool_choice", &items);
     if (!status) return status;
-    *mapped = items.array.size() == 1
+    *mapped = definitions_only
+                  ? String("auto")
+              : items.array.size() == 1
                   ? items.array.front()
                   : Object({{"type", String("allowed_tools")},
                             {"mode", String("required")},
                             {"tools", std::move(items)}});
   } else if (choice.GetString("type") == "allowed_tools") {
+    auto status = InputFields(choice, {"type", "mode", "tools"},
+                              &error->param, "tool_choice");
+    if (!status) return status;
     const auto* selected = choice.GetArray("tools");
-    if (!selected) return Invalid(error, "tool_choice.tools", "Expected tools");
+    const auto mode = choice.GetString("mode");
+    if (!selected || selected->array.empty() ||
+        (mode != "auto" && mode != "required"))
+      return Invalid(error, "tool_choice", "Invalid allowed_tools choice");
     if (selected->array.size() > 128)
       return Invalid(error, "tool_choice.tools",
                      "Selected tools exceed capacity", true);
@@ -262,6 +293,8 @@ Status MapResponsesMcpChoice(const Json& choice,
                      "Selected tools exceed capacity", true);
     *mapped = choice;
     Set(mapped, "tools", std::move(items));
+    if (definitions_only && mapped->GetArray("tools")->array.empty())
+      *mapped = String("auto");
   } else {
     *mapped = choice;
   }

@@ -218,6 +218,16 @@ Q4T_TEST(responses_mcp_request_declaration_only_never_grants_calls) {
   Q4T_CHECK(tools.array.empty() &&
             OutputJson(effective).find("request-only-secret") ==
                 std::string::npos);
+  Set(&request, "tool_choice",
+      Object({{"type", String("mcp")},
+              {"server_label", *first.Find("server_label")},
+              {"name", String("not_known_until_listing")}}));
+  Q4T_CHECK(NormalizeResponsesCallableTools(request, &tools, &choice, &error,
+                                           &effective, true));
+  Q4T_CHECK(tools.array.empty());
+  Q4T_CHECK(!NormalizeResponsesCallableTools(request, &tools, &choice, &error,
+                                            &effective));
+  Q4T_CHECK(error.code == "mcp_catalog_resolution_required");
   Set(&request, "tools", Array({first, first}));
   Q4T_CHECK(!NormalizeResponsesCallableTools(request, &tools, &choice, &error,
                                              &effective, true));

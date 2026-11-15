@@ -39,5 +39,10 @@ Status PlanResponsesMcpRequestBindings(
 // callable is an error; a forced call must never silently become plain text.
 Status MapResponsesMcpChoice(const io::Json& choice,
                              const std::vector<ResponsesMcpBinding>& bindings,
-                             io::Json* mapped, ChatPlanError* error);
+                             io::Json* mapped, ChatPlanError* error,
+                             const io::Json* definitions_only = nullptr);
+// definitions_only validates declaration/caller/filter selectors without a
+// remote catalog. MCP selections are removed from this validation projection;
+// its result must never be used for execution. Actual planning binds and checks
+// the selected names against an authenticated catalog again.
 }  // namespace q4t::server

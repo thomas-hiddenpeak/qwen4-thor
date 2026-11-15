@@ -19,6 +19,7 @@
 #include "q4t/server/files.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
@@ -803,6 +804,13 @@ bool ContinueExecution(ResponsesExecution* run, const ChatPlanConfig& config) {
   return ExecutionOk(run->ContinueFileSearch(
       8, config, [](const auto&, auto*) { return q4t::Status{}; }, &next));
 }
+Json McpPrompt(const Server& server, std::string name = "read_project") {
+  auto request = ExecutionRequest(server, "never", false);
+  Set(&request, "tool_choice",
+      Object({{"type", String("mcp")}, {"server_label", String("project")},
+              {"name", String(std::move(name))}}));
+  return Object({{"request", std::move(request)}, {"variables", Object()}});
+}
 Json ApprovalResponse(const Json& request, const Json& approval, bool approve,
                       const std::string& previous) {
   auto next = request;
@@ -814,6 +822,142 @@ Json ApprovalResponse(const Json& request, const Json& approval, bool approve,
   return next;
 }
 }  // namespace
+
+Q4T_TEST(responses_mcp_prompt_freezes_version_and_uses_request_credentials) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  PromptRegistry prompts(objects);
+  const auto config = ExecutionConfig(server);
+  auto definition = McpPrompt(server);
+  const auto saved = prompts.Create(definition, config, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(saved) && server.Requests().empty());
+  const auto id = saved.value.GetString("id");
+  auto request = Object({{"prompt", Object({{"id", String(id)}})},
+                         {"tools", *ExecutionRequest(server).Find("tools")}});
+  ResponsesExecution prepared(objects);
+  Q4T_CHECK(
+      ExecutionOk(prepared.Prepare(request, config, ExecutionAccess(), 42)));
+  Json frozen;
+  Q4T_CHECK(ExecutionOk(prepared.FreezeInputs(&frozen)));
+  Q4T_CHECK(OutputJson(frozen).find("mcp-request-secret") == std::string::npos);
+  Q4T_CHECK(OutputJson(frozen).find("mcp-header-secret") == std::string::npos);
+  Set(&Field(definition, "request"), "input", String("different version"));
+  Q4T_CHECK(ExecutionOk(
+      prompts.Append(id, 1, definition, config, ExecutionAccess())));
+  Q4T_CHECK(ExecutionOk(prompts.Erase(id, ExecutionAccess())));
+  const auto listed = server.Requests().size();
+  ResponsesExecution run(objects);
+  Q4T_CHECK(ExecutionOk(run.RestoreInputs(frozen, config, ExecutionAccess(),
+                                         42, nullptr, &request)));
+  Q4T_CHECK(server.Requests().size() == listed);
+  Q4T_CHECK(run.Envelope().options.Find("prompt")->GetString("version") ==
+            "1");
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting &&
+            server.calls == 1);
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  for (const auto& operation : server.Requests()) {
+    Q4T_CHECK(operation.headers.at("authorization") ==
+              "Bearer mcp-request-secret");
+    Q4T_CHECK(operation.headers.at("x-private") == "mcp-header-secret");
+  }
+  Q4T_CHECK(run.ResultJson().find("mcp-request-secret") == std::string::npos);
+  Q4T_CHECK(run.ResultJson().find("mcp-header-secret") == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_prompt_checks_choices_without_inventing_catalogs) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  PromptRegistry prompts(objects);
+  const auto config = ExecutionConfig(server);
+  auto definition = McpPrompt(server, "not_in_remote_catalog");
+  auto saved = prompts.Create(definition, config, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(saved) && server.Requests().empty());
+  ResponsesExecution run(objects);
+  const auto request = Object(
+      {{"prompt", Object({{"id", *saved.value.Find("id")}})}});
+  const auto rejected = run.Prepare(request, config, ExecutionAccess(), 42);
+  Q4T_CHECK(rejected.http_status == 400 && !server.calls &&
+            !server.Requests().empty());
+  const auto previous = server.Requests().size();
+  for (int variant = 0; variant < 5; ++variant) {
+    auto invalid = McpPrompt(server);
+    auto& req = Field(invalid, "request");
+    auto& choice = Field(req, "tool_choice");
+    if (variant == 0)
+      Set(&choice, "server_label", String("not_declared"));
+    else if (variant == 1)
+      Set(&Field(req, "tools").array.front(), "allowed_callers",
+          Array({String("programmatic")}));
+    else if (variant == 2)
+      Set(&Field(req, "tools").array.front(), "allowed_tools",
+          Array({String("another_tool")}));
+    else
+      choice = Object({{"type", String("allowed_tools")},
+                       {"mode", String(variant == 3 ? "bad" : "required")},
+                       {"tools", Array({choice})}});
+    if (variant == 4) Set(&choice, "unknown_field", Boolean(true));
+    Q4T_CHECK(prompts.Create(invalid, config, ExecutionAccess()).http_status ==
+              400);
+  }
+  auto allowed = McpPrompt(server);
+  auto& req = Field(allowed, "request");
+  const auto selector = *req.Find("tool_choice");
+  Set(&req, "tool_choice",
+      Object({{"type", String("allowed_tools")}, {"mode", String("required")},
+              {"tools", Array({selector})}}));
+  Q4T_CHECK(ExecutionOk(prompts.Create(allowed, config, ExecutionAccess())));
+  Q4T_CHECK(server.Requests().size() == previous);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_prompt_secrets_rejected_before_persistence) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  PromptRegistry prompts(objects);
+  const auto config = ExecutionConfig(server);
+  const auto saved = prompts.Create(McpPrompt(server), config, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(saved));
+  const auto id = saved.value.GetString("id");
+  const auto original = prompts.Retrieve(id, "", ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(original));
+  for (int variant = 0; variant < 3; ++variant) {
+    auto invalid = McpPrompt(server);
+    const auto private_tools = *ExecutionRequest(server).Find("tools");
+    if (variant == 0)
+      Set(&Field(invalid, "request"), "tools", private_tools);
+    else {
+      auto input = Array({Object(
+          {{"type", String(variant == 1 ? "additional_tools"
+                                         : "tool_search_output")},
+           {"tools", private_tools}})});
+      if (variant == 2) {
+        Set(&input.array.front(), "call_id", String("search_external"));
+        Set(&input.array.front(), "execution", String("client"));
+        Set(&input.array.front(), "status", String("completed"));
+      }
+      Set(&Field(invalid, "request"), "input", std::move(input));
+    }
+    Q4T_CHECK(prompts.Create(invalid, config, ExecutionAccess()).http_status ==
+              400);
+    Q4T_CHECK(prompts.Append(id, 1, invalid, config, ExecutionAccess())
+                  .http_status == 400);
+    Q4T_CHECK(OutputJson(prompts.Retrieve(id, "", ExecutionAccess()).value) ==
+              OutputJson(original.value));
+  }
+  ObjectRequest page;
+  const auto entries = prompts.List(page, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(entries) &&
+            entries.value.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(server.Requests().empty());
+  return true;
+}
 
 Q4T_TEST(
     responses_mcp_execution_streams_actual_call_and_keeps_credentials_private) {
@@ -1225,7 +1369,7 @@ Q4T_TEST(responses_mcp_missing_live_credentials_never_initialize_remote) {
 }
 
 Q4T_TEST(responses_mcp_discovery_loads_remote_only_when_activated) {
-  for (const bool frozen : {false, true}) {
+  for (const int variant : {0, 1, 2}) {
     Server server;
     ExecutionFixture fixture;
     ObjectStore objects(fixture.options);
@@ -1234,11 +1378,25 @@ Q4T_TEST(responses_mcp_discovery_loads_remote_only_when_activated) {
     Set(&Field(request, "tools").array.front(), "defer_loading", Boolean(true));
     Field(request, "tools")
         .array.push_back(Object({{"type", String("tool_search")}}));
+    if (variant == 2) {
+      auto definition = request;
+      for (auto& tool : Field(definition, "tools").array)
+        std::erase_if(tool.object, [](const auto& field) {
+          return field.first == "authorization" || field.first == "headers";
+        });
+      auto saved = PromptRegistry(objects).Create(
+          Object({{"request", std::move(definition)},
+                  {"variables", Object()}}),
+          config, ExecutionAccess());
+      Q4T_CHECK(ExecutionOk(saved) && server.Requests().empty());
+      request = Object({{"prompt", Object({{"id", *saved.value.Find("id")}})},
+                         {"tools", *request.Find("tools")}});
+    }
     auto run = std::make_unique<ResponsesExecution>(objects);
     Q4T_CHECK(
         ExecutionOk(run->Prepare(request, config, ExecutionAccess(), 42)));
     Q4T_CHECK(server.Requests().empty() && !run->HasMcp());
-    if (frozen) {
+    if (variant == 1) {
       Json prepared;
       Q4T_CHECK(ExecutionOk(run->FreezeInputs(&prepared)));
       run = std::make_unique<ResponsesExecution>(objects);

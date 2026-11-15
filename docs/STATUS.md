@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP与Prompt组合11项CPU首过](evidence/serve-mcp-prompt-cpu-20261116/README.md)：
+  登记不联网/不授予调用，执行时校验认证目录；当次凭据、冻结版本、
+  Batch来源及延迟发现已覆盖。主机零警告、0GPU、rev126保持；继续
+  失去拥有者后的调用收尾、程序/媒体等及真实业务发行，总目标active。
+
 - [MCP发现/权限及开放schema23项CPU最终通过](evidence/serve-mcp-discovery-cpu-20261116/README.md)：
   延迟目录实际激活、客户端新定义、权限刷新及故障后续请求恢复；
   修复strict混合工具错误封闭MCP参数，原schema由独立worker校验

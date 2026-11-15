@@ -5,6 +5,7 @@
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_mcp.h"
 
 namespace q4t::server::prompt_detail {
 using namespace object_detail;
@@ -276,14 +277,26 @@ ObjectReply ValidateDefinition(const Json& definition,
   }
   auto rendered = Render(definition, dummy);
   if (!rendered.ok()) return rendered;
+  // A reusable template is public persistent configuration, not a secret
+  // store. Callers bind MCP credentials through the request's tools override.
+  // The typed capture also checks additional_tools/tool_search_output inputs.
+  auto clean = rendered.value;
+  std::vector<ResponsesMcpDefinition> credentials;
   ResponsesEnvelope envelope;
   ChatPlanError error;
-  auto status =
-      ParseResponsesEnvelope(rendered.value, config, &envelope, &error);
+  auto status = CaptureResponsesMcpCredentials(&clean, &credentials, &error);
+  if (!status)
+    return Invalid(status.message(), "definition.request." + error.param);
+  if (!credentials.empty())
+    return Invalid("MCP credentials must be supplied in each request, not "
+                   "stored in a reusable prompt",
+                   "definition.request");
+  status = ParseResponsesEnvelope(rendered.value, config, &envelope, &error);
   if (!status)
     return Invalid(status.message(), "definition.request." + error.param);
   Json tools, choice;
-  status = NormalizeResponsesTools(rendered.value, &tools, &choice, &error);
+  status = NormalizeResponsesTools(rendered.value, &tools, &choice, &error,
+                                   nullptr, nullptr, nullptr, true);
   return status
              ? ObjectReply()
              : Invalid(status.message(), "definition.request." + error.param);

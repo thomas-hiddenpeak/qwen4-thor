@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-15",
+  "updated": "2026-11-16",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active_master_goal",
   "app_migration": {
@@ -1145,9 +1145,12 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": true,
+        "full_engine_build_passed": false,
         "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
-        "discovery_policy_targeted_cpp_passed": 23
+        "discovery_policy_targeted_cpp_passed": 23,
+        "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
+        "prompt_targeted_cpp_passed": 11,
+        "engine_build_note": "Preceding discovery engine compiled; consolidated build required after current integration."
       }
     },
     {
@@ -1925,9 +1928,12 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": true,
+        "full_engine_build_passed": false,
         "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
-        "discovery_policy_targeted_cpp_passed": 23
+        "discovery_policy_targeted_cpp_passed": 23,
+        "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
+        "prompt_targeted_cpp_passed": 11,
+        "engine_build_note": "Preceding discovery engine compiled; consolidated build required after current integration."
       }
     },
     {

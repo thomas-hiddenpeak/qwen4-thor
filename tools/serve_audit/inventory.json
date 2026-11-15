@@ -1936,11 +1936,11 @@
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
     "include/q4t/server/responses_execution.h": "a3ee42963f8a73ef4631800e52645cdba88a6cadf162acf1411e56652292ce7c",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
-    "include/q4t/server/responses_input.h": "10fb358dcba81a5ea08b1491050389b0660bacb9bdd3fbc4b9b476269f5cf587",
+    "include/q4t/server/responses_input.h": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
-    "include/q4t/server/responses_mcp_binding.h": "d651f42095e00c5d46d95e13182dc61b17cb30a576714cc47a5163fdb6dcd441",
+    "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
     "include/q4t/server/responses_mcp_state.h": "7315eb8e9c7a461b12fa655720ae75f610e6564e31190896a9b9344db3d3156d",
     "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
@@ -2182,7 +2182,7 @@
     "src/server/prompt_cache_policy.cpp": "3b5b74a4876867699d5e17040ca6c2aa9e956085a999c73568cc94c2a5187222",
     "src/server/prompt_internal.h": "171a2463a5117f67e036c9148508f985f4360e143c350e0cb027c3762032e999",
     "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
-    "src/server/prompt_template.cpp": "ca4a9b18b4de0e1369c88cfd3b579ff5f26af6856aee6e2bb696eb8c24bd9b26",
+    "src/server/prompt_template.cpp": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
@@ -2200,12 +2200,12 @@
     "src/server/responses_file_search_execution.cpp": "befb07c310f5e4e247c8e036ccd10382bac57b76783637a85f7ba5a3b8685168",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
-    "src/server/responses_input.cpp": "a3d51c3fce1d7962bc2006aacd2b77cde68d4e5c21b5b3dd5b8ce58eaf71a44b",
+    "src/server/responses_input.cpp": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
-    "src/server/responses_mcp_binding.cpp": "21514659b8b9657cc8c81344ddfdee50d21d75deaf598e13f61e3a2c18d83e86",
+    "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
     "src/server/responses_mcp_execution.cpp": "4b55db52f3b6f26da70ae7db96e8409dcd2fee1287bffa3d5eaefd8dcaa38489",
     "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd",
     "src/server/responses_mcp_preparation.cpp": "7e4e232711f3e424b7e4f34ed7957df3e351ff804ebc16383d060d61a812419f",
@@ -5153,5 +5153,34 @@
     "schema": "open advisory original schema validated with bounded complete-value receipt, strict unchanged",
     "gpu_runs": 0,
     "public_capability_delivered": false
+  },
+  "mcp_prompt_review_20261116": {
+    "scope": "Prompt definition validation performs no remote I/O and grants no MCP callable; selected names are bound again against authenticated catalogs at actual execution. Private credentials must come from each request, including immutable Batch source. Runtime choices retain caller/filter/schema checks.",
+    "sources": {
+      "include/q4t/server/responses_input.h": {
+        "before": "10fb358dcba81a5ea08b1491050389b0660bacb9bdd3fbc4b9b476269f5cf587",
+        "after": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd"
+      },
+      "include/q4t/server/responses_mcp_binding.h": {
+        "before": "d651f42095e00c5d46d95e13182dc61b17cb30a576714cc47a5163fdb6dcd441",
+        "after": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7"
+      },
+      "src/server/prompt_template.cpp": {
+        "before": "ca4a9b18b4de0e1369c88cfd3b579ff5f26af6856aee6e2bb696eb8c24bd9b26",
+        "after": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574"
+      },
+      "src/server/responses_input.cpp": {
+        "before": "a3d51c3fce1d7962bc2006aacd2b77cde68d4e5c21b5b3dd5b8ce58eaf71a44b",
+        "after": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8"
+      },
+      "src/server/responses_mcp_binding.cpp": {
+        "before": "21514659b8b9657cc8c81344ddfdee50d21d75deaf598e13f61e3a2c18d83e86",
+        "after": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded"
+      }
+    },
+    "targeted_cpu": "11 passed, 0 failed, 0 skipped",
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-prompt-cpu-20261116"
   }
 }

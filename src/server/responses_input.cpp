@@ -1284,7 +1284,9 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       status = MapResponsesProgramChoice(selected, program_enabled,
                                          &native_choice, error);
     if (status)
-      status = MapResponsesMcpChoice(native_choice, mcp, &mcp_choice, error);
+      status = MapResponsesMcpChoice(
+          native_choice, mcp, &mcp_choice, error,
+          definitions_only ? request.GetArray("tools") : nullptr);
     if (status)
       status =
           MapResponsesFileSearchChoice(mcp_choice, native, &mapped, error);
@@ -1342,7 +1344,8 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
 Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                                io::Json* choice, ChatPlanError* error,
                                io::Json* effective_tools,
-                               io::Json* header_tools, io::Json* active_tools) {
+                               io::Json* header_tools, io::Json* active_tools,
+                               bool definitions_only) {
   if (header_tools) *header_tools = {};
   const auto* definitions = request.Find("tools");
   const auto* input = request.GetArray("input");
@@ -1351,7 +1354,7 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                                  input ? *input : empty)) {
     Json effective;
     auto status = NormalizeResponsesCallableTools(request, tools, choice, error,
-                                                  &effective);
+                                                  &effective, definitions_only);
     if (effective_tools) *effective_tools = effective;
     if (active_tools) *active_tools = std::move(effective);
     return status;
@@ -1364,7 +1367,7 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
   auto current = request;
   Set(&current, "tools", history.active);
   status = NormalizeActiveResponsesTools(current, history.initial, tools,
-                                         choice, error);
+                                         choice, error, definitions_only);
   if (!status) return status;
   if (header_tools) {
     auto initial = history.initial.eager;
@@ -1378,7 +1381,7 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     });
     status = NormalizeActiveResponsesTools(initial_request,
                                            history.initial, header_tools,
-                                           &ignored, error);
+                                           &ignored, error, definitions_only);
     if (!status) return status;
   }
   if (effective_tools) *effective_tools = history.initial.definitions;
