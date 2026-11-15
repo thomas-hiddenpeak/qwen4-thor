@@ -7,6 +7,7 @@
 #include "q4t/server/file_fetch.h"
 
 namespace q4t::server {
+class McpTunnelBroker;
 struct McpEndpoint {
   std::string url;
   // Private request credentials. Never place these in model inputs or logs.
@@ -58,7 +59,8 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
                       std::string_view method, const io::Json& params,
                       const std::function<ObjectReply()>& before_call,
                       McpTransportReceipt* receipt, GrammarControl control = {},
-                      McpSession* session = nullptr);
+                      McpSession* session = nullptr,
+                      std::shared_ptr<McpTunnelBroker> tunnel_broker = {});
 // Nonblocking collection of an already-exited native session owner.
 void PollMcpSessions();
 // Explicit bounded shutdown of this process's idle MCP owner only. Active

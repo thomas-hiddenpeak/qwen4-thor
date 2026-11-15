@@ -1,0 +1,5 @@
+[PASS] mcp_tunnel_detached_cleanup_releases_capacity_without_waiting
+[PASS] mcp_transport_rpc_error_and_structured_result_preserved
+[PASS] mcp_http_non200_rpc_error_is_known_and_404_marks_session_lost
+[PASS] mcp_http_error_rejects_fractional_rpc_identity_and_code
+4 tests, 4 passed, 0 failed, 0 skipped

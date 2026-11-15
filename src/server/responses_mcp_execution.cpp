@@ -153,7 +153,7 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
         [&] {
           return mcp_state_->Permit(id, definition, access_, &session.state);
         },
-        &receipt, {}, &session);
+        &receipt, {}, &session, cipher_config_.mcp_tunnels);
   };
   auto result = invoke();
   if (result.code == "mcp_session_binding_changed" && !receipt.call_permitted) {

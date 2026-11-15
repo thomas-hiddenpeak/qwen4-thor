@@ -1,4 +1,5 @@
 #include "mcp_transport_internal.h"
+#include "mcp_tunnel_transport_internal.h"
 
 #include <sys/random.h>
 
@@ -8,8 +9,10 @@
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/mcp_content.h"
+#include "q4t/server/application_routes.h"
 #include "remote_http_internal.h"
 
 namespace q4t::server::mcp_detail {
@@ -134,6 +137,7 @@ class Client {
   Client(const McpEndpoint& endpoint, const FileFetchOptions& options,
          Deadline deadline)
       : options_(options), deadline_(deadline) {
+    native_ = !endpoint.tunnel_id.empty();
     file_detail::ParseUrl(endpoint.url, &url_);
     headers_ = endpoint.headers;
     if (!endpoint.authorization.empty())
@@ -155,8 +159,8 @@ class Client {
     std::unique_ptr<RemoteHttp> response;
     auto reply = Open("POST", url_, OutputJson(init), &response);
     if (!reply.ok()) return reply;
-    if (response->Status() == 400 || response->Status() == 404 ||
-        response->Status() == 405 || response->Status() == 415) {
+    if (!native_ && (response->Status() == 400 || response->Status() == 404 ||
+                     response->Status() == 405 || response->Status() == 415)) {
       response.reset();
       reply = Open("GET", url_, "", &legacy_);
       if (!reply.ok()) return reply;
@@ -225,6 +229,10 @@ class Client {
     headers_["MCP-Protocol-Version"] = protocol;
     tools_ = state.GetBool("tools");
     resources_ = state.GetBool("resources");
+    if (native_) {
+      instance_ = state.GetString("agent_instance");
+      if (!Visible(instance_, 128)) return Protocol();
+    }
     return {};
   }
   void Snapshot(Json* state) const {
@@ -235,6 +243,7 @@ class Client {
     const auto session = headers_.find("Mcp-Session-Id");
     Set(state, "session_id",
         String(session == headers_.end() ? "" : session->second));
+    if (native_) Set(state, "agent_instance", String(instance_));
   }
   void Begin(Deadline deadline) {
     deadline_ = deadline;
@@ -247,12 +256,23 @@ class Client {
     std::unique_ptr<RemoteHttp> response;
     auto reply = Send(request, &response);
     if (!reply.ok()) return reply;
-    return Receive(request.GetInt("id"), response.get(), result, error);
+    reply = Receive(request.GetInt("id"), response.get(), result, error);
+    if (!Legacy() && response->Status() != 200) {
+      if (!reply.ok() || error->IsNull()) return HttpError(response->Status());
+      // A complete matching RPC error is a known outcome even on HTTP errors.
+      // Preserve code/message/data; the private status still expires a 404
+      // session without retrying the operation.
+      reply.value = Object({{"upstream_status", Number(response->Status())}});
+    }
+    return reply;
   }
   bool Legacy() const { return legacy_ != nullptr; }
   // A best-effort session release has its own short deadline. It cannot change
   // the known tool outcome or retry any operation on an expired session.
   void Close() {
+    // Native leases are cleaned by the parent. Idle worker collection must
+    // never write unsolicited bridge frames into a later invocation's IPC.
+    if (native_) return;
     if (Legacy() || !headers_.contains("Mcp-Session-Id")) return;
     std::unique_ptr<RemoteHttp> ignored;
     try {
@@ -274,6 +294,59 @@ class Client {
                    std::string_view body,
                    std::unique_ptr<RemoteHttp>* response) {
     if (++exchanges_ > 128) return Capacity();
+    if (native_) {
+      if (method != "POST") return Protocol();
+      Json rpc;
+      if (!Parse(std::string(body), &rpc)) return Protocol();
+      auto headers = Object();
+      for (const auto& [key, value] : headers_)
+        Set(&headers, key, String(value));
+      auto reply = TunnelWorkerExchange(headers, rpc, instance_);
+      if (!reply.ok()) return reply;
+      const auto instance = reply.value.GetString("agent_instance");
+      if (!Visible(instance, 128) ||
+          (!instance_.empty() && instance_ != instance))
+        return Protocol();
+      instance_ = instance;
+      RemoteHeaders received;
+      const auto* fields = reply.value.Find("resp_headers");
+      if (!fields || !fields->IsObject()) return Protocol();
+      for (const auto& [key, value] : fields->object) {
+        if (!value.IsArray() || value.array.empty() ||
+            ((key == "mcp-session-id" || key == "mcp-protocol-version" ||
+              key == "content-type" || key == "last-event-id") &&
+             value.array.size() != 1))
+          return Protocol();
+        std::string joined;
+        for (const auto& part : value.array) {
+          if (!part.IsString()) return Protocol();
+          if (!joined.empty()) joined += ", ";
+          joined += part.str;
+        }
+        received.emplace(key, std::move(joined));
+      }
+      std::string bytes;
+      const auto* result = reply.value.Find("resp_json");
+      const auto* notifications = reply.value.GetArray("notifications");
+      const bool stream =
+          result && notifications && !notifications->array.empty();
+      if (stream) {
+        for (const auto& notification : notifications->array) {
+          const auto* rpc = notification.Find("resp_json");
+          if (!rpc) return Protocol();
+          bytes += "data: " + OutputJson(*rpc) + "\n\n";
+        }
+        bytes += "data: " + OutputJson(*result) + "\n\n";
+      } else if (result) {
+        bytes = OutputJson(*result);
+      }
+      // The agent already parsed HTTP/SSE into JSON-RPC. Content-Type here
+      // describes this reconstructed bounded body, not its upstream framing.
+      received["content-type"] =
+          stream ? "text/event-stream" : "application/json";
+      return RemoteHttp::Buffered(reply.value.GetInt("resp_code"), received,
+                                  std::move(bytes), response);
+    }
     return RemoteHttp::Open(url, options_, method, headers_, body,
                             kResponseBytes, deadline_, response);
   }
@@ -286,7 +359,9 @@ class Client {
       reply = (*response)->ReadAll(&ignored);
       if (!reply.ok()) return reply;
       if (!ignored.empty()) return Protocol();
-    } else if ((*response)->Status() != 200) {
+    } else if ((*response)->Status() != 200 &&
+               (*response)->Mime() != "application/json" &&
+               (*response)->Mime() != "text/event-stream") {
       // Never resubmit a tools/call after ambiguous failure or session expiry.
       // A later independently authorized invocation may negotiate anew.
       return HttpError((*response)->Status());
@@ -347,7 +422,7 @@ class Client {
         continue;
       }
       const auto* id = message.Find("id");
-      if (!id || !id->IsNumber() || message.GetInt("id", -1) != expected)
+      if (!id || !IsInputInteger(*id) || message.GetInt("id", -1) != expected)
         return Protocol();
       const auto* value = message.Find("result");
       const auto* failed = message.Find("error");
@@ -357,8 +432,8 @@ class Client {
         *result = *value;
       } else {
         if (!failed->IsObject() || !failed->Find("code") ||
-            !failed->Find("code")->IsNumber() || !failed->Find("message") ||
-            !failed->Find("message")->IsString())
+            !IsInputInteger(*failed->Find("code")) ||
+            !failed->Find("message") || !failed->Find("message")->IsString())
           return Protocol();
         *error = *failed;
       }
@@ -375,11 +450,24 @@ class Client {
   uint64_t id_ = 0;
   int exchanges_ = 0;
   bool entropy_ = false, tools_ = false, resources_ = false;
+  bool native_ = false;
+  std::string instance_;
 };
 }  // namespace
 
 ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
                           const FileFetchOptions& deployment) {
+  if (!endpoint.tunnel_id.empty()) {
+    if (!endpoint.url.empty() || !ValidApplicationId(endpoint.tunnel_id) ||
+        !Visible(endpoint.tunnel_generation, 128) ||
+        !Visible(endpoint.tunnel_channel, 128))
+      return Error(400, "mcp_tunnel_invalid", "Invalid native MCP endpoint");
+    if (!file_detail::ValidOptions(deployment))
+      return Error(500, "mcp_policy_invalid", "Invalid MCP deployment policy");
+    return CheckHeaders(endpoint);
+  }
+  if (!endpoint.tunnel_generation.empty())
+    return Error(400, "mcp_tunnel_invalid", "Invalid native MCP endpoint");
   Url url;
   if (!file_detail::ParseUrl(endpoint.url, &url))
     return Error(400, "mcp_url_invalid", "Invalid MCP HTTP(S) endpoint");
@@ -430,7 +518,7 @@ static ObjectReply Perform(Client& client, std::string_view method,
                          : ValidateMcpResourcesResult(receipt->result);
       if (!checked) return Protocol();
     }
-    return {};
+    return reply;
   }
   auto tools = Array();
   std::set<std::string> cursors, names;
@@ -542,6 +630,10 @@ ObjectReply Sessions::Exchange(
       if (!prior || !incoming || OutputJson(*prior) != OutputJson(*incoming))
         return invalid();
     }
+    if (!endpoint.tunnel_id.empty() &&
+        found->second.state.GetString("agent_instance") !=
+            session->GetString("agent_instance"))
+      return invalid();
   }
   if (initialized) {
     const auto created = session->GetInt("created_ms");
@@ -646,8 +738,9 @@ ObjectReply Sessions::Exchange(
   }
   auto reply = Perform(*entry.client, method, params, permit, receipt);
   entry.touched = Clock::now();
-  if (!reply.ok() && (entry.client->Legacy() ||
-                      reply.value.GetInt("upstream_status") == 404)) {
+  if ((!reply.ok() && entry.client->Legacy()) ||
+      reply.value.GetInt("upstream_status") == 404 ||
+      reply.code == "mcp_tunnel_session_lost") {
     // No retry, including HTTP 404. The failed invocation keeps its original
     // unknown/known result. A subsequent independent operation may initialize
     // again, but a resource always requires its exact original session.

@@ -577,3 +577,33 @@ Q4T_TEST(mcp_tunnel_known_result_survives_collection_and_stop_for_its_waiter) {
   }
   return true;
 }
+
+Q4T_TEST(mcp_tunnel_detached_cleanup_releases_capacity_without_waiting) {
+  McpTunnelBroker broker;
+  McpTunnelLimits limits;
+  limits.requests = limits.per_client = 1;
+  Q4T_CHECK(broker.Configure({Route()}, limits));
+  const auto cleanup =
+      broker.Submit(Caller(), "tunnel_private", "deployment-1", "main",
+                    Object(), Json(), true, "instance-one", true);
+  Q4T_CHECK(cleanup.ok());
+  Q4T_CHECK(
+      broker.Wait(Caller("client:other"), cleanup.value.GetString("request_id"))
+          .http_status == 403);
+  Q4T_CHECK(broker.Wait(Caller(), cleanup.value.GetString("request_id")).code ==
+            "mcp_tunnel_cleanup");
+  auto polled = Poll(broker);
+  const auto command = At(polled.value, "commands").array.front();
+  const auto response =
+      Object({{"request_id", At(command, "request_id")},
+              {"resp_type", String("session_termination_response")},
+              {"resp_code", Number(204)}});
+  Q4T_CHECK(Respond(broker, command, response).ok());
+  Q4T_CHECK(broker.Health().GetInt("retained_bytes") == 0);
+  Q4T_CHECK(Submit(broker).ok());
+  Q4T_CHECK(broker
+                .Submit(Caller(), "tunnel_private", "deployment-1", "main",
+                        Object(), Object(), false, {}, true)
+                .code == "invalid_tunnel_request");
+  return true;
+}

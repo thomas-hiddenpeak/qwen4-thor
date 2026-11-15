@@ -157,7 +157,7 @@ struct McpTunnelBroker::Impl {
     Clock::time_point deadline;
     uint64_t sequence = 0, accounted = 0, command_bytes = 0, progress_bytes = 0;
     bool polled = false, done = false, claimed = false;
-    bool has_rpc_id = false, termination = false;
+    bool has_rpc_id = false, termination = false, detached_cleanup = false;
     ObjectReply result;
     std::string final_identity;
   };
@@ -187,7 +187,8 @@ struct McpTunnelBroker::Impl {
     const auto now = Clock::now();
     for (auto i = requests.begin(); i != requests.end();) {
       auto& request = *i->second;
-      if (request.deadline > now) {
+      if (request.deadline > now &&
+          !(request.detached_cleanup && request.done)) {
         ++i;
         continue;
       }
@@ -228,20 +229,20 @@ Status McpTunnelBroker::Configure(std::vector<McpTunnelRoute> routes,
   return {};
 }
 
-ObjectReply McpTunnelBroker::Submit(const BinaryAccess& caller,
-                                    std::string_view tunnel,
-                                    std::string_view generation,
-                                    std::string_view channel,
-                                    const Json& headers, const Json& rpc,
-                                    bool terminate_session,
-                                    std::string_view expected_instance) {
+ObjectReply McpTunnelBroker::Submit(
+    const BinaryAccess& caller, std::string_view tunnel,
+    std::string_view generation, std::string_view channel, const Json& headers,
+    const Json& rpc, bool terminate_session, std::string_view expected_instance,
+    bool detached_cleanup) {
   auto active = Active(caller);
   if (!active.ok()) return active;
   Json clean;
   if (!ValidId(tunnel) || !Text(generation, 128) || !Text(channel, 512) ||
       (!expected_instance.empty() && !Text(expected_instance, 128)) ||
       (!terminate_session && !RpcRequest(rpc)) ||
-      (terminate_session && !rpc.IsNull()) || !Headers(headers, false, &clean))
+      (terminate_session && !rpc.IsNull()) ||
+      (detached_cleanup && !terminate_session) ||
+      !Headers(headers, false, &clean))
     return Error(400, "invalid_tunnel_request", "Invalid MCP tunnel request");
   const auto bytes = OutputJson(rpc).size() + OutputJson(clean).size();
   if (bytes > kRequestBytes)
@@ -261,6 +262,7 @@ ObjectReply McpTunnelBroker::Submit(const BinaryAccess& caller,
   request->channel = channel;
   request->caller = caller.scope;
   request->termination = terminate_session;
+  request->detached_cleanup = detached_cleanup;
   request->expected_instance = expected_instance;
   if (const auto* rpc_id = rpc.Find("id")) {
     request->rpc_id = *rpc_id;
@@ -548,6 +550,10 @@ ObjectReply McpTunnelBroker::Respond(const BinaryAccess& agent,
   Set(&result, "dispatched", Boolean(true));
   request.result.value = std::move(result);
   impl_->changed.notify_all();
+  if (request.detached_cleanup) {
+    impl_->Release(request);
+    impl_->requests.erase(id);
+  }
   return valid ? Ack() : invalid;
 }
 
@@ -560,6 +566,8 @@ ObjectReply McpTunnelBroker::Wait(const BinaryAccess& caller,
                  "Tunnel request unavailable");
   auto request = found->second;
   if (caller.scope.empty() || request->caller != caller.scope) return Denied();
+  if (request->detached_cleanup)
+    return Error(409, "mcp_tunnel_cleanup", "Cleanup has no response owner");
   if (request->claimed)
     return Error(409, "mcp_tunnel_waiter_busy", "Tunnel result already owned");
   request->claimed = true;

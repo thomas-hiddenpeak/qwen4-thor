@@ -1,0 +1,43 @@
+[PASS] mcp_tunnel_notifications_termination_and_status_normalization
+[PASS] mcp_tunnel_cancel_stop_wake_and_release_without_redelivery
+[PASS] mcp_tunnel_queue_and_response_capacity_release_for_other_clients
+[PASS] mcp_tunnel_agent_lease_failover_keeps_original_session_and_no_replay
+[PASS] mcp_tunnel_known_result_survives_collection_and_stop_for_its_waiter
+[PASS] mcp_transport_json_pagination_session_and_credentials
+[PASS] mcp_transport_sse_returns_before_eof_and_replies_to_ping
+[PASS] mcp_transport_call_waits_for_durable_permission
+[PASS] mcp_transport_call_failure_never_retries_or_reinitializes
+[PASS] mcp_transport_rpc_error_and_structured_result_preserved
+[PASS] mcp_transport_invalid_rpc_and_http_frames_rejected
+[PASS] mcp_transport_legacy_sse_lists_and_calls_real_endpoint
+[PASS] mcp_session_worker_loss_restores_modern_without_reinitializing
+[PASS] mcp_session_404_never_replays_and_next_independent_call_renews
+[PASS] mcp_session_expiry_is_bounded_and_resources_do_not_migrate
+[PASS] mcp_session_absolute_lifetime_bounds_slow_publication_and_permission
+  CHECK failed: ExecutionOk(peer.Invoke(&session, &receipt)) (line 4175)
+[FAIL] mcp_native_tunnel_isolated_list_call_resource_and_private_session
+  CHECK failed: peer.Invoke(&session, &receipt, "tools/call").code == "fixture_storage" (line 4205)
+[FAIL] mcp_native_tunnel_permission_and_checkpoint_fail_before_dispatch
+  CHECK failed: peer.Invoke(&session, &receipt).ok() (line 4222)
+[FAIL] mcp_native_tunnel_binding_changes_rejected_before_queueing
+  CHECK failed: peer.Invoke(&session, &receipt).ok() (line 4245)
+[FAIL] mcp_native_tunnel_owner_loss_restores_original_without_initialize
+  CHECK failed: peer.Invoke(&session, &receipt, "tools/call").ok() (line 4260)
+[FAIL] mcp_native_tunnel_new_agent_cannot_take_original_resource_session
+  CHECK failed: peer.Invoke(&session, &receipt).ok() (line 4277)
+[FAIL] mcp_native_tunnel_cancelled_handoff_is_unknown_and_never_replayed
+  CHECK failed: result.http_status == 408 && Clock::now() - start < 1s && permits == 0 && !receipt.call_permitted (line 4314)
+[FAIL] mcp_native_tunnel_offline_broker_is_bounded_before_permission
+  CHECK failed: ExecutionOk(peer.Invoke(nullptr, &receipt, "tools/call")) (line 4326)
+[FAIL] mcp_native_tunnel_progress_and_http_error_keep_exact_rpc_outcome
+  CHECK failed: peer.Invoke(&sessions[i], &receipt).ok() (line 4339)
+[FAIL] mcp_native_tunnel_session_capacity_and_idle_cleanup_are_separate
+[PASS] mcp_native_tunnel_bridge_cannot_change_headers_or_dispatch_authority
+[PASS] mcp_http_non200_rpc_error_is_known_and_404_marks_session_lost
+  CHECK failed: ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire) (line 4417)
+[FAIL] responses_mcp_native_tunnel_resource_and_frozen_offline_count
+  CHECK failed: ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire) (line 4452)
+[FAIL] responses_mcp_native_tunnel_approval_survives_owner_restart
+  CHECK failed: ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting && peer.called == 1 (line 4490)
+[FAIL] responses_mcp_native_tunnel_program_retains_original_authority
+30 tests, 18 passed, 12 failed, 0 skipped

@@ -228,7 +228,8 @@
         "evidence/serve-input-tokens-cpu-20261110/README.md",
         "evidence/serve-input-tokens-followup-20261110/README.md",
         "evidence/serve-input-tokens-business-20261110/README.md",
-        "evidence/serve-input-tokens-delivery-20261110/README.md"
+        "evidence/serve-input-tokens-delivery-20261110/README.md",
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -1184,8 +1185,9 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "in_progress_mcp_worker_agent_business_release_pending",
-      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md"
+      "mcp_tunnel_delivery": "isolated worker/broker/session/approval/resource/program wired and CPU verified; own agent, actual HTTP/SDK/business/recovery/release/main remain required",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
     },
     {
       "id": "A08",
@@ -1594,7 +1596,8 @@
         "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
         "evidence/serve-file-search-profiles-20261112/README.md",
         "evidence/serve-retrieval-managed-business-20261112/README.md",
-        "evidence/serve-retrieval-delivery-20261112/README.md"
+        "evidence/serve-retrieval-delivery-20261112/README.md",
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -2001,8 +2004,9 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "in_progress_mcp_worker_agent_business_release_pending",
-      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md"
+      "mcp_tunnel_delivery": "isolated worker/broker/session/approval/resource/program wired and CPU verified; own agent, actual HTTP/SDK/business/recovery/release/main remain required",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
     },
     {
       "id": "A12",

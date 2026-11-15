@@ -1,0 +1,5 @@
+[PASS] mcp_native_tunnel_isolated_list_call_resource_and_private_session
+[PASS] mcp_native_tunnel_cancelled_handoff_is_unknown_and_never_replayed
+[PASS] mcp_native_tunnel_progress_and_http_error_keep_exact_rpc_outcome
+[PASS] mcp_native_tunnel_known_result_wins_cancellation_during_worker_return
+4 tests, 4 passed, 0 failed, 0 skipped

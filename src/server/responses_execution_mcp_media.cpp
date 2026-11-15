@@ -96,7 +96,7 @@ ObjectReply ResponsesExecution::ResolveMcpResource(const std::string& id,
         return mcp_state_->PermitResource(id, uri, definition, access_,
                                           &session.state);
       },
-      &receipt, {}, &session);
+      &receipt, {}, &session, cipher_config_.mcp_tunnels);
   if (result.commit_unknown) return BindMutationResult(std::move(result));
   const StateAccess cleanup{
       access_.scope,

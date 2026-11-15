@@ -9,6 +9,7 @@
 
 #include "file_fetch_internal.h"
 #include "mcp_transport_internal.h"
+#include "mcp_tunnel_transport_internal.h"
 #include "q4t/server/mcp_content.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -21,6 +22,7 @@ using namespace object_detail;
 using Clock = std::chrono::steady_clock;
 constexpr size_t kInputBytes = 1U << 20;
 constexpr size_t kOutputBytes = 5U << 20;
+constexpr size_t kBridgeBytes = 6U << 20;
 ObjectReply Failed(GrammarFailure failure) {
   if (failure == GrammarFailure::kCancelled)
     return Error(499, "request_cancelled", "MCP request cancelled");
@@ -52,6 +54,7 @@ struct Owner {
   std::mutex mutex;
   std::unique_ptr<detail::GrammarProcess> worker;
   uint64_t address_space_bytes = 0;
+  mcp_detail::TunnelSessions tunnels;
 };
 Owner& SessionOwner() {
   // Shutdown must not race a request still draining. The exec child's parent
@@ -69,14 +72,18 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
   auto headers = Object();
   for (const auto& [key, value] : endpoint.headers)
     Set(&headers, key, String(value));
+  auto authority = Object({{"url", String(endpoint.url)},
+                           {"headers", std::move(headers)},
+                           {"authorization", String(endpoint.authorization)},
+                           {"policy", file_detail::OptionsJson(deployment)}});
+  if (!endpoint.tunnel_id.empty()) {
+    Set(&authority, "tunnel_id", String(endpoint.tunnel_id));
+    Set(&authority, "tunnel_generation", String(endpoint.tunnel_generation));
+    Set(&authority, "tunnel_channel", String(endpoint.tunnel_channel));
+  }
   std::string binding, scope;
   if (!InputValueIdentity(String(access.scope), &scope) ||
-      !InputValueIdentity(
-          Object({{"url", String(endpoint.url)},
-                  {"headers", std::move(headers)},
-                  {"authorization", String(endpoint.authorization)},
-                  {"policy", file_detail::OptionsJson(deployment)}}),
-          &binding))
+      !InputValueIdentity(authority, &binding))
     return Error(503, "mcp_session_invalid",
                  "MCP session identity unavailable");
   if (session->state.IsNull()) {
@@ -103,15 +110,20 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
 void PollMcpSessions() {
   auto& owner = SessionOwner();
   const std::unique_lock lock(owner.mutex, std::try_to_lock);
-  if (lock.owns_lock() && owner.worker && owner.worker->Exited())
-    owner.worker.reset();
+  if (lock.owns_lock()) {
+    owner.tunnels.Collect();
+    if (owner.worker && owner.worker->Exited()) owner.worker.reset();
+  }
 }
 
 bool CloseMcpSessions(bool release_remote) {
   auto& owner = SessionOwner();
   const std::unique_lock lock(owner.mutex, std::try_to_lock);
   if (!lock.owns_lock()) return false;
-  if (!owner.worker) return true;
+  if (!owner.worker) {
+    owner.tunnels.Clear(release_remote);
+    return true;
+  }
   // A bounded best-effort DELETE/stream close. A remote cleanup failure never
   // changes a known invocation result and cannot stop the healthy model.
   const auto deadline = Clock::now() + std::chrono::milliseconds(250);
@@ -128,6 +140,7 @@ bool CloseMcpSessions(bool release_remote) {
     owner.worker->Transfer(bytes.data(), bytes.size(), false, deadline);
   }
   owner.worker.reset();
+  owner.tunnels.Clear(release_remote);
   return true;
 }
 
@@ -136,7 +149,8 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
                       std::string_view method, const Json& params,
                       const std::function<ObjectReply()>& before_call,
                       McpTransportReceipt* receipt, GrammarControl control,
-                      McpSession* session) {
+                      McpSession* session,
+                      std::shared_ptr<McpTunnelBroker> tunnel_broker) {
   if (!receipt) return Error(500, "mcp_state_invalid", "Missing MCP output");
   *receipt = {};
   if (access.scope.empty())
@@ -144,6 +158,9 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
                  "Authenticated scope required");
   auto checked = mcp_detail::CheckEndpoint(endpoint, deployment);
   if (!checked.ok()) return checked;
+  if (!endpoint.tunnel_id.empty() && !tunnel_broker)
+    return Error(503, "mcp_tunnel_unavailable",
+                 "Native MCP broker unavailable");
   if (!ValidOperation(method, params) ||
       (method != "tools/list" && !before_call))
     return Error(400, "mcp_operation_invalid", "Invalid MCP operation");
@@ -166,6 +183,13 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   auto& owner = SessionOwner();
   const std::unique_lock lock(owner.mutex, std::try_to_lock);
   if (!lock.owns_lock()) return Failed(GrammarFailure::kUnavailable);
+  std::unique_ptr<mcp_detail::TunnelExchange> tunnel;
+  if (!endpoint.tunnel_id.empty()) {
+    auto started = owner.tunnels.Begin(
+        {access.scope, control.compile_deadline, control.cancelled}, endpoint,
+        tunnel_broker, method, params, session, &tunnel);
+    if (!started.ok()) return started;
+  }
   if (owner.worker && owner.worker->Exited()) owner.worker.reset();
   if (owner.worker && control.address_space_bytes < owner.address_space_bytes)
     return Failed(GrammarFailure::kUnavailable);
@@ -183,6 +207,9 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   if (timeout < 1) return Failed(GrammarFailure::kTimeout);
   auto request =
       Object({{"url", String(endpoint.url)},
+              {"tunnel_id", String(endpoint.tunnel_id)},
+              {"tunnel_generation", String(endpoint.tunnel_generation)},
+              {"tunnel_channel", String(endpoint.tunnel_channel)},
               {"headers", std::move(headers)},
               {"authorization", String(endpoint.authorization)},
               {"options", file_detail::OptionsJson(deployment)},
@@ -217,12 +244,16 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   // From the first frame onwards an interrupted exchange must discard the
   // IPC stream; preflight rejections above leave unrelated sessions intact.
   keep = false;
+  bool known_native_result = false;
+  auto completion_deadline = Clock::time_point::max();
   auto transfer = [&](void* data, size_t size, bool write) {
-    return worker->Transfer(data, size, write, control.compile_deadline,
-                            control.cancelled);
+    return known_native_result
+               ? worker->Transfer(data, size, write, completion_deadline)
+               : worker->Transfer(data, size, write, control.compile_deadline,
+                                  control.cancelled);
   };
   auto failed = [&] {
-    receipt->outcome_unknown = receipt->call_permitted;
+    receipt->outcome_unknown = receipt->call_permitted && !known_native_result;
     return Failed(worker->Failure());
   };
   Frame frame{kVersion, 1, bytes.size()};
@@ -230,7 +261,8 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
       !transfer(bytes.data(), bytes.size(), true))
     return failed();
   bool session_confirmed = false;
-  for (int messages = 0; messages < 3; ++messages) {
+  unsigned tunnel_exchanges = 0;
+  for (int messages = 0; messages < (tunnel ? 131 : 3); ++messages) {
     if (!transfer(&frame, sizeof(frame), false) || frame.version != kVersion ||
         frame.sequence != 1 || !frame.bytes || frame.bytes > kOutputBytes)
       return failed();
@@ -238,17 +270,42 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
     Json wire;
     if (!transfer(bytes.data(), bytes.size(), false) || !Parse(bytes, &wire))
       return failed();
+    if (wire.GetString("type") == "tunnel_http") {
+      if (!tunnel || ++tunnel_exchanges > 128) return failed();
+      const auto reply = tunnel->Forward(wire, receipt->call_permitted);
+      if (reply.ok() && receipt->call_permitted && wire.Find("rpc") &&
+          wire.Find("rpc")->GetString("method") == method) {
+        // The broker matched the terminal RPC before cancellation. Let the
+        // isolated parser finish this known result in a fixed cleanup grace;
+        // no additional external operation is authorized by the grace.
+        known_native_result = true;
+        completion_deadline = Clock::now() + std::chrono::milliseconds(100);
+      }
+      bytes = OutputJson(WireReply(reply));
+      if (bytes.size() > kBridgeBytes) return failed();
+      frame = {kVersion, 1, bytes.size()};
+      if (!transfer(&frame, sizeof(frame), true) ||
+          !transfer(bytes.data(), bytes.size(), true))
+        return failed();
+      continue;
+    }
     if (wire.GetString("type") == "session") {
-      if (!session || messages || !wire.Find("session")) return failed();
+      if (!session || session_confirmed || !wire.Find("session") ||
+          receipt->call_permitted)
+        return failed();
       session->state = *wire.Find("session");
       auto confirmed = BindSession(access, endpoint, deployment, session);
+      if (confirmed.ok() && tunnel)
+        confirmed = tunnel->Checkpoint(session->state);
       if (confirmed.ok() && session->checkpoint)
         confirmed = session->checkpoint(session->state);
       if (confirmed.commit_unknown) {
+        if (tunnel) tunnel->Retain();
         confirmed.code = "mcp_state_commit_unknown";
         confirmed.message = "MCP session publication receipt unavailable";
       }
       if (!confirmed.ok() || confirmed.commit_unknown) return confirmed;
+      if (tunnel) tunnel->Retain();
       session_confirmed = true;
       uint8_t ack = 1;
       if (!transfer(&ack, sizeof(ack), true)) return failed();
@@ -290,6 +347,9 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
       session->state = *saved_session;
       const auto bound = BindSession(access, endpoint, deployment, session);
       if (!bound.ok()) return failed();
+      if (tunnel && session_confirmed &&
+          !tunnel->Checkpoint(session->state).ok())
+        return failed();
     }
     receipt->protocol = wire.GetString("protocol");
     receipt->legacy_sse = wire.GetBool("legacy_sse");
@@ -300,6 +360,27 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
     return reply;
   }
   return failed();
+}
+
+ObjectReply mcp_detail::TunnelWorkerExchange(
+    const Json& headers, const Json& rpc, std::string_view expected_instance) {
+  if (!WriteWorker(Object(
+          {{"type", String("tunnel_http")},
+           {"headers", headers},
+           {"rpc", rpc},
+           {"expected_instance", String(std::string(expected_instance))}})))
+    return Failed(GrammarFailure::kWorker);
+  Frame frame;
+  if (!detail::WorkerTransfer(&frame, sizeof(frame), false) ||
+      frame.version != kVersion || frame.sequence != 1 || !frame.bytes ||
+      frame.bytes > kBridgeBytes)
+    return Error(503, "mcp_tunnel_bridge", "Native MCP bridge unavailable");
+  std::string bytes(frame.bytes, '\0');
+  Json reply;
+  if (!detail::WorkerTransfer(bytes.data(), bytes.size(), false) ||
+      !Parse(bytes, &reply))
+    return Error(503, "mcp_tunnel_bridge", "Native MCP bridge unavailable");
+  return DecodeReply(reply);
 }
 
 int MaybeRunMcpWorker(int argc, char** argv) {
@@ -341,6 +422,9 @@ int MaybeRunMcpWorker(int argc, char** argv) {
       }
       McpEndpoint endpoint;
       endpoint.url = request.GetString("url");
+      endpoint.tunnel_id = request.GetString("tunnel_id");
+      endpoint.tunnel_generation = request.GetString("tunnel_generation");
+      endpoint.tunnel_channel = request.GetString("tunnel_channel", "main");
       endpoint.authorization = request.GetString("authorization");
       const auto* headers = request.Find("headers");
       const auto* options = request.Find("options");

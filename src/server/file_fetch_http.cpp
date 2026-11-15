@@ -444,9 +444,40 @@ struct RemoteHttp::Impl {
   Headers headers;
   uint64_t limit = 0, received = 0, remaining = 0, control = 0;
   bool finished = false, chunk_end = false;
+  std::optional<std::string> buffered;
 };
 RemoteHttp::RemoteHttp(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 RemoteHttp::~RemoteHttp() = default;
+
+ObjectReply RemoteHttp::Buffered(int status, const RemoteHeaders& headers,
+                                 std::string body,
+                                 std::unique_ptr<RemoteHttp>* output) {
+  if (!output) return Error(500, "remote_http_state", "Missing output");
+  output->reset();
+  if (status < 200 || status > 599 || body.size() > (6U << 20))
+    return Error(502, "remote_http_response", "Invalid buffered response");
+  auto impl = std::make_unique<Impl>(Deadline::max());
+  impl->headers.status = status;
+  size_t size = 0;
+  for (const auto& [key, value] : headers) {
+    std::string name;
+    std::string_view parsed;
+    const auto line = key + ": " + value;
+    size += line.size();
+    if (size > 32768 || !http::Field(line, &name, &parsed) ||
+        impl->headers.fields.contains(name))
+      return Error(502, "remote_http_headers", "Invalid buffered headers");
+    impl->headers.fields.emplace(name, value);
+    if (name == "content-type") {
+      const auto semicolon = parsed.find(';');
+      impl->headers.mime = http::Lower(http::Trim(parsed.substr(0, semicolon)));
+    }
+  }
+  impl->buffered = std::move(body);
+  impl->finished = impl->buffered->empty();
+  *output = std::unique_ptr<RemoteHttp>(new RemoteHttp(std::move(impl)));
+  return {};
+}
 
 ObjectReply RemoteHttp::Open(const Url& url, const FileFetchOptions& options,
                              std::string_view method,
@@ -534,6 +565,12 @@ ObjectReply RemoteHttp::Read(std::string* bytes, bool* eof) {
   auto& s = *impl_;
   *eof = s.finished;
   if (*eof) return {};
+  if (s.buffered) {
+    *bytes = s.buffered->substr(s.received, 16384);
+    s.received += bytes->size();
+    s.finished = s.received == s.buffered->size();
+    return {};
+  }
   auto invalid = [] { return Failure("file_fetch_framing_invalid"); };
   auto capacity = [] {
     return Error(413, "remote_http_capacity", "Remote response too large");

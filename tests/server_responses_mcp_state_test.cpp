@@ -1900,3 +1900,58 @@ Q4T_TEST(responses_mcp_mapping_resource_stays_bound_after_store_restart) {
       Ok(state.PermitResource(id, "file:///report0", original, Access())));
   return true;
 }
+
+Q4T_TEST(responses_mcp_native_agent_is_private_and_part_of_dispatch_identity) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  auto session = PrivateSession();
+  Set(&session, "agent_instance", String("private-agent-one"));
+  const auto catalog =
+      state.Catalog(definition, Tools(), Access(), 600, "", "", &session);
+  Q4T_CHECK(Ok(catalog));
+  Q4T_CHECK(OutputJson(catalog.value).find("private-agent-one") ==
+            std::string::npos);
+  Q4T_CHECK(OutputJson(Record(objects, catalog.value.GetString("id")))
+                .find("private-agent-one") == std::string::npos);
+  const auto proposed = Propose(state, catalog.value, definition);
+  Q4T_CHECK(Ok(proposed));
+  const auto id = proposed.value.GetString("id");
+  auto changed = session;
+  Set(&changed, "agent_instance", String("private-agent-two"));
+  Q4T_CHECK(!state.Permit(id, definition, Access(), &changed).ok());
+  std::erase_if(changed.object, [](const auto& field) {
+    return field.first == "agent_instance";
+  });
+  Q4T_CHECK(!state.Permit(id, definition, Access(), &changed).ok());
+  const auto permitted = state.Permit(id, definition, Access(), &session);
+  Q4T_CHECK(Ok(permitted));
+  auto receipt = Success(permitted.value.GetString("dispatch_id"));
+  Q4T_CHECK(!state.Finish(id, receipt, {}, Access(), &changed).ok());
+  Q4T_CHECK(Ok(state.Finish(id, receipt, {}, Access(), &session)));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_native_agent_snapshot_rejects_invalid_and_legacy_owner) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  for (const auto& instance : {String(""), String("bad\ninstance"),
+                               String(std::string(129, 'a')), Number(1)}) {
+    auto session = PrivateSession();
+    Set(&session, "agent_instance", instance);
+    Q4T_CHECK(!state
+                   .Catalog(Definition("never"), Tools(), Access(), 600, "", "",
+                            &session)
+                   .ok());
+  }
+  auto session = PrivateSession();
+  Set(&session, "agent_instance", String("native-agent"));
+  Set(&session, "legacy", Boolean(true));
+  Q4T_CHECK(!state
+                 .Catalog(Definition("never"), Tools(), Access(), 600, "", "",
+                          &session)
+                 .ok());
+  return true;
+}

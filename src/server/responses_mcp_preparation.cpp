@@ -46,6 +46,7 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
   // The executor retains the exact immutable policy used for preparation;
   // later dispatch/approval/resource callbacks do not receive ChatPlanConfig.
   cipher_config_.mcp_policy = config.mcp_policy;
+  cipher_config_.mcp_tunnels = config.mcp_tunnels;
   auto& input = continuation ? *continuation : generation_history_;
   const auto* declared = envelope_.request.GetArray("tools");
   auto definitions = declared ? *declared : Array();
@@ -198,7 +199,7 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
     auto listed =
         InvokeMcp({access_.scope, access_.deadline, access_.cancelled},
                   definition.credentials, mcp_fetch_, "tools/list", Object(),
-                  {}, &receipt, {}, &session);
+                  {}, &receipt, {}, &session, config.mcp_tunnels);
     if (listed.commit_unknown || listed.http_status == 408 ||
         listed.http_status == 499)
       return listed;

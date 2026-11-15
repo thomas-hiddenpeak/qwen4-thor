@@ -1,0 +1,70 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4021:56: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+ 4021 |           auto response = Object({{"request_id", Field(command, "request_id")},
+      |                                                        ^~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:12,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:20:
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4021:33: error: could not convert ‘{{"request_id", <expression error>}, {"resp_code", q4t::server::responses_detail::Number(int64_t)()}, {"resp_headers", q4t::server::responses_detail::Object(std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >)()}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+ 4021 |           auto response = Object({{"request_id", Field(command, "request_id")},
+      |                           ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 <brace-enclosed initializer list>
+ 4022 |                                   {"resp_code", Number(200)},
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4023 |                                   {"resp_headers", Object()}});
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4064:49: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+ 4064 |                                    {"id", Field(*rpc, "id")},
+      |                                                 ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4063:34: error: could not convert ‘{{"jsonrpc", q4t::server::responses_detail::String(std::string)()}, {"id", <expression error>}, {"result", result}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+ 4063 |             auto message = Object({{"jsonrpc", String("2.0")},
+      |                            ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                  |
+      |                                  <brace-enclosed initializer list>
+ 4064 |                                    {"id", Field(*rpc, "id")},
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4065 |                                    {"result", result}});
+      |                                    ~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:32:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool q4t_test_fn_mcp_native_tunnel_isolated_list_call_resource_and_private_session()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4191:21: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+ 4191 |     Q4T_CHECK(Field(command, "headers").GetString("authorization") ==
+      |                     ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4385:38: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+ 4385 |                 {"id", Field(request.rpc, "id")},
+      |                              ~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:4384:15: error: could not convert ‘{{"jsonrpc", q4t::server::responses_detail::String(std::string)()}, {"id", <expression error>}, {"error", q4t::server::responses_detail::Object(std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >)()}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+ 4384 |         Object({{"jsonrpc", String("2.0")},
+      |         ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |               |
+      |               <brace-enclosed initializer list>
+ 4385 |                 {"id", Field(request.rpc, "id")},
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4386 |                 {"error",
+      |                 ~~~~~~~~~
+ 4387 |                  Object({{"code", Number(-32001)},
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4388 |                          {"message", String("Session expired")},
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4389 |                          {"data", Object({{"retryable", Boolean(false)}})}})}});
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1521: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

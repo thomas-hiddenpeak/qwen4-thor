@@ -36,7 +36,8 @@ class McpTunnelBroker {
                      std::string_view generation, std::string_view channel,
                      const io::Json& headers, const io::Json& rpc,
                      bool terminate_session = false,
-                     std::string_view expected_instance = {});
+                     std::string_view expected_instance = {},
+                     bool detached_cleanup = false);
   // An authenticated agent has a stable random instance ID for its lifetime.
   // A bounded exclusive lease prevents stateful sessions from being spread
   // across competing instances sharing the same credential.

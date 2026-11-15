@@ -58,7 +58,7 @@ bool ValidSession(const Json& session, const StateAccess& access) {
   if (!InputFields(session,
                    {"id", "binding", "scope", "protocol", "session_id",
                     "legacy", "tools", "resources", "created_ms", "expires_ms",
-                    "idle_ms", "idle_expires_ms", "lost"},
+                    "idle_ms", "idle_expires_ms", "lost", "agent_instance"},
                    &param, "session") ||
       OutputJson(session).size() > 4096 ||
       !InputValueIdentity(String(access.scope), &scope) ||
@@ -74,6 +74,13 @@ bool ValidSession(const Json& session, const StateAccess& access) {
   for (const auto* field : {"legacy", "tools", "resources"})
     if (!session.Find(field) || !session.Find(field)->IsBool()) return false;
   if (session.Has("lost") && !session.Find("lost")->IsBool()) return false;
+  if (const auto* instance = session.Find("agent_instance")) {
+    if (!instance->IsString() || instance->str.empty() ||
+        instance->str.size() > 128 || session.GetBool("legacy"))
+      return false;
+    for (unsigned char c : instance->str)
+      if (c < 0x21 || c > 0x7e) return false;
+  }
   const auto* token = session.Find("session_id");
   if (!token || !token->IsString() || token->str.size() > 1024) return false;
   for (unsigned char c : token->str)
@@ -91,6 +98,11 @@ bool ValidSession(const Json& session, const StateAccess& access) {
          session.GetInt("idle_expires_ms") <= expires + 300000;
 }
 bool SameSession(const Json& left, const Json& right) {
+  const auto* a_instance = left.Find("agent_instance");
+  const auto* b_instance = right.Find("agent_instance");
+  if (bool(a_instance) != bool(b_instance) ||
+      (a_instance && !Same(*a_instance, *b_instance)))
+    return false;
   for (const auto* field :
        {"id", "binding", "scope", "protocol", "session_id", "legacy", "tools",
         "resources", "created_ms", "expires_ms", "idle_ms"}) {

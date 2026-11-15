@@ -39,6 +39,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [原生隧道隔离传输38项CPU最终通过](evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md)：
+  原权限/加密会话/实例亲和、审批/资源/程序调用、已知终态和清理
+  已接线；头转换和会话schema遗漏已修复，首次失败保留。来源7项、
+  主机/完整引擎零警告，0GPU、rev126保持；继续自有agent真实HTTP/
+  SSE、SDK/业务及恢复发行，完整隧道与全部master尚未完成。
+
 - [原生隧道接入26项CPU、5项入口/封包首过](evidence/serve-mcp-tunnel-api-cpu-20261116/README.md)：
   native配置/私有绑定、受保护头、真实TLS和独立poll/response容量
   已验证；来源7项及主机/完整引擎/ingress零警告，0GPU、rev126保持。

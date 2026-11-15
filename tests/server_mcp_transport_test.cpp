@@ -1,5 +1,7 @@
 #include "q4t/server/mcp_transport.h"
 #include "q4t/server/mcp_policy.h"
+#include "q4t/server/mcp_tunnel.h"
+#include "../src/server/mcp_tunnel_transport_internal.h"
 
 #include <arpa/inet.h>
 #include <poll.h>
@@ -3964,5 +3966,577 @@ Q4T_TEST(responses_mcp_mapped_program_uses_original_route_for_native_dispatch) {
             OutputItem(run, "program_output").GetString("result") ==
                 "document result");
   Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  return true;
+}
+
+namespace {
+// CPU wire peer. The worker and broker under test are production code; this
+// peer intentionally does not stand in for the self-owned HTTP/SSE agent.
+class TunnelPeer {
+ public:
+  std::shared_ptr<McpTunnelBroker> broker = std::make_shared<McpTunnelBroker>();
+  std::atomic<int> initialized{0}, called{0}, read{0}, terminated{0};
+  std::atomic<bool> drop_call{false}, rpc_failure{false}, progress{false};
+  TunnelPeer() {
+    CloseMcpSessions();
+    McpTunnelLimits limits;
+    limits.agent_lease_ms = 20;
+    if (!broker->Configure({{"tunnel_project",
+                             "one",
+                             {Access().scope, ExecutionAccess().scope},
+                             {"client:agent"},
+                             {"main"}}},
+                           limits))
+      throw std::runtime_error("native MCP tunnel fixture");
+    Start("peer-one");
+  }
+  ~TunnelPeer() {
+    CloseMcpSessions();
+    thread_.request_stop();
+    thread_.join();
+    broker->Stop();
+  }
+  void Start(std::string instance) {
+    if (thread_.joinable()) {
+      thread_.request_stop();
+      thread_.join();
+    }
+    thread_ = std::jthread([this, instance](std::stop_token stop) {
+      while (!stop.stop_requested()) {
+        BinaryAccess agent{"client:agent", Clock::now() + 1s,
+                           [stop] { return stop.stop_requested(); }};
+        auto polled =
+            broker->Poll(agent, "tunnel_project", instance, {}, 25, 10);
+        const auto* commands = polled.value.GetArray("commands");
+        if (!polled.ok() || !commands) {
+          std::this_thread::sleep_for(1ms);
+          continue;
+        }
+        for (const auto& command : commands->array) {
+          {
+            std::lock_guard lock(mutex_);
+            commands_.push_back(command);
+          }
+          const auto* rpc = command.Find("jsonrpc");
+          auto response = Object({{"request_id", *command.Find("request_id")},
+                                  {"resp_code", Number(200)},
+                                  {"resp_headers", Object()}});
+          auto result = Object();
+          if (!rpc) {
+            ++terminated;
+            Set(&response, "resp_type", String("session_termination_response"));
+            Set(&response, "resp_code", Number(204));
+          } else if (!rpc->Has("id")) {
+            Set(&response, "resp_type", String("notify_ack"));
+            Set(&response, "resp_code", Number(202));
+          } else {
+            const auto method = rpc->GetString("method");
+            if (method == "initialize") {
+              const auto remote =
+                  "private-native-" + std::to_string(++initialized);
+              Set(&response, "resp_headers",
+                  Object({{"Mcp-Session-Id", Array({String(remote)})}}));
+              result = Object(
+                  {{"protocolVersion", String("2025-06-18")},
+                   {"capabilities",
+                    Object({{"tools", Object()}, {"resources", Object()}})},
+                   {"serverInfo", Object({{"name", String("cpu-peer")},
+                                          {"version", String("1")}})}});
+            } else if (method == "tools/list") {
+              result = Object({{"tools", Array({Tool()})}});
+            } else if (method == "tools/call") {
+              ++called;
+              if (drop_call) continue;
+              result = Object(
+                  {{"content",
+                    Array({Object({{"type", String("resource_link")},
+                                   {"uri", String("resource://native")},
+                                   {"name", String("native document")}})})}});
+            } else if (method == "resources/read") {
+              ++read;
+              result = Object(
+                  {{"contents",
+                    Array({Object(
+                        {{"uri", String("resource://native")},
+                         {"text", String("native tunnel document")}})})}});
+            }
+            auto message = Object({{"jsonrpc", String("2.0")},
+                                   {"id", *rpc->Find("id")},
+                                   {"result", result}});
+            if (method == "tools/call" && rpc_failure) {
+              std::erase_if(message.object, [](const auto& field) {
+                return field.first == "result";
+              });
+              Set(&message, "error",
+                  Object({{"code", Number(-32042)},
+                          {"message", String("Authorization expired")},
+                          {"data", Object({{"retryable", Boolean(false)},
+                                           {"detail", String("原始错误")}})}}));
+              Set(&response, "resp_code", Number(401));
+            }
+            Set(&response, "resp_json", message);
+            if (progress) {
+              auto notify = response;
+              Set(&notify, "resp_type", String("jsonrpc_notify"));
+              Set(&notify, "resp_json",
+                  Object({{"jsonrpc", String("2.0")},
+                          {"method", String("notifications/progress")},
+                          {"params", Object({{"progressToken", String("p")},
+                                             {"progress", Number(1)}})}}));
+              (void)broker->Respond(agent, "tunnel_project", instance,
+                                    command.GetString("shard_token"), notify);
+            }
+          }
+          (void)broker->Respond(agent, "tunnel_project", instance,
+                                command.GetString("shard_token"), response);
+        }
+      }
+    });
+  }
+  McpEndpoint Endpoint() const {
+    McpEndpoint endpoint;
+    endpoint.tunnel_id = "tunnel_project";
+    endpoint.tunnel_generation = "one";
+    endpoint.authorization = "native-secret";
+    return endpoint;
+  }
+  ObjectReply Invoke(
+      McpSession* session, McpTransportReceipt* receipt,
+      std::string_view method = "tools/list",
+      std::function<ObjectReply()> permit = [] { return ObjectReply{}; },
+      BinaryAccess access = Access()) {
+    return InvokeMcp(access, Endpoint(), FileFetchOptions{}, method,
+                     method == "tools/list" ? Object()
+                     : method == "resources/read"
+                         ? Object({{"uri", String("resource://native")}})
+                         : Call(),
+                     permit, receipt, {}, session, broker);
+  }
+  std::vector<Json> Commands() {
+    std::lock_guard lock(mutex_);
+    return commands_;
+  }
+  bool WaitTerminated(int count) {
+    const auto end = Clock::now() + 1s;
+    while (terminated < count && Clock::now() < end)
+      std::this_thread::sleep_for(1ms);
+    return terminated == count;
+  }
+  ChatPlanConfig Config() {
+    ChatPlanConfig config;
+    config.model = "cpu-native-mcp";
+    config.structured = true;
+    auto policy = std::make_shared<McpDeploymentPolicy>();
+    const auto raw = Object(
+        {{"version", Number(1)},
+         {"targets",
+          Array({Object({{"kind", String("tunnel_id")},
+                         {"id", String("tunnel_project")},
+                         {"transport", String("native")},
+                         {"generation", String("one")},
+                         {"scopes", Array({String(ExecutionAccess().scope)})},
+                         {"agents", Array({String("client:agent")})}})})}});
+    if (!ParseMcpDeploymentPolicy(OutputJson(raw), policy.get()))
+      throw std::runtime_error("native MCP execution policy");
+    config.mcp_policy = policy;
+    config.mcp_tunnels = broker;
+    return config;
+  }
+  Json Request(std::string approval = "never") {
+    return Object(
+        {{"input", String("Read the project document")},
+         {"reasoning", Object({{"effort", String("none")}})},
+         {"tools", Array({Object({{"type", String("mcp")},
+                                  {"server_label", String("project")},
+                                  {"tunnel_id", String("tunnel_project")},
+                                  {"authorization", String("native-secret")},
+                                  {"require_approval",
+                                   String(std::move(approval))}})})}});
+  }
+
+ private:
+  std::mutex mutex_;
+  std::vector<Json> commands_;
+  std::jthread thread_;
+};
+}  // namespace
+
+Q4T_TEST(mcp_native_tunnel_isolated_list_call_resource_and_private_session) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  int checkpoints = 0, permits = 0;
+  session.checkpoint = [&](const Json& state) {
+    ++checkpoints;
+    return state.GetString("agent_instance") == "peer-one"
+               ? ObjectReply{}
+               : Error(500, "fixture_state", "No agent affinity");
+  };
+  Q4T_CHECK(ExecutionOk(peer.Invoke(&session, &receipt)));
+  const auto id = session.state.GetString("id");
+  Q4T_CHECK(ExecutionOk(peer.Invoke(&session, &receipt, "tools/call", [&] {
+    ++permits;
+    return ObjectReply{};
+  })));
+  session.allow_new = false;
+  Q4T_CHECK(ExecutionOk(peer.Invoke(&session, &receipt, "resources/read")));
+  Q4T_CHECK(checkpoints == 3 && permits == 1 && peer.initialized == 1 &&
+            peer.called == 1 && peer.read == 1 &&
+            session.state.GetString("id") == id);
+  Q4T_CHECK(receipt.result.GetArray("contents")->array[0].GetString("text") ==
+            "native tunnel document");
+  Q4T_CHECK(OutputJson(receipt.result).find("private-native-") ==
+            std::string::npos);
+  for (const auto& command : peer.Commands())
+    Q4T_CHECK(
+        command.Find("headers")->GetArray("authorization")->array[0].str ==
+        "Bearer native-secret");
+  Q4T_CHECK(CloseMcpSessions() && peer.WaitTerminated(1));
+  Q4T_CHECK(peer.broker->Health().GetInt("pending") == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_permission_and_checkpoint_fail_before_dispatch) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  session.checkpoint = [](const Json&) {
+    return Error(503, "fixture_storage", "Cannot persist session");
+  };
+  Q4T_CHECK(peer.Invoke(&session, &receipt, "tools/call").code ==
+            "fixture_storage");
+  Q4T_CHECK(!receipt.call_permitted && peer.called == 0 &&
+            peer.WaitTerminated(1));
+  session = {};
+  Q4T_CHECK(
+      peer.Invoke(&session, &receipt, "tools/call",
+                  [] { return Error(409, "fixture_approval", "Not approved"); })
+          .code == "fixture_approval");
+  Q4T_CHECK(!receipt.call_permitted && peer.called == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_binding_changes_rejected_before_queueing) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(peer.Invoke(&session, &receipt).ok());
+  const auto count = peer.Commands().size();
+  for (int kind = 0; kind < 4; ++kind) {
+    auto endpoint = peer.Endpoint();
+    auto access = Access();
+    if (kind == 0) endpoint.tunnel_channel = "changed";
+    if (kind == 1) endpoint.tunnel_generation = "changed";
+    if (kind == 2) endpoint.authorization = "changed";
+    if (kind == 3) access.scope = "client:other";
+    Q4T_CHECK(InvokeMcp(
+                  access, endpoint, FileFetchOptions{}, "tools/call", Call(),
+                  [] { return ObjectReply{}; }, &receipt, {}, &session,
+                  peer.broker)
+                  .code == "mcp_session_binding_changed");
+  }
+  Q4T_CHECK(peer.Commands().size() == count && peer.called == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_owner_loss_restores_original_without_initialize) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(peer.Invoke(&session, &receipt).ok());
+  Q4T_CHECK(BreakMcpOwner());
+  Q4T_CHECK(ExecutionOk(peer.Invoke(&session, &receipt, "tools/call")));
+  Q4T_CHECK(peer.initialized == 1 && peer.called == 1 && peer.terminated == 0);
+  Q4T_CHECK(CloseMcpSessions(false));
+  session.allow_new = false;
+  Q4T_CHECK(peer.Invoke(&session, &receipt, "resources/read").ok());
+  Q4T_CHECK(peer.initialized == 1 && peer.read == 1 && peer.terminated == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_new_agent_cannot_take_original_resource_session) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(peer.Invoke(&session, &receipt, "tools/call").ok());
+  peer.Start("peer-two");
+  session.allow_new = false;
+  const auto result = peer.Invoke(&session, &receipt, "resources/read");
+  Q4T_CHECK(result.code == "mcp_tunnel_session_lost" && peer.read == 0 &&
+            session.state.GetBool("lost"));
+  session.allow_new = true;
+  Q4T_CHECK(ExecutionOk(peer.Invoke(&session, &receipt, "tools/call")));
+  Q4T_CHECK(peer.initialized == 2 && peer.called == 2 &&
+            session.state.GetString("agent_instance") == "peer-two");
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_cancelled_handoff_is_unknown_and_never_replayed) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(peer.Invoke(&session, &receipt).ok());
+  peer.drop_call = true;
+  auto access = Access();
+  access.deadline = Clock::now() + 200ms;
+  access.cancelled = [&] { return peer.called.load() > 0; };
+  const auto start = Clock::now();
+  const auto result = peer.Invoke(
+      &session, &receipt, "tools/call", [] { return ObjectReply{}; }, access);
+  Q4T_CHECK(result.http_status == 499 && Clock::now() - start < 1s &&
+            receipt.call_permitted && receipt.outcome_unknown &&
+            peer.called == 1);
+  Q4T_CHECK(peer.broker->Health().GetInt("pending") == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_offline_broker_is_bounded_before_permission) {
+  auto broker = std::make_shared<McpTunnelBroker>();
+  Q4T_CHECK(broker->Configure({{"tunnel_offline",
+                                "one",
+                                {Access().scope},
+                                {"client:agent"},
+                                {"main"}}}));
+  McpEndpoint endpoint;
+  endpoint.tunnel_id = "tunnel_offline";
+  endpoint.tunnel_generation = "one";
+  auto access = Access();
+  access.deadline = Clock::now() + 100ms;
+  McpTransportReceipt receipt;
+  int permits = 0;
+  const auto start = Clock::now();
+  const auto result = InvokeMcp(
+      access, endpoint, FileFetchOptions{}, "tools/call", Call(),
+      [&] {
+        ++permits;
+        return ObjectReply{};
+      },
+      &receipt, {}, nullptr, broker);
+  Q4T_CHECK(result.http_status == 408 && Clock::now() - start < 1s &&
+            permits == 0 && !receipt.call_permitted);
+  const auto polled = broker->Poll({"client:agent", Clock::now() + 1s, {}},
+                                   "tunnel_offline", "late", {}, 1, 0);
+  Q4T_CHECK(polled.http_status == 204);
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_progress_and_http_error_keep_exact_rpc_outcome) {
+  TunnelPeer peer;
+  peer.progress = peer.rpc_failure = true;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(ExecutionOk(peer.Invoke(nullptr, &receipt, "tools/call")));
+  Q4T_CHECK(receipt.call_permitted && !receipt.outcome_unknown &&
+            receipt.error.GetInt("code") == -32042 &&
+            Field(receipt.error, "data").GetString("detail") == "原始错误");
+  Q4T_CHECK(peer.called == 1 && peer.WaitTerminated(1));
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_session_capacity_and_idle_cleanup_are_separate) {
+  TunnelPeer peer;
+  std::vector<McpSession> sessions(5);
+  McpTransportReceipt receipt;
+  for (size_t i = 0; i < 4; ++i)
+    Q4T_CHECK(peer.Invoke(&sessions[i], &receipt).ok());
+  Q4T_CHECK(peer.Invoke(&sessions[4], &receipt).code == "mcp_session_capacity");
+  Q4T_CHECK(peer.initialized == 4);
+  // Direct MCP's independent remote remains usable while native leases fill.
+  Server direct;
+  Q4T_CHECK(Invoke(direct, &receipt).ok());
+  Q4T_CHECK(CloseMcpSessions() && peer.WaitTerminated(4));
+  McpSession short_lived;
+  short_lived.idle_ms = 30;
+  Q4T_CHECK(peer.Invoke(&short_lived, &receipt).ok());
+  std::this_thread::sleep_for(40ms);
+  PollMcpSessions();
+  Q4T_CHECK(peer.WaitTerminated(5));
+  return true;
+}
+
+Q4T_TEST(mcp_native_tunnel_bridge_cannot_change_headers_or_dispatch_authority) {
+  TunnelPeer peer;
+  mcp_detail::TunnelSessions leases;
+  std::unique_ptr<mcp_detail::TunnelExchange> exchange;
+  Q4T_CHECK(leases
+                .Begin(Access(), peer.Endpoint(), peer.broker, "tools/call",
+                       Call(), nullptr, &exchange)
+                .ok());
+  auto forged = Object({{"type", String("tunnel_http")},
+                        {"headers", Object()},
+                        {"rpc", Object({{"jsonrpc", String("2.0")},
+                                        {"id", Number(1)},
+                                        {"method", String("tools/call")},
+                                        {"params", Call()}})}});
+  Q4T_CHECK(exchange->Forward(forged, false).code == "mcp_tunnel_authority");
+  Q4T_CHECK(exchange->Forward(forged, true).code == "mcp_tunnel_authority");
+  Q4T_CHECK(peer.Commands().empty() && peer.called == 0);
+  return true;
+}
+
+Q4T_TEST(mcp_http_non200_rpc_error_is_known_and_404_marks_session_lost) {
+  StatefulMcp remote;
+  const auto original = remote.server.handler;
+  remote.server.handler = [&](const Request& request, int fd,
+                              std::stop_token stop) {
+    if (request.rpc.GetString("method") != "tools/call")
+      return original(request, fd, stop);
+    ++remote.dispatched;
+    auto response =
+        Object({{"jsonrpc", String("2.0")},
+                {"id", *request.rpc.Find("id")},
+                {"error",
+                 Object({{"code", Number(-32001)},
+                         {"message", String("Session expired")},
+                         {"data", Object({{"retryable", Boolean(false)}})}})}});
+    Send(fd, Http(404, OutputJson(response)));
+    return true;
+  };
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  const auto result = remote.Invoke(session, receipt, "tools/call");
+  Q4T_CHECK(result.ok() && result.value.GetInt("upstream_status") == 404 &&
+            !receipt.outcome_unknown &&
+            receipt.error.GetInt("code") == -32001 &&
+            session.state.GetBool("lost") && remote.dispatched == 1);
+  session.allow_new = false;
+  Q4T_CHECK(remote.Invoke(session, receipt, "resources/read").code ==
+            "mcp_session_lost");
+  return true;
+}
+
+Q4T_TEST(responses_mcp_native_tunnel_resource_and_frozen_offline_count) {
+  TunnelPeer peer;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto config = peer.Config();
+  ResponsesExecution run(objects);
+  Q4T_CHECK(
+      ExecutionOk(run.Prepare(peer.Request(), config, ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+  Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, {})) && !waiting);
+  Q4T_CHECK(ExecutionOk(run.PrepareToolMedia(config)));
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  Q4T_CHECK(peer.initialized == 1 && peer.called == 1 && peer.read == 1);
+  const auto text = run.ResultJson();
+  Q4T_CHECK(text.find("private-native-") == std::string::npos &&
+            text.find("native-secret") == std::string::npos &&
+            text.find("peer-one") == std::string::npos);
+  const auto count = peer.Commands().size();
+  config.mcp_policy.reset();
+  config.mcp_tunnels.reset();
+  config.count_input_only = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan counted;
+  Q4T_CHECK(ExecutionOk(PrepareResponsesTokenCount(
+      Object({{"previous_response_id", String(run.Id())},
+              {"input", String("Continue")}}),
+      config, objects, ExecutionAccess(), &envelope, &counted)));
+  Q4T_CHECK(peer.Commands().size() == count &&
+            OutputJson(counted.input.messages).find("native tunnel document") !=
+                std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_native_tunnel_approval_survives_owner_restart) {
+  TunnelPeer peer;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = peer.Config();
+  const auto request = peer.Request("always");
+  ResponsesExecution first(objects);
+  Q4T_CHECK(ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)));
+  std::string wire;
+  bool waiting = false;
+  Q4T_CHECK(ExecutionOk(first.Begin(&wire)) && ModelCall(&first, false, &wire));
+  Q4T_CHECK(ExecutionOk(first.RunMcp(1, &waiting, {})) && waiting &&
+            peer.called == 0);
+  const auto approval = OutputItem(first, "mcp_approval_request");
+  Q4T_CHECK(ExecutionOk(first.Finish(false, 1, {}, 43, &wire)));
+  Q4T_CHECK(CloseMcpSessions(false));
+  ResponsesExecution next(objects);
+  Q4T_CHECK(ExecutionOk(next.Prepare(
+                ApprovalResponse(request, approval, true, first.Id()), config,
+                ExecutionAccess(), 44)) &&
+            ExecutionOk(next.Begin(&wire)));
+  Q4T_CHECK(ExecutionOk(next.RunMcpApprovals({})) && peer.called == 1);
+  Q4T_CHECK(ExecutionOk(next.PrepareToolMedia(config)) &&
+            ContinueExecution(&next, config) && FinishExecution(&next));
+  Q4T_CHECK(peer.initialized == 1 && peer.read == 1);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_native_tunnel_program_retains_original_authority) {
+  TunnelPeer peer;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = peer.Config();
+  auto request = peer.Request();
+  Set(&Field(request, "tools").array[0], "allowed_callers",
+      Array({String("programmatic")}));
+  Field(request, "tools")
+      .array.push_back(Object({{"type", String("programmatic_tool_calling")}}));
+  ResponsesExecution run(objects);
+  std::string wire;
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)) &&
+            ExecutionOk(run.Begin(&wire)) &&
+            ProgramCode(
+                &run,
+                "const r=await "
+                "tools['mcp:project'].read_project({});text(r.content[0].uri);",
+                &wire));
+  Q4T_CHECK(ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting &&
+            peer.called == 1);
+  Q4T_CHECK(OutputItem(run, "program_output").GetString("result") ==
+            "resource://native");
+  Q4T_CHECK(ContinueExecution(&run, config) && FinishExecution(&run));
+  return true;
+}
+
+Q4T_TEST(
+    mcp_native_tunnel_known_result_wins_cancellation_during_worker_return) {
+  TunnelPeer peer;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(peer.Invoke(&session, &receipt).ok());
+  auto access = Access();
+  // Wait consumes the matched terminal response. Cancellation becomes true
+  // precisely after handoff has completed and before the worker IPC returns.
+  access.cancelled = [&] {
+    return peer.called.load() > 0 &&
+           peer.broker->Health().GetInt("pending") == 0 &&
+           peer.broker->Health().GetInt("inflight") == 0;
+  };
+  Q4T_CHECK(ExecutionOk(peer.Invoke(
+      &session, &receipt, "tools/call", [] { return ObjectReply{}; }, access)));
+  Q4T_CHECK(access.cancelled() && receipt.call_permitted &&
+            !receipt.outcome_unknown && peer.called == 1 &&
+            receipt.result.GetArray("content"));
+  return true;
+}
+
+Q4T_TEST(mcp_http_error_rejects_fractional_rpc_identity_and_code) {
+  for (const bool fractional_id : {true, false}) {
+    Server server;
+    std::atomic<int> calls{0};
+    server.handler = [&](const Request& request, int fd, std::stop_token) {
+      if (request.rpc.GetString("method") != "tools/call") return false;
+      ++calls;
+      const auto id = OutputJson(*request.rpc.Find("id"));
+      const auto body =
+          "{\"jsonrpc\":\"2.0\",\"id\":" + id + (fractional_id ? ".5" : "") +
+          ",\"error\":{\"code\":-32001" + (fractional_id ? "" : ".5") +
+          ",\"message\":\"Invalid wire\"}}";
+      Send(fd, Http(401, body));
+      return true;
+    };
+    McpTransportReceipt receipt;
+    const auto reply = Invoke(server, &receipt, "tools/call");
+    Q4T_CHECK(reply.code == "mcp_http_error" && receipt.call_permitted &&
+              receipt.outcome_unknown && calls == 1);
+  }
   return true;
 }

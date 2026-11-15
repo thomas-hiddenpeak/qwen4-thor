@@ -27,6 +27,7 @@ namespace q4t::server {
 struct FileExpansionOptions;
 struct FileExpansionUsage;
 struct McpDeploymentPolicy;
+class McpTunnelBroker;
 
 inline constexpr std::string_view kPreflightProfile = "q4t-preflight-v1";
 inline constexpr size_t kPreflightResponseBytes = 8 * 1024 * 1024;
@@ -81,6 +82,7 @@ struct ChatPlanConfig {
   std::shared_ptr<const FileExpansionOptions> file_inputs;
   std::string file_input_policy_sha256;
   std::shared_ptr<const McpDeploymentPolicy> mcp_policy;
+  std::shared_ptr<McpTunnelBroker> mcp_tunnels;
 };
 
 struct ChatPlanError {
