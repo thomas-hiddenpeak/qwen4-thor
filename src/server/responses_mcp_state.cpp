@@ -317,11 +317,16 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
     return Error(403, "mcp_approval_required",
                  "Current policy requires approval");
   Set(&payload, "state", String("dispatching"));
+  const auto dispatch_id = detail::NewRequestId("mcpd_");
+  if (dispatch_id.empty())
+    return Error(503, "mcp_entropy_unavailable", "MCP dispatch ID unavailable");
+  Set(&payload, "dispatch_id", String(dispatch_id));
   reply = Write(id, "call", payload, record.GetInt("revision"),
                 record.GetInt("expires_at"), access);
   if (reply.ok() && !reply.commit_unknown)
-    reply.value = Object(
-        {{"call", *payload.Find("call")}, {"tool", *payload.Find("tool")}});
+    reply.value = Object({{"dispatch_id", String(dispatch_id)},
+                          {"call", *payload.Find("call")},
+                          {"tool", *payload.Find("tool")}});
   return reply;
 }
 ObjectReply ResponsesMcpState::Inspect(const std::string& id,
@@ -343,6 +348,14 @@ ObjectReply ResponsesMcpState::Finish(const std::string& id,
   if (state != "dispatching" && state != "ready")
     return Error(409, "mcp_result_already_final",
                  "MCP invocation is already resolved");
+  // A losing concurrent caller's transport failure is not evidence about the
+  // winner. Even failure/unknown completion must belong to this dispatch.
+  if ((state == "dispatching" &&
+       (receipt.dispatch_id.empty() ||
+        receipt.dispatch_id != payload.GetString("dispatch_id"))) ||
+      (state == "ready" && !receipt.dispatch_id.empty()))
+    return Error(409, "mcp_dispatch_owner_conflict",
+                 "MCP result belongs to a different dispatch owner");
   const bool success = transport.ok() && !transport.commit_unknown;
   if (success && (state != "dispatching" || !receipt.call_permitted ||
                   receipt.outcome_unknown))

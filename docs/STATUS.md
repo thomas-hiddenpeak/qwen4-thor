@@ -39,6 +39,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP输出与派发拥有者16项CPU、2项SDK最终通过](evidence/serve-mcp-output-owner-cpu-20261115/README.md)：
+  参数逐片事件、截断/取消形状与并发失败不覆盖在途结果已验证。
+  公开执行/历史和组合仍在接线，尚无MCP对外交付；0GPU、rev126
+  保持，继续全部master。
+
+- MCP公开输出部件10项CPU及2项官方SDK最终通过；继续接实际
+  Responses执行器。并发复核补充派发身份，防重复请求失败覆盖
+  在途结果，正在验证直接受影响项；0GPU、rev126保持。
+
 - [MCP目录与持久审批20项针对性CPU最终通过](evidence/serve-mcp-authority-cpu-20261115/README.md)：
   单次派发、未知不重放、原schema及凭据不存储验证通过；首次清理
   夹具失败保留，修后单项通过。0GPU、rev126保持；继续公开MCP

@@ -84,8 +84,9 @@ ObjectReply Propose(ResponsesMcpState& state, const Json& catalog,
   return state.Propose(catalog, definition, "read", std::move(args),
                        std::move(caller), Access());
 }
-McpTransportReceipt Success() {
+McpTransportReceipt Success(std::string dispatch_id = "") {
   McpTransportReceipt receipt;
+  receipt.dispatch_id = std::move(dispatch_id);
   receipt.call_permitted = true;
   receipt.result = Value(R"({"content":[{"type":"text","text":"model info"}],
                             "structuredContent":{"text":"model info"}})");
@@ -185,6 +186,21 @@ Q4T_TEST(responses_mcp_state_concurrent_permission_sends_at_most_once) {
   Q4T_CHECK(!a.commit_unknown && !b.commit_unknown);
   Q4T_CHECK(state.Inspect(id, Access()).value.GetString("state") ==
             "dispatching");
+  const auto winner = a.ok() ? a : b;
+  Q4T_CHECK(!winner.value.GetString("dispatch_id").empty());
+  McpTransportReceipt losing;
+  auto failure = Error(409, "mcp_dispatch_not_ready", "Other request won");
+  Q4T_CHECK(state.Finish(id, losing, failure, Access()).code ==
+            "mcp_dispatch_owner_conflict");
+  losing.dispatch_id = "mcpd_forged";
+  losing.call_permitted = true;
+  losing.outcome_unknown = true;
+  Q4T_CHECK(state.Finish(id, losing, failure, Access()).code ==
+            "mcp_dispatch_owner_conflict");
+  Q4T_CHECK(state.Inspect(id, Access()).value.GetString("state") ==
+            "dispatching");
+  Q4T_CHECK(Ok(state.Finish(id, Success(winner.value.GetString("dispatch_id")),
+                            {}, Access())));
   return true;
 }
 
@@ -284,6 +300,10 @@ Q4T_TEST(responses_mcp_state_unknown_dispatch_never_replays_after_restart) {
             "dispatching");
   Q4T_CHECK(!state.Permit(id, definition, Access()).ok());
   McpTransportReceipt unknown;
+  // This fixture destroyed the previous executor/store owner above. Recovery
+  // can reconcile its private dispatch; an ordinary losing caller cannot.
+  unknown.dispatch_id =
+      state.Inspect(id, Access()).value.GetString("dispatch_id");
   unknown.outcome_unknown = true;
   const auto finished = state.Finish(
       id, unknown, Error(503, "mcp_worker_failed", "Worker unavailable"),
@@ -308,7 +328,9 @@ Q4T_TEST(responses_mcp_state_result_schema_errors_and_no_result_forgery) {
     const auto id = proposal.value.GetString("id");
     auto receipt = Success();
     Q4T_CHECK(!state.Finish(id, receipt, {}, Access()).ok());
-    Q4T_CHECK(Ok(state.Permit(id, definition, Access())));
+    const auto permitted = state.Permit(id, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    receipt.dispatch_id = permitted.value.GetString("dispatch_id");
     if (variant == 0) {
       Set(&receipt.result, "structuredContent", Value(R"({"text":12})"));
     } else if (variant == 1) {
@@ -347,8 +369,10 @@ Q4T_TEST(responses_mcp_state_completed_result_roundtrip_after_restart) {
         Propose(state, Catalog(state, definition), definition);
     Q4T_CHECK(Ok(proposal));
     id = proposal.value.GetString("id");
-    Q4T_CHECK(Ok(state.Permit(id, definition, Access())));
-    const auto finished = state.Finish(id, Success(), {}, Access());
+    const auto permitted = state.Permit(id, definition, Access());
+    Q4T_CHECK(Ok(permitted));
+    const auto finished = state.Finish(
+        id, Success(permitted.value.GetString("dispatch_id")), {}, Access());
     Q4T_CHECK(Ok(finished) &&
               finished.value.GetString("status") == "completed");
     final = finished.value;

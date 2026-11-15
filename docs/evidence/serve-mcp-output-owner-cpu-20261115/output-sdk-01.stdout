@@ -1,0 +1,46 @@
+✔ MCP approval JSON retains the official continuation contract (38.24029ms)
+✖ MCP SSE keeps incremental arguments and list/call/answer order (25.959794ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 222.364423
+
+✖ failing tests:
+
+test at tools/serve_responses/test_mcp_output_sdk.mjs:66:1
+✖ MCP SSE keeps incremental arguments and list/call/answer order (25.959794ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        id: 'mcpl_stream',
+        server_label: 'project',
+        tools: [
+  ...
+            logprobs: [],
+  +         parsed: null,
+            text: 'The project document was retrieved.',
+            type: 'output_text'
+          }
+        ],
+        id: 'msg_2ce988cf7d8e6b048a4835cb340aa96d',
+  
+      at file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_output_sdk.mjs:72:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async peer (file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_output_sdk.mjs:45:5)
+      at async TestContext.<anonymous> (file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_output_sdk.mjs:67:3)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { type: 'mcp_list_tools', id: 'mcpl_stream', server_label: 'project', tools: [Array] }, { type: 'mcp_call', id: 'mcp_stream', server_label: 'project', name: 'read', arguments: '{"path":"docs/MODEL.md"}', approval_request_id: null, status: 'completed', output: 'Project documentation fixture', error: null }, { id: 'msg_2ce988cf7d8e6b048a4835cb340aa96d', type: 'message', content: [Array], role: 'assistant', status: 'completed' } ],
+    expected: [ { type: 'mcp_list_tools', id: 'mcpl_stream', server_label: 'project', tools: [Array] }, { type: 'mcp_call', id: 'mcp_stream', server_label: 'project', name: 'read', arguments: '{"path":"docs/MODEL.md"}', approval_request_id: null, status: 'completed', output: 'Project documentation fixture', error: null }, { id: 'msg_2ce988cf7d8e6b048a4835cb340aa96d', type: 'message', content: [Array], role: 'assistant', status: 'completed' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

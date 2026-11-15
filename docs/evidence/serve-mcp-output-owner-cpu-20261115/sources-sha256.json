@@ -1,0 +1,15 @@
+{
+  "include/q4t/server/mcp_transport.h": "5506d9e64170007da13eaa829f63d4aa99aa089ccd45e6bc9e93cab8c3418647",
+  "src/server/mcp_transport.cpp": "36e7e426b7fd955f976020930bfcfe2a23805f3a0b8151d4eafcbfc71e283f90",
+  "src/server/responses_mcp_state.cpp": "96646ffb3d28a4470bc4aac3984da68f7342e1131166cb2176afac3c9327d1ba",
+  "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
+  "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
+  "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd",
+  "tests/server_responses_mcp_output_test.cpp": "4c768a1befc73d369e91198a0a0df638f88490bc3eb58ab054f18badfee3ca6e",
+  "tests/server_responses_mcp_state_test.cpp": "af59e648b6f0fe16baefba3bd6c8c6aa814e1b942624ba358b1989d9973dfd0a",
+  "tools/serve_responses/test_mcp_output_sdk.mjs": "bdfcff7bf0a11ba3c8abf53e816b5cbde7d765ba3130140600073e3993b7bf63",
+  "cmake/ChatProtocolIdentity.cmake": "ffbfef5a6910756e174ce3912d9f37da4060bc3f302866f6c431907d04ea3e88",
+  "cmake/HostTestSources.cmake": "2ee23087bfc95d0ea08dd9d2f045581bae2f25156cc370102fc5049ca651d03b",
+  "CMakeLists.txt": "a07f27069c7ce12f821f9643dcb860c75eab6657748189b6c2a238b64c90dccc",
+  "tools/serve_audit/inventory.json": "a84fa7e39e23816b0214df0f8de5d21be53789c230e0fefce7ceaa32401e155e"
+}

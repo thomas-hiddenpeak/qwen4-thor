@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5",
-    "cmake/ChatProtocolIdentity.cmake": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef",
+    "CMakeLists.txt": "a07f27069c7ce12f821f9643dcb860c75eab6657748189b6c2a238b64c90dccc",
+    "cmake/ChatProtocolIdentity.cmake": "ffbfef5a6910756e174ce3912d9f37da4060bc3f302866f6c431907d04ea3e88",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1938,7 +1938,7 @@
     "include/q4t/server/responses_input.h": "00bacde441fa080f215fd8bfc35460942bdf06de326587ab174db174b91d3c7c",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
-    "include/q4t/server/responses_output.h": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480",
+    "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
     "include/q4t/server/responses_program.h": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
@@ -2196,7 +2196,7 @@
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1",
+    "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "3d111362a52c66846f6b6f245449a0490ef3d13cd3606b27f7f7c01eab6118cf",
     "src/server/responses_program.cpp": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
@@ -2447,15 +2447,16 @@
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
-    "include/q4t/server/mcp_transport.h": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e",
-    "src/server/mcp_transport.cpp": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd",
+    "include/q4t/server/mcp_transport.h": "5506d9e64170007da13eaa829f63d4aa99aa089ccd45e6bc9e93cab8c3418647",
+    "src/server/mcp_transport.cpp": "36e7e426b7fd955f976020930bfcfe2a23805f3a0b8151d4eafcbfc71e283f90",
     "src/server/remote_http_internal.h": "2ff012c16ed2a2760875e27c4b54073e8b62662ad222d9d45b4e6d80bef2bba0",
     "src/server/mcp_transport_internal.h": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93",
     "src/server/mcp_http.cpp": "ba0f31d5d9eb3986cf8dabd22202627aac14b4ebd6c93db6af1503c8edbf8617",
     "include/q4t/server/responses_mcp.h": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf",
     "src/server/responses_mcp.cpp": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9",
     "include/q4t/server/responses_mcp_state.h": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404",
-    "src/server/responses_mcp_state.cpp": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a"
+    "src/server/responses_mcp_state.cpp": "96646ffb3d28a4470bc4aac3984da68f7342e1131166cb2176afac3c9327d1ba",
+    "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -5092,6 +5093,45 @@
       }
     },
     "evidence": "docs/evidence/serve-mcp-authority-cpu-20261115/README.md",
+    "public_integration_required": true
+  },
+  "mcp_output_owner_review_20261115": {
+    "scope": "Native MCP list/approval/call output and incremental arguments match SDK shape; interruption has no fabricated arguments.done/success. Private durable dispatch identity prevents a losing request from closing another active call. No public MCP execution route enabled yet.",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5",
+        "after": "a07f27069c7ce12f821f9643dcb860c75eab6657748189b6c2a238b64c90dccc"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef",
+        "after": "ffbfef5a6910756e174ce3912d9f37da4060bc3f302866f6c431907d04ea3e88"
+      },
+      "include/q4t/server/mcp_transport.h": {
+        "before": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e",
+        "after": "5506d9e64170007da13eaa829f63d4aa99aa089ccd45e6bc9e93cab8c3418647"
+      },
+      "src/server/mcp_transport.cpp": {
+        "before": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd",
+        "after": "36e7e426b7fd955f976020930bfcfe2a23805f3a0b8151d4eafcbfc71e283f90"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a",
+        "after": "96646ffb3d28a4470bc4aac3984da68f7342e1131166cb2176afac3c9327d1ba"
+      },
+      "include/q4t/server/responses_output.h": {
+        "before": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480",
+        "after": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab"
+      },
+      "src/server/responses_output.cpp": {
+        "before": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1",
+        "after": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc"
+      },
+      "src/server/responses_mcp_output.cpp": {
+        "before": null,
+        "after": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd"
+      }
+    },
+    "evidence": "docs/evidence/serve-mcp-output-owner-cpu-20261115/README.md",
     "public_integration_required": true
   }
 }

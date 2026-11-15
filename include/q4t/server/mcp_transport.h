@@ -17,6 +17,9 @@ struct McpTransportReceipt {
   io::Json result;
   io::Json error;
   std::string protocol;
+  // Private before_call permission identity, never sent to the remote server.
+  // Completion must belong to the request that won the durable dispatch CAS.
+  std::string dispatch_id;
   bool legacy_sse = false;
   // Conservatively true after the parent permits the call, even if the child
   // dies before sending. False proves that this invocation did not call it.

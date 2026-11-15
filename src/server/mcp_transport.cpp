@@ -121,6 +121,7 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
         return permitted;
       }
       if (!permitted.ok()) return permitted;
+      receipt->dispatch_id = permitted.value.GetString("dispatch_id");
       if (control.cancelled()) return Failed(GrammarFailure::kCancelled);
       if (Clock::now() >= control.compile_deadline)
         return Failed(GrammarFailure::kTimeout);
