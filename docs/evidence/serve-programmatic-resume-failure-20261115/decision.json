@@ -1,0 +1,27 @@
+{
+  "status": "FAILED_REQUIRES_REPAIR",
+  "error": {
+    "code": "step_admission_unavailable",
+    "message": "Internal step input reservation unavailable"
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 1,
+    "controls": 347
+  },
+  "seconds": 133.91587389586493,
+  "nvml_queries": 126,
+  "env_abort": false,
+  "program_resumed": true,
+  "final_model_step_admitted": false,
+  "default_unchanged": true,
+  "owned_processes_gone": true,
+  "ports_free": true,
+  "lock_released": true,
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-programmatic-tools-20261113/candidate-01/bundle",
+    "manifest_sha256": "213fc8d6f1da9acdf55af5f4c55991e6d6c8a3538ff7be77fe6374ed7c78a08a"
+  },
+  "source_commit": "f1bd5017530431bad006da919d91574f6dc47951"
+}

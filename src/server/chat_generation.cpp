@@ -1250,6 +1250,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   };
   ResponsesGenerationPlan continuation_generation;
   bool file_search_continuation = false;
+  bool initial_prompt_pending = true;
   // Native tool continuations plus at most one independent async answer.
   // Neither path retries an answer or a client operation.
   const int response_steps =
@@ -1466,8 +1467,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                     "client_prompt_limit_exceeded", param);
           return;
         }
-        const auto extended = rate_lease.ExtendPrompt(clients_, http->Client(),
-                                                      prompt_u32.size());
+        const auto extended =
+            initial_prompt_pending
+                ? rate_lease.ReplacePendingPrompt(clients_, http->Client(),
+                                                  prompt_u32.size())
+                : rate_lease.ExtendPrompt(clients_, http->Client(),
+                                          prompt_u32.size());
         if (extended != ClientRateResult::kAllowed) {
           const bool tpm = extended == ClientRateResult::kTpm;
           if (moderation_step) {
@@ -2010,6 +2015,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     } else if (responses) {
       rate_lease.StartPrompt(prepared_input + responses_usage.input_tokens +
                              moderation_usage.input_tokens + prompt_u32.size());
+      initial_prompt_pending = false;
     } else {
       rate_lease.Start();
     }

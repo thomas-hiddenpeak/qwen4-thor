@@ -465,8 +465,10 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   if (precharged_) {
     if (precharge_claimed_) return ClientRateResult::kInvalid;
     precharge_claimed_ = true;
-    return ClaimPrecharge(admission, identity, prompt, output, auxiliary_output,
-                          preparation_output);
+    const auto result = ClaimPrecharge(admission, identity, prompt, output,
+                                       auxiliary_output, preparation_output);
+    precharge_valid_ = result == ClientRateResult::kAllowed;
+    return result;
   }
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
@@ -654,6 +656,57 @@ ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
   reserved_ += extra;
   prompt_ += additional;
   if (precharged_) prompt_capacity_ = std::max(prompt_capacity_, prompt_);
+  return ClientRateResult::kAllowed;
+}
+
+ClientRateResult ClientRateLease::ReplacePendingPrompt(
+    ClientAdmission& admission, const ClientIdentity& identity,
+    uint64_t pending, ClientClock::time_point now) {
+  if (admission_ != &admission || identity.owner_ != &admission ||
+      identity.index_ != client_ || !identity.Allowed() ||
+      (precharged_ && !precharge_valid_) ||
+      pending > UINT64_MAX - admitted_prompt_)
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped())
+    return admission.Enabled() ? ClientRateResult::kInvalid
+                               : ClientRateResult::kAllowed;
+  const auto policy = admission.Snapshot();
+  if (!policy || client_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[client_].id)
+    return ClientRateResult::kInvalid;
+  const auto& limits = policy->clients[client_];
+  const auto total = admitted_prompt_ + pending;
+  if (total > limits.max_prompt_tokens) return ClientRateResult::kInvalid;
+  if (!counters_) {
+    if (policy->version >= 3 || limits.requests_per_minute ||
+        limits.tokens_per_minute)
+      return ClientRateResult::kInvalid;
+    prompt_ = total;
+    return ClientRateResult::kAllowed;
+  }
+  auto* expected = domain_ == ClientRateDomain::kBatch
+                       ? &admission.batch_counters_[client_]
+                       : &admission.counters_[client_];
+  if (counters_ != expected) return ClientRateResult::kInvalid;
+  const std::lock_guard lock(counters_->mutex);
+  if (admission.rates_frozen_) return ClientRateResult::kFrozen;
+  counters_->Advance(now);
+  auto& rate = counters_->rate;
+  const auto capacity = precharged_ ? prompt_capacity_ : prompt_;
+  const auto extra = total > capacity ? total - capacity : 0;
+  const auto refund = !precharged_ && total < capacity ? capacity - total : 0;
+  if (extra && limits.tokens_per_minute &&
+      Add(Add(rate.tokens, rate.reserved), extra) > limits.tokens_per_minute) {
+    rate.tpm_rejected = Add(rate.tpm_rejected, 1);
+    return ClientRateResult::kTpm;
+  }
+  if (extra > UINT64_MAX - rate.reserved || extra > UINT64_MAX - reserved_ ||
+      refund > rate.reserved || refund > reserved_)
+    return ClientRateResult::kInvalid;
+  rate.reserved = rate.reserved + extra - refund;
+  reserved_ = reserved_ + extra - refund;
+  prompt_ = total;
+  if (precharged_) prompt_capacity_ = std::max(prompt_capacity_, total);
   return ClientRateResult::kAllowed;
 }
 

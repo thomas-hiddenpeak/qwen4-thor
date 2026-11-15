@@ -267,6 +267,12 @@ class ClientRateLease {
   ClientRateResult ExtendPrompt(
       ClientAdmission& admission, const ClientIdentity& identity,
       uint64_t additional, ClientClock::time_point now = ClientClock::now());
+  // Re-plan the reserved, not yet admitted input (for example after a program
+  // resumes before the first model step). Preserve prior observed work, one
+  // RPM admission and the shared output envelope. Batch credit stays reserved.
+  ClientRateResult ReplacePendingPrompt(
+      ClientAdmission& admission, const ClientIdentity& identity,
+      uint64_t pending, ClientClock::time_point now = ClientClock::now());
   void Start() noexcept { StartPrompt(prompt_); }
   // Cumulative distinct prompt tokens admitted from a pre-reserved batch.
   // Repeated candidates do not charge the same input again.
@@ -295,6 +301,7 @@ class ClientRateLease {
   bool attempted_ = false;
   bool internal_input_ = false;
   bool precharged_ = false, precharge_claimed_ = false;
+  bool precharge_valid_ = false;
   ClientIdentity precharged_identity_;
   uint64_t prompt_capacity_ = 0, output_capacity_ = 0;
   uint64_t auxiliary_capacity_ = 0, preparation_capacity_ = 0;
