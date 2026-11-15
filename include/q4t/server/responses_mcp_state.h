@@ -8,8 +8,12 @@ namespace q4t::server {
 // exposed. Credentials never enter this store, including encrypted payloads.
 class ResponsesMcpState {
  public:
-  ResponsesMcpState(ObjectStore& objects, const ChatPlanConfig& config)
-      : objects_(objects), cipher_(objects), model_(config.model) {}
+  ResponsesMcpState(ObjectStore& objects, const ChatPlanConfig& config,
+                    std::string response_id = "")
+      : objects_(objects),
+        cipher_(objects),
+        model_(config.model),
+        response_id_(std::move(response_id)) {}
   ObjectReply Catalog(const ResponsesMcpDefinition& definition,
                       const io::Json& native_tools, const StateAccess& access,
                       int64_t lifetime_seconds = 30 * 24 * 3600,
@@ -42,6 +46,16 @@ class ResponsesMcpState {
   // there is no method to reset it to ready or to replay the remote call.
   ObjectReply Inspect(const std::string& authority_id,
                       const StateAccess& access);
+  // Only a proven dead process may be recovered automatically. ended is an
+  // internal cleanup proof, supplied only after that exact Response execution
+  // has drained; both its response ID and original process identity must match
+  // the sealed invocation. No caller input grants this authority. Never retry
+  // external work; dispatched work becomes unknown, ready work not executed.
+  ObjectReply Recover(const std::string& authority_id,
+                      const StateAccess& access,
+                      const ResponseStatePlan* ended = nullptr);
+  ObjectReply Reconcile(io::Json* items, const ResponseStatePlan& ended,
+                        const StateAccess& access);
 
  private:
   ObjectReply Read(const std::string& id, std::string_view kind,
@@ -53,5 +67,6 @@ class ResponsesMcpState {
   ObjectStore& objects_;
   StateCipher cipher_;
   std::string model_;
+  std::string response_id_;
 };
 }  // namespace q4t::server

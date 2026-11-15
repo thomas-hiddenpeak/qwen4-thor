@@ -1145,12 +1145,16 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": false,
+        "full_engine_build_passed": true,
         "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Preceding discovery engine compiled; consolidated build required after current integration."
+        "engine_build_note": "Prompt and current owner-recovery integration compiled; not executed or delivered.",
+        "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
+        "recovery_owner_targeted_cpp_passed": 21,
+        "engine_candidate_sha256": "45700b0e2797fb8059eae5859dfa89a6f6fdb649320d69677269d4d8c7520185",
+        "next": "Bounded cleanup continuation through transient storage failure, programmatic/media/session/mapping combinations, then public SDK/business/recovery qualification and delivery."
       }
     },
     {
@@ -1928,12 +1932,16 @@
         "execution_owner_targeted_cpp_passed": 22,
         "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
         "batch_source_targeted_cpp_passed": 12,
-        "full_engine_build_passed": false,
+        "full_engine_build_passed": true,
         "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
         "discovery_policy_targeted_cpp_passed": 23,
         "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
         "prompt_targeted_cpp_passed": 11,
-        "engine_build_note": "Preceding discovery engine compiled; consolidated build required after current integration."
+        "engine_build_note": "Prompt and current owner-recovery integration compiled; not executed or delivered.",
+        "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
+        "recovery_owner_targeted_cpp_passed": 21,
+        "engine_candidate_sha256": "45700b0e2797fb8059eae5859dfa89a6f6fdb649320d69677269d4d8c7520185",
+        "next": "Bounded cleanup continuation through transient storage failure, programmatic/media/session/mapping combinations, then public SDK/business/recovery qualification and delivery."
       }
     },
     {

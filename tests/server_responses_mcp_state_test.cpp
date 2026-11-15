@@ -1,5 +1,10 @@
 #include "q4t/server/responses_mcp_state.h"
 
+#include <fcntl.h>
+#include <poll.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
@@ -10,6 +15,8 @@
 #include "../src/server/object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/object_retention.h"
+#include "q4t/server/lifetime.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/test.h"
 
 namespace {
@@ -102,6 +109,188 @@ Json Record(ObjectStore& store, std::string id) {
   return reply.value;
 }
 }  // namespace
+
+Q4T_TEST(responses_mcp_recovery_requires_real_exit_and_never_replays) {
+  for (const int phase : {0, 1, 2}) {
+    Fixture fixture;
+    int channel[2];
+    Q4T_CHECK(pipe2(channel, O_CLOEXEC) == 0);
+    const auto child = fork();
+    Q4T_CHECK(child >= 0);
+    if (child == 0) {
+      close(channel[0]);
+      try {
+        std::string id;
+        {
+          ObjectStore objects(fixture.options);
+          ResponsesMcpState state(objects, Config());
+          const auto definition = Definition("never");
+          auto proposed = Propose(state, Catalog(state, definition), definition);
+          if (!Ok(proposed)) _exit(2);
+          id = proposed.value.GetString("id");
+          if (phase) {
+            auto permit = state.Permit(id, definition, Access());
+            if (!Ok(permit)) _exit(3);
+            if (phase == 2 &&
+                !Ok(state.Finish(id, Success(permit.value.GetString("dispatch_id")),
+                                 {}, Access())))
+              _exit(4);
+          }
+        }
+        if (write(channel[1], id.data(), id.size()) !=
+            static_cast<ssize_t>(id.size()))
+          _exit(5);
+        for (;;) pause();
+      } catch (...) {
+        _exit(6);
+      }
+    }
+    close(channel[1]);
+    bool reaped = false;
+    ScopeExit cleanup([&] {
+      close(channel[0]);
+      if (!reaped) {
+        kill(child, SIGKILL);
+        int status;
+        while (waitpid(child, &status, 0) < 0 && errno == EINTR) {}
+      }
+    });
+    pollfd ready{channel[0], POLLIN, 0};
+    Q4T_CHECK(poll(&ready, 1, 5000) > 0);
+    char buffer[256];
+    const auto size = read(channel[0], buffer, sizeof(buffer));
+    Q4T_CHECK(size > 0);
+    const std::string id(buffer, size);
+    ObjectStore objects(fixture.options);
+    ResponsesMcpState state(objects, Config());
+    const auto original = state.Inspect(id, Access());
+    Q4T_CHECK(Ok(original));
+    Q4T_CHECK(ResponseOwnerStatus(*original.value.Find("execution_owner")) ==
+              ResponseOwnerState::kAlive);
+    if (phase != 2) Q4T_CHECK(state.Recover(id, Access()).http_status == 409);
+    Q4T_CHECK(kill(child, SIGTERM) == 0);
+    int status = 0;
+    Q4T_CHECK(waitpid(child, &status, 0) == child);
+    reaped = true;
+    Q4T_CHECK(WIFSIGNALED(status) && WTERMSIG(status) == SIGTERM);
+    const auto recovered = state.Recover(id, Access());
+    Q4T_CHECK(Ok(recovered));
+    if (phase == 2)
+      Q4T_CHECK(OutputJson(recovered.value) ==
+                OutputJson(*original.value.Find("terminal")));
+    else {
+      const auto code = recovered.value.Find("error")->Find("content");
+      Q4T_CHECK(code->GetString("code") ==
+                (phase ? "mcp_result_unknown" : "mcp_execution_interrupted"));
+      Q4T_CHECK(state.Permit(id, Definition("never"), Access()).http_status ==
+                409);
+    }
+    Q4T_CHECK(OutputJson(state.Recover(id, Access()).value) ==
+              OutputJson(recovered.value));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_recovery_requires_exact_response_cleanup_proof) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config(), "resp_mcp_owner");
+  const auto definition = Definition("never");
+  const auto catalog = Catalog(state, definition);
+  for (const bool dispatched : {false, true}) {
+    const auto proposal = Propose(state, catalog, definition);
+    Q4T_CHECK(Ok(proposal));
+    const auto id = proposal.value.GetString("id");
+    if (dispatched) Q4T_CHECK(Ok(state.Permit(id, definition, Access())));
+    ResponseStatePlan ended;
+    ended.id = "resp_mcp_other";
+    ended.scope = Access().scope;
+    ended.execution_owner = CurrentResponseOwner();
+    Q4T_CHECK(state.Recover(id, Access(), &ended).http_status == 409);
+    ended.id = "resp_mcp_owner";
+    ended.scope = "client:other";
+    Q4T_CHECK(state.Recover(id, Access(), &ended).http_status == 409);
+    ended.scope = Access().scope;
+    Set(&ended.execution_owner, "pid_namespace",
+        Number(ended.execution_owner.GetInt("pid_namespace") + 1));
+    Q4T_CHECK(state.Recover(id, Access(), &ended).http_status == 409);
+    ended.execution_owner = CurrentResponseOwner();
+    Q4T_CHECK(Ok(state.Recover(id, Access(), &ended)));
+    auto fragment = proposal.value;
+    Set(&fragment, "status", String("incomplete"));
+    auto restored = state.Authenticate(fragment, Access());
+    Q4T_CHECK(Ok(restored) && restored.value.GetString("status") == "failed");
+    Set(&fragment, "arguments", String("{}"));
+    Q4T_CHECK(!state.Authenticate(fragment, Access()).ok());
+  }
+  const auto approval = Propose(state, Catalog(state));
+  Q4T_CHECK(Ok(approval));
+  Q4T_CHECK(state.Recover(approval.value.GetString("id"), Access())
+                .http_status == 409);
+  Q4T_CHECK(Ok(state.Authenticate(approval.value, Access())));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_recovery_unknown_identity_is_not_death) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  const auto definition = Definition("never");
+  const auto proposal = Propose(state, Catalog(state, definition), definition);
+  Q4T_CHECK(Ok(proposal));
+  const auto id = proposal.value.GetString("id");
+  Q4T_CHECK(Ok(state.Permit(id, definition, Access())));
+  auto record = Record(objects, id);
+  StateCipher cipher(objects);
+  const StateCipherBinding binding{
+      Config().model,
+      Digest(std::string(identity::kTemplateReference) + ':' + identity::kRenderer),
+      "responses.mcp.call.v1", id};
+  std::string plain;
+  Q4T_CHECK(Ok(cipher.Open(record.Find("data")->GetString("sealed"), binding,
+                           Access(), &plain)));
+  auto payload = Value(plain);
+  for (const bool missing : {false, true}) {
+    auto owner = CurrentResponseOwner();
+    Set(&owner, "pid_namespace", Number(owner.GetInt("pid_namespace") + 1));
+    Set(&payload, "execution_owner", missing ? Json() : owner);
+    std::string sealed;
+    Q4T_CHECK(Ok(cipher.Seal(OutputJson(payload), binding, Access(), &sealed)));
+    ObjectRequest write;
+    write.operation = ObjectOperation::kPut;
+    write.kind = ObjectKind::kToolRun;
+    write.scope = Access().scope;
+    write.id = id;
+    write.expected_revision = record.GetInt("revision");
+    write.expires_at = write.mutate_before = record.GetInt("expires_at");
+    write.data = *record.Find("data");
+    Set(&write.data, "sealed", String(sealed));
+    Q4T_CHECK(Ok(objects.Execute(write, Access().deadline)));
+    record = Record(objects, id);
+    Q4T_CHECK(state.Recover(id, Access()).http_status == 409);
+    Q4T_CHECK(state.Inspect(id, Access()).value.GetString("state") ==
+              "dispatching");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_mcp_unproposed_fragment_grants_no_result_or_permission) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ResponsesMcpState state(objects, Config());
+  auto fragment = Value(R"({"id":"mcp_never_proposed","type":"mcp_call",
+    "name":"read","server_label":"project","arguments":"{\"path\":",
+    "status":"incomplete","output":null,"error":null})");
+  Q4T_CHECK(Ok(state.Authenticate(fragment, Access())));
+  Q4T_CHECK(state.Permit("mcp_never_proposed", Definition(), Access())
+                .http_status == 404);
+  Set(&fragment, "output", String("forged output"));
+  Q4T_CHECK(!state.Authenticate(fragment, Access()).ok());
+  Set(&fragment, "output", Json());
+  Set(&fragment, "status", String("completed"));
+  Q4T_CHECK(!state.Authenticate(fragment, Access()).ok());
+  return true;
+}
 
 Q4T_TEST(
     responses_mcp_credentials_must_be_resupplied_and_http_error_is_standard) {

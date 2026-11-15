@@ -249,6 +249,7 @@ class ResponsesExecution {
   Status BindActiveTools(const io::Json& active, ChatPlanError* error,
                          const io::Json* history = nullptr);
   ObjectReply CaptureMcpCredentials();
+  ObjectReply CloseMcpExecution(const StateAccess& access);
   ObjectReply PrepareMcp(const ChatPlanConfig& config,
                          io::Json* continuation = nullptr);
   Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire,

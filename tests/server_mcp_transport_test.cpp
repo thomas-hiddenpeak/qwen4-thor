@@ -959,6 +959,76 @@ Q4T_TEST(responses_mcp_prompt_secrets_rejected_before_persistence) {
   return true;
 }
 
+Q4T_TEST(responses_mcp_cleanup_and_reconciliation_allow_honest_continuation) {
+  for (const int phase : {0, 1, 2, 3}) {
+    Server server;
+    ExecutionFixture fixture;
+    ObjectStore objects(fixture.options);
+    const auto config = ExecutionConfig(server);
+    auto request = ExecutionRequest(server);
+    Set(&request, "store", Boolean(phase != 0));
+    ResponsesExecution run(objects);
+    Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)));
+    std::string wire;
+    Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ModelCall(&run, false, &wire));
+    bool waiting = true, interrupted = false;
+    try {
+      Q4T_CHECK(ExecutionOk(run.RunMcp(1, &waiting, [&](const auto&) {
+        if (phase != 3) {
+          if (phase == 2 && !ExecutionOk(run.Checkpoint()))
+            throw std::runtime_error("fixture checkpoint failure");
+          throw std::runtime_error("fixture subscriber ended");
+        }
+        return true;
+      })));
+    } catch (const std::runtime_error& error) {
+      Q4T_CHECK(std::string(error.what()) == "fixture subscriber ended");
+      interrupted = true;
+    }
+    Q4T_CHECK(interrupted == (phase != 3));
+    Json final;
+    if (phase < 2) {
+      Q4T_CHECK(ExecutionOk(run.CloseUnfinished()));
+      final = run.Output().Snapshot();
+    } else {
+      if (phase == 3) Q4T_CHECK(ExecutionOk(run.Checkpoint()));
+      auto reconciled = ResponsesState(objects).Interrupt(
+          run.Id(), ExecutionAccess(), "fixture_interrupted", "owner ended");
+      Q4T_CHECK(ExecutionOk(reconciled));
+      final = reconciled.value;
+    }
+    Q4T_CHECK(server.calls == (phase == 3 ? 1 : 0));
+    Json call;
+    for (const auto& item : final.GetArray("output")->array) {
+      if (item.GetString("type") == "mcp_call") call = item;
+      if (item.GetString("type") == "mcp_list_tools")
+        Q4T_CHECK(!item.Has("status"));
+    }
+    Q4T_CHECK(!call.IsNull());
+    auto canonical = ResponsesMcpState(objects, config)
+                         .Authenticate(call, ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(canonical));
+    Q4T_CHECK(canonical.value.GetString("status") ==
+              (phase == 3 ? "completed" : "failed"));
+    if (phase == 2)
+      Q4T_CHECK(OutputJson(canonical.value) == OutputJson(call));
+    auto next = request;
+    if (phase == 0)
+      Set(&next, "input", *final.Find("output"));
+    else {
+      Set(&next, "previous_response_id", String(run.Id()));
+      Set(&next, "input", String("Explain what actually happened"));
+    }
+    ResponsesExecution continued(objects);
+    Q4T_CHECK(ExecutionOk(
+        continued.Prepare(next, config, ExecutionAccess(), 44)));
+    Q4T_CHECK(ExecutionOk(continued.Begin(&wire)) &&
+              FinishExecution(&continued));
+    Q4T_CHECK(server.calls == (phase == 3 ? 1 : 0));
+  }
+  return true;
+}
+
 Q4T_TEST(
     responses_mcp_execution_streams_actual_call_and_keeps_credentials_private) {
   Server server;

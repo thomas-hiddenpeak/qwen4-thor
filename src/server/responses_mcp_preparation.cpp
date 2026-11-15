@@ -5,6 +5,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
 namespace {
@@ -84,7 +85,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
   ResponsesToolCatalog checked_tools;
   checked = PlanResponsesToolCatalog(definitions, &checked_tools, &error);
   if (!checked) return PlanError(checked, error);
-  mcp_state_ = std::make_unique<ResponsesMcpState>(objects_, config);
+  if (plan_.execution_owner.IsNull())
+    plan_.execution_owner = CurrentResponseOwner();
+  mcp_state_ = std::make_unique<ResponsesMcpState>(objects_, config, plan_.id);
   mcp_fetch_ =
       config.file_inputs ? config.file_inputs->fetch : FileFetchOptions{};
   if (plan_.mcp_catalogs.IsNull()) plan_.mcp_catalogs = Array();

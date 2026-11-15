@@ -14,6 +14,7 @@
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp.h"
+#include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/tool_result_contracts.h"
@@ -532,8 +533,21 @@ ObjectReply ResponsesState::Interrupt(const std::string& id,
     result.value = std::move(snapshot);
     return result;
   }
-  for (auto& item : Field(snapshot, "output").array)
+  ChatPlanConfig mcp_config;
+  mcp_config.model = snapshot.GetString("model");
+  auto recovered = ResponsesMcpState(objects_, mcp_config)
+                       .Reconcile(&Field(snapshot, "output"), plan, access);
+  if (!recovered.ok() || recovered.commit_unknown) return recovered;
+  for (auto& item : Field(snapshot, "output").array) {
+    // MCP catalogs and approvals have no status. Proven invocation results
+    // remain terminal, including a result committed just before owner exit.
+    const auto type = item.GetString("type");
+    if (type == "mcp_list_tools" || type == "mcp_approval_request") continue;
+    if (type == "mcp_call" && (item.GetString("status") == "completed" ||
+                               item.GetString("status") == "failed"))
+      continue;
     Set(&item, "status", String("incomplete"));
+  }
   Set(&snapshot, "status", String("failed"));
   Set(&snapshot, "error",
       Object({{"code", String(std::string(code))},

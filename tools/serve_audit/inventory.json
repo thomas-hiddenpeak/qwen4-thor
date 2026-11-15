@@ -1934,14 +1934,14 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "a3ee42963f8a73ef4631800e52645cdba88a6cadf162acf1411e56652292ce7c",
+    "include/q4t/server/responses_execution.h": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
     "include/q4t/server/responses_mcp.h": "51cfae6d1de966a06dea0b0fa8f925467e94c1c8cb18f5bb6cbaa6f192fdfcf4",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
-    "include/q4t/server/responses_mcp_state.h": "7315eb8e9c7a461b12fa655720ae75f610e6564e31190896a9b9344db3d3156d",
+    "include/q4t/server/responses_mcp_state.h": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
     "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
     "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
@@ -2190,7 +2190,7 @@
     "src/server/responses_api.cpp": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "d2c02e7a0efa90ec0ad165d6254ffa6d26b8c228380ff17f43e4f7f9b7d40cff",
+    "src/server/responses_execution.cpp": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
     "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
     "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
@@ -2206,10 +2206,10 @@
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
-    "src/server/responses_mcp_execution.cpp": "4b55db52f3b6f26da70ae7db96e8409dcd2fee1287bffa3d5eaefd8dcaa38489",
+    "src/server/responses_mcp_execution.cpp": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e",
     "src/server/responses_mcp_output.cpp": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd",
-    "src/server/responses_mcp_preparation.cpp": "7e4e232711f3e424b7e4f34ed7957df3e351ff804ebc16383d060d61a812419f",
-    "src/server/responses_mcp_state.cpp": "0aec62430f669e4410a35453eba7ce4fed4bcb92fc7033b00d862b10a98e94ff",
+    "src/server/responses_mcp_preparation.cpp": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
+    "src/server/responses_mcp_state.cpp": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f",
@@ -2218,7 +2218,7 @@
     "src/server/responses_program_output.cpp": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587",
     "src/server/responses_program_plan.cpp": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "49feadc0dc2dd5a10065ad2fe3312139fb23402d341b01c487ee9ac0193042cc",
+    "src/server/responses_state.cpp": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
@@ -5182,5 +5182,42 @@
     "gpu_starts": 0,
     "public_mcp_delivery": false,
     "evidence": "docs/evidence/serve-mcp-prompt-cpu-20261116"
+  },
+  "mcp_recovery_review_20261116": {
+    "scope": "Sealed process and Response ownership; automatic closure only after verified death, explicit cleanup only for exact drained Response. Dispatched unknown never replayed, unstarted failed, committed results preserved. No-result partial history grants no result/dispatch. All resource/owner combinations and public qualification remain required.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "a3ee42963f8a73ef4631800e52645cdba88a6cadf162acf1411e56652292ce7c",
+        "after": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": "7315eb8e9c7a461b12fa655720ae75f610e6564e31190896a9b9344db3d3156d",
+        "after": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "d2c02e7a0efa90ec0ad165d6254ffa6d26b8c228380ff17f43e4f7f9b7d40cff",
+        "after": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "4b55db52f3b6f26da70ae7db96e8409dcd2fee1287bffa3d5eaefd8dcaa38489",
+        "after": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e"
+      },
+      "src/server/responses_mcp_preparation.cpp": {
+        "before": "7e4e232711f3e424b7e4f34ed7957df3e351ff804ebc16383d060d61a812419f",
+        "after": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "0aec62430f669e4410a35453eba7ce4fed4bcb92fc7033b00d862b10a98e94ff",
+        "after": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3"
+      },
+      "src/server/responses_state.cpp": {
+        "before": "49feadc0dc2dd5a10065ad2fe3312139fb23402d341b01c487ee9ac0193042cc",
+        "after": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821"
+      }
+    },
+    "targeted_cpu_passed": 21,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-recovery-cpu-20261116"
   }
 }

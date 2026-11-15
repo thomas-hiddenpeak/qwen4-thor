@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [MCP拥有者恢复21项CPU首过](evidence/serve-mcp-recovery-cpu-20261116/README.md)：
+  真实进程退出、精确请求清理、未知不重放、已知结果保留和异常续接
+  已验证。主机/完整引擎零警告、0GPU、rev126保持；继续存储短暂
+  失能后的清理续办及程序/媒体/会话/映射、业务与发行，master active。
+
 - [MCP与Prompt组合11项CPU首过](evidence/serve-mcp-prompt-cpu-20261116/README.md)：
   登记不联网/不授予调用，执行时校验认证目录；当次凭据、冻结版本、
   Batch来源及延迟发现已覆盖。主机零警告、0GPU、rev126保持；继续

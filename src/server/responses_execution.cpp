@@ -543,15 +543,17 @@ ObjectReply ResponsesExecution::Cancel() {
   if (plan_.finished) return {};
   if (!begun_ || commit_unknown_)
     return Error(409, "response_state_invalid", "Response cannot be cancelled");
+  StateAccess cleanup{
+      access_.scope,
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
+      {}};
+  auto closed = BindMutationResult(CloseMcpExecution(cleanup));
+  if (!closed.ok() || closed.commit_unknown) return closed;
   DiscardUnreviewedOutput();
   auto candidate = output_;
   auto status = ApplyActualUsage(&candidate);
   if (status) status = candidate.Cancel();
   if (!status) return OutputError(status);
-  StateAccess cleanup{
-      access_.scope,
-      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
-      {}};
   auto result = BindMutationResult(
       state_.Finish(candidate.Snapshot(), events_, cleanup, &plan_));
   if (!result.commit_unknown && (result.code == "object_too_large" ||
@@ -753,15 +755,25 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {
-  DiscardUnreviewedOutput();
   ScopeExit release_cleanup([&] {
+    DiscardUnreviewedOutput();
     if (cleanup_ticket_) {
       cleanup_->Close(cleanup_ticket_,
                       plan_.finished || !durable_begin_attempted_);
       cleanup_ticket_ = 0;
     }
   });
-  if (!begun_ || plan_.finished || commit_unknown_) return {};
+  if (!begun_ || plan_.finished) return {};
+  StateAccess cleanup{
+      access_.scope,
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
+      {}};
+  // A lost parent/child commit receipt is no permission to replay. Cleanup
+  // first reads actual child state and closes only this drained invocation.
+  auto closed = BindMutationResult(CloseMcpExecution(cleanup));
+  if (!closed.ok() || closed.commit_unknown) return closed;
+  DiscardUnreviewedOutput();
+  if (commit_unknown_) return {};
   if (!output_.Terminal()) {
     auto usage_status = ApplyActualUsage(&output_);
     if (!usage_status) return OutputError(usage_status);
@@ -775,10 +787,6 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
     if (!status) return OutputError(status);
     if (!Capture(wire, &events_, &event_bytes_)) events_ = Array();
   }
-  StateAccess cleanup{
-      access_.scope,
-      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
-      {}};
   auto saved = BindMutationResult(
       state_.Finish(output_.Snapshot(), events_, cleanup, &plan_));
   if (!saved.commit_unknown && (saved.code == "object_too_large" ||

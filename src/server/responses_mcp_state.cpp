@@ -12,6 +12,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/server/tool_result_schema.h"
 
 namespace q4t::server {
@@ -75,6 +76,14 @@ bool PublicMatches(const Json& incoming, const Json& stored) {
     }
   }
   return true;
+}
+bool Unfinished(const Json& item) {
+  const auto status = item.GetString("status");
+  return item.GetString("type") == "mcp_call" &&
+         (status == "in_progress" || status == "calling" ||
+          status == "incomplete") &&
+         (!item.Has("output") || item.Find("output")->IsNull()) &&
+         (!item.Has("error") || item.Find("error")->IsNull());
 }
 ObjectReply Definition(const Json& original,
                        const ResponsesMcpDefinition& current,
@@ -330,7 +339,21 @@ ObjectReply ResponsesMcpState::Authenticate(const Json& item,
   Json record, payload;
   auto reply =
       Read(id, listing ? "catalog" : "call", access, &record, &payload);
+  // An interrupted argument fragment may never have reached Propose. It is
+  // only assistant history with no result and no authority to run a tool.
+  if (reply.http_status == 404 && Unfinished(item) &&
+      item.GetString("status") == "incomplete") {
+    reply = {};
+    reply.value = item;
+    return reply;
+  }
   if (!reply.ok()) return reply;
+  if (type == "mcp_call" && !payload.Has("terminal")) {
+    auto recovered = Recover(id, access);
+    if (!recovered.ok() || recovered.commit_unknown) return recovered;
+    reply = Read(id, "call", access, &record, &payload);
+    if (!reply.ok()) return reply;
+  }
   if (type == "mcp_approval_response") {
     if (payload.Find("call")->GetString("approval_request_id") != id)
       return Invalid("Approval response does not match the original request");
@@ -358,7 +381,14 @@ ObjectReply ResponsesMcpState::Authenticate(const Json& item,
                    "MCP invocation has no terminal result");
     expected = *terminal;
   }
-  if (!PublicMatches(item, expected))
+  auto compared = item;
+  if (type == "mcp_call" && Unfinished(item)) {
+    // Upgrade a no-result fragment only from its sealed terminal invocation.
+    // Name, target label, original arguments and approval identity still match.
+    for (const auto* key : {"status", "output", "error"})
+      if (const auto* value = expected.Find(key)) Set(&compared, key, *value);
+  }
+  if (!PublicMatches(compared, expected))
     return Invalid("MCP item differs from its authenticated history");
   reply.value = std::move(expected);
   return reply;
@@ -429,6 +459,8 @@ ObjectReply ResponsesMcpState::Propose(const Json& catalog,
   const auto& id = call_id;
   auto next = Object(
       {{"state", String(approval ? "approval" : "ready")},
+       {"execution_owner", CurrentResponseOwner()},
+       {"response_id", String(response_id_)},
        {"declaration", *declaration},
        {"credentials_required",
         Boolean(payload.GetBool("credentials_required") ||
@@ -461,6 +493,10 @@ ObjectReply ResponsesMcpState::Decide(const std::string& id, bool approve,
                      payload.Find("tool"), payload.GetString("caller"));
   if (!reply.ok()) return reply;
   Set(&payload, "state", String(approve ? "ready" : "denied"));
+  if (approve) {
+    Set(&payload, "execution_owner", CurrentResponseOwner());
+    Set(&payload, "response_id", String(response_id_));
+  }
   Set(&payload, "decision",
       Object({{"approve", Boolean(approve)},
               {"reason", String(std::move(reason))}}));
@@ -499,6 +535,8 @@ ObjectReply ResponsesMcpState::Permit(const std::string& id,
     return Error(403, "mcp_approval_required",
                  "Current policy requires approval");
   Set(&payload, "state", String("dispatching"));
+  Set(&payload, "execution_owner", CurrentResponseOwner());
+  Set(&payload, "response_id", String(response_id_));
   const auto dispatch_id = detail::NewRequestId("mcpd_");
   if (dispatch_id.empty())
     return Error(503, "mcp_entropy_unavailable", "MCP dispatch ID unavailable");
@@ -518,6 +556,74 @@ ObjectReply ResponsesMcpState::Inspect(const std::string& id,
   if (!reply.ok()) return reply;
   reply.value = std::move(payload);
   return reply;
+}
+ObjectReply ResponsesMcpState::Recover(const std::string& id,
+                                       const StateAccess& access,
+                                       const ResponseStatePlan* ended) {
+  Json record, payload;
+  auto reply = Read(id, "call", access, &record, &payload);
+  if (!reply.ok()) return reply;
+  if (const auto* terminal = payload.Find("terminal")) {
+    reply.value = *terminal;
+    return reply;
+  }
+  const auto state = payload.GetString("state");
+  if (state != "ready" && state != "dispatching")
+    return Error(409, "mcp_result_pending", "MCP approval is still pending");
+  const auto* owner = payload.Find("execution_owner");
+  const bool own_ended = owner && ended && !ended->id.empty() &&
+                         ended->scope == access.scope &&
+                         payload.GetString("response_id") == ended->id &&
+                         ValidResponseOwner(ended->execution_owner) &&
+                         Same(*owner, ended->execution_owner);
+  if (!own_ended && (!owner || ResponseOwnerStatus(*owner) !=
+                                  ResponseOwnerState::kGone))
+    return Error(409, "mcp_result_pending",
+                 "MCP execution owner is live or cannot be verified");
+  auto item = CallItem(payload);
+  const bool dispatched = state == "dispatching";
+  Set(&item, "status", String("failed"));
+  Set(&item, "error",
+      ExecutionError(dispatched ? "mcp_result_unknown"
+                                : "mcp_execution_interrupted",
+                     dispatched
+                         ? "Execution owner ended; remote outcome unknown, "
+                           "call will not be replayed"
+                         : "Execution owner ended before remote dispatch"));
+  Set(&payload, "state", String(dispatched ? "unknown" : "failed"));
+  Set(&payload, "terminal", item);
+  reply = Write(record.GetString("id"), "call", payload,
+                record.GetInt("revision"), record.GetInt("expires_at"), access);
+  if (reply.ok() && !reply.commit_unknown) reply.value = std::move(item);
+  // A concurrent known completion wins. Do not overwrite it or retry a write.
+  if (!reply.commit_unknown && reply.code == "object_revision_conflict") {
+    auto current = Inspect(id, access);
+    if (current.ok() && current.value.Has("terminal")) {
+      auto terminal = *current.value.Find("terminal");
+      current.value = std::move(terminal);
+      return current;
+    }
+  }
+  return reply;
+}
+ObjectReply ResponsesMcpState::Reconcile(Json* items,
+                                         const ResponseStatePlan& ended,
+                                         const StateAccess& access) {
+  if (!items || !items->IsArray()) return Invalid("Expected MCP output items");
+  for (auto& item : items->array) {
+    if (!Unfinished(item)) continue;
+    auto recovered = Recover(item.GetString("id"), access, &ended);
+    if (recovered.commit_unknown) return recovered;
+    // An argument fragment may predate Propose. A sibling request may also
+    // own an approval dispatch now; neither gives this cleanup authority.
+    if (recovered.http_status == 404 || recovered.code == "mcp_result_pending")
+      continue;
+    if (!recovered.ok()) return recovered;
+    auto authenticated = Authenticate(item, access);
+    if (!authenticated.ok()) return authenticated;
+    item = std::move(authenticated.value);
+  }
+  return {};
 }
 ObjectReply ResponsesMcpState::Finish(const std::string& id,
                                       const McpTransportReceipt& receipt,

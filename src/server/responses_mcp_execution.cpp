@@ -8,6 +8,15 @@
 namespace q4t::server {
 using namespace object_detail;
 
+ObjectReply ResponsesExecution::CloseMcpExecution(const StateAccess& access) {
+  if (!mcp_state_) return {};
+  auto items = *output_.Snapshot().GetArray("output");
+  // Network/grammar execution has drained. Close only this exact Response's
+  // invocation; never rewrite already-published stream events. A subsequent
+  // authenticated continuation upgrades no-result fragments from this record.
+  return mcp_state_->Reconcile(&items, plan_, access);
+}
+
 Status ResponsesExecution::AppendMcp(const ResponseDelta& delta, bool* handled,
                                      std::string* wire) {
   *handled = false;
@@ -145,6 +154,13 @@ ObjectReply ResponsesExecution::RunMcpApprovals(
     // token here: only this request's successful Permit callback can do that.
     auto original = mcp_state_->Inspect(id, access_);
     if (!original.ok()) return original;
+    if (original.value.GetString("state") == "dispatching") {
+      auto recovered = mcp_state_->Recover(id, access_);
+      if (!recovered.ok() || recovered.commit_unknown)
+        return BindMutationResult(std::move(recovered));
+      original = mcp_state_->Inspect(id, access_);
+      if (!original.ok()) return original;
+    }
     const auto label = original.value.Find("call")->GetString("server_label");
     const auto definition = std::find_if(
         mcp_definitions_.begin(), mcp_definitions_.end(),
