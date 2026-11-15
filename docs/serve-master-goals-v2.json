@@ -1188,7 +1188,8 @@
       "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
-      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md"
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
     },
     {
       "id": "A08",
@@ -2008,7 +2009,8 @@
       "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
-      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md"
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
     },
     {
       "id": "A12",
@@ -2030,7 +2032,8 @@
         "N03"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
     },
     {
       "id": "N01",
@@ -2191,7 +2194,8 @@
         "merged": true,
         "commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
         "evidence": "docs/evidence/serve-pr23-merged-20261113"
-      }
+      },
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
     },
     {
       "id": "N06",

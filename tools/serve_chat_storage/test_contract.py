@@ -64,7 +64,9 @@ class StoredChatContract(unittest.TestCase):
         expected = {(method.upper(), path) for path, operations in spec['paths'].items()
             if path.startswith(('/v1/chat/completions', '/v1/responses', '/v1/conversations'))
             for method in operations} - {('POST', '/v1/chat/completions')}
-        self.assertEqual({(method, path) for method, path, _ in gateway.APPLICATION_ROUTES}, expected)
+        self.assertEqual({(method, path) for method, path, _ in gateway.APPLICATION_ROUTES
+            if path.startswith(('/v1/chat/completions', '/v1/responses', '/v1/conversations'))},
+            expected)
         self.assertTrue(gateway.validate_routes())
         listing = spec['paths']['/v1/chat/completions']['get']
         metadata = next(p for p in listing['parameters'] if p['name'] == 'metadata')

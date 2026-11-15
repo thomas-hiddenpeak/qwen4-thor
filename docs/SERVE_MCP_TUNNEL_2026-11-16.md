@@ -180,3 +180,12 @@ q4t agent使用可选wire扩展`q4t_outcome_unknown:true`区别传输合成错�
 隔离调用与Responses持久状态保留unknown并禁止再次许可；无效终态
 同样按未知处理。远端RPC错误data里的同名内容不作为传输权限。
 这是q4t原生扩展，不宣称该字段属于所参考的官方wire标准。
+
+## 公开合同与可选前置
+
+三条路由已登记到[OpenAPI](serve-openapi-v1.json)和独立
+[wire schema](serve-mcp-tunnel-v1.schema.json)。显式nginx模式的两个
+渲染器均保留实例/结果凭据，poll与response使用独立槽位和速率；
+配置仍可选，默认原生入口不依赖nginx。实际TLS、容量、重复/指定头
+拒绝和原生回归见[22项CPU证据](evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md)。
+完整SDK/实际模型业务、提供方与恢复发行继续，0新增GPU。

@@ -1,0 +1,7 @@
+test_creation_and_metadata_bounds_match_native_contract (tools.serve_chat_storage.test_contract.StoredChatContract.test_creation_and_metadata_bounds_match_native_contract) ... ok
+test_optional_nginx_and_formal_application_routes_are_complete (tools.serve_chat_storage.test_contract.StoredChatContract.test_optional_nginx_and_formal_application_routes_are_complete) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.763s
+
+OK

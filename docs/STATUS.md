@@ -39,6 +39,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [隧道公开合同与可选前置22项CPU最终通过](evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md)：
+  三条OpenAPI/schema、两种可选nginx的TLS/受保护头与独立准入已接通；
+  修复存储Chat文件消息引用缺口。首次失败保留，来源7项过，复用未变
+  C++构建；0GPU、rev126保持。继续SDK/真实业务、提供方、恢复发行及全部master。
+
 - [自有agent 32项CPU及4项实际CLI最终通过](evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md)：
   固定私网HTTP/SSE、真实broker往返、TLS入口/资料、会话清理及
   35秒监护/重启预算已验证。鉴权终态与unknown传递缺口已修复；

@@ -16,7 +16,7 @@ def definitions():
     def rewrite(value):
         if isinstance(value, dict):
             return {key: child.replace('#/$defs/', '#/$defs/chat_')
-                    if key == '$ref' else rewrite(child)
+                    if key == '$ref' and isinstance(child, str) else rewrite(child)
                     for key, child in value.items()}
         if isinstance(value, list):
             return [rewrite(child) for child in value]
@@ -48,13 +48,13 @@ def definitions():
     def message_rewrite(value):
         if isinstance(value, dict):
             return {key: child.replace('#/$defs/', '#/$defs/chat_input_')
-                    if key == '$ref' else message_rewrite(child)
+                    if key == '$ref' and isinstance(child, str) else message_rewrite(child)
                     for key, child in value.items()}
         if isinstance(value, list):
             return [message_rewrite(child) for child in value]
         return value
     for name in ('message', 'textPart', 'refusalPart', 'historyCall',
-                 'imagePart', 'videoPart'):
+                 'imagePart', 'videoPart', 'filePart'):
         shape = message['$defs'][name]
         result['chat_input_'+name] = message_rewrite(shape)
     props = copy.deepcopy(message['$defs']['message']['properties'])
@@ -63,7 +63,7 @@ def definitions():
                  content=dict(type=['string', 'null']),
                  content_parts=dict(anyOf=[dict(type='null'), dict(type='array',
                      items=dict(oneOf=[ref('chat_input_'+name) for name in
-                         ('textPart', 'refusalPart', 'imagePart', 'videoPart')]))]))
+                         ('textPart', 'refusalPart', 'imagePart', 'videoPart', 'filePart')]))]))
     result['stored_chat_message'] = obj(props, ('id', 'role', 'content', 'name'))
     for name, item in [('stored_chat_list', 'stored_chat'),
                        ('stored_chat_messages', 'stored_chat_message')]:

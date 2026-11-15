@@ -1,0 +1,21 @@
+{
+  "stage": "native tunnel public contract and optional nginx",
+  "base": "89a6e510",
+  "gpu_starts": 0,
+  "checks": [
+    "standalone schemas, published OpenAPI and bundled references",
+    "actual optional nginx supervised routes, TLS headers, separate admission and credential rejection",
+    "standalone nginx syntax/private-package validation",
+    "native routes regression only if fixture affected",
+    "source inventory and dependency identity"
+  ],
+  "bounds": {
+    "cpu_seconds": 1200,
+    "model_starts": 0
+  },
+  "reuse": [
+    "broker API/transport/agent CPU evidence",
+    "unchanged rev126 default and GPU evidence"
+  ],
+  "remaining": "SDK, native-provider adapters, actual model business, recovery/release and all master tasks"
+}

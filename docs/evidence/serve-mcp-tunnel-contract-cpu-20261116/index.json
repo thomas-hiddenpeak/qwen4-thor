@@ -1,0 +1,137 @@
+{
+  "base_commit": "89a6e5101e8727a43a36ff0dc5b34d4d0af7559f",
+  "distinct_tests": 22,
+  "test_executions": 34,
+  "rounds": [
+    {
+      "label": "tunnel-contract-cpu-01",
+      "tests": 12,
+      "passed": 9,
+      "seconds": 9.349498759955168
+    },
+    {
+      "label": "tunnel-contract-cpu-02",
+      "tests": 3,
+      "passed": 1,
+      "seconds": 4.540899961721152
+    },
+    {
+      "label": "tunnel-contract-cpu-03",
+      "tests": 6,
+      "passed": 5,
+      "seconds": 1.7369800531305373
+    },
+    {
+      "label": "tunnel-contract-cpu-04",
+      "tests": 2,
+      "passed": 2,
+      "seconds": 1.636749638710171
+    },
+    {
+      "label": "tunnel-contract-cpu-05",
+      "tests": 2,
+      "passed": 2,
+      "seconds": 0.3855456099845469
+    },
+    {
+      "label": "tunnel-contract-native-01",
+      "tests": 4,
+      "passed": 4,
+      "seconds": 6.291811713948846
+    },
+    {
+      "label": "tunnel-contract-routes-01",
+      "tests": 3,
+      "passed": 3,
+      "seconds": 7.343372150789946
+    },
+    {
+      "label": "tunnel-contract-storage-01",
+      "tests": 2,
+      "passed": 2,
+      "seconds": 1.9905612566508353
+    }
+  ],
+  "final_results": {
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_duplicate_and_connection_nominated_tokens_rejected_before_forwarding": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_poll_and_response_capacity_do_not_depend_on_generation_or_each_other": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_single_opaque_comma_is_preserved_and_invalid_headers_never_forward": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tls_tunnel_token_and_body_forwarding": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tunnel_routes_auth_preserve_original_wire_headers": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_generated_contract_and_complete_routes": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_invalid_types_tokens_and_misleading_terminal_rejected": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_valid_commands_and_terminal_variants": "PASS",
+    "tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries": "PASS",
+    "tools.serve_gateway.test_gateway.GatewayTests.test_protocol_contract_has_separate_bounded_capacity": "PASS",
+    "tools.serve_gateway.test_gateway.GatewayTests.test_real_nginx_parse_and_private_package_verification": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_stored_chat_file_parts_preserve_public_contract": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_ingress.TunnelIngress.test_duplicate_and_connection_nominated_tokens_rejected_before_forwarding": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_ingress.TunnelIngress.test_poll_and_response_capacity_do_not_depend_on_generation_or_each_other": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_ingress.TunnelIngress.test_tls_tunnel_token_and_body_forwarding": "PASS",
+    "tools.serve_responses.test_mcp_tunnel_ingress.TunnelIngress.test_tunnel_routes_auth_preserve_original_wire_headers": "PASS",
+    "__main__.NginxTests.test_application_routes_preserve_methods_queries_and_identity": "PASS",
+    "__main__.NginxTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers": "PASS",
+    "__main__.NginxTests.test_accepted_post_transport_failure_is_not_replayed": "PASS",
+    "tools.serve_chat_storage.test_contract.StoredChatContract.test_creation_and_metadata_bounds_match_native_contract": "PASS",
+    "tools.serve_chat_storage.test_contract.StoredChatContract.test_optional_nginx_and_formal_application_routes_are_complete": "PASS"
+  },
+  "source_mutations": 7,
+  "source_anchors": 688,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "complete_tunnel_delivered": false,
+  "public_capability_delivered": false,
+  "build_reused": "89a6e510 engine/ingress; no C++ changes",
+  "engine_sha256": "9db0b9fc360e816624df6d3e7f6fca4fdd3113070beec968a2f9e260c714c375",
+  "ingress_sha256": "8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a",
+  "sources_sha256": {
+    "docs/serve-application-v1.schema.json": "3ce09f39146a573134212a3d642cfba91bf033461e33569ef97a5a85c2adc2d1",
+    "docs/serve-openapi-bundle-v1.json": "f52fecd63c4f24da3e674bea7e71eff4cf5c5ce15c7358f208ca8ecc5eaee45d",
+    "docs/serve-openapi-v1.json": "4d4855e57761ace737ea95f60ef34658ecae4bd31ddc94f3afcfc7076d5f1f23",
+    "tools/serve_audit/inventory.json": "90a6ad08939ca795093f63dc8f61ed102a905116381fc6e0ffbe1781ddc39543",
+    "tools/serve_chat_storage/build_contract.py": "000d17eb6afb44299c804751138a2f4506da476ef5d191948b3d1f855133a076",
+    "tools/serve_chat_storage/test_contract.py": "b4d4d486a40336d28fb642787e9069955a6723900705aa0b9c32888392f33a41",
+    "tools/serve_gateway/gateway.py": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
+    "tools/serve_protocol/test_stage.py": "60e6fe887987de32a4c60b0006329444889a536dc93712885cc4a531eab566b8",
+    "tools/serve_recovery/gateway.py": "8fed57e0e6fc515928f40e26c5a46081fc767961fdf992a42bd6dada65ba7eaf",
+    "tools/serve_recovery/gateway_config.py": "ac84b61eb867ec32ba75ab95cdd6c0ba7378382da92f04a156dddf0fe5746888",
+    "tools/serve_recovery/test_gateway_nginx.py": "229a85269ff4236d0a01ac44ec9cd76bd331e50e86215d8a36a7961d9e0d4930",
+    "tools/serve_responses/build_contract.py": "4bcb4eb6ec5072802117356191842f7eec5f53db5dfb9c3331dc7c67759af783",
+    "tools/serve_responses/test_mcp_tunnel_ingress.py": "9d011356bd987ae1b2ded3d8401c9627bb3d4c4e60e06d20d32b856cfe2cac21",
+    "tools/serve_responses/mcp_tunnel_contract.py": "1e75ad5e0c74977409c9d2e556381b9ed47ec1a5a1f22bd11548a1fb72e79c0f",
+    "tools/serve_responses/test_mcp_tunnel_contract.py": "61e74cbe44e3801bf4d58dd19e8b06c8bd9c2ba7056bfa0d1b3b0a899ae65610",
+    "docs/serve-mcp-tunnel-v1.schema.json": "1fd28fc492cb7a69047e0c1755053e60e7a8d76360f004bea42ca7f55fe8c95f"
+  },
+  "files_sha256": {
+    "tunnel-contract-source-01.json": "3582d746003ada71e6c39af82537b8c8c1ed5630bc49d1ff3aedbb7a0dce5cc1",
+    "tunnel-contract-cpu-04.json": "7fd469b766fe670f6e613a6cfdd9120fd4aa7f865a45b3534c859268e25d5633",
+    "tunnel-contract-storage-01.stderr": "e1dee8ce1491b28701d3243bdb730bbe44457280856f8c4aa379e97a3af0f568",
+    "tunnel-contract-cpu-05.json": "d3b71c79ecaed45024f9e2c6b9a1bd317e047f39036288d32369feb4986a0176",
+    "tunnel-contract-source-01.stdout": "9fa375f8677f846fe6376fcb3d5fb75d50731823dd6ff0d9cfef0f19f9e62714",
+    "tunnel-contract-native-01.json": "ef83060f2290233efed65b53e35f8fecb7c1f307d2eafe3b1787952938b103e5",
+    "tunnel-contract-cpu-04.stderr": "f1885c8df2996a3cdda17344e3d5475e1ec7e081c8b902511c3863c5ff88c49d",
+    "tunnel-contract-cpu-02.stderr": "b8755e0dfc38ef370becc0060b1c266f766c57d6f77614970ad3d1ee7e1cb88a",
+    "tunnel-contract-cpu-01.json": "52ae31bfe754bc91194432b62cb57e5e21098872afd93e79e3fb536f060deb9a",
+    "tunnel-contract-cpu-02.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-storage-01.json": "19a5ffc5795d1f35bc5f83d82c2b57fa37be8f72810d162f88e6d7c5bd68a21e",
+    "tunnel-contract-native-01.stderr": "6f8c93c81bec0bce323080a030b244e5b6fe9e575ef347ed5b4c699ee4014147",
+    "tunnel-contract-cpu-05.stderr": "a33c4dba776446555cb3794ebc67f5aebf74c41322c21205798706c8ffd57648",
+    "tunnel-contract-cpu-03.stderr": "a53e819c5f36d2715d2deca2ceff8309ba72964367ccac7a20c7ef0b5fbd0dfd",
+    "plan.json": "8a44eff12e14457af70a6d1a8b3555366a3f34700afec8051e026800f57ea62d",
+    "tunnel-contract-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-routes-01.json": "5716236c517760c0bd48ea3fa90775365acc308cbc420a28b5de7b79280abf6b",
+    "tunnel-contract-cpu-03.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-routes-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-cpu-01.stderr": "bb35294285e10cc45fb5f6574669d578b1d42b14ebf240d5f921a358dcb506eb",
+    "tunnel-contract-cpu-03.json": "8162cbe4c33f84f03a4bc4b23685402cb914888a1a699705e2c35909b3a5eea4",
+    "tunnel-contract-native-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-routes-01.stderr": "c95c84a192eae358b0519a0ed459ead50b159dd750ff2034659d606d04355622",
+    "tunnel-contract-cpu-02.json": "142f38e27d253bea99543426992ec681ea36e68ba96f36e39a494070d63f6529",
+    "tunnel-contract-cpu-05.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-source-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-storage-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tunnel-contract-cpu-04.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "README.md": "5dd47e8c565fe5c9473e547a9ebc1ffbf4f1483ed07db7e901e6e16c650541aa"
+  }
+}

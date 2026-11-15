@@ -1,0 +1,7 @@
+test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire) ... ok
+test_generated_contract_and_complete_routes (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_generated_contract_and_complete_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.339s
+
+OK

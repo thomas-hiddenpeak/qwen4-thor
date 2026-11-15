@@ -417,7 +417,7 @@ class NginxTests(unittest.TestCase):
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
-                              vector_store_id='vs_1')
+                              vector_store_id='vs_1', tunnel_id='tunnel_local')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)

@@ -1224,29 +1224,35 @@
     },
     "GET /v1/tunnels/{tunnel_id}": {
       "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
-      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
       "evidence": [
         "src/server/mcp_tunnel_api.cpp",
         "tests/server_mcp_tunnel_api_test.cpp",
-        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
       ]
     },
     "GET /v1/tunnels/{tunnel_id}/poll": {
       "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
-      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
       "evidence": [
         "src/server/mcp_tunnel_api.cpp",
         "tests/server_mcp_tunnel_api_test.cpp",
-        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
       ]
     },
     "POST /v1/tunnels/{tunnel_id}/response": {
       "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
-      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
       "evidence": [
         "src/server/mcp_tunnel_api.cpp",
         "tests/server_mcp_tunnel_api_test.cpp",
-        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
       ]
     }
   },
@@ -2347,7 +2353,7 @@
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "f462696017284cdd57e6f8579e3f80d3154b63bb3fe6dd8ad357b371dd457e00",
+    "tools/serve_gateway/gateway.py": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
@@ -2392,8 +2398,8 @@
     "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
     "tools/serve_recovery/fixture_model.py": "6a6c64f2b1742b08f1b58dd740ea28f553816edd5b613bb5b46071511bc3066c",
     "tools/serve_recovery/fixture_production.py": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18",
-    "tools/serve_recovery/gateway.py": "272b1a66c251dd6aede2c78d53bcf3a424c4cbb5cbc561b64c3de324b287bacb",
-    "tools/serve_recovery/gateway_config.py": "9306adc5736c782a3efea0845cd9dcdf184e4668cde288e60b069da9dca1be7d",
+    "tools/serve_recovery/gateway.py": "8fed57e0e6fc515928f40e26c5a46081fc767961fdf992a42bd6dada65ba7eaf",
+    "tools/serve_recovery/gateway_config.py": "ac84b61eb867ec32ba75ab95cdd6c0ba7378382da92f04a156dddf0fe5746888",
     "tools/serve_recovery/host_artifact.py": "94cf594a7bfefe3a1fafe19fb70ca8c3a1060c219cdb624cca609cc4e4f68c79",
     "tools/serve_recovery/host_entry.py": "e930b878c2d7d29621863e4f371884b75f163a0bfdacc641ce0bdc752cc47940",
     "tools/serve_recovery/host_handoff.py": "0d88e5d81c07a23d441ad5c2e9afbaca6fca4f7cc6cd68c1158a00d3be9f9431",
@@ -5609,5 +5615,17 @@
     "contract": "No field/route/whitelist change. Existing RemoteHttp request default remains 1 MiB; only agent result uploads explicitly permit 4 MiB. Shared SSE parser extracted unchanged. Private file reader contract retained.",
     "verification": "32 distinct C++ tests final PASS / 44 executions; 4 actual CLI tests final PASS / 9 executions. Initial failures retained; actual CPU watchdog and TLS native ingress/private target verified. Evidence docs/evidence/serve-mcp-tunnel-agent-cpu-20261116. 0 GPU/default unchanged; full business/release/master pending.",
     "followup": "q4t_outcome_unknown authenticated terminal extension flows through broker and isolated receipt to durable unknown/no replay, arbitrary upstream error data stays known. Actual engine CUDA mappings exceeded 512 MiB; MCP/agent share bounded 1 GiB virtual ceiling, matching existing engine workers. Physical memory is separate R08 work. No public inference allowlist changes."
+  },
+  "mcp_tunnel_public_contract_review_20261116": {
+    "base_commit": "89a6e510",
+    "changes": [
+      "tools/serve_gateway/gateway.py",
+      "tools/serve_recovery/gateway.py",
+      "tools/serve_recovery/gateway_config.py"
+    ],
+    "new_dependencies": false,
+    "gpu_starts": 0,
+    "complete_tunnel_delivered": false,
+    "semantics": "Public wire schema, optional nginx separate tunnel lanes/protected headers; stored Chat filePart reference closure."
   }
 }

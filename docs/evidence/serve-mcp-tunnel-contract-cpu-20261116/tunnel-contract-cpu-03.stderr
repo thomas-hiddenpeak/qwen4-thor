@@ -1,0 +1,21 @@
+/home/rm01/models/dev/qwen4-thor/tools/serve_responses/mcp_tunnel_contract.py:22: SyntaxWarning: invalid escape sequence '\s'
+  pattern='^[A-Za-z0-9_-]+(?![\s\S])')
+test_generated_contract_and_complete_routes (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_generated_contract_and_complete_routes) ... ok
+test_invalid_types_tokens_and_misleading_terminal_rejected (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_invalid_types_tokens_and_misleading_terminal_rejected) ... ok
+test_stored_chat_file_parts_preserve_public_contract (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_stored_chat_file_parts_preserve_public_contract) ... ok
+test_valid_commands_and_terminal_variants (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_valid_commands_and_terminal_variants) ... ok
+test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire) ... FAIL
+test_openapi_refs_routes_and_explicit_semantic_boundaries (tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries) ... ok
+
+======================================================================
+FAIL: test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_contract.py", line 199, in test_standalone_private_package_tls_wire
+    self.assertEqual(response.status, 200, response.read())
+AssertionError: 403 != 200 : b'{"error": {"code": "invalid_gateway_credentials"}}'
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.393s
+
+FAILED (failures=1)

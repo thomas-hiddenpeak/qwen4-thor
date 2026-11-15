@@ -242,6 +242,8 @@ def schema(graph):
 
 def add_openapi(paths, response, error):
     """Add actual application routes, preserving each HTTP method/body/query."""
+    from tools.serve_responses.mcp_tunnel_contract import add_openapi as add_tunnels
+    add_tunnels(paths, response, error)
     from tools.serve_responses.batches_contract import add_openapi as add_batches
     add_batches(paths, response, error)
     from tools.serve_responses.vector_stores_contract import add_openapi as add_vectors

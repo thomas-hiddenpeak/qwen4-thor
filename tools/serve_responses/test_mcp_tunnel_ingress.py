@@ -22,7 +22,10 @@ class TunnelIngress(unittest.TestCase):
 
     def setUp(self):
         self.ingress = Path(os.environ['Q4T_INGRESS']).resolve(strict=True)
-        self.stack = fixture.Stack(self.output, native_ingress=self.ingress)
+        self.stack = self.make_stack()
+
+    def make_stack(self, **kwargs):
+        return fixture.Stack(self.output, native_ingress=self.ingress, **kwargs)
 
     def test_tunnel_routes_auth_preserve_original_wire_headers(self):
         self.ready()
@@ -61,7 +64,7 @@ class TunnelIngress(unittest.TestCase):
 
     def test_poll_and_response_capacity_do_not_depend_on_generation_or_each_other(self):
         self.stack.close()
-        self.stack = fixture.Stack(self.output, native_ingress=self.ingress,
+        self.stack = self.make_stack(
             policy_overrides=dict(per_client_inflight=1, global_inflight=1))
         self.ready()
         poll = '/v1/tunnels/tunnel_local/poll'
@@ -106,7 +109,7 @@ class TunnelIngress(unittest.TestCase):
         context = ssl.create_default_context(cafile=str(pem/'ca.pem'))
         tls = dict(certificate=str(pem/'server.pem'), key=str(pem/'server.key'),
                    ca='', require_client_certificate=False)
-        self.stack = fixture.Stack(self.output, native_ingress=self.ingress,
+        self.stack = self.make_stack(
             policy_overrides=dict(version=3, cors=None), tls=tls, ssl_context=context)
         self.ready()
         body = dict(request_id='original', resp_code=200, resp_type='jsonrpc_response',
