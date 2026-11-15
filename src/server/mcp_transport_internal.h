@@ -12,4 +12,27 @@ ObjectReply Exchange(const McpEndpoint& endpoint,
                      std::chrono::steady_clock::time_point deadline,
                      const std::function<bool()>& permit_call,
                      McpTransportReceipt* receipt);
+// Only the isolated native worker owns connections. At most 16 sessions,
+// including at most 4 per authenticated scope, with bounded idle/lifetimes.
+class Sessions {
+ public:
+  Sessions();
+  ~Sessions();
+  ObjectReply Exchange(const McpEndpoint& endpoint,
+                       const FileFetchOptions& deployment,
+                       std::string_view method, const io::Json& params,
+                       std::chrono::steady_clock::time_point deadline,
+                       io::Json* session, bool allow_new, int idle_ms,
+                       int lifetime_ms,
+                       const std::function<bool(const io::Json&)>& checkpoint,
+                       const std::function<bool()>& permit_call,
+                       McpTransportReceipt* receipt);
+  void Collect();
+  void Clear();
+  size_t Size() const;
+
+ private:
+  struct Impl;
+  std::unique_ptr<Impl> impl_;
+};
 }  // namespace q4t::server::mcp_detail

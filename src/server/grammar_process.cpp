@@ -352,6 +352,12 @@ void GrammarProcess::ReportRss(uint64_t bytes) {
   reported_rss_bytes_ = std::max(reported_rss_bytes_, bytes);
 }
 
+bool GrammarProcess::Exited() const {
+  if (pid_fd_ < 0) return true;
+  pollfd event{pid_fd_, POLLIN, 0};
+  return poll(&event, 1, 0) > 0 && (event.revents & POLLIN);
+}
+
 Status GrammarProcess::Transfer(
     void* data, size_t bytes, bool write,
     std::chrono::steady_clock::time_point deadline,
@@ -562,4 +568,12 @@ bool WorkerTransfer(void* data, size_t bytes, bool write) {
   }
   return true;
 }
+int WaitWorkerInput(int milliseconds) {
+  pollfd event{kSocket, POLLIN, 0};
+  const auto result = poll(&event, 1, milliseconds);
+  if (!result || (result < 0 && errno == EINTR)) return 0;
+  if (result < 0 || !(event.revents & POLLIN)) return -1;
+  return 1;
+}
+
 }  // namespace q4t::server::detail

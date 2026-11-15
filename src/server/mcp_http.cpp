@@ -1,9 +1,13 @@
 #include "mcp_transport_internal.h"
 
+#include <sys/random.h>
+
+#include <algorithm>
 #include <set>
 
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/mcp_content.h"
 #include "remote_http_internal.h"
@@ -15,7 +19,13 @@ using file_detail::RemoteHeaders;
 using file_detail::RemoteHttp;
 using file_detail::Url;
 using Deadline = std::chrono::steady_clock::time_point;
+using Clock = std::chrono::steady_clock;
 constexpr uint64_t kResponseBytes = 4U << 20;
+int64_t NowMillis() {
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::system_clock::now().time_since_epoch())
+      .count();
+}
 ObjectReply Protocol() {
   return Error(502, "mcp_protocol_error", "Invalid MCP server response");
 }
@@ -130,8 +140,12 @@ class Client {
       headers_["Authorization"] = "Bearer " + endpoint.authorization;
     headers_["Accept"] = "application/json, text/event-stream";
     headers_["Content-Type"] = "application/json";
+    entropy_ = getrandom(&id_, sizeof(id_), 0) == sizeof(id_);
+    id_ &= (1ULL << 52) - 1;
   }
-  ObjectReply Initialize(bool resource_read) {
+  ObjectReply Initialize() {
+    if (!entropy_)
+      return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
     auto params =
         Object({{"protocolVersion", String("2025-06-18")},
                 {"capabilities", Object()},
@@ -182,17 +196,50 @@ class Client {
         !info->Find("name") || !info->Find("name")->IsString() ||
         !info->Find("version") || !info->Find("version")->IsString())
       return Protocol();
-    const auto* capability = caps->Find(resource_read ? "resources" : "tools");
-    if (!capability || !capability->IsObject())
-      return Error(
-          502,
-          resource_read ? "mcp_resources_unavailable" : "mcp_tools_unavailable",
-          "Server lacks the requested MCP capability");
+    tools_ = caps->Find("tools") && caps->Find("tools")->IsObject();
+    resources_ = caps->Find("resources") && caps->Find("resources")->IsObject();
     headers_["MCP-Protocol-Version"] = protocol;
     Json notification =
         Object({{"jsonrpc", String("2.0")},
                 {"method", String("notifications/initialized")}});
     return SendNotification(notification);
+  }
+  ObjectReply Capability(std::string_view method) const {
+    const bool resource = method == "resources/read";
+    if (resource ? resources_ : tools_) return {};
+    return Error(
+        502, resource ? "mcp_resources_unavailable" : "mcp_tools_unavailable",
+        "Server lacks the requested MCP capability");
+  }
+  ObjectReply Restore(const Json& state) {
+    const auto session = state.GetString("session_id");
+    protocol = state.GetString("protocol");
+    if (!entropy_ || state.GetBool("legacy") ||
+        (protocol != "2025-06-18" && protocol != "2025-03-26" &&
+         protocol != "2024-11-05") ||
+        (!session.empty() && !Visible(session, 1024)) || !state.Find("tools") ||
+        !state.Find("tools")->IsBool() || !state.Find("resources") ||
+        !state.Find("resources")->IsBool())
+      return Protocol();
+    if (!session.empty()) headers_["Mcp-Session-Id"] = session;
+    headers_["MCP-Protocol-Version"] = protocol;
+    tools_ = state.GetBool("tools");
+    resources_ = state.GetBool("resources");
+    return {};
+  }
+  void Snapshot(Json* state) const {
+    Set(state, "protocol", String(protocol));
+    Set(state, "legacy", Boolean(Legacy()));
+    Set(state, "tools", Boolean(tools_));
+    Set(state, "resources", Boolean(resources_));
+    const auto session = headers_.find("Mcp-Session-Id");
+    Set(state, "session_id",
+        String(session == headers_.end() ? "" : session->second));
+  }
+  void Begin(Deadline deadline) {
+    deadline_ = deadline;
+    exchanges_ = 0;
+    if (legacy_) legacy_->BeginRead(deadline);
   }
   ObjectReply Invoke(std::string_view method, const Json& params, Json* result,
                      Json* error) {
@@ -210,9 +257,7 @@ class Client {
     std::unique_ptr<RemoteHttp> ignored;
     try {
       RemoteHttp::Open(url_, options_, "DELETE", headers_, "", 0,
-                       std::min(deadline_, std::chrono::steady_clock::now() +
-                                               std::chrono::milliseconds(100)),
-                       &ignored);
+                       Clock::now() + std::chrono::milliseconds(100), &ignored);
     } catch (...) {
     }
   }
@@ -243,8 +288,7 @@ class Client {
       if (!ignored.empty()) return Protocol();
     } else if ((*response)->Status() != 200) {
       // Never resubmit a tools/call after ambiguous failure or session expiry.
-      // This short-lived session is discarded; a later distinct invocation
-      // negotiates a new one before any independently authorized call.
+      // A later independently authorized invocation may negotiate anew.
       return HttpError((*response)->Status());
     }
     return {};
@@ -322,7 +366,7 @@ class Client {
     }
     return Capacity();
   }
-  const FileFetchOptions& options_;
+  FileFetchOptions options_;
   Deadline deadline_;
   Url url_;
   RemoteHeaders headers_;
@@ -330,6 +374,7 @@ class Client {
   std::unique_ptr<Events> events_;
   uint64_t id_ = 0;
   int exchanges_ = 0;
+  bool entropy_ = false, tools_ = false, resources_ = false;
 };
 }  // namespace
 
@@ -362,14 +407,11 @@ ObjectReply CheckHeaders(const McpEndpoint& endpoint) {
   }
   return {};
 }
-ObjectReply Exchange(const McpEndpoint& endpoint,
-                     const FileFetchOptions& deployment,
-                     std::string_view method, const Json& params,
-                     Deadline deadline, const std::function<bool()>& permit,
-                     McpTransportReceipt* receipt) {
-  Client client(endpoint, deployment, deadline);
-  ScopeExit close([&] { client.Close(); });
-  auto reply = client.Initialize(method == "resources/read");
+static ObjectReply Perform(Client& client, std::string_view method,
+                           const Json& params,
+                           const std::function<bool()>& permit,
+                           McpTransportReceipt* receipt) {
+  auto reply = client.Capability(method);
   if (!reply.ok()) return reply;
   receipt->protocol = client.protocol;
   receipt->legacy_sse = client.Legacy();
@@ -421,5 +463,183 @@ ObjectReply Exchange(const McpEndpoint& endpoint,
     page_params = Object({{"cursor", *cursor}});
   }
   return Capacity();
+}
+ObjectReply Exchange(const McpEndpoint& endpoint,
+                     const FileFetchOptions& deployment,
+                     std::string_view method, const Json& params,
+                     Deadline deadline, const std::function<bool()>& permit,
+                     McpTransportReceipt* receipt) {
+  Client client(endpoint, deployment, deadline);
+  ScopeExit close([&] { client.Close(); });
+  auto reply = client.Initialize();
+  if (!reply.ok()) return reply;
+  return Perform(client, method, params, permit, receipt);
+}
+
+struct Sessions::Impl {
+  struct Entry {
+    Json state;
+    std::unique_ptr<Client> client;
+    Deadline touched;
+  };
+  std::map<std::string, Entry> entries;
+};
+Sessions::Sessions() : impl_(std::make_unique<Impl>()) {}
+Sessions::~Sessions() { Clear(); }
+size_t Sessions::Size() const { return impl_->entries.size(); }
+void Sessions::Clear() {
+  for (auto& [id, entry] : impl_->entries)
+    if (entry.client) entry.client->Close();
+  impl_->entries.clear();
+}
+void Sessions::Collect() {
+  const auto now = Clock::now();
+  for (auto it = impl_->entries.begin(); it != impl_->entries.end();) {
+    const auto& entry = it->second;
+    if (now - entry.touched >=
+            std::chrono::milliseconds(entry.state.GetInt("idle_ms")) ||
+        NowMillis() >= entry.state.GetInt("expires_ms")) {
+      if (entry.client) entry.client->Close();
+      it = impl_->entries.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+ObjectReply Sessions::Exchange(
+    const McpEndpoint& endpoint, const FileFetchOptions& deployment,
+    std::string_view method, const Json& params, Deadline deadline,
+    Json* session, bool allow_new, int idle_ms, int lifetime_ms,
+    const std::function<bool(const Json&)>& checkpoint,
+    const std::function<bool()>& permit, McpTransportReceipt* receipt) {
+  const auto invalid = [] {
+    return Error(503, "mcp_session_invalid", "Invalid private MCP session");
+  };
+  const auto lost = [] {
+    return Error(409, "mcp_session_lost", "Original MCP session unavailable");
+  };
+  if (!session || !session->IsObject() ||
+      !session->GetString("id").starts_with("mcps_") ||
+      !ValidId(session->GetString("id")) ||
+      session->GetString("binding").size() != 64 ||
+      session->GetString("scope").size() != 64 || idle_ms < 1 ||
+      idle_ms > 300000 || lifetime_ms < 1 || lifetime_ms > 3600000 ||
+      OutputJson(*session).size() > 4096)
+    return invalid();
+  Collect();
+  auto& entries = impl_->entries;
+  auto id = session->GetString("id");
+  auto found = entries.find(id);
+  const bool initialized = session->Find("protocol");
+  const auto now = NowMillis();
+  bool replace = false;
+  if (found != entries.end()) {
+    for (const auto* field :
+         {"id", "binding", "scope", "protocol", "session_id", "legacy", "tools",
+          "resources", "created_ms", "expires_ms", "idle_ms"}) {
+      const auto* prior = found->second.state.Find(field);
+      const auto* incoming = session->Find(field);
+      if (!prior || !incoming || OutputJson(*prior) != OutputJson(*incoming))
+        return invalid();
+    }
+  }
+  if (initialized) {
+    const auto created = session->GetInt("created_ms");
+    const auto expires = session->GetInt("expires_ms");
+    if (!created || expires <= created || expires - created > 3600000 ||
+        session->GetInt("idle_ms") < 1 || session->GetInt("idle_ms") > 300000 ||
+        session->GetInt("idle_expires_ms") < created ||
+        session->GetInt("idle_expires_ms") > expires + 300000)
+      return invalid();
+    // Absolute expiry never extends on access or process restart. A legacy
+    // connection cannot be reconstructed from a token after its owner dies.
+    const auto idle_expires =
+        found == entries.end() ? session->GetInt("idle_expires_ms")
+                               : found->second.state.GetInt("idle_expires_ms");
+    replace = now < created || now >= expires || now >= idle_expires ||
+              session->GetBool("lost") ||
+              (found != entries.end() && !found->second.client) ||
+              (session->GetBool("legacy") && found == entries.end());
+    if (replace && !allow_new) return lost();
+  } else if (!allow_new) {
+    return lost();
+  }
+  if (replace) {
+    if (found != entries.end()) {
+      if (found->second.client) found->second.client->Close();
+      entries.erase(found);
+    }
+    id = detail::NewRequestId("mcps_");
+    if (id.empty())
+      return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
+    *session = Object({{"id", String(id)},
+                       {"binding", *session->Find("binding")},
+                       {"scope", *session->Find("scope")}});
+    found = entries.end();
+  }
+  if (found == entries.end()) {
+    const auto scope = session->GetString("scope");
+    const auto count_scope = [&] {
+      return std::count_if(entries.begin(), entries.end(), [&](const auto& e) {
+        return e.second.state.GetString("scope") == scope;
+      });
+    };
+    // Modern HTTP has no retained stream. Its authenticated snapshot can
+    // restore the same remote session after cache eviction; do not DELETE it
+    // while the catalog/call still owns it. Legacy connections stay bounded.
+    while (entries.size() >= 16 || count_scope() >= 4) {
+      auto victim = entries.end();
+      for (auto it = entries.begin(); it != entries.end(); ++it) {
+        if ((it->second.client && it->second.client->Legacy()) ||
+            (count_scope() >= 4 &&
+             it->second.state.GetString("scope") != scope))
+          continue;
+        if (victim == entries.end() ||
+            it->second.touched < victim->second.touched)
+          victim = it;
+      }
+      if (victim == entries.end())
+        return Error(503, "mcp_session_capacity",
+                     "MCP session capacity occupied");
+      entries.erase(victim);
+    }
+    auto client = std::make_unique<Client>(endpoint, deployment, deadline);
+    const bool resume = session->Find("protocol");
+    auto reply = resume ? client->Restore(*session) : client->Initialize();
+    if (!reply.ok()) {
+      client->Close();
+      return reply;
+    }
+    if (!resume) {
+      Set(session, "created_ms", Number(now));
+      Set(session, "expires_ms", Number(now + lifetime_ms));
+      Set(session, "idle_ms", Number(idle_ms));
+      client->Snapshot(session);
+    }
+    found =
+        entries
+            .emplace(id, Impl::Entry{*session, std::move(client), Clock::now()})
+            .first;
+  }
+  auto& entry = found->second;
+  entry.client->Begin(deadline);
+  Set(&entry.state, "idle_expires_ms",
+      Number(NowMillis() + entry.state.GetInt("idle_ms")));
+  *session = entry.state;
+  if (!checkpoint || !checkpoint(entry.state))
+    return Error(409, "mcp_session_not_confirmed", "MCP session not confirmed");
+  auto reply = Perform(*entry.client, method, params, permit, receipt);
+  entry.touched = Clock::now();
+  if (!reply.ok() && (entry.client->Legacy() ||
+                      reply.value.GetInt("upstream_status") == 404)) {
+    // No retry, including HTTP 404. The failed invocation keeps its original
+    // unknown/known result. A subsequent independent operation may initialize
+    // again, but a resource always requires its exact original session.
+    entry.client->Close();
+    entry.client.reset();
+    Set(&entry.state, "lost", Boolean(true));
+    *session = entry.state;
+  }
+  return reply;
 }
 }  // namespace q4t::server::mcp_detail

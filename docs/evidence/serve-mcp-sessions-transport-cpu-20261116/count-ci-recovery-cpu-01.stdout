@@ -1,0 +1,5 @@
+[PASS] object_store_transaction_recovers_durable_decision_before_apply
+[PASS] object_store_transaction_recovers_partial_file_installation
+[PASS] object_store_invalid_journal_is_preserved_and_isolated
+[PASS] object_store_nonexpiring_single_object_survives_restart
+4 tests, 4 passed, 0 failed, 0 skipped

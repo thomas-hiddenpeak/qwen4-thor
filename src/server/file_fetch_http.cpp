@@ -259,6 +259,7 @@ class Reader {
  public:
   Reader(Stream& stream, Deadline deadline)
       : stream_(stream), deadline_(deadline) {}
+  void SetDeadline(Deadline deadline) { deadline_ = deadline; }
   bool Line(std::string* line, size_t limit = 8192) {
     line->clear();
     for (;;) {
@@ -522,6 +523,10 @@ std::string_view RemoteHttp::Header(std::string_view name) const {
 }
 bool RemoteHttp::HasHeader(std::string_view name) const {
   return impl_->headers.fields.contains(http::Lower(name));
+}
+void RemoteHttp::BeginRead(Deadline deadline) {
+  impl_->reader.SetDeadline(deadline);
+  impl_->received = impl_->control = 0;
 }
 ObjectReply RemoteHttp::Read(std::string* bytes, bool* eof) {
   if (!bytes || !eof) return Error(500, "remote_http_state", "Missing output");

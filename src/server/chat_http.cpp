@@ -1,6 +1,7 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/mcp_transport.h"
 
 #include <new>
 
@@ -195,6 +196,7 @@ Status ChatServer::Run() {
     for (;;) {
       ProgressExecution loop_work(ProgressWork::kServiceLoop);
       detail::PollRequestWorkers();
+      PollMcpSessions();
       RecoverApplicationJobs();
       if (stop_requested_.load() && !draining) {
         draining = true;

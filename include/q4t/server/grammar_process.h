@@ -126,6 +126,8 @@ class GrammarProcess {
   GrammarFailure Failure() const { return failure_; }
   // Identity of this still-owned direct child; never used after Stop.
   int Pid() const { return pid_; }
+  // Nonblocking pidfd observation; does not reap or transfer ownership.
+  bool Exited() const;
   void ReportRss(uint64_t bytes);
   void Stop();
 
@@ -148,6 +150,8 @@ class GrammarProcess {
 // fixed-or-tighter rlimits, no core dumps. False means exit without compiling.
 bool EnterGrammarWorker(int argc, char** argv);
 bool WorkerTransfer(void* data, size_t bytes, bool write);
+// 1=input, 0=idle timeout, -1=closed/error; only in the owned exec child.
+int WaitWorkerInput(int milliseconds);
 
 }  // namespace detail
 }  // namespace q4t::server

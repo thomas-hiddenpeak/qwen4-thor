@@ -39,6 +39,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [原生会话传输30项CPU首过](evidence/serve-mcp-sessions-transport-cpu-20261116/README.md)：
+  有状态列表/调用/资源、现代恢复、旧SSE连续、隔离与过期通过；
+  7项来源负控和完整引擎零警告，0GPU、rev126保持。计数远端CI
+  的四项事务恢复失败已定位并针对性补验通过，失败保留；继续
+  加密目录/调用接线及完整MCP与全部master交付。
+
 - [计数统一26项CPU首过](evidence/serve-mcp-count-cpu-20261116/README.md)：
   MCP图像与生成输入一致、多份CSV精确额度及冻结复用、新目录
   只读元数据和全部计数直接合同通过；主机/完整引擎零警告，

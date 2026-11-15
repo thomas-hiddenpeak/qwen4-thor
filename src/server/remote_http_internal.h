@@ -26,6 +26,9 @@ class RemoteHttp {
   std::string_view Mime() const;
   std::string_view Header(std::string_view name) const;
   bool HasHeader(std::string_view name) const;
+  // Keep an existing legacy SSE connection while bounding the next operation.
+  // Begin a new bounded read without discarding buffered framing or bytes.
+  void BeginRead(std::chrono::steady_clock::time_point deadline);
   ObjectReply Read(std::string* bytes, bool* eof);
   ObjectReply ReadAll(std::string* bytes);
 

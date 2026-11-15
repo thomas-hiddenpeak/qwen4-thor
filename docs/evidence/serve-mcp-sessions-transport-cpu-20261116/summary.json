@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-16",
+  "task_type": "nonperformance_native_mcp_sessions",
+  "targeted_cpp_distinct": 30,
+  "targeted_cpp_invocations": 30,
+  "cpp_passed": 30,
+  "cpp_failed": 0,
+  "cpp_skipped": 0,
+  "ci_recovery_cpp_passed": 4,
+  "source_mutation_checks": 7,
+  "reviewed_source_anchors": 675,
+  "host_build": "final_pass_zero_warnings_one_fixture_compile_failure_preserved",
+  "engine_build": "passed_zero_warnings",
+  "engine_sha256": "10ee305755e43017016c7ddb14cd72acacfc5eb51260980d1a4a36619a6960ab",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "public_capability_delivered": false,
+  "master_goal": "active"
+}

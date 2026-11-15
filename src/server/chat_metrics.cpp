@@ -5,6 +5,7 @@
 #include <string>
 
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/mcp_transport.h"
 #ifdef Q4T_STARTUP_RESERVATION
 #include "q4t/server/cuda_quota_metrics.h"
 #endif
@@ -188,6 +189,7 @@ void ChatServer::HandleMetrics(int fd) {
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
   detail::PollRequestWorkers();
+  PollMcpSessions();
   gauge("q4t_structured_cleanup_pending",
         "Unconfirmed cleanup retains the process-wide structured capacity.",
         detail::GrammarCleanupPending() ? 1 : 0);

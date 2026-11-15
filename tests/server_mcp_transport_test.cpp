@@ -10,6 +10,7 @@
 #include <cstring>
 #include <filesystem>
 #include <mutex>
+#include <set>
 #include <sstream>
 #include <thread>
 
@@ -3059,5 +3060,426 @@ Q4T_TEST(responses_mcp_client_discovery_binds_new_credentials_and_real_call) {
   Q4T_CHECK(ExecutionOk(next.RunMcp(1, &waiting, {})) && !waiting &&
             server.calls == 1);
   Q4T_CHECK(ContinueExecution(&next, config) && FinishExecution(&next));
+  return true;
+}
+
+namespace {
+// A stateful remote: resources exist only in the session that ran the tool.
+struct StatefulMcp {
+  std::mutex mutex;
+  std::map<std::string, bool> sessions;
+  std::atomic<int> initialized{0}, dispatched{0}, read{0}, closed{0};
+  std::atomic<bool> expire_call{false};
+  Server server;
+  StatefulMcp() {
+    server.handler = [this](const Request& r, int fd, std::stop_token) {
+      const auto method = r.rpc.GetString("method");
+      std::lock_guard lock(mutex);
+      if (method == "initialize") {
+        const auto id =
+            "private-fixture-session-" + std::to_string(++initialized);
+        sessions[id] = false;
+        const auto result =
+            Object({{"protocolVersion", String("2025-06-18")},
+                    {"capabilities",
+                     Object({{"tools", Object()}, {"resources", Object()}})},
+                    {"serverInfo", Object({{"name", String("stateful")},
+                                           {"version", String("1")}})}});
+        Send(fd, Http(200, OutputJson(Rpc(r, result)), "application/json",
+                      "Mcp-Session-Id: " + id + "\r\n"));
+        return true;
+      }
+      const auto header = r.headers.find("mcp-session-id");
+      if (header == r.headers.end() || !sessions.contains(header->second) ||
+          !r.headers.contains("mcp-protocol-version") ||
+          r.headers.at("mcp-protocol-version") != "2025-06-18") {
+        Send(fd, Http(404));
+        return true;
+      }
+      if (r.verb == "DELETE") {
+        ++closed;
+        sessions.erase(header->second);
+        Send(fd, Http(204));
+        return true;
+      }
+      if (method == "tools/call") {
+        ++dispatched;
+        if (expire_call.exchange(false)) {
+          sessions.erase(header->second);
+          Send(fd, Http(404));
+          return true;
+        }
+        sessions[header->second] = true;
+        const auto result = Object(
+            {{"content", Array({Object({{"type", String("resource_link")},
+                                        {"uri", String("resource://owned")},
+                                        {"name", String("result")}})})}});
+        Send(fd, Http(200, OutputJson(Rpc(r, result))));
+        return true;
+      }
+      if (method == "resources/read") {
+        ++read;
+        if (!sessions[header->second]) {
+          Send(fd, Http(409));
+          return true;
+        }
+        const auto result = Object(
+            {{"contents",
+              Array({Object({{"uri", String("resource://owned")},
+                             {"text", String("same session resource")}})})}});
+        Send(fd, Http(200, OutputJson(Rpc(r, result))));
+        return true;
+      }
+      return false;
+    };
+  }
+  ~StatefulMcp() { CloseMcpSessions(); }
+  ObjectReply Invoke(
+      McpSession& session, McpTransportReceipt& receipt,
+      std::string_view method = "tools/list", BinaryAccess access = Access(),
+      std::function<ObjectReply()> permit = [] { return ObjectReply{}; }) {
+    return InvokeMcp(access, server.Endpoint(), server.Options(), method,
+                     method == "tools/list" ? Object()
+                     : method == "resources/read"
+                         ? Object({{"uri", String("resource://owned")}})
+                         : Call(),
+                     permit, &receipt, {}, &session);
+  }
+};
+bool BreakMcpOwner() {
+  Server stalled;
+  stalled.handler = [](const Request&, int, std::stop_token stop) {
+    Stall(stop);
+    return true;
+  };
+  auto access = Access();
+  access.deadline = Clock::now() + 80ms;
+  McpTransportReceipt receipt;
+  return Invoke(stalled, &receipt, "tools/list", {}, access).http_status == 408;
+}
+}  // namespace
+
+Q4T_TEST(mcp_session_stateful_list_call_resource_and_private_checkpoint) {
+  StatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  int saved = 0;
+  session.checkpoint = [&](const Json& state) {
+    ++saved;
+    if (!state.GetString("session_id")
+             .starts_with("private-fixture-session-") ||
+        state.GetString("binding").size() != 64)
+      return Error(500, "fixture_invalid", "Missing private state");
+    return ObjectReply{};
+  };
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  const auto identity = session.state.GetString("id");
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  Q4T_CHECK(!receipt.outcome_unknown && receipt.call_permitted);
+  session.allow_new = false;
+  Q4T_CHECK(remote.Invoke(session, receipt, "resources/read").ok());
+  Q4T_CHECK(session.state.GetString("id") == identity && saved == 3 &&
+            remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1 && remote.closed == 0);
+  Q4T_CHECK(OutputJson(receipt.result).find("private-fixture-session-") ==
+            std::string::npos);
+  Q4T_CHECK(CloseMcpSessions() && remote.closed == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_session_binding_rejects_scope_target_credentials_and_policy) {
+  StatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  const auto requests = remote.server.Requests().size();
+  for (int change = 0; change < 4; ++change) {
+    auto access = Access();
+    auto endpoint = remote.server.Endpoint();
+    auto options = remote.server.Options();
+    auto changed = session;
+    if (change == 0) access.scope = "another-client";
+    if (change == 1) endpoint.url += "?different=target";
+    if (change == 2) endpoint.authorization = "different-credential";
+    if (change == 3) options.timeout_ms -= 1;
+    const auto result = InvokeMcp(access, endpoint, options, "tools/list",
+                                  Object(), {}, &receipt, {}, &changed);
+    Q4T_CHECK(result.code == "mcp_session_binding_changed");
+  }
+  Q4T_CHECK(remote.server.Requests().size() == requests);
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  return true;
+}
+
+Q4T_TEST(mcp_session_unconfirmed_checkpoint_cannot_dispatch) {
+  for (const bool unknown : {false, true}) {
+    StatefulMcp remote;
+    McpSession session;
+    McpTransportReceipt receipt;
+    Q4T_CHECK(remote.Invoke(session, receipt).ok());
+    session.checkpoint = [=](const Json&) {
+      auto result = Error(503, "fixture_storage_failed", "No commit receipt");
+      result.commit_unknown = unknown;
+      return result;
+    };
+    const auto result = remote.Invoke(session, receipt, "tools/call");
+    Q4T_CHECK(!result.ok() && result.commit_unknown == unknown &&
+              !receipt.call_permitted && remote.dispatched == 0);
+    session.checkpoint = {};
+    Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+    Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1);
+  }
+  return true;
+}
+
+Q4T_TEST(mcp_session_worker_loss_restores_modern_without_reinitializing) {
+  StatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  const auto identity = session.state.GetString("id");
+  Q4T_CHECK(BreakMcpOwner());
+  session.allow_new = false;
+  Q4T_CHECK(remote.Invoke(session, receipt, "resources/read").ok());
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 1 &&
+            remote.read == 1 && session.state.GetString("id") == identity);
+  return true;
+}
+
+Q4T_TEST(mcp_session_404_never_replays_and_next_independent_call_renews) {
+  StatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  const auto original = session.state.GetString("id");
+  remote.expire_call = true;
+  const auto failed = remote.Invoke(session, receipt, "tools/call");
+  Q4T_CHECK(failed.code == "mcp_http_error" && receipt.call_permitted &&
+            receipt.outcome_unknown && remote.dispatched == 1 &&
+            remote.initialized == 1 && session.state.GetBool("lost"));
+  auto resource = session;
+  resource.allow_new = false;
+  Q4T_CHECK(remote.Invoke(resource, receipt, "resources/read").code ==
+            "mcp_session_lost");
+  Q4T_CHECK(!receipt.call_permitted && remote.read == 0);
+  Q4T_CHECK(BreakMcpOwner());
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  Q4T_CHECK(remote.initialized == 2 && remote.dispatched == 2 &&
+            session.state.GetString("id") != original);
+  return true;
+}
+
+Q4T_TEST(mcp_session_expiry_is_bounded_and_resources_do_not_migrate) {
+  for (const bool absolute : {false, true}) {
+    StatefulMcp remote;
+    McpSession session;
+    if (absolute)
+      session.lifetime_ms = 120;
+    else
+      session.idle_ms = 120;
+    McpTransportReceipt receipt;
+    Q4T_CHECK(remote.Invoke(session, receipt).ok());
+    const auto original = session.state.GetString("id");
+    std::this_thread::sleep_for(160ms);
+    auto resource = session;
+    resource.allow_new = false;
+    Q4T_CHECK(remote.Invoke(resource, receipt, "resources/read").code ==
+              "mcp_session_lost");
+    Q4T_CHECK(remote.initialized == 1 && !receipt.call_permitted);
+    Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+    Q4T_CHECK(remote.initialized == 2 && remote.dispatched == 1 &&
+              session.state.GetString("id") != original);
+  }
+  return true;
+}
+
+Q4T_TEST(mcp_session_modern_cache_eviction_keeps_original_remote_session) {
+  StatefulMcp remote;
+  std::vector<McpSession> sessions(7);
+  McpTransportReceipt receipt;
+  for (auto& session : sessions)
+    Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  Q4T_CHECK(remote.initialized == 7 && !remote.closed);
+  Q4T_CHECK(remote.Invoke(sessions.front(), receipt, "tools/call").ok());
+  Q4T_CHECK(remote.initialized == 7 && remote.dispatched == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_session_busy_exchange_does_not_queue_or_block_other_domains) {
+  StatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  std::atomic<bool> entered{false}, release{false};
+  ObjectReply first;
+  std::jthread owner([&] {
+    McpTransportReceipt result;
+    first = remote.Invoke(session, result, "tools/call", Access(), [&] {
+      entered = true;
+      while (!release.load()) std::this_thread::sleep_for(1ms);
+      return ObjectReply{};
+    });
+  });
+  ScopeExit finish([&] {
+    release = true;
+    owner.join();
+  });
+  const auto until = Clock::now() + 1s;
+  while (!entered && Clock::now() < until) std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(entered);
+  McpSession another;
+  const auto start = Clock::now();
+  Q4T_CHECK(remote.Invoke(another, receipt).code == "mcp_worker_capacity");
+  Q4T_CHECK(Clock::now() - start < 100ms && !CloseMcpSessions());
+  GrammarControl control;
+  control.domain = IsolatedWorkerDomain::kGrammar;
+  std::unique_ptr<detail::GrammarProcess> worker;
+  Q4T_CHECK(detail::GrammarProcess::Start("--cache-fixture-descriptors",
+                                          control, &worker));
+  char value = 0;
+  Q4T_CHECK(worker->Transfer(&value, 1, false, Clock::now() + 1s) &&
+            value == 'x');
+  worker.reset();
+  release = true;
+  owner.join();
+  finish.Release();
+  Q4T_CHECK(first.ok() && remote.dispatched == 1);
+  return true;
+}
+
+namespace {
+struct LegacyStatefulMcp {
+  std::mutex mutex;
+  std::map<std::string, int> streams;
+  std::set<std::string> called;
+  std::atomic<int> initialized{0}, dispatched{0}, read{0};
+  Server server;
+  LegacyStatefulMcp() {
+    server.handler = [this](const Request& r, int fd, std::stop_token stop) {
+      if (r.target == "/mcp" && r.verb == "POST") {
+        Send(fd, Http(405));
+        return true;
+      }
+      if (r.verb == "GET") {
+        std::string target;
+        {
+          std::lock_guard lock(mutex);
+          target = "/messages?session=" + std::to_string(++initialized);
+          streams[target] = fd;
+        }
+        Send(fd,
+             "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
+             "Transfer-Encoding: chunked\r\n\r\n");
+        Chunk(fd, "event: endpoint\ndata: " + target + "\n\n");
+        Stall(stop);
+        return true;
+      }
+      std::lock_guard lock(mutex);
+      if (!streams.contains(r.target)) {
+        Send(fd, Http(404));
+        return true;
+      }
+      Send(fd, Http(202));
+      if (!r.rpc.Find("id")) return true;
+      Json result;
+      const auto method = r.rpc.GetString("method");
+      if (method == "initialize") {
+        result = Object(
+            {{"protocolVersion", String("2024-11-05")},
+             {"capabilities",
+              Object({{"tools", Object()}, {"resources", Object()}})},
+             {"serverInfo",
+              Object({{"name", String("legacy")}, {"version", String("1")}})}});
+      } else if (method == "tools/list") {
+        result = Object({{"tools", Array({Tool()})}});
+      } else if (method == "tools/call") {
+        ++dispatched;
+        called.insert(r.target);
+        result =
+            Object({{"content",
+                     Array({Object({{"type", String("resource_link")},
+                                    {"uri", String("resource://legacy-owned")},
+                                    {"name", String("result")}})})}});
+      } else if (method == "resources/read" && called.contains(r.target)) {
+        ++read;
+        result = Object(
+            {{"contents",
+              Array({Object({{"uri", String("resource://legacy-owned")},
+                             {"text", String("original legacy session")}})})}});
+      }
+      Chunk(streams.at(r.target),
+            "event: message\ndata: " + OutputJson(Rpc(r, result)) + "\n\n");
+      return true;
+    };
+  }
+  ~LegacyStatefulMcp() { CloseMcpSessions(); }
+  ObjectReply Invoke(McpSession& session, McpTransportReceipt& receipt,
+                     std::string_view method = "tools/list",
+                     BinaryAccess access = Access()) {
+    return InvokeMcp(
+        access, server.Endpoint(), server.Options(), method,
+        method == "tools/list" ? Object()
+        : method == "resources/read"
+            ? Object({{"uri", String("resource://legacy-owned")}})
+            : Call(),
+        [] { return ObjectReply{}; }, &receipt, {}, &session);
+  }
+};
+}  // namespace
+
+Q4T_TEST(mcp_session_legacy_reuses_stream_with_each_operation_deadline) {
+  LegacyStatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  auto first = Access();
+  first.deadline = Clock::now() + 1s;
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/list", first).ok());
+  std::this_thread::sleep_until(first.deadline + 20ms);
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  session.allow_new = false;
+  Q4T_CHECK(remote.Invoke(session, receipt, "resources/read").ok());
+  Q4T_CHECK(receipt.legacy_sse && remote.initialized == 1 &&
+            remote.dispatched == 1 && remote.read == 1);
+  return true;
+}
+
+Q4T_TEST(mcp_session_legacy_loss_rejects_old_resources_but_allows_new_call) {
+  LegacyStatefulMcp remote;
+  McpSession session;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(remote.Invoke(session, receipt).ok());
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  const auto original = session.state.GetString("id");
+  Q4T_CHECK(BreakMcpOwner());
+  auto resource = session;
+  resource.allow_new = false;
+  Q4T_CHECK(remote.Invoke(resource, receipt, "resources/read").code ==
+            "mcp_session_lost");
+  Q4T_CHECK(!receipt.call_permitted && !remote.read && remote.initialized == 1);
+  Q4T_CHECK(remote.Invoke(session, receipt, "tools/call").ok());
+  Q4T_CHECK(remote.initialized == 2 && remote.dispatched == 2 &&
+            session.state.GetString("id") != original);
+  return true;
+}
+
+Q4T_TEST(mcp_session_legacy_capacity_is_per_scope_and_frees_on_idle) {
+  LegacyStatefulMcp remote;
+  McpTransportReceipt receipt;
+  std::vector<McpSession> sessions(5);
+  for (size_t i = 0; i < 4; ++i) {
+    sessions[i].idle_ms = 500;
+    Q4T_CHECK(remote.Invoke(sessions[i], receipt).ok());
+  }
+  Q4T_CHECK(remote.Invoke(sessions.back(), receipt).code ==
+            "mcp_session_capacity");
+  Q4T_CHECK(remote.initialized == 4 && !receipt.call_permitted);
+  McpSession other;
+  auto access = Access();
+  access.scope = "client:separate-scope";
+  Q4T_CHECK(remote.Invoke(other, receipt, "tools/list", access).ok());
+  std::this_thread::sleep_for(550ms);
+  Q4T_CHECK(remote.Invoke(sessions.back(), receipt).ok());
+  Q4T_CHECK(remote.initialized == 6);
   return true;
 }
