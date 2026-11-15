@@ -39,6 +39,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+- [原生隧道broker 16项CPU通过](evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md)：
+  单次取走、精确实例/token/作用域、未知不重放、进度/终态与容量
+  已验证；7项来源负控、主机/完整引擎零警告通过。映射远端CI成功，
+  0GPU、rev126保持；继续HTTP/实际MCP/私网agent接线与完整交付。
+
+- [原生MCP反向隧道](SERVE_MCP_TUNNEL_2026-11-16.md)继续实施：
+  固定官方wire来源，先补有界broker/精确拥有者，再接原生入口与
+  私网agent；尚未完成或验证，0GPU、rev126保持。
+
 - [MCP部署映射29项CPU最终通过](evidence/serve-mcp-mapping-cpu-20261116/README.md)：
   独立网络/作用域、原审批/资源目标、离线冻结及程序/Batch实际HTTP
   已验证；执行策略快照遗漏已修复，首次3项失败保留。8项原生

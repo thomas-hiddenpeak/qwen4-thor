@@ -1,0 +1,4 @@
+[PASS] mcp_tunnel_concurrent_handoff_is_once_and_fifo_with_channels
+[PASS] mcp_tunnel_poll_envelope_and_large_rpc_error_stay_within_budgets
+[PASS] mcp_tunnel_known_result_survives_collection_and_stop_for_its_waiter
+3 tests, 3 passed, 0 failed, 0 skipped

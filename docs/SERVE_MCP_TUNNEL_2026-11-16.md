@@ -1,0 +1,80 @@
+# 原生 MCP 反向隧道接入
+
+沿用 A07/A11/A12 与 R01/R03/Q01—Q03，总目标持续推进。HTTP部署
+映射已完成CPU验证（50bef003），它连接已存在的MCP适配入口；本组
+补齐私网主动连接的传输，不能以把tunnel_id改名为URL作为完成。
+
+## 固定来源与职责
+
+参考 OpenAI tunnel-client `fb6c47fbdf156451137e2c00a55d485be42f03a3`
+的[协议说明](https://github.com/openai/tunnel-client/blob/fb6c47fbdf156451137e2c00a55d485be42f03a3/docs/protocol.md)
+及[OpenAPI](https://github.com/openai/tunnel-client/blob/fb6c47fbdf156451137e2c00a55d485be42f03a3/docs/openapi.json)，
+Apache-2.0。源码及许可快照仅在`.q4t-work/serve-mcp-20261115/`
+`tunnel-reference-fb6c47fb`，有逐文件SHA256。当前学习协议，不复制
+其Go实现、不新增Go/Cloudflare程序运行依赖；后续如移植代码则
+先保留对应许可与NOTICE。README登记参考来源。
+
+q4t拥有原生broker、入口路由和可选私网agent。既有远端MCP仍走
+隔离传输，HTTP映射仍可选择已部署外部适配器。隧道是工具数据源
+能力；禁用或失能不改变模型健康，也不能触发模型/整树自动重启。
+控制面组织/账单、Cloudflare托管等属于G00待决云管理范围，不因
+协议参考而隐式引入这些外部服务。
+
+## 实施出口
+
+1. **有界broker与固定wire合同。** 认证调用方、授权agent、目标
+   generation分别绑定。任务只被poll一次；响应由原request_id与
+   shard_token确认。处理中断/取走后丢失不重新入队；关闭唤醒等待。
+   所有容量、字节、等待和保留有硬上限，不保存请求回调/FD到会话。
+2. **原生入口与实际MCP传输。** GET metadata/poll、POST response，
+   已有TLS/API Key/CIDR/前缀能力复用。私网凭据只作为受保护任务
+   内容传递；agent凭据与用户MCP OAuth分离。actual tools/list→call→
+   resources/read通过原会话/权限链执行，旧审批不可随映射迁移。
+3. **自有agent与运行生命周期。** 在可达私网MCP的一侧主动访问
+   q4t控制面；HTTP/SSE会话、JSON-RPC通知/终态、DELETE与deadline
+   保持；结果上传可确认但外部工具不能重放。退出/失联有明确状态，
+   同一有状态绑定的agent实例必须有独占/亲和约束，不能随机分发
+   初始化与后续操作给不同进程。第三方客户端仅作可选互操作。
+4. **交付接线。** 策略、封包、原生命令、健康投影、真实业务/SDK、
+   恢复资格与可回退发行/main；完成后继续所有master任务。
+
+## Broker与权限边界
+
+- 路由配置由管理员提供，调用客户与agent客户分别精确授权，不能
+  根据未认证body或headers建立身份。HTTP映射策略与本地隧道配置
+  使用可区分的transport，旧HTTP配置保持语义；原目标指纹包括
+  传输类型、ID及generation，不包含轮换凭据。
+- 请求携带原JSON-RPC及MCP相关头，不能携带可选择任意私网目标的
+  URL/命令。私网agent使用自己的固定目标和网络策略。策略不可由
+  model/tool arguments覆盖。
+- 排队与在途总数、单客户数、聚合字节、单请求/响应、进度数量和
+  最大期限分别约束；等待使用单调时钟，通知不延长原期限。配置
+  超限在入队前拒绝，不能靠后续大分配失败保护统一RAM。
+- Poll遵守channel过滤；原request_id和独立随机shard_token绑定
+  同一任务。错误agent/token不能完成别人的任务，未poll不能答复。
+  终态重复上传最多确认同一已知结果，不能重新执行或替换结果。
+- 精确合法MCP错误/结构化数据保持；无法交付的已认证终态用固定
+  错误有界完成，不把任意远端错误文本写入指标/普通日志。
+- 关闭、取消和期限均停止本任务等待；记录是否已交给agent，接入
+  现有MCP未知结果/不重放合同。进程重启不重放内存队列中的工具。
+  远端会话存活与原资源权限继续由已实现的加密会话链证明。
+
+## Wire与必要验证
+
+采用固定来源中的plural `/v1/tunnels/{id}`、`/poll`、`/response`；
+response支持jsonrpc_response、jsonrpc_notify、notify_ack及
+session_termination_response；channel缺省main。可选诊断/timing
+不影响任务权限，未知可选元数据不能破坏合法主业务。
+
+先冻结并成组验证broker的真实并发取走、精确响应、取消/超时、
+失联/关闭、作用域/token/generation、超限和进度终态边界。接线后
+用本机真实HTTP/HTTPS私网MCP与原生agent验证列表/调用/资源、审批
+和重启不重放；再做必要官方SDK/真实模型业务。非性能任务不跑
+完整性能/全模型质量矩阵，已验且身份未变的证据复用；GPU通过
+严格同一阶段租约，当前尚未启动GPU、rev126默认保持。
+
+内部broker已完成[16项针对性CPU验证](evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md)。
+HTTP/实际MCP与agent仍在接线，尚无完整隧道业务/发行证据，不能记为已完成。
+保留内容预算含封套、原RPC ID及失败收尾空间，不等于物理RAM硬限额。
+无外部IO的broker复用已认证调用方；接线继续保持隔离worker的审批/
+会话链与单次派发，不能另建绕过原权限的执行入口。

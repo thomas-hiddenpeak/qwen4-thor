@@ -1181,7 +1181,10 @@
         "deployment_mapping_evidence": "evidence/serve-mcp-mapping-cpu-20261116/README.md",
         "deployment_mapping_cpp_passed": 29,
         "deployment_mapping_python_passed": 8
-      }
+      },
+      "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
+      "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
+      "mcp_tunnel_delivery": "in_progress_http_transport_agent_business_release_pending"
     },
     {
       "id": "A08",
@@ -1994,7 +1997,10 @@
         "deployment_mapping_evidence": "evidence/serve-mcp-mapping-cpu-20261116/README.md",
         "deployment_mapping_cpp_passed": 29,
         "deployment_mapping_python_passed": 8
-      }
+      },
+      "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
+      "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
+      "mcp_tunnel_delivery": "in_progress_http_transport_agent_business_release_pending"
     },
     {
       "id": "A12",

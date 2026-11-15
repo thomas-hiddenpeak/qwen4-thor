@@ -251,6 +251,7 @@ set(protocol_inputs
   src/server/file_fetch_http.cpp
   include/q4t/server/mcp_transport.h
   include/q4t/server/mcp_policy.h
+  include/q4t/server/mcp_tunnel.h
   include/q4t/server/mcp_content.h
   src/server/mcp_content.cpp
   src/server/mcp_projection.cpp
@@ -269,6 +270,7 @@ set(protocol_inputs
   src/server/mcp_transport_internal.h
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
+  src/server/mcp_tunnel.cpp
   src/server/mcp_transport.cpp
   src/server/remote_http_internal.h
   include/q4t/server/file_document.h

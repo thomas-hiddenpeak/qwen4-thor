@@ -1792,8 +1792,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "888bebadfd603e00618f0bbb03d23e538efed4462327937f93dc566d081a66e5",
-    "cmake/ChatProtocolIdentity.cmake": "4cf2271e68a349ff9f6252941db94260c3c8c122be27dafe9ca9369cb82761c9",
+    "CMakeLists.txt": "7910ac41e2fd63ae8767e51a44a95d9e4ab66cdf2894630a12ab8b74e82e7b19",
+    "cmake/ChatProtocolIdentity.cmake": "51e88faf24fa58191939ff74c7e283807b9ee6ce7530f4040c18879bad068b0f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1902,6 +1902,7 @@
     "include/q4t/server/mcp_content.h": "80f421825338d9b8574be9e8beb54e2d84ebe7a4303c8471dcab40744a21a223",
     "include/q4t/server/mcp_policy.h": "81d119e601bf50c492d70f4a058775eaf6a85ff4282ea9f99874cba0d20c37e1",
     "include/q4t/server/mcp_transport.h": "a7cad04f748ade54bcfdff2cb7366ff5c348cf265829fd6964edb4e5cad6c670",
+    "include/q4t/server/mcp_tunnel.h": "d393d5dcd2a8c0cbf8af3e6c7fdcc386568ec2c4c07eac7039cc8504e466ed9a",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
@@ -2162,6 +2163,7 @@
     "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
     "src/server/mcp_transport.cpp": "e74ed5f49a1a42ff6803c5edfbd1bc9aea128bc311a4f60c6b257e461d6397e1",
     "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
+    "src/server/mcp_tunnel.cpp": "ecf5c00244240cbba50e5a72a572030152a378c80dbc94c60eb39bdbf8aea513",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",

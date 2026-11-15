@@ -721,6 +721,7 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
+| [OpenAI tunnel-client](https://github.com/openai/tunnel-client) | Apache-2.0；参考固定版本的MCP隧道wire合同，原生实现进行中，不引入其程序作为核心依赖，见[接入计划](docs/SERVE_MCP_TUNNEL_2026-11-16.md) |
 | [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Apache-2.0专用嵌入权重及架构/分词合同；原生后端已完成针对性业务短验，权重不随代码仓库分发，见[实现与验收](docs/SERVE_NATIVE_EMBEDDING_BACKEND_2026-11-11.md) |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
