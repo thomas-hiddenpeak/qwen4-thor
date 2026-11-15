@@ -98,7 +98,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_tunnel_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_tunnel_api_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_content.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_projection.cpp

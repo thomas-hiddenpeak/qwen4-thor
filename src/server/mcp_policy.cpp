@@ -56,10 +56,12 @@ Status ParseMcpDeploymentPolicy(std::string_view raw,
     if (!targets->IsArray() || targets->array.size() > 128) return Invalid();
     std::set<std::pair<std::string, std::string>> ids;
     for (const auto& item : targets->array) {
-      if (!InputFields(item, {"kind", "id", "url", "generation", "scopes"},
+      if (!InputFields(item,
+                       {"kind", "id", "url", "generation", "scopes",
+                        "transport", "agents", "channel"},
                        &field, "target") ||
           !Text(item.Find("kind"), 32) || !Text(item.Find("id"), 256) ||
-          !Text(item.Find("generation"), 128) || !Text(item.Find("url"), 8192))
+          !Text(item.Find("generation"), 128))
         return Invalid();
       const auto kind = item.GetString("kind");
       const auto id = item.GetString("id");
@@ -75,15 +77,43 @@ Status ParseMcpDeploymentPolicy(std::string_view raw,
                       {kind, String(id)}}),
               &checked, &error))
         return Invalid();
-      file_detail::Url url;
-      if (!file_detail::ParseUrl(item.GetString("url"), &url) ||
-          (url.scheme == "http" && !next.fetch.allow_http))
+      McpDeploymentTarget target;
+      target.kind = kind;
+      target.id = id;
+      target.generation = item.GetString("generation");
+      target.transport = item.GetString("transport", "http");
+      if (item.Has("transport") && !Text(item.Find("transport"), 32))
         return Invalid();
+      if (target.transport == "http") {
+        file_detail::Url url;
+        if (!Text(item.Find("url"), 8192) || item.Has("agents") ||
+            item.Has("channel") ||
+            !file_detail::ParseUrl(item.GetString("url"), &url) ||
+            (url.scheme == "http" && !next.fetch.allow_http))
+          return Invalid();
+        target.url = url.Text();
+      } else if (target.transport == "native") {
+        if (kind != "tunnel_id" || !ValidId(id) || item.Has("url"))
+          return Invalid();
+        const auto* agents = item.GetArray("agents");
+        if (!agents || agents->array.empty() || agents->array.size() > 128)
+          return Invalid();
+        std::set<std::string> unique;
+        for (const auto& agent : agents->array) {
+          if (!Text(&agent, 512) || agent.str == "*" ||
+              !unique.insert(agent.str).second)
+            return Invalid();
+          target.agents.push_back(agent.str);
+        }
+        if (item.Has("channel") && !Text(item.Find("channel"), 128))
+          return Invalid();
+        target.channel = item.GetString("channel", "main");
+      } else {
+        return Invalid();
+      }
       const auto* scopes = item.GetArray("scopes");
       if (!scopes || scopes->array.empty() || scopes->array.size() > 128)
         return Invalid();
-      McpDeploymentTarget target{
-          kind, id, url.Text(), item.GetString("generation"), {}};
       std::set<std::string> unique;
       for (const auto& scope : scopes->array) {
         if (!Text(&scope, 512) || scope.str == "*" ||
@@ -147,6 +177,9 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
     return Error(500, "mcp_preparation_invalid", "Missing MCP definition");
   if (definition->target_kind == "server_url") return {};
   definition->credentials.url.clear();
+  definition->credentials.tunnel_id.clear();
+  definition->credentials.tunnel_generation.clear();
+  definition->credentials.tunnel_channel = "main";
   definition->target_binding.clear();
   if (policy)
     for (const auto& target : policy->targets) {
@@ -157,15 +190,25 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
                                      scope) == target.scopes.end())
         return Error(403, "mcp_target_denied",
                      "MCP route is outside the authenticated scope");
+      auto identity = Object({{"kind", String(target.kind)},
+                              {"id", String(target.id)},
+                              {"url", String(target.url)},
+                              {"generation", String(target.generation)}});
+      // Preserve old HTTP route identities; changing transport or channel is
+      // an actual target change, not a credential/policy rotation.
+      if (target.transport == "native") {
+        Set(&identity, "transport", String("native"));
+        Set(&identity, "channel", String(target.channel));
+      }
       std::string binding;
-      if (!InputValueIdentity(
-              Object({{"kind", String(target.kind)},
-                      {"id", String(target.id)},
-                      {"url", String(target.url)},
-                      {"generation", String(target.generation)}}),
-              &binding))
+      if (!InputValueIdentity(identity, &binding))
         return Error(500, "mcp_preparation_invalid", "Invalid MCP route");
       definition->credentials.url = target.url;
+      if (target.transport == "native") {
+        definition->credentials.tunnel_id = target.id;
+        definition->credentials.tunnel_generation = target.generation;
+        definition->credentials.tunnel_channel = target.channel;
+      }
       definition->target_binding = std::move(binding);
       return {};
     }
@@ -173,11 +216,27 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
                "MCP target has no configured deployment route");
 }
 
+std::vector<McpTunnelRoute> McpDeploymentTunnelRoutes(
+    const McpDeploymentPolicy* policy) {
+  std::vector<McpTunnelRoute> routes;
+  if (policy)
+    for (const auto& target : policy->targets)
+      if (target.transport == "native")
+        routes.push_back({target.id,
+                          target.generation,
+                          target.scopes,
+                          target.agents,
+                          {target.channel}});
+  return routes;
+}
+
 Json McpDeploymentPolicyDescription(const McpDeploymentPolicy* policy) {
   return Object({{"profile", String("q4t-mcp-deployment-policy-v1")},
                  {"configured", Boolean(policy && !policy->sha256.empty())},
                  {"sha256", policy ? String(policy->sha256) : Json()},
                  {"target_count", Number(policy ? policy->targets.size() : 0)},
+                 {"native_tunnel_count",
+                  Number(McpDeploymentTunnelRoutes(policy).size())},
                  {"request_override", Boolean(false)},
                  {"redirects", Boolean(false)}});
 }

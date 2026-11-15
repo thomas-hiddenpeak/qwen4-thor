@@ -41,6 +41,7 @@ namespace q4t::server {
 
 ChatServer::~ChatServer() {
   RequestStop();
+  if (mcp_tunnels_) mcp_tunnels_->Stop();
   // Stop the bounded policy worker before destroying queue/client state.
   client_policy_admin_.reset();
   state_key_admin_.reset();
@@ -151,6 +152,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   } else {
     mcp_policy_.reset();
   }
+  mcp_tunnels_ = std::make_shared<McpTunnelBroker>();
+  auto tunnel_routes = McpDeploymentTunnelRoutes(mcp_policy_.get());
+  mcp_tunnels_enabled_ = !tunnel_routes.empty();
+  const auto tunnel_status = mcp_tunnels_->Configure(std::move(tunnel_routes));
+  if (!tunnel_status) return tunnel_status;
   FileInputPolicy file_policy;
   if (!opts.file_input_policy_file.empty()) {
     const auto status =

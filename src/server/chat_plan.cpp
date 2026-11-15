@@ -399,7 +399,12 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   auto capacities = config.capacities;
   if (capacities.empty()) capacities.assign(config.max_seq, config.max_len);
   const text::TokenizerLimits tokenizer;
-  const int public_handlers = business_connections + kOperationsConnections;
+  const bool native_tunnels =
+      !McpDeploymentTunnelRoutes(config.mcp_policy.get()).empty();
+  const int tunnel_poll = native_tunnels ? kTunnelPollConnections : 0;
+  const int tunnel_response = native_tunnels ? kTunnelResponseConnections : 0;
+  const int public_handlers = business_connections + kOperationsConnections +
+                              tunnel_poll + tunnel_response;
   const int operations_handlers =
       requested.operations_port ? kOperationsConnections : 0;
   std::string aliases = "[";
@@ -594,7 +599,11 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          std::to_string(kReservedControlConnections) +
          R"(,"observation_connections":)" +
          std::to_string(kReservedObservationConnections) +
-         R"(,"public_connection_handlers":)" + std::to_string(public_handlers) +
+         R"(,"tunnel_poll_connections":)" + std::to_string(tunnel_poll) +
+         R"(,"tunnel_response_connections":)" +
+         std::to_string(tunnel_response) + R"(,"tunnel_body_bytes":)" +
+         std::to_string(17U << 20) + R"(,"public_connection_handlers":)" +
+         std::to_string(public_handlers) +
          R"(,"operations_connection_handlers":)" +
          std::to_string(operations_handlers) + R"(,"connection_handlers":)" +
          std::to_string(public_handlers + operations_handlers) +

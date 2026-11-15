@@ -2709,3 +2709,45 @@ Q4T_TEST(
             admission.RateUsage(0).tokens == 0);
   return true;
 }
+
+Q4T_TEST(
+    client_tunnel_poll_response_and_generation_have_independent_bounded_leases) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto identity = admission.Authenticate("alpha", kSecret);
+  ClientLease data1, data2, data3, control, cancel, poll, poll_denied;
+  ClientLease response1, response2, response3, transferred;
+  Q4T_CHECK(data1.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(data2.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(!data3.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(control.Acquire(admission, identity, ClientLane::kControl));
+  Q4T_CHECK(cancel.Acquire(admission, identity, ClientLane::kCancel));
+  const auto acquire = [&](std::string method, std::string path,
+                           ClientLease* lease) {
+    HttpRequestHeaders headers;
+    headers.client_id = "alpha";
+    headers.gateway_token = kSecret;
+    ClientIdentity current;
+    int status = 400;
+    return AdmitClientRequest(method, path, &headers, admission, lease,
+                              &current, &status);
+  };
+  Q4T_CHECK(acquire("GET", "/v1/tunnels/tunnel_a/poll?timeout_ms=0", &poll));
+  Q4T_CHECK(!acquire("GET", "/v1/tunnels/tunnel_a/poll", &poll_denied));
+  Q4T_CHECK(acquire("POST", "/v1/tunnels/tunnel_a/response", &response1));
+  Q4T_CHECK(acquire("POST", "/v1/tunnels/tunnel_a/response", &response2));
+  Q4T_CHECK(!acquire("POST", "/v1/tunnels/tunnel_a/response", &response3));
+  Q4T_CHECK(poll.TransferTo(transferred) &&
+            transferred.Holds(identity, ClientLane::kTunnelPoll));
+  const auto usage = admission.Usage(0);
+  Q4T_CHECK(usage.tunnel_poll_active == 1 &&
+            usage.tunnel_response_active == 2 && usage.data_active == 2 &&
+            usage.control_active == 1 && usage.cancel_active == 1);
+  Q4T_CHECK(usage.tunnel_poll_rejected == 1 &&
+            usage.tunnel_response_rejected == 1);
+  const auto metrics = ClientPolicyMetrics(admission);
+  Q4T_CHECK(metrics.find("lane=\"tunnel_poll\"} 1") != metrics.npos &&
+            metrics.find("lane=\"tunnel_response\"} 2") != metrics.npos);
+  Q4T_CHECK(admission.RateUsage(0).requests == 0);
+  return true;
+}

@@ -257,6 +257,19 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
       seen_id = true;
       headers->request_id = value;
+    } else if (name == "x-tunnel-client-instance-id" ||
+               name == "x-tunnel-shard-token") {
+      auto& destination = name == "x-tunnel-client-instance-id"
+                              ? headers->tunnel_instance
+                              : headers->tunnel_shard_token;
+      if (!destination.empty() || value.empty() || value.size() > 128 ||
+          !std::all_of(value.begin(), value.end(), [](unsigned char c) {
+            return c >= 0x21 && c <= 0x7e;
+          })) {
+        headers->error_code = "invalid_tunnel_header";
+        return false;
+      }
+      destination = value;
     } else if (name == "x-q4t-client-id") {
       if (seen_client || !ValidClientId(value)) {
         headers->error_code = "invalid_client_header";
@@ -356,14 +369,17 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     headers->error_code = "invalid_body_stream_capacity";
     return false;
   }
-  const size_t route_limit = streaming ? stream->max_bytes :
-      (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
-              *path == "/v1/completions" || *path == "/v1/moderations" ||
-            *path == "/v1/embeddings" ||
-              IsResponsesTarget(*path) ||
-              IsConversationTarget(*path) || IsPromptTarget(*path) ||
-              IsUploadTarget(*path)
-          ? kChatBodyBytes : 4096);
+  const size_t route_limit =
+      streaming ? stream->max_bytes
+      : IsMcpTunnelResponse(*method, *path)
+          ? 4U << 20
+          : (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
+                     *path == "/v1/completions" || *path == "/v1/moderations" ||
+                     *path == "/v1/embeddings" || IsResponsesTarget(*path) ||
+                     IsConversationTarget(*path) || IsPromptTarget(*path) ||
+                     IsUploadTarget(*path)
+                 ? kChatBodyBytes
+                 : 4096);
   const size_t body_limit = std::min(route_limit, headers->body_limit);
   const size_t metadata_limit = streaming ? stream->max_metadata_bytes
                                            : kMaxHeader;

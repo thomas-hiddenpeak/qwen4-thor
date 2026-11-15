@@ -271,6 +271,7 @@ set(protocol_inputs
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
   src/server/mcp_tunnel.cpp
+  src/server/mcp_tunnel_api.cpp
   src/server/mcp_transport.cpp
   src/server/remote_http_internal.h
   include/q4t/server/file_document.h

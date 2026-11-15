@@ -59,4 +59,10 @@ class McpTunnelBroker {
   struct Impl;
   std::unique_ptr<Impl> impl_;
 };
+// Wire handler; authentication is supplied by native HTTP admission. Instance
+// and response token come from protected HTTP headers, never response JSON.
+ObjectReply HandleMcpTunnelRequest(
+    McpTunnelBroker& broker, const BinaryAccess& access,
+    std::string_view method, std::string_view target, const std::string& body,
+    std::string_view instance, std::string_view shard_token);
 }  // namespace q4t::server

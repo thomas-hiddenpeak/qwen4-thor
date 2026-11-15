@@ -92,7 +92,13 @@ class ClientIdentity {
   size_t index_ = kMaxClients;
 };
 
-enum class ClientLane { kData, kControl, kCancel };
+enum class ClientLane {
+  kData,
+  kControl,
+  kCancel,
+  kTunnelPoll,
+  kTunnelResponse
+};
 // Trusted execution origin, never selected by a public JSON/header field.
 // Each pool enforces the configured per-client minute limits independently.
 enum class ClientRateDomain { kOnline, kBatch };
@@ -104,6 +110,8 @@ struct ClientUsage {
   uint64_t control_rejected = 0;
   uint32_t cancel_active = 0;
   uint64_t cancel_rejected = 0;
+  uint32_t tunnel_poll_active = 0, tunnel_response_active = 0;
+  uint64_t tunnel_poll_rejected = 0, tunnel_response_rejected = 0;
 };
 
 using ClientClock = std::chrono::steady_clock;
@@ -204,12 +212,15 @@ class ClientAdmission {
     uint32_t data_finishing = 0;  // Protected by mutex; still charged.
     uint32_t control_finishing = 0;
     uint32_t cancel_finishing = 0;
+    uint32_t tunnel_poll_finishing = 0, tunnel_response_finishing = 0;
     std::atomic<uint32_t> data{0};
     std::atomic<uint32_t> control{0};
     std::atomic<uint32_t> cancel{0};
+    std::atomic<uint32_t> tunnel_poll{0}, tunnel_response{0};
     std::atomic<uint64_t> data_rejected{0};
     std::atomic<uint64_t> control_rejected{0};
     std::atomic<uint64_t> cancel_rejected{0};
+    std::atomic<uint64_t> tunnel_poll_rejected{0}, tunnel_response_rejected{0};
     bool window_started = false;
     ClientClock::time_point window;
     ClientRateUsage rate;

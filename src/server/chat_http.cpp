@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "object_protocol.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/mcp_transport.h"
 
@@ -109,8 +110,12 @@ void ChatServer::StartConnection(int fd, bool operations) {
   ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
   auto& handlers = operations ? operations_conns_ : public_conns_;
   const int limit =
-      operations ? kOperationsConnections
-                 : conn_cap_ + kControlConnections + kObservationConnections;
+      operations
+          ? kOperationsConnections
+          : conn_cap_ + kControlConnections + kObservationConnections +
+                (mcp_tunnels_enabled_
+                     ? kTunnelPollConnections + kTunnelResponseConnections
+                     : 0);
   auto& rejected = operations ? metrics_.operations_connection_rejections
                               : metrics_.connection_rejections;
   if (!AcquireHttpConnection(handlers, limit)) {
@@ -203,6 +208,7 @@ Status ChatServer::Run() {
         drain_until =
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
+        if (mcp_tunnels_) mcp_tunnels_->Stop();
         batches_.RequestStop();
         vector_jobs_.RequestStop();
         background_.RequestStop();
@@ -311,7 +317,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     const auto admit = [&] {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       const auto kind = ClassifyHttpConnection(method, path);
-      if (operations && kind == HttpConnectionClass::kBusiness) {
+      if (operations && kind != HttpConnectionClass::kControl &&
+          kind != HttpConnectionClass::kObservation) {
         failure_status = 404;
         headers.error_code = "route_not_found";
         headers.failure = HttpReceiveFailure::kRoute;
@@ -324,7 +331,12 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       context.SetClient(identity, &client_lease);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
-      if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
+      if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
+        lease.SelectBudget(tunnel_body_budget_);
+      if ((kind == HttpConnectionClass::kBusiness ||
+           kind == HttpConnectionClass::kTunnelPoll ||
+           kind == HttpConnectionClass::kTunnelResponse) &&
+          stop_requested_.load()) {
         failure_status = 503;
         headers.error_code = "server_draining";
         headers.failure = HttpReceiveFailure::kDraining;
@@ -333,12 +345,19 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       auto& control = operations ? operations_control_conns_ : control_conns_;
       auto& observation =
           operations ? operations_observation_conns_ : observation_conns_;
-      auto& counter = kind == HttpConnectionClass::kControl ? control
-                      : kind == HttpConnectionClass::kObservation
-                          ? observation
-                          : business_conns_;
+      auto& counter =
+          kind == HttpConnectionClass::kTunnelPoll ? tunnel_poll_conns_
+          : kind == HttpConnectionClass::kTunnelResponse
+              ? tunnel_response_conns_
+          : kind == HttpConnectionClass::kControl     ? control
+          : kind == HttpConnectionClass::kObservation ? observation
+                                                      : business_conns_;
       const int cap =
-          kind == HttpConnectionClass::kControl       ? kControlConnections
+          kind == HttpConnectionClass::kTunnelPoll
+              ? (mcp_tunnels_enabled_ ? kTunnelPollConnections : 0)
+          : kind == HttpConnectionClass::kTunnelResponse
+              ? (mcp_tunnels_enabled_ ? kTunnelResponseConnections : 0)
+          : kind == HttpConnectionClass::kControl     ? kControlConnections
           : kind == HttpConnectionClass::kObservation ? kObservationConnections
                                                       : conn_cap_;
       if (!AcquireHttpConnection(counter, cap)) {
@@ -435,10 +454,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" ||
-            path == "/v1/embeddings" ||
-        IsResponsesTarget(path) ||
+        path == "/v1/embeddings" || IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
-        IsPromptTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path)) {
+        IsPromptTarget(path) || IsBatchTarget(path) ||
+        IsVectorStoreTarget(path) || IsMcpTunnelTarget(path)) {
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
@@ -471,7 +490,34 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     dispatch_started = true;
     if (file_request)
       file_request->Serve(fd);
-    else
+    else if (IsMcpTunnelTarget(path)) {
+      const auto& client = context.Client();
+      const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
+                                         : "local:anonymous";
+      BinaryAccess access{scope,
+                          std::chrono::steady_clock::now() +
+                              std::chrono::milliseconds(request_deadline_ms_),
+                          [this, fd] {
+                            return stop_requested_.load() ||
+                                   detail::ClientConnectionFailed(fd);
+                          }};
+      const auto reply =
+          mcp_tunnels_ && client.Allowed()
+              ? HandleMcpTunnelRequest(*mcp_tunnels_, access, method, path,
+                                       body, headers.tunnel_instance,
+                                       headers.tunnel_shard_token)
+              : object_detail::Error(503, "mcp_tunnel_unavailable",
+                                     "Tunnel broker unavailable");
+      if (reply.ok())
+        SendSimple(fd, reply.http_status,
+                   reply.http_status == 204 ? "No Content" : "OK",
+                   reply.http_status == 204 ? "" : OutputJson(reply.value),
+                   "application/json", {access.deadline});
+      else
+        SendError(fd, reply.http_status, reply.ClientMessage(),
+                  {access.deadline}, reply.ClientCode(), {},
+                  reply.value.GetString("allow"));
+    } else
       Dispatch(fd, method, path, body);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
     if (access_log) {

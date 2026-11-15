@@ -12,6 +12,11 @@ struct McpEndpoint {
   // Private request credentials. Never place these in model inputs or logs.
   std::map<std::string, std::string> headers;
   std::string authorization;
+  // Deployment-resolved native transport, never copied from request headers.
+  // An HTTP URL and a native tunnel are mutually exclusive.
+  std::string tunnel_id{};
+  std::string tunnel_generation{};
+  std::string tunnel_channel = "main";
 };
 // Private, authenticated session state. Persist only inside sealed MCP
 // authority, never in public items, model input, metrics or ordinary logs.

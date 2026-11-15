@@ -1184,7 +1184,8 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "in_progress_http_transport_agent_business_release_pending"
+      "mcp_tunnel_delivery": "in_progress_mcp_worker_agent_business_release_pending",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md"
     },
     {
       "id": "A08",
@@ -2000,7 +2001,8 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "in_progress_http_transport_agent_business_release_pending"
+      "mcp_tunnel_delivery": "in_progress_mcp_worker_agent_business_release_pending",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md"
     },
     {
       "id": "A12",

@@ -179,3 +179,70 @@ Q4T_TEST(mcp_policy_serve_option_is_optional_and_transactional) {
   Q4T_CHECK(!ValidateServerOptions(options));
   return true;
 }
+
+Q4T_TEST(
+    mcp_policy_native_transport_has_distinct_authority_and_private_agents) {
+  McpDeploymentPolicy policy;
+  const auto raw = R"({"version":1,"targets":[{"kind":"tunnel_id",
+    "id":"tunnel_project","transport":"native","generation":"generation-1",
+    "scopes":["client:owner"],"agents":["client:private_agent"],"channel":"main"}]})";
+  Q4T_CHECK(ParseMcpDeploymentPolicy(raw, &policy));
+  const auto routes = McpDeploymentTunnelRoutes(&policy);
+  Q4T_CHECK(routes.size() == 1 && routes[0].callers[0] == "client:owner" &&
+            routes[0].agents[0] == "client:private_agent");
+  auto definition = Definition("tunnel_id", "tunnel_project");
+  Q4T_CHECK(
+      ResolveMcpDeploymentTarget(&policy, "client:owner", &definition).ok());
+  const auto native = definition.target_binding;
+  Q4T_CHECK(definition.credentials.url.empty() &&
+            definition.credentials.tunnel_id == "tunnel_project" &&
+            definition.credentials.tunnel_generation == "generation-1");
+  policy.targets[0].channel = "new-channel";
+  Q4T_CHECK(
+      ResolveMcpDeploymentTarget(&policy, "client:owner", &definition).ok());
+  Q4T_CHECK(definition.target_binding != native);
+  policy.targets[0].channel = "main";
+  policy.targets[0].agents = {"client:rotated-agent"};
+  Q4T_CHECK(
+      ResolveMcpDeploymentTarget(&policy, "client:owner", &definition).ok());
+  Q4T_CHECK(definition.target_binding == native);
+  const auto public_config =
+      OutputJson(McpDeploymentPolicyDescription(&policy));
+  Q4T_CHECK(public_config.find("rotated-agent") == public_config.npos &&
+            public_config.find("tunnel_project") == public_config.npos);
+  Q4T_CHECK(ParseMcpDeploymentPolicy(kPolicy, &policy));
+  Q4T_CHECK(
+      ResolveMcpDeploymentTarget(&policy, "client:owner", &definition).ok());
+  Q4T_CHECK(definition.credentials.tunnel_id.empty() &&
+            definition.credentials.tunnel_generation.empty() &&
+            definition.target_binding != native &&
+            !definition.credentials.url.empty());
+  Q4T_CHECK(McpDeploymentTunnelRoutes(&policy).empty());
+  return true;
+}
+
+Q4T_TEST(mcp_policy_native_rejects_ambiguous_transport_scope_and_channels) {
+  McpDeploymentPolicy policy;
+  const auto raw = R"({"version":1,"targets":[{"kind":"tunnel_id",
+    "id":"tunnel_project","transport":"native","generation":"generation-1",
+    "scopes":["client:owner"],"agents":["client:private_agent"]}]})";
+  Json original;
+  Q4T_CHECK(Parse(raw, &original) && ParseMcpDeploymentPolicy(raw, &policy));
+  for (auto patch :
+       {Object({{"url", String("https://unwanted.example")}}),
+        Object({{"agents", Array()}}),
+        Object({{"agents", Array({String("*")})}}),
+        Object({{"agents", Array({String("a"), String("a")})}}),
+        Object({{"transport", Boolean(true)}}),
+        Object({{"transport", String("other")}}), Object({{"channel", Json()}}),
+        Object({{"id", String("path/ambiguous")}}),
+        Object({{"kind", String("connector_id")},
+                {"id", String("connector_googledrive")}})}) {
+    auto changed = original;
+    for (const auto& [key, value] : patch.object)
+      Set(&Field(changed, "targets").array[0], key, value);
+    Q4T_CHECK(!ParseMcpDeploymentPolicy(OutputJson(changed), &policy));
+    Q4T_CHECK(policy.sha256 == Digest(raw));
+  }
+  return true;
+}

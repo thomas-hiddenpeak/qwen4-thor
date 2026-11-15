@@ -1221,6 +1221,33 @@
         "tests/server_vector_search_execution_test.cpp",
         "tools/serve_responses/test_vector_stores_transport.py"
       ]
+    },
+    "GET /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "GET /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "POST /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
     }
   },
   "whitelists": {
@@ -1792,8 +1819,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7910ac41e2fd63ae8767e51a44a95d9e4ab66cdf2894630a12ab8b74e82e7b19",
-    "cmake/ChatProtocolIdentity.cmake": "51e88faf24fa58191939ff74c7e283807b9ee6ce7530f4040c18879bad068b0f",
+    "CMakeLists.txt": "4e9a2318450ec564fa7876795869d44e4b1f6f37e5d70a4e5d68e8046689c30a",
+    "cmake/ChatProtocolIdentity.cmake": "46d564dbd44ce789053469467296370e3be1381be65dc94efc190c86cce86820",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1824,7 +1851,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "ec2f8f6d6f0ef42f39bcadf430afd03797ed2c3a727704d5abfc24f8c37ccd76",
+    "include/q4t/server/application_routes.h": "cc57af3a4ccd36f0cdb1088c6c1a7b5b4f24e040622658c34fd0bfa1caeb2d5e",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
     "include/q4t/server/batch_checkpoint.h": "ce3e49ef7d94b95d9b813c50e7fbc930c17a77f932437ed428ef17a93db659b9",
@@ -1848,12 +1875,12 @@
     "include/q4t/server/chat_plan.h": "9c852a7cb615503fea2d6860cd24c81db4bd5591fa2890c7487e17b36a282df2",
     "include/q4t/server/chat_prompt.h": "661ce8074d94bf3b07364ad067509d54ede6fdc43c5f45ef57c5784173772993",
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
-    "include/q4t/server/chat_server.h": "ce4359618cc02c190da152fe6962960312bddc8311bb7c9df8e6bfb405e3c664",
+    "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "6f075e4f2e131276029668e09f549d56d7d53cd328a84f7200116f192c4af27d",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "bf1f0bded970842ca5ddabc42a19b480372fbb2608365616866c97fa847929ec",
+    "include/q4t/server/client_policy.h": "82d816a798b0f9bbc27d41e25e398086e00b160bebf63b40afab069d9da4e066",
     "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
     "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
@@ -1888,11 +1915,11 @@
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/grammar_process.h": "584b3f5d80e3ec035a99dde02cd4894fdf2742f5b15f9c85f12f140a153915fd",
-    "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
-    "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
+    "include/q4t/server/http_connection.h": "3afb216669cd6ebd20fd555a25c728643ea68a4ce57d03ca61c66cc87709cf7d",
+    "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "2c84737705289d75954f55d41ff1ed810e914fd6087ce3c41b77975f02cd7563",
+    "include/q4t/server/http_request.h": "9a2f1e837f0dd118388e83e4fa8608c198eb5f2c3b519f1b419bf3626dfb8879",
     "include/q4t/server/http_response.h": "fd24155eb610847d1945de57715e00a1cfb7f6b64833c8fb78ab951912757934",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
@@ -1900,9 +1927,9 @@
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
     "include/q4t/server/mcp_content.h": "80f421825338d9b8574be9e8beb54e2d84ebe7a4303c8471dcab40744a21a223",
-    "include/q4t/server/mcp_policy.h": "81d119e601bf50c492d70f4a058775eaf6a85ff4282ea9f99874cba0d20c37e1",
-    "include/q4t/server/mcp_transport.h": "a7cad04f748ade54bcfdff2cb7366ff5c348cf265829fd6964edb4e5cad6c670",
-    "include/q4t/server/mcp_tunnel.h": "d393d5dcd2a8c0cbf8af3e6c7fdcc386568ec2c4c07eac7039cc8504e466ed9a",
+    "include/q4t/server/mcp_policy.h": "90cd878a147ea09aaef7fe2fda3d27cbbb3477dbbb9093d5b83a34a38511192d",
+    "include/q4t/server/mcp_transport.h": "6604f751c30635b5c25a2c26d5bc0fa3d6ca68afebb275b0b9db1dda04a3fc5b",
+    "include/q4t/server/mcp_tunnel.h": "5a485f1dfcd7f29d8750f8d5265e0f56344524b5e2a1a1c0057490c472552483",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
@@ -2062,21 +2089,21 @@
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
     "src/server/chat_generation.cpp": "fc815880f0eb59d32d885496e033b903bd89802e8646e97ca4cfdd6f1bfa4c62",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "44d3924afc80354aff690c48907034fa571d1047a121d193acafa58a94126e4b",
+    "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "fbe52074398504070dea6f68404f6e9d6b1c2ae17273efa236e2a6cb5088a05e",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "5cd6ce65451face0b5baf0628422db8951e50ce78ffe7f66bfba0d6619782d2e",
+    "src/server/chat_metrics.cpp": "7aeb7bbd9a5a3748a64aba4989ca7608b24e749da765ab116799cf294276b500",
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
     "src/server/chat_model_step.h": "4e61be099f4d32535946d22979fe837f3c120a49aab9ab986eda01dee2b7ddca",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
-    "src/server/chat_plan.cpp": "53b71355e60d5dcfc59c78af69d71cfa2f10675c09f54cced79310dce3f15a2e",
+    "src/server/chat_plan.cpp": "80807e9264274a30e6571be835118f0a27ea0f14a32f48dbe6530ca4e5720956",
     "src/server/chat_preflight.cpp": "533402ba8c4568a8f561de020b0fac8ec9beb79c46206beaf95c308c5d98a51f",
     "src/server/chat_prompt.cpp": "7f54e6e302bb171347434bc3170fba913620a31b52d3970490b5662bb0d08745",
     "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
     "src/server/chat_responses.cpp": "74fa1e051643821b26d491ef7ab10bb53151b9177d68215d0d12fa9b8a8cd336",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
-    "src/server/chat_server.cpp": "7a1feaf56ca7b16ed426356825d9b60b57a32fc4dcf66dd608feb8b5895b1624",
+    "src/server/chat_server.cpp": "c7b39a179d21d6ea0d0aac7b734b7d7471cc3743e5abb58b430bd2b01b15947a",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
@@ -2084,10 +2111,10 @@
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
-    "src/server/client_policy.cpp": "40c917a53281e02de140ac4ac0fdec8b6c090a33dda7d480cfe7ae5c0d37ce23",
+    "src/server/client_policy.cpp": "a142b3cb0d8ba30a7b7919c7eea8a6e83cb7f7df420cc027ec419ac6e7e49262",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "9c2eb3b26ffb92412fc4a685d7265d1f88413fcdcbeff6586a8f29a6069fb961",
+    "src/server/client_request.cpp": "3c20cd09870843d117ce76c915749de64f78581f612dfa33d47d9583b15fab2f",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -2151,7 +2178,7 @@
     "src/server/grammar_process.cpp": "6c98537c251c6395606159d41df990d950707e15c86c7a6ab6b93ce11a678356",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "a963e1099af8505277ca04dd75f18da090bcab5fd8c058eb826ff10e3a25a8b1",
+    "src/server/http_request.cpp": "475d201a89306c99927c49ae7e0161b47429f21a0035bb371508a8e884daa0e5",
     "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -2159,11 +2186,12 @@
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/mcp_content.cpp": "421599723f7af3d2c805e407803e44926777c666c77b372f9920343f211d3965",
     "src/server/mcp_http.cpp": "dc5c07e9b6c0baaeac5dc46505951586a5412caa32cf17fbbe19822b541f3ae6",
-    "src/server/mcp_policy.cpp": "2004933a358ff29e0443ab53b464ee87350c493d18c853bc2fcd289d8302263b",
+    "src/server/mcp_policy.cpp": "ad78cc692e5a4427d4e0b9bdbf42b824642451103ef2cb85b610dad8c799c9fb",
     "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
     "src/server/mcp_transport.cpp": "e74ed5f49a1a42ff6803c5edfbd1bc9aea128bc311a4f60c6b257e461d6397e1",
     "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
     "src/server/mcp_tunnel.cpp": "ecf5c00244240cbba50e5a72a572030152a378c80dbc94c60eb39bdbf8aea513",
+    "src/server/mcp_tunnel_api.cpp": "f7b6abc4f9a45861ce3dd07d9fb63be1a3a818370013cc92980781d4852f0d30",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
@@ -2301,7 +2329,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "1d3dfc296e4c3869eb5015dcea32c0109495b2302c8af8cfe0d976af6f873901",
+    "src/service/ingress_main.cpp": "902407f6dbf0a56dbeccf7454728c11b03430d40863d33651485a48fea7a1663",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -4002,6 +4030,60 @@
         "src/server/vector_search_execution.cpp",
         "tests/server_vector_search_execution_test.cpp",
         "tools/serve_responses/test_vector_stores_transport.py"
+      ]
+    },
+    "GET /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "GET /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "POST /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
       ]
     }
   },

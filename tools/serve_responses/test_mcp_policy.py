@@ -51,6 +51,26 @@ class McpPolicyPackage(unittest.TestCase):
         for hidden in ('private.example', '/private/', 'client:owner', 'private=value'):
             self.assertNotIn(hidden, result.stdout.decode())
 
+    def test_native_tunnel_without_url_survives_private_package_binding(self):
+        binary, release, model = self.native_fixture()
+        policy = self.policy(targets=[dict(kind='tunnel_id', id='tunnel_project',
+            transport='native', generation='private-generation',
+            scopes=['client:owner'], agents=['client:private-agent'])])
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_tunnel_count'], 1)
+        self.assertNotIn('private-agent', json.dumps(parsed))
+        self.assertNotIn('private-generation', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy']['native_tunnel_count'], 1)
+        self.assertEqual(pkg.read(target/'mcp-policy.json')['targets'][0]['transport'], 'native')
+        command = pkg.command(target, manifest)
+        self.assertEqual(command[command.index('--mcp-policy-file')+1],
+                         str(target/'mcp-policy.json'))
+
     def test_invalid_and_changed_policy_never_fall_back(self):
         path = self.policy(targets=[dict(kind='connector_id', id='connector_gmail')])
         with self.assertRaisesRegex(RuntimeError, 'validation failed'):

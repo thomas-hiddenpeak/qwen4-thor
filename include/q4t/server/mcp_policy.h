@@ -2,6 +2,7 @@
 #pragma once
 
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/mcp_tunnel.h"
 
 namespace q4t::server {
 struct ResponsesMcpDefinition;
@@ -11,6 +12,9 @@ struct McpDeploymentTarget {
   std::string url;
   std::string generation;
   std::vector<std::string> scopes;
+  std::string transport = "http";
+  std::vector<std::string> agents{};
+  std::string channel = "main";
 };
 struct McpDeploymentPolicy {
   FileFetchOptions fetch;
@@ -28,6 +32,8 @@ Status LoadMcpDeploymentPolicy(const std::string& path,
 ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
                                        std::string_view scope,
                                        ResponsesMcpDefinition* definition);
+std::vector<McpTunnelRoute> McpDeploymentTunnelRoutes(
+    const McpDeploymentPolicy* policy);
 io::Json McpDeploymentPolicyDescription(const McpDeploymentPolicy* policy);
 int RunMcpDeploymentPolicyCheck(int argc, char** argv);
 }  // namespace q4t::server

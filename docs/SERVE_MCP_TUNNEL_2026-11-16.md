@@ -74,7 +74,34 @@ session_termination_response；channel缺省main。可选诊断/timing
 严格同一阶段租约，当前尚未启动GPU、rev126默认保持。
 
 内部broker已完成[16项针对性CPU验证](evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md)。
-HTTP/实际MCP与agent仍在接线，尚无完整隧道业务/发行证据，不能记为已完成。
+原生HTTP/策略与独立准入已完成[26项CPU及5项入口/封包验证](evidence/serve-mcp-tunnel-api-cpu-20261116/README.md)。
+实际MCP与agent仍在接线，尚无完整隧道业务/发行证据，不能记为已完成。
 保留内容预算含封套、原RPC ID及失败收尾空间，不等于物理RAM硬限额。
 无外部IO的broker复用已认证调用方；接线继续保持隔离worker的审批/
 会话链与单次派发，不能另建绕过原权限的执行入口。
+
+## 原生接入配置与后续传输
+
+`--mcp-policy-file`的version1新增可选native目标，例如：
+
+```json
+{"version":1,"targets":[{"kind":"tunnel_id","id":"tunnel_project",
+ "transport":"native","generation":"project-1","scopes":["client:user"],
+ "agents":["client:private_agent"],"channel":"main"}]}
+```
+
+该文件仍须私有/owned常规文件，可通过`q4t mcp-policy-check FILE`
+离线验证并打包。HTTP目标未写transport时保持原语义；native不接受
+URL，agent固定目标在其本地配置中定义。此例当前用于接线准备，
+实际MCP传输/agent尚未完成，不应当作已验生产部署配方。
+
+采用官方`X-Tunnel-Client-Instance-Id`和原shard响应头，无需自定义
+客户端身份头替代wire。poll/response的每客户容量为1/2，全局4/4，
+17MiB独立正文预算，metadata走观察名额；只有配置native路由才在
+core增加8个公开连接名额。R08物理RAM计量/硬限额仍另行完成。
+
+下一步让现有隔离MCP worker通过有界IPC交给本进程broker；复用
+原会话、checkpoint与before_call，不在主进程另建外部HTTP解析器。
+worker仍不持有调用方回调；当前请求的取消/绝对期限由父进程验证。
+原agent实例必须进入加密会话快照，旧资源/审批不能迁移到新实例。
+无结果的派发不重放，已知MCP错误的结构化data不能被HTTP状态遮蔽。

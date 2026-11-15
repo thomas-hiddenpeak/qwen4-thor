@@ -774,9 +774,16 @@ ClientIdentity ClientAdmission::RecoveryIdentity(size_t index) const {
 ClientUsage ClientAdmission::Usage(size_t index) const {
   if (index >= Size()) throw std::out_of_range("client counter index");
   const auto& counters = counters_[index];
-  return {counters.data.load(),          counters.control.load(),
-          counters.data_rejected.load(), counters.control_rejected.load(),
-          counters.cancel.load(),        counters.cancel_rejected.load()};
+  return {counters.data.load(),
+          counters.control.load(),
+          counters.data_rejected.load(),
+          counters.control_rejected.load(),
+          counters.cancel.load(),
+          counters.cancel_rejected.load(),
+          counters.tunnel_poll.load(),
+          counters.tunnel_response.load(),
+          counters.tunnel_poll_rejected.load(),
+          counters.tunnel_response_rejected.load()};
 }
 
 ClientLease::~ClientLease() {
@@ -821,7 +828,8 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   attempted_ = true;
   if (identity.owner_ != &admission || !identity.Allowed() ||
       (lane != ClientLane::kData && lane != ClientLane::kControl &&
-       lane != ClientLane::kCancel))
+       lane != ClientLane::kCancel && lane != ClientLane::kTunnelPoll &&
+       lane != ClientLane::kTunnelResponse))
     return false;
   if (!identity.Scoped()) {
     admitted_ = !admission.Enabled();
@@ -838,19 +846,29 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   auto& counters = admission.counters_[identity.index_];
   const bool control = lane == ClientLane::kControl;
   const bool cancel = lane == ClientLane::kCancel;
-  auto& active = cancel    ? counters.cancel
-                 : control ? counters.control
-                           : counters.data;
-  auto& rejected = cancel    ? counters.cancel_rejected
-                   : control ? counters.control_rejected
-                             : counters.data_rejected;
+  const bool tunnel_poll = lane == ClientLane::kTunnelPoll;
+  const bool tunnel_response = lane == ClientLane::kTunnelResponse;
+  auto& active = tunnel_poll       ? counters.tunnel_poll
+                 : tunnel_response ? counters.tunnel_response
+                 : cancel          ? counters.cancel
+                 : control         ? counters.control
+                                   : counters.data;
+  auto& rejected = tunnel_poll       ? counters.tunnel_poll_rejected
+                   : tunnel_response ? counters.tunnel_response_rejected
+                   : cancel          ? counters.cancel_rejected
+                   : control         ? counters.control_rejected
+                                     : counters.data_rejected;
   const uint32_t limit =
-      cancel    ? 1
-      : control ? policy->clients[identity.index_].max_control_inflight
-                : policy->clients[identity.index_].max_inflight;
-  auto& finishing = cancel    ? counters.cancel_finishing
-                    : control ? counters.control_finishing
-                              : counters.data_finishing;
+      tunnel_poll       ? 1
+      : tunnel_response ? 2
+      : cancel          ? 1
+      : control         ? policy->clients[identity.index_].max_control_inflight
+                        : policy->clients[identity.index_].max_inflight;
+  auto& finishing = tunnel_poll       ? counters.tunnel_poll_finishing
+                    : tunnel_response ? counters.tunnel_response_finishing
+                    : cancel          ? counters.cancel_finishing
+                    : control         ? counters.control_finishing
+                                      : counters.data_finishing;
   std::unique_lock lock(counters.mutex);
   if (active.load(std::memory_order_relaxed) >= limit && finishing) {
     counters.changed.wait_for(lock, kClientHandoffWait, [&] {
@@ -951,6 +969,19 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
       out += "q4t_client_batch_rate_limit" + labels +
              std::to_string(tpm ? limits.tokens_per_minute
                                 : limits.requests_per_minute) +
+             '\n';
+    }
+    for (bool response : {false, true}) {
+      const auto label = "{client=\"" + limits.id + "\",lane=\"tunnel_" +
+                         (response ? "response" : "poll") + "\"} ";
+      out += "q4t_client_requests_active" + label +
+             std::to_string(response ? usage.tunnel_response_active
+                                     : usage.tunnel_poll_active) +
+             '\n';
+      out += "q4t_client_requests_limit" + label + (response ? "2\n" : "1\n");
+      out += "q4t_client_capacity_rejected_total" + label +
+             std::to_string(response ? usage.tunnel_response_rejected
+                                     : usage.tunnel_poll_rejected) +
              '\n';
     }
     for (const auto lane :
