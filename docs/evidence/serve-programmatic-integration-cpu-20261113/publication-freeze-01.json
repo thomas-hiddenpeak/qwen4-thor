@@ -1,0 +1,21 @@
+{
+  "created": "2026-11-12T22:48:30.319237+00:00",
+  "scope": "Publication declaration/media capability set, paired program outputs, recovery budget preservation, included and required QuickJS license",
+  "gpu_starts": 0,
+  "cpu": [
+    "chat_capabilities_native_file_search_conditions_and_output_types"
+  ],
+  "python": [
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_program_extension_and_recovery_preserve_capabilities_and_budgets",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_program_outputs_require_paired_types_and_authenticated_implementation",
+    "tools.serve_service.test_declarations.Declarations.test_program_runtime_license_survives_distribution_and_is_required"
+  ],
+  "sources": {
+    "src/server/chat_capabilities.cpp": "cd42b60c0d0509a139092b2ed2f653487ee1bb1bf1a22119018e6e3e5b815e83",
+    "tests/server_chat_capabilities_test.cpp": "800a6480edca17a4d6ee181954e62e05aa5126c2ccfe6db65d592c7828535fef",
+    "tools/serve_recovery/profile_migration.py": "fa69991f8f8bc4d4af8f0b9ebdb0f98f476680561c56fb8945f849052a023ab6",
+    "tools/serve_recovery/test_profile_migration.py": "796af7af08d6b5316e12a92a4e580ffeace5bc20f8e9064d82ae7349961d1787",
+    "tools/serve_service/package.py": "9e7b3ff721096dbe8ab129f0e52415e05e6e41a212785bc2595f9245500d9688",
+    "tools/serve_service/test_declarations.py": "0f1698fcebb988d3bf9f54a869f1b6410a73a88e8989ccf705e769ea8d6e32ca"
+  }
+}

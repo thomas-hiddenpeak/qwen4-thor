@@ -89,6 +89,9 @@ Json Binding(const Json& item, const Json& schema) {
   // Omitted/false and omitted/direct remain the pre-async storage contract.
   // The true execution policy must survive tool changes and reject rebinding.
   if (item.GetBool("async")) Set(&result, "async", Boolean(true));
+  if (const auto* caller = item.Find("caller");
+      caller && caller->GetString("type") == "program")
+    Set(&result, "caller", *caller);
   return result;
 }
 bool Same(const Json& a, const Json& b) {
@@ -148,7 +151,8 @@ ObjectReply MergeToolResultContracts(const Json& source, const Json& items,
 }
 
 ObjectReply BindToolResultContracts(const Json& request, const Json& items,
-                                    Json* contracts) {
+                                    Json* contracts,
+                                    bool authenticated_program) {
   // Do not filter existing bindings here: the caller may be adding only the
   // new output to a plan that also owns historical calls.
   if (!items.IsArray() || (!contracts->IsNull() && !contracts->IsArray()))
@@ -174,6 +178,12 @@ ObjectReply BindToolResultContracts(const Json& request, const Json& items,
         return Invalid();
       continue;
     }
+    // Public declarations cannot establish or change a program child's
+    // invocation-time schema. Its owner first opens the sealed tool snapshot.
+    if (const auto* caller = item.Find("caller");
+        caller && caller->GetString("type") == "program" &&
+        !authenticated_program)
+      continue;
     const auto declaration =
         declarations.find(Identity(item, item.GetString("namespace")));
     const auto* schema = declaration == declarations.end()

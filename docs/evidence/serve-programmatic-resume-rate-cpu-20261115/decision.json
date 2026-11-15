@@ -1,0 +1,26 @@
+{
+  "status": "PASS_TARGETED_PENDING_PROMPT_REPLAN",
+  "cpu_passed": 26,
+  "new_cases": 7,
+  "related_cases": 19,
+  "binary_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+  "runtime_sources": {
+    "include/q4t/server/client_policy.h": "bf1f0bded970842ca5ddabc42a19b480372fbb2608365616866c97fa847929ec",
+    "src/server/chat_generation.cpp": "0d908482e8079f95c474901366c297544aa778052b2273d15c61de56595865d7",
+    "src/server/client_policy.cpp": "40c917a53281e02de140ac4ac0fdec8b6c090a33dda7d480cfe7ae5c0d37ce23"
+  },
+  "zero_build_warnings": true,
+  "new_gpu_starts": 0,
+  "default_unchanged": true,
+  "actual_managed_business_pending": true,
+  "audit_negative_checks": 7,
+  "build_failure_retained": "CPU fixture ternary bool/Status; fixed before executing the frozen list",
+  "source_audit_initial_failure": "Three reviewed runtime hashes stale; renewed only those anchors",
+  "test_sources": {
+    "include/q4t/server/client_policy.h": "bf1f0bded970842ca5ddabc42a19b480372fbb2608365616866c97fa847929ec",
+    "src/server/client_policy.cpp": "40c917a53281e02de140ac4ac0fdec8b6c090a33dda7d480cfe7ae5c0d37ce23",
+    "src/server/chat_generation.cpp": "0d908482e8079f95c474901366c297544aa778052b2273d15c61de56595865d7",
+    "tests/server_client_policy_test.cpp": "2e5e1f5fb399e803b34fdfda1948038bd0fa38582a9a0c231c5b48b5f8a54dc2",
+    "tests/server_responses_program_execution_test.cpp": "7375915e3c733bc273760c0c04e60f9df3287e0304775fed3a31e81f81459934"
+  }
+}

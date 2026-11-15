@@ -1,0 +1,21 @@
+{
+  ".gitattributes": "80cc7408f798c4d0fac6535a860ea00c33fd3cb03d918dccc4b4f70b1d8e3fc7",
+  "README.md": "e92840b3dc5322022ee5a57f8ea2938ab34ee3083f8c74b5a6cf0420fd5ba27d",
+  "component-audit-01.json": "dbf39cc53b94bcc6d8f9d7a6377eef40cb1dd953b25d9da946790b1c1547ad4a",
+  "component-audit-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "component-audit-01.stdout": "58412076743d886a9ee9e6b82cef5605fc005f93df74ff78ff821655e03667d3",
+  "component-build-01.json": "36dd85afee53be3b16c62366bf96911f2b76d947c943d18d25e6163bf781e262",
+  "component-build-01.stderr": "a8ac781484e5e01825add4254bbb1a48c1af192491e7f7ad445353245201a5fd",
+  "component-build-01.stdout": "5061d68d3bff067a8515de0f10dc364c54d3d54daf2b7aca8284733eca16ec7c",
+  "component-build-02.json": "825b3a8097d026196bf19a69eb64bccb7309a34178b232ec875d97f0d3399ce6",
+  "component-build-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "component-build-02.stdout": "b0d9d40dbf0f7ee9db296a84a52093026d11a2e6f02d2b3213630391f8453259",
+  "component-cpu-01.json": "a77676c162ee3e171b7a5196bb59f25771acb21e6d16da1b17aef74fc6fbf7a0",
+  "component-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "component-cpu-01.stdout": "b12859cb7ef423f2e0f0e8fd23abb25d018d01c3de19d9cf5382124a2b140c2b",
+  "component-freeze-01.json": "d902e9d3ca3787f3ca7d47013d2c8ffd9517c29e037a2d8ba32a7056f86cd809",
+  "component-freeze-02.json": "0b0c4ff56ea99032ca53e4965fb44ac9ab1fc22bb3fa1762b97d4a4738dc5182",
+  "component-required-01.txt": "ae4799fc7fd817663e83551718ca9750fdf8dc854177f0a1283872c906da0bbc",
+  "result.json": "a31e98297c9b465aec95d39075e3fd14f5819049911af76f6e2a37aae8b4bf38",
+  "source-receipt.json": "dd17434262816dc7145521ac05e4a43271d331dd164c0a0798a11454f8991954"
+}

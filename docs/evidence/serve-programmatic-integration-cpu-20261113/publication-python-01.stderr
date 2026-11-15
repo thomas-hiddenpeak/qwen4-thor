@@ -1,0 +1,18 @@
+E..
+======================================================================
+ERROR: test_program_extension_and_recovery_preserve_capabilities_and_budgets (tools.serve_recovery.test_profile_migration.MigrationTests.test_program_extension_and_recovery_preserve_capabilities_and_budgets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_migration.py", line 448, in test_program_extension_and_recovery_preserve_capabilities_and_budgets
+    moved = migration.candidate(self.pending, grant, self.stamp(999999))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 188, in candidate
+    ledger.require(previous['registry_sha256'] == authorization['from_registry'] and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: profile migration predecessor differs
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.284s
+
+FAILED (errors=1)

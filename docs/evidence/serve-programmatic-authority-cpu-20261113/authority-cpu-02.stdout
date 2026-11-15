@@ -1,0 +1,3 @@
+  CHECK failed: Ok(Run(cipher, history, &output)) && output.array[0].GetString("result") == "actual document" (line 292)
+[FAIL] responses_program_namespace_custom_format_dispatch_checked
+1 tests, 0 passed, 1 failed, 0 skipped

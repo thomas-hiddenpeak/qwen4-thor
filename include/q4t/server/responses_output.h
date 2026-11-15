@@ -65,6 +65,7 @@ class ResponsesOutput {
                         std::string* wire);
   // Private effective identities can grow without rewriting public tools.
   Status BindTools(const io::Json& active);
+  Status AppendProgramItems(const io::Json& items, std::string* wire);
   Status StartToolSearch(const ResponseToolCall& call, bool server,
                          size_t* index, std::string* wire);
   Status CompleteToolSearchCall(size_t index, const io::Json& arguments,

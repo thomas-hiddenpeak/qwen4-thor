@@ -1,0 +1,10 @@
+✔ program and child JSON survive official continuation projection (41.234008ms)
+✔ program output SSE completes before real final message (24.211526ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213.997122

@@ -1,0 +1,26 @@
+{
+  "tests": [
+    "program_worker_executes_javascript_and_freezes_time_random",
+    "program_worker_parallel_calls_resume_with_actual_results",
+    "program_worker_result_order_preserves_race_and_dependent_call",
+    "program_worker_namespace_custom_and_image_output",
+    "program_worker_replay_mismatch_and_duplicate_results_fail_closed",
+    "program_worker_rejects_ambient_io_and_module_loading",
+    "program_worker_time_memory_and_output_limits_leave_next_run_healthy",
+    "program_worker_microtasks_unhandled_rejection_and_call_bounds",
+    "program_worker_cancelled_and_unreaped_slot_is_bounded",
+    "grammar_process_object_domain_keeps_grammar_capacity",
+    "grammar_process_output_eof_does_not_hide_stalled_exit",
+    "grammar_process_output_cancel_interrupts_read_and_exit_wait",
+    "grammar_process_output_unknown_exit_retains_slot_and_counters"
+  ],
+  "source_sha256": {
+    "src/server/program_vm.cpp": "5aacddc97c7825d8d437176941e2eba8d70c51b17ea5850c1892978ac901b8eb",
+    "src/server/program_worker.cpp": "f27d62436db5bdf0a7b4e404d1309663564ed6cbabb751d3e86ddad9b01cc406",
+    "src/server/grammar_process.cpp": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
+    "tests/server_program_worker_test.cpp": "8594d0231c275d6ee6cb2bfef12b773c4d6070402fdc15e1ba839be62feab210"
+  },
+  "new_gpu_starts": 0,
+  "scope": "Native isolated component only; public execution/history/authorization not yet wired",
+  "default": "rev118 unchanged"
+}

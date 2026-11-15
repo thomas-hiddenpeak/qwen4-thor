@@ -17,7 +17,7 @@ CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
-    'tool_search_output'))
+    'tool_search_output', 'program', 'program_output'))
 
 
 def semantic_capabilities(value):
@@ -53,6 +53,20 @@ def semantic_capabilities(value):
                 all(discovery.get(key) is True for key in ('defer_loading',
                     'server_paths', 'client_search', 'additional_tools')),
                 'tool discovery outputs lack their implementation capability')
+        program_items = {'program', 'program_output'}
+        if program_items.intersection(items):
+            program = responses.get('programmatic_tools')
+            ledger.require(program_items.issubset(items) and
+                type(program) is dict and
+                program.get('profile') == 'q4t-programmatic-tools-v1' and
+                program.get('caller_binding') == 'program_call_id' and
+                program.get('schema_binding') == 'invocation_time' and
+                all(program.get(key) is True for key in ('enabled',
+                    'allowed_callers', 'authenticated_continuation',
+                    'isolated_worker', 'loaded_tools_only')) and
+                program.get('automatic_tool_replay') is False and
+                program.get('model_restart_on_error') is False,
+                'program outputs lack their implementation capability')
         # This field declares an unordered set of output types. Normalize only
         # this reviewed enum; all other arrays retain exact-value comparison.
         responses['output_items'] = {item: True for item in items}

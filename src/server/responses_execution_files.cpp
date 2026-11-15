@@ -1,6 +1,7 @@
 #include "q4t/server/responses_execution.h"
 
 #include "object_protocol.h"
+#include "q4t/server/request_json.h"
 
 namespace q4t::server {
 namespace {
@@ -26,6 +27,26 @@ ObjectReply ResponsesExecution::BuildPreparedGeneration(
   if (files_) {
     reply = files_->Render(file_history_, &generation_history_);
     if (!reply.ok()) return reply;
+    // Authorization/order/schema were checked against the original input.
+    // Only tool result values are replaced by immutable prepared content.
+    // The VM cannot fetch URLs or open files on its own.
+    for (auto& program : programs_)
+      for (auto& result : Field(program.worker_input, "results").array) {
+        const auto& call = program.calls.at(result.GetInt("index"));
+        for (const auto& item : generation_history_.array) {
+          if (item.GetString("call_id") != call.GetString("call_id") ||
+              !item.Has("output"))
+            continue;
+          auto value = *item.Find("output");
+          if (call.GetString("type") == "function_call" && value.IsString()) {
+            Json decoded;
+            if (io::ParseJson(value.str, &decoded, true, kSchemaJsonLimits))
+              value = std::move(decoded);
+          }
+          Set(&result, "value", std::move(value));
+          break;
+        }
+      }
   }
   ChatPlanError error;
   auto status = PrepareResponsesGeneration(envelope_, generation_history_,

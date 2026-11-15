@@ -263,6 +263,9 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
     if (!identity && (call->name.starts_with("q4t_ns_") ||
                       call->name.starts_with("q4t_builtin_")))
       return Status::Fail("unknown Responses internal tool identity");
+    if (identity && !identity->direct)
+      return Status::Fail(
+          "Program-only tool cannot be emitted by a direct caller");
     item = Object(
         {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
          {"type", String(call->custom ? "custom_tool_call" : "function_call")},

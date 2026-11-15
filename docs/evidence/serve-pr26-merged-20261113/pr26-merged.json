@@ -1,0 +1,10 @@
+{
+  "baseRefOid": "4e87a03f6c6337bf2d70d10f9a3de0bcc613344d",
+  "headRefOid": "1282ece2f4c15977a077c44ff803332d76cf44f6",
+  "mergeCommit": {
+    "oid": "090f0d4892c2d5315ce492b219546f0cd5842356"
+  },
+  "mergedAt": "2026-11-12T21:49:24Z",
+  "state": "MERGED",
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/26"
+}

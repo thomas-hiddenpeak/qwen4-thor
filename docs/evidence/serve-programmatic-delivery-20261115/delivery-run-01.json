@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    ".q4t-work/serve-programmatic-tools-20261113/deliver_02.py",
+    "run"
+  ],
+  "returncode": 0,
+  "seconds": 53.3266107509844,
+  "default_change_authorized": true,
+  "new_gpu_starts": 0,
+  "binary_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
+  "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a"
+}

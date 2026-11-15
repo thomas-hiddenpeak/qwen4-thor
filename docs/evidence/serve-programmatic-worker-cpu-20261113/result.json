@@ -1,0 +1,15 @@
+{
+  "status": "PASS_PROGRAM_WORKER_COMPONENT_CPU",
+  "tests": 13,
+  "new_gpu_starts": 0,
+  "default_unchanged": true,
+  "public_execution_wired": false,
+  "source_sha256": {
+    "src/server/program_vm.cpp": "2a2ec1b42bf21367feacdf4d334ed704393c9c992af82b9b8ab02bc89d7ccbcb",
+    "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
+    "src/server/grammar_process.cpp": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
+    "include/q4t/server/grammar_process.h": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
+    "cmake/NativeProgrammatic.cmake": "206fc171d327ea521bf8df981f60cbc4d903fffda7c922b94e94cb549e01fb04",
+    "third_party/quickjs/SOURCE.json": "4700fba616d4fbd4a9275a3b7ca7fefadc7370f7040a799c1cd52c9b3a95ad32"
+  }
+}

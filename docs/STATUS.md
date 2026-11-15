@@ -1,4 +1,4 @@
-# 当前状态（2026-11-13）
+# 当前状态（2026-11-15）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -9,32 +9,115 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev118；服务包 `bd4b75a783e5e51038bcfdc68a1083ad22ceb0fec7db617f4a69f320220d57c2` |
-| Generation | `52009da55b88a88d8ac5d5a7b7f2bcc2abadb0528fd51c5bf3ea85e271917615` |
-| 引擎 | `ab955eac99bf6f81f205298770f3817c4cb85288e5eaed865e419a13111ba531` |
-| 引擎发布记录 | `a2500b5603f5963d719f3addee02fe1595b1fd09a9bbd4fb6a9172122c0ea3b6` |
+| 发布 | rev126；服务包 `6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a` |
+| Generation | `813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0` |
+| 引擎 | `d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080` |
+| 引擎发布记录 | `5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `11c09eb77d9d7eeb1a595b957ce8b4e8f59dbd9f6839c0a984eb018a3111d1bf`；保持新工具能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `5251373be1781e6ecf6e3bb75995ff6c3622e7406c73e1ab68437f832b7cf17f`；保持新工具能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
 
-[发行结果与回退记录](evidence/serve-tool-discovery-delivery-20261113/README.md)
-包含17项STOPPED交付检查，0新增GPU。server/client工具发现与
-additional_tools实际闭环、主轻资格及整树切换均已接受；发布迁移
-遗漏已补齐，严格保持能力与预算。namespace/async原有能力保留。
+[程序调用发行与回退记录](evidence/serve-programmatic-delivery-20261115/README.md)
+包含17项STOPPED交付检查，0新增GPU。原生程序调用、认证续接、
+原工具schema、caller与JSON/SSE实际闭环已通过；首次入场前配额
+缺陷已修复并完成整树恢复中的最终回答。主轻及精确回退包均已验。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱。旧默认程序和状态备份保留，未宣称长稳或完整OpenAI兼容。
-自动版本恢复保留现代根；人工整根回退到v12入口没有outer功能。
+保留前驱。旧默认程序和状态备份保留；自动版本恢复保留现代根，
+人工整根回退到v12入口没有outer。PR27待最终检查和实际合main，
+未宣称长稳或完整OpenAI兼容，全部master继续。
+
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
 提交也已实际合main（PR24，`79f6e391`），
 [合并回执](evidence/serve-pr24-merged-20261113/README.md)保留。
 异步实现已实际合main（PR25，`4e87a03f`），
-[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。默认rev118可用，
-工具发现已发行，PR26仍待当前head检查及实际合main；程序调用等全部master继续。
+[合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。前驱rev118的
+工具发现已发行并实际合main（PR26，`090f0d48`），
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付，PR27待合main，全部master继续。
 
 ## 最近完成的实现和验证
+
+- 原生程序调用已[可回退发行rev126](evidence/serve-programmatic-delivery-20261115/README.md)：
+  17项STOPPED检查全过，实际回退再前进，密钥/配额/core/outer及
+  恢复预算保持，0新增模型启动。PR27待最终检查和实际合main；
+  剩余协议/工具/模型后端及恢复组合继续，未结束总目标。
+
+
+- 程序调用受控续答缺陷已[通过真实补验](evidence/serve-programmatic-qualification-20261115/README.md)：
+  新引擎主轻2启动8业务、独立回退1启动2业务、整树恢复2启动4业务
+  1探测均通过。切换后保留原程序/caller和schema，真实资料只读一次，
+  VM恢复后模型成功输出最终SSE答案；自有资源清理。原失败仍保留，
+  默认rev118保持，接着17项停止态可回退发布与PR27实际合main；
+  剩余全部master任务继续。
+
+- 首次入场前程序续接配额已[修复，26项针对性CPU通过](evidence/serve-programmatic-resume-rate-cpu-20261115/README.md)：
+  重新预留未入场提示，保留RPM、输出预算、已发生用量与Batch额度；
+  实际引擎d7dd0c6d及主机零警告构建，4个原生helper字节保持。
+  默认rev118未改；新引擎资格及受控续接/恢复补验上限5启动14业务
+  1探测1800秒，含原失败资格组累计上限10/28/2/3600秒。不跑全量
+  性能/质量，业务闭环尚未通过前不发行，全部master继续。
+
+- 程序续接[整树恢复业务未通过](evidence/serve-programmatic-resume-failure-20261115/README.md)：
+  控制树和持久调用恢复成功，但受控客户端在首次模型入场前续接程序，
+  误用要求已入场的输入追加接口，最终响应503。2启动4业务1探测，
+  自有资源已清理、rev118保持。正在修正未入场输入的重新预留，保留
+  RPM/输出预算/既有用量，并验证26项直接相关CPU；不关闭配额绕过。
+
+- PR27的无XGrammar构建断言已[修复，两种构建针对性CPU均通过](evidence/serve-programmatic-ci-grammar-20261115/README.md)：
+  ON保持regex/Lark实际派发与拒绝，OFF验证零派发及明确错误；生产
+  源码/引擎和rev118未变，已有业务及主轻资格复用。继续精确回退包、
+  整树恢复、可回退交付及实际合main。另依据PR23/24实际合并回执
+  修正N05/R01滞后的任务状态；剩余全部master任务继续。
+
+- 程序调用[真实资料JSON/SSE闭环通过](evidence/serve-programmatic-business-20261113/README.md)：
+  修后1启动/8创建/121.786秒，115次NVML正常、资源清理；含首次失败
+  累计2启动/9创建/159.939秒。原schema、caller和持久续接保持，实际
+  两次读取资料，纯计算/截断/普通业务均通过。PR27已建；继续主轻与
+  程序等待期间整树恢复、可回退发行及合main，rev118保持，master继续。
+
+- 大长度语法失败已CPU复现并[修复，11项针对性检查通过](evidence/serve-programmatic-length-repair-20261113/README.md)：
+  紧凑计数规则保留min/max、Unicode及JSON转义；不删除约束或放宽资源
+  上限。实际引擎零警告构建，补验固定1启动/8创建/900秒，连原失败
+  累计上限2启动/9创建/1200秒；业务未重验前不交付，rev118保持。
+
+- 程序调用[首次真实短验失败](evidence/serve-programmatic-business-failure-20261113/README.md)：
+  1启动/1创建/38.153秒，首条请求在语法编译阶段返回资源限制，未执行
+  程序或客户端工具。自有进程/端口/锁清理，默认rev118保持；正在CPU
+  复现大字符串长度约束的编译问题，修复后补原业务，不以失败归档结案。
+
+- 程序调用公开接入[54项不同C++、2项官方SDK及7项Python检查最终通过](evidence/serve-programmatic-integration-cpu-20261113/README.md)：
+  授权派发、JSON/SSE、认证续接、媒体冻结/审核/共享预算及异步同步
+  组合已验证。媒体临时引用和混合同步等待缺口已修复，失败原件保留。
+  实际引擎零警告构建已通过，冻结1启动/8创建/900秒资料闭环，再完成
+  适用恢复资格与发行；0GPU、rev118保持，全部master继续。
+
+- 程序调用公开执行链正在接线：program-only工具从直接生成通道移除，
+  原生程序输出及caller进入JSON/SSE，持久结果合同从认证快照绑定，
+  历史/压缩保留程序依赖；续接进入原共享预算、审核与终结流程。
+  这组尚未验证或发行，媒体组合等仍需补齐；rev118保持，全部master继续。
+
+- 程序调用[认证/回放部件19项不同CPU最终通过](evidence/serve-programmatic-authority-cpu-20261113/README.md)：
+  跨客户/模型/代码篡改拒绝、调用时参数/结果合同、结果因果回放、
+  custom文本/regex/Lark、重启及取消/过期已验证。两项适配失败原件
+  保留，仅重验受影响用例；0GPU、rev118保持。继续公开生成与
+  JSON/SSE/持久接线、实际业务及全部master，不以部件通过结束总目标。
+
+- 程序调用的授权/认证续接正在接线：调用时工具及参数/结果合同写入
+  客户/模型/模板绑定的加密指纹，校验子调用身份和结果因果顺序，
+  custom regex/Lark在派发前进入既有隔离校验worker。9项新增及
+  直接受影响CPU准备成组验证；公开接口、业务及发行仍待完成，
+  rev118保持，继续全部master。
+
+- [程序调用隔离执行部件](SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)已通过
+  [13项针对性CPU](evidence/serve-programmatic-worker-cpu-20261113/README.md)：
+  真实JavaScript、并行/依赖续接、结果顺序、资源限额和回收验证通过；
+  构建零警告、0GPU、默认rev118保持。公开授权/持久续接/执行接线、
+  真实业务与发行仍待完成，不能算对外能力已交付；全部master继续。
+
+- PR26精确head `1282ece2`的push/PR两组CI均通过，已实际合main
+  （`090f0d48`）；[回执](evidence/serve-pr26-merged-20261113/README.md)保留。
 
 - PR26旧head一次CI暴露正常Batch恢复误用150ms故障期限；已将三项
   同类夹具的正常/注入期限分开，[7项针对性CPU首过](evidence/serve-ci-batch-recount-deadline-20261113/README.md)。

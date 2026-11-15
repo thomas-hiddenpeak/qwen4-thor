@@ -5,6 +5,7 @@
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/responses_crypto.h"
+#include "q4t/server/responses_program.h"
 
 namespace q4t::server {
 namespace {
@@ -91,6 +92,17 @@ ObjectReply PrepareResponsesTokenCount(
     history = std::move(resolved.history);
   }
   Json effective_tools;
+  if (std::any_of(history.array.begin(), history.array.end(),
+                  [](const auto& item) {
+                    const auto* caller = item.Find("caller");
+                    return item.GetString("type") == "program" ||
+                           item.GetString("type") == "program_output" ||
+                           (caller && caller->GetString("type") == "program");
+                  })) {
+    std::vector<ResponsesProgramState> programs;
+    result = OpenResponsesPrograms(cipher, history, config, access, &programs);
+    if (!result.ok()) return result;
+  }
   status = ValidateResponsesPreparation(*envelope, history, config,
                                         &effective_tools, &error);
   if (!status) return Invalid(status, error);

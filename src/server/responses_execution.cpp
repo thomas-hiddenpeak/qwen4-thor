@@ -64,6 +64,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
                             &tool_search_catalog_.eager,
                             &tool_search_catalog_.search,
                             &tool_search_catalog_.summaries,
+                            &program_tools_,
                             &generation_.input.items,
                             &generation_.input.messages,
                             &generation_history_,
@@ -92,6 +93,13 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   bytes += file_search_argument_bytes_;
   bytes += tool_search_argument_bytes_;
+  bytes += program_argument_bytes_;
+  for (const auto& program : programs_) {
+    for (const auto* value : {&program.program, &program.tools,
+                              &program.worker_input, &program.terminal})
+      bytes += OutputJson(*value).size();
+    for (const auto& call : program.calls) bytes += OutputJson(call).size();
+  }
   for (const auto& binding : file_search_bindings_) {
     bytes += binding.model_name.size() +
              OutputJson(binding.tool.search.filters).size();
@@ -223,6 +231,22 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   } else {
     generation_history_ = std::move(history);
   }
+  if (std::any_of(generation_history_.array.begin(),
+                  generation_history_.array.end(), [](const auto& item) {
+                    const auto* caller = item.Find("caller");
+                    return item.GetString("type") == "program" ||
+                           item.GetString("type") == "program_output" ||
+                           (caller && caller->GetString("type") == "program");
+                  })) {
+    auto opened = OpenResponsesPrograms(cipher_, generation_history_, config,
+                                        access_, &programs_);
+    if (!opened.ok()) return opened;
+    for (const auto& program : programs_) {
+      auto bound = BindResponsesProgramContracts(program, generation_history_,
+                                                 &plan_.tool_contracts);
+      if (!bound.ok()) return bound;
+    }
+  }
   ChatPlanError error;
   Json effective_tools;
   auto status = PlanResponsesFileSearchBindings(envelope_.request,
@@ -272,11 +296,13 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                         require_frozen_inputs_);
     if (!prepared.ok()) return prepared;
   }
+  program_file_options_ =
+      config.file_inputs ? *config.file_inputs : FileExpansionOptions{};
   if (!PendingFileSheets()) {
     auto built = BuildPreparedGeneration(config);
     if (!built.ok()) return built;
   }
-  if (envelope_.encrypted_reasoning) {
+  if (envelope_.encrypted_reasoning || program_enabled_) {
     auto ready = cipher_.Ready(access_);
     if (!ready.ok()) return ready;
   }
@@ -511,6 +537,8 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
   auto status = AppendFileSearch(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendToolSearch(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendProgram(delta, &handled, wire);
   if (!status || handled) return status;
   return RecordOutput(output_.Append(delta, probabilities, wire), wire);
 }

@@ -637,6 +637,12 @@ def verify(package, digest):
                 'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
+    program = metadata.get('chat_protocol', {}).get('responses', {}).get(
+        'programmatic_tools', {})
+    if program.get('profile') == 'q4t-programmatic-tools-v1':
+        require({'quickjs/LICENSE', 'quickjs/SOURCE.json'} <=
+                set(manifest.get('third_party_notices', {}).get('files', [])),
+                'program runtime notices absent')
     if 'access_program_policy' in manifest:
         require(read(package/'declarations/capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,

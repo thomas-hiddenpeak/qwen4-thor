@@ -65,7 +65,10 @@ bool Primary(const Json& item) {
   // Tool definitions are executable policy, not prose that a summarizer may
   // paraphrase or discard. Preserve their original loading points and IDs.
   if (type == "additional_tools" || type == "tool_search_call" ||
-      type == "tool_search_output")
+      type == "tool_search_output" || type == "program" ||
+      type == "program_output" ||
+      (item.Find("caller") &&
+       item.Find("caller")->GetString("type") == "program"))
     return true;
   return type == "message" && (item.GetString("role") == "system" ||
                                item.GetString("role") == "developer");

@@ -1,0 +1,22 @@
+{
+  "ci-grammar-off-build-01.json": "e2cbe2ab09f9074ffea36f498afec45a9dd26cbc0b1024dfbdd9df0e33f8884f",
+  "ci-grammar-off-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-grammar-off-build-01.stdout": "8ac0c33e80586e29859058be1dd42ee170ea41640777417ed6b769a06ca4e158",
+  "ci-grammar-off-configure-01.json": "96e43edfda1e65d8cdb3240fa91b76cb021e33e956624f7b47d21c38ca5ff7b7",
+  "ci-grammar-off-configure-01.stderr": "4ff3ed70e122f38ca3d92720e15f80bee76b4b248ddd976570800baa5d679de0",
+  "ci-grammar-off-configure-01.stdout": "f1f58a2a018e1ed1a097f2065ac872a54c5bb20c2677b6add281124857a05c2c",
+  "ci-grammar-off-configure-02.json": "8ca8c268db4cbce1258db5e9fa56497cf82a40b258c9e31eebf38b0ceafd9a1a",
+  "ci-grammar-off-configure-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-grammar-off-configure-02.stdout": "872b2eb9ecf511c89d1a5d56c70449a7e59c6b086c4254cd81953c1288e4e948",
+  "ci-grammar-off-test-01.json": "fe34d29f037f37460daff11aa45c959ca028c40935d11c5effc6d5bc1644ed8b",
+  "ci-grammar-off-test-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-grammar-off-test-01.stdout": "1376f81cf23211353a19e5c74b0c1b8642103997f66ed5c8e90baa17a0b625e8",
+  "ci-grammar-on-build-01.json": "73199e9be60d001a5d4adf4611820f53a4417b135aef389a5fe8b4abd7037179",
+  "ci-grammar-on-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-grammar-on-build-01.stdout": "1fed52af7e77c3f26e8ffb027c4b10241003818ed0c196d10e4e5445d234a1ee",
+  "ci-grammar-on-test-01.json": "782be85dccee3cfbde67c371865d49bf782bbbb423558365644dea27ab284ed8",
+  "ci-grammar-on-test-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ci-grammar-on-test-01.stdout": "1376f81cf23211353a19e5c74b0c1b8642103997f66ed5c8e90baa17a0b625e8",
+  "pr27-ci-pr-failed.log": "feeb39077d1867e5089c98017ce9a16c3ad23d98c51bc5cdec9b42da81304d32",
+  "pr27-ci-push-failed.log": "a14a622f9e8fabbbd70de191b459820f3c479ef986cbff952c44fd9a93deb982"
+}

@@ -1,0 +1,102 @@
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp: In function ‘q4t::io::Json q4t::server::NativeResponsesProgramDefinition(const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp:57:19: error: ‘OutputJson’ was not declared in this scope
+   57 |                   OutputJson(catalog))}})}});
+      |                   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp:39:15: error: could not convert ‘{{"name", q4t::server::responses_detail::String(std::string)()}, {"strict", q4t::server::responses_detail::Boolean(bool)()}, {"parameters", parameters}, {"description", <expression error>}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   39 |         Object(
+      |         ~~~~~~^
+      |               |
+      |               <brace-enclosed initializer list>
+   40 |             {{"name", String(kResponsesProgramModelName)},
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   41 |              {"strict", Boolean(true)},
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   42 |              {"parameters", parameters},
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   43 |              {"description",
+      |              ~~~~~~~~~~~~~~~
+   44 |               String(
+      |               ~~~~~~~
+   45 |                   "Run JavaScript with top-level await in an isolated runtime. "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   46 |                   "Call only the following loaded tools with "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   47 |                   "tools[name](arguments) "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+   48 |                   "or tools[namespace][name](arguments). Function arguments "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   49 |                   "are objects; "
+      |                   ~~~~~~~~~~~~~~~
+   50 |                   "custom arguments are strings. Await results, then "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   51 |                   "text(value) to "
+      |                   ~~~~~~~~~~~~~~~~~
+   52 |                   "emit the final result; image(dataURL) emits an image. Use "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |                   "Promise.all for independent calls. No filesystem, network, "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   54 |                   "process, console, Node, or tool search. Never invent "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                   "results. "
+      |                   ~~~~~~~~~~~
+   56 |                   "Authorized definitions: " +
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   57 |                   OutputJson(catalog))}})}});
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp:36:16: error: could not convert ‘{{"type", q4t::server::responses_detail::String(std::string)()}, {"function", <expression error>}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   36 |   return Object(
+      |          ~~~~~~^
+      |                |
+      |                <brace-enclosed initializer list>
+   37 |       {{"type", String("function")},
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   38 |        {"function",
+      |        ~~~~~~~~~~~~
+   39 |         Object(
+      |         ~~~~~~~ 
+   40 |             {{"name", String(kResponsesProgramModelName)},
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   41 |              {"strict", Boolean(true)},
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   42 |              {"parameters", parameters},
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   43 |              {"description",
+      |              ~~~~~~~~~~~~~~~
+   44 |               String(
+      |               ~~~~~~~
+   45 |                   "Run JavaScript with top-level await in an isolated runtime. "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   46 |                   "Call only the following loaded tools with "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   47 |                   "tools[name](arguments) "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+   48 |                   "or tools[namespace][name](arguments). Function arguments "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   49 |                   "are objects; "
+      |                   ~~~~~~~~~~~~~~~
+   50 |                   "custom arguments are strings. Await results, then "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   51 |                   "text(value) to "
+      |                   ~~~~~~~~~~~~~~~~~
+   52 |                   "emit the final result; image(dataURL) emits an image. Use "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |                   "Promise.all for independent calls. No filesystem, network, "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   54 |                   "process, console, Node, or tool search. Never invent "
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                   "results. "
+      |                   ~~~~~~~~~~~
+   56 |                   "Authorized definitions: " +
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   57 |                   OutputJson(catalog))}})}});
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::AppendProgramItems(const q4t::io::Json&, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_program_output.cpp:33:33: error: ‘OutputJson’ was not declared in this scope
+   33 |     if (status) status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+      |                                 ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:107: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:121: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program_output.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

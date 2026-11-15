@@ -1,0 +1,8 @@
+[PASS] responses_program_namespace_custom_format_dispatch_checked
+[PASS] responses_program_api_media_is_prepared_reviewed_and_replayable
+[PASS] responses_program_api_media_budget_and_bad_pixels_fail_before_publish
+[PASS] file_expansion_all_source_validation_precedes_external_io
+[PASS] file_expansion_real_text_preserves_original_tool_paths_and_cache_boundary
+[PASS] file_expansion_combined_source_text_and_rendered_budgets_are_atomic
+[PASS] file_expansion_combined_retained_payload_is_atomic
+7 tests, 7 passed, 0 failed, 0 skipped

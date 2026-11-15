@@ -1,0 +1,9 @@
+test_actual_cpp_program_and_resume_match_wire_schema (tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_actual_cpp_program_and_resume_match_wire_schema) ... ok
+test_child_oracle_rejects_identity_order_and_status_errors (tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_child_oracle_rejects_identity_order_and_status_errors) ... ok
+test_completion_and_get_projection_are_failure_sensitive (tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_completion_and_get_projection_are_failure_sensitive) ... ok
+test_requests_match_sdk_and_frozen_limits (tools.serve_responses.test_programmatic_acceptance.ProgrammaticAcceptance.test_requests_match_sdk_and_frozen_limits) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.137s
+
+OK

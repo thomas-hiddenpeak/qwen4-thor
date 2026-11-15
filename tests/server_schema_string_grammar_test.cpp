@@ -102,8 +102,7 @@ Q4T_TEST(schema_string_syntax_intersects_formats_patterns_and_lengths) {
 }
 
 Q4T_TEST(schema_string_syntax_counted_length_unicode_and_escape_boundaries) {
-  const auto one = Parse(
-      R"({"type":"string","minLength":1,"maxLength":300})");
+  const auto one = Parse(R"({"type":"string","minLength":1,"maxLength":300})");
   const auto two = Parse(R"({"type":"string","maxLength":256})");
   const auto language = CompileSchemaStringSyntax({&one, &two});
   xgrammar::TokenizerInfo tokenizer(Vocabulary(), xgrammar::VocabType::RAW, 257,
@@ -136,5 +135,56 @@ Q4T_TEST(schema_string_syntax_counted_length_unicode_and_escape_boundaries) {
       xgrammar::Grammar::FromEBNF(CompileSchemaStringSyntax({&empty})));
   xgrammar::GrammarMatcher matcher(empty_grammar);
   Q4T_CHECK(matcher.AcceptString("\"\"") && matcher.AcceptToken(0));
+  return true;
+}
+
+Q4T_TEST(schema_string_syntax_large_length_compact_exact_boundaries) {
+  const auto schema =
+      Parse(R"({"type":"string","minLength":1,"maxLength":65536})");
+  const auto language = CompileSchemaStringSyntax({&schema});
+  Q4T_CHECK(language.size() < 32768);
+  xgrammar::TokenizerInfo tokenizer(Vocabulary(), xgrammar::VocabType::RAW, 257,
+                                    std::vector<int32_t>{0}, false);
+  xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
+  const auto grammar =
+      compiler.CompileGrammar(xgrammar::Grammar::FromEBNF(language));
+  for (const auto count : {0, 1, 65535, 65536, 65537}) {
+    for (const std::string scalar : {"a", "中", "🚀", "\n", "\""}) {
+      std::string text;
+      for (int i = 0; i < count; ++i) text += scalar;
+      xgrammar::GrammarMatcher matcher(grammar);
+      const bool accepted = matcher.AcceptString(EncodeCustomInput(text)) &&
+                            matcher.AcceptToken(0) && matcher.IsTerminated();
+      Q4T_CHECK(accepted == (count >= 1 && count <= 65536));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(schema_string_syntax_large_lower_and_interval_bounds) {
+  const std::pair<int, int> bounds[] = {
+      {4095, 4097}, {65536, 65536}, {1025, -1}, {0, 65536}};
+  xgrammar::TokenizerInfo tokenizer(Vocabulary(), xgrammar::VocabType::RAW, 257,
+                                    std::vector<int32_t>{0}, false);
+  xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
+  for (const auto& [minimum, maximum] : bounds) {
+    const auto schema = Parse(
+        "{\"type\":\"string\",\"minLength\":" + std::to_string(minimum) +
+        (maximum < 0 ? "" : ",\"maxLength\":" + std::to_string(maximum)) + '}');
+    const auto language = CompileSchemaStringSyntax({&schema});
+    Q4T_CHECK(language.size() < 32768);
+    const auto grammar =
+        compiler.CompileGrammar(xgrammar::Grammar::FromEBNF(language));
+    for (const int count :
+         {0, minimum - 1, minimum, minimum + 1, maximum, maximum + 1}) {
+      if (count < 0) continue;
+      xgrammar::GrammarMatcher matcher(grammar);
+      const bool accepted =
+          matcher.AcceptString(EncodeCustomInput(std::string(count, '<'))) &&
+          matcher.AcceptToken(0) && matcher.IsTerminated();
+      Q4T_CHECK(accepted ==
+                (count >= minimum && (maximum < 0 || count <= maximum)));
+    }
+  }
   return true;
 }

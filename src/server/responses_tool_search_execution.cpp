@@ -19,6 +19,11 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
   if (!status) return status;
   has_async_tools_ = std::any_of(identities.begin(), identities.end(),
                                  [](const auto& tool) { return tool.async; });
+  program_tools_ = active;
+  program_enabled_ = std::any_of(
+      active.array.begin(), active.array.end(), [](const auto& tool) {
+        return tool.GetString("type") == "programmatic_tool_calling";
+      });
   tool_search_catalog_.search = {};
   for (const auto& tool : active.array)
     if (tool.GetString("type") == "tool_search") {

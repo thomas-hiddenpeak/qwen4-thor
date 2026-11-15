@@ -389,5 +389,32 @@ class Declarations(unittest.TestCase):
             pkg.verify_declarations(original)
 
 
+    def test_program_runtime_license_survives_distribution_and_is_required(self):
+        binary, release, model = self.application_declaration_fixture()
+        metadata = pkg.read(release)
+        declaration = metadata['release_declarations']
+        root = Path(declaration['directory'])
+        caps = pkg.read(root/'capabilities.json')
+        caps['responses']['programmatic_tools'] = dict(profile='q4t-programmatic-tools-v1')
+        metadata['chat_protocol']['responses'] = caps['responses']
+        pkg.save(root/'capabilities.json', caps)
+        declaration['files']['capabilities.json'] = pkg.sha(root/'capabilities.json')
+        pkg.save(release, metadata)
+        receipt = pkg.prepare(binary, release, model, self.root/'program-package')
+        target = Path(receipt['package'])
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        for name in ('quickjs/LICENSE', 'quickjs/SOURCE.json'):
+            self.assertEqual(pkg.sha(target/'licenses'/name), pkg.sha(pkg.NOTICE_ROOT/name))
+        shutil.rmtree(root)
+        pkg.verify(target, receipt['manifest_sha256'])
+        for name in ('quickjs/LICENSE', 'quickjs/SOURCE.json'):
+            manifest['third_party_notices']['files'].remove(name)
+            del manifest['files']['licenses/'+name]
+            (target/'licenses'/name).unlink()
+        pkg.save(target/'manifest.json', manifest)
+        with self.assertRaisesRegex(RuntimeError, 'program runtime notices absent'):
+            pkg.verify(target, pkg.sha(target/'manifest.json'))
+
+
 if __name__ == '__main__':
     unittest.main()

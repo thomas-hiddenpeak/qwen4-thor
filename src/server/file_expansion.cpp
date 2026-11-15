@@ -1,6 +1,7 @@
 #include "q4t/server/file_expansion.h"
 
 #include <algorithm>
+#include <memory>
 #include <set>
 
 #include "object_protocol.h"
@@ -8,6 +9,7 @@
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_program.h"
 
 namespace q4t::server {
 namespace {
@@ -108,7 +110,9 @@ ObjectReply ChargeImage(const FileImageInput& image,
 }
 struct Candidate {
   const Json* item;
-  const Json* part;
+  // Source values borrow JSON strings. Decoded program content must stay at a
+  // stable address through vector moves and the entire acquisition phase.
+  std::shared_ptr<const Json> part;
   std::string path;
   FileInputSource source;
   bool image = false;
@@ -129,14 +133,22 @@ ObjectReply Scan(const Json& item, const Json& value, std::string path,
     if (type == "file" || type == "input_file" || type == "input_image" ||
         type == "image_url") {
       if (files->size() >= maximum) return Capacity();
-      Candidate candidate{&item, &value, path, {}};
+      Candidate candidate{&item, std::make_shared<Json>(value), path, {}};
       candidate.image = type == "input_image" || type == "image_url";
-      auto reply =
-          candidate.image
-              ? ParseImageInputSource(value, profile, path, &candidate.source)
-              : ParseFileInputSource(value, profile, path, &candidate.source);
+      auto reply = candidate.image
+                       ? ParseImageInputSource(*candidate.part, profile, path,
+                                               &candidate.source)
+                       : ParseFileInputSource(*candidate.part, profile, path,
+                                              &candidate.source);
       if (!reply.ok()) return reply;
       files->push_back(std::move(candidate));
+    } else if (type == "program_output") {
+      Json content;
+      auto status =
+          DecodeResponsesProgramOutput(value.GetString("result"), &content);
+      if (!status) return Invalid(status.message());
+      return Scan(item, content, path + "/result", profile, maximum, work,
+                  files, depth + 1);
     } else {
       for (const auto* key : {"content", "output", "results"})
         if (const auto* child = value.Find(key)) {
@@ -265,6 +277,12 @@ bool ContainsFile(const Json& value, size_t depth) {
     if (type == "file" || type == "input_file" || type == "input_image" ||
         type == "image_url")
       return true;
+    if (type == "program_output") {
+      Json content;
+      return !DecodeResponsesProgramOutput(value.GetString("result"),
+                                           &content) ||
+             ContainsFile(content, depth + 1);
+    }
     for (const auto* key : {"content", "output", "results"})
       if (const auto* child = value.Find(key);
           child && ContainsFile(*child, depth + 1))
@@ -771,6 +789,19 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
           result->array.push_back(std::move(mapped));
         }
       }
+    } else if (value.IsObject() &&
+               value.GetString("type") == "program_output") {
+      Json content, mapped;
+      auto status =
+          DecodeResponsesProgramOutput(value.GetString("result"), &content);
+      if (!status) return Invalid(status.message());
+      auto reply = walk(content, id, path + "/result", &mapped, depth + 1);
+      if (!reply.ok()) return reply;
+      std::string encoded;
+      status = EncodeResponsesProgramOutput(mapped, &encoded);
+      if (!status) return Capacity();
+      *result = value;
+      Set(result, "result", String(std::move(encoded)));
     } else if (value.IsObject()) {
       *result = Object();
       for (const auto& [key, child] : value.object) {

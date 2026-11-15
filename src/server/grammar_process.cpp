@@ -58,6 +58,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* documents = new WorkerOwner;
   static auto* embeddings = new WorkerOwner;
   static auto* tool_results = new WorkerOwner;
+  static auto* programs = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
@@ -67,6 +68,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
     case IsolatedWorkerDomain::kEmbeddingAssets: return *embeddings;
     case IsolatedWorkerDomain::kToolResults:
       return *tool_results;
+    case IsolatedWorkerDomain::kPrograms: return *programs;
     default: return *grammar;
   }
 }
@@ -154,6 +156,7 @@ void PollRequestWorkers() {
   PollIsolatedWorkers(IsolatedWorkerDomain::kFileParse);
   PollIsolatedWorkers(IsolatedWorkerDomain::kEmbeddingAssets);
   PollIsolatedWorkers(IsolatedWorkerDomain::kToolResults);
+  PollIsolatedWorkers(IsolatedWorkerDomain::kPrograms);
 }
 
 void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
@@ -198,7 +201,8 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.domain != IsolatedWorkerDomain::kFileFetch &&
       control.domain != IsolatedWorkerDomain::kFileParse &&
       control.domain != IsolatedWorkerDomain::kEmbeddingAssets &&
-      control.domain != IsolatedWorkerDomain::kToolResults)
+      control.domain != IsolatedWorkerDomain::kToolResults &&
+      control.domain != IsolatedWorkerDomain::kPrograms)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -251,6 +255,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char document_name[] = "q4t-file-document";
     char embedding_name[] = "q4t-embedding-assets";
     char tool_result_name[] = "q4t-tool-results";
+    char program_name[] = "q4t-program";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
     if (control.domain == IsolatedWorkerDomain::kSessionCache ||
@@ -258,6 +263,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       name = cache_name;
     if (control.domain == IsolatedWorkerDomain::kToolResults)
       name = tool_result_name;
+    if (control.domain == IsolatedWorkerDomain::kPrograms) name = program_name;
     if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     if (control.domain == IsolatedWorkerDomain::kFileParse) name = document_name;
     if (control.domain == IsolatedWorkerDomain::kEmbeddingAssets)

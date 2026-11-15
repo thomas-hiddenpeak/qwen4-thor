@@ -11,7 +11,8 @@ ObjectReply MergeToolResultContracts(const io::Json& source,
                                      const io::Json& items,
                                      io::Json* contracts);
 ObjectReply BindToolResultContracts(const io::Json& request,
-                                    const io::Json& items, io::Json* contracts);
+                                    const io::Json& items, io::Json* contracts,
+                                    bool authenticated_program = false);
 ObjectReply CheckToolResultContracts(const io::Json& request,
                                      const io::Json& history,
                                      const io::Json& contracts,

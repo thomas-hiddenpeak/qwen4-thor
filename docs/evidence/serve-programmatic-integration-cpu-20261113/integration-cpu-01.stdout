@@ -1,0 +1,46 @@
+[PASS] responses_program_callers_are_exact_and_default_direct
+[PASS] responses_program_authenticated_restart_and_real_results
+[PASS] responses_program_fingerprint_rejects_scope_model_and_code_changes
+[PASS] responses_program_direct_only_and_unloaded_tools_do_not_execute
+[PASS] responses_program_argument_and_original_result_schema_enforced
+[PASS] responses_program_result_caller_and_identity_cannot_be_rebound
+[PASS] responses_program_causal_replay_rejects_forged_arguments_and_order
+  CHECK failed: Run(cipher, bad, &output).http_status == 400 && output.array.empty() (line 303)
+[FAIL] responses_program_namespace_custom_format_dispatch_checked
+[PASS] responses_program_cancel_and_expiry_do_not_dispatch
+[PASS] responses_program_api_routes_and_choice_preserve_only_authorized_calls
+[PASS] responses_program_api_direct_output_cannot_bypass_program_only_policy
+[PASS] responses_program_api_stored_resume_sse_and_final_answer
+[PASS] responses_program_api_stateless_and_changed_schema_keep_original_authority
+[PASS] responses_program_api_truncated_code_never_dispatches
+[PASS] responses_program_api_no_tool_program_continues_under_shared_budget
+[PASS] responses_program_api_frozen_queue_preserves_program_result_contract
+[PASS] responses_program_api_output_review_holds_client_dispatch
+[PASS] responses_program_api_serial_promise_all_keeps_sealed_policy
+[PASS] responses_program_api_conversation_restart_and_compaction_keep_authority
+  CHECK failed: Ok(run.Prepare(request, config, Access(), 42)) && Ok(run.Begin(&wire)) && run.Append(Code("text('actual pixels'); image('" + url + "');"), {}, &wire) && Ok(run.RunPrograms(1, &waiting, Silent)) && !waiting (line 415)
+[FAIL] responses_program_api_media_is_prepared_reviewed_and_replayable
+[PASS] responses_program_api_media_budget_and_bad_pixels_fail_before_publish
+[PASS] program_worker_parallel_calls_resume_with_actual_results
+[PASS] program_worker_result_order_preserves_race_and_dependent_call
+[PASS] program_worker_namespace_custom_and_image_output
+[PASS] input_binding_paths_identity_conflicts_and_atomic_subsets
+[PASS] input_binding_multiple_references_and_queued_restart_restore_privately
+[PASS] input_binding_explicit_tool_output_preserves_immutable_file
+[PASS] file_expansion_all_source_validation_precedes_external_io
+[PASS] file_expansion_real_text_preserves_original_tool_paths_and_cache_boundary
+[PASS] file_expansion_combined_source_text_and_rendered_budgets_are_atomic
+[PASS] file_expansion_combined_retained_payload_is_atomic
+[PASS] responses_async_done_precedes_independent_text_and_only_once
+[PASS] responses_async_media_results_keep_original_feature_order_and_ids
+[PASS] tool_result_invocation_schema_survives_restart_changed_tools_and_refs
+[PASS] tool_result_contract_conversation_copy_and_frozen_queue_keep_schema
+[PASS] tool_result_schema_content_array_and_legacy_unbound_are_independent
+[PASS] moderation_output_covers_tools_refusal_and_reasoning_without_metadata
+[PASS] moderation_content_capacity_failure_never_silently_truncates
+[PASS] responses_discovery_real_parser_receipt_and_sse_items_are_consistent
+[PASS] responses_discovery_result_schema_binds_at_invocation_not_final_catalog
+[PASS] responses_discovery_truncation_preserves_definitions_and_original_paths
+[PASS] responses_discovery_compaction_keeps_executable_definitions_exact
+[PASS] responses_context_parallel_calls_and_outputs_are_not_split
+43 tests, 41 passed, 2 failed, 0 skipped

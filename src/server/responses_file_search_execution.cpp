@@ -174,7 +174,8 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || output_used < 0 || output_used >= limit)
+      PendingToolSearch() || PendingPrograms() || output_used < 0 ||
+      output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
@@ -195,6 +196,8 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
         Object({{"type", String("allowed_tools")},
                 {"mode", String("auto")},
                 {"tools", Array({Object({{"type", String("file_search")}})})}});
+  if (choice.GetString("type") == "programmatic_tool_calling")
+    choice = String("auto");
   if (choice.GetString("type") == "allowed_tools")
     Set(&choice, "mode", String("auto"));
   envelope.native_tools_exhausted = exhausted;
@@ -217,14 +220,30 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   wire->clear();
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || output_used < 0 || output_used >= limit)
+      PendingToolSearch() || PendingPrograms() || output_used < 0 ||
+      output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid async continuation");
   if (async_continued_) return {};
+  // Completed public dispatch items can still await synchronous client work.
+  // A separate direct async call must not bypass that program dependency.
+  if (program_client_wait_ && !program_async_wait_) return {};
   auto candidate = output_;
   std::string events;
   auto status =
       candidate.CompleteAsyncCalls(completed_calls, continue_answer, &events);
   if (!status) return Error(502, "async_tool_incomplete", status.message());
+  if (!*continue_answer && program_async_wait_) {
+    bool synchronous = false;
+    for (const auto& item : candidate.Snapshot().GetArray("output")->array) {
+      const auto type = item.GetString("type");
+      synchronous |= (type == "function_call" || type == "custom_tool_call") &&
+                     item.GetString("status") == "in_progress" &&
+                     !item.GetBool("async");
+      synchronous |=
+          type == "tool_search_call" && item.GetString("execution") == "client";
+    }
+    *continue_answer = !synchronous;
+  }
   if (!*continue_answer) return {};
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));

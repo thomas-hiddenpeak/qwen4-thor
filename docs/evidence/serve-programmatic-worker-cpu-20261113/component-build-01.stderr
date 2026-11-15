@@ -1,0 +1,43 @@
+-- GLOB mismatch!
+The following files were added:
+  +/home/rm01/models/dev/qwen4-thor/cmake/../third_party/licenses/quickjs/LICENSE
+  +/home/rm01/models/dev/qwen4-thor/cmake/../third_party/licenses/quickjs/SOURCE.json
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘JS_SetClassProto’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:2674:16: warning: unused variable ‘rt’ [-Wunused-variable]
+ 2674 |     JSRuntime *rt = ctx->rt;
+      |                ^~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘JS_GetClassProto’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:2681:16: warning: unused variable ‘rt’ [-Wunused-variable]
+ 2681 |     JSRuntime *rt = ctx->rt;
+      |                ^~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘num_keys_cmp’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:8573:28: warning: variable ‘atom2_is_integer’ set but not used [-Wunused-but-set-variable]
+ 8573 |     BOOL atom1_is_integer, atom2_is_integer;
+      |                            ^~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:8573:10: warning: variable ‘atom1_is_integer’ set but not used [-Wunused-but-set-variable]
+ 8573 |     BOOL atom1_is_integer, atom2_is_integer;
+      |          ^~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘JS_EvalThis’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:37230:9: warning: unused variable ‘eval_type’ [-Wunused-variable]
+37230 |     int eval_type = eval_flags & JS_EVAL_TYPE_MASK;
+      |         ^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘js_array_toSpliced’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:42902:43: warning: variable ‘last’ set but not used [-Wunused-but-set-variable]
+42902 |     JSValue arr, obj, ret, *arrp, *pval, *last;
+      |                                           ^~~~
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c: In function ‘js_json_check’:
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:49809:12: warning: this statement may fall through [-Wimplicit-fallthrough=]
+49809 |         if (JS_IsFunction(ctx, val))
+      |            ^
+/home/rm01/models/dev/qwen4-thor/third_party/quickjs/quickjs.c:49811:5: note: here
+49811 |     case JS_TAG_STRING:
+      |     ^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2431: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_object_store_test.cpp.o] Terminated
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2613: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_options_test.cpp.o] Terminated
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2711: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_progress_context_test.cpp.o] Terminated
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:275: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prompt_cache_test.cpp.o] Terminated
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:261: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prompt_registry_test.cpp.o] Terminated
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:4461: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prediction_test.cpp.o] Terminated
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Terminated
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Terminated
+gmake: *** [Makefile:148: q4t_host_tests] Terminated
