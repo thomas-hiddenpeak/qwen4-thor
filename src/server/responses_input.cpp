@@ -14,6 +14,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/trace/sha256.h"
@@ -50,6 +51,10 @@ Status TextField(const Json& value, const char* key, std::string_view path,
 }
 Status ItemMetadata(const Json& item, std::string_view path,
                     ChatPlanError* error) {
+  // These variants have their own status/nullable contract in the SDK graph.
+  if (item.GetString("type").starts_with("mcp_"))
+    return ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
+                                      path);
   if (const auto* type = item.Find("type"); type && !type->IsString())
     return Invalid(error, std::string(path) + ".type", "invalid item type");
   if (const auto* id = item.Find("id");
@@ -478,7 +483,8 @@ Status NormalizeResponsesInput(const io::Json& request,
     if (!discovery.initial.search.IsNull())
       initial.array.push_back(discovery.initial.search);
     Json native, ignored;
-    status = NormalizeActiveResponsesTools(Object({{"tools", initial}}),
+    status = NormalizeActiveResponsesTools(Object({{"tools", initial},
+                                                    {"input", plan.items}}),
                                            discovery.initial, &native, &ignored,
                                            error);
     if (!status) return status;
@@ -534,7 +540,68 @@ Status NormalizeResponsesInput(const io::Json& request,
     if (item.Has("id") && !item_ids.insert(item.GetString("id")).second)
       return Invalid(error, path + ".id", "duplicate input item ID");
     const auto type = item.GetString("type", "message");
-    if (type == "program" || type == "program_output") {
+    if (type == "mcp_list_tools") {
+      // The request owner authenticates this catalog. The actual definitions
+      // are rendered by the model tool adapter, not as a privileged message.
+      // Preserve listing failures as data instead of claiming an empty list.
+      if (Nonnull(item, "error")) {
+        if (assistant_path.empty()) assistant_path = path;
+        Set(&assistant, "content",
+            String(assistant.GetString("content") +
+                   "\n[MCP tool listing failed]\n" + OutputJson(item)));
+      }
+    } else if (type == "mcp_approval_request" ||
+               type == "mcp_approval_response") {
+      // Permission metadata is not a completed tool execution. Keep the
+      // actual decision/arguments in their participant role, never synthesize
+      // a successful tool result or dispatch from this pure projection.
+      status = flush();
+      if (!status) return status;
+      append(Object({{"role", String(type == "mcp_approval_request"
+                                          ? "assistant" : "user")},
+                     {"content", String("[MCP approval]\n" +
+                                         OutputJson(item))}}), path);
+    } else if (type == "mcp_call") {
+      const auto terminal = item.GetString("status");
+      if (terminal != "completed" && terminal != "failed") {
+        if (assistant_path.empty()) assistant_path = path;
+        Set(&assistant, "content",
+            String(assistant.GetString("content") +
+                   "\n[Unfinished MCP call; no result]\n" + OutputJson(item)));
+        continue;
+      }
+      if (results.size() > automatic_returns) {
+        status = flush();
+        if (!status) return status;
+      }
+      const auto id = item.GetString("id");
+      if (!call_ids.insert(id).second)
+        return Invalid(error, path + ".id", "Duplicate MCP call identity");
+      Json arguments;
+      if (!io::ParseJson(item.GetString("arguments"), &arguments, true,
+                          kSchemaJsonLimits) || !arguments.IsObject())
+        return Invalid(error, path + ".arguments", "Invalid MCP arguments");
+      const auto model_name = ResponsesMcpModelName(
+          item.GetString("server_label"), item.GetString("name"));
+      if (assistant_path.empty()) assistant_path = path;
+      calls.array.push_back(Object(
+          {{"id", String(id)}, {"type", String("function")},
+           {"function", Object({{"name", String(model_name)},
+                                 {"arguments", *item.Find("arguments")}})}}));
+      // A result remains source data. The private invocation owner, not this
+      // projection, validates original input/output schemas and execution.
+      auto result = Object({{"status", String(terminal)},
+                             {"output", Json()}, {"error", Json()}});
+      for (const auto* key : {"output", "error"})
+        if (const auto* value = item.Find(key)) Set(&result, key, *value);
+      results.emplace_back(Object({{"role", String("tool")},
+                                   {"tool_call_id", String(id)},
+                                   {"content", String(OutputJson(result))}}),
+                           path);
+      expected.emplace(id, false);
+      returned.insert(id);
+      ++automatic_returns;
+    } else if (type == "program" || type == "program_output") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
                                           error, path);
       if (!status) return status;
@@ -752,7 +819,8 @@ Status NormalizeResponsesInput(const io::Json& request,
           discovery.activations[activation].item_index == i) {
         Json native, ignored;
         status = NormalizeActiveResponsesTools(
-            Object({{"tools", discovery.activations[activation].definitions}}),
+            Object({{"tools", discovery.activations[activation].definitions},
+                    {"input", plan.items}}),
             discovery.initial, &native, &ignored, error);
         if (status) status = RenderChatToolDefinitions(native, &definitions);
         if (!status) return status;
@@ -963,7 +1031,8 @@ void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
 
 Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
                                        io::Json* choice, ChatPlanError* error,
-                                       io::Json* effective_tools) {
+                                       io::Json* effective_tools,
+                                       bool definitions_only) {
   *tools = Array();
   *choice = String("auto");
   *error = {};
@@ -987,6 +1056,10 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
   std::vector<ResponsesFileSearchBinding> native;
   auto binding_status =
       PlanResponsesFileSearchBindings(request, &native, error);
+  if (!binding_status) return binding_status;
+  std::vector<ResponsesMcpBinding> mcp;
+  binding_status = PlanResponsesMcpRequestBindings(request, &mcp, error,
+                                                   definitions_only);
   if (!binding_status) return binding_status;
   if (const auto* definitions = request.Find("tools")) {
     if (!definitions->IsArray() || definitions->array.size() > 128)
@@ -1016,6 +1089,27 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         return Invalid(error, at + ".type",
                        "tool type must be a nonempty string");
       const auto type = definition.GetString("type");
+      if (type == "mcp") {
+        ResponsesMcpDefinition checked;
+        auto status = PlanResponsesMcpDefinition(definition, &checked, error,
+                                                 at);
+        if (!status) return status;
+        if (effective_tools)
+          effective_tools->array[entry.outer] = checked.declaration;
+        for (const auto& binding : mcp) {
+          if (binding.server_label != definition.GetString("server_label"))
+            continue;
+          auto body = Object();
+          for (const auto* key : {"description", "parameters", "strict"})
+            Set(&body, key, *binding.function.Find(key));
+          Set(&body, "name", String(binding.model_name));
+          tools->array.push_back(Object({{"type", String("function")},
+                                         {"function", std::move(body)}}));
+          model_paths.push_back(at);
+          if (!binding.direct) program_only.insert(binding.model_name);
+        }
+        continue;
+      }
       if (type == "programmatic_tool_calling") {
         auto status = InputFields(definition, {"type"}, &error->param, at);
         if (!status) return status;
@@ -1181,7 +1275,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     model_paths.push_back(program_path);
   }
   if (const auto* original = request.Find("tool_choice")) {
-    Json selected, native_choice, mapped;
+    Json selected, native_choice, mcp_choice, mapped;
     // Client selectors are mapped before builtin expansion. A builtin's
     // private model name must never be reinterpreted as a child's bare name.
     auto status = MapNamespaceChoice(*original, identities, &selected, error);
@@ -1189,11 +1283,17 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
       status = MapResponsesProgramChoice(selected, program_enabled,
                                          &native_choice, error);
     if (status)
+      status = MapResponsesMcpChoice(native_choice, mcp, &mcp_choice, error);
+    if (status)
       status =
-          MapResponsesFileSearchChoice(native_choice, native, &mapped, error);
+          MapResponsesFileSearchChoice(mcp_choice, native, &mapped, error);
     if (status)
       status = ToolSelection(mapped, choice, "tool_choice", {}, error);
     if (!status) return status;
+  }
+  if (tools->array.size() > 128) {
+    *error = {"tool_resource_exhausted", "tools", 503};
+    return Status::Fail("Expanded callable tools exceed request capacity");
   }
   auto status =
       ValidateToolDefinitions(Object({{"tools", *tools}}), &error->param);
@@ -1270,7 +1370,12 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
     if (!history.initial.search.IsNull())
       initial.array.push_back(history.initial.search);
     Json ignored;
-    status = NormalizeActiveResponsesTools(Object({{"tools", initial}}),
+    auto initial_request = request;
+    Set(&initial_request, "tools", initial);
+    std::erase_if(initial_request.object, [](const auto& pair) {
+      return pair.first == "tool_choice";
+    });
+    status = NormalizeActiveResponsesTools(initial_request,
                                            history.initial, header_tools,
                                            &ignored, error);
     if (!status) return status;

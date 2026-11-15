@@ -55,5 +55,6 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
 // does not load history or grant access to deferred definitions by itself.
 Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
                                        io::Json* choice, ChatPlanError* error,
-                                       io::Json* effective_tools = nullptr);
+                                       io::Json* effective_tools = nullptr,
+                                       bool definitions_only = false);
 }  // namespace q4t::server

@@ -1,0 +1,37 @@
+{
+  "scope": "MCP pure tools/history/discovery, original schemas and choice, compaction/truncation dependencies, native tool exhaustion. Owner execution and credentials remain in development; no GPU/default changes.",
+  "sources": {
+    "include/q4t/server/responses_input.h": {
+      "before": "00bacde441fa080f215fd8bfc35460942bdf06de326587ab174db174b91d3c7c",
+      "after": "fab67f495d1ffd4dc4c2248a1de8f0cc845b47be1cd410fedd00b556f704280a"
+    },
+    "include/q4t/server/responses_mcp_binding.h": {
+      "before": "0bc2bd5a763175bc1bda8b596717e2595ad1cb65c2a6571a6a20f6ca5ad4a76a",
+      "after": "d651f42095e00c5d46d95e13182dc61b17cb30a576714cc47a5163fdb6dcd441"
+    },
+    "src/server/responses_compaction.cpp": {
+      "before": "06c36dccc8cab791dfcc002e60fc40c40422ebe819829bdf9e206a8feaf0a84e",
+      "after": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d"
+    },
+    "src/server/responses_input.cpp": {
+      "before": "bc26f9e215a4a9d02b2d52fce89df1ca656fac22d131ca99184bef20d6aede11",
+      "after": "00ff61b6d1b6000f7f358f1515c9900efe58b363b0b7bf1bb6e43647a212d60c"
+    },
+    "src/server/responses_mcp_binding.cpp": {
+      "before": "fe67e96fe5521f6da75b807d0d658b757a28b463fbdf31cb5298df57f2de06a7",
+      "after": "21514659b8b9657cc8c81344ddfdee50d21d75deaf598e13f61e3a2c18d83e86"
+    },
+    "src/server/responses_plan.cpp": {
+      "before": "3d111362a52c66846f6b6f245449a0490ef3d13cd3606b27f7f7c01eab6118cf",
+      "after": "2746e75290f0b36b62b56dafadf0c575b7322776942209e5528ba57d044f4f1f"
+    },
+    "src/server/responses_tool_catalog_history.cpp": {
+      "before": "2b8011bf99d9264a92a9b1f9c6fa42bb3a229600833c5b29b84a27bdee4210bb",
+      "after": "6bbe646d37de50dd5c0c5f7d4d4bbb06c2681c02653243ab50b6a926fb524ce4"
+    },
+    "src/server/responses_tool_search.cpp": {
+      "before": "b73429e8dbac20630baf88c3ef89667e31e6d4bc15b20c7e56f9ad1d7b44cb9d",
+      "after": "42b50b7e4333a91a0636c950ecc7a3d69472e3ba2691f7237489f66c8cd7a3a1"
+    }
+  }
+}

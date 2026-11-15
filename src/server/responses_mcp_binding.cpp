@@ -1,5 +1,6 @@
 #include "q4t/server/responses_mcp_binding.h"
 
+#include <algorithm>
 #include <set>
 
 #include "object_protocol.h"
@@ -19,6 +20,71 @@ Status Invalid(ChatPlanError* error, std::string path, std::string message,
   return Status::Fail(std::move(message));
 }
 }  // namespace
+
+namespace {
+std::string Alias(std::string_view label, std::string_view name) {
+  return "q4t_builtin_mcp_" +
+         Digest(OutputJson(Array(
+                    {String(std::string(label)), String(std::string(name))})))
+             .substr(0, 48);
+}
+}  // namespace
+
+std::string ResponsesMcpModelName(std::string_view server_label,
+                                  std::string_view name) {
+  return ResponsesToolModelName("", Alias(server_label, name), "function");
+}
+
+Status PlanResponsesMcpRequestBindings(
+    const Json& request, std::vector<ResponsesMcpBinding>* bindings,
+    ChatPlanError* error, bool definitions_only) {
+  bindings->clear();
+  std::vector<ResponsesMcpDefinition> declarations;
+  std::set<std::string> labels;
+  std::vector<size_t> indices;
+  if (const auto* tools = request.GetArray("tools")) {
+    for (size_t i = 0; i < tools->array.size(); ++i) {
+      const auto& tool = tools->array[i];
+      if (tool.GetString("type") != "mcp") continue;
+      ResponsesMcpDefinition definition;
+      const auto path = "tools[" + std::to_string(i) + ']';
+      auto status = PlanResponsesMcpDefinition(tool, &definition, error, path);
+      if (!status) return status;
+      if (!labels.insert(definition.declaration.GetString("server_label"))
+               .second)
+        return Invalid(error, path + ".server_label", "Duplicate MCP server");
+      declarations.push_back(std::move(definition));
+      indices.push_back(i);
+    }
+  }
+  if (definitions_only || declarations.empty()) return {};
+  auto catalogs = Array();
+  if (const auto* input = request.GetArray("input")) {
+    for (const auto& item : input->array) {
+      const auto label = item.GetString("server_label");
+      if (item.GetString("type") != "mcp_list_tools" || !labels.contains(label))
+        continue;
+      std::erase_if(catalogs.array, [&](const auto& old) {
+        return old.GetString("server_label") == label;
+      });
+      catalogs.array.push_back(item);
+    }
+  }
+  auto status =
+      PlanResponsesMcpBindings(declarations, catalogs, bindings, error);
+  if (!status) {
+    // The declaration vector excludes other public tool kinds.
+    for (size_t i = 0; i < indices.size(); ++i) {
+      const auto prefix = "tools[" + std::to_string(i) + ']';
+      if (error->param.starts_with(prefix)) {
+        error->param.replace(0, prefix.size(),
+                             "tools[" + std::to_string(indices[i]) + ']');
+        break;
+      }
+    }
+  }
+  return status;
+}
 
 Status PlanResponsesMcpBindings(
     const std::vector<ResponsesMcpDefinition>& declarations,
@@ -83,11 +149,8 @@ Status PlanResponsesMcpBindings(
       if (next.size() >= 128)
         return Invalid(error, path, "Expanded MCP tools exceed capacity", true);
       const auto name = tool.GetString("name");
-      const auto alias =
-          "q4t_builtin_mcp_" +
-          Digest(OutputJson(Array({String(label), String(name)})))
-              .substr(0, 48);
-      const auto model_name = ResponsesToolModelName("", alias, "function");
+      const auto alias = Alias(label, name);
+      const auto model_name = ResponsesMcpModelName(label, name);
       if (!aliases.insert(model_name).second)
         return Invalid(error, path, "MCP tool identity collision");
       const auto& schema = *tool.Find("inputSchema");

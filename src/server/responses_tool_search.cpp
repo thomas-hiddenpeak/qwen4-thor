@@ -90,10 +90,12 @@ Status ValidationCopy(Json* tool, ChatPlanError* error,
 }
 
 Json Summary(const Json& tool) {
+  const bool mcp = tool.GetString("type") == "mcp";
+  const auto& name = *tool.Find(mcp ? "server_label" : "name");
   auto result = Object({{"type", *tool.Find("type")},
-                        {"path", *tool.Find("name")},
-                        {"name", *tool.Find("name")}});
-  if (const auto* description = tool.Find("description"))
+                        {"path", name}, {"name", name}});
+  if (const auto* description =
+          tool.Find(mcp ? "server_description" : "description"))
     Set(&result, "description", *description);
   return result;
 }
@@ -133,7 +135,8 @@ Status PlanResponsesToolCatalog(const Json& tools, ResponsesToolCatalog* result,
   }
   Json normalized, choice, effective;
   auto status = NormalizeResponsesCallableTools(
-      Object({{"tools", validating}}), &normalized, &choice, error, &effective);
+      Object({{"tools", validating}}), &normalized, &choice, error, &effective,
+      true);
   if (!status) {
     for (size_t i = 0; i < source_indices.size(); ++i) {
       const auto prefix = "tools[" + std::to_string(i) + ']';
@@ -220,7 +223,8 @@ Status DiscoverResponsesTools(const ResponsesToolCatalog& catalog,
   }
   auto result = Array();
   for (const auto& tool : catalog.deferred.array) {
-    if (paths.contains(tool.GetString("name"))) {
+    if (paths.contains(tool.GetString(tool.GetString("type") == "mcp"
+                                         ? "server_label" : "name"))) {
       result.array.push_back(tool);
       continue;
     }

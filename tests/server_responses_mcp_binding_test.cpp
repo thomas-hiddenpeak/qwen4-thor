@@ -2,6 +2,9 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/responses_input.h"
+#include "q4t/server/responses_compaction.h"
+#include "q4t/server/responses_plan.h"
+#include "q4t/server/responses_tool_search.h"
 #include "q4t/test.h"
 
 namespace {
@@ -42,6 +45,185 @@ Json Catalog(std::string label = "project docs", Json tools = Array({Tool()})) {
                  {"tools", std::move(tools)}});
 }
 }  // namespace
+
+Q4T_TEST(responses_mcp_request_tools_preserve_original_schema_and_choices) {
+  auto request = Object({{"input", Array({Catalog()})},
+                         {"tools", Array({Definition().declaration})},
+                         {"tool_choice", Value(R"({"type":"mcp",
+                           "server_label":"project docs"})")}});
+  Json tools, choice, effective;
+  ChatPlanError error;
+  Q4T_CHECK(
+      NormalizeResponsesTools(request, &tools, &choice, &error, &effective));
+  Q4T_CHECK(tools.array.size() == 1 && effective.array.size() == 1 &&
+            effective.array[0].GetString("type") == "mcp");
+  const auto& function = *tools.array[0].Find("function");
+  Q4T_CHECK(function.GetString("name") ==
+            ResponsesMcpModelName("project docs", "read project"));
+  Q4T_CHECK(!function.GetBool("strict") &&
+            OutputJson(*function.Find("parameters")) ==
+                OutputJson(*Tool().Find("input_schema")));
+  Q4T_CHECK(choice.Find("function")->GetString("name") ==
+            function.GetString("name"));
+  Set(&request, "input", Array());
+  Q4T_CHECK(!NormalizeResponsesTools(request, &tools, &choice, &error));
+  Q4T_CHECK(error.code == "mcp_catalog_resolution_required");
+  return true;
+}
+
+Q4T_TEST(responses_mcp_discovery_uses_server_labels_and_distinct_active_slots) {
+  auto first = Definition("first").declaration;
+  auto second = Definition("second").declaration;
+  Set(&first, "defer_loading", Boolean(true));
+  Set(&second, "defer_loading", Boolean(true));
+  const auto search = Value(R"({"type":"tool_search"})");
+  const auto declarations = Array({first, second, search});
+  ResponsesToolCatalog catalog;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesToolCatalog(declarations, &catalog, &error));
+  Q4T_CHECK(catalog.eager.array.empty() && catalog.deferred.array.size() == 2 &&
+            catalog.summaries.array[0].GetString("path") == "first");
+  Json found;
+  Q4T_CHECK(DiscoverResponsesTools(catalog, Value(R"({"paths":["second"]})"),
+                                   &found, &error));
+  Q4T_CHECK(found.array.size() == 1 &&
+            found.array[0].GetString("server_label") == "second");
+  auto history = Array({Catalog("first"), Catalog("second"),
+                        Value(R"({"type":"message","role":"user",
+                                    "content":"Read the docs"})")});
+  Json tools, choice, active, header;
+  auto request = Object({{"tools", declarations}, {"input", history}});
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error, nullptr,
+                                    &header, &active));
+  Q4T_CHECK(tools.array.size() == 1);  // Only discovery before loading.
+  for (const auto& tool : {first, second})
+    history.array.push_back(Object({{"type", String("additional_tools")},
+                                    {"role", String("developer")},
+                                    {"tools", Array({tool})}}));
+  Set(&request, "input", history);
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error, nullptr,
+                                    &header, &active));
+  Q4T_CHECK(tools.array.size() == 3 && header.array.size() == 1 &&
+            active.array.size() == 3);
+  ResponsesInputPlan input;
+  Q4T_CHECK(NormalizeResponsesInput(request, &input, &error));
+  const auto messages = OutputJson(input.messages);
+  Q4T_CHECK(messages.find(ResponsesMcpModelName("first", "read project")) !=
+                messages.npos &&
+            messages.find(ResponsesMcpModelName("second", "read project")) !=
+                messages.npos);
+  return true;
+}
+
+Q4T_TEST(responses_mcp_history_keeps_approval_failure_and_partial_semantics) {
+  const auto history = Value(R"([
+    {"type":"message","role":"user","content":"Read docs"},
+    {"id":"mcpr_history","type":"mcp_approval_request",
+     "name":"read project","server_label":"project docs",
+     "arguments":"{\"path\":\"STATUS.md\"}"},
+    {"type":"mcp_approval_response","approval_request_id":"mcpr_history",
+     "approve":true},
+    {"id":"mcp_history","type":"mcp_call","server_label":"project docs",
+     "name":"read project","arguments":"{\"path\":\"STATUS.md\"}",
+     "approval_request_id":"mcpr_history","status":"failed",
+     "error":{"type":"http_error","code":503,"message":"Unavailable"}},
+    {"id":"mcp_partial","type":"mcp_call","server_label":"project docs",
+     "name":"read project","arguments":"{","status":"incomplete"}
+  ])");
+  ResponsesInputPlan input;
+  ChatPlanError error;
+  Q4T_CHECK(
+      NormalizeResponsesInput(Object({{"input", history}}), &input, &error));
+  Q4T_CHECK(input.items.array.size() == 5 && input.messages.array.size() == 5);
+  Q4T_CHECK(input.messages.array[1].GetString("role") == "assistant" &&
+            input.messages.array[2].GetString("role") == "user");
+  const auto& calls = input.messages.array[3].GetArray("tool_calls")->array;
+  Q4T_CHECK(calls.size() == 1 && calls[0].GetString("id") == "mcp_history");
+  Q4T_CHECK(input.messages.array[3].GetString("content").find("no result") !=
+            std::string::npos);
+  const auto result = input.messages.array[4].GetString("content");
+  Q4T_CHECK(result.find("Unavailable") != result.npos &&
+            result.find("failed") != result.npos);
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_planning_preserves_catalog_when_truncating_and_exhausted) {
+  auto request = Object(
+      {{"reasoning", Object({{"effort", String("none")}})},
+       {"truncation", String("auto")},
+       {"tools", Array({Definition().declaration})},
+       {"input", Array({Catalog(), Value(R"({"type":"message","role":"user",
+                                    "content":"old"})"),
+                        Value(R"({"type":"message","role":"assistant",
+                                    "content":"old answer"})"),
+                        Value(R"({"type":"message","role":"user",
+                                    "content":"current"})")})}});
+  ChatPlanConfig config;
+  config.model = "cpu";
+  config.structured = true;
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(ParseResponsesEnvelope(request, config, &envelope, &error));
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, *request.Find("input"), config,
+                                       &plan, &error));
+  Q4T_CHECK(plan.generation_request.GetArray("tools")->array.size() == 1);
+  ResponsesCompactionPlan compact;
+  auto canonical = *request.Find("input");
+  for (size_t i = 1; i < canonical.array.size(); ++i) {
+    auto& item = canonical.array[i];
+    Set(&item, "id", String("msg_mcp_context_" + std::to_string(i)));
+    Set(&item, "status", String("completed"));
+    const bool assistant = item.GetString("role") == "assistant";
+    auto part =
+        Object({{"type", String(assistant ? "output_text" : "input_text")},
+                {"text", *item.Find("content")}});
+    if (assistant) Set(&part, "annotations", Array());
+    Set(&item, "content", Array({std::move(part)}));
+  }
+  Q4T_CHECK(PlanResponsesCompaction(canonical,
+                                    ResponsesCompactionMode::kAutomatic, 128,
+                                    config, &compact, &error));
+  Q4T_CHECK(
+      compact.compacted_items == 2 && compact.retained.array.size() == 2 &&
+      compact.retained.array.front().GetString("type") == "mcp_list_tools");
+  Q4T_CHECK(FitResponsesContext(
+      envelope, config,
+      [](const auto& candidate, ChatPlanError* failure) -> q4t::Status {
+        if (candidate.input.messages.array.size() <= 1) return {};
+        *failure = {"context_length_exceeded", "input", 400};
+        return q4t::Status::Fail("fixture context");
+      },
+      &plan, &error));
+  Q4T_CHECK(plan.truncated_items == 2 && plan.input.items.array.size() == 2 &&
+            plan.input.items.array.front().GetString("type") ==
+                "mcp_list_tools");
+  envelope.native_tools_exhausted = true;
+  const auto retained = plan.input.items;
+  Q4T_CHECK(
+      PrepareResponsesGeneration(envelope, retained, config, &plan, &error));
+  Q4T_CHECK(plan.generation_request.GetArray("tools")->array.empty());
+  return true;
+}
+
+Q4T_TEST(responses_mcp_request_declaration_only_never_grants_calls) {
+  auto first = Definition().declaration;
+  Set(&first, "authorization", String("request-only-secret"));
+  auto request = Object({{"tools", Array({first})}});
+  Json tools, choice, effective;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesCallableTools(request, &tools, &choice, &error,
+                                            &effective, true));
+  Q4T_CHECK(tools.array.empty() &&
+            OutputJson(effective).find("request-only-secret") ==
+                std::string::npos);
+  Set(&request, "tools", Array({first, first}));
+  Q4T_CHECK(!NormalizeResponsesCallableTools(request, &tools, &choice, &error,
+                                             &effective, true));
+  Q4T_CHECK(error.param == "tools[1].server_label");
+  return true;
+}
 
 Q4T_TEST(responses_mcp_bindings_preserve_schema_and_distinguish_servers) {
   std::vector<ResponsesMcpBinding> bindings;
