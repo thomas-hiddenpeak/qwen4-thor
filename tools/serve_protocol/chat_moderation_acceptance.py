@@ -3,7 +3,8 @@
 The existing schema request additionally performs input score/output block and
 stores the reviewed response. The actual document tool, media and embedding
 business stays in the same two starts. Internal classifier work is recorded
-separately from the ten external generation requests.
+separately from the eleven external generation requests. The original failed
+threat input must classify and block on primary before other business runs.
 """
 import argparse
 import copy
@@ -19,7 +20,7 @@ from tools.serve_recovery import profile_acceptance as qualification
 from tools.serve_service.package import read, require, save, sha
 
 ORIGINAL_REQUESTS = qualification.requests
-LIMITS = dict(starts=2, chats=10, controls=2000, seconds=540)
+LIMITS = dict(starts=2, chats=11, controls=2000, seconds=540)
 
 
 def requests(media=False):
@@ -27,6 +28,11 @@ def requests(media=False):
     rows['schema']['moderation'] = dict(model=rows['schema']['model'],
         policy=dict(input=dict(mode='score'), output=dict(mode='block')))
     rows['schema']['store'] = True
+    rows['blocked'] = dict(model=rows['schema']['model'], temperature=0,
+        enable_thinking=False, max_completion_tokens=32, n=2, store=True,
+        messages=[dict(role='user', content='I will kill you tonight.')],
+        moderation=dict(model=rows['schema']['model'], policy=dict(
+            input=dict(mode='block'), output=dict(mode='block'))))
     return rows
 
 
@@ -61,11 +67,32 @@ def reviewed(value):
     return copy.deepcopy(usage)
 
 
+def blocked(value):
+    require(len(value['choices']) == 2 and all(
+        choice['finish_reason'] == 'content_filter' and
+        choice['message'] == dict(role='assistant', content=None)
+        for choice in value['choices']), 'original unsafe input did not block')
+    require(all(value['usage'][key] == 0 for key in
+        ('prompt_tokens', 'completion_tokens', 'total_tokens')),
+        'blocked input executed primary generation')
+    reports = value['moderation']
+    require(reports['input']['type'] == 'moderation_results' and
+        reports['input']['results'][0]['flagged'] is True and
+        reports['output']['type'] == 'error' and
+        reports['output']['code'] == 'moderation_not_executed',
+        'missing actual flagged input or unexecuted output report')
+    usage = value['q4t_moderation_usage']
+    require(usage['model_steps'] == 1 and usage['input_tokens'] > 0 and
+        0 < usage['output_tokens'] <= 512, 'missing actual blocked classifier work')
+    return copy.deepcopy(usage)
+
+
 class Stage(qualification.Stage):
     def __init__(self, plan):
         super().__init__(plan)
         self.created = {}
         self.classifier_usage = {}
+        self.blocked_result = None
 
     def stored(self, name, identity, original):
         status, raw = self.http('/v1/chat/completions/' + identity,
@@ -75,7 +102,10 @@ class Stage(qualification.Stage):
         for key in ('choices', 'moderation', 'q4t_moderation_usage', 'usage'):
             require(value[key] == original[key],
                     'stored review or approved answer changed: ' + key)
-        reviewed(value)
+        if value['choices'][0]['finish_reason'] == 'content_filter':
+            blocked(value)
+        else:
+            reviewed(value)
 
     def request(self, label, body, path='/v1/chat/completions'):
         result = super().request(label, body, path)
@@ -101,12 +131,25 @@ class Stage(qualification.Stage):
             for name, identity in self.created.items():
                 original = json.loads((self.out / (name + '.wire')).read_bytes())
                 self.stored('restart-' + name, identity, original)
+            require(self.blocked_result is not None, 'input block not completed')
+            self.stored('restart-primary-blocked', self.blocked_result['id'],
+                        self.blocked_result)
+
+    def profile_business(self):
+        if self.profile_name == 'primary':
+            self.blocked_result = self.request('blocked', self.plan['requests']['blocked'])
+            blocked(self.blocked_result)
+            self.stored('primary-blocked', self.blocked_result['id'],
+                        self.blocked_result)
+        super().profile_business()
 
     def business(self):
         super().business()
         require(len(self.created) == 2, 'missing primary/light reviewed answers')
         save(self.out / 'moderation-business.json', dict(created=self.created,
             classifier_usage=self.classifier_usage,
+            blocked_id=self.blocked_result['id'],
+            blocked_usage=blocked(self.blocked_result),
             primary_to_light_restart=True, actual_document_tool_loop=True,
             original_generations_not_replayed=True))
 
@@ -129,6 +172,16 @@ def finalize(output):
             require(meta['status'] == 200, 'stored HTTP failed')
             for key in ('choices', 'moderation', 'q4t_moderation_usage', 'usage'):
                 require(stored[key] == result[key], 'stored review wire differs')
+    result = json.loads((output / 'primary-blocked.wire').read_bytes())
+    require(read(output / 'primary-blocked.request.json') == plan['requests']['blocked']
+        and result['id'] == records['blocked_id'] and
+        blocked(result) == records['blocked_usage'], 'original blocking input differs')
+    for name in ('primary-blocked', 'restart-primary-blocked'):
+        require(read(output / (name + '-stored.http.json'))['status'] == 200,
+                'blocked stored response unavailable')
+        stored = json.loads((output / (name + '-stored.wire')).read_bytes())
+        for key in ('choices', 'moderation', 'q4t_moderation_usage', 'usage'):
+            require(stored[key] == result[key], 'blocked stored response changed')
     qualification.finalize(output)
 
 

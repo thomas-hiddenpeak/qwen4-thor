@@ -88,6 +88,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[分类数据修复CPU通过](evidence/serve-chat-moderation-repair-cpu-20261117/README.md)：
+10项直接用例、726/7来源和隔离零警告构建通过；记录仍原样嵌入，
+未改阈值或拒绝保护。继续使用原失败输入短验，未声明运行时修复。
+默认rev196保持，全部master继续。
+
+[Chat审核原始短验已保留](evidence/serve-chat-moderation-business-failure-20261117/README.md)：
+4启动/15外部请求/204.259秒，194项NVML正常，清理完成。主轻资格及
+已返回的SSE/存储可复核，但威胁输入的内部模型拒绝分类，外层503，
+不能当作成功拦截。候选不交付，默认rev196保持。正在改进分类任务与
+引用数据的表达，保持拒绝/错误保护；只补10项受影响CPU和同一失败
+输入的必要精确包业务，下一组≤4启动/17请求/900秒，总≤8/32/1200秒。
+原始失败不改写；PR37草稿继续，全部master保持active。
+
 [Chat审核CPU接受](evidence/serve-chat-moderation-cpu-20261117/README.md)：
 26项C++/8种前端最终通过，726来源/7负控及隔离零警告构建通过。
 原编译和前端失败保留；JS合法缺省logprobs误拒绝已修，仅补失败项。

@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CLASSIFIER_DATA_CPU",
+  "cpp_cases": 10,
+  "source_anchors": 726,
+  "source_negative_controls": 7,
+  "zero_warning_builds": true,
+  "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+  "source_sha256": "6cbbf4046419304d592f91a04a128562a74fda85aceeeb7b654042862dd8eafb",
+  "runtime_accepted": false,
+  "original_failure_input_unchanged": true,
+  "refusal_protection_unchanged": true,
+  "default_revision": 196,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "files": 21,
+  "archive_sha256": "a4ee4cdc5dab9f0596ed54b484e183a9a45ec3e6b1ae7dd8d35d816277edc841",
+  "master_complete": false
+}
