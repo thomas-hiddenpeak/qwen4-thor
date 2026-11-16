@@ -94,6 +94,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+新候选受影响媒体9条及主轻10条已通过：旧全量图片与新分块logprobs
+一致，换图未命中/追加命中、schema冷/热和8709-token私有恢复成立；
+主轻实际工具/embedding/原视频通过。累计10启动54请求约488.965秒，
+环境清理通过；剩余仅两个保留组合2启动4请求后准备发行。
+[PR38夹具定点修复](evidence/serve-pr38-ci-repair-20261117/README.md)2项CPU及
+隔离零警告构建通过，运行时不变。默认204保持，全部master继续。
+
+PR38旧head的Batch线程恢复CPU夹具在250ms存储截止前超时，随后
+cleanup_pending串扰配额用例；原CI日志保留。该用例并非存储故障
+注入，现仅把其I/O预算对齐5秒任务预算；冻结该用例及后续配额
+2项定点CPU验证，生产运行时和已验GPU身份不变。
+
 [原视频短尾回归已修复](evidence/serve-media-prefill-repair-business-20261117/README.md)：
 1启动3请求，完整/隐式冷/热文本及logprobs完全一致，实际1062-token
 SSD写入/恢复通过，监控清理正常。新候选2de56309未交付；下一组

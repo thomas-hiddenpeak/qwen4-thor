@@ -1,0 +1,10 @@
+{
+  "status": "PASS_TARGETED_BATCH_OWNER_FIXTURE_REPAIR",
+  "cpp_cases": 2,
+  "zero_warning_build": true,
+  "runtime_unchanged": true,
+  "new_gpu_starts": 0,
+  "default_unchanged": true,
+  "original_ci_failure_preserved": true,
+  "archive_sha256": "82b00152c2770eb5ef1d8111475ec80f8b41109e8fa35e83ce923907f3798e21"
+}
