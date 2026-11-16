@@ -156,6 +156,9 @@ def schema(graph):
                                                    maximum=high))
     request['properties']['metadata'] = nullable(dict(type='object', maxProperties=16,
         propertyNames=dict(maxLength=64), additionalProperties=dict(type='string', maxLength=512)))
+    # TypeScript string types do not express the frozen HTTP character limit.
+    request['properties']['safety_identifier'] = dict(type=['string', 'null'], maxLength=128)
+    request['properties']['reasoning']['default'] = dict(effort='medium')
     request['allOf'] = [
         {'not': dict(required=['previous_response_id', 'conversation'],
             properties={name: {'not': dict(type='null')}

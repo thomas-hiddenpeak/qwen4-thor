@@ -232,6 +232,9 @@ def chat_schema():
             dict(type="string"), dict(type="array", minItems=1, items=ref("textPart"))])),
             ("type", "content"))),
         response_format=response_format, user=dict(type=["string", "null"]),
+        safety_identifier=dict(type=["string", "null"], maxLength=128),
+        service_tier=dict(enum=["auto", "default", "flex", "scale", "priority",
+                                "fast", None], default="auto"),
         session_id=hex64, prefix_cache_scope=hex64,
         prompt_cache_key=nullable(dict(type="string", maxLength=512)),
         prompt_cache_retention=nullable(dict(enum=["in_memory", "24h"])),
@@ -646,6 +649,24 @@ def semantics():
         "Chat stream_options object requires stream=true; include_obfuscation is boolean and defaults true. "
         "Role/content/reasoning/tool/choice-finish deltas receive random transport padding; usage-only terminal, "
         "DONE, errors and heartbeats keep their own shape. Opt-out does not change content or usage."))
+    rules.append(("attribution-tier-and-reasoning-defaults", [
+        "src/server/input_contract.cpp", "src/server/chat_contract.cpp",
+        "src/server/chat_choices.cpp", "src/server/http_response.cpp",
+        "src/server/chat_generation.cpp", "src/server/chat_storage.cpp",
+        "include/q4t/server/request_diagnostics.h",
+        "include/q4t/server/responses_plan.h", "src/server/responses_plan.cpp",
+        "src/server/responses_execution.cpp"],
+        "Chat and Responses safety_identifier is nullable text with at most 128 Unicode characters. "
+        "It does not grant authority or select a quota/cache scope, and never enters model prompts. "
+        "Existing diagnostics and stored Chat private attribution retain a client-scoped SHA256 digest, "
+        "not raw caller text. Chat service_tier accepts the frozen enum/null; omitted/null requests auto. "
+        "The native pool actually uses default and reports default in JSON, all SSE chunks and storage, "
+        "without advertising requested fast/priority treatment. Responses omitted/null effort defaults "
+        "to medium for new work. Queued recovery binds the originally accepted effective effort from "
+        "the snapshot and events, rejects missing/invalid/conflicting identities, and preserves the "
+        "original request and journal; no automatic replay of started work. Legacy queued attribution "
+        "up to the prior 4096-character limit is retained only when the original request, snapshot "
+        "and both queued events agree; new work keeps the 128-character bound."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",

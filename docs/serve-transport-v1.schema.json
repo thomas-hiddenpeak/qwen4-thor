@@ -236,6 +236,21 @@
               }
             }
           ]
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "auto",
+            "default",
+            "flex",
+            "scale",
+            "priority",
+            "fast",
+            null
+          ]
         }
       }
     },
@@ -332,6 +347,21 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 256
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "auto",
+            "default",
+            "flex",
+            "scale",
+            "priority",
+            "fast",
+            null
+          ]
         }
       },
       "if": {

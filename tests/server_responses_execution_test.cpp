@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include <cstdlib>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <thread>
@@ -1259,5 +1260,153 @@ Q4T_TEST(responses_custom_grammar_standard_shape_reaches_generation_plan) {
                     ->Find("format")
                     ->Find("grammar")
                     ->GetString("syntax") == "regex");
+  return true;
+}
+
+namespace {
+Json& QueuedField(Json& value, const char* name) {
+  for (auto& [key, item] : value.object)
+    if (key == name) return item;
+  throw std::runtime_error("missing queued fixture field");
+}
+ObjectRequest QueuedRecord(const std::string& id) {
+  ObjectRequest request;
+  request.kind = ObjectKind::kResponse;
+  request.id = id;
+  request.scope = Access().scope;
+  return request;
+}
+}  // namespace
+
+Q4T_TEST(responses_queued_restore_preserves_preupgrade_effective_effort) {
+  for (int variant = 0; variant < 3; ++variant) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution queued(store);
+    Q4T_CHECK(Ok(queued.Prepare(
+        Parse(
+            R"({"input":"17+25?","background":true,"reasoning":{"effort":"xhigh"}})"),
+        Config(), Access(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(queued.Begin(&wire)));
+    auto request = QueuedRecord(queued.Id());
+    auto original = store.Execute(request, Clock::now() + 5s);
+    Q4T_CHECK(Ok(original));
+    request.operation = ObjectOperation::kPut;
+    request.expected_revision = original.value.GetInt("revision");
+    request.data = *original.value.Find("data");
+    auto& input = QueuedField(request.data, "request");
+    if (variant == 0) {
+      std::erase_if(input.object,
+                    [](const auto& pair) { return pair.first == "reasoning"; });
+    } else {
+      QueuedField(input, "reasoning") =
+          variant == 1 ? Json() : Parse(R"({"effort":null})");
+    }
+    const auto original_input = OutputJson(input);
+    const auto original_events =
+        OutputJson(QueuedField(request.data, "events"));
+    Q4T_CHECK(Ok(store.Execute(request, Clock::now() + 5s)));
+    ResponsesExecution restored(store);
+    Q4T_CHECK(Ok(restored.RestoreQueued(queued.Id(), Config(), Access())));
+    Q4T_CHECK(restored.Envelope().reasoning_effort == "xhigh");
+    Q4T_CHECK(
+        restored.Envelope().request.Find("reasoning")->GetString("effort") ==
+        "xhigh");
+    auto saved = store.Execute(QueuedRecord(queued.Id()), Clock::now() + 5s);
+    Q4T_CHECK(Ok(saved));
+    Q4T_CHECK(OutputJson(*saved.value.Find("data")->Find("request")) ==
+              original_input);
+    Q4T_CHECK(OutputJson(*saved.value.Find("data")->Find("events")) ==
+              original_events);
+    Q4T_CHECK(Ok(restored.StartRunning(&wire)));
+    Q4T_CHECK(wire.find("\"effort\":\"xhigh\"") != wire.npos);
+    Q4T_CHECK(Ok(restored.Cancel()));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_queued_rejects_invalid_or_conflicting_frozen_effort) {
+  for (int variant = 0; variant < 4; ++variant) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution queued(store);
+    Q4T_CHECK(Ok(queued.Prepare(
+        Parse(
+            R"({"input":"q","background":true,"reasoning":{"effort":"xhigh"}})"),
+        Config(), Access(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(queued.Begin(&wire)));
+    auto request = QueuedRecord(queued.Id());
+    auto original = store.Execute(request, Clock::now() + 5s);
+    Q4T_CHECK(Ok(original));
+    request.operation = ObjectOperation::kPut;
+    request.expected_revision = original.value.GetInt("revision");
+    request.data = *original.value.Find("data");
+    auto& response = QueuedField(request.data, "response");
+    if (variant == 0) QueuedField(response, "reasoning") = Json();
+    if (variant == 1)
+      QueuedField(response, "reasoning") = Parse(R"({"effort":"unknown"})");
+    if (variant == 2)
+      QueuedField(response, "reasoning") = Parse(R"({"effort":"medium"})");
+    if (variant == 3) {
+      auto& event = QueuedField(request.data, "events").array[0];
+      QueuedField(QueuedField(event, "response"), "reasoning") =
+          Parse(R"({"effort":"medium"})");
+    }
+    Q4T_CHECK(Ok(store.Execute(request, Clock::now() + 5s)));
+    ResponsesExecution restored(store);
+    const auto result = restored.RestoreQueued(queued.Id(), Config(), Access());
+    Q4T_CHECK(result.code == "response_state_invalid" &&
+              result.http_status == 503);
+    const auto current = ResponsesState(store).Retrieve(queued.Id(), Access());
+    Q4T_CHECK(Ok(current) && current.value.GetString("status") == "queued");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_queued_legacy_attribution_requires_frozen_agreement) {
+  for (int variant = 0; variant < 4; ++variant) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution queued(store);
+    Q4T_CHECK(Ok(queued.Prepare(
+        Parse(R"({"input":"q","background":true,"safety_identifier":"old"})"),
+        Config(), Access(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(queued.Begin(&wire)));
+    auto request = QueuedRecord(queued.Id());
+    auto original = store.Execute(request, Clock::now() + 5s);
+    Q4T_CHECK(Ok(original));
+    request.operation = ObjectOperation::kPut;
+    request.expected_revision = original.value.GetInt("revision");
+    request.data = *original.value.Find("data");
+    const auto legacy =
+        Parse("\"" + std::string(variant == 3 ? 4097 : 4096, 'x') + "\"");
+    QueuedField(QueuedField(request.data, "request"), "safety_identifier") =
+        legacy;
+    if (variant != 1)
+      QueuedField(QueuedField(request.data, "response"), "safety_identifier") =
+          legacy;
+    for (auto& event : QueuedField(request.data, "events").array)
+      if (variant != 2)
+        QueuedField(QueuedField(event, "response"), "safety_identifier") =
+            legacy;
+    Q4T_CHECK(Ok(store.Execute(request, Clock::now() + 5s)));
+    ResponsesExecution restored(store);
+    const auto result = restored.RestoreQueued(queued.Id(), Config(), Access());
+    if (variant == 0) {
+      Q4T_CHECK(Ok(result));
+      Q4T_CHECK(restored.Envelope().options.GetString("safety_identifier") ==
+                legacy.str);
+      Q4T_CHECK(restored.Envelope().request.GetString("safety_identifier") ==
+                legacy.str);
+      Q4T_CHECK(Ok(restored.StartRunning(&wire)));
+      Q4T_CHECK(Ok(restored.Cancel()));
+    } else {
+      Q4T_CHECK(result.http_status == 503 &&
+                result.code == "response_state_invalid");
+    }
+  }
   return true;
 }

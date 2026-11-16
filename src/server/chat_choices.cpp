@@ -101,7 +101,7 @@ Status ChatChoices::Json(std::string_view id, std::string_view model,
       "{\"id\":" + Quote(id) +
       ",\"object\":\"chat.completion\",\"created\":" + std::to_string(created) +
       ",\"model\":" + Quote(model) + ",\"choices\":[" + choices_ +
-      "],\"usage\":" + UsageJson() + '}';
+      "],\"service_tier\":\"default\",\"usage\":" + UsageJson() + '}';
   if (output->size() > kResponseLimit) {
     output->clear();
     return Status::Fail("completion exceeds 32 MiB response storage");

@@ -29,6 +29,7 @@
 #include "q4t/server/chat_choices.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/completion_response.h"
@@ -668,6 +669,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           ? "client:" + std::string(http->Client().Id())
           : "local:anonymous",
       deadline, cancelled};
+  if (!completion)
+    diagnostic.BindAttribution(
+        SafetyIdentifierDigest(responses ? responses->Envelope().options : req,
+                               chat_state_access.scope));
   if (chat_storage.store) {
     RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
     const auto existing =
@@ -4630,17 +4635,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       std::string tail;
       if (final_choice) {
         if (include_usage) {
-          tail =
-              completion
-                  ? CompletionUsageChunk(id, model_field, created,
-                                         completion_choices.UsageJson(),
-                                         completion_plan.include_obfuscation)
-                  : "data: {\"id\":\"" + id +
-                        "\",\"object\":\"chat.completion.chunk\",\"created\":" +
-                        std::to_string(created) + ",\"model\":\"" +
-                        JsonEscape(model_field) +
-                        "\",\"choices\":[],\"usage\":" + choices.UsageJson() +
-                        "}\r\n\r\n";
+          tail = completion
+                     ? CompletionUsageChunk(id, model_field, created,
+                                            completion_choices.UsageJson(),
+                                            completion_plan.include_obfuscation)
+                     : detail::SseUsageChunk(id, model_field, created,
+                                             choices.UsageJson());
         }
         tail += "data: [DONE]\r\n\r\n";
         if (http) http->BeforeTerminal();

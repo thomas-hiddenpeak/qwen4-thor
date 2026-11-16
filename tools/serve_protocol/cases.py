@@ -36,6 +36,16 @@ def cases():
                          if raw is None else raw, **config)))
 
     custom_ref = dict(type="custom", custom=dict(name="read"))
+    for tier in ["auto", "default", "flex", "scale", "priority", "fast", None]:
+        add("attribution-tier-"+str(tier),dict(base(),service_tier=tier))
+    for label,value in [("null",None),("empty",""),("unicode128","用"*128)]:
+        add("attribution-id-"+label,dict(base(),safety_identifier=value))
+    for label,value in [("unicode129","用"*129),("bool",True),("object",{})]:
+        add("attribution-id-invalid-"+label,dict(base(),safety_identifier=value),
+            False,field="safety_identifier")
+    for label,value in [("unknown","unknown"),("ultrafast","ultrafast"),("bool",True)]:
+        add("attribution-tier-invalid-"+label,dict(base(),service_tier=value),
+            False,field="service_tier")
     custom_tool = dict(type="custom", custom=dict(name="read"))
     for label, spec in (("omitted", None), ("text", dict(type="text")),
         ("regex",dict(type="grammar",grammar=dict(syntax="regex",definition=r"^READ \p{Han}+$"))),

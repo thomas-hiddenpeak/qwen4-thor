@@ -2,7 +2,7 @@
   "version": 2,
   "updated": "2026-11-16",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
-  "goal_state": "active_master_goal",
+  "goal_state": "active",
   "app_migration": {
     "attempted": true,
     "result": "active_master_goal_created_after_R01_delivery",
@@ -82,7 +82,7 @@
         "Remaining default/null, nested message and response projection parity beyond delivered Chat style fields"
       ],
       "chat_style_parity_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
         "default_unchanged": false,
@@ -96,7 +96,21 @@
         "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
         "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md",
+        "pull_request": 31,
+        "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
+        "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "input_attribution_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
+        "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
+        "cpp_tests": 18,
+        "schema_client_driver_tests": 5,
+        "native_schema_cases": 16,
+        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -138,7 +152,7 @@
         "Non-null audio/annotations history and matching model/output/template round trips"
       ],
       "chat_style_parity_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
         "default_unchanged": false,
@@ -152,7 +166,10 @@
         "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
         "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md",
+        "pull_request": 31,
+        "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
+        "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       }
     },
     {
@@ -1462,6 +1479,17 @@
           "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP"
         ],
         "existing_evidence_reviewed": true
+      },
+      "input_attribution_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
+        "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
+        "cpp_tests": 18,
+        "schema_client_driver_tests": 5,
+        "native_schema_cases": 16,
+        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -1534,6 +1562,17 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "input_attribution_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
+        "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
+        "cpp_tests": 18,
+        "schema_client_driver_tests": 5,
+        "native_schema_cases": 16,
+        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -2674,7 +2713,7 @@
         "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
       ],
       "chat_style_parity_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
         "default_unchanged": false,
@@ -2688,7 +2727,21 @@
         "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
         "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md",
+        "pull_request": 31,
+        "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
+        "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "input_attribution_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
+        "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
+        "cpp_tests": 18,
+        "schema_client_driver_tests": 5,
+        "native_schema_cases": 16,
+        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -3886,13 +3939,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 150,
-        "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
-        "generation_sha256": "37da32d909a70fb06e80dd505daa4ccbbe4831c2a4ffc32e05ee7e4c135ff83a",
-        "engine_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
-        "evidence": "evidence/serve-video-geometry-delivery-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "generation_sha256": "2daee557faa5d43d8225569a1c75b26b7e27ede998129d18fd25bfe16435d62c",
+        "engine_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
         "state": "STOPPED",
-        "main_integration_pending": true
+        "main_integration_pending": false
       },
       "merged_foundation": {
         "pr": 22,
@@ -4072,6 +4125,24 @@
       "pr30_actual_merge": {
         "commit": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
         "evidence": "evidence/serve-pr30-merged-20261116/README.md"
+      },
+      "input_attribution_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
+        "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
+        "cpp_tests": 18,
+        "schema_client_driver_tests": 5,
+        "native_schema_cases": 16,
+        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+        "default_unchanged": true,
+        "master_complete": false
+      },
+      "chat_style_main_integration": {
+        "pr": 31,
+        "merged": true,
+        "head": "3b37dabf2a53927454544b1472d50eab6aa2921a",
+        "commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
+        "evidence": "evidence/serve-pr31-merged-20261116/README.md"
       }
     },
     {
@@ -4110,7 +4181,7 @@
         "Executable long-stability handoff; user performs long run"
       ],
       "chat_style_parity_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
         "default_unchanged": false,
@@ -4124,10 +4195,13 @@
         "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
         "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md",
+        "pull_request": 31,
+        "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
+        "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       }
     }
   ],
-  "next_task": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary.",
+  "next_task": "A01/A07/A12 input attribution and Responses effective defaults: bounded actual business then reversible delivery; all remaining master tasks continue",
   "next": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary."
 }

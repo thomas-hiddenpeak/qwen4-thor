@@ -315,5 +315,7 @@ std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& finish_reason, int index,
                      int64_t created = 0, bool include_usage = false,
                      bool obfuscate = false);
+std::string SseUsageChunk(const std::string& id, const std::string& model,
+                          int64_t created, std::string_view usage_json);
 
 }  // namespace q4t::server::detail

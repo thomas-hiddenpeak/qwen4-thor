@@ -16,6 +16,57 @@ bool Accept(const std::string& input, bool media = false) {
 }
 }  // namespace
 
+Q4T_TEST(chat_contract_attribution_and_service_tier) {
+  const std::string base = R"({"messages":[{"role":"user","content":"q"}])";
+  for (const auto* tier :
+       {"auto", "default", "flex", "scale", "priority", "fast"})
+    Q4T_CHECK(Accept(base + ",\"service_tier\":\"" + tier + "\"}"));
+  Q4T_CHECK(Accept(base + R"(,"service_tier":null,"safety_identifier":null})"));
+  Q4T_CHECK(Accept(base + R"(,"safety_identifier":""})"));
+  std::string unicode;
+  for (int i = 0; i < 128; ++i) unicode += "用";
+  Q4T_CHECK(Accept(base + ",\"safety_identifier\":\"" + unicode + "\"}"));
+  for (const auto& [extra, expected] :
+       {std::pair{",\"safety_identifier\":\"" + unicode + "用\"",
+                  "safety_identifier"},
+        std::pair{std::string(R"(,"safety_identifier":true)"),
+                  "safety_identifier"},
+        std::pair{std::string(R"(,"service_tier":"ultrafast")"),
+                  "service_tier"},
+        std::pair{std::string(R"(,"service_tier":"unknown")"), "service_tier"},
+        std::pair{std::string(R"(,"service_tier":[])"), "service_tier"}}) {
+    q4t::io::Json request;
+    Q4T_CHECK(q4t::io::ParseJson(base + extra + '}', &request));
+    std::string param;
+    Q4T_CHECK(!q4t::server::ValidateChatContract(request, "m", false, &param));
+    Q4T_CHECK(param == expected);
+  }
+  return true;
+}
+
+Q4T_TEST(safety_identifier_digest_is_scoped_and_not_prompt_data) {
+  using namespace q4t::server;
+  q4t::io::Json request, absent, null;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"messages":[{"role":"user","content":"same question"}],)"
+      R"("safety_identifier":"reader\nprivate"})",
+      &request));
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"messages":[{"role":"user","content":"same question"}]})", &absent));
+  Q4T_CHECK(q4t::io::ParseJson(R"({"safety_identifier":null})", &null));
+  const auto digest = SafetyIdentifierDigest(request, "client:a");
+  Q4T_CHECK(digest.size() == 64 &&
+            digest == SafetyIdentifierDigest(request, "client:a"));
+  Q4T_CHECK(digest != SafetyIdentifierDigest(request, "client:b"));
+  Q4T_CHECK(SafetyIdentifierDigest(absent, "client:a").empty());
+  Q4T_CHECK(SafetyIdentifierDigest(null, "client:a").empty());
+  std::string first, second;
+  Q4T_CHECK(RenderChatPrompt(request, {"same question"}, &first));
+  Q4T_CHECK(RenderChatPrompt(absent, {"same question"}, &second));
+  Q4T_CHECK(first == second && first.find("private") == first.npos);
+  return true;
+}
+
 Q4T_TEST(chat_contract_standard_style_and_stream_options) {
   const std::string base =
       R"({"messages":[{"role":"user","content":"q"}])";

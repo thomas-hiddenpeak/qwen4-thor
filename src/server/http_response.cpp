@@ -825,10 +825,20 @@ std::string SseDeltaChunk(const std::string& id, const std::string& model,
                     "\"created\":" +
                     std::to_string(created ? created : std::time(nullptr)) +
                     ",\"model\":\"" + JsonEscape(model) + "\",\"choices\":[" +
-                    choice + "]" + (include_usage ? ",\"usage\":null" : "");
+                    choice + "],\"service_tier\":\"default\"" +
+                    (include_usage ? ",\"usage\":null" : "");
   if (obfuscate) AppendStreamObfuscation(&obj);
   obj += '}';
   return "data: " + obj + "\r\n\r\n";
+}
+
+std::string SseUsageChunk(const std::string& id, const std::string& model,
+                          int64_t created, std::string_view usage_json) {
+  return "data: {\"id\":\"" + JsonEscape(id) +
+         "\",\"object\":\"chat.completion.chunk\",\"created\":" +
+         std::to_string(created) + ",\"model\":\"" + JsonEscape(model) +
+         "\",\"service_tier\":\"default\",\"choices\":[],\"usage\":" +
+         std::string(usage_json) + "}\r\n\r\n";
 }
 
 }  // namespace q4t::server::detail

@@ -14,6 +14,12 @@ bool IsInputInteger(const io::Json& value);
 bool ValidInputName(std::string_view name);
 bool ValidRequestId(std::string_view id);
 bool ValidCancelToken(std::string_view token);
+// Attribution never grants authority or changes quota/cache ownership.
+Status ValidateSafetyIdentifier(const io::Json& request,
+                                std::string* error_param = nullptr);
+std::string SafetyIdentifierDigest(const io::Json& request,
+                                   std::string_view scope);
+bool ValidServiceTier(std::string_view value, bool responses = false);
 // Identifier fields use dots; other object keys use JSON-quoted brackets.
 // Array indices are appended separately, so keys containing dots/brackets
 // cannot be confused with nested fields or array positions.

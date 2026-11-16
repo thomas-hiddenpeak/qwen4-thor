@@ -32,7 +32,8 @@ core/client/outer字节、Key/配额和容量保持；profile迁移只增加已�
 四个原生辅助程序和其余控制源未改，旧压力/外层监护证据按身份复用。
 最终STOPPED、GPU释放；rev150默认/状态私有备份和可恢复归档保留。
 自动恢复保留现代根，人工整根回退v12入口无outer，仍是R09待解决项；
-保留包不是独立旧引擎回退。PR31待最终head检查与实际合main。
+保留包不是独立旧引擎回退。PR31最终head两组CI通过，已实际合main
+（`8015dbc8`），[合并回执](evidence/serve-pr31-merged-20261116/README.md)保留。
 前驱rev150显示几何已通过PR30合main（`d2524e4a`），
 [合并回执](evidence/serve-pr30-merged-20261116/README.md)保留。
 
@@ -56,6 +57,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[标准输入归属CPU通过](evidence/serve-input-attribution-cpu-20261116/README.md)：
+18项C++、5项schema/客户端/驱动、16项原生/公开合同对照、715来源/
+7负控及生成物一致性通过，零警告。候选7a23cb30补Chat归属摘要和
+实际档位、Responses新medium默认及旧queued语义/归属保持。
+旧README类型图错误已修正；rev158未改，继续最多1启动/6生成/
+900秒实际业务。PR31已实际合main，全部master继续。
+
+[下一组标准输入合同](SERVE_INPUT_ATTRIBUTION_2026-11-16.md)已冻结：Chat
+safety_identifier归属摘要和实际service_tier返回、Responses新请求medium
+默认及旧queued快照语义保持。先成组开发/针对性CPU，再最多1启动/
+6生成/900秒实际业务；rev158保持，PR31最终head CI中，全部master继续。
 
 [rev158可回退交付完成](evidence/serve-chat-style-delivery-20261116/README.md)：
 17项检查通过，默认cba9f596/e0b34b43，停止意图/历史预算/Key保持。
