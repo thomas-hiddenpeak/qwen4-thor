@@ -236,6 +236,11 @@ def configuration(value, *, version=3):
             result[name] = value_bool
         # Historical observations omitted these fields. New capacity profiles
         # require them explicitly when checking their effective configuration.
+        if 'media_enabled' in value['runtime']:
+            enabled = value['runtime']['media_enabled']
+            if type(enabled) is not bool:
+                raise InvalidObservation('invalid_runtime_contract')
+            result['media_enabled'] = enabled
         if 'default_output_tokens' in value:
             result['default_output_tokens'] = integer(
                 value['default_output_tokens']['effective'], 1, 2**31-1)

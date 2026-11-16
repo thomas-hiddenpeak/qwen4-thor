@@ -2,6 +2,7 @@
 from tools.serve_service.package import PROFILE, require, same_json
 
 NAME = 'text-managed-capacity-v1'
+NATIVE_NAME = 'native-managed-capacity-v2'
 BOUNDS = dict(max_seq=(1, 8192), max_len=(1, 2**31-1),
     max_prefill=(1, 8192), max_tokens=(1, 2**31-1), mtp_k=(1, 16),
     max_inflight_requests=(1, 4096), max_queued_requests=(0, 4096),
@@ -12,11 +13,17 @@ BOUNDS = dict(max_seq=(1, 8192), max_len=(1, 2**31-1),
 
 
 def validate(value):
+    native = type(value) is dict and value.get('name') == NATIVE_NAME
     require(type(value) is dict and value.keys() ==
-        {'name', 'host', 'mtp_enabled', *BOUNDS}, 'invalid managed capacity fields')
-    require(value['name'] == NAME and value['host'] == '127.0.0.1',
+        {'name', 'host', 'mtp_enabled', *BOUNDS} |
+            ({'allow_media'} if native else set()), 'invalid managed capacity fields')
+    require(value['name'] in (NAME, NATIVE_NAME) and value['host'] == '127.0.0.1',
             'invalid managed capacity identity')
     require(type(value['mtp_enabled']) is bool, 'MTP switch must be boolean')
+    if native:
+        require(type(value['allow_media']) is bool, 'media switch must be boolean')
+        require(not value['allow_media'] or value['max_seq'] == 1,
+                'managed media requires one execution slot')
     for key, (low, high) in BOUNDS.items():
         require(type(value[key]) is int and low <= value[key] <= high,
                 'invalid managed capacity: '+key)
@@ -34,12 +41,16 @@ def normalize(value):
     requests exact effective capacities; a startup budget clipping a request
     cannot silently pass the readiness identity check.
     """
-    require(type(value) is dict and value.get('version') == 1 and
+    native = type(value) is dict and value.get('version') == 2
+    require(type(value) is dict and value.get('version') in (1, 2) and
         type(value.get('version')) is int and
-        value.keys() <= {'version', 'mtp_enabled', *BOUNDS},
+        value.keys() <= {'version', 'mtp_enabled', *BOUNDS} |
+            ({'allow_media'} if native else set()),
         'invalid capacity configuration')
     defaults = dict(PROFILE, name=NAME, mtp_enabled=True,
                     request_deadline_ms=1200000)
+    if native:
+        defaults.update(name=NATIVE_NAME, allow_media=False)
     return validate(defaults | {k: v for k, v in value.items() if k != 'version'})
 
 
@@ -60,5 +71,7 @@ def observation(profile, observed):
         request_deadline_ms=profile['request_deadline_ms'],
         mtp_k=profile['mtp_k'] if profile['mtp_enabled'] else None,
         startup_memory_headroom_mib=profile['startup_memory_headroom_mib'])
+    if 'allow_media' in profile:
+        expected['media_enabled'] = profile['allow_media']
     require(all(k in observed and same_json(observed[k], v)
                 for k, v in expected.items()), 'effective capacity differs')

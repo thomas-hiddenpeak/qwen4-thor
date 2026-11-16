@@ -1,0 +1,73 @@
+{
+  "cpp": [
+    "serve_default_is_single_text_greedy",
+    "serve_capabilities_allow_explicit_combinations",
+    "serve_agent_slot_capacity_and_admission",
+    "serve_media_supported_profile_and_client_policy",
+    "serve_suffix_requires_text_fixed_k3",
+    "serve_startup_plan_modes_are_explicit_and_transactional",
+    "chat_capabilities_runtime_flags",
+    "chat_capabilities_native_video_separates_model_and_codec_readiness",
+    "chat_capabilities_media_and_host_failure_boundaries"
+  ],
+  "python": [
+    "tools.serve_service.test_capacity.CapacityTests.test_omitted_fields_preserve_defaults_without_mutating_input",
+    "tools.serve_service.test_capacity.CapacityTests.test_unknown_fields_types_and_all_numeric_boundaries_rejected",
+    "tools.serve_service.test_capacity.CapacityTests.test_command_uses_selected_profile_and_explicit_disabled_switches",
+    "tools.serve_service.test_capacity.CapacityTests.test_selected_observation_rejects_fixed_defaults_missing_and_wrong_types",
+    "tools.serve_service.test_capacity.CapacityTests.test_real_archived_configuration_projection_includes_capacity_fields",
+    "tools.serve_service.test_capacity.CapacityTests.test_fair_queue_matches_durable_policy_and_rejects_overcommit",
+    "tools.serve_service.test_capacity.CapacityTests.test_custom_package_executes_its_own_verifier_without_checkout_modules",
+    "tools.serve_service.test_capacity.CapacityTests.test_old_package_needs_no_new_module_and_rejects_boolean_config_alias",
+    "tools.serve_service.test_capacity.CapacityTests.test_malformed_capacity_fails_before_package_creation",
+    "tools.serve_service.test_capacity.CapacityTests.test_configurable_profile_cannot_masquerade_as_historical_version",
+    "tools.serve_service.test_capacity.CapacityTests.test_optional_host_resources_remain_bound_to_capacity_package",
+    "tools.serve_service.test_capacity.CapacityTests.test_supervisor_uses_custom_profile_with_same_real_cpu_child",
+    "tools.serve_service.test_media_capacity.MediaCapacityTests.test_v2_explicit_media_and_old_v1_identity",
+    "tools.serve_service.test_media_capacity.MediaCapacityTests.test_media_observation_missing_disabled_or_coerced_fails_closed",
+    "tools.serve_service.test_media_capacity.MediaCapacityTests.test_sealed_native_package_emits_media_flag_and_keeps_text_mtp",
+    "tools.serve_service.test_media_capacity.MediaCapacityTests.test_media_requires_observed_capability_before_packaging_and_when_verifying",
+    "tools.serve_service.test_media_capacity.MediaCapacityTests.test_light_profile_preserves_media_and_declared_application_features",
+    "tools.serve_service.test_media_capacity.MediaEvidenceTests.test_visual_qualification_requires_both_real_source_and_result",
+    "tools.serve_service.test_media_capacity.MediaEvidenceTests.test_media_capability_and_effective_configuration_must_agree",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_light_profile_cannot_reduce_service_contract",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_capability_equivalence_does_not_hide_media_tools_or_embedding_loss",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_actual_primary_configuration_and_memory_are_bound",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_asset_binding_keeps_all_fixed_models_and_rejects_unsafe_paths",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_receipts_reject_unqualified_capacity_assets_and_single_evidence",
+    "tools.serve_recovery.test_profile_contract.ProfileContractTests.test_pair_digest_binds_source_identity_and_only_explicit_fields"
+  ],
+  "source_hashes": {
+    "src/server/chat_capabilities.cpp": "3ca4f424a5cd463a138630829fda0ea4bc6b9fdfb7ba6fee312a3e4fd0798a4b",
+    "src/server/chat_generation.cpp": "d23865edad38a70dd463b45f63af8b65c63a59e64c6657a05e9ab5994311cdf1",
+    "src/server/server_options.cpp": "d95b75f6a60cf0e144eb864afd985b7d6b90b46f03a2be768dd7b9cd139f217d",
+    "tests/server_chat_capabilities_test.cpp": "af1d3ef5f40be515e31e2dd4d8777cd0bcce17781ca6aec22a174f5f5304b990",
+    "tests/server_options_test.cpp": "221a87f8b2728d8bd00d56ff7bb06a1724b2ca2e3fd1e12677143c79083c93ed",
+    "tools/serve_audit/inventory.json": "1ff8787bb10a6a8ceb113fb8c6d952cba1db1e8ab1e227b4faac2d45684ebe7f",
+    "tools/serve_ops/contracts.py": "362930ab912f34bc27ef02be2c336fb1a2936f467bb64e9650a717cb7b9890ac",
+    "tools/serve_recovery/profile_contract.py": "d9f9ffc0e6e8c4bfda9eea0201a9e2e16b63298eb55d95464a34f6a00a142c61",
+    "tools/serve_recovery/profile_evidence.py": "dde96cc724c78bb9c75ef807363dae90029437422e85be0830db3b0407c5e269",
+    "tools/serve_recovery/test_profile_contract.py": "92cba1e7c15841deaf734722bb3fe5ea081dc62759c645d7b1d8a8cec25bf28f",
+    "tools/serve_service/capacity.py": "5543324d07a74b90d60b46a024a7847ae796e1db0463958f0a4841f816866c35",
+    "tools/serve_service/package.py": "719ac8e3445afc1b5d3ea607f61a693c4c866993b5fdd70f7fdd0df7640b6bc1",
+    "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
+    "tools/serve_service/test_capacity.py": "2e574e8f65295f7926d953404b51bfbfacaf139629af7f91fd0372a801504794",
+    "tools/serve_service/test_media_capacity.py": "c7a71b2b845c134886b9dc0a367057457f2f52a6aa3d78fd926c029e04e9bdae"
+  },
+  "reviewed_anchors": [
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/server_options.cpp",
+    "tools/serve_recovery/profile_contract.py",
+    "tools/serve_recovery/profile_evidence.py",
+    "tools/serve_service/capacity.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/supervisor.py"
+  ],
+  "gpu_limits": {
+    "starts": 1,
+    "creates": 4,
+    "seconds": 600
+  },
+  "reuse": "Unchanged actual 8 video and 4 document business; new joint startup and dispatch need actual business; v1 legacy profile receipts unchanged"
+}

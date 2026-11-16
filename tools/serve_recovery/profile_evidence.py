@@ -1,4 +1,5 @@
 """Verify retained profile observations and actual business result contracts."""
+import base64
 import hashlib
 import json
 import math
@@ -6,6 +7,52 @@ import math
 from tools.serve_recovery import ledger, profile_contract
 
 FORMAT = 'q4t-profile-business-v1'
+MEDIA_FORMAT = 'q4t-profile-business-v2'
+MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
+MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
+
+
+def format_for(profile):
+    return MEDIA_FORMAT if profile.get('allow_media', False) else FORMAT
+
+
+def media_request(data):
+    """Actual unlabeled clip; the expected red/blue answer is never an input."""
+    ledger.require(hashlib.sha256(data).hexdigest() == MEDIA_SHA,
+                   'qualified media source differs')
+    colors = ['red', 'green', 'blue', 'yellow', 'cyan', 'magenta', 'black', 'white']
+    schema = dict(type='object', additionalProperties=False, required=['start','end'],
+        properties={k:dict(type='string', enum=colors) for k in ['start','end']})
+    return dict(model='qwen3.8-flash-next', temperature=0, max_output_tokens=128,
+        reasoning=dict(effort='none'), text=dict(format=dict(type='json_schema',
+            name='video_colors', strict=True, schema=schema)),
+        input=[dict(role='user', content=[dict(type='input_file', filename='clip.webm',
+            file_data=base64.b64encode(data).decode()), dict(type='input_text',
+            text='Inspect the actual video. What is the dominant color at its start '
+                 'and at its end? Return lowercase English colors in start and end.')])])
+
+
+def media_business(value):
+    ledger.keys(value, ('request', 'response'))
+    request = value['request']
+    try:
+        encoded = request['input'][0]['content'][0]['file_data']
+        ledger.require(type(encoded) is str and len(encoded) <= 256*1024,
+                       'qualified media input size differs')
+        raw = base64.b64decode(encoded, validate=True)
+        ledger.require(request == media_request(raw), 'qualified media request differs')
+        response = value['response']
+        ledger.require(response['status'] == 'completed' and not response.get('error') and
+            response['usage']['input_tokens'] > 0, 'qualified media completion missing')
+        content = [part for item in response['output'] if item['type'] == 'message'
+                   for part in item['content']]
+        ledger.require(content and all(part['type'] == 'output_text' for part in content),
+                       'qualified media refused or produced no text')
+        answer = ''.join(part['text'] for part in content)
+        ledger.require(json.loads(answer) == dict(start='red', end='blue'),
+                       'qualified media did not read actual frame colors')
+    except (KeyError, IndexError, TypeError) as error:
+        raise ValueError('invalid qualified media evidence') from error
 
 
 def message(response, finish):
@@ -18,9 +65,12 @@ def message(response, finish):
     return value
 
 
-def business(value, identity):
+def business(value, identity, selected=None):
+    media = (selected or {}).get('allow_media', False)
     ledger.keys(value, ('schema', 'tool_call', 'tool_result', 'tool_reply',
-                       'tool_source', 'embedding'))
+                       'tool_source', 'embedding') + (('media',) if media else ()))
+    if media:
+        media_business(value['media'])
     schema = message(value['schema'], 'stop')
     ledger.require(json.loads(schema['content']) == {'answer': 42},
                    'profile structured business differs')
@@ -66,14 +116,15 @@ def validate(value, registry, name, digest):
     ledger.keys(value, ('format', 'profile', 'identity', 'capacity', 'capabilities',
         'configuration', 'startup_memory', 'business', 'environment'))
     profile_contract.validate(registry)
-    ledger.require(value['format'] == FORMAT and value['profile'] == name and
+    ledger.require(value['format'] == format_for(registry['profiles'][name]) and
+        value['profile'] == name and
         value['identity'] == registry['identity'] and
         value['capacity'] == registry['profiles'][name], 'profile evidence identity differs')
     actual = profile_contract.qualification(name, value['capacity'], value['identity'],
         value['capabilities'], value['configuration'], value['startup_memory'], digest)
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
-    business(value['business'], value['identity'])
+    business(value['business'], value['identity'], value['capacity'])
     environment = value['environment']
     ledger.keys(environment, ('status', 'env_abort', 'all_queries_ok',
         'nvml_queries', 'lease_result_sha256', 'cleanup_complete'))

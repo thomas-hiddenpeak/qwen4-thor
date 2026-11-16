@@ -2281,7 +2281,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     ? static_cast<size_t>(mtp_.cfg.hc) *
                                           static_cast<size_t>(mtp_.cfg.hs)
                                     : 0;
-    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured &&
+    // The text draft has no visual features/positions. A loaded draft may
+    // serve the next text request, but cannot speculate on this visual prompt.
+    const bool request_mtp = mtp_loaded_ && vfeats.num_tokens == 0 &&
+                             plain_greedy && !structured &&
                              !prediction_enabled && (max_tokens > 0 || prewarm);
     const bool stream_mtp =
         request_mtp && (explicit_slots || (api_cache && !prefix_scope.empty()));

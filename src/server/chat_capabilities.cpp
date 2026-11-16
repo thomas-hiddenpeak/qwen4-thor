@@ -235,8 +235,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("containers":["mp4","webm"],"codecs":["h264","vp8","vp9"],)"
          R"("decoder_compiled":)" +
          (video_decoder ? "true" : "false") + R"(,"model_media_enabled":)" +
-         (allow_media && !mtp_enabled ? "true" : "false") +
-         R"(,"requires_mtp_disabled":true,"runtime_codec_checked_on_request":true,)"
+         (allow_media ? "true" : "false") +
+         R"(,"requires_mtp_disabled":false,"decode_strategy":"target_model",)"
+         R"("runtime_codec_checked_on_request":true,)"
          R"("decoder":"isolated_cpu_worker","external_program_required":false,)"
          R"("sampling":"uniform-presentation-time-with-endpoints",)"
          R"("full_timeline_in_model":false,"timestamps":true,)"

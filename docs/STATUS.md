@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[托管视觉配置CPU首过](evidence/serve-managed-vision-cpu-20261116/README.md)：
+9项C++/25项Python/7项来源负控通过，主机与引擎零警告。共同加载、
+按请求媒体普通decode、版本2容量和独立观测、主轻媒体资格合同已实现。
+候选cd640ccc尚待实际混合业务与恢复；最多1启动/4创建/600秒短验，
+rev134保持，全部master继续。
+
 [原生视频实际业务通过](evidence/serve-video-business-20261116/README.md)：
 1启动/8创建/53.447秒，52次NVML正常；MP4计数、VP8 SSE、实际函数
 VP9续答、MCP真实读取、删除后的冻结回放、损坏后同PID普通推理均过。

@@ -162,11 +162,12 @@ Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
       const auto* video = caps.Find("file_inputs")->Find("native_video");
       Q4T_CHECK(video &&
                 video->GetString("profile") == "q4t-native-video-input-v1");
-      Q4T_CHECK(video->GetBool("model_media_enabled") == (media && !mtp));
+      Q4T_CHECK(video->GetBool("model_media_enabled") == media);
       Q4T_CHECK(video->GetBool("runtime_codec_checked_on_request") &&
                 video->GetBool("shared_work_budget") &&
                 video->GetBool("timestamps") &&
-                video->GetBool("requires_mtp_disabled"));
+                !video->GetBool("requires_mtp_disabled", true));
+      Q4T_CHECK(video->GetString("decode_strategy") == "target_model");
       for (const auto* key :
            {"full_timeline_in_model", "frozen_replay_requires_codec",
             "external_program_required", "core_readiness_dependency"})
