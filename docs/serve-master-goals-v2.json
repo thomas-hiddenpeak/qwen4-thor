@@ -125,7 +125,7 @@
         "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -140,7 +140,9 @@
         "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       }
     },
     {
@@ -1534,7 +1536,7 @@
         "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -1549,7 +1551,9 @@
         "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       }
     },
     {
@@ -2828,7 +2832,7 @@
         "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -2843,7 +2847,9 @@
         "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       }
     },
     {
@@ -3116,7 +3122,7 @@
         "gpu_starts": 0
       },
       "root_rollback_business_20261116": {
-        "state": "accepted_targeted_facts_delivery_pending",
+        "state": "delivered_main_pending",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3125,8 +3131,10 @@
         "original_failures_preserved": true,
         "candidate": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
         "retained": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964",
-        "default_unchanged": true,
-        "master_complete": false
+        "default_unchanged": false,
+        "master_complete": false,
+        "revision": 182,
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
       }
     },
     {
@@ -3830,11 +3838,10 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Cold/host-entry composition and final release",
-        "Whole-root fallback entry with current outer capability"
+        "Cold/resource/host-entry composition and final release"
       ],
       "root_rollback_20261116": {
-        "state": "targeted_cpu_accepted_business_pending",
+        "state": "implemented_validated_delivered_main_pending",
         "plan": "SERVE_ROOT_ROLLBACK_2026-11-16.md",
         "cpu_frozen": 8,
         "new_gpu_starts": 0,
@@ -3865,10 +3872,13 @@
           "probes": 1,
           "seconds": 900
         },
-        "actual_business_pending": true
+        "actual_business_pending": true,
+        "revision": 182,
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "full_task_complete": false
       },
       "root_rollback_business_20261116": {
-        "state": "accepted_targeted_facts_delivery_pending",
+        "state": "delivered_main_pending",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3877,14 +3887,18 @@
         "original_failures_preserved": true,
         "candidate": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
         "retained": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964",
-        "default_unchanged": true,
-        "master_complete": false
+        "default_unchanged": false,
+        "master_complete": false,
+        "revision": 182,
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
       },
       "recovery_wait_20261116": {
-        "state": "implemented_cpu_accepted_business_pending",
+        "state": "implemented_validated_delivered",
         "tests": 10,
         "original_budgets_preserved": true,
-        "gpu_starts": 0
+        "gpu_starts": 0,
+        "revision": 182,
+        "guardian_sha256": "e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a"
       }
     },
     {
@@ -4091,7 +4105,7 @@
         "Remaining new backend/client/fault combinations; existing project retrieval business reused"
       ],
       "chat_cache_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -4106,7 +4120,9 @@
         "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       }
     },
     {
@@ -4128,8 +4144,8 @@
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
-        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
-        "record": "evidence/serve-chat-cache-delivery-20261116/delivery-01/result.json"
+        "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+        "record": "evidence/serve-root-delivery-20261116/delivery-01/result.json"
       },
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -4146,11 +4162,11 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 174,
-        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
-        "generation_sha256": "031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428",
+        "revision": 182,
+        "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+        "generation_sha256": "a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020",
         "engine_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
-        "evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "evidence": "evidence/serve-root-delivery-20261116/README.md",
         "state": "STOPPED",
         "main_integration_pending": true
       },
@@ -4319,6 +4335,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
+        "Native root rollback exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4379,7 +4396,8 @@
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
-        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175"
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "version_retention_20261116": {
         "state": "implemented_cpu_and_actual_maintenance_accepted",
@@ -4402,7 +4420,7 @@
         "evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "root_rollback_business_20261116": {
-        "state": "accepted_targeted_facts_delivery_pending",
+        "state": "delivered_main_pending",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -4411,8 +4429,10 @@
         "original_failures_preserved": true,
         "candidate": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
         "retained": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964",
-        "default_unchanged": true,
-        "master_complete": false
+        "default_unchanged": false,
+        "master_complete": false,
+        "revision": 182,
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
       }
     },
     {
@@ -4472,6 +4492,6 @@
       }
     }
   ],
-  "next_task": "Complete Chat cache and version-retention exact-head main integration; implement R09 whole-root rollback preserving native outer and consumed cycle state, then all remaining standard fields, media/cache, backends, clients and cold/resource/host compositions. All 33 tasks remain required.",
-  "next": "Complete Chat cache and version-retention exact-head main integration; implement R09 whole-root rollback preserving native outer and consumed cycle state, then all remaining standard fields, media/cache, backends, clients and cold/resource/host compositions. All 33 tasks remain required."
+  "next_task": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary."
 }

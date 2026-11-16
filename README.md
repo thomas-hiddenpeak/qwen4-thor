@@ -174,7 +174,10 @@ NVML/日志/指标失能不触发切档，原设备故障保护保持。
 回退一次；固定 Guardian 保持原启动预算、客户端用量及停止意图。
 `service version-status`查询当前周期、实际 payload 和已用额度。
 辅助依赖失能不触发版本切换，回退版再失败进入持久保护。可回退发布
-及旧控制根停机回退再升级见[交付证据](docs/evidence/serve-version-delivery-20261112/README.md)。
+及人工整包回退见[当前交付](docs/evidence/serve-root-delivery-20261116/README.md)。
+人工回退根也保留原生outer及该根最后持久化的恢复周期；往返不重置
+消费、故障和预算。`service status/observe`显示当前恢复等待角色、原因
+和剩余时间。冷启动/资源与宿主组合仍按总计划继续。
 
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。

@@ -188,6 +188,10 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 
 当前版本恢复已完成针对性CPU、实际整树回退/工具业务，以及停机
 发布回退再升级，见[R06交付](evidence/serve-version-delivery-20261112/README.md)。
+[整根回退](SERVE_ROOT_ROLLBACK_2026-11-16.md)已在rev182补齐：现代保留根
+执行原生outer，切根恢复该根最后持久化的版本状态；只递增全局revision，
+不重建seed返还fallback/故障额度。核心/客户端/outer/profile独立保留。
+Guardian等待诊断是实际预算结果的投影，不授予额外恢复权限。
 NVML失能时首次加载的独立独占部署控制仍在R07实现，不能将既有
 连续租约内的恢复能力等同于任意宿主的无监控冷启动。
 
