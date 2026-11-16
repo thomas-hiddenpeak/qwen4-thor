@@ -127,12 +127,17 @@ int RunWebDeploymentPolicyCheck(int argc, char** argv) {
     return 2;
   }
   WebDeploymentPolicy policy;
-  if (!LoadWebDeploymentPolicy(argv[2], &policy)) {
+  std::string raw;
+  if (!ReadMcpPrivateConfig(argv[2], &raw) ||
+      !ParseWebDeploymentPolicy(raw, &policy)) {
     std::fprintf(stderr, "Invalid web search deployment policy\n");
     return 2;
   }
-  std::printf("%s\n",
-              OutputJson(WebDeploymentPolicyDescription(&policy)).c_str());
+  auto description = WebDeploymentPolicyDescription(&policy);
+  // The index uses a semantic policy identity. Packaging also binds the
+  // exact private input bytes read and parsed above, without a second read.
+  Set(&description, "source_sha256", String(Digest(raw)));
+  std::printf("%s\n", OutputJson(description).c_str());
   return 0;
 }
 std::string WebIndexIdentity(const WebDeploymentPolicy& deployment,

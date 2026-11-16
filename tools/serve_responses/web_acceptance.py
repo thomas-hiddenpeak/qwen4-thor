@@ -72,7 +72,7 @@ def requests():
 
 
 def check_citations(text, annotations, *, chat=False):
-    require('documentation' in text.lower() and MARKER in text,
+    require(isinstance(text, str) and 'documentation' in text.lower() and MARKER in text,
             'answer did not use the retrieved source and exact citation')
     require(annotations, 'actual source annotation missing')
     for item in annotations:

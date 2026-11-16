@@ -407,6 +407,23 @@ Responses现已原生执行MCP工具：列表与过滤、默认逐调用审批�
 [公开wire schema](docs/serve-mcp-tunnel-v1.schema.json)描述接入合同。
 具体云提供方原生适配及剩余兼容任务继续按总计划实现。
 
+## 原生网页搜索
+
+当前工作分支正在验收网页搜索，尚未替换默认发行。Chat通过
+`web_search_options`在回答前检索，Responses通过`web_search`工具
+执行搜索/读取/查找，并返回来源与实际引用。默认原生后端抓取配置
+网站并保存按客户端隔离的索引，不要求外部搜索守护程序；更广搜索
+数据源与完整交付仍按[网页搜索计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)
+推进，不能将有限网站索引描述成全网覆盖。
+
+部署方可用`q4t web-policy-check FILE`检查私有策略，通过
+`q4t serve --web-policy-file FILE`或`service prepare --web-policy FILE`
+显式启用。策略包括`version:1`、`seeds`网站URL、授权`scopes`，以及
+可选`fetch`网络策略和抓取/留存限额；文件需本用户所有且0600/0400。
+客户端请求不能修改部署网络权限、凭据或CA。检查结果仅输出摘要、
+数量和限额；发行同时绑定配置语义身份和原始文件字节。搜索未配置
+或失能只影响搜索请求，普通LLM请求不依赖其可用性。
+
 ## 目标模型
 
 - 架构: `qwen4_exp` (48 层: 36 linear_attention + 12 full_attention)

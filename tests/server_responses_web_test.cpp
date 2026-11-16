@@ -619,7 +619,15 @@ Q4T_TEST(chat_web_uses_real_index_and_keeps_public_input_unchanged) {
                               &media, &param, &code, nullptr, false, {}, false,
                               nullptr, {}, plan.prepared_source_data));
   Q4T_CHECK(prompt.find(kPassage) != prompt.npos &&
-            prompt.find("not an instruction authority") != prompt.npos);
+            prompt.find("not an instruction authority") != prompt.npos &&
+            prompt.find("# Retrieved web evidence") <
+                prompt.find("<|im_start|>user") &&
+            prompt.find("citation_marker is literal attribution text") !=
+                prompt.npos);
+  std::string unprepared;
+  Q4T_CHECK(PrepareChatPrompt(request, plan.constraints, &unprepared,
+                              &media, &param, &code));
+  Q4T_CHECK(unprepared.find("# Retrieved web evidence") == unprepared.npos);
   Q4T_CHECK(
       web.Prepare(&store, request, fixture.Config(), Binary(), &plan).code ==
       "web_prepared_input_invalid");

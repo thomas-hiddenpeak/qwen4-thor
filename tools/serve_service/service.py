@@ -222,6 +222,7 @@ def main():
     p.add_argument('--access-program-policy', type=Path)
     p.add_argument('--file-input-policy', type=Path)
     p.add_argument('--mcp-policy', type=Path)
+    p.add_argument('--web-policy', type=Path)
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
     p.add_argument('--object-store-dir')
@@ -257,6 +258,7 @@ def main():
                              access_program_policy=args.access_program_policy,
                              file_input_policy=args.file_input_policy,
                              mcp_policy=args.mcp_policy,
+                             web_policy=args.web_policy,
                              embedding_model_dir=args.embedding_model_dir,
                              capacity_config=pkg.read(args.capacity_config)
                                  if args.capacity_config is not None else None,
