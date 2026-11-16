@@ -80,6 +80,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat引用历史](SERVE_CHAT_ANNOTATIONS_2026-11-16.md)进入实现：补非null
+annotations的合同、原assistant模板数据、统一schema和持久往返；
+不冒充已执行检索。冻结16项直接C++/8前端病例，必要业务最多3启动/
+12Chat/600秒；PR35已创建等待CI，全部master继续。
+
 [rev188交付与day交接](evidence/serve-ops-v5-delivery-20261116/README.md)完成，13项
 发布/实际回退/再前进与健康检查通过、0新增GPU；默认STOPPED、原预算
 保持。day只读prepare/check通过，未执行。继续实际合main和全部master。

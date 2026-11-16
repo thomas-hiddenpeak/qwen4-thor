@@ -143,6 +143,18 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "implementing",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        }
       }
     },
     {
@@ -202,6 +214,18 @@
         "pull_request": 31,
         "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "implementing",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        }
       }
     },
     {
@@ -3450,7 +3474,8 @@
         "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "revision": 188,
-        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "pull_request": 35
       }
     },
     {
@@ -4168,6 +4193,18 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "implementing",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        }
       }
     },
     {
@@ -4486,7 +4523,8 @@
         "state": "delivered_main_pending",
         "revision": 188,
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
-        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "pull_request": 35
       }
     },
     {
@@ -4577,10 +4615,11 @@
         "revision": 188,
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
-        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md"
+        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md",
+        "pull_request": 35
       }
     }
   ],
-  "next_task": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered.",
-  "next": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered."
+  "next_task": "Complete native soak/ops PR35 main integration while implementing Chat annotation history; continue all remaining protocol/backend/media, cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Complete native soak/ops PR35 main integration while implementing Chat annotation history; continue all remaining protocol/backend/media, cold/resource/host tasks. All 33 required tasks remain the completion boundary."
 }
