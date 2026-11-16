@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
 GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
 主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
-准备新独立快照，原rev214计划保留；PR38及本组实际合main继续。
+新独立快照已prepare/check且未运行，原rev214计划保留；PR38及本组实际合main继续。
 全部33项master仍是总目标完成条件，其余协议/模型/资源缺口继续实现。
 
 前驱[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
@@ -112,7 +112,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
 GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
 主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
-准备新独立快照，原rev214计划保留；PR38及本组实际合main继续。
+新独立快照已prepare/check且未运行，原rev214计划保留；PR38及本组实际合main继续。
 全部33项master仍是总目标完成条件，其余协议/模型/资源缺口继续实现。
 
 [Stop组合真实业务接受](evidence/serve-stop-combinations-business-20261117/README.md)：

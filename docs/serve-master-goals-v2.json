@@ -5107,28 +5107,28 @@
       },
       "current_native_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
-        "source_commit": "17e5368930065061e624422ecc2c3601e34b84ac",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
-        "revision": 214,
+        "source_commit": "00d872a2fee50329ca6eb91775fc50fb2c929915",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
+        "revision": 224,
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
-          "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3"
         },
-        "service_id": "ee49c36a-b9dc-4636-981e-e8e1e78f2b9b",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "9e21d433a327dfe320d3512174f7a513233d7311c120e64afc92b5c2b29020f3",
-        "sources": 589,
+        "service_id": "8286217f-4a80-4f47-8c9e-d89a57bcd748",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e00b66c0ee23dc77d94f9ef7f022227ffac54645e493761d6aec171b707a8972",
+        "sources": 590,
         "links": {
-          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t",
-          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t.release.json",
-          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
-          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/delivery-01/candidate-service.release.json"
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/delivery-01/candidate-service.release.json"
         },
         "protected_default": {
-          "/home/rm01/models/dev/qwen4-thor/build/q4t": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
-          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03",
-          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "e96210279524545d28c9bc93fa2196e258320bcb125e8f310bc17854701da808",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "b74286b9699b5c95bddd4260a73fca42f0a9574c365348006cc7d0d52b8cd48c",
           "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
         },
         "production_unchanged": true,
@@ -5149,9 +5149,9 @@
               "--output",
               ".q4t-work/day-01"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 1.815789708867669
+            "seconds": 1.6678077392280102
           },
           {
             "name": "check",
@@ -5164,16 +5164,16 @@
               "--plan",
               ".q4t-work/day-01/plan.json"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 0.5142534719780087
+            "seconds": 0.5142732369713485
           }
         ],
         "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "archive_sha256": "07ef68096ddf1afa738e3b345f89fe64dc024cb92059f45f6e24c3761f84c0d8",
-        "evidence": "evidence/serve-media-state-cache-day-handoff-20261117/README.md"
+        "archive_sha256": "b9a007618cc704636d1311460d218775eca5dd76dee78c2e9961ec24eecf628c",
+        "evidence": "evidence/serve-stop-combinations-day-handoff-20261117/README.md"
       }
     }
   ],
