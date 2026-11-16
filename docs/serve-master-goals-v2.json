@@ -410,7 +410,7 @@
         "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
         "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
       },
-      "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
+      "development_status": "丰富schema/工具/媒体/缓存已有交付，Stop组合本次针对性CPU及实际业务通过；原失败保留，当前候选待STOPPED发行与实际合main。",
       "remaining_required": [
         "Stop, constrained-output and private cache combinations with correct final validation; audit remaining combinations against accepted media evidence"
       ],
@@ -453,7 +453,7 @@
         "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       },
       "stop_combinations_20261117": {
-        "state": "partial_business_media_recheck_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
         "cpu_max": {
           "cpp": 20,
@@ -487,7 +487,13 @@
           "media_refusal_not_positive_acceptance": true,
           "private_prompt_tokens": 13361,
           "private_follow_stop_matched": false
-        }
+        },
+        "total_starts": 6,
+        "total_external_requests": 27,
+        "strict_lease_seconds": 342.3800303977914,
+        "nvml_queries": 323,
+        "business_evidence": "evidence/serve-stop-combinations-business-20261117/README.md",
+        "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3"
       }
     },
     {
