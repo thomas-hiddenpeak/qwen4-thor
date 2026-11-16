@@ -1,0 +1,8 @@
+test_checkpoint_or_partial_intent_requires_complete_migration_support (tools.serve_recovery.test_root_contract.ContractTests.test_checkpoint_or_partial_intent_requires_complete_migration_support) ... ok
+test_unestablished_migration_does_not_invent_an_old_root_requirement (tools.serve_recovery.test_root_contract.ContractTests.test_unestablished_migration_does_not_invent_an_old_root_requirement) ... ok
+test_real_roundtrip_restores_consumed_cycle_and_actual_fallback_profile (tools.serve_recovery.test_root_transfer.TransferTests.test_real_roundtrip_restores_consumed_cycle_and_actual_fallback_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.068s
+
+OK

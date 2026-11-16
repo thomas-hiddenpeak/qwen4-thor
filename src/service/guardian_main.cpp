@@ -656,6 +656,24 @@ class Guardian {
     gateway_reason_at_ = now;
   }
   Json Status() const {
+    const auto now = Now();
+    int64_t retry_at = 0;
+    std::string retry_role, retry_reason;
+    const auto consider_wait = [&](const char* role, int64_t at,
+                                   const std::string& reason) {
+      if (at <= now || at <= retry_at) return;
+      retry_at = at;
+      retry_role = role;
+      retry_reason = reason.empty() ? "backoff" : reason;
+    };
+    if (!stopped_ && !stopping_ && !BusinessReady()) {
+      consider_wait("controller", retry_after_, controller_retry_reason_);
+      consider_wait("gateway", gateway_retry_at_, gateway_retry_reason_);
+      consider_wait("model", model_retry_at_, model_retry_reason_);
+    }
+    const auto retry_ms = retry_at > now
+                              ? (retry_at - now + 999'999) / 1'000'000
+                              : 0;
     const auto& outer_owner =
         outer_attached_ ? outer_observer_.identity : config_.launcher;
     const bool observations_unknown =
@@ -673,13 +691,15 @@ class Guardian {
                                       ? "READY_DEGRADED"
                                       : "READY")
         : !failure_.empty()    ? "WAIT_DEPENDENCY"
-        : retry_after_ > Now() ? (circuit_open_ ? "CIRCUIT_OPEN" : "RECOVERING")
+        : retry_ms > 0 ? (retry_reason == "backoff" ? "RECOVERING"
+                                                   : "CIRCUIT_OPEN")
         : controller_ready_    ? "WAIT_DEPENDENCY"
                                : "STARTING";
     const bool current_gateway_reason =
         gateway_reason_at_ > 0 && (gateway_reason_model_ == 0 ||
                                    gateway_reason_model_ == model_generation_);
     const auto reason = !failure_.empty() ? failure_
+                        : retry_ms > 0 ? retry_role + "_" + retry_reason
                         : !stopped_ && !BusinessReady() &&
                                 current_gateway_reason &&
                                 gateway_reason_ != "none"
@@ -722,8 +742,13 @@ class Guardian {
          {"cold_device_recovery", w::Boolean(ColdProbeAvailable(Now()))},
          {"cold_probe_used", w::Boolean(cold_probe_used_)},
          {"probe_used_for_generation", w::Unsigned(probe_used_generation_)},
-         {"retry_after_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
-                                0, (retry_after_ - Now()) / 1'000'000)))},
+         {"retry_after_ms", w::Unsigned(retry_ms)},
+         {"recovery_wait", retry_ms > 0
+                               ? w::Object({{"role", w::String(retry_role)},
+                                            {"reason", w::String(retry_reason)},
+                                            {"retry_after_ms",
+                                             w::Unsigned(retry_ms)}})
+                               : Json{}},
          {"journal_pid",
           !journal_.CleanupConfirmed() && journal_.Worker().pid > 0
               ? w::Unsigned(journal_.Worker().pid)
@@ -1405,12 +1430,18 @@ class Guardian {
     Require(model_request_.has_value(), "unbound model transaction");
     const auto& operation = model_request_->operation;
     if (operation == "authorize" && reply.result.GetBool("allowed")) {
+      model_retry_at_ = 0;
+      model_retry_reason_.clear();
       const auto* grant = reply.result.Find("grant");
       Require(grant && grant->IsObject(), "missing model grant");
       model_ticket_ = Text(*grant, "ticket");
       model_generation_ = Integer(*grant, "generation");
       model_authority_seen_ = true;
       quota_.Granted(model_generation_, now);
+    } else if (operation == "authorize" &&
+               reply.result.Has("retry_after_ns")) {
+      RecordRecoveryWait(reply.result, now, &model_retry_at_,
+                         &model_retry_reason_);
     } else if (operation == "spawned") {
       model_registered_ = true;
     } else if (operation == "ready") {
@@ -1728,6 +1759,17 @@ class Guardian {
     gateway_heartbeat_at_ = now;
   }
 
+  void RecordRecoveryWait(const Json& result, int64_t now, int64_t* deadline,
+                          std::string* reason) {
+    const auto duration = Integer(result, "retry_after_ns");
+    const auto kind = Text(result, "reason");
+    Require(duration <= 24 * 60 * 60 * static_cast<uint64_t>(kSecond) &&
+                (kind == "cooldown" || kind == "budget_exhausted"),
+            "invalid recovery wait");
+    *deadline = now + static_cast<int64_t>(duration);
+    *reason = kind;
+  }
+
   void CompleteGateway(Purpose purpose, const s::JournalReply& reply,
                        int64_t now) {
     if (purpose == Purpose::kGatewayGrant) {
@@ -1737,12 +1779,12 @@ class Guardian {
           Freeze("gateway authorization denied");
           return;
         }
-        const auto duration = Integer(reply.result, "retry_after_ns");
-        Require(duration <= 24 * 60 * 60 * static_cast<uint64_t>(kSecond),
-                "invalid gateway recovery wait");
-        gateway_retry_at_ = now + static_cast<int64_t>(duration);
+        RecordRecoveryWait(reply.result, now, &gateway_retry_at_,
+                           &gateway_retry_reason_);
         return;
       }
+      gateway_retry_at_ = 0;
+      gateway_retry_reason_.clear();
       const auto* grant = reply.result.Find("grant");
       Require(grant && grant->IsObject(), "missing gateway grant");
       gateway_ticket_ = Text(*grant, "ticket");
@@ -1762,6 +1804,7 @@ class Guardian {
       gateway_recovering_ = false;
       gateway_bound_model_ = 0;
       gateway_retry_at_ = now + 5 * kSecond;
+      gateway_retry_reason_.clear();
       if (!recovering_) signalled_.clear();
     } else {
       Require(false, "invalid gateway completion");
@@ -1828,11 +1871,8 @@ class Guardian {
       if (!reply.result.GetBool("allowed")) {
         const auto* delay = reply.result.Find("retry_after_ns");
         if (delay) {
-          const uint64_t duration = Integer(reply.result, "retry_after_ns");
-          Require(duration <= 24 * 60 * 60 * static_cast<uint64_t>(kSecond),
-                  "invalid recovery wait");
-          retry_after_ = now + static_cast<int64_t>(duration);
-          circuit_open_ = true;
+          RecordRecoveryWait(reply.result, now, &retry_after_,
+                             &controller_retry_reason_);
         } else
           Freeze("controller authorization denied");
         return;
@@ -1841,7 +1881,8 @@ class Guardian {
       Require(grant && grant->IsObject(), "missing durable controller grant");
       controller_ticket_ = Text(*grant, "ticket");
       controller_generation_ = Integer(*grant, "generation");
-      circuit_open_ = false;
+      retry_after_ = 0;
+      controller_retry_reason_.clear();
       if (gate_.Begin(reply.sequence, controller_generation_))
         SpawnController(now);
     } else if (purpose == Purpose::kSpawned) {
@@ -1857,7 +1898,7 @@ class Guardian {
       recovering_ = false;
       if (!gateway_recovering_) signalled_.clear();
       retry_after_ = now + 5 * kSecond;
-      circuit_open_ = false;
+      controller_retry_reason_.clear();
     } else if (purpose == Purpose::kModel) {
       CompleteModel(reply, now);
     } else if (purpose == Purpose::kModelRetired) {
@@ -2008,7 +2049,9 @@ class Guardian {
   bool recovering_ = false, controller_reaped_ = true;
   bool controller_registered_ = false, controller_ready_seen_ = false;
   bool controller_ready_ = false;
-  bool circuit_open_ = false;
+  std::string controller_retry_reason_, gateway_retry_reason_;
+  std::string model_retry_reason_;
+  int64_t model_retry_at_ = 0;
   bool model_registered_ = false, model_ready_ = false, quarantined_ = false;
   bool model_admission_open_ = false;
   bool model_ready_committed_ = false, cold_unreconciled_ = false;

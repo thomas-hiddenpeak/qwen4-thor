@@ -99,7 +99,7 @@ def write_descriptor(state, value):
     finally:os.close(fd)
 
 
-def preserve_outer(state, target):
+def preserve_outer(state, target, *, migration=False):
     """Established native outer authority must remain operable after rollback."""
     from tools.serve_recovery import outer_manager, outer_store
     if any(os.path.lexists(Path(state)/name) for name in
@@ -109,6 +109,15 @@ def preserve_outer(state, target):
             'source/tools/serve_recovery/'+name+'.py' in target['files']
             for name in ('outer_manager', 'outer_runtime', 'outer_daemon')),
             'target would discard established native outer supervision')
+    from tools.serve_recovery import root_checkpoints, root_transfer
+    if migration or any(os.path.lexists(Path(state)/name) for name in
+           (root_checkpoints.DIRECTORY, root_transfer.INTENT,
+            root_transfer.INTENT+'.new')):
+        ledger.require(target['version'] >= 19 and all(
+            'source/tools/serve_recovery/'+name+'.py' in target['files']
+            for name in ('root_checkpoints', 'root_transfer',
+                         'root_version_policy')),
+            'target would discard established root recovery migration')
 
 
 FAMILIES = {'access': access_store.Store, 'limits': quota_store.Store, 'usage': usage_store.Store}
@@ -231,6 +240,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
             candidate = policy.prepare(value, target, request_id, bootstrap)
             from tools.serve_recovery import profile_manager, root_transfer
             version_context = root_transfer.preview(binding, candidate, core.state)
+            preserve_outer(state, selected, migration=version_context is not None)
             profile_manager.preflight(binding, old, selected, root=desc, core=core.state,
                                       version_context=version_context)
             journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'prepare')), value['revision'], candidate)
@@ -253,6 +263,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
         old, selected = check_target(value['current'], value['target'])
         preserve_outer(state, selected)
         with root_transfer.transaction(binding, value, core.state) as version_context:
+            preserve_outer(state, selected, migration=version_context is not None)
             profile_manager.deploy(binding, value, old, selected, core.state,
                                    version_context=version_context)
         write_descriptor(state, value['target'])

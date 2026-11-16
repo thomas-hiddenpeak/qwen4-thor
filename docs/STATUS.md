@@ -68,6 +68,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R09首次短验后的[修复CPU通过](evidence/serve-recovery-wait-cpu-20261116/README.md)：
+三个角色的真实预算等待投影及原生指标、首次/已建立整根迁移合同
+的保留。10项CPU通过，首次迁移审查后只重验3项；独立Guardian
+零警告。原预算不变，业务补验/发行继续，默认rev174保持。
+
+
 [R09整根回退修复](SERVE_ROOT_ROLLBACK_2026-11-16.md)继续实现：
 8项纯策略CPU已闭合（原启动判定用例错误保留，实际入口修正后通过）。
 已接有界检查点/原STOPPED锁内迁移、实际目标payload的profile、

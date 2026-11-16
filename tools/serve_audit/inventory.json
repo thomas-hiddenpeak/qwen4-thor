@@ -2610,7 +2610,7 @@
     "src/service/device_control_main.cpp": "df56297c3469b0b60e5dcacd398ae747a31e3c66df8062641b02cf8f2b347fbc",
     "src/service/device_filter.cpp": "3c93ffea127653e58766cba4deb87680d50bb51f15d1e07a34303c77c2e09828",
     "src/service/guardian_journal.cpp": "ca5f71ff90184e0bbe8e00f8384c0733209ddfb34c3f7f3a5757f9143a087ef9",
-    "src/service/guardian_main.cpp": "137ec0fd5c80044b2a8e7b3e5dac0806dc4812641cc33b35aaa2d2578b5f27ae",
+    "src/service/guardian_main.cpp": "2dd156e8ca889ab33306a9d0e18d0eed64f85f9cbe7b6b3ef4d1e868682d8cef",
     "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
     "src/service/guardian_version.cpp": "6fb3c51bc9399f02abaa3a5211d80a1bfb5c369e9dedcf1b4b2f982c20e0165a",
     "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
@@ -2660,7 +2660,7 @@
     "tools/serve_recovery/controller.py": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
     "tools/serve_recovery/core_http.py": "91ed363e9aa38b14b643aab9b21dcd7d5bb5f3b5ef91cc6750d873f288d42c4c",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
-    "tools/serve_recovery/deployment.py": "ed6fd66ef31d9dc9d46cfa0869a0f329a7ac4ffd9dd1808269c27e60fd5e83a0",
+    "tools/serve_recovery/deployment.py": "31d4c3823e693eb59c231e3f1fab539b98b86dc1cdf49a53b304b1b0742a75e1",
     "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
     "tools/serve_recovery/device_budget.py": "e98a4dc142eb246d009b9d65b814f43bced006ed8fab54bcc0e7a13da160ae02",
     "tools/serve_recovery/device_control.py": "aedf363009938adc0225722bda104af07987dad83e984697e2422272f900a57c",
@@ -2792,7 +2792,8 @@
     "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e",
     "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
     "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
-    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add"
+    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
+    "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6459,5 +6460,15 @@
     "review": "Stopped original deployment/Guardian/core and exclusive version ownership. Restore latest authenticated target cycle, preserving UUID, boot, faults, completed/terminal switch and all budgets; only global revision advances. Bounded checkpoint identity plus exact resumable transfer, registered source and actual target payload profile grants, established native outer preservation. V19 freezes V18 inventory. Explicit archive moves checkpoint pair with registration and protects latest transfer roots. Eight policy and24 persistence/retention/sealed CPU cases accepted; CPU model qualifications are synthetic. Actual qualified modern retained root, rollback business and delivery remain required.",
     "evidence": "docs/evidence/serve-root-rollback-cpu-20261116/README.md",
     "master_active": true
+  },
+  "recovery_wait_20261116": {
+    "plan": "docs/SERVE_ROOT_ROLLBACK_2026-11-16.md",
+    "reviewed_sources": {
+      "src/service/guardian_main.cpp": "2dd156e8ca889ab33306a9d0e18d0eed64f85f9cbe7b6b3ef4d1e868682d8cef",
+      "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
+      "tools/serve_recovery/deployment.py": "31d4c3823e693eb59c231e3f1fab539b98b86dc1cdf49a53b304b1b0742a75e1"
+    },
+    "scope": "Observe original role delays without changing grants, budgets or model dispatch; retain established native root migration in stopped deployments",
+    "acceptance": "targeted CPU; real root continuation pending"
   }
 }

@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPTED_TARGETED_CPU",
+  "unique_tests": 10,
+  "initial_seconds": 11.198949050623924,
+  "first_migration_guard_review_recheck_tests": 3,
+  "recheck_seconds": 3.3404483227059245,
+  "source_gate": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 49,
+    "completion_fields": 21,
+    "routes": 74,
+    "native_routes": 123,
+    "reviewed_source_anchors": 720,
+    "mutation_checks": 7,
+    "errors": []
+  },
+  "guardian_sha256": "e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a",
+  "sources": {
+    "src/service/guardian_main.cpp": "2dd156e8ca889ab33306a9d0e18d0eed64f85f9cbe7b6b3ef4d1e868682d8cef",
+    "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
+    "tools/serve_recovery/deployment.py": "31d4c3823e693eb59c231e3f1fab539b98b86dc1cdf49a53b304b1b0742a75e1",
+    "tools/serve_recovery/test_runtime.py": "28cdf5ded4efe4e73df585f6d3abb72676397d3299580f9468b423b379752cd9",
+    "tools/serve_recovery/test_recovery_wait.py": "35bc0ade7baba101e0e6ed8dc91ce4aafc6d97de38bbd732cc27de47b97bcc8b",
+    "tools/serve_recovery/test_root_contract.py": "822e4c039458607fe44de35da4fb464637d732bd090c9ccdc9900edd92a91af7",
+    "tools/serve_audit/check_inventory.py": "31a4a04290c5be588853e1e76996b6f64e334428be757ce1859d468845ca06fd"
+  },
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "real_business_pending": true
+}

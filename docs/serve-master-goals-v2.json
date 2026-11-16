@@ -3071,7 +3071,8 @@
         "evidence/serve-native-observation-delivery-20261109/decision.json",
         "evidence/serve-gateway-diagnostics-20261109/README.md",
         "evidence/serve-gateway-diagnostics-delivery-20261109/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-recovery-wait-cpu-20261116/README.md"
       ],
       "release": {
         "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
@@ -3106,6 +3107,12 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "recovery_wait_20261116": {
+        "state": "implemented_cpu_accepted_business_pending",
+        "tests": 10,
+        "original_budgets_preserved": true,
+        "gpu_starts": 0
       }
     },
     {
@@ -3741,7 +3748,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-root-rollback-cpu-20261116/README.md",
         "evidence/serve-root-rollback-driver-20261116/README.md",
-        "evidence/serve-root-rollback-business-failure-20261116/README.md"
+        "evidence/serve-root-rollback-business-failure-20261116/README.md",
+        "evidence/serve-recovery-wait-cpu-20261116/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -3852,6 +3860,12 @@
         "cleanup_passed": true,
         "default_unchanged": true,
         "whole_master_complete": false
+      },
+      "recovery_wait_20261116": {
+        "state": "implemented_cpu_accepted_business_pending",
+        "tests": 10,
+        "original_budgets_preserved": true,
+        "gpu_starts": 0
       }
     },
     {
