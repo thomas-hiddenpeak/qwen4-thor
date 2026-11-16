@@ -1,0 +1,22 @@
+{
+  "status": "CPU_ACCEPTED_ROOT_BUSINESS_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/package-01/bundle",
+    "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d"
+  },
+  "changed_files": [
+    "source/tools/serve_recovery/bundle.py",
+    "source/tools/serve_recovery/deployment.py",
+    "source/tools/serve_recovery/profile_manager.py",
+    "source/tools/serve_recovery/root_checkpoints.py",
+    "source/tools/serve_recovery/root_transfer.py",
+    "source/tools/serve_recovery/root_version_policy.py"
+  ],
+  "engine_manifest_identical": true,
+  "profiles_identical": true,
+  "native_helpers_identical": true,
+  "retained_controller_origin": null,
+  "source_commit": "e08525a2f9b06e4b11de0629b069d122f01b46e3",
+  "default_changed": false,
+  "actual_business_pending": true
+}

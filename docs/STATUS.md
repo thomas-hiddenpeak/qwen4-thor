@@ -71,7 +71,9 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 8项纯策略CPU已闭合（原启动判定用例错误保留，实际入口修正后通过）。
 已接有界检查点/原STOPPED锁内迁移、实际目标payload的profile、
 outer保留与v19封包；检查点与退休登记一起移动。[24项针对性CPU](evidence/serve-root-rollback-cpu-20261116/README.md)首轮
-全部通过，55.819秒，0新增GPU，rev174保持；真实回退包/业务尚待完成。
+全部通过，55.819秒，0新增GPU，rev174保持；真实双根及[4项驱动CPU](evidence/serve-root-rollback-driver-20261116/README.md)
+通过，实际业务执行前修订为6启动/12Chat含自检/1探测/900秒，
+覆盖真实周期消费、outer及再前进；业务/发行尚待完成。
 
 [rev174缓存交付完成](evidence/serve-chat-cache-delivery-20261116/README.md)：
 78d6bd7b/0851dab3进入实际默认，17项STOPPED检查与整根回退再前进
