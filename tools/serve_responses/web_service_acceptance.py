@@ -63,8 +63,15 @@ def check_business(execution):
     require(stop['profile']=='q4t-text-stop-v2' and stop['state_cache'] and stop['constrained_output'],'stop combination declaration')
     caps=declared['media']
     require(caps['state_cache'] and caps['chunked_prefill'] and not caps['mtp'],'native media declaration')
-    from tools.serve_recovery.profile_migration import web_search_capabilities
-    web_search_capabilities(declared)
+    # Do not import current production modules into the sealed legacy control
+    # namespace. Compare with this exact package's qualified observations.
+    plan=json.loads((execution.parent/'plan.json').read_text())
+    package=Path(plan['package']['package'])
+    expected=json.loads((package/'engine/declarations/capabilities.json').read_text())
+    require(declared.get('web_search')==expected.get('web_search') and
+            declared['responses'].get('web_search')==expected['responses'].get('web_search') and
+            declared['responses']['output_items']==expected['responses']['output_items'],
+            'qualified web execution or isolation contract changed')
     require(declared.get('web_search', {}).get('profile') == 'q4t-native-web-search-v1',
             'native web declaration missing')
     require(json.loads((execution/'missing-web-http.json').read_text())['status']==503,
