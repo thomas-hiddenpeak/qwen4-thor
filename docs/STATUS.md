@@ -72,6 +72,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R07精确包prepare通过；管理员只读check在设备操作前发现验证helper
+污染sealed namespace。已改为按文件加载，2项原owner降权CPU通过，
+保留失败与原plan，仅更新验证文件绑定补check；默认/宿主服务保持。
+
 [R07当前包CPU接受](evidence/serve-cold-refresh-cpu-20261116/README.md)：
 5项不同用例通过，原3项异常类型断言错误保留，仅重验受影响项。
 宿主只读观察BUSY：nvargus-daemon/jtop持设备句柄；未安装围栏或

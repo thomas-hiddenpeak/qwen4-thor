@@ -2650,7 +2650,7 @@
     "tools/serve_recovery/cold_compat.py": "126c0959af0040e1304fe2d6660882248252cc59471596f17f8ad2b132304334",
     "tools/serve_recovery/cold_custody.py": "8b84fd53d8d2de9e2c3e223cd15021b11c3c0ed7b4b362653b76ac1b15f8d264",
     "tools/serve_recovery/cold_host.py": "7cd677c8b22dddae424c20a8871605c8bc33fe816ab9f686e5fb33b4668287c1",
-    "tools/serve_recovery/cold_host_acceptance.py": "f1ea9b91a345ee0f1bda6f57ba37dd88f80028cbd8311fc6f90529d5f0644da9",
+    "tools/serve_recovery/cold_host_acceptance.py": "44e11a848b3ed1bde7f1669305c8d11af7c9c4dd494c420651be289948bd1122",
     "tools/serve_recovery/cold_issuer.py": "00ae8d7ea252c755ec78b1adfec716bff0a59c7f0735eab500bd8af6cde32161",
     "tools/serve_recovery/cold_requests.py": "47b2090dfaaecd0aed09b3ab9a30cf6500a3d1a6181a314d087ce7c92b3ed89c",
     "tools/serve_recovery/cold_verify.py": "e9c59e57b07cc479d8b099392d1703594a571d33149b9c4e0637fb7468334b9b",
