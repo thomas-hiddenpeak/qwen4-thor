@@ -1,0 +1,9 @@
+test_actual_primary_sealed_media_payload (__main__.DriverTests.test_actual_primary_sealed_media_payload) ... ok
+test_actual_retained_sealed_media_payload (__main__.DriverTests.test_actual_retained_sealed_media_payload) ... ok
+test_each_action_is_bounded_before_dispatch (__main__.DriverTests.test_each_action_is_bounded_before_dispatch) ... ok
+test_incomplete_or_environment_failure_cannot_be_accepted (__main__.DriverTests.test_incomplete_or_environment_failure_cannot_be_accepted) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.227s
+
+OK

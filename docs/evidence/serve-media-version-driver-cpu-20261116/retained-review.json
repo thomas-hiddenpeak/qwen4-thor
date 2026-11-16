@@ -1,0 +1,75 @@
+{
+  "status": "NEW_PAYLOAD_ACTUAL_ACCEPTANCE_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+    "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+  },
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/package-01/bundle",
+    "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/retained-01/bundle",
+    "manifest_sha256": "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a"
+  },
+  "changed_files": [
+    "bin/q4t-guardian",
+    "bin/q4t-ingress",
+    "native-build.json",
+    "profile-light.json",
+    "profile-primary.json",
+    "source/tools/serve_ops/contracts.py",
+    "source/tools/serve_recovery/profile_contract.py",
+    "source/tools/serve_recovery/profile_evidence.py",
+    "source/tools/serve_service/capacity.py",
+    "source/tools/serve_service/package.py",
+    "source/tools/serve_service/supervisor.py"
+  ],
+  "media_adapters": [
+    "tools/serve_ops/contracts.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/supervisor.py",
+    "tools/serve_service/capacity.py",
+    "tools/serve_recovery/profile_contract.py",
+    "tools/serve_recovery/profile_evidence.py"
+  ],
+  "compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "b5bf5064dcbd98082f6125349c0018740548e43194f7eade1228f1f87f868d96",
+    "to_registry": "b5bf5064dcbd98082f6125349c0018740548e43194f7eade1228f1f87f868d96",
+    "profiles": {
+      "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+      "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "d0fd3c750e42b27c2787eb595f1b63bfe26da4c0731fb95ba2364e5481c599dd",
+    "to_identity": "d0fd3c750e42b27c2787eb595f1b63bfe26da4c0731fb95ba2364e5481c599dd",
+    "capabilities_sha256": "cd6a03436e5dc85e79a1e561c2cb0fc46fddee927ee806c85b671f2ea4d418f9",
+    "automatic": true
+  },
+  "control_implementation": "Accepted v12 controller and unchanged legacy state machine; six current media capacity/declaration/observation/evidence adapters; current accepted engine and byte-identical helpers. Fresh complete payload needs actual acceptance. Not independent older-engine rollback.",
+  "original_acceptance_not_relabelled": true,
+  "default_unchanged": true,
+  "driver_sha256": "5084dc612953b4d1127354c65dc62651d54b7c3fcc5014087b4fee670c7717da"
+}
