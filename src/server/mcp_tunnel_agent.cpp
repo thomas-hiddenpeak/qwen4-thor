@@ -73,25 +73,6 @@ std::string Escape(std::string_view value) {
   }
   return encoded;
 }
-Json ConfigJson(const McpTunnelAgentConfig& config) {
-  auto headers = Object();
-  for (const auto& [key, value] : config.target.headers)
-    Set(&headers, key, String(value));
-  auto target = Object(
-      {{"url", String(config.target.url)}, {"headers", std::move(headers)}});
-  if (!config.target.authorization.empty())
-    Set(&target, "authorization", String(config.target.authorization));
-  return Object(
-      {{"version", Number(1)},
-       {"api_base", String(config.api_base)},
-       {"api_key", String(config.api_key)},
-       {"tunnel_id", String(config.tunnel_id)},
-       {"channel", String(config.channel)},
-       {"control_fetch", file_detail::OptionsJson(config.control_fetch)},
-       {"target_fetch", file_detail::OptionsJson(config.target_fetch)},
-       {"target", std::move(target)},
-       {"restart_limit", Number(config.restart_limit)}});
-}
 std::chrono::milliseconds RetryDelay(std::string_view value, unsigned attempt,
                                      unsigned jitter) {
   const auto base = std::min(5000U, 100U << std::min(attempt, 6U));
@@ -286,7 +267,7 @@ Deadline mcp_detail::TunnelCommandDeadline(
 }
 int RunMcpTunnelAgent(const McpTunnelAgentConfig& config,
                       const std::function<bool()>& stop) {
-  const auto bytes = OutputJson(ConfigJson(config));
+  const auto bytes = SerializeMcpTunnelAgentConfig(config);
   McpTunnelAgentConfig checked;
   if (!ParseMcpTunnelAgentConfig(bytes, &checked)) return 2;
   std::deque<Deadline> launches;
@@ -380,7 +361,7 @@ int MaybeRunMcpTunnelAgentWorker(int argc, char** argv) {
     Frame frame;
     if (!detail::WorkerTransfer(&frame, sizeof(frame), false) ||
         frame.version != kVersion || frame.sequence != 1 || !frame.bytes ||
-        frame.bytes > (64U << 10))
+        frame.bytes > kMcpTunnelAgentConfigBytes)
       return 3;
     std::string bytes(frame.bytes, '\0');
     McpTunnelAgentConfig config;

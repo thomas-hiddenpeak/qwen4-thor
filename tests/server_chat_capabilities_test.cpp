@@ -102,10 +102,22 @@ Q4T_TEST(chat_capabilities_mcp_native_execution_and_recovery_boundaries) {
             mcp->GetBool("authenticated_continuation") &&
             mcp->GetBool("encrypted_session_state"));
   Q4T_CHECK(mcp->GetString("approval_default") == "always");
+  Q4T_CHECK(mcp->GetBool("native_provider_adapters") &&
+            mcp->GetString("connector_transport") ==
+                "native_or_deployment_mapped_mcp");
+  const auto* providers = mcp->GetArray("native_provider_ids");
+  Q4T_CHECK(providers && providers->array.size() == 8 &&
+            providers->array[0].str == "connector_googlecalendar" &&
+            providers->array[1].str == "connector_googledrive" &&
+            providers->array[2].str == "connector_gmail" &&
+            providers->array[3].str == "connector_outlookcalendar" &&
+            providers->array[4].str == "connector_outlookemail" &&
+            providers->array[5].str == "connector_microsoftteams" &&
+            providers->array[6].str == "connector_sharepoint" &&
+            providers->array[7].str == "connector_dropbox");
   for (const auto* field :
        {"automatic_tool_replay", "model_restart_on_error",
-        "core_readiness_dependency", "external_agent_required",
-        "native_provider_adapters"})
+        "core_readiness_dependency", "external_agent_required"})
     Q4T_CHECK(!mcp->GetBool(field, true));
   Q4T_CHECK(responses->Find("programmatic_tools")
                 ->Find("tool_types")
@@ -138,6 +150,38 @@ Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
             inputs->GetString("configuration_field") == "file_inputs" &&
             inputs->GetBool("policy_check_cli") &&
             !inputs->GetBool("request_override"));
+  return true;
+}
+
+Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
+  for (bool media : {false, true}) {
+    for (bool mtp : {false, true}) {
+      q4t::io::Json caps;
+      Q4T_CHECK(q4t::io::ParseJson(
+          q4t::server::ChatCapabilitiesJson("m", media, mtp), &caps));
+      const auto* video = caps.Find("file_inputs")->Find("native_video");
+      Q4T_CHECK(video &&
+                video->GetString("profile") == "q4t-native-video-input-v1");
+      Q4T_CHECK(video->GetBool("model_media_enabled") == media);
+      Q4T_CHECK(video->GetBool("runtime_codec_checked_on_request") &&
+                video->GetBool("shared_work_budget") &&
+                video->GetBool("timestamps") &&
+                !video->GetBool("requires_mtp_disabled", true));
+      Q4T_CHECK(video->GetString("decode_strategy") == "target_model");
+      for (const auto* key :
+           {"full_timeline_in_model", "frozen_replay_requires_codec",
+            "external_program_required", "core_readiness_dependency"})
+        Q4T_CHECK(!video->GetBool(key, true));
+      Q4T_CHECK(video->GetString("input_type") == "input_file");
+      Q4T_CHECK(video->GetArray("containers")->array.size() == 2 &&
+                video->GetArray("codecs")->array.size() == 3);
+#ifdef Q4T_HAVE_GSTREAMER_HEADERS
+      Q4T_CHECK(video->GetBool("decoder_compiled"));
+#else
+      Q4T_CHECK(!video->GetBool("decoder_compiled", true));
+#endif
+    }
+  }
   return true;
 }
 

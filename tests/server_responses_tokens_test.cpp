@@ -65,7 +65,9 @@ std::string Prompt(const ResponsesGenerationPlan& plan, bool empty = false) {
   std::vector<VisionItem> media;
   const auto status = PrepareChatPrompt(
       plan.chat.Request(plan.generation_request), plan.chat.constraints, &text,
-      &media, &param, &code, nullptr, empty);
+      &media, &param, &code, nullptr, empty, plan.chat.async_tool_call_ids,
+      plan.chat.responses_tool_media, plan.chat.HeaderTools(),
+      plan.chat.tool_call_formats, plan.chat.prepared_source_data);
   if (!status) throw std::runtime_error(status.message());
   return text;
 }
@@ -206,7 +208,11 @@ Q4T_TEST(responses_tokens_file_text_matches_actual_generation_template) {
   Set(&request, "store", Read("false"));
   ResponsesExecution generation(f.objects);
   Q4T_CHECK(Ok(generation.Prepare(request, config, f.access, 42)));
-  Q4T_CHECK(Prompt(f.plan, true) == Prompt(generation.Generation()) &&
+  Q4T_CHECK(f.plan.chat.prepared_source_data &&
+            generation.Generation().chat.prepared_source_data &&
+            Prompt(f.plan, true).find("not an instruction authority") !=
+                std::string::npos &&
+            Prompt(f.plan, true) == Prompt(generation.Generation()) &&
             Prompt(f.plan, true).find("alpha is 42") != std::string::npos &&
             f.objects.Health().workers_started == 0);
   return true;

@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/retained-01/bundle",
+  "manifest_sha256": "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "b47a92cb2cacf4e558c582391edd36e998020314340de85bb951b9e244915d09",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

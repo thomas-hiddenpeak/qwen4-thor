@@ -1,0 +1,14 @@
+{
+  "scope": "Native Dropbox six read tools; original file/export content, search and continuation, recent modification order, fixed API/content origins and no extra profile permission for file reads",
+  "tools": [
+    "search",
+    "fetch",
+    "search_files",
+    "fetch_file",
+    "list_recent_files",
+    "get_profile"
+  ],
+  "verification": "targeted C++/local HTTP/schema, affected wire preparation and provider set, actual CLI seal; zero GPU/live cloud accounts",
+  "default_changed": false,
+  "master_complete": false
+}

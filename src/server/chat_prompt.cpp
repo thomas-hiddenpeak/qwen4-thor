@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <format>
 #include <utility>
 
 #include "q4t/server/chat_template.h"
@@ -91,8 +90,9 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
     }
     const io::Json* vf = part.Find("video_frames");
     if (vf != nullptr) {
-      if (m.GetString("role") != "user") {
-        *err = "Only user messages may contain videos.";
+      if (m.GetString("role") != "user" &&
+          !(responses_tool_media && m.GetString("role") == "tool")) {
+        *err = "Video requires a user or prepared Responses tool message.";
         return {};
       }
       if (!vf->IsArray()) {
@@ -154,7 +154,7 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       // receives its mean timestamp and an independent visual boundary.
       for (size_t frame = 0; frame < times.size(); frame += 2) {
         const double last = times[std::min(frame + 1, times.size() - 1)];
-        out += std::format("<{:.1f} seconds>", (times[frame] + last) / 2);
+        out += VideoGroupTimestamp(times[frame], last);
         out += "<|vision_start|><|video_pad|><|vision_end|>";
       }
       if (part_ends) part_ends->push_back(out.size());
@@ -187,7 +187,8 @@ Status PrepareChatPrompt(
     std::string* error_param, std::string* error_code, ChatPromptLayout* layout,
     bool allow_empty, std::span<const std::string> async_call_ids,
     bool responses_tool_media, const io::Json* header_tools,
-    std::span<const ChatToolCallFormat> call_formats) {
+    std::span<const ChatToolCallFormat> call_formats,
+    bool prepared_source_data) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
@@ -196,7 +197,7 @@ Status PrepareChatPrompt(
     status = PrepareChatPrompt(
         normalized.request, constraints, prompt_out, items_out, error_param,
         error_code, layout, allow_empty, async_call_ids, responses_tool_media,
-        header_tools, call_formats);
+        header_tools, call_formats, prepared_source_data);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -257,7 +258,7 @@ Status PrepareChatPrompt(
         req, contents, &prompt, layout ? &layout->messages : nullptr,
         allow_empty, async_call_ids,
         history_tools ? history_tools->array : std::span<const io::Json>{},
-        selected_header, call_formats);
+        selected_header, call_formats, prepared_source_data);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

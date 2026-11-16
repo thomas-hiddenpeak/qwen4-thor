@@ -89,14 +89,33 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_image_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_calendar.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_time.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_common.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_drive.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_drive_lro.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_gmail.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_mail.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_graph.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_graph_cursor.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_outlook.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_teams.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_sharepoint.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_dropbox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_provider_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_transport.cpp

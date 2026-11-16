@@ -1,0 +1,38 @@
+{
+  "phase": "Native provider transport, Google Calendar first adapter",
+  "required_providers": [
+    "connector_dropbox",
+    "connector_gmail",
+    "connector_googlecalendar",
+    "connector_googledrive",
+    "connector_microsoftteams",
+    "connector_outlookcalendar",
+    "connector_outlookemail",
+    "connector_sharepoint"
+  ],
+  "contract": "Explicit deployment-owned provider route; fixed HTTPS origins, caller OAuth, no external MCP daemon. Existing MCP catalog, approvals, sessions, tools/call, programmatic and Batch unchanged in authority.",
+  "initial_tools": [
+    "get_profile",
+    "search",
+    "fetch",
+    "search_events",
+    "read_event"
+  ],
+  "validation": [
+    "scope filtered catalog and complete schema",
+    "exact URI and opaque cursor encoding",
+    "RFC3339 and calendar-local timezone, DST ambiguity and gap",
+    "actual local HTTP transport bounded success/error/no redirect",
+    "original session binding, permission before I/O and no retry",
+    "deployment parsing, redaction, native CLI and packaging"
+  ],
+  "cpu_only_first": true,
+  "gpu_starts": 0,
+  "final_delivery": "Requires actual provider business, SDK, existing recovery qualification and reversible publication; this development phase is not master completion",
+  "source_urls": [
+    "https://developers.openai.com/api/docs/guides/tools-connectors-mcp",
+    "https://developers.google.com/workspace/calendar/api/v3/reference/events/list",
+    "https://developers.google.com/workspace/calendar/api/v3/reference/events/get",
+    "https://developers.google.com/identity/openid-connect/openid-connect"
+  ]
+}

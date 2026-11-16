@@ -1,10 +1,15 @@
 #include "q4t/server/media_admission.h"
 
+#include <format>
+
 #include <array>
 #include <cmath>
 #include <limits>
 
 namespace q4t::server {
+std::string VideoGroupTimestamp(double first_seconds, double last_seconds) {
+  return std::format("<{:.1f} seconds>", (first_seconds + last_seconds) / 2);
+}
 namespace {
 int Digit(unsigned char c) {
   if (c >= 'A' && c <= 'Z') return c - 'A';

@@ -60,6 +60,7 @@ ObjectReply ChatFileInputs::Prepare(const Json& request,
   status = PlanChatRequest(model_request, validation, plan, &error);
   if (!status) return Invalid(status, error);
   plan->legacy_output = legacy;
+  plan->prepared_source_data = true;
   plan->normalized_request = std::move(model_request);
   return {};
 }

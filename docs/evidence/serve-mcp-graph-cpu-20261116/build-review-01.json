@@ -1,0 +1,51 @@
+{
+  "builds": [
+    {
+      "name": "engine-build-01",
+      "exit_code": 0,
+      "seconds": 20.224017867352813,
+      "warnings": 0,
+      "default_unchanged": true
+    },
+    {
+      "name": "host-build-01",
+      "exit_code": 2,
+      "seconds": 20.912061013747007,
+      "warnings": 0,
+      "default_unchanged": true
+    },
+    {
+      "name": "host-build-02",
+      "exit_code": 0,
+      "seconds": 14.462096532341093,
+      "warnings": 0,
+      "default_unchanged": true
+    },
+    {
+      "name": "host-build-03",
+      "exit_code": 2,
+      "seconds": 22.421211367007345,
+      "warnings": 0,
+      "default_unchanged": true
+    },
+    {
+      "name": "host-build-04",
+      "exit_code": 0,
+      "seconds": 21.230021060910076,
+      "warnings": 0,
+      "default_unchanged": true
+    },
+    {
+      "name": "host-build-05",
+      "exit_code": 0,
+      "seconds": 16.216881806962192,
+      "warnings": 0,
+      "default_unchanged": true
+    }
+  ],
+  "failed_build_causes": {
+    "host-build-01": "std::from_chars fixture passed pointer instead of reference",
+    "host-build-03": "Fixture tried mutating const Json::Find result; construct original resource in GraphHits instead"
+  },
+  "failed_cpu": "Only loopback fixture retained HTTPS-only policy. Production unchanged by targeted fix."
+}

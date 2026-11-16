@@ -1,0 +1,13 @@
+{
+  "CMakeLists.txt": "be32153645632f18820e142937189eaf1c2fa7a7d684d78fb1872a2fbe981c9e",
+  "cmake/ChatProtocolIdentity.cmake": "e2fdd48fa061f71d9f93663356232adcb5a0b23a5040da14650e4e35affdf42c",
+  "cmake/HostTestSources.cmake": "c8d1fd873ed40505cc5cba30c6c29c6298769dfe54918e310aaedf83659c3407",
+  "src/server/chat_capabilities.cpp": "348f21740417c2abb7cdfeccfa810a1ddad3242167b3581ead17fe7f80f94427",
+  "src/server/mcp_provider.cpp": "2cdbc6657fe358fdc2e973b45d457c4476eb6f75dad6d93c9dba7b61f76e25da",
+  "src/server/mcp_provider_dropbox.cpp": "bbff6e90437b7a1d56d3a927aeaa73f3510b413a6a5063dc1dc9d6144c035354",
+  "src/server/mcp_provider_internal.h": "4fa731fbdab1772d31263b16baa16c26eceec886f18917d235ab6cdb34094d44",
+  "tests/server_chat_capabilities_test.cpp": "97421728732f12bf9228ac3a24a23731b2e2b7290d5ce1f6d93034769c8fc385",
+  "tests/server_mcp_provider_test.cpp": "bbd256f61a104f8e558e93ce067c28e610db0c43676eb098bd3a1bbdd05d983e",
+  "tools/serve_audit/inventory.json": "4f6013727ed780d7520e644d30e5522aea28040219104dfcd86b62bbee480e20",
+  "tools/serve_responses/test_mcp_policy.py": "c51219744430ddb0e736c43f6f3852468c025c1879d6c3b59540f2461d7e869f"
+}

@@ -1,0 +1,10 @@
+test_private_configuration_file_contract_and_redaction (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_private_configuration_file_contract_and_redaction) ... ok
+test_redirect_setting_is_validated_without_silent_override (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_redirect_setting_is_validated_without_silent_override) ... ok
+test_check_rejects_configuration_that_cannot_reach_worker (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_check_rejects_configuration_that_cannot_reach_worker) ... ok
+test_verified_tls_native_ingress_prefix_and_real_private_document (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_verified_tls_native_ingress_prefix_and_real_private_document) ... ok
+test_intentional_stop_closes_private_session_without_respawn (tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_intentional_stop_closes_private_session_without_respawn) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.907s
+
+OK

@@ -19,6 +19,39 @@ RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
     'mcp_approval_request', 'mcp_call'))
+MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
+    'connector_googlecalendar', 'connector_googledrive', 'connector_microsoftteams',
+    'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
+
+
+def media_capabilities(value):
+    """Represent reviewed optional-media activation as feature additions.
+
+    Disabling media, lowering/changing its observed device limit, or altering
+    any other media contract still fails extension. Automatic migration still
+    requires exact equivalence. Never discard the original observations.
+    """
+    runtime, media = value.get('runtime'), value.get('media')
+    if not isinstance(media, dict) or media.get('profile') != 'q4t-media-admission-v3':
+        return
+    ledger.require(type(runtime) is dict and type(runtime.get('media_enabled')) is bool,
+                   'missing optional media runtime observation')
+    enabled = runtime['media_enabled']
+    shared = media.get('attention_shared_bytes')
+    ledger.require((enabled and ledger.integer(shared, minimum=1)) or
+                   (not enabled and shared is None), 'invalid media device observation')
+    runtime['media_enabled'] = dict(enabled=True) if enabled else {}
+    media['attention_shared_bytes'] = {str(shared): True} if enabled else {}
+    video = value.get('file_inputs', {}).get('native_video')
+    if video is not None:
+        ledger.require(type(video) is dict and
+            video.get('profile') == 'q4t-native-video-input-v1' and
+            video.get('model_media_enabled') is enabled and
+            type(video.get('requires_mtp_disabled')) is bool,
+            'invalid native video media observation')
+        video['model_media_enabled'] = dict(enabled=True) if enabled else {}
+        video['requires_mtp_disabled'] = {} if video['requires_mtp_disabled'] else \
+            dict(joint_text_mtp=True)
 
 
 def semantic_capabilities(value):
@@ -32,6 +65,7 @@ def semantic_capabilities(value):
     template revisions and other changed values are not normalized.
     """
     result = copy.deepcopy(value)
+    media_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']
@@ -81,6 +115,25 @@ def semantic_capabilities(value):
                 all(mcp.get(key) is False for key in ('automatic_tool_replay',
                     'model_restart_on_error', 'core_readiness_dependency')),
                 'MCP outputs lack their implementation capability')
+            if any(key in mcp for key in ('native_provider_adapters',
+                    'native_provider_ids', 'connector_transport')):
+                enabled = mcp.get('native_provider_adapters')
+                providers = mcp.get('native_provider_ids', [])
+                ledger.require(type(enabled) is bool and type(providers) is list
+                    and all(type(item) is str for item in providers)
+                    and len(set(providers)) == len(providers)
+                    and set(providers) <= MCP_PROVIDER_IDS
+                    and enabled == bool(providers)
+                    and mcp.get('connector_transport') == (
+                        'native_or_deployment_mapped_mcp' if enabled else
+                        'deployment_mapped_mcp'),
+                    'invalid native MCP provider capabilities')
+                # Only this reviewed provider enum can extend. Automatic
+                # recovery still requires equality, never provider loss/addition.
+                mcp['native_provider_adapters'] = {item: True for item in providers}
+                mcp.pop('native_provider_ids', None)
+                mcp['connector_transport'] = dict(deployment_mapped_mcp=True,
+                    **(dict(native_provider=True) if enabled else {}))
         # This field declares an unordered set of output types. Normalize only
         # this reviewed enum; all other arrays retain exact-value comparison.
         responses['output_items'] = {item: True for item in items}

@@ -9,26 +9,34 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev134；服务包 `437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577` |
-| Generation | `b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f` |
-| 引擎 | `a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885` |
-| 引擎发布记录 | `f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0` |
+| 发布 | rev142；服务包 `7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce` |
+| Generation | `2970a016c6be5bb982aceb175a6e07918babfbab561be82f8d282f5ece4d8a5a` |
+| 引擎 | `cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360` |
+| 引擎发布记录 | `3188c9964a2b5031b3dbaa06f25098b14136f20c3883fe0a23dbc23b3e1b2151` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e`；保持新MCP能力 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；MCP数据源、私网目标/凭据与TLS/CORS等按部署显式配置 |
+| 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
+| 版本回退 | 已验旧控制/当前引擎包 `73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a`；保留媒体/MCP/embedding能力 |
+| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[MCP发行与回退记录](evidence/serve-mcp-delivery-20261116/README.md)包含
-17项STOPPED交付检查，54.136秒，0新增GPU。实际MCP的审批/拒绝、
-原生隧道SSE、资料与资源读取、未知不重放、同PID普通推理已验；
-主轻资格和共享程序/存储/配额的整树恢复分别有精确包证据。
-Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱；旧默认程序和状态备份保留。自动版本恢复保留现代根，
-人工整根回退到v12入口没有outer；不是独立旧引擎回退。
-本次代码待最终检查和实际合main；提供方原生适配、完整客户端矩阵、
-其他协议及可靠性组合继续，未宣称完整OpenAI兼容或长稳通过。
+[托管视觉发行与回退记录](evidence/serve-managed-vision-delivery-20261116/README.md)
+包含17项STOPPED交付检查，55.432秒，0新增GPU。普通文本MTP与视觉
+目标解码共同加载；原MP4/WebM、文件/工具/MCP输入和冻结历史有实际
+业务证据。媒体主轻资格、真实RAM压力主→轻→主和精确包整树版本
+回退均已过，视频SSE可继续；实际Key/配额/core/outer字节保持。
+容量只新增媒体与v2标识，原上下文/输出/准入及恢复历史/冷却不变；
+版本新周期保留前驱，旧默认与状态备份可核验。自动版本恢复保留
+现代根，人工整根回退的v12入口无outer；不是独立旧引擎回退。
+
+八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
+仍需部署方配置，未声称通过。视觉旋转/像素比例、缓存/分块prefill、
+完整客户端矩阵及其余master缺口继续实现；不宣称完整OpenAI兼容、
+硬解码、视觉并发或长稳通过。PR29待最终head检查和实际合main。
+
+前驱rev134的MCP发行已通过PR28合main（`35581f98`），
+[合并回执](evidence/serve-pr28-merged-20261116/README.md)保留；
+[原发行证据](evidence/serve-mcp-delivery-20261116/README.md)按原身份复用。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
@@ -40,6 +48,174 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[PR29旧媒体/MTP断言已修复](evidence/serve-media-client-ci-20261116/README.md)：
+原f8f25148两组CI仅同一旧断言失败，本机针对性1项首过、零警告；
+运行时与rev142不变、0GPU。等待新head远端检查后合main，master继续。
+
+[rev142托管视觉可回退发行完成](evidence/serve-managed-vision-delivery-20261116/README.md)：
+17项STOPPED检查通过，实际回退再前进保持配额/历史/预算，默认
+启用媒体且文本保留MTP。0新增GPU；继续PR29合main及全部master。
+
+[精确媒体包与版本回退通过](evidence/serve-media-version-business-20261116/README.md)：
+保留包73b45ed3独立1启动/2生成，正式包7a8e9cd2实际2启动/4生成/
+1探测完成整树回退，视频历史/SSE和能力保留，自有资源清理。
+原默认rev134保持，继续可回退发行及全部master。
+
+[媒体版本回退驱动4项CPU首过](evidence/serve-media-version-driver-cpu-20261116/README.md)：
+真实封包隔离导入、媒体启动、判定和预算通过。新派生保留控制包
+73b45ed3待1启动/2生成/300秒真实资格，再对正式7a8e9cd2完成
+2启动/4生成/1设备探测/600秒整树回退。rev134不变，全部master继续。
+
+[视觉服务实际自动降级/恢复通过](evidence/serve-media-managed-business-20261116/README.md)：
+3启动/12请求/205.133秒，192次NVML正常；真实RAM压力触发主→轻→主，
+8.125GiB自有页全释放，视频冻结历史/一次工具执行/配额连续/晋升SSE
+和普通Chat通过，控制树保持。实际受控包8fe97f50已验；正式候选
+7a8e9cd2及版本回退仍须完成，rev134不变，全部master继续。
+
+[托管视觉驱动首次失败已定位](evidence/serve-media-managed-driver-failure-20261116/README.md)：
+1启动/1自检后，驱动间接导入生产包未携带的TLS夹具失败；尚无媒体
+请求或RAM压力，持久STOPPED与自有资源清理完成。纯wire检查替代
+测试夹具导入，实际sealed namespace判定CPU单项通过；引擎/包保持，
+继续最多3启动/12请求/900秒原恢复场景，rev134保持、master继续。
+
+[托管视觉恢复驱动/封包CPU首过](evidence/serve-media-managed-driver-cpu-20261116/README.md)：
+5项CPU通过，四个原生服务程序零警告且字节与rev134相同。候选包
+7a8e9cd2待实际恢复；继续最多3启动/12请求/900秒真实内存压力下的
+主→轻→主、视觉冻结历史/工具/配额与SSE，rev134保持，全部master继续。
+
+[媒体主轻真实资格通过](evidence/serve-media-profile-business-20261116/README.md)：
+2启动/10请求/96.528秒，92次NVML正常；两侧均完成工具实际SHA闭环、
+结构化输出、embedding和原VP8首尾识别。仅MTP开关不同，能力相等，
+准入估算103887276952/93982841120字节。自有资源清理、rev134保持；
+继续同能力托管恢复/发行及全部master，尚未认作自动恢复通过。
+
+[混合文本/视觉实际业务通过](evidence/serve-managed-vision-business-20261116/README.md)：
+1启动/4创建/68.710秒，66次NVML正常。前后文本各10步MTP，中间真实
+视频和PDF普通解码且答案正确，同PID/计数/清理闭合，rev134保持。
+[媒体资格/迁移38项CPU首过](evidence/serve-media-profile-contract-cpu-20261116/README.md)，
+继续同cd640ccc最多2启动/10请求/900秒主轻真实媒体资格，再实际恢复
+与发行；全部master仍active。
+
+[托管视觉配置CPU首过](evidence/serve-managed-vision-cpu-20261116/README.md)：
+9项C++/25项Python/7项来源负控通过，主机与引擎零警告。共同加载、
+按请求媒体普通decode、版本2容量和独立观测、主轻媒体资格合同已实现。
+候选cd640ccc尚待实际混合业务与恢复；最多1启动/4创建/600秒短验，
+rev134保持，全部master继续。
+
+[原生视频实际业务通过](evidence/serve-video-business-20261116/README.md)：
+1启动/8创建/53.447秒，52次NVML正常；MP4计数、VP8 SSE、实际函数
+VP9续答、MCP真实读取、删除后的冻结回放、损坏后同PID普通推理均过。
+历史失败保留，自有进程/端口/锁清理，rev134未改。随后同候选的
+[受影响入口短验](evidence/serve-prepared-source-business-20261116/README.md)
+也通过：1启动/4创建/65.750秒、63次NVML正常；Chat PDF/WebP流式、
+Responses真实项目文档与计数、同PID普通Chat闭合。继续
+[托管视觉配置与恢复](SERVE_MANAGED_VISION_2026-11-16.md)，rev134保持，
+全部master仍active。
+
+[统一投影原业务](evidence/serve-video-projection-business-failure-20261116/README.md)
+在VP8仍拒答：实际看见红/蓝，却将平均视觉组标签当作缺首尾帧的证据。
+当前共用同一时间戳函数，并将每组标签对应到实际源帧的显示区间；
+不改像素、采样、张量或均值。[7项CPU首过](evidence/serve-video-group-timing-cpu-20261116/README.md)，
+主机/引擎零警告；随后最多1启动/8创建/
+900秒原业务；失败未验收，rev134保持，全部master继续。
+
+[通用说明业务](evidence/serve-prepared-input-trust-business-failure-20261116/README.md)
+仍在VP8拒答，未验收；[相同输入JSON/SSE诊断](evidence/serve-video-transport-diagnostic-20261116/README.md)
+结果完全相同，未观察到传输差异。当前修正纯视频的空文档包装，
+共用模板层的私有数据说明接通Chat/Responses、计数、预检和Batch，
+不插入额外历史消息。[16项CPU最终通过](evidence/serve-video-projection-cpu-20261116/README.md)，
+主机/引擎零警告；继续最多1启动/8创建/900秒原业务；
+原问题、refusal协议和答案判定保持，rev134不变，总目标继续。
+
+[帧时长业务](evidence/serve-native-video-intervals-business-failure-20261116/README.md)
+仍拒答，未验收；随后[三组固定诊断](evidence/serve-native-video-diagnostic-20261116/README.md)
+均答对，指向“来源可信度/指令权威”语义与结构化输出的组合问题。
+当前原生适配为真实准备文件/MCP结果加入通用数据说明，保留refusal
+协议、原问题/答案、权限和像素；普通文本不添加。[5项不同CPU最终过](evidence/serve-prepared-input-trust-cpu-20261116/README.md)，
+首轮MCP映射类型错误保留并针对性修复；主机/引擎零警告。继续
+最多1启动/8创建/900秒原业务，默认rev134保持，总目标继续。
+
+[视频首尾说明补验](evidence/serve-native-video-followup-failure-20261116/README.md)
+仍失败：模型已识别末帧蓝色，但把5.5秒PTS误解为6秒结束前缺帧。
+1启动/4创建后按失败清理，rev134不变；继续补齐实际帧显示时长、
+worker传递、快照完整性和半开时间区间表达，不根据容器时长虚构帧。
+[20项C++/7项来源负控已过](evidence/serve-native-video-intervals-cpu-20261116/README.md)，
+主机/完整引擎零警告；之后最多1启动/8创建/900秒验证原问题，业务仍未验收。
+
+[首次视频业务短验](evidence/serve-native-video-business-failure-20261116/README.md)
+在1启动/4创建后失败：直接MP4、VP8 SSE和计数通过，工具VP9续答拒答。
+原始首尾帧与media执行存在，45项NVML均OK、自有资源清理完成、rev134
+保持。当前补充统一投影对实际视觉内容/首尾/采样遗漏的准确说明，
+明确报告refusal；冻结4项C++/2项Python及最多1启动/8创建/900秒补验，
+原问题与判定不变。[4项C++/2项Python和来源检查已过](evidence/serve-native-video-followup-cpu-20261116/README.md)，
+主机/引擎零警告；仍须实际业务证明修复，不将失败转成兼容完成。
+
+[视频业务驱动CPU准备](evidence/serve-native-video-business-driver-cpu-20261116/README.md)
+已过：2项C++、5项Python实际TLS/请求/判定器、7项来源负控/712锚点，
+主机/引擎零警告；能力发现区分编译、媒体配置与运行库检查。
+候选e5e67af8已冻结，继续最多1启动/8创建/900秒SDK/模型
+业务短验；本记录时0GPU、rev134保持，不把CPU通过当实际业务通过。
+
+[统一视频输入CPU验证](evidence/serve-native-video-input-cpu-20261116/README.md)
+已完成：38项不同C++（39次执行）、1项实际CLI封包、7项来源负控/712
+锚点最终通过，主机/完整引擎零警告。Files、MCP、计数、工具角色、
+审核和v3快照接线；跨文件/调用零余额阻止新解码。首轮计数夹具失败
+保留并单项修复复验；0GPU、rev134保持。候选8dbab79f尚待实际业务/
+恢复发行；PR29前驱2276928f两组远端CI均成功，不代表本批新代码已验。
+继续SDK/模型业务、格式组合和全部master。
+
+[原生视频worker](evidence/serve-native-video-worker-cpu-20261116/README.md)
+已通过13项不同C++（26次执行）、7项来源负控/712锚点，最终主机/
+完整引擎零警告；固定软件H.264/VP8/VP9真实帧与PTS、隔离/配额有证据。
+首轮截断容器超时已修复，失败保留；0GPU、rev134保持。PR29旧head
+一组CI的PID夹具竞争也已修复，1项本机CPU及前驱两组远端CI均过。
+继续[统一视频文件输入](SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)的快照、
+时序投影和共享预算，不能把worker通过当完整API或云账户业务通过。
+
+Graph分页兼容已接线保留原URL的受保护续接、等价编码/OData路径及
+认证提供方返回的用户/日历别名；[47项CPU首过](evidence/serve-mcp-graph-cursor-cpu-20261116/README.md)。
+原工具/参数/授权与一小时期限绑定，复用现有密码组件，无新依赖。
+来源7项/706锚点过、构建零警告，0GPU、rev134保持，真实账户仍待验。
+继续MCP下载视频进入实际媒体准备，不能把MP4普通文件投影当完整业务。
+
+Google Vids长耗时下载已接线一次发起、显式pending和原任务单次续接；
+[30项CPU首过](evidence/serve-mcp-drive-lro-cpu-20261116/README.md)，7项来源
+负控/705锚点过，主机和完整引擎零警告。认证下载URI留在worker内，
+账户令牌只发固定Google API主机；无重试或模型重启，0GPU。
+候选工作已建立[PR29](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/29)，
+仍为draft，真实账户/业务/发行未完成；rev134保持，全部master继续。
+
+Dropbox六工具候选已完成[25项CPU和1项实际CLI八提供方封包首过](evidence/serve-mcp-dropbox-cpu-20261116/README.md)，
+主机/完整引擎零警告，来源7项负控/704锚点过，0GPU、rev134不变。
+八提供方42工具均有原生候选实现；真实账户、特殊格式、业务组合及
+可回退发行仍未完成。继续Google Vids异步下载与全部master。
+
+Microsoft Graph四提供方20工具已实现候选，[40项不同C++、1项实际CLI
+最终通过](evidence/serve-mcp-graph-cpu-20261116/README.md)，7项来源负控、
+703锚点通过，最终构建零警告。OAuth与文件下载能力隔离，邮件列表
+游标不能扩大到正文；原始失败及针对性补验保留。0GPU、rev134保持，
+七提供方候选仍待真实账户/发行；继续Dropbox、特殊格式及全部master。
+
+Drive五项、Gmail六项原生只读工具已进入候选：实际下载/Office导出、
+分页与MIME正文/可选附件接线。[36项C++、1项实际CLI封包首过](evidence/serve-mcp-google-cpu-20261116/README.md)，
+最终构建零警告、7项来源负控通过，0GPU。不新增链接密码库，系统
+字符转换仅在隔离worker内使用。三个提供方仍待真实账户业务/发行，
+继续Graph/Dropbox及特殊格式，不将本机夹具称为云账户实际验收。
+
+[原生提供方适配](SERVE_MCP_PROVIDERS_2026-11-16.md)的Calendar五项
+只读工具、固定主机、OAuth权限目录、时区/游标及错误处理已实现；
+[28项C++、14项Python/实际CLI最终通过](evidence/serve-mcp-provider-calendar-cpu-20261116/README.md)，
+主机/完整引擎零警告、7项来源负控通过，0GPU。首轮小数秒与恢复
+夹具失败保留并补验。实际账户业务和可用发行仍待完成；继续其余
+七提供方及全部master，八提供方42工具没有缩减。
+
+[隧道agent配置一致性修复](evidence/serve-mcp-agent-config-cpu-20261116/README.md)
+已完成：11项不同C++、5项实际CLI、7项来源负控最终通过；显式非零
+重定向不再静默覆盖，check使用实际worker序列化预算，避免检查成功
+而启动失败。首轮夹具/来源门禁失败保留，针对性补验；0GPU。候选
+9cf9af38独立保留、尚待发行；rev134默认不变。PR28此前交付已合入，
+本修复随提供方原生适配继续交付，全部master任务保持active。
 
 以下保留各阶段发生时的默认身份；当前已交付身份以上表为准。
 

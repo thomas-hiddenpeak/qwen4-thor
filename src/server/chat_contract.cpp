@@ -270,8 +270,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (!messages->IsArray() ||
       (!allow_empty_messages && messages->array.empty()))
     return invalid("messages", "messages must be a nonempty array");
-  status = ValidateChatMessageProfile(*messages, error_param,
-                                      allow_empty_messages);
+  status =
+      ValidateChatMessageProfile(*messages, error_param, allow_empty_messages);
   if (!status) return status;
   size_t media_items = 0;
   for (size_t index = 0; index < messages->array.size(); ++index) {
@@ -338,8 +338,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
           return Status::Fail(
               "media disabled; experimental --allow-media required");
         if (message.GetString("role") != "user" &&
-            !(responses_tool_media && message.GetString("role") == "tool" &&
-              part.Has("image_url")))
+            !(responses_tool_media && message.GetString("role") == "tool"))
           return Status::Fail("media requires user role");
         const bool image = part.Has("image_url");
         const bool video = part.Has("video_frames");

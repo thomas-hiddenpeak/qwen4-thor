@@ -1,0 +1,9 @@
+{
+  "tests": [
+    "mcp_graph_sealed_cursor_page_limit_survives_legacy_upgrade"
+  ],
+  "count": 1,
+  "reason": "Review identified missing direct acceptance for explicit page limit across legacy raw to protected continuation; source unchanged, add only this boundary case",
+  "prior_46_passed_reused": true,
+  "gpu": false
+}

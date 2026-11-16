@@ -1,0 +1,14 @@
+{
+  "files": {
+    "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/master/files.stone",
+    "sha256": "42a7011e2a5e9bf21af27dcaa012bb4507edbb576df74cba95e89ca3f4c48f18"
+  },
+  "users": {
+    "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/master/users.stone",
+    "sha256": "075b65b78af85129a57d473f61681268caf869cf9cf4ce0a180f1d7d72f6369f"
+  },
+  "auth": {
+    "url": "https://raw.githubusercontent.com/dropbox/dropbox-api-spec/master/auth.stone",
+    "sha256": "493c058cf7952690a1ac03905781995140b27e33c8d11a5dd0fefdd3d1fe7fb4"
+  }
+}

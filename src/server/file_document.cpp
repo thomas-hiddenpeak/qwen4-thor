@@ -244,11 +244,15 @@ FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
   if (bytes.starts_with("\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"))
     return FileDocumentFormat::kOfficeBinary;
   if (bytes.starts_with("{\\rtf")) return FileDocumentFormat::kRtf;
+  if (IsVideoContainer(bytes)) return FileDocumentFormat::kVideo;
   const auto dot = input.filename.rfind('.');
   const auto extension =
       dot == input.filename.npos ? "" : http::Lower(input.filename.substr(dot));
   const auto mime = http::Lower(http::Trim(
       std::string_view(input.mime_type).substr(0, input.mime_type.find(';'))));
+  if (extension == ".mp4" || extension == ".m4v" || extension == ".webm" ||
+      mime.starts_with("video/"))
+    return FileDocumentFormat::kVideo;
   if (extension == ".pdf" || mime == "application/pdf")
     return FileDocumentFormat::kPdf;
   if (extension == ".docx" || extension == ".docm" || extension == ".dotx" ||
@@ -256,9 +260,9 @@ FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
       extension == ".potx" || extension == ".potm" || extension == ".ppsx" ||
       extension == ".ppsm" || extension == ".ppam" || extension == ".xlsx" ||
       extension == ".xlsm" || extension == ".xltx" || extension == ".xltm" ||
-      extension == ".xlam" || extension == ".xlsb" ||
-      extension == ".odt" || extension == ".odp" || extension == ".ods" ||
-      extension == ".pages" || extension == ".key" || extension == ".numbers" ||
+      extension == ".xlam" || extension == ".xlsb" || extension == ".odt" ||
+      extension == ".odp" || extension == ".ods" || extension == ".pages" ||
+      extension == ".key" || extension == ".numbers" ||
       mime ==
           "application/"
           "vnd.openxmlformats-officedocument.wordprocessingml.document" ||

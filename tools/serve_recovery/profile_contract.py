@@ -138,6 +138,10 @@ def qualification(name, selected, fixed, capability, observed, memory, evidence)
     fixed = identity(fixed)
     configuration(selected, observed)
     normalized = capabilities(capability, selected['mtp_enabled'])
+    if 'allow_media' in selected:
+        ledger.require(capability['runtime'].get('media_enabled') is
+                       selected['allow_media'],
+                       'qualified media capability differs')
     ledger.require(capability.get('protocol_source_sha256') ==
                    fixed['protocol_sha256'], 'qualified protocol observation differs')
     ledger.require(type(evidence) is str and ledger.HASH.fullmatch(evidence),

@@ -81,6 +81,99 @@ class McpPolicyPackage(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'identity differs'):
             pkg.mcp_policy_binding(BINARY, path, original)
 
+    def test_native_provider_keeps_scope_authority_and_needs_no_external_mcp_url(self):
+        binary, release, model = self.native_fixture()
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=[dict(kind='connector_id',
+            id='connector_googlecalendar', transport='provider',
+            generation='calendar-private-generation', scopes=['client:owner'])])
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 1)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('calendar-private-generation', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        route = pkg.read(target/'mcp-policy.json')['targets'][0]
+        self.assertEqual(route['transport'], 'provider')
+        self.assertEqual(route['scopes'], ['client:owner'])
+        self.assertNotIn('url', route)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
+    def test_native_google_provider_set_is_sealed_with_separate_scopes(self):
+        binary, release, model = self.native_fixture()
+        ids = ['connector_googlecalendar', 'connector_googledrive',
+               'connector_gmail']
+        routes = [dict(kind='connector_id', id=provider, transport='provider',
+                       generation='private-' + str(index),
+                       scopes=['client:provider-' + str(index)])
+                  for index, provider in enumerate(ids)]
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=routes)
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 3)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('private-', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'google-package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        self.assertEqual(pkg.read(target/'mcp-policy.json')['targets'], routes)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
+    def test_native_graph_provider_set_is_sealed_with_separate_scopes(self):
+        binary, release, model = self.native_fixture()
+        ids = ['connector_outlookcalendar', 'connector_outlookemail',
+               'connector_microsoftteams', 'connector_sharepoint']
+        routes = [dict(kind='connector_id', id=provider, transport='provider',
+                       generation='graph-private-' + str(index),
+                       scopes=['client:graph-' + str(index)])
+                  for index, provider in enumerate(ids)]
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=routes)
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 4)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('graph-private-', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'graph-package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        self.assertEqual(pkg.read(target/'mcp-policy.json')['targets'], routes)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
+    def test_native_all_eight_providers_seal_without_external_mcp_process(self):
+        binary, release, model = self.native_fixture()
+        ids = ['connector_googlecalendar', 'connector_googledrive',
+               'connector_gmail', 'connector_outlookcalendar',
+               'connector_outlookemail', 'connector_microsoftteams',
+               'connector_sharepoint', 'connector_dropbox']
+        routes = [dict(kind='connector_id', id=provider, transport='provider',
+                       generation='native-private-' + str(index),
+                       scopes=['client:native-' + str(index)])
+                  for index, provider in enumerate(ids)]
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=routes)
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 8)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('native-private-', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'native-package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        self.assertEqual(pkg.read(target/'mcp-policy.json')['targets'], routes)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
     def test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes(self):
         binary, release, model = self.native_fixture()
         policy = self.policy()

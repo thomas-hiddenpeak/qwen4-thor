@@ -1,0 +1,20 @@
+{
+  "CMakeLists.txt": "d437d0fec1982cd45cfb34c35217a0827835b22215dd7a6ff277408d30e92899",
+  "cmake/ChatProtocolIdentity.cmake": "630d2966457e44e162f8e0ca03bd93c85ddb7d4f8cb15d4ff8fc485274ec9044",
+  "cmake/HostTestSources.cmake": "5f553bc98a54b25686cc42477c09a36984e6e13865135a9f78175e3fbfe86ff2",
+  "include/q4t/server/mcp_transport.h": "39d9d9dcf89bbd4dad8b741ddc7d875a72d393f80adc931cd91817e7443fd41f",
+  "src/server/chat_capabilities.cpp": "e763756e89cafa496361afbd2cbc97f7639f04975af7fe095e2840608a1c4b88",
+  "src/server/mcp_http.cpp": "f647ab1ff780a1eed27c67fc267f1951219b6586e35a830dfffce79e7e4ebf7d",
+  "src/server/mcp_policy.cpp": "4f3485e0055f89fe0bbf1c8b77656697431017bec1740ef137e8a6ed0fbbe467",
+  "src/server/mcp_provider.cpp": "610a4871c6e95d531c8683c40b6ea30a4021c1d6f5b673079315fa67d65c2e4f",
+  "src/server/mcp_provider_calendar.cpp": "9aa182a60351cf49d74e501656bea0dd514d7b1d3698aa11a52e6201c1d85f80",
+  "src/server/mcp_provider_internal.h": "f892ea8235315f5a3f89ec20dfae34b011ad7e8b5fd4a1c38c2431446cf96fb2",
+  "src/server/mcp_provider_time.cpp": "fa775232eecf42d5ffb18d1b441b880ff731446f65e547ff8a740b549f24c421",
+  "src/server/mcp_transport.cpp": "7499d77f2ba98dc7d55ee8b2143522ffaeb5e61751fcdd7f7f7dcbbf9ccda99a",
+  "tests/server_chat_capabilities_test.cpp": "c25edcbbe5a8db96e44c6510707ec2498cfb3e2fe6b72b74db04032913bb6a5f",
+  "tests/server_mcp_provider_test.cpp": "cac017391f252d6f0c4936eb92b00d1ae9b8228b00537095869e5acbd32eb973",
+  "tools/serve_audit/inventory.json": "fa0122bd18c29e12c2adb7bd3451456e4c0fda0a74bfb4c0cb08a80362902c23",
+  "tools/serve_recovery/profile_migration.py": "e9d9df763d5556c20b08f486378361745dae0240feda7c1e008d1f3658830892",
+  "tools/serve_recovery/test_mcp_recovery_contract.py": "78fde77518890e204e000ddde77b6a62f7d359608ae887e02d34b33b4a25bdf4",
+  "tools/serve_responses/test_mcp_policy.py": "7e3a321449243cfa8243a1bec67e305647cea84851015126b739c8059ae67470"
+}

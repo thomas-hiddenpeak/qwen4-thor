@@ -1,0 +1,9 @@
+/usr/bin/ld: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_common.cpp.o: in function `q4t::server::mcp_detail::provider_detail::Base64[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >)':
+mcp_provider_common.cpp:(.text+0x144c): undefined reference to `EVP_EncodeBlock'
+/usr/bin/ld: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_common.cpp.o: in function `q4t::server::mcp_detail::provider_detail::DecodeBase64Url(std::basic_string_view<char, std::char_traits<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)':
+mcp_provider_common.cpp:(.text+0x19c0): undefined reference to `EVP_DecodeBlock'
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:6056: q4t_host_tests] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

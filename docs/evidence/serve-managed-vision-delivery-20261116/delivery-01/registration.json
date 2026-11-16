@@ -1,0 +1,75 @@
+{
+  "format": "q4t-version-registration-v1",
+  "root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/package-01/bundle",
+    "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce"
+  },
+  "registry": {
+    "format": "q4t-version-registry-v1",
+    "cycle_id": "30d1e366-7e48-4c74-abd7-86c169a95f74",
+    "root_manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+    "payloads": {
+      "primary": {
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "binding_sha256": "c4beff1b88e19d626c6254f64b4814c21b41246179e7203d9649b675467052c3"
+      },
+      "fallback": {
+        "manifest_sha256": "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a",
+        "binding_sha256": "68ee941686e98c90380a723da631e2257099c611364d4d117cea3fd72fcb29e7"
+      }
+    },
+    "compatibility_sha256": "f92993505f8083062f69cbadd7d02dbc5f384c7ad7f550211675e51452f45bc7",
+    "qualification_sha256": "20f03585c3a43cd510f8ceacc03ba379aa32a501a2738b6ab4589eb56fd48ee1"
+  },
+  "bootstrap_boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+  "fallback_acceptance": {
+    "release": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/retained-business-01/service-release.json",
+      "sha256": "f6989b7a19146a5958c6564d9a449764121af9143a8fa4d7b173e87f6f48447f"
+    },
+    "decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/retained-business-01/decision.json",
+      "sha256": "fd25d90a014610377c4fc8969d5c9412636c740ae0d1960adacfd9e53f47bcb9"
+    }
+  },
+  "payloads": {
+    "primary": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/package-01/bundle",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce"
+      },
+      "binding": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "protocol_sha256": "dd079acaa627420a8c552f71a70d7a942dbd63fe842d93a8df14e7003256f309",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+          "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+        },
+        "profile_registry_sha256": "b5bf5064dcbd98082f6125349c0018740548e43194f7eade1228f1f87f868d96",
+        "controller_sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
+        "ingress_sha256": "8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a"
+      }
+    },
+    "fallback": {
+      "descriptor": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/retained-01/bundle",
+        "manifest_sha256": "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a"
+      },
+      "binding": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "protocol_sha256": "dd079acaa627420a8c552f71a70d7a942dbd63fe842d93a8df14e7003256f309",
+        "port": 18162,
+        "operations_port": 18163,
+        "profile_capacities": {
+          "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+          "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+        },
+        "profile_registry_sha256": "b5bf5064dcbd98082f6125349c0018740548e43194f7eade1228f1f87f868d96",
+        "controller_sha256": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+        "ingress_sha256": "8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a"
+      }
+    }
+  }
+}

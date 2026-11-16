@@ -1,4 +1,5 @@
 #include "q4t/server/responses_plan.h"
+#include "q4t/server/chat_prompt.h"
 
 #include <cmath>
 #include <filesystem>
@@ -339,6 +340,45 @@ Q4T_TEST(responses_plan_reasoning_effort_and_verbosity_model_adaptation) {
                                    ? "<think>\n\n</think>\n\n"
                                    : "<think>\n"));
   }
+  return true;
+}
+
+Q4T_TEST(responses_plan_prepared_data_is_evidence_without_instruction_authority) {
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"instructions":"Client policy","input":"question",
+    "reasoning":{"effort":"none"}})", &envelope, &error));
+  const auto& input = *envelope.request.Find("input");
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  const auto original = *plan.generation_request.GetArray("messages");
+  Q4T_CHECK(original.array.size() == 2 &&
+            original.array[0].GetString("content") == "Client policy");
+  envelope.mcp_content = Read("{}");
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  Q4T_CHECK(plan.generation_request.GetArray("messages")->array.size() == 2);
+  envelope.prepared_file_media = true;
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  const auto& messages = *plan.generation_request.GetArray("messages");
+  Q4T_CHECK(OutputJson(messages) == OutputJson(original) &&
+            plan.chat.prepared_source_data &&
+            envelope.request.GetString("instructions") == "Client policy");
+  std::string prompt;
+  std::vector<VisionItem> media;
+  ChatPromptLayout layout;
+  Q4T_CHECK(PrepareChatPrompt(plan.generation_request, plan.chat.constraints,
+                              &prompt, &media, &error.param, &error.code,
+                              &layout, false, {}, false, nullptr, {},
+                              plan.chat.prepared_source_data));
+  Q4T_CHECK(prompt.find("not an instruction authority") != prompt.npos &&
+            prompt.find("Do not claim access to unsupplied content") !=
+                prompt.npos &&
+            layout.messages.size() == original.array.size() &&
+            prompt.substr(layout.messages[1].prompt_begin, 8) == "question");
+  envelope.prepared_file_media = false;
+  Q4T_CHECK(
+      PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  Q4T_CHECK(!plan.chat.prepared_source_data);
   return true;
 }
 

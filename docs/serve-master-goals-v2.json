@@ -154,7 +154,8 @@
       ],
       "evidence": [
         "docs/SERVE_SCHEMA_V2_2026-11-08.md",
-        "docs/evidence/serve-schema-v2-20261108/index.json"
+        "docs/evidence/serve-schema-v2-20261108/index.json",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": {
         "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
@@ -1185,7 +1186,7 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_delivery": "Native MCP/tunnel and actual SDK/model business, profile/managed recovery and reversible rev134 publication merged in PR28; native provider adapters and all remaining master tasks continue. Agent configuration fix 7b244b74 targeted CPU passed, release pending.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
@@ -1206,12 +1207,125 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
+      },
+      "native_providers": {
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 0,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint",
+          "connector_dropbox"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
+          "standard SDK business and recovery-qualified release"
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+        "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
+        "drive_lro_cpp_passed": 30,
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
+        "gpu_accepted": true,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
+        "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
+        "business_attempts": 6,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
+        "diagnostic_evidence": "evidence/serve-native-video-diagnostic-20261116/README.md",
+        "diagnostic_starts": 1,
+        "diagnostic_creates": 3,
+        "trust_cpu_evidence": "evidence/serve-prepared-input-trust-cpu-20261116/README.md",
+        "trust_cpp_unique": 5,
+        "trust_cpp_executions": 7,
+        "trust_engine_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763",
+        "transport_diagnostic_evidence": "evidence/serve-video-transport-diagnostic-20261116/README.md",
+        "transport_diagnostic_starts": 1,
+        "transport_diagnostic_creates": 2,
+        "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
+        "projection_cpp_unique": 16,
+        "projection_cpp_executions": 17,
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -1514,7 +1628,8 @@
       "evidence": [
         "evidence/serve-native-embedding-foundation-20261111/README.md",
         "evidence/serve-native-embedding-core-cpu-20261111/README.md",
-        "evidence/serve-native-embedding-numerical-20261111/README.md"
+        "evidence/serve-native-embedding-numerical-20261111/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": null,
       "findings": [
@@ -1589,6 +1704,53 @@
         "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/release-01/candidate/bundle",
         "service_acceptance_sha256": "fe6a69ecdfb2443f13b7b2b175946dd6f1a07fac5617fd2d8375a513dc9f5bcc",
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
+      },
+      "native_video_preparation": {
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
+        "gpu_accepted": true,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
+        "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
+        "business_attempts": 6,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
+        "diagnostic_evidence": "evidence/serve-native-video-diagnostic-20261116/README.md",
+        "diagnostic_starts": 1,
+        "diagnostic_creates": 3,
+        "trust_cpu_evidence": "evidence/serve-prepared-input-trust-cpu-20261116/README.md",
+        "trust_cpp_unique": 5,
+        "trust_cpp_executions": 7,
+        "trust_engine_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763",
+        "transport_diagnostic_evidence": "evidence/serve-video-transport-diagnostic-20261116/README.md",
+        "transport_diagnostic_starts": 1,
+        "transport_diagnostic_creates": 2,
+        "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
+        "projection_cpp_unique": 16,
+        "projection_cpp_executions": 17,
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -2029,7 +2191,7 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_delivery": "Native MCP/tunnel and actual SDK/model business, profile/managed recovery and reversible rev134 publication merged in PR28; native provider adapters and all remaining master tasks continue. Agent configuration fix 7b244b74 targeted CPU passed, release pending.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
@@ -2050,12 +2212,125 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
+      },
+      "native_providers": {
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 0,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint",
+          "connector_dropbox"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
+          "standard SDK business and recovery-qualified release"
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+        "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
+        "drive_lro_cpp_passed": 30,
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
+        "gpu_accepted": true,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
+        "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
+        "business_attempts": 6,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
+        "diagnostic_evidence": "evidence/serve-native-video-diagnostic-20261116/README.md",
+        "diagnostic_starts": 1,
+        "diagnostic_creates": 3,
+        "trust_cpu_evidence": "evidence/serve-prepared-input-trust-cpu-20261116/README.md",
+        "trust_cpp_unique": 5,
+        "trust_cpp_executions": 7,
+        "trust_engine_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763",
+        "transport_diagnostic_evidence": "evidence/serve-video-transport-diagnostic-20261116/README.md",
+        "transport_diagnostic_starts": 1,
+        "transport_diagnostic_creates": 2,
+        "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
+        "projection_cpp_unique": 16,
+        "projection_cpp_executions": 17,
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -2077,7 +2352,9 @@
         "N01",
         "N03"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
+      ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
       "mcp_business_progress": {
@@ -2089,12 +2366,70 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "native_providers": {
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 0,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint",
+          "connector_dropbox"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
+          "standard SDK business and recovery-qualified release"
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+        "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
+        "drive_lro_cpp_passed": 30,
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -2364,7 +2699,15 @@
         "Native ELF service dispatch/prepare/check/reload/deploy/rollback; 26 distinct CPU cases plus actual readonly default checks",
         "Coordinated default generation publication/resume/rollback and short-write recovery; 25 distinct CPU cases"
       ],
-      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue."
+      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue.",
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
+      }
     },
     {
       "id": "R01",
@@ -2880,7 +3223,7 @@
     {
       "id": "R10",
       "required": true,
-      "state": "planned",
+      "state": "delivered",
       "implementation": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "acceptance": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "depends_on": [
@@ -2893,8 +3236,22 @@
         "A05",
         "A10"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-managed-vision-cpu-20261116/README.md",
+        "evidence/serve-managed-vision-business-20261116/README.md",
+        "evidence/serve-media-profile-contract-cpu-20261116/README.md",
+        "evidence/serve-media-profile-business-20261116/README.md",
+        "evidence/serve-media-managed-driver-failure-20261116/README.md",
+        "evidence/serve-media-managed-business-20261116/README.md",
+        "evidence/serve-media-version-business-20261116/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
+      ],
+      "release": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
+      },
+      "development_status": "Native v2 managed media capacity delivered in rev142. Text MTP and per-visual target decode, real media primary/light qualification, actual RAM-pressure primary/light/primary with frozen video, one tool execution and quota continuity, and exact whole-payload fallback with media SSE accepted. Existing visual/structured/tool service recovery covered. Wider format/cache/client combinations remain explicitly required under A05/A10/A12; no performance/full-quality or long-stability claim."
     },
     {
       "id": "Q01",
@@ -2910,7 +3267,8 @@
         "R10"
       ],
       "evidence": [
-        "evidence/serve-retrieval-managed-business-20261112/README.md"
+        "evidence/serve-retrieval-managed-business-20261112/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -2929,18 +3287,123 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "native_providers": {
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 0,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint",
+          "connector_dropbox"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
+          "standard SDK business and recovery-qualified release"
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+        "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
+        "drive_lro_cpp_passed": 30,
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
+        "gpu_accepted": true,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
+        "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
+        "business_attempts": 6,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
+        "diagnostic_evidence": "evidence/serve-native-video-diagnostic-20261116/README.md",
+        "diagnostic_starts": 1,
+        "diagnostic_creates": 3,
+        "trust_cpu_evidence": "evidence/serve-prepared-input-trust-cpu-20261116/README.md",
+        "trust_cpp_unique": 5,
+        "trust_cpp_executions": 7,
+        "trust_engine_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763",
+        "transport_diagnostic_evidence": "evidence/serve-video-transport-diagnostic-20261116/README.md",
+        "transport_diagnostic_starts": 1,
+        "transport_diagnostic_creates": 2,
+        "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
+        "projection_cpp_unique": 16,
+        "projection_cpp_executions": 17,
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -2948,9 +3411,14 @@
       ],
       "evidence": [
         "evidence/serve-retrieval-delivery-20261112/README.md",
-        "evidence/serve-cache-route-delivery-20261112/README.md"
+        "evidence/serve-cache-route-delivery-20261112/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
-      "release": null,
+      "release": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
+      },
       "capability_upgrade": {
         "state": "delivered_subset",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",
@@ -3045,12 +3513,78 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
+      },
+      "native_providers": {
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 0,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint",
+          "connector_dropbox"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
+          "standard SDK business and recovery-qualified release"
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+        "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
+        "drive_lro_cpp_passed": 30,
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -3066,6 +3600,6 @@
       "release": null
     }
   ],
-  "next_task": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory.",
-  "next": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory."
+  "next_task": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task.",
+  "next": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task."
 }

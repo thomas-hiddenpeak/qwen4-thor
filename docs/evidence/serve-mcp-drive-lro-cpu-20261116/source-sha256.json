@@ -1,0 +1,11 @@
+{
+  "CMakeLists.txt": "d13f96af2835c5d878a580102bcdf104d7eeab278d5df1f50fab3cd3ac12314c",
+  "cmake/HostTestSources.cmake": "f23bbdbf6140c8dfae4de770108d508a0255619b251b6a20df4acdf0a5310909",
+  "cmake/ChatProtocolIdentity.cmake": "330ba4647b226d6b2a0d56f21632e2f271280313840f2376078382deea74e65d",
+  "src/server/mcp_provider.cpp": "2407d26e01ea9c57b04410b6b932a48ff4c0ae3675c05be8227b493c4fe4128d",
+  "src/server/mcp_provider_drive.cpp": "a8aaa3e73251ebdfc92da0c925d85b9d1f0ccd4349952d57b98fc10b7854b435",
+  "src/server/mcp_provider_drive_lro.cpp": "7e228fc060d32c83ce840ed7c42da977d1b210d66339a36793725b9f57bffbf2",
+  "src/server/mcp_provider_internal.h": "70b5b1a1e9ce41e46df89ba6c20658f0620f83b35ca9413175a2b109efb28e0c",
+  "tests/server_mcp_provider_test.cpp": "29fb05a607098cd5fa0bfad814e8ce14194cac653573e829c8528b95673e725b",
+  "tools/serve_audit/inventory.json": "edad9d32eed0ea7d59066fc2c32b1fcca499c64c18acdac087bc7ff5cb7d7457"
+}

@@ -1,0 +1,65 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp:86:34: error: no matching function for call to ‘from_chars(const char*&, char*, size_t*)’
+   86 |                   std::from_chars(begin, request.data() + end, &length);
+      |                   ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp:7:
+/usr/include/c++/14/charconv:659:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, float&, chars_format)’
+  659 |   from_chars(const char* __first, const char* __last, float& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:659:62: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘float&’
+  659 |   from_chars(const char* __first, const char* __last, float& __value,
+      |                                                       ~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:663:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, double&, chars_format)’
+  663 |   from_chars(const char* __first, const char* __last, double& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:663:63: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘double&’
+  663 |   from_chars(const char* __first, const char* __last, double& __value,
+      |                                                       ~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:667:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, long double&, chars_format)’
+  667 |   from_chars(const char* __first, const char* __last, long double& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:667:68: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘long double&’
+  667 |   from_chars(const char* __first, const char* __last, long double& __value,
+      |                                                       ~~~~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:684:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, _Float16&, chars_format)’
+  684 |   from_chars(const char* __first, const char* __last, _Float16& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:684:65: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘_Float16&’
+  684 |   from_chars(const char* __first, const char* __last, _Float16& __value,
+      |                                                       ~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:698:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, _Float32&, chars_format)’
+  698 |   from_chars(const char* __first, const char* __last, _Float32& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:698:65: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘_Float32&’
+  698 |   from_chars(const char* __first, const char* __last, _Float32& __value,
+      |                                                       ~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:711:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, _Float64&, chars_format)’
+  711 |   from_chars(const char* __first, const char* __last, _Float64& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:711:65: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘_Float64&’
+  711 |   from_chars(const char* __first, const char* __last, _Float64& __value,
+      |                                                       ~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:724:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, _Float128&, chars_format)’
+  724 |   from_chars(const char* __first, const char* __last, _Float128& __value,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:724:66: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘_Float128&’
+  724 |   from_chars(const char* __first, const char* __last, _Float128& __value,
+      |                                                       ~~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:759:3: note: candidate: ‘std::from_chars_result std::from_chars(const char*, const char*, __gnu_cxx::__bfloat16_t&, chars_format)’
+  759 |   from_chars(const char* __first, const char* __last,
+      |   ^~~~~~~~~~
+/usr/include/c++/14/charconv:760:40: note:   no known conversion for argument 3 from ‘size_t*’ {aka ‘long unsigned int*’} to ‘__gnu_cxx::__bfloat16_t&’ {aka ‘__bf16&’}
+  760 |              __gnu_cxx::__bfloat16_t & __value,
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/usr/include/c++/14/charconv:552:5: note: candidate: ‘template<class _Tp, typename std::enable_if<std::__or_<std::__or_<std::__is_one_of<typename std::remove_cv< <template-parameter-1-1> >::type, signed char, short int, int, long int, long long int>, std::__is_one_of<typename std::remove_cv< <template-parameter-1-1> >::type, unsigned char, short unsigned int, unsigned int, long unsigned int, long long unsigned int> >, std::is_same<char, typename std::remove_cv< <template-parameter-1-1> >::type> >::value, int>::type <anonymous> > constexpr std::from_chars_result std::from_chars(const char*, const char*, _Tp&, int)’
+  552 |     from_chars(const char* __first, const char* __last, _Tp& __value,
+      |     ^~~~~~~~~~
+/usr/include/c++/14/charconv:552:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/14/charconv:550:78: error: no type named ‘type’ in ‘struct std::enable_if<false, int>’
+  550 |                              is_same<char, remove_cv_t<_Tp>>>::value, int> = 0>
+      |                                                                              ^
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1507: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

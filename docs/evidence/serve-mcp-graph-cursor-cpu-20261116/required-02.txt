@@ -1,0 +1,1 @@
+mcp_graph_sealed_cursor_page_limit_survives_legacy_upgrade

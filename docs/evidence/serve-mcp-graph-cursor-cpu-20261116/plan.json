@@ -1,0 +1,18 @@
+{
+  "scope": "Graph native continuation compatibility with original URL and bounded authenticated cursor",
+  "contracts": [
+    "Normalize equivalent percent/OData path syntax without changing opaque IDs",
+    "Authenticated response may issue canonical me/users/default calendar aliases; raw caller URLs cannot widen authority",
+    "Reuse existing native AES-256-GCM and SHA256; bind cursor to private endpoint authority, original tool/arguments/resource route; bounded one-hour expiry",
+    "Forward complete original URL once; no automatic pagination/retry",
+    "Keep mail metadata projection, explicit page limit and calendar window; validate opaque continuation via binding when query moved into skiptoken",
+    "Crypto/network/provider failure affects only tool request; core is not restarted"
+  ],
+  "verification": "targeted CPU and necessary builds, no GPU/accounts/full model matrix",
+  "sources": [
+    "https://learn.microsoft.com/en-us/graph/paging",
+    "https://learn.microsoft.com/en-us/graph/query-parameters"
+  ],
+  "master_complete": false,
+  "default_changed": false
+}

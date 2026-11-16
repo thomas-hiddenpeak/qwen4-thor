@@ -310,12 +310,29 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_input.cpp
   src/server/file_image.cpp
   src/server/file_webp.cpp
+  src/server/file_video.cpp
+  src/server/file_video_worker.cpp
+  src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
+  src/server/mcp_provider.cpp
+  src/server/mcp_provider_calendar.cpp
+  src/server/mcp_provider_time.cpp
+  src/server/mcp_provider_common.cpp
+  src/server/mcp_provider_drive.cpp
+  src/server/mcp_provider_drive_lro.cpp
+  src/server/mcp_provider_gmail.cpp
+  src/server/mcp_provider_mail.cpp
+  src/server/mcp_provider_graph.cpp
+  src/server/mcp_provider_graph_cursor.cpp
+  src/server/mcp_provider_outlook.cpp
+  src/server/mcp_provider_teams.cpp
+  src/server/mcp_provider_sharepoint.cpp
+  src/server/mcp_provider_dropbox.cpp
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp

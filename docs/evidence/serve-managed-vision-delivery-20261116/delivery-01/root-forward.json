@@ -1,0 +1,26 @@
+{
+  "label": "root-forward",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/package-01/bundle/engine/q4t",
+    "service",
+    "publish",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--default-root",
+    "/home/rm01/models/dev/qwen4-thor/build",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/package-01/bundle",
+    "--manifest-sha256",
+    "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+    "--service-release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/delivery-01/primary-service.release.json",
+    "--expected-manifest-sha256",
+    "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a",
+    "--expected-revision",
+    "140",
+    "--request-id",
+    "d456cd95-e4b0-46bd-8651-4ea1a841db4f"
+  ],
+  "returncode": 0,
+  "seconds": 6.075544549617916
+}

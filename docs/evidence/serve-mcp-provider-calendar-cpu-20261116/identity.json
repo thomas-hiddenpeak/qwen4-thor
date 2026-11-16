@@ -1,0 +1,16 @@
+{
+  "base_commit": "2cbfaef2638f5d644f7082fccb245699ca81d9a8",
+  "engine_sha256": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+  "engine_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-providers-20261116/candidate-01/q4t",
+  "compiled_manifest_sha256": "90c4f9e6a7b3b290ba083bb140a2b0ec6dbe8bc35991a435142cc35c911c53e2",
+  "targeted_cpp_unique_passed": 28,
+  "cpp_executions": 44,
+  "python_unique_passed": 14,
+  "python_executions": 15,
+  "source_mutation_checks": 7,
+  "source_anchors": 692,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "live_provider_business": false,
+  "released": false
+}

@@ -1,0 +1,25 @@
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp: In function ‘q4t::server::video_detail::Failure q4t::server::{anonymous}::Decode(Runtime&, const q4t::server::video_detail::Request&, const std::string&, q4t::server::FileVideoPixels*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp:353:38: error: missing initializer for member ‘q4t::server::{anonymous}::Pipeline::source_mutex’ [-Werror=missing-field-initializers]
+  353 |   Pipeline state{api, request, source};
+      |                                      ^
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp: In function ‘int q4t::server::{anonymous}::Run(int, char**, bool)’:
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp:526:5: error: reference to ‘Frame’ is ambiguous
+  526 |     Frame wire{frame.png.size(), frame.timestamp_ns, frame.source_index};
+      |     ^~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp:13:
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_protocol.h:21:8: note: candidates are: ‘struct q4t::server::video_detail::Frame’
+   21 | struct Frame {
+      |        ^~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp:14:
+/home/rm01/models/dev/qwen4-thor/src/server/object_protocol.h:21:8: note:                 ‘struct q4t::server::object_detail::Frame’
+   21 | struct Frame {
+      |        ^~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp:527:34: error: ‘wire’ was not declared in this scope
+  527 |     if (!detail::WorkerTransfer(&wire, sizeof(wire), true) ||
+      |                                  ^~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1283: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

@@ -1,0 +1,16 @@
+{
+  "reason": "Repair known truncated container lengths; affected real decodes and preflight/limits only",
+  "names": [
+    "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+    "file_video_actual_vp8_webm_preserves_colors_order_and_pts",
+    "file_video_actual_vp9_webm_preserves_colors_order_and_pts",
+    "file_video_preflight_rejects_bad_scope_source_cancel_and_deadline",
+    "file_video_actual_limits_reject_without_publishing_partial_frames",
+    "file_video_corrupt_container_is_request_local_and_reaped"
+  ],
+  "reuse": "Other 6 CPU cases from cpu-worker-01",
+  "source_sha256": {
+    "src/server/file_video.cpp": "bb620eed8cf7f5e65259fa405be59be1ca3b260b2731003deb83c60671b62a21",
+    "tests/server_file_video_test.cpp": "56e8650375095960e48900eaee31e26ee2291f456441aaaf5743dfec34432fdc"
+  }
+}

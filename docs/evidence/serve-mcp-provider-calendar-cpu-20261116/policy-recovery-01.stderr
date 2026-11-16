@@ -1,0 +1,36 @@
+test_explicit_mcp_upgrade_preserves_history_and_cannot_hide_feature_loss (tools.serve_recovery.test_mcp_recovery_contract.McpMigrationTests.test_explicit_mcp_upgrade_preserves_history_and_cannot_hide_feature_loss) ... ok
+test_mcp_outputs_require_approval_isolation_and_complete_items (tools.serve_recovery.test_mcp_recovery_contract.McpMigrationTests.test_mcp_outputs_require_approval_isolation_and_complete_items) ... ok
+test_recovery_keeps_mcp_contract_and_original_evidence (tools.serve_recovery.test_mcp_recovery_contract.McpMigrationTests.test_recovery_keeps_mcp_contract_and_original_evidence) ... ok
+test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery (tools.serve_recovery.test_mcp_recovery_contract.PrivatePolicyRecoveryTests.test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery) ... ok
+test_provider_capability_types_and_catalog_are_not_relaxed (tools.serve_recovery.test_mcp_recovery_contract.ProviderMigrationTests.test_provider_capability_types_and_catalog_are_not_relaxed) ... ok
+test_provider_recovery_requires_same_exact_provider_set (tools.serve_recovery.test_mcp_recovery_contract.ProviderMigrationTests.test_provider_recovery_requires_same_exact_provider_set) ... ERROR
+test_provider_upgrade_is_explicit_and_preserves_original_evidence (tools.serve_recovery.test_mcp_recovery_contract.ProviderMigrationTests.test_provider_upgrade_is_explicit_and_preserves_original_evidence) ... ok
+test_actual_native_checker_and_package_binding_redact_private_routes (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_actual_native_checker_and_package_binding_redact_private_routes) ... ok
+test_invalid_and_changed_policy_never_fall_back (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_invalid_and_changed_policy_never_fall_back) ... ok
+test_native_provider_keeps_scope_authority_and_needs_no_external_mcp_url (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_native_provider_keeps_scope_authority_and_needs_no_external_mcp_url) ... ok
+test_native_tunnel_without_url_survives_private_package_binding (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_native_tunnel_without_url_survives_private_package_binding) ... ok
+test_old_engine_cannot_claim_mcp_policy_support (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_old_engine_cannot_claim_mcp_policy_support) ... ok
+test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes) ... ok
+test_unconfigured_package_preserves_existing_startup (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_unconfigured_package_preserves_existing_startup) ... ok
+
+======================================================================
+ERROR: test_provider_recovery_requires_same_exact_provider_set (tools.serve_recovery.test_mcp_recovery_contract.ProviderMigrationTests.test_provider_recovery_requires_same_exact_provider_set)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_mcp_recovery_contract.py", line 156, in test_provider_recovery_requires_same_exact_provider_set
+    migration.permit(base.old, base.new, old, new, base.config, base.config,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 153, in permit
+    first = observations(previous, previous_evidence)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 141, in observations
+    profile_evidence.validate(item['record'], registry, name, item['sha256'])
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 69, in validate
+    ledger.require(value['format'] == FORMAT and value['profile'] == name and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: profile evidence identity differs
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.954s
+
+FAILED (errors=1)

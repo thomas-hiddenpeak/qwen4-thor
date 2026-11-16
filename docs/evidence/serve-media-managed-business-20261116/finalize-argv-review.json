@@ -1,0 +1,19 @@
+{
+  "actual": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-managed-vision-20261116/managed_media.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-managed-vision-20261116/managed-02/plan.json"
+  ],
+  "planned": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/managed_media.py",
+    "run",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/managed-02/plan.json"
+  ],
+  "reason": "Original offline finalizer compared equivalent relative/absolute interpreter and script paths as raw strings. Preserve raw arrays, require identical flags and resolved executable/script/plan identities; no GPU repetition."
+}

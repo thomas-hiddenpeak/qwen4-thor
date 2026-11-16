@@ -1,0 +1,174 @@
+{
+  "status": "FAILED_TOOL_VIDEO_SEMANTIC_REFUSAL",
+  "source_head": "057e35fbba8d6f4df15ddb16d6019e9915ce62bc",
+  "binary_sha256": "e5e67af8772f683b2b9b601cfa1a64141fe89902da1bab93fb04078927060c64",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 39
+  },
+  "seconds": 45.93429920217022,
+  "passed": [
+    "direct uploaded MP4 correct red-to-blue",
+    "inline VP8 SSE correct red-to-blue",
+    "input count equals generation usage 609",
+    "actual function call and VP9 upload"
+  ],
+  "failed": "tool VP9 follow returned refusal instead of color answer",
+  "not_run": [
+    "MCP video",
+    "frozen replay",
+    "bad video",
+    "ordinary text after error"
+  ],
+  "nvml_queries": 45,
+  "nvml_all_ok": true,
+  "conflicts": [],
+  "frames": [
+    {
+      "sha256": "4e949328719f3e50f305aa8e62165965b863541ee09f0427540e8ff5c284b713",
+      "timestamp_ns": 0,
+      "source_index": 0,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        252,
+        0,
+        0
+      ]
+    },
+    {
+      "sha256": "4e949328719f3e50f305aa8e62165965b863541ee09f0427540e8ff5c284b713",
+      "timestamp_ns": 1000000000,
+      "source_index": 2,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        252,
+        0,
+        0
+      ]
+    },
+    {
+      "sha256": "4e949328719f3e50f305aa8e62165965b863541ee09f0427540e8ff5c284b713",
+      "timestamp_ns": 2000000000,
+      "source_index": 4,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        252,
+        0,
+        0
+      ]
+    },
+    {
+      "sha256": "67bf99974dcca820c30aec6187e985ec007969fc3d5f2be598adadf0c59331c4",
+      "timestamp_ns": 3000000000,
+      "source_index": 6,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        0,
+        0,
+        250
+      ]
+    },
+    {
+      "sha256": "67bf99974dcca820c30aec6187e985ec007969fc3d5f2be598adadf0c59331c4",
+      "timestamp_ns": 3500000000,
+      "source_index": 7,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        0,
+        0,
+        250
+      ]
+    },
+    {
+      "sha256": "67bf99974dcca820c30aec6187e985ec007969fc3d5f2be598adadf0c59331c4",
+      "timestamp_ns": 4500000000,
+      "source_index": 9,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        0,
+        0,
+        250
+      ]
+    },
+    {
+      "sha256": "67bf99974dcca820c30aec6187e985ec007969fc3d5f2be598adadf0c59331c4",
+      "timestamp_ns": 5500000000,
+      "source_index": 11,
+      "size": [
+        96,
+        64
+      ],
+      "center_rgb": [
+        0,
+        0,
+        250
+      ]
+    }
+  ],
+  "cleanup": {
+    "owned": {
+      "3628032": {
+        "state": "R",
+        "ppid": 3628022,
+        "pgid": 3628022,
+        "start_ticks": 299158703,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--operations-port",
+          "18187",
+          "--no-mtp",
+          "--allow-media",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/business-01/objects",
+          "--mcp-policy-file",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/business-01/mcp-policy.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "default_unchanged": true,
+  "hypothesis": "projection explains provenance but not actual visual attachments/endpoints; investigate with common renderer change, do not treat as established root cause"
+}

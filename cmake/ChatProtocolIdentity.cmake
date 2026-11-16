@@ -240,8 +240,13 @@ set(protocol_inputs
   src/server/file_input.cpp
   src/server/file_image.cpp
   include/q4t/server/file_webp.h
+  include/q4t/server/file_video.h
   src/server/file_webp_protocol.h
   src/server/file_webp.cpp
+  src/server/file_video.cpp
+  src/server/file_video_worker.cpp
+  src/server/file_video_sandbox.cpp
+  src/server/file_video_protocol.h
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h
@@ -274,6 +279,24 @@ set(protocol_inputs
   src/server/mcp_tunnel_agent_internal.h
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
+  src/server/mcp_provider_internal.h
+  src/server/mcp_provider.cpp
+  src/server/mcp_provider_calendar.cpp
+  src/server/mcp_provider_time.cpp
+  src/server/mcp_provider_common.cpp
+  src/server/mcp_provider_drive.cpp
+  src/server/mcp_provider_drive_lro.cpp
+  src/server/mcp_provider_gmail.cpp
+  src/server/mcp_provider_mail.cpp
+  src/server/mcp_provider_graph.cpp
+  src/server/mcp_provider_graph_cursor.cpp
+  src/server/mcp_provider_outlook.cpp
+  src/server/mcp_provider_teams.cpp
+  src/server/mcp_provider_sharepoint.cpp
+  src/server/mcp_provider_dropbox.cpp
+  src/server/mcp_provider_graph.h
+  src/server/mcp_provider_common.h
+  src/server/mcp_provider_mail.h
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp
@@ -327,6 +350,7 @@ set(protocol_inputs
   include/q4t/server/file_source.h
   src/server/file_source.cpp
   cmake/NativeDocuments.cmake
+  cmake/NativeVideo.cmake
   include/q4t/server/file_pdf.h
   src/server/file_pdf.cpp
   src/server/file_pdf_protocol.h

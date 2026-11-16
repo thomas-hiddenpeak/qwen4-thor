@@ -1,0 +1,28 @@
+{
+  "scope": "Implement all four Microsoft Graph native providers, beginning Outlook Calendar 5 and Email 6 tools, then Teams 4 and SharePoint 5. Keep every master task.",
+  "first_group": [
+    "connector_outlookcalendar",
+    "connector_outlookemail"
+  ],
+  "contract": [
+    "opaque IDs encoded once; no user URL target",
+    "v1.0 fixed read-only Graph search POST, GET resources",
+    "next-page URLs constrained to exact original resource path and origin, no redirects/retries",
+    "catalog is native schema capability, not unverified JWT scope claims; Graph API enforces each operation, no extra User.Read dependency",
+    "complete original messages/events, recurring calendarView for explicit time range, exact offset conversions",
+    "batch up to20, list/search maxlimits, single-page cursors and actual error/partial handling",
+    "isolated worker and shared request/byte/deadline budgets; no model/core health dependency"
+  ],
+  "verification": [
+    "targeted local HTTP plus actual native schema validation",
+    "affected Google shared reader/origin and capability cases",
+    "candidate private policy/seal checks"
+  ],
+  "gpu_starts": 0,
+  "live_accounts": false,
+  "later_group": [
+    "Teams search/fetch/members",
+    "SharePoint site/search/recent/fetch, credential-free authenticated download URL"
+  ],
+  "default_changed": false
+}

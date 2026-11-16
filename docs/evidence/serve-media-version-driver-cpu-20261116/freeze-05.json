@@ -1,0 +1,30 @@
+{
+  "purpose": "Exact media retained payload and actual native whole-payload fallback",
+  "sources": {
+    ".q4t-work/serve-managed-vision-20261116/media_version.py": "f82289fb56e2e47dacdb32f51c592f0362afb2c9c2e89759fdef046ee6a6f9a0",
+    ".q4t-work/serve-managed-vision-20261116/test_media_version.py": "b1f933f059031bb3bbc442540ecbc55fe1eb228fe1a4f39ab68be7d1720647a3",
+    ".q4t-work/serve-managed-vision-20261116/prepare_retained.py": "5084dc612953b4d1127354c65dc62651d54b7c3fcc5014087b4fee670c7717da"
+  },
+  "cpu": [
+    "DriverTests.test_actual_primary_sealed_media_payload",
+    "DriverTests.test_actual_retained_sealed_media_payload",
+    "DriverTests.test_each_action_is_bounded_before_dispatch",
+    "DriverTests.test_incomplete_or_environment_failure_cannot_be_accepted"
+  ],
+  "gpu": {
+    "retained": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "seconds": 300
+    },
+    "version": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "seconds": 600
+    }
+  },
+  "reuse": "Current cd640 engine and media profile/managed pressure acceptance; no performance or full quality matrix",
+  "default_unchanged": true
+}

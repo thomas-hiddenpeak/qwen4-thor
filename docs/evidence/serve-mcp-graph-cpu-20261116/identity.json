@@ -1,0 +1,15 @@
+{
+  "base_commit": "97acc61c557120eb73bfd6c23de7c4a6c3ba0837",
+  "engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+  "engine_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-graph-20261116/candidate-01/q4t",
+  "compiled_manifest_sha256": "4ff08d1ce79aed8068418f5f2eee5f4b15ecfb4d00f4147356081e410e7ce177",
+  "cpp_passed": 40,
+  "cpp_executions": 68,
+  "actual_cli_policy_checks": 1,
+  "source_mutation_checks": 7,
+  "source_anchors": 703,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "live_provider_accounts": false,
+  "released": false
+}

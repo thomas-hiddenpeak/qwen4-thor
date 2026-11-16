@@ -1,0 +1,17 @@
+{
+  "CMakeLists.txt": "af76043caf2d065f5bec7e7ebfb726fca346082ca02c8b690eef185da65349c4",
+  "cmake/ChatProtocolIdentity.cmake": "b3d5abd45dc67b188560c9fe98f1c4deee62db36ed0b612b706f12ce4256516c",
+  "cmake/HostTestSources.cmake": "28fdc273cce19bc8eca7f7ba62dd5c069c259eb750df6feebe8950135b37c41b",
+  "src/server/chat_capabilities.cpp": "5098ea27e021811d9d026032dc1ddd4ae3a5ca896e36cc3c8cfc9afeb24b10ae",
+  "src/server/mcp_provider.cpp": "ee6bfe2472ada0837a701cffc3c56bb3a4a5d287696e86df84c1c611ac7976cb",
+  "src/server/mcp_provider_graph.cpp": "2ae82d5b5fb98f2f14d943df0339ce1a6a64ba35599085ed5c1b15f0abaf2231",
+  "src/server/mcp_provider_graph.h": "7166c3b02210c75125c3bf2ff93bb459b213b3d667f929e9ff57d72563a505d6",
+  "src/server/mcp_provider_internal.h": "603c7b9be51a6b7a4e5a7b6c62ec64bae215a2b5ac86a5c5b5bc85841a2ca52c",
+  "src/server/mcp_provider_outlook.cpp": "ebf1ddde2f8b1c8de89cff2e5b2f3607792d67430ae81979fc9cc65399a15558",
+  "src/server/mcp_provider_sharepoint.cpp": "ee3ee1dcaa7e917478b28c6897aab8cd6980ce5d05aac83bbe9ed07fbd5fc361",
+  "src/server/mcp_provider_teams.cpp": "9f428cc2f2397f8a3a33c9a22ec6de03dbda25e577a4acb5dde82883623ac009",
+  "tests/server_chat_capabilities_test.cpp": "ffc550bfec7cf472886beaa188732d9d6b13cab5b0b44708463e3ddf91055e9f",
+  "tests/server_mcp_provider_test.cpp": "280570487b359c9650f9a294c22851644a8a2acd734b98177831fff7f80b0647",
+  "tools/serve_audit/inventory.json": "b5ad2cd12c1cc6da8222a9166e66ab47860edd203c089ec421736f0c2831222f",
+  "tools/serve_responses/test_mcp_policy.py": "b0f6f4c68c03ae22a8998f2d62668c03a0f4b79ccddc201f103ddeb3918d2e27"
+}

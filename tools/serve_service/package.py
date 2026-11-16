@@ -454,6 +454,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    check_media_declaration(metadata, config['profile'])
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
     if access_raw is not None:
@@ -665,6 +666,7 @@ def verify(package, digest):
                 'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
+    check_media_declaration(metadata, config['profile'])
     program = metadata.get('chat_protocol', {}).get('responses', {}).get(
         'programmatic_tools', {})
     if program.get('profile') == 'q4t-programmatic-tools-v1':
@@ -725,14 +727,26 @@ def check_embedding_declaration(metadata):
             'accepted engine does not declare configured native embedding backend')
 
 
+def check_media_declaration(metadata, profile):
+    """Opt-in media requires an actually accepted media-enabled engine."""
+    if profile.get('allow_media', False):
+        caps = metadata.get('chat_protocol', {}).get('runtime', {})
+        observed = metadata.get('observed_configuration', {}).get('runtime', {})
+        require(caps.get('media_enabled') is True and
+                observed.get('media_enabled') is True,
+                'accepted engine does not declare enabled media')
+
+
 def command(package, manifest, *, state_directory=None):
     cfg = manifest['settings']
     args = [str(Path(package)/'q4t'), 'serve', '--model-dir', manifest['model_dir'],
             '--host', '127.0.0.1', '--port', str(cfg['port']),
             '--mtp' if cfg['profile'].get('mtp_enabled', True) else '--no-mtp']
     for key, value in cfg['profile'].items():
-        if key not in ('name', 'host', 'mtp_enabled'):
+        if key not in ('name', 'host', 'mtp_enabled', 'allow_media'):
             args += ['--'+key.replace('_', '-'), str(value)]
+    if cfg['profile'].get('allow_media', False):
+        args += ['--allow-media']
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
     if 'access_program_policy' in manifest:

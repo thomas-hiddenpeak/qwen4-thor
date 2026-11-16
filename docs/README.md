@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [原生视频文件输入闭环](SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)
+- [原生连接器提供方适配](SERVE_MCP_PROVIDERS_2026-11-16.md)
 - [原生MCP反向隧道、broker与私网agent](SERVE_MCP_TUNNEL_2026-11-16.md)
 
 - [MCP隧道公开wire schema](serve-mcp-tunnel-v1.schema.json)

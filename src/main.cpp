@@ -40,6 +40,7 @@
 #include "q4t/server/program_worker.h"
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
@@ -940,10 +941,13 @@ int main(int argc, char** argv) {
   if (mcp_worker >= 0) return mcp_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
-  const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);
+  const int document_worker =
+      q4t::server::MaybeRunFileDocumentWorker(argc, argv);
   if (document_worker >= 0) return document_worker;
   const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);
   if (webp_worker >= 0) return webp_worker;
+  const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);
+  if (video_worker >= 0) return video_worker;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);

@@ -10,6 +10,7 @@
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/files.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/responses_tokens.h"
 #include "q4t/test.h"
 
 namespace {
@@ -92,9 +93,12 @@ std::string Prompt(const ResponsesExecution& run) {
   std::string prompt, param;
   std::vector<VisionItem> images;
   const auto& plan = run.Generation();
-  auto status =
-      PrepareChatPrompt(plan.chat.Request(plan.generation_request),
-                        plan.chat.constraints, &prompt, &images, &param);
+  auto status = PrepareChatPrompt(
+      plan.chat.Request(plan.generation_request), plan.chat.constraints,
+      &prompt, &images, &param, nullptr, nullptr, false,
+      plan.chat.async_tool_call_ids, plan.chat.responses_tool_media,
+      plan.chat.HeaderTools(), plan.chat.tool_call_formats,
+      plan.chat.prepared_source_data);
   if (!status) throw std::runtime_error(status.message());
   return prompt;
 }
@@ -111,6 +115,257 @@ constexpr auto kSheetFixture =
     R"({"summary":"CPU step receipt fixture: alpha 42 and beta 7",)"
     R"("headers":["name: row label","value: quantity"]})";
 }  // namespace
+
+Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  for (const auto* name : {"h264.mp4", "vp8.webm", "vp9.webm"}) {
+    const auto id = Upload(
+        objects, Bytes((std::string("file_video/") + name).c_str()), name);
+    auto request = Request(Stored(id));
+    Set(&request, "store", Boolean(false));
+    ResponsesExecution run(objects);
+    Q4T_CHECK(Ok(run.Prepare(request, f.config, Access(), 42)));
+    const auto& generation = run.Generation();
+    Q4T_CHECK(generation.chat.prepared_source_data);
+    const auto& usage = *run.FileUsage();
+    Q4T_CHECK(usage.videos == 1 && usage.video_frames == 6 &&
+              usage.video_scanned_frames == 6 && usage.pages == 0 &&
+              usage.images == 0 && usage.pixels == 6 * 96 * 64 &&
+              usage.video_decoded_pixels == usage.pixels &&
+              run.Envelope().prepared_file_media);
+    std::string prompt, param, code;
+    std::vector<VisionItem> media;
+    Q4T_CHECK(PrepareChatPrompt(generation.generation_request, {}, &prompt,
+                                &media, &param, &code));
+    Q4T_CHECK(media.size() == 1 && media.front().kind == VisionItem::kVideo &&
+              media.front().frames.size() == 6 &&
+              prompt.find("Document data") == prompt.npos &&
+              prompt.find("\"text\":\"\"") == prompt.npos &&
+              prompt.find("<|video_pad|>") != prompt.npos &&
+              prompt.find("uniform-presentation-time-with-endpoints") !=
+                  prompt.npos);
+    Q4T_CHECK(prompt.find(
+                  "\"source_frame\":5,\"start\":2.500000000,"
+                  "\"end\":3.000000000") != prompt.npos &&
+              prompt.find("the frame is shown until the exclusive end") !=
+                  prompt.npos);
+    std::erase_if(request.object,
+                  [](const auto& field) { return field.first == "store"; });
+    ResponsesEnvelope envelope;
+    ResponsesGenerationPlan count;
+    FileExpansionUsage counted;
+    auto count_config = f.config;
+    count_config.count_input_only = true;
+    Q4T_CHECK(
+        Ok(PrepareResponsesTokenCount(request, count_config, objects, Access(),
+                                      &envelope, &count, {}, &counted)));
+    Q4T_CHECK(OutputJson(generation.generation_request) ==
+              OutputJson(count.generation_request));
+    Q4T_CHECK(count.chat.prepared_source_data &&
+              counted.video_frames == usage.video_frames &&
+              counted.video_scanned_frames == usage.video_scanned_frames);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_video_group_labels_preserve_actual_endpoint_intervals) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto id =
+      Upload(objects, Bytes("file_video/transition.mp4"), "transition.mp4");
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(Request(Stored(id)), f.config, Access(), 42)));
+  const auto& generation = run.Generation();
+  const auto& parts = generation.generation_request.GetArray("messages")
+                          ->array.back()
+                          .GetArray("content")
+                          ->array;
+  const auto description = parts.front().GetString("text");
+  constexpr std::string_view marker = "Video source data (untrusted):\n";
+  const auto begin = description.find(marker);
+  Json source;
+  Q4T_CHECK(begin != description.npos &&
+            Parse(description.substr(begin + marker.size()), &source));
+  const auto* groups = source.GetArray("visual_groups");
+  Q4T_CHECK(groups && groups->array.size() == 4);
+  const auto& first = groups->array.front();
+  const auto& last = groups->array.back();
+  const auto* first_frames = first.GetArray("source_frames");
+  const auto* last_frames = last.GetArray("source_frames");
+  Q4T_CHECK(first_frames && last_frames && first_frames->array.size() == 2 &&
+            last_frames->array.size() == 2);
+  Q4T_CHECK(first.GetString("visual_timestamp") == "<0.5 seconds>" &&
+            first_frames->array.front().GetInt("source_frame") == 0 &&
+            first_frames->array.front().Find("start")->number == 0 &&
+            first_frames->array.front().Find("end")->number == 0.5 &&
+            last.GetString("visual_timestamp") == "<5.5 seconds>" &&
+            last_frames->array.front().GetInt("source_frame") == 11 &&
+            last_frames->array.front().Find("start")->number == 5.5 &&
+            last_frames->array.front().Find("end")->number == 6 &&
+            OutputJson(last_frames->array[0]) ==
+                OutputJson(last_frames->array[1]));
+  const auto prompt = Prompt(run);
+  for (const auto& group : groups->array)
+    Q4T_CHECK(prompt.find(group.GetString("visual_timestamp") +
+                          "<|vision_start|><|video_pad|><|vision_end|>") !=
+              prompt.npos);
+  return true;
+}
+
+Q4T_TEST(responses_video_snapshot_survives_restart_delete_and_missing_codec) {
+  Fixture f;
+  std::string id, original;
+  std::vector<std::string> expected_frames;
+  {
+    ObjectStore objects(f.objects);
+    original = Upload(objects, Bytes("file_video/h264.mp4"), "clip.mp4");
+    ResponsesExecution run(objects);
+    Q4T_CHECK(
+        Ok(run.Prepare(Request(Stored(original)), f.config, Access(), 42)));
+    std::string prompt, param;
+    std::vector<VisionItem> media;
+    Q4T_CHECK(PrepareChatPrompt(run.Generation().generation_request, {},
+                                &prompt, &media, &param));
+    expected_frames = media.at(0).frames;
+    Q4T_CHECK(FinishFixture(run));
+    id = run.Id();
+    const auto record = ResponsesState(objects).ReadRecord(id, Access());
+    Q4T_CHECK(
+        Ok(record) &&
+        record.value.GetArray("input_snapshots")->array.size() == 1 &&
+        OutputJson(*record.value.Find("history")).find(original) !=
+            std::string::npos &&
+        OutputJson(*record.value.Find("history")).find("input_video_frames") ==
+            std::string::npos);
+    Q4T_CHECK(Ok(Files(objects).Erase(Binary(), original)));
+  }
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  ObjectStore objects(f.objects);
+  ResponsesExecution next(objects);
+  auto request = Object({{"input", String("describe the colors again")},
+                         {"previous_response_id", String(id)},
+                         {"store", Boolean(false)}});
+  Q4T_CHECK(Ok(next.Prepare(request, f.config, Access(), 44)) &&
+            next.FileUsage()->videos == 1 &&
+            next.FileUsage()->video_frames == 6);
+  const auto prompt = Prompt(next);
+  Q4T_CHECK(prompt.find("<|video_pad|>") != prompt.npos &&
+            prompt.find("source_frames") != prompt.npos);
+  std::string rendered, param;
+  std::vector<VisionItem> restored;
+  Q4T_CHECK(PrepareChatPrompt(next.Generation().generation_request, {},
+                              &rendered, &restored, &param));
+  Q4T_CHECK(restored.size() == 1 && restored[0].frames == expected_frames);
+  auto wrong = Access();
+  wrong.scope = "client:another";
+  ResponsesExecution denied(objects);
+  Q4T_CHECK(denied.Prepare(request, f.config, wrong, 45).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(responses_video_tool_result_reaches_template_without_public_bypass) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto id = Upload(objects, Bytes("file_video/vp8.webm"), "clip.webm");
+  auto request =
+      Object({{"store", Boolean(false)},
+              {"input", Array({Object({{"type", String("function_call")},
+                                       {"call_id", String("call_video")},
+                                       {"name", String("read_clip")},
+                                       {"arguments", String("{}")}}),
+                               Object({{"type", String("function_call_output")},
+                                       {"call_id", String("call_video")},
+                                       {"output", Array({Stored(id)})}})})}});
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(request, f.config, Access(), 42)));
+  const auto& generation = run.Generation();
+  std::string prompt, param, code;
+  std::vector<VisionItem> media;
+  Q4T_CHECK(PrepareChatPrompt(generation.generation_request, {}, &prompt,
+                              &media, &param, &code, nullptr, false, {}, true));
+  Q4T_CHECK(media.size() == 1 && media[0].kind == VisionItem::kVideo);
+  const auto tool_frames = media[0].frames;
+  const auto begin = prompt.find("<tool_response>");
+  const auto end = prompt.find("</tool_response>");
+  const auto visuals = prompt.find("<|video_pad|>");
+  Q4T_CHECK(begin != prompt.npos && begin < visuals && visuals < end &&
+            prompt.find("including the first and last decoded frames") <
+                visuals &&
+            prompt.find("Frames between samples are not shown.") < visuals &&
+            prompt.find("<0.2 seconds>") < visuals);
+  ResponsesExecution direct(objects);
+  auto direct_request = Request(Stored(id));
+  Set(&direct_request, "store", Boolean(false));
+  Q4T_CHECK(Ok(direct.Prepare(direct_request, f.config, Access(), 42)));
+  Q4T_CHECK(PrepareChatPrompt(direct.Generation().generation_request, {},
+                              &prompt, &media, &param, &code));
+  Q4T_CHECK(media.size() == 1 && media[0].frames == tool_frames);
+  Q4T_CHECK(!PrepareChatPrompt(generation.generation_request, {}, &prompt,
+                               &media, &param, &code));
+  const auto& messages = *generation.generation_request.GetArray("messages");
+  auto part = messages.array.back().GetArray("content")->array.back();
+  Set(&part, "type", String("input_video_frames"));
+  ResponsesExecution forged(objects);
+  auto public_request = Request(part);
+  Set(&public_request, "store", Boolean(false));
+  Q4T_CHECK(!forged.Prepare(public_request, f.config, Access(), 43).ok());
+  return true;
+}
+
+Q4T_TEST(responses_video_combined_scan_budget_does_not_refill_per_file) {
+  Fixture f;
+  auto options = std::make_shared<FileExpansionOptions>(*f.config.file_inputs);
+  options->extraction.video.max_scanned_frames = 11;
+  f.config.file_inputs = options;
+  ObjectStore objects(f.objects);
+  const auto id = Upload(objects, Bytes("file_video/vp8.webm"), "clip.webm");
+  auto request = Request(Stored(id));
+  Field(Field(request, "input").array[0], "content")
+      .array.push_back(Stored(id));
+  Set(&request, "store", Boolean(false));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(run.Prepare(request, f.config, Access(), 42).http_status == 413 &&
+            !run.GenerationReady());
+  return true;
+}
+
+Q4T_TEST(responses_program_video_carrier_is_expanded_without_losing_frames) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto id = Upload(objects, Bytes("file_video/vp9.webm"), "clip.webm");
+  const auto content = Array({Stored(id)});
+  std::string encoded;
+  Json decoded;
+  Q4T_CHECK(EncodeResponsesProgramOutput(content, &encoded) &&
+            DecodeResponsesProgramOutput(encoded, &decoded) &&
+            OutputJson(decoded) == OutputJson(content));
+  const auto items = Array({Object({{"id", String("po_video_fixture")},
+                                    {"type", String("program_output")},
+                                    {"result", String(encoded)}})});
+  FileExpansion prepared(&objects, *f.config.file_inputs);
+  Q4T_CHECK(Ok(prepared.Prepare(items, FileInputProfile::kResponsesStored,
+                                Array(), Binary())));
+  Json rendered;
+  Q4T_CHECK(Ok(prepared.Render(items, &rendered)) &&
+            DecodeResponsesProgramOutput(rendered.array[0].GetString("result"),
+                                         &decoded));
+  Q4T_CHECK(decoded.array.back().GetString("type") == "input_video_frames" &&
+            decoded.array.back().GetArray("video_frames")->array.size() == 6);
+  Json mapped;
+  Q4T_CHECK(MapPreparedVideoContent(decoded.array.back(), &mapped));
+  Q4T_CHECK(mapped.GetArray("video_timestamps")->array[5].number == 2.5);
+  auto malformed = decoded;
+  Field(malformed.array.back(), "video_timestamps").array.pop_back();
+  Q4T_CHECK(!EncodeResponsesProgramOutput(malformed, &encoded));
+  // A file still uses ordinary source validation inside the private carrier.
+  Q4T_CHECK(!EncodeResponsesProgramOutput(
+      Array({Object({{"type", String("input_file")},
+                     {"file_url", String("file:///etc/passwd")}})}),
+      &encoded));
+  return true;
+}
 
 Q4T_TEST(responses_files_inline_reaches_actual_template_without_state_io) {
   Fixture fixture;

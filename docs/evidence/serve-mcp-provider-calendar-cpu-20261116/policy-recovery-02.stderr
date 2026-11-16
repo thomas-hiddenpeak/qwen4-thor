@@ -1,0 +1,6 @@
+test_provider_recovery_requires_same_exact_provider_set (tools.serve_recovery.test_mcp_recovery_contract.ProviderMigrationTests.test_provider_recovery_requires_same_exact_provider_set) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.053s
+
+OK

@@ -1,0 +1,11 @@
+{
+  "changed_reviewed_sources": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "src/server/mcp_provider.cpp",
+    "src/server/mcp_provider_drive.cpp",
+    "src/server/mcp_provider_drive_lro.cpp",
+    "src/server/mcp_provider_internal.h"
+  ],
+  "routes_and_fields_unchanged": true
+}

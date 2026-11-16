@@ -1,0 +1,12 @@
+[PASS] mcp_agent_config_strict_network_and_redacted_description
+  CHECK failed: !ParseMcpTunnelAgentConfig(OutputJson(raw), &config) (line 4704)
+[FAIL] mcp_agent_config_redirect_authority_is_not_silently_discarded
+[PASS] mcp_agent_config_rejects_input_that_cannot_fit_worker_string_budget
+[PASS] mcp_agent_config_exact_worker_budget_round_trips_original_authority
+  CHECK failed: AgentOk(init) (line 5049)
+  CHECK failed: AgentBrokerRoundtrip(remote.server, "2025-06-18") (line 5067)
+[FAIL] mcp_agent_broker_actual_http_roundtrip
+  CHECK failed: AgentOk(init) (line 5049)
+  CHECK failed: AgentBrokerRoundtrip(remote.server, "2024-11-05") (line 5074)
+[FAIL] mcp_agent_broker_actual_legacy_roundtrip
+6 tests, 3 passed, 3 failed, 0 skipped

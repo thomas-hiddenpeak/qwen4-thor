@@ -56,7 +56,9 @@ allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
-暂不组合缓存；显式单槽no-MTP媒体组合见[视觉v1](docs/VISION_SERVICE_V1.md)。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
+缓存组合仍待补齐；单槽媒体可与文本MTP共同加载，有视觉token的请求
+使用目标模型普通解码，见[托管视觉交付](docs/evidence/serve-managed-vision-delivery-20261116/README.md)。
+范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
 固定12KiB严格复制输出的真实TCP取消/写截止及后续恢复已验，见
 [限定结果](docs/SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)；生成仍可能因
 token预算不足而失败，canonical分词长度不构成生成上限。
@@ -97,10 +99,12 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 与实际采样生成
-- **多模态**: 27 层 ViT、独立HF数值参考、3D MRoPE；`image_url`和私有
-  `video_frames`帧序列接入。须显式`--allow-media --no-mtp --max-seq 1`；
-  图片/工具/配额已有限接受，视频方向任务与硬解码未接受，仍标experimental。
-  [矩阵、示例与回退](docs/VISION_SERVICE_V1.md)，当前身份见STATUS
+- **多模态**: 27 层 ViT、独立HF数值参考、3D MRoPE；`image_url`、私有
+  `video_frames`及原MP4/WebM文件接入。直接serve使用
+  `--allow-media --max-seq 1`；当前托管包已启用，文本保留MTP，视觉请求
+  走目标模型普通解码。实际视频、工具、冻结历史和自动恢复已验；
+  旋转/像素比例、缓存组合等仍须补齐，硬解码和视觉并发未扩展。
+  [当前交付与回退](docs/evidence/serve-managed-vision-delivery-20261116/README.md)，身份见STATUS
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
   默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
   65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS
@@ -143,7 +147,7 @@ TLS和外部前置按部署需要选择；[实际交付证据](docs/evidence/ser
 与其余未完成总任务分别记录。
 
 受管默认包已支持[实测轻量配置的自动降级与恢复](docs/SERVE_ADAPTIVE_PROFILES_2026-11-11.md)：
-可靠RAM压力下关闭MTP，保持原上下文、工具、schema和专用嵌入能力；
+可靠RAM压力下关闭MTP，保持原上下文、媒体、工具、schema和专用嵌入能力；
 恢复需持续余量、冷却及持久预算。`service profiles-status`查询当前选择。
 NVML/日志/指标失能不触发切档，原设备故障保护保持。
 
@@ -234,7 +238,23 @@ WebP静态图片使用隔离子进程按需加载系统libwebpdecoder 3与zlib 1
 [RIFF容器规范](https://developers.google.com/speed/webp/docs/riff_container)
 实现适配，未复制解码器代码；系统libwebp保留BSD及专利许可，zlib保留
 zlib许可（本机`/usr/share/doc/libwebpdecoder3/copyright`和
-`/usr/share/doc/zlib1g/copyright`）。完整API接入及真实模型验收继续实施。
+`/usr/share/doc/zlib1g/copyright`）。WebP实际流式输入及相邻文件入口已通过
+[针对性业务短验](docs/evidence/serve-prepared-source-business-20261116/README.md)。
+
+原生视频容器准备已交付：独立worker通过
+GStreamer 1.x系统库和固定软件插件解码H.264/VP8/VP9，保留采样帧、
+原始PTS、尺寸及实际库身份。构建头文件为`libgstreamer1.0-dev`和
+`libgstreamer-plugins-base1.0-dev`，运行插件来自系统base/good/bad包；
+不将GStreamer链接为核心启动依赖，也不启动外部解码程序。缺库和
+解码失败只影响相应准备请求，worker复用有界回收与请求槽。
+适配依据[官方API](https://gstreamer.freedesktop.org/documentation/app/appsink.html)，
+未复制codec源码；系统库/插件按各包保留LGPL等许可，OpenH264保留
+BSD许可，以系统`/usr/share/doc/*/copyright`为准。统一文件输入、实际
+帧显示区间快照、MCP/计数/审核及共享预算已接通；原MP4/WebM、VP8 SSE、
+实际工具VP9续答、MCP资源和删除后的冻结回放通过真实模型短验。
+[可回退发行](docs/evidence/serve-managed-vision-delivery-20261116/README.md)
+保留媒体主轻及整树版本恢复；旋转/非方形像素等格式组合继续实现。
+详见[原生视频计划](docs/SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
@@ -275,8 +295,8 @@ Responses等待原任务终态和资源排空，在线/Batch使用独立分钟�
 `POST /v1/moderations`及官方SDK `moderations.create()`提供原生审核：
 字符串数组逐项返回结果，文本/图像内容数组合并审核，返回本地实际
 模型的完整13类分数、分类和适用输入。每请求1RPM，各分类步骤累计
-计入TPM，失败或取消不发布部分成功。图像使用显式`--allow-media
---no-mtp --max-seq 1`配置；默认文本MTP保持。分数为本地模型估计，
+计入TPM，失败或取消不发布部分成功。图像使用`--allow-media
+--max-seq 1`配置；当前托管包已启用，文本MTP保持。分数为本地模型估计，
 实际良性/威胁与图像短验见[业务证据](docs/evidence/serve-moderations-business-20261111/README.md)。
 
 标准`POST /v1/responses/input_tokens`与SDK
@@ -458,7 +478,7 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--prefix-cache-dir DIR` | 默认关闭；另须请求传prefix_cache_scope；同进程公共池8项/8GiB SSD/30分钟TTL，请求默认只读 |
 | `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
-| `--allow-media` | 默认不启用，显式启用实验媒体路径 |
+| `--allow-media` | 直接serve默认不启用；当前托管包已启用单槽媒体，文本MTP共同加载，视觉请求普通解码 |
 | `--embedding-model-dir` | 可选固定Qwen3-Embedding-0.6B资产绝对路径；原生执行，32～1024维、每条最多8192 token，独立延迟加载/健康，不要求外部推理服务 |
 | `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
 | `--cuda-allocation-limit-mib` | `auto`，生产wrapper请求字节额度为mem_fraction×MemTotal；0显式关闭，正整数指定MiB，独立于`--no-budget`。不覆盖DSO内部/host堆/driver/文件缓存/CUDA池保留，不是整机RAM硬限额；交付状态见STATUS |

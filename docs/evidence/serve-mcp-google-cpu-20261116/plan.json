@@ -1,0 +1,28 @@
+{
+  "scope": "Native Google Drive five and Gmail six read-only tools, using existing isolated MCP worker. Actual provider credentials still pending; no fabricated cloud business.",
+  "providers": [
+    "connector_googledrive",
+    "connector_gmail"
+  ],
+  "implementation": [
+    "fixed provider HTTPS origins and scoped catalog",
+    "Drive account/shared drives/search/recent one-page cursors",
+    "Drive actual media and Google document exports through existing MCP media pipeline",
+    "Gmail account/search IDs/full metadata/recent/read/batch with full MIME bodies",
+    "bounded optional attachments and original message fields",
+    "known errors, no redirect/retry, no core readiness/model restart dependency"
+  ],
+  "verification": [
+    "provider catalog and scope separation",
+    "Drive query escape/shared drive/cursor/response fields",
+    "Drive file download/export/shortcut/resource keys and content budgets",
+    "Gmail list versus metadata/full hydration/cursor and errors",
+    "mail base64url/MIME charset/attachment/body traversal and limits",
+    "malformed arguments no I/O, empty/partial results, HTTP errors and shared limits",
+    "directly affected Calendar transport/error/session contracts",
+    "actual CLI private policy/capability/recovery binding"
+  ],
+  "gpu_starts": 0,
+  "default_changed": false,
+  "remaining_all_master_tasks_required": true
+}

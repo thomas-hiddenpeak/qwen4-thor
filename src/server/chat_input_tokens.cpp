@@ -137,7 +137,7 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
         req, candidate.chat.constraints, &prompt, &items, &error->param,
         &error->code, nullptr, true, candidate.chat.async_tool_call_ids,
         candidate.chat.responses_tool_media, candidate.chat.HeaderTools(),
-        candidate.chat.tool_call_formats);
+        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data);
     if (!measured) return measured;
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;

@@ -448,7 +448,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 &error->param, &error->code, nullptr, false,
                 candidate.chat.async_tool_call_ids,
                 candidate.chat.responses_tool_media,
-                candidate.chat.HeaderTools(), candidate.chat.tool_call_formats);
+                candidate.chat.HeaderTools(), candidate.chat.tool_call_formats,
+                candidate.chat.prepared_source_data);
             if (!measured) return measured;
             std::vector<uint32_t> tokens;
             ChatPromptBudget budget;
@@ -729,7 +730,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         req, constraints, &prompt, &items, &planning_error.param,
         &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
         request_plan.async_tool_call_ids, request_plan.responses_tool_media,
-        request_plan.HeaderTools(), request_plan.tool_call_formats);
+        request_plan.HeaderTools(), request_plan.tool_call_formats,
+        request_plan.prepared_source_data);
   if (!s) {
     SendError(fd, 400, s.message(), {}, planning_error.code,
               planning_error.param);
@@ -837,7 +839,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         candidate_req, candidate.chat.constraints, &text, &media, &error->param,
         &error->code, nullptr, false, candidate.chat.async_tool_call_ids,
         candidate.chat.responses_tool_media, candidate.chat.HeaderTools(),
-        candidate.chat.tool_call_formats);
+        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data);
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;
     auto config = planning_config;
@@ -881,7 +883,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         step_request, step.constraints, &prompt, &items, &planning_error.param,
         &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
         step.async_tool_call_ids, step.responses_tool_media, step.HeaderTools(),
-        step.tool_call_formats);
+        step.tool_call_formats, step.prepared_source_data);
     if (status) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock())
@@ -2279,7 +2281,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     ? static_cast<size_t>(mtp_.cfg.hc) *
                                           static_cast<size_t>(mtp_.cfg.hs)
                                     : 0;
-    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured &&
+    // The text draft has no visual features/positions. A loaded draft may
+    // serve the next text request, but cannot speculate on this visual prompt.
+    const bool request_mtp = mtp_loaded_ && vfeats.num_tokens == 0 &&
+                             plain_greedy && !structured &&
                              !prediction_enabled && (max_tokens > 0 || prewarm);
     const bool stream_mtp =
         request_mtp && (explicit_slots || (api_cache && !prefix_scope.empty()));

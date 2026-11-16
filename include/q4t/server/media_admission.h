@@ -10,6 +10,11 @@
 
 namespace q4t::server {
 
+// The model renders one visual group per pair of frames at their mean time.
+// Shared with native source metadata so a group label cannot imply a missing
+// endpoint. An odd final frame is passed twice by the caller.
+std::string VideoGroupTimestamp(double first_seconds, double last_seconds);
+
 // Canonical standard base64, optionally in an exact PNG/JPEG data URL.
 // Validates the entire encoded alphabet/padding before allocating the output.
 Status DecodeMediaUrl(std::string_view url, std::string* bytes,

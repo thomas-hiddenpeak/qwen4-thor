@@ -1,0 +1,37 @@
+{
+  "scope": "Owned native CPU software video worker and sandbox; later integration tests separate",
+  "names": [
+    "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+    "file_video_actual_vp8_webm_preserves_colors_order_and_pts",
+    "file_video_actual_vp9_webm_preserves_colors_order_and_pts",
+    "file_video_sandbox_permits_threads_without_external_capabilities",
+    "file_video_preflight_rejects_bad_scope_source_cancel_and_deadline",
+    "file_video_actual_limits_reject_without_publishing_partial_frames",
+    "file_video_corrupt_container_is_request_local_and_reaped",
+    "file_video_missing_codec_keeps_native_text_and_worker_slots_healthy",
+    "file_video_hang_crash_and_inflight_cancel_have_bounded_cleanup",
+    "file_video_unreaped_worker_retains_shared_document_capacity",
+    "file_video_frozen_metadata_rejects_source_pts_and_frame_tampering",
+    "file_document_worker_actual_text_and_sheet_match_original_data"
+  ],
+  "timeout_seconds": 180,
+  "head": "06d5edeebd2e85e771d2a75c20433ed7d98794d2",
+  "source_sha256": {
+    "include/q4t/server/file_video.h": "0cf6da5333c48d48dd88a00fb0d68c51cbf68274e20cd811afac7f73464de30f",
+    "src/server/file_video_worker.cpp": "238fd4f70f8a5e23931429114d03562dabe80d32a376374441516e3ea20782a4",
+    "src/server/file_video.cpp": "43d4f86c28adbe443b415bfbd5fb09d93ddbf5d8422078526d492a7c84b67fc3",
+    "src/server/file_video_protocol.h": "8b026fa67eb71e3de7840dcb25b005915f299892cf3f6a4ffb590f99e40db028",
+    "src/server/file_video_sandbox.cpp": "113973c06d06229340c30aa553fa61f1f954982893f2024ee49b36e1cd0c5779",
+    "tests/server_file_video_test.cpp": "aa738529913f485b0ebfb2edd4dd60cda7d76fe96a59a1f4d4feb825c297b3dd",
+    "tests/fixtures/file_video/vp8.webm": "c7ca4f1261e62e936ab1def3169f716a00c05dc7c889ea4c4f8fb610f9f52b8f",
+    "tests/fixtures/file_video/h264.mp4": "abf7b4793b0c02e7df9e8100b814135fc6c7bbbf17474f76a0e5553ded426e8b",
+    "tests/fixtures/file_video/identity.json": "7d92701aa12bbefc516959badda2532c8694981e61e871de8c44c4ed1f980567",
+    "tests/fixtures/file_video/generate.py": "f334b009bae2d6c5e17f126095bc0a5e233a69c981435eeb0e13d27ef4f126d8",
+    "tests/fixtures/file_video/vp9.webm": "c2e669bb549ac13e69dd47f90f4f68c3d1e42ca715a65be5498cf6396161ba05",
+    "tests/test_main.cpp": "0fabbebb95ca024bc39f31d70e7cef27d463eff4ee0b6b347929471eb01cc2fe",
+    "cmake/NativeVideo.cmake": "61e107a022bf88c8d2a22a95d8047b66e18e460cff49feff22a04038ad6af423"
+  },
+  "binary_sha256": "dc68813d4db747705c7352b3be865c30bf82fad70da43e6acef92f34e1e016b8",
+  "gpu": false,
+  "default_changed": false
+}

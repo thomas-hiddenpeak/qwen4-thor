@@ -1,0 +1,21 @@
+{
+  "scope": "Implement Google Vids native asynchronous download with explicit pending/completed/error outcomes and one-poll continuation; preserve original Google Drive fetch paths and all master tasks",
+  "contract": [
+    "POST files/{id}/download exactly once for Vids",
+    "done absent/null/false means pending, never fake content",
+    "fetch(operation_name,file_id,resource_key) polls the same operation once and never restarts download",
+    "completed initial response consumed without another poll",
+    "operation name/source remains explicit; resumed content is not falsely attributed to newly queried file metadata",
+    "known canonical operation error mapped to known tool failure without raw private details",
+    "Google-owned final URI only; no arbitrary user URL, OAuth only original fixed API origin, resource keys only trusted Google hosts",
+    "same request/response/deadline budgets, no internal sleeps/retries/model restart"
+  ],
+  "verification": "Targeted CPU schema/local HTTP/transport checks, existing affected Drive and provider reads; no GPU or actual account use",
+  "sources": [
+    "https://developers.google.com/workspace/drive/api/guides/long-running-operations",
+    "https://developers.google.com/workspace/drive/api/reference/rest/v3/files/download",
+    "https://developers.google.com/workspace/drive/api/reference/rest/v3/operations/get"
+  ],
+  "default_changed": false,
+  "master_complete": false
+}

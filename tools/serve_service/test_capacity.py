@@ -42,7 +42,7 @@ class CapacityTests(unittest.TestCase):
         self.assertEqual(pkg.PROFILE['max_seq'], 1)
 
     def test_unknown_fields_types_and_all_numeric_boundaries_rejected(self):
-        for source in ([], {}, {'version': True}, {'version': 2},
+        for source in ([], {}, {'version': True}, {'version': 3},
                        {'version': 1, 'host': '0.0.0.0'}, {'version': 1, 'mtp_enabled': 1}):
             with self.subTest(source=source), self.assertRaises(RuntimeError):
                 capacity.normalize(source)

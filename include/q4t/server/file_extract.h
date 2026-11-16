@@ -1,15 +1,24 @@
 // Unified document dispatch for all file-consuming API paths.
 #pragma once
 
+#include <optional>
+
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/file_pdf.h"
 
 namespace q4t::server {
+struct FileVideoWorkBudget {
+  uint64_t scanned_frames = 0, decoded_pixels = 0;
+};
 struct FileExtractOptions {
   uint64_t timeout_ms = 30000;
   FileDocumentLimits document;
   FilePdfOptions pdf;
   FileLegacyOptions legacy;
+  FileVideoLimits video;
+  // Internal remaining request allowance, not a deployment policy field.
+  // Zero is meaningful: text can proceed, but no new video worker may start.
+  std::optional<FileVideoWorkBudget> remaining_video_work;
   // Retrieval ingestion requires complete rows even in embedded documents.
   // Ordinary file-input callers keep their documented bounded row window.
   bool require_complete_rows = false;

@@ -275,6 +275,45 @@ class AgentCli(unittest.TestCase):
         self.write_config(invalid)
         check(path, 2)
 
+    def test_redirect_setting_is_validated_without_silent_override(self):
+        for field in ('control_fetch', 'target_fetch'):
+            for value in (1, 0.5, False, '0', None, 0):
+                with self.subTest(field=field, value=value):
+                    config = self.config(12345, 12346)
+                    config[field]['max_redirects'] = value
+                    path = self.write_config(config)
+                    result = subprocess.run(
+                        [str(self.binary), 'mcp-tunnel-agent', 'check', str(path)],
+                        capture_output=True, timeout=5)
+                    self.assertEqual(result.returncode, 0 if type(value) is int and value == 0 else 2)
+                    self.assertNotIn(b'control-secret', result.stdout+result.stderr)
+                    self.assertNotIn(b'private-target-token', result.stdout+result.stderr)
+
+    def test_check_rejects_configuration_that_cannot_reach_worker(self):
+        def string_bytes(value):
+            if isinstance(value, str):
+                return len(value.encode())
+            if isinstance(value, dict):
+                return sum(len(k.encode())+string_bytes(v) for k, v in value.items())
+            if isinstance(value, list):
+                return sum(map(string_bytes, value))
+            return 0
+        config = self.config(12345, 12346)
+        config['api_key'] = 'A'*8192
+        config['target']['authorization'] = ''
+        config['target']['authorization'] = 'B'*(16384-string_bytes(config))
+        self.assertLessEqual(len(config['target']['authorization']), 8192)
+        path = self.write_config(config)
+        self.assertLess(path.stat().st_size, 64 << 10)
+        for command in ('check', 'run'):
+            result = subprocess.run(
+                [str(self.binary), 'mcp-tunnel-agent', command, str(path)],
+                capture_output=True, timeout=5)
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(result.stderr,
+                             b'Invalid private MCP tunnel agent configuration\n')
+            self.assertEqual(result.stdout, b'')
+
     def test_verified_tls_native_ingress_prefix_and_real_private_document(self):
         context = ssl.create_default_context(cafile=str(self.pem/'ca.pem'))
         self.stack = ingress_fixture.Stack(self.work, native_ingress=self.ingress,

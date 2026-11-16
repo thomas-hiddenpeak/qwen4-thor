@@ -1,0 +1,35 @@
+{
+  "stage": "native_video_worker_cpu_only",
+  "parent_head": "06d5edeebd2e85e771d2a75c20433ed7d98794d2",
+  "engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+  "protocol_manifest_sha256": "5b5cb3225e2e694c0dedf04ecb887d3dec1784d5c942f00ef3f71a8d06707daa",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/candidate-worker-01/q4t",
+  "local_work": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116",
+  "cpp_unique_tests": 13,
+  "cpp_executions": 26,
+  "cpp_final_passed": 13,
+  "python_targeted_passed": 1,
+  "source_mutation_checks": 7,
+  "source_anchors": 712,
+  "failed_tests_preserved": [
+    "cpu-worker-01: truncated container stalled until deadline; repaired with structural length checks"
+  ],
+  "build_failures_preserved": [
+    "host-build-01: aggregate mutex initialization and ambiguous Frame name"
+  ],
+  "warnings_final_builds": 0,
+  "gpu_starts": 0,
+  "real_cloud_accounts": 0,
+  "default_changed": false,
+  "whole_video_input_accepted": false,
+  "master_complete": false,
+  "prior_ci": {
+    "head": "06d5edeebd2e85e771d2a75c20433ed7d98794d2",
+    "failed_run": 43792238133,
+    "passed_run": 43792244735,
+    "reason": "detached child PID fixture opened before contents written; atomically publish ready file",
+    "raw_log_sha256": "40347594b969a710236aaabde79f8c75f9672d254cbcd687a7d230bb08d188b5",
+    "raw_log_local": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/pr29-prior-head-failure-log.stdout",
+    "fixed_remote_acceptance_pending": true
+  }
+}

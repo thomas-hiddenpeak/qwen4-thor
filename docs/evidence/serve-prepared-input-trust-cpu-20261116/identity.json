@@ -1,0 +1,14 @@
+{
+  "binary_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763",
+  "manifest_sha256": "cfacd9a3c55fab0688e44dbf51cdd1197d43d2ff21086b6927af919b91612945",
+  "protocol_sha256": "7f11ba1c4c126b3609f1555d5c393f2635844969c76fc03fd97ea9e1d44e1d6e",
+  "cpp_unique_passed": 5,
+  "cpp_executions": 7,
+  "first_run_passed": 4,
+  "first_run_failed": 1,
+  "source_negative_passed": 7,
+  "source_anchors": 712,
+  "warnings": 0,
+  "gpu_added": 0,
+  "default_unchanged": true
+}

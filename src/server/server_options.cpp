@@ -44,10 +44,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!ValidServedModels(options.served_model_name, options.model_aliases))
     return Status::Fail("invalid or duplicate served model name/alias");
   if (options.allow_media &&
-      (!options.no_mtp || options.max_seq != 1 || options.no_budget ||
+      (options.max_seq != 1 || options.no_budget ||
        options.moe_resident_slots != 0 || !options.moe_trace_dir.empty()))
     return Status::Fail(
-        "media v1 requires --no-mtp, --max-seq 1, enabled budget and "
+        "media v1 requires --max-seq 1, enabled budget and "
         "no expert offload/trace");
   if (options.cuda_allocation_limit_mib < -1 ||
       options.cuda_allocation_limit_mib > 1048576)

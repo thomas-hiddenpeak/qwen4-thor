@@ -79,6 +79,28 @@ Q4T_TEST(file_input_policy_defaults_and_all_preparation_domains) {
   return true;
 }
 
+Q4T_TEST(file_input_policy_native_video_bounds_and_discovery_are_consistent) {
+  FileInputPolicy policy;
+  Q4T_CHECK(ParseFileInputPolicy(R"({"version":1,"video":{
+    "max_source_bytes":4000000,"max_frame_pixels":2000000,
+    "max_decoded_pixels":16000000,"max_output_bytes":8000000,
+    "max_duration_ns":6000000000,"max_edge":2048,"max_scanned_frames":12,
+    "sample_frames":4,"max_thread_creations":8,"timeout_ms":2000}})",
+                                 &policy));
+  const auto description =
+      FileInputPolicyDescription(policy.options, policy.sha256);
+  Q4T_CHECK(description.Find("video")->GetInt("sample_frames") == 4 &&
+            description.Find("video")->GetInt("max_thread_creations") == 8 &&
+            policy.options.extraction.video.max_scanned_frames == 12);
+  for (const auto* invalid :
+       {R"({"version":1,"video":{"sample_frames":1}})",
+        R"({"version":1,"video":{"max_thread_creations":65}})",
+        R"({"version":1,"video":{"max_duration_ns":600000000001}})",
+        R"({"version":1,"video":{"decoder":"external-program"}})"})
+    Q4T_CHECK(!ParseFileInputPolicy(invalid, &policy));
+  return true;
+}
+
 Q4T_TEST(file_input_policy_invalid_configuration_is_transactional) {
   FileInputPolicy policy;
   Q4T_CHECK(ParseFileInputPolicy(kPolicy, &policy));

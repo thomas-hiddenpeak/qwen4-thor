@@ -1,0 +1,15 @@
+{
+  "base_commit": "0696c6ad0876e9c4dde184e98cb66b945f711e53",
+  "engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+  "engine_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-drive-lro-20261116/candidate-01/q4t",
+  "compiled_manifest_sha256": "c045f9ee70189d1c281e09c88d782ff9f9a90eb275e7e5e47ec59a12b0619f49",
+  "cpp_passed": 30,
+  "cpp_executions": 30,
+  "new_lro_tests": 13,
+  "source_mutation_checks": 7,
+  "source_anchors": 705,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "live_provider_accounts": false,
+  "released": false
+}

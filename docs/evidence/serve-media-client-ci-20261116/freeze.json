@@ -1,0 +1,12 @@
+{
+  "reason": "Both exact PR29 final-head CI jobs retain obsolete media/MTP rejection at line 1545; actual joint startup and managed recovery already accepted",
+  "head": "f8f251481fb6065741ff99f7e4910e24734f2cff",
+  "source": {
+    "tests/server_client_policy_test.cpp": "8b907fca085b53c0f6352d513a8a4445088934d95f370bedebe83379c41d500a"
+  },
+  "required": [
+    "client_policy_config_redaction_and_cli_boundary"
+  ],
+  "gpu_starts": 0,
+  "production_code_unchanged": true
+}

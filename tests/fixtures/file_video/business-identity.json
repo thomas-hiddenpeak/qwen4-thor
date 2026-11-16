@@ -1,0 +1,174 @@
+{
+  "source": "generate_business.py; original solid red then blue, no labels",
+  "width": 96,
+  "height": 64,
+  "frames": 12,
+  "fps": 2,
+  "duration_ns": 6000000000,
+  "colors": [
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      0,
+      0,
+      255
+    ]
+  ],
+  "gpu": false,
+  "commands": [
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "openh264enc",
+        "bitrate=500000",
+        "gop-size=1",
+        "enable-frame-skip=false",
+        "!",
+        "h264parse",
+        "!",
+        "mp4mux",
+        "faststart=true",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/transition.mp4"
+      ],
+      "stdout": "",
+      "stderr": "[OpenH264] this = 0x0xffff9001b2a0, Error:CWelsH264SVCEncoder::EncodeFrame(), cmInitParaError.\n"
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "vp8enc",
+        "threads=1",
+        "deadline=1000000",
+        "keyframe-max-dist=1",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/transition-vp8.webm"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "vp9enc",
+        "threads=1",
+        "deadline=1000000",
+        "keyframe-max-dist=1",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/assets-01/transition-vp9.webm"
+      ],
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "sha256": {
+    "transition-vp8.webm": "c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408",
+    "transition-vp9.webm": "ee0f6f34006f8f94534061619e24610128b421568818fa31e14f7c5849124454",
+    "transition.mp4": "c51e7f8936131626788bc4fdbbe41f0cc9a0455aa22113f15380595fd95109d7"
+  }
+}

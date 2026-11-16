@@ -1,0 +1,10 @@
+{
+  "business-01/mcp-video.request.json": {
+    "original_sha256": "103270a13f2bc55101c5e87e27015fb456e88ab98e30ce4c59e0127308c6d344",
+    "public_sha256": "941d29e9c9b0ba9ea6375129a79120a70754b417c5e7175ad2f200efc3db3b37"
+  },
+  "business-01/mcp-video.sdk.json": {
+    "original_sha256": "8941713c4bba0d9aabb38c71327b3def94cf5fa3cdf698703f76efe08b0f2f10",
+    "public_sha256": "0cd8cab62b585ad16398532eb2debb173511a7061bc9d37571d4ab8e5a147e79"
+  }
+}

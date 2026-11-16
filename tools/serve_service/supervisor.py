@@ -96,7 +96,7 @@ class RotatingLog:
 
 def expected_configuration(profile=None):
     p = pkg.PROFILE if profile is None else profile
-    return dict(max_context_tokens=p['max_len'], max_sequences=p['max_seq'],
+    result = dict(max_context_tokens=p['max_len'], max_sequences=p['max_seq'],
         prefill_chunk_tokens=p['max_prefill'],
         max_inflight_requests=p['max_inflight_requests'],
         max_queued_requests=p['max_queued_requests'],
@@ -105,6 +105,9 @@ def expected_configuration(profile=None):
         memory_floor_mib=p['min_available_memory_mib'],
         memory_recovery_mib=(p['min_available_memory_mib'] +
             p['memory_recovery_margin_mib'] if p['min_available_memory_mib'] else 0))
+    if 'allow_media' in p:
+        result['media_enabled'] = p['allow_media']
+    return result
 
 
 class BindingMismatch(RuntimeError):

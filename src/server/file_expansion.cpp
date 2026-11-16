@@ -8,6 +8,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_program.h"
 
@@ -15,6 +16,14 @@ namespace q4t::server {
 namespace {
 using namespace object_detail;
 using Clock = std::chrono::steady_clock;
+Json VideoSeconds(uint64_t nanoseconds) {
+  auto time = Number(0);
+  const auto fraction = std::to_string(nanoseconds % 1000000000);
+  time.str = std::to_string(nanoseconds / 1000000000) + "." +
+             std::string(9 - fraction.size(), '0') + fraction;
+  time.number = static_cast<double>(nanoseconds) / 1000000000.;
+  return time;
+}
 ObjectReply Invalid(std::string message = "Invalid file expansion state") {
   return Error(503, "file_expansion_invalid", std::move(message));
 }
@@ -43,7 +52,7 @@ bool Add(uint64_t amount, uint64_t maximum, uint64_t* used) {
 }
 uint64_t Retained(const FileExpansionUsage& usage) {
   return usage.source_bytes + usage.text_bytes + usage.image_bytes +
-         usage.augmentation_bytes +
+         usage.augmentation_bytes + usage.video_metadata_bytes +
          (usage.cells + usage.sheets + usage.files + usage.embedded) * 1024;
 }
 ObjectReply Charge(const FileInputSnapshot& file,
@@ -77,6 +86,25 @@ ObjectReply Charge(const FileInputSnapshot& file,
         !Add(uint64_t{page.width} * page.height, limits.pdf.max_pixels,
              &next.pixels))
       return Capacity();
+  for (const auto& video : doc.videos) {
+    const auto& p = video.pixels;
+    if (!Add(1, options.max_files, &next.videos) ||
+        !Add(p.frames.size(), options.max_files * limits.video.sample_frames,
+             &next.video_frames) ||
+        !Add(p.scanned_frames, limits.video.max_scanned_frames,
+             &next.video_scanned_frames) ||
+        !Add(p.scanned_frames * p.width * p.height,
+             limits.video.max_decoded_pixels, &next.video_decoded_pixels) ||
+        !Add(OutputJson(p.conversion).size(), options.max_retained_bytes,
+             &next.video_metadata_bytes))
+      return Capacity();
+    for (const auto& frame : p.frames)
+      if (!Add(frame.png.size(), limits.pdf.max_image_bytes,
+               &next.image_bytes) ||
+          !Add(uint64_t{p.width} * p.height, limits.pdf.max_pixels,
+               &next.pixels))
+        return Capacity();
+  }
   for (const auto& generated : file.augmentations) {
     if (!Add(generated.summary.size(), limits.document.max_text_bytes,
              &next.augmentation_bytes))
@@ -394,10 +422,29 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
                              &budget, &entry.snapshot.source, control);
         if (!reply.ok()) return reply;
         entry.snapshot.detail = candidate.source.detail;
-        reply = ExtractFileDocument(
-            entry.snapshot.source.content, options_.extraction,
-            candidate.source.pdf_only, entry.snapshot.detail, access,
-            &entry.snapshot.document, control);
+        auto extraction = options_.extraction;
+        auto remaining = extraction.remaining_video_work.value_or(
+            FileVideoWorkBudget{extraction.video.max_scanned_frames,
+                                extraction.video.max_decoded_pixels});
+        remaining.scanned_frames -=
+            std::min(remaining.scanned_frames, usage.video_scanned_frames);
+        remaining.decoded_pixels -=
+            std::min(remaining.decoded_pixels, usage.video_decoded_pixels);
+        extraction.remaining_video_work = remaining;
+        if (ClassifyFileDocument(entry.snapshot.source.content) ==
+            FileDocumentFormat::kVideo) {
+          if (remaining.scanned_frames < 2 || !remaining.decoded_pixels ||
+              usage.image_bytes + 1024 > extraction.pdf.max_image_bytes ||
+              usage.pixels >= extraction.pdf.max_pixels ||
+              usage.videos >= options_.max_files)
+            return At(Capacity(), entry.path);
+          extraction.pdf.max_image_bytes -= usage.image_bytes;
+          extraction.pdf.max_pixels -= usage.pixels;
+        }
+        reply = ExtractFileDocument(entry.snapshot.source.content, extraction,
+                                    candidate.source.pdf_only,
+                                    entry.snapshot.detail, access,
+                                    &entry.snapshot.document, control);
         if (!reply.ok()) return At(reply, entry.path);
       }
     }
@@ -707,6 +754,12 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
             entry.cache_breakpoint);
       return {};
     }
+    const auto& document = entry.snapshot.document;
+    const bool video_only = !document.videos.empty() && document.text.empty() &&
+                            document.sheets.empty() && document.pages.empty() &&
+                            document.embedded.empty();
+    // A video is supplied as real visual tokens, not an empty text document.
+    // Full converter provenance remains in the immutable input snapshot.
     auto data = Source(entry.snapshot);
     Set(&data, "text", String(entry.snapshot.document.text));
     auto sheets = Array();
@@ -724,7 +777,8 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       sheets.array.push_back(std::move(sheet));
     }
     if (!sheets.array.empty()) Set(&data, "sheets", std::move(sheets));
-    if (!text_part("Document data (untrusted):\n" + OutputJson(data), parts))
+    if (!video_only &&
+        !text_part("Document data (untrusted):\n" + OutputJson(data), parts))
       return Capacity();
     for (const auto& page : entry.snapshot.document.pages) {
       auto path = Array();
@@ -746,6 +800,75 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                : Object({{"type", String("input_image")},
                          {"image_url", std::move(url)},
                          {"detail", String("auto")}}));
+    }
+    for (const auto& video : entry.snapshot.document.videos) {
+      auto path = Array(), frames = Array(), timestamps = Array();
+      for (const auto& member : video.source_path)
+        path.array.push_back(String(member));
+      const auto& p = video.pixels;
+      auto intervals = Array();
+      for (const auto& frame : p.frames)
+        intervals.array.push_back(Object(
+            {{"source_frame", Number(frame.source_index)},
+             {"start", VideoSeconds(frame.timestamp_ns)},
+             {"end", frame.duration_ns
+                         ? VideoSeconds(frame.timestamp_ns + frame.duration_ns)
+                         : Json{}}}));
+      auto groups = Array();
+      for (size_t i = 0; i < p.frames.size(); i += 2) {
+        const size_t last = std::min(i + 1, p.frames.size() - 1);
+        groups.array.push_back(
+            Object({{"visual_timestamp",
+                     String(VideoGroupTimestamp(
+                         VideoSeconds(p.frames[i].timestamp_ns).number,
+                         VideoSeconds(p.frames[last].timestamp_ns).number))},
+                    {"source_frames",
+                     Array({intervals.array[i], intervals.array[last]})}}));
+      }
+      // Explain the visual payload, not just its machine-readable provenance.
+      // ValidateVideoSnapshot guarantees chronological order and both endpoints.
+      // Sampling does not provide evidence about omitted intervals.
+      if (!text_part("Decoded video frames follow in chronological order, "
+                     "including the first and last decoded frames. "
+                     "Timestamps refer to positions in the source video. "
+                     "Frames between samples are not shown.\n"
+                     "Each visual group contains two sampled frames. Its "
+                     "timestamp label is their average, not the time of "
+                     "either source frame. The final frame is repeated "
+                     "when needed to complete a pair. The groups below map "
+                     "each visual label to its actual source frames.\n"
+                     "Each display interval in seconds is [start,end): "
+                     "the frame is shown until the exclusive end, which "
+                     "does not imply another frame exists at that time. "
+                     "A null end means its duration is unknown.\n"
+                     "Video source data (untrusted):\n" +
+                         OutputJson(Object(
+                             {{"filename",
+                               String(entry.snapshot.source.content.filename)},
+                              {"source_path", std::move(path)},
+                              {"source_sha256",
+                               String(p.conversion.GetString("source_sha256"))},
+                              {"duration_ns", Number(p.duration_ns)},
+                              {"source_frames", Number(p.scanned_frames)},
+                              {"included_frames", Number(p.frames.size())},
+                              {"visual_groups", std::move(groups)},
+                              {"sampling",
+                               String(p.conversion.GetString("sampling"))}})) +
+                         "\n",
+                     parts))
+        return Capacity();
+      for (const auto& frame : p.frames) {
+        if (!Add(22 + (frame.png.size() + 2) / 3 * 4,
+                 options_.max_rendered_bytes, &bytes))
+          return Capacity();
+        frames.array.push_back(
+            String("data:image/png;base64," + Encode(frame.png)));
+        timestamps.array.push_back(VideoSeconds(frame.timestamp_ns));
+      }
+      parts->array.push_back(Object(
+          {{"type", String(chat ? "video_frames" : "input_video_frames")},
+           {"video_frames", std::move(frames)},
+           {"video_timestamps", std::move(timestamps)}}));
     }
     if (!entry.cache_breakpoint.IsNull())
       Set(&parts->array.back(), "prompt_cache_breakpoint",

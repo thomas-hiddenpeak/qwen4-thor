@@ -68,6 +68,28 @@ class FileInputPolicyPackage(unittest.TestCase):
         self.assertEqual(pkg.file_input_policy_binding(BINARY, policy,
             policy.read_bytes()), value)
 
+    def test_native_video_policy_parser_and_sealed_package_keep_limits(self):
+        video = dict(max_source_bytes=4000000, max_frame_pixels=2000000,
+            max_decoded_pixels=16000000, max_output_bytes=8000000,
+            max_duration_ns=6000000000, max_edge=2048,
+            max_scanned_frames=12, sample_frames=4,
+            max_thread_creations=8, timeout_ms=2000)
+        policy = self.policy(video=video)
+        original = policy.read_bytes()
+        actual = pkg.file_input_policy_binding(BINARY, policy, original)
+        self.assertEqual(actual['video'], video)
+        binary, release, model = self.native_fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              file_input_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        sealed = target/'file-input-policy.json'
+        self.assertEqual(sealed.read_bytes(), original)
+        checked = pkg.file_input_policy_binding(BINARY, sealed, original)
+        self.assertEqual(checked['video'], video)
+        self.assertEqual(manifest['file_input_policy']['sha256'], actual['sha256'])
+
     def test_native_rejects_invalid_or_raced_policy_without_fallback(self):
         path = self.policy(total_summary_output_tokens=0)
         with self.assertRaisesRegex(RuntimeError, 'validation failed'):

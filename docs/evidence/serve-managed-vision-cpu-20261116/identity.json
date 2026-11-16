@@ -1,0 +1,7 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/candidate-01/q4t",
+  "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+  "compiled_manifest_sha256": "f31ae0127d9fbe635eb2bb479a474a6428d58de0d1d66541a41165e314059377",
+  "protocol_sha256": "dd079acaa627420a8c552f71a70d7a942dbd63fe842d93a8df14e7003256f309",
+  "zero_warning_builds": true
+}

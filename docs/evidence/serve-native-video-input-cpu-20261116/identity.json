@@ -1,0 +1,15 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-input-20261116/candidate-01/q4t",
+  "binary_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
+  "manifest_sha256": "3fd92762a83c60a92af1e6338d1c7c0cb3e63a1efd0fe6188770d98f831e54a5",
+  "protocol_sha256": "198a8301990c28a7879ade046cad8d36548538baa08f5dbc2b0b0f0159bbf9dc",
+  "compiled_sources_current": true,
+  "cpp_unique_final_pass": 38,
+  "cpp_executions": 39,
+  "cpu_first_failure": "count fixture missing count_input_only; repaired test only",
+  "gpu": false,
+  "default_changed": false,
+  "cli_passed": 1,
+  "source_negative_passed": 7,
+  "source_anchors": 712
+}

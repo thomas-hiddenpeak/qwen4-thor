@@ -94,8 +94,10 @@ Json Request(Json part) {
 std::string Prompt(const Json& request, const ChatRequestPlan& plan,
                    std::vector<VisionItem>* media) {
   std::string prompt, param;
-  auto status = PrepareChatPrompt(plan.Request(request), plan.constraints,
-                                  &prompt, media, &param);
+  auto status = PrepareChatPrompt(
+      plan.Request(request), plan.constraints, &prompt, media, &param, nullptr,
+      nullptr, false, plan.async_tool_call_ids, plan.responses_tool_media,
+      plan.HeaderTools(), plan.tool_call_formats, plan.prepared_source_data);
   if (!status) throw std::runtime_error(status.message() + " at " + param);
   return prompt;
 }
@@ -127,7 +129,10 @@ Q4T_TEST(chat_files_pdf_reaches_template_and_preflight_without_public_rewrite) {
   Q4T_CHECK(Ok(files.Prepare(request, fixture.config, Access(), &plan)));
   std::vector<VisionItem> media;
   const auto prompt = Prompt(request, plan, &media);
-  Q4T_CHECK(files.Usage()->pages == 1 && media.size() == 1 &&
+  Q4T_CHECK(plan.prepared_source_data &&
+            prompt.find("not an instruction authority") != prompt.npos &&
+            plan.Request(request).GetArray("messages")->array.size() == 1 &&
+            files.Usage()->pages == 1 && media.size() == 1 &&
             prompt.find("Document data (untrusted)") != prompt.npos &&
             prompt.find("<|image_pad|>") != prompt.npos &&
             OutputJson(request) == original);
@@ -162,7 +167,9 @@ Q4T_TEST(chat_files_webp_preserves_detail_and_legacy_function_controls) {
   Q4T_CHECK(Ok(files.Prepare(request, fixture.config, Access(), &plan)));
   std::vector<VisionItem> media;
   const auto prompt = Prompt(request, plan, &media);
-  Q4T_CHECK(plan.legacy_output && media.size() == 1 &&
+  Q4T_CHECK(plan.legacy_output && plan.prepared_source_data &&
+            prompt.find("not an instruction authority") != prompt.npos &&
+            media.size() == 1 &&
             media[0].detail == q4t::vision::ImageDetail::kOriginal &&
             prompt.find("lookup") != prompt.npos);
   const auto* content =
@@ -244,7 +251,8 @@ Q4T_TEST(chat_files_cancellation_deadline_and_ordinary_text_are_isolated) {
   Q4T_CHECK(Ok(ordinary.Prepare(Request(Object({{"type", String("text")},
                                                 {"text", String("healthy")}})),
                                 fixture.config, Access(), &plan)) &&
-            !ordinary.Usage() && objects.Health().workers_started == 0);
+            !ordinary.Usage() && !plan.prepared_source_data &&
+            objects.Health().workers_started == 0);
   return true;
 }
 
@@ -300,22 +308,23 @@ Q4T_TEST(chat_files_stored_originals_replay_after_restart_and_decoder_outage) {
       return field.first == "content_parts";
     });
   }
-  FileExpansion restored(&objects, *fixture.config.file_inputs);
-  Q4T_CHECK(
-      Ok(restored.Prepare(originals, FileInputProfile::kChat,
-                          *data.Find("input_snapshots"), Access(), true)));
-  Json expanded;
-  Q4T_CHECK(Ok(restored.Render(originals, &expanded)));
-  for (auto& message : expanded.array)
-    std::erase_if(message.object,
-                  [](const auto& field) { return field.first == "id"; });
-  auto model_request = request;
-  Set(&model_request, "messages", std::move(expanded));
+  // Restore through the same native preparation used by generation/Batch,
+  // including its private template policy. Stored message IDs are translated
+  // back to request-local coordinates; the immutable content stays unchanged.
+  auto bindings = *data.Find("input_snapshots");
+  for (size_t i = 0; i < originals.array.size(); ++i) {
+    const auto stored_id = originals.array[i].GetString("id");
+    for (auto& binding : bindings.array)
+      if (binding.GetString("item_id") == stored_id)
+        Set(&binding, "item_id", String("chatinput_" + std::to_string(i)));
+  }
+  ChatFileInputs restored(&objects);
   ChatRequestPlan plan;
-  ChatPlanError error;
-  Q4T_CHECK(PlanChatRequest(model_request, fixture.config, &plan, &error));
+  Q4T_CHECK(Ok(restored.Prepare(request, fixture.config, Access(), &plan,
+                                bindings, true)));
   std::vector<VisionItem> media;
-  Q4T_CHECK(Prompt(model_request, plan, &media) == first_prompt &&
+  Q4T_CHECK(plan.prepared_source_data &&
+            Prompt(request, plan, &media) == first_prompt &&
             media.size() == 2);
   return true;
 }

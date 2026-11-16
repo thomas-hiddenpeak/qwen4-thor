@@ -7,6 +7,7 @@
 #include "q4t/server/responses_program.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/file_video.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -35,6 +36,15 @@ Status CheckContent(const io::Json& content) {
           (detail != "auto" && detail != "low" && detail != "high" &&
            detail != "original"))
         return Status::Fail("Invalid program image detail");
+    } else if (type == "input_file") {
+      FileInputSource source;
+      const auto parsed = ParseFileInputSource(
+          part, FileInputProfile::kResponsesStored, "result", &source);
+      if (!parsed.ok()) return Status::Fail(parsed.message);
+    } else if (type == "input_video_frames") {
+      io::Json mapped;
+      const auto parsed = MapPreparedVideoContent(part, &mapped, &param);
+      if (!parsed) return parsed;
     } else {
       return Status::Fail("Invalid program output content type");
     }
@@ -71,7 +81,7 @@ Status EncodeResponsesProgramOutput(const io::Json& content,
   bool media = false;
   for (size_t i = 0; i < parts.array.size(); ++i) {
     const auto& part = parts.array[i];
-    if (part.GetString("type") == "input_image")
+    if (part.GetString("type") != "input_text")
       media = true;
     else {
       if (i) text += '\n';

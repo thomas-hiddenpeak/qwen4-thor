@@ -1,0 +1,6 @@
+test_native_all_eight_providers_seal_without_external_mcp_process (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_native_all_eight_providers_seal_without_external_mcp_process) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.373s
+
+OK

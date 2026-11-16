@@ -9,6 +9,7 @@
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/file_input.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/request_json.h"
@@ -113,7 +114,8 @@ bool StrictDefaults(Json* schema, size_t depth = 0) {
   return true;
 }
 Status Parts(const Json& value, const std::string& role, std::string_view path,
-             Json* content, ChatPlanError* error, bool preparing_files) {
+             Json* content, ChatPlanError* error, bool preparing_files,
+             bool prepared_file_media) {
   if (value.IsString()) {
     *content = value;
     return {};
@@ -137,7 +139,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
         &cache_boundary, &cache_ttl, &error->param);
     if (!status) return status;
     if (part.Has("prompt_cache_breakpoint") && type != "input_text" &&
-        type != "input_image" && type != "input_file")
+        type != "input_image" && type != "input_file" &&
+        !(prepared_file_media && type == "input_video_frames"))
       return Invalid(error, at + ".prompt_cache_breakpoint",
                      "Cache breakpoints require an input content block");
     Json mapped;
@@ -209,6 +212,9 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
       mapped = Object({{"type", String("image_url")},
                        {"image_url", Object({{"url", *part.Find("image_url")},
                                              {"detail", String(detail)}})}});
+    } else if (type == "input_video_frames" && prepared_file_media) {
+      status = MapPreparedVideoContent(part, &mapped, &error->param);
+      if (!status) return Invalid(error, at, status.message());
     } else if (type == "input_file") {
       return Unresolved(error, at);
     } else {
@@ -416,7 +422,8 @@ Status PlanResponsesToolIdentities(
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
                                bool allow_empty, bool preparing_files,
-                               bool preparing_mcp, const Json* mcp_content) {
+                               bool preparing_mcp, const Json* mcp_content,
+                               bool prepared_file_media) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -604,7 +611,7 @@ Status NormalizeResponsesInput(const io::Json& request,
         if (!prepared || !prepared->IsArray())
           return Unresolved(error, path + ".output");
         status = Parts(*prepared, "tool", path + ".output", &content, error,
-                        preparing_files);
+                       preparing_files, true);
         if (!status) return status;
       }
       results.emplace_back(Object({{"role", String("tool")},
@@ -651,7 +658,7 @@ Status NormalizeResponsesInput(const io::Json& request,
             DecodeResponsesProgramOutput(item.GetString("result"), &content);
         if (status)
           status = Parts(content, "tool", path + ".result", &mapped, error,
-                         preparing_files);
+                         preparing_files, true);
         if (!status) return status;
         results.emplace_back(Object({{"role", String("tool")},
                                      {"tool_call_id", String(id)},
@@ -711,7 +718,7 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (!value) return Invalid(error, path + ".content", "content required");
       Json content;
       status = Parts(*value, role, path + ".content", &content, error,
-                     preparing_files);
+                     preparing_files, prepared_file_media);
       if (!status) return status;
       if (const auto* phase = item.Find("phase"); phase && !phase->IsNull()) {
         if (role != "assistant" || !phase->IsString() ||
@@ -1009,7 +1016,7 @@ Status NormalizeResponsesInput(const io::Json& request,
         return Invalid(error, path + ".output", "tool output required");
       Json content;
       status = Parts(*value, "tool", path + ".output", &content, error,
-                     preparing_files);
+                     preparing_files, prepared_file_media);
       if (!status) return status;
       results.emplace_back(Object({{"role", String("tool")},
                                    {"tool_call_id", String(id)},

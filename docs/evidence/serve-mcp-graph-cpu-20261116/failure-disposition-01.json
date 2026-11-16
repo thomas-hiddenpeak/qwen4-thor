@@ -1,0 +1,9 @@
+{
+  "failed": [
+    "mcp_graph_sharepoint_download_actual_http_strips_all_credentials",
+    "mcp_graph_sharepoint_size_errors_never_return_partial_content"
+  ],
+  "root_cause": "Local test peer retained production HTTPS-only download policy while mapping to HTTP loopback. Explicitly grant HTTP only in test fixture; production policy unchanged.",
+  "rerun": "only two failed download cases",
+  "production_changed": false
+}

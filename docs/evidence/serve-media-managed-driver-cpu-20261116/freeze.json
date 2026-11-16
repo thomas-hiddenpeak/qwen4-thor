@@ -1,0 +1,26 @@
+{
+  "sources": {
+    "tools/serve_recovery/test_gateway_capacity.py": "c80e68855e30d21df7d95b0f9c1a4247ff4850c9c33ff9fe4d38e67ff5d2e002",
+    ".q4t-work/serve-managed-vision-20261116/managed_media.py": "868b582dbadaf86f089f4be823697e4af2c44597479477b5f91b29cc6cfba5dc",
+    ".q4t-work/serve-managed-vision-20261116/test_managed_media.py": "e9f1118d84bad16779ded6b234555faf6ffb4161588906f4c7de75ad7f492a3b"
+  },
+  "cpu": [
+    "tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests.test_actual_gate_accepts_joint_media_and_refuses_disabled_media",
+    "private DriverTests: 4 actual helper, bound and isolated sealed import controls"
+  ],
+  "gpu_limits": {
+    "starts": 3,
+    "chats": 12,
+    "probes": 0,
+    "controls": 4000,
+    "seconds": 900
+  },
+  "pressure": {
+    "target_mib": 23552,
+    "floor_mib": 20480,
+    "max_mib": 24576,
+    "chunk_mib": 128,
+    "seconds": 120
+  },
+  "purpose": "actual managed primary/light/primary with frozen media, tool and quota continuity; no kernel/performance/full model checks"
+}

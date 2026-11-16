@@ -1,0 +1,10 @@
+{
+  "command": "run",
+  "exit_code": 2,
+  "timed_out": false,
+  "seconds": 0.03428644686937332,
+  "raw_bytes": 16499,
+  "decoded_string_bytes": 16384,
+  "stdout": "",
+  "stderr": ""
+}

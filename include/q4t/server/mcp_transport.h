@@ -22,6 +22,8 @@ struct McpEndpoint {
   std::string tunnel_id{};
   std::string tunnel_generation{};
   std::string tunnel_channel = "main";
+  // Deployment-selected native adapter. Mutually exclusive with URL/tunnel.
+  std::string provider_id{};
 };
 // Private, authenticated session state. Persist only inside sealed MCP
 // authority, never in public items, model input, metrics or ordinary logs.

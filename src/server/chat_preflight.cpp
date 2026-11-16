@@ -208,7 +208,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   status = PrepareChatPrompt(
       req, plan.constraints, &prompt, &items, &error.param, &error.code,
       nullptr, false, plan.async_tool_call_ids, plan.responses_tool_media,
-      plan.HeaderTools(), plan.tool_call_formats);
+      plan.HeaderTools(), plan.tool_call_formats, plan.prepared_source_data);
   if (status) {
     ChatResponseParser parser;
     status = parser.Init(req, prompt, "preflight", true, plan.legacy_output);

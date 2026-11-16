@@ -30,6 +30,13 @@ jobs:
           test -f /usr/include/zlib.h || packages+=(zlib1g-dev)
           test -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)
           test -f /usr/include/LibreOfficeKit/LibreOfficeKit.h || packages+=(libreofficekit-dev)
+          command -v pkg-config >/dev/null || packages+=(pkg-config)
+          for codec in libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+              gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+              gstreamer1.0-plugins-bad; do
+            dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \
+              grep -q 'install ok installed' || packages+=("$codec")
+          done
           for codec in libreoffice-writer libreoffice-calc libreoffice-impress; do
             dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \
               grep -q 'install ok installed' || packages+=("$codec")

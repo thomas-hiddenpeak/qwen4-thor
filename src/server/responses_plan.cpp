@@ -593,11 +593,10 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
   auto request = envelope.request;
   Set(&request, "input", resolved_input);
   ResponsesInputPlan input;
-  auto status = NormalizeResponsesInput(request, &input, error,
-                                        config.count_input_only, true, false,
-                                        envelope.mcp_content.IsNull()
-                                            ? nullptr
-                                            : &envelope.mcp_content);
+  auto status = NormalizeResponsesInput(
+      request, &input, error, config.count_input_only, true, false,
+      envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
+      envelope.prepared_file_media);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
   status = GenerationOptions(envelope, &options, effective_tools, error,
@@ -627,11 +626,10 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   ResponsesGenerationPlan result;
   auto request = envelope.request;
   Set(&request, "input", resolved_input);
-  auto status = NormalizeResponsesInput(request, &result.input, error,
-                                        config.count_input_only, false, false,
-                                        envelope.mcp_content.IsNull()
-                                            ? nullptr
-                                            : &envelope.mcp_content);
+  auto status = NormalizeResponsesInput(
+      request, &result.input, error, config.count_input_only, false, false,
+      envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
+      envelope.prepared_file_media);
   if (!status) return status;
   for (size_t i = 0; i < result.input.items.array.size(); ++i)
     result.input_source_indices.push_back(i);
@@ -716,6 +714,9 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     OptionErrorParam(error);
     return status;
   }
+  result.chat.prepared_source_data =
+      envelope.prepared_file_media ||
+      (envelope.mcp_content.IsObject() && !envelope.mcp_content.object.empty());
   *plan = std::move(result);
   return {};
 }
@@ -774,8 +775,7 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
       const auto type = items[i].GetString("type");
       if (i < cut && type != "additional_tools" && type != "tool_search_call" &&
           type != "tool_search_output" && type != "program" &&
-          type != "program_output" &&
-          !type.starts_with("mcp_") &&
+          type != "program_output" && !type.starts_with("mcp_") &&
           !(items[i].Find("caller") &&
             items[i].Find("caller")->GetString("type") == "program"))
         continue;

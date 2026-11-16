@@ -69,8 +69,8 @@ ObjectReply Read(InputSnapshotStore& store, Fixture& fixture,
 }
 bool Empty(const FileInputSnapshot& input) {
   return input.source.content.bytes.empty() && input.document.text.empty() &&
-         input.document.pages.empty() && input.document.sheets.empty() &&
-         input.document.source_sha256.empty();
+         input.document.pages.empty() && input.document.videos.empty() &&
+         input.document.sheets.empty() && input.document.source_sha256.empty();
 }
 std::string Upload(ObjectStore& objects, std::string_view bytes) {
   FileUpload upload(objects, Access(), "multipart/form-data; boundary=snap");
@@ -86,6 +86,121 @@ std::string Upload(ObjectStore& objects, std::string_view bytes) {
   return result.value.GetString("id");
 }
 }  // namespace
+
+Q4T_TEST(file_snapshot_video_v3_roundtrip_without_codec_and_strict_integrity) {
+  Fixture f;
+  auto source = f.Extract("file_video", "vp9.webm");
+  Q4T_CHECK(source.document.videos.size() == 1);
+  ObjectStore objects(f.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+  InputSnapshot raw;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &raw)) &&
+            raw.metadata.GetString("format") == "q4t.file_input_snapshot.v3" &&
+            raw.parts.size() == 7 &&
+            raw.parts[0] == source.source.content.bytes);
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileInputSnapshot replay;
+  Q4T_CHECK(Ok(Read(snapshots, f, reference, &replay)) &&
+            replay.document.videos[0].pixels.frames.size() == 6 &&
+            OutputJson(replay.document.videos[0].pixels.conversion) ==
+                OutputJson(source.document.videos[0].pixels.conversion));
+  for (size_t i = 0; i < 6; ++i)
+    Q4T_CHECK(replay.document.videos[0].pixels.frames[i].png ==
+                  source.document.videos[0].pixels.frames[i].png &&
+              replay.document.videos[0].pixels.frames[i].duration_ns ==
+                  500000000ULL);
+  for (int mode = 0; mode < 5; ++mode) {
+    auto bad = source;
+    if (mode == 0) bad.document.videos.clear();
+    if (mode == 1) bad.document.videos.push_back(bad.document.videos[0]);
+    if (mode == 2) bad.document.videos[0].pixels.frames[0].timestamp_ns = 1;
+    if (mode == 3) bad.document.videos[0].source_path = {"unknown.webm"};
+    if (mode == 4) bad.document.videos[0].pixels.frames[0].duration_ns = 1;
+    InputSnapshotRef rejected;
+    InputSnapshotHold rejected_hold;
+    Q4T_CHECK(!Save(snapshots, f, bad, &rejected, &rejected_hold).ok());
+    Q4T_CHECK(rejected.id.empty() && rejected_hold.id.empty());
+  }
+  f.extraction.video.max_scanned_frames = 5;
+  Q4T_CHECK(Read(snapshots, f, reference, &replay).http_status == 413 &&
+            Empty(replay));
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  return true;
+}
+
+Q4T_TEST(file_snapshot_nested_video_paths_and_raw_tampering_are_checked) {
+  Fixture f;
+  const auto source = f.Extract("file_video", "wrapped-video.docx");
+  Q4T_CHECK(
+      source.document.videos.size() == 1 &&
+      source.document.videos[0].source_path ==
+          std::vector<std::string>({"word/inner.docx", "word/clip.webm"}));
+  ObjectStore objects(f.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+  InputSnapshot raw;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &raw)));
+  for (int mode = 0; mode < 7; ++mode) {
+    auto bad = raw;
+    auto& video = Field(bad.metadata, "videos").array[0];
+    auto& frame = Field(video, "frames").array[0];
+    if (mode == 0) Set(&frame, "part", Number(0));
+    if (mode == 1) Set(&frame, "timestamp_ns", Number(1));
+    if (mode == 2) Set(&video, "source_path", Array({String("missing.webm")}));
+    if (mode == 3)
+      Set(&Field(video, "conversion"), "source_sha256", String(Digest("bad")));
+    if (mode == 4) bad.parts.back() += "tampered";
+    if (mode == 5) Set(&frame, "duration_ns", Number(1));
+    if (mode == 6)
+      std::erase_if(frame.object, [](const auto& field) {
+        return field.first == "duration_ns";
+      });
+    std::vector<std::string_view> parts;
+    for (const auto& part : bad.parts) parts.push_back(part);
+    InputSnapshotRef rejected;
+    InputSnapshotHold rejected_hold;
+    Q4T_CHECK(Ok(snapshots.Save(Access(), kBinding, bad.metadata, parts, {}, 60,
+                                &rejected, &rejected_hold)));
+    FileInputSnapshot replay = source;
+    Q4T_CHECK(Read(snapshots, f, rejected, &replay).code ==
+                  "file_snapshot_inconsistent" &&
+              Empty(replay));
+    Q4T_CHECK(Ok(snapshots.Release(Access(), &rejected_hold)));
+  }
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  return true;
+}
+
+Q4T_TEST(file_snapshot_legacy_video_duration_stays_unknown_without_codec) {
+  Fixture f;
+  auto source = f.Extract("file_video", "vp9.webm");
+  auto& pixels = source.document.videos[0].pixels;
+  Set(&pixels.conversion, "format", String("q4t.cpu_video_png.v1"));
+  for (auto& frame : pixels.frames) frame.duration_ns = 0;
+  for (auto& frame : Field(pixels.conversion, "frames").array)
+    std::erase_if(frame.object,
+                  [](const auto& field) { return field.first == "duration_ns"; });
+  ObjectStore objects(f.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileInputSnapshot replay;
+  Q4T_CHECK(Ok(Read(snapshots, f, reference, &replay)));
+  const auto& restored = replay.document.videos[0].pixels;
+  Q4T_CHECK(restored.frames.size() == 6 && restored.duration_ns == 3000000000);
+  for (const auto& frame : restored.frames) Q4T_CHECK(!frame.duration_ns);
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  return true;
+}
 
 Q4T_TEST(
     file_snapshot_real_nested_pages_conversion_and_restart_without_codecs) {

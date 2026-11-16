@@ -1,0 +1,9 @@
+{
+  "source": "generate_nested.py; synthetic altChunk package boundary cases",
+  "video_sha256": "c7ca4f1261e62e936ab1def3169f716a00c05dc7c889ea4c4f8fb610f9f52b8f",
+  "sha256": {
+    "wrapped-video.docx": "142683ed5699cf77e6511c6c66a885f56e0df8894403e4cdebcdee2aae09d8c5",
+    "two-videos.docx": "8e57320b92e9ce27beafcc8a6fa19646765e22679e7df442cf8dea056940b4e1"
+  },
+  "gpu": false
+}

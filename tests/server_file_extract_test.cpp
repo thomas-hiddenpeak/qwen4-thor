@@ -77,6 +77,30 @@ bool Cell(const FileDocument& document, const char* value) {
 }
 }  // namespace
 
+Q4T_TEST(file_extract_nested_videos_share_scan_and_zero_work_budget) {
+  Fixture f;
+  FileDocument document;
+  const auto input = Input("file_video", "two-videos.docx");
+  f.options.video.max_scanned_frames = 12;
+  Q4T_CHECK(f.Read(input, &document).ok() && document.videos.size() == 2 &&
+            document.videos[0].pixels.scanned_frames == 6 &&
+            document.videos[1].pixels.scanned_frames == 6 && f.Clean());
+  f.options.video.max_scanned_frames = 11;
+  Q4T_CHECK(f.Read(input, &document).http_status == 413 &&
+            document.videos.empty() && document.text.empty() && f.Clean());
+  f.options.remaining_video_work = FileVideoWorkBudget{0, 0};
+  const auto before = f.control.counters->started.load();
+  Q4T_CHECK(f.Read(input, &document).http_status == 413 &&
+            document.videos.empty() && f.Clean());
+  // Only the package parser starts; exhausted video work never starts a codec.
+  Q4T_CHECK(f.control.counters->started == before + 1);
+  auto text = Input("file_video", "unused.txt");
+  text.bytes = "An unrelated text record";
+  Q4T_CHECK(f.Read(text, &document).ok() && document.videos.empty() &&
+            document.text == text.bytes && f.Clean());
+  return true;
+}
+
 Q4T_TEST(file_extract_actual_pages_text_and_conversion_identity) {
   Fixture fixture;
   const auto input = Input("file_adapters", "pages.pages");

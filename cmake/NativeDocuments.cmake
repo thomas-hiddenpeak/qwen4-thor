@@ -1,5 +1,6 @@
 # Only the isolated document worker dynamically loads these system codecs.
 include_guard(GLOBAL)
+include(${CMAKE_CURRENT_LIST_DIR}/NativeVideo.cmake)
 find_path(Q4T_ARCHIVE_INCLUDE_DIR archive.h REQUIRED)
 find_path(Q4T_XML_INCLUDE_DIR libxml/xmlreader.h PATH_SUFFIXES libxml2 REQUIRED)
 find_path(Q4T_LIBREOFFICE_INCLUDE_DIR LibreOfficeKit/LibreOfficeKit.h REQUIRED)
@@ -22,6 +23,7 @@ find_path(Q4T_ZLIB_INCLUDE_DIR zlib.h REQUIRED)
 set(Q4T_SYSTEM_WEBP_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libwebpdecoder.so.3")
 set(Q4T_SYSTEM_ZLIB_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libz.so.1")
 function(q4t_link_native_documents target)
+  q4t_configure_native_video(${target})
   target_include_directories(${target} SYSTEM PRIVATE
     ${Q4T_ARCHIVE_INCLUDE_DIR} ${Q4T_XML_INCLUDE_DIR}
     ${Q4T_LIBREOFFICE_INCLUDE_DIR} ${Q4T_WEBP_INCLUDE_DIR} ${Q4T_ZLIB_INCLUDE_DIR})

@@ -53,6 +53,7 @@ Status RenderChatPrompt(const io::Json& request,
                         std::span<const std::string> async_call_ids = {},
                         std::span<const io::Json> historical_tools = {},
                         const io::Json* header_tools = nullptr,
-                        std::span<const ChatToolCallFormat> call_formats = {});
+                        std::span<const ChatToolCallFormat> call_formats = {},
+                        bool prepared_source_data = false);
 
 }  // namespace q4t::server
