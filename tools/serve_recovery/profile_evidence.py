@@ -40,10 +40,14 @@ def media_business(value):
         ledger.require(type(encoded) is str and len(encoded) <= 256*1024,
                        'qualified media input size differs')
         raw = base64.b64decode(encoded, validate=True)
-        ledger.require(request == media_request(raw), 'qualified media request differs')
+        ledger.require(ledger.canonical(request) == ledger.canonical(media_request(raw)),
+                       'qualified media request differs')
         response = value['response']
         ledger.require(response['status'] == 'completed' and not response.get('error') and
-            response['usage']['input_tokens'] > 0, 'qualified media completion missing')
+            ledger.integer(response['usage']['input_tokens'], minimum=1),
+            'qualified media completion missing')
+        ledger.require(all(item.get('role') == 'assistant' for item in response['output']
+            if item['type'] == 'message'), 'qualified media assistant missing')
         content = [part for item in response['output'] if item['type'] == 'message'
                    for part in item['content']]
         ledger.require(content and all(part['type'] == 'output_text' for part in content),

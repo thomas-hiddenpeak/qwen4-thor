@@ -24,6 +24,36 @@ MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
     'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
 
 
+def media_capabilities(value):
+    """Represent reviewed optional-media activation as feature additions.
+
+    Disabling media, lowering/changing its observed device limit, or altering
+    any other media contract still fails extension. Automatic migration still
+    requires exact equivalence. Never discard the original observations.
+    """
+    runtime, media = value.get('runtime'), value.get('media')
+    if not isinstance(media, dict) or media.get('profile') != 'q4t-media-admission-v3':
+        return
+    ledger.require(type(runtime) is dict and type(runtime.get('media_enabled')) is bool,
+                   'missing optional media runtime observation')
+    enabled = runtime['media_enabled']
+    shared = media.get('attention_shared_bytes')
+    ledger.require((enabled and ledger.integer(shared, minimum=1)) or
+                   (not enabled and shared is None), 'invalid media device observation')
+    runtime['media_enabled'] = dict(enabled=True) if enabled else {}
+    media['attention_shared_bytes'] = {str(shared): True} if enabled else {}
+    video = value.get('file_inputs', {}).get('native_video')
+    if video is not None:
+        ledger.require(type(video) is dict and
+            video.get('profile') == 'q4t-native-video-input-v1' and
+            video.get('model_media_enabled') is enabled and
+            type(video.get('requires_mtp_disabled')) is bool,
+            'invalid native video media observation')
+        video['model_media_enabled'] = dict(enabled=True) if enabled else {}
+        video['requires_mtp_disabled'] = {} if video['requires_mtp_disabled'] else \
+            dict(joint_text_mtp=True)
+
+
 def semantic_capabilities(value):
     """Separate reviewed implementation identities from promised behavior.
 
@@ -35,6 +65,7 @@ def semantic_capabilities(value):
     template revisions and other changed values are not normalized.
     """
     result = copy.deepcopy(value)
+    media_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']

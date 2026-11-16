@@ -1,6 +1,7 @@
 """Qualify exact managed primary/light capacities with actual bounded business.
 
 Two starts, six Chat and two native embedding requests under one strict lease.
+Media profiles additionally require one actual video request on each profile.
 Final qualification is constructed only after guard exit and complete cleanup.
 This does not enable deployment or certify automatic managed profile switching.
 """
@@ -25,7 +26,7 @@ from tools.serve_ops import contracts
 from tools.serve_recovery import bundle, profile_contract, profile_evidence
 from tools.serve_responses import background_acceptance as background
 from tools.serve_responses import encryption_acceptance as encrypted
-from tools.serve_service import package
+from tools.serve_service import capacity, package
 from tools.serve_service.package import read, require, save, sha
 
 LIMITS = dict(starts=2, chats=8, controls=2000, seconds=900)
@@ -33,7 +34,12 @@ DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
 SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
-def requests():
+def limits_for(profile):
+    capacity.validate(profile)
+    return dict(LIMITS, chats=10 if profile.get('allow_media', False) else 8)
+
+
+def requests(media=False):
     base = dict(model='qwen3.8-flash-next', temperature=0,
                 enable_thinking=False, max_completion_tokens=256)
     schema = dict(type='object', properties=dict(answer=dict(type='integer', const=42)),
@@ -42,7 +48,7 @@ def requests():
         description='Read an actual project document and return its SHA256 digest.',
         parameters=dict(type='object', properties=dict(path=dict(type='string', const=DOCUMENT)),
                         required=['path'], additionalProperties=False)))
-    return dict(
+    result = dict(
         schema=dict(base, messages=[dict(role='user', content='Compute 17+25 as JSON.')],
             response_format=dict(type='json_schema', json_schema=dict(
                 name='arithmetic', strict=True, schema=schema))),
@@ -51,6 +57,10 @@ def requests():
             tools=[tool], tool_choice='required', parallel_tool_calls=False),
         embedding=dict(model='qwen3-embedding-0.6b', input='!',
                        dimensions=32, encoding_format='float'))
+    if media:
+        result['media'] = profile_evidence.media_request(
+            (ROOT/profile_evidence.MEDIA_FILE).read_bytes())
+    return result
 
 
 def command(plan, name, directory):
@@ -118,12 +128,25 @@ def candidate_build_base(base, binary, directory):
 
 
 def prepare(args):
-    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
-    path = args.output.resolve()/'plan.json'
-    plan = read(path)
     engine = args.package.resolve()/'engine'
     base = read(engine/'manifest.json')
     manifest = read(engine.parent/'manifest.json')
+    selected_path = getattr(args, 'capacity_config', None)
+    selected = capacity.normalize(read(selected_path)) if selected_path else \
+        capacity.validate(base['settings']['profile'])
+    profiles = profile_contract.profiles(selected)
+    media = selected.get('allow_media', False)
+    limits = limits_for(selected)
+    background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
+    path = args.output.resolve()/'plan.json'
+    plan = read(path)
+    if selected_path:
+        selected_path = selected_path.resolve(strict=True)
+        plan['sources'][str(selected_path)] = sha(selected_path)
+        plan['explicit_capacity'] = dict(path=str(selected_path),
+            sha256=sha(selected_path), previous=copy.deepcopy(base['settings']['profile']),
+            selected=selected, default_unchanged=True)
+        base['settings']['profile'] = selected
     release = getattr(args, 'candidate_release', None)
     build = getattr(args, 'candidate_build', None)
     require(not (release and build), 'select one candidate identity source')
@@ -156,10 +179,12 @@ def prepare(args):
             'this acceptance requires the delivered native embedding backend')
     require(not base['settings']['application_state']['directory'],
             'qualification must use a private application directory')
-    plan.update(base=base, profiles=profile_contract.profiles(base['settings']['profile']),
+    plan.update(base=base, profiles=profiles,
         identity=profile_contract.binding(base['files']['q4t'], base['protocol_sha256'],
             base['model_files'], manifest['model_assets'], base['settings']['native_embedding']))
     plan['sources'][DOCUMENT] = sha(ROOT/DOCUMENT)
+    if media:
+        plan['sources'][profile_evidence.MEDIA_FILE] = sha(ROOT/profile_evidence.MEDIA_FILE)
     plan['sources'][str(engine/'manifest.json')] = sha(engine/'manifest.json')
     assets = Path(base['settings']['native_embedding']['directory'])
     plan['native_assets'] = {str(assets/name):sha(assets/name) for name in
@@ -169,9 +194,10 @@ def prepare(args):
         if (engine/name).is_file():
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)
-    plan['planned'] = dict(starts=2, requests=8, chats=6, native_embeddings=2,
+    plan['planned'] = dict(starts=2, requests=limits['chats'], chats=6,
+                           native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
-    plan['mutations'] = ['gracefully stop owned primary after four requests',
+    plan['mutations'] = ['gracefully stop owned primary after its bounded business',
         'start only qualified light command in same lease/private directory',
         'default deployment and its state remain untouched']
     plan['derived_requests'] = ['tool results computed from actual fixed project file',
@@ -185,6 +211,12 @@ class Stage(encrypted.Stage):
     request_templates = staticmethod(requests)
     success_status = SUCCESS
     requests_per_minute = 16
+
+    def __init__(self, plan):
+        selected = plan['profiles']['primary']
+        self.limits = limits_for(selected)
+        self.request_templates = lambda: requests(selected.get('allow_media', False))
+        super().__init__(plan)
 
     def start(self):
         name = profile_contract.NAMES[self.counts['starts']]
@@ -251,7 +283,11 @@ class Stage(encrypted.Stage):
         embedding = self.request('embedding', rows['embedding'], '/v1/embeddings')
         value = dict(schema=schema, tool_call=call, tool_result=result,
                      tool_reply=reply, tool_source=source, embedding=embedding)
-        profile_evidence.business(value, self.plan['identity'])
+        selected = self.plan['profiles'][self.profile_name]
+        if selected.get('allow_media', False):
+            value['media'] = dict(request=copy.deepcopy(rows['media']),
+                response=self.request('media', rows['media'], '/v1/responses'))
+        profile_evidence.business(value, self.plan['identity'], selected)
         save(self.out/(self.profile_name+'-business.json'), value)
 
     def business(self):
@@ -286,8 +322,9 @@ def environment(exit_record, queries, cleanups):
 def finalize(out):
     plan = read(out/'plan.json')
     result = read(out/'result.json')
+    limits = limits_for(plan['profiles']['primary'])
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
-        result['counts']['chats'] == 8 and result['seconds'] < LIMITS['seconds'],
+        result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
     for name, digest in {**plan['sources'], **plan['protected'], **plan['native_assets']}.items():
         require(sha(ROOT/name) == digest, 'postflight identity drift: '+name)
@@ -311,7 +348,7 @@ def finalize(out):
                     profiles=plan['profiles'], qualifications={})
     for name in profile_contract.NAMES:
         config = read(out/(name+'-config.json'))
-        value = dict(format=profile_evidence.FORMAT, profile=name,
+        value = dict(format=profile_evidence.format_for(plan['profiles'][name]), profile=name,
             identity=plan['identity'], capacity=plan['profiles'][name],
             capabilities=read(out/(name+'-capabilities.json')),
             configuration=contracts.configuration(config, version=5),
@@ -344,6 +381,8 @@ def main():
                    help='accepted new engine identity with retained package settings')
     candidate.add_argument('--candidate-build', type=Path,
                    help='unsealed compiled build to qualify before release packaging')
+    p.add_argument('--capacity-config', type=Path,
+                   help='explicit versioned candidate capacity; retained package stays unchanged')
     p.add_argument('--port', type=int, default=19069)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     p = sub.add_parser('finalize'); p.add_argument('--output', type=Path, required=True)

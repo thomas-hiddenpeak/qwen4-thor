@@ -104,6 +104,25 @@ class QualificationDriverTests(unittest.TestCase):
                 self.assertEqual(args.count(flag), 1)
                 self.assertEqual(args[args.index(flag)+1], value)
 
+    def test_media_commands_and_plan_require_two_additional_real_requests(self):
+        from tools.serve_recovery import profile_evidence
+        selected = capacity.normalize(dict(version=2, allow_media=True))
+        base = dict(model_dir='/readonly/model', settings=package.settings(18186,0,
+            operations_port=18187,capacity_profile=selected))
+        plan = dict(base=base,profiles=profile_contract.profiles(selected),
+                    port=18186,operations_port=18187,binary='/candidate/q4t')
+        commands = [stage.command(plan,n,Path('/private/state')) for n in ('primary','light')]
+        self.assertTrue(all('--allow-media' in a for a in commands))
+        primary = commands[0][:];primary[primary.index('--mtp')] = '--no-mtp'
+        self.assertEqual(primary,commands[1])
+        self.assertEqual(stage.limits_for(selected),dict(stage.LIMITS,chats=10))
+        self.assertEqual(stage.limits_for(capacity.normalize(dict(version=1))),stage.LIMITS)
+        self.assertNotIn('media',stage.requests())
+        row = stage.requests(True)['media']
+        profile_evidence.media_business(dict(request=row,response=dict(status='completed',
+            usage=dict(input_tokens=100),output=[dict(type='message',role='assistant',content=[
+                dict(type='output_text',text='{"start":"red","end":"blue"}')])])))
+
     def test_failed_or_missing_environment_cannot_certify_business(self):
         exit_record = dict(status='COMPLETED', child_returncode=0,
                            compute_backend='nvml', lease_inherited_by_child=True)

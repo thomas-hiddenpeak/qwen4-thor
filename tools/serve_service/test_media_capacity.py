@@ -148,6 +148,9 @@ class MediaEvidenceTests(unittest.TestCase):
                 lambda r:r.update(format=profile_evidence.FORMAT),
                 lambda r:r['business']['media'].update(response=r['business']['schema']),
                 lambda r:r['business']['media']['request']['input'][0]['content'][0].update(file_data=''),
+                lambda r:r['business']['media']['request'].update(temperature=False),
+                lambda r:r['business']['media']['response']['usage'].update(input_tokens=True),
+                lambda r:r['business']['media']['response']['output'][0].update(role='user'),
                 lambda r:r['business']['media']['response']['output'][0]['content'][0].update(text='{"start":"blue","end":"red"}')]:
                 bad = copy.deepcopy(self.records[name]);mutate(bad)
                 with self.assertRaises(ValueError):
