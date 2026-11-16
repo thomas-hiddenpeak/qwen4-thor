@@ -171,7 +171,7 @@
         "pull_request": 36
       },
       "chat_moderation_20261117": {
-        "state": "repair_cpu_accepted_runtime_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
         "cpu_limit": 26,
         "frontend_limit": 8,
@@ -181,16 +181,16 @@
           "seconds": 900
         },
         "default_revision": 196,
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "whole_task_complete": false,
         "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
         "cpp_tests": 26,
         "frontend_unique_cases": 8,
-        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0",
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
         "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
-        "actual_starts": 4,
-        "actual_requests": 15,
-        "actual_seconds": 204.2592144268565,
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
         "repair_cpu_cases": 10,
         "repair_limits": {
           "starts": 4,
@@ -204,7 +204,10 @@
         },
         "pull_request": 37,
         "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
-        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0"
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17
       }
     },
     {
@@ -2946,7 +2949,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_moderation_20261117": {
-        "state": "repair_cpu_accepted_runtime_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
         "cpu_limit": 26,
         "frontend_limit": 8,
@@ -2956,16 +2959,16 @@
           "seconds": 900
         },
         "default_revision": 196,
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "whole_task_complete": false,
         "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
         "cpp_tests": 26,
         "frontend_unique_cases": 8,
-        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0",
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
         "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
-        "actual_starts": 4,
-        "actual_requests": 15,
-        "actual_seconds": 204.2592144268565,
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
         "repair_cpu_cases": 10,
         "repair_limits": {
           "starts": 4,
@@ -2979,7 +2982,10 @@
         },
         "pull_request": 37,
         "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
-        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0"
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17
       }
     },
     {
@@ -4321,7 +4327,7 @@
         "pull_request": 36
       },
       "chat_moderation_20261117": {
-        "state": "repair_cpu_accepted_runtime_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
         "cpu_limit": 26,
         "frontend_limit": 8,
@@ -4331,16 +4337,16 @@
           "seconds": 900
         },
         "default_revision": 196,
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "whole_task_complete": false,
         "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
         "cpp_tests": 26,
         "frontend_unique_cases": 8,
-        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0",
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
         "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
-        "actual_starts": 4,
-        "actual_requests": 15,
-        "actual_seconds": 204.2592144268565,
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
         "repair_cpu_cases": 10,
         "repair_limits": {
           "starts": 4,
@@ -4354,7 +4360,10 @@
         },
         "pull_request": 37,
         "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
-        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0"
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17
       }
     },
     {

@@ -88,6 +88,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat审核真实业务接受](evidence/serve-chat-moderation-business-20261117/README.md)：
+修复组4启动/17外部请求/238.768秒，通过原输入block、批准SSE、多
+choice score、存储重启及客户隔离；内部分类另记12步。原失败保留，
+累计8启动/32请求/443.027秒，全部自有资源清理。新引擎`e016bd5f`
+和主轻/两种保留包已验，默认仍rev196；继续可回退发行及PR37合main。
+全部33项master仍active，不将本阶段接受当作总目标完成。
+
 [分类数据修复CPU通过](evidence/serve-chat-moderation-repair-cpu-20261117/README.md)：
 10项直接用例、726/7来源和隔离零警告构建通过；记录仍原样嵌入，
 未改阈值或拒绝保护。继续使用原失败输入短验，未声明运行时修复。
