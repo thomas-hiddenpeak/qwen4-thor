@@ -1,0 +1,24 @@
+{
+  "status": "BLOCKED_DELIVERY_ACTUAL_VISUAL_REGRESSION",
+  "candidate": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659",
+  "original_starts": 1,
+  "original_requests": 5,
+  "seconds": 46.045873421709985,
+  "actual_media_refusal": true,
+  "same_request_as_accepted_rev204": true,
+  "original_response_preserved": true,
+  "nvml_queries": 45,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "cumulative_starts": 4,
+  "cumulative_requests": 27,
+  "cumulative_seconds": 202.2882280210033,
+  "private_session_restore_tokens": 8709,
+  "default_unchanged": true,
+  "archive_sha256": "59177bcea933b7483a332176d2bff75510eaf8e8710bbe1a9b2597f574a67df9",
+  "next_diagnostic": {
+    "starts": 1,
+    "requests": 3,
+    "seconds": 300
+  }
+}

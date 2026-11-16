@@ -26,7 +26,7 @@
     },
     "messages": {
       "semantics": "qwen3.8-openai-v4：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
-      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。assistant url_citation历史现校验字符偏移并进入原模板，未据此执行联网检索；audio历史和完整媒体缓存仍是A02/A10待实现项。",
+      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。assistant url_citation历史现校验字符偏移并进入原模板，未据此执行联网检索；audio历史和完整媒体缓存仍是A02/A10待实现项。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -48,7 +48,11 @@
         "docs/evidence/serve-managed-vision-business-20261116/README.md",
         "docs/evidence/serve-video-geometry-business-20261116/README.md",
         "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "docs/SERVE_CHAT_ANNOTATIONS_2026-11-16.md"
+        "docs/SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "max_tokens": {
@@ -324,7 +328,7 @@
     },
     "session_id": {
       "semantics": "同进程独占 SSD KV cache 能力 key",
-      "boundary": "显式启用，按认证客户端命名空间隔离；缓存不是持久会话。原生独立worker隔离文件I/O，失能按miss/save失败继续，取消清理有界且不重启模型。文本及结构化组合已交付；媒体身份/MRoPE/恢复仍待A05/A10。",
+      "boundary": "显式启用，按认证客户端命名空间隔离；缓存不是持久会话。原生独立worker隔离文件I/O，失能按miss/save失败继续，取消清理有界且不重启模型。文本及结构化组合已交付；媒体身份/MRoPE/恢复仍待A05/A10。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -332,12 +336,16 @@
         "tests/server_session_isolation_test.cpp",
         "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
         "docs/evidence/serve-cache-route-delivery-20261112/README.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "prefix_cache_scope": {
       "semantics": "同进程共享前缀 cache 能力 key",
-      "boundary": "显式启用，按认证客户端命名空间隔离；缓存不是持久会话。原生独立worker隔离文件I/O，失能按miss/save失败继续，取消清理有界且不重启模型。文本及结构化组合已交付；媒体身份/MRoPE/恢复仍待A05/A10。",
+      "boundary": "显式启用，按认证客户端命名空间隔离；缓存不是持久会话。原生独立worker隔离文件I/O，失能按miss/save失败继续，取消清理有界且不重启模型。文本及结构化组合已交付；媒体身份/MRoPE/恢复仍待A05/A10。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -345,12 +353,16 @@
         "tests/server_session_isolation_test.cpp",
         "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
         "docs/evidence/serve-cache-route-delivery-20261112/README.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "prefix_cache_write_tokens": {
       "semantics": "原文精确整数 0 或 [1024,131072]",
-      "boundary": "正值需要prefix_cache_scope；仍受槽位和缓存布局限制。文件I/O及取消已隔离，不能由此推断媒体状态缓存可用。",
+      "boundary": "正值需要prefix_cache_scope；仍受槽位和缓存布局限制。文件I/O及取消已隔离，不能由此推断媒体状态缓存可用。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -359,7 +371,11 @@
         "tests/server_session_isolation_test.cpp",
         "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
         "docs/evidence/serve-cache-route-delivery-20261112/README.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "parse_response": {
@@ -483,14 +499,18 @@
     },
     "prompt_cache_key": {
       "semantics": "标准缓存分组键：最多512个Unicode字符；按已认证客户端和键摘要隔离，实际 token 前缀与布局仍须相等。",
-      "boundary": "A07.6文本路径已实际验收交付；有界SSD匿名快照，缓存故障回退正常推理。实际token/布局相等才命中，不是远端托管缓存等价实现；媒体指纹和MRoPE仍待A10。",
+      "boundary": "A07.6文本路径已实际验收交付；有界SSD匿名快照，缓存故障回退正常推理。实际token/布局相等才命中，不是远端托管缓存等价实现；媒体指纹和MRoPE仍待A10。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "tests/server_prompt_cache_test.cpp",
         "tests/server_session_isolation_test.cpp",
         "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
         "docs/evidence/serve-prompt-cache-delivery-20261110/README.md",
         "docs/evidence/serve-cache-route-delivery-20261112/README.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "prompt_cache_retention": {
@@ -544,7 +564,7 @@
     },
     "prompt_cache_options": {
       "semantics": "Chat独立mode/ttl合同，默认隐式；显式内容断点映射真实模板/token边界，最近80查找及最多4写槽。",
-      "boundary": "20项C++及8项实际SSD/JSON/SSE/隔离业务、精确主轻/版本恢复及rev174发行通过；媒体状态指纹仍必做。",
+      "boundary": "20项C++及8项实际SSD/JSON/SSE/隔离业务、精确主轻/版本恢复及rev174发行通过；媒体状态指纹仍必做。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
       "evidence": [
         "docs/SERVE_CHAT_CACHE_2026-11-16.md",
         "tests/server_prompt_cache_test.cpp",
@@ -552,7 +572,11 @@
         "tools/serve_protocol/test_chat_cache.py",
         "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
         "docs/evidence/serve-chat-cache-business-20261116/README.md",
-        "docs/evidence/serve-chat-cache-delivery-20261116/README.md"
+        "docs/evidence/serve-chat-cache-delivery-20261116/README.md",
+        "src/server/media_cache.cpp",
+        "include/q4t/server/session_media.h",
+        "include/q4t/model/vision_positions.h",
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
       ]
     },
     "moderation": {
@@ -2098,8 +2122,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "bc7f648d2092bca5f5dfa1122a5bf6a31737bc7eb8c057bef6995c474c13d227",
-    "cmake/ChatProtocolIdentity.cmake": "9489b1f4cec1fb308b85af0234d6d40a15778120baec7fa43cfb8a2e1ea370fb",
+    "CMakeLists.txt": "060b2dca07890e3740a7d7a624d1a6c43e068ad4b813535460210463162252f5",
+    "cmake/ChatProtocolIdentity.cmake": "af64813af88249943618295c35fb05e5fe7395489240717e9f2e6189b917320f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2114,8 +2138,9 @@
     "include/q4t/model/embedding_config.h": "b486a5753102f490b129b91fc28f91557f6ed5dc3ee8a70ca5d189af149cb73c",
     "include/q4t/model/embedding_layout.h": "d4c6c8d1d5c86417217b31de116fa68edadcc3136587834f971fbff0df405e35",
     "include/q4t/model/embedding_model.h": "aaf03b7e00955aca3380eaf67924705d4c5691b4d8c8fccd0628c1f1d5ee3cf8",
+    "include/q4t/model/linear.h": "274df361d258cf3cef0256148f4c086cfd0d9bc03883bf35b6b415c74142089d",
     "include/q4t/model/model_head.h": "5c6f7a3202d8cbeb2918aa22263d8a24b8e56d92266251701dd804adcc10bd27",
-    "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
+    "include/q4t/model/vision_positions.h": "69e1f066a2c09a9e4f789bbfc0cfa2ea47b05a222d1eb26c8b1745684340d427",
     "include/q4t/ple/page_reader.h": "bbb35325c82421f6e9608a144672b051d3531b6652b6076d018fec0bff17e86e",
     "include/q4t/ple/ple_embedding.h": "9d61a76df2f96ee7831177de6d9de0c85e2fce1023dd5ba2b40780f2e123db30",
     "include/q4t/runtime/allocation_quota.h": "f3707f500c3dc5492bcd56e434c52e98b64cdfb83113139d32161ee3ddbb381c",
@@ -2124,6 +2149,7 @@
     "include/q4t/runtime/device_memory.h": "23a00cc4a04e7fde691f13fe1c046d7cc05a2661e5bf4fc7cbaeda72751a5585",
     "include/q4t/runtime/execution_progress.h": "5a4ef1dda8686eaa91ae60248ebe04dd5e85793b13a56126eaa3984453e7cb0a",
     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
+    "include/q4t/runtime/prefill_kernels.h": "a9321fc109a81b5d246142c4b303c7e3c1bb91e76304ccc66b66d19ed6909572",
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
@@ -2215,6 +2241,7 @@
     "include/q4t/server/mcp_tunnel.h": "1d8b7fa51d220209b7b5fc003d555eeef52adb0ba80dd9eef4494bd7ced310e5",
     "include/q4t/server/mcp_tunnel_agent.h": "a106be5294c3d2236f439a010968a5083f3ec673a6ac4b14a1291b2a66cd7069",
     "include/q4t/server/media_admission.h": "45f0cbecfdc50793763678837dbd890dd47abfe215c602ed24e798b6234a9367",
+    "include/q4t/server/media_cache.h": "777f159e51951bf15f9657cd5ad77930cf3349520abb2afa12ac5be82344e14a",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
@@ -2276,9 +2303,10 @@
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
     "include/q4t/server/server_options.h": "88f296ce1215537b9608d42638a1dd707807b9c52c2b7a3df6a01513f54a9d9f",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
-    "include/q4t/server/session_cache.h": "19706aeaac3c036d8325d7ae50c0e1198dfe507fc989cf6c4b5414d3dc530455",
+    "include/q4t/server/session_cache.h": "3cc4370484238700780acac554442c6d14d0f958c5b179b715c46c32b145064c",
+    "include/q4t/server/session_media.h": "7973093f19264f1860def6b2dc3259b451c242d721cc30ff0eca353f8b46a379",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
-    "include/q4t/server/session_state.h": "45ee23a8433b6dfce3d72f942ba4ad3bd0019cb25c5e20c7f219fb329af8d3e9",
+    "include/q4t/server/session_state.h": "0eabb5c168e1ffb993f890f7f146908f39d097531930f529de99d29b683c49ba",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "include/q4t/server/state_cipher.h": "d883cb8c11ccce3a39c7fadf5c9448b42086ec482258df8ca975d6782d2ec8f3",
     "include/q4t/server/state_key_admin.h": "29821475b37d3e3022d42eed0e0373d12de6a585dc0a7f874516276b6a3ed1cb",
@@ -2331,12 +2359,16 @@
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "fd855fab933d9538c6326c1d9d7d003e3d0e6af52c33f84b07bec7480513625e",
-    "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
+    "src/model/full_attention.cu": "b1b1a213200200eda05b2ed2d124d511e3b8bddff1f6335320641ff578d327ef",
+    "src/model/hyperconnection.cu": "34d71169ce8085a5552113378abafded52ee59afbbbae068d25f1cb8af3f6031",
+    "src/model/linear_attention.cu": "2ce56772fac0318ab01aca650a3d6d0d93222760b03d86677c3554902aa40c65",
+    "src/model/model.cu": "846b7a57d6b4ff3ac8e67974b6182722155a20cac9a985c092c6604c66cfcd52",
     "src/model/model_head.cu": "d480e1c6c898aa65a016ee454abe4447246a58c3c3e70c6db1559e27347fde45",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
     "src/ple/page_reader.cpp": "73745f84d482fb5ddbc341a570fa5148eb2ea1a037db79ea1e1d11eaef582f4d",
     "src/ple/ple_embedding.cpp": "5f2a8584698642f55d0b2931aa6f44fdf0571d49e0f9b8cf22a345ac6fd5f400",
+    "src/quant/moe_gemm.cu": "dfd3cefdf0cdbd107a9b3b16715e707bb621efc23a1c91b8c8b528a6dec1c1c1",
     "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
     "src/runtime/cuda_quota_backend.h": "ed5a378f24a18d4fbd91ee6a4473e5c14a93f10a9a221bf4a1e2c581ccf7e9ca",
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
@@ -2365,14 +2397,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "01e7fe1366946a8e6ece023ce2c91c922d12f9173bc4490b1cf66d9893dd86da",
+    "src/server/chat_capabilities.cpp": "547da80d03a230f3f087d922e0f40df3d25dd2f13195d34da4578f1159066939",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
     "src/server/chat_contract.cpp": "b6205aea0995e36b2f6943954423a7141deb2de8a99e88910e190296eec257b4",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "aaab934e9b674345684e612c62da6821711dc84702e2e88e37cff85f98d17b52",
+    "src/server/chat_generation.cpp": "ab7e7ca72a7a54fedb0e4c3719580b80749826358de949a8fe16d2b6db967fc5",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2509,7 +2541,8 @@
     "src/server/mcp_tunnel_api.cpp": "f7b6abc4f9a45861ce3dd07d9fb63be1a3a818370013cc92980781d4852f0d30",
     "src/server/mcp_tunnel_transport.cpp": "46fdacb5379eb33118e46c3066590f39a6ef08dfc64bd135673181d3f50e28d1",
     "src/server/mcp_tunnel_transport_internal.h": "0474e349f1f1256a19e4d2c71efedf3a2edc35337654b6ffc459672d2da36e3c",
-    "src/server/media_admission.cpp": "b063bbf933b38254d14d1ff0a8b84aa665cbec21a10f5b05e7864da874d1eee1",
+    "src/server/media_admission.cpp": "04b0181fb1ec214a653427e0577542493a05a677e371a272ded8d92a8318af32",
+    "src/server/media_cache.cpp": "ad3e2fae8415b04cd2cc233b7aaa61626704433c440675d478e7f69c14253a28",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
@@ -2597,8 +2630,8 @@
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "a08e932fe0d67acc7d18427b15f15a5417bddc10295ced2a3a3f92d385295e2f",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
-    "src/server/server_options.cpp": "d95b75f6a60cf0e144eb864afd985b7d6b90b46f03a2be768dd7b9cd139f217d",
-    "src/server/session_cache.cpp": "43263b8298973f4717a784272ceb7d1b06219781eb27ddd5d338a44fb4b40d2c",
+    "src/server/server_options.cpp": "116586b41b8aff99531b45e0ded14f324833595122763267531d00a8a0dbcfff",
+    "src/server/session_cache.cpp": "9d3d8b0b612fccd2b3e2bf418a3672b4c90736592da7cfc082d80d33b08d9e06",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
     "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
@@ -2741,7 +2774,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "6473a321124414d3c392253479b6fa9a38ce613db5943a67d73b95a5bddb157f",
+    "tools/serve_recovery/profile_migration.py": "ab9e6ddf8e26ca17b36321abecadc09315903a39930df956981665bfd6bf492e",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",

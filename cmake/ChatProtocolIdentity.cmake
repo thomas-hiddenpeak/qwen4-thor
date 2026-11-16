@@ -3,6 +3,12 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/runtime/prefill_kernels.h
+  include/q4t/model/linear.h
+  src/model/full_attention.cu
+  src/model/linear_attention.cu
+  src/model/hyperconnection.cu
+  src/quant/moe_gemm.cu
   include/q4t/server/moderation_options.h
   include/q4t/server/chat_moderation.h
   src/server/chat_moderation.cpp
@@ -161,6 +167,9 @@ set(protocol_inputs
   include/q4t/vision/forward_timing_core.h
   include/q4t/vision/media_plan.h
   src/vision/media_plan.cpp
+  include/q4t/server/media_cache.h
+  include/q4t/server/session_media.h
+  src/server/media_cache.cpp
   include/q4t/server/media_admission.h
   src/server/media_admission.cpp
   src/vision/vision.cu

@@ -514,6 +514,16 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             SequenceCompletion completion =
                                 SequenceCompletion::kWait);
 
+struct VisionPrefillPlan;
+// Continue a validated full visual prompt with absolute positions and the
+// corresponding slice of feature rows; permits chunk boundaries within an
+// image. Cache publication separately requires complete visual blocks.
+Status ModelPrefillVisionChunk(
+    const Model& m, ModelSequence* seq, const VisionPrefillPlan& plan,
+    const VisionFeatures& vision, int chunk_length, uint16_t* logits,
+    cudaStream_t stream,
+    SequenceCompletion completion = SequenceCompletion::kWait);
+
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
 // 等价于 ModelDecodeStep (history 由 seq 内部维护)。trunk_out 同上。

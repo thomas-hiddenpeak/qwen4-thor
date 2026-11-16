@@ -23,6 +23,7 @@
 
 #include "q4t/runtime/residency_config.h"
 #include "q4t/runtime/cleanup_policy.h"
+#include "q4t/runtime/prefill_kernels.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -553,7 +554,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  bool sequence_last_rows = false,
                  float** ssm_captures = nullptr,
                  uint16_t** qkv_raw_captures = nullptr,
-                 uint16_t** gated_n_captures = nullptr) {
+                 uint16_t** gated_n_captures = nullptr,
+                 bool prefill_kernels = false) {
   // Checkpoints describe the most recent successful verify only. Invalidate
   // before any layer mutates recurrent state, including failed forwards.
   InvalidateVerifyCheckpoints(m);
@@ -624,6 +626,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   if (layer_subtiming) HcMixSubTiming::Instance().Begin();
   if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
+    // End the scope before HeadForward: its final single-row projection keeps
+    // the existing head contract, independently of the prompt chunk size.
+    const runtime::PrefillKernelScope kernel_scope(prefill_kernels);
     if (diag) {
       const cudaError_t e = cudaGetLastError();
       if (e != cudaSuccess) {
@@ -987,14 +992,13 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 // k+1 separate T=1 decodes. `history` (length `history_len`) supplies the PLE
 // n-gram context for positions before `base`; the in-batch prefix supplies the
 // rest.
-Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
-                        int base_position, const int32_t* history,
-                        int history_len, uint16_t* logits, cudaStream_t stream,
-                        uint16_t* trunk_out, bool save_checkpoints,
-                        int seq_id, LogitsRows logits_rows,
-                        float** ssm_captures,
-                        uint16_t** qkv_raw_captures,
-                        uint16_t** gated_n_captures) {
+static Status RunContinuation(
+    const Model& m, const int32_t* input_ids, int T, int base_position,
+    const int32_t* history, int history_len, uint16_t* logits,
+    cudaStream_t stream, uint16_t* trunk_out, bool save_checkpoints, int seq_id,
+    LogitsRows logits_rows, float** ssm_captures, uint16_t** qkv_raw_captures,
+    uint16_t** gated_n_captures, const VisionPrefillPlan* vision_plan = nullptr,
+    const VisionFeatures* vision = nullptr) {
   InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
@@ -1014,6 +1018,18 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
     if (!capacity.ok()) return capacity;
   }
 
+  VisionPrefillSlice visual_slice;
+  if (vision_plan) {
+    if (!vision || !vision->device || save_checkpoints ||
+        vision_plan->stride != cfg.max_len ||
+        vision_plan->merge != cfg.spatial_merge_size ||
+        vision_plan->image_id != cfg.image_token_id ||
+        vision_plan->video_id != cfg.video_token_id)
+      return Status::Fail("visual continuation/model contract mismatch");
+    const auto checked = SliceVisionPrefill(*vision_plan, base_position, T,
+                                            vision->num_tokens, &visual_slice);
+    if (!checked) return checked;
+  }
   if (!m.metadata_upload)
     return Status::Fail("ModelDecodeBatch: upload owner missing");
   auto& upload = *m.metadata_upload;
@@ -1048,18 +1064,38 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
     std::vector<int> rope_pos(T);
     for (int t = 0; t < T; ++t) rope_pos[t] = base_position + t + m.rope_delta[seq_id];
     for (int r = 0; r < 3; ++r) {
+      const int* source =
+          vision_plan ? vision_plan->positions.data() + r * ml + base_position
+                      : rope_pos.data();
       if (!(upload_status = upload.Copy(seq_rope + r * ml + base_position,
-                                        rope_pos.data(), T * sizeof(int)))
+                                        source, T * sizeof(int)))
                .ok())
         return upload_status;
     }
   }
 
+  if (vision_plan) {
+    m.rope_delta[seq_id] = visual_slice.rope_delta;
+    if (!visual_slice.local_positions.empty()) {
+      upload_status =
+          upload.Copy(m.d_img_pos, visual_slice.local_positions.data(),
+                      visual_slice.local_positions.size() * sizeof(int));
+      if (!upload_status) return upload_status;
+    }
+  }
   upload_status = upload.Finish();
   if (!upload_status.ok()) return upload_status;
 
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
   if (!s.ok()) return s;
+  if (vision_plan && !visual_slice.local_positions.empty()) {
+    const int rows = static_cast<int>(visual_slice.local_positions.size());
+    const int grid = (rows * cfg.hs + kBlock - 1) / kBlock;
+    InjectVisionKernel<<<grid, kBlock, 0, stream>>>(
+        vision->device +
+            static_cast<size_t>(visual_slice.first_feature) * cfg.hs,
+        m.d_img_pos, m.d_emb, cfg.hs, rows);
+  }
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, T, stream);
   if (!s.ok()) return s;
 
@@ -1103,12 +1139,25 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                 positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
                 conv_ckpt, num_ckpt, seq_id, nullptr, 0, ple_conv_ckpt,
                 nullptr, logits_rows, false, ssm_captures, qkv_raw_captures,
-                gated_n_captures);
+                gated_n_captures, vision_plan != nullptr);
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(1, seq_id);
   }
   return s;
+}
+
+Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
+                        int base_position, const int32_t* history,
+                        int history_len, uint16_t* logits, cudaStream_t stream,
+                        uint16_t* trunk_out, bool save_checkpoints, int seq_id,
+                        LogitsRows logits_rows, float** ssm_captures,
+                        uint16_t** qkv_raw_captures,
+                        uint16_t** gated_n_captures) {
+  return RunContinuation(m, input_ids, T, base_position, history, history_len,
+                         logits, stream, trunk_out, save_checkpoints, seq_id,
+                         logits_rows, ssm_captures, qkv_raw_captures,
+                         gated_n_captures);
 }
 
 // B2 continuous batching: decode ONE token for each of B sequences in a single
@@ -1818,6 +1867,38 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
   if (!s.ok()) seq->Fail();
   return completion == SequenceCompletion::kWait
              ? ModelCompleteSequence(seq, stream, s) : s;
+}
+
+Status ModelPrefillVisionChunk(const Model& m, ModelSequence* seq,
+                               const VisionPrefillPlan& plan,
+                               const VisionFeatures& vision, int chunk_length,
+                               uint16_t* logits, cudaStream_t stream,
+                               SequenceCompletion completion) {
+  if (!seq || seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
+      seq->stage != ModelSequence::Stage::kPrefill || seq->position < 0 ||
+      plan.ids.empty() ||
+      plan.ids.size() > static_cast<size_t>(m.cfg.Capacity(seq->seq_id)) ||
+      chunk_length <= 0 || chunk_length > m.cfg.max_prefill)
+    return Status::Fail("ModelPrefillVisionChunk: invalid sequence or range");
+  VisionPrefillSlice slice;
+  auto s = SliceVisionPrefill(plan, seq->position, chunk_length,
+                              vision.num_tokens, &slice);
+  if (!s) return s;
+  const int base = seq->position;
+  const auto next = base + chunk_length == static_cast<int>(plan.ids.size())
+                        ? ModelSequence::Stage::kDecode
+                        : ModelSequence::Stage::kPrefill;
+  s = seq->Submit({plan.ids.data() + base, static_cast<size_t>(chunk_length)},
+                  next, m.cfg.Capacity(seq->seq_id));
+  if (!s) return s;
+  s = RunContinuation(m, plan.ids.data() + base, chunk_length, base,
+                      seq->history.data(), base, logits, stream, nullptr, false,
+                      seq->seq_id, LogitsRows::kLastRow, nullptr, nullptr,
+                      nullptr, &plan, &vision);
+  if (!s) seq->Fail();
+  return completion == SequenceCompletion::kWait
+             ? ModelCompleteSequence(seq, stream, s)
+             : s;
 }
 
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,

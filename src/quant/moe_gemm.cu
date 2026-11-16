@@ -24,6 +24,7 @@
 #include "q4t/quant/moe_decode.h"
 #include "q4t/quant/format.h"
 #include "q4t/quant/swizzle.h"
+#include "q4t/runtime/prefill_kernels.h"
 
 namespace q4t {
 namespace quant {
@@ -338,6 +339,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
   // env var is unset.
   const bool ablate_moe_decode_t1 =
+      runtime::UsePrefillKernels() ||
       std::getenv("Q4T_ABLATE_MOE_DECODE_T1") != nullptr;
   if (!ablate_moe_decode_t1 && M == 1 && k == 10 && E == 512 && hs == 2560 &&
       moe_is == 640) {

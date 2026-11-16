@@ -1,0 +1,18 @@
+{
+  "status": "PASS_TARGETED_UNKNOWN_APPLICATION_RECEIPT_FIXTURE",
+  "cpp_cases": 1,
+  "single_and_batch": true,
+  "seconds": 4.241838694084436,
+  "zero_warning_build": true,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "runtime_unchanged": true,
+  "old_io_timeout_ms": 250,
+  "new_io_timeout_ms": 2000,
+  "forced_commit_without_receipt_preserved": true,
+  "exact_restored_data_and_worker_count_preserved": true,
+  "original_ci_run": 43949275138,
+  "original_failed_head": "d4e7661827278724d6a5931f0d1562c0041292f4",
+  "invalid_cli_attempt": "--filter rejected before tests; corrected to --required-list, original retained",
+  "archive_sha256": "19b080a1a32801cbd404814971276f74a96b4e51923104d2f2eb9940945a9174"
+}

@@ -449,9 +449,10 @@ def vision_schema():
         required_semantic_validation=True, acceptance="separate release attestation",
         temporal_patch_size=2, max_media_items=8,
         file_inputs="Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
+        state_cache="actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
+        media_chunked_prefill=True,
         unsupported=["video_container_on_server", "audio", "MTP",
-                     "state_cache", "media_chunked_prefill", "multiple_execution_slots"])
-    result["allOf"].append(forbid(["session_id", "prefix_cache_scope"]))
+                     "multiple_execution_slots"])
     return result
 
 
@@ -488,8 +489,10 @@ def semantics():
             "src/server/prompt_cache_policy.cpp", "include/q4t/server/chat_plan.h",
             "src/server/chat_plan.cpp", "src/server/chat_contract.cpp",
             "src/server/chat_template.cpp", "src/server/chat_prompt.cpp",
-            "src/server/chat_generation.cpp", "src/server/chat_storage.cpp"],
-         "Chat has closed mode/30m request options, exact content breakpoints with inherited or 30m/12h TTL, default implicit mode and a latest-80 unique-boundary lookup. Explicit mode without breakpoints reads/writes nothing. Native prefix scopes cannot mix with standard controls/markers. Final prepared content maps through actual template/token offsets; immutable input history retains markers. Client/key isolation, bounded SSD state and auxiliary-failure miss behavior reuse native cache ownership. Responses retains its separately accepted prewarm/comparison/lookup policy. Media markers are accepted but actual visual state fingerprint/restore remains required; never reuse text-only KV for media. Targeted CPU/business/delivery acceptance is separate."),
+            "src/server/chat_generation.cpp", "src/server/chat_storage.cpp",
+            "src/server/media_cache.cpp", "include/q4t/server/session_media.h",
+            "include/q4t/model/vision_positions.h", "src/model/model.cu"],
+         "Chat has closed mode/30m request options, exact content breakpoints with inherited or 30m/12h TTL, default implicit mode and a latest-80 unique-boundary lookup. Explicit mode without breakpoints reads/writes nothing. Native prefix scopes cannot mix with standard controls/markers. Final prepared content maps through actual template/token offsets; immutable input history retains markers. Client/key isolation, bounded SSD state and auxiliary-failure miss behavior reuse native cache ownership. Responses retains its separately accepted prewarm/comparison/lookup policy. Media state binds actual source bytes, processor/geometry and complete visual block positions. Target restore retains all effective RoPE rows and their offset; chunked visual prefill uses the full prompt positions and exact feature slice. Append-only later media can reuse an identical completed prefix; changed pixels/frames/parameters inside it cannot. Visual requests never use the text MTP draft. Targeted CPU/business/delivery acceptance is separate."),
         ("chat-file-inputs", ["src/server/chat_file_inputs.cpp",
             "src/server/file_expansion.cpp", "src/server/chat_storage.cpp",
             "src/server/chat_preflight.cpp", "src/server/chat_generation.cpp"],

@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/modern-retained-01/bundle",
+  "manifest_sha256": "f046a6d535d5f8b228bc913011f88b17a7253a8a722e799adc4132f1b062a40e",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/delivery-01/retained-service.release.json",
+  "service_release_sha256": "126f6dd471e9f7ee7fda4451fe8e34954a927c6ee641763bde7657e15b6358a8",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}

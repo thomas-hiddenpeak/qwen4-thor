@@ -26,6 +26,41 @@ CHAT_EFFORTS = frozenset(('none', 'minimal', 'low', 'medium', 'high', 'xhigh', '
 LEGACY_CHAT_EFFORTS = frozenset(('low', 'medium', 'xhigh'))
 
 
+def media_cache_capabilities(value, media):
+    """Normalize only the qualified complete-media-cache implementation.
+
+    The pending markers are negative capability declarations. Completing this
+    exact contract adds a feature; generic boolean flips remain replacements.
+    Both protocol observations and the state/position contracts must agree.
+    """
+    if not any(key in media for key in ('state_cache', 'chunked_prefill')):
+        return
+    state, chunk = media.get('state_cache'), media.get('chunked_prefill')
+    ledger.require(type(state) is bool and type(chunk) is bool and state == chunk,
+                   'inconsistent media cache/prefill implementation')
+    contract = dict(cache_identity='source_bytes_processor_geometry_and_position',
+                    cache_layout='target_with_three_axis_rope_and_delta',
+                    cache_boundaries='complete_visual_blocks')
+    ledger.require(all(media.get(k) == v for k, v in contract.items()) if state else
+                   not any(k in media for k in contract),
+                   'invalid complete media cache contract')
+    for name in ('chat', 'responses'):
+        protocol = value.get(name)
+        ledger.require(protocol is None or type(protocol) is dict,
+                       'invalid protocol capability object')
+        cache = protocol.get('prompt_cache') if protocol is not None else None
+        ledger.require(cache is None or type(cache) is dict,
+                       'invalid prompt cache capability object')
+        if not state and (cache is None or 'media_fingerprint_pending' not in cache):
+            continue  # Older observations did not declare this capability.
+        ledger.require(type(cache) is dict and
+                       cache.get('media_fingerprint_pending') is (not state),
+                       'protocol media fingerprint contract differs')
+        cache['media_fingerprint_pending'] = dict(implemented=True) if state else {}
+    media['state_cache'] = dict(enabled=True) if state else {}
+    media['chunked_prefill'] = dict(enabled=True) if chunk else {}
+
+
 def media_capabilities(value):
     """Represent reviewed optional-media activation as feature additions.
 
@@ -36,6 +71,7 @@ def media_capabilities(value):
     runtime, media = value.get('runtime'), value.get('media')
     if not isinstance(media, dict) or media.get('profile') != 'q4t-media-admission-v3':
         return
+    media_cache_capabilities(value, media)
     ledger.require(type(runtime) is dict and type(runtime.get('media_enabled')) is bool,
                    'missing optional media runtime observation')
     enabled = runtime['media_enabled']

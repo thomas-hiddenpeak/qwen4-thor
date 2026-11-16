@@ -434,6 +434,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp
   src/server/media_admission.cpp
+  src/server/media_cache.cpp
   src/server/chat_prompt.cpp
   src/server/chat_plan.cpp
   src/server/chat_preflight.cpp

@@ -339,7 +339,6 @@ Q4T_TEST(cache_io_restart_budget_and_stop_intent) {
 Q4T_TEST(cache_io_controller_exception_spawn_stall_and_thread_failure) {
   Injection cleanup;
   Fixture f;
-  f.options.timeout_ms = 100;
   {
     FailCacheThreadStartForTesting();
     CacheIo io(f.options);
@@ -349,6 +348,9 @@ Q4T_TEST(cache_io_controller_exception_spawn_stall_and_thread_failure) {
     Q4T_CHECK(Ready(io) && io.Health().controller_failures == 2);
     Q4T_CHECK(io.Health().workers_started == 2);
   }
+  // Only the deliberate spawn stall needs the short cancellation deadline.
+  // Normal worker startup/recovery keeps its ordinary I/O budget.
+  f.options.timeout_ms = 100;
   DeferCacheSpawnForTesting(true);
   {
     CacheIo io(f.options);
@@ -364,6 +366,7 @@ Q4T_TEST(cache_io_controller_exception_spawn_stall_and_thread_failure) {
   }
   DeferCacheSpawnForTesting(false);
   std::this_thread::sleep_for(30ms);
+  f.options.timeout_ms = CacheIoOptions{}.timeout_ms;
   CacheIo recovered(f.options);
   Q4T_CHECK(Ready(recovered));
   return true;

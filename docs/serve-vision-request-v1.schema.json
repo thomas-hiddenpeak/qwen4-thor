@@ -3576,28 +3576,6 @@
           }
         }
       }
-    },
-    {
-      "not": {
-        "anyOf": [
-          {
-            "required": [
-              "session_id"
-            ],
-            "properties": {
-              "session_id": {}
-            }
-          },
-          {
-            "required": [
-              "prefix_cache_scope"
-            ],
-            "properties": {
-              "prefix_cache_scope": {}
-            }
-          }
-        ]
-      }
     }
   ],
   "x-q4t": {
@@ -3626,12 +3604,12 @@
     "temporal_patch_size": 2,
     "max_media_items": 8,
     "file_inputs": "Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
+    "state_cache": "actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
+    "media_chunked_prefill": true,
     "unsupported": [
       "video_container_on_server",
       "audio",
       "MTP",
-      "state_cache",
-      "media_chunked_prefill",
       "multiple_execution_slots"
     ]
   }

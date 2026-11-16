@@ -83,4 +83,78 @@ inline Status BuildVisionRopePositions(
   return Status();
 }
 
+// Immutable request-local plan. Chunking changes neither absolute MRoPE
+// coordinates nor the feature row assigned to a visual token. The caller
+// retains this plan and the full feature buffer until all chunks complete.
+struct VisionPrefillPlan {
+  int stride = 0;
+  int merge = 0;
+  int image_id = 0;
+  int video_id = 0;
+  std::vector<int32_t> ids;
+  std::vector<int> positions;
+  std::vector<int> visual_positions;
+  std::vector<int> prefix_delta;
+};
+
+struct VisionPrefillSlice {
+  int first_feature = 0;
+  int rope_delta = 0;
+  std::vector<int> local_positions;
+};
+
+inline Status PlanVisionPrefill(std::span<const int32_t> ids, int merge,
+                                int image_id, int video_id, int max_len,
+                                std::span<const std::array<int, 3>> grids,
+                                VisionPrefillPlan* plan) {
+  *plan = {};
+  VisionPrefillPlan result;
+  int delta = 0;
+  auto status =
+      BuildVisionRopePositions(ids, merge, image_id, video_id, max_len, grids,
+                               &result.positions, &delta);
+  if (!status) return status;
+  if (grids.empty()) return Status::Fail("visual prefill needs actual grids");
+  result.stride = max_len;
+  result.merge = merge;
+  result.image_id = image_id;
+  result.video_id = video_id;
+  result.ids.assign(ids.begin(), ids.end());
+  result.prefix_delta.push_back(0);
+  int maximum = -1;
+  for (size_t p = 0; p < ids.size(); ++p) {
+    if (ids[p] == image_id || ids[p] == video_id)
+      result.visual_positions.push_back(static_cast<int>(p));
+    for (int axis = 0; axis < 3; ++axis)
+      maximum = std::max(maximum, result.positions[axis * max_len + p]);
+    result.prefix_delta.push_back(maximum - static_cast<int>(p));
+  }
+  *plan = std::move(result);
+  return {};
+}
+
+inline Status SliceVisionPrefill(const VisionPrefillPlan& plan, int base,
+                                 int count, int feature_count,
+                                 VisionPrefillSlice* slice) {
+  *slice = {};
+  if (base < 0 || count <= 0 || plan.stride <= 0 ||
+      plan.ids.size() > static_cast<size_t>(plan.stride) ||
+      static_cast<size_t>(base) >= plan.ids.size() ||
+      static_cast<size_t>(count) > plan.ids.size() - base ||
+      plan.positions.size() != static_cast<size_t>(plan.stride) * 3 ||
+      plan.prefix_delta.size() != plan.ids.size() + 1 || feature_count < 0 ||
+      static_cast<size_t>(feature_count) != plan.visual_positions.size())
+    return Status::Fail("visual prefill slice contract mismatch");
+  const auto first = std::lower_bound(plan.visual_positions.begin(),
+                                      plan.visual_positions.end(), base);
+  const auto end =
+      std::lower_bound(first, plan.visual_positions.end(), base + count);
+  slice->first_feature =
+      static_cast<int>(first - plan.visual_positions.begin());
+  for (auto it = first; it != end; ++it)
+    slice->local_positions.push_back(*it - base);
+  slice->rope_delta = plan.prefix_delta[base + count];
+  return {};
+}
+
 }  // namespace q4t::model

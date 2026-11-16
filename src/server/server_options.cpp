@@ -72,12 +72,11 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("max-queued-requests exceeds max-inflight-requests");
   if ((!options.session_cache_dir.empty() ||
        !options.prefix_cache_dir.empty()) &&
-      (options.allow_media ||
-       (!options.no_mtp &&
+      ((!options.no_mtp &&
         (options.mtp_k != 3 || options.seq_capacities.empty())) ||
        options.moe_resident_slots != 0 || !options.moe_trace_dir.empty()))
     return Status::Fail(
-        "state caches require text, no trace/offload; MTP also requires "
+        "state caches require no trace/offload; MTP also requires "
         "k=3 and explicit slots");
   if (options.prefix_cache_checkpoints.empty() ||
       options.prefix_cache_checkpoints.size() > 4)
@@ -98,10 +97,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
   if (!runtime::ValidSequenceCapacities(options.seq_capacities, options.max_len,
                                         options.max_seq) ||
-      (!options.seq_capacities.empty() &&
-       (options.allow_media || options.no_budget)))
+      (!options.seq_capacities.empty() && options.no_budget))
     return Status::Fail(
-        "seq-capacities requires explicit page-aligned text "
+        "seq-capacities requires explicit page-aligned "
         "slots and an enabled budget");
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)

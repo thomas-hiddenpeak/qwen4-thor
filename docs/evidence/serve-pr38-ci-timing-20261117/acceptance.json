@@ -1,0 +1,30 @@
+{
+  "status": "PASS_TARGETED_CI_TIMING_FIXTURES",
+  "cpp_cases": 7,
+  "seconds": 17.25735283875838,
+  "zero_warning_build": true,
+  "runtime_changes": 0,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "original_failed_ci_run": 43954573809,
+  "original_head": "56477a5a7dd0901a74529e483cfac37c62f774fa",
+  "failures_observed": 3,
+  "related_fixtures": 7,
+  "exact_worker_counts_and_commit_unknown_and_no_replay_preserved": true,
+  "real_expiry_and_collection_preserved": true,
+  "source_reuse": {
+    "dependencies": {
+      "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
+      "src/server/responses_mcp_state.cpp": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451",
+      "src/server/vector_jobs.cpp": "59fb0e36d95aabf9d670286f46e80eb0993bb9326b28701d5c31a57537bb1693",
+      "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
+      "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
+      "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f"
+    },
+    "pr_head": "56477a5a7dd0901a74529e483cfac37c62f774fa",
+    "local_head": "e22eb29b18e13aae8b8cfc5aaf0cd3c9188dd23d",
+    "scope": "Targeted seven CPU fixtures; current host linked libraries include unrelated Stop additions; these storage/cache/MCP/vector implementations are exactly the PR source. Final clean-head CI remains required."
+  },
+  "active_overlay_restored": true,
+  "archive_sha256": "abdd60eceed8d95ba39d1be01712f490fc27849dbb60d2c1856a6078e3487c22"
+}

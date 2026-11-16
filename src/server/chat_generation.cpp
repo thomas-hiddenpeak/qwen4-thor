@@ -39,6 +39,8 @@
 #include "q4t/server/responses_reasoning.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/media_admission.h"
+#include "q4t/server/media_cache.h"
+#include "q4t/model/vision_positions.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/structured_admission.h"
@@ -753,6 +755,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   std::vector<std::uint32_t> prompt_u32;
+  std::vector<std::uint32_t> raw_prompt_u32;
   ChatPromptBudget prompt_budget;
   vision::MediaPlan media_plan;
   bool prompt_encoded = false;
@@ -770,6 +773,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           },
           &prompt_u32, &prompt_budget, &planning_error);
     }
+    if (encoded) raw_prompt_u32 = prompt_u32;
     if (encoded && !items.empty()) {
       const auto& config = model_.Get().cfg;
       encoded = ExpandChatMedia(
@@ -910,6 +914,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           },
           &prompt_u32, &prompt_budget, &planning_error);
     }
+    if (status) raw_prompt_u32 = prompt_u32;
     if (status && !items.empty()) {
       const auto& model = model_.Get().cfg;
       status = ExpandChatMedia(step_request, items, model.image_token_id,
@@ -2141,21 +2146,36 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     ids.assign(prompt_u32.begin(), prompt_u32.end());
     PromptCachePlan cache_plan;
-    bool cache_available = prefix_cache_.Health().available;
+    MediaCachePlan media_cache;
+    bool cache_identity_valid = true;
+    if (!items.empty()) {
+      const auto& config = model_.Get().cfg;
+      cache_identity_valid =
+          PlanMediaCache(raw_prompt_u32, ids, items, media_plan,
+                         config.image_token_id, config.video_token_id,
+                         proc_cfg_, video_proc_cfg_, &media_cache)
+              .ok();
+    }
+    bool cache_available =
+        prefix_cache_.Health().available && cache_identity_valid;
     if (api_cache && !internal_step) {
-      // Visual token expansion needs a media-aware state fingerprint (A10).
-      // Never route images through the text-only cached prefill path.
-      bool mapped = items.empty();
-      cache_available = cache_available && mapped;
-      if (items.empty() && prompt_u32.size() >= 1024) {
+      bool mapped = cache_identity_valid;
+      if (mapped && prompt_u32.size() >= 1024) {
         std::vector<size_t> offsets;
         Status planned;
         {
           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
-          planned = lock.owns_lock() ? tok_->EchoByteOffsets(
-                                           prompt, prompt_u32, true, &offsets,
-                                           {.cancelled = cancelled})
-                                     : Status::Fail("Cache mapping cancelled");
+          planned =
+              lock.owns_lock()
+                  ? tok_->EchoByteOffsets(
+                        prompt, items.empty() ? prompt_u32 : raw_prompt_u32,
+                        true, &offsets, {.cancelled = cancelled})
+                  : Status::Fail("Cache mapping cancelled");
+        }
+        if (planned && !items.empty()) {
+          std::vector<size_t> expanded_offsets;
+          planned = MediaCacheOffsets(offsets, media_cache, &expanded_offsets);
+          if (planned) offsets = std::move(expanded_offsets);
         }
         std::span<const PromptCacheInputBoundary> boundaries =
             request_plan.cache_boundaries;
@@ -2192,6 +2212,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
     } else if (!internal_step && request_prefix_write_tokens > 0) {
       cache_plan.writes.push_back({request_prefix_write_tokens, 1800});
+    }
+    if (!cache_identity_valid) prefix_scope.clear();
+    for (const auto& point : cache_plan.writes) {
+      if (SessionMediaPrefix(media_cache.blocks, point.tokens) < 0) {
+        SendError(fd, 400, "Cache boundary splits a visual block", {},
+                  "invalid_cache_boundary", "prefix_cache_write_tokens");
+        return;
+      }
     }
     const auto next_cache_boundary = [&](int base, int count) {
       for (const auto& point : cache_plan.writes)
@@ -2479,17 +2507,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // forward workspace (d_ws, d_trunk, ...) is sized for max_prefill tokens,
     // so a prompt longer than max_prefill is run in chunks of max_prefill.
     // max_prefill is now the CHUNK size, not a prompt cap (the prompt cap is
-    // max_len). Text-only: a vision prompt's special (t,h,w) rope is not
-    // reproducible by the continuation chunks' text rope, so vision + chunked
-    // is rejected (vision prompts are far shorter than 262K in practice).
+    // max_len). Visual chunks retain the full prompt's positions and select
+    // only their corresponding rows from the actual feature buffer.
     const int chunk = max_prefill_;
     const bool chunked = T > chunk;
-    if (chunked && vfeats.num_tokens > 0) {
-      SendError(fd, 400,
-                "chunked prefill (prompt > max_prefill) does not support "
-                "vision input");
-      cleanup();
-      return;
+    model::VisionPrefillPlan visual_prefill;
+    if (vfeats.num_tokens > 0) {
+      const auto& config = model_.Get().cfg;
+      s = model::PlanVisionPrefill(
+          ids, config.spatial_merge_size, config.image_token_id,
+          config.video_token_id, config.max_len, vfeats.grids, &visual_prefill);
+      if (!s) {
+        SendError(fd, 500, s.message(), {}, "media_position_mismatch");
+        return;
+      }
     }
     if (router_trace_) router_trace_->BeginRequest(ids, request_id);
     // Chunk 0 is a true prefill (state reset + rope table + PLE history);
@@ -2520,8 +2551,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                              !prediction_enabled && (max_tokens > 0 || prewarm);
     const bool stream_mtp =
         request_mtp && (explicit_slots || (api_cache && !prefix_scope.empty()));
-    const bool target_cache =
-        !request_mtp && (session.cache || !prefix_scope.empty());
+    const bool target_cache = !request_mtp && cache_identity_valid &&
+                              (session.cache || !prefix_scope.empty());
     const SessionLayout cache_layout =
         request_mtp ? SessionLayout::kMtp : SessionLayout::kTarget;
     int32_t stream_d0 = -1;
@@ -2695,7 +2726,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
       const auto begin = std::chrono::steady_clock::now();
       int prefix = session.cache
-                       ? session_cache_.Match(session.key, ids, cache_layout)
+                       ? session_cache_.Match(session.key, ids, cache_layout,
+                                              media_cache.blocks)
                        : 0;
       SessionCache* selected_cache = &session_cache_;
       std::string selected_key = session.key;
@@ -2704,7 +2736,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         const int shared = prefix_cache_.MatchShared(
             prefix_scope, ids, &shared_read.key, cache_layout,
             api_cache ? std::span<const int>(cache_plan.reads)
-                      : std::span<const int>());
+                      : std::span<const int>(),
+            media_cache.blocks);
         if (shared > 0) shared_read.cache = &prefix_cache_;
         if (shared > prefix) {
           prefix = shared;
@@ -2721,10 +2754,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                        : SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
                                             d_mtp_g, d_session_trunk, &ranges);
         int32_t cached_pending = -1;
+        int cached_rope_delta = 0;
         if (restored.ok())
-          restored = selected_cache->Restore(selected_key, ranges, session_copy,
-                                             cancelled, &stream_d0,
-                                             &cached_pending, cache_layout);
+          restored = selected_cache->Restore(
+              selected_key, ranges, session_copy, cancelled, &stream_d0,
+              &cached_pending, cache_layout, &cached_rope_delta);
+        const int expected_delta =
+            vptr ? visual_prefill.prefix_delta[prefix] : 0;
+        if (restored && cached_rope_delta != expected_delta)
+          restored = Status::Fail("session cache visual position mismatch");
         if (restored.ok() && !target_cache && cached_pending != ids[prefix]) {
           RequestDiagnostics::ExecutionScope running(diagnostic,
                                                      ProgressStage::kCache);
@@ -2742,7 +2780,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (restored.ok()) {
           seq.history.assign(ids.begin(), ids.begin() + prefix);
           seq.position = prefix;
-          model_.Get().rope_delta[seq_id] = 0;
+          model_.Get().rope_delta[seq_id] = cached_rope_delta;
           restored_prefix = prefix;
         } else if (session_gpu_error) {
           s = restored;
@@ -2782,11 +2820,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       if (saved.ok() && !seq.HasPending() &&
           seq.history.size() == static_cast<size_t>(seq.position) &&
-          model_.Get().rope_delta[seq_id] == 0) {
+          SessionMediaPrefix(media_cache.blocks, seq.position) >= 0) {
         std::vector<int32_t> prefix(seq.history);
         prefix.push_back(-1);  // No draft token is part of a target snapshot.
-        saved = cache->Save(key, prefix, ranges, session_copy, cancelled, -1,
-                            &timing, SessionLayout::kTarget, lifetime);
+        saved =
+            cache->Save(key, prefix, ranges, session_copy, cancelled, -1,
+                        &timing, SessionLayout::kTarget, lifetime,
+                        media_cache.blocks, model_.Get().rope_delta[seq_id]);
         if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
       } else if (saved.ok()) {
         saved = Status::Fail("incomplete target session boundary");
@@ -2809,9 +2849,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const auto digest =
           trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
                          static_cast<size_t>(boundary) * sizeof(int32_t)});
-      const std::string snapshot_key = prefix_scope +
-                                       (target_cache ? ":target-v1:" : ":") +
-                                       trace::HexDigest(digest);
+      const std::string snapshot_key =
+          prefix_scope + (target_cache ? ":target-v1:" : ":") +
+          trace::HexDigest(digest) +
+          MediaCacheKeySuffix(media_cache.blocks, boundary);
       if (!prefix_cache_.AcquireNew(snapshot_key,
                                     api_cache ? point->ttl_seconds : 0))
         return;
@@ -3059,10 +3100,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         const bool last = boundary == T;
         if (router_trace_)
           router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
-        s = model::ModelPrefillTextChunk(
-            model_.Get(), &seq, ids.data(), T, count,
-            last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
-            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
+        s = vptr ? model::ModelPrefillVisionChunk(
+                       model_.Get(), &seq, visual_prefill, *vptr, count,
+                       last ? d_prefill_logits_ : nullptr, nullptr,
+                       model::SequenceCompletion::kDeferred)
+                 : model::ModelPrefillTextChunk(
+                       model_.Get(), &seq, ids.data(), T, count,
+                       last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
+                       model::LogitsRows::kLastRow,
+                       model::SequenceCompletion::kDeferred);
         cudaError_t copy_error = cudaSuccess;
         if (s.ok() && last)
           copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
@@ -3165,14 +3211,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             {
               q4t::diagnostic::Scope execution_submit("target_prefill_call",
                                                       base, c);
-              s = model::ModelPrefillTextChunk(
-                  model_.Get(), &seq, ids.data(), T, c,
-                  last ? d_prefill_logits_ : nullptr, nullptr,
-                  d_trunk_full
-                      ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                      : nullptr,
-                  model::LogitsRows::kLastRow,
-                  model::SequenceCompletion::kDeferred);
+              s = vptr ? model::ModelPrefillVisionChunk(
+                             model_.Get(), &seq, visual_prefill, *vptr, c,
+                             last ? d_prefill_logits_ : nullptr, nullptr,
+                             model::SequenceCompletion::kDeferred)
+                       : model::ModelPrefillTextChunk(
+                             model_.Get(), &seq, ids.data(), T, c,
+                             last ? d_prefill_logits_ : nullptr, nullptr,
+                             d_trunk_full
+                                 ? d_trunk_full +
+                                       static_cast<size_t>(base) * trunk_hc_dim
+                                 : nullptr,
+                             model::LogitsRows::kLastRow,
+                             model::SequenceCompletion::kDeferred);
             }
             if (!last) {
               model::ModelSequence* sequence = &seq;

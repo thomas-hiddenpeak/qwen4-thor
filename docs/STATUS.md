@@ -9,23 +9,30 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev204；服务包 `4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3` |
-| Generation | `91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2` |
-| 引擎 | `e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0` |
-| 引擎发布记录 | `bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4` |
+| 发布 | rev214；服务包 `f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b` |
+| Generation | `bbd132e81985145436e46f7121795596525682acb9507c7311780d0adeb45413` |
+| 引擎 | `2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3` |
+| 引擎发布记录 | `603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570`；outer/周期及审核能力完整，前驱196/188另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `f046a6d535d5f8b228bc913011f88b17a7253a8a722e799adc4132f1b062a40e`；outer/周期及媒体缓存能力完整，前驱204/196另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `ffa5c43848ee3bbc4696944c05b15ccef31a72135a15ce95d7fdf0684671d584`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
+已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
+GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实
+业务通过；发布模块仅补显式能力迁移，原预算和周期保持。PR38最终
+检查与实际合main继续；用户day独立快照已prepare/check、未运行，rev204原入口保留。
+全部33项master仍是总目标完成条件，其他缺口继续实现。
+
+前驱[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
-保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
-用户day交接已prepare/check、未启动，全部33项master保持active。
+保持，profile仅增加已验能力/身份。PR37两组检查通过且[已实际合main](evidence/serve-pr37-merged-20261117/README.md)
+（`c2a3128d`）；用户day独立快照已prepare/check、未启动。全部33项master保持active。
 
 前驱[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
@@ -94,6 +101,105 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
+7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。
+精确worker次数、不重放、真实过期/回收断言保持，原三项失败保留。
+独立修复推送后继续最终head检查与实际合main，后续Stop不混入此PR。
+
+PR38的56477a5a一组CI通过，另一组发现三类时间夹具耦合：正常
+缓存worker启动被100ms缩短、MCP一秒TTL在读取前过期、向量任务
+正常存储同被100ms限制。隔离工作区仅修夹具，保留故障注入、次数/
+不重放/清理/实际过期断言；冻结7项关联CPU、0GPU，生产实现不改。
+通过后继续该PR最终检查和实际合main；Stop独立工作未并入本PR。
+
+[PR38回执恢复夹具修复](evidence/serve-pr38-ci-payload-repair-20261117/README.md)：
+一组最终d4e检查通过，另一组正常payload GET超出250ms夹具时限。
+恢复默认2秒I/O预算，原实际提交丢回执/精确恢复断言保持；1项CPU
+通过，运行时及rev214未变，0GPU。新head CI通过后实际合main。
+
+[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
+已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
+GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实
+业务通过；发布模块仅补显式能力迁移，原预算和周期保持。PR38最终
+检查与实际合main继续；用户day独立快照已prepare/check、未运行，rev204原入口保留。
+全部33项master仍是总目标完成条件，其他缺口继续实现。
+
+[媒体能力迁移CPU通过](evidence/serve-media-cache-migration-cpu-20261117/README.md)：
+6项不同用例/7次执行，735/7来源通过。仅重封候选的发布迁移模块；
+先由新候选迁移能力，再安装已经实跑的原现代保留根，之后验证两根
+回退和再前进，最多20条STOPPED命令、0GPU。实际默认仍204。
+
+发布预检发现实际迁移缺口：媒体缓存/分块false→true及pending→false
+被通用“只能增加字段”规则拒绝。现补限定完整媒体身份/位置/边界、
+Chat/Responses一致的显式升级语义；不允许自动加能力、降级或任意
+布尔翻转。冻结6项直接CPU迁移检查和来源检查，之后STOPPED发布/
+回退；引擎及真实GPU业务不变，控制包重封并明确证据复用范围。
+
+[媒体状态/视觉分块业务接受](evidence/serve-media-state-cache-business-20261117/README.md)：
+新引擎正式接受6启动26请求；包含原失败/诊断/命令补验累计13启动
+60请求、严格租约636.757秒，605项NVML正常，全部清理。原视频
+数值回归由原输入修复，图片/schema/私有状态及主轻/两个保留包
+通过；旧失败未追认。继续STOPPED可回退交付及PR38合main，默认
+仍204、全部master任务继续。
+
+旧控制包本次实际SSE/存储/隔离已返回成功，但验证入口手工命令未
+严格使用计划的绝对路径及Python -I，正式postflight拒绝，原记录
+保留，不追认通过。现代保留组合改为直接执行冻结command；旧控制
+仅补1启动2请求/180秒，总上限明确13/60/1200秒。生产引擎不变，
+默认204保持，全部master继续；后续禁止手工重写已冻结命令。
+
+新候选受影响媒体9条及主轻10条已通过：旧全量图片与新分块logprobs
+一致，换图未命中/追加命中、schema冷/热和8709-token私有恢复成立；
+主轻实际工具/embedding/原视频通过。累计10启动54请求约488.965秒，
+环境清理通过；剩余仅两个保留组合2启动4请求后准备发行。
+[PR38夹具定点修复](evidence/serve-pr38-ci-repair-20261117/README.md)2项CPU及
+隔离零警告构建通过，运行时不变。默认204保持，全部master继续。
+
+PR38旧head的Batch线程恢复CPU夹具在250ms存储截止前超时，随后
+cleanup_pending串扰配额用例；原CI日志保留。该用例并非存储故障
+注入，现仅把其I/O预算对齐5秒任务预算；冻结该用例及后续配额
+2项定点CPU验证，生产运行时和已验GPU身份不变。
+
+[原视频短尾回归已修复](evidence/serve-media-prefill-repair-business-20261117/README.md)：
+1启动3请求，完整/隐式冷/热文本及logprobs完全一致，实际1062-token
+SSD写入/恢复通过，监控清理正常。新候选2de56309未交付；下一组
+5启动23请求/780秒完成受影响图片/schema/私有缓存和主轻/保留组合，
+累计上限12/58/1200秒。原失败保留，默认204不变，全部master继续。
+
+[视觉短尾修复CPU出口](evidence/serve-media-prefill-repair-cpu-20261117/README.md)：
+2项直接CPU、735/7来源与零警告隔离构建通过。原诊断/来源失败
+保留；新候选尚未GPU验收，接下来仅3条原视频对照。默认204保持。
+
+标准视频定位已确认：完整计算正确，隐式冷/热均拒绝；捕获对照中
+1062-token前缀全部48层逐位一致，7-token尾部从首层attention输出开始
+分歧。原两次定位共2启动5请求93.531秒，累计6启动32请求295.819秒。
+现修复视觉prefill短尾的内核分派，显式保留prefill BF16/HC/MoE/QSA
+路径；作用域在head前结束，文本decode/MTP不受影响。修复尚未验收。
+仅新增2项CPU作用域/线程隔离检查，随后1启动3条原视频对照/300秒；
+累计上限7启动35请求，原全部失败及默认rev204保留，交付资格另冻结。
+
+[媒体发行资格回归](evidence/serve-media-state-cache-profile-failure-20261117/README.md)：
+同一标准视频请求在隐式缓存后拒绝看帧，主配置业务未通过；候选
+5068d4c9不可交付，默认rev204保持。私有8709 token恢复补验已通过。
+原4启动27请求202.288秒与清理保留；下一步限定1启动3请求诊断
+一次性/隐式冷/热差异，修复后仅重验受影响项，全部master继续。
+
+[媒体缓存原业务复核](evidence/serve-media-state-cache-business-review-20261117/README.md)：
+2启动20请求110.884秒，工具正确摘要带说明被驱动误判，原失败
+保持；离线核对真实工具与3项负控，已完成分项接受。旧全量/分块及
+缓存冷/热logprobs一致，105项NVML正常，全部清理。只补私有会话
+2条，明确总上限7启动/36请求/1200秒；不重跑通过项。默认204不变。
+
+[媒体缓存CPU接受](evidence/serve-media-state-cache-cpu-20261117/README.md)：
+34项C++/2项schema最终通过，729/7来源和隔离零警告构建通过。原单槽
+媒体限制与生成文档失败保留，只补受影响项；候选`5068d4c9`未交付。
+继续最多6启动/36请求/1200秒的真实业务，默认rev204与day快照保持。
+
+[媒体状态缓存/视觉分块](SERVE_MEDIA_STATE_CACHE_2026-11-17.md)已冻结实现合同：
+实际内容与完整视觉块身份、三轴位置/偏移、模板边界、特征切片及
+资源边界一起补齐。最多36项直接CPU，必要6启动/36请求/1200秒；
+CPU已通过、真实业务与交付待完成，默认rev204保持，全部master继续。
+
 [PR37 CI定点修复](evidence/serve-pr37-ci-repair-20261117/README.md)：
 原CI的MCP视频断言未适配分类后置说明，现核对全部媒体和首尾文本，
 1项CPU及隔离零警告构建通过。运行时/默认不变、0GPU；原失败保留，
@@ -107,8 +213,8 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
-保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
-用户day交接已prepare/check、未启动，全部33项master保持active。
+保持，profile仅增加已验能力/身份。PR37两组检查通过且[已实际合main](evidence/serve-pr37-merged-20261117/README.md)
+（`c2a3128d`）；用户day独立快照已prepare/check、未启动。全部33项master保持active。
 
 [Chat审核真实业务接受](evidence/serve-chat-moderation-business-20261117/README.md)：
 修复组4启动/17外部请求/238.768秒，通过原输入block、批准SSE、多

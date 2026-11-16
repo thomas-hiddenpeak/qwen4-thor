@@ -1,25 +1,25 @@
 # 当前默认原生长稳交接
 
-当前rev204包`4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3`
-已完成真实审核主轻、批准SSE/输入block/多choice评分、存储/隔离的
-4启动/17请求功能短验及可回退发布；[业务证据](evidence/serve-chat-moderation-business-20261117/README.md)、
-[交付证据](evidence/serve-chat-moderation-delivery-20261117/README.md)。原失败另保留，
-累计8启动/32请求；不能把原失败链改称通过。连续60秒/3组长稳驱动
-短验属于前驱rev188的509c3bcb包，其原始
-[证据](evidence/serve-native-soak-business-20261116/README.md)保留，不能
-冒称当前审核引擎重跑该连续short。当前原生控制/helper按精确身份复用。
+当前rev214包`f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b`
+已完成媒体状态缓存/视觉分块、原视频数值修复、图片/schema/私有缓存、
+主轻及保留组合的真实功能验收；新引擎正式接受6启动26请求。
+[业务证据](evidence/serve-media-state-cache-business-20261117/README.md)、
+[交付证据](evidence/serve-media-state-cache-delivery-20261117/README.md)保留原失败和
+诊断，累计13启动60请求。发布迁移模块补验为CPU及实际STOPPED切换，
+不冒称新整包GPU重跑。连续60秒长稳驱动短验属于前驱rev188，
+[原证据](evidence/serve-native-soak-business-20261116/README.md)按原身份保留。
 
-[独立快照day prepare/check](evidence/serve-frozen-day-handoff-20261117/README.md)
-已完成，24小时未运行，由用户选择维护窗口显式开展。快照固定
-`97850fd8`及rev204包，不再依赖活动工作区和未来默认指针。
+[当前独立快照day prepare/check](evidence/serve-media-state-cache-day-handoff-20261117/README.md)
+已完成，24小时未运行。快照固定`17e53689`及rev214包，不依赖活动
+工作区和未来默认指针。用户选择维护窗口显式开展。
 
 ## 当前已准备的入口
 
-私有验证服务UUID `93294db6-abf0-47ea-9577-ed128d30c934`，生产默认保持STOPPED。
+私有验证服务UUID `ee49c36a-b9dc-4636-981e-e8e1e78f2b9b`，生产默认保持STOPPED。
 先进入保留的源码快照；此路径不能随清理开发分支而删除：
 
 ```bash
-cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src
 /usr/bin/python3 -I -B tools/serve_soak/native_stage.py check \
   --plan .q4t-work/day-01/plan.json
 ```
@@ -53,8 +53,8 @@ STOPPED清理全部复核。RSS/RssAnon相互重叠，不能推导统一DRAM硬�
 
 ## 后续代码或发行变化
 
-此计划继续验证rev204，不会因活动开发工作区改变而失效，也不会
+此计划继续验证rev214，不会因活动开发工作区改变而失效，也不会
 自动跟随新默认。若要验证后续发行，保留此快照、包和原证据，按
 [prepare流程](../tools/serve_soak/README.md)创建新源码快照及新目录。
-不得改旧plan散列、清空execution或把rev204证据移称新版本证据。
-原工作区day-01及更早计划保留，当前有效入口以上述独立快照为准。
+不得改旧plan散列、清空execution或把rev214证据移称新版本证据。
+原rev204独立快照、工作区day-01及更早计划保留，当前有效入口以上述独立快照为准。

@@ -1928,6 +1928,10 @@ Q4T_TEST(
 Q4T_TEST(
     batch_application_owner_partial_threads_drain_then_real_task_recovers) {
   Fixture f;
+  // This case injects thread creation failure, not storage latency. Keep real
+  // durable I/O within the task deadline on a loaded host instead of racing
+  // the fixture's 250 ms storage timeout before the recovery assertion.
+  f.objects.io_timeout_ms = 5000;
   ObjectStore objects(f.objects);
   const auto file = File(objects, Input(2));
   ApplicationOwner<BatchJobs> owner({1ms, 20ms});

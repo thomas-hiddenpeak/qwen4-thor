@@ -413,6 +413,29 @@ Q4T_TEST(serve_media_supported_profile_and_client_policy) {
   return true;
 }
 
+Q4T_TEST(serve_media_state_cache_keeps_slot_and_execution_guards) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse(
+      {"--allow-media", "--no-mtp", "--max-len", "8192", "--session-cache-dir",
+       ".q4t-work/unused", "--prefix-cache-dir", ".q4t-work/unused-prefix"},
+      &options));
+  options.no_mtp = false;
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  options.seq_capacities = {options.max_len};
+  Q4T_CHECK(q4t::server::ValidateServerOptions(options));
+  options.max_seq = 2;
+  options.seq_capacities.push_back(options.max_len);
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  options.max_seq = 1;
+  options.seq_capacities.resize(1);
+  options.no_budget = true;
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  options.no_budget = false;
+  options.moe_trace_dir = ".q4t-work/unused-trace";
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  return true;
+}
+
 Q4T_TEST(serve_suffix_requires_text_fixed_k3) {
   auto options = Defaults();
   Q4T_CHECK(Parse({"--mtp-suffix", "--max-len", "262144"}, &options));

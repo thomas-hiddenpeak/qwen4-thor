@@ -378,6 +378,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_sampling_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_prompt.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/media_admission.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/media_cache.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_media_cache_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/vision/media_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/vision/processor.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_image_detail_test.cpp

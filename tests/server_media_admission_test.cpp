@@ -175,9 +175,9 @@ Q4T_TEST(media_plan_expanded_slot_budget) {
   Q4T_CHECK(budget.required_capacity == 291 &&
             budget.eligible_slots == std::vector<int>{1});
   f.config.max_prefill = 162;
-  Q4T_CHECK(!f.Plan());
-  Q4T_CHECK(f.error.code == "media_prefill_limit" &&
-            f.error.param == "messages");
+  Q4T_CHECK(f.Plan() && f.plan.expanded_prompt_tokens == 163);
+  f.config.max_prefill = 1;
+  Q4T_CHECK(f.Plan() && f.plan.expanded_prompt_tokens == 163);
   f.config.max_prefill = 8192;
   f.config.max_len = 163;
   Q4T_CHECK(!f.Plan());
@@ -228,6 +228,9 @@ Q4T_TEST(media_policy_discovery) {
   Q4T_CHECK(policy.GetInt("attention_shared_bytes") == 48128);
   Q4T_CHECK(policy.GetInt("decoder_owned_bytes") == 268435456);
   Q4T_CHECK(policy.GetInt("max_items") == 8);
+  Q4T_CHECK(policy.GetBool("state_cache") &&
+            policy.GetBool("chunked_prefill") && !policy.GetBool("mtp", true) &&
+            policy.GetString("cache_boundaries") == "complete_visual_blocks");
   Q4T_CHECK(policy.GetArray("image_detail")->array.size() == 4);
   Q4T_CHECK(policy.Find("detail_policy")->Find("low")->GetInt("longest_edge") ==
             512);

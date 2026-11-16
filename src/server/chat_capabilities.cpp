@@ -209,7 +209,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("diagnostics":"bounded_client_scoped_hashes_without_storage_io",)"
          R"("diagnostic_entries":128,"diagnostic_client_entries":16,)"
          R"("diagnostic_ttl_seconds":3600,"durable_cache":false,)"
-         R"("media_fingerprint_pending":true,"core_readiness_dependency":false},)"
+         R"("media_fingerprint_pending":false,"core_readiness_dependency":false},)"
          R"("moderation":{"enabled":true,"executor":"native_served_model",)"
          R"("requires_structured_backend":true,"classifier_available":)" +
          (constrained && !cleanup_pending ? "true" : "false") +
@@ -374,7 +374,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("max_writes":4,"latest_lookup_boundaries":80,)"
          R"("exact_token_boundaries":true,"client_key_isolation":true,)"
          R"("usage":"actual_restored_tokens","native_scope_exclusive":true,)"
-         R"("core_readiness_dependency":false,"media_fingerprint_pending":true},)"
+         R"("core_readiness_dependency":false,"media_fingerprint_pending":false},)"
          R"("stream_usage_null":true,"choice_logprobs_null":false,)"
          R"("stream_heartbeat_ms":5000,"heartbeat_write_timeout_ms":1000,)"
          R"("stream_start":"after_template_and_structured_admission",)"
