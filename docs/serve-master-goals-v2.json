@@ -435,6 +435,16 @@
         "delivered": false,
         "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
+      },
+      "media_state_cache_20261117": {
+        "state": "actual_business_accepted_delivery_pending",
+        "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
+        "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+        "total_starts": 13,
+        "total_external_requests": 60,
+        "strict_lease_seconds": 636.7565552387387,
+        "original_failures_preserved": true,
+        "whole_task_complete": false
       }
     },
     {
@@ -2204,6 +2214,16 @@
         "delivered": false,
         "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
+      },
+      "media_state_cache_20261117": {
+        "state": "actual_business_accepted_delivery_pending",
+        "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
+        "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+        "total_starts": 13,
+        "total_external_requests": 60,
+        "strict_lease_seconds": 636.7565552387387,
+        "original_failures_preserved": true,
+        "whole_task_complete": false
       }
     },
     {
@@ -3036,6 +3056,16 @@
         "delivered": false,
         "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
+      },
+      "media_state_cache_20261117": {
+        "state": "actual_business_accepted_delivery_pending",
+        "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
+        "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+        "total_starts": 13,
+        "total_external_requests": 60,
+        "strict_lease_seconds": 636.7565552387387,
+        "original_failures_preserved": true,
+        "whole_task_complete": false
       }
     },
     {
@@ -4432,6 +4462,16 @@
         "delivered": false,
         "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
+      },
+      "media_state_cache_20261117": {
+        "state": "actual_business_accepted_delivery_pending",
+        "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
+        "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+        "total_starts": 13,
+        "total_external_requests": 60,
+        "strict_lease_seconds": 636.7565552387387,
+        "original_failures_preserved": true,
+        "whole_task_complete": false
       }
     },
     {
@@ -4995,7 +5035,7 @@
     "default_revision": 204
   },
   "media_prefill_repair_20261117": {
-    "state": "original_video_business_accepted_remaining_delivery",
+    "state": "business_accepted_delivery_pending",
     "evidence": "docs/evidence/serve-media-prefill-repair-cpu-20261117/acceptance.json",
     "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks.",
     "business_evidence": "docs/evidence/serve-media-prefill-repair-business-20261117/acceptance.json"
