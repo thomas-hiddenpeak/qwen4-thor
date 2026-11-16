@@ -265,6 +265,12 @@ set(protocol_inputs
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h
+  include/q4t/server/web_search.h
+  src/server/web_page_internal.h
+  src/server/web_search_contract.cpp
+  src/server/web_search_rank.cpp
+  src/server/web_page_html.cpp
+  src/server/web_page_worker.cpp
   src/server/file_fetch_internal.h
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp

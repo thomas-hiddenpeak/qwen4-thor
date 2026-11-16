@@ -315,6 +315,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp
   src/server/file_fetch.cpp
+  src/server/web_search_contract.cpp
+  src/server/web_search_rank.cpp
+  src/server/web_page_html.cpp
+  src/server/web_page_worker.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/mcp_http.cpp

@@ -108,6 +108,17 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页搜索组件CPU验证](evidence/serve-web-search-components-20261117/README.md)
+19项不同用例/31次执行通过，3次构建零警告，0GPU、默认rev224保持。
+真实本地HTTP提取、来源/过滤/离线词法排序及HTML纯内存沙箱已验；
+持久索引、Chat/Responses调用与引用/SDK/发行继续，不记完整功能完成。
+
+原生网页搜索实施已冻结[完整合同与有界计划](SERVE_WEB_SEARCH_2026-11-17.md)：
+补实际搜索/读取/引用、Chat与Responses执行、离线索引和可选数据源。
+当前仍只有类型/include投影，不能记功能完成；先做最多18项直接CPU
+组件验证，默认rev224不变。PR38测试时限修复8f55b643独立推送，
+最终CI与实际合main继续；Stop改动单独保留，全部master保持active。
+
 [PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
 7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。
 精确worker次数、不重放、真实过期/回收断言保持，原三项失败保留。

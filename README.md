@@ -229,6 +229,13 @@ q4t没有复制这些库源码或随包分发库。OpenXML/ODF内容和原生RTF
 已做针对性CPU验证；RTF代码页仅在解析子进程通过系统libc的iconv
 预加载，实际未使用的代码页缺失不影响其他文档。
 
+开发中的原生网页搜索复用同一系统libxml2，在网页解析子进程预加载
+HTML接口后进入现有纯内存seccomp沙箱，再读取网页字节。禁止打开
+文件、建立网络、创建进程及可执行内存；不执行网页脚本，不添加
+外部常驻程序。库不可用只失败相关网页请求。当前组件及19项针对性
+CPU已验，持久索引与Chat/Responses接入仍在实现，默认发行尚未宣称
+网页搜索可用，见[执行计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)。
+
 Legacy Office/Apple适配使用隔离子进程中的系统
 [LibreOfficeKit](https://docs.libreoffice.org/libreofficekit.html) C API，
 构建需`libreofficekit-dev`头；不随q4t分发或启动Office常驻服务。

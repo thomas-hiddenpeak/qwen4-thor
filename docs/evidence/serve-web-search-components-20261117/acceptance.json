@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_COMPONENT_CPU_ONLY",
+  "unique_tests": 19,
+  "executions": 31,
+  "runs": [
+    {
+      "run": "cpu-01",
+      "tests": 18,
+      "seconds": 0.28719031997025013
+    },
+    {
+      "run": "cpu-02",
+      "tests": 4,
+      "seconds": 0.029809547122567892
+    },
+    {
+      "run": "cpu-03",
+      "tests": 9,
+      "seconds": 0.2872938197106123
+    }
+  ],
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "zero_warning_builds": 3,
+  "chat_responses_execution_accepted": false,
+  "persistent_index_accepted": false,
+  "live_public_search_accepted": false,
+  "master_complete": false,
+  "remaining": "Persistent scoped index, network policy and data sources, real Chat/Responses tool loop, citations/SDK and delivery",
+  "archive_sha256": "fb61746c0fe340f6049a994fa9da4ca3522e809da55a6f5fcdd462568522b5de"
+}
