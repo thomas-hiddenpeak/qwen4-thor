@@ -2795,7 +2795,7 @@
     "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
-    "tools/serve_soak/native_stage.py": "68d7be1030d1c67474d1835e3f7c10e5893efccb485e4ad7d62ee97a779a93cd",
+    "tools/serve_soak/native_stage.py": "d0e6e0d86a265168d5a648e57069f13cf8658753482146fbde5498a31a18e33f",
     "tools/serve_soak/native_report.py": "b0c8c0fcc8de16bc89ec0154e4e2c2e2e886de6541420a354c3e570275692b34"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",

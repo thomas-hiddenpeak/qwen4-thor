@@ -405,6 +405,11 @@ def main():
     plan = json.loads(path.read_text())
     check(plan)
     if args.mode == 'check':
+        # Verify the capture/report import path with the actual sealed
+        # production namespaces before any GPU operation.
+        from tools.serve_soak import evidence, native_report
+        CONTRACT.require(callable(evidence.Capture) and
+                         callable(native_report.check), 'handoff helpers missing')
         print(json.dumps(dict(package=plan['package'], profile=plan['profile'],
                               source_verified=True, model_actions=0)))
         return 0
