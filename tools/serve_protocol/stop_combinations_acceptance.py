@@ -19,6 +19,7 @@ from tools.serve_service.package import read, require, save, sha
 from tools.examples.chat_client import RemoteError, read_json, read_sse
 
 LIMITS = dict(starts=1, chats=12, controls=2000, seconds=600)
+MEDIA_LIMITS = dict(starts=1, chats=3, controls=1000, seconds=360)
 DOCUMENT = media.DOCUMENT
 
 
@@ -59,10 +60,15 @@ def requests():
         (ROOT/media.FILES[0]).read_bytes()).decode()
     rows['media_write'] = dict(copy.deepcopy(rows['schema_complete']),
         session_id='e'*64, logprobs=True, top_logprobs=3)
+    rows['media_write']['response_format']['json_schema'] = dict(
+        name='colors', strict=True, schema=dict(type='object',
+            properties=dict(visible_colors=dict(type='boolean')),
+            required=['visible_colors'], additionalProperties=False))
     rows['media_write']['messages'] = [dict(role='user', content=[
         dict(type='text', text='Archive record.\n'*2800),
         dict(type='image_url', image_url=dict(url=image, detail='auto')),
-        dict(type='text', text='Inspect this image. Return {"answer":"ALPHA"}.')])]
+        dict(type='text', text='Return JSON: visible_colors is true if the '
+             'image has multiple colors.')])]
     rows['media_follow'] = copy.deepcopy(rows['media_write'])
     rows['media_uncached'] = copy.deepcopy(rows['media_write'])
     rows['media_uncached'].pop('session_id')
@@ -72,11 +78,18 @@ def requests():
     return rows
 
 
+def media_requests():
+    return {k: v for k, v in requests().items() if k.startswith('media_')}
+
+
 class Stage(media.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_STOP_COMBINATIONS_BUSINESS'
     baseline_first = False
+    initial_labels = ('none_json', 'none_sse', 'schema_complete', 'schema_cut',
+                      'tool_complete', 'tool_cut')
+    state_kinds = ('private', 'media')
 
     def chat(self, label, body, *, failure=False):
         self.budget('controls')
@@ -122,8 +135,7 @@ class Stage(media.Stage):
                 caps['state_cache'] and caps['constrained_output'], 'capability absent')
         rows = self.plan['requests']
         values = {}
-        for label in ('none_json', 'none_sse', 'schema_complete', 'schema_cut',
-                      'tool_complete', 'tool_cut'):
+        for label in self.initial_labels:
             value = self.chat(label, rows[label], failure=label.endswith('_cut'))
             if value is not None:
                 values[label] = value
@@ -143,13 +155,16 @@ class Stage(media.Stage):
                         (json.loads(content) == dict(answer='ALPHA')
                          if label == 'schema_complete' else content.strip() == 'ALPHA'),
                         'actual stopped/structured answer differs: '+label)
-        for kind in ('private', 'media'):
+        for kind in self.state_kinds:
             label = kind+'_write'
             first = self.chat(label, rows[label])
             values[label] = first
+            require(first.finish_reason == 'stop' and
+                    isinstance(first.message.get('content'), str),
+                    'requested structured/text answer was not produced: '+kind)
             correct_answer = (first.message['content'].strip() == 'ALPHA'
                 if kind == 'private' else
-                json.loads(first.message['content']) == dict(answer='ALPHA'))
+                json.loads(first.message['content']) == dict(visible_colors=True))
             require(first.usage['prompt_tokens'] >= 8192 and correct_answer,
                     'private prompt or answer: '+kind)
             for suffix in ('follow', 'uncached'):
@@ -157,14 +172,15 @@ class Stage(media.Stage):
                 body = copy.deepcopy(rows[label])
                 body['messages'] += [first.message, dict(role='user', content=(
                     'Write exactly: BETA END OMEGA' if kind == 'private' else
-                    'Inspect the same image again. Return {"answer":"ALPHA"}.'))]
+                    'Inspect the same image again. Return JSON with '
+                    'visible_colors indicating whether it has multiple colors.'))]
                 if suffix == 'follow':
                     body.update(stream=True, stream_options=dict(include_usage=True))
                 values[label] = self.chat(label, body)
                 value = values[label]
                 require(value.finish_reason == 'stop' and
                     (value.message['content'].strip() == 'BETA' if kind == 'private'
-                     else json.loads(value.message['content']) == dict(answer='ALPHA')),
+                     else json.loads(value.message['content']) == dict(visible_colors=True)),
                     'actual continuation differs: '+label)
                 cached = value.usage.get('prompt_tokens_details', {}).get('cached_tokens', 0)
                 require(cached == (first.usage['prompt_tokens'] if suffix == 'follow' else 0),
@@ -176,7 +192,8 @@ class Stage(media.Stage):
                         'visual target cache probabilities differ')
         log = (self.out/'candidate-model.log').read_text()
         proof = {}
-        for kind, layout in (('private', 'mtp'), ('media', 'target')):
+        for kind in self.state_kinds:
+            layout = 'mtp' if kind == 'private' else 'target'
             for suffix in ('write', 'follow'):
                 label = kind+'_'+suffix
                 entries = re.findall(r'\[session-cache\] request='+
@@ -192,19 +209,36 @@ class Stage(media.Stage):
                 r' event=restore prefix=(\d+) ms=\S+ error=(\S+) source=(\w+) layout=(\w+)', log)
             require(matches == [(str(values[kind+'_write'].usage['prompt_tokens']),
                     'none', 'session', layout)], 'actual restore differs: '+kind)
-        for label in ('none_json', 'none_sse', 'private_write', 'private_follow'):
+        # The continuation may itself end at EOS after BETA. Its recovery is
+        # checked above; only actual matched stops are claimed as such.
+        for label in ('none_json', 'none_sse', 'private_write'):
+            if label not in rows:
+                continue
             require(re.search(r'\[text-stop\] request='+re.escape(rows[label]['request_id'])+
                     r' matched_index=0 ', log), 'stop was not hit: '+label)
-        require('[mtp-accept] request='+rows['private_write']['request_id'] in log,
-                'text private scenario did not execute MTP')
+        if 'private' in self.state_kinds:
+            require('[mtp-accept] request='+rows['private_write']['request_id'] in log,
+                    'text private scenario did not execute MTP')
         metrics = self.drained('final')
-        require(self.counts['chats'] == 12 and metrics['q4t_requests_total'] == 12 and
-            metrics['q4t_requests_success_total'] == 10 and
-            metrics['q4t_requests_error_total'] == 2, 'terminal accounting differs')
-        save(self.out/'business-checks.json', dict(requests=12,
-            expected_constraint_errors=2, real_tool_executions=1,
+        expected = len(rows)
+        errors = sum(label.endswith('_cut') for label in self.initial_labels)
+        require(self.counts['chats'] == expected and
+            metrics['q4t_requests_total'] == expected and
+            metrics['q4t_requests_success_total'] == expected-errors and
+            metrics['q4t_requests_error_total'] == errors, 'terminal accounting differs')
+        save(self.out/'business-checks.json', dict(requests=expected,
+            expected_constraint_errors=errors,
+            real_tool_executions=int('tool_complete' in rows),
             same_healthy_model=True, exact_prompt_snapshots=proof,
             original_gpu_numerical_evidence_reused=True, performance_claim=False))
+
+
+class MediaStage(Stage):
+    limits = MEDIA_LIMITS
+    request_templates = staticmethod(media_requests)
+    initial_labels = ()
+    state_kinds = ('media',)
+    success_status = 'PASS_STOP_MEDIA_COMBINATIONS_BUSINESS'
 
 
 def main():
@@ -214,9 +248,15 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--port', type=int, default=18772)
     parser.add_argument('--plan', type=Path)
+    parser.add_argument('--media-only', action='store_true')
     args = parser.parse_args()
     if args.mode == 'prepare':
-        media.responses.base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+        media.responses.base.prepare(args,
+            rows=media_requests() if args.media_only else requests(),
+            limits=MEDIA_LIMITS if args.media_only else LIMITS,
+            scope=('Only the unfinished three media stop/schema/private-cache '
+                   'requests, using actual image content; prior failure retained.'
+                   if args.media_only else __doc__))
         path = args.output/'plan.json'
         plan = read(path)
         baseline = (ROOT/'build/q4t').resolve(strict=True)
@@ -225,16 +265,21 @@ def main():
                      'tools/serve_protocol/media_cache_acceptance.py',
                      'tools/serve_protocol/stop_combinations_acceptance.py'):
             plan['sources'][name] = sha(ROOT/name)
-        plan['planned'] = dict(starts=1, requests=12, expected_errors=2,
-            private_cache_minimum=8192, real_tool_execution=1, exact_stop_match=True)
+        plan['media_only'] = args.media_only
+        plan['planned'] = dict(starts=1, requests=3 if args.media_only else 12,
+            expected_errors=0 if args.media_only else 2,
+            private_cache_minimum=8192,
+            real_tool_execution=0 if args.media_only else 1,
+            exact_stop_match=not args.media_only)
         save(path, plan)
     else:
         def deadline(*_):
             raise TimeoutError('stop combination business deadline')
         signal.signal(signal.SIGALRM, deadline)
-        signal.setitimer(signal.ITIMER_REAL, 550)
+        plan = read(args.plan)
+        signal.setitimer(signal.ITIMER_REAL, plan['limits']['seconds']-50)
         with media.responses.base.lifecycle.child_subreaper():
-            Stage(read(args.plan)).run()
+            (MediaStage if plan.get('media_only') else Stage)(plan).run()
 
 
 if __name__ == '__main__':

@@ -453,7 +453,7 @@
         "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       },
       "stop_combinations_20261117": {
-        "state": "cpu_pass_business_pending",
+        "state": "partial_business_media_recheck_pending",
         "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
         "cpu_max": {
           "cpp": 20,
@@ -462,8 +462,8 @@
           "clients": 2
         },
         "gpu_max": {
-          "starts": 5,
-          "external_requests": 26,
+          "starts": 6,
+          "external_requests": 27,
           "seconds": 1200
         },
         "default_unchanged": true,
@@ -477,7 +477,17 @@
           "clients": 2
         },
         "evidence": "evidence/serve-stop-combinations-cpu-20261117/README.md",
-        "candidate_engine_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f"
+        "candidate_engine_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+        "first_business": {
+          "starts": 1,
+          "external_requests": 10,
+          "seconds": 96.6198365483433,
+          "status": "FAILED",
+          "accepted_subset": 9,
+          "media_refusal_not_positive_acceptance": true,
+          "private_prompt_tokens": 13361,
+          "private_follow_stop_matched": false
+        }
       }
     },
     {
