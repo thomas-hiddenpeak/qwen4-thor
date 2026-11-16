@@ -182,6 +182,9 @@ Q4T_TEST(file_snapshot_legacy_video_duration_stays_unknown_without_codec) {
   auto source = f.Extract("file_video", "vp9.webm");
   auto& pixels = source.document.videos[0].pixels;
   Set(&pixels.conversion, "format", String("q4t.cpu_video_png.v1"));
+  std::erase_if(pixels.conversion.object, [](const auto& entry) {
+    return entry.first == "display_geometry";
+  });
   for (auto& frame : pixels.frames) frame.duration_ns = 0;
   for (auto& frame : Field(pixels.conversion, "frames").array)
     std::erase_if(frame.object,
@@ -199,6 +202,40 @@ Q4T_TEST(file_snapshot_legacy_video_duration_stays_unknown_without_codec) {
   Q4T_CHECK(restored.frames.size() == 6 && restored.duration_ns == 3000000000);
   for (const auto& frame : restored.frames) Q4T_CHECK(!frame.duration_ns);
   Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  return true;
+}
+
+Q4T_TEST(file_snapshot_display_geometry_and_v2_replay_without_codec) {
+  for (bool legacy : {false, true}) {
+    Fixture f;
+    auto source =
+        f.Extract("file_video", legacy ? "geometry.mp4" : "wide-rotate-90.mp4");
+    auto& pixels = source.document.videos[0].pixels;
+    if (legacy) {
+      Set(&pixels.conversion, "format", String("q4t.cpu_video_png.v2"));
+      std::erase_if(pixels.conversion.object, [](const auto& entry) {
+        return entry.first == "display_geometry";
+      });
+    }
+    ObjectStore objects(f.options);
+    InputSnapshotStore snapshots(objects);
+    InputSnapshotRef reference;
+    InputSnapshotHold hold;
+    Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+    detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+    ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+    FileInputSnapshot replay;
+    Q4T_CHECK(Ok(Read(snapshots, f, reference, &replay)));
+    const auto& restored = replay.document.videos[0].pixels;
+    Q4T_CHECK(restored.frames.size() == 4 &&
+              restored.width == (legacy ? 128U : 64U) &&
+              restored.height == (legacy ? 64U : 256U) &&
+              OutputJson(restored.conversion) == OutputJson(pixels.conversion));
+    for (size_t i = 0; i < restored.frames.size(); ++i)
+      Q4T_CHECK(restored.frames[i].png == pixels.frames[i].png &&
+                restored.frames[i].duration_ns == 500000000ULL);
+    Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  }
   return true;
 }
 

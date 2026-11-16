@@ -247,6 +247,8 @@ set(protocol_inputs
   src/server/file_video_worker.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_video_protocol.h
+  src/server/file_video_geometry.h
+  src/server/file_video_orientation.h
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h

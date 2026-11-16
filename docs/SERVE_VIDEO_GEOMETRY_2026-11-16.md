@@ -1,0 +1,48 @@
+# 原生视频显示方向与像素比例
+
+2026-11-16，A10/A05针对性正确性与业务改动，沿用rev142默认；非性能优化。
+此前worker使用编码尺寸直接转PNG，未完整应用显示矩阵和非方形像素，
+会使模型看到旋转或拉伸的画面。本项实现这些能力，不以拒绝合法变体收口。
+
+## 实现与边界
+
+在既有隔离worker内固定加载系统good包的videofilter。实际安装的
+qtdemux遗漏反射矩阵的方向标签，因此原生有界MP4读取器检查atom长度、
+版本、节点数和单个视频track，组合movie/track的八种正交显示方向；
+videoflip执行该方向，WebM继续源方向标签模式。复用已有
+videoconvertscale，按实际解码CAPS
+核对正整数尺寸与像素比例。只扩展需要校正的轴、最邻近整数取整，
+在转换分配前检查边长/像素预算；每帧累计预算按校正尺寸计入。
+最终PNG实际尺寸须与计算结果或其旋转一致，不能继续信任编码尺寸。
+
+转换记录v3保存编码尺寸、像素比例与显示变换策略；快照仍离线验证
+PNG哈希、尺寸、帧时间/时长和来源。v1/v2旧快照保持读取，无codec
+也可续接。新版本不得丢失v2已有的实际帧显示时长。
+
+固定插件来自已经使用的GStreamer good系统包，不新增外部服务程序，
+不链接为核心启动依赖；缺库/变换失败仍只影响对应视频准备请求。
+根据[官方videoflip API](https://gstreamer.freedesktop.org/documentation/videofilter/videoflip.html)、
+[方向枚举](https://gstreamer.freedesktop.org/documentation/video/gstvideo.html)
+与[缩放API](https://gstreamer.freedesktop.org/documentation/videoconvertscale/videoscale.html)
+核对，2026-11-16查阅；未复制插件代码，继续保留系统LGPL许可说明。
+
+## 验证与交付
+
+原创四象限视频及独立预期角点颜色覆盖90/180/270度、四种镜像，
+MP4/WebM宽像素、窄像素与旋转组合；另测放大预算/溢出、转换记录
+篡改、v1/v2/v3冻结回放。首轮13项有2项失败；已定位反射方向丢失
+和EOS覆盖容量错误，修复后8项受影响用例通过，6项未变成功记录复用。
+共14项不同C++最终通过，2项业务驱动CPU通过，714来源锚点/7项负控
+通过；主机/引擎零警告。原失败完整保留于
+[CPU证据](evidence/serve-video-geometry-cpu-20261116/README.md)。
+
+候选`6135c33e`接下来最多1模型启动/4个创建/600秒：上传的90度旋转
+MP4、inline镜像SSE、像素比例与旋转组合及同PID普通文本。只向模型
+提供原始视频和问题，角点颜色/布局预期留在独立判定器；核对计数与
+实际usage、自有资源清理。复用未改数值/恢复证据，不跑完整性能或
+质量矩阵。其他仿射变换、格式与组合仍属于A10未完工作。
+
+本阶段不扩展硬解码或视觉并发，其他格式与组合仍在master推进。
+PR29已按精确head独立通过CI并实际合main（692982e7），本批未混入
+其交付；实际默认rev142保持STOPPED。显示修复CPU通过，业务和发行
+尚未验收，全部master继续。

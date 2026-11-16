@@ -32,7 +32,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
 仍需部署方配置，未声称通过。视觉旋转/像素比例、缓存/分块prefill、
 完整客户端矩阵及其余master缺口继续实现；不宣称完整OpenAI兼容、
-硬解码、视觉并发或长稳通过。PR29待最终head检查和实际合main。
+硬解码、视觉并发或长稳通过。PR29最终head两组CI已通过并实际合main
+（`692982e7`），[合并回执](evidence/serve-pr29-merged-20261116/README.md)保留。
 
 前驱rev134的MCP发行已通过PR28合main（`35581f98`），
 [合并回执](evidence/serve-pr28-merged-20261116/README.md)保留；
@@ -49,9 +50,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[视频显示方向/比例修复](SERVE_VIDEO_GEOMETRY_2026-11-16.md)
+[针对性CPU已过](evidence/serve-video-geometry-cpu-20261116/README.md)：
+14项不同C++、2项驱动、714来源锚点/7项负控；主机/引擎零警告。
+首轮两项失败已保存并修复：实际系统库遗漏反射方向，原生有界MP4
+矩阵解析补齐；EOS保留原容量错误。8项受影响复验通过，6项未变成功
+记录复用。候选6135c33e继续最多1启动/4创建/600秒实际显示业务；
+尚未发行，rev142保持、master active。
+
 [PR29旧媒体/MTP断言已修复](evidence/serve-media-client-ci-20261116/README.md)：
 原f8f25148两组CI仅同一旧断言失败，本机针对性1项首过、零警告；
-运行时与rev142不变、0GPU。等待新head远端检查后合main，master继续。
+运行时与rev142不变、0GPU。新head两组远端检查成功且已实际合main，
+master继续。
 
 [rev142托管视觉可回退发行完成](evidence/serve-managed-vision-delivery-20261116/README.md)：
 17项STOPPED检查通过，实际回退再前进保持配额/历史/预算，默认

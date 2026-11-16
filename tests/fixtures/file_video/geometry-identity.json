@@ -1,0 +1,284 @@
+{
+  "source": "generate_geometry.py; original RGB quadrants",
+  "width": 128,
+  "height": 64,
+  "frames": 4,
+  "fps": 2,
+  "duration_ns": 2000000000,
+  "colors": [
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      0,
+      255,
+      0
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      255,
+      255,
+      0
+    ]
+  ],
+  "transformations": {
+    "rotate-90": [
+      0,
+      1,
+      -1,
+      0,
+      64,
+      0,
+      [
+        2,
+        0,
+        3,
+        1
+      ]
+    ],
+    "rotate-180": [
+      -1,
+      0,
+      0,
+      -1,
+      128,
+      64,
+      [
+        3,
+        2,
+        1,
+        0
+      ]
+    ],
+    "rotate-270": [
+      0,
+      -1,
+      1,
+      0,
+      0,
+      128,
+      [
+        1,
+        3,
+        0,
+        2
+      ]
+    ],
+    "mirror-x": [
+      -1,
+      0,
+      0,
+      1,
+      128,
+      0,
+      [
+        1,
+        0,
+        3,
+        2
+      ]
+    ],
+    "mirror-y": [
+      1,
+      0,
+      0,
+      -1,
+      0,
+      64,
+      [
+        2,
+        3,
+        0,
+        1
+      ]
+    ],
+    "transpose": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      [
+        0,
+        2,
+        1,
+        3
+      ]
+    ],
+    "anti-transpose": [
+      0,
+      -1,
+      -1,
+      0,
+      64,
+      128,
+      [
+        3,
+        1,
+        2,
+        0
+      ]
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/quadrants.rgb",
+        "blocksize=24576",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=128",
+        "height=64",
+        "framerate=2/1",
+        "pixel-aspect-ratio=1/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "openh264enc",
+        "bitrate=500000",
+        "gop-size=1",
+        "enable-frame-skip=false",
+        "!",
+        "h264parse",
+        "!",
+        "mp4mux",
+        "faststart=true",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/geometry.mp4"
+      ],
+      "stdout": "",
+      "stderr": "[OpenH264] this = 0x0xffff7801ca20, Error:CWelsH264SVCEncoder::EncodeFrame(), cmInitParaError.\n"
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/quadrants.rgb",
+        "blocksize=24576",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=128",
+        "height=64",
+        "framerate=2/1",
+        "pixel-aspect-ratio=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "openh264enc",
+        "bitrate=500000",
+        "gop-size=1",
+        "enable-frame-skip=false",
+        "!",
+        "h264parse",
+        "!",
+        "mp4mux",
+        "faststart=true",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/wide-pixels.mp4"
+      ],
+      "stdout": "",
+      "stderr": "[OpenH264] this = 0x0xffff7001ca20, Error:CWelsH264SVCEncoder::EncodeFrame(), cmInitParaError.\n"
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/quadrants.rgb",
+        "blocksize=24576",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=128",
+        "height=64",
+        "framerate=2/1",
+        "pixel-aspect-ratio=1/2",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "openh264enc",
+        "bitrate=500000",
+        "gop-size=1",
+        "enable-frame-skip=false",
+        "!",
+        "h264parse",
+        "!",
+        "mp4mux",
+        "faststart=true",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/tall-pixels.mp4"
+      ],
+      "stdout": "",
+      "stderr": "[OpenH264] this = 0x0xffffac01ca20, Error:CWelsH264SVCEncoder::EncodeFrame(), cmInitParaError.\n"
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/quadrants.rgb",
+        "blocksize=24576",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=128",
+        "height=64",
+        "framerate=2/1",
+        "pixel-aspect-ratio=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "vp8enc",
+        "threads=1",
+        "deadline=1000000",
+        "keyframe-max-dist=1",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/generated-01/wide-pixels.webm"
+      ],
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "gpu": false,
+  "sha256": {
+    "anti-transpose.mp4": "eab4708a4f323faf70735b5a3cfcef7b1325c6a1496a032c16519ee5f785dcda",
+    "geometry.mp4": "bebaf36aeb8dc3ca25093c2e2169ff087e031fb845bf8c255791c7f4e7261358",
+    "mirror-x.mp4": "07100b27ab5b8f63f71d42e9a17cfa0b18824935b3d0988fa4372046ccd14a34",
+    "mirror-y.mp4": "5d705c37cd71eea3470311298224b6e0e03ff95c362f9d7aea7b6c4e0f13c56e",
+    "rotate-180.mp4": "b39f6f1d8bec8ac8c34e7cda771086e2f7be43947daa21f1170e983191bb1a1e",
+    "rotate-270.mp4": "d83fb6e0658d78c2ae60e2d69f8c4cb6deffa7ca4247bca30cd07dc3186f1a09",
+    "rotate-90.mp4": "64e21e5972576623a576e2a9eada3ca21e5dcfd015fa4752e8752b41d3e40511",
+    "tall-pixels.mp4": "807c346b9946cb9123a3907bc41dee991d3177ce57946f0c546b9e619d72930f",
+    "transpose.mp4": "b893859243411c553908f75840d8933b3ddf9a0ce468d242bae8aae90e5ae56d",
+    "wide-pixels.mp4": "c75c33b9e22f6e94c9319cef00f518265acad9312b8132ea37db37510084d40e",
+    "wide-pixels.webm": "d326572a40fd05e65c2b389d09f9e5b334780f96028c57b60a9a0085eb495b11",
+    "wide-rotate-90.mp4": "355db8f3c6bfaadfd22db7117868ef8700d1039eb3099657c5109a9b9ba3e9c5"
+  }
+}

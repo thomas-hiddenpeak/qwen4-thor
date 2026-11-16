@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cerrno>
 #include <cmath>
@@ -15,6 +16,8 @@
 #include <thread>
 
 #include "../src/server/file_video_protocol.h"
+#include "../src/server/file_video_geometry.h"
+#include "../src/server/file_video_orientation.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/lifetime.h"
@@ -90,6 +93,54 @@ bool Actual(const char* filename) {
   Q4T_CHECK(modules && modules->array.size() >= 7);
   return true;
 }
+bool Display(const char* filename, uint32_t width, uint32_t height,
+             const std::array<int, 4>& corners) {
+  const auto bytes = Bytes(filename);
+  FileVideoPixels output;
+  auto control = Control();
+  FileVideoLimits limits;
+  limits.sample_frames = 2;
+  Q4T_CHECK(
+      Ok(DecodeVideoContainer(bytes, limits, Access(), &output, control)));
+  Q4T_CHECK(Clean(control) && output.width == width &&
+            output.height == height && output.scanned_frames == 4 &&
+            output.frames.size() == 2 && output.duration_ns == 2000000000ULL);
+  Q4T_CHECK(output.conversion.GetString("format") == "q4t.cpu_video_png.v3" &&
+            Ok(ValidateVideoPixels(bytes, limits, output)));
+  const int colors[][3] = {
+      {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 255, 0}};
+  for (size_t i = 0; i < output.frames.size(); ++i) {
+    const auto& frame = output.frames[i];
+    Q4T_CHECK(frame.source_index == i * 3 &&
+              frame.timestamp_ns == i * 1500000000ULL &&
+              frame.duration_ns == 500000000ULL);
+    q4t::vision::ProcessedImage image;
+    q4t::vision::ProcessorOptions options;
+    options.image_detail = q4t::vision::ImageDetail::kOriginal;
+    std::string error;
+    Q4T_CHECK(q4t::vision::ProcessImage(
+        reinterpret_cast<const uint8_t*>(frame.png.data()), frame.png.size(),
+        {}, &image, &error, options));
+    Q4T_CHECK(image.grid_w * 16 == int(width) &&
+              image.grid_h * 16 == int(height));
+    for (size_t corner = 0; corner < corners.size(); ++corner) {
+      const auto px = (width * ((corner % 2) ? 3 : 1) / 4) / 16;
+      const auto py = (height * ((corner / 2) ? 3 : 1) / 4) / 16;
+      const auto patch =
+          ((py / 2) * (image.grid_w / 2) + px / 2) * 4 + (py % 2) * 2 + px % 2;
+      for (size_t channel = 0; channel < 3; ++channel) {
+        const float expected = colors[corners[corner]][channel] / 127.5f - 1;
+        const auto pixel = patch * 1536 + channel * 512 + 8 * 16 + 8;
+        if (std::abs(image.pixel_values[pixel] - expected) >= 0.08f)
+          std::fprintf(stderr, "%s corner=%zu channel=%zu got=%f want=%f\n",
+                       filename, corner, channel, image.pixel_values[pixel],
+                       expected);
+        Q4T_CHECK(std::abs(image.pixel_values[pixel] - expected) < 0.08f);
+      }
+    }
+  }
+  return true;
+}
 }  // namespace
 
 int VideoWorkerFixture(int argc, char** argv) {
@@ -149,6 +200,95 @@ Q4T_TEST(file_video_actual_vp8_webm_preserves_colors_order_and_pts) {
 }
 Q4T_TEST(file_video_actual_vp9_webm_preserves_colors_order_and_pts) {
   return Actual("vp9.webm");
+}
+Q4T_TEST(file_video_actual_track_rotations_and_reflections_transform_pixels) {
+  return Display("rotate-90.mp4", 64, 128, {2, 0, 3, 1}) &&
+         Display("rotate-180.mp4", 128, 64, {3, 2, 1, 0}) &&
+         Display("rotate-270.mp4", 64, 128, {1, 3, 0, 2}) &&
+         Display("mirror-x.mp4", 128, 64, {1, 0, 3, 2}) &&
+         Display("mirror-y.mp4", 128, 64, {2, 3, 0, 1}) &&
+         Display("transpose.mp4", 64, 128, {0, 2, 1, 3}) &&
+         Display("anti-transpose.mp4", 64, 128, {3, 1, 2, 0});
+}
+Q4T_TEST(file_video_actual_non_square_pixels_preserve_display_aspect) {
+  return Display("wide-pixels.mp4", 256, 64, {0, 1, 2, 3}) &&
+         Display("tall-pixels.mp4", 128, 128, {0, 1, 2, 3}) &&
+         Display("wide-pixels.webm", 256, 64, {0, 1, 2, 3});
+}
+Q4T_TEST(file_video_actual_pixel_aspect_and_orientation_compose) {
+  return Display("wide-rotate-90.mp4", 64, 256, {2, 0, 3, 1});
+}
+Q4T_TEST(file_video_display_geometry_rejects_overflow_and_expansion_budget) {
+  using namespace video_detail;
+  FileVideoLimits limits;
+  DisplayGeometry shape;
+  Q4T_CHECK(SquarePixelGeometry(128, 64, 0, 1, limits, &shape) ==
+            Failure::kInvalid);
+  Q4T_CHECK(SquarePixelGeometry(128, 64, 1, -1, limits, &shape) ==
+            Failure::kInvalid);
+  Q4T_CHECK(SquarePixelGeometry(128, 64, 2147483648LL, 1, limits, &shape) ==
+            Failure::kInvalid);
+  Q4T_CHECK(SquarePixelGeometry(128, 64, 2147483647, 1, limits, &shape) ==
+            Failure::kCapacity);
+  Q4T_CHECK(SquarePixelGeometry(128, 64, 1, 2147483647, limits, &shape) ==
+            Failure::kCapacity);
+  Q4T_CHECK(SquarePixelGeometry(3, 2, 3, 2, limits, &shape) == Failure::kNone &&
+            shape.square_width == 5 && shape.square_height == 2);
+  limits.max_frame_pixels = 128 * 64;
+  auto control = Control();
+  FileVideoPixels output;
+  const auto reply = DecodeVideoContainer(Bytes("wide-pixels.mp4"), limits,
+                                          Access(), &output, control);
+  const bool clean = Clean(control);
+  if (reply.http_status != 413 || !output.frames.empty() || !clean)
+    std::fprintf(
+        stderr, "geometry budget status=%d code=%s frames=%zu clean=%d\n",
+        reply.http_status, reply.code.c_str(), output.frames.size(), clean);
+  Q4T_CHECK(reply.http_status == 413 && output.frames.empty() && clean);
+  return true;
+}
+Q4T_TEST(file_video_display_metadata_is_validated_before_frozen_replay) {
+  const auto bytes = Bytes("wide-rotate-90.mp4");
+  FileVideoPixels output;
+  Q4T_CHECK(Ok(DecodeVideoContainer(bytes, {}, Access(), &output)));
+  for (int mode = 0; mode < 5; ++mode) {
+    auto changed = output;
+    auto& geometry = Field(changed.conversion, "display_geometry");
+    if (mode == 0) Set(&geometry, "pixel_aspect_num", Number(1));
+    if (mode == 1) Set(&geometry, "pixel_aspect_den", Number(0));
+    if (mode == 2) Set(&geometry, "coded_width", Number(0.5));
+    if (mode == 3) Set(&geometry, "policy", String("ignored"));
+    if (mode == 4) Set(&geometry, "coded_height", Number(8193));
+    Q4T_CHECK(!ValidateVideoPixels(bytes, {}, changed).ok());
+  }
+  return true;
+}
+Q4T_TEST(file_video_display_matrix_bounds_versions_and_composition) {
+  using namespace video_detail;
+  Q4T_CHECK(!MovieDisplay().Read(Bytes("vp8.webm")));
+  auto original = Bytes("rotate-90.mp4");
+  const auto movie = original.find("mvhd"), track = original.find("tkhd");
+  Q4T_CHECK(movie != original.npos && track != original.npos);
+  // Both fixture headers are v0; applying movie rotation after track rotation
+  // composes two quarter turns. No codec or GPU is needed for this boundary.
+  auto combined = original;
+  combined.replace(movie + 4 + 36, 36, original.substr(track + 4 + 40, 36));
+  Q4T_CHECK(MovieDisplay().Read(combined) == DisplayDirection::kHalf);
+  for (int mode = 0; mode < 4; ++mode) {
+    auto bad = original;
+    if (mode == 0) bad[track + 4] = 2;           // Unknown version.
+    if (mode == 1) bad[track + 4 + 40 + 8] = 1;  // Perspective component.
+    if (mode == 2) bad[track + 4 + 40 + 2] = 1;  // Non-unit transform.
+    if (mode == 3) bad.resize(track + 12);       // Truncated nested atom.
+    bool rejected = false;
+    try {
+      (void)MovieDisplay().Read(bad);
+    } catch (const std::runtime_error&) {
+      rejected = true;
+    }
+    Q4T_CHECK(rejected);
+  }
+  return true;
 }
 Q4T_TEST(file_video_sandbox_permits_threads_without_external_capabilities) {
   auto control = Control();
@@ -325,6 +465,9 @@ Q4T_TEST(file_video_frozen_metadata_rejects_source_pts_and_frame_tampering) {
   // silently extended to the end of the whole container.
   changed = original;
   Set(&changed.conversion, "format", String("q4t.cpu_video_png.v1"));
+  std::erase_if(changed.conversion.object, [](const auto& entry) {
+    return entry.first == "display_geometry";
+  });
   for (auto& frame : changed.frames) frame.duration_ns = 0;
   for (auto& frame : Field(changed.conversion, "frames").array)
     std::erase_if(frame.object,

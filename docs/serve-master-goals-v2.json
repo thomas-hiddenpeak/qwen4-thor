@@ -1751,6 +1751,18 @@
         "accepted_business_starts": 1,
         "accepted_business_creates": 8,
         "accepted_business_seconds": 53.44687231024727
+      },
+      "display_geometry": {
+        "state": "cpu_accepted_business_pending",
+        "plan": "SERVE_VIDEO_GEOMETRY_2026-11-16.md",
+        "cpu_evidence": "evidence/serve-video-geometry-cpu-20261116/README.md",
+        "candidate_sha256": "6135c33e75a4de51c40a43c365e502b66ea54fe904cfbb1e4fcd1176915bc8d3",
+        "limits": {
+          "starts": 1,
+          "creates": 4,
+          "seconds": 600
+        },
+        "remaining": "Actual HTTP, reversible delivery, arbitrary affine/remaining format and all other A10 requirements."
       }
     },
     {
@@ -3403,7 +3415,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_and_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -3585,6 +3597,13 @@
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_main_integration": {
+        "pr": 29,
+        "head": "a68c8030861ecf7188ea50381a8cf92ed65ceba3",
+        "merge": "692982e76669d07ee51fba8d5b568edd5e6d10f8",
+        "evidence": "evidence/serve-pr29-merged-20261116/README.md",
+        "latest_release": 142
       }
     },
     {
@@ -3597,9 +3616,14 @@
         "Q02"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "surface_prose_audit": {
+        "state": "required",
+        "finding": "Source/key drift guard does not certify semantics prose; historical model alias/CRUD/schema/media descriptions are stale. Renew against code and accepted current delivery, retaining all real unimplemented tasks.",
+        "next": "After current geometry acceptance, reconcile full inventory prose and task states against implementation and evidence."
+      }
     }
   ],
-  "next_task": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task.",
-  "next": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task."
+  "next_task": "Complete native video display geometry targeted HTTP and reversible delivery; renew full compatibility inventory semantics; continue every outstanding provider, model, client, resource and recovery master requirement.",
+  "next": "Complete native video display geometry targeted HTTP and reversible delivery; renew full compatibility inventory semantics; continue every outstanding provider, model, client, resource and recovery master requirement."
 }

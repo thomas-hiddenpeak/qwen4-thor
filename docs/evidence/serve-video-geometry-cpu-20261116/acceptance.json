@@ -1,0 +1,82 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_GEOMETRY_TARGETED_CPU",
+  "distinct_cpp": 14,
+  "cpp_executions": 23,
+  "python_cases": 2,
+  "source_anchors": 714,
+  "negative_inventory_checks": 7,
+  "cpp_final": {
+    "file_video_actual_h264_mp4_preserves_colors_order_and_pts": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_actual_vp8_webm_preserves_colors_order_and_pts": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_video_actual_vp9_webm_preserves_colors_order_and_pts": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_video_actual_track_rotations_and_reflections_transform_pixels": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_actual_non_square_pixels_preserve_display_aspect": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_actual_pixel_aspect_and_orientation_compose": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_display_geometry_rejects_overflow_and_expansion_budget": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_display_metadata_is_validated_before_frozen_replay": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "file_video_frozen_metadata_rejects_source_pts_and_frame_tampering": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_snapshot_video_v3_roundtrip_without_codec_and_strict_integrity": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_snapshot_legacy_video_duration_stays_unknown_without_codec": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_snapshot_display_geometry_and_v2_replay_without_codec": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "chat_capabilities_native_video_separates_model_and_codec_readiness": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "file_video_display_matrix_bounds_versions_and_composition": {
+      "status": "PASS",
+      "run": "host-test-02"
+    }
+  },
+  "initial_failures": [
+    "installed qtdemux omits reflected display matrix tags",
+    "capacity error overwritten on failure/EOS"
+  ],
+  "fixes": [
+    "bounded native MP4 movie and selected video track matrix composition",
+    "retain explicit failure on pipeline exit"
+  ],
+  "binary_sha256": "6135c33e75a4de51c40a43c365e502b66ea54fe904cfbb1e4fcd1176915bc8d3",
+  "protocol_sha256": "f3e753daaea809562b1a5db839a15eae9935c8be68d7b0e944229814880db654",
+  "build_warnings": 0,
+  "gpu_starts": 0,
+  "default_revision": 142,
+  "default_unchanged": true,
+  "business_pending": true,
+  "archive_sha256": "986cb7f75282ab4314d54b192317fd4d98a8c601ea7be2b51b013719843d047e"
+}
