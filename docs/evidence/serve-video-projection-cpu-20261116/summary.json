@@ -1,0 +1,19 @@
+{
+  "status": "TARGETED_CPU_ACCEPTED_BUSINESS_PENDING",
+  "cpp_unique": 16,
+  "cpp_executions": 17,
+  "first_passed": 15,
+  "first_failed": 1,
+  "rerun_passed": 1,
+  "source_mutation_checks": 7,
+  "source_anchors": 712,
+  "gpu_starts": 0,
+  "identity": {
+    "engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+    "manifest_sha256": "d6e09c0728de6c0d57cc69a33cd3101a653a2da0d895ebfb71193548e5438633",
+    "protocol_sha256": "58b7b1919f0a1ac520d4f5976e65e8649c59e343cab3fd6b836b1c9ed4d0b76d",
+    "default_unchanged": true
+  },
+  "failure_fix": "Stored Chat fixture now uses real frozen ChatFileInputs preparation instead of bypassing native policy; no runtime change after first test",
+  "reuse": "Unchanged worker/frames/v3 snapshot/SDK oracle CPU evidence; no complete performance or quality matrix"
+}

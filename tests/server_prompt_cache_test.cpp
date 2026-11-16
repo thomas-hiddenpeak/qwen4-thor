@@ -366,23 +366,26 @@ Q4T_TEST(
       "\"content\":[{\"type\":\"text\",\"text\":\"  " +
       std::string(1100, 'a') +
       "\"},{\"type\":\"text\",\"text\":\"uncached question\"}]}]}");
-  ChatPromptLayout layout;
-  std::string prompt, param;
-  std::vector<VisionItem> media;
-  Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &media, &param, nullptr,
-                              &layout));
-  // Byte-token fixture isolates exact boundary placement from BPE semantics.
-  std::vector<size_t> offsets(prompt.size());
-  std::iota(offsets.begin(), offsets.end(), 0);
-  PromptCacheOptions options;
-  options.explicit_only = true;
-  const std::vector<PromptCacheInputBoundary> marks = {{0, 0, 43200}};
-  PromptCachePlan plan;
-  Q4T_CHECK(PlanPromptCacheLayout(options, *request.Find("messages"), layout,
-                                  marks, offsets, prompt.size(), &plan));
-  Q4T_CHECK(plan.writes.size() == 1 && plan.reads.size() == 1);
-  Q4T_CHECK(plan.writes[0].tokens ==
-            static_cast<int>(prompt.find("uncached question")));
-  Q4T_CHECK(plan.writes[0].ttl_seconds == 43200);
+  for (bool prepared_source_data : {false, true}) {
+    ChatPromptLayout layout;
+    std::string prompt, param;
+    std::vector<VisionItem> media;
+    Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &media, &param, nullptr,
+                                &layout, false, {}, false, nullptr, {},
+                                prepared_source_data));
+    // Byte-token fixture isolates exact boundary placement from BPE semantics.
+    std::vector<size_t> offsets(prompt.size());
+    std::iota(offsets.begin(), offsets.end(), 0);
+    PromptCacheOptions options;
+    options.explicit_only = true;
+    const std::vector<PromptCacheInputBoundary> marks = {{0, 0, 43200}};
+    PromptCachePlan plan;
+    Q4T_CHECK(PlanPromptCacheLayout(options, *request.Find("messages"), layout,
+                                    marks, offsets, prompt.size(), &plan));
+    Q4T_CHECK(plan.writes.size() == 1 && plan.reads.size() == 1);
+    Q4T_CHECK(plan.writes[0].tokens ==
+              static_cast<int>(prompt.find("uncached question")));
+    Q4T_CHECK(plan.writes[0].ttl_seconds == 43200);
+  }
   return true;
 }

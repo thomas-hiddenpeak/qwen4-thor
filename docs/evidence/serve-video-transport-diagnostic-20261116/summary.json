@@ -1,0 +1,138 @@
+{
+  "status": "DIAGNOSIS_COMPLETE_NOT_ACCEPTANCE",
+  "result": {
+    "status": "COMPLETED_TRANSPORT_DIAGNOSTIC_NOT_ACCEPTANCE",
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "controls": 43
+    },
+    "seconds": 52.43946874374524,
+    "binary_sha256": "8f404810fa8c029c75fc3969c3deac59106548a7ee2d1166f62c7375ca28e763"
+  },
+  "diagnosis": {
+    "outputs": {
+      "json": {
+        "content": [
+          [
+            {
+              "type": "refusal",
+              "refusal": "\nThe provided video frames do not contain any visual content to inspect, as the images are not displayed. Therefore, I cannot determine the dominant colors at the start and end of the video.\n"
+            }
+          ]
+        ],
+        "usage": {
+          "input_tokens": 966,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 54,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1020
+        }
+      },
+      "sse": {
+        "content": [
+          [
+            {
+              "type": "refusal",
+              "refusal": "\nThe provided video frames do not contain any visual content to inspect, as the images are not displayed. Therefore, I cannot determine the dominant colors at the start and end of the video.\n"
+            }
+          ]
+        ],
+        "usage": {
+          "input_tokens": 966,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 54,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1020
+        }
+      }
+    },
+    "equal_content": true,
+    "equal_input_tokens": true,
+    "acceptance": false
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      ".q4t-work/serve-native-video-diagnostic-20261116/transport.py",
+      "run"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "lease_inherited_by_child": true,
+    "explicit_inherited_fd_count": 0,
+    "finished": {
+      "utc": "2026-11-16T04:36:29.832100+00:00",
+      "monotonic": 2993872.348989465,
+      "pid": 3648872
+    }
+  },
+  "cleanup": {
+    "owned": {
+      "3648886": {
+        "state": "R",
+        "ppid": 3648876,
+        "pgid": 3648876,
+        "start_ticks": 299381969,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prepared-input-trust-20261116/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--operations-port",
+          "18187",
+          "--no-mtp",
+          "--allow-media",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-diagnostic-20261116/transport-01/objects",
+          "--mcp-policy-file",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-diagnostic-20261116/transport-01/mcp-policy.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prepared-input-trust-20261116/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "nvml_queries": 51,
+  "nvml_all_ok": true,
+  "owned_processes_gone": true,
+  "ports_free": true,
+  "lock_released": true,
+  "default_unchanged": true
+}

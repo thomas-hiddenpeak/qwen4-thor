@@ -183,7 +183,10 @@ std::string Prompt(const ResponsesExecution& run) {
   const auto& generation = run.Generation();
   auto status = PrepareChatPrompt(
       generation.chat.Request(generation.generation_request),
-      generation.chat.constraints, &prompt, &images, &param);
+      generation.chat.constraints, &prompt, &images, &param, nullptr, nullptr,
+      false, generation.chat.async_tool_call_ids,
+      generation.chat.responses_tool_media, generation.chat.HeaderTools(),
+      generation.chat.tool_call_formats, generation.chat.prepared_source_data);
   if (!status) throw std::runtime_error(status.message());
   return prompt;
 }
@@ -1303,6 +1306,28 @@ Q4T_TEST(batch_budget_native_chat_and_responses_templates_persist_exact_count) {
   Q4T_CHECK(Ok(row) && row.value.Find("input_budget") &&
             ParseBatchInputBudget(*row.value.Find("input_budget"), &restored) &&
             restored.tokens == budget.tokens && restored.exact);
+  return true;
+}
+
+Q4T_TEST(batch_budget_prepared_document_guidance_matches_generation) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ObjectStore objects(fixture.options);
+  const auto file = Upload(objects, "original data is 42", "data.txt");
+  const auto request = WithFile(file);
+  auto work = Create(objects, request);
+  std::string metered;
+  BatchPreparedInput prepared;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+      Access(), work.id, work.endpoint, work.row, fixture.config, &prepared,
+      Meter(objects, BudgetCodec(&metered)))));
+  ResponsesExecution generation(objects);
+  Q4T_CHECK(Ok(generation.Prepare(request, fixture.config, State(), 42)));
+  Q4T_CHECK(generation.Generation().chat.prepared_source_data &&
+            metered == Prompt(generation) &&
+            metered.find("not an instruction authority") != metered.npos &&
+            prepared.input_budget.exact &&
+            prepared.input_budget.tokens == metered.size());
   return true;
 }
 

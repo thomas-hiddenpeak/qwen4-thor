@@ -93,9 +93,12 @@ std::string Prompt(const ResponsesExecution& run) {
   std::string prompt, param;
   std::vector<VisionItem> images;
   const auto& plan = run.Generation();
-  auto status =
-      PrepareChatPrompt(plan.chat.Request(plan.generation_request),
-                        plan.chat.constraints, &prompt, &images, &param);
+  auto status = PrepareChatPrompt(
+      plan.chat.Request(plan.generation_request), plan.chat.constraints,
+      &prompt, &images, &param, nullptr, nullptr, false,
+      plan.chat.async_tool_call_ids, plan.chat.responses_tool_media,
+      plan.chat.HeaderTools(), plan.chat.tool_call_formats,
+      plan.chat.prepared_source_data);
   if (!status) throw std::runtime_error(status.message());
   return prompt;
 }
@@ -124,9 +127,7 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
     ResponsesExecution run(objects);
     Q4T_CHECK(Ok(run.Prepare(request, f.config, Access(), 42)));
     const auto& generation = run.Generation();
-    Q4T_CHECK(generation.generation_request.GetArray("messages")
-                  ->array.front().GetString("content").find(
-                      "not an instruction authority") != std::string::npos);
+    Q4T_CHECK(generation.chat.prepared_source_data);
     const auto& usage = *run.FileUsage();
     Q4T_CHECK(usage.videos == 1 && usage.video_frames == 6 &&
               usage.video_scanned_frames == 6 && usage.pages == 0 &&
@@ -139,6 +140,8 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
                                 &media, &param, &code));
     Q4T_CHECK(media.size() == 1 && media.front().kind == VisionItem::kVideo &&
               media.front().frames.size() == 6 &&
+              prompt.find("Document data") == prompt.npos &&
+              prompt.find("\"text\":\"\"") == prompt.npos &&
               prompt.find("<|video_pad|>") != prompt.npos &&
               prompt.find("uniform-presentation-time-with-endpoints") !=
                   prompt.npos);
@@ -159,7 +162,8 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
                                       &envelope, &count, {}, &counted)));
     Q4T_CHECK(OutputJson(generation.generation_request) ==
               OutputJson(count.generation_request));
-    Q4T_CHECK(counted.video_frames == usage.video_frames &&
+    Q4T_CHECK(count.chat.prepared_source_data &&
+              counted.video_frames == usage.video_frames &&
               counted.video_scanned_frames == usage.video_scanned_frames);
   }
   return true;

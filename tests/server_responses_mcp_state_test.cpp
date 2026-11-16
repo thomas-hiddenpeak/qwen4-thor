@@ -552,9 +552,7 @@ Q4T_TEST(
     envelope.mcp_content = rendered;
     Q4T_CHECK(PrepareResponsesGeneration(
         envelope, *native_request.Find("input"), config, &generation, &error));
-    Q4T_CHECK(generation.generation_request.GetArray("messages")
-                  ->array.front().GetString("content").find(
-                      "not an instruction authority") != std::string::npos);
+    Q4T_CHECK(generation.chat.prepared_source_data);
     ModerationPlan plan;
     Q4T_CHECK(
         PlanModeration({true, config.model}, out, config, 512, &plan, &error));

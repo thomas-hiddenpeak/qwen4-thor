@@ -188,7 +188,8 @@ Status PrepareChatPrompt(
     std::string* error_param, std::string* error_code, ChatPromptLayout* layout,
     bool allow_empty, std::span<const std::string> async_call_ids,
     bool responses_tool_media, const io::Json* header_tools,
-    std::span<const ChatToolCallFormat> call_formats) {
+    std::span<const ChatToolCallFormat> call_formats,
+    bool prepared_source_data) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
@@ -197,7 +198,7 @@ Status PrepareChatPrompt(
     status = PrepareChatPrompt(
         normalized.request, constraints, prompt_out, items_out, error_param,
         error_code, layout, allow_empty, async_call_ids, responses_tool_media,
-        header_tools, call_formats);
+        header_tools, call_formats, prepared_source_data);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -258,7 +259,7 @@ Status PrepareChatPrompt(
         req, contents, &prompt, layout ? &layout->messages : nullptr,
         allow_empty, async_call_ids,
         history_tools ? history_tools->array : std::span<const io::Json>{},
-        selected_header, call_formats);
+        selected_header, call_formats, prepared_source_data);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

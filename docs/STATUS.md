@@ -43,6 +43,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[通用说明业务](evidence/serve-prepared-input-trust-business-failure-20261116/README.md)
+仍在VP8拒答，未验收；[相同输入JSON/SSE诊断](evidence/serve-video-transport-diagnostic-20261116/README.md)
+结果完全相同，未观察到传输差异。当前修正纯视频的空文档包装，
+共用模板层的私有数据说明接通Chat/Responses、计数、预检和Batch，
+不插入额外历史消息。[16项CPU最终通过](evidence/serve-video-projection-cpu-20261116/README.md)，
+主机/引擎零警告；继续最多1启动/8创建/900秒原业务；
+原问题、refusal协议和答案判定保持，rev134不变，总目标继续。
+
 [帧时长业务](evidence/serve-native-video-intervals-business-failure-20261116/README.md)
 仍拒答，未验收；随后[三组固定诊断](evidence/serve-native-video-diagnostic-20261116/README.md)
 均答对，指向“来源可信度/指令权威”语义与结构化输出的组合问题。

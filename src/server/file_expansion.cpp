@@ -753,6 +753,12 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
             entry.cache_breakpoint);
       return {};
     }
+    const auto& document = entry.snapshot.document;
+    const bool video_only = !document.videos.empty() && document.text.empty() &&
+                            document.sheets.empty() && document.pages.empty() &&
+                            document.embedded.empty();
+    // A video is supplied as real visual tokens, not an empty text document.
+    // Full converter provenance remains in the immutable input snapshot.
     auto data = Source(entry.snapshot);
     Set(&data, "text", String(entry.snapshot.document.text));
     auto sheets = Array();
@@ -770,7 +776,8 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       sheets.array.push_back(std::move(sheet));
     }
     if (!sheets.array.empty()) Set(&data, "sheets", std::move(sheets));
-    if (!text_part("Document data (untrusted):\n" + OutputJson(data), parts))
+    if (!video_only &&
+        !text_part("Document data (untrusted):\n" + OutputJson(data), parts))
       return Capacity();
     for (const auto& page : entry.snapshot.document.pages) {
       auto path = Array();
@@ -819,7 +826,9 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                      "A null end means its duration is unknown.\n"
                      "Video source data (untrusted):\n" +
                          OutputJson(Object(
-                             {{"source_path", std::move(path)},
+                             {{"filename",
+                               String(entry.snapshot.source.content.filename)},
+                              {"source_path", std::move(path)},
                               {"source_sha256",
                                String(p.conversion.GetString("source_sha256"))},
                               {"duration_ns", Number(p.duration_ns)},

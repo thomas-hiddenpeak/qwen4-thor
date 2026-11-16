@@ -94,6 +94,9 @@ struct ChatPlanError {
 struct ChatRequestPlan {
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
+  // Set only after native file/MCP preparation. It changes model guidance,
+  // never the public messages or their cache/error coordinates.
+  bool prepared_source_data = false;
   std::optional<io::Json> header_tools;
   std::vector<ChatToolCallFormat> tool_call_formats;
   std::optional<io::Json> normalized_request;

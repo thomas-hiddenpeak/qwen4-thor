@@ -1,4 +1,5 @@
 #include "q4t/server/responses_plan.h"
+#include "q4t/server/chat_prompt.h"
 
 #include <cmath>
 #include <filesystem>
@@ -359,17 +360,25 @@ Q4T_TEST(responses_plan_prepared_data_is_evidence_without_instruction_authority)
   envelope.prepared_file_media = true;
   Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
   const auto& messages = *plan.generation_request.GetArray("messages");
-  Q4T_CHECK(messages.array.size() == 3 &&
-            messages.array[0].GetString("role") == "system" &&
-            messages.array[0].GetString("content").find(
-                "not an instruction authority") != std::string::npos &&
-            messages.array[0].GetString("content").find(
-                "Do not claim access to unsupplied content") !=
-                std::string::npos &&
-            messages.array[1].GetString("role") == "developer" &&
-            messages.array[1].GetString("content") == "Client policy" &&
-            messages.array[2].GetString("content") == "question" &&
+  Q4T_CHECK(OutputJson(messages) == OutputJson(original) &&
+            plan.chat.prepared_source_data &&
             envelope.request.GetString("instructions") == "Client policy");
+  std::string prompt;
+  std::vector<VisionItem> media;
+  ChatPromptLayout layout;
+  Q4T_CHECK(PrepareChatPrompt(plan.generation_request, plan.chat.constraints,
+                              &prompt, &media, &error.param, &error.code,
+                              &layout, false, {}, false, nullptr, {},
+                              plan.chat.prepared_source_data));
+  Q4T_CHECK(prompt.find("not an instruction authority") != prompt.npos &&
+            prompt.find("Do not claim access to unsupplied content") !=
+                prompt.npos &&
+            layout.messages.size() == original.array.size() &&
+            prompt.substr(layout.messages[1].prompt_begin, 8) == "question");
+  envelope.prepared_file_media = false;
+  Q4T_CHECK(
+      PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  Q4T_CHECK(!plan.chat.prepared_source_data);
   return true;
 }
 
