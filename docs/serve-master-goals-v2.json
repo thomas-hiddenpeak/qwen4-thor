@@ -145,7 +145,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -156,7 +156,9 @@
           "seconds": 600
         },
         "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
-        "runtime_accepted": false
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27"
       }
     },
     {
@@ -218,7 +220,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -229,7 +231,9 @@
           "seconds": 600
         },
         "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
-        "runtime_accepted": false
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27"
       }
     },
     {
@@ -4199,7 +4203,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_accepted_delivery_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -4210,7 +4214,9 @@
           "seconds": 600
         },
         "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
-        "runtime_accepted": false
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27"
       }
     },
     {
