@@ -78,6 +78,16 @@ def check_response(value):
     responses.check_usage(value)
 
 
+def check_stored_snapshots(created_wire, stored_wire, created_sdk, stored_sdk):
+    require(created_wire == stored_wire, 'stored raw Responses snapshot changed')
+    require('output_text' not in created_wire, 'SDK convenience field entered wire')
+    for actual in (created_sdk, stored_sdk):
+        expected = dict(created_wire)
+        if 'output_text' in actual:
+            expected['output_text'] = responses.text(created_wire)
+        require(actual == expected, 'SDK observation differs from raw snapshot')
+
+
 def prepare(args):
     base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve() / 'plan.json'
@@ -167,7 +177,10 @@ class Stage(responses.Stage):
                     if 'response' in e), 'Responses options changed during stream')
             saved = self.sdk(label + '-get', 'retrieve', response_id=value['id'],
                              query=dict(include=['message.output_text.logprobs']))
-            require(saved == value, 'stored Responses result changed')
+            created_wire = (events[-1]['response'] if rows[label].get('stream') else
+                            json.loads((self.out / (label + '.wire')).read_bytes()))
+            stored_wire = json.loads((self.out / (label + '-get.wire')).read_bytes())
+            check_stored_snapshots(created_wire, stored_wire, value, saved)
             response_ids.append(value['id'])
         metrics = self.drained('final')
         require(metrics['q4t_requests_total'] == 6 and metrics['q4t_requests_success_total'] == 6 and

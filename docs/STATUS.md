@@ -58,6 +58,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[输入归属业务接受](evidence/serve-input-attribution-business-20261116/README.md)：
+7a23cb30累计2启动/7生成，六项不同业务覆盖Chat JSON/SSE/实际档位/
+归属、文档工具/SHA、Responses省略/null medium与存储。两次驱动
+投影/SDK便利字段失败保留，修正后用实际wire和CPU正负控闭合，0追加
+GPU。第二项剩余对象用生产原生状态API在CPU删除并确认404；不称
+已重跑HTTP DELETE。模型/端口/锁清理，rev158保持，继续主轻与可回退
+发行、其余五个Chat字段及全部master。
+
 [输入归属短验首轮未通过](evidence/serve-input-attribution-business-failure-20261116/README.md)：
 1启动/5生成，四条Chat与实际文档SHA闭环通过；Responses GET默认
 投影logprobs导致驱动全量相等断言失败。唯一差异已核对，核心5/5

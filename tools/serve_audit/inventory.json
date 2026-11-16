@@ -517,24 +517,26 @@
     },
     "safety_identifier": {
       "semantics": "string/null，最多128个Unicode字符；客户端作用域SHA256归属，不参与鉴权/配额/缓存或提示。",
-      "boundary": "针对性CPU通过；实际业务及可回退发行待做，默认仍rev158。",
+      "boundary": "CPU与实际业务接受；可回退发行待做，默认仍rev158。",
       "evidence": [
         "docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "tests/server_chat_contract_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tests/server_http_response_test.cpp",
-        "docs/evidence/serve-input-attribution-cpu-20261116/README.md"
+        "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
+        "docs/evidence/serve-input-attribution-business-20261116/README.md"
       ]
     },
     "service_tier": {
       "semantics": "auto/default/flex/scale/priority/fast/null；请求偏好省略/null为auto，实际本机执行及JSON/SSE/存储返回default。",
-      "boundary": "针对性CPU通过；实际业务及可回退发行待做，默认仍rev158。",
+      "boundary": "CPU与实际业务接受；可回退发行待做，默认仍rev158。",
       "evidence": [
         "docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "tests/server_chat_contract_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tests/server_http_response_test.cpp",
-        "docs/evidence/serve-input-attribution-cpu-20261116/README.md"
+        "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
+        "docs/evidence/serve-input-attribution-business-20261116/README.md"
       ]
     }
   },
@@ -6358,7 +6360,7 @@
   },
   "input_attribution_development_20261116": {
     "report": "docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
-    "status": "targeted_cpu_passed_business_pending",
+    "status": "business_accepted_delivery_pending",
     "reviewed_sources": [
       "include/q4t/server/http_response.h",
       "include/q4t/server/input_contract.h",
@@ -6377,6 +6379,7 @@
     "legacy_queued_effort_and_attribution_preserved": true,
     "actual_default_revision": 158,
     "master_active": true,
-    "evidence": "docs/evidence/serve-input-attribution-cpu-20261116/README.md"
+    "evidence": "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
+    "business_evidence": "docs/evidence/serve-input-attribution-business-20261116/README.md"
   }
 }

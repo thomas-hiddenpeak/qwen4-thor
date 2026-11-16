@@ -27,6 +27,20 @@ def chunks():
 
 
 class InputAttribution(unittest.TestCase):
+    def test_raw_snapshot_and_sdk_derived_text_are_checked_separately(self):
+        raw = dict(id='r', output=[dict(type='message', content=[dict(
+            type='output_text', text='42', logprobs=[])])])
+        derived = dict(raw, output_text='42')
+        a.check_stored_snapshots(raw, copy.deepcopy(raw), raw, derived)
+        a.check_stored_snapshots(raw, copy.deepcopy(raw), derived, derived)
+        changed = copy.deepcopy(raw)
+        changed['output'][0]['content'][0].pop('logprobs')
+        with self.assertRaises(Exception):
+            a.check_stored_snapshots(raw, changed, raw, derived)
+        for incorrect in (dict(raw, output_text='41'), dict(raw, extra='ignored')):
+            with self.assertRaises(Exception):
+                a.check_stored_snapshots(raw, raw, raw, incorrect)
+
     def test_chat_and_vision_public_input_boundaries(self):
         for name, schema in [('chat', chat_schema()), ('vision', vision_schema())]:
             self.assertEqual(schema, json.loads(
