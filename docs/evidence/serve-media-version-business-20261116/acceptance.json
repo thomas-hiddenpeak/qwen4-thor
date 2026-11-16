@@ -1,0 +1,77 @@
+{
+  "status": "ACCEPT_NATIVE_MEDIA_SERVICE_AND_VERSION",
+  "packages": {
+    "retained-business-01": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_RETAINED",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+        "manifest_sha256": "73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a",
+        "engine_binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+          "strict_lease_seconds": 47.97437087679282,
+          "nvml_queries": 46,
+          "env_abort": false,
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "probes": 0,
+            "controls": 160
+          },
+          "source_commit": "1e48c3802fe9756496dc68819cb1c402b6879d8e",
+          "plan_sha256": "a95897421ef856476db8ed1bfabe943c522f76282f79a1e64c9a102dbd60bcce",
+          "result_sha256": "b35a450d5b47b45ffb49ee12539b1c6c24332966155929b201e5d54fd5ccff1f",
+          "lease_result_sha256": "08578a8fb917b528ed9df0e9d4c9a4bea59d3a74c642c0dc7220723171832e22",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "seconds": 46.80350563488901
+    },
+    "version-business-01": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_VERSION",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "engine_binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+          "strict_lease_seconds": 116.5933127538301,
+          "nvml_queries": 109,
+          "env_abort": false,
+          "counts": {
+            "starts": 2,
+            "chats": 4,
+            "probes": 1,
+            "controls": 404
+          },
+          "source_commit": "1e48c3802fe9756496dc68819cb1c402b6879d8e",
+          "plan_sha256": "d232ad320ead117071c125f4c560032e627a1a872d3048615ec22bbf3a56d5a7",
+          "result_sha256": "f5137b72c09403918f87496557b6e59eb8b7767571283d14877065259e12f5a4",
+          "lease_result_sha256": "093d009bf77c081cc6ebb347405f46fd856aea5cc0f8164bd4c6e2241f08df82",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "seconds": 115.62342678522691
+    }
+  },
+  "credentials_matches": 0,
+  "remaining_master_tasks_open": true
+}

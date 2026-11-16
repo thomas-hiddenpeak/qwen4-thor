@@ -3219,7 +3219,7 @@
     {
       "id": "R10",
       "required": true,
-      "state": "managed_visual_recovery_accepted_delivery_pending",
+      "state": "managed_visual_and_version_recovery_accepted_delivery_pending",
       "implementation": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "acceptance": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "depends_on": [
@@ -3238,7 +3238,8 @@
         "evidence/serve-media-profile-contract-cpu-20261116/README.md",
         "evidence/serve-media-profile-business-20261116/README.md",
         "evidence/serve-media-managed-driver-failure-20261116/README.md",
-        "evidence/serve-media-managed-business-20261116/README.md"
+        "evidence/serve-media-managed-business-20261116/README.md",
+        "evidence/serve-media-version-business-20261116/README.md"
       ],
       "release": null,
       "development_status": "Native v2 managed media capacity; text MTP and per-visual target decoding; exact media primary/light qualification and original video source/result evidence. Actual controlled-RAM primary/light/primary preserves frozen media, one tool execution/result, quota and promoted SSE. 3 starts/12 requests/205.133s; strict 192 NVML observations, own cleanup. Original driver failure retained. Actual package 8fe97f50 uses isolated controlled thresholds/keys/ports; exact delivery package 7a8e9cd2 and preserved-capability version fallback still pending. No full-model/performance claim. R10 is not complete before remaining delivery tasks."

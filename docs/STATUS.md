@@ -43,6 +43,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[精确媒体包与版本回退通过](evidence/serve-media-version-business-20261116/README.md)：
+保留包73b45ed3独立1启动/2生成，正式包7a8e9cd2实际2启动/4生成/
+1探测完成整树回退，视频历史/SSE和能力保留，自有资源清理。
+原默认rev134保持，继续可回退发行及全部master。
+
 [媒体版本回退驱动4项CPU首过](evidence/serve-media-version-driver-cpu-20261116/README.md)：
 真实封包隔离导入、媒体启动、判定和预算通过。新派生保留控制包
 73b45ed3待1启动/2生成/300秒真实资格，再对正式7a8e9cd2完成
