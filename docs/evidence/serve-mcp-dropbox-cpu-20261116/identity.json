@@ -1,0 +1,15 @@
+{
+  "base_commit": "ef8c7c2b235fd4857a40e5f2f497b16a186e273b",
+  "engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
+  "engine_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-dropbox-20261116/candidate-01/q4t",
+  "compiled_manifest_sha256": "069c5e042c375e032821bd842951a9e8c540d5c3ba0f9f128a2524c2d32cd36b",
+  "cpp_passed": 25,
+  "cpp_executions": 25,
+  "actual_cli_policy_checks": 1,
+  "source_mutation_checks": 7,
+  "source_anchors": 704,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "live_provider_accounts": false,
+  "released": false
+}

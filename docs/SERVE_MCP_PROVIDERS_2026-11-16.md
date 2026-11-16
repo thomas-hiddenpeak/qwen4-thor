@@ -153,6 +153,39 @@ CLI/私有封包检查及7项来源负控通过，最终主机/完整引擎零�
 GPU或全模型测试。七个提供方候选不等于真实账户/全部实时分页形式已验；
 真实租户、权限、canonical分页别名与内容资产仍需受控账户验收。
 
+### Dropbox六工具候选
+
+依据官方[请求/响应格式](https://docs.dropboxapi.com/dropbox-api/docs/technical-reference/request-response-formats)、
+[下载](https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/download)、
+[导出](https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/export)及
+[API规范](https://github.com/dropbox/dropbox-api-spec/blob/master/files.stone)，
+六项工具原生执行。RPC仅允许固定的profile/metadata/search/continue
+四个POST端点；原文件/导出只从content.dropboxapi.com读取，写入和其他
+主机拒绝。工具目录不发profile探测，文件读取不额外要求account权限；
+服务方每次执行实际OAuth授权，API名称对应的工具和参数均明确公开。
+
+搜索保留原始matches/metadata、has_more和cursor；续页只接受原游标，
+不能同时传新查询/路径/页大小后静默忽略。最近文件明确是索引中的修改
+时间顺序，排除文件夹，不冒充个人访问历史。单页最多1000，不自动扫完
+账户或宣称索引结果绝对完整。
+
+fetch/fetch_file接受Dropbox路径、id、namespace或revision。中文、
+补充平面字符、合法换行路径经ASCII JSON编码进入Dropbox-API-Arg头；
+不进入URL或shell。响应头Dropbox-API-Result按严格JSON解析并计入共享
+预算；核对ID/revision和实际长度，字节进入MCP resource。文件类型标签
+只是已有解码器的输入提示，不能替代解码验收。
+
+直接下载先行，只有明确409 export-only才执行一次导出，明确not_file
+才读取folder元数据。权限/限流/不确定传输不重试；409错误正文只提取
+两种受控原因，不泄露原诊断；正文损坏或超时仍返回已经确定的409。
+普通文件不因预先查询元数据而额外要求files.metadata.read。所有请求
+共享原绝对期限、32次HTTP和4MiB预算，无新增外部程序/SDK/库。
+
+[25项C++与1项实际CLI八提供方封包首过](evidence/serve-mcp-dropbox-cpu-20261116/README.md)，
+来源7项负控及704锚点通过，主机/完整引擎零警告，0GPU。八提供方42工具
+已有候选实现；真实账户、特殊格式、原生/标准客户端业务、恢复资格与
+可回退发行/main仍继续，不能用数量齐全替代完整业务验收。
+
 ### 已验Calendar及后续
 
 初始冻结27项CPU，另补具体能力声明后，28项不同C++最终通过；

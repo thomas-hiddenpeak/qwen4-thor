@@ -48,6 +48,7 @@ struct Reply {
   std::string body;
   bool omit_body = false;
   std::string mime = "application/json";
+  std::map<std::string, std::string> headers{};
 };
 class ProviderPeer {
  public:
@@ -99,11 +100,14 @@ class ProviderPeer {
           requests_.push_back(request);
           reply = index < replies_.size() ? replies_[index] : Reply{500, "{}"};
         }
+        std::string extra;
+        for (const auto& [key, value] : reply.headers)
+          extra += key + ": " + value + "\r\n";
         std::string output =
             "HTTP/1.1 " + std::to_string(reply.status) +
             " Result\r\nContent-Type: " + reply.mime +
             "\r\nContent-Length: " + std::to_string(reply.body.size()) +
-            "\r\nConnection: close\r\n\r\n" +
+            "\r\nConnection: close\r\n" + extra + "\r\n" +
             (reply.omit_body ? "" : reply.body);
         std::string_view pending = output;
         while (!pending.empty()) {
@@ -149,8 +153,9 @@ class ProviderPeer {
     reply = file_detail::RemoteHttp::Open(
         local, options, request.method, headers, request.body,
         (4U << 20) - bytes_, std::chrono::steady_clock::now() + 2s, &response);
-    return reply.ok() ? mcp_detail::ReadProviderResponse(*response, &bytes_,
-                                                         output, request.binary)
+    return reply.ok() ? mcp_detail::ReadProviderResponse(
+                            *response, &bytes_, output, request.binary,
+                            request.dropbox_content)
                       : reply;
   }
 
@@ -1643,6 +1648,348 @@ Q4T_TEST(mcp_graph_teams_sharepoint_invalid_inputs_never_fetch) {
                   &result, &error)
                   .ok());
     Q4T_CHECK(calls == 0 && result.IsNull() && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+namespace {
+constexpr auto kDropbox = "connector_dropbox";
+Json DropboxMetadata(std::string name = "Record.TXT", size_t size = 4) {
+  return Object({{"id", String("id:file1")},
+                 {"name", String(name)},
+                 {"rev", String("a123456789")},
+                 {"size", Number(size)},
+                 {"path_display", String("/Project/" + name)}});
+}
+Reply DropboxBytes(Json metadata, std::string body = "real") {
+  return {200,
+          std::move(body),
+          false,
+          "application/octet-stream",
+          {{"Dropbox-API-Result", OutputJson(metadata)}}};
+}
+Json DropboxMatches(bool more = false) {
+  auto file = DropboxMetadata();
+  Set(&file, ".tag", String("file"));
+  return Object(
+      {{"matches",
+        Array({Object(
+            {{"metadata",
+              Object({{".tag", String("metadata")}, {"metadata", file}})},
+             {"match_type", Object({{".tag", String("file_content")}})}})})},
+       {"has_more", Boolean(more)},
+       {"cursor", more ? String("cursor+/=") : Json()}});
+}
+Json RequestJson(const std::string& request) {
+  Json body;
+  q4t::io::ParseJson(request.substr(request.find("\r\n\r\n") + 4), &body);
+  return body;
+}
+}  // namespace
+Q4T_TEST(mcp_dropbox_catalog_schema_and_independent_permissions) {
+  size_t calls = 0;
+  Json result, error;
+  Q4T_CHECK(mcp_detail::InvokeProvider(
+                kDropbox, "tools/list", Object(),
+                [&](const auto&, Json*) {
+                  ++calls;
+                  return ObjectReply{};
+                },
+                &result, &error)
+                .ok());
+  const auto* tools = result.GetArray("tools");
+  Q4T_CHECK(calls == 0 && error.IsNull() && tools && tools->array.size() == 6);
+  for (const auto& tool : tools->array) {
+    OutputSchemaGraph schema;
+    std::string param;
+    Q4T_CHECK(schema.Init(*tool.Find("inputSchema"), false, &param, "schema",
+                          OutputSchemaPurpose::kToolResult));
+    const auto name = tool.GetString("name");
+    auto args = Object();
+    if (name == "search" || name == "search_files")
+      Set(&args, "query", String("project"));
+    if (name == "fetch" || name == "fetch_file")
+      Set(&args, "path", String("/项目.txt"));
+    Q4T_CHECK(schema.Check(args));
+  }
+  ProviderPeer peer(
+      {{403, "private profile denial"}, DropboxBytes(DropboxMetadata())},
+      kDropbox);
+  Q4T_CHECK(
+      ProviderCall(kDropbox, "get_profile", Object(), peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.Find("data")->GetInt("upstream_status") == 403);
+  Q4T_CHECK(ProviderCall(kDropbox, "fetch_file",
+                         Object({{"path", String("id:file1")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            peer.Requests()[1].starts_with("GET /2/files/download "));
+  return true;
+}
+Q4T_TEST(mcp_dropbox_profile_uses_original_account_fields) {
+  auto account = Object({{"account_id", String("dbid:original")},
+                         {"name", Object({{"display_name", String("原用户")}})},
+                         {"email_verified", Boolean(false)}});
+  ProviderPeer peer({JsonReply(account)}, kDropbox);
+  Json result, error;
+  Q4T_CHECK(
+      ProviderCall(kDropbox, "get_profile", Object(), peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.IsNull() && OutputJson(*result.Find("structuredContent")) ==
+                                  OutputJson(account));
+  Q4T_CHECK(
+      peer.Requests()[0].starts_with("POST /2/users/get_current_account ") &&
+      RequestJson(peer.Requests()[0]).IsNull());
+  return true;
+}
+Q4T_TEST(mcp_dropbox_search_cursor_and_recent_preserve_contract) {
+  ProviderPeer peer(
+      {JsonReply(DropboxMatches(true)),
+       JsonReply(Object({{"matches", Array()}, {"has_more", Boolean(false)}})),
+       JsonReply(DropboxMatches())},
+      kDropbox);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDropbox, "search",
+                         Object({{"query", String("项目")},
+                                 {"path", String("ns:123/Project")},
+                                 {"max_results", Number(3)}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() &&
+            result.Find("structuredContent")->GetString("next_page_token") ==
+                "cursor+/=");
+  Q4T_CHECK(ProviderCall(kDropbox, "search_files",
+                         Object({{"next_page_token", String("cursor+/=")}}),
+                         peer, &result, &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(
+      result.Find("structuredContent")->GetArray("matches")->array.empty());
+  Q4T_CHECK(ProviderCall(kDropbox, "list_recent_files", Object(), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(result.Find("structuredContent")->GetString("recency") ==
+            "last_modified_time");
+  const auto requests = peer.Requests();
+  Q4T_CHECK(RequestJson(requests[0]).GetString("query") == "项目");
+  Q4T_CHECK(RequestJson(requests[0]).Find("options")->GetString("path") ==
+            "ns:123/Project");
+  Q4T_CHECK(requests[1].starts_with("POST /2/files/search/continue_v2 ") &&
+            RequestJson(requests[1]).GetString("cursor") == "cursor+/=");
+  const auto recent = RequestJson(requests[2]);
+  Q4T_CHECK(recent.GetString("query") == "" &&
+            recent.Find("options")->GetString("order_by") ==
+                "last_modified_time");
+  for (const auto& category :
+       recent.Find("options")->GetArray("file_categories")->array)
+    Q4T_CHECK(category.str != "folder");
+  return true;
+}
+Q4T_TEST(mcp_dropbox_unicode_path_header_is_ascii_and_roundtrips) {
+  const std::string path = "/项目/🧪\r\n\"quoted\".txt";
+  ProviderPeer peer({DropboxBytes(DropboxMetadata())}, kDropbox);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDropbox, "fetch", Object({{"path", String(path)}}),
+                         peer, &result, &error)
+                .ok() &&
+            error.IsNull());
+  const auto request = peer.Requests()[0];
+  const auto begin = request.find("Dropbox-API-Arg: ") + 17;
+  const auto encoded =
+      request.substr(begin, request.find("\r\n", begin) - begin);
+  for (unsigned char c : encoded) Q4T_CHECK(c >= 32 && c < 128);
+  Json argument;
+  Q4T_CHECK(q4t::io::ParseJson(encoded, &argument) &&
+            argument.GetString("path") == path);
+  Q4T_CHECK(result.Find("structuredContent")->GetString("content_mime_type") ==
+            "text/plain");
+  Q4T_CHECK(result.GetArray("content")
+                ->array[1]
+                .Find("resource")
+                ->GetString("blob") == "cmVhbA==");
+  return true;
+}
+Q4T_TEST(mcp_dropbox_revision_download_checks_returned_revision) {
+  ProviderPeer peer({DropboxBytes(DropboxMetadata())}, kDropbox);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDropbox, "fetch_file",
+                         Object({{"path", String("rev:a123456789")}}), peer,
+                         &result, &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(result.Find("structuredContent")
+                ->Find("file_metadata")
+                ->GetString("rev") == "a123456789");
+  return true;
+}
+Q4T_TEST(mcp_dropbox_export_only_file_reads_actual_export_once) {
+  const auto file = DropboxMetadata("sheet.gsheet", 0);
+  const auto metadata =
+      Object({{"file_metadata", file},
+              {"export_metadata",
+               Object({{"name", String("sheet.xlsx")}, {"size", Number(4)}})}});
+  ProviderPeer peer(
+      {{409,
+        R"({"error_summary":"private detail","error":{".tag":"unsupported_file"}})"},
+       DropboxBytes(metadata, std::string("PK\x03\x04", 4))},
+      kDropbox);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDropbox, "fetch",
+                         Object({{"path", String("id:file1")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetBool("exported") &&
+            value->Find("export_metadata")->GetString("name") == "sheet.xlsx");
+  Q4T_CHECK(
+      value->GetString("content_mime_type") ==
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            peer.Requests()[1].starts_with("GET /2/files/export "));
+  Q4T_CHECK(OutputJson(result).find("private detail") == std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_dropbox_folder_fallback_preserves_metadata) {
+  const auto folder = Object({{".tag", String("folder")},
+                              {"id", String("id:folder1")},
+                              {"name", String("Project")}});
+  ProviderPeer peer(
+      {{409, R"({"error":{".tag":"path","path":{".tag":"not_file"}}})"},
+       JsonReply(folder)},
+      kDropbox);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDropbox, "fetch",
+                         Object({{"path", String("id:folder1")}}), peer,
+                         &result, &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(result.Find("structuredContent")->GetString("kind") == "folder" &&
+            result.GetArray("content")->array.size() == 1 &&
+            peer.Requests()[1].starts_with("POST /2/files/get_metadata "));
+  return true;
+}
+Q4T_TEST(mcp_dropbox_known_errors_never_retry_or_expose_private_body) {
+  for (const auto& fail : std::vector<Reply>{
+           {401, "private-token"},
+           {403, "private-token"},
+           {429, "private-token"},
+           {409, R"({"error":{".tag":"path","path":{".tag":"not_found"}}})"},
+           {409, "private-malformed-json"},
+           {409, "private-truncated", true}}) {
+    ProviderPeer peer({fail}, kDropbox);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kDropbox, "fetch",
+                           Object({{"path", String("id:file1")}}), peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(error.Find("data")->GetInt("upstream_status") == fail.status &&
+              result.IsNull() && peer.Requests().size() == 1 &&
+              OutputJson(error).find("private-") == std::string::npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_dropbox_header_size_identity_and_truncation_are_not_success) {
+  for (int mode = 0; mode < 5; ++mode) {
+    auto metadata = DropboxMetadata();
+    if (mode == 2) Set(&metadata, "size", Number(5));
+    if (mode == 3) Set(&metadata, "id", String("id:other"));
+    auto response = DropboxBytes(metadata);
+    if (mode == 0) response.headers.clear();
+    if (mode == 1) response.headers["Dropbox-API-Result"] = "{bad-json";
+    if (mode == 4) response.omit_body = true;
+    ProviderPeer peer({response}, kDropbox);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kDropbox, "fetch",
+                            Object({{"path", String("id:file1")}}), peer,
+                            &result, &error)
+                   .ok());
+    Q4T_CHECK(result.IsNull() && peer.Requests().size() == 1);
+  }
+  return true;
+}
+Q4T_TEST(mcp_dropbox_header_metadata_charged_to_shared_budget) {
+  const auto metadata = OutputJson(DropboxMetadata());
+  std::unique_ptr<file_detail::RemoteHttp> response;
+  Q4T_CHECK(file_detail::RemoteHttp::Buffered(
+                200,
+                {{"content-type", "application/octet-stream"},
+                 {"dropbox-api-result", metadata}},
+                "real", &response)
+                .ok());
+  uint64_t bytes = (4U << 20) - metadata.size() - 3;
+  Json value;
+  Q4T_CHECK(
+      mcp_detail::ReadProviderResponse(*response, &bytes, &value, true, true)
+          .http_status == 413);
+  Q4T_CHECK(value.IsNull());
+  return true;
+}
+Q4T_TEST(mcp_dropbox_fixed_endpoints_reject_uploads_and_other_providers) {
+  Q4T_CHECK(mcp_detail::ProviderOrigin(
+      kDropbox, "https://api.dropboxapi.com/2/files/search_v2"));
+  for (const auto* url :
+       {"https://api.dropboxapi.com.evil.invalid/",
+        "http://api.dropboxapi.com/", "https://graph.microsoft.com/v1.0/me"})
+    Q4T_CHECK(!mcp_detail::ProviderOrigin(kDropbox, url));
+  McpEndpoint endpoint;
+  endpoint.provider_id = kDropbox;
+  endpoint.authorization = "opaque";
+  for (const auto* url : {"https://content.dropboxapi.com/2/files/upload",
+                          "https://api.dropboxapi.com/2/files/delete_v2",
+                          "https://api.dropboxapi.com/2/users/"
+                          "get_current_account?override=yes"}) {
+    mcp_detail::ProviderRequest request{url};
+    request.method = "POST";
+    request.body = "{}";
+    file_detail::Url parsed;
+    file_detail::RemoteHeaders headers;
+    FileFetchOptions options;
+    Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, FileFetchOptions{},
+                                                  request, &parsed, &headers,
+                                                  &options)
+                   .ok());
+  }
+  return true;
+}
+Q4T_TEST(mcp_dropbox_invalid_arguments_and_changed_cursor_do_no_io) {
+  for (const auto& [name, args] : std::vector<std::pair<std::string, Json>>{
+           {"fetch", Object({{"path", String("https://evil.invalid/file")}})},
+           {"fetch", Object({{"path", String("rev:bad")}})},
+           {"fetch", Object({{"path", String(std::string("/nul\0byte", 9))}})},
+           {"search", Object()},
+           {"search_files", Object({{"next_page_token", String("cursor")},
+                                    {"query", String("different")}})},
+           {"list_recent_files", Object({{"max_results", Number(1001)}})}}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  kDropbox, "tools/call", Call(name, args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && result.IsNull() && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_dropbox_malformed_search_response_never_fabricates_matches) {
+  for (const auto& raw : std::vector<Json>{
+           Object({{"matches", Array()}, {"has_more", Boolean(true)}}),
+           Object(
+               {{"matches", Array({Object()})}, {"has_more", Boolean(false)}}),
+           Object({{"matches", Array()}, {"has_more", String("false")}})}) {
+    ProviderPeer peer({JsonReply(raw)}, kDropbox);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kDropbox, "search",
+                            Object({{"query", String("x")}}), peer, &result,
+                            &error)
+                   .ok());
+    Q4T_CHECK(result.IsNull());
   }
   return true;
 }

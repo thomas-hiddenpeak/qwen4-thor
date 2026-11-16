@@ -1,0 +1,50 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_runtime
+[  0%] Built target q4t_trace
+[  0%] Built target q4t_io
+[  3%] Built target q4t_ple
+[  3%] Built target q4t_regex_build
+[  3%] Built target q4t_program_javascript
+[  6%] Built target q4t_service_tools
+[  9%] Built target q4t_text
+[ 12%] Built target q4t_quant
+[ 12%] Built target q4t_service_cli
+[ 21%] Built target xgrammar
+[ 31%] Built target q4t_model
+[ 34%] Built target q4t_startup_plan
+[ 34%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_http.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_policy.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_calendar.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_time.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_common.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_drive.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_gmail.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_mail.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_graph.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_outlook.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_teams.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_sharepoint.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/mcp_provider_dropbox.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_program.cpp.o
+[ 40%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

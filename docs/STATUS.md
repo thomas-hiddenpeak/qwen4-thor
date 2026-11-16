@@ -43,6 +43,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+Dropbox六工具候选已完成[25项CPU和1项实际CLI八提供方封包首过](evidence/serve-mcp-dropbox-cpu-20261116/README.md)，
+主机/完整引擎零警告，来源7项负控/704锚点过，0GPU、rev134不变。
+八提供方42工具均有原生候选实现；真实账户、特殊格式、业务组合及
+可回退发行仍未完成。继续Google Vids异步下载与全部master。
+
 Microsoft Graph四提供方20工具已实现候选，[40项不同C++、1项实际CLI
 最终通过](evidence/serve-mcp-graph-cpu-20261116/README.md)，7项来源负控、
 703锚点通过，最终构建零警告。OAuth与文件下载能力隔离，邮件列表

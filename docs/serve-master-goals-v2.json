@@ -1225,7 +1225,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "seven_providers_cpu_accepted_remaining_in_progress",
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -1238,7 +1238,7 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 1,
+        "remaining_provider_count": 0,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
@@ -1246,7 +1246,8 @@
           "connector_outlookcalendar",
           "connector_outlookemail",
           "connector_microsoftteams",
-          "connector_sharepoint"
+          "connector_sharepoint",
+          "connector_dropbox"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -1266,7 +1267,11 @@
           "OAuth permission and content behavior",
           "Graph canonical nextLink path aliases and actual pagination",
           "standard SDK business and recovery-qualified release"
-        ]
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96"
       }
     },
     {
@@ -2124,7 +2129,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "seven_providers_cpu_accepted_remaining_in_progress",
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2137,7 +2142,7 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 1,
+        "remaining_provider_count": 0,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
@@ -2145,7 +2150,8 @@
           "connector_outlookcalendar",
           "connector_outlookemail",
           "connector_microsoftteams",
-          "connector_sharepoint"
+          "connector_sharepoint",
+          "connector_dropbox"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -2165,7 +2171,11 @@
           "OAuth permission and content behavior",
           "Graph canonical nextLink path aliases and actual pagination",
           "standard SDK business and recovery-qualified release"
-        ]
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96"
       }
     },
     {
@@ -2210,7 +2220,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "seven_providers_cpu_accepted_remaining_in_progress",
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2223,7 +2233,7 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 1,
+        "remaining_provider_count": 0,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
@@ -2231,7 +2241,8 @@
           "connector_outlookcalendar",
           "connector_outlookemail",
           "connector_microsoftteams",
-          "connector_sharepoint"
+          "connector_sharepoint",
+          "connector_dropbox"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -2251,7 +2262,11 @@
           "OAuth permission and content behavior",
           "Graph canonical nextLink path aliases and actual pagination",
           "standard SDK business and recovery-qualified release"
-        ]
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96"
       }
     },
     {
@@ -3105,7 +3120,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "seven_providers_cpu_accepted_remaining_in_progress",
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3118,7 +3133,7 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 1,
+        "remaining_provider_count": 0,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
@@ -3126,7 +3141,8 @@
           "connector_outlookcalendar",
           "connector_outlookemail",
           "connector_microsoftteams",
-          "connector_sharepoint"
+          "connector_sharepoint",
+          "connector_dropbox"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -3146,7 +3162,11 @@
           "OAuth permission and content behavior",
           "Graph canonical nextLink path aliases and actual pagination",
           "standard SDK business and recovery-qualified release"
-        ]
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96"
       }
     },
     {
@@ -3276,7 +3296,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "seven_providers_cpu_accepted_remaining_in_progress",
+        "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3289,7 +3309,7 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 1,
+        "remaining_provider_count": 0,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
@@ -3297,7 +3317,8 @@
           "connector_outlookcalendar",
           "connector_outlookemail",
           "connector_microsoftteams",
-          "connector_sharepoint"
+          "connector_sharepoint",
+          "connector_dropbox"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -3317,7 +3338,11 @@
           "OAuth permission and content behavior",
           "Graph canonical nextLink path aliases and actual pagination",
           "standard SDK business and recovery-qualified release"
-        ]
+        ],
+        "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+        "dropbox_cpp_passed": 25,
+        "dropbox_cli_passed": 1,
+        "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96"
       }
     },
     {
@@ -3333,6 +3358,6 @@
       "release": null
     }
   ],
-  "next_task": "Implement Dropbox native provider and remaining content formats; complete actual provider/SDK business, reversible agent/provider release and all Serve master tasks.",
-  "next": "Implement Dropbox native provider and remaining content formats; complete actual provider/SDK business, reversible agent/provider release and all Serve master tasks."
+  "next_task": "Implement remaining content formats and provider pagination compatibility; complete real account and SDK business, recovery qualification, reversible release and all Serve master tasks.",
+  "next": "Implement remaining content formats and provider pagination compatibility; complete real account and SDK business, recovery qualification, reversible release and all Serve master tasks."
 }

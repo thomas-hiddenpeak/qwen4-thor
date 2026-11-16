@@ -19,6 +19,7 @@ struct ProviderRequest {
   // Only from an authenticated Graph driveItem download capability. Never a
   // tool-supplied URL; drop all account/deployment headers for this transfer.
   bool graph_download = false;
+  bool dropbox_content = false;
 };
 using ProviderFetch =
     std::function<ObjectReply(const ProviderRequest&, io::Json*)>;
@@ -34,7 +35,8 @@ ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
                                    FileFetchOptions* options);
 ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
                                  uint64_t* total_bytes, io::Json* output,
-                                 bool binary = false);
+                                 bool binary = false,
+                                 bool dropbox_content = false);
 // The callback is supplied by native code. Production uses the independently
 // owned MCP worker and fixed-origin HTTPS; tests can exercise real local peers.
 ObjectReply InvokeProvider(std::string_view id, std::string_view method,
@@ -57,6 +59,8 @@ ObjectReply GoogleDriveProvider(std::string_view method, const io::Json& params,
                                 const ProviderFetch& fetch, io::Json* result);
 ObjectReply GmailProvider(std::string_view method, const io::Json& params,
                           const ProviderFetch& fetch, io::Json* result);
+ObjectReply DropboxProvider(std::string_view method, const io::Json& params,
+                            const ProviderFetch& fetch, io::Json* result);
 bool GraphProviderId(std::string_view id);
 ObjectReply GraphProvider(std::string_view id, std::string_view method,
                           const io::Json& params, const ProviderFetch& fetch,

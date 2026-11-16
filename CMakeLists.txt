@@ -327,6 +327,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/mcp_provider_outlook.cpp
   src/server/mcp_provider_teams.cpp
   src/server/mcp_provider_sharepoint.cpp
+  src/server/mcp_provider_dropbox.cpp
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp

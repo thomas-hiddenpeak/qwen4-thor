@@ -1825,8 +1825,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "af76043caf2d065f5bec7e7ebfb726fca346082ca02c8b690eef185da65349c4",
-    "cmake/ChatProtocolIdentity.cmake": "b3d5abd45dc67b188560c9fe98f1c4deee62db36ed0b612b706f12ce4256516c",
+    "CMakeLists.txt": "be32153645632f18820e142937189eaf1c2fa7a7d684d78fb1872a2fbe981c9e",
+    "cmake/ChatProtocolIdentity.cmake": "e2fdd48fa061f71d9f93663356232adcb5a0b23a5040da14650e4e35affdf42c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2087,7 +2087,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "5098ea27e021811d9d026032dc1ddd4ae3a5ca896e36cc3c8cfc9afeb24b10ae",
+    "src/server/chat_capabilities.cpp": "348f21740417c2abb7cdfeccfa810a1ddad3242167b3581ead17fe7f80f94427",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -2195,15 +2195,16 @@
     "src/server/mcp_http.cpp": "f647ab1ff780a1eed27c67fc267f1951219b6586e35a830dfffce79e7e4ebf7d",
     "src/server/mcp_policy.cpp": "4f3485e0055f89fe0bbf1c8b77656697431017bec1740ef137e8a6ed0fbbe467",
     "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
-    "src/server/mcp_provider.cpp": "ee6bfe2472ada0837a701cffc3c56bb3a4a5d287696e86df84c1c611ac7976cb",
+    "src/server/mcp_provider.cpp": "2cdbc6657fe358fdc2e973b45d457c4476eb6f75dad6d93c9dba7b61f76e25da",
     "src/server/mcp_provider_calendar.cpp": "9aa182a60351cf49d74e501656bea0dd514d7b1d3698aa11a52e6201c1d85f80",
     "src/server/mcp_provider_common.cpp": "406da0eac6fed942b4c49ba7797098401d22ddc9d0bdcf05562debe30e5a5054",
     "src/server/mcp_provider_common.h": "3a5a23e934f2dce1dfc4b5fc757a6e3931aeb609f3bda3b197efcc902228e90b",
     "src/server/mcp_provider_drive.cpp": "a161019ea6e840f436c0f7098bd1444a53b8125287e5c8d797914133ffdd21c0",
+    "src/server/mcp_provider_dropbox.cpp": "bbff6e90437b7a1d56d3a927aeaa73f3510b413a6a5063dc1dc9d6144c035354",
     "src/server/mcp_provider_gmail.cpp": "ac2f26236428e498c8d6b3db3bdce8ed445d44dd5b0c05bbde3a57bece516548",
     "src/server/mcp_provider_graph.cpp": "2ae82d5b5fb98f2f14d943df0339ce1a6a64ba35599085ed5c1b15f0abaf2231",
     "src/server/mcp_provider_graph.h": "7166c3b02210c75125c3bf2ff93bb459b213b3d667f929e9ff57d72563a505d6",
-    "src/server/mcp_provider_internal.h": "603c7b9be51a6b7a4e5a7b6c62ec64bae215a2b5ac86a5c5b5bc85841a2ca52c",
+    "src/server/mcp_provider_internal.h": "4fa731fbdab1772d31263b16baa16c26eceec886f18917d235ab6cdb34094d44",
     "src/server/mcp_provider_mail.cpp": "c0c2b745717c3f343b12b5c0c0cdffe8cecf412b5690779714228810bd01601d",
     "src/server/mcp_provider_mail.h": "59c6675d5f638347cff46029430b9c8cbb9cc9f4155062a7146c5c7be95c5714",
     "src/server/mcp_provider_outlook.cpp": "ebf1ddde2f8b1c8de89cff2e5b2f3607792d67430ae81979fc9cc65399a15558",
@@ -5706,5 +5707,11 @@
     "cpu": "40 distinct targeted C++ tests passed after two loopback-fixture fixes; no GPU/live cloud-account business",
     "evidence": "docs/evidence/serve-mcp-graph-cpu-20261116/README.md",
     "remaining": "Dropbox, real account permissions/paging/assets, provider release and all Serve master tasks"
+  },
+  "native_provider_dropbox_review_20261116": {
+    "scope": "Six read tools; fixed Dropbox RPC/content endpoints, content-header metadata and budgets, ASCII JSON paths, original download or one known export/folder resolution, opaque cursors and independent account permissions",
+    "cpu": "25 targeted C++ first-pass; no GPU or live cloud accounts",
+    "evidence": "docs/evidence/serve-mcp-dropbox-cpu-20261116/README.md",
+    "remaining": "Special formats, live accounts and full client business, reversible release and all master tasks"
   }
 }

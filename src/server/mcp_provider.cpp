@@ -13,7 +13,8 @@ constexpr uint64_t kProviderResponseBytes = 4U << 20;
 
 bool NativeProvider(std::string_view id) {
   return id == "connector_googlecalendar" || id == "connector_googledrive" ||
-         id == "connector_gmail" || GraphProviderId(id);
+         id == "connector_gmail" || id == "connector_dropbox" ||
+         GraphProviderId(id);
 }
 bool ProviderOrigin(std::string_view id, std::string_view raw) {
   file_detail::Url url;
@@ -21,6 +22,9 @@ bool ProviderOrigin(std::string_view id, std::string_view raw) {
       url.scheme != "https" || url.port != 443)
     return false;
   if (GraphProviderId(id)) return url.host == "graph.microsoft.com";
+  if (id == "connector_dropbox")
+    return url.host == "api.dropboxapi.com" ||
+           url.host == "content.dropboxapi.com";
   if (url.host == "oauth2.googleapis.com") return true;
   if (id == "connector_gmail") return url.host == "gmail.googleapis.com";
   return url.host == "www.googleapis.com" ||
@@ -55,6 +59,8 @@ ObjectReply InvokeProvider(std::string_view id, std::string_view method,
                    ? GoogleDriveProvider(method, params, fetch, result)
                : id == "connector_gmail"
                    ? GmailProvider(method, params, fetch, result)
+               : id == "connector_dropbox"
+                   ? DropboxProvider(method, params, fetch, result)
                    : GraphProvider(id, method, params, fetch, result);
   if (reply.ok()) return reply;
   const int status = reply.value.GetInt("upstream_status");
@@ -82,7 +88,7 @@ ObjectReply InvokeProvider(std::string_view id, std::string_view method,
 }
 ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
                                  uint64_t* total_bytes, Json* output,
-                                 bool binary) {
+                                 bool binary, bool dropbox_content) {
   if (!total_bytes || !output || *total_bytes > kProviderResponseBytes)
     return Error(500, "mcp_provider_invalid",
                  "Invalid provider response state");
@@ -91,7 +97,45 @@ ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
     auto reply =
         Error(502, "mcp_provider_http_error", "Provider request failed");
     reply.value = Object({{"upstream_status", Number(response.Status())}});
+    // A Dropbox content read may explicitly require export (or identify a
+    // folder). Inspect only this known 409's bounded reason, never expose its
+    // private body. A stalled/malformed error remains the already-known 409.
+    if (dropbox_content && response.Status() == 409) {
+      std::string body;
+      auto read = response.ReadAll(&body);
+      if (body.size() > kProviderResponseBytes - *total_bytes) return reply;
+      *total_bytes += body.size();
+      Json value;
+      if (read.ok() && body.size() <= 16384 &&
+          io::ParseJson(body, &value, true,
+                        {.max_depth = 16,
+                         .max_values = 1024,
+                         .max_string_bytes = 16384,
+                         .reject_duplicate_keys = true})) {
+        const auto* error = value.Find("error");
+        const auto* path = error ? error->Find("path") : nullptr;
+        if (error && error->GetString(".tag") == "unsupported_file")
+          Set(&reply.value, "provider_reason", String("export_required"));
+        else if (error && error->GetString(".tag") == "path" && path &&
+                 path->GetString(".tag") == "not_file")
+          Set(&reply.value, "provider_reason", String("folder"));
+      }
+    }
     return reply;
+  }
+  Json metadata;
+  if (dropbox_content) {
+    const auto raw = response.Header("dropbox-api-result");
+    if (!binary || raw.empty() || raw.size() > 16384 ||
+        raw.size() > kProviderResponseBytes - *total_bytes ||
+        !io::ParseJson(std::string(raw), &metadata, true,
+                       {.max_depth = 16,
+                        .max_values = 4096,
+                        .max_string_bytes = 16384,
+                        .reject_duplicate_keys = true}) ||
+        !metadata.IsObject())
+      return provider_detail::Protocol();
+    *total_bytes += raw.size();
   }
   std::string body;
   auto reply = response.ReadAll(&body);
@@ -104,6 +148,7 @@ ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
     *output = Object({{"mimeType", String(std::string(response.Mime()))},
                       {"data", String(provider_detail::Base64(body))},
                       {"size", Number(body.size())}});
+    if (dropbox_content) Set(output, "metadata", std::move(metadata));
     return {};
   }
   if (response.Mime() != "application/json" ||
@@ -130,9 +175,10 @@ ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
   if (request.graph_download) {
     if (endpoint.provider_id != "connector_sharepoint" ||
         request.method != "GET" || !request.binary || request.token_query ||
-        !request.body.empty() || !request.headers.empty() ||
-        !file_detail::ParseUrl(request.url, url) || url->scheme != "https" ||
-        url->port != 443 || request.url.find('#') != request.url.npos)
+        request.dropbox_content || !request.body.empty() ||
+        !request.headers.empty() || !file_detail::ParseUrl(request.url, url) ||
+        url->scheme != "https" || url->port != 443 ||
+        request.url.find('#') != request.url.npos)
       return Error(403, "mcp_provider_target_denied",
                    "Native provider download target not permitted");
     // The authenticated API chooses the short-lived CDN URL. Keep the
@@ -149,6 +195,37 @@ ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
                  "Native provider target not permitted");
   if (!file_detail::ParseUrl(request.url, url))
     return Error(500, "mcp_provider_invalid", "Invalid provider target");
+  if (endpoint.provider_id == "connector_dropbox") {
+    const bool content =
+        request.dropbox_content && request.binary && request.method == "GET" &&
+        request.body.empty() && request.headers.size() == 1 &&
+        request.headers.contains("Dropbox-API-Arg") &&
+        (request.url == "https://content.dropboxapi.com/2/files/download" ||
+         request.url == "https://content.dropboxapi.com/2/files/export");
+    const bool rpc =
+        !request.dropbox_content && !request.binary &&
+        request.method == "POST" && request.headers.empty() &&
+        (request.url ==
+             "https://api.dropboxapi.com/2/users/get_current_account" ||
+         request.url == "https://api.dropboxapi.com/2/files/get_metadata" ||
+         request.url == "https://api.dropboxapi.com/2/files/search_v2" ||
+         request.url ==
+             "https://api.dropboxapi.com/2/files/search/continue_v2");
+    if ((!content && !rpc) || request.token_query)
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider operation not permitted");
+    *headers = endpoint.headers;
+    (*headers)["Accept"] = content ? "*/*" : "application/json";
+    if (content)
+      (*headers)["Dropbox-API-Arg"] = request.headers.at("Dropbox-API-Arg");
+    else
+      (*headers)["Content-Type"] = "application/json";
+    (*headers)["Authorization"] = "Bearer " + endpoint.authorization;
+    return {};
+  }
+  if (request.dropbox_content)
+    return Error(403, "mcp_provider_target_denied",
+                 "Native provider operation not permitted");
   *headers = endpoint.headers;
   (*headers)["Accept"] = request.binary ? "*/*" : "application/json";
   for (const auto& [key, value] : request.headers) {
@@ -206,7 +283,8 @@ ObjectReply ExchangeProvider(const McpEndpoint& endpoint,
         url, options, request.method, headers, request.body,
         kProviderResponseBytes - bytes, deadline, &response);
     if (!reply.ok()) return reply;
-    return ReadProviderResponse(*response, &bytes, output, request.binary);
+    return ReadProviderResponse(*response, &bytes, output, request.binary,
+                                request.dropbox_content);
   };
   return InvokeProvider(endpoint.provider_id, method, params, fetch, result,
                         error);
