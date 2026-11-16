@@ -3,6 +3,7 @@ import copy
 import unittest
 
 from tools.serve_recovery import profile_contract, profile_evidence, profile_migration
+from tools.serve_recovery import profile_policy
 from tools.serve_recovery import test_profile_migration as previous
 from tools.serve_service import capacity
 
@@ -31,6 +32,76 @@ class MediaMigrationTests(unittest.TestCase):
                 requires_mtp_disabled=False,decode_strategy='target_model')
             record['business']['media']=copy.deepcopy(proof)
         return registry,previous.bind_records(registry,records)
+
+    def cache_extension(self):
+        registry, evidence = self.extension()
+        old = copy.deepcopy(registry)
+        records = {n: copy.deepcopy(v['record']) for n, v in evidence.items()}
+        for record in records.values():
+            caps = record['capabilities']
+            caps['media'].update(state_cache=False, chunked_prefill=False)
+            for name in ('chat', 'responses'):
+                caps.setdefault(name, {})['prompt_cache'] = dict(
+                    media_fingerprint_pending=True)
+        first = previous.bind_records(old, records)
+        target = copy.deepcopy(old)
+        target['identity'].update(binary_sha256='e'*64, protocol_sha256='f'*64)
+        records = copy.deepcopy(records)
+        for record in records.values():
+            caps = record['capabilities']
+            caps['media'].update(state_cache=True, chunked_prefill=True,
+                cache_identity='source_bytes_processor_geometry_and_position',
+                cache_layout='target_with_three_axis_rope_and_delta',
+                cache_boundaries='complete_visual_blocks')
+            for name in ('chat', 'responses'):
+                caps[name]['prompt_cache']['media_fingerprint_pending'] = False
+        return old, target, first, previous.bind_records(target, records)
+
+    def test_media_cache_requires_explicit_upgrade_and_cannot_lose_or_auto_add(self):
+        old, new, first, second = self.cache_extension()
+        saved = copy.deepcopy((first, second))
+        def permit(a, b, x, y, **kwargs):
+            return profile_migration.permit(a, b, x, y, self.base.config,
+                                            self.base.config, **kwargs)
+        for kwargs in ({}, dict(automatic=True, allow_capability_extension=True)):
+            with self.assertRaises(ValueError): permit(old, new, first, second, **kwargs)
+        grant = permit(old, new, first, second, allow_capability_extension=True)
+        self.assertEqual(grant['format'], profile_migration.EXTENSION_FORMAT)
+        for automatic in (False, True):
+            with self.assertRaises(ValueError):
+                permit(new, old, second, first, automatic=automatic,
+                       allow_capability_extension=True)
+        self.assertTrue(permit(new, new, second, second, automatic=True)['automatic'])
+        self.assertEqual((first, second), saved)
+
+    def test_media_cache_upgrade_keeps_pending_and_consumed_budget(self):
+        old, new, first, second = self.cache_extension()
+        initial = profile_policy.initial(old, self.base.stamp(0), self.base.config)
+        pending = profile_policy.prepare(initial, 'light', 'sustained_memory_pressure',
+                                         str(previous.uuid.uuid4()), 7, self.base.stamp(1))
+        grant = profile_migration.permit(old, new, first, second, self.base.config,
+            self.base.config, allow_capability_extension=True)
+        after = profile_migration.candidate(pending, grant, self.base.stamp(1))
+        for key in ('pending', 'history', 'selected', 'not_before_ns', 'light_since_ns',
+                    'configuration', 'profiles'):
+            self.assertEqual(after[key], pending[key])
+
+    def test_media_cache_rejects_inconsistent_fingerprints_layout_and_boolean_types(self):
+        _, _, _, second = self.cache_extension()
+        caps = second['primary']['record']['capabilities']
+        for change in (lambda c:c['media'].update(state_cache=1),
+            lambda c:c['media'].update(chunked_prefill=False),
+            lambda c:c['media'].update(cache_identity='token_placeholders'),
+            lambda c:c['media'].update(cache_layout='target_text_only'),
+            lambda c:c['media'].update(cache_boundaries='partial_blocks'),
+            lambda c:c.update(chat='invalid'),
+            lambda c:c['responses'].update(prompt_cache=1),
+            lambda c:c['chat']['prompt_cache'].update(media_fingerprint_pending=True),
+            lambda c:c['responses']['prompt_cache'].pop('media_fingerprint_pending'),
+            lambda c:c['chat']['prompt_cache'].update(media_fingerprint_pending=0)):
+            bad = copy.deepcopy(caps); change(bad)
+            with self.assertRaises(ValueError):
+                profile_migration.semantic_capabilities(bad)
 
     def test_media_extension_requires_explicit_capacity_and_feature_decision(self):
         registry,evidence=self.extension();before=copy.deepcopy(evidence)

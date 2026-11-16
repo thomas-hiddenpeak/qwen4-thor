@@ -1,0 +1,12 @@
+{
+  "status": "PASS_TARGETED_MEDIA_CAPABILITY_MIGRATION_CPU",
+  "unique_tests": 6,
+  "test_executions": 7,
+  "source_anchors": 735,
+  "negative_source_checks": 7,
+  "original_publish_rejection_preserved": true,
+  "engine_client_native_helpers_unchanged": true,
+  "new_gpu_starts": 0,
+  "publication_pending": true,
+  "archive_sha256": "7680bc219bb09392fca0ad018eb90908f71703451106c2d244206d5eaa751e11"
+}
