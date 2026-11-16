@@ -71,7 +71,9 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 R09首次短验后的[修复CPU通过](evidence/serve-recovery-wait-cpu-20261116/README.md)：
 三个角色的真实预算等待投影及原生指标、首次/已建立整根迁移合同
 的保留。10项CPU通过，首次迁移审查后只重验3项；独立Guardian
-零警告。原预算不变，业务补验/发行继续，默认rev174保持。
+零警告。原预算不变，[补验驱动2项CPU](evidence/serve-root-rollback-completion-driver-20261116/README.md)
+通过；等待原窗口实际到期，仅补3启动/6Chat含自检/300秒，累计
+7启动/14Chat/1探测、GPU租约总时≤900秒。默认rev174保持。
 
 
 [R09整根回退修复](SERVE_ROOT_ROLLBACK_2026-11-16.md)继续实现：

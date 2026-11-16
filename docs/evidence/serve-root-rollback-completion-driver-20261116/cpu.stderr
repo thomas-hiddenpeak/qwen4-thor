@@ -1,0 +1,7 @@
+test_completion_counter_carries_all_prior_real_consumption (__main__.CompletionTests.test_completion_counter_carries_all_prior_real_consumption) ... ok
+test_real_original_budget_eligibility_requires_monotonic_expiry (__main__.CompletionTests.test_real_original_budget_eligibility_requires_monotonic_expiry) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.013s
+
+OK
