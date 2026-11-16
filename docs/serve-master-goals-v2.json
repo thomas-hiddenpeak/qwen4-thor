@@ -82,15 +82,16 @@
         "Chat stream_options.include_obfuscation, null/default and response projection parity"
       ],
       "chat_style_parity_20261116": {
-        "state": "real_business_failure_repaired_targeted_cpu_passed",
+        "state": "targeted_cpu_and_real_business_accepted_release_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
-        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
       }
     },
     {
@@ -133,15 +134,16 @@
         "Non-null audio/annotations history and matching model/output/template round trips"
       ],
       "chat_style_parity_20261116": {
-        "state": "real_business_failure_repaired_targeted_cpu_passed",
+        "state": "targeted_cpu_and_real_business_accepted_release_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
-        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
       }
     },
     {
@@ -2663,15 +2665,16 @@
         "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
       ],
       "chat_style_parity_20261116": {
-        "state": "real_business_failure_repaired_targeted_cpu_passed",
+        "state": "targeted_cpu_and_real_business_accepted_release_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
-        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
       }
     },
     {
@@ -4089,15 +4092,16 @@
         "Executable long-stability handoff; user performs long run"
       ],
       "chat_style_parity_20261116": {
-        "state": "real_business_failure_repaired_targeted_cpu_passed",
+        "state": "targeted_cpu_and_real_business_accepted_release_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
-        "runtime_accepted": false,
+        "runtime_accepted": true,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
-        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
       }
     }
   ],

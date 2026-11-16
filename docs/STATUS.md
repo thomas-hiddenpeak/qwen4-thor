@@ -51,6 +51,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat 样式实际业务通过](evidence/serve-chat-style-business-20261116/README.md)：
+e0b34b43同一严格租约1启动/6Chat/54.202秒，52项NVML正常。
+原问题/判定保持；默认/null、padding双向、双choice概率/usage、一次
+实际文档工具/结构化续答及同PID普通Chat通过，自有资源清理。原
+none语法失步失败保留；继续新引擎主轻资格与可回退交付，rev150未改。
+
 [none模板/约束修复CPU通过](evidence/serve-chat-style-grammar-cpu-20261116/README.md)：
 8项直接C++含真实grammar负控，来源/生成物检查通过，最终零警告。
 仅共享样式、模板、约束三项运行时变化；初次key类型构建失败保留。
