@@ -1,0 +1,4 @@
+{
+  "private_policy_sealing": "docs/evidence/serve-mcp-dropbox-cpu-20261116/policy-01.json",
+  "reason": "No deployment policy, CLI/package sealing, provider identity or recovery configuration sources changed in LRO work; original eight-provider actual CLI evidence reused. Candidate executable differs, no claim that old CLI execution ran this candidate."
+}

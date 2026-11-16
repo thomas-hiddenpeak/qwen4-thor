@@ -47,6 +47,18 @@ std::string ProviderEscape(std::string_view value) {
   }
   return result;
 }
+bool GoogleDownloadOrigin(std::string_view raw) {
+  file_detail::Url url;
+  if (!file_detail::ParseUrl(raw, &url) || url.scheme != "https" ||
+      url.port != 443 || raw.find('#') != raw.npos)
+    return false;
+  return url.host == "www.googleapis.com" ||
+         url.host == "content.googleapis.com" ||
+         url.host == "drive.usercontent.google.com" ||
+         url.host == "drive.google.com" || url.host == "docs.google.com" ||
+         url.host.ends_with(".googleusercontent.com") ||
+         url.host.ends_with(".googlevideo.com");
+}
 ObjectReply InvokeProvider(std::string_view id, std::string_view method,
                            const Json& params, const ProviderFetch& fetch,
                            Json* result, Json* error) {
@@ -172,6 +184,30 @@ ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
     return Error(500, "mcp_provider_invalid", "Invalid provider request state");
   *options = deployment;
   headers->clear();
+  if (request.google_download) {
+    if (endpoint.provider_id != "connector_googledrive" ||
+        request.method != "GET" || !request.binary || request.token_query ||
+        request.graph_download || request.dropbox_content ||
+        !request.body.empty() || !GoogleDownloadOrigin(request.url) ||
+        request.headers.size() > 1 ||
+        (!request.headers.empty() &&
+         !request.headers.contains("X-Goog-Drive-Resource-Keys")))
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider download target not permitted");
+    file_detail::ParseUrl(request.url, url);
+    options->allowed_networks.clear();
+    options->allow_http = false;
+    options->max_redirects = 0;
+    *headers = request.headers;
+    (*headers)["Accept"] = "*/*";
+    // Only fixed API hosts receive the account token. Google-owned content
+    // URIs retain the per-file resource key, never arbitrary deployment
+    // headers.
+    if (url->host == "www.googleapis.com" ||
+        url->host == "content.googleapis.com")
+      (*headers)["Authorization"] = "Bearer " + endpoint.authorization;
+    return {};
+  }
   if (request.graph_download) {
     if (endpoint.provider_id != "connector_sharepoint" ||
         request.method != "GET" || !request.binary || request.token_query ||
@@ -237,12 +273,24 @@ ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
     (*headers)[key] = value;
   }
   if (request.method == "POST") {
-    if (!GraphProviderId(endpoint.provider_id) || request.token_query ||
-        request.binary ||
-        request.url != "https://graph.microsoft.com/v1.0/search/query")
+    const std::string_view prefix = "/drive/v3/files/";
+    const std::string_view suffix = "/download?mimeType=video%2Fmp4";
+    const bool drive =
+        endpoint.provider_id == "connector_googledrive" &&
+        url->host == "www.googleapis.com" && request.body.empty() &&
+        url->target.size() > prefix.size() + suffix.size() &&
+        url->target.starts_with(prefix) && url->target.ends_with(suffix) &&
+        provider_detail::Identifier(
+            std::string_view(url->target)
+                .substr(prefix.size(),
+                        url->target.size() - prefix.size() - suffix.size()));
+    const bool graph =
+        GraphProviderId(endpoint.provider_id) &&
+        request.url == "https://graph.microsoft.com/v1.0/search/query";
+    if ((!drive && !graph) || request.token_query || request.binary)
       return Error(403, "mcp_provider_target_denied",
                    "Native provider operation not permitted");
-    (*headers)["Content-Type"] = "application/json";
+    if (graph) (*headers)["Content-Type"] = "application/json";
   } else if (request.method != "GET" || !request.body.empty()) {
     return Error(403, "mcp_provider_target_denied",
                  "Native provider operation not permitted");

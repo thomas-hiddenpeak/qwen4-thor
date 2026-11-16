@@ -20,12 +20,15 @@ struct ProviderRequest {
   // tool-supplied URL; drop all account/deployment headers for this transfer.
   bool graph_download = false;
   bool dropbox_content = false;
+  // Only a completed authenticated Drive operation may supply this URI.
+  bool google_download = false;
 };
 using ProviderFetch =
     std::function<ObjectReply(const ProviderRequest&, io::Json*)>;
 
 bool NativeProvider(std::string_view id);
 bool ProviderOrigin(std::string_view id, std::string_view url);
+bool GoogleDownloadOrigin(std::string_view url);
 std::string ProviderEscape(std::string_view value);
 ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
                                    const FileFetchOptions& deployment,
@@ -57,6 +60,11 @@ ObjectReply GoogleCalendarProvider(std::string_view method,
                                    io::Json* result);
 ObjectReply GoogleDriveProvider(std::string_view method, const io::Json& params,
                                 const ProviderFetch& fetch, io::Json* result);
+ObjectReply GoogleDriveDownload(std::string_view file_id,
+                                std::string_view resource_key,
+                                std::string_view operation_name,
+                                const ProviderFetch& fetch, io::Json* value,
+                                io::Json* content);
 ObjectReply GmailProvider(std::string_view method, const io::Json& params,
                           const ProviderFetch& fetch, io::Json* result);
 ObjectReply DropboxProvider(std::string_view method, const io::Json& params,

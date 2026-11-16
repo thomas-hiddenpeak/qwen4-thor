@@ -105,8 +105,36 @@ Gmail使用当前授权用户，search_email_ids单页最多500，展开元数�
 iconv复用系统libc且只在隔离worker调用，不引入常驻外部程序或
 新链接密码库。真实提供方账户验收尚待测试资产；
 [36项CPU与实际私有配置封包首过](evidence/serve-mcp-google-cpu-20261116/README.md)，
-最终构建零警告、来源检查通过。Google Vids等独立异步下载格式仍需
+最终构建零警告、来源检查通过。Google Vids异步路径见下节；特殊格式
 继续实现与验证，不能将一般文件下载证明成所有云端格式全覆盖。
+
+### Google Vids长耗时下载候选
+
+按Google官方[长耗时操作](https://developers.google.com/workspace/drive/api/guides/long-running-operations)、
+[发起下载](https://developers.google.com/workspace/drive/api/reference/rest/v3/files/download)、
+[读取操作](https://developers.google.com/workspace/drive/api/reference/rest/v3/operations/get)与
+[MIME类型](https://developers.google.com/workspace/drive/api/guides/mime-types)，
+Google Vids走files.download导出MP4，不能复用files.export。
+一次fetch仅发起一次；done为空/false时返回pending_download、
+resume_arguments和建议等待秒数，不谎称已取得内容。后续fetch携带
+原operation_name只查询一次原任务；初次已完成则直接取内容，不多查。
+
+原操作名按不透明路径段编码，快捷方式续接绑定解析后的目标ID/key。
+续接不查询另一份当前文件元数据来冒充原操作身份，结果明确标记
+operation_name。服务方仍校验当前Google用户/权限；过期或撤权错误
+不会重新发起下载。完整任务错误转成已知工具失败，诊断正文不外泄；
+传输中断保持未知，无内部轮询、睡眠或自动重试。
+
+仅认证操作返回的Google所属HTTPS下载URI可读取。部署域名/CA/公网
+限制保留，私网放行不继承；不跟随重定向。OAuth只发固定Google API
+主机，内容主机不接收OAuth或部署私有头；资源key只发受控Google主机。
+下载URI/原始任务元数据不进入模型结果，HTML登录页不冒充视频。
+复用32次HTTP、4MiB与绝对期限，无新依赖，也不影响核心健康状态。
+
+30项针对性CPU首过，[来源与构建记录](evidence/serve-mcp-drive-lro-cpu-20261116/README.md)
+保留，主机/完整引擎零警告；本机字节夹具仅证明传输、
+错误和资源投影，不能证明真实Vids文件解码或云账户业务。实际资产、
+下载主机组合、标准客户端及发行仍保留为待验，全部master继续。
 
 ### Microsoft Graph四提供方候选
 

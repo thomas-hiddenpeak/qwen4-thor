@@ -102,6 +102,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_time.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_common.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_drive.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_drive_lro.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_gmail.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_mail.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_graph.cpp

@@ -60,9 +60,12 @@ ObjectReply Catalog(const ProviderFetch& fetch, Json* result) {
     tools.array.push_back(
         Tool("fetch",
              "Read original file metadata and "
-             "content, exporting native documents without dropping sheets",
+             "content, exporting native documents without dropping sheets. "
+             "Pending Vids downloads return resume_arguments; pass them back "
+             "after retry_after_seconds to poll that operation once.",
              Object({{"file_id", TextSchema(1024, false)},
-                     {"resource_key", TextSchema(1024)}}),
+                     {"resource_key", TextSchema(1024)},
+                     {"operation_name", TextSchema(2048)}}),
              Array({String("file_id")})));
   *result = Object({{"tools", std::move(tools)}});
   return {};
@@ -79,12 +82,21 @@ ProviderRequest FileRequest(std::string url, std::string_view id,
 ObjectReply FetchFile(const Json& args, const ProviderFetch& fetch, Json* value,
                       Json* content) {
   std::string field;
-  if (!InputFields(args, {"file_id", "resource_key"}, &field) ||
+  if (!InputFields(args, {"file_id", "resource_key", "operation_name"},
+                   &field) ||
       !OptionalText(args, "file_id", 1024) ||
-      !OptionalText(args, "resource_key", 1024))
+      !OptionalText(args, "resource_key", 1024) ||
+      !OptionalText(args, "operation_name", 2048))
     return Invalid();
   auto id = Text(args, "file_id"), key = Text(args, "resource_key");
   if (!Identifier(id) || (!key.empty() && !Identifier(key))) return Invalid();
+  const auto operation = Text(args, "operation_name");
+  if (!operation.empty()) {
+    // The operation identifies its content. Don't query unrelated current file
+    // metadata and claim that it proves the identity of a resumed operation.
+    *value = Object();
+    return GoogleDriveDownload(id, key, operation, fetch, value, content);
+  }
   const auto requested = id;
   auto shortcuts = Array();
   std::set<std::string> seen;
@@ -125,6 +137,8 @@ ObjectReply FetchFile(const Json& args, const ProviderFetch& fetch, Json* value,
         !capabilities->GetBool("canDownload"))
       return Error(403, "mcp_provider_access_denied",
                    "The provider does not permit downloading this file");
+    if (mime == "application/vnd.google-apps.vid")
+      return GoogleDriveDownload(id, key, {}, fetch, value, content);
     std::string exported = mime;
     if (mime.starts_with("application/vnd.google-apps.")) {
       static const std::map<std::string, std::string> formats{

@@ -395,6 +395,338 @@ Q4T_TEST(mcp_google_drive_exports_preserve_complete_office_formats) {
   }
   return true;
 }
+namespace {
+constexpr auto kDriveOperation = "opaque+/=%2Foperation";
+Json DriveOperation(
+    bool complete = false,
+    std::string uri =
+        "https://content.googleapis.com/drive/download?token=private") {
+  auto value =
+      Object({{"name", String(kDriveOperation)}, {"done", Boolean(complete)}});
+  if (complete)
+    Set(&value, "response",
+        Object({{"@type", String("type.googleapis.com/google.apps.drive.v3."
+                                 "DownloadFileResponse")},
+                {"downloadUri", String(std::move(uri))},
+                {"partialDownloadAllowed", Boolean(true)}}));
+  return value;
+}
+Json DriveResume() {
+  return Object({{"file_id", String("file_1")},
+                 {"operation_name", String(kDriveOperation)}});
+}
+}  // namespace
+Q4T_TEST(mcp_google_drive_lro_pending_never_claims_content_or_loops) {
+  for (int mode = 0; mode < 3; ++mode) {
+    auto operation = Object({{"name", String(kDriveOperation)}});
+    if (mode == 1) Set(&operation, "done", Json());
+    if (mode == 2) Set(&operation, "done", Boolean(false));
+    Set(&operation, "metadata", Object({{"resourceKey", String("key_new")}}));
+    ProviderPeer peer({JsonReply(DriveFile("application/vnd.google-apps.vid")),
+                       JsonReply(operation)},
+                      kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                           Object({{"file_id", String("file_1")},
+                                   {"resource_key", String("key_old")}}),
+                           peer, &result, &error)
+                  .ok());
+    Q4T_CHECK(error.IsNull() && ValidateMcpToolResult(result));
+    const auto* value = result.Find("structuredContent");
+    Q4T_CHECK(value->GetString("kind") == "pending_download" &&
+              !value->GetBool("done", true) &&
+              value->GetInt("retry_after_seconds") == 10 &&
+              result.GetArray("content")->array.size() == 1);
+    const auto* resume = value->Find("resume_arguments");
+    Q4T_CHECK(resume->GetString("operation_name") == kDriveOperation &&
+              resume->GetString("resource_key") == "key_new");
+    const auto requests = peer.Requests();
+    Q4T_CHECK(requests.size() == 2);
+    Q4T_CHECK(requests[1].starts_with(
+        "POST /drive/v3/files/file_1/download?mimeType=video%2Fmp4 HTTP/1.1"));
+    Q4T_CHECK(requests[1].find("X-Goog-Drive-Resource-Keys: file_1/key_old") !=
+              requests[1].npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_resume_polls_same_opaque_operation_once) {
+  ProviderPeer peer({JsonReply(DriveOperation())}, kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch", DriveResume(), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto requests = peer.Requests();
+  Q4T_CHECK(
+      requests.size() == 1 &&
+      requests[0].starts_with(
+          "GET /drive/v3/operations/opaque%2B%2F%3D%252Foperation HTTP/1.1"));
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetString("kind") == "pending_download" &&
+            !value->Has("file") && !value->Has("requested_file_id"));
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_completed_initial_does_not_poll_again) {
+  ProviderPeer peer({JsonReply(DriveFile("application/vnd.google-apps.vid")),
+                     JsonReply(DriveOperation(true)),
+                     {200, "mp4-transport-fixture", false, "video/mp4"}},
+                    kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                         Object({{"file_id", String("file_1")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && ValidateMcpToolResult(result));
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 3 &&
+            requests[2].starts_with("GET /drive/download?token=private "));
+  Q4T_CHECK(requests[2].find("Authorization: Bearer synthetic-private-token") !=
+                requests[2].npos &&
+            requests[2].find("X-Private-Tenant") == requests[2].npos);
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetBool("done") && value->GetInt("content_bytes") == 21 &&
+            value->GetString("content_mime_type") == "video/mp4");
+  Q4T_CHECK(OutputJson(result).find("token=private") == std::string::npos);
+  const auto* resource = result.GetArray("content")->array[1].Find("resource");
+  Q4T_CHECK(resource->GetString("blob") ==
+            mcp_detail::provider_detail::Base64("mp4-transport-fixture"));
+  McpContentProjection projection;
+  Q4T_CHECK(ProjectMcpToolResult(result, Array(), &projection));
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_resume_completed_strips_content_credentials) {
+  auto operation = DriveOperation(
+      true, "https://r1.googlevideo.com/videoplayback?signature=private");
+  Set(&operation, "metadata", Object({{"resourceKey", String("key_new")}}));
+  ProviderPeer peer(
+      {JsonReply(operation), {200, "mp4", false, "application/octet-stream"}},
+      kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch", DriveResume(), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && peer.Requests().size() == 2);
+  const auto request = peer.Requests()[1];
+  Q4T_CHECK(request.find("Authorization:") == request.npos &&
+            request.find("X-Private-Tenant:") == request.npos &&
+            request.find("X-Goog-Drive-Resource-Keys: file_1/key_new") !=
+                request.npos);
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetBool("done") && !value->Has("file") &&
+            value->GetString("content_mime_type") == "video/mp4");
+  Q4T_CHECK(OutputJson(result).find("signature=private") == std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_shortcut_resumes_target_identity_and_key) {
+  auto shortcut = DriveFile("application/vnd.google-apps.shortcut");
+  Set(&shortcut, "shortcutDetails",
+      Object({{"targetId", String("target_1")},
+              {"targetResourceKey", String("target_key")}}));
+  ProviderPeer peer(
+      {JsonReply(shortcut),
+       JsonReply(DriveFile("application/vnd.google-apps.vid", "target_1")),
+       JsonReply(DriveOperation())},
+      kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                         Object({{"file_id", String("file_1")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && peer.Requests().size() == 3);
+  const auto* value = result.Find("structuredContent");
+  const auto* resume = value->Find("resume_arguments");
+  Q4T_CHECK(value->GetString("requested_file_id") == "file_1" &&
+            resume->GetString("file_id") == "target_1" &&
+            resume->GetString("resource_key") == "target_key");
+  Q4T_CHECK(peer.Requests()[2].starts_with(
+      "POST /drive/v3/files/target_1/download?"));
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_terminal_error_is_known_redacted_no_relaunch) {
+  for (const auto& [code, status] :
+       std::vector<std::pair<int, int>>{{1, 499},
+                                        {4, 504},
+                                        {5, 404},
+                                        {7, 403},
+                                        {8, 429},
+                                        {14, 503},
+                                        {16, 401}}) {
+    auto operation = Object(
+        {{"name", String(kDriveOperation)},
+         {"done", Boolean(true)},
+         {"error", Object({{"code", Number(code)},
+                           {"message", String("private diagnostic")}})}});
+    ProviderPeer peer({JsonReply(operation)}, kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kDriveProvider, "fetch", DriveResume(), peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(result.IsNull() && error.GetInt("code") == -32000 &&
+              error.Find("data")->GetInt("upstream_status") == status &&
+              peer.Requests().size() == 1);
+    Q4T_CHECK(OutputJson(error).find("private") == std::string::npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_expired_or_revoked_operation_never_restarts) {
+  for (int status : {401, 403, 404, 429, 503}) {
+    ProviderPeer peer({{status, "private diagnostic", true}}, kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kDriveProvider, "fetch", DriveResume(), peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(result.IsNull() && error.GetInt("code") == -32000 &&
+              error.Find("data")->GetInt("upstream_status") == status &&
+              peer.Requests().size() == 1);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_malformed_or_changed_operation_not_success) {
+  for (int mode = 0; mode < 8; ++mode) {
+    auto operation = DriveOperation();
+    if (mode == 0) Set(&operation, "name", String("other-operation"));
+    if (mode == 1) Set(&operation, "done", String("false"));
+    if (mode == 2) Set(&operation, "response", Object());
+    if (mode == 3) Set(&operation, "error", Object({{"code", Number(7)}}));
+    if (mode == 4) Set(&operation, "done", Boolean(true));
+    if (mode == 5) {
+      operation = DriveOperation(true);
+      Set(&operation, "error", Object({{"code", Number(7)}}));
+    }
+    if (mode == 6)
+      Set(&operation, "metadata", Object({{"resourceKey", String("bad/key")}}));
+    if (mode == 7) Set(&operation, "metadata", String("not-object"));
+    ProviderPeer peer({JsonReply(operation)}, kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kDriveProvider, "fetch", DriveResume(), peer,
+                            &result, &error)
+                   .ok());
+    Q4T_CHECK(result.IsNull() && peer.Requests().size() == 1);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_host_and_result_type_reject_before_download) {
+  for (int mode = 0; mode < 4; ++mode) {
+    auto operation = DriveOperation(true);
+    auto response = *operation.Find("response");
+    if (mode == 0) Set(&response, "@type", String("other-response"));
+    if (mode == 1)
+      Set(&response, "downloadUri",
+          String("https://googlevideo.com.evil.invalid/read"));
+    if (mode == 2)
+      Set(&response, "downloadUri",
+          String("http://content.googleapis.com/read"));
+    if (mode == 3) Set(&response, "partialDownloadAllowed", String("true"));
+    Set(&operation, "response", response);
+    ProviderPeer peer({JsonReply(operation)}, kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kDriveProvider, "fetch", DriveResume(), peer,
+                            &result, &error)
+                   .ok());
+    Q4T_CHECK(result.IsNull() && peer.Requests().size() == 1);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_download_failure_not_partial_success) {
+  for (int mode = 0; mode < 4; ++mode) {
+    Reply download{200, "not-full-video", false, "video/mp4"};
+    if (mode == 0) download.status = 302;
+    if (mode == 1) download.status = 403;
+    if (mode == 2) download.omit_body = true;
+    if (mode == 3) download.mime = "text/html";
+    ProviderPeer peer({JsonReply(DriveOperation(true)), download},
+                      kDriveProvider);
+    Json result, error;
+    const auto reply = ProviderCall(kDriveProvider, "fetch", DriveResume(),
+                                    peer, &result, &error);
+    Q4T_CHECK(result.IsNull() && peer.Requests().size() == 2);
+    Q4T_CHECK(mode < 2 ? reply.ok() && error.IsObject()
+                       : !reply.ok() && error.IsNull());
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_invalid_arguments_do_not_start_download) {
+  for (const auto& name : std::vector<std::string>{"", ".", "..", "bad\nname",
+                                                   std::string(2049, 'a')}) {
+    auto args = DriveResume();
+    Set(&args, "operation_name", String(name));
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  kDriveProvider, "tools/call", Call("fetch", args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && result.IsNull() && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_download_preserves_deployment_network_policy) {
+  McpEndpoint endpoint;
+  endpoint.provider_id = kDriveProvider;
+  endpoint.authorization = "private-token";
+  endpoint.headers = {{"Cookie", "private-cookie"}, {"X-Tenant", "private"}};
+  FileFetchOptions deployment;
+  deployment.allowed_networks = {"10.0.0.0/8"};
+  deployment.allowed_hosts = {"r1.googlevideo.com"};
+  deployment.public_networks = false;
+  deployment.ca_file = "/fixture/ca.pem";
+  mcp_detail::ProviderRequest request{
+      "https://r1.googlevideo.com/videoplayback"};
+  request.binary = request.google_download = true;
+  file_detail::Url url;
+  file_detail::RemoteHeaders headers;
+  FileFetchOptions options;
+  Q4T_CHECK(mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                               &url, &headers, &options)
+                .ok());
+  Q4T_CHECK(headers.size() == 1 && headers.at("Accept") == "*/*" &&
+            options.allowed_networks.empty() && !options.allow_http &&
+            !options.public_networks && options.max_redirects == 0 &&
+            options.allowed_hosts == deployment.allowed_hosts &&
+            options.ca_file == deployment.ca_file);
+  for (const auto* bad :
+       {"http://r1.googlevideo.com/read",
+        "https://evil.googleusercontent.com.evil.invalid/read",
+        "https://www.googleapis.com:444/read",
+        "https://www.googleapis.com/read#secret", "https://127.0.0.1/read",
+        "https://user@www.googleapis.com/read"}) {
+    request.url = bad;
+    Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                                  &url, &headers, &options)
+                   .ok());
+  }
+  request.url = "https://content.googleapis.com/read";
+  endpoint.provider_id = kGmailProvider;
+  Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                                &url, &headers, &options)
+                 .ok());
+  return true;
+}
+Q4T_TEST(mcp_google_drive_lro_post_is_read_download_only) {
+  McpEndpoint endpoint;
+  endpoint.provider_id = kDriveProvider;
+  endpoint.authorization = "private-token";
+  for (const auto* target :
+       {"/drive/v3/files/file_1", "/drive/v3/files/",
+        "/drive/v3/files/file_1/download?mimeType=video%2Fmp4&write=true",
+        "/drive/v3/files//download?mimeType=video%2Fmp4"}) {
+    mcp_detail::ProviderRequest request{
+        std::string("https://www.googleapis.com") + target};
+    request.method = "POST";
+    file_detail::Url url;
+    file_detail::RemoteHeaders headers;
+    FileFetchOptions options;
+    Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, FileFetchOptions{},
+                                                  request, &url, &headers,
+                                                  &options)
+                   .ok());
+  }
+  return true;
+}
 Q4T_TEST(mcp_google_drive_shortcut_uses_fixed_origin_and_resource_key) {
   auto shortcut = DriveFile("application/vnd.google-apps.shortcut");
   Set(&shortcut, "shortcutDetails",
@@ -697,6 +1029,7 @@ Q4T_TEST(mcp_google_catalog_schemas_accept_executable_arguments) {
       if (name == "search_emails" || name == "search_email_ids")
         Set(&args, "query", String("project"));
       Q4T_CHECK(graph.Check(args));
+      if (name == "fetch") Q4T_CHECK(graph.Check(DriveResume()));
     }
   }
   ProviderPeer peer({JsonReply(Mail()), JsonReply(Mail())}, kGmailProvider);

@@ -43,6 +43,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+Google Vids长耗时下载已接线一次发起、显式pending和原任务单次续接；
+[30项CPU首过](evidence/serve-mcp-drive-lro-cpu-20261116/README.md)，7项来源
+负控/705锚点过，主机和完整引擎零警告。认证下载URI留在worker内，
+账户令牌只发固定Google API主机；无重试或模型重启，0GPU。
+候选工作已建立[PR29](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/29)，
+仍为draft，真实账户/业务/发行未完成；rev134保持，全部master继续。
+
 Dropbox六工具候选已完成[25项CPU和1项实际CLI八提供方封包首过](evidence/serve-mcp-dropbox-cpu-20261116/README.md)，
 主机/完整引擎零警告，来源7项负控/704锚点过，0GPU、rev134不变。
 八提供方42工具均有原生候选实现；真实账户、特殊格式、业务组合及

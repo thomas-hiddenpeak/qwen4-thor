@@ -280,6 +280,7 @@ set(protocol_inputs
   src/server/mcp_provider_time.cpp
   src/server/mcp_provider_common.cpp
   src/server/mcp_provider_drive.cpp
+  src/server/mcp_provider_drive_lro.cpp
   src/server/mcp_provider_gmail.cpp
   src/server/mcp_provider_mail.cpp
   src/server/mcp_provider_graph.cpp
