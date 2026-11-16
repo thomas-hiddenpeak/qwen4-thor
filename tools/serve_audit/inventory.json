@@ -543,13 +543,14 @@
     },
     "prompt_cache_options": {
       "semantics": "Chat独立mode/ttl合同，默认隐式；显式内容断点映射真实模板/token边界，最近80查找及最多4写槽。",
-      "boundary": "针对性CPU通过，真实SSD写入/JSON/SSE命中及发行待验；媒体状态指纹仍为必做项。",
+      "boundary": "针对性CPU与8项实际SSD/JSON/SSE/隔离业务通过，可回退发行待验；媒体状态指纹仍为必做项。",
       "evidence": [
         "docs/SERVE_CHAT_CACHE_2026-11-16.md",
         "tests/server_prompt_cache_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tools/serve_protocol/test_chat_cache.py",
-        "docs/evidence/serve-chat-cache-cpu-20261116/README.md"
+        "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
+        "docs/evidence/serve-chat-cache-business-20261116/README.md"
       ]
     }
   },
@@ -6410,7 +6411,7 @@
     "master_active": true
   },
   "chat_cache_development_20261116": {
-    "status": "targeted_cpu_passed_business_pending",
+    "status": "business_accepted_delivery_pending",
     "changed_sources": [
       "include/q4t/server/chat_plan.h",
       "include/q4t/server/prompt_cache_policy.h",
@@ -6423,6 +6424,7 @@
     ],
     "review": "Chat-specific policy separates Responses controls; default implicit preserves explicit native scope opt-in. Collect final Chat coordinates including file expansion; nested validators accept only reviewed markers; rendering/model bytes unchanged and original storage parts retained. Generation uses actual token mapping, existing optional SSD ownership/TTL/miss behavior, no media KV reuse. Chat latest80 differs from Responses previously qualified lookup; API reference/guidance conflict recorded. No CUDA/model arithmetic or native control source changes.",
     "evidence": "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
-    "master_active": true
+    "master_active": true,
+    "business_evidence": "docs/evidence/serve-chat-cache-business-20261116/README.md"
   }
 }
