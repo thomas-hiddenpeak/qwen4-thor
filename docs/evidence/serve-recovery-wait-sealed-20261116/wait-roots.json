@@ -1,0 +1,10 @@
+{
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+    "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+  },
+  "retained": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+    "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+  }
+}

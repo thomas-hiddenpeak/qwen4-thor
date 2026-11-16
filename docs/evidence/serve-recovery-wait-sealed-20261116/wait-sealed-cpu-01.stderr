@@ -1,0 +1,7 @@
+test_exact_candidate (__main__.SealedTests.test_exact_candidate) ... ok
+test_exact_retained (__main__.SealedTests.test_exact_retained) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.866s
+
+OK

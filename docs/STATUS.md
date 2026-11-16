@@ -73,7 +73,9 @@ R09首次短验后的[修复CPU通过](evidence/serve-recovery-wait-cpu-20261116
 的保留。10项CPU通过，首次迁移审查后只重验3项；独立Guardian
 零警告。原预算不变，[补验驱动2项CPU](evidence/serve-root-rollback-completion-driver-20261116/README.md)
 通过；等待原窗口实际到期，仅补3启动/6Chat含自检/300秒，累计
-7启动/14Chat/1探测、GPU租约总时≤900秒。默认rev174保持。
+7启动/14Chat/1探测、GPU租约总时≤900秒。
+[修复后新双包CPU](evidence/serve-recovery-wait-sealed-20261116/README.md)2项通过，
+430e7985/7230ac61业务/发行待完成，默认rev174保持。
 
 
 [R09整根回退修复](SERVE_ROOT_ROLLBACK_2026-11-16.md)继续实现：
